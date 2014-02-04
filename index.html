@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" media="all" href="toontalk.css">
+<script>
+window.TOONTALK = {
+    test1: function (format) {
+        "use strict";
+        var update = function (id, new_value) {
+            document.getElementById(id).innerHTML = new_value;
+        };
+        var value_of = function (id) {
+            return parseInt(document.getElementById(id).value, 10);
+        };
+        var numerator = value_of("numerator");
+        var denominator = value_of("denominator");
+        var power = value_of("power");
+        var n = window.TOONTALK.number.create(numerator, denominator).power(window.TOONTALK.number.create(power, 1));
+        var length = value_of("length");
+        update('number', n.toString());
+        if (!format) {
+            format = window.TOONTALK.format;
+        }
+        if (!format) {
+            return;
+        }
+        window.TOONTALK.format = format;
+        var display = document.createElement('p');
+        display.innerHTML = n.to_HTML(length, 18, format);
+        var number_display_element = document.getElementById('number_display');
+        display.id = 'number_display';
+        number_display_element.parentNode.replaceChild(display, number_display_element);
+    }
+};
+</script>
+<script src="support/for_old_browsers_only.js"></script>
+<script src="libraries/rationaljs.js"></script>
+<script src="primitives/number.js"></script>
+<script src="primitives/robot.js"></script>
+<script src="primitives/backside.js"></script>
+<script src="primitives/number_backside.js"></script>
+<script src="primitives/frontside.js"></script>
+<script src="actions/drop.js"></script>
+<script src="actions/pick_up.js"></script>
+<script src="actions/copy.js"></script>
+<script src="support/path.js"></script>
+<script src="support/robot_actions.js"></script>
+<script src="support/run_queue.js"></script>
+<script src="support/display_updates.js"></script>
+<script src="support/utilities.js"></script>
+<!-- above scripts compiled by closure
+<script src="toontalk.js"></script>
+-->
+<!-- only including during development/testing --->
+<script src="tests.js"></script>
+<meta charset="ISO-8859-1">
+<title>Test1 Page</title>
+</head>
+<body >
+<p>
+(<input value='13' type='text' id='numerator' onchange='window.TOONTALK.test1();'></input>/<input value='3' type='text' id='denominator' onchange='window.TOONTALK.test1();'></input>)^<input value='2' type='text' id='power' onchange='window.TOONTALK.test1();'></input> is <div id='number'>X</div>
+<br>
+It can be displayed as <span id='number_display'></span> one of the following formats with a length of <input value='30' type='text' id='length' onchange='window.TOONTALK.test1();'>
+<br>
+<button onclick='window.TOONTALK.test1("decimal");'>Decimal</button>
+<button onclick='window.TOONTALK.test1("proper_fraction");'>Proper fraction</button>
+<button onclick='window.TOONTALK.test1("improper_fraction");'>Improper fraction</button>
+</p>
+<!--  <button onclick='button1();'>Run test 1</button>  --->
+<div class='toontalk-backside' id='test1_top_level_backside' style='width: 800px; height: 600px; background-color: yellow''>
+</div>
+<script>
+var button1 = function () {
+    window.TOONTALK.tests.add_or_duplicate_robot(true, true, document.getElementById("test1_top_level_backside"), -10000);
+};
+button1();
+TOONTALK.QUEUE.run();
+// window.TOONTALK.tests.run();
+// window.TOONTALK.test1();
+</script>
+</body>
+</html>
