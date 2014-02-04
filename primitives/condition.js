@@ -1,6 +1,7 @@
  /**
  * Implements ToonTalk's conditions for running robots, e.g. a thought bubble
  * Authors: Ken Kahn
+ * License: New BSD
  */
 
 window.TOONTALK.condition = 

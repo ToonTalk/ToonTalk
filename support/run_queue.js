@@ -1,6 +1,7 @@
  /**
  * Implements ToonTalk's queue for running the actions of robots
  * Authors: Ken Kahn
+ * License: New BSD
  */
 
 window.TOONTALK.queue = 

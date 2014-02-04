@@ -1,6 +1,7 @@
  /**
  * Implements workarounds for old browsers (e.g. IE8)
  * Authors: Ken Kahn
+ * License: New BSD
  */
  
 if (typeof Object.create !== 'function') {

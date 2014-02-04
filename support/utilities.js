@@ -1,6 +1,7 @@
  /**
  * Implements ToonTalk's JavaScript functions shared between files
  * Authors: Ken Kahn
+ * License: New BSD
  */
 
 window.TOONTALK.UTILITIES = 

@@ -1,6 +1,7 @@
  /**
  * Implements ToonTalk's action of a robot droping what it is holding
  * Authors: Ken Kahn
+ * License: New BSD
  */
 
 window.TOONTALK.drop_on = 

@@ -1,6 +1,7 @@
  /**
  * Implements ToonTalk's frontside of a widget
  * Authors: Ken Kahn
+ * License: New BSD
  */
 
 window.TOONTALK.frontside = 

@@ -1,6 +1,7 @@
  /**
  * Implements ToonTalk's robots
  * Authors: Ken Kahn
+ * License: New BSD
  */
 
 window.TOONTALK.robot = 

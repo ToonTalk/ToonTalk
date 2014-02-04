@@ -2,6 +2,7 @@
  * Implements ToonTalk's exact arithmetic using rational numbers
  * Relies upon https://npmjs.org/package/bigrat
  * Authors: Ken Kahn
+ * License: New BSD
  */
 
 /*jslint browser: true, devel: true, vars: true */

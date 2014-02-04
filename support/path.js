@@ -1,6 +1,7 @@
  /**
  * Implements ToonTalk's path description that refers to something in the robot's context
  * Authors: Ken Kahn
+ * License: New BSD
  */
 
 window.TOONTALK.path = 

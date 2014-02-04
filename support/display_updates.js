@@ -1,6 +1,7 @@
  /**
  * Implements ToonTalk's list of updates to the HTML of elements
  * Authors: Ken Kahn
+ * License: New BSD
  */
 
 window.TOONTALK.DISPLAY_UPDATES = 

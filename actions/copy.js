@@ -1,6 +1,7 @@
  /**
  * Implements ToonTalk's action of a robot copying something
  * Authors: Ken Kahn
+ * License: New BSD
  */
 
 window.TOONTALK.copy = 

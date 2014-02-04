@@ -1,6 +1,7 @@
  /**
  * Implements ToonTalk's actions for running robots
  * Authors: Ken Kahn
+ * License: New BSD
  */
 
 window.TOONTALK.actions = 

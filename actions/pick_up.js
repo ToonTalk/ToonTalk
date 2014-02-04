@@ -1,6 +1,7 @@
  /**
  * Implements ToonTalk's action of a robot picking something up
  * Authors: Ken Kahn
+ * License: New BSD
  */
 
 window.TOONTALK.pick_up = 

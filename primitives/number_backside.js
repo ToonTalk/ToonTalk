@@ -1,6 +1,7 @@
  /**
  * Implements ToonTalk's backside of a number
  * Authors: Ken Kahn
+ * License: New BSD
  */
 
 window.TOONTALK.number_backside = 
