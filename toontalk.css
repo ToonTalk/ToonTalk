@@ -1,4 +1,10 @@
 @CHARSET "ISO-8859-1";
+ /**
+ * Implements ToonTalk's style sheet
+ * Authors: Ken Kahn
+ * License: New BSD
+ */
+ 
 .toontalk-backside {
 	position: absolute;
 	background-color: rgba(245, 240, 240, 0.94);
@@ -41,4 +47,16 @@
 .toontalk-decimal-point {
 	/* decimal point as monospace looked bad -- not sure if serif is the best rememdy */
 	font-family: serif;
+}
+.toontalk-numerator {
+}
+.toontalk-denominator {
+}
+.toontalk-numerator-input {
+	width: 98%;
+	border-radius: 4px;
+}
+.toontalk-denominator-input {
+	width: 98%;
+	border-radius: 4px;
 }

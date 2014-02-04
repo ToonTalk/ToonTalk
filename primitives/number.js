@@ -311,10 +311,11 @@ window.TOONTALK.number = (function () {
                 return '<div class="toontalk-number toontalk-integer' + extra_class + '" style="font-size: ' + font_size + 'px;">' + fit_string_to_length(integer_as_string, max_characters) + '</div>';
             }
             if (format === 'improper_fraction' || !format) { // default format
-                return '<table class="toontalk-number toontalk-improper-fraction ' + extra_class + '">' +
-                       '<tr><td align="center" class="toontalk-number toontalk-numerator">' + fit_string_to_length(this.numerator_string(), max_characters) + '</td></tr>' +
+                // double the max_characters since the font size is halved
+                return '<table class="toontalk-number toontalk-improper-fraction ' + extra_class + '" style="font-size: ' + (font_size * 0.5) + 'px;">' +
+                       '<tr><td align="center" class="toontalk-number toontalk-numerator">' + fit_string_to_length(this.numerator_string(), max_characters * 2) + '</td></tr>' +
                        '<tr><td><hr class="toontalk-fraction-line"></td></tr>' +
-                       '<tr><td align="center" class="toontalk-number toontalk-denominator">' + fit_string_to_length(this.denominator_string(), max_characters) + '</td></tr></table>';
+                       '<tr><td align="center" class="toontalk-number toontalk-denominator">' + fit_string_to_length(this.denominator_string(), max_characters * 2) + '</td></tr></table>';
             }
             if (format === 'proper_fraction') {
                 integer_part = this.integer_part();
@@ -323,15 +324,15 @@ window.TOONTALK.number = (function () {
                 }
                 fractional_part = this.copy().subtract(integer_part).absolute_value();
                 // split max_characters between the two parts and recur for each them
-                return '<table class="toontalk-number toontalk-improper_fraction ' + extra_class + '">' +
+                return '<table class="toontalk-number toontalk-improper_fraction ' + extra_class + '" style="font-size: ' + (font_size * 0.5) + 'px;">' +
                         '<tr><td class="toontalk-number toontalk-integer-part-of-proper-fraction">' +
-                        integer_part.to_HTML(max_characters / 2, font_size, '', false) + // integers don't have formats
+                        integer_part.to_HTML(max_characters, font_size, '', false) + // integers don't have formats
                         '</td><td class="toontalk-number toontalk-fraction-part-of-proper_fraction">' +
-                        fractional_part.to_HTML(max_characters / 2, font_size, 'improper_fraction', false) +
+                        fractional_part.to_HTML(max_characters, font_size, 'improper_fraction', false) +
                         '</td></tr></table>';
             }
             if (format === 'decimal') {
-                return '<div class="toontalk-number toontalk-decimal' + extra_class + '">' + this.decimal_string(max_characters) + '</div>';
+                return '<div class="toontalk-number toontalk-decimal' + extra_class + '" style="font-size: ' + font_size + 'px;">' + this.decimal_string(max_characters) + '</div>';
             }
             // else warn??
         },
