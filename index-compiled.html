@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" media="all" href="toontalk.css">
+<script>
+window.TOONTALK = {}; // create ToonTalk 'module'
+</script>
+<script src="support/for_old_browsers_only.js"></script>
+<script src="libraries/rationaljs.js"></script>
+<script src="primitives/number.js"></script>
+<script src="primitives/robot.js"></script>
+<script src="primitives/backside.js"></script>
+<script src="primitives/number_backside.js"></script>
+<script src="primitives/frontside.js"></script>
+<script src="actions/drop.js"></script>
+<script src="actions/pick_up.js"></script>
+<script src="actions/copy.js"></script>
+<script src="support/path.js"></script>
+<script src="support/robot_actions.js"></script>
+<script src="support/run_queue.js"></script>
+<script src="support/display_updates.js"></script>
+<script src="support/utilities.js"></script>
+<!-- above scripts compiled by closure
+<script src="toontalk.js"></script>
+-->
+<!-- only including during development/testing --->
+<script src="tests.js"></script>
+<meta charset="ISO-8859-1">
+<title>ToonTalk Reborn Test Page</title>
+</head>
+<body >
+<div class='toontalk-backside' id='test1_top_level_backside' style='width: 800px; height: 600px; left: 20px; top: 20px; background-color: yellow''>
+</div>
+<script>
+window.TOONTALK.tests.add_or_duplicate_robot(true, true, document.getElementById("test1_top_level_backside"), -10000);
+TOONTALK.QUEUE.run();
+</script>
+</body>
+</html>
