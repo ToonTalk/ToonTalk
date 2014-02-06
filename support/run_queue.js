@@ -15,8 +15,8 @@ window.TOONTALK.queue =
             return result;
         },
         
-        enqueue: function (robot_or_context) {
-            return this.to_run.push(robot_or_context);
+        enqueue: function (robot_context_queue) {
+            return this.to_run.push(robot_context_queue);
         },
         
         dequeue: function () {
@@ -25,20 +25,24 @@ window.TOONTALK.queue =
         
         maximum_run: 1, // milliseconds
         
-        run: function (steps_limit) {
-            var next_robot, context;
+        paused: false,
+        
+        run: function (steps_limit, run_after_steps_limit) {
+            var next_robot_run, context;
             var end_time = new Date().getTime() + this.maximum_run;
             var that = this;
             var now, element;
             while (this.to_run.length > 0) {
+                if (this.paused) {
+                    return;
+                }
                 now = new Date().getTime();
                 if (now >= end_time) {
                     break; 
                 }
                 // TODO: use an efficient implementation of queues (linked lists?)
-                next_robot = this.dequeue();
-                context = this.dequeue();
-                next_robot.run_actions(context);
+                next_robot_run = this.dequeue();
+                next_robot_run.robot.run_actions(next_robot_run.context, next_robot_run.queue);
                 if (steps_limit) {
                     // only used for testing
                     steps_limit -= 1;
@@ -46,13 +50,16 @@ window.TOONTALK.queue =
                         // clear the queue to be ready for the next test
                         this.to_run = [];
                         window.TOONTALK.DISPLAY_UPDATES.update_display();
+                        if (run_after_steps_limit) {
+                            run_after_steps_limit();
+                        }
                         return;
                     }
                 }
             }
             window.TOONTALK.DISPLAY_UPDATES.update_display();
             setTimeout(function () {
-                          that.run(steps_limit);
+                          that.run(steps_limit, run_after_steps_limit);
                        },
                        0); // give browser a chance to run
         }

@@ -11,13 +11,9 @@ window.TOONTALK.actions =
     return {
         create: function () {
             var steps = [];
-            var optimized_steps = []; // when not being watched -- is this a good idea???
             var robot;
             var result = Object.create(this);
-            result.get_steps = function (optimized) {
-                if (optimized) {
-                    return optimized_steps;
-                }
+            result.get_steps = function () {
                 return steps;
             };
             result.get_robot = function () {
@@ -29,17 +25,17 @@ window.TOONTALK.actions =
             return result;
         },
         
-        add: function(step, optimized) {
-            this.get_steps(optimized)[this.get_steps().length] = step;
+        add: function(step) {
+            this.get_steps()[this.get_steps().length] = step;
         },
         
-        run: function(context, optimized) {
+        run: function(context, queue) {
             var i;
-            var steps = this.get_steps(optimized);
+            var steps = this.get_steps();
             for (i = 0; i < steps.length; i++) {
                 steps[i].run(context);
             }
-            this.get_robot().run(context);
+            this.get_robot().run(context, queue);
         }
         
     };

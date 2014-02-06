@@ -26,27 +26,29 @@ window.TOONTALK.robot =
             return this.create(this.get_bubble().copy(), this.get_body());
         },
         
-        run: function (context) {
+        run: function (context, queue) {
             if (this.stopped) {
                 return 'not_matched';
             }
             var match_status = this.get_bubble().match(context);
             switch (match_status) {
                 case 'matched':
-                    window.TOONTALK.QUEUE.enqueue(this);
-                    window.TOONTALK.QUEUE.enqueue(context);
-                    return match_status;
+                if (!queue) {
+                    queue = window.TOONTALK.QUEUE;
+                }
+                queue.enqueue({robot: this, context: context, queue: queue});
+                return match_status;
                 case 'not_matched':
                 // replace next_robot with get_next_robot()
-                    if (this.next_robot) {
-                        return this.next_robot.run(context);
-                    }
-                    return match_status;
+                if (this.next_robot) {
+                    return this.next_robot.run(context, queue);
+                }
+                return match_status;
                 default:
-                    if (match_status[0] === 'waiting_on') {
-                        match_status[1].run_when_non_empty(this);
-                    }
-                    return match_status;                    
+                if (match_status[0] === 'waiting_on') {
+                    match_status[1].run_when_non_empty(this);
+                }
+                return match_status;                    
             }
         },
         
@@ -54,8 +56,8 @@ window.TOONTALK.robot =
             this.stopped = true;
         },
         
-        run_actions: function(context) {
-            return this.get_body().run(context);
+        run_actions: function(context, queue) {
+            return this.get_body().run(context, queue);
         }
         
     };
