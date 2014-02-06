@@ -7,39 +7,25 @@
 window.TOONTALK.DISPLAY_UPDATES = 
 (function () {
     "use strict";
-    var dirty_numbers = [];
-    var dirty_backsides = [];
+    // for now only backsides and frontsides can be 'dirty'
+    var dirty_sides = [];
     return {
-        add_dirty_number: function (number) {
+        add_dirty_side: function (side) {
             var i;
-            for (i = 0; i < dirty_numbers.length; i += 1) {
-                if (dirty_numbers[i].get_frontside() === number.get_frontside()) {
+            for (i = 0; i < dirty_sides.length; i += 1) {
+                if (dirty_sides[i] === side) {
                     return;
                 }
             }
-            dirty_numbers.push(number);
-        },
-        
-        add_dirty_backside: function (backside) {
-            var i;
-            for (i = 0; i < dirty_backsides.length; i += 1) {
-                if (dirty_backsides[i] === backside) {
-                    return;
-                }
-            }
-            dirty_backsides.push(backside);
+            dirty_sides.push(side);
         },
         
         update_display: function () {
             var i;
-            for (i = 0; i < dirty_numbers.length; i += 1) {
-                dirty_numbers[i].update_display();
+            for (i = 0; i < dirty_sides.length; i += 1) {
+                dirty_sides[i].update_display();
             }
-            dirty_numbers = [];
-            for (i = 0; i < dirty_backsides.length; i += 1) {
-                dirty_backsides[i].update_display();
-            }
-            dirty_backsides = [];
+            dirty_sides = [];
         }
     };
 }());

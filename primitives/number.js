@@ -107,10 +107,10 @@ window.TOONTALK.number = (function () {
                         this.update_display();
                     } else {
                         if (frontside) {
-                            TT.DISPLAY_UPDATES.add_dirty_number(this);
+                            TT.DISPLAY_UPDATES.add_dirty_side(frontside);
                         }
                         if (backside) {
-                           TT.DISPLAY_UPDATES.add_dirty_backside(backside);
+                           TT.DISPLAY_UPDATES.add_dirty_side(backside);
                         }
                     }
                     return this;
