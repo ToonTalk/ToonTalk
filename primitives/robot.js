@@ -28,10 +28,11 @@ window.TOONTALK.robot = (function () {
     };
     
     robot.run = function (context, queue) {
+        var match_status, i;
         if (this.stopped) {
             return 'not_matched';
         }
-        var match_status = this.get_bubble().match(context);
+        match_status = this.get_bubble().match(context);
         switch (match_status) {
         case 'matched':
             if (!queue) {
@@ -46,8 +47,8 @@ window.TOONTALK.robot = (function () {
             }
             return match_status;
         default:
-            if (match_status[0] === 'waiting_on') {
-                match_status[1].run_when_non_empty(this);
+            for (i = 0; i < match_status.length; i += 1) {
+                match_status[i].run_when_non_empty(this);
             }
             return match_status;                    
         }

@@ -98,19 +98,21 @@ window.TOONTALK.number = (function () {
         // value is a private variable closed over below
         var value = bigrat_from_values(numerator, denominator);
         var format = "improper_fraction";
-        var frontside, backside;
         result.set_value =
-            function (new_value, update_now) { 
+            function (new_value, update_now) {
+				var frontside, backside;
                 value = new_value;
                 if (update_now) {
-                this.update_display();
+                    this.update_display();
                 } else {
-                if (frontside) {
-                    TT.DISPLAY_UPDATES.add_dirty_side(frontside);
-                }
-                if (backside) {
-                   TT.DISPLAY_UPDATES.add_dirty_side(backside);
-                }
+					frontside = this.get_frontside();
+					backside = this.get_backside();
+                    if (frontside) {
+                        TT.DISPLAY_UPDATES.add_dirty_side(frontside);
+                    }
+                    if (backside) {
+                        TT.DISPLAY_UPDATES.add_dirty_side(backside);
+                    }
                 }
                 return this;
             };
@@ -118,25 +120,11 @@ window.TOONTALK.number = (function () {
             function () { 
                 return value; 
             };
-        result.get_frontside =
-            function (create) {
-                if (create && !frontside) {
-                frontside = TT.frontside.create(this);
-                }
-                return frontside;
-            };
-        result.get_backside =
-            function (create) {
-                if (create && !backside) {
-                backside = TT.number_backside.create(this);
-                }
-                return backside;
-            };
         result.set_format =
             function (new_value, update_now) { 
                 format = new_value;
                 if (update_now) {
-                this.update_display();
+                    this.update_display();
                 }
                 return this;
             };
@@ -144,8 +132,12 @@ window.TOONTALK.number = (function () {
             function () { 
                 return format; 
             };
-        return result;
+        return number.add_sides_functionality(result);
     };
+	
+	number.create_backside = function () {
+		return TT.number_backside.create(this);
+	};
         
     number.set_from_values = function (numerator, denominator, update_now) {
         return this.set_value(bigrat_from_values(numerator, denominator), update_now);
@@ -160,18 +152,20 @@ window.TOONTALK.number = (function () {
     };
 
     number.copy = function () {
-        return window.TOONTALK.number.create(this.get_value()[0], this.get_value()[1]);
+        return number.create(this.get_value()[0], this.get_value()[1]);
     };
     
     number.is_number = function () {
         return true;
     };
+	
+	number.equals = function (other) {
+		return other.equals_number(this);
+	};
 
-    number.equals = function (other) {
-        if (!other.get_value) {
-	    return false;
-        }
-        return bigrat.equals(this.get_value(), other.get_value());
+    number.equals_number = function (other_number) {
+		// note that we are not considering the operator
+        return bigrat.equals(this.get_value(), other_number.get_value());
     };
     
     number.update_display = function() {
@@ -407,5 +401,6 @@ window.TOONTALK.number = (function () {
         }
         return 'not_matched';
     };
+	
     return number;
 }());

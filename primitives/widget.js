@@ -11,27 +11,56 @@ window.TOONTALK.widget = (function () {
 
     return {
         
+        add_sides_functionality: function (widget) {
+            var frontside, backside;
+            widget.get_frontside =
+                function (create) {
+                    if (create && !frontside) {
+                        // all frontsides are the same
+                        frontside = window.TOONTALK.frontside.create(widget);
+                    }
+                    return frontside;
+                };
+            widget.get_backside =
+                function (create) {
+                    if (create && !backside) {
+                        // backides are customised by each kind of widget
+                        backside = widget.create_backside();
+                    }
+                    return backside;
+                };
+            return widget;
+        },
+        
         dereference: function () {
             // is already dereferenced when used as part of a path
             return this;
         },
+        
         copy: function () {
             console.assert(true, "copy not implemented");
         },
+        
         equals: function (other) {
             console.assert(true, "equals not implemented");
         },
-        update_display: function () {
-            console.assert(true, "update_display not implemented");
+        
+        match: function (context) {
+            // should return 'matched', 'not-matched', or an array of nests waiting for objects to arrive
+            console.assert(true, "copy not implemented");
         },
+        
         drop_on: function (other, location) {
             console.assert(true, "drop_on not implemented");
         },
-        to_HTML: function () {
-            console.assert(true, "to_HTML not implemented");
+        
+        update_display: function () {
+            console.assert(true, "update_display not implemented");
         },
-        match: function (context) {
-            console.assert(true, "copy not implemented");
+        
+        to_HTML: function () {
+            // should this be given the dimensions (in pixels) available? 
+            console.assert(true, "to_HTML not implemented");
         }
         
     };
