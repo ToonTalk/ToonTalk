@@ -38,29 +38,29 @@ window.TOONTALK.widget = (function () {
         },
         
         copy: function () {
-            console.assert(true, "copy not implemented");
+            console.assert(false, "copy not implemented");
         },
         
         equals: function (other) {
-            console.assert(true, "equals not implemented");
+            console.assert(false, "equals not implemented");
         },
         
         match: function (context) {
             // should return 'matched', 'not-matched', or an array of nests waiting for objects to arrive
-            console.assert(true, "copy not implemented");
+            console.assert(false, "copy not implemented");
         },
         
         drop_on: function (other, location) {
-            console.assert(true, "drop_on not implemented");
+            console.assert(false, "drop_on not implemented");
         },
         
         update_display: function () {
-            console.assert(true, "update_display not implemented");
+            console.assert(false, "update_display not implemented");
         },
         
         to_HTML: function () {
             // should this be given the dimensions (in pixels) available? 
-            console.assert(true, "to_HTML not implemented");
+            console.assert(false, "to_HTML not implemented");
         }
         
     };

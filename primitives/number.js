@@ -285,8 +285,9 @@ window.TOONTALK.number = (function () {
 
     number.toString = function () {
         // addition is implicit so don't display it
-        var operatorString = this.get_operator() === '+' ? '' : this.get_operator();
-        return operatorString + bigrat.str(this.get_value());
+        var operator_string = this.get_operator() === '+' ? '' : this.get_operator();
+		var erased_string = this.erased ? "erased: " : "";
+        return erased_string + operator_string + bigrat.str(this.get_value());
     };
 
     number.to_HTML = function (max_characters, font_size, format, top_level) {
@@ -399,7 +400,7 @@ window.TOONTALK.number = (function () {
         if (other_number.equals(this)) {
             return 'matched';
         }
-        return 'not_matched';
+        return 'not matched';
     };
 	
     return number;

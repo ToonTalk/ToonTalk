@@ -30,7 +30,7 @@ window.TOONTALK.robot = (function () {
     robot.run = function (context, queue) {
         var match_status, i;
         if (this.stopped) {
-            return 'not_matched';
+            return 'not matched';
         }
         match_status = this.get_bubble().match(context);
         switch (match_status) {
@@ -40,7 +40,7 @@ window.TOONTALK.robot = (function () {
             }
             queue.enqueue({robot: this, context: context, queue: queue});
             return match_status;
-        case 'not_matched':
+        case 'not matched':
             // replace next_robot with get_next_robot()
             if (this.next_robot) {
                 return this.next_robot.run(context, queue);

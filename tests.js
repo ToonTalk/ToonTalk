@@ -94,22 +94,70 @@
          return robot;
      },
      
-     run: function () {
-         "use strict";
-         // robot tests
+     robot_tests: function () {
          this.add_or_duplicate_robot();
          this.add_or_duplicate_robot(true);
          this.add_or_duplicate_robot(true, true);
          window.TOONTALK.tests.add_or_duplicate_robot(true, true,  document.getElementById("test1_top_level_backside"), 10000);
-         window.TOONTALK.tests.add_or_duplicate_robot(true, false, document.getElementById("test1_top_level_backside"), 10000);
-                  
-         // number tests
+         window.TOONTALK.tests.add_or_duplicate_robot(true, false, document.getElementById("test1_top_level_backside"), 10000);                   
+     },
+     
+     number_tests: function () {
          this.drop_numbers('+', 1, 1, 2, 1, 3, 1);
          this.drop_numbers('-', 1, 1, 3, 1, 2, 1);
          this.drop_numbers('*', 2, 1, 3, 1, 6, 1);
          this.drop_numbers('/', 6, 1, 10, 1, 5, 3);
-         this.drop_numbers('^', 2, 1, 3, 1, 9, 1);
-         
+         this.drop_numbers('^', 2, 1, 3, 1, 9, 1);                   
+     },
+     
+     box_tests: function () {
+         var a_2 = window.TOONTALK.box.create(2);
+         var b_1 = window.TOONTALK.box.create(1);
+         var b_1_erased = window.TOONTALK.box.create(1);
+         b_1_erased.erased = true;
+         var b_2 = window.TOONTALK.box.create(2);
+         console.assert(b_2.match(a_2) === 'matched', "Empty box of size 2 should match empty box of size 2");
+         console.assert(b_2.equals(a_2), "Empty box of size 2 should equal an empty box of size 2");
+         console.assert(b_1.match(a_2) === 'not matched', "Empty box of size 1 should not match empty box of size 2");
+         console.assert(!b_1.equals(a_2), "Empty box of size 1 should not equal an empty box of size 2");
+         console.assert(b_1_erased.match(a_2) === 'matched', "Empty ERASED box of size 1 should match empty box of size 2");
+         console.assert(!b_1_erased.equals(a_2), "Empty ERASED box of size 1 should not equal an empty box of size 2");
+         var a_hole_0 = window.TOONTALK.number.create(3);
+         a_2.set_hole(0, a_hole_0);
+         console.assert(b_2.match(a_2) === 'matched', "Empty box of size 2 should match box of size 2 with number in first hole");
+         var b_hole_0 = window.TOONTALK.number.create(3);
+         b_2.set_hole(0, b_hole_0);
+//          console.log("b_2 is " + b_2.toString() + " and a_2 is " + a_2.toString());
+         console.assert(b_2.match(a_2) === 'matched', "box of size 2 with 3 in first hole should match box of size 2 with 3 in first hole");
+         console.assert(b_2.equals(a_2), "box of size 2 with 3 in first hole should equal a box of size 2 with 3 in first hole");
+         var b_hole_1 = window.TOONTALK.number.create(4);
+         b_2.set_hole(1, b_hole_1);
+         console.assert(b_2.match(a_2) === 'not matched', "box of size 2 with 3 and 4 should not match box of size 2 with just 3 in first hole");
+         b_hole_1.erased = true;
+//          console.log("b_2 is " + b_2.toString() + " and a_2 is " + a_2.toString());
+         console.assert(b_2.match(a_2) === 'not matched', "box of size 2 with 3 and erased 4 should not match box of size 2 with 3 in first hole");
+         console.assert(!b_2.equals(a_2), "box of size 2 with 3 and erased 4 should not equal a box of size 2 with 3 in first hole");
+         var a_hole_1 = window.TOONTALK.number.create(5);
+         a_2.set_hole(1, a_hole_1);
+//          console.log("b_2 is " + b_2.toString() + " and a_2 is " + a_2.toString());
+         console.assert(b_2.match(a_2) === 'matched', "box of size 2 with 3 and erased 4 should match box of size 2 with 3 and 5");
+         b_hole_1.erased = false;
+         b_2.set_hole(1, b_hole_1.copy());
+//          console.log("b_2 is " + b_2.toString() + " and a_2 is " + a_2.toString());
+         console.assert(b_2.match(a_2) === 'not matched', "box of size 2 with 3 and 4 should not match box of size 2 with 3 and 5");
+         console.assert(!b_2.equals(a_2), "box of size 2 with 3 and 4 should not equal a box of size 2 with 3 and 5");
+         a_2.set_hole(1, window.TOONTALK.number.create(5));
+         b_2.set_hole(1, window.TOONTALK.number.create(5));
+//          console.log("b_2 is " + b_2.toString() + " and a_2 is " + a_2.toString());
+         console.assert(b_2.match(a_2) === 'matched', "box of size 2 with 3 and 5 should match box of size 2 with 3 and 5");
+         console.assert(b_2.equals(a_2), "box of size 2 with 3 and 5 should equal a box of size 2 with 3 and 5");
+     },
+     
+     run: function () {
+         "use strict";
+         this.number_tests();
+         this.box_tests();
+         this.robot_tests();
          return "All tests run.";
      }
 
