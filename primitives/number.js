@@ -77,7 +77,7 @@ window.TOONTALK.number = (function () {
         if (!denominator) {
             denominator = 1;
         }
-        if ((typeof numerator === 'number' || typeof numerator === 'string') && (typeof denominator === 'number'  || typeof numerator === 'string')) {
+        if ((typeof numerator === 'number' || typeof numerator === 'string') && (typeof denominator === 'number'  || typeof denominator === 'string')) {
             return bigrat.fromValues(numerator, denominator);
         }
         // assume (for now) numerator is a bigrat with denominator of 1
@@ -156,6 +156,10 @@ window.TOONTALK.number = (function () {
 		if (this.erased) {
 			copy.erased = this.erased;
 		}
+		if (this.operator) {
+			copy.operator = this.operator;
+		}
+		return copy;
     };
     
     number.is_number = function () {

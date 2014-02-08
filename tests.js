@@ -64,15 +64,19 @@
          return this;
      },
      
-     test_robot: function (robot, context, runs, expected_result) {
+     test_robot: function (robot, context, runs, expected_result, run_when_completed) {
           // reset the queue for these kinds of tests
          window.TOONTALK.QUEUE.paused = true;
          var queue = window.TOONTALK.queue.create();
+         var context_copy = context.copy();
          robot.run(context, queue);
          var that = this;
          queue.run(runs, function () {
-                             var message = robot.toString() + " when given " + context.toString() + " expected " + expected_result.toString() + " when run " + runs + " times. ";
+                             var message = robot.toString() + " when given " + context_copy.toString() + " expected " + expected_result.toString() + " not " + context.toString() + " when run " + runs + " times. ";
                              that.assert_equals(context, expected_result, message);
+                             if (run_when_completed) {
+                                 run_when_completed();
+                             }
                     });                             
      },
      
@@ -122,9 +126,19 @@
          var hole1 = window.TOONTALK.number.create(19);
          box.set_hole(0, hole0);
          box.set_hole(1, hole1);
+         var div1 = document.createElement("div");
+         var div2 = document.createElement("div");
+         div1.innerHTML = box.to_HTML();
+         document.body.appendChild(div1);
          var expected_result = box.copy();
-         expected_result.set_hole(1,  hole1.power(window.TOONTALK.number.create(10)));
-         this.test_robot(robot, box, 10, expected_result);
+         var fraction = window.TOONTALK.number.create(19, "79792266297612001");
+         expected_result.set_hole(1, fraction);
+         var add_result = function () {
+             div2.innerHTML = box.to_HTML();
+             document.body.appendChild(div2);
+         };
+         this.test_robot(robot, box, 10, expected_result, add_result);
+
      },
      
      robot_tests: function () {

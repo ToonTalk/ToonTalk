@@ -83,5 +83,9 @@ window.TOONTALK.widget = (function () {
             return 'not matched';
         },
         
+        number_dropped_on_me: function (other) {
+            console.assert("No handler for drop of " + this.toString() + " on " + other.toString());
+        }
+        
     };
 }());
