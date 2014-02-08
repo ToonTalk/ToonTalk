@@ -1,5 +1,5 @@
  /**
- * Implements test programs for Web ToonTalk
+ * Implements test programs for Web window.TOONTALK
  */
  
  window.TOONTALK.tests = {
@@ -21,11 +21,11 @@
          "use strict";
          var a = window.TOONTALK.number.create(a_n, a_d).set_operator(operator);
          var b = window.TOONTALK.number.create(b_n, b_d);
-         var expected_result = TOONTALK.number.create(result_n, result_d);
+         var expected_result = window.TOONTALK.number.create(result_n, result_d);
          var result = a.drop_on(b);
          this.assert_equals(result, expected_result, 'Dropping ' + a + ' on ' + b + ' should result in ' + expected_result);
          this.assert_equals(b, expected_result, 'Dropping ' + a + ' on ' + b + ' should update ' + b + ' to ' + expected_result);
-         this.assert_equals(a, TOONTALK.number.create(a_n, a_d), 'Dropping ' + a + ' on ' + b + ' should not update ' + a);
+         this.assert_equals(a, window.TOONTALK.number.create(a_n, a_d), 'Dropping ' + a + ' on ' + b + ' should not update ' + a);
      },
      
      create_sides: function (context, backside_element) {
@@ -40,21 +40,17 @@
      // robot tests:
      add_or_duplicate_robot: function (erase_bubble, double, backside_element, runs) {
          "use strict";
-         var bubble = TOONTALK.number.create(2);
+         var bubble = window.TOONTALK.number.create(2);
          var expected_result;
-         var context = TOONTALK.number.create(2);
+         var context = window.TOONTALK.number.create(2);
          if (backside_element) {
              this.create_sides(context, backside_element);
          }
          if (!runs) {
              runs = 100;
          }
-         // reset the queue for these kinds of tests
-         window.TOONTALK.QUEUE.paused = true;
-         var queue = window.TOONTALK.queue.create();
          var robot = double ? this.double_robot() : this.add_one_robot();
          if (erase_bubble) {
-             bubble.erased = true;
              if (double) {
                  expected_result = window.TOONTALK.number.create(2).power(window.TOONTALK.number.create(runs + 1)).toString();
              } else {
@@ -64,32 +60,46 @@
              robot.get_bubble().erased = false;
              expected_result = 3;
          }
-         robot.run(context, queue);
-         var that = this;
-         queue.run(runs, function () {
-                             var message = double ? "A robot dropping a copy of the number on the number should result in " : "A robot dropping 1 on 2 should make the 2 into ";
-                             that.assert_equals(context, TOONTALK.number.create(expected_result), message + expected_result + " when run " + runs + " times. ");
-                    });
+         this.test_robot(robot, context, runs, window.TOONTALK.number.create(expected_result));
          return this;
      },
      
-     test_robot: function() {
-         var body = TOONTALK.actions.create();
-         var bubble = TOONTALK.number.create(1);
+     test_robot: function (robot, context, runs, expected_result) {
+          // reset the queue for these kinds of tests
+         window.TOONTALK.QUEUE.paused = true;
+         var queue = window.TOONTALK.queue.create();
+         robot.run(context, queue);
+         var that = this;
+         queue.run(runs, function () {
+                             var message = robot.toString() + " when given " + context.toString() + " expected " + expected_result.toString() + " when run " + runs + " times. ";
+                             that.assert_equals(context, expected_result, message);
+                    });                             
+     },
+     
+     accept_number_robot: function() {
+         var body = window.TOONTALK.actions.create();
+         var bubble = window.TOONTALK.number.create(1);
          bubble.erased = true;
-         return TOONTALK.robot.create(bubble, body);         
+         return window.TOONTALK.robot.create(bubble, body);         
+     },
+     
+     accept_box_robot: function(n) {
+         var body = window.TOONTALK.actions.create();
+         var bubble = window.TOONTALK.box.create(n);
+         bubble.erased = true;
+         return window.TOONTALK.robot.create(bubble, body);         
      },
      
      add_one_robot: function () {
-         var robot = this.test_robot();
+         var robot = this.accept_number_robot();
          var body = robot.get_body();
-         body.add(window.TOONTALK.pick_up_constant.create(robot, TOONTALK.number.ONE()));
+         body.add(window.TOONTALK.pick_up_constant.create(robot, window.TOONTALK.number.ONE()));
          body.add(window.TOONTALK.drop_on.create(robot)); // entire context
          return robot;
      },
      
      double_robot: function () {
-         var robot = this.test_robot();
+         var robot = this.accept_number_robot();
          var body = robot.get_body();
          body.add(window.TOONTALK.copy.create(robot));
          body.add(window.TOONTALK.drop_on.create(robot)); // entire context
@@ -97,19 +107,34 @@
      },
      
      copy_first_hole_to_second_hole_robot: function () {
-         var robot = this.test_robot();
+         var robot = this.accept_box_robot(2);
          var body = robot.get_body();
-         body.add(window.TOONTALK.copy.create(robot, TOONTALK.box.create_path(1)));
-         body.add(window.TOONTALK.drop_on.create(robot)); // entire context
+         body.add(window.TOONTALK.copy.create(robot, window.TOONTALK.box.create_path(0)));
+         body.add(window.TOONTALK.drop_on.create(robot, window.TOONTALK.box.create_path(1)));
          return robot;
+     },
+     
+     test_copy_first_hole_to_second_hole_robot: function () {
+         var robot = this.copy_first_hole_to_second_hole_robot();
+         var box = window.TOONTALK.box.create(2);
+         var hole0 = window.TOONTALK.number.create(1, 49);
+         hole0.set_operator("*");
+         var hole1 = window.TOONTALK.number.create(19);
+         box.set_hole(0, hole0);
+         box.set_hole(1, hole1);
+         var expected_result = box.copy();
+         expected_result.set_hole(1,  hole1.power(window.TOONTALK.number.create(10)));
+         this.test_robot(robot, box, 10, expected_result);
      },
      
      robot_tests: function () {
          this.add_or_duplicate_robot();
          this.add_or_duplicate_robot(true);
          this.add_or_duplicate_robot(true, true);
+         // not using 'this' here so can easily copy and run in console individually
          window.TOONTALK.tests.add_or_duplicate_robot(true, true,  document.getElementById("test1_top_level_backside"), 10000);
-         window.TOONTALK.tests.add_or_duplicate_robot(true, false, document.getElementById("test1_top_level_backside"), 10000);                   
+         window.TOONTALK.tests.add_or_duplicate_robot(true, false, document.getElementById("test1_top_level_backside"), 10000);
+         window.TOONTALK.tests.test_copy_first_hole_to_second_hole_robot();
      },
      
      number_tests: function () {

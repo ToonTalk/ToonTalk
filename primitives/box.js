@@ -41,7 +41,16 @@ window.TOONTALK.box = (function () {
     
     box.copy = function () {
         // what about erased flag?
-        return box.create(this.get_size(), this.get_horizontal());
+        var copy = box.create(this.get_size(), this.get_horizontal());
+        var size = this.get_size();
+        var i, hole;
+        for (i = 0; i < size; i += 1) {
+            hole = this.get_hole(i);
+            if (hole) {
+                copy.set_hole(i, hole.copy());
+            }
+        }
+        return copy;
     };
     
     box.equals = function (other) {
@@ -131,7 +140,7 @@ window.TOONTALK.box = (function () {
         var index, hole;
         if (path) {
             index = path.get_index && path.get_index();
-            if (index) {
+            if (typeof index === 'number') {
                 hole = this.get_hole(index);
                 return hole.dereference(path.next);
             }
@@ -148,7 +157,7 @@ window.TOONTALK.box = (function () {
             },
             
             toString: function () {
-                return "Box hole " + index + (next ? "; " + next.toString() : "");
+                return "Box hole " + index + (this.next ? "; " + next.toString() : "");
             }
         };
     };

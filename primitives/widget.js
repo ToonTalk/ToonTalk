@@ -61,7 +61,27 @@ window.TOONTALK.widget = (function () {
         to_HTML: function () {
             // should this be given the dimensions (in pixels) available? 
             console.assert(false, "to_HTML not implemented");
-        }
+        },
+        
+        equals_box: function () {
+            // if a box didn't respond to this then not equal
+            return false;
+        },
+        
+        equals_number: function () {
+            // if a number didn't respond to this then not equal
+            return false;
+        },
+        
+        match_box: function () {
+            // if a box didn't respond to this then not matched
+            return 'not matched';
+        },
+        
+        match_number: function () {
+            // if a number didn't respond to this then not matched
+            return 'not matched';
+        },
         
     };
 }());
