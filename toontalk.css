@@ -31,16 +31,55 @@
 	left: 10px;
 	top: 50px;
 }
+.toontalk-box {
+	background-color: rgb(244, 247, 214);
+	table-layout: fixed;
+    width:  100%;	
+	height: 100%;
+	padding:  0px;
+	border-collapse: collapse;
+}
+.toontalk-box-horizontal {
+
+}
+.toontalk-box-hole {
+	width: 100%;
+	height: 100%;
+    border-color: rgb(173, 43, 105);
+	padding:  0;
+}
+.toontalk-box-hole-horizontal {
+	border-style: solid;
+	border-left-width: 0px;
+	border-right-width: 3px;
+	border-top-width: 3px;
+	border-bottom-width: 3px;
+}
+.toontalk-box-hole-horizontal:nth-child(1) {
+	border-left-width: 3px;
+}
+.toontalk-box-hole-vertical {
+	border-style: solid;
+	border-left-width: 3px;
+	border-right-width: 3px;
+	border-top-width: 0px;
+	border-bottom-width: 3px;
+}
+.toontalk-box-hole-vertical:nth-child(1) {
+	border-top-width: 3px;
+}
 .toontalk-top-level-number {
 	/* numbers look better with fixed widths -- easier to compare visually */
 	font-family: monospace;
 	background-color: rgb(237, 247, 240);
 	width: 100%;
 	height: 100%;
-	border-style: solid;
-	border-width: 2px;
-	border-color: rgb(96, 173, 43);
-	border-radius: 4px;
+	/* border-style: solid; */
+	/* border-width: 2px; */
+	/* border-color: rgb(96, 173, 43); */
+	border-radius: 6px;
+	text-align: center;
+	vertical-align: middle;
 }
 .toontalk-digit {
 }
@@ -59,4 +98,7 @@
 .toontalk-denominator-input {
 	width: 98%;
 	border-radius: 4px;
+}
+.toontalk-fraction-line {
+	width: 50%;
 }

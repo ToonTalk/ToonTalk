@@ -121,24 +121,32 @@
      test_copy_first_hole_to_second_hole_robot: function () {
          var robot = this.copy_first_hole_to_second_hole_robot();
          var box = window.TOONTALK.box.create(2);
+         box.set_horizontal(true);
          var hole0 = window.TOONTALK.number.create(1, 49);
          hole0.set_operator("*");
          var hole1 = window.TOONTALK.number.create(19);
          box.set_hole(0, hole0);
          box.set_hole(1, hole1);
+         var div1_container = document.createElement("div");
+         div1_container.className = "toontalk-frontside";
+         div1_container.style.top = "10px";
+         var div2_container = document.createElement("div");
+         div2_container.className = "toontalk-frontside";
+         div1_container.style.top = "200px";
          var div1 = document.createElement("div");
+         div1_container.appendChild(div1);
          var div2 = document.createElement("div");
+         div2_container.appendChild(div2);
          div1.innerHTML = box.to_HTML();
-         document.body.appendChild(div1);
+         document.body.appendChild(div1_container);
          var expected_result = box.copy();
          var fraction = window.TOONTALK.number.create(19, "79792266297612001");
          expected_result.set_hole(1, fraction);
          var add_result = function () {
              div2.innerHTML = box.to_HTML();
-             document.body.appendChild(div2);
+             document.body.appendChild(div2_container);
          };
          this.test_robot(robot, box, 10, expected_result, add_result);
-
      },
      
      robot_tests: function () {
