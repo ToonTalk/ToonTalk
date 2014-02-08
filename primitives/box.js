@@ -40,7 +40,6 @@ window.TOONTALK.box = (function () {
     };
     
     box.copy = function () {
-        // what about erased flag?
         var copy = box.create(this.get_size(), this.get_horizontal());
         var size = this.get_size();
         var i, hole;
@@ -49,6 +48,9 @@ window.TOONTALK.box = (function () {
             if (hole) {
                 copy.set_hole(i, hole.copy());
             }
+        }
+        if (this.erased) {
+            copy.erased = this.erased;
         }
         return copy;
     };

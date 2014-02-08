@@ -152,7 +152,10 @@ window.TOONTALK.number = (function () {
     };
 
     number.copy = function () {
-        return number.create(this.get_value()[0], this.get_value()[1]);
+        var copy = number.create(this.get_value()[0], this.get_value()[1]);
+		if (this.erased) {
+			copy.erased = this.erased;
+		}
     };
     
     number.is_number = function () {
