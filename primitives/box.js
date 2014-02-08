@@ -24,6 +24,9 @@ window.TOONTALK.box = (function () {
         };
         new_box.get_horizontal = function () {
             // since horizontal is a boolean should this be called is_horizontal?
+            if (horizontal === undefined) {
+                return true; // horizontal by default
+            }
             return horizontal;
         };
         new_box.set_horizontal = function (new_horizontal) {
@@ -136,6 +139,35 @@ window.TOONTALK.box = (function () {
             }
         }
         return '[' + contents + ']';
+    };
+    
+    box.to_HTML = function () {
+        var horizontal = this.get_horizontal();
+        var extra_classes = (horizontal ? 'horizontal' : 'vertical');
+        var html = "<table class='toontalk-box toontalk-box-" + extra_classes + "'>";
+        var size = this.get_size();
+        var i, hole;
+        var percentage = size === 0 ? 1 : 100 / size;
+        var horizontal_style = horizontal ? " style='width:" + + percentage + "%;'" : "";
+        var vertical_style =   horizontal ? "" : " style='height:" + + percentage + "%;'";
+//         var style = "style='" + (horizontal ? "width:" : "height:") + percentage + "%;'";
+        html += "<tr" + vertical_style + ">";
+        for (i = 0; i < size; i += 1) {
+            hole = this.get_hole(i);
+            if (hole) {
+               html += "<td class='toontalk-box-hole toontalk-box-hole-" + extra_classes + "'" + horizontal_style + ">";
+               html += hole.to_HTML();
+               html += "</td>";
+               if (!horizontal) {
+                   html += "</tr><tr" + vertical_style + ">";
+               }
+            }
+        }
+        if (horizontal) {
+            html += "</tr>";
+        }
+        html += "</table>";
+        return html;
     };
     
     box.dereference = function (path) {
