@@ -127,5 +127,31 @@ window.TOONTALK.box = (function () {
         return '[' + contents + ']';
     };
     
+    box.dereference = function (path) {
+        var index, hole;
+        if (path) {
+            index = path.get_index && path.get_index();
+            if (index) {
+                hole = this.get_hole(index);
+                return hole.dereference(path.next);
+            }
+            console.log("box " + this.toString() + " unable to dereference path " + path.toString());
+        } else {
+            return this;
+        }
+    };
+    
+    box.create_path = function (index) {
+        return {
+            get_index: function () {
+                return index;
+            },
+            
+            toString: function () {
+                return "Box hole " + index + (next ? "; " + next.toString() : "");
+            }
+        };
+    };
+    
     return box;
 }());

@@ -8,16 +8,19 @@ window.TOONTALK.copy =
 (function () {
     "use strict";
     return {
-        create: function (robot, path_or_object) {
-            // delegate to share this with other actions???
+        create: function (robot, path) {
             var result = Object.create(this);
             result.robot = robot;
-            result.path = path_or_object;
+            result.path = path;
             return result;
         },
         
         run: function (context) {
-            this.robot.thing_in_hand = this.path.dereference(context).copy();
+            var referenced = window.TOONTALK.UTILITIES.dereference_path(this.path, context);
+            if (!referenced) {
+                return false;
+            }
+            this.robot.thing_in_hand = referenced.copy();
             return true;
         }
 

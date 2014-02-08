@@ -37,6 +37,19 @@ window.TOONTALK.UTILITIES =
 					return child;
 				}
 			}
-		}
+		},
+		
+		dereference_path: function (path, context) {
+			var reference;
+		    if (path) {
+                reference = context.dereference(path);
+			    if (!reference) {
+			        console.log("Unable to dereference path: " + path.toString() + " in context: " + context.toString());
+			    }
+			    return reference;
+            }
+            // no path means entire context
+            return context;
+        }
     };
 }());

@@ -14,14 +14,16 @@ window.TOONTALK.path =
             return result;
         },
         
-        dereference: function (context) {
-            if (this.context) {
-                // to do
-                return 'not yet implemented';
-            }
-            // no path means entire context
-            return context;
-        }
+        add_path_functionality: function (path) {
+            path.dereference = 
+                function (context) {
+                    if (this.path) {
+                        return context.dereference(path);
+                    }
+                    // no path means entire context
+                    return context;
+                };
+        } 
 
     };
 }());

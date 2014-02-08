@@ -32,7 +32,8 @@ window.TOONTALK = {}; // create ToonTalk 'module'
 <div class='toontalk-backside' id='test1_top_level_backside' style='width: 800px; height: 600px; left: 20px; top: 20px; background-color: yellow''>
 </div>
 <script>
-window.TOONTALK.tests.add_or_duplicate_robot(true, true, document.getElementById("test1_top_level_backside"), -10000);
+var context = TOONTALK.number.create(2, 7); 
+window.TOONTALK.tests.create_sides(context, document.getElementById("test1_top_level_backside"));
 TOONTALK.QUEUE.run();
 </script>
 </body>

@@ -28,24 +28,26 @@
          this.assert_equals(a, TOONTALK.number.create(a_n, a_d), 'Dropping ' + a + ' on ' + b + ' should not update ' + a);
      },
      
+     create_sides: function (context, backside_element) {
+         var backside = context.get_backside(true);
+         var frontside = context.get_frontside(true);
+         backside_element.appendChild(backside.get_element());
+         backside_element.appendChild(frontside.get_element());
+         // wait 1/10 second before updating the display
+         setTimeout(function () {context.update_display();}, 100);
+     },
+     
      // robot tests:
      add_or_duplicate_robot: function (erase_bubble, double, backside_element, runs) {
          "use strict";
          var bubble = TOONTALK.number.create(2);
          var expected_result;
-         var context = runs < 0 ? TOONTALK.number.create(2, 7) : TOONTALK.number.create(2);
-         var backside = context.get_backside(true);
-         var frontside = context.get_frontside(true);
+         var context = TOONTALK.number.create(2);
          if (backside_element) {
-             backside_element.appendChild(backside.get_element());
-             backside_element.appendChild(frontside.get_element());
+             this.create_sides(context, backside_element);
          }
          if (!runs) {
              runs = 100;
-         }
-         if (runs < 0) {
-             setTimeout(function () {context.update_display();}, 100);
-             return;
          }
          // reset the queue for these kinds of tests
          window.TOONTALK.QUEUE.paused = true;
@@ -65,8 +67,8 @@
          robot.run(context, queue);
          var that = this;
          queue.run(runs, function () {
-                        var message = double ? "A robot dropping a copy of the number on the number should result in " : "A robot dropping 1 on 2 should make the 2 into ";
-                        that.assert_equals(context, TOONTALK.number.create(expected_result), message + expected_result + " when run " + runs + " times. ");
+                             var message = double ? "A robot dropping a copy of the number on the number should result in " : "A robot dropping 1 on 2 should make the 2 into ";
+                             that.assert_equals(context, TOONTALK.number.create(expected_result), message + expected_result + " when run " + runs + " times. ");
                     });
          return this;
      },
@@ -81,16 +83,24 @@
      add_one_robot: function () {
          var robot = this.test_robot();
          var body = robot.get_body();
-         body.add(window.TOONTALK.pick_up.create(robot, TOONTALK.number.ONE()));
-         body.add(window.TOONTALK.drop_on.create(robot, TOONTALK.path.create())); // entire context
+         body.add(window.TOONTALK.pick_up_constant.create(robot, TOONTALK.number.ONE()));
+         body.add(window.TOONTALK.drop_on.create(robot)); // entire context
          return robot;
      },
      
      double_robot: function () {
          var robot = this.test_robot();
          var body = robot.get_body();
-         body.add(window.TOONTALK.copy.create(robot, TOONTALK.path.create()));
-         body.add(window.TOONTALK.drop_on.create(robot, TOONTALK.path.create())); // entire context
+         body.add(window.TOONTALK.copy.create(robot));
+         body.add(window.TOONTALK.drop_on.create(robot)); // entire context
+         return robot;
+     },
+     
+     copy_first_hole_to_second_hole_robot: function () {
+         var robot = this.test_robot();
+         var body = robot.get_body();
+         body.add(window.TOONTALK.copy.create(robot, TOONTALK.box.create_path(1)));
+         body.add(window.TOONTALK.drop_on.create(robot)); // entire context
          return robot;
      },
      

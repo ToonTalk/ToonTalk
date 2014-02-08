@@ -18,7 +18,7 @@ window.TOONTALK.drop_on =
         },
         
         run: function (context) {
-            var target = this.path.dereference(context);
+            var target = window.TOONTALK.UTILITIES.dereference_path(this.path, context);
             if (target) {
                 this.robot.thing_in_hand.drop_on(target);
                 return true;

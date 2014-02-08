@@ -8,15 +8,19 @@ window.TOONTALK.pick_up =
 (function () {
     "use strict";
     return {
-        create: function (robot, path_or_object) {
+        create: function (robot, path) {
             var result = Object.create(this);
             result.robot = robot;
-            result.path = path_or_object;
+            result.path = path;
             return result;
         },
         
         run: function (context) {
-            this.robot.thing_in_hand = this.path.dereference(context);
+            var referenced = window.TOONTALK.UTILITIES.dereference_path(this.path, context);
+            if (!referenced) {
+                return false;
+            }
+            this.robot.thing_in_hand = referenced;
             return true;
         }
 
