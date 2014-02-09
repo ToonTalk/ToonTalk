@@ -314,9 +314,9 @@ window.TOONTALK.number = (function () {
         if (format === 'improper_fraction' || !format) { // default format
             // double the max_characters since the font size is halved
             return '<table class="toontalk-number toontalk-improper-fraction ' + extra_class + '" style="font-size: ' + (font_size * 0.5) + 'px;">' +
-                '<tr><td align="center" class="toontalk-number toontalk-numerator">' + fit_string_to_length(this.numerator_string(), max_characters * 2) + '</td></tr>' +
-                '<tr><td><hr class="toontalk-fraction-line"></td></tr>' +
-                '<tr><td align="center" class="toontalk-number toontalk-denominator">' + fit_string_to_length(this.denominator_string(), max_characters * 2) + '</td></tr></table>';
+                '<tr class="toontalk-numerator"><td align="center" class="toontalk-number">' + fit_string_to_length(this.numerator_string(), max_characters * 2) + '</td></tr>' +
+                '<tr class="toontalk-fraction-line-as-row"><td  class="toontalk-fraction-line-as-table-entry"><hr class="toontalk-fraction-line"></td></tr>' +
+                '<tr class="toontalk-denominator"><td align="center" class="toontalk-number">' + fit_string_to_length(this.denominator_string(), max_characters * 2) + '</td></tr></table>';
         }
         if (format === 'proper_fraction') {
             integer_part = this.integer_part();
