@@ -50,6 +50,52 @@ window.TOONTALK.UTILITIES =
             }
             // no path means entire context
             return context;
-        }
-    };
+        },
+		
+	create_text_input: function (value, class_name, title) {
+		var input = document.createElement("input");
+        input.type = "text";
+		input.className = class_name;
+        input.value = value;
+        input.title = title;
+		return input;
+	},
+	
+	create_button: function (label, class_name, title) {
+		var button = document.createElement("button");
+		button.className = class_name;
+        button.innerHTML = label;
+        button.title = title;
+		return button;
+	},
+	
+	create_radio_button: function (name, value) {
+		var input = document.createElement("input");
+		input.type = "radio";
+		input.className = "toontalk-radio-button";
+        input.name = name;
+        input.value = value;
+		return input;
+	},
+	
+	label_radio_button: function (button, label) {
+		var container = document.createElement("div");
+		var label_element = document.createElement("span");
+		label_element.innerHTML = label;
+		container.appendChild(button);
+		container.appendChild(label_element);
+		return container;		
+	},
+	
+	selected_radio_button: function () {
+		var i;
+		for (i = 0; i < arguments.length; i += 1) {
+			if (arguments[i].checked) {
+				return arguments[i];
+			}
+		}
+	},
+	
+    }
+	
 }());
