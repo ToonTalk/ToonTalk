@@ -19,9 +19,8 @@
 	left: 350px;
 	top: 50px;
 }
-.toontalk-frontside {
+.toontalk-top-level-frontside {
 	position: absolute;
-	background-color: none;
 	border: none;
 	padding: 4px;
 	/* while testing: */
@@ -105,4 +104,8 @@
 .toontalk-denominator-input {
 	width: 98%;
 	border-radius: 4px;
+}
+.toontalk-hole-about-to-be-replaced {
+	width: 100%;
+	height: 100%;
 }

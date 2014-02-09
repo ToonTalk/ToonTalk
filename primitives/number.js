@@ -436,7 +436,7 @@ window.TOONTALK.number_backside =
 				break;
 			}
 			add_one.robot = robot;
-			robot.run(backside.get_number());
+			robot.run(backside.get_widget());
 			add_one.innerHTML = "stop " + robot_name;
 		};
 		backside.get_element().appendChild(add_one);
@@ -484,7 +484,7 @@ window.TOONTALK.number_backside =
 		update_display: function () {
 			var numerator_input = window.TOONTALK.UTILITIES.get_first_child_with_class(this.get_element(), "toontalk-numerator-input");
 			var denominator_input = window.TOONTALK.UTILITIES.get_first_child_with_class(this.get_element(), "toontalk-denominator-input");
-			var number = this.get_number();
+			var number = this.get_widget();
 			numerator_input.value = number.numerator_string();
 			denominator_input.value = number.denominator_string();
 		}

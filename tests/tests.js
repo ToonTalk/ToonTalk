@@ -31,8 +31,10 @@
      create_sides: function (context, backside_element) {
          var backside = context.get_backside(true);
          var frontside = context.get_frontside(true);
+         var frontside_element = frontside.get_element();
+         frontside_element.className += " toontalk-top-level-frontside";
          backside_element.appendChild(backside.get_element());
-         backside_element.appendChild(frontside.get_element());
+         backside_element.appendChild(frontside_element);
          // wait 1/10 second before updating the display
          setTimeout(function () {context.update_display();}, 100);
      },
@@ -118,8 +120,7 @@
          return robot;
      },
      
-     test_copy_first_hole_to_second_hole_robot: function () {
-         var robot = this.copy_first_hole_to_second_hole_robot();
+     create_test_box: function () {
          var box = window.TOONTALK.box.create(2);
          box.set_horizontal(true);
          var hole0 = window.TOONTALK.number.create(1, 49);
@@ -127,6 +128,12 @@
          var hole1 = window.TOONTALK.number.create(19);
          box.set_hole(0, hole0);
          box.set_hole(1, hole1);
+         return box;
+     },
+     
+     test_copy_first_hole_to_second_hole_robot: function () {
+         var robot = this.copy_first_hole_to_second_hole_robot();
+         var box = this.create_test_box();
          var div1_container = document.createElement("div");
          div1_container.className = "toontalk-frontside";
          div1_container.style.top = "10px";
