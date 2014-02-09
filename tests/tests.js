@@ -28,13 +28,18 @@
          this.assert_equals(a, window.TOONTALK.number.create(a_n, a_d), 'Dropping ' + a + ' on ' + b + ' should not update ' + a);
      },
      
-     create_sides: function (context, backside_element) {
+     create_sides: function (context, parent_backside_element, offset) {
          var backside = context.get_backside(true);
          var frontside = context.get_frontside(true);
          var frontside_element = frontside.get_element();
+         var backside_element = backside.get_element();
+         if (offset) {
+             frontside_element.style.top = offset + "px";
+             backside_element.style.top = offset + "px";
+         }
          frontside_element.className += " toontalk-top-level-frontside";
-         backside_element.appendChild(backside.get_element());
-         backside_element.appendChild(frontside_element);
+         parent_backside_element.appendChild(backside_element);
+         parent_backside_element.appendChild(frontside_element);
          // wait 1/10 second before updating the display
          setTimeout(function () {context.update_display();}, 100);
      },

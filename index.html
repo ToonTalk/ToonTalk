@@ -33,9 +33,10 @@ window.TOONTALK = {}; // create ToonTalk 'module' -- using 'window' as recommend
 <div class='toontalk-backside' id='test1_top_level_backside' style='width: 800px; height: 600px; left: 350px; top: 20px; background-color: yellow'>
 </div>
 <script>
-var numnber_context = TOONTALK.number.create(2, 7);
+var number_context = TOONTALK.number.create(2, 7);
 var box_context = TOONTALK.tests.create_test_box();
-window.TOONTALK.tests.create_sides(box_context, document.getElementById("test1_top_level_backside"));
+window.TOONTALK.tests.create_sides(number_context, document.getElementById("test1_top_level_backside"));
+window.TOONTALK.tests.create_sides(box_context, document.getElementById("test1_top_level_backside"), 300);
 TOONTALK.QUEUE.run();
 </script>
 </body>

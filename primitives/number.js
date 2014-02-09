@@ -461,7 +461,7 @@ window.TOONTALK.number_backside =
 			backside.get_element = function () {
                 return backside_element;
             };
-            backside.get_number = function () {
+            backside.get_widget = function () {
                 return number;
             };
             numerator_input.onchange = update_value;
