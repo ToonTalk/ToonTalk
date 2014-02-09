@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" media="all" href="../toontalk.css">
+<script>
+window.TOONTALK = {}; // create ToonTalk 'module'
+</script>
+<script src="toontalk.js"></script>
+<!-- only including during development/testing --->
+<script src="../tests/tests.js"></script>
+<meta charset="ISO-8859-1">
+<title>ToonTalk Reborn Test Page</title>
+</head>
+<body>
+<div class='toontalk-backside' id='test1_top_level_backside' style='width: 800px; height: 600px; left: 350px; top: 20px; background-color: yellow'>
+</div>
+<script>
+var context = TOONTALK.number.create(2, 7); 
+window.TOONTALK.tests.create_sides(context, document.getElementById("test1_top_level_backside"));
+TOONTALK.QUEUE.run();
+</script>
+</body>
+</html>
