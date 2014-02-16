@@ -445,6 +445,7 @@ window.TOONTALK.number_backside =
     return {
         create: function (number) {
 			var backside_element = document.createElement("div");
+			backside_element.draggable = true;
 			backside_element.className = "toontalk-backside";
 	        var backside = Object.create(this);
             var numerator_input = window.TOONTALK.UTILITIES.create_text_input(number.numerator_string(), 'toontalk-numerator-input', "Type here to edit the numerator");

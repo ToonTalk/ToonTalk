@@ -8,6 +8,7 @@
 .toontalk-backside {
 	position: absolute;
 	background-color: rgba(245, 240, 240, 0.94);
+    cursor: move;
 	border-style: solid;
 	border-width: 2px;
 	border-color: rgb(185, 113, 141);
@@ -21,6 +22,7 @@
 }
 .toontalk-top-level-frontside {
 	position: absolute;
+	cursor: move;
 	border: none;
 	padding: 4px;
 	/* while testing: */
