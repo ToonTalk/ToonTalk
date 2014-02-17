@@ -32,14 +32,17 @@ window.TOONTALK = {}; // create ToonTalk 'module' -- using 'window' as recommend
 <title>ToonTalk Reborn Test Page</title>
 </head>
 <body>
-<div class='toontalk-backside' id='test1_top_level_backside' draggable='false' style='width: 800px; height: 600px; left: 350px; top: 20px; background-color: yellow'>
+<div class='toontalk-backside toontalk-side' id='test1_top_level_backside' draggable='false' style='width: 800px; height: 600px; left: 350px; top: 20px; background-color: yellow'>
 </div>
 <script>
 $( document ).ready(function () {
     var number_context = TOONTALK.number.create(2, 7);
     var box_context = TOONTALK.tests.create_test_box();
-    window.TOONTALK.tests.create_sides(number_context, document.getElementById("test1_top_level_backside"));
-    window.TOONTALK.tests.create_sides(box_context, document.getElementById("test1_top_level_backside"), 20);
+    var test_backside = document.getElementById("test1_top_level_backside");
+    window.TOONTALK.tests.create_sides(number_context, test_backside);
+    window.TOONTALK.tests.create_sides(box_context, test_backside, 20);
+    // empty top-level test object: {}
+    window.TOONTALK.backside.associate_widget_with_backside_element({}, test_backside);
     TOONTALK.QUEUE.run();
 });
 </script>

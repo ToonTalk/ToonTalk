@@ -52,49 +52,86 @@ window.TOONTALK.UTILITIES =
             return context;
         },
 		
-	create_text_input: function (value, class_name, title) {
-		var input = document.createElement("input");
-        input.type = "text";
-		input.className = class_name;
-        input.value = value;
-        input.title = title;
-		return input;
-	},
-	
-	create_button: function (label, class_name, title) {
-		var button = document.createElement("button");
-		button.className = class_name;
-        button.innerHTML = label;
-        button.title = title;
-		return button;
-	},
-	
-	create_radio_button: function (name, value) {
-		var input = document.createElement("input");
-		input.type = "radio";
-		input.className = "toontalk-radio-button";
-        input.name = name;
-        input.value = value;
-		return input;
-	},
-	
-	label_radio_button: function (button, label) {
-		var container = document.createElement("div");
-		var label_element = document.createElement("span");
-		label_element.innerHTML = label;
-		container.appendChild(button);
-		container.appendChild(label_element);
-		return container;		
-	},
-	
-	selected_radio_button: function () {
-		var i;
-		for (i = 0; i < arguments.length; i += 1) {
-			if (arguments[i].checked) {
-				return arguments[i];
+		drag_and_drop: function ($element, drop_continuation) {
+			var $container = $element.parents(".toontalk-side:last"); // top-most
+			$element.draggable({
+				appendTo: $container,
+                start: function (event, ui) {
+					$element.addClass("toontalk-being-dragged");
+					var $container = $(event.target).parents(".toontalk-side:first");
+					var container = $container.data("owner");
+					if (container) {
+					    container.removed($element);
+					}
+					event.stopPropagation();
+				},
+				stop: function (event, ui) {
+					$element.removeClass("toontalk-being-dragged");
+				},
+            });
+			$element.droppable({
+				greedy: true,
+                drop: function (event, ui) {
+// 					var $target = $(event.toElement).parents(".toontalk-frontside:first");
+                    var $target = $(".toontalk-being-dragged");
+					if ($target.length >= 1) {
+					    var target = $target.data("owner");
+						var source = $element.data("owner");
+					    source.drop_on(target, event.clientX, event.clientY, event);
+						event.stopPropagation();
+						if (drop_continuation) {
+							drop_continuation($element, $target);
+						}
+					}
+                }
+			});
+		},
+		
+		// probably the following could be replaced with better JQuery UI coce
+		
+		create_text_input: function (value, class_name, title) {
+			var input = document.createElement("input");
+			input.type = "text";
+			input.className = class_name;
+			input.value = value;
+			input.title = title;
+			return input;
+		},
+		
+		create_button: function (label, class_name, title) {
+			var button = document.createElement("button");
+			button.className = class_name;
+			button.innerHTML = label;
+			button.title = title;
+			return button;
+		},
+		
+		create_radio_button: function (name, value) {
+			var input = document.createElement("input");
+			input.type = "radio";
+			input.className = "toontalk-radio-button";
+			input.name = name;
+			input.value = value;
+			return input;
+		},
+		
+		label_radio_button: function (button, label) {
+			var container = document.createElement("div");
+			var label_element = document.createElement("span");
+			label_element.innerHTML = label;
+			container.appendChild(button);
+			container.appendChild(label_element);
+			return container;		
+		},
+		
+		selected_radio_button: function () {
+			var i;
+			for (i = 0; i < arguments.length; i += 1) {
+				if (arguments[i].checked) {
+					return arguments[i];
+				}
 			}
-		}
-	},
+		},
 	
     }
 	

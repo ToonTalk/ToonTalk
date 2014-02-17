@@ -42,7 +42,7 @@ window.TOONTALK.box = (function () {
         new_box.set_hole = function (n, new_value) {
             contents[n] = new_value;
 			// following re-computes the whole thing -- could be more clever
-			this.update_display();
+// 			this.update_display();
         };
         return new_box.add_sides_functionality(new_box);
     };
@@ -224,6 +224,17 @@ window.TOONTALK.box = (function () {
             return this;
         }
     };
+	
+	box.removed = function (part) {
+		var size = this.get_size();
+		var i;
+		for (i = 0; i < size; i += 1) {
+            if ( part === this.get_hole(i)) {
+				this.set_hole(i, undefined);
+				return this;
+			}
+		}
+	};
     
     box.create_path = function (index) {
         return {
@@ -263,14 +274,14 @@ window.TOONTALK.box_backside =
 			robot.run(backside.get_widget());
 			test_button.innerHTML = "stop " + robot_name;
 		};
-		backside.get_element().appendChild(test_button );
+		backside.get_element().appendChild(test_button);
 	};
 	
     return {
         create: function (box) {
 			var backside_element = document.createElement("div");
-			backside_element.className = "toontalk-backside";
-			$( backside_element ).draggable();
+			backside_element.className = "toontalk-backside toontalk-side";
+			window.TOONTALK.backside.associate_widget_with_backside_element(box, backside_element);
 	        var backside = Object.create(this);
             var size_input = window.TOONTALK.UTILITIES.create_text_input(box.get_size().toString(), 'toontalk-box-size-input', "Type here to edit the number of holes.");
             var update_value = function () {
@@ -285,7 +296,7 @@ window.TOONTALK.box_backside =
             size_input.onchange = update_value;
 			// TO DO position the new elements
             backside_element.appendChild(size_input);
-			add_test_button(backside, "copy-first-hole-to-second-hole");
+			add_test_button(backside, "copy-first-hole-to-second-hole"); // for testing
             return backside;
         },
 		

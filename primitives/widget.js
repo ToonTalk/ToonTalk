@@ -32,6 +32,17 @@ window.TOONTALK.widget = (function () {
             return widget;
         },
         
+        remove: function () {
+            var backside = this.get_backside();
+            var frontside = this.get_frontside();
+            if (backside) {
+                backside.remove();
+            }
+            if (frontside) {
+                frontside.remove();
+            }
+        },
+        
         dereference: function () {
             // is already dereferenced when used as part of a path
             return this;
@@ -52,6 +63,11 @@ window.TOONTALK.widget = (function () {
         
         drop_on: function (other, location) {
             console.assert(false, "drop_on not implemented");
+        },
+                   
+        removed: function (part) {
+            // part should be a ToonTalk widget that is part of this
+            console.assert(false, "removed not implemented");
         },
         
         update_display: function () {

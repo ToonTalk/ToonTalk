@@ -134,6 +134,7 @@
          var hole1 = window.TOONTALK.number.create(19);
          box.set_hole(0, hole0);
          box.set_hole(1, hole1);
+         box.update_display();
          return box;
      },
      

@@ -199,11 +199,18 @@ window.TOONTALK.number = (function () {
         frontside_element.firstChild.innerHTML = new_HTML;
     };
 
-    number.drop_on = function (other, location) {
-        return other.number_dropped_on_me(this, location);
+    number.drop_on = function (other, clientX, clientY, event) {
+// 		console.log(this.toString() + " dropped on " + other.toString()); for debugging
+        var result = other.number_dropped_on_me(this, location);
+		if (event) {
+			other.update_display();
+		}
+// 		console.log("Became " + other.toString());                        for debugging
+		this.remove();
+		return result;
     };
 
-    number.number_dropped_on_me = function (other_number) { // ignores the optional 'location' parameters
+    number.number_dropped_on_me = function (other_number, clientX, clientY, event) { 
         switch (other_number.get_operator()) {
         case '+':
             return this.add(other_number);
@@ -445,13 +452,8 @@ window.TOONTALK.number_backside =
     return {
         create: function (number) {
 			var backside_element = document.createElement("div");
-			backside_element.className = "toontalk-backside";
-			$( backside_element ).draggable();
-			$( backside_element ).droppable({
-                drop: function( event, ui ) {
-					console.log("backside drop event:" + event);
-                }
-			});
+			backside_element.className = "toontalk-backside toontalk-side";
+			window.TOONTALK.backside.associate_widget_with_backside_element(number, backside_element);
 	        var backside = Object.create(this);
             var numerator_input = window.TOONTALK.UTILITIES.create_text_input(number.numerator_string(), 'toontalk-numerator-input', "Type here to edit the numerator");
             var denominator_input = window.TOONTALK.UTILITIES.create_text_input(number.denominator_string(), 'toontalk-denominator-input', "Type here to edit the denominator");
@@ -493,7 +495,11 @@ window.TOONTALK.number_backside =
 			var number = this.get_widget();
 			numerator_input.value = number.numerator_string();
 			denominator_input.value = number.denominator_string();
-		}
+		},
+		
+		remove: function() {
+			$(this.get_element()).remove();
+		},
 
     };
 }());

@@ -6,7 +6,7 @@
  */
  
 .toontalk-backside {
-	/* position: absolute; */
+	position: absolute;
 	background-color: rgba(245, 240, 240, 0.94);
     cursor: move;
 	border-style: solid;
@@ -21,7 +21,7 @@
 	top: 50px;
 }
 .toontalk-top-level-frontside {
-	/* position: absolute; */
+	position: absolute;
 	cursor: move;
 	border: none;
 	padding: 4px;
