@@ -208,6 +208,10 @@ window.TOONTALK.box = (function () {
 		    }
 		}
     };
+	
+	box.empty_hole = function (index) {
+		this.set_hole(window.TOONTALK.box_empty_hole.create(this));
+	};
     
     box.dereference = function (path) {
         var index, hole;
@@ -230,7 +234,7 @@ window.TOONTALK.box = (function () {
 		var i;
 		for (i = 0; i < size; i += 1) {
             if ( part === this.get_hole(i)) {
-				this.set_hole(i, undefined);
+				this.set_hole(i);
 				return this;
 			}
 		}
@@ -307,4 +311,29 @@ window.TOONTALK.box_backside =
 		},
 
     };
+}());
+
+window.TOONTALK.box_empty_hole = 
+(function () {
+    "use strict";
+	return {
+	    create: function (box) {
+			var hole_element = document.createElement("div");
+			hole_element.className = "toontalk-empty-hole";
+			$element.droppable({
+				greedy: true,
+                drop: function (event, ui) {
+                    var $dropped = $(".toontalk-being-dragged");
+					if ($dropped.length >= 1) {
+					    var dropped = $dropped.data("owner");
+						box.set_hole(dropped);
+						event.stopPropagation();
+						box.update_display();
+					}
+                }
+			});
+	        return Object.create(this);
+	    },
+	};
+	
 }());
