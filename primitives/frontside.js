@@ -9,15 +9,24 @@ window.TOONTALK.frontside =
     "use strict";
     return {
         create: function (object) {
-			// where object is a primitive like a number or image
+			// where object is a ToonTalk widget like a number or a box
 	        var frontside = Object.create(this);
             var frontside_element = document.createElement('div');
-			// replacing the above with the following enables drag in IE9
-			// see http://stackoverflow.com/questions/5500615/internet-explorer-9-drag-and-drop-dnd
-// 			var frontside_element = document.createElement('a');
-// 			frontside_element.href = '#';
-			frontside_element.draggable = true;
-            frontside_element.className = "toontalk-frontside";
+			var $frontside_element = $( frontside_element );
+			frontside_element.className += "toontalk-frontside";
+//             frontside_element.className = "toontalk-frontside";
+			$frontside_element.data("owner", object);
+			$frontside_element.draggable();
+			$frontside_element.droppable({
+                drop: function (event, ui) {
+					// TODO: fix the following test
+					if (event.toElement.parentElement.parentElement.className.indexOf("toontalk-frontside") >= 0) {
+					    var target = $(event.toElement.parentElement.parentElement).data("owner");
+					    object.drop_on(target);
+						target.update_display();
+					}
+                }
+			});
             frontside.get_element = function () {
                 return frontside_element;
             };

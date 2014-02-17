@@ -40,8 +40,9 @@
          frontside_element.className += " toontalk-top-level-frontside";
          parent_backside_element.appendChild(backside_element);
          parent_backside_element.appendChild(frontside_element);
+         context.update_display();
          // wait 1/10 second before updating the display
-         setTimeout(function () {context.update_display();}, 100);
+//          setTimeout(function () {context.update_display();}, 100);
      },
      
      // robot tests:

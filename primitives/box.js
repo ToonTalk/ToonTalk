@@ -270,6 +270,7 @@ window.TOONTALK.box_backside =
         create: function (box) {
 			var backside_element = document.createElement("div");
 			backside_element.className = "toontalk-backside";
+			$( backside_element ).draggable();
 	        var backside = Object.create(this);
             var size_input = window.TOONTALK.UTILITIES.create_text_input(box.get_size().toString(), 'toontalk-box-size-input', "Type here to edit the number of holes.");
             var update_value = function () {

@@ -6,7 +6,7 @@
  */
  
 .toontalk-backside {
-	position: absolute;
+	/* position: absolute; */
 	background-color: rgba(245, 240, 240, 0.94);
     cursor: move;
 	border-style: solid;
@@ -21,15 +21,15 @@
 	top: 50px;
 }
 .toontalk-top-level-frontside {
-	position: absolute;
+	/* position: absolute; */
 	cursor: move;
 	border: none;
 	padding: 4px;
 	/* while testing: */
 	width: 300px;
 	height: 60px;
-	left: 10px;
-	top: 50px;
+	/* left: 10px; */
+	/* top: 50px; */
 }
 .toontalk-box {
 	background-color: rgb(244, 247, 214);
@@ -50,22 +50,22 @@
 .toontalk-box-hole-horizontal {
 	border-style: solid;
 	border-left-width: 0px;
-	border-right-width: 3px;
-	border-top-width: 3px;
-	border-bottom-width: 3px;
+	border-right-width: 6px;
+	border-top-width: 6px;
+	border-bottom-width: 6px;
 }
 .toontalk-box-hole-horizontal:nth-child(1) {
-	border-left-width: 3px;
+	border-left-width: 6px;
 }
 .toontalk-box-hole-vertical {
 	border-style: solid;
-	border-left-width: 3px;
-	border-right-width: 3px;
+	border-left-width: 6px;
+	border-right-width: 6px;
 	border-top-width: 0px;
-	border-bottom-width: 3px;
+	border-bottom-width: 6px;
 }
 .toontalk-box-hole-vertical:nth-child(1) {
-	border-top-width: 3px;
+	border-top-width: 6px;
 }
 .toontalk-top-level-number {
 	/* numbers look better with fixed widths -- easier to compare visually */

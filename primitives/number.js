@@ -445,8 +445,13 @@ window.TOONTALK.number_backside =
     return {
         create: function (number) {
 			var backside_element = document.createElement("div");
-			backside_element.draggable = true;
 			backside_element.className = "toontalk-backside";
+			$( backside_element ).draggable();
+			$( backside_element ).droppable({
+                drop: function( event, ui ) {
+					console.log("backside drop event:" + event);
+                }
+			});
 	        var backside = Object.create(this);
             var numerator_input = window.TOONTALK.UTILITIES.create_text_input(number.numerator_string(), 'toontalk-numerator-input', "Type here to edit the numerator");
             var denominator_input = window.TOONTALK.UTILITIES.create_text_input(number.denominator_string(), 'toontalk-denominator-input', "Type here to edit the denominator");
