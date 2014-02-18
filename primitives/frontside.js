@@ -17,31 +17,6 @@ window.TOONTALK.frontside =
 			frontside_element.className += "toontalk-frontside toontalk-side";
 			$frontside_element.data("owner", widget);
 			window.TOONTALK.UTILITIES.drag_and_drop($frontside_element);
-// 			$frontside_element.draggable({
-// 				appendTo: $frontside_container,
-//                 start: function (event, ui) {
-// 					var $container = $(event.target).parents(".toontalk-frontside:first");
-// 					var container = $container.data("owner");
-// 					if (container) {
-// 					    container.removed();
-// 					}
-// 					event.stopPropagation();
-// 				}
-//             });
-// 			$frontside_element.droppable({
-// 				greedy: true,
-//                 drop: function (event, ui) {
-// 					// without not($frontside_element); seems to find 'this' sometimes
-// 					// ".toontalk-frontside" was ".toontalk-frontside:first"
-// 					var $target = $(event.toElement).parents(".toontalk-frontside:first");
-// // 					var $target = $(event.toElement).parents(".toontalk-frontside").not($frontside_element);
-// 					if ($target.length >= 1) {
-// 					    var target = $target.data("owner");
-// 					    widget.drop_on(target, event.clientX, event.clientY, event);
-// 						event.stopPropagation();
-// 					}
-//                 }
-// 			});
             frontside.get_element = function () {
                 return frontside_element;
             };

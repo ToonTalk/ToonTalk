@@ -69,13 +69,13 @@ window.TOONTALK.widget = (function () {
             console.assert(false, "copy not implemented");
         },
         
-        drop_on: function (other, location) {
+        drop_on: function (other, side_of_other, event) {
             console.log("drop_on not implemented; this is " + this.toString() + " and other is " + other.toString());
         },
                    
         removed: function (part) {
             // part should be a ToonTalk widget that is part of this
-            console.assert(false, "removed not implemented");
+            console.log("removed not implemented");
         },
         
         update_display: function () {
@@ -106,10 +106,6 @@ window.TOONTALK.widget = (function () {
             // if a number didn't respond to this then not matched
             return 'not matched';
         },
-        
-        number_dropped_on_me: function (other) {
-            console.assert("No handler for drop of " + this.toString() + " on " + other.toString());
-        }
         
     };
 }());

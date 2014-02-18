@@ -52,7 +52,7 @@ window.TOONTALK.UTILITIES =
             return context;
         },
 		
-		drag_and_drop: function ($element, drop_continuation) {
+		drag_and_drop: function ($element) {
 			$element.draggable({
 				create: function( event, ui ) {
                     $(this).css({position: "absolute"})
@@ -72,32 +72,33 @@ window.TOONTALK.UTILITIES =
 					$element.removeClass("toontalk-being-dragged");
 				},
             });
-// 			$element.css({position: "absolute"});
 			$element.droppable({
 				greedy: true,
                 drop: function (event, ui) {
-// 					var $target = $(event.toElement).parents(".toontalk-frontside:first");
                     var $target = $(".toontalk-being-dragged");
 					if ($target.length >= 1) {
 					    var target = $target.data("owner");
 						var source = $element.data("owner");
-					    source.drop_on(target, event.clientX, event.clientY, event);
+					    source.drop_on(target, $target, event);
 						event.stopPropagation();
-						if (drop_continuation) {
-							drop_continuation($element, $target);
-						}
 					}
                 }
 			});
 		},
 		
-		set_position_absolute: function (element, absolute) {
+		set_position_absolute: function (element, absolute, event) {
 			var position;
 			if (absolute) {
-				position = $(element).position();
+				if (event) {
+					position = {left: event.clientX - element.parentElement.offsetLeft,
+					            top:  event.clientY - element.parentElement.offsetTop,
+					};
+				} else {
+				    position = $(element).position();
+				}
 				element.style.position = "absolute";
 				$(element).css({left: position.left,
-				                 top:  position.top});
+				                 top: position.top});
 			} else {
 				element.style.position = "relative";
 				element.style.left = "0";

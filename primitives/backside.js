@@ -14,9 +14,17 @@ window.TOONTALK.backside =
                 return element;
             };
 			if (!widget.drop_on) {
-			    widget.drop_on = function (other) {
-				    window.TOONTALK.UTILITIES.set_position_absolute(other.get_frontside().get_element(), true); // when on the backside
-					// no need to do anything else since backside can find all children and their 'owners' easily enough
+			    widget.drop_on = function (other, $side_element_of_other, event) {
+					$element.append($side_element_of_other);
+				    window.TOONTALK.UTILITIES.set_position_absolute($side_element_of_other.get(0), true, event); // when on the backside
+					// following constants could be defined in backside widget -- good idea?
+					var fraction = $side_element_of_other.is(".toontalk-frontside") ? 5 : 2.5;
+				    var width = $element.width() / fraction;
+                    var height = $element.height() / fraction;
+//                     var offset = $target.offset();
+                    $side_element_of_other.width(width);
+                    $side_element_of_other.height(height);
+//                     $target.offset(offset);
 			    };
 			}
 			if (!widget.removed) {
@@ -24,33 +32,7 @@ window.TOONTALK.backside =
 				    // no need to do anything since can find all children and their 'owners' easily enough
 			    };
             }
-			window.TOONTALK.UTILITIES.drag_and_drop($element, function ($element, $target) {
-				var fraction = $target.is(".toontalk-frontside") ? 5 : 2.5;
-				var width = $element.width() / fraction;
-                var height = $element.height() / fraction;
-                var offset = $target.offset();
-                $element.append($target);
-                $target.width(width);
-                $target.height(height);
-                $target.offset(offset);
-			});
-// 			$element.draggable();
-// 			$element.droppable({
-// 				greedy: true, // so it doesn't propagate
-//                 drop: function (event, ui) {
-//                     var $target = $(event.toElement).parents(".toontalk-frontside:first");
-// 					// TODO: generalise the following sizes
-//                     var width = $element.width()/5;
-//                     var height = $element.height()/5;
-//                     var offset = $target.offset();
-//                     $element.append($target);
-//                     $target.width(width);
-//                     $target.height(height);
-//                     $target.offset(offset);
-// 					event.stopPropagation();
-// 					event.preventDefault();
-//                 }
-//             });
+			window.TOONTALK.UTILITIES.drag_and_drop($element);
             return widget;
         },
 

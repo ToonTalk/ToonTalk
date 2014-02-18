@@ -199,8 +199,12 @@ window.TOONTALK.number = (function () {
         frontside_element.firstChild.innerHTML = new_HTML;
     };
 
-    number.drop_on = function (other, clientX, clientY, event) {
+    number.drop_on = function (other, side_of_other, event) {
 // 		console.log(this.toString() + " dropped on " + other.toString()); for debugging
+        if (!other.number_dropped_on_me) {
+            console.log("No handler for drop of " + this.toString() + " on " + other.toString());
+			return;
+		}
         var result = other.number_dropped_on_me(this, location);
 		if (event) {
 			other.update_display();
@@ -224,24 +228,6 @@ window.TOONTALK.number = (function () {
             return this.power(other_number);
         default:
             console.log("Number received a number with unsupported operator: " + other_number.get_operator());
-            return this;
-        }
-    };
-
-    number.to_HTML_with_operator = function () {
-        switch (this.get_operator()) {
-        case '+':
-            return this.to_HTML();
-        case '-':
-            return '&minus' + this.to_HTML();
-        case '*':
-            return '&times;' + this.to_HTML();
-        case '/':
-            return '&divide;' + this.to_HTML();
-        case '^':
-            return '^' + '<sup>' + this.toHTML() + '<\/sub>';
-        default:
-            console.log("Number has an unsupported operator: " + this.get_operator());
             return this;
         }
     };
@@ -303,11 +289,29 @@ window.TOONTALK.number = (function () {
 		var erased_string = this.erased ? "erased: " : "";
         return erased_string + operator_string + bigrat.str(this.get_value());
     };
+	
+	number.operator_HTML = function () {
+        switch (this.get_operator()) {
+        case '+':
+            return '';
+        case '-':
+            return '&minus';
+        case '*':
+            return '&times;';
+        case '/':
+            return '&divide;';
+        case '^':
+            return '^';
+        default:
+            console.log("Number has an unsupported operator: " + this.get_operator());
+            return "";
+        }
+    };
 
     number.to_HTML = function (max_characters, font_size, format, top_level) {
-        // normalise value first?
-        var integer_as_string, integer_part, fractional_part;
+        var integer_as_string, integer_part, fractional_part, improper_fraction_HTML;
         var extra_class = (top_level !== false) ? ' toontalk-top-level-number' : '';
+	    var operator_HTML = this.operator_HTML();
         if (!max_characters) {
             max_characters = 4;
         }
@@ -316,14 +320,19 @@ window.TOONTALK.number = (function () {
         }
         if (this.is_integer()) {
             integer_as_string = bigrat.toBigInteger(this.get_value()).toString();
-            return '<div class="toontalk-number toontalk-integer' + extra_class + '" style="font-size: ' + font_size + 'px;">' + fit_string_to_length(integer_as_string, max_characters) + '</div>';
+            return '<div class="toontalk-number toontalk-integer' + extra_class + '" style="font-size: ' + font_size + 'px;">' + operator_HTML + fit_string_to_length(integer_as_string, max_characters) + '</div>';
         }
         if (format === 'improper_fraction' || !format) { // default format
             // double the max_characters since the font size is halved
-            return '<table class="toontalk-number toontalk-improper-fraction ' + extra_class + '" style="font-size: ' + (font_size * 0.5) + 'px;">' +
+            improper_fraction_HTML = '<table class="toontalk-number toontalk-improper-fraction ' + extra_class + '" style="font-size: ' + (font_size * 0.5) + 'px;">' +
                 '<tr class="toontalk-numerator"><td align="center" class="toontalk-number">' + fit_string_to_length(this.numerator_string(), max_characters * 2) + '</td></tr>' +
                 '<tr class="toontalk-fraction-line-as-row"><td  class="toontalk-fraction-line-as-table-entry"><hr class="toontalk-fraction-line"></td></tr>' +
                 '<tr class="toontalk-denominator"><td align="center" class="toontalk-number">' + fit_string_to_length(this.denominator_string(), max_characters * 2) + '</td></tr></table>';
+			if (operator_HTML === '') {
+				return improper_fraction_HTML;
+			} else {
+				return improper_fraction_HTML; // to do
+			}
         }
         if (format === 'proper_fraction') {
             integer_part = this.integer_part();
@@ -332,15 +341,15 @@ window.TOONTALK.number = (function () {
             }
             fractional_part = this.copy().subtract(integer_part).absolute_value();
             // split max_characters between the two parts and recur for each them
-            return '<table class="toontalk-number toontalk-improper_fraction ' + extra_class + '" style="font-size: ' + (font_size * 0.5) + 'px;">' +
+            return '<table class="toontalk-number toontalk-proper_fraction ' + extra_class + '" style="font-size: ' + (font_size * 0.5) + 'px;">' +
                 '<tr><td class="toontalk-number toontalk-integer-part-of-proper-fraction">' +
-                integer_part.to_HTML(max_characters, font_size, '', false) + // integers don't have formats
+                operator_HTML + integer_part.to_HTML(max_characters, font_size, '', false) + // integers don't have formats
                 '</td><td class="toontalk-number toontalk-fraction-part-of-proper_fraction">' +
                 fractional_part.to_HTML(max_characters, font_size, 'improper_fraction', false) +
                 '</td></tr></table>';
         }
         if (format === 'decimal') {
-            return '<div class="toontalk-number toontalk-decimal' + extra_class + '" style="font-size: ' + font_size + 'px;">' + this.decimal_string(max_characters) + '</div>';
+            return '<div class="toontalk-number toontalk-decimal' + extra_class + '" style="font-size: ' + font_size + 'px;">' + operator_HTML + this.decimal_string(max_characters) + '</div>';
         }
         // else warn??
     };
