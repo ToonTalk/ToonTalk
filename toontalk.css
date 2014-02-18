@@ -67,6 +67,11 @@
 .toontalk-box-hole-vertical:nth-child(1) {
 	border-top-width: 6px;
 }
+.toontalk-empty-hole {
+	width: 100%;
+	height: 100%;
+	background-color: rgb(231, 215, 241);
+}
 .toontalk-top-level-number {
 	/* numbers look better with fixed widths -- easier to compare visually */
 	font-family: monospace;

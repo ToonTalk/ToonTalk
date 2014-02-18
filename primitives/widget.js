@@ -52,6 +52,14 @@ window.TOONTALK.widget = (function () {
             console.assert(false, "copy not implemented");
         },
         
+        visible: function () {
+            var frontside = this.get_frontside();
+            if (!frontside) {
+               return false;
+            }
+            return $(frontside.get_element()).is(":visible");
+        },
+        
         equals: function (other) {
             console.assert(false, "equals not implemented");
         },
@@ -62,7 +70,7 @@ window.TOONTALK.widget = (function () {
         },
         
         drop_on: function (other, location) {
-            console.assert(false, "drop_on not implemented");
+            console.log("drop_on not implemented; this is " + this.toString() + " and other is " + other.toString());
         },
                    
         removed: function (part) {

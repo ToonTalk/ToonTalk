@@ -53,15 +53,18 @@ window.TOONTALK.UTILITIES =
         },
 		
 		drag_and_drop: function ($element, drop_continuation) {
-			var $container = $element.parents(".toontalk-side:last"); // top-most
 			$element.draggable({
-				appendTo: $container,
+				create: function( event, ui ) {
+                    $(this).css({position: "absolute"})
+				},
+				appendTo:  $element.parents(".toontalk-side:last"), // top-most,
+				stack: ".toontalk-side",
                 start: function (event, ui) {
 					$element.addClass("toontalk-being-dragged");
-					var $container = $(event.target).parents(".toontalk-side:first");
+					var $container = $element.parents(".toontalk-side:first");
 					var container = $container.data("owner");
 					if (container) {
-					    container.removed($element);
+					    container.removed($element.data("owner"));
 					}
 					event.stopPropagation();
 				},
@@ -69,6 +72,7 @@ window.TOONTALK.UTILITIES =
 					$element.removeClass("toontalk-being-dragged");
 				},
             });
+// 			$element.css({position: "absolute"});
 			$element.droppable({
 				greedy: true,
                 drop: function (event, ui) {
@@ -85,6 +89,20 @@ window.TOONTALK.UTILITIES =
 					}
                 }
 			});
+		},
+		
+		set_position_absolute: function (element, absolute) {
+			var position;
+			if (absolute) {
+				position = $(element).position();
+				element.style.position = "absolute";
+				$(element).css({left: position.left,
+				                 top:  position.top});
+			} else {
+				element.style.position = "relative";
+				element.style.left = "0";
+				element.style.top = "0";
+			}
 		},
 		
 		// probably the following could be replaced with better JQuery UI coce

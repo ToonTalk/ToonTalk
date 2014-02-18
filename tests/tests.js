@@ -6,9 +6,6 @@
      assert_equals: function (a, b, message) {
          "use strict";
          console.assert(a.equals(b), message + " Expected to be equal " + a.toString() + "=" + b.toString());
-//         if (!(a.equals(b))) {
-//             alert(message + " Expected to be equal " + a.toString() + "=" + b.toString());
-//         }
      },
      
      random_integer_between: function (min, max) {
@@ -33,16 +30,12 @@
          var frontside = context.get_frontside(true);
          var frontside_element = frontside.get_element();
          var backside_element = backside.get_element();
-         if (offset) {
-             frontside_element.style.top = offset + "px";
-             backside_element.style.top = offset + "px";
-         }
+         frontside_element.style.top = offset + "px";
+         backside_element.style.top = offset + "px";
          frontside_element.className += " toontalk-top-level-frontside";
          parent_backside_element.appendChild(backside_element);
          parent_backside_element.appendChild(frontside_element);
          context.update_display();
-         // wait 1/10 second before updating the display
-//          setTimeout(function () {context.update_display();}, 100);
      },
      
      // robot tests:
