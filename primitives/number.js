@@ -197,6 +197,7 @@ window.TOONTALK.number = (function () {
             frontside_element.appendChild(document.createElement('div'));
         }
         frontside_element.firstChild.innerHTML = new_HTML;
+		frontside_element.firstChild.className += " toontalk-widget";
     };
 
     number.drop_on = function (other, side_of_other, event) {

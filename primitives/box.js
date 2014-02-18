@@ -193,6 +193,7 @@ window.TOONTALK.box = (function () {
         }
 // 		box_element = frontside_element;
         frontside_element.firstChild.innerHTML = new_HTML;
+		frontside_element.firstChild.className += " toontalk-widget";
 		$(".toontalk-hole-about-to-be-replaced").each(function (index, element) {
 			// can't just use box.update_hole_display because then 'this' isn't bound to the box
 			that.update_hole_display(index, element);
