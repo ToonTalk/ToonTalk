@@ -64,7 +64,7 @@ window.TOONTALK.UTILITIES =
 					var $container = $element.parents(".toontalk-side:first");
 					var container = $container.data("owner");
 					if (container) {
-					    container.removed($element.data("owner"));
+					    container.removed($element.data("owner"), $element, event);
 					}
 					event.stopPropagation();
 				},
@@ -89,6 +89,9 @@ window.TOONTALK.UTILITIES =
 		set_position_absolute: function (element, absolute, event) {
 			var position;
 			if (absolute) {
+				if (element.style.position === "absolute") {
+					return;
+				}
 				if (event) {
 					position = {left: event.clientX - element.parentElement.offsetLeft,
 					            top:  event.clientY - element.parentElement.offsetTop,
@@ -100,6 +103,9 @@ window.TOONTALK.UTILITIES =
 				$(element).css({left: position.left,
 				                 top: position.top});
 			} else {
+				if (element.style.position === "relative") {
+					return;
+				}
 				element.style.position = "relative";
 				element.style.left = "0";
 				element.style.top = "0";
