@@ -23,6 +23,7 @@ window.TOONTALK.frontside =
             frontside.get_widget = function () {
                 return widget;
             };
+// 			$frontside_element.resizable(); {handles: "n, e, s, w"}
             return frontside;
         },
 		
