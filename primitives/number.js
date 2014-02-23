@@ -394,7 +394,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         var integer_string = integer_part.toString();
         var fractional_part = copy.subtract(integer_part);
         var integer_max_digits = Math.min(integer_string.length, max_decimal_places / 2);
-        var decimal_max_digits = max_decimal_places - integer_max_digits;
+        var decimal_max_digits = max_decimal_places - (integer_max_digits + .5); // 1/2 for the decimal point since not monospace
         var decimal_places = generate_decimal_places(fractional_part, decimal_max_digits * 2);
         if (decimal_places.length < decimal_max_digits) {
             // not repeating and not too many decimal digits
@@ -404,8 +404,8 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         // generate twice as many decimal places are there is room for so they shrink
         // split space between integer part and decimal part
         return fit_string_to_length(integer_string, integer_max_digits) +
-            "<span class='toontalk-decimal-point' style='font-family: serif'>.</span>" + // decimal point looks better if not monospace
-            shrink_to_fit(decimal_places, max_decimal_places / 2, true);
+               "<span class='toontalk-decimal-point' style='font-family: serif'>.</span>" + // decimal point looks better if not monospace
+               shrink_to_fit(decimal_places, decimal_max_digits, true);
     };
 
     number.match = function (context) {
