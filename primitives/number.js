@@ -40,7 +40,7 @@ window.TOONTALK.number = (function () {
     };
 
     var fit_string_to_length = function (string, max_characters) {
-        if (string.length <= max_characters) {
+        if (string.length <= Math.round(max_characters)) {
             return string;
         }
         if (max_characters < 4) {

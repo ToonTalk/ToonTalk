@@ -194,6 +194,10 @@ window.TOONTALK.box = (function () {
 // 		box_element = frontside_element;
         frontside_element.firstChild.innerHTML = new_HTML;
 		frontside_element.firstChild.className += " toontalk-widget";
+// 	    $(frontside_element).find(".toontalk-box-hole").each(function (index, element) {
+// 			// can't just use box.update_hole_display because then 'this' isn't bound to the box
+// 			that.update_hole_display(index, element);
+// 		});
 		$(".toontalk-hole-about-to-be-replaced").each(function (index, element) {
 			// can't just use box.update_hole_display because then 'this' isn't bound to the box
 			that.update_hole_display(index, element);
@@ -211,11 +215,11 @@ window.TOONTALK.box = (function () {
 			this.set_hole(index, hole);
 		}
 		hole_frontside = hole.get_frontside(true);
-		hole_frontside.update_display();
 		if (old_hole_element) {
 			hole_frontside_element = hole_frontside.get_element();
 		    old_hole_element.parentNode.replaceChild(hole_frontside_element, old_hole_element);
 			window.TOONTALK.UTILITIES.set_position_absolute(hole_frontside_element, false);
+			$(hole_frontside_element).addClass("toontalk-frontside-in-box");
 		} else {
 			old_hole_element = hole.get_frontside(true).get_element();
 			box_frontside = this.get_frontside();
@@ -223,7 +227,9 @@ window.TOONTALK.box = (function () {
 			$element_container.append(old_hole_element);
 			// since drag and drop is set up with absolute as the default
 			window.TOONTALK.UTILITIES.set_position_absolute(old_hole_element, false);
-		}	
+			$(old_hole_element).addClass("toontalk-frontside-in-box");
+		}
+		hole_frontside.update_display();
 	};
 	
 	box.empty_hole = function (index) {
@@ -249,6 +255,10 @@ window.TOONTALK.box = (function () {
 	box.removed = function (part) {
 		var size = this.get_size();
 		var i;
+		var part_frontside = part.get_frontside();
+		if (part_frontside) {
+			$(part_frontside.get_element()).removeClass("toontalk-frontside-in-box");
+		}
 		for (i = 0; i < size; i += 1) {
 // 			console.log("Part is " + part.toString() + " hole " + i + " is " + this.get_hole(i).toString()); for debugging
             if (part === this.get_hole(i)) {
@@ -319,8 +329,7 @@ window.TOONTALK.box_backside =
             backside_element.appendChild(size_input);
 			add_test_button(backside, "copy-first-hole-to-second-hole"); // for testing
             return backside;
-        },
-		
+        },		
 		update_display: function () {
 			var size_input = window.TOONTALK.UTILITIES.get_first_child_with_class(this.get_element(), "toontalk-box-size-input");
 			var box = this.get_widget();

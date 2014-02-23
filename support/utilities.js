@@ -57,7 +57,7 @@ window.TOONTALK.UTILITIES =
 				create: function( event, ui ) {
                     $(this).css({position: "absolute"})
 				},
-				appendTo:  $element.parents(".toontalk-side:last"), // top-most,
+ 				appendTo: $element.parents(".toontalk-side:last"), // top-most
 				stack: ".toontalk-side",
                 start: function (event, ui) {
 					$element.addClass("toontalk-being-dragged");
@@ -71,7 +71,7 @@ window.TOONTALK.UTILITIES =
 				stop: function (event, ui) {
 					$element.removeClass("toontalk-being-dragged");
 				},
-            });
+            }); // .resizable(); -- wrorks fine for backsides but need to fix frontside problem
 			$element.droppable({
 				greedy: true,
                 drop: function (event, ui) {
