@@ -112,8 +112,6 @@ window.TOONTALK.UTILITIES =
 			}
 		},
 		
-		// probably the following could be replaced with better JQuery UI coce
-		
 		create_text_input: function (value, class_name, title) {
 			var input = document.createElement("input");
 			input.type = "text";
