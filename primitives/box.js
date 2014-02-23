@@ -6,7 +6,7 @@
 
 /*jslint browser: true, devel: true, vars: true */
 
-window.TOONTALK.box = (function () {
+window.TOONTALK.box = (function (TT) {
     "use strict";
     
     var TT = window.TOONTALK; // for convenience and more legible code
@@ -162,11 +162,7 @@ window.TOONTALK.box = (function () {
         for (i = 0; i < size; i += 1) {
             hole = this.get_hole(i);
             html += "<td class='toontalk-box-hole toontalk-box-hole-" + extra_classes + "'" + horizontal_style + ">";
-//             if (hole) {
 		    html += "<div class='toontalk-hole-about-to-be-replaced'>";
-//             } else {
-// 				html += "<div class=='toontalk-empty-hole'>";
-// 			}
             html += "</td>";
             if (!horizontal) {
                 html += "</tr><tr" + vertical_style + ">";
@@ -191,13 +187,8 @@ window.TOONTALK.box = (function () {
         if (!frontside_element.firstChild) {
             frontside_element.appendChild(document.createElement('div'));
         }
-// 		box_element = frontside_element;
         frontside_element.firstChild.innerHTML = new_HTML;
 		frontside_element.firstChild.className += " toontalk-widget";
-// 	    $(frontside_element).find(".toontalk-box-hole").each(function (index, element) {
-// 			// can't just use box.update_hole_display because then 'this' isn't bound to the box
-// 			that.update_hole_display(index, element);
-// 		});
 		$(".toontalk-hole-about-to-be-replaced").each(function (index, element) {
 			// can't just use box.update_hole_display because then 'this' isn't bound to the box
 			that.update_hole_display(index, element);
@@ -211,14 +202,14 @@ window.TOONTALK.box = (function () {
 	    var hole = this.get_hole(index);
 		var hole_frontside, hole_frontside_element, box_frontside, $element_container;
 		if (!hole) {
-			hole = window.TOONTALK.box_empty_hole.create(index, this);
+			hole = TT.box_empty_hole.create(index, this);
 			this.set_hole(index, hole);
 		}
 		hole_frontside = hole.get_frontside(true);
 		if (old_hole_element) {
 			hole_frontside_element = hole_frontside.get_element();
 		    old_hole_element.parentNode.replaceChild(hole_frontside_element, old_hole_element);
-			window.TOONTALK.UTILITIES.set_position_absolute(hole_frontside_element, false);
+			TT.UTILITIES.set_position_absolute(hole_frontside_element, false);
 			$(hole_frontside_element).addClass("toontalk-frontside-in-box");
 		} else {
 			old_hole_element = hole.get_frontside(true).get_element();
@@ -226,14 +217,14 @@ window.TOONTALK.box = (function () {
 			$element_container = $(box_frontside.get_element()).find(".toontalk-box-hole").eq(index); 
 			$element_container.append(old_hole_element);
 			// since drag and drop is set up with absolute as the default
-			window.TOONTALK.UTILITIES.set_position_absolute(old_hole_element, false);
+			TT.UTILITIES.set_position_absolute(old_hole_element, false);
 			$(old_hole_element).addClass("toontalk-frontside-in-box");
 		}
 		hole_frontside.update_display();
 	};
 	
 	box.empty_hole = function (index) {
-		this.set_hole(index, window.TOONTALK.box_empty_hole.create(index, this));
+		this.set_hole(index, TT.box_empty_hole.create(index, this));
 	};
     
     box.dereference = function (path) {
@@ -280,14 +271,14 @@ window.TOONTALK.box = (function () {
     };
     
     return box;
-}());
+}(window.TOONTALK));
 
 window.TOONTALK.box_backside = 
-(function () {
+(function (TT) {
     "use strict";
 	
 	var add_test_button = function(backside, robot_name) {
-		var test_button = window.TOONTALK.UTILITIES.create_button("add " + robot_name + " robot", "test", "just testing");
+		var test_button = TT.UTILITIES.create_button("add " + robot_name + " robot", "test", "just testing");
 		test_button.onclick = function () {
 			if (test_button.robot) {
 				test_button.robot.stop();
@@ -312,9 +303,9 @@ window.TOONTALK.box_backside =
         create: function (box) {
 			var backside_element = document.createElement("div");
 			backside_element.className = "toontalk-backside toontalk-side";
-			window.TOONTALK.backside.associate_widget_with_backside_element(box, backside_element);
+			TT.backside.associate_widget_with_backside_element(box, backside_element);
 	        var backside = Object.create(this);
-            var size_input = window.TOONTALK.UTILITIES.create_text_input(box.get_size().toString(), 'toontalk-box-size-input', "Type here to edit the number of holes.");
+            var size_input = TT.UTILITIES.create_text_input(box.get_size().toString(), 'toontalk-box-size-input', "Type here to edit the number of holes.");
             var update_value = function () {
                 box.set_size(parseInt(size_input.value.trim(), 10));
             };
@@ -331,13 +322,13 @@ window.TOONTALK.box_backside =
             return backside;
         },		
 		update_display: function () {
-			var size_input = window.TOONTALK.UTILITIES.get_first_child_with_class(this.get_element(), "toontalk-box-size-input");
+			var size_input = TT.UTILITIES.get_first_child_with_class(this.get_element(), "toontalk-box-size-input");
 			var box = this.get_widget();
 			size_input.value = box.get_size().toString();
 		},
 
     };
-}());
+}(window.TOONTALK));
 
 window.TOONTALK.box_empty_hole = 
 (function () {

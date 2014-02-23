@@ -5,7 +5,7 @@
  */
 
 window.TOONTALK.condition = 
-(function() {
+(function(TT) {
     "use strict";
     return {
         create: function(items) {
@@ -28,4 +28,4 @@ window.TOONTALK.condition =
         }
         
     };
-}());
+}(window.TOONTALK));

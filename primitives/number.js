@@ -8,10 +8,9 @@
 /*jslint browser: true, devel: true, vars: true */
 /*global BigInteger, bigrat */
 
-window.TOONTALK.number = (function () {
+window.TOONTALK.number = (function (TT) { // TT is for convenience and more legible code
     "use strict";
     
-    var TT = window.TOONTALK; // for convenience and more legible code
     var number = Object.create(TT.widget);
 
     // private functions
@@ -77,7 +76,7 @@ window.TOONTALK.number = (function () {
         if (!denominator) {
             denominator = 1;
         }
-        if ((typeof numerator === 'number' || typeof numerator === 'string') && (typeof denominator === 'number'  || typeof denominator === 'string')) {
+        if ((typeof numerator === 'number' || typeof numerator === 'string') && (typeof denominator === 'number' || typeof denominator === 'string')) {
             return bigrat.fromValues(numerator, denominator);
         }
         // assume (for now) numerator is a bigrat with denominator of 1
@@ -428,14 +427,14 @@ window.TOONTALK.number = (function () {
     };
 	
     return number;
-}());
+}(window.TOONTALK));
 
 window.TOONTALK.number_backside = 
-(function () {
+(function (TT) {
     "use strict";
 	
 	var add_test_button = function(backside, robot_name) {
-		var add_one = window.TOONTALK.UTILITIES.create_button("add " + robot_name + " robot", "test", "just testing");
+		var add_one = TT.UTILITIES.create_button("add " + robot_name + " robot", "test", "just testing");
 		add_one.onclick = function () {
 			if (add_one.robot) {
 				add_one.robot.stop();
@@ -465,16 +464,16 @@ window.TOONTALK.number_backside =
 			backside_element.className = "toontalk-backside toontalk-side";
 			window.TOONTALK.backside.associate_widget_with_backside_element(number, backside_element);
 	        var backside = Object.create(this);
-            var numerator_input = window.TOONTALK.UTILITIES.create_text_input(number.numerator_string(), 'toontalk-numerator-input', "Type here to edit the numerator");
-            var denominator_input = window.TOONTALK.UTILITIES.create_text_input(number.denominator_string(), 'toontalk-denominator-input', "Type here to edit the denominator");
-			var decimal_format = window.TOONTALK.UTILITIES.create_radio_button("number_format", "decimal");
-			var proper_format = window.TOONTALK.UTILITIES.create_radio_button("number_format", "proper_fraction");
-			var improper_format = window.TOONTALK.UTILITIES.create_radio_button("number_format", "improper_fraction");
+            var numerator_input = TT.UTILITIES.create_text_input(number.numerator_string(), 'toontalk-numerator-input', "Type here to edit the numerator");
+            var denominator_input = TT.UTILITIES.create_text_input(number.denominator_string(), 'toontalk-denominator-input', "Type here to edit the denominator");
+			var decimal_format = TT.UTILITIES.create_radio_button("number_format", "decimal");
+			var proper_format = TT.UTILITIES.create_radio_button("number_format", "proper_fraction");
+			var improper_format =TT.UTILITIES.create_radio_button("number_format", "improper_fraction");
             var update_value = function () {
                 number.set_from_values(numerator_input.value.trim(), denominator_input.value.trim(), true);
             };
 			var update_format = function () {
-				number.set_format(window.TOONTALK.UTILITIES.selected_radio_button(decimal_format, proper_format, improper_format).value, true);
+				number.set_format(TT.UTILITIES.selected_radio_button(decimal_format, proper_format, improper_format).value, true);
 			};
 			backside.get_element = function () {
                 return backside_element;
@@ -491,17 +490,17 @@ window.TOONTALK.number_backside =
 			// TO DO position the new elements
             backside_element.appendChild(numerator_input);
             backside_element.appendChild(denominator_input);
-			backside_element.appendChild(window.TOONTALK.UTILITIES.label_radio_button(decimal_format, "&nbsp;Display number as a decimal."));
-			backside_element.appendChild(window.TOONTALK.UTILITIES.label_radio_button(proper_format, "&nbsp;Display number as a proper fraction."));
-			backside_element.appendChild(window.TOONTALK.UTILITIES.label_radio_button(improper_format, "&nbsp;Display number as a simple fraction."));
+			backside_element.appendChild(TT.UTILITIES.label_radio_button(decimal_format, "&nbsp;Display number as a decimal."));
+			backside_element.appendChild(TT.UTILITIES.label_radio_button(proper_format, "&nbsp;Display number as a proper fraction."));
+			backside_element.appendChild(TT.UTILITIES.label_radio_button(improper_format, "&nbsp;Display number as a simple fraction."));
 			add_test_button(backside, "add-one");
 			add_test_button(backside, "double");
             return backside;
         },
 		
 		update_display: function () {
-			var numerator_input = window.TOONTALK.UTILITIES.get_first_child_with_class(this.get_element(), "toontalk-numerator-input");
-			var denominator_input = window.TOONTALK.UTILITIES.get_first_child_with_class(this.get_element(), "toontalk-denominator-input");
+			var numerator_input = TT.UTILITIES.get_first_child_with_class(this.get_element(), "toontalk-numerator-input");
+			var denominator_input = TT.UTILITIES.get_first_child_with_class(this.get_element(), "toontalk-denominator-input");
 			var number = this.get_widget();
 			numerator_input.value = number.numerator_string();
 			denominator_input.value = number.denominator_string();
@@ -512,4 +511,4 @@ window.TOONTALK.number_backside =
 		},
 
     };
-}());
+}(window.TOONTALK));

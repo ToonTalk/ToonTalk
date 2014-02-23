@@ -4,7 +4,7 @@
  * License: New BSD
  */
 
-window.TOONTALK.robot = (function () {
+window.TOONTALK.robot = (function (TT) {
     "use strict";
     var TT = window.TOONTALK; // for convenience and more legible code
     var robot = Object.create(TT.widget);
@@ -36,7 +36,7 @@ window.TOONTALK.robot = (function () {
         switch (match_status) {
         case 'matched':
             if (!queue) {
-                queue = window.TOONTALK.QUEUE;
+                queue = TT.QUEUE;
             }
             queue.enqueue({robot: this, context: context, queue: queue});
             return match_status;
@@ -63,4 +63,4 @@ window.TOONTALK.robot = (function () {
     };
     
     return robot;
-}());
+}(window.TOONTALK));

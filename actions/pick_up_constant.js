@@ -5,7 +5,7 @@
  */
 
 window.TOONTALK.pick_up_constant = 
-(function () {
+(function (TT) {
     "use strict";
     return {
         create: function (robot, constant_object) {
@@ -21,4 +21,4 @@ window.TOONTALK.pick_up_constant =
         }
 
     };
-}());
+}(window.TOONTALK));

@@ -5,7 +5,7 @@
  */
 
 window.TOONTALK.frontside = 
-(function () {
+(function (TT) {
     "use strict";
     return {
         create: function (widget) {
@@ -16,7 +16,7 @@ window.TOONTALK.frontside =
 // 			var $frontside_container = $frontside_element.parents(".toontalk-frontside:first");
 			frontside_element.className += "toontalk-frontside toontalk-side";
 			$frontside_element.data("owner", widget);
-			window.TOONTALK.UTILITIES.drag_and_drop($frontside_element);
+			TT.UTILITIES.drag_and_drop($frontside_element);
             frontside.get_element = function () {
                 return frontside_element;
             };
@@ -36,4 +36,4 @@ window.TOONTALK.frontside =
 		},
 
     };
-}());
+}(window.TOONTALK));

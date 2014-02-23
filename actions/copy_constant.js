@@ -5,7 +5,7 @@
  */
 
 window.TOONTALK.copy_constant = 
-(function () {
+(function (TT) {
     "use strict";
     return {
         create: function (robot, constant_object) {
@@ -21,4 +21,4 @@ window.TOONTALK.copy_constant =
         }
 
     };
-}());
+}(window.TOONTALK));

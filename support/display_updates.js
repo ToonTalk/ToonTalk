@@ -5,7 +5,7 @@
  */
 
 window.TOONTALK.DISPLAY_UPDATES = 
-(function () {
+(function (TT) {
     "use strict";
     // for now only backsides and frontsides can be 'dirty'
     var dirty_sides = [];
@@ -28,6 +28,6 @@ window.TOONTALK.DISPLAY_UPDATES =
             dirty_sides = [];
         }
     };
-}());
+}(window.TOONTALK));
 
         

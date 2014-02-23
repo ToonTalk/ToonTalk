@@ -2,7 +2,10 @@
  * Implements test programs for Web window.TOONTALK
  */
  
- window.TOONTALK.tests = {
+ window.TOONTALK.tests =
+ (function (TT) {
+     "use strict";
+     return {
      assert_equals: function (a, b, message) {
          "use strict";
          console.assert(a.equals(b), message + " Expected to be equal " + a.toString() + "=" + b.toString());
@@ -226,3 +229,5 @@
      }
 
  };
+ 
+ } (window.TOONTALK));

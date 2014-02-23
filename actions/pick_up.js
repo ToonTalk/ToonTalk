@@ -5,7 +5,7 @@
  */
 
 window.TOONTALK.pick_up = 
-(function () {
+(function (TT) {
     "use strict";
     return {
         create: function (robot, path) {
@@ -16,7 +16,7 @@ window.TOONTALK.pick_up =
         },
         
         run: function (context) {
-            var referenced = window.TOONTALK.UTILITIES.dereference_path(this.path, context);
+            var referenced = TT.UTILITIES.dereference_path(this.path, context);
             if (!referenced) {
                 return false;
             }
@@ -25,4 +25,4 @@ window.TOONTALK.pick_up =
         }
 
     };
-}());
+}(window.TOONTALK));

@@ -5,7 +5,7 @@
  */
 
 window.TOONTALK.pick_up = 
-(function () {
+(function (TT) {
     "use strict";
     return {
         create: function (robot, path_or_object) {
@@ -21,4 +21,4 @@ window.TOONTALK.pick_up =
         }
 
     };
-}());
+}(window.TOONTALK));

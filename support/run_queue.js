@@ -5,7 +5,7 @@
  */
 
 window.TOONTALK.queue = 
-(function () {
+(function (TT) {
     "use strict";
     return {
         create: function () {
@@ -49,7 +49,7 @@ window.TOONTALK.queue =
                     if (steps_limit === 0) {
                         // clear the queue to be ready for the next test
                         this.to_run = [];
-                        window.TOONTALK.DISPLAY_UPDATES.update_display();
+                        TT.DISPLAY_UPDATES.update_display();
                         if (run_after_steps_limit) {
                             run_after_steps_limit();
                         }
@@ -57,7 +57,7 @@ window.TOONTALK.queue =
                     }
                 }
             }
-            window.TOONTALK.DISPLAY_UPDATES.update_display();
+            TT.DISPLAY_UPDATES.update_display();
             setTimeout(function () {
                           that.run(steps_limit, run_after_steps_limit);
                        },
@@ -65,7 +65,7 @@ window.TOONTALK.queue =
         }
         
     };
-}());
+}(window.TOONTALK));
 
 window.TOONTALK.QUEUE = window.TOONTALK.queue.create();
 // might want two queues: so new entries end up in the 'next queue'

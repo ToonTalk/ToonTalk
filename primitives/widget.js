@@ -6,7 +6,7 @@
 
 /*jslint browser: true, devel: true, vars: true */
 
-window.TOONTALK.widget = (function () {
+window.TOONTALK.widget = (function (TT) {
     "use strict";
 
     return {
@@ -17,7 +17,7 @@ window.TOONTALK.widget = (function () {
                 function (create) {
                     if (create && !frontside) {
                         // all frontsides are the same
-                        frontside = window.TOONTALK.frontside.create(widget);
+                        frontside = TT.frontside.create(widget);
                     }
                     return frontside;
                 };
@@ -108,4 +108,4 @@ window.TOONTALK.widget = (function () {
         },
         
     };
-}());
+}(window.TOONTALK));

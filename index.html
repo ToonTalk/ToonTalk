@@ -37,13 +37,14 @@ window.TOONTALK = {}; // create ToonTalk 'module' -- using 'window' as recommend
 </div>
 <script>
 $( document ).ready(function () {
-    var number_context = TOONTALK.number.create(2, 7);
-    var box_context = TOONTALK.tests.create_test_box();
+    var TT = window.TOONTALK;
+    var number_context = TT.number.create(2, 7);
+    var box_context = TT.tests.create_test_box();
     var test_backside = document.getElementById("test1_top_level_backside");
-    window.TOONTALK.tests.create_sides(number_context, test_backside, 0);
-    window.TOONTALK.tests.create_sides(box_context, test_backside, 300);
+    TT.tests.create_sides(number_context, test_backside, 0);
+    TT.tests.create_sides(box_context, test_backside, 300);
     // empty top-level test object: {}
-    window.TOONTALK.backside.associate_widget_with_backside_element({}, test_backside);
+    TT.backside.associate_widget_with_backside_element({}, test_backside);
     TOONTALK.QUEUE.run();
 });
 </script>

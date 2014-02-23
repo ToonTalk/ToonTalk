@@ -4,7 +4,7 @@
  */
 
 window.TOONTALK.backside = 
-(function () {
+(function (TT) {
     "use strict";
     return {
         associate_widget_with_backside_element: function (widget, element) {
@@ -17,7 +17,7 @@ window.TOONTALK.backside =
 			    widget.drop_on = function (other, $side_element_of_other, event) {
 					$element.append($side_element_of_other);
 // 					$element.addClass("toontalk-on-backside");
-				    window.TOONTALK.UTILITIES.set_position_absolute($side_element_of_other.get(0), true, event); // when on the backside
+				    TT.UTILITIES.set_position_absolute($side_element_of_other.get(0), true, event); // when on the backside
 					// following constants could be defined in backside widget -- good idea?
 					if ($side_element_of_other.is(".toontalk-frontside")) {
 						// better to have a preferrred size that it goes to when on backside
@@ -46,10 +46,10 @@ window.TOONTALK.backside =
 				    // no need to do anything since can find all children and their 'owners' easily enough
 			    };
             }
-			window.TOONTALK.UTILITIES.drag_and_drop($element);
+			TT.UTILITIES.drag_and_drop($element);
 			$element.resizable();
             return widget;
         },
 
     };
-}());
+}(window.TOONTALK));

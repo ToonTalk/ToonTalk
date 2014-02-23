@@ -5,7 +5,7 @@
  */
 
 window.TOONTALK.UTILITIES = 
-(function () {
+(function (TT) {
     "use strict";
     return {
         get_style_property: function (element, style_property) {
@@ -160,4 +160,4 @@ window.TOONTALK.UTILITIES =
 	
     }
 	
-}());
+}(window.TOONTALK));
