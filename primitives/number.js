@@ -97,6 +97,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         // value is a private variable closed over below
         var value = bigrat_from_values(numerator, denominator);
         var format = "improper_fraction";
+		var operator = '+';
         result.set_value =
             function (new_value, update_now) {
 				var frontside, backside;
@@ -122,6 +123,18 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         result.set_format =
             function (new_value, update_now) { 
                 format = new_value;
+                if (update_now) {
+                    this.update_display();
+                }
+                return this;
+            };
+        result.get_operator =
+            function () { 
+                return operator; 
+            };
+		result.set_operator =
+            function (new_value, update_now) { 
+                operator = new_value;
                 if (update_now) {
                     this.update_display();
                 }
@@ -155,8 +168,8 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
 		if (this.erased) {
 			copy.erased = this.erased;
 		}
-		if (this.operator) {
-			copy.operator = this.operator;
+		if (this.get_operator()) {
+			copy.set_operator(this.get_operator());
 		}
 		return copy;
     };
@@ -230,18 +243,6 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             console.log("Number received a number with unsupported operator: " + other_number.get_operator());
             return this;
         }
-    };
-
-    number.get_operator = function () {
-        if (!this.operator) {
-            this.operator = '+';
-        }
-        return this.operator;
-    };
-
-    number.set_operator = function (operator) {
-        this.operator = operator;
-        return this;
     };
 
     number.add = function (other) {
