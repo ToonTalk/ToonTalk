@@ -138,12 +138,48 @@ window.TOONTALK.UTILITIES =
 			return input;
 		},
 		
-		label_radio_button: function (button, label) {
-			var container = document.createElement("div");
+		create_label: function (html) {
 			var label_element = document.createElement("span");
-			label_element.innerHTML = label;
+			label_element.className = "toontalk-label";
+			label_element.innerHTML = html;
+			return label_element;
+		},
+		
+		create_horizontal_table: function (parameters) {
+			var table = document.createElement("table");
+			var i, row, table_element;
+			row = document.createElement("tr");
+			table.appendChild(row);
+			for (i = 0; i < arguments.length; i += 1) {
+				table_element = document.createElement("td");
+				row.appendChild(table_element);
+				table_element.appendChild(arguments[i]);
+			}
+			return table;
+		},
+		
+		create_vertical_table: function (parameters) {
+			var table = document.createElement("table");
+			var i, row, table_element;
+			for (i = 0; i < arguments.length; i += 1) {
+				row = document.createElement("tr");
+				table.appendChild(row);
+				table_element = document.createElement("td");
+				row.appendChild(table_element);
+				table_element.appendChild(arguments[i]);
+			}
+			return table;
+		},
+		
+		label_radio_button: function (button, label, title, label_class_name) {
+			var container = document.createElement("div");
+			var label_element = this.create_label(label);
+			label_element.className += " " + label_class_name;
 			container.appendChild(button);
 			container.appendChild(label_element);
+			if (title) {
+				container.title = title;
+			}
 			return container;		
 		},
 		
@@ -154,7 +190,7 @@ window.TOONTALK.UTILITIES =
 					return arguments[i];
 				}
 			}
-		},
+		}
 	
     }
 	

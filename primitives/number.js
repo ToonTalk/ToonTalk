@@ -296,7 +296,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         case '+':
             return '';
         case '-':
-            return '&minus';
+            return '&minus;';
         case '*':
             return '&times;';
         case '/':
@@ -350,6 +350,9 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
                 '</td></tr></table>';
         }
         if (format === 'decimal') {
+			if (operator_HTML.length > 0) {
+				max_characters -= 1; // leave room for operator
+			}
             return '<div class="toontalk-number toontalk-decimal' + extra_class + '" style="font-size: ' + font_size + 'px;">' + operator_HTML + this.decimal_string(max_characters) + '</div>';
         }
         // else warn??
@@ -446,10 +449,10 @@ window.TOONTALK.number_backside =
 			var robot;
 			switch (robot_name) {
 				case "add-one": 
-				robot = TOONTALK.tests.add_one_robot(); 
+				robot = TT.tests.add_one_robot(); 
 				break;
 				case "double": 
-				robot = TOONTALK.tests.double_robot(); 
+				robot = TT.tests.double_robot(); 
 				break;
 			}
 			add_one.robot = robot;
@@ -463,19 +466,27 @@ window.TOONTALK.number_backside =
         create: function (number) {
 			var backside_element = document.createElement("div");
 			backside_element.className = "toontalk-backside toontalk-side";
-			window.TOONTALK.backside.associate_widget_with_backside_element(number, backside_element);
+			TT.backside.associate_widget_with_backside_element(number, backside_element);
 	        var backside = Object.create(this);
             var numerator_input = TT.UTILITIES.create_text_input(number.numerator_string(), 'toontalk-numerator-input', "Type here to edit the numerator");
             var denominator_input = TT.UTILITIES.create_text_input(number.denominator_string(), 'toontalk-denominator-input', "Type here to edit the denominator");
 			var decimal_format = TT.UTILITIES.create_radio_button("number_format", "decimal");
 			var proper_format = TT.UTILITIES.create_radio_button("number_format", "proper_fraction");
 			var improper_format =TT.UTILITIES.create_radio_button("number_format", "improper_fraction");
+			var plus = TT.UTILITIES.create_radio_button("operator", "+");
+			var minus = TT.UTILITIES.create_radio_button("operator", "-");
+			var multiply = TT.UTILITIES.create_radio_button("operator", "*");
+			var divide = TT.UTILITIES.create_radio_button("operator", "/");
+			var power = TT.UTILITIES.create_radio_button("operator", "^");
             var update_value = function () {
                 number.set_from_values(numerator_input.value.trim(), denominator_input.value.trim(), true);
             };
 			var update_format = function () {
 				number.set_format(TT.UTILITIES.selected_radio_button(decimal_format, proper_format, improper_format).value, true);
 			};
+			var update_operator = function () {
+				number.set_operator(TT.UTILITIES.selected_radio_button(plus, minus, multiply, divide, power).value, true);
+			}
 			backside.get_element = function () {
                 return backside_element;
             };
@@ -488,12 +499,25 @@ window.TOONTALK.number_backside =
 			proper_format.onchange = update_format;
 			improper_format.onchange = update_format;
 			improper_format.checked = true;
+			plus.onchange = update_operator;
+			minus.onchange = update_operator;
+			multiply.onchange = update_operator;
+			divide.onchange = update_operator;
+			power.onchange = update_operator;
 			// TO DO position the new elements
             backside_element.appendChild(numerator_input);
             backside_element.appendChild(denominator_input);
 			backside_element.appendChild(TT.UTILITIES.label_radio_button(decimal_format, "&nbsp;Display number as a decimal."));
 			backside_element.appendChild(TT.UTILITIES.label_radio_button(proper_format, "&nbsp;Display number as a proper fraction."));
 			backside_element.appendChild(TT.UTILITIES.label_radio_button(improper_format, "&nbsp;Display number as a simple fraction."));
+			backside_element.appendChild(TT.UTILITIES.create_label("<i>What should this do when dropped on another number?</i>"));
+			backside_element.appendChild(TT.UTILITIES.create_horizontal_table(
+			    TT.UTILITIES.label_radio_button(plus, "&plus;", "Add me to what I'm dropped on", "toontalk-operator-choice"),
+				TT.UTILITIES.label_radio_button(minus, "&minus;", "Subtract me from what I'm dropped on", "toontalk-operator-choice"),
+				TT.UTILITIES.label_radio_button(multiply, "&times;", "Multiply me with what I'm dropped on", "toontalk-operator-choice"),
+				TT.UTILITIES.label_radio_button(divide, "&divide;", "Divide me into what I'm dropped on", "toontalk-operator-choice"),
+				TT.UTILITIES.label_radio_button(power, "Integer power", "Use me as the number of times to multiply together what I'm dropped on", "toontalk-operator-choice")));
+			backside_element.appendChild(TT.UTILITIES.create_label("<i>Following for testing:</i>"));
 			add_test_button(backside, "add-one");
 			add_test_button(backside, "double");
             return backside;
