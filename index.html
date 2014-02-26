@@ -39,6 +39,7 @@ window.TOONTALK = {}; // create ToonTalk 'module' -- using 'window' as recommend
 <script>
 $( document ).ready(function () {
     var TT = window.TOONTALK;
+    TT.debugging = true; // remove this for production releases
     var number_context = TT.number.create(2, 7);
     var box_context = TT.tests.create_test_box();
     var test_backside = document.getElementById("test1_top_level_backside");

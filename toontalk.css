@@ -113,7 +113,14 @@
 .toontalk-improper-fraction {
 	table-layout: fixed;
 	border-spacing:  0px;
-	collapse: collapse;
+	border-collapse: collapse;
+}
+.toontalk-operator-and-fraction {
+	/* background-color same as toontalk-top-level-number */
+	background-color: rgb(237, 247, 240); 
+	table-layout: fixed;
+	border-spacing:  0px;
+	border-collapse: collapse;
 }
 .toontalk-digit {
 }
