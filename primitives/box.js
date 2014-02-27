@@ -18,10 +18,12 @@ window.TOONTALK.box = (function (TT) {
         new_box.get_size = function () {
             return size;
         };
-        new_box.set_size = function (new_size) {
+        new_box.set_size = function (new_size, update_display) {
             size = new_size;
 			contents.length = size;
-			this.update_display();
+			if (update_display) {
+			    this.update_display();
+			}
             return this;
         };
         new_box.get_horizontal = function () {
@@ -31,17 +33,21 @@ window.TOONTALK.box = (function (TT) {
             }
             return horizontal;
         };
-        new_box.set_horizontal = function (new_horizontal) {
+        new_box.set_horizontal = function (new_horizontal, update_display) {
             horizontal = new_horizontal;
-			this.update_display();
+			if (update_display) {
+			    this.update_display();
+			}
             return this;
         };
         new_box.get_hole = function (index) {
             return contents[index];
         };
-        new_box.set_hole = function (index, new_value) {
+        new_box.set_hole = function (index, new_value, update_display) {
             contents[index] = new_value;
-            this.update_hole_display(index);
+			if (update_display) {
+                this.update_hole_display(index);
+			}
         };
         return new_box.add_sides_functionality(new_box);
     };
@@ -223,8 +229,8 @@ window.TOONTALK.box = (function (TT) {
 		hole_frontside.update_display();
 	};
 	
-	box.empty_hole = function (index) {
-		this.set_hole(index, TT.box_empty_hole.create(index, this));
+	box.empty_hole = function (index, update_display) {
+		this.set_hole(index, TT.box_empty_hole.create(index, this), update_display);
 	};
     
     box.dereference = function (path) {
