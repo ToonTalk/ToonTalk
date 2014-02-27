@@ -520,8 +520,13 @@ window.TOONTALK.number_backside =
 			switch (number.get_format()) {
 				case "decimal":
 				decimal_format.checked = true;
-				// finish this
-				
+				break;
+				case "improper_fraction":
+				improper_format.checked = true;
+				break;
+				case "proper_fraction":
+				proper_format.checked = true;
+				break;
 			}
 			improper_format.checked = true;
 			plus.onchange = update_operator;
