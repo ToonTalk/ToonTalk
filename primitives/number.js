@@ -517,6 +517,12 @@ window.TOONTALK.number_backside =
 			decimal_format.onchange = update_format;
 			proper_format.onchange = update_format;
 			improper_format.onchange = update_format;
+			switch (number.get_format()) {
+				case "decimal":
+				decimal_format.checked = true;
+				// finish this
+				
+			}
 			improper_format.checked = true;
 			plus.onchange = update_operator;
 			minus.onchange = update_operator;

@@ -308,13 +308,18 @@ window.TOONTALK.box_backside =
     return {
         create: function (box) {
 			var backside_element = document.createElement("div");
-			backside_element.className = "toontalk-backside toontalk-side";
-			TT.backside.associate_widget_with_backside_element(box, backside_element);
 	        var backside = Object.create(this);
             var size_input = TT.UTILITIES.create_text_input(box.get_size().toString(), 'toontalk-box-size-input', "Type here to edit the number of holes.");
+			var horizontal_radio_button = TT.UTILITIES.create_radio_button("box_orientation", "horizontal"); // might be nicer replaced by an icon
+			var vertical_radio_button = TT.UTILITIES.create_radio_button("box_orientation", "vertical");
             var update_value = function () {
                 box.set_size(parseInt(size_input.value.trim(), 10));
             };
+			var update_orientation = function () {
+				number.set_horizontal((TT.UTILITIES.selected_radio_button(horizontal_radio_button, vertical_radio_button).value === "horizontal"), true);
+			};
+			backside_element.className = "toontalk-backside toontalk-side";
+			TT.backside.associate_widget_with_backside_element(box, backside_element);
 			backside.get_element = function () {
                 return backside_element;
             };
@@ -322,8 +327,18 @@ window.TOONTALK.box_backside =
                 return box;
             };
             size_input.onchange = update_value;
+			horizontal_radio_button.onchange = update_orientation;
+			vertical_radio_button.onchange = update_orientation;
 			// TO DO position the new elements
             backside_element.appendChild(size_input);
+			backside_element.appendChild(TT.UTILITIES.create_horizontal_table(
+			    TT.UTILITIES.label_radio_button(horizontal_radio_button, "Left to right", "Show box horizontally", "toontalk-box-orientation-choice"),
+				TT.UTILITIES.label_radio_button(vertical_radio_button, "Top to bottom", "Show box vertically", "toontalk-box-orientation-choice")));
+			if (box.get_horizontal()) {
+				horizontal_radio_button.checked = true;
+			} else {
+				vertical_radio_button.checked = true;
+			}
 			add_test_button(backside, "copy-first-hole-to-second-hole"); // for testing
             return backside;
         },		
