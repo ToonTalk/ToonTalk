@@ -63,6 +63,7 @@ window.TOONTALK.UTILITIES =
                 start: function (event, ui) {
 					var $container = $element.parents(".toontalk-side:first");
 					var container = $container.data("owner");
+					$element.removeClass("toontalk-emerging-backside");
 					// save the current dimension so size doesn't change while being dragged
 					this.style.width = this.offsetWidth + "px",
 					this.style.height = this.offsetHeight + "px",

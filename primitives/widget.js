@@ -29,6 +29,10 @@ window.TOONTALK.widget = (function (TT) {
                     }
                     return backside;
                 };
+            widget.forget_backside =
+                function () {
+                    backside = undefined;
+                };
             return widget;
         },
         

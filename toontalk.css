@@ -20,6 +20,9 @@
 	left: 350px;
 	top: 50px;
 }
+.toontalk-emerging-backside {
+	opacity: .33;
+}
 .toontalk-top-level-frontside {
 	position: absolute;
 	cursor: move;
