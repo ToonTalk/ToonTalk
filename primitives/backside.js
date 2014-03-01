@@ -9,6 +9,7 @@ window.TOONTALK.backside =
     return {	
         associate_widget_with_backside_element: function (widget, backside, backside_element) {
 			var $backside_element = $(backside_element);
+			var hide_button = TT.UTILITIES.create_button("Hide", "toontalk-hide-backside-button", "Click to hide this behind the front side.");
 			$backside_element.data("owner", widget);
             widget.get_element = function () {
                 return backside_element;
@@ -50,6 +51,17 @@ window.TOONTALK.backside =
 			         }
 			         return true;
 		        };
+			hide_button.onclick = function () {
+				$backside_element.remove(); // could animate away
+				widget.forget_backside();
+			};
+			setTimeout(function ()  {
+					// when loaded backside_element will have a position
+					hide_button.style.left = "10px";
+					hide_button.style.top = (backside_element.offsetHeight - 35) + "px";
+				    },
+					1);
+			$backside_element.append(hide_button);
 			TT.UTILITIES.drag_and_drop($backside_element);
 			$backside_element.resizable();
             return widget;

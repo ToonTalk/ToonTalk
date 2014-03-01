@@ -16,7 +16,7 @@
 	padding:  6px;
 	/* while testing: */
 	width: 400px;
-	height: 200px;
+	height: 250px;
 	left: 350px;
 	top: 50px;
 }
@@ -158,4 +158,7 @@
 }
 .toontalk-operator-choice {
 	/* font-weight: bold; */
+}
+.toontalk-hide-backside-button {
+	position: absolute;
 }
