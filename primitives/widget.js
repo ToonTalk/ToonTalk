@@ -71,6 +71,7 @@ window.TOONTALK.widget = (function (TT) {
         
         drop_on: function (other, side_of_other, event) {
             console.log("drop_on not implemented; this is " + this.toString() + " and other is " + other.toString());
+            return false;
         },
                    
         removed: function (part) {

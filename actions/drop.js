@@ -5,7 +5,7 @@
  */
 
 window.TOONTALK.drop_on = 
-(function () {
+(function (TT) {
     "use strict";
     return {
         create: function (robot, path) {
@@ -18,7 +18,7 @@ window.TOONTALK.drop_on =
         },
         
         run: function (context) {
-            var target = window.TOONTALK.UTILITIES.dereference_path(this.path, context);
+            var target = TT.UTILITIES.dereference_path(this.path, context);
             if (target) {
                 this.robot.thing_in_hand.drop_on(target);
                 return true;
@@ -27,4 +27,4 @@ window.TOONTALK.drop_on =
         }
 
     };
-}());
+}(window.TOONTALK));

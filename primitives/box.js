@@ -249,6 +249,27 @@ window.TOONTALK.box = (function (TT) {
         }
     };
 	
+	box.drop_on = function (other, side_of_other, event) {
+        if (!other.box_dropped_on_me) {
+			if (other.widget_dropped_on_me) {
+				return other.widget_dropped_on_me(this, event);
+			}
+            console.log("No handler for drop of " + this.toString() + " on " + other.toString());
+			return;
+		}
+        var result = other.box_dropped_on_me(this, event);
+		if (event) {
+			other.update_display();
+		}
+		this.remove();
+		return true;
+    };
+	
+	box.box_dropped_on_me = function (other, event) {
+		console.log("box on box not yet implemented");
+		return false;
+	}
+	
 	box.removed = function (part) {
 		var size = this.get_size();
 		var i;
@@ -319,7 +340,7 @@ window.TOONTALK.box_backside =
 				number.set_horizontal((TT.UTILITIES.selected_radio_button(horizontal_radio_button, vertical_radio_button).value === "horizontal"), true);
 			};
 			backside_element.className = "toontalk-backside toontalk-side";
-			TT.backside.associate_widget_with_backside_element(box, backside_element);
+			TT.backside.associate_widget_with_backside_element(box, backside, backside_element);
 			backside.get_element = function () {
                 return backside_element;
             };

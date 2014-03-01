@@ -19,11 +19,12 @@ $( document ).ready(function () {
     var TT = window.TOONTALK;
     var number_context = TT.number.create(2, 7);
     var box_context = TT.tests.create_test_box();
+    // better to create a backside...
     var test_backside = document.getElementById("test1_top_level_backside");
     TT.tests.create_sides(number_context, test_backside, 0);
     TT.tests.create_sides(box_context, test_backside, 300);
     // empty top-level test object: {}
-    TT.backside.associate_widget_with_backside_element({}, test_backside);
+    TT.backside.associate_widget_with_backside_element({}, {}, test_backside);
     TOONTALK.QUEUE.run();
 });
 </script>

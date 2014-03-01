@@ -243,16 +243,19 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     number.drop_on = function (other, side_of_other, event) {
 // 		console.log(this.toString() + " dropped on " + other.toString()); for debugging
         if (!other.number_dropped_on_me) {
+			if (other.widget_dropped_on_me) {
+				return other.widget_dropped_on_me(this, event);
+			}
             console.log("No handler for drop of " + this.toString() + " on " + other.toString());
 			return;
 		}
-        var result = other.number_dropped_on_me(this, location);
+        var result = other.number_dropped_on_me(this, event);
 		if (event) {
 			other.update_display();
 		}
 // 		console.log("Became " + other.toString());                        for debugging
 		this.remove();
-		return result;
+		return true;
     };
 
     number.number_dropped_on_me = function (other_number, clientX, clientY, event) { 
@@ -485,7 +488,6 @@ window.TOONTALK.number_backside =
         create: function (number) {
 			var backside_element = document.createElement("div");
 			backside_element.className = "toontalk-backside toontalk-side";
-			TT.backside.associate_widget_with_backside_element(number, backside_element);
 	        var backside = Object.create(this);
             var numerator_input = TT.UTILITIES.create_text_input(number.numerator_string(), 'toontalk-numerator-input', "Type here to edit the numerator");
             var denominator_input = TT.UTILITIES.create_text_input(number.denominator_string(), 'toontalk-denominator-input', "Type here to edit the denominator");
@@ -506,6 +508,7 @@ window.TOONTALK.number_backside =
 			var update_operator = function () {
 				number.set_operator(TT.UTILITIES.selected_radio_button(plus, minus, multiply, divide, power).value, true);
 			}
+			TT.backside.associate_widget_with_backside_element(number, backside, backside_element);
 			backside.get_element = function () {
                 return backside_element;
             };

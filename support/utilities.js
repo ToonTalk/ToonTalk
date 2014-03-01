@@ -58,6 +58,7 @@ window.TOONTALK.UTILITIES =
                     $(this).css({position: "absolute"})
 				},
  				appendTo: $element.parents(".toontalk-side:last"), // top-most
+				greedy: true,
 				stack: ".toontalk-side",
                 start: function (event, ui) {
 					var $container = $element.parents(".toontalk-side:first");
@@ -77,37 +78,51 @@ window.TOONTALK.UTILITIES =
 					this.style.width = "";
 					this.style.height = "";
 				},
-            }); // .resizable(); -- wrorks fine for backsides but need to fix frontside problem
+            }); // .resizable(); -- works fine for backsides but need to fix frontside problem
 			$element.droppable({
 				greedy: true,
                 drop: function (event, ui) {
-                    var $target = $(".toontalk-being-dragged");
-					if ($target.length >= 1) {
-					    var target = $target.data("owner");
-						var source = $element.data("owner");
-					    source.drop_on(target, $target, event);
-						event.stopPropagation();
+                    var $source = $(".toontalk-being-dragged");
+					var target_element = event.target;
+					var $target = $(target_element);
+					var source, target;
+					if ($source.length >= 1) {
+						target = $target.data("owner");
+						source = $source.data("owner");
+						if ($target.is(".toontalk-backside")) {
+							target.get_backside().widget_dropped_on_me(source, event);
+							event.stopPropagation();
+						} else if (source.drop_on(target, $target, event)) {
+						    event.stopPropagation();
+					    }
 					}
                 }
 			});
 		},
 		
 		set_position_absolute: function (element, absolute, event) {
-			var position;
+			var position, left, top, ancestor;
 			if (absolute) {
 				if (element.style.position === "absolute") {
 					return;
 				}
 				if (event) {
-					position = {left: event.clientX - element.parentElement.offsetLeft,
-					            top:  event.clientY - element.parentElement.offsetTop,
-					};
+					left = event.clientX;
+			        top = event.clientY;
+					ancestor = element.parentElement;
+					while (ancestor) {
+						left -= ancestor.offsetLeft;
+						top -= ancestor.offsetTop;
+						ancestor = ancestor.parentElement;
+					}
 				} else {
 				    position = $(element).position();
+					left = position.left;
+					top = position.top;
 				}
 				element.style.position = "absolute";
-				$(element).css({left: position.left,
-				                 top: position.top});
+				$(element).css({left: left,
+				                 top: top});
 			} else {
 				if (element.style.position === "relative") {
 					return;
