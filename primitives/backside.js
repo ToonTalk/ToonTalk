@@ -51,17 +51,19 @@ window.TOONTALK.backside =
 			         }
 			         return true;
 		        };
-			hide_button.onclick = function () {
-				$backside_element.remove(); // could animate away
-				widget.forget_backside();
-			};
-			setTimeout(function ()  {
-					// when loaded backside_element will have a position
-					hide_button.style.left = "10px";
-					hide_button.style.top = (backside_element.offsetHeight - 35) + "px";
-				    },
-					1);
-			$backside_element.append(hide_button);
+		    if (!backside_element.parentElement || backside_element.parentElement.tagName != "BODY") {
+				hide_button.onclick = function () {
+					$backside_element.remove(); // could animate away
+					widget.forget_backside();
+				};
+				setTimeout(function ()  {
+						// when loaded backside_element will have a position
+						hide_button.style.left = "10px";
+						hide_button.style.top = (backside_element.offsetHeight - 35) + "px";
+						},
+						1);
+				$backside_element.append(hide_button);
+		    }
 			TT.UTILITIES.drag_and_drop($backside_element);
 			$backside_element.resizable();
             return widget;
