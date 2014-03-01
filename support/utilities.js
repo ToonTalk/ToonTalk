@@ -60,9 +60,12 @@ window.TOONTALK.UTILITIES =
  				appendTo: $element.parents(".toontalk-side:last"), // top-most
 				stack: ".toontalk-side",
                 start: function (event, ui) {
-					$element.addClass("toontalk-being-dragged");
 					var $container = $element.parents(".toontalk-side:first");
 					var container = $container.data("owner");
+					// save the current dimension so size doesn't change while being dragged
+					this.style.width = this.offsetWidth + "px",
+					this.style.height = this.offsetHeight + "px",
+					$element.addClass("toontalk-being-dragged");
 					if (container) {
 					    container.removed($element.data("owner"), $element, event);
 					}
@@ -70,6 +73,9 @@ window.TOONTALK.UTILITIES =
 				},
 				stop: function (event, ui) {
 					$element.removeClass("toontalk-being-dragged");
+					// restore ordinary size styles
+					this.style.width = "";
+					this.style.height = "";
 				},
             }); // .resizable(); -- wrorks fine for backsides but need to fix frontside problem
 			$element.droppable({
