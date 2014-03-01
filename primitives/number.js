@@ -531,6 +531,23 @@ window.TOONTALK.number_backside =
 				proper_format.checked = true;
 				break;
 			}
+			switch (number.get_operator()) {
+				case "+":
+				plus.checked = true;
+				break;
+				case "-":
+				minus.checked = true;
+				break;
+				case "*":
+				multiply.checked = true;
+				break;
+				case "/":
+				divide.checked = true;
+				break;
+				case "^":
+				power.checked = true;
+				break;
+			}
 			improper_format.checked = true;
 			plus.onchange = update_operator;
 			minus.onchange = update_operator;
