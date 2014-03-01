@@ -128,7 +128,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
 				var frontside, backside;
                 value = new_value;
                 if (update_now) {
-                    this.update_display();
+                    this.update_frontside();
                 } else {
 					frontside = this.get_frontside();
 					backside = this.get_backside();
@@ -152,7 +152,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             function (new_value, update_now) { 
                 format = new_value;
                 if (update_now) {
-                    this.update_display();
+                    this.update_frontside();
                 }
                 return this;
             };
@@ -164,7 +164,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             function (new_value, update_now) { 
                 operator = new_value;
                 if (update_now) {
-                    this.update_display();
+                    this.update_frontside();
                 }
                 return this;
             };
@@ -215,7 +215,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         return bigrat.equals(this.get_value(), other_number.get_value());
     };
     
-    number.update_display = function() {
+    number.update_frontside = function() {
         // should compute width from frontside element
         // get format from backside ancestor (via parent attribute?)
         var frontside = this.get_frontside();
@@ -251,7 +251,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
 		}
         var result = other.number_dropped_on_me(this, event);
 		if (event) {
-			other.update_display();
+			other.update_frontside();
 		}
 // 		console.log("Became " + other.toString());                        for debugging
 		this.remove();
@@ -556,7 +556,7 @@ window.TOONTALK.number_backside =
             return backside;
         },
 		
-		update_display: function () {
+		update_frontside: function () {
 			var numerator_input = TT.UTILITIES.get_first_child_with_class(this.get_element(), "toontalk-numerator-input");
 			var denominator_input = TT.UTILITIES.get_first_child_with_class(this.get_element(), "toontalk-denominator-input");
 			var number = this.get_widget();

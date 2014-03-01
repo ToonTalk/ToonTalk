@@ -38,7 +38,7 @@
          frontside_element.className += " toontalk-top-level-frontside";
          parent_backside_element.appendChild(backside_element);
          parent_backside_element.appendChild(frontside_element);
-         context.update_display();
+         context.update_frontside();
      },
      
      // robot tests:
@@ -130,7 +130,7 @@
          var hole1 = window.TOONTALK.number.create(19);
          box.set_hole(0, hole0);
          box.set_hole(1, hole1);
-         box.update_display();
+         box.update_frontside();
          return box;
      },
      

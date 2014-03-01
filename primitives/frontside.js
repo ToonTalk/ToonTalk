@@ -27,8 +27,8 @@ window.TOONTALK.frontside =
             return frontside;
         },
 		
-		update_display: function () {
-			return this.get_widget().update_display();
+		update_frontside: function () {
+			return this.get_widget().update_frontside();
 		},
 		
 		remove: function() {

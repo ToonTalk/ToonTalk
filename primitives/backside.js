@@ -23,7 +23,7 @@ window.TOONTALK.backside =
 						// better to have a preferrred size that it goes to when on backside
 						// recorded when dropped into something that changes its size -- e.g. a box
                         $side_element_of_other.addClass("toontalk-frontside-on-backside");
-                        other.update_display();
+                        other.update_frontside();
 			        }
 					return true;
 			    };
@@ -46,7 +46,7 @@ window.TOONTALK.backside =
 				        // better to have a preferrred size that it goes to when on backside
 				        // recorded when dropped into something that changes its size -- e.g. a box
 				        $other_front_side_element.addClass("toontalk-frontside-on-backside");
-                        other.update_display();
+                        other.update_frontside();
 			         }
 			         return true;
 		        };

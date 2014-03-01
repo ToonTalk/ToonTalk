@@ -20,10 +20,10 @@ window.TOONTALK.DISPLAY_UPDATES =
             dirty_sides.push(side);
         },
         
-        update_display: function () {
+        update_frontside: function () {
             var i;
             for (i = 0; i < dirty_sides.length; i += 1) {
-                dirty_sides[i].update_display();
+                dirty_sides[i].update_frontside();
             }
             dirty_sides = [];
         }

@@ -79,8 +79,8 @@ window.TOONTALK.widget = (function (TT) {
             console.log("removed not implemented");
         },
         
-        update_display: function () {
-            console.assert(false, "update_display not implemented");
+        update_frontside: function () {
+            console.assert(false, "update_frontside not implemented");
         },
         
         to_HTML: function () {
