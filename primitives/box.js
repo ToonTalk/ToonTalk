@@ -337,7 +337,7 @@ window.TOONTALK.box_backside =
                 box.set_size(parseInt(size_input.value.trim(), 10));
             };
 			var update_orientation = function () {
-				number.set_horizontal((TT.UTILITIES.selected_radio_button(horizontal_radio_button, vertical_radio_button).value === "horizontal"), true);
+				box.set_horizontal((TT.UTILITIES.selected_radio_button(horizontal_radio_button, vertical_radio_button).value === "horizontal"), true);
 			};
 			backside_element.className = "toontalk-backside toontalk-side";
 			TT.backside.associate_widget_with_backside_element(box, backside, backside_element);
