@@ -9,7 +9,6 @@ window.TOONTALK.backside =
     return {	
         associate_widget_with_backside_element: function (widget, backside, backside_element) {
 			var $backside_element = $(backside_element);
-			var hide_button = TT.UTILITIES.create_button("Hide", "toontalk-hide-backside-button", "Click to hide this behind the front side.");
 			$backside_element.data("owner", widget);
             widget.get_element = function () {
                 return backside_element;
@@ -52,17 +51,20 @@ window.TOONTALK.backside =
 			         return true;
 		        };
 		    if (!backside_element.parentElement || backside_element.parentElement.tagName != "BODY") {
-				hide_button.onclick = function () {
-					$backside_element.remove(); // could animate away
-					widget.forget_backside();
-				};
+				// when loaded backside_element will have a position
 				setTimeout(function ()  {
-						// when loaded backside_element will have a position
-						hide_button.style.left = "10px";
-						hide_button.style.top = (backside_element.offsetHeight - 35) + "px";
-						},
-						1);
-				$backside_element.append(hide_button);
+// 						var hide_button = TT.UTILITIES.create_button("Hide", "toontalk-hide-backside-button", "Click to hide this behind the front side.");
+						var $hide_button =  $("<button>Hide</button>").button();
+						$hide_button.addClass("toontalk-hide-backside-button");
+						$hide_button.click(function () {
+							$backside_element.remove(); // could animate away
+							widget.forget_backside();
+						});
+						$hide_button.css({left: "10px",
+										   top: (backside_element.offsetHeight - 55) + "px"});
+						$backside_element.append($hide_button.get(0));
+					},
+					1);	
 		    }
 			TT.UTILITIES.drag_and_drop($backside_element);
 			$backside_element.resizable();

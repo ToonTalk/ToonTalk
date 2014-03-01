@@ -305,8 +305,9 @@ window.TOONTALK.box_backside =
     "use strict";
 	
 	var add_test_button = function(backside, robot_name) {
-		var test_button = TT.UTILITIES.create_button("add " + robot_name + " robot", "test", "just testing");
-		test_button.onclick = function () {
+		var $test_button = $("<button></button>").button({label: "add " + robot_name});
+// 		var test_button = TT.UTILITIES.create_button("add " + robot_name + " robot", "test", "just testing");
+		$test_button.click(function () {
 			if (test_button.robot) {
 				test_button.robot.stop();
 				test_button.robot = undefined;
@@ -322,8 +323,8 @@ window.TOONTALK.box_backside =
 			test_button.robot = robot;
 			robot.run(backside.get_widget());
 			test_button.innerHTML = "stop " + robot_name;
-		};
-		backside.get_element().appendChild(test_button);
+		});
+		backside.get_element().appendChild($test_button.get(0));
 	};
 	
     return {
