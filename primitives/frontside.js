@@ -17,7 +17,7 @@ window.TOONTALK.frontside =
 			var show_backside_timer;
 			frontside_element.className += "toontalk-frontside toontalk-side";
 			$frontside_element.data("owner", widget);
-			TT.UTILITIES.drag_and_drop($frontside_element);
+			TT.UTILITIES.drag_and_drop($frontside_element, widget);
             frontside.get_element = function () {
                 return frontside_element;
             };

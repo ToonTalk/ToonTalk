@@ -325,6 +325,13 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
 		var erased_string = this.erased ? "erased: " : "";
         return erased_string + operator_string + bigrat.str(this.get_value());
     };
+	
+	number.get_JSON = function () {
+		return {operator: this.get_operator(),
+		        numerator: this.numerator_string(),
+				denominator: this.denominator_string(),
+				erased: this.erased}; // SHOULD BE get_erased() !!!!!!!!!!!!
+	}
 
     number.to_HTML = function (max_characters, font_size, format, top_level, operator) {
         var integer_as_string, integer_part, fractional_part, improper_fraction_HTML;

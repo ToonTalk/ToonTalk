@@ -60,6 +60,11 @@ window.TOONTALK.widget = (function (TT) {
             return this;
         },
         
+        get_JSON: function () {
+            console.log("get_JSON not defined");
+            return "";
+        },
+        
         copy: function () {
             console.assert(false, "copy not implemented");
         },

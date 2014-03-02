@@ -4,6 +4,8 @@
  * License: New BSD
  */
 
+jQuery.event.props.push('dataTransfer'); // some posts claim this needed -- unsure...
+
 window.TOONTALK.UTILITIES = 
 (function (TT) {
     "use strict";
@@ -52,13 +54,14 @@ window.TOONTALK.UTILITIES =
             return context;
         },
 		
-		drag_and_drop: function ($element) {
+		drag_and_drop: function ($element, widget) {
 			$element.draggable({
-				create: function( event, ui ) {
+				create: function (event, ui) {
                     $(this).css({position: "absolute"})
 				},
- 				appendTo: $element.parents(".toontalk-side:last"), // top-most
+//  				appendTo: $element.parents(".toontalk-side:last"), // top-most
 				greedy: true,
+// 				containment: false, // doesn't seem to work... -- nor does "none"
 				stack: ".toontalk-side",
                 start: function (event, ui) {
 					var $container = $element.parents(".toontalk-side:first");
@@ -75,6 +78,7 @@ window.TOONTALK.UTILITIES =
 					if (container) {
 					    container.removed($element.data("owner"), $element, event);
 					}
+					event.dataTransfer = widget.get_JSON();
 					event.stopPropagation();
 				},
 				stop: function (event, ui) {
