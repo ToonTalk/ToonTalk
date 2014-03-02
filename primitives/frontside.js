@@ -24,7 +24,7 @@ window.TOONTALK.frontside =
             frontside.get_widget = function () {
                 return widget;
             };
-			$frontside_element.mouseover(function () {
+			$frontside_element.mouseenter(function () {
 				var backside = widget.get_backside();
 				var backside_element;
 				if (backside) {
@@ -34,7 +34,12 @@ window.TOONTALK.frontside =
 					// only those directly on a backside
 					return;
 				}
-				show_backside_timer = setTimeout(function () {
+				show_backside_timer = setTimeout(
+				    function () {
+						if ($(".toontalk-being-dragged").length > 0) {
+							// a drag in progress
+							return;
+						}
 						backside = widget.get_backside(true);
 						backside_element = backside.get_element();
 						$(backside_element).addClass("toontalk-emerging-backside");
@@ -50,14 +55,7 @@ window.TOONTALK.frontside =
 					clearTimeout(show_backside_timer);
 					show_backside_timer = null;
 				}
-				setTimeout(function () {
-						$(".toontalk-emerging-backside").each(function (index, element) {
-							var widget = $(element).data("widget");
-							widget.forget_backside();
-						});
-						$(".toontalk-emerging-backside").remove();
-				    },
-				    2000);
+				setTimeout(TT.UTILITIES.remove_emerging_backsides, 3000);
 			});
 // 			$frontside_element.resizable(); {handles: "n, e, s, w"}
             return frontside;

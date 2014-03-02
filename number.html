@@ -34,21 +34,16 @@ window.TOONTALK = {}; // create ToonTalk 'module' -- using 'window' as recommend
 <link rel="shortcut icon" href="favicon.ico" />
 </head>
 <body>
-<div class='toontalk-backside toontalk-side' id='test1_top_level_backside' draggable='false' style='width: 800px; height: 600px; left: 350px; top: 20px; background-color: yellow'>
-</div>
+<div id='number'></div>
 <script>
 $(document).ready(function () {
     var TT = window.TOONTALK;
     TT.debugging = true; // remove this for production releases
-    var number_context = TT.number.create(2, 7);
-    var box_context = TT.tests.create_test_box();
-    var test_backside_element = document.getElementById("test1_top_level_backside");
-    var test_backside = {get_element: function () { return test_backside_element}};
-    var test_widget = {get_backside: function () { return test_backside}};
-    TT.tests.create_sides(number_context, test_backside_element, 0);
-    TT.tests.create_sides(box_context, test_backside_element, 300);
-    TT.backside.associate_widget_with_backside_element(test_widget, test_backside, test_backside_element);
-    TT.QUEUE.run();
+    var number = TT.number.create(1);
+    $("#number").append(number.get_frontside(true).get_element());
+    // should the following be done by get_element if never done?
+    number.update_frontside();
+//  TT.QUEUE.run();
 });
 </script>
 </body>

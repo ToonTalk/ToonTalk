@@ -61,6 +61,7 @@ window.TOONTALK.UTILITIES =
 				greedy: true,
 				stack: ".toontalk-side",
                 start: function (event, ui) {
+					TT.UTILITIES.remove_emerging_backsides();
 					var $container = $element.parents(".toontalk-side:first");
 					var container = $container.data("owner");
 					$element.removeClass("toontalk-emerging-backside");
@@ -82,6 +83,7 @@ window.TOONTALK.UTILITIES =
             }); // .resizable(); -- works fine for backsides but need to fix frontside problem
 			$element.droppable({
 				greedy: true,
+				tolerance: "intersect", // at least 50%
                 drop: function (event, ui) {
                     var $source = $(".toontalk-being-dragged");
 					var target_element = event.target;
@@ -99,6 +101,14 @@ window.TOONTALK.UTILITIES =
 					}
                 }
 			});
+		},
+		
+		remove_emerging_backsides: function () {
+			$(".toontalk-emerging-backside").each(function (index, element) {
+				var widget = $(element).data("widget");
+				widget.forget_backside();
+			});
+			$(".toontalk-emerging-backside").remove();
 		},
 		
 		set_position_absolute: function (element, absolute, event) {
@@ -141,14 +151,6 @@ window.TOONTALK.UTILITIES =
 			input.value = value;
 			input.title = title;
 			return input;
-		},
-		
-		create_button: function (label, class_name, title) {
-			var button = document.createElement("button");
-			button.className = class_name;
-			button.innerHTML = label;
-			button.title = title;
-			return button;
 		},
 		
 		create_radio_button: function (name, value) {
