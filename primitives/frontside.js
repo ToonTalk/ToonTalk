@@ -43,7 +43,7 @@ window.TOONTALK.frontside =
 						backside = widget.get_backside(true);
 						backside_element = backside.get_element();
 						$(backside_element).addClass("toontalk-emerging-backside");
-						$(backside_element).data("widget", widget);
+						$(backside_element).data("owner", widget);
 						backside_element.style.left = frontside_element.style.left;
 						backside_element.style.top = frontside_element.style.top;
 						$frontside_element.parent(".toontalk-backside").append(backside_element);
@@ -55,7 +55,7 @@ window.TOONTALK.frontside =
 					clearTimeout(show_backside_timer);
 					show_backside_timer = null;
 				}
-				setTimeout(TT.UTILITIES.remove_emerging_backsides, 3000);
+				setTimeout(TT.UTILITIES.remove_emerging_backsides, 4000);
 			});
 // 			$frontside_element.resizable(); {handles: "n, e, s, w"}
             return frontside;

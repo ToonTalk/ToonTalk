@@ -34,20 +34,39 @@ window.TOONTALK = {}; // create ToonTalk 'module' -- using 'window' as recommend
 <link rel="shortcut icon" href="favicon.ico" />
 </head>
 <body>
-<div class='toontalk-backside toontalk-side' id='test1_top_level_backside' draggable='false' style='width: 800px; height: 600px; left: 350px; top: 20px; background-color: yellow'>
-</div>
 <script>
 $(document).ready(function () {
     var TT = window.TOONTALK;
+    var backside = TT.backside.create({});
+    var backside_element = backside.get_element();
+    var $backside_element = $(backside_element);
+    $("body").append(backside_element);
+    $backside_element.css({width: "90%",
+                            height: "90%",
+                            left: "0px",
+                            top: "0px",
+                            "background-color": "yellow"});
+    backside_element.draggable = false;
     TT.debugging = true; // remove this for production releases
-    var number_context = TT.number.create(2, 7);
-    var box_context = TT.tests.create_test_box();
-    var test_backside_element = document.getElementById("test1_top_level_backside");
-    var test_backside = {get_element: function () { return test_backside_element}};
-    var test_widget = {get_backside: function () { return test_backside}};
-    TT.tests.create_sides(number_context, test_backside_element, 0);
-    TT.tests.create_sides(box_context, test_backside_element, 300);
-    TT.backside.associate_widget_with_backside_element(test_widget, test_backside, test_backside_element);
+    // use get_frontside_element in the following
+    var number = TT.number.create(2, 7);
+    var number_element = number.get_frontside_element();
+    var box = TT.box.create(2);
+    var box_element = box.get_frontside_element();
+    $(box_element).css({left: "50px",
+                         top: "300px"});
+    $backside_element.append(number_element);
+    $backside_element.append(box_element);
+//     $(number_element).addClass("toontalk-frontside-on-backside");
+//     $(box_element).addClass("toontalk-frontside-on-backside");
+//     box.update_frontside();
+//     number.update_frontside();
+//     var test_backside_element = document.getElementById("test1_top_level_backside");
+//     var test_backside = {get_element: function () { return test_backside_element}};
+//     var test_widget = {get_backside: function () { return test_backside}};
+//     TT.tests.create_sides(number_context, test_backside_element, 0);
+//     TT.tests.create_sides(box_context, test_backside_element, 300);
+//     TT.backside.associate_widget_with_backside_element(test_widget, test_backside, test_backside_element);
     TT.QUEUE.run();
 });
 </script>

@@ -194,7 +194,7 @@ window.TOONTALK.box = (function (TT) {
             frontside_element.appendChild(document.createElement('div'));
         }
         frontside_element.firstChild.innerHTML = new_HTML;
-		frontside_element.firstChild.className += " toontalk-widget";
+		$(frontside_element.firstChild).addClass("toontalk-widget");
 		$(".toontalk-hole-about-to-be-replaced").each(function (index, element) {
 			// can't just use box.update_hole_display because then 'this' isn't bound to the box
 			that.update_hole_display(index, element);
@@ -306,6 +306,7 @@ window.TOONTALK.box_backside =
 	
 	var add_test_button = function(backside, robot_name) {
 		var $test_button = $("<button></button>").button({label: "add " + robot_name});
+		var test_button = $test_button.get(0);
 // 		var test_button = TT.UTILITIES.create_button("add " + robot_name + " robot", "test", "just testing");
 		$test_button.click(function () {
 			if (test_button.robot) {
@@ -329,8 +330,7 @@ window.TOONTALK.box_backside =
 	
     return {
         create: function (box) {
-			var backside_element = document.createElement("div");
-	        var backside = Object.create(this);
+	        var backside = TT.backside.create(this);
             var size_input = TT.UTILITIES.create_text_input(box.get_size().toString(), 'toontalk-box-size-input', "Type here to edit the number of holes.");
 			var horizontal_radio_button = TT.UTILITIES.create_radio_button("box_orientation", "horizontal"); // might be nicer replaced by an icon
 			var vertical_radio_button = TT.UTILITIES.create_radio_button("box_orientation", "vertical");
@@ -340,14 +340,6 @@ window.TOONTALK.box_backside =
 			var update_orientation = function () {
 				box.set_horizontal((TT.UTILITIES.selected_radio_button(horizontal_radio_button, vertical_radio_button).value === "horizontal"), true);
 			};
-			backside_element.className = "toontalk-backside toontalk-side";
-			TT.backside.associate_widget_with_backside_element(box, backside, backside_element);
-			backside.get_element = function () {
-                return backside_element;
-            };
-            backside.get_widget = function () {
-                return box;
-            };
             size_input.onchange = update_value;
 			horizontal_radio_button.onchange = update_orientation;
 			vertical_radio_button.onchange = update_orientation;

@@ -237,7 +237,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             frontside_element.appendChild(document.createElement('div'));
         }
         frontside_element.firstChild.innerHTML = new_HTML;
-		frontside_element.firstChild.className += " toontalk-widget";
+		$(frontside_element.firstChild).addClass("toontalk-widget");
     };
 
     number.drop_on = function (other, side_of_other, event) {
@@ -462,6 +462,7 @@ window.TOONTALK.number_backside =
 	var add_test_button = function(backside, robot_name) {
 // 		var add_one = TT.UTILITIES.create_button("add " + robot_name + " robot", "test", "just testing");
         var $add_one = $("<button></button>").button({label: "add " + robot_name});
+		var add_one = $add_one.get(0);
 		$add_one.click(function () {
 			if (add_one.robot) {
 				add_one.robot.stop();
@@ -487,9 +488,8 @@ window.TOONTALK.number_backside =
 	
     return {
         create: function (number) {
-			var backside_element = document.createElement("div");
-			backside_element.className = "toontalk-backside toontalk-side";
-	        var backside = Object.create(this);
+	        var backside = TT.backside.create(number);
+			var backside_element = backside.get_element();
             var numerator_input = TT.UTILITIES.create_text_input(number.numerator_string(), 'toontalk-numerator-input', "Type here to edit the numerator");
             var denominator_input = TT.UTILITIES.create_text_input(number.denominator_string(), 'toontalk-denominator-input', "Type here to edit the denominator");
 			var decimal_format = TT.UTILITIES.create_radio_button("number_format", "decimal");
@@ -509,13 +509,6 @@ window.TOONTALK.number_backside =
 			var update_operator = function () {
 				number.set_operator(TT.UTILITIES.selected_radio_button(plus, minus, multiply, divide, power).value, true);
 			}
-			TT.backside.associate_widget_with_backside_element(number, backside, backside_element);
-			backside.get_element = function () {
-                return backside_element;
-            };
-            backside.get_widget = function () {
-                return number;
-            };
             numerator_input.onchange = update_value;
             denominator_input.onchange = update_value;
 			decimal_format.onchange = update_format;

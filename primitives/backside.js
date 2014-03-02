@@ -6,19 +6,29 @@
 window.TOONTALK.backside = 
 (function (TT) {
     "use strict";
-    return {	
-        associate_widget_with_backside_element: function (widget, backside, backside_element) {
+    return {
+		create: function (widget) {
+			var backside = Object.create(this);
+			var backside_element = document.createElement("div");
 			var $backside_element = $(backside_element);
-			$backside_element.data("owner", widget);
-            widget.get_element = function () {
+			$backside_element.addClass("toontalk-backside toontalk-side");
+			backside.get_element = function () {
                 return backside_element;
             };
+			backside.get_widget = function () {
+				return widget;
+			}
+			if (!widget.get_backside) {
+				// e.g. top-level backside
+				widget.get_backside = function () {
+					return backside;
+				}
+		    }
 			if (!widget.drop_on) {
 			    widget.drop_on = function (other, $side_element_of_other, event) {
 					$backside_element.append($side_element_of_other);
 // 					$backside_element.addClass("toontalk-on-backside");
 				    TT.UTILITIES.set_position_absolute($side_element_of_other.get(0), true, event); // when on the backside
-					// following constants could be defined in backside widget -- good idea?
 					if ($side_element_of_other.is(".toontalk-frontside")) {
 						// better to have a preferrred size that it goes to when on backside
 						// recorded when dropped into something that changes its size -- e.g. a box
@@ -41,16 +51,9 @@ window.TOONTALK.backside =
 			        var $other_front_side_element = $(other_front_side_element);
 			        $backside_element.append($other_front_side_element);
 			        TT.UTILITIES.set_position_absolute(other_front_side_element, true, event); // when on the backside
-			        // following constants could be defined in backside widget -- good idea?
-			        if ($other_front_side_element.is(".toontalk-frontside")) {
-				        // better to have a preferrred size that it goes to when on backside
-				        // recorded when dropped into something that changes its size -- e.g. a box
-				        $other_front_side_element.addClass("toontalk-frontside-on-backside");
-                        other.update_frontside();
-			         }
-			         return true;
+			        return true;
 		        };
-		    if (!backside_element.parentElement || backside_element.parentElement.tagName != "BODY") {
+		    if (backside_element.parentElement && backside_element.parentElement.tagName != "BODY") {
 				// when loaded backside_element will have a position
 				setTimeout(function ()  {
 // 						var hide_button = TT.UTILITIES.create_button("Hide", "toontalk-hide-backside-button", "Click to hide this behind the front side.");
@@ -58,7 +61,9 @@ window.TOONTALK.backside =
 						$hide_button.addClass("toontalk-hide-backside-button");
 						$hide_button.click(function () {
 							$backside_element.remove(); // could animate away
-							widget.forget_backside();
+							if (widget.forget_backside) {
+								widget.forget_backside();
+							}
 						});
 						$hide_button.css({left: "10px",
 										   top: (backside_element.offsetHeight - 55) + "px"});
@@ -66,11 +71,41 @@ window.TOONTALK.backside =
 					},
 					1);	
 		    }
+			TT.backside.associate_widget_with_backside_element(widget, backside, backside_element);
 			TT.UTILITIES.drag_and_drop($backside_element);
 			$backside_element.resizable();
+            // following should be done by something like GWT's onLoad...
+            // but DOMNodeInserted is deprecated and MutationObserver is only in IE11.
+			$(backside_element).on('DOMNodeInserted', function (event) {
+				var $source = $(event.originalEvent.srcElement);
+				var owner_widget;
+				if ($source.is(".toontalk-frontside")) {
+					$source.addClass("toontalk-frontside-on-backside");
+					owner_widget = $source.data("owner");
+					if (owner_widget) {
+						owner_widget.update_frontside();
+					}
+				}
+			});
+			$(backside_element).on('DOMNodeRemoved', function (event) {
+				var $source = $(event.originalEvent.srcElement);
+				var owner_widget;
+				if ($source.is(".toontalk-frontside")) {
+					$source.removeClass("toontalk-frontside-on-backside");
+					owner_widget = $source.data("owner");
+					if (owner_widget) {
+						owner_widget.update_frontside();
+					}
+				}
+			});		
+			return backside;
+		},
+		
+        associate_widget_with_backside_element: function (widget, backside, backside_element) {
+			var $backside_element = $(backside_element);
+			$backside_element.data("owner", widget);
             return widget;
         },
-
 
     };
 }(window.TOONTALK));

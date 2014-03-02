@@ -12,6 +12,9 @@ window.TOONTALK.DISPLAY_UPDATES =
     return {
         add_dirty_side: function (side) {
             var i;
+            if (!side.update_frontside) {
+                return;
+            }
             for (i = 0; i < dirty_sides.length; i += 1) {
                 if (dirty_sides[i] === side) {
                     return;

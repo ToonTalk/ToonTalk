@@ -61,10 +61,13 @@ window.TOONTALK.UTILITIES =
 				greedy: true,
 				stack: ".toontalk-side",
                 start: function (event, ui) {
-					TT.UTILITIES.remove_emerging_backsides();
 					var $container = $element.parents(".toontalk-side:first");
 					var container = $container.data("owner");
-					$element.removeClass("toontalk-emerging-backside");
+					if ($element.is(".toontalk-emerging-backside")) {
+						$element.removeClass("toontalk-emerging-backside");
+					} else {
+						TT.UTILITIES.remove_emerging_backsides();
+					}
 					// save the current dimension so size doesn't change while being dragged
 					this.style.width = this.offsetWidth + "px",
 					this.style.height = this.offsetHeight + "px",
@@ -105,7 +108,7 @@ window.TOONTALK.UTILITIES =
 		
 		remove_emerging_backsides: function () {
 			$(".toontalk-emerging-backside").each(function (index, element) {
-				var widget = $(element).data("widget");
+				var widget = $(element).data("owner");
 				widget.forget_backside();
 			});
 			$(".toontalk-emerging-backside").remove();

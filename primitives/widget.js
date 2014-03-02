@@ -47,6 +47,14 @@ window.TOONTALK.widget = (function (TT) {
             }
         },
         
+        get_frontside_element: function (update) {
+            var frontside = this.get_frontside(true);
+            if (update) {
+                this.update_frontside();
+            }
+            return frontside.get_element();
+        },
+        
         dereference: function () {
             // is already dereferenced when used as part of a path
             return this;
