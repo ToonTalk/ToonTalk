@@ -9,7 +9,17 @@ jQuery.event.props.push('dataTransfer'); // some posts claim this needed -- unsu
 window.TOONTALK.UTILITIES = 
 (function (TT) {
     "use strict";
+	// private functions
+	var create_from_JSON = function (JSON) {
+		switch (JSON.type) {
+			case "number":
+			return TT.number.create_from_JSON(JSON);
+			default:
+			console.log("JSON type " + JSON.type + " not yet supported.");
+		}
+	};
     return {
+		// public functions
         get_style_property: function (element, style_property) {
 	        if (element.currentStyle) {
 		        return element.currentStyle[style_property];
@@ -55,15 +65,12 @@ window.TOONTALK.UTILITIES =
         },
 		
 		drag_and_drop: function ($element, widget) {
-			$element.draggable({
-				create: function (event, ui) {
-                    $(this).css({position: "absolute"})
-				},
-//  				appendTo: $element.parents(".toontalk-side:last"), // top-most
-				greedy: true,
-// 				containment: false, // doesn't seem to work... -- nor does "none"
-				stack: ".toontalk-side",
-                start: function (event, ui) {
+			$element.css({position: "absolute"});
+			$element.attr("draggable", true);
+			// draggable causes dataTransfer to be null
+			// rewrote after noticing that this works fine: http://jsfiddle.net/KWut6/
+ 			$element.on('dragstart', 
+			    function (event) {
 					var $container = $element.parents(".toontalk-side:first");
 					var container = $container.data("owner");
 					if ($element.is(".toontalk-emerging-backside")) {
@@ -78,36 +85,64 @@ window.TOONTALK.UTILITIES =
 					if (container) {
 					    container.removed($element.data("owner"), $element, event);
 					}
-					event.dataTransfer = widget.get_JSON();
+					if (event.originalEvent.dataTransfer) {
+						event.originalEvent.dataTransfer.effectAllowed = 'move';
+						event.originalEvent.dataTransfer.setData("application/json", JSON.stringify(widget.get_JSON()));
+					}
 					event.stopPropagation();
-				},
-				stop: function (event, ui) {
+				});
+			$element.on('dragstop', 
+			    function (event) {
+// 				stop: function (event, ui) {
 					$element.removeClass("toontalk-being-dragged");
 					// restore ordinary size styles
 					this.style.width = "";
 					this.style.height = "";
-				},
-            }); // .resizable(); -- works fine for backsides but need to fix frontside problem
-			$element.droppable({
-				greedy: true,
-				tolerance: "intersect", // at least 50%
-                drop: function (event, ui) {
+				});
+// 				greedy: true,
+// 				tolerance: "intersect", // at least 50%
+            $element.on('dragover', 
+			    function (event) {
+					event.preventDefault();
+					return false;
+				});
+			$element.on('drop',
+                function (event) {
                     var $source = $(".toontalk-being-dragged");
-					var target_element = event.target;
-					var $target = $(target_element);
-					var source, target;
+					var $target = $(event.target).closest(".toontalk-side");
+					var target = $target.data("owner");
+					var source, json;
 					if ($source.length >= 1) {
-						target = $target.data("owner");
-						source = $source.data("owner");
-						if ($target.is(".toontalk-backside")) {
-							target.get_backside().widget_dropped_on_me(source, event);
-							event.stopPropagation();
-						} else if (source.drop_on(target, $target, event)) {
-						    event.stopPropagation();
-					    }
+						source = $source.data("owner");	
+					} else {
+						json = event.originalEvent.dataTransfer.getData("application/json");
+						if (json) {
+							source = create_from_JSON(JSON.parse(json));
+						} else {
+							console.log("No data in dataTransfer in drop.");
+							return;
+						}
 					}
-                }
-			});
+					if ($target.is(".toontalk-backside")) {
+						$source.css({left: event.originalEvent.clientX,
+							         top: event.originalEvent.clientY});
+						target.get_backside().widget_dropped_on_me(source, event);
+						event.stopPropagation();
+					} else if (source.drop_on(target, $target, event)) {
+						event.stopPropagation();
+					}
+                });
+			// following provides mouseevents rather than dragstart and the like
+			// which doesn't have a dataTransfer attribute
+// 			$element.draggable({
+// 				create: function (event, ui) {
+//                     $(this).css({position: "absolute"})
+// 				},
+// //  				appendTo: $element.parents(".toontalk-side:last"), // top-most
+// 				greedy: true,
+// // 				containment: false, // doesn't seem to work... -- nor does "none"
+// 				stack: ".toontalk-side",
+// 			}); // .resizable(); -- works fine for backsides but need to fix frontside problem
 		},
 		
 		remove_emerging_backsides: function () {

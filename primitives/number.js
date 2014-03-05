@@ -117,12 +117,14 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     };
 
     // public methods
-    number.create = function (numerator, denominator) {
+    number.create = function (numerator, denominator, operator) {
         var result = Object.create(number);
         // value is a private variable closed over below
         var value = bigrat_from_values(numerator, denominator);
         var format = "improper_fraction";
-		var operator = '+';
+		if (!operator) {
+			operator = '+';
+		} 
         result.set_value =
             function (new_value, update_now) {
 				var frontside, backside;
@@ -327,10 +329,16 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     };
 	
 	number.get_JSON = function () {
-		return {operator: this.get_operator(),
+		return {type: "number",
+		        operator: this.get_operator(),
 		        numerator: this.numerator_string(),
 				denominator: this.denominator_string(),
 				erased: this.erased}; // SHOULD BE get_erased() !!!!!!!!!!!!
+	}
+	
+	number.create_from_JSON = function (JSON) {
+		// ERASED -- to do
+		return this.create(JSON.numerator, JSON.denominator, JSON.operator);
 	}
 
     number.to_HTML = function (max_characters, font_size, format, top_level, operator) {
