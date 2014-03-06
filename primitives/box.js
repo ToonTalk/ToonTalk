@@ -12,9 +12,11 @@ window.TOONTALK.box = (function (TT) {
     var TT = window.TOONTALK; // for convenience and more legible code
     var box = Object.create(TT.widget);
 
-    box.create = function (size, horizontal) {
+    box.create = function (size, horizontal, contents) {
         var new_box = Object.create(box);
-        var contents = [];
+        if (!contents) {
+			contents = [];
+        }
         new_box.get_size = function () {
             return size;
         };
@@ -23,6 +25,9 @@ window.TOONTALK.box = (function (TT) {
 			contents.length = size;
 			if (update_frontside) {
 			    this.update_frontside();
+			}
+			if (TT.debugging) {
+				this.debug_string = this.toString();
 			}
             return this;
         };
@@ -48,6 +53,9 @@ window.TOONTALK.box = (function (TT) {
 			if (update_frontside) {
                 this.update_hole_display(index);
 			}
+			if (TT.debugging) {
+				this.debug_string = this.toString();
+			}
         };
         return new_box.add_sides_functionality(new_box);
     };
@@ -62,8 +70,8 @@ window.TOONTALK.box = (function (TT) {
                 copy.set_hole(i, hole.copy());
             }
         }
-        if (this.erased) {
-            copy.erased = this.erased;
+        if (this.get_erased()) {
+            copy.set_erased(this.get_erased());
         }
         return copy;
     };
@@ -97,7 +105,7 @@ window.TOONTALK.box = (function (TT) {
     };
     
     box.match = function (context) {
-        if (this.erased) {
+        if (this.get_erased()) {
             return context.match_with_any_box();
         }
         return context.match_with_this_box(this);
@@ -147,13 +155,36 @@ window.TOONTALK.box = (function (TT) {
         var i, hole;
         for (i = 0; i < size; i += 1) {
             hole = this.get_hole(i);
-            contents += hole.toString();
+			if (hole) {
+                contents += hole.toString();
+			} else {
+				contents += "_";
+			}
             if (i < size - 1) {
                 contents += " | ";
             }
         }
         return '[' + contents + ']';
     };
+
+	box.get_JSON = function () {
+		var super_prototype = this.__proto__.__proto__;
+		var contents_JSON = [];
+		var size = this.get_size();
+		var i;
+		for (i = 0; i < size; i += 1) {
+			contents_JSON[i] = this.get_hole(i).get_JSON();
+		}
+		return super_prototype.get_JSON(
+		   {type: "box",
+		    contents: contents_JSON,
+			horizontal: this.get_horizontal()
+		   });
+	};
+	
+	box.create_from_JSON = function (JSON) {
+		return box.create(JSON.contents.length, JSON.horizontal, TT.UTILITIES.create_array_from_JSON(JSON.contents));
+	};
     
     box.to_HTML = function () {
         var horizontal = this.get_horizontal();
@@ -296,6 +327,10 @@ window.TOONTALK.box = (function (TT) {
             }
         };
     };
+	
+	if (TT.debugging) {
+		this.debug_string = this.toString();
+	}
     
     return box;
 }(window.TOONTALK));
@@ -382,23 +417,31 @@ window.TOONTALK.box_empty_hole =
 			empty_hole.get_frontside = function () {
 				// doubles as its own frontside
 				return this;
-			}
+			};
 			empty_hole.get_element = function () {
 				// doubles as its own frontside
 				return hole_element;
+			};
+			empty_hole.widget_dropped_on_me = function (dropped) {
+				box.set_hole(index, dropped, true);
+				box.update_frontside();
+			};
+			empty_hole.get_JSON = function () {
+				// no need to put anything into the array
+				return undefined;
 			}
-			$(hole_element).droppable({
-				greedy: true,
-                drop: function (event, ui) {
-                    var $dropped = $(".toontalk-being-dragged");
+			$(hole_element).on('drop',
+                function (event) {
+					var $dropped = $(".toontalk-being-dragged");
+					var dropped;
 					if ($dropped.length >= 1) {
-					    var dropped = $dropped.data("owner");
-						box.set_hole(index, dropped);
-						event.stopPropagation();
+						dropped = $dropped.data("owner");
+						box.set_hole(index, dropped, true);
 						box.update_frontside();
+						event.stopPropagation();
 					}
-                }
-			});
+				});
+			$(hole_element).data("owner", empty_hole);
 	        return empty_hole;
 	    },
 		toString: function () {

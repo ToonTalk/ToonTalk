@@ -7,9 +7,6 @@
 <script>
 window.TOONTALK = {}; // create ToonTalk 'module' -- using 'window' as recommended by Caja
 </script>
-<!--  come back to this -- assuming we care about IE8 and the like
-<script src="support/for_old_browsers_only.js"></script>
---->
 <script src="libraries/jquery-2.1.0.js"></script>
 <script src="libraries/jquery-ui-1.10.4.custom.js"></script>
 <script src="libraries/rationaljs.js"></script>
@@ -27,6 +24,7 @@ window.TOONTALK = {}; // create ToonTalk 'module' -- using 'window' as recommend
 <script src="support/robot_actions.js"></script>
 <script src="support/run_queue.js"></script>
 <script src="support/display_updates.js"></script>
+<!-- following should be after all the primitive widgets are defined --->
 <script src="support/utilities.js"></script>
 <!-- following only including during development/testing --->
 <script src="tests/tests.js"></script>

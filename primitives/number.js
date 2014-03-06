@@ -195,9 +195,9 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
 
     number.copy = function () {
         var copy = number.create(this.get_value()[0], this.get_value()[1]);
-		if (this.erased) {
-			copy.erased = this.erased;
-		}
+	    if (this.get_erased()) {
+            copy.set_erased(this.get_erased());
+        }
 		if (this.get_operator()) {
 			copy.set_operator(this.get_operator());
 		}
@@ -324,22 +324,23 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     number.toString = function () {
         // addition is implicit so don't display it
         var operator_string = this.get_operator() === '+' ? '' : this.get_operator();
-		var erased_string = this.erased ? "erased: " : "";
+		var erased_string = this.get_erased() ? "erased: " : "";
         return erased_string + operator_string + bigrat.str(this.get_value());
     };
 	
 	number.get_JSON = function () {
-		return {type: "number",
-		        operator: this.get_operator(),
-		        numerator: this.numerator_string(),
-				denominator: this.denominator_string(),
-				erased: this.erased}; // SHOULD BE get_erased() !!!!!!!!!!!!
-	}
+		var super_prototype = this.__proto__.__proto__;
+		return super_prototype.get_JSON(
+		   {type: "number",
+		    operator: this.get_operator(),
+		    numerator: this.numerator_string(),
+	        denominator: this.denominator_string(),
+		    });
+	};
 	
 	number.create_from_JSON = function (JSON) {
-		// ERASED -- to do
-		return this.create(JSON.numerator, JSON.denominator, JSON.operator);
-	}
+		return number.create(JSON.numerator, JSON.denominator, JSON.operator);
+	};
 
     number.to_HTML = function (max_characters, font_size, format, top_level, operator) {
         var integer_as_string, integer_part, fractional_part, improper_fraction_HTML;

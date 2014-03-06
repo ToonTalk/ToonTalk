@@ -25,6 +25,7 @@ window.TOONTALK.backside =
 				}
 		    }
 			if (!widget.drop_on) {
+				// TO DO: determine if this is needed -- top-level backside can't be added to something - can it?
 			    widget.drop_on = function (other, $side_element_of_other, event) {
 					$backside_element.append($side_element_of_other);
 // 					$backside_element.addClass("toontalk-on-backside");
@@ -47,7 +48,7 @@ window.TOONTALK.backside =
             }
 			backside.widget_dropped_on_me = 
 			    function (other, event) {
-			        var other_front_side_element = other.get_frontside().get_element();
+			        var other_front_side_element = other.get_frontside(true).get_element();
 			        var $other_front_side_element = $(other_front_side_element);
 			        $backside_element.append($other_front_side_element);
 			        TT.UTILITIES.set_position_absolute(other_front_side_element, true, event); // when on the backside

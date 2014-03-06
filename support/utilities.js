@@ -9,17 +9,35 @@ jQuery.event.props.push('dataTransfer'); // some posts claim this needed -- unsu
 window.TOONTALK.UTILITIES = 
 (function (TT) {
     "use strict";
+	var JSON_creators = {"box": TT.box.create_from_JSON,
+	                     "number": TT.number.create_from_JSON};
 	// private functions
 	var create_from_JSON = function (JSON) {
-		switch (JSON.type) {
-			case "number":
-			return TT.number.create_from_JSON(JSON);
-			default:
+		var widget;
+		if (JSON_creators[JSON.type]) {
+			widget = JSON_creators[JSON.type](JSON);
+		} else {
 			console.log("JSON type " + JSON.type + " not yet supported.");
+			return;
 		}
+		if (widget) {
+			widget.set_erased(JSON.erased);
+		}
+		return widget;
 	};
     return {
 		// public functions
+		create_array_from_JSON: function (JSON_array) {
+			var new_array = [];
+			var i;
+			for (i = 0; i < JSON_array.length; i += 1) {
+				if (JSON_array[i]) {
+					new_array[i] = create_from_JSON(JSON_array[i]);
+				}
+			}
+			return new_array;
+		},
+		
         get_style_property: function (element, style_property) {
 	        if (element.currentStyle) {
 		        return element.currentStyle[style_property];
@@ -109,6 +127,7 @@ window.TOONTALK.UTILITIES =
 			$element.on('drop',
                 function (event) {
                     var $source = $(".toontalk-being-dragged");
+					$source.removeClass("toontalk-being-dragged");
 					var $target = $(event.target).closest(".toontalk-side");
 					var target = $target.data("owner");
 					var source, json;
@@ -125,9 +144,11 @@ window.TOONTALK.UTILITIES =
 					}
 					if ($target.is(".toontalk-backside")) {
 						$source.css({left: event.originalEvent.clientX,
-							         top: event.originalEvent.clientY});
+							          top: event.originalEvent.clientY});
 						target.get_backside().widget_dropped_on_me(source, event);
 						event.stopPropagation();
+					} else if (!target) {
+						console.log("target element has no 'owner'");
 					} else if (source.drop_on(target, $target, event)) {
 						event.stopPropagation();
 					}

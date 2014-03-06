@@ -8,8 +8,18 @@
 
 window.TOONTALK.widget = (function (TT) {
     "use strict";
+    
+    var erased;
 
     return {
+        
+        get_erased: function () {
+            return erased;
+        },
+        
+        set_erased: function (new_value) {
+            erased = new_value;
+        },
         
         add_sides_functionality: function (widget) {
             var frontside, backside;
@@ -60,9 +70,14 @@ window.TOONTALK.widget = (function (TT) {
             return this;
         },
         
-        get_JSON: function () {
-            console.log("get_JSON not defined");
-            return "";
+        get_JSON: function (JSON) {
+            if (JSON) {
+                JSON.erased = this.get_erased();
+                return JSON;
+            } else {
+                console.log("get_JSON not defined");
+                return {};
+            }
         },
         
         copy: function () {

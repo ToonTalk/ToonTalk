@@ -61,7 +61,7 @@
                  expected_result = runs+2;
              }
          } else {
-             robot.get_bubble().erased = false;
+             robot.get_bubble().set_erased(false);
              expected_result = 3;
          }
          this.test_robot(robot, context, runs, window.TOONTALK.number.create(expected_result));
@@ -94,7 +94,7 @@
      accept_box_robot: function(n) {
          var body = window.TOONTALK.actions.create();
          var bubble = window.TOONTALK.box.create(n);
-         bubble.erased = true;
+         bubble.set_erased(true);
          return window.TOONTALK.robot.create(bubble, body);         
      },
      
@@ -181,7 +181,7 @@
          var a_2 = window.TOONTALK.box.create(2);
          var b_1 = window.TOONTALK.box.create(1);
          var b_1_erased = window.TOONTALK.box.create(1);
-         b_1_erased.erased = true;
+         b_1_erased.set_erased(true);
          var b_2 = window.TOONTALK.box.create(2);
          console.assert(b_2.match(a_2) === 'matched', "Empty box of size 2 should match empty box of size 2");
          console.assert(b_2.equals(a_2), "Empty box of size 2 should equal an empty box of size 2");
@@ -200,7 +200,7 @@
          var b_hole_1 = window.TOONTALK.number.create(4);
          b_2.set_hole(1, b_hole_1);
          console.assert(b_2.match(a_2) === 'not matched', "box of size 2 with 3 and 4 should not match box of size 2 with just 3 in first hole");
-         b_hole_1.erased = true;
+         b_hole_1.erased.set_erased(true);
 //          console.log("b_2 is " + b_2.toString() + " and a_2 is " + a_2.toString());
          console.assert(b_2.match(a_2) === 'not matched', "box of size 2 with 3 and erased 4 should not match box of size 2 with 3 in first hole");
          console.assert(!b_2.equals(a_2), "box of size 2 with 3 and erased 4 should not equal a box of size 2 with 3 in first hole");
@@ -208,7 +208,7 @@
          a_2.set_hole(1, a_hole_1);
 //          console.log("b_2 is " + b_2.toString() + " and a_2 is " + a_2.toString());
          console.assert(b_2.match(a_2) === 'matched', "box of size 2 with 3 and erased 4 should match box of size 2 with 3 and 5");
-         b_hole_1.erased = false;
+         b_hole_1.erased.set_erased(false);
          b_2.set_hole(1, b_hole_1.copy());
 //          console.log("b_2 is " + b_2.toString() + " and a_2 is " + a_2.toString());
          console.assert(b_2.match(a_2) === 'not matched', "box of size 2 with 3 and 4 should not match box of size 2 with 3 and 5");
