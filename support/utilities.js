@@ -122,8 +122,8 @@ window.TOONTALK.UTILITIES =
 						TT.UTILITIES.remove_emerging_backsides();
 					}
 					// save the current dimension so size doesn't change while being dragged
-					this.style.width = this.offsetWidth + "px",
-					this.style.height = this.offsetHeight + "px",
+					$element.css({width:  this.offsetWidth + "px",
+					              height: this.offsetHeight + "px"});
 					$element.attr("id", unique_id);
 					if (container) {
 					    container.removed($element.data("owner"), $element, event);
@@ -134,16 +134,22 @@ window.TOONTALK.UTILITIES =
 						json_object.id_of_original_dragree = unique_id;
 						json_object.drag_x_offset = event.originalEvent.clientX-position.left;
 						json_object.drag_y_offset = event.originalEvent.clientY-position.top;
+						json_object.original_width_fraction = $element.outerWidth() / $element.parent().outerWidth();
+						json_object.original_height_fraction = $element.outerHeight() / $element.parent().outerHeight();
+						$element.data("json", json_object);
 						event.originalEvent.dataTransfer.setData("application/json", JSON.stringify(json_object));
 					}
 					event.stopPropagation();
 				});
-			$element.on('dragstop', 
+			$element.on('dragend', 
 			    function (event) {
-// 				stop: function (event, ui) {
 					// restore ordinary size styles
-					this.style.width = "";
-					this.style.height = "";
+                    var json_object = $element.data("json");
+					if (json_object) {
+						$element.css({width:  json_object.original_width_fraction * 100 + "%",
+									  height: json_object.original_height_fraction * 100 + "%"});
+					}
+					event.stopPropagation();
 				});
 // 				greedy: true,
 // 				tolerance: "intersect", // at least 50%
