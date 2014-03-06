@@ -70,12 +70,12 @@ window.TOONTALK.widget = (function (TT) {
             return this;
         },
         
-        get_JSON: function (JSON) {
-            if (JSON) {
-                JSON.erased = this.get_erased();
-                return JSON;
+        get_json: function (json) {
+            if (json) {
+                json.erased = this.get_erased();
+                return json;
             } else {
-                console.log("get_JSON not defined");
+                console.log("get_json not defined");
                 return {};
             }
         },

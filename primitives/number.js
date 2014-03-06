@@ -328,9 +328,9 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         return erased_string + operator_string + bigrat.str(this.get_value());
     };
 	
-	number.get_JSON = function () {
+	number.get_json = function () {
 		var super_prototype = this.__proto__.__proto__;
-		return super_prototype.get_JSON(
+		return super_prototype.get_json(
 		   {type: "number",
 		    operator: this.get_operator(),
 		    numerator: this.numerator_string(),
@@ -338,8 +338,8 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
 		    });
 	};
 	
-	number.create_from_JSON = function (JSON) {
-		return number.create(JSON.numerator, JSON.denominator, JSON.operator);
+	number.create_from_json = function (json) {
+		return number.create(json.numerator, json.denominator, json.operator);
 	};
 
     number.to_HTML = function (max_characters, font_size, format, top_level, operator) {

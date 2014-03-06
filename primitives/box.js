@@ -167,23 +167,23 @@ window.TOONTALK.box = (function (TT) {
         return '[' + contents + ']';
     };
 
-	box.get_JSON = function () {
+	box.get_json = function () {
 		var super_prototype = this.__proto__.__proto__;
-		var contents_JSON = [];
+		var contents_json = [];
 		var size = this.get_size();
 		var i;
 		for (i = 0; i < size; i += 1) {
-			contents_JSON[i] = this.get_hole(i).get_JSON();
+			contents_json[i] = this.get_hole(i).get_json();
 		}
-		return super_prototype.get_JSON(
+		return super_prototype.get_json(
 		   {type: "box",
-		    contents: contents_JSON,
+		    contents: contents_json,
 			horizontal: this.get_horizontal()
 		   });
 	};
 	
-	box.create_from_JSON = function (JSON) {
-		return box.create(JSON.contents.length, JSON.horizontal, TT.UTILITIES.create_array_from_JSON(JSON.contents));
+	box.create_from_json = function (json) {
+		return box.create(json.contents.length, json.horizontal, TT.UTILITIES.create_array_from_json(json.contents));
 	};
     
     box.to_HTML = function () {
@@ -375,6 +375,7 @@ window.TOONTALK.box_backside =
 			var update_orientation = function () {
 				box.set_horizontal((TT.UTILITIES.selected_radio_button(horizontal_radio_button, vertical_radio_button).value === "horizontal"), true);
 			};
+			var backside_element = backside.get_element();
             size_input.onchange = update_value;
 			horizontal_radio_button.onchange = update_orientation;
 			vertical_radio_button.onchange = update_orientation;
@@ -426,17 +427,16 @@ window.TOONTALK.box_empty_hole =
 				box.set_hole(index, dropped, true);
 				box.update_frontside();
 			};
-			empty_hole.get_JSON = function () {
+			empty_hole.get_json = function () {
 				// no need to put anything into the array
 				return undefined;
 			}
 			$(hole_element).on('drop',
                 function (event) {
-					var $dropped = $(".toontalk-being-dragged");
-					var dropped;
+					var json_object = TT.UTILITIES.data_transfer_json_object(event);
+                    var $dropped = $("#" + json_object.id_of_original_dragree);
 					if ($dropped.length >= 1) {
-						dropped = $dropped.data("owner");
-						box.set_hole(index, dropped, true);
+						box.set_hole(index, $dropped.data("owner"), true);
 						box.update_frontside();
 						event.stopPropagation();
 					}

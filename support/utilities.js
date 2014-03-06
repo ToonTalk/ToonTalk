@@ -9,33 +9,37 @@ jQuery.event.props.push('dataTransfer'); // some posts claim this needed -- unsu
 window.TOONTALK.UTILITIES = 
 (function (TT) {
     "use strict";
-	var JSON_creators = {"box": TT.box.create_from_JSON,
-	                     "number": TT.number.create_from_JSON};
+	var json_creators = {"box": TT.box.create_from_json,
+	                     "number": TT.number.create_from_json};
 	// private functions
-	var create_from_JSON = function (JSON) {
+	var create_from_json = function (json) {
 		var widget;
-		if (JSON_creators[JSON.type]) {
-			widget = JSON_creators[JSON.type](JSON);
+		if (json_creators[json.type]) {
+			widget = json_creators[json.type](json);
 		} else {
-			console.log("JSON type " + JSON.type + " not yet supported.");
+			console.log("json type " + json.type + " not yet supported.");
 			return;
 		}
 		if (widget) {
-			widget.set_erased(JSON.erased);
+			widget.set_erased(json.erased);
 		}
 		return widget;
 	};
     return {
 		// public functions
-		create_array_from_JSON: function (JSON_array) {
+		create_array_from_json: function (json_array) {
 			var new_array = [];
 			var i;
-			for (i = 0; i < JSON_array.length; i += 1) {
-				if (JSON_array[i]) {
-					new_array[i] = create_from_JSON(JSON_array[i]);
+			for (i = 0; i < json_array.length; i += 1) {
+				if (json_array[i]) {
+					new_array[i] = create_from_json(json_array[i]);
 				}
 			}
 			return new_array;
+		},
+		
+		generate_unique_id: function () {
+		    return 'id' + (new Date()).getTime();
 		},
 		
         get_style_property: function (element, style_property) {
@@ -82,6 +86,24 @@ window.TOONTALK.UTILITIES =
             return context;
         },
 		
+		data_transfer_json_object: function (event) {
+			var json;
+			if (!event.originalEvent.dataTransfer) {
+				console.log("no dataTransfer in drop event");
+				return;
+		    }
+			json = event.originalEvent.dataTransfer.getData("application/json");
+			if (!json) {
+				console.log("No data in dataTransfer in drop.");
+				return;
+			}
+			try {
+				return JSON.parse(json);
+			} catch (e) {
+				console.log("Exception parsing " + json + "\n" + e.toString());
+			}
+		},
+		
 		drag_and_drop: function ($element, widget) {
 			$element.css({position: "absolute"});
 			$element.attr("draggable", true);
@@ -91,6 +113,9 @@ window.TOONTALK.UTILITIES =
 			    function (event) {
 					var $container = $element.parents(".toontalk-side:first");
 					var container = $container.data("owner");
+					var position = $element.position();
+					var unique_id = TT.UTILITIES.generate_unique_id();
+					var json_object;
 					if ($element.is(".toontalk-emerging-backside")) {
 						$element.removeClass("toontalk-emerging-backside");
 					} else {
@@ -99,20 +124,23 @@ window.TOONTALK.UTILITIES =
 					// save the current dimension so size doesn't change while being dragged
 					this.style.width = this.offsetWidth + "px",
 					this.style.height = this.offsetHeight + "px",
-					$element.addClass("toontalk-being-dragged");
+					$element.attr("id", unique_id);
 					if (container) {
 					    container.removed($element.data("owner"), $element, event);
 					}
 					if (event.originalEvent.dataTransfer) {
 						event.originalEvent.dataTransfer.effectAllowed = 'move';
-						event.originalEvent.dataTransfer.setData("application/json", JSON.stringify(widget.get_JSON()));
+						json_object = widget.get_json();
+						json_object.id_of_original_dragree = unique_id;
+						json_object.drag_x_offset = event.originalEvent.clientX-position.left;
+						json_object.drag_y_offset = event.originalEvent.clientY-position.top;
+						event.originalEvent.dataTransfer.setData("application/json", JSON.stringify(json_object));
 					}
 					event.stopPropagation();
 				});
 			$element.on('dragstop', 
 			    function (event) {
 // 				stop: function (event, ui) {
-					$element.removeClass("toontalk-being-dragged");
 					// restore ordinary size styles
 					this.style.width = "";
 					this.style.height = "";
@@ -126,25 +154,28 @@ window.TOONTALK.UTILITIES =
 				});
 			$element.on('drop',
                 function (event) {
-                    var $source = $(".toontalk-being-dragged");
-					$source.removeClass("toontalk-being-dragged");
-					var $target = $(event.target).closest(".toontalk-side");
-					var target = $target.data("owner");
-					var source, json;
+					var $source, source, $target, target, target_position, json_object, drag_x_offset, drag_y_offset;
+					var json_object = TT.UTILITIES.data_transfer_json_object(event);
+                    $source = $("#" + json_object.id_of_original_dragree);
+					$target = $(event.target).closest(".toontalk-side");
+					target = $target.data("owner");
 					if ($source.length >= 1) {
 						source = $source.data("owner");	
 					} else {
-						json = event.originalEvent.dataTransfer.getData("application/json");
-						if (json) {
-							source = create_from_JSON(JSON.parse(json));
-						} else {
-							console.log("No data in dataTransfer in drop.");
-							return;
-						}
+						source = create_from_json(json_object);
+						$source = $(source.get_frontside_element());
 					}
 					if ($target.is(".toontalk-backside")) {
-						$source.css({left: event.originalEvent.clientX,
-							          top: event.originalEvent.clientY});
+						target_position = $target.position();
+						if (json_object) {
+							drag_x_offset = json_object.drag_x_offset;
+						    drag_y_offset = json_object.drag_y_offset;
+						} else {
+							drag_x_offset = 0;
+							drag_y_offset = 0;
+						}
+						$source.css({left: event.originalEvent.clientX-target_position.left-drag_x_offset,
+							          top: event.originalEvent.clientY-target_position.top-drag_y_offset});
 						target.get_backside().widget_dropped_on_me(source, event);
 						event.stopPropagation();
 					} else if (!target) {
