@@ -34,7 +34,7 @@ window.TOONTALK.backside =
 						// better to have a preferrred size that it goes to when on backside
 						// recorded when dropped into something that changes its size -- e.g. a box
                         $side_element_of_other.addClass("toontalk-frontside-on-backside");
-                        other.update_frontside();
+                        other.update_display();
 			        }
 					return true;
 			    };
@@ -84,7 +84,7 @@ window.TOONTALK.backside =
 					$source.addClass("toontalk-frontside-on-backside");
 					owner_widget = $source.data("owner");
 					if (owner_widget) {
-						owner_widget.update_frontside();
+						owner_widget.update_display();
 					}
 				}
 			});
@@ -95,7 +95,7 @@ window.TOONTALK.backside =
 					$source.removeClass("toontalk-frontside-on-backside");
 					owner_widget = $source.data("owner");
 					if (owner_widget) {
-						owner_widget.update_frontside();
+						owner_widget.update_display();
 					}
 				}
 			});		
@@ -107,6 +107,10 @@ window.TOONTALK.backside =
 			$backside_element.data("owner", widget);
             return widget;
         },
+				
+		remove: function() {
+			$(this.get_element()).remove();
+		},
 
     };
 }(window.TOONTALK));

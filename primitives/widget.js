@@ -60,7 +60,7 @@ window.TOONTALK.widget = (function (TT) {
         get_frontside_element: function (update) {
             var frontside = this.get_frontside(true);
             if (update) {
-                this.update_frontside();
+                this.update_display();
             }
             return frontside.get_element();
         },
@@ -72,7 +72,9 @@ window.TOONTALK.widget = (function (TT) {
         
         get_json: function (json) {
             if (json) {
-                json.erased = this.get_erased();
+                if (this.get_erased()) {
+                    json.erased = true;
+                }
                 return json;
             } else {
                 console.log("get_json not defined");
@@ -111,8 +113,8 @@ window.TOONTALK.widget = (function (TT) {
             console.log("removed not implemented");
         },
         
-        update_frontside: function () {
-            console.assert(false, "update_frontside not implemented");
+        update_display: function () {
+            console.assert(false, "update_display not implemented");
         },
         
         to_HTML: function () {

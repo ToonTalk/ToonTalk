@@ -12,7 +12,7 @@ window.TOONTALK.DISPLAY_UPDATES =
     return {
         add_dirty_side: function (side) {
             var i;
-            if (!side.update_frontside) {
+            if (!side.update_display) {
                 return;
             }
             for (i = 0; i < dirty_sides.length; i += 1) {
@@ -23,10 +23,10 @@ window.TOONTALK.DISPLAY_UPDATES =
             dirty_sides.push(side);
         },
         
-        update_frontside: function () {
+        update_display: function () {
             var i;
             for (i = 0; i < dirty_sides.length; i += 1) {
-                dirty_sides[i].update_frontside();
+                dirty_sides[i].update_display();
             }
             dirty_sides = [];
         }

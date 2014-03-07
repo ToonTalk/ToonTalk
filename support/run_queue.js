@@ -49,7 +49,7 @@ window.TOONTALK.queue =
                     if (steps_limit === 0) {
                         // clear the queue to be ready for the next test
                         this.to_run = [];
-                        TT.DISPLAY_UPDATES.update_frontside();
+                        TT.DISPLAY_UPDATES.update_display();
                         if (run_after_steps_limit) {
                             run_after_steps_limit();
                         }
@@ -57,7 +57,7 @@ window.TOONTALK.queue =
                     }
                 }
             }
-            TT.DISPLAY_UPDATES.update_frontside();
+            TT.DISPLAY_UPDATES.update_display();
             setTimeout(function () {
                           that.run(steps_limit, run_after_steps_limit);
                        },

@@ -4,38 +4,59 @@
  * License: New BSD
  */
 
-jQuery.event.props.push('dataTransfer'); // some posts claim this needed -- unsure...
+// jQuery.event.props.push('dataTransfer'); // some posts claim this needed -- unsure...
 
 window.TOONTALK.UTILITIES = 
 (function (TT) {
     "use strict";
 	var json_creators = {"box": TT.box.create_from_json,
-	                     "number": TT.number.create_from_json};
-	// private functions
-	var create_from_json = function (json) {
-		var widget;
-		if (json_creators[json.type]) {
-			widget = json_creators[json.type](json);
-		} else {
-			console.log("json type " + json.type + " not yet supported.");
-			return;
-		}
-		if (widget) {
-			widget.set_erased(json.erased);
-		}
-		return widget;
-	};
+	                     "number": TT.number.create_from_json,
+						 "robot": TT.robot.create_from_json,
+						 "body": TT.actions.create_from_json,
+						 "pick_up_constant_action": TT.pick_up_constant.create_from_json,
+						 "pick_up_action": TT.pick_up.create_from_json,
+						 "drop_on_action": TT.drop_on.create_from_json,
+						 "box_path": TT.box.path.create_from_json,
+						 "path_to_entire_context": TT.path_to_entire_context.create_from_json};
     return {
-		// public functions
+		create_from_json: function (json) {
+			var widget;
+			if (json_creators[json.type]) {
+				widget = json_creators[json.type](json);
+			} else {
+				console.log("json type " + json.type + " not yet supported.");
+				return;
+			}
+			if (widget && json.erased) {
+				widget.set_erased(json.erased);
+			}
+			return widget;
+		},
+		
 		create_array_from_json: function (json_array) {
 			var new_array = [];
 			var i;
 			for (i = 0; i < json_array.length; i += 1) {
 				if (json_array[i]) {
-					new_array[i] = create_from_json(json_array[i]);
+					new_array[i] = TT.UTILITIES.create_from_json(json_array[i]);
 				}
 			}
 			return new_array;
+		},
+		
+		get_json_of_array: function (array) {
+			var json = [];
+		    var i;
+			for (i = 0; i < array.length; i += 1) {
+				if (array[i]) {
+					if (array[i].get_json) {
+					    json[i] = array[i].get_json();
+					} else {
+						console.log("No get_json for " + array[i].toString());
+					}
+				}
+			}
+			return json;
 		},
 		
 		generate_unique_id: function () {
@@ -168,7 +189,7 @@ window.TOONTALK.UTILITIES =
 					if ($source.length >= 1) {
 						source = $source.data("owner");	
 					} else {
-						source = create_from_json(json_object);
+						source = TT.UTILITIES.create_from_json(json_object);
 						$source = $(source.get_frontside_element());
 					}
 					if ($target.is(".toontalk-backside")) {
@@ -189,6 +210,7 @@ window.TOONTALK.UTILITIES =
 					} else if (source.drop_on(target, $target, event)) {
 						event.stopPropagation();
 					}
+					event.preventDefault();
                 });
 			// following provides mouseevents rather than dragstart and the like
 			// which doesn't have a dataTransfer attribute

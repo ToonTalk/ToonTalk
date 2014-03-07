@@ -5,14 +5,16 @@
  */
 
 window.TOONTALK.actions = 
-(function () {
+(function (TT) {
     "use strict";
     // public methods
     return {
-        create: function () {
-            var steps = [];
+        create: function (steps) {
             var robot;
             var result = Object.create(this);
+            if (!steps) {
+                steps = [];
+            }
             result.get_steps = function () {
                 return steps;
             };
@@ -20,12 +22,17 @@ window.TOONTALK.actions =
                 return robot;
             };
             result.set_robot = function (robot_parameter) {
+                var i;
                 robot = robot_parameter;
+                for (i = 0; i < steps.length; i += 1) {
+                    steps[i].robot = robot;
+                }
             };
             return result;
         },
         
         add: function(step) {
+            step.robot = this.get_robot();
             this.get_steps()[this.get_steps().length] = step;
         },
         
@@ -36,7 +43,16 @@ window.TOONTALK.actions =
                 steps[i].run(context);
             }
             this.get_robot().run(context, queue);
+        },
+        
+        get_json: function () {
+            return {type: "body",
+                    steps: TT.UTILITIES.get_json_of_array(this.get_steps())};
+        },
+        
+        create_from_json: function (json) {
+            return TT.actions.create(TT.UTILITIES.create_array_from_json(json.steps));
         }
         
     };
-}());
+}(window.TOONTALK));

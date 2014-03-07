@@ -8,11 +8,10 @@ window.TOONTALK.drop_on =
 (function (TT) {
     "use strict";
     return {
-        create: function (robot, path) {
+        create: function (path) {
             var result = Object.create(this);
             // worth making this state private?
             // maybe not since this is more like a data structure
-            result.robot = robot;
             result.path = path;
             return result;
         },
@@ -24,7 +23,21 @@ window.TOONTALK.drop_on =
                 return true;
             }
             return false;
-        }
+        },
+        
+        toString: function () {
+            return "drop on " + this.path.toString();
+        },
+        
+        get_json: function () {
+            return {type: "drop_on_action",
+                    path: this.path.get_json(),
+                    };
+        },
+        
+        create_from_json: function (json) {
+            return TT.drop_on.create(TT.UTILITIES.create_from_json(json.path));
+        },
 
     };
 }(window.TOONTALK));

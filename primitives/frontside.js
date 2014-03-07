@@ -61,8 +61,8 @@ window.TOONTALK.frontside =
             return frontside;
         },
 		
-		update_frontside: function () {
-			return this.get_widget().update_frontside();
+		update_display: function () {
+			return this.get_widget().update_display();
 		},
 		
 		remove: function() {
