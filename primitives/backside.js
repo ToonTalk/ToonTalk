@@ -117,31 +117,25 @@ window.TOONTALK.backside =
 			return $hide_button.get(0);
 		},
 		
-// 		attached: function ()  {
-// 			var backside_element = this.get_element();
-// 			var $backside_element = $(backside_element);
-// 			var widget = this.get_widget();
-// 			var $hide_button;
-// 			if (backside_element.offsetHeight == 0) {
-// 				// zero height -- not yet really attached
-// 				return;
-// 			}
-// 			if ($backside_element.children(".toontalk-hide-backside-button").length > 0) {
-// 				// already added
-// 				return;
-// 			}
-// 			$hide_button =  $("<button>Hide</button>").button();
-// 			$hide_button.addClass("toontalk-hide-backside-button");
-// 			$hide_button.click(function () {
-// 				$backside_element.remove(); // could animate away
-// 				if (widget && widget.forget_backside) {
-// 					widget.forget_backside();
-// 				}
-// 			});
-// 			$hide_button.css({left: "10px",
-// 							  top:  (backside_element.offsetHeight - 55) + "px"});
-// 			$backside_element.append($hide_button.get(0));
-// 		},
+		create_run_button: function (backside, widget) {
+			var backside_element = backside.get_element();
+			var $backside_element = $(backside_element);
+			var $run_button =  $("<button>Run</button>").button();
+			var run = true;
+			var robot;
+			$run_button.addClass("toontalk-run-backside-button");
+			$run_button.click(function () {
+				$backside_element.children(".toontalk-robot").each(function (index, element) {
+					if (run) {
+						robot = $(element).data("owner");
+						if (robot) {
+							robot.run(widget);
+						}
+					}
+				});					
+			});
+			return $run_button.get(0);
+		},
 
     };
 }(window.TOONTALK));

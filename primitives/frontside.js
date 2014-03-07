@@ -37,11 +37,12 @@ window.TOONTALK.frontside =
 				backside = widget.get_backside(true);
 				backside_element = backside.get_element();
 				$(backside_element).data("owner", widget);
-				backside_element.style.left = frontside_element.style.left;
+				backside_element.style.left = frontside_element.style.right;
 				backside_element.style.top = frontside_element.style.top;
 				$frontside_element.parent(".toontalk-backside").append(backside_element);
 			});
-// 			$frontside_element.resizable(); {handles: "n, e, s, w"}
+			// interferes with dragging and clicking to see backside
+//			$frontside_element.resizable(); // {handles: "n, e, s, w"}
             return frontside;
         },
 		

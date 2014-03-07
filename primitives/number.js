@@ -451,7 +451,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     };
 
     number.match = function (context) {
-        if (this.erased) {
+        if (this.get_erased()) {
             return context.match_with_any_number();
         }
         return context.match_with_this_number(this);
@@ -576,7 +576,9 @@ window.TOONTALK.number_backside =
 				TT.UTILITIES.label_radio_button(divide, "&divide;", "Divide me into what I'm dropped on", "toontalk-operator-choice"),
 				TT.UTILITIES.label_radio_button(power, "Integer power", "Use me as the number of times to multiply together what I'm dropped on", "toontalk-operator-choice")));
 // 			backside_element.appendChild(TT.UTILITIES.create_label("<i>Following for testing:</i>"));
-			backside_element.appendChild(TT.backside.create_hide_button(backside, number));
+			backside_element.appendChild(TT.UTILITIES.create_horizontal_table(
+			    TT.backside.create_run_button(backside, number),
+				TT.backside.create_hide_button(backside, number)));
 // 			add_test_button(backside, "add-one");
 // 			add_test_button(backside, "double");
 			backside.update_display = function () {

@@ -124,6 +124,7 @@ window.TOONTALK.robot = (function (TT) {
             frontside_element.appendChild(document.createElement('div'));
         }
         frontside_element.firstChild.innerHTML = new_HTML;
+		$(frontside_element).addClass("toontalk-robot");
 		$(frontside_element.firstChild).addClass("toontalk-widget");
     };
 	
@@ -147,8 +148,8 @@ window.TOONTALK.robot = (function (TT) {
 			 image_url: this.get_image_url(),
 			 width: this.get_width(),
 			 height: this.get_height(),
-			 description: this.get_description()}
-		);
+			 description: this.get_description()
+			});
 	};
     
     robot.create_from_json = function (json) {

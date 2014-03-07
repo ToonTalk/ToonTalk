@@ -87,7 +87,7 @@ window.TOONTALK.tests =
      accept_number_robot: function() {
          var body = TT.actions.create();
          var bubble = TT.number.create(1);
-         bubble.erased = true;
+         bubble.set_erased(true);
          return TT.robot.create(bubble, body);         
      },
      
@@ -201,7 +201,7 @@ window.TOONTALK.tests =
          var b_hole_1 = TT.number.create(4);
          b_2.set_hole(1, b_hole_1);
          console.assert(b_2.match(a_2) === 'not matched', "box of size 2 with 3 and 4 should not match box of size 2 with just 3 in first hole");
-         b_hole_1.erased.set_erased(true);
+         b_hole_1.set_erased(true);
 //          console.log("b_2 is " + b_2.toString() + " and a_2 is " + a_2.toString());
          console.assert(b_2.match(a_2) === 'not matched', "box of size 2 with 3 and erased 4 should not match box of size 2 with 3 in first hole");
          console.assert(!b_2.equals(a_2), "box of size 2 with 3 and erased 4 should not equal a box of size 2 with 3 in first hole");
@@ -209,7 +209,7 @@ window.TOONTALK.tests =
          a_2.set_hole(1, a_hole_1);
 //          console.log("b_2 is " + b_2.toString() + " and a_2 is " + a_2.toString());
          console.assert(b_2.match(a_2) === 'matched', "box of size 2 with 3 and erased 4 should match box of size 2 with 3 and 5");
-         b_hole_1.erased.set_erased(false);
+         b_hole_1.set_erased(false);
          b_2.set_hole(1, b_hole_1.copy());
 //          console.log("b_2 is " + b_2.toString() + " and a_2 is " + a_2.toString());
          console.assert(b_2.match(a_2) === 'not matched', "box of size 2 with 3 and 4 should not match box of size 2 with 3 and 5");
