@@ -475,32 +475,31 @@ window.TOONTALK.number_backside =
 (function (TT) {
     "use strict";
 	
-	var add_test_button = function(backside, robot_name) {
-// 		var add_one = TT.UTILITIES.create_button("add " + robot_name + " robot", "test", "just testing");
-        var $add_one = $("<button></button>").button({label: "add " + robot_name});
-		var add_one = $add_one.get(0);
-		$add_one.click(function () {
-			if (add_one.robot) {
-				add_one.robot.stop();
-				add_one.robot = undefined;
-				add_one.innerHTML = "resume " + robot_name;
-				return;
-			}
-			var robot;
-			switch (robot_name) {
-				case "add-one": 
-				robot = TT.tests.add_one_robot(); 
-				break;
-				case "double": 
-				robot = TT.tests.double_robot(); 
-				break;
-			}
-			add_one.robot = robot;
-			robot.run(backside.get_widget());
-			add_one.innerHTML = "stop " + robot_name;
-		});
-		backside.get_element().appendChild($add_one.get(0));
-	};
+// 	var add_test_button = function(backside, robot_name) {
+//         var $add_one = $("<button></button>").button({label: "add " + robot_name});
+// 		var add_one = $add_one.get(0);
+// 		$add_one.click(function () {
+// 			if (add_one.robot) {
+// 				add_one.robot.stop();
+// 				add_one.robot = undefined;
+// 				add_one.innerHTML = "resume " + robot_name;
+// 				return;
+// 			}
+// 			var robot;
+// 			switch (robot_name) {
+// 				case "add-one": 
+// 				robot = TT.tests.add_one_robot(); 
+// 				break;
+// 				case "double": 
+// 				robot = TT.tests.double_robot(); 
+// 				break;
+// 			}
+// 			add_one.robot = robot;
+// 			robot.run(backside.get_widget());
+// 			add_one.innerHTML = "stop " + robot_name;
+// 		});
+// 		backside.get_element().appendChild($add_one.get(0));
+// 	};
 	
     return {
         create: function (number) {
@@ -564,7 +563,6 @@ window.TOONTALK.number_backside =
 			multiply.onchange = update_operator;
 			divide.onchange = update_operator;
 			power.onchange = update_operator;
-			// TO DO position the new elements
             backside_element.appendChild(numerator_input);
             backside_element.appendChild(denominator_input);
 			backside_element.appendChild(TT.UTILITIES.label_radio_button(decimal_format, "&nbsp;Display number as a decimal."));
@@ -581,16 +579,15 @@ window.TOONTALK.number_backside =
 			backside_element.appendChild(TT.backside.create_hide_button(backside, number));
 // 			add_test_button(backside, "add-one");
 // 			add_test_button(backside, "double");
+			backside.update_display = function () {
+				var numerator_input = TT.UTILITIES.get_first_child_with_class(this.get_element(), "toontalk-numerator-input");
+				var denominator_input = TT.UTILITIES.get_first_child_with_class(this.get_element(), "toontalk-denominator-input");
+				var number = this.get_widget();
+				numerator_input.value = number.numerator_string();
+				denominator_input.value = number.denominator_string();
+			};
             return backside;
         },
-		
-		update_display: function () {
-			var numerator_input = TT.UTILITIES.get_first_child_with_class(this.get_element(), "toontalk-numerator-input");
-			var denominator_input = TT.UTILITIES.get_first_child_with_class(this.get_element(), "toontalk-denominator-input");
-			var number = this.get_widget();
-			numerator_input.value = number.numerator_string();
-			denominator_input.value = number.denominator_string();
-		},
 
     };
 }(window.TOONTALK));
