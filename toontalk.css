@@ -14,14 +14,11 @@
 	border-color: rgb(185, 113, 141);
 	border-radius: 10px;
 	padding:  6px;
-	/* while testing: */
-	width: 450px;
-	height: 250px;
-	left: 300px;
-	top: 50px;
 }
 .toontalk-emerging-backside {
 	opacity: .33;
+	width: 20%;
+	height: 10%;
 }
 .toontalk-top-level-frontside {
 	position: absolute;
@@ -156,4 +153,10 @@
 }
 .toontalk-hide-backside-button {
 	position: absolute;
+}
+.toontalk-robot-description-input {
+	width: 30em;
+}
+.toontalk-image-url-input {
+	width: 30em;
 }
