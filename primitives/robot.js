@@ -8,13 +8,22 @@ window.TOONTALK.robot = (function (TT) {
     "use strict";
     var robot = Object.create(TT.widget);
     
-    robot.create = function (bubble, body, image_url) {
+    robot.create = function (bubble, body, image_url, width, height, description) {
         // bubble holds the conditions that need to be matched to run
         // body holds the actions the robot does when it runs
         var result = Object.create(this);
         if (!image_url) {
             image_url = "images/robot.png";
         }
+		if (!width) {
+			width = 50;
+		}
+		if (!height) {
+			height = 50;
+		}
+		if (!description) {
+			description = "";
+		}
         result.get_bubble = function () {
             return bubble;
         };
@@ -27,6 +36,24 @@ window.TOONTALK.robot = (function (TT) {
         result.set_image_url = function (new_value) {
             image_url = new_value;
         };
+		result.get_width = function () {
+			return width;
+		};
+		result.set_width = function (new_value) {
+			width = new_value;
+		};
+		result.get_height = function () {
+			return height;
+		};
+		result.set_height = function (new_value) {
+			height = new_value;
+		};
+		result.get_description = function () {
+			return description;
+		};
+		result.set_description = function (new_value) {
+			description = new_value;
+		};
         body.set_robot(result);
 		if (TT.debugging) {
 			result.debug_string = result.toString();
@@ -94,11 +121,11 @@ window.TOONTALK.robot = (function (TT) {
 	
 	robot.to_HTML = function () {
 		// to do: add thought bubble
-		return "<p>This robot <img src='" + this.get_image_url() + "'></img> adds 1 to any number given to it.</p>";
+		return "<p>This robot <img src='" + this.get_image_url() + "' width='" + this.get_width() + "px' height='" + this.get_height() + "'></img> " + this.get_description() + ".</p>";
 	};
 	
 	robot.toString = function () {
-		"robot with bubble " + this.get_bubble().toString() + " with these actions " + this.get_body().toString + " with this image " + this.get_image_url();
+		"robot " + this.get_description() + "with bubble " + this.get_bubble().toString() + " with these actions " + this.get_body().toString + " with this image " + this.get_image_url();
 	}
 	
 	robot.get_json = function () {
@@ -107,14 +134,20 @@ window.TOONTALK.robot = (function (TT) {
 		    {type: "robot",
 		     bubble: this.get_bubble().get_json(),
 		     body: this.get_body().get_json(),
-			 image_url: this.get_image_url()}
+			 image_url: this.get_image_url(),
+			 width: this.get_width(),
+			 height: this.get_height(),
+			 description: this.get_description()}
 		);
 	};
     
     robot.create_from_json = function (json) {
 		return TT.robot.create(TT.UTILITIES.create_from_json(json.bubble),
 		                       TT.UTILITIES.create_from_json(json.body),
-							   json.image_url);
+							   json.image_url,
+							   json.width,
+							   json.height,
+							   json.description);
 	};
     
     return robot;

@@ -103,6 +103,7 @@ window.TOONTALK.tests =
          var body = robot.get_body();
          body.add(TT.pick_up_constant.create(TT.number.ONE()));
          body.add(TT.drop_on.create(TT.path_to_entire_context));
+         robot.set_description("adds one to what it is given");
          return robot;
      },
      
