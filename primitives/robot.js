@@ -183,6 +183,7 @@ window.TOONTALK.robot_backside =
 			input_table = TT.UTILITIES.create_vertical_table(description_input, image_url_input);
 			$(input_table).css({width: "90%"});
 			backside_element.appendChild(input_table);
+			backside_element.appendChild(TT.backside.create_hide_button(backside, robot));
             return backside;
         },
 		

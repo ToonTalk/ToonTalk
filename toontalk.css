@@ -13,12 +13,11 @@
 	border-width: 2px;
 	border-color: rgb(185, 113, 141);
 	border-radius: 10px;
-	padding:  6px;
-}
-.toontalk-emerging-backside {
-	opacity: .33;
-	width: 20%;
-	height: 10%;
+	/* leave room at the bottom for hide buttons, etc. */
+	padding-bottom:  50px;
+	padding-top:  6px;
+	padding-left:  6px;
+	padding-right:  6px;
 }
 .toontalk-top-level-frontside {
 	position: absolute;

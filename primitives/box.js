@@ -394,7 +394,6 @@ window.TOONTALK.box_backside =
             size_input.onchange = update_value;
 			horizontal_radio_button.onchange = update_orientation;
 			vertical_radio_button.onchange = update_orientation;
-			// TO DO position the new elements
             backside_element.appendChild(size_input);
 			backside_element.appendChild(TT.UTILITIES.create_horizontal_table(
 			    TT.UTILITIES.label_radio_button(horizontal_radio_button, "Left to right", "Show box horizontally", "toontalk-box-orientation-choice"),
@@ -404,7 +403,8 @@ window.TOONTALK.box_backside =
 			} else {
 				vertical_radio_button.checked = true;
 			}
-			add_test_button(backside, "copy-first-hole-to-second-hole"); // for testing
+//			add_test_button(backside, "copy-first-hole-to-second-hole"); // for testing
+            backside_element.appendChild(TT.backside.create_hide_button(backside, box));
             return backside;
         },		
 		update_display: function () {

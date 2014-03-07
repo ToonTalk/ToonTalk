@@ -125,7 +125,7 @@ window.TOONTALK.UTILITIES =
 			}
 		},
 		
-		drag_and_drop: function ($element, widget) {
+		drag_and_drop: function ($element) {
 			$element.css({position: "absolute"});
 			$element.attr("draggable", true);
 			// draggable causes dataTransfer to be null
@@ -136,16 +136,13 @@ window.TOONTALK.UTILITIES =
 					var container = $container.data("owner");
 					var position = $element.position();
 					var unique_id = TT.UTILITIES.generate_unique_id();
-					var emerging_backside = $element.is(".toontalk-emerging-backside");
 					var json_object;
-					if (emerging_backside) {
-						$element.removeClass("toontalk-emerging-backside");
-					} else {
-						TT.UTILITIES.remove_emerging_backsides();
+					var widget = $element.data("owner");
+					if ($element.is(".toontalk-frontside")) {
+						// save the current dimension so size doesn't change while being dragged
+						$element.css({width:  this.offsetWidth + "px",
+									  height: this.offsetHeight + "px"});
 					}
-					// save the current dimension so size doesn't change while being dragged
-					$element.css({width:  this.offsetWidth + "px",
-					              height: this.offsetHeight + "px"});
 					$element.attr("id", unique_id);
 					if (container) {
 					    container.removed($element.data("owner"), $element, event);
@@ -156,8 +153,8 @@ window.TOONTALK.UTILITIES =
 						json_object.id_of_original_dragree = unique_id;
 						json_object.drag_x_offset = event.originalEvent.clientX-position.left;
 						json_object.drag_y_offset = event.originalEvent.clientY-position.top;
-						json_object.original_width_fraction = emerging_backside ? .2 : $element.outerWidth() / $element.parent().outerWidth();
-						json_object.original_height_fraction = emerging_backside ? .1 : $element.outerHeight() / $element.parent().outerHeight();
+						json_object.original_width_fraction = $element.outerWidth() / $element.parent().outerWidth();
+						json_object.original_height_fraction = $element.outerHeight() / $element.parent().outerHeight();
 						$element.data("json", json_object);
 						event.originalEvent.dataTransfer.setData("application/json", JSON.stringify(json_object));
 					}
@@ -165,11 +162,13 @@ window.TOONTALK.UTILITIES =
 				});
 			$element.on('dragend', 
 			    function (event) {
-					// restore ordinary size styles
-                    var json_object = $element.data("json");
-					if (json_object) {
-						$element.css({width:  json_object.original_width_fraction * 100 + "%",
-									  height: json_object.original_height_fraction * 100 + "%"});
+					if ($element.is(".toontalk-frontside")) {
+						// restore ordinary size styles
+						var json_object = $element.data("json");
+						if (json_object) {
+							$element.css({width:  json_object.original_width_fraction * 100 + "%",
+										  height: json_object.original_height_fraction * 100 + "%"});
+						}
 					}
 					event.stopPropagation();
 				});
@@ -224,14 +223,6 @@ window.TOONTALK.UTILITIES =
 // // 				containment: false, // doesn't seem to work... -- nor does "none"
 // 				stack: ".toontalk-side",
 // 			}); // .resizable(); -- works fine for backsides but need to fix frontside problem
-		},
-		
-		remove_emerging_backsides: function () {
-			$(".toontalk-emerging-backside").each(function (index, element) {
-				var widget = $(element).data("owner");
-				widget.forget_backside();
-			});
-			$(".toontalk-emerging-backside").remove();
 		},
 		
 		set_position_absolute: function (element, absolute, event) {
