@@ -22,7 +22,7 @@ window.TOONTALK.robot = (function (TT) {
 			height = 50;
 		}
 		if (!description) {
-			description = "";
+			description = toString();
 		}
         result.get_bubble = function () {
             return bubble;
@@ -33,9 +33,13 @@ window.TOONTALK.robot = (function (TT) {
         result.get_image_url = function () {
             return image_url;
         };
-        result.set_image_url = function (new_value) {
+        result.set_image_url = function (new_value, update_display) {
             image_url = new_value;
+			if (update_display) {
+				this.update_display();
+			}
         };
+		// should the following use 'width' from the frontside element?
 		result.get_width = function () {
 			return width;
 		};
@@ -51,8 +55,11 @@ window.TOONTALK.robot = (function (TT) {
 		result.get_description = function () {
 			return description;
 		};
-		result.set_description = function (new_value) {
+		result.set_description = function (new_value, update_display) {
 			description = new_value;
+			if (update_display) {
+				this.update_display();
+			}
 		};
         body.set_robot(result);
 		if (TT.debugging) {
@@ -121,7 +128,9 @@ window.TOONTALK.robot = (function (TT) {
 	
 	robot.to_HTML = function () {
 		// to do: add thought bubble
-		return "<p>This robot <img src='" + this.get_image_url() + "' width='" + this.get_width() + "px' height='" + this.get_height() + "'></img> " + this.get_description() + ".</p>";
+		var description = this.get_description();
+		var title = description ? "This robot " + description : "This is a " + this.toString();
+		return "<img src='" + this.get_image_url() + "' width='" + this.get_width() + "px' height='" + this.get_height() + "' title='" + title + "'></img>";
 	};
 	
 	robot.toString = function () {
@@ -162,11 +171,14 @@ window.TOONTALK.robot_backside =
 			var backside_element = backside.get_element();
             // create_text_input should use JQuery????
             var image_url_input = TT.UTILITIES.create_text_input(robot.get_image_url(), 'toontalk-image-url-input', "Type here to provide a URL for the appearance of this robot.");
-            // later should have 'name' and other stuff
-            var update_value = function () {
+			var description_input = TT.UTILITIES.create_text_input(robot.get_description(), 'toontalk-robot-description-input', "Type here to provide a better descprion of this robot.");
+            image_url_input.onchange = function () {
                 robot.set_image_url(image_url_input.value.trim(), true);
             };
-            image_url_input.onchange = update_value; 
+			description_input.onchange = function () {
+                robot.set_description(description_input.value.trim(), true);
+            };
+			backside_element.appendChild(description_input);
             backside_element.appendChild(image_url_input);
             return backside;
         },
