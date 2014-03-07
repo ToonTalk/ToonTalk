@@ -112,6 +112,7 @@ window.TOONTALK.robot = (function (TT) {
     };
 	
 	robot.update_display = function() {
+		// perhaps this should be moved to widget and number and box updated to differ in the to_HTML part
         var frontside = this.get_frontside();
 		var new_HTML, frontside_element;
         if (!frontside) {
@@ -172,14 +173,16 @@ window.TOONTALK.robot_backside =
             // create_text_input should use JQuery????
             var image_url_input = TT.UTILITIES.create_text_input(robot.get_image_url(), 'toontalk-image-url-input', "Type here to provide a URL for the appearance of this robot.");
 			var description_input = TT.UTILITIES.create_text_input(robot.get_description(), 'toontalk-robot-description-input', "Type here to provide a better descprion of this robot.");
-            image_url_input.onchange = function () {
+            var input_table;
+			image_url_input.onchange = function () {
                 robot.set_image_url(image_url_input.value.trim(), true);
             };
 			description_input.onchange = function () {
                 robot.set_description(description_input.value.trim(), true);
             };
-			backside_element.appendChild(description_input);
-            backside_element.appendChild(image_url_input);
+			input_table = TT.UTILITIES.create_vertical_table(description_input, image_url_input);
+			$(input_table).css({width: "90%"});
+			backside_element.appendChild(input_table);
             return backside;
         },
 		
