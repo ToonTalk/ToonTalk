@@ -136,8 +136,9 @@ window.TOONTALK.UTILITIES =
 					var container = $container.data("owner");
 					var position = $element.position();
 					var unique_id = TT.UTILITIES.generate_unique_id();
+					var emerging_backside = $element.is(".toontalk-emerging-backside");
 					var json_object;
-					if ($element.is(".toontalk-emerging-backside")) {
+					if (emerging_backside) {
 						$element.removeClass("toontalk-emerging-backside");
 					} else {
 						TT.UTILITIES.remove_emerging_backsides();
@@ -155,8 +156,8 @@ window.TOONTALK.UTILITIES =
 						json_object.id_of_original_dragree = unique_id;
 						json_object.drag_x_offset = event.originalEvent.clientX-position.left;
 						json_object.drag_y_offset = event.originalEvent.clientY-position.top;
-						json_object.original_width_fraction = $element.outerWidth() / $element.parent().outerWidth();
-						json_object.original_height_fraction = $element.outerHeight() / $element.parent().outerHeight();
+						json_object.original_width_fraction = emerging_backside ? .2 : $element.outerWidth() / $element.parent().outerWidth();
+						json_object.original_height_fraction = emerging_backside ? .1 : $element.outerHeight() / $element.parent().outerHeight();
 						$element.data("json", json_object);
 						event.originalEvent.dataTransfer.setData("application/json", JSON.stringify(json_object));
 					}

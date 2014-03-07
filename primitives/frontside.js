@@ -24,7 +24,7 @@ window.TOONTALK.frontside =
             frontside.get_widget = function () {
                 return widget;
             };
-			$frontside_element.mouseenter(function () {
+			$frontside_element.click(function (event) {
 				var backside = widget.get_backside();
 				var backside_element;
 				if (backside) {
@@ -36,27 +36,27 @@ window.TOONTALK.frontside =
 				}
 				show_backside_timer = setTimeout(
 				    function () {
-						if ($(".toontalk-being-dragged").length > 0) {
-							// a drag in progress
-							return;
-						}
+// 						if ($(".toontalk-being-dragged").length > 0) {
+// 							// a drag in progress
+// 							return;
+// 						}
 						backside = widget.get_backside(true);
 						backside_element = backside.get_element();
-						$(backside_element).addClass("toontalk-emerging-backside");
+// 						$(backside_element).addClass("toontalk-emerging-backside");
 						$(backside_element).data("owner", widget);
 						backside_element.style.left = frontside_element.style.left;
 						backside_element.style.top = frontside_element.style.top;
 						$frontside_element.parent(".toontalk-backside").append(backside_element);
 					},
-				    2000);
+				    20);
 			});
-			$frontside_element.on("click mouseout", function () {
-				if (show_backside_timer) {
-					clearTimeout(show_backside_timer);
-					show_backside_timer = null;
-				}
-				setTimeout(TT.UTILITIES.remove_emerging_backsides, 4000);
-			});
+// 			$frontside_element.on("click mouseout", function () {
+// 				if (show_backside_timer) {
+// 					clearTimeout(show_backside_timer);
+// 					show_backside_timer = null;
+// 				}
+// 				setTimeout(TT.UTILITIES.remove_emerging_backsides, 4000);
+// 			});
 // 			$frontside_element.resizable(); {handles: "n, e, s, w"}
             return frontside;
         },
