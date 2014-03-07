@@ -103,8 +103,8 @@ window.TOONTALK.robot = (function (TT) {
         }
     };
     
-    robot.stop = function () {
-        this.stopped = true;
+    robot.set_stopped = function (new_value) {
+        this.stopped = new_value;
     };
     
     robot.run_actions = function(context, queue) {
