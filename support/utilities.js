@@ -258,12 +258,27 @@ window.TOONTALK.UTILITIES =
 			}
 		},
 		
-		create_text_input: function (value, class_name, title) {
+		create_text_input: function (value, class_name, label, title) {
 			var input = document.createElement("input");
+			var label_element, div;
 			input.type = "text";
-			input.className = class_name;
+			if (class_name) {
+				input.className = class_name;
+			}
 			input.value = value;
-			input.title = title;
+			if (title) {
+				input.title = title;
+			}
+			if (label) {
+				input.id = TT.UTILITIES.generate_unique_id();
+				label_element = document.createElement("label");
+				label_element.innerHTML = label;
+				label_element.for = input.id;
+				div = document.createElement("div");
+				div.appendChild(input);
+				div.appendChild(label_element);
+				return div;
+			}
 			return input;
 		},
 		

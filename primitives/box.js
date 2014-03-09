@@ -381,7 +381,7 @@ window.TOONTALK.box_backside =
     return {
         create: function (box) {
 	        var backside = TT.backside.create(this);
-            var size_input = TT.UTILITIES.create_text_input(box.get_size().toString(), 'toontalk-box-size-input', "Type here to edit the number of holes.");
+            var size_input = TT.UTILITIES.create_text_input(box.get_size().toString(), 'toontalk-box-size-input', "Number of holes", "Type here to edit the number of holes.");
 			var horizontal_radio_button = TT.UTILITIES.create_radio_button("box_orientation", "horizontal"); // might be nicer replaced by an icon
 			var vertical_radio_button = TT.UTILITIES.create_radio_button("box_orientation", "vertical");
             var update_value = function () {

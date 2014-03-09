@@ -505,8 +505,8 @@ window.TOONTALK.number_backside =
         create: function (number) {
 	        var backside = TT.backside.create(number);
 			var backside_element = backside.get_element();
-            var numerator_input = TT.UTILITIES.create_text_input(number.numerator_string(), 'toontalk-numerator-input', "Type here to edit the numerator");
-            var denominator_input = TT.UTILITIES.create_text_input(number.denominator_string(), 'toontalk-denominator-input', "Type here to edit the denominator");
+            var numerator_input = TT.UTILITIES.create_text_input(number.numerator_string(), "toontalk-numerator-input", "Numerator", "Type here to edit the numerator");
+            var denominator_input = TT.UTILITIES.create_text_input(number.denominator_string(), "toontalk-denominator-input", "Denominator", "Type here to edit the denominator");
 			var decimal_format = TT.UTILITIES.create_radio_button("number_format", "decimal");
 			var proper_format = TT.UTILITIES.create_radio_button("number_format", "proper_fraction");
 			var improper_format =TT.UTILITIES.create_radio_button("number_format", "improper_fraction");

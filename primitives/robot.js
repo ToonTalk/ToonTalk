@@ -172,8 +172,8 @@ window.TOONTALK.robot_backside =
 	        var backside = TT.backside.create(robot);
 			var backside_element = backside.get_element();
             // create_text_input should use JQuery????
-            var image_url_input = TT.UTILITIES.create_text_input(robot.get_image_url(), 'toontalk-image-url-input', "Type here to provide a URL for the appearance of this robot.");
-			var description_input = TT.UTILITIES.create_text_input(robot.get_description(), 'toontalk-robot-description-input', "Type here to provide a better descprion of this robot.");
+            var image_url_input = TT.UTILITIES.create_text_input(robot.get_image_url(), "toontalk-image-url-input", "Image URL", "Type here to provide a URL for the appearance of this robot.");
+			var description_input = TT.UTILITIES.create_text_input(robot.get_description(), "toontalk-robot-description-input", "Description", "Type here to provide a better descprion of this robot.");
             var input_table;
 			image_url_input.onchange = function () {
                 robot.set_image_url(image_url_input.value.trim(), true);
