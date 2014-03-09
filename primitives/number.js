@@ -507,91 +507,81 @@ window.TOONTALK.number_backside =
 			var backside_element = backside.get_element();
             var numerator_input = TT.UTILITIES.create_text_input(number.numerator_string(), "toontalk-numerator-input", "Numerator", "Type here to edit the numerator");
             var denominator_input = TT.UTILITIES.create_text_input(number.denominator_string(), "toontalk-denominator-input", "Denominator", "Type here to edit the denominator");
-			var decimal_format = TT.UTILITIES.create_radio_button("number_format", "decimal");
-			var proper_format = TT.UTILITIES.create_radio_button("number_format", "proper_fraction");
-			var improper_format =TT.UTILITIES.create_radio_button("number_format", "improper_fraction");
-			var plus = TT.UTILITIES.create_radio_button("operator", "+");
-			var minus = TT.UTILITIES.create_radio_button("operator", "-");
-			var multiply = TT.UTILITIES.create_radio_button("operator", "*");
-			var divide = TT.UTILITIES.create_radio_button("operator", "/");
-			var power = TT.UTILITIES.create_radio_button("operator", "^");
+			var decimal_format = TT.UTILITIES.create_radio_button("number_format", "decimal", "Decimal", "Display number as a decimal.");
+			var proper_format = TT.UTILITIES.create_radio_button("number_format", "proper_fraction", "Proper fraction", "Display number as a proper fraction with an integer part and a fraction.");
+			var improper_format =TT.UTILITIES.create_radio_button("number_format", "improper_fraction", "Improper fraction", "Display number as a simple fraction.");
+			var plus = TT.UTILITIES.create_radio_button("operator", "+", "&plus;", "Add me to what I'm dropped on.");
+			var minus = TT.UTILITIES.create_radio_button("operator", "-", "&minus;", "Subtract me from what I'm dropped on.");
+			var multiply = TT.UTILITIES.create_radio_button("operator", "*", "&times;", "Multiply me with what I'm dropped on.");
+			var divide = TT.UTILITIES.create_radio_button("operator", "/", "&divide;", "Divide me into what I'm dropped on.");
+			var power = TT.UTILITIES.create_radio_button("operator", "^", "Integer power", "Use me as the number of times to multiply together what I'm dropped on.");
             var update_value = function () {
-                number.set_from_values(numerator_input.value.trim(), denominator_input.value.trim(), true);
+                number.set_from_values(numerator_input.button.value.trim(), denominator_input.button.value.trim(), true);
             };
 			var update_format = function () {
-				number.set_format(TT.UTILITIES.selected_radio_button(decimal_format, proper_format, improper_format).value, true);
+				// use JQuery instead?
+				number.set_format(TT.UTILITIES.selected_radio_button(decimal_format.button, proper_format.button, improper_format.button).value, true);
 			};
 			var update_operator = function () {
-				number.set_operator(TT.UTILITIES.selected_radio_button(plus, minus, multiply, divide, power).value, true);
-			}
-            numerator_input.onchange = update_value;
-            denominator_input.onchange = update_value;
-			decimal_format.onchange = update_format;
-			proper_format.onchange = update_format;
-			improper_format.onchange = update_format;
+				number.set_operator(TT.UTILITIES.selected_radio_button(plus.button, minus.button, multiply.button, divide.button, power.button).value, true);
+			};
+			var run_button = TT.backside.create_run_button(backside, number);
+			var hide_button = TT.backside.create_hide_button(backside, number);
+			var number_set = TT.UTILITIES.create_button_set(numerator_input.container, denominator_input.container);
+			var format_set = TT.UTILITIES.create_button_set(decimal_format.container, proper_format.container, improper_format.container);
+            var operator_set = TT.UTILITIES.create_button_set(plus.container, minus.container, multiply.container, divide.container, power.container);
+			var run_hide_buttons_set = TT.UTILITIES.create_button_set(run_button, hide_button);
+			backside_element.appendChild(number_set);
+			backside_element.appendChild(format_set);
+			backside_element.appendChild(operator_set);
+			backside_element.appendChild(run_hide_buttons_set);
+			// use JQuery UI for the following???
+            numerator_input.button.onchange = update_value;
+            denominator_input.button.onchange = update_value;
+			decimal_format.button.onchange = update_format;
+			proper_format.button.onchange = update_format;
+			improper_format.button.onchange = update_format;
 			switch (number.get_format()) {
 				case "decimal":
-				decimal_format.checked = true;
+				decimal_format.button.checked = true;
 				break;
 				case "improper_fraction":
-				improper_format.checked = true;
+				improper_format.button.checked = true;
 				break;
 				case "proper_fraction":
-				proper_format.checked = true;
+				proper_format.button.checked = true;
 				break;
 			}
 			switch (number.get_operator()) {
 				case "+":
-				plus.checked = true;
+				plus.button.checked = true;
 				break;
 				case "-":
-				minus.checked = true;
+				minus.button.checked = true;
 				break;
 				case "*":
-				multiply.checked = true;
+				multiply.button.checked = true;
 				break;
 				case "/":
-				divide.checked = true;
+				divide.button.checked = true;
 				break;
 				case "^":
-				power.checked = true;
+				power.button.checked = true;
 				break;
 			}
-			improper_format.checked = true;
-			plus.onchange = update_operator;
-			minus.onchange = update_operator;
-			multiply.onchange = update_operator;
-			divide.onchange = update_operator;
-			power.onchange = update_operator;
-            backside_element.appendChild(numerator_input);
-            backside_element.appendChild(denominator_input);
-			backside_element.appendChild(TT.UTILITIES.label_radio_button(decimal_format, "&nbsp;Display number as a decimal."));
-			backside_element.appendChild(TT.UTILITIES.label_radio_button(proper_format, "&nbsp;Display number as a proper fraction."));
-			backside_element.appendChild(TT.UTILITIES.label_radio_button(improper_format, "&nbsp;Display number as a simple fraction."));
-			backside_element.appendChild(TT.UTILITIES.create_label("<i>What should this do when dropped on another number?</i>"));
-			backside_element.appendChild(TT.UTILITIES.create_horizontal_table(
-			    TT.UTILITIES.label_radio_button(plus, "&plus;", "Add me to what I'm dropped on", "toontalk-operator-choice"),
-				TT.UTILITIES.label_radio_button(minus, "&minus;", "Subtract me from what I'm dropped on", "toontalk-operator-choice"),
-				TT.UTILITIES.label_radio_button(multiply, "&times;", "Multiply me with what I'm dropped on", "toontalk-operator-choice"),
-				TT.UTILITIES.label_radio_button(divide, "&divide;", "Divide me into what I'm dropped on", "toontalk-operator-choice"),
-				TT.UTILITIES.label_radio_button(power, "Integer power", "Use me as the number of times to multiply together what I'm dropped on", "toontalk-operator-choice")));
-// 			backside_element.appendChild(TT.UTILITIES.create_label("<i>Following for testing:</i>"));
-			var run_button = TT.backside.create_run_button(backside, number);
-			var hide_button = TT.backside.create_hide_button(backside, number);
-			backside_element.appendChild(run_button);
-			backside_element.appendChild(hide_button);
-			var buttons = $(run_button, hide_button).buttonset();
-// 			backside_element.appendChild(TT.UTILITIES.create_horizontal_table(
-// 			    TT.backside.create_run_button(backside, number),
-// 				TT.backside.create_hide_button(backside, number)));
-// 			add_test_button(backside, "add-one");
-// 			add_test_button(backside, "double");
+			// to do -- generalise the following
+			improper_format.button.checked = true;
+			plus.button.onchange = update_operator;
+			minus.button.onchange = update_operator;
+			multiply.button.onchange = update_operator;
+			divide.button.onchange = update_operator;
+			power.button.onchange = update_operator;
 			backside.update_display = function () {
 				var numerator_input = TT.UTILITIES.get_first_child_with_class(this.get_element(), "toontalk-numerator-input");
 				var denominator_input = TT.UTILITIES.get_first_child_with_class(this.get_element(), "toontalk-denominator-input");
 				var number = this.get_widget();
-				numerator_input.value = number.numerator_string();
-				denominator_input.value = number.denominator_string();
+				numerator_input.button.value = number.numerator_string();
+				denominator_input.button.value = number.denominator_string();
 			};
             return backside;
         },

@@ -18,6 +18,7 @@ window.TOONTALK.UTILITIES =
 						 "drop_on_action": TT.drop_on.create_from_json,
 						 "box_path": TT.box.path.create_from_json,
 						 "path_to_entire_context": TT.path_to_entire_context.create_from_json};
+	var id_counter = 0;
     return {
 		create_from_json: function (json) {
 			var widget;
@@ -60,7 +61,8 @@ window.TOONTALK.UTILITIES =
 		},
 		
 		generate_unique_id: function () {
-		    return 'id' + (new Date()).getTime();
+			id_counter += 1;
+		    return 'toontalk_id_' + id_counter;
 		},
 		
         get_style_property: function (element, style_property) {
@@ -258,9 +260,19 @@ window.TOONTALK.UTILITIES =
 			}
 		},
 		
+		create_button_set: function (parameters) {
+			var container = document.createElement("div");
+			var i;
+			for (i = 0; i < arguments.length; i += 1) {
+				container.appendChild(arguments[i]);
+			}
+			$(container).buttonset();
+			return container;
+		},
+		
 		create_text_input: function (value, class_name, label, title) {
 			var input = document.createElement("input");
-			var label_element, div;
+			var label_element, container;
 			input.type = "text";
 			if (class_name) {
 				input.className = class_name;
@@ -269,35 +281,69 @@ window.TOONTALK.UTILITIES =
 			if (title) {
 				input.title = title;
 			}
-			if (label) {
-				input.id = TT.UTILITIES.generate_unique_id();
-				label_element = document.createElement("label");
-				label_element.innerHTML = label;
-				label_element.for = input.id;
-				div = document.createElement("div");
-				div.appendChild(input);
-				div.appendChild(label_element);
-				$(div).button();
-				return div;
-			}
-			return input;
+			input.id = TT.UTILITIES.generate_unique_id();
+			label_element = document.createElement("label");
+			label_element.innerHTML = label;
+			label_element.htmlFor = input.id;
+			container = document.createElement("div");
+			container.appendChild(input);
+			container.appendChild(label_element);
+			$(container).button();
+			return {container: container,
+				    button: input};
 		},
 		
-		create_radio_button: function (name, value) {
+		create_radio_button: function (name, value, label, title) {
+			var container = document.createElement("div");
 			var input = document.createElement("input");
 			input.type = "radio";
 			input.className = "toontalk-radio-button";
 			input.name = name;
 			input.value = value;
-			return input;
+			input.id = TT.UTILITIES.generate_unique_id();
+			var label_element = document.createElement("label");
+			label_element.innerHTML = label;
+			label_element.htmlFor = input.id;
+			container.appendChild(input);
+			container.appendChild(label_element);
+			if (title) {
+				container.title = title;
+			}
+			$(container).button();
+			return {container: container,
+			        button: input};
 		},
 		
-		create_label: function (html) {
-			var label_element = document.createElement("span");
-			label_element.className = "toontalk-label";
-			label_element.innerHTML = html;
-			return label_element;
-		},
+// 		get_radio_button_element: function (container) {
+// 			return $(container).children(".toontalk-radio-button").get(0);
+// 		},
+		
+// 		label_radio_button: function (button, label, title, label_class_name) {
+// 			// consider merging this with create_radio_button
+// 			var container = document.createElement("div");
+// 			var label_element = document.createElement("label");
+// 			if (!button.id) {
+// 				button.id = TT.UTILITIES.generate_unique_id();
+// 			}
+// 			label_element.innerHTML = label;
+// 			label_element.for = input.id;
+// 			// still worth doing here?
+// 			label_element.className += " " + label_class_name;
+// 			container.appendChild(button);
+// 			container.appendChild(label_element);
+// 			if (title) {
+// 				container.title = title;
+// 			}
+// 			$(container).button();
+// 			return container;		
+// 		},
+		
+// 		create_label: function (html) {
+// 			var label_element = document.createElement("span");
+// 			label_element.className = "toontalk-label";
+// 			label_element.innerHTML = html;
+// 			return label_element;
+// 		},
 		
 		create_horizontal_table: function (parameters) {
 			var table = document.createElement("table");
@@ -323,18 +369,6 @@ window.TOONTALK.UTILITIES =
 				table_element.appendChild(arguments[i]);
 			}
 			return table;
-		},
-		
-		label_radio_button: function (button, label, title, label_class_name) {
-			var container = document.createElement("div");
-			var label_element = this.create_label(label);
-			label_element.className += " " + label_class_name;
-			container.appendChild(button);
-			container.appendChild(label_element);
-			if (title) {
-				container.title = title;
-			}
-			return container;		
 		},
 		
 		selected_radio_button: function () {

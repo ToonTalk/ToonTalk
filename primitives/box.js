@@ -382,8 +382,8 @@ window.TOONTALK.box_backside =
         create: function (box) {
 	        var backside = TT.backside.create(this);
             var size_input = TT.UTILITIES.create_text_input(box.get_size().toString(), 'toontalk-box-size-input', "Number of holes", "Type here to edit the number of holes.");
-			var horizontal_radio_button = TT.UTILITIES.create_radio_button("box_orientation", "horizontal"); // might be nicer replaced by an icon
-			var vertical_radio_button = TT.UTILITIES.create_radio_button("box_orientation", "vertical");
+			var horizontal_radio_button = TT.UTILITIES.create_radio_button("box_orientation", "horizontal", "Left to right", "Show box horizontally."); // might be nicer replaced by an icon
+			var vertical_radio_button = TT.UTILITIES.create_radio_button("box_orientation", "vertical", "Top to bottom", "Show box vertically.");
             var update_value = function () {
                 box.set_size(parseInt(size_input.value.trim(), 10));
             };
@@ -395,9 +395,12 @@ window.TOONTALK.box_backside =
 			horizontal_radio_button.onchange = update_orientation;
 			vertical_radio_button.onchange = update_orientation;
             backside_element.appendChild(size_input);
-			backside_element.appendChild(TT.UTILITIES.create_horizontal_table(
-			    TT.UTILITIES.label_radio_button(horizontal_radio_button, "Left to right", "Show box horizontally", "toontalk-box-orientation-choice"),
-				TT.UTILITIES.label_radio_button(vertical_radio_button, "Top to bottom", "Show box vertically", "toontalk-box-orientation-choice")));
+			backside_element.appendChild(horizontal_radio_button);
+			backside_element.appendChild(vertical_radio_button);
+			$(horizontal_radio_button, vertical_radio_button).buttonset();
+// 			backside_element.appendChild(TT.UTILITIES.create_horizontal_table(
+// 			    TT.UTILITIES.label_radio_button(horizontal_radio_button, "Left to right", "Show box horizontally", "toontalk-box-orientation-choice"),
+// 				TT.UTILITIES.label_radio_button(vertical_radio_button, "Top to bottom", "Show box vertically", "toontalk-box-orientation-choice")));
 			if (box.get_horizontal()) {
 				horizontal_radio_button.checked = true;
 			} else {
