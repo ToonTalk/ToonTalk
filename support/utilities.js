@@ -277,6 +277,7 @@ window.TOONTALK.UTILITIES =
 				div = document.createElement("div");
 				div.appendChild(input);
 				div.appendChild(label_element);
+				$(div).button();
 				return div;
 			}
 			return input;
