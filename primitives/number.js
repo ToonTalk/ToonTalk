@@ -324,8 +324,9 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     number.toString = function () {
         // addition is implicit so don't display it
         var operator_string = this.get_operator() === '+' ? '' : this.get_operator();
-		var erased_string = this.get_erased() ? "erased: " : "";
-        return erased_string + operator_string + bigrat.str(this.get_value());
+		// erased_string was showing up in decimal number display
+// 		var erased_string = this.get_erased() ? "erased: " : "";
+        return operator_string + bigrat.str(this.get_value());
     };
 	
 	number.get_json = function () {
@@ -505,7 +506,7 @@ window.TOONTALK.number_backside =
         create: function (number) {
 	        var backside = TT.backside.create(number);
 			var backside_element = backside.get_element();
-            var numerator_input = TT.UTILITIES.create_text_input(number.numerator_string(), "toontalk-numerator-input", "Numerator", "Type here to edit the numerator");
+            var numerator_input = TT.UTILITIES.create_text_input(number.numerator_string(), "toontalk-numerator-input", "Numerator&nbsp;&nbsp;&nbsp;", "Type here to edit the numerator");
             var denominator_input = TT.UTILITIES.create_text_input(number.denominator_string(), "toontalk-denominator-input", "Denominator", "Type here to edit the denominator");
 			var decimal_format = TT.UTILITIES.create_radio_button("number_format", "decimal", "Decimal", "Display number as a decimal.");
 			var proper_format = TT.UTILITIES.create_radio_button("number_format", "proper_fraction", "Proper fraction", "Display number as a proper fraction with an integer part and a fraction.");
@@ -528,8 +529,8 @@ window.TOONTALK.number_backside =
 			var run_button = TT.backside.create_run_button(backside, number);
 			var hide_button = TT.backside.create_hide_button(backside, number);
 			var number_set = TT.UTILITIES.create_button_set(numerator_input.container, denominator_input.container);
-			var format_set = TT.UTILITIES.create_button_set(decimal_format.container, proper_format.container, improper_format.container);
-            var operator_set = TT.UTILITIES.create_button_set(plus.container, minus.container, multiply.container, divide.container, power.container);
+			var format_set = $(TT.UTILITIES.create_horizontal_table(decimal_format.container, proper_format.container, improper_format.container)).buttonset().get(0);
+            var operator_set = $(TT.UTILITIES.create_horizontal_table(plus.container, minus.container, multiply.container, divide.container, power.container)).buttonset().get(0);
 			var run_hide_buttons_set = TT.UTILITIES.create_button_set(run_button, hide_button);
 			backside_element.appendChild(number_set);
 			backside_element.appendChild(format_set);
@@ -538,50 +539,53 @@ window.TOONTALK.number_backside =
 			// use JQuery UI for the following???
             numerator_input.button.onchange = update_value;
             denominator_input.button.onchange = update_value;
+// 			$(decimal_format.button).click(
+// 				function () {
+// 					number.set_format("decimal");
+// 				});
 			decimal_format.button.onchange = update_format;
 			proper_format.button.onchange = update_format;
 			improper_format.button.onchange = update_format;
 			switch (number.get_format()) {
 				case "decimal":
-				decimal_format.button.checked = true;
+				$(decimal_format.button).prop("checked", true);
+				$(decimal_format.container).addClass('active');
 				break;
 				case "improper_fraction":
-				improper_format.button.checked = true;
+				$(improper_format.button).prop("checked", true);
+				$(improper_format.container).addClass('active');
 				break;
 				case "proper_fraction":
-				proper_format.button.checked = true;
+				$(proper_format.button).prop("checked", true);
+				$(proper_format.container).addClass('active');
 				break;
 			}
 			switch (number.get_operator()) {
 				case "+":
-				plus.button.checked = true;
+				$(plus.button).prop("checked", true);
 				break;
 				case "-":
-				minus.button.checked = true;
+				$(minus.button).prop("checked", true);
 				break;
 				case "*":
-				multiply.button.checked = true;
+				$(multiply.button).prop("checked", true);
 				break;
 				case "/":
-				divide.button.checked = true;
+				$(divide.button).prop("checked", true);
 				break;
 				case "^":
-				power.button.checked = true;
+				$(power.button).prop("checked", true);
 				break;
 			}
-			// to do -- generalise the following
-			improper_format.button.checked = true;
 			plus.button.onchange = update_operator;
 			minus.button.onchange = update_operator;
 			multiply.button.onchange = update_operator;
 			divide.button.onchange = update_operator;
 			power.button.onchange = update_operator;
 			backside.update_display = function () {
-				var numerator_input = TT.UTILITIES.get_first_child_with_class(this.get_element(), "toontalk-numerator-input");
-				var denominator_input = TT.UTILITIES.get_first_child_with_class(this.get_element(), "toontalk-denominator-input");
 				var number = this.get_widget();
-				numerator_input.button.value = number.numerator_string();
-				denominator_input.button.value = number.denominator_string();
+				$(numerator_input.button).val(number.numerator_string());
+				$(denominator_input.button).val(number.denominator_string());
 			};
             return backside;
         },

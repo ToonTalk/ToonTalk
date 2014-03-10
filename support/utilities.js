@@ -18,7 +18,8 @@ window.TOONTALK.UTILITIES =
 						 "drop_on_action": TT.drop_on.create_from_json,
 						 "box_path": TT.box.path.create_from_json,
 						 "path_to_entire_context": TT.path_to_entire_context.create_from_json};
-	var id_counter = 0;
+	// id needs to be unique across ToonTalks due to drag and drop
+	var id_counter = new Date().getTime();
     return {
 		create_from_json: function (json) {
 			var widget;
@@ -87,6 +88,7 @@ window.TOONTALK.UTILITIES =
 			return as_string;
 		},
 		
+		// replace calls with JQuery
 		get_first_child_with_class: function (element, class_name) {
 			var child;
 			for (child = element.firstChild; child; child = child.nextSibling) {
@@ -286,9 +288,10 @@ window.TOONTALK.UTILITIES =
 			label_element.innerHTML = label;
 			label_element.htmlFor = input.id;
 			container = document.createElement("div");
-			container.appendChild(input);
 			container.appendChild(label_element);
-			$(container).button();
+			container.appendChild(input);
+			$(input).button();
+			$(label_element).button();
 			return {container: container,
 				    button: input};
 		},
@@ -309,9 +312,11 @@ window.TOONTALK.UTILITIES =
 			if (title) {
 				container.title = title;
 			}
-			$(container).button();
+			$(input).button();
+// 			$(container).button();
 			return {container: container,
-			        button: input};
+			        button: input,
+					label: label_element};
 		},
 		
 // 		get_radio_button_element: function (container) {

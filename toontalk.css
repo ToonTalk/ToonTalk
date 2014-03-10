@@ -130,12 +130,12 @@
 .toontalk-denominator {
 }
 .toontalk-numerator-input {
-	width: 98%;
-	border-radius: 4px;
+	/* width: 98%; */
+	/* border-radius: 4px; */
 }
 .toontalk-denominator-input {
-	width: 98%;
-	border-radius: 4px;
+	/* width: 98%; */
+	/* border-radius: 4px; */
 }
 .toontalk-three-dots-in-number {
 	font-size: 30%;
