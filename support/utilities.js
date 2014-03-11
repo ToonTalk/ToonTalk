@@ -157,8 +157,14 @@ window.TOONTALK.UTILITIES =
 						json_object.id_of_original_dragree = unique_id;
 						json_object.drag_x_offset = event.originalEvent.clientX-position.left;
 						json_object.drag_y_offset = event.originalEvent.clientY-position.top;
-						json_object.original_width_fraction = $element.outerWidth() / $element.parent().outerWidth();
-						json_object.original_height_fraction = $element.outerHeight() / $element.parent().outerHeight();
+						if ($element.parent().is(".toontalk-backside")) {
+							json_object.original_width_fraction = $element.outerWidth() / $element.parent().outerWidth();
+							json_object.original_height_fraction = $element.outerHeight() / $element.parent().outerHeight();
+						} else {
+							// following should be kept in synch with toontalk-frontside-on-backside CSS
+							json_object.original_width_fraction = .3;
+							json_object.original_height_fraction = .1;
+						}
 						$element.data("json", json_object);
 						event.originalEvent.dataTransfer.setData("application/json", JSON.stringify(json_object));
 					}
