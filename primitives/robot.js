@@ -175,16 +175,18 @@ window.TOONTALK.robot_backside =
             var image_url_input = TT.UTILITIES.create_text_input(robot.get_image_url(), "toontalk-image-url-input", "Image URL", "Type here to provide a URL for the appearance of this robot.");
 			var description_input = TT.UTILITIES.create_text_input(robot.get_description(), "toontalk-robot-description-input", "Description", "Type here to provide a better descprion of this robot.");
             var input_table;
-			image_url_input.onchange = function () {
-                robot.set_image_url(image_url_input.value.trim(), true);
+			var hide_button = TT.backside.create_hide_button(backside, robot);
+			var hide_buttons_set = TT.UTILITIES.create_button_set(hide_button); // more to come -- e.g. copy
+			image_url_input.button.onchange = function () {
+                robot.set_image_url(image_url_input.button.value.trim(), true);
             };
-			description_input.onchange = function () {
-                robot.set_description(description_input.value.trim(), true);
+			description_input.button.onchange = function () {
+                robot.set_description(description_input.button.value.trim(), true);
             };
-			input_table = TT.UTILITIES.create_vertical_table(description_input, image_url_input);
+			input_table = TT.UTILITIES.create_vertical_table(description_input.container, image_url_input.container);
 			$(input_table).css({width: "90%"});
 			backside_element.appendChild(input_table);
-			backside_element.appendChild(TT.backside.create_hide_button(backside, robot));
+			backside_element.appendChild(hide_buttons_set);
             return backside;
         },
 		
