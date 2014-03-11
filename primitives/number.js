@@ -549,15 +549,16 @@ window.TOONTALK.number_backside =
 			switch (number.get_format()) {
 				case "decimal":
 				$(decimal_format.button).prop("checked", true);
-				$(decimal_format.container).addClass('active');
+				// also tried .label
+// 				$(decimal_format.container).addClass('active');
 				break;
 				case "improper_fraction":
 				$(improper_format.button).prop("checked", true);
-				$(improper_format.container).addClass('active');
+// 				$(improper_format.container).addClass('active');
 				break;
 				case "proper_fraction":
 				$(proper_format.button).prop("checked", true);
-				$(proper_format.container).addClass('active');
+// 				$(proper_format.container).addClass('active');
 				break;
 			}
 			switch (number.get_operator()) {

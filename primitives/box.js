@@ -173,7 +173,9 @@ window.TOONTALK.box = (function (TT) {
 		var size = this.get_size();
 		var i;
 		for (i = 0; i < size; i += 1) {
-			contents_json[i] = this.get_hole(i).get_json();
+			if (this.get_hole(i)) {
+				contents_json[i] = this.get_hole(i).get_json();
+			}
 		}
 		return super_prototype.get_json(
 		   {type: "box",
@@ -382,32 +384,29 @@ window.TOONTALK.box_backside =
         create: function (box) {
 	        var backside = TT.backside.create(this);
             var size_input = TT.UTILITIES.create_text_input(box.get_size().toString(), 'toontalk-box-size-input', "Number of holes", "Type here to edit the number of holes.");
-			var horizontal_radio_button = TT.UTILITIES.create_radio_button("box_orientation", "horizontal", "Left to right", "Show box horizontally."); // might be nicer replaced by an icon
-			var vertical_radio_button = TT.UTILITIES.create_radio_button("box_orientation", "vertical", "Top to bottom", "Show box vertically.");
+			var horizontal = TT.UTILITIES.create_radio_button("box_orientation", "horizontal", "Left to right", "Show box horizontally."); // might be nicer replaced by an icon
+			var vertical = TT.UTILITIES.create_radio_button("box_orientation", "vertical", "Top to bottom", "Show box vertically.");
             var update_value = function () {
-                box.set_size(parseInt(size_input.value.trim(), 10));
+                box.set_size(parseInt(size_input.button.value.trim(), 10), true);
             };
 			var update_orientation = function () {
-				box.set_horizontal((TT.UTILITIES.selected_radio_button(horizontal_radio_button, vertical_radio_button).value === "horizontal"), true);
+				box.set_horizontal((TT.UTILITIES.selected_radio_button(horizontal.button, vertical.button).value === "horizontal"), true);
 			};
 			var backside_element = backside.get_element();
-            size_input.onchange = update_value;
-			horizontal_radio_button.onchange = update_orientation;
-			vertical_radio_button.onchange = update_orientation;
-            backside_element.appendChild(size_input);
-			backside_element.appendChild(horizontal_radio_button);
-			backside_element.appendChild(vertical_radio_button);
-			$(horizontal_radio_button, vertical_radio_button).buttonset();
-// 			backside_element.appendChild(TT.UTILITIES.create_horizontal_table(
-// 			    TT.UTILITIES.label_radio_button(horizontal_radio_button, "Left to right", "Show box horizontally", "toontalk-box-orientation-choice"),
-// 				TT.UTILITIES.label_radio_button(vertical_radio_button, "Top to bottom", "Show box vertically", "toontalk-box-orientation-choice")));
+			var hide_button = TT.backside.create_hide_button(backside, box);
+			var run_button = TT.backside.create_run_button(backside, box);
+			var run_hide_buttons_set = TT.UTILITIES.create_button_set(run_button, hide_button);
+            size_input.button.onchange = update_value;
+			horizontal.button.onchange = update_orientation;
+			vertical.button.onchange = update_orientation;
+            backside_element.appendChild(size_input.container);
+			backside_element.appendChild($(TT.UTILITIES.create_horizontal_table(horizontal.container, vertical.container)).buttonset().get(0));
 			if (box.get_horizontal()) {
-				horizontal_radio_button.checked = true;
+				horizontal.button.checked = true;
 			} else {
-				vertical_radio_button.checked = true;
+				vertical.button.checked = true;
 			}
-//			add_test_button(backside, "copy-first-hole-to-second-hole"); // for testing
-            backside_element.appendChild(TT.backside.create_hide_button(backside, box));
+            backside_element.appendChild(run_hide_buttons_set);
             return backside;
         },		
 		update_display: function () {
@@ -420,7 +419,7 @@ window.TOONTALK.box_backside =
 }(window.TOONTALK));
 
 window.TOONTALK.box_empty_hole = 
-(function () {
+(function (TT) {
     "use strict";
 	return {
 	    create: function (index, box) {
@@ -467,4 +466,4 @@ window.TOONTALK.box_empty_hole =
 		},
 	};
 	
-}());
+}(window.TOONTALK));

@@ -106,7 +106,7 @@ window.TOONTALK.backside =
 		create_hide_button: function (backside, widget) {
 			var backside_element = backside.get_element();
 			var $backside_element = $(backside_element);
-			var $hide_button =  $("<button>Hide</button>").button();
+			var $hide_button = $("<button>Hide</button>").button();
 			$hide_button.addClass("toontalk-hide-backside-button");
 			$hide_button.click(function () {
 				$backside_element.remove(); // could animate away
@@ -120,7 +120,7 @@ window.TOONTALK.backside =
 		create_run_button: function (backside, widget) {
 			var backside_element = backside.get_element();
 			var $backside_element = $(backside_element);
-			var $run_button =  $("<button>Run</button>").button();
+			var $run_button = $("<button>Run</button>").button();
 			var run = true;
 			var robot;
 			$run_button.addClass("toontalk-run-backside-button");

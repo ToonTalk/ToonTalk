@@ -31,6 +31,7 @@
 .toontalk-frontside-on-backside {
 	width: 20%;
 	height: 10%;
+	resize:  both;
 }
 .toontalk-frontside-in-box {
 	width: 100%;
