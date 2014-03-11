@@ -62,7 +62,7 @@ window.TOONTALK.backside =
 			$(backside_element).on('DOMNodeInserted', function (event) {
 				var $source = $(event.originalEvent.srcElement);
 				var owner_widget;
-				if ($source.is(".toontalk-frontside")) {
+				if ($source.is(".toontalk-frontside") && $source.parent().is(".toontalk-backside")) {
 					$source.addClass("toontalk-frontside-on-backside");
 					owner_widget = $source.data("owner");
 					if (owner_widget) {
@@ -83,10 +83,10 @@ window.TOONTALK.backside =
 				var owner_widget;
 				if ($source.is(".toontalk-frontside")) {
 					$source.removeClass("toontalk-frontside-on-backside");
-					owner_widget = $source.data("owner");
-					if (owner_widget) {
-						owner_widget.update_display();
-					}
+// 					owner_widget = $source.data("owner");
+// 					if (owner_widget) {
+// 						owner_widget.update_display();
+// 					}
 				}
 				event.stopPropagation();
 			});		
