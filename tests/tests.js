@@ -110,7 +110,7 @@ window.TOONTALK.tests =
      double_robot: function () {
          var robot = this.accept_number_robot();
          var body = robot.get_body();
-         body.add(TT.copy.create(robot, TT.path_to_entire_context));
+         body.add(TT.copy.create(TT.path_to_entire_context));
          body.add(TT.drop_on.create(TT.path_to_entire_context));
          robot.set_image_url("images/RB19.PNG");
          return robot;
@@ -119,7 +119,7 @@ window.TOONTALK.tests =
      copy_first_hole_to_second_hole_robot: function () {
          var robot = this.accept_box_robot(2);
          var body = robot.get_body();
-         body.add(TT.copy.create(robot, TT.box.path.create(0)));
+         body.add(TT.copy.create(TT.box.path.create(0)));
          body.add(TT.drop_on.create(TT.box.path.create(1)));
          robot.set_image_url("images/RB45.PNG");
          return robot;

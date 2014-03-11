@@ -8,9 +8,8 @@ window.TOONTALK.copy =
 (function (TT) {
     "use strict";
     return {
-        create: function (robot, path) {
+        create: function (path) {
             var result = Object.create(this);
-            result.robot = robot;
             result.path = path;
             return result;
         },

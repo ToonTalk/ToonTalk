@@ -273,7 +273,10 @@ window.TOONTALK.box = (function (TT) {
             if (typeof index === 'number') {
                 hole = this.get_hole(index);
 				if (hole) {
-                    return hole.dereference(path.next);
+					if (path.next) {
+                    	return hole.dereference(path.next);
+					}
+					return hole;
 				}
             }
             console.log("box " + this.toString() + " unable to dereference path " + path.toString());
@@ -332,7 +335,7 @@ window.TOONTALK.box = (function (TT) {
 				get_json: function () {
 					return {type: "box_path",
 							index: index,
-							next: next && next.get_json()};
+							next: this.next && this.next.get_json()};
 				}
 			};
     	},
