@@ -138,7 +138,7 @@ window.TOONTALK.UTILITIES =
 			    function (event) {
 					var $container = $element.parents(".toontalk-side:first");
 					var container = $container.data("owner");
-					var position = $element.position();
+					var position = $element.get(0).getBoundingClientRect(); // $element.position();
 					var unique_id = TT.UTILITIES.generate_unique_id();
 					var json_object;
 					var widget = $element.data("owner");
@@ -155,8 +155,8 @@ window.TOONTALK.UTILITIES =
 						event.originalEvent.dataTransfer.effectAllowed = 'move';
 						json_object = widget.get_json();
 						json_object.id_of_original_dragree = unique_id;
-						json_object.drag_x_offset = event.originalEvent.clientX-position.left;
-						json_object.drag_y_offset = event.originalEvent.clientY-position.top;
+						json_object.drag_x_offset = event.originalEvent.clientX - position.left;
+						json_object.drag_y_offset = event.originalEvent.clientY - position.top;
 						if ($element.parent().is(".toontalk-backside")) {
 							json_object.original_width_fraction = $element.outerWidth() / $element.parent().outerWidth();
 							json_object.original_height_fraction = $element.outerHeight() / $element.parent().outerHeight();

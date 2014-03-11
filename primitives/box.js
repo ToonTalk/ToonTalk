@@ -303,17 +303,18 @@ window.TOONTALK.box = (function (TT) {
 		return false;
 	}
 	
-	box.removed = function (part) {
+	box.removed = function (part, element, event) {
 		var size = this.get_size();
 		var i;
 		var part_frontside = part.get_frontside();
+		var update_display = !!event;
 		if (part_frontside) {
 			$(part_frontside.get_element()).removeClass("toontalk-frontside-in-box");
 		}
 		for (i = 0; i < size; i += 1) {
 // 			console.log("Part is " + part.toString() + " hole " + i + " is " + this.get_hole(i).toString()); for debugging
             if (part === this.get_hole(i)) {
-				this.empty_hole(i);
+				this.empty_hole(i, update_display);
 				return this;
 			}
 		}
