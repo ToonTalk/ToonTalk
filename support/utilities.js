@@ -16,6 +16,8 @@ window.TOONTALK.UTILITIES =
 						 "pick_up_constant_action": TT.pick_up_constant.create_from_json,
 						 "pick_up_action": TT.pick_up.create_from_json,
 						 "drop_on_action": TT.drop_on.create_from_json,
+						 "copy_constant_action": TT.copy_constant.create_from_json,
+						 "copy_action": TT.copy.create_from_json,
 						 "box_path": TT.box.path.create_from_json,
 						 "path_to_entire_context": TT.path_to_entire_context.create_from_json};
 	// id needs to be unique across ToonTalks due to drag and drop

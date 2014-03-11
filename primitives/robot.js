@@ -21,9 +21,6 @@ window.TOONTALK.robot = (function (TT) {
 		if (!height) {
 			height = 50;
 		}
-		if (!description) {
-			description = toString();
-		}
         result.get_bubble = function () {
             return bubble;
         };
@@ -53,6 +50,9 @@ window.TOONTALK.robot = (function (TT) {
 			height = new_value;
 		};
 		result.get_description = function () {
+			if (!description) {
+				return result.toString();
+			}
 			return description;
 		};
 		result.set_description = function (new_value, update_display) {
@@ -136,8 +136,9 @@ window.TOONTALK.robot = (function (TT) {
 	};
 	
 	robot.toString = function () {
-		"robot " + this.get_description() + "with bubble " + this.get_bubble().toString() + " with these actions " + this.get_body().toString + " with this image " + this.get_image_url();
-	}
+		var bubble_erased = this.get_bubble().get_erased() ? " an erased " : " a ";
+		return "when given something that matches" + bubble_erased + this.get_bubble().toString() + " will " + this.get_body().toString();
+	};
 	
 	robot.get_json = function () {
 		var super_prototype = this.__proto__.__proto__;

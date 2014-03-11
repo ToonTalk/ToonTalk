@@ -45,6 +45,21 @@ window.TOONTALK.actions =
             this.get_robot().run(context, queue);
         },
         
+        toString: function () {
+            var description = "";
+            var i;
+            var steps = this.get_steps();
+            for (i = 0; i < steps.length; i++) {
+                description += steps[i].toString();
+                if (i === steps.length-2) {
+                    description += " and ";
+                } else if (i < steps.length-2) {
+                    description += ", ";
+                }
+            }
+            return description;
+        },
+        
         get_json: function () {
             return {type: "body",
                     steps: TT.UTILITIES.get_json_of_array(this.get_steps())};

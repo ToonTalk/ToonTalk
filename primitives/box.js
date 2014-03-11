@@ -327,7 +327,7 @@ window.TOONTALK.box = (function (TT) {
 					return index;
 				},         
 				toString: function () {
-					return "Box hole " + index + (this.next ? "; " + next.toString() : "");
+					return "box hole " + index + (this.next ? "; " + next.toString() : "");
 				},
 				get_json: function () {
 					return {type: "box_path",
