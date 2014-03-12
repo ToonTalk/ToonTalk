@@ -14,7 +14,6 @@ window.TOONTALK.frontside =
             var frontside_element = document.createElement('div');
 			var $frontside_element = $(frontside_element);
 			var $frontside_container = $frontside_element.parents(".toontalk-frontside:first");
-			var show_backside_timer;
 			frontside_element.className += "toontalk-frontside toontalk-side";
 			$frontside_element.data("owner", widget);
 			TT.UTILITIES.drag_and_drop($frontside_element, widget);
@@ -26,20 +25,25 @@ window.TOONTALK.frontside =
             };
 			$frontside_element.click(function (event) {
 				var backside = widget.get_backside();
-				var backside_element;
+				var backside_element, $frontside_ancestor_that_is_backside_element, $frontside_ancestor_before_backside_element, frontside_ancestor_before_backside_element;
 				if (backside) {
 					return; // could highlight it...
 				}
-				if ($frontside_element.parent(".toontalk-backside").length === 0) {
-					// only those directly on a backside
-					return;
+				// frontside_ancestor_that_is_backside_element is first parent that is a toontalk-backside
+				$frontside_ancestor_that_is_backside_element = $(frontside_element).parent();
+				$frontside_ancestor_before_backside_element = $(frontside_element);
+				while (!$frontside_ancestor_that_is_backside_element.is(".toontalk-backside")) {
+					$frontside_ancestor_before_backside_element = $frontside_ancestor_that_is_backside_element;
+					$frontside_ancestor_that_is_backside_element = $frontside_ancestor_that_is_backside_element.parent();
 				}
+				frontside_ancestor_before_backside_element = $frontside_ancestor_before_backside_element.get(0);
 				backside = widget.get_backside(true);
 				backside_element = backside.get_element();
 				$(backside_element).data("owner", widget);
-				$(backside_element).css({left: frontside_element.offsetLeft + frontside_element.offsetWidth,
-				                         top:  backside_element.style.top = frontside_element.offsetTop});
-				$frontside_element.parent(".toontalk-backside").append(backside_element);
+				$(backside_element).css({left: frontside_ancestor_before_backside_element.offsetLeft + frontside_ancestor_before_backside_element.offsetWidth,
+				                         top:  frontside_ancestor_before_backside_element.offsetTop});				
+				$frontside_ancestor_that_is_backside_element.append(backside_element);
+				event.stopPropagation();
 			});
 			// interferes with dragging and clicking to see backside
 //			$frontside_element.resizable(); // {handles: "n, e, s, w"}
