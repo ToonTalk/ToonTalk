@@ -117,6 +117,7 @@ window.TOONTALK.tests =
      },
      
      copy_first_hole_to_second_hole_robot: function () {
+         // following should ensure that something is in the first hole...
          var robot = this.accept_box_robot(2);
          var body = robot.get_body();
          body.add(TT.copy.create(TT.box.path.create(0)));

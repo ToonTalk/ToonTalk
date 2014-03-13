@@ -132,7 +132,7 @@ window.TOONTALK.UTILITIES =
 		},
 		
 		drag_and_drop: function ($element) {
-			$element.css({position: "absolute"});
+//			$element.css({position: "absolute"});
 			$element.attr("draggable", true);
 			// draggable causes dataTransfer to be null
 			// rewrote after noticing that this works fine: http://jsfiddle.net/KWut6/
@@ -142,8 +142,23 @@ window.TOONTALK.UTILITIES =
 					var container = $container.data("owner");
 					var position = $element.get(0).getBoundingClientRect(); // $element.position();
 					var unique_id = TT.UTILITIES.generate_unique_id();
-					var json_object;
 					var widget = $element.data("owner");
+					var json_object, widget_copy, element_copy;
+					if ($element.is(".toontalk-top-level-resource")) {
+						widget_copy = widget.copy();
+						element_copy = widget_copy.get_frontside_element(true);
+						$(element_copy).css({//left: position.left,
+						                     //top:  position.top,
+											 width: $element.width(),
+											 height: $element.height()});
+						$element.removeClass("toontalk-top-level-resource");
+						$(element_copy).addClass("toontalk-top-level-resource");
+						$element.parent().append(element_copy);
+						widget_copy.update_display();
+						// tried the following at the end but lost the dataTransfer
+						// idea from http://stackoverflow.com/questions/11055170/html5-drag-and-drop-how-do-i-target-the-cloned-and-original-elements
+// 						return $(this).clone().insertAfter(this);
+					}
 					if ($element.is(".toontalk-frontside")) {
 						// save the current dimension so size doesn't change while being dragged
 						$element.css({width:  this.offsetWidth + "px",
@@ -164,7 +179,7 @@ window.TOONTALK.UTILITIES =
 							json_object.original_height_fraction = $element.outerHeight() / $element.parent().outerHeight();
 						} else {
 							// following should be kept in synch with toontalk-frontside-on-backside CSS
-							json_object.original_width_fraction = .3;
+							json_object.original_width_fraction = .2;
 							json_object.original_height_fraction = .1;
 						}
 						$element.data("json", json_object);
@@ -262,7 +277,7 @@ window.TOONTALK.UTILITIES =
 					left = position.left;
 					top = position.top;
 				}
-				element.style.position = "absolute";
+//				element.style.position = "absolute";
 				$(element).css({left: left,
 				                 top: top});
 			} else {

@@ -33,39 +33,60 @@ window.TOONTALK = {}; // create ToonTalk 'module' -- using 'window' as recommend
 <link rel="shortcut icon" href="favicon.ico" />
 </head>
 <body>
+<div id='top-level-backside'> </div>
+<div id='a-number' class='toontalk-top-level-resource'></div>
+<div id='a-box' class='toontalk-top-level-resource'></div>
+<p>Test robots</p>
+<table style='padding: 6px;'>
+<tr style='padding: 4px;'>
+<td style='padding: 4px;'><div id='add_one_robot' style='width: 20%; height: 20%;'></td>
+<td style='padding: 4px;'>This robot adds one to what it is given.</td>
+</tr>
+<tr style='padding: 4px;'>
+<td style='padding: 4px;'><div id='double_robot' style='width: 20%; height: 20%;'></td>
+<td style='padding: 4px;'>This robot doubles what it is given.</td>
+</tr>
+<tr style='padding: 4px;'>
+<td style='padding: 4px;'><div id='copy_first_hole_to_second_hole_robot' style='width: 20%; height: 20%;'></div></td>
+<td style='padding: 4px;'>This robot copies what is in the first hole and drops the copy on the second hole.</td>
+</tr>
+</table>
 <script>
 $(document).ready(function () {
     var TT = window.TOONTALK;
     var backside = TT.backside.create({});
     var backside_element = backside.get_element();
     var $backside_element = $(backside_element);
-    $("body").append(backside_element);
-    $backside_element.css({width: "90%",
-                            height: "90%",
-                            left: "0px",
-                            top: "0px",
-                            "background-color": "yellow"});
+    $("#top-level-backside").append(backside_element);
+    $backside_element.css({width: "450px",
+                           height: "300px", // not sure why 50% didn't work
+                           "background-color": "yellow",
+                           position: "relative"});
     backside_element.draggable = false;
     TT.debugging = true; // remove this for production releases
     // use get_frontside_element in the following
-    var number = TT.number.create(2, 7);
+    var number = TT.number.create(1);
     var number_element = number.get_frontside_element();
-    var box = TT.box.create(2);
+    var box = TT.box.create(1);
     var box_element = box.get_frontside_element();
-    $(box_element).css({left: "50px",
-                         top: "300px"});
-    $backside_element.append(number_element);
-    $backside_element.append(box_element);
-//     $(number_element).addClass("toontalk-frontside-on-backside");
-//     $(box_element).addClass("toontalk-frontside-on-backside");
-//     box.update_frontside();
-//     number.update_frontside();
-//     var test_backside_element = document.getElementById("test1_top_level_backside");
-//     var test_backside = {get_element: function () { return test_backside_element}};
-//     var test_widget = {get_backside: function () { return test_backside}};
-//     TT.tests.create_sides(number_context, test_backside_element, 0);
-//     TT.tests.create_sides(box_context, test_backside_element, 300);
-//     TT.backside.associate_widget_with_backside_element(test_widget, test_backside, test_backside_element);
+    $("#a-number").append(number_element);
+    $(number_element).addClass("toontalk-top-level-resource");
+    $(number_element).css({position: "relative"});
+    number.update_display();
+    $("#a-box").append(box_element);
+    $(box_element).addClass("toontalk-top-level-resource");
+    $(box_element).css({position: "relative"});
+    box.update_display();
+    var add_one_robot = TT.tests.add_one_robot();
+    $("#add_one_robot").append(add_one_robot.get_frontside(true).get_element());
+    // should the following be done by get_element if never done?
+    add_one_robot.update_display();
+    var double_robot = TT.tests.double_robot();
+    $("#double_robot").append(double_robot.get_frontside(true).get_element());
+    double_robot.update_display();
+    var copy_first_hole_to_second_hole_robot = TT.tests.copy_first_hole_to_second_hole_robot();
+    $("#copy_first_hole_to_second_hole_robot").append(copy_first_hole_to_second_hole_robot.get_frontside(true).get_element());
+    copy_first_hole_to_second_hole_robot.update_display();
     TT.QUEUE.run();
 });
 </script>

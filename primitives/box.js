@@ -106,7 +106,10 @@ window.TOONTALK.box = (function (TT) {
     
     box.match = function (context) {
         if (this.get_erased()) {
-            return context.match_with_any_box();
+			if (context.match_with_any_box) {
+   	            return context.match_with_any_box();
+			}
+			return 'not matched';
         }
         return context.match_with_this_box(this);
     };
@@ -453,7 +456,10 @@ window.TOONTALK.box_empty_hole =
 			empty_hole.get_json = function () {
 				// no need to put anything into the array
 				return undefined;
-			}
+			};
+			empty_hole.copy = function () {
+				return TT.box_empty_hole.create(index, box);
+			};
 			$(hole_element).on('drop',
                 function (event) {
 					var json_object = TT.UTILITIES.data_transfer_json_object(event);
