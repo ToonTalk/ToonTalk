@@ -45,7 +45,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
 
     var fit_string_to_length = function (string, max_characters) {
         if (string.length <= Math.round(max_characters)) {
-            return string;
+			return '<span class="toontalk-digit" style="font-size:100%">' + string + '</span>';
         }
         if (max_characters < 5) {
 			// decrease font size and try again
@@ -225,16 +225,17 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             return;
         }
         var frontside_element = frontside.get_element();
-        var client_width, client_height, font_size, font_width, font_height, number_element, new_HTML;
-        client_width = frontside_element.clientWidth;
-        client_height = frontside_element.clientHeight;
-        font_height = client_height * 0.8;
-	//         font_size = TT.UTILITIES.get_style_numeric_property(frontside, "font-size");
+		var $dimensions_holder = $(frontside_element).parent().is(".toontalk-backside") ? $(frontside_element) : $(frontside_element).parent();
+        var client_width = $dimensions_holder.width();
+        var client_height = $dimensions_holder.height();
+		console.log(client_width + "x" + client_height);
+        var font_height = client_height * 0.8;
+//      font_size = TT.UTILITIES.get_style_numeric_property(frontside, "font-size");
         // according to http://www.webspaceworks.com/resources/fonts-web-typography/43/
         // the aspect ratio of monospace fonts varies from .43 to .55 
-        font_width = font_height * 0.64; // .55 'worst' aspect ratio -- add a little extra
+        var font_width = font_height * 0.64; // .55 'worst' aspect ratio -- add a little extra
         // could find the font name and use the precise value
-        new_HTML = this.to_HTML(client_width / font_width, font_height, this.get_format(), true, this.get_operator());
+        var new_HTML = this.to_HTML(client_width / font_width, font_height, this.get_format(), true, this.get_operator());
         if (!frontside_element.firstChild) {
             frontside_element.appendChild(document.createElement('div'));
         }

@@ -175,11 +175,16 @@ window.TOONTALK.UTILITIES =
 			$element.on('dragend', 
 			    function (event) {
 					if ($element.is(".toontalk-frontside")) {
-						// restore ordinary size styles
-						var json_object = $element.data("json");
-						if (json_object) {
-							$element.css({width:  json_object.original_width_fraction * 100 + "%",
-										  height: json_object.original_height_fraction * 100 + "%"});
+						if ($element.parent().is(".toontalk-backside")) {
+							// restore ordinary size styles
+							var json_object = $element.data("json");
+							if (json_object) {
+								$element.css({width:  json_object.original_width_fraction * 100 + "%",
+											  height: json_object.original_height_fraction * 100 + "%"});
+							}
+						} else {
+							$element.css({width:  "100%",
+									      height: "100%"});
 						}
 					}
 					event.stopPropagation();

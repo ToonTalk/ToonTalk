@@ -255,6 +255,8 @@ window.TOONTALK.box = (function (TT) {
 			box_frontside = this.get_frontside();
 			$element_container = $(box_frontside.get_element()).find(".toontalk-box-hole").eq(index); 
 			$element_container.append(old_hole_element);
+// 			$(old_hole_element).css({width:  "",
+// 			                         height: ""});
 			// since drag and drop is set up with absolute as the default
 			TT.UTILITIES.set_position_absolute(old_hole_element, false);
 			$(old_hole_element).addClass("toontalk-frontside-in-box");
@@ -457,7 +459,7 @@ window.TOONTALK.box_empty_hole =
 					var json_object = TT.UTILITIES.data_transfer_json_object(event);
                     var $dropped = $("#" + json_object.id_of_original_dragree);
 					if ($dropped.length >= 1) {
-						box.set_hole(index, $dropped.data("owner"), true);
+						box.set_hole(index, $dropped.data("owner"));
 						box.update_display();
 						event.stopPropagation();
 					}
