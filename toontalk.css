@@ -10,7 +10,9 @@
 	 width: 100px;
 	 height: 50px;
  }
-
+.toontalk-top-level-resource:hover {
+	cursor: move;
+}
 .toontalk-backside {
 	position: absolute;
 	background-color: rgba(245, 240, 240, 0.94);

@@ -228,7 +228,6 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
 		var $dimensions_holder = $(frontside_element).parent().is(".toontalk-backside") ? $(frontside_element) : $(frontside_element).parent();
         var client_width = $dimensions_holder.width();
         var client_height = $dimensions_holder.height();
-		console.log(client_width + "x" + client_height);
         var font_height = client_height * 0.8;
 //      font_size = TT.UTILITIES.get_style_numeric_property(frontside, "font-size");
         // according to http://www.webspaceworks.com/resources/fonts-web-typography/43/
