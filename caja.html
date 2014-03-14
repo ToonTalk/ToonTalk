@@ -1,0 +1,24 @@
+<html>
+  <head>
+    <title>Caja host page</title>
+    <script type="text/javascript"
+            src="http://caja.appspot.com/caja.js">
+    </script>
+  </head>
+
+  <body>
+    <h1>Caja host page</h1>
+    <div id="guest"></div>
+    <script type="text/javascript">
+      caja.initialize({
+        cajaServer: 'https://caja.appspot.com/',
+        debug: true
+      });
+      caja.load(document.getElementById('guest'), undefined, function(frame) {
+        frame.code('https://googledrive.com/host/0B0taMM6vlEqQbkZ1Ri1qa1BHNVk/',
+                   'text/html')
+             .run();
+      });
+    </script>
+  </body>
+</html>
