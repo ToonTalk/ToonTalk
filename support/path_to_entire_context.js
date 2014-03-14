@@ -3,6 +3,8 @@
  * Authors: Ken Kahn
  * License: New BSD
  */
+ 
+  /*jslint browser: true, devel: true, vars: true, white: true */
 
 
  window.TOONTALK.path_to_entire_context = 
@@ -17,7 +19,7 @@
             return {type: "path_to_entire_context"};
         },
         
-        create_from_json: function (json) {
+        create_from_json: function () {
             return TT.path_to_entire_context;
         }
     };

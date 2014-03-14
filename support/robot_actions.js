@@ -3,6 +3,8 @@
  * Authors: Ken Kahn
  * License: New BSD
  */
+ 
+/*jslint browser: true, devel: true, plusplus: true, vars: true, white: true */
 
 window.TOONTALK.actions = 
 (function (TT) {

@@ -2,23 +2,22 @@
  * Implements test programs for Web window.TOONTALK
  */
  
+ /*jslint browser: true, devel: true, vars: true, white: true */
+ 
 window.TOONTALK.tests =
  (function (TT) {
      "use strict";
      return {
      assert_equals: function (a, b, message) {
-         "use strict";
          console.assert(a.equals(b), message + " Expected to be equal " + a.toString() + "=" + b.toString());
      },
      
      random_integer_between: function (min, max) {
-         "use strict";
          return Math.round(Math.random()*(max-min))+min;
      },
      
      // number tests:
      drop_numbers: function (operator, a_n, a_d, b_n, b_d, result_n, result_d) {
-         "use strict";
          var a = TT.number.create(a_n, a_d).set_operator(operator);
          var b = TT.number.create(b_n, b_d);
          var expected_result = TT.number.create(result_n, result_d);
@@ -43,8 +42,7 @@ window.TOONTALK.tests =
      
      // robot tests:
      add_or_duplicate_robot: function (erase_bubble, double, backside_element, runs) {
-         "use strict";
-         var bubble = TT.number.create(2);
+//          var bubble = TT.number.create(2);
          var expected_result;
          var context = TT.number.create(2);
          if (backside_element) {
@@ -225,7 +223,6 @@ window.TOONTALK.tests =
      },
      
      run: function () {
-         "use strict";
          this.number_tests();
          this.box_tests();
          this.robot_tests();

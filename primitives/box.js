@@ -4,12 +4,11 @@
  * License: New BSD
  */
 
-/*jslint browser: true, devel: true, vars: true */
+/*jslint browser: true, devel: true, plusplus: true, vars: true, white: true */
 
 window.TOONTALK.box = (function (TT) {
     "use strict";
-    
-    var TT = window.TOONTALK; // for convenience and more legible code
+
     var box = Object.create(TT.widget);
 
     box.create = function (size, horizontal, contents) {
@@ -88,7 +87,7 @@ window.TOONTALK.box = (function (TT) {
         // what should this do if either or both are erased?
         var size = this.get_size();
         var i, my_hole, pattern_hole;
-        if (size != other_box.get_size()) {
+        if (size !== other_box.get_size()) {
             return false;
         }
         for (i = 0; i < size; i += 1) {
@@ -122,7 +121,7 @@ window.TOONTALK.box = (function (TT) {
         var size = this.get_size();
         var waiting_nests = [];
         var i, my_hole, pattern_hole, hole_match;
-        if (size != pattern_box.get_size()) {
+        if (size !== pattern_box.get_size()) {
             return 'not matched';
         }
         for (i = 0; i < size; i += 1) {
@@ -137,7 +136,7 @@ window.TOONTALK.box = (function (TT) {
                 if (hole_match === 'not matched') {
                     return 'not matched';
                 }
-                if (hole_match != 'matched') {
+                if (hole_match !== 'matched') {
                     if (waiting_nests.length === 0) {
                         waiting_nests = hole_match;
                     } else {
@@ -171,7 +170,7 @@ window.TOONTALK.box = (function (TT) {
     };
 
 	box.get_json = function () {
-		var super_prototype = this.__proto__.__proto__;
+		var super_prototype = Object.getPrototypeOf(Object.getPrototypeOf(this));
 		var contents_json = [];
 		var size = this.get_size();
 		var i;
@@ -196,13 +195,12 @@ window.TOONTALK.box = (function (TT) {
         var extra_classes = (horizontal ? 'horizontal' : 'vertical');
         var html = "<table class='toontalk-box toontalk-box-" + extra_classes + "'>";
         var size = this.get_size();
-        var i, hole;
+        var i;
         var percentage = size === 0 ? 1 : 100 / size;
         var horizontal_style = horizontal ? " style='width:" + percentage + "%;'" : "";
         var vertical_style =   horizontal ? "" : " style='height:" + percentage + "%;'";
         html += "<tr" + vertical_style + ">";
         for (i = 0; i < size; i += 1) {
-            hole = this.get_hole(i);
             html += "<td class='toontalk-box-hole toontalk-box-hole-" + extra_classes + "'" + horizontal_style + ">";
 		    html += "<div class='toontalk-hole-about-to-be-replaced'>";
             html += "</td>";
@@ -224,7 +222,6 @@ window.TOONTALK.box = (function (TT) {
         var frontside = this.get_frontside();
         var frontside_element = frontside.get_element();
         var new_HTML = this.to_HTML();
-		var size = this.get_size();
 		var that = this;
         if (!frontside_element.firstChild) {
             frontside_element.appendChild(document.createElement('div'));
@@ -303,13 +300,13 @@ window.TOONTALK.box = (function (TT) {
 			other.update_display();
 		}
 		this.remove();
-		return true;
+		return result;
     };
 	
 	box.box_dropped_on_me = function (other, event) {
 		console.log("box on box not yet implemented");
 		return false;
-	}
+	};
 	
 	box.removed = function (part, element, event) {
 		var size = this.get_size();
@@ -335,7 +332,7 @@ window.TOONTALK.box = (function (TT) {
 					return index;
 				},         
 				toString: function () {
-					return "box hole " + index + (this.next ? "; " + next.toString() : "");
+					return "box hole " + index + (this.next ? "; " + this.next.toString() : "");
 				},
 				get_json: function () {
 					return {type: "box_path",
@@ -351,7 +348,7 @@ window.TOONTALK.box = (function (TT) {
 				path.next = TT.UTILITIES.create_from_json(json.next);
 			}
 			return path;
-		},
+		}
     };
 	
 	if (TT.debugging) {
@@ -364,30 +361,6 @@ window.TOONTALK.box = (function (TT) {
 window.TOONTALK.box_backside = 
 (function (TT) {
     "use strict";
-	
-	var add_test_button = function(backside, robot_name) {
-		var $test_button = $("<button></button>").button({label: "add " + robot_name});
-		var test_button = $test_button.get(0);
-// 		var test_button = TT.UTILITIES.create_button("add " + robot_name + " robot", "test", "just testing");
-		$test_button.click(function () {
-			if (test_button.robot) {
-				test_button.robot.stop();
-				test_button.robot = undefined;
-				test_button.innerHTML = "resume " + robot_name;
-				return;
-			}
-			var robot;
-			switch (robot_name) {
-				case "copy-first-hole-to-second-hole": 
-				robot = TOONTALK.tests.copy_first_hole_to_second_hole_robot(); 
-				break;
-			}
-			test_button.robot = robot;
-			robot.run(backside.get_widget());
-			test_button.innerHTML = "stop " + robot_name;
-		});
-		backside.get_element().appendChild($test_button.get(0));
-	};
 	
     return {
         create: function (box) {
@@ -422,7 +395,7 @@ window.TOONTALK.box_backside =
 			var size_input = TT.UTILITIES.get_first_child_with_class(this.get_element(), "toontalk-box-size-input");
 			var box = this.get_widget();
 			size_input.value = box.get_size().toString();
-		},
+		}
 
     };
 }(window.TOONTALK));
@@ -475,7 +448,7 @@ window.TOONTALK.box_empty_hole =
 	    },
 		toString: function () {
 			return "_";
-		},
+		}
 	};
 	
 }(window.TOONTALK));

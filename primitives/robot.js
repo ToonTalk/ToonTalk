@@ -3,6 +3,8 @@
  * box.Authors = Ken Kahn
  * License: New BSD
  */
+ 
+ /*jslint browser: true, devel: true, plusplus: true, vars: true, white: true */
 
 window.TOONTALK.robot = (function (TT) {
     "use strict";
@@ -141,7 +143,7 @@ window.TOONTALK.robot = (function (TT) {
 	};
 	
 	robot.get_json = function () {
-		var super_prototype = this.__proto__.__proto__;
+		var super_prototype = Object.getPrototypeOf(Object.getPrototypeOf(this));
 		return super_prototype.get_json(
 		    {type: "robot",
 		     bubble: this.get_bubble().get_json(),
@@ -196,6 +198,6 @@ window.TOONTALK.robot_backside =
 			var image_url_input = TT.UTILITIES.get_first_child_with_class(this.get_element(), "toontalk-image-url-input");
 			var robot = this.get_widget();
 			image_url_input.value = robot.get_image_url();
-		},
+		}
     };
 }(window.TOONTALK));

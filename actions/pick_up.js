@@ -4,11 +4,7 @@
  * License: New BSD
  */
 
- /**
- * Implements ToonTalk's action of a robot picking something up
- * Authors: Ken Kahn
- * License: New BSD
- */
+/*jslint browser: true, devel: true, plusplus: true, vars: true, white: true */
  
  window.TOONTALK.pick_up = 
 (function (TT) {
@@ -35,13 +31,13 @@
         
         get_json: function () {
             return {type: "pick_up_action",
-                    path: this.path.get_json(),
+                    path: this.path.get_json()
                     };
         },
         
         create_from_json: function (json) {
             return TT.pick_up.create(TT.UTILITIES.create_from_json(json.path));
-        },
+        }
 
     };
 }(window.TOONTALK));

@@ -5,7 +5,7 @@
  * License: New BSD
  */
 
-/*jslint browser: true, devel: true, vars: true */
+/*jslint browser: true, devel: true, plusplus: true, vars: true, white: true */
 /*global BigInteger, bigrat */
 
 window.TOONTALK.number = (function (TT) { // TT is for convenience and more legible code
@@ -25,7 +25,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             while (size >= 1 && index < string.length) {
                 result = result + "<span class='toontalk-digit' style='font-size:" + size + "%'>" + string[index] + "<\/span>";
                 index += 1;
-                if (string[index] != '-') {
+                if (string[index] !== '-') {
 					// don't shrink if just displayed a minus sign
 					size *= factor;
                 }
@@ -35,7 +35,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             while (size >= 1 && index > 0) {
                 result = "<span class='toontalk-digit' style='font-size:" + size + "%'>" + string[index] + "<\/span>" + result;
                 index -= 1;
-				if (string[index] != '-') {
+				if (string[index] !== '-') {
                     size *= factor;
 				}
             }
@@ -98,7 +98,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         return result;
     };
 	
-	var HTML_for_operator = function (operator) {
+	var html_for_operator = function (operator) {
         switch (operator) {
         case '+':
             return '';
@@ -330,12 +330,12 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     };
 	
 	number.get_json = function () {
-		var super_prototype = this.__proto__.__proto__;
+		var super_prototype = Object.getPrototypeOf(Object.getPrototypeOf(this));
 		return super_prototype.get_json(
 		   {type: "number",
 		    operator: this.get_operator(),
 		    numerator: this.numerator_string(),
-	        denominator: this.denominator_string(),
+	        denominator: this.denominator_string()
 		    });
 	};
 	
@@ -346,7 +346,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     number.to_HTML = function (max_characters, font_size, format, top_level, operator) {
         var integer_as_string, integer_part, fractional_part, improper_fraction_HTML;
         var extra_class = (top_level !== false) ? ' toontalk-top-level-number' : '';
-	    var operator_HTML = operator ? HTML_for_operator(operator) : "";
+	    var operator_HTML = operator ? html_for_operator(operator) : "";
         if (!max_characters) {
             max_characters = 4;
         }
@@ -437,7 +437,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
 		}
         var fractional_part = copy.subtract(integer_part);
         var integer_max_digits = Math.min(integer_string.length, max_decimal_places / 2);
-        var decimal_max_digits = max_decimal_places - (integer_max_digits + .5); // 1/2 for the decimal point since not monospace
+        var decimal_max_digits = max_decimal_places - (integer_max_digits + 0.5); // 1/2 for the decimal point since not monospace
         var decimal_places = generate_decimal_places(fractional_part, decimal_max_digits * 2);
         if (decimal_places.length < decimal_max_digits) {
             // not repeating and not too many decimal digits
@@ -584,12 +584,12 @@ window.TOONTALK.number_backside =
 			divide.button.onchange = update_operator;
 			power.button.onchange = update_operator;
 			backside.update_display = function () {
-				var number = this.get_widget();
-				$(numerator_input.button).val(number.numerator_string());
-				$(denominator_input.button).val(number.denominator_string());
+				var number_widget = this.get_widget();
+				$(numerator_input.button).val(number_widget.numerator_string());
+				$(denominator_input.button).val(number_widget.denominator_string());
 			};
             return backside;
-        },
+        }
 
     };
 }(window.TOONTALK));

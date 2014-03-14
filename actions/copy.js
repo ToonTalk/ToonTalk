@@ -3,6 +3,8 @@
  * Authors: Ken Kahn
  * License: New BSD
  */
+ 
+ /*jslint browser: true, devel: true, plusplus: true, vars: true, white: true */
 
 window.TOONTALK.copy = 
 (function (TT) {
@@ -10,6 +12,9 @@ window.TOONTALK.copy =
     return {
         create: function (path) {
             var result = Object.create(this);
+            if (!path) {
+                console.log("path undefined in copy action");
+            }
             result.path = path;
             return result;
         },
@@ -29,13 +34,13 @@ window.TOONTALK.copy =
         
         get_json: function () {
             return {type: "copy_action",
-                    path: this.path.get_json(),
+                    path: this.path.get_json()
                     };
         },
         
         create_from_json: function (json) {
             return TT.copy.create(TT.UTILITIES.create_from_json(json.path));
-        },
+        }
 
     };
 }(window.TOONTALK));

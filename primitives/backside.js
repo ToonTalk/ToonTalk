@@ -1,7 +1,10 @@
  /**
  * Implements ToonTalk's backside of a widget
  * Authors: Ken Kahn
+ * License: New BSD
  */
+ 
+/*jslint browser: true, devel: true, plusplus: true, vars: true, white: true */
 
 window.TOONTALK.backside = 
 (function (TT) {
@@ -17,12 +20,12 @@ window.TOONTALK.backside =
             };
 			backside.get_widget = function () {
 				return widget;
-			}
+			};
 			if (!widget.get_backside) {
 				// e.g. top-level backside
 				widget.get_backside = function () {
 					return backside;
-				}
+				};
 		    }
 			if (!widget.drop_on) {
 				// TO DO: determine if this is needed -- top-level backside can't be added to something - can it?
@@ -80,7 +83,6 @@ window.TOONTALK.backside =
 			});
 			$(backside_element).on('DOMNodeRemoved', function (event) {
 				var $source = $(event.originalEvent.srcElement);
-				var owner_widget;
 				if ($source.is(".toontalk-frontside")) {
 					$source.removeClass("toontalk-frontside-on-backside");
 // 					owner_widget = $source.data("owner");
@@ -144,7 +146,7 @@ window.TOONTALK.backside =
 				run = !run;		
 			});
 			return $run_button.get(0);
-		},
+		}
 
     };
 }(window.TOONTALK));

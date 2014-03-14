@@ -3,6 +3,8 @@
  * Authors: Ken Kahn
  * License: New BSD
  */
+ 
+  /*jslint browser: true, devel: true, plusplus: true, vars: true, white: true */
 
 window.TOONTALK.drop_on = 
 (function (TT) {
@@ -31,13 +33,13 @@ window.TOONTALK.drop_on =
         
         get_json: function () {
             return {type: "drop_on_action",
-                    path: this.path.get_json(),
+                    path: this.path.get_json()
                     };
         },
         
         create_from_json: function (json) {
             return TT.drop_on.create(TT.UTILITIES.create_from_json(json.path));
-        },
+        }
 
     };
 }(window.TOONTALK));

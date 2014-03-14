@@ -3,6 +3,8 @@
  * Authors: Ken Kahn
  * License: New BSD
  */
+ 
+/*jslint browser: true, devel: true, plusplus: true, vars: true, white: true */
 
 window.TOONTALK.frontside = 
 (function (TT) {
@@ -13,7 +15,7 @@ window.TOONTALK.frontside =
 	        var frontside = Object.create(this);
             var frontside_element = document.createElement('div');
 			var $frontside_element = $(frontside_element);
-			var $frontside_container = $frontside_element.parents(".toontalk-frontside:first");
+// 			var $frontside_container = $frontside_element.parents(".toontalk-frontside:first");
 			frontside_element.className += "toontalk-frontside toontalk-side";
 			$frontside_element.data("owner", widget);
 			TT.UTILITIES.drag_and_drop($frontside_element, widget);
@@ -56,7 +58,7 @@ window.TOONTALK.frontside =
 		
 		remove: function() {
 			$(this.get_element()).remove();
-		},
+		}
 
     };
 }(window.TOONTALK));

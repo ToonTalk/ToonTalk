@@ -3,6 +3,8 @@
  * Authors: Ken Kahn
  * License: New BSD
  */
+ 
+/*jslint browser: true, devel: true, plusplus: true, vars: true, white: true */
 
 // jQuery.event.props.push('dataTransfer'); // some posts claim this needed -- unsure...
 
@@ -164,8 +166,8 @@ window.TOONTALK.UTILITIES =
 							json_object.original_height_fraction = $element.outerHeight() / $element.parent().outerHeight();
 						} else {
 							// following should be kept in synch with toontalk-frontside-on-backside CSS
-							json_object.original_width_fraction = .2;
-							json_object.original_height_fraction = .1;
+							json_object.original_width_fraction = 0.2;
+							json_object.original_height_fraction = 0.1;
 						}
 						$element.data("json", json_object);
 						event.originalEvent.dataTransfer.setData("application/json", JSON.stringify(json_object));
@@ -198,7 +200,7 @@ window.TOONTALK.UTILITIES =
 				});
 			$element.on('drop',
                 function (event) {
-					var $source, source, $target, target, target_position, json_object, drag_x_offset, drag_y_offset;
+					var $source, source, $target, target, target_position, drag_x_offset, drag_y_offset;
 					var json_object = TT.UTILITIES.data_transfer_json_object(event);
 					var source_copy, source_element_copy;
                     $source = $("#" + json_object.id_of_original_dragree);
@@ -288,7 +290,7 @@ window.TOONTALK.UTILITIES =
 			}
 		},
 		
-		create_button_set: function (parameters) {
+		create_button_set: function () { // takes any number of parameters
 			var container = document.createElement("div");
 			var i;
 			for (i = 0; i < arguments.length; i += 1) {
@@ -376,7 +378,7 @@ window.TOONTALK.UTILITIES =
 // 			return label_element;
 // 		},
 		
-		create_horizontal_table: function (parameters) {
+		create_horizontal_table: function () { // takes any number of parameters
 			var table = document.createElement("table");
 			var i, row, table_element;
 			row = document.createElement("tr");
@@ -389,7 +391,7 @@ window.TOONTALK.UTILITIES =
 			return table;
 		},
 		
-		create_vertical_table: function (parameters) {
+		create_vertical_table: function () { // takes any number of parameters
 			var table = document.createElement("table");
 			var i, row, table_element;
 			for (i = 0; i < arguments.length; i += 1) {
@@ -411,6 +413,6 @@ window.TOONTALK.UTILITIES =
 			}
 		}
 	
-    }
+    };
 	
 }(window.TOONTALK));

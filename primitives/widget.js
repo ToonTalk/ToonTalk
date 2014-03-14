@@ -4,7 +4,7 @@
  * License: New BSD
  */
 
-/*jslint browser: true, devel: true, vars: true */
+ /*jslint browser: true, devel: true, plusplus: true, vars: true, white: true */
 
 window.TOONTALK.widget = (function (TT) {
     "use strict";
@@ -140,7 +140,7 @@ window.TOONTALK.widget = (function (TT) {
         match_number: function () {
             // if a number didn't respond to this then not matched
             return 'not matched';
-        },
+        }
         
     };
 }(window.TOONTALK));

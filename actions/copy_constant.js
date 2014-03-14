@@ -3,6 +3,8 @@
  * Authors: Ken Kahn
  * License: New BSD
  */
+ 
+/*jslint browser: true, devel: true, plusplus: true, vars: true, white: true */
 
 window.TOONTALK.copy_constant = 
 (function (TT) {
@@ -26,13 +28,13 @@ window.TOONTALK.copy_constant =
         
         get_json: function () {
             return {type: "copy_constant_action",
-                    constant_object: this.constant_object.get_json(),
+                    constant_object: this.constant_object.get_json()
                     };
         },
         
         create_from_json: function (json) {
             return TT.copy_constant.create(TT.UTILITIES.create_from_json(json.constant_object));
-        },
+        }
 
     };
 }(window.TOONTALK));
