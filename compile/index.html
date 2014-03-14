@@ -1,32 +1,37 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta charset="ISO-8859-1">
+<link rel="stylesheet" media="all" href="../libraries/jquery-ui-1.10.4.custom.css">
 <link rel="stylesheet" media="all" href="../toontalk.css">
 <script>
-window.TOONTALK = {}; // create ToonTalk 'module'
+window.TOONTALK = {}; // create ToonTalk 'module' -- using 'window' as recommended by Caja
 </script>
 <script src="toontalk.js"></script>
-<!-- only including during development/testing --->
-<script src="../tests/tests.js"></script>
-<meta charset="ISO-8859-1">
 <title>ToonTalk Reborn Test Page</title>
+<link rel="shortcut icon" href="favicon.ico" />
 </head>
 <body>
-<div class='toontalk-backside toontalk-side' id='test1_top_level_backside' draggable='false' style='width: 800px; height: 600px; left: 350px; top: 20px; background-color: yellow'>
-</div>
+<div id='top-level-backside'> </div>
+<div id='a-number' class='toontalk-top-level-resource'></div>
+<div id='a-box' class='toontalk-top-level-resource'></div>
+<p>Test robots</p>
+<table style='padding: 6px;'>
+<tr style='padding: 4px;'>
+<td style='padding: 4px;'><div id='add_one_robot' style='width: 20%; height: 20%;' class='toontalk-top-level-resource'></td>
+<td style='padding: 4px;'>This robot adds one to what it is given.</td>
+</tr>
+<tr style='padding: 4px;'>
+<td style='padding: 4px;'><div id='double_robot' style='width: 20%; height: 20%;' class='toontalk-top-level-resource'></td>
+<td style='padding: 4px;'>This robot doubles what it is given.</td>
+</tr>
+<tr style='padding: 4px;'>
+<td style='padding: 4px;'><div id='copy_first_hole_to_second_hole_robot' style='width: 20%; height: 20%;' class='toontalk-top-level-resource'></div></td>
+<td style='padding: 4px;'>This robot copies what is in the first hole and drops the copy on the second hole.</td>
+</tr>
+</table>
 <script>
-$( document ).ready(function () {
-    var TT = window.TOONTALK;
-    var number_context = TT.number.create(2, 7);
-    var box_context = TT.tests.create_test_box();
-    // better to create a backside...
-    var test_backside = document.getElementById("test1_top_level_backside");
-    TT.tests.create_sides(number_context, test_backside, 0);
-    TT.tests.create_sides(box_context, test_backside, 300);
-    // empty top-level test object: {}
-    TT.backside.associate_widget_with_backside_element({}, {}, test_backside);
-    TOONTALK.QUEUE.run();
-});
+window.TOONTALK.initialise();
 </script>
 </body>
 </html>
