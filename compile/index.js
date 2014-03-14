@@ -1,3 +1,11 @@
+ /**
+ * Implements ToonTalk's creation of index page
+ * Authors: Ken Kahn
+ * License: New BSD
+ */
+ 
+ /*jslint browser: true, devel: true, plusplus: true, vars: true, white: true */
+
 window.TOONTALK.initialise = 
 function () {
     "use strict";
