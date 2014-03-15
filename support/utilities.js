@@ -319,7 +319,7 @@ window.TOONTALK.UTILITIES =
 			container.appendChild(label_element);
 			container.appendChild(input);
 			$(input).button();
-			$(label_element).button();
+            $(label_element).addClass("ui-widget");
 			return {container: container,
 				    button: input};
 		},
