@@ -134,7 +134,6 @@ window.TOONTALK.UTILITIES =
 		},
 		
 		drag_and_drop: function ($element) {
-//			$element.css({position: "absolute"});
 			$element.attr("draggable", true);
 			// draggable causes dataTransfer to be null
 			// rewrote after noticing that this works fine: http://jsfiddle.net/KWut6/
@@ -146,6 +145,7 @@ window.TOONTALK.UTILITIES =
 					var unique_id = TT.UTILITIES.generate_unique_id();
 					var widget = $element.data("owner");
 					var json_object;
+					$element.css({position: "absolute"});
 					if ($element.is(".toontalk-frontside")) {
 						// save the current dimension so size doesn't change while being dragged
 						$element.css({width:  this.offsetWidth + "px",
