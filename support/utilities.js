@@ -236,6 +236,12 @@ window.TOONTALK.UTILITIES =
 						$source.css({left: event.originalEvent.clientX-target_position.left-drag_x_offset,
 							          top: event.originalEvent.clientY-target_position.top-drag_y_offset});
 						target.get_backside().widget_dropped_on_me(source, event);
+						if ($source.is(".toontalk-frontside")) {
+							$source.resizable(
+								{resize: function(event, ui) {
+									source.update_display();
+								}});
+                        }
 						event.stopPropagation();
 					} else if (!target) {
 						console.log("target element has no 'owner'");
