@@ -10,7 +10,7 @@ window.TOONTALK.robot = (function (TT) {
     "use strict";
     var robot = Object.create(TT.widget);
     
-    robot.create = function (bubble, body, image_url, width, height, description) {
+    robot.create = function (bubble, body, image_url, description, width, height) {
         // bubble holds the conditions that need to be matched to run
         // body holds the actions the robot does when it runs
         var result = Object.create(this);
@@ -75,7 +75,7 @@ window.TOONTALK.robot = (function (TT) {
 	};
     
     robot.copy = function () {
-        return this.create(this.get_bubble().copy(), this.get_body());
+        return this.create(this.get_bubble().copy(), this.get_body(), this.get_image_url(), this.get_description());
     };
     
     robot.run = function (context, queue) {
