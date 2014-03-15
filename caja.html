@@ -12,10 +12,11 @@
     <script type="text/javascript">
       caja.initialize({
         cajaServer: 'https://caja.appspot.com/',
+        es5Mode: false,
         debug: true
       });
       caja.load(document.getElementById('guest'), undefined, function(frame) {
-        frame.code('https://googledrive.com/host/0B0taMM6vlEqQbkZ1Ri1qa1BHNVk/',
+        frame.code('http://toontalk.appspot.com/index.html',
                    'text/html')
              .run();
       });
