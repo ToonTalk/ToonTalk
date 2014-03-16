@@ -204,10 +204,13 @@ window.TOONTALK.box = (function (TT) {
         html += "<tr" + vertical_style + ">";
         for (i = 0; i < size; i += 1) {
             html += "<td class='toontalk-box-hole toontalk-box-hole-" + extra_classes + "'" + horizontal_style + ">";
-		    html += "<div class='toontalk-hole-about-to-be-replaced'>";
+		    html += "<div class='toontalk-hole-about-to-be-replaced' />";
             html += "</td>";
             if (!horizontal) {
-                html += "</tr><tr" + vertical_style + ">";
+                html += "</tr>";
+				if (i+1 < size) {
+					html += "<tr" + vertical_style + ">";
+				}
             }
         }
         if (horizontal) {
