@@ -37,6 +37,7 @@ window.TOONTALK.backside =
 						// better to have a preferrred size that it goes to when on backside
 						// recorded when dropped into something that changes its size -- e.g. a box
                         $side_element_of_other.addClass("toontalk-frontside-on-backside");
+// 						$side_element_of_other.resizable("enable");
                         other.update_display();
 			        }
 					return true;
@@ -45,6 +46,8 @@ window.TOONTALK.backside =
 			if (!widget.removed) {
 			    widget.removed = function (other, $side_element_of_other, event) {
 					$side_element_of_other.removeClass("toontalk-frontside-on-backside");
+// 					$side_element_of_other.resizable("disable");
+					// need to disable resizable -- probably should add it it and disable elsewhere
 // 					$element.removeClass("toontalk-on-backside");
 				    // no need to do anything since can find all children and their 'owners' easily enough
 			    };
@@ -59,6 +62,7 @@ window.TOONTALK.backside =
 		        };
 			TT.backside.associate_widget_with_backside_element(widget, backside, backside_element);
 			TT.UTILITIES.drag_and_drop($backside_element, widget);
+			// to do: following should set width and height percentages of children
 			$backside_element.resizable();
             // following should be done by something like GWT's onLoad...
             // but DOMNodeInserted is deprecated and MutationObserver is only in IE11.
@@ -67,6 +71,7 @@ window.TOONTALK.backside =
 				var owner_widget;
 				if ($source.is(".toontalk-frontside") && $source.parent().is(".toontalk-backside")) {
 					$source.addClass("toontalk-frontside-on-backside");
+// 					$source.resizable("enable");
 					owner_widget = $source.data("owner");
 					if (owner_widget) {
 						owner_widget.update_display();
@@ -85,6 +90,7 @@ window.TOONTALK.backside =
 				var $source = $(event.originalEvent.srcElement);
 				if ($source.is(".toontalk-frontside")) {
 					$source.removeClass("toontalk-frontside-on-backside");
+// 					$source.resizable("disable");
 // 					owner_widget = $source.data("owner");
 // 					if (owner_widget) {
 // 						owner_widget.update_display();
