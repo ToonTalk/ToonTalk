@@ -71,7 +71,9 @@ window.TOONTALK.backside =
 				var owner_widget;
 				if ($source.is(".toontalk-frontside") && $source.parent().is(".toontalk-backside")) {
 					$source.addClass("toontalk-frontside-on-backside");
-// 					$source.resizable("enable");
+					if ($source.is(".ui-resizable")) {
+						$source.resizable("enable");
+					}
 					owner_widget = $source.data("owner");
 					if (owner_widget) {
 						owner_widget.update_display();

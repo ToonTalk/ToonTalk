@@ -192,7 +192,7 @@ window.TOONTALK.UTILITIES =
 							// restore ordinary size styles
 							var json_object = $element.data("json");
 							if (json_object) {
-								$element.data("json", "");
+								$element.data("json", ""); // no point wasting memory on this anymore
 								$element.css({width:  json_object.width || json_object.original_width_fraction * 100 + "%",
 											  height: json_object.height || json_object.original_height_fraction * 100 + "%"});
 							}
@@ -259,7 +259,9 @@ window.TOONTALK.UTILITIES =
 							$source.resizable(
 								{resize: function(event, ui) {
 									source.update_display();			
-								}});
+								 },
+								 // the corner handles caused the element to be stuck in resize mode when used
+								 handles: "n,e,s,w"});
 						    // when dropped on a backside will be enabled
 // 							$source.resizable("disable");
                         }

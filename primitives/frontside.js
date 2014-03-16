@@ -52,8 +52,6 @@ window.TOONTALK.frontside =
 				$frontside_ancestor_that_is_backside_element.append(backside_element);
 				event.stopPropagation();
 			});
-			// interferes with dragging and clicking to see backside
-//			$frontside_element.resizable(); // {handles: "n, e, s, w"}
             return frontside;
         },
 		
