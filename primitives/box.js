@@ -56,7 +56,9 @@ window.TOONTALK.box = (function (TT) {
 				this.debug_string = this.toString();
 			}
         };
-        return new_box.add_sides_functionality(new_box);
+        new_box = new_box.add_sides_functionality(new_box);
+		new_box = new_box.erasable(new_box);
+        return new_box;
     };
     
     box.copy = function () {
@@ -438,6 +440,11 @@ window.TOONTALK.box_empty_hole =
 					var json_object = TT.UTILITIES.data_transfer_json_object(event);
                     var $dropped = $("#" + json_object.id_of_original_dragree);
 					if ($dropped.length >= 1) {
+						if ($dropped.is(".ui-resizable")) {
+							$dropped.resizable("disable");
+							// don't want it to look disabled just because you can't resize it
+							$dropped.removeClass('ui-state-disabled');
+						}
 						box.set_hole(index, $dropped.data("owner"));
 						box.update_display();
 						event.stopPropagation();

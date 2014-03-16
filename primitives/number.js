@@ -174,7 +174,9 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             function () { 
                 return format; 
             };
-        return number.add_sides_functionality(result);
+		result = number.add_sides_functionality(result);
+		result = number.erasable(result);
+        return result;
     };
 	
 	number.create_backside = function () {

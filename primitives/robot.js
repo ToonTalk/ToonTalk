@@ -67,7 +67,9 @@ window.TOONTALK.robot = (function (TT) {
 		if (TT.debugging) {
 			result.debug_string = result.toString();
 		}
-        return robot.add_sides_functionality(result);
+		result = robot.add_sides_functionality(result);
+		result = robot.erasable(result);
+        return result;
     };
     
     robot.create_backside = function () {

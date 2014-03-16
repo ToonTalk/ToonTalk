@@ -11,13 +11,15 @@ window.TOONTALK.widget = (function (TT) {
 
     return {
         
-        get_erased: function () {
-            // consider making erased a closure variable (but not by adding it to widget since then is shared between all widgets)
-            return this.erased;
-        },
-        
-        set_erased: function (new_value) {
-            this.erased = new_value;
+        erasable: function (widget) {
+            var erased;
+            widget.get_erased = function () {
+                return erased;
+            };
+            widget.set_erased = function (new_value) {
+                erased = new_value;
+            };
+            return widget;
         },
         
         add_sides_functionality: function (widget) {
@@ -125,10 +127,10 @@ window.TOONTALK.widget = (function (TT) {
             console.assert(false, "update_display not implemented");
         },
         
-        to_HTML: function () {
-            // should this be given the dimensions (in pixels) available? 
-            console.assert(false, "to_HTML not implemented");
-        },
+//         to_HTML: function () {
+//             // should this be given the dimensions (in pixels) available? 
+//             console.assert(false, "to_HTML not implemented");
+//         },
         
         equals_box: function () {
             // if a box didn't respond to this then not equal
