@@ -447,13 +447,16 @@ window.TOONTALK.box_empty_hole =
                 function (event) {
 					var json_object = TT.UTILITIES.data_transfer_json_object(event);
                     var $dropped = $("#" + json_object.id_of_original_dragree);
+					var dropped_widget;
 					if ($dropped.length >= 1) {
+						dropped_widget = $dropped.data("owner");
+						TT.UTILITIES.restore_resource($dropped, dropped_widget);
 						if ($dropped.is(".ui-resizable")) {
 							$dropped.resizable("disable");
 							// don't want it to look disabled just because you can't resize it
 							$dropped.removeClass('ui-state-disabled');
 						}
-						box.set_hole(index, $dropped.data("owner"));
+						box.set_hole(index, dropped_widget);
 						box.update_display();
 						event.stopPropagation();
 					}

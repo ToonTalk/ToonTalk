@@ -215,7 +215,6 @@ window.TOONTALK.UTILITIES =
                 function (event) {
 					var $source, source, $target, target, target_position, drag_x_offset, drag_y_offset;
 					var json_object = TT.UTILITIES.data_transfer_json_object(event);
-					var source_copy, source_element_copy;
                     $source = dragee || $("#" + json_object.id_of_original_dragree);
 					dragee = undefined;
 					$target = $(event.target).closest(".toontalk-side");
@@ -226,18 +225,7 @@ window.TOONTALK.UTILITIES =
 							return;
 						}
 						source = $source.data("owner");
-						if ($source.is(".toontalk-top-level-resource")) {
-							// restore original
-							source_copy = source.copy();
-							source_element_copy = source_copy.get_frontside_element(true);
-							$source.removeClass("toontalk-top-level-resource");
-							$(source_element_copy).addClass("toontalk-top-level-resource");
-							$source.parent().append(source_element_copy);
-							source_copy.update_display();
-							// tried the following at the end of dragstart but lost the dataTransfer
-							// idea from http://stackoverflow.com/questions/11055170/html5-drag-and-drop-how-do-i-target-the-cloned-and-original-elements
-	// 						return $(this).clone().insertAfter(this);
-						}
+						TT.UTILITIES.restore_resource($source, source);
 					} else {
 						source = TT.UTILITIES.create_from_json(json_object);
 						$source = $(source.get_frontside_element());
@@ -284,6 +272,19 @@ window.TOONTALK.UTILITIES =
 // // 				containment: false, // doesn't seem to work... -- nor does "none"
 // 				stack: ".toontalk-side",
 // 			}); // .resizable(); -- works fine for backsides but need to fix frontside problem
+		},
+		
+		restore_resource: function ($dropped, dropped_widget) {
+			var dropped_copy, dropped_element_copy;
+			if ($dropped.is(".toontalk-top-level-resource")) {
+				// restore original
+				dropped_copy = dropped_widget.copy();
+				dropped_element_copy = dropped_copy.get_frontside_element(true);
+				$dropped.removeClass("toontalk-top-level-resource");
+				$(dropped_element_copy).addClass("toontalk-top-level-resource");
+				$dropped.parent().append(dropped_element_copy);
+				dropped_copy.update_display();
+			}
 		},
 		
 		set_position_absolute: function (element, absolute, event) {
