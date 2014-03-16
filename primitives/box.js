@@ -170,7 +170,7 @@ window.TOONTALK.box = (function (TT) {
     };
 
 	box.get_json = function () {
-		var super_prototype = Object.getPrototypeOf(Object.getPrototypeOf(this));
+// 		var super_prototype = Object.getPrototypeOf(Object.getPrototypeOf(this));
 		var contents_json = [];
 		var size = this.get_size();
 		var i;
@@ -179,7 +179,7 @@ window.TOONTALK.box = (function (TT) {
 				contents_json[i] = this.get_hole(i).get_json();
 			}
 		}
-		return super_prototype.get_json(
+		return this.add_to_json(
 		   {type: "box",
 		    contents: contents_json,
 			horizontal: this.get_horizontal()

@@ -26,15 +26,22 @@ window.TOONTALK.UTILITIES =
 	var id_counter = new Date().getTime();
     return {
 		create_from_json: function (json) {
-			var widget;
+			var widget, frontside_element;
 			if (json_creators[json.type]) {
 				widget = json_creators[json.type](json);
 			} else {
 				console.log("json type " + json.type + " not yet supported.");
 				return;
 			}
-			if (widget && json.erased) {
-				widget.set_erased(json.erased);
+			if (widget) {
+				if (json.erased) {
+					widget.set_erased(json.erased);
+				}
+				if (json.width) {
+					frontside_element = widget.get_frontside_element();
+					$(frontside_element).css({width: json.width,
+					                          height: json.height});
+				}
 			}
 			return widget;
 		},

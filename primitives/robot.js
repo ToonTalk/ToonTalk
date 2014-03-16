@@ -143,14 +143,14 @@ window.TOONTALK.robot = (function (TT) {
 	};
 	
 	robot.get_json = function () {
-		var super_prototype = Object.getPrototypeOf(Object.getPrototypeOf(this));
-		return super_prototype.get_json(
+// 		var super_prototype = Object.getPrototypeOf(Object.getPrototypeOf(this));
+		return th8is.add_to_json(
 		    {type: "robot",
 		     bubble: this.get_bubble().get_json(),
 		     body: this.get_body().get_json(),
 			 image_url: this.get_image_url(),
-			 width: this.get_width(),
-			 height: this.get_height(),
+// 			 width: this.get_width(),
+// 			 height: this.get_height(),
 			 description: this.get_description()
 			});
 	};

@@ -8,17 +8,16 @@
 
 window.TOONTALK.widget = (function (TT) {
     "use strict";
-    
-    var erased;
 
     return {
         
         get_erased: function () {
-            return erased;
+            // consider making erased a closure variable (but not by adding it to widget since then is shared between all widgets)
+            return this.erased;
         },
         
         set_erased: function (new_value) {
-            erased = new_value;
+            this.erased = new_value;
         },
         
         add_sides_functionality: function (widget) {
@@ -58,7 +57,10 @@ window.TOONTALK.widget = (function (TT) {
         },
         
         get_frontside_element: function (update) {
-            var frontside = this.get_frontside(true);
+            var frontside = this.get_frontside && this.get_frontside(true);
+            if (!frontside) {
+                return;
+            }
             if (update) {
                 this.update_display();
             }
@@ -70,10 +72,16 @@ window.TOONTALK.widget = (function (TT) {
             return this;
         },
         
-        get_json: function (json) {
+        add_to_json: function (json) {
+            var frontside_element;
             if (json) {
                 if (this.get_erased()) {
                     json.erased = true;
+                }
+                frontside_element = this.get_frontside_element && this.get_frontside_element();
+                if (frontside_element) {
+                    json.width = $(frontside_element).width();
+                    json.height = $(frontside_element).height();
                 }
                 return json;
             } else {

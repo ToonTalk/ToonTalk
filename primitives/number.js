@@ -330,8 +330,8 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     };
 	
 	number.get_json = function () {
-		var super_prototype = Object.getPrototypeOf(Object.getPrototypeOf(this));
-		return super_prototype.get_json(
+// 		var super_prototype = Object.getPrototypeOf(Object.getPrototypeOf(this));
+		return this.add_to_json(
 		   {type: "number",
 		    operator: this.get_operator(),
 		    numerator: this.numerator_string(),
