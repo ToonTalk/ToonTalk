@@ -129,6 +129,8 @@ window.TOONTALK.robot = (function (TT) {
         }
         frontside_element.firstChild.innerHTML = new_HTML;
 		$(frontside_element).addClass("toontalk-robot");
+// 		$(frontside_element).css({width: this.get_width(),
+// 		                          height: this.get_height()});
 		$(frontside_element.firstChild).addClass("toontalk-widget");
     };
 	
@@ -136,7 +138,7 @@ window.TOONTALK.robot = (function (TT) {
 		// to do: add thought bubble
 		var description = this.get_description();
 		var title = description ? "This robot " + description : "This is a " + this.toString();
-		return "<img src='" + this.get_image_url() + "' width='" + this.get_width() + "px' height='" + this.get_height() + "' title='" + title + "'></img>";
+		return "<img src='" + this.get_image_url() + "' title='" + title + "' width='100%' height='100%'></img>";
 	};
 	
 	robot.toString = function () {
