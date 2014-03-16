@@ -134,6 +134,7 @@ window.TOONTALK.UTILITIES =
 		},
 		
 		drag_and_drop: function ($element) {
+			var dragee;
 			$element.attr("draggable", true);
 			// draggable causes dataTransfer to be null
 			// rewrote after noticing that this works fine: http://jsfiddle.net/KWut6/
@@ -145,6 +146,7 @@ window.TOONTALK.UTILITIES =
 					var unique_id = TT.UTILITIES.generate_unique_id();
 					var widget = $element.data("owner");
 					var json_object;
+					dragee = $element;
 					$element.css({position: "absolute"});
 					if ($element.is(".toontalk-frontside")) {
 						// save the current dimension so size doesn't change while being dragged
@@ -189,6 +191,7 @@ window.TOONTALK.UTILITIES =
 									      height: "100%"});
 						}
 					}
+// 					dragee = undefined;
 					event.stopPropagation();
 				});
 // 				greedy: true,
@@ -203,10 +206,11 @@ window.TOONTALK.UTILITIES =
 					var $source, source, $target, target, target_position, drag_x_offset, drag_y_offset;
 					var json_object = TT.UTILITIES.data_transfer_json_object(event);
 					var source_copy, source_element_copy;
-                    $source = $("#" + json_object.id_of_original_dragree);
+                    $source = dragee || $("#" + json_object.id_of_original_dragree);
+					dragee = undefined;
 					$target = $(event.target).closest(".toontalk-side");
 					target = $target.data("owner");
-					if ($source.length >= 1) {
+					if ($source && $source.length > 0) {
 						source = $source.data("owner");
 						if ($source.is(".toontalk-top-level-resource")) {
 							// restore original
@@ -236,11 +240,14 @@ window.TOONTALK.UTILITIES =
 						$source.css({left: event.originalEvent.clientX-target_position.left-drag_x_offset,
 							          top: event.originalEvent.clientY-target_position.top-drag_y_offset});
 						target.get_backside().widget_dropped_on_me(source, event);
-						if ($source.is(".toontalk-frontside")) {
+						if ($source.is(".toontalk-frontside") && !$source.is('.ui-resizable')) {
+// 							$source.css({resize: "both"}); // didn't work
 							$source.resizable(
 								{resize: function(event, ui) {
-									source.update_display();
+									source.update_display();			
 								}});
+						    // when dropped on a backside will be enabled
+// 							$source.resizable("disable");
                         }
 						event.stopPropagation();
 					} else if (!target) {
