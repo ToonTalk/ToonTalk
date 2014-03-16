@@ -504,6 +504,10 @@ window.TOONTALK.number_backside =
 // 		});
 // 		backside.get_element().appendChild($add_one.get(0));
 // 	};
+	var check_button = function (button_elements) {
+		$(button_elements.button).prop("checked", true);
+		$(button_elements.label).addClass('ui-state-active');
+	};
 	
     return {
         create: function (number) {
@@ -542,43 +546,35 @@ window.TOONTALK.number_backside =
 			// use JQuery UI for the following???
             numerator_input.button.onchange = update_value;
             denominator_input.button.onchange = update_value;
-// 			$(decimal_format.button).click(
-// 				function () {
-// 					number.set_format("decimal");
-// 				});
 			decimal_format.button.onchange = update_format;
 			proper_format.button.onchange = update_format;
 			improper_format.button.onchange = update_format;
 			switch (number.get_format()) {
 				case "decimal":
-				$(decimal_format.button).prop("checked", true);
-				// also tried .label
-// 				$(decimal_format.container).addClass('active');
+				check_button(decimal_format);
 				break;
 				case "improper_fraction":
-				$(improper_format.button).prop("checked", true);
-// 				$(improper_format.container).addClass('active');
+				check_button(improper_format);
 				break;
 				case "proper_fraction":
-				$(proper_format.button).prop("checked", true);
-// 				$(proper_format.container).addClass('active');
+				check_button(proper_format);
 				break;
 			}
 			switch (number.get_operator()) {
 				case "+":
-				$(plus.button).prop("checked", true);
+				check_button(plus);
 				break;
 				case "-":
-				$(minus.button).prop("checked", true);
+				check_button(minus);
 				break;
 				case "*":
-				$(multiply.button).prop("checked", true);
+				check_button(multiply);
 				break;
 				case "/":
-				$(divide.button).prop("checked", true);
+				check_button(divide);
 				break;
 				case "^":
-				$(power.button).prop("checked", true);
+				check_button(power);
 				break;
 			}
 			plus.button.onchange = update_operator;
