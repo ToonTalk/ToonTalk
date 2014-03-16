@@ -218,6 +218,10 @@ window.TOONTALK.UTILITIES =
 					$target = $(event.target).closest(".toontalk-side");
 					target = $target.data("owner");
 					if ($source && $source.length > 0) {
+						if ($source.get(0) === $target.get(0)) {
+							// just moved it a little bit
+							return;
+						}
 						source = $source.data("owner");
 						if ($source.is(".toontalk-top-level-resource")) {
 							// restore original
