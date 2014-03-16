@@ -47,6 +47,10 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         if (string.length <= Math.round(max_characters)) {
 			return '<span class="toontalk-digit" style="font-size:100%">' + string + '</span>';
         }
+		if (max_characters < 1) {
+			// hopefully too small to see
+			return "";
+		}
         if (max_characters < 5) {
 			// decrease font size and try again
 			return "<span style='font-size: 80%'>" + fit_string_to_length(string, max_characters * 1.25) + "</span>";
