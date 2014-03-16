@@ -113,6 +113,12 @@ window.TOONTALK.backside =
 			$(this.get_element()).remove();
 		},
 		
+		create_standard_buttons: function (backside, widget) {
+		    var run_button = TT.backside.create_run_button(backside, widget);
+			var hide_button = TT.backside.create_hide_button(backside, widget);
+			return TT.UTILITIES.create_button_set(run_button, hide_button);
+		},			
+		
 		create_hide_button: function (backside, widget) {
 			var backside_element = backside.get_element();
 			var $backside_element = $(backside_element);

@@ -146,7 +146,7 @@ window.TOONTALK.robot = (function (TT) {
 	
 	robot.get_json = function () {
 // 		var super_prototype = Object.getPrototypeOf(Object.getPrototypeOf(this));
-		return th8is.add_to_json(
+		return this.add_to_json(
 		    {type: "robot",
 		     bubble: this.get_bubble().get_json(),
 		     body: this.get_body().get_json(),
@@ -180,8 +180,7 @@ window.TOONTALK.robot_backside =
             var image_url_input = TT.UTILITIES.create_text_input(robot.get_image_url(), "toontalk-image-url-input", "Image URL", "Type here to provide a URL for the appearance of this robot.");
 			var description_input = TT.UTILITIES.create_text_input(robot.get_description(), "toontalk-robot-description-input", "Description", "Type here to provide a better descprion of this robot.");
             var input_table;
-			var hide_button = TT.backside.create_hide_button(backside, robot);
-			var hide_buttons_set = TT.UTILITIES.create_button_set(hide_button); // more to come -- e.g. copy
+			var standard_buttons = TT.backside.create_standard_buttons(backside, robot);
 			image_url_input.button.onchange = function () {
                 robot.set_image_url(image_url_input.button.value.trim(), true);
             };
@@ -191,7 +190,7 @@ window.TOONTALK.robot_backside =
 			input_table = TT.UTILITIES.create_vertical_table(description_input.container, image_url_input.container);
 			$(input_table).css({width: "90%"});
 			backside_element.appendChild(input_table);
-			backside_element.appendChild(hide_buttons_set);
+			backside_element.appendChild(standard_buttons);
             return backside;
         },
 		

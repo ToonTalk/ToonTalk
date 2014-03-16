@@ -537,16 +537,14 @@ window.TOONTALK.number_backside =
 			var update_operator = function () {
 				number.set_operator(TT.UTILITIES.selected_radio_button(plus.button, minus.button, multiply.button, divide.button, power.button).value, true);
 			};
-			var run_button = TT.backside.create_run_button(backside, number);
-			var hide_button = TT.backside.create_hide_button(backside, number);
 			var number_set = TT.UTILITIES.create_button_set(numerator_input.container, denominator_input.container);
 			var format_set = $(TT.UTILITIES.create_horizontal_table(decimal_format.container, proper_format.container, improper_format.container)).buttonset().get(0);
             var operator_set = $(TT.UTILITIES.create_horizontal_table(plus.container, minus.container, multiply.container, divide.container, power.container)).buttonset().get(0);
-			var run_hide_buttons_set = TT.UTILITIES.create_button_set(run_button, hide_button);
+			var standard_buttons = TT.backside.create_standard_buttons(backside, number);
 			backside_element.appendChild(number_set);
 			backside_element.appendChild(format_set);
 			backside_element.appendChild(operator_set);
-			backside_element.appendChild(run_hide_buttons_set);
+			backside_element.appendChild(standard_buttons);
 			// use JQuery UI for the following???
             numerator_input.button.onchange = update_value;
             denominator_input.button.onchange = update_value;

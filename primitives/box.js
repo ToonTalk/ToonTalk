@@ -385,9 +385,7 @@ window.TOONTALK.box_backside =
 				box.set_horizontal((TT.UTILITIES.selected_radio_button(horizontal.button, vertical.button).value === "horizontal"), true);
 			};
 			var backside_element = backside.get_element();
-			var hide_button = TT.backside.create_hide_button(backside, box);
-			var run_button = TT.backside.create_run_button(backside, box);
-			var run_hide_buttons_set = TT.UTILITIES.create_button_set(run_button, hide_button);
+			var standard_buttons = TT.backside.create_standard_buttons(backside, box);
             size_input.button.onchange = update_value;
 			horizontal.button.onchange = update_orientation;
 			vertical.button.onchange = update_orientation;
@@ -398,7 +396,7 @@ window.TOONTALK.box_backside =
 			} else {
 				check_button(vertical.button);
 			}
-            backside_element.appendChild(run_hide_buttons_set);
+            backside_element.appendChild(standard_buttons);
             return backside;
         },		
 		update_display: function () {
