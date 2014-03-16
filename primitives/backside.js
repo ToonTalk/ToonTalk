@@ -115,8 +115,9 @@ window.TOONTALK.backside =
 		
 		create_standard_buttons: function (backside, widget) {
 		    var run_button = TT.backside.create_run_button(backside, widget);
+			var copy_button = TT.backside.create_copy_button(backside, widget);
 			var hide_button = TT.backside.create_hide_button(backside, widget);
-			return TT.UTILITIES.create_button_set(run_button, hide_button);
+			return TT.UTILITIES.create_button_set(run_button, copy_button, hide_button);
 		},			
 		
 		create_hide_button: function (backside, widget) {
@@ -131,6 +132,25 @@ window.TOONTALK.backside =
 				}
 			});
 			return $hide_button.get(0);
+		},
+		
+		create_copy_button: function (backside, widget) {
+			var backside_element = backside.get_element();
+			var $backside_element = $(backside_element);
+			var $copy_button = $("<button>Copy</button>").button();
+			$copy_button.addClass("toontalk-copy-backside-button");
+			$copy_button.click(function () {
+				var widget_copy = widget.copy();
+				var frontside_element = widget.get_frontside_element();
+				var frontside_element_copy = widget_copy.get_frontside_element();
+				var position = $(frontside_element).position();
+				$(frontside_element_copy).css({width: $(frontside_element).width(),
+				                               height: $(frontside_element).height(),
+											   left: position.left+10,
+											   top: position.top+10});
+				$(frontside_element).parent().append(frontside_element_copy);
+			});
+			return $copy_button.get(0);
 		},
 		
 		create_run_button: function (backside, widget) {
