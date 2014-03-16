@@ -88,6 +88,7 @@
 	border-top-width: 0px;
 	border-bottom-width: 6px;
 	min-width:  100%;
+	min-height: 100%;
 }
 .toontalk-box-hole-vertical:nth-child(1) {
 	border-top-width: 6px;
