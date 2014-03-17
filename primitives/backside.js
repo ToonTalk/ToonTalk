@@ -14,6 +14,7 @@ window.TOONTALK.backside =
 			var backside = Object.create(this);
 			var backside_element = document.createElement("div");
 			var $backside_element = $(backside_element);
+			var original_width, original_height;
 			$backside_element.addClass("toontalk-backside toontalk-side");
 			backside.get_element = function () {
                 return backside_element;
@@ -62,8 +63,21 @@ window.TOONTALK.backside =
 		        };
 			TT.backside.associate_widget_with_backside_element(widget, backside, backside_element);
 			TT.UTILITIES.drag_and_drop($backside_element, widget);
-			// to do: following should set width and height percentages of children
-			$backside_element.resizable();
+			// the following function should apply recursively...
+			$backside_element.resizable(
+				{start: function () {
+					if (!original_width) {
+						original_width = $backside_element.width();
+					}
+					if (!original_height) {
+						original_height = $backside_element.height();
+					}
+				},
+				resize: function (event, ui) {
+					var percentage = 100 * Math.min(1, $backside_element.width() / original_width, $backside_element.height() / original_height);
+					$backside_element.css({"font-size": percentage + "%"});
+				},
+				handles: "n,e,s,w,se,ne,sw,nw"});
             // following should be done by something like GWT's onLoad...
             // but DOMNodeInserted is deprecated and MutationObserver is only in IE11.
 			$(backside_element).on('DOMNodeInserted', function (event) {

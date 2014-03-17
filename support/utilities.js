@@ -287,6 +287,22 @@ window.TOONTALK.UTILITIES =
 			}
 		},
 		
+// 		recursively_change_dimensions_to_percentages: function ($element) {
+// 			var parent_width = $element.width();
+// 			var parent_height = $element.height();
+// 			$element.children().each(function (index, child) {
+// 				if (!$(child).is(".ui-resizable-handle")) {
+// 					var child_width = $(child).width();
+// 					var child_height = $(child).height();
+// 					var width_percentage = Math.min(100, (100 * child_width / parent_width)) + "%";
+// 					var height_percentage = Math.min(100, (100 * child_height / parent_height)) + "%";
+// 					$(child).css({width: width_percentage,
+// 								  height: height_percentage});
+// 					TT.UTILITIES.recursively_change_dimensions_to_percentages($(child));
+// 				}
+// 			});
+// 		},
+		
 		set_position_absolute: function (element, absolute, event) {
 			var position, left, top, ancestor;
 			if (absolute) {
