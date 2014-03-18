@@ -366,11 +366,6 @@ window.TOONTALK.box_backside =
 (function (TT) {
     "use strict";
 	
-	var check_button = function (button_elements) {
-		$(button_elements.button).prop("checked", true);
-		$(button_elements.label).addClass('ui-state-active');
-	};
-	
     return {
         create: function (box) {
 	        var backside = TT.backside.create(this);
@@ -391,9 +386,9 @@ window.TOONTALK.box_backside =
             backside_element.appendChild(size_input.container);
 			backside_element.appendChild($(TT.UTILITIES.create_horizontal_table(horizontal.container, vertical.container)).buttonset().get(0));
 			if (box.get_horizontal()) {
-				check_button(horizontal);
+				TT.UTILITIES.check_radio_button(horizontal);
 			} else {
-				check_button(vertical.button);
+				TT.UTILITIES.check_radio_button(vertical.button);
 			}
             backside_element.appendChild(standard_buttons);
             return backside;

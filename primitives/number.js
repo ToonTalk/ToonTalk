@@ -483,11 +483,6 @@ window.TOONTALK.number_backside =
 (function (TT) {
     "use strict";
 	
-	var check_button = function (button_elements) {
-		$(button_elements.button).prop("checked", true);
-		$(button_elements.label).addClass('ui-state-active');
-	};
-	
     return {
         create: function (number) {
 	        var backside = TT.backside.create(number);
@@ -528,30 +523,30 @@ window.TOONTALK.number_backside =
 			improper_format.button.onchange = update_format;
 			switch (number.get_format()) {
 				case "decimal":
-				check_button(decimal_format);
+				TT.UTILITIES.check_radio_button(decimal_format);
 				break;
 				case "improper_fraction":
-				check_button(improper_format);
+				TT.UTILITIES.check_radio_button(improper_format);
 				break;
 				case "proper_fraction":
-				check_button(proper_format);
+				TT.UTILITIES.check_radio_button(proper_format);
 				break;
 			}
 			switch (number.get_operator()) {
 				case "+":
-				check_button(plus);
+				TT.UTILITIES.check_radio_button(plus);
 				break;
 				case "-":
-				check_button(minus);
+				TT.UTILITIES.check_radio_button(minus);
 				break;
 				case "*":
-				check_button(multiply);
+				TT.UTILITIES.check_radio_button(multiply);
 				break;
 				case "/":
-				check_button(divide);
+				TT.UTILITIES.check_radio_button(divide);
 				break;
 				case "^":
-				check_button(power);
+				TT.UTILITIES.check_radio_button(power);
 				break;
 			}
 			plus.button.onchange = update_operator;

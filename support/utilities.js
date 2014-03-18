@@ -336,6 +336,11 @@ window.TOONTALK.UTILITIES =
 			}
 		},
 		
+		check_radio_button: function (button_elements) {
+			$(button_elements.button).prop("checked", true);
+			$(button_elements.label).addClass('ui-state-active');
+		},
+		
 		create_button_set: function () { // takes any number of parameters
 			var container = document.createElement("div");
 			var i;
