@@ -42,6 +42,10 @@ window.TOONTALK.widget = (function (TT) {
                 };
             widget.forget_backside =
                 function () {
+                    var widgets = this.get_backside_widgets();
+                    if (widgets) {
+                        this.backside_widgets = widgets;
+                    }
                     backside = undefined;
                 };
             return widget;

@@ -153,10 +153,10 @@ window.TOONTALK.backside =
 			var $hide_button = $("<button>Hide</button>").button();
 			$hide_button.addClass("toontalk-hide-backside-button");
 			$hide_button.click(function () {
-				$backside_element.remove(); // could animate away
 				if (widget && widget.forget_backside) {
 					widget.forget_backside();
 				}
+			    $backside_element.remove(); // could animate away
 			});
 			$hide_button.attr("title", "Click to hide this.");
 			return $hide_button.get(0);
