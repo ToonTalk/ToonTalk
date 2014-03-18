@@ -121,11 +121,13 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     };
 
     // public methods
-    number.create = function (numerator, denominator, operator) {
+    number.create = function (numerator, denominator, operator, format) {
         var result = Object.create(number);
         // value is a private variable closed over below
         var value = bigrat_from_values(numerator, denominator);
-        var format = "improper_fraction";
+        if (!format) {
+			format = "improper_fraction";
+        }
 		if (!operator) {
 			operator = '+';
 		} 
@@ -200,7 +202,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     };
 
     number.copy = function (just_value) {
-        var copy = number.create(this.get_value()[0], this.get_value()[1], this.get_operator());
+        var copy = number.create(this.get_value()[0], this.get_value()[1], this.get_operator(), this.get_format());
 		if (just_value) {
 			return copy;
 		}
