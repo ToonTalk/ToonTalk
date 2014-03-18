@@ -15,7 +15,7 @@ window.TOONTALK.backside =
 			var backside_element = document.createElement("div");
 			var $backside_element = $(backside_element);
 			var original_width, original_height;
-			var backside_widgets, i;
+			var backside_widgets;
 			$backside_element.addClass("toontalk-backside toontalk-side");
 			backside.get_element = function () {
                 return backside_element;
@@ -120,8 +120,11 @@ window.TOONTALK.backside =
 				// too soon to add these widgets so delay slightly
 				setTimeout(
 					function ()  {
+						var i, widget_backside_element;
 						for (i = 0; i < backside_widgets.length; i++) {
-							$(backside_element).append(backside_widgets[i].get_frontside_element(true));
+							widget_backside_element = backside_widgets[i].get_frontside_element(true);
+							$(widget_backside_element).data("owner", backside_widgets[i]);
+							$(backside_element).append(widget_backside_element);
 						}
 					},
 					1);
