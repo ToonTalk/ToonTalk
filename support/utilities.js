@@ -140,7 +140,7 @@ window.TOONTALK.UTILITIES =
 				console.log("no dataTransfer in drop event");
 				return;
 		    }
-			json = event.originalEvent.dataTransfer.getData("application/json");
+			json = event.originalEvent.dataTransfer.getData("text/plain");
 			if (!json) {
 				console.log("No data in dataTransfer in drop.");
 				return;
@@ -193,7 +193,7 @@ window.TOONTALK.UTILITIES =
 							}
 						}
 						$element.data("json", json_object);
-						event.originalEvent.dataTransfer.setData("application/json", JSON.stringify(json_object));
+						event.originalEvent.dataTransfer.setData("text/plain", JSON.stringify(json_object));
 					}
 					event.stopPropagation();
 				});
@@ -227,7 +227,15 @@ window.TOONTALK.UTILITIES =
                 function (event) {
 					var $source, source, $target, target, target_position, drag_x_offset, drag_y_offset;
 					var json_object = TT.UTILITIES.data_transfer_json_object(event);
-                    $source = dragee || $("#" + json_object.id_of_original_dragree);
+                    $source = dragee || (json_object && $("#" + json_object.id_of_original_dragree));
+					if (!$source && !json_object) {
+						if (!event.originalEvent.dataTransfer) {
+							console.log("Drop failed since there is no event.originalEvent.dataTransfer");
+						} else {
+							console.log("Drop failed since unable to parse " + event.originalEvent.dataTransfer);
+						}
+						return;
+					}
 					dragee = undefined;
 					$target = $(event.target).closest(".toontalk-side");
 					target = $target.data("owner");
