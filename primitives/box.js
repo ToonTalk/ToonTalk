@@ -60,7 +60,7 @@ window.TOONTALK.box = (function (TT) {
         return new_box;
     };
     
-    box.copy = function () {
+    box.copy = function (just_value) {
         var copy = box.create(this.get_size(), this.get_horizontal());
         var size = this.get_size();
         var i, hole;
@@ -70,6 +70,9 @@ window.TOONTALK.box = (function (TT) {
                 copy.set_hole(i, hole.copy());
             }
         }
+		if (just_value) {
+			return copy;
+		}
         return this.add_to_copy(copy);
     };
     
@@ -166,9 +169,12 @@ window.TOONTALK.box = (function (TT) {
         }
         return '[' + contents + ']';
     };
+	
+	box.get_type_name = function () {
+		return "box (" + this.toString() + ")";
+	};
 
 	box.get_json = function () {
-// 		var super_prototype = Object.getPrototypeOf(Object.getPrototypeOf(this));
 		var contents_json = [];
 		var size = this.get_size();
 		var i;
@@ -256,8 +262,6 @@ window.TOONTALK.box = (function (TT) {
 			box_frontside = this.get_frontside();
 			$element_container = $(box_frontside.get_element()).find(".toontalk-box-hole").eq(index); 
 			$element_container.append(old_hole_element);
-// 			$(old_hole_element).css({width:  "",
-// 			                         height: ""});
 			// since drag and drop is set up with absolute as the default
 			TT.UTILITIES.set_position_absolute(old_hole_element, false);
 			$(old_hole_element).addClass("toontalk-frontside-in-box");

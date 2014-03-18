@@ -122,7 +122,12 @@ window.TOONTALK.widget = (function (TT) {
                 copy.set_backside_widgets(TT.UTILITIES.copy_widgets(backside_widgets));
             }
             return copy;
-        },           
+        },
+        
+        get_type_name: function () {
+            // only used for informative purposes so ignore if not overridden 
+            return "";
+        },
         
         copy: function () {
             console.assert(false, "copy not implemented");

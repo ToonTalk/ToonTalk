@@ -143,7 +143,8 @@ window.TOONTALK.backside =
 		    var run_button = TT.backside.create_run_button(backside, widget);
 			var copy_button = TT.backside.create_copy_button(backside, widget);
 			var hide_button = TT.backside.create_hide_button(backside, widget);
-			return TT.UTILITIES.create_button_set(run_button, copy_button, hide_button);
+			var remove_button = TT.backside.create_remove_button(backside, widget);
+			return TT.UTILITIES.create_button_set(run_button, copy_button, remove_button, hide_button);
 		},			
 		
 		create_hide_button: function (backside, widget) {
@@ -157,6 +158,7 @@ window.TOONTALK.backside =
 					widget.forget_backside();
 				}
 			});
+			$hide_button.attr("title", "Click to hide this.");
 			return $hide_button.get(0);
 		},
 		
@@ -176,6 +178,7 @@ window.TOONTALK.backside =
 											   top: position.top+10});
 				$(frontside_element).parent().append(frontside_element_copy);
 			});
+			$copy_button.attr("title", "Click to make a copy of this " + widget.get_type_name());
 			return $copy_button.get(0);
 		},
 		
@@ -200,12 +203,27 @@ window.TOONTALK.backside =
 				});
 				if (run) {
 					$run_button.button("option", "label", "Stop");
+					$run_button.attr("title", "Click to stop running the robots on this " + widget.get_type_name());
 				} else {
 					$run_button.button("option", "label", "Run");
+					$run_button.attr("title", "Click to run the robots on this " + widget.get_type_name());
 				}
-				run = !run;		
+				run = !run;
 			});
+			$run_button.attr("title", "Click to run the robots on this " + widget.get_type_name());
 			return $run_button.get(0);
+		},
+		
+		create_remove_button: function (backside, widget) {
+			var $remove_button = $("<button>Remove</button>").button();
+			$remove_button.addClass("toontalk-remove-backside-button");
+			$remove_button.click(function () {
+				if (widget && widget.remove) {
+					widget.remove();
+				}
+			});
+			$remove_button.attr("title", "Click to remove this " + widget.get_type_name());
+			return $remove_button.get(0);
 		},
 		
 		get_widgets: function () {

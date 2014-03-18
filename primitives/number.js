@@ -199,8 +199,11 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         return this.create(0);
     };
 
-    number.copy = function () {
+    number.copy = function (just_value) {
         var copy = number.create(this.get_value()[0], this.get_value()[1], this.get_operator());
+		if (just_value) {
+			return copy;
+		}
 		return this.add_to_copy(copy);
     };
     
@@ -328,6 +331,10 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
 // 		var erased_string = this.get_erased() ? "erased: " : "";
         return operator_string + bigrat.str(this.get_value());
     };
+	
+	number.get_type_name = function () {
+		return "number (" + this.toString() + ")";
+	};
 	
 	number.get_json = function () {
 // 		var super_prototype = Object.getPrototypeOf(Object.getPrototypeOf(this));

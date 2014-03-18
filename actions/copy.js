@@ -24,7 +24,7 @@ window.TOONTALK.copy =
             if (!referenced) {
                 return false;
             }
-            this.robot.thing_in_hand = referenced.copy();
+            this.robot.thing_in_hand = referenced.copy(true);
             return true;
         },
         
