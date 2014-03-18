@@ -483,31 +483,6 @@ window.TOONTALK.number_backside =
 (function (TT) {
     "use strict";
 	
-// 	var add_test_button = function(backside, robot_name) {
-//         var $add_one = $("<button></button>").button({label: "add " + robot_name});
-// 		var add_one = $add_one.get(0);
-// 		$add_one.click(function () {
-// 			if (add_one.robot) {
-// 				add_one.robot.stop();
-// 				add_one.robot = undefined;
-// 				add_one.innerHTML = "resume " + robot_name;
-// 				return;
-// 			}
-// 			var robot;
-// 			switch (robot_name) {
-// 				case "add-one": 
-// 				robot = TT.tests.add_one_robot(); 
-// 				break;
-// 				case "double": 
-// 				robot = TT.tests.double_robot(); 
-// 				break;
-// 			}
-// 			add_one.robot = robot;
-// 			robot.run(backside.get_widget());
-// 			add_one.innerHTML = "stop " + robot_name;
-// 		});
-// 		backside.get_element().appendChild($add_one.get(0));
-// 	};
 	var check_button = function (button_elements) {
 		$(button_elements.button).prop("checked", true);
 		$(button_elements.label).addClass('ui-state-active');
