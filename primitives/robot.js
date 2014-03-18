@@ -18,10 +18,11 @@ window.TOONTALK.robot = (function (TT) {
             image_url = "images/robot.png";
         }
 		if (!width) {
-			width = 50;
+			// probably should be based upon toontalk-top-level-resource's width
+			width = 100;
 		}
 		if (!height) {
-			height = 50;
+			height = 100;
 		}
         result.get_bubble = function () {
             return bubble;
@@ -77,7 +78,7 @@ window.TOONTALK.robot = (function (TT) {
 	};
     
     robot.copy = function () {
-        return this.create(this.get_bubble().copy(), this.get_body(), this.get_image_url(), this.get_description());
+        return this.add_to_copy(this.create(this.get_bubble().copy(), this.get_body(), this.get_image_url(), this.get_description(), this.get_width(), this.get_height()));
     };
     
     robot.run = function (context, queue) {
@@ -129,6 +130,9 @@ window.TOONTALK.robot = (function (TT) {
         }
         frontside_element.firstChild.innerHTML = new_HTML;
 		$(frontside_element).addClass("toontalk-robot");
+		frontside_element.style.width = this.get_width();
+		frontside_element.style.height = this.get_height();
+		// following interfered with resizable
 // 		$(frontside_element).css({width: this.get_width(),
 // 		                          height: this.get_height()});
 		$(frontside_element.firstChild).addClass("toontalk-widget");

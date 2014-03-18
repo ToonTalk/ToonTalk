@@ -116,10 +116,15 @@ window.TOONTALK.backside =
 				event.stopPropagation();
 			});
 			if (widget.get_backside_widgets) {
-			backside_widgets = widget.get_backside_widgets();
-				for (i = 0; i < backside_widgets.length; i++) {
-					$(backside_element).append(backside_widgets[i].get_frontside_element(true));
-				}
+				backside_widgets = widget.get_backside_widgets();
+				// too soon to add these widgets so delay slightly
+				setTimeout(
+					function ()  {
+						for (i = 0; i < backside_widgets.length; i++) {
+							$(backside_element).append(backside_widgets[i].get_frontside_element(true));
+						}
+					},
+					1);
 			}
 			return backside;
 		},

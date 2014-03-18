@@ -200,14 +200,8 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     };
 
     number.copy = function () {
-        var copy = number.create(this.get_value()[0], this.get_value()[1]);
-	    if (this.get_erased()) {
-            copy.set_erased(this.get_erased());
-        }
-		if (this.get_operator()) {
-			copy.set_operator(this.get_operator());
-		}
-		return copy;
+        var copy = number.create(this.get_value()[0], this.get_value()[1], this.get_operator());
+		return this.add_to_copy(copy);
     };
     
     number.is_number = function () {

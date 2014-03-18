@@ -70,10 +70,7 @@ window.TOONTALK.box = (function (TT) {
                 copy.set_hole(i, hole.copy());
             }
         }
-        if (this.get_erased()) {
-            copy.set_erased(this.get_erased());
-        }
-        return copy;
+        return this.add_to_copy(copy);
     };
     
     box.create_backside = function () {

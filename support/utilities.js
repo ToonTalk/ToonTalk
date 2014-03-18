@@ -75,6 +75,15 @@ window.TOONTALK.UTILITIES =
 			return json;
 		},
 		
+		copy_widgets: function (widgets) {
+			var widgets_copy = [];
+			var i;
+			for (i = 0; i < widgets.length; i++) {
+				widgets_copy[i] = widgets[i].copy();
+			}
+			return widgets_copy;
+		},
+		
 		generate_unique_id: function () {
 			id_counter += 1;
 		    return 'toontalk_id_' + id_counter;
@@ -308,13 +317,22 @@ window.TOONTALK.UTILITIES =
 		
 		set_position_absolute: function (element, absolute, event) {
 			var position, left, top, ancestor;
+			if (event) {
+				// either DOM or JQuery event
+				if (event.originalEvent) {
+					event = event.originalEvent;
+				}
+			}
 			if (absolute) {
-				if (element.style.position === "absolute") {
-					return;
+				if (element.style.position === "absolute") {					
+					if (!event || (event.pageX === event.clientX && event.pageY === event.clientY)) {
+						// is already absolute and no need to adjust for scrolling
+						return;
+					}
 				}
 				if (event) {
-					left = event.clientX;
-			        top = event.clientY;
+					left = event.pageX;
+			        top = event.pageY;
 					ancestor = element.parentElement;
 					while (ancestor) {
 						left -= ancestor.offsetLeft;

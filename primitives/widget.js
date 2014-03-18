@@ -113,6 +113,17 @@ window.TOONTALK.widget = (function (TT) {
             this.backside_widgets = backside_widgets;
         },
         
+        add_to_copy: function (copy) {
+            var backside_widgets = this.get_backside_widgets();
+            if (this.get_erased()) {
+                copy.set_erased(this.get_erased());
+            }
+            if (backside_widgets.length > 0) {
+                copy.set_backside_widgets(TT.UTILITIES.copy_widgets(backside_widgets));
+            }
+            return copy;
+        },           
+        
         copy: function () {
             console.assert(false, "copy not implemented");
         },
