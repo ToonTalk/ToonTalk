@@ -488,8 +488,11 @@ window.TOONTALK.number_backside =
         create: function (number) {
 	        var backside = TT.backside.create(number);
 			var backside_element = backside.get_element();
-            var numerator_input = TT.UTILITIES.create_text_input(number.numerator_string(), "toontalk-numerator-input", "Numerator&nbsp;&nbsp;&nbsp;", "Type here to edit the numerator");
-            var denominator_input = TT.UTILITIES.create_text_input(number.denominator_string(), "toontalk-denominator-input", "Denominator", "Type here to edit the denominator");
+            var numerator_input = TT.UTILITIES.create_text_input(number.numerator_string(), "toontalk-numerator-input", "", "Type here to edit the numerator");
+			var slash = document.createElement("div");
+			slash.innerHTML = "/";
+			$(slash).addClass("ui-widget"); // to look nice
+            var denominator_input = TT.UTILITIES.create_text_input(number.denominator_string(), "toontalk-denominator-input", "", "Type here to edit the denominator");
 			var decimal_format = TT.UTILITIES.create_radio_button("number_format", "decimal", "Decimal", "Display number as a decimal.");
 			var proper_format = TT.UTILITIES.create_radio_button("number_format", "proper_fraction", "Proper fraction", "Display number as a proper fraction with an integer part and a fraction.");
 			var improper_format =TT.UTILITIES.create_radio_button("number_format", "improper_fraction", "Improper fraction", "Display number as a simple fraction.");
@@ -508,7 +511,7 @@ window.TOONTALK.number_backside =
 			var update_operator = function () {
 				number.set_operator(TT.UTILITIES.selected_radio_button(plus.button, minus.button, multiply.button, divide.button, power.button).value, true);
 			};
-			var number_set = TT.UTILITIES.create_button_set(numerator_input.container, denominator_input.container);
+			var number_set = TT.UTILITIES.create_horizontal_table(numerator_input.container, slash, denominator_input.container);
 			var format_set = $(TT.UTILITIES.create_horizontal_table(decimal_format.container, proper_format.container, improper_format.container)).buttonset().get(0);
             var operator_set = $(TT.UTILITIES.create_horizontal_table(plus.container, minus.container, multiply.container, divide.container, power.container)).buttonset().get(0);
 			var standard_buttons = TT.backside.create_standard_buttons(backside, number);
