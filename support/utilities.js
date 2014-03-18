@@ -26,7 +26,7 @@ window.TOONTALK.UTILITIES =
 	var id_counter = new Date().getTime();
     return {
 		create_from_json: function (json) {
-			var widget, frontside_element;
+			var widget, frontside_element, backside_widgets;
 			if (json_creators[json.type]) {
 				widget = json_creators[json.type](json);
 			} else {
@@ -41,6 +41,9 @@ window.TOONTALK.UTILITIES =
 					frontside_element = widget.get_frontside_element();
 					$(frontside_element).css({width: json.width,
 					                          height: json.height});
+				}
+				if (json.backside_widgets) {
+					widget.set_backside_widgets(this.create_array_from_json(json.backside_widgets));
 				}
 			}
 			return widget;

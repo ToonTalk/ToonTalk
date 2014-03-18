@@ -75,7 +75,7 @@ window.TOONTALK.widget = (function (TT) {
         },
         
         add_to_json: function (json) {
-            var frontside_element;
+            var frontside_element, backside_widgets;
             if (json) {
                 if (this.get_erased()) {
                     json.erased = true;
@@ -85,11 +85,32 @@ window.TOONTALK.widget = (function (TT) {
                     json.width = $(frontside_element).width();
                     json.height = $(frontside_element).height();
                 }
+                backside_widgets = this.get_backside_widgets();
+                if (backside_widgets.length > 0) {
+                    json.backside_widgets = TT.UTILITIES.get_json_of_array(backside_widgets);
+                }
                 return json;
             } else {
                 console.log("get_json not defined");
                 return {};
             }
+        },
+        
+        get_backside_widgets: function () {
+            var backside = this.get_backside();
+            var backside_element;
+            if (!backside) {
+                if (this.backside_widgets) {
+                    // backside never displayed so use widgets added by copy or drop
+                    return this.backside_widgets;
+                }
+                return [];
+            }
+            return backside.get_widgets();
+        },
+        
+        set_backside_widgets: function (backside_widgets) {
+            this.backside_widgets = backside_widgets;
         },
         
         copy: function () {

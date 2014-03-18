@@ -15,6 +15,7 @@ window.TOONTALK.backside =
 			var backside_element = document.createElement("div");
 			var $backside_element = $(backside_element);
 			var original_width, original_height;
+			var backside_widgets, i;
 			$backside_element.addClass("toontalk-backside toontalk-side");
 			backside.get_element = function () {
                 return backside_element;
@@ -113,7 +114,13 @@ window.TOONTALK.backside =
 // 					}
 				}
 				event.stopPropagation();
-			});		
+			});
+			if (widget.get_backside_widgets) {
+			backside_widgets = widget.get_backside_widgets();
+				for (i = 0; i < backside_widgets.length; i++) {
+					$(backside_element).append(backside_widgets[i].get_frontside_element(true));
+				}
+			}
 			return backside;
 		},
 		
@@ -194,6 +201,17 @@ window.TOONTALK.backside =
 				run = !run;		
 			});
 			return $run_button.get(0);
+		},
+		
+		get_widgets: function () {
+			var widgets = [];
+			$(this.get_element()).children().each(function (index, element) {
+				var owner = $(element).data("owner");
+				if (owner) {
+					widgets[widgets.length] = owner;
+				}
+			});
+			return widgets;
 		}
 
     };
