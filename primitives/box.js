@@ -16,6 +16,9 @@ window.TOONTALK.box = (function (TT) {
         if (!contents) {
 			contents = [];
         }
+		if (!horizontal) {
+			horizontal = true;
+		}
         new_box.get_size = function () {
             return size;
         };
@@ -31,10 +34,6 @@ window.TOONTALK.box = (function (TT) {
             return this;
         };
         new_box.get_horizontal = function () {
-            // since horizontal is a boolean should this be called is_horizontal?
-            if (horizontal === undefined) {
-                return true; // horizontal by default
-            }
             return horizontal;
         };
         new_box.set_horizontal = function (new_horizontal, update_display) {
@@ -436,7 +435,7 @@ window.TOONTALK.box_empty_hole =
 			};
 			empty_hole.get_json = function () {
 				// no need to put anything into the array
-				return undefined;
+				return null;
 			};
 			empty_hole.copy = function () {
 				return TT.box_empty_hole.create(index, box);
