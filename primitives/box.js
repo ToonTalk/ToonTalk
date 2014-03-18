@@ -246,7 +246,7 @@ window.TOONTALK.box = (function (TT) {
 			this.set_hole(index, hole);
 		}
 		hole_frontside = hole.get_frontside(true);
-		if (old_hole_element) {
+		if (old_hole_element && old_hole_element.parentNode) {
 			hole_frontside_element = hole_frontside.get_element();
 		    old_hole_element.parentNode.replaceChild(hole_frontside_element, old_hole_element);
 			TT.UTILITIES.set_position_absolute(hole_frontside_element, false);
@@ -438,6 +438,11 @@ window.TOONTALK.box_empty_hole =
                     var $dropped = $("#" + json_object.id_of_original_dragree);
 					var dropped_widget;
 					if ($dropped.length >= 1) {
+						event.stopPropagation();
+						if ($(hole_element).parents("#" + json_object.id_of_original_dragree).length > 0) {
+							// dropped on itself
+							return;
+						}
 						dropped_widget = $dropped.data("owner");
 						TT.UTILITIES.restore_resource($dropped, dropped_widget);
 						if ($dropped.is(".ui-resizable")) {
@@ -447,7 +452,6 @@ window.TOONTALK.box_empty_hole =
 						}
 						box.set_hole(index, dropped_widget);
 						box.update_display();
-						event.stopPropagation();
 					}
 				});
 			$(hole_element).data("owner", empty_hole);
