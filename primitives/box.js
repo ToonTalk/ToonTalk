@@ -171,7 +171,7 @@ window.TOONTALK.box = (function (TT) {
     };
 	
 	box.get_type_name = function () {
-		return "box (" + this.toString() + ")";
+		return "box";
 	};
 
 	box.get_json = function () {

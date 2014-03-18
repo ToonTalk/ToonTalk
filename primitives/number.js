@@ -333,7 +333,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     };
 	
 	number.get_type_name = function () {
-		return "number (" + this.toString() + ")";
+		return "number";
 	};
 	
 	number.get_json = function () {
