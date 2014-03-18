@@ -239,7 +239,13 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         // the aspect ratio of monospace fonts varies from .43 to .55 
         var font_width = font_height * 0.64; // .55 'worst' aspect ratio -- add a little extra
         // could find the font name and use the precise value
-        var new_HTML = this.to_HTML(client_width / font_width, font_height, this.get_format(), true, this.get_operator());
+		var max_decimal_places = client_width / font_width;
+		if (max_decimal_places < 4 && this.get_format() === 'decimal') {
+			// better to use a smaller font than have too few digits
+			font_height = font_height * max_decimal_places / 4;
+			max_decimal_places = 4;
+		}
+        var new_HTML = this.to_HTML(max_decimal_places, font_height, this.get_format(), true, this.get_operator());
         if (!frontside_element.firstChild) {
             frontside_element.appendChild(document.createElement('div'));
         }
