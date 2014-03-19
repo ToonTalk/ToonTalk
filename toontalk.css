@@ -150,7 +150,7 @@
 }
 .toontalk-three-dots-in-number {
 	font-size: 30%;
-	font-family: serif; // really want to ignore the monospace
+	font-family: serif; /* really want to ignore the monospace */
 }
 .toontalk-hole-about-to-be-replaced {
 	width: 100%;

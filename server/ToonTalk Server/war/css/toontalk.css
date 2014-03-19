@@ -8,7 +8,7 @@
  .toontalk-top-level-resource {
 	 position: relative;
 	 width: 100px;
-	 height: 50px;
+	 height: 100px;
  }
 .toontalk-top-level-resource:hover {
 	cursor: move;
@@ -40,7 +40,7 @@
 	position: absolute;
 	width: 20%;
 	height: 10%;
-	resize:  both;
+	/* resize:  both; */
 }
 .toontalk-frontside-in-box {
 	width: 100%;
@@ -88,6 +88,7 @@
 	border-top-width: 0px;
 	border-bottom-width: 6px;
 	min-width:  100%;
+	min-height: 100%;
 }
 .toontalk-box-hole-vertical:nth-child(1) {
 	border-top-width: 6px;
