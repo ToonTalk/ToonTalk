@@ -350,12 +350,13 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
 		   {type: "number",
 		    operator: this.get_operator(),
 		    numerator: this.numerator_string(),
-	        denominator: this.denominator_string()
+	        denominator: this.denominator_string(),
+			format: this.get_format()
 		    });
 	};
 	
 	number.create_from_json = function (json) {
-		return number.create(json.numerator, json.denominator, json.operator);
+		return number.create(json.numerator, json.denominator, json.operator, json.format);
 	};
 
     number.to_HTML = function (max_characters, font_size, format, top_level, operator) {
