@@ -60,6 +60,7 @@ window.TOONTALK.backside =
 			        var $other_front_side_element = $(other_front_side_element);
 			        $backside_element.append($other_front_side_element);
 			        TT.UTILITIES.set_position_absolute(other_front_side_element, true, event); // when on the backside
+					$other_front_side_element.data("owner").update_display();
 			        return true;
 		        };
 			TT.backside.associate_widget_with_backside_element(widget, backside, backside_element);
