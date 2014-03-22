@@ -370,11 +370,18 @@ window.TOONTALK.UTILITIES =
 			$(button_elements.label).addClass('ui-state-active');
 		},
 		
-		create_button_set: function () { // takes any number of parameters
+		create_button_set: function () { 
+			// takes any number of parameters, any of which can be an array of buttons
 			var container = document.createElement("div");
-			var i;
-			for (i = 0; i < arguments.length; i += 1) {
-				container.appendChild(arguments[i]);
+			var i, j;
+			for (i = 0; i < arguments.length; i++) {
+				if (arguments[i].length >= 0) {
+					for (j = 0; j < arguments[i].length; j++) {
+						container.appendChild(arguments[i][j]);
+					}
+				} else { 
+					container.appendChild(arguments[i]);
+				}
 			}
 			$(container).buttonset();
 			return container;

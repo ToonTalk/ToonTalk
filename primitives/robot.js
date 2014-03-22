@@ -120,6 +120,10 @@ window.TOONTALK.robot = (function (TT) {
         return this.get_body().run(context, queue);
     };
 	
+	robot.training_finished = function () {
+		// to do
+	},
+	
 	robot.update_display = function() {
 		// perhaps this should be moved to widget and number and box updated to differ in the to_HTML part
         var frontside = this.get_frontside();
@@ -195,6 +199,8 @@ window.TOONTALK.robot_backside =
 			var description_input = TT.UTILITIES.create_text_input(robot.get_description(), "toontalk-robot-description-input", "Description", "Type here to provide a better descprion of this robot.");
             var input_table;
 			var standard_buttons = TT.backside.create_standard_buttons(backside, robot);
+			// don't do the following if already trained -- or offer to retrain?
+			standard_buttons.insertBefore(this.create_train_button(backside, robot), standard_buttons.firstChild);
 			image_url_input.button.onchange = function () {
                 robot.set_image_url(image_url_input.button.value.trim(), true);
             };
@@ -213,6 +219,40 @@ window.TOONTALK.robot_backside =
 			var image_url_input = TT.UTILITIES.get_first_child_with_class(this.get_element(), "toontalk-image-url-input");
 			var robot = this.get_widget();
 			image_url_input.value = robot.get_image_url();
-		}
+		},
+		
+		create_train_button: function (backside, robot) {
+			var backside_element = backside.get_element();
+			var $backside_element = $(backside_element);
+			var $train_button = $("<button>Train</button>").button();
+			var training = false;
+			var change_label_and_title = function () {
+				if (training) {
+					$train_button.button("option", "label", "Stop training");
+					$train_button.attr("title", "Click to stop training this robot.");
+				} else {
+					if (robot.get_body()) {
+						$train_button.button("option", "label", "Re-train");
+						$train_button.attr("title", "Click to start training this robot all over again.");
+					} else {
+						$train_button.attr("title", "Click to start training this robot.");
+						$train_button.addClass("toontalk-train-backside-button");
+					}
+				}
+			};
+			change_label_and_title();
+			$train_button.click(function () {
+				training = !training;
+				change_label_and_title();
+				if (training) {
+					TT.robot.in_training = robot;
+				} else {
+					robot.training_finished();
+					TT.robot.in_training = null;
+				}
+			});
+			return $train_button.get(0);
+		},
+		
     };
 }(window.TOONTALK));

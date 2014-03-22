@@ -143,12 +143,19 @@ window.TOONTALK.backside =
 			$(this.get_element()).remove();
 		},
 		
-		create_standard_buttons: function (backside, widget) {
+		create_standard_buttons: function (backside, widget) { // extra arguments are extra buttons
 		    var run_button = TT.backside.create_run_button(backside, widget);
 			var copy_button = TT.backside.create_copy_button(backside, widget);
 			var hide_button = TT.backside.create_hide_button(backside, widget);
 			var remove_button = TT.backside.create_remove_button(backside, widget);
-			return TT.UTILITIES.create_button_set(run_button, copy_button, remove_button, hide_button);
+			// consider moving this to UTILITIES...
+			// or eliminating it entirely since can appendChild after set is created
+			var extra_arguments = [];
+			var i;
+			for (i = 2; i < arguments.length; i++) {
+				extra_arguments[i-2] = arguments[i];
+			}
+			return TT.UTILITIES.create_button_set(run_button, copy_button, remove_button, hide_button, extra_arguments);
 		},			
 		
 		create_hide_button: function (backside, widget) {
