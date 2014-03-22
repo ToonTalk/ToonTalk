@@ -67,7 +67,7 @@ window.TOONTALK.box = (function (TT) {
         for (i = 0; i < size; i += 1) {
             hole = this.get_hole(i);
             if (hole) {
-                copy.set_hole(i, hole.copy());
+                copy.set_hole(i, hole.copy(copy));
             }
         }
 		if (just_value) {
@@ -433,15 +433,15 @@ window.TOONTALK.box_empty_hole =
 				// no need to put anything into the array
 				return null;
 			};
-			empty_hole.copy = function () {
-				return TT.box_empty_hole.create(index, box);
+			empty_hole.copy = function (containing_box) {
+				return TT.box_empty_hole.create(index, containing_box);
 			};
 			$(hole_element).on('drop',
                 function (event) {
 					var json_object = TT.UTILITIES.data_transfer_json_object(event);
                     var $dropped = $("#" + json_object.id_of_original_dragree);
 					var dropped_widget;
-					if ($dropped.length >= 1) {
+					if ($dropped.length > 0) {
 						event.stopPropagation();
 						if ($(hole_element).parents("#" + json_object.id_of_original_dragree).length > 0) {
 							// dropped on itself
