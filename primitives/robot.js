@@ -231,12 +231,12 @@ window.TOONTALK.robot_backside =
 					$train_button.button("option", "label", "Stop training");
 					$train_button.attr("title", "Click to stop training this robot.");
 				} else {
-					if (robot.get_body()) {
-						$train_button.button("option", "label", "Re-train");
-						$train_button.attr("title", "Click to start training this robot all over again.");
-					} else {
+					if (robot.get_body().is_empty()) {
 						$train_button.attr("title", "Click to start training this robot.");
 						$train_button.addClass("toontalk-train-backside-button");
+					} else {
+						$train_button.button("option", "label", "Re-train");
+						$train_button.attr("title", "Click to start training this robot all over again.");
 					}
 				}
 			};
@@ -245,6 +245,7 @@ window.TOONTALK.robot_backside =
 				training = !training;
 				change_label_and_title();
 				if (training) {
+					robot.get_body().reset_steps();
 					TT.robot.in_training = robot;
 				} else {
 					robot.training_finished();

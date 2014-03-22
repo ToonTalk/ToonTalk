@@ -20,6 +20,15 @@ window.TOONTALK.actions =
             result.get_steps = function () {
                 return steps;
             };
+            result.is_empty = function () {
+                return steps.length === 0;
+            };
+            result.reset_steps = function () {
+                steps = [];
+            };
+            result.add_step = function (step) {
+                steps[steps.length] = step;
+            };
             result.get_robot = function () {
                 return robot;
             };
