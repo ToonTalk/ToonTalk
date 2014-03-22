@@ -11,6 +11,7 @@
 window.TOONTALK.UTILITIES = 
 (function (TT) {
     "use strict";
+	var dragee;
 	var json_creators = {"box": TT.box.create_from_json,
 	                     "number": TT.number.create_from_json,
 						 "robot": TT.robot.create_from_json,
@@ -153,7 +154,6 @@ window.TOONTALK.UTILITIES =
 		},
 		
 		drag_and_drop: function ($element) {
-			var dragee;
 			$element.attr("draggable", true);
 			// draggable causes dataTransfer to be null
 			// rewrote after noticing that this works fine: http://jsfiddle.net/KWut6/
@@ -213,7 +213,6 @@ window.TOONTALK.UTILITIES =
 									      height: "100%"});
 						}
 					}
-// 					dragee = undefined;
 					event.stopPropagation();
 				});
 // 				greedy: true,
@@ -236,7 +235,6 @@ window.TOONTALK.UTILITIES =
 						}
 						return;
 					}
-					dragee = undefined;
 					$target = $(event.target).closest(".toontalk-side");
 					target = $target.data("owner");
 					if ($source && $source.length > 0) {
@@ -259,9 +257,10 @@ window.TOONTALK.UTILITIES =
 							drag_x_offset = 0;
 							drag_y_offset = 0;
 						}
-						$source.css({left: event.originalEvent.clientX-target_position.left-drag_x_offset,
-							          top: event.originalEvent.clientY-target_position.top-drag_y_offset});
 						target.get_backside().widget_dropped_on_me(source, event);
+						// should the following use pageX instead?
+						$source.css({left: event.originalEvent.clientX - (target_position.left + drag_x_offset),
+							          top: event.originalEvent.clientY - (target_position.top + drag_y_offset)});
 						if ($source.is(".toontalk-frontside") && !$source.is('.ui-resizable')) {
 // 							$source.css({resize: "both"}); // didn't work
 							$source.resizable(
@@ -280,6 +279,7 @@ window.TOONTALK.UTILITIES =
 						event.stopPropagation();
 					}
 					event.preventDefault();
+					dragee = undefined;
                 });
 			// following provides mouseevents rather than dragstart and the like
 			// which doesn't have a dataTransfer attribute
