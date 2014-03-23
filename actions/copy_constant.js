@@ -10,15 +10,14 @@ window.TOONTALK.copy_constant =
 (function (TT) {
     "use strict";
     return {
-        create: function (robot, constant_object) {
+        create: function (constant_object) {
             var result = Object.create(this);
-            result.robot = robot;
             result.constant_object = constant_object;
             return result;
         },
         
         run: function (context) {
-            this.robot.thing_in_hand = this.constant_object.copy(true);
+            this.robot.set_thing_in_hand(this.constant_object.copy(true));
             return true;
         },
         

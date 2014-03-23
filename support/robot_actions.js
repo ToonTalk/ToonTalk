@@ -27,6 +27,7 @@ window.TOONTALK.actions =
                 steps = [];
             };
             result.add_step = function (step) {
+                step.robot = this.get_robot();
                 steps[steps.length] = step;
             };
             result.get_robot = function () {
@@ -40,11 +41,6 @@ window.TOONTALK.actions =
                 }
             };
             return result;
-        },
-        
-        add: function(step) {
-            step.robot = this.get_robot();
-            this.get_steps()[this.get_steps().length] = step;
         },
         
         run: function(context, queue) {

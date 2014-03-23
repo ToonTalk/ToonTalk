@@ -16,7 +16,7 @@ window.TOONTALK.pick_up_constant =
             return result;
         },
         run: function (context) {
-            this.robot.thing_in_hand = this.constant_object;
+            this.robot.set_thing_in_hand(this.constant_object);
             return true;
         },
         toString: function () {

@@ -145,6 +145,20 @@ window.TOONTALK.widget = (function (TT) {
             return $(frontside.get_element()).is(":visible");
         },
         
+        drag_started: function (json, is_resource) {
+            // by default records this if robot is being trained
+            // widgets may override this behaviour
+            if (TT.robot.in_training) {
+                TT.robot.in_training.picked_up(this, json, is_resource);
+            }
+        },
+        
+        widget_dropped_on_me: function () {
+            if (TT.robot.in_training) {
+                TT.robot.in_training.dropped_on(this);
+            }
+        },
+        
         equals: function (other) {
             console.assert(false, "equals not implemented");
         },

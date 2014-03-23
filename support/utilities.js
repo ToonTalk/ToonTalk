@@ -196,7 +196,7 @@ window.TOONTALK.UTILITIES =
 						// following was text/plain but that caused an error in IE9
 						event.originalEvent.dataTransfer.setData("text", JSON.stringify(json_object)); 
 					}
-					widget.drag_started();
+					widget.drag_started(json_object, $element.is(".toontalk-top-level-resource"));
 					event.stopPropagation();
 				});
 			$element.on('dragend', 
@@ -279,6 +279,11 @@ window.TOONTALK.UTILITIES =
 						console.log("target element has no 'owner'");
 					} else if (source.drop_on(target, $target, event)) {
 						event.stopPropagation();
+					}
+					if (target) {
+						if (target.widget_dropped_on_me) {
+							target.widget_dropped_on_me();
+						}
 					}
 					event.preventDefault();
 					dragee = undefined;

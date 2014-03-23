@@ -21,7 +21,7 @@
             if (!referenced) {
                 return false;
             }
-            this.robot.thing_in_hand = referenced;
+            this.robot.set_thing_in_hand(referenced);
             return true;
         },
         

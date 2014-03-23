@@ -10,7 +10,7 @@ window.TOONTALK.robot = (function (TT) {
     "use strict";
     var robot = Object.create(TT.widget);
     
-    robot.create = function (bubble, body, image_url, description, width, height) {
+    robot.create = function (bubble, body, image_url, description, width, height, thing_in_hand) {
         // bubble holds the conditions that need to be matched to run
         // body holds the actions the robot does when it runs
         var result = Object.create(this);
@@ -27,6 +27,9 @@ window.TOONTALK.robot = (function (TT) {
         result.get_bubble = function () {
             return bubble;
         };
+		result.set_bubble = function (new_value) {
+			bubble = new_value;
+		};
         result.get_body = function () {
             return body;
         };
@@ -63,6 +66,12 @@ window.TOONTALK.robot = (function (TT) {
 			if (update_display) {
 				this.update_display();
 			}
+		};
+		result.get_thing_in_hand = function () {
+			return thing_in_hand;
+		};
+		result.set_thing_in_hand = function (new_value) {
+			thing_in_hand = new_value;
 		};
         body.set_robot(result);
 		if (TT.debugging) {
@@ -120,9 +129,44 @@ window.TOONTALK.robot = (function (TT) {
         return this.get_body().run(context, queue);
     };
 	
+	robot.picked_up = function (widget, json, is_resource) {
+		// note widget may be inside of something like a box
+		// widget is a resource then is like copy_constant...
+		var path, step;
+		if (is_resource) {
+			step = TT.copy_constant.create(widget);
+		} else {
+			// to do
+		}
+		this.set_thing_in_hand(widget);
+		this.get_body().add_step(step);
+	};
+	
+	robot.dropped_on = function (target_widget) {
+		var path, step;
+		var context = this.get_context();
+		if (context === target_widget) {
+			step = TT.drop_on.create(TT.path_to_entire_context);
+		} else {
+			// to do
+		}
+		this.set_thing_in_hand(null);
+		this.get_body().add_step(step);
+	};
+	
+	robot.get_context = function () {
+		var frontside_element = this.get_frontside_element();
+		var $parent_element = $(frontside_element).parent();
+		return $parent_element.data("owner");
+	};
+	
+	robot.training_started = function () {
+		this.set_bubble(this.get_context());
+	};
+	
 	robot.training_finished = function () {
-		// to do
-	},
+		// not sure anything needs to be done
+	};
 	
 	robot.update_display = function() {
 		// perhaps this should be moved to widget and number and box updated to differ in the to_HTML part
@@ -247,6 +291,7 @@ window.TOONTALK.robot_backside =
 				if (training) {
 					robot.get_body().reset_steps();
 					TT.robot.in_training = robot;
+					robot.training_started();
 				} else {
 					robot.training_finished();
 					TT.robot.in_training = null;

@@ -21,8 +21,8 @@ window.TOONTALK.drop_on =
         run: function (context) {
             var target = TT.UTILITIES.dereference_path(this.path, context);
             if (target) {
-                if (this.robot.thing_in_hand) {
-                    this.robot.thing_in_hand.drop_on(target);
+                if (this.robot.get_thing_in_hand()) {
+                    this.robot.get_thing_in_hand().drop_on(target);
                     return true;
                 }
                 console.log(this.robot.toString() + " is executing drop_on but has nothing in its hand.");
