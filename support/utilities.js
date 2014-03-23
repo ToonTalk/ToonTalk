@@ -141,7 +141,7 @@ window.TOONTALK.UTILITIES =
 				console.log("no dataTransfer in drop event");
 				return;
 		    }
-			json = event.originalEvent.dataTransfer.getData("text/plain");
+			json = event.originalEvent.dataTransfer.getData("text");
 			if (!json) {
 				console.log("No data in dataTransfer in drop.");
 				return;
@@ -193,8 +193,10 @@ window.TOONTALK.UTILITIES =
 							}
 						}
 						$element.data("json", json_object);
-						event.originalEvent.dataTransfer.setData("text/plain", JSON.stringify(json_object));
+						// following was text/plain but that caused an error in IE9
+						event.originalEvent.dataTransfer.setData("text", JSON.stringify(json_object)); 
 					}
+					widget.drag_started();
 					event.stopPropagation();
 				});
 			$element.on('dragend', 
