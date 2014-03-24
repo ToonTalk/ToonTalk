@@ -210,17 +210,17 @@ window.TOONTALK.robot = (function (TT) {
 // 		$(frontside_element).css({width: this.get_width(),
 // 		                          height: this.get_height()});
 		frontside_element.appendChild(new_first_child);
-		if (bubble_contents_element) {
 			setTimeout(
 				function () {
-					bubble.update_display();
+					if (bubble_contents_element) {
+						bubble.update_display();
+					}
 					if (resource_becoming_instance) {
 						// need to adjust for thought bubble
 						frontside_element.style.top = ($(frontside_element).position().top - $(robot_image).height()) + "px";
 					}
 				},
 				1);
-		}
     };
 	
 	robot.image = function () {

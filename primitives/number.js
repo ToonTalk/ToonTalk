@@ -376,6 +376,9 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         if (!font_size) {
             font_size = 16;
         }
+		if (this.get_erased()) {
+			return '<div class="toontalk-number toontalk-integer' + extra_class + '" style="font-size: ' + font_size + 'px;"></div>';
+		}
 		if (operator_HTML.length > 0) {
 			max_characters -= 1; // leave room for operator
 		}
