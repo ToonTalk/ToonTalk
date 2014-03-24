@@ -184,3 +184,10 @@
     width: 96px;
     height: 96px;
 }
+.toontalk-thought-bubble-contents {
+    left: 10%;
+	top: 15%;
+	width: 60%;
+	height: 40%;
+	position: absolute;
+}

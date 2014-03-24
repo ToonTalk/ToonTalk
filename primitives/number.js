@@ -230,7 +230,14 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             return;
         }
         var frontside_element = frontside.get_element();
-		var $dimensions_holder = $(frontside_element).parent().is(".toontalk-backside") ? $(frontside_element) : $(frontside_element).parent();
+		var $dimensions_holder;
+		if ($(frontside_element).is(".toontalk-thought-bubble-contents")) {
+			$dimensions_holder = $(frontside_element);
+		} else if ($(frontside_element).parent().is(".toontalk-backside")) {
+			$dimensions_holder = $(frontside_element);
+		} else {
+			$dimensions_holder = $(frontside_element).parent();
+		}
         var client_width = $dimensions_holder.width();
         var client_height = $dimensions_holder.height();
         var font_height = client_height * 0.8;

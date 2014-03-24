@@ -177,7 +177,8 @@ window.TOONTALK.robot = (function (TT) {
 		// perhaps this should be moved to widget and number and box updated to differ in the to_HTML part
         var frontside = this.get_frontside();
 		var description = this.get_description();
-		var new_first_child, robot_image, thought_bubble, frontside_element;
+		var new_first_child, robot_image, thought_bubble, frontside_element, bubble_contents_element;
+		var bubble = this.get_bubble();
         if (!frontside) {
             return;
         }
@@ -187,7 +188,14 @@ window.TOONTALK.robot = (function (TT) {
 			new_first_child = robot_image;
 		} else {
 			thought_bubble = this.thought_bubble_div();
-			new_first_child = TT.UTILITIES.create_vertical_table(thought_bubble, robot_image);
+			new_first_child = document.createElement("div");
+			$(new_first_child).css({position: "absolute"});
+			new_first_child.appendChild(thought_bubble);
+			$(robot_image).css({top: "30%"});
+			new_first_child.appendChild(robot_image);
+			bubble_contents_element = bubble.get_frontside_element();
+			$(bubble_contents_element).addClass("toontalk-thought-bubble-contents");
+			thought_bubble.appendChild(bubble_contents_element);
 		}
         while (frontside_element.firstChild) {
             frontside_element.removeChild(frontside_element.firstChild);
@@ -201,13 +209,20 @@ window.TOONTALK.robot = (function (TT) {
 // 		$(frontside_element).css({width: this.get_width(),
 // 		                          height: this.get_height()});
 		frontside_element.appendChild(new_first_child);
+		if (bubble_contents_element) {
+			setTimeout(
+				function () {
+					bubble.update_display();
+				},
+				1);
+		}
     };
 	
 	robot.image = function () {
 		var image = document.createElement("img");
 		image.src = this.get_image_url();
 		image.style.width = "100%";
-		image.style.height = "50%"; // other half is for thought bubble
+		image.style.height = "70%"; // other part is for thought bubble
 		return image;	
 	};
 	
