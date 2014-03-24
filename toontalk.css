@@ -6,6 +6,7 @@
  */
  
  .toontalk-top-level-resource {
+	 -ms-touch-action: none;
 	 position: relative;
 	 width: 100px;
 	 height: 100px;
@@ -14,6 +15,7 @@
 	cursor: move;
 }
 .toontalk-backside {
+	-ms-touch-action: none;
 	position: absolute;
 	background-color: rgba(245, 240, 240, 0.94);
     cursor: move;
@@ -28,6 +30,7 @@
 	padding-right:  6px;
 }
 .toontalk-top-level-frontside {
+	-ms-touch-action: none;
 	position: absolute;
 	cursor: move;
 	border: none;
@@ -35,6 +38,9 @@
 	/* while testing: */
 	width: 20%;
 	height: 10%;
+}
+.toontalk-frontside {
+	-ms-touch-action: none;
 }
 .toontalk-frontside-on-backside {
 	position: absolute;
