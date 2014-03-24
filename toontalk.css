@@ -10,6 +10,7 @@
 	 position: relative;
 	 width: 100px;
 	 height: 100px;
+	 display:  inline-block;
  }
 .toontalk-top-level-resource:hover {
 	cursor: move;
@@ -57,6 +58,7 @@
 	height:  100%;
 	min-width: 100%;
 	min-height: 100%;
+	display: inline-block;
 }
 .toontalk-box {
 	background-color: rgb(244, 247, 214);
@@ -175,4 +177,10 @@
 }
 .toontalk-image-url-input {
 	width: 30em;
+}
+.toontalk-thought-bubble {
+    background-image: url(images/BUBBL10.96x96.PNG);
+	background-repeat: no-repeat;
+    width: 96px;
+    height: 96px;
 }

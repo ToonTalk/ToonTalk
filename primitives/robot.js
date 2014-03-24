@@ -176,30 +176,45 @@ window.TOONTALK.robot = (function (TT) {
 	robot.update_display = function() {
 		// perhaps this should be moved to widget and number and box updated to differ in the to_HTML part
         var frontside = this.get_frontside();
-		var new_HTML, frontside_element;
+		var description = this.get_description();
+		var new_first_child, robot_image, thought_bubble, frontside_element;
         if (!frontside) {
             return;
         }
         frontside_element = frontside.get_element();
-        new_HTML = this.to_HTML();
-        if (!frontside_element.firstChild) {
-            frontside_element.appendChild(document.createElement('div'));
+        robot_image = this.image();
+		if ($(frontside_element).parent(".toontalk-top-level-resource").length > 0) {
+			new_first_child = robot_image;
+		} else {
+			thought_bubble = this.thought_bubble_div();
+			new_first_child = TT.UTILITIES.create_vertical_table(thought_bubble, robot_image);
+		}
+        while (frontside_element.firstChild) {
+            frontside_element.removeChild(frontside_element.firstChild);
         }
-        frontside_element.firstChild.innerHTML = new_HTML;
+		frontside_element.title = description ? "This robot " + description : "This is a " + this.toString();
 		$(frontside_element).addClass("toontalk-robot");
+		$(new_first_child).addClass("toontalk-widget");
 		frontside_element.style.width = this.get_width();
 		frontside_element.style.height = this.get_height();
 		// following interfered with resizable
 // 		$(frontside_element).css({width: this.get_width(),
 // 		                          height: this.get_height()});
-		$(frontside_element.firstChild).addClass("toontalk-widget");
+		frontside_element.appendChild(new_first_child);
     };
 	
-	robot.to_HTML = function () {
-		// to do: add thought bubble
-		var description = this.get_description();
-		var title = description ? "This robot " + description : "This is a " + this.toString();
-		return "<img src='" + this.get_image_url() + "' title='" + title + "' width='100%' height='100%'></img>";
+	robot.image = function () {
+		var image = document.createElement("img");
+		image.src = this.get_image_url();
+		image.style.width = "100%";
+		image.style.height = "50%"; // other half is for thought bubble
+		return image;	
+	};
+	
+	robot.thought_bubble_div = function () {
+		var thought_bubble = document.createElement("div");
+		$(thought_bubble).addClass("toontalk-thought-bubble");
+		return thought_bubble;
 	};
 	
 	robot.toString = function () {
