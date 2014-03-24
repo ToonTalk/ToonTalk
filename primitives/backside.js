@@ -144,7 +144,12 @@ window.TOONTALK.backside =
 		},
 		
 		create_standard_buttons: function (backside, widget) { // extra arguments are extra buttons
-		    var run_button = TT.backside.create_run_button(backside, widget);
+		    var run_or_erase_button;
+			if (!widget.get_erased() && $(widget.get_frontside_element()).parents(".toontalk-thought-bubble-contents").length === 0) {
+				run_or_erase_button = TT.backside.create_run_button(backside, widget);
+			} else {
+				run_or_erase_button = TT.backside.create_erase_button(backside, widget);
+			}
 			var copy_button = TT.backside.create_copy_button(backside, widget);
 			var hide_button = TT.backside.create_hide_button(backside, widget);
 			var remove_button = TT.backside.create_remove_button(backside, widget);
@@ -155,7 +160,7 @@ window.TOONTALK.backside =
 			for (i = 2; i < arguments.length; i++) {
 				extra_arguments[i-2] = arguments[i];
 			}
-			return TT.UTILITIES.create_button_set(run_button, copy_button, remove_button, hide_button, extra_arguments);
+			return TT.UTILITIES.create_button_set(run_or_erase_button, copy_button, remove_button, hide_button, extra_arguments);
 		},			
 		
 		create_hide_button: function (backside, widget) {
@@ -171,6 +176,29 @@ window.TOONTALK.backside =
 			});
 			$hide_button.attr("title", "Click to hide this.");
 			return $hide_button.get(0);
+		},
+		
+		create_erase_button: function (backside, widget) {
+			var backside_element = backside.get_element();
+			var $backside_element = $(backside_element);
+			var $erase_button = $("<button>Erase</button>").button();
+			$erase_button.addClass("toontalk-erase-backside-button");
+			var update_title = function () {
+				if (widget.get_erased()) {
+					$erase_button.button("option", "label", "Un-erase");
+					$erase_button.attr("title", "Click to restore this to how it was before it was erased.");
+				} else {
+					$erase_button.button("option", "label", "Erase");
+					$erase_button.attr("title", "Click to erase this so the robot won't be so fussy.");
+				}
+			};
+			update_title();
+			$erase_button.click(function () {
+				widget.set_erased(!widget.get_erased(), true);
+				update_title();
+			});
+			$erase_button.attr("title", "Click to hide this.");
+			return $erase_button.get(0);
 		},
 		
 		create_copy_button: function (backside, widget) {
