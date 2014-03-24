@@ -372,6 +372,14 @@ window.TOONTALK.UTILITIES =
 			}
 		},
 		
+		cursor_of_image: function (url) {
+			var extensionStart = url.lastIndexOf('.');
+			if (extensionStart >= 0) {
+				return url.substring(0, extensionStart) + ".32x32" + url.substring(extensionStart);
+			}
+			return url;
+		},
+		
 		check_radio_button: function (button_elements) {
 			$(button_elements.button).prop("checked", true);
 			$(button_elements.label).addClass('ui-state-active');
@@ -409,9 +417,7 @@ window.TOONTALK.UTILITIES =
 			label_element = document.createElement("label");
 			label_element.innerHTML = label;
 			label_element.htmlFor = input.id;
-			container = document.createElement("div");
-			container.appendChild(label_element);
-			container.appendChild(input);
+			container = TT.UTILITIES.create_horizontal_table(label_element, input);
 			$(input).button();
             $(label_element).addClass("ui-widget");
 			return {container: container,

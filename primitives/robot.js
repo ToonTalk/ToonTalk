@@ -139,7 +139,9 @@ window.TOONTALK.robot = (function (TT) {
 			// to do
 		}
 		this.set_thing_in_hand(widget);
-		this.get_body().add_step(step);
+		if (step) {
+			this.get_body().add_step(step);
+		}
 	};
 	
 	robot.dropped_on = function (target_widget) {
@@ -151,7 +153,9 @@ window.TOONTALK.robot = (function (TT) {
 			// to do
 		}
 		this.set_thing_in_hand(null);
-		this.get_body().add_step(step);
+		if (step) {
+			this.get_body().add_step(step);
+		}
 	};
 	
 	robot.get_context = function () {
@@ -162,10 +166,11 @@ window.TOONTALK.robot = (function (TT) {
 	
 	robot.training_started = function () {
 		this.set_bubble(this.get_context());
+		$("div").css({cursor: 'url(' + TT.UTILITIES.cursor_of_image(this.get_image_url()) + '), default'});
 	};
 	
 	robot.training_finished = function () {
-		// not sure anything needs to be done
+		$("div").css({cursor: ''});
 	};
 	
 	robot.update_display = function() {
@@ -239,8 +244,8 @@ window.TOONTALK.robot_backside =
 	        var backside = TT.backside.create(robot);
 			var backside_element = backside.get_element();
             // create_text_input should use JQuery????
-            var image_url_input = TT.UTILITIES.create_text_input(robot.get_image_url(), "toontalk-image-url-input", "Image URL", "Type here to provide a URL for the appearance of this robot.");
-			var description_input = TT.UTILITIES.create_text_input(robot.get_description(), "toontalk-robot-description-input", "Description", "Type here to provide a better descprion of this robot.");
+            var image_url_input = TT.UTILITIES.create_text_input(robot.get_image_url(), "toontalk-image-url-input", "Image URL&nbsp;", "Type here to provide a URL for the appearance of this robot.");
+			var description_input = TT.UTILITIES.create_text_input(robot.get_description(), "toontalk-robot-description-input", "Description&nbsp;", "Type here to provide a better descprion of this robot.");
             var input_table;
 			var standard_buttons = TT.backside.create_standard_buttons(backside, robot);
 			// don't do the following if already trained -- or offer to retrain?
@@ -269,6 +274,7 @@ window.TOONTALK.robot_backside =
 			var backside_element = backside.get_element();
 			var $backside_element = $(backside_element);
 			var $train_button = $("<button>Train</button>").button();
+			$train_button.addClass("toontalk-train-backside-button");
 			var training = false;
 			var change_label_and_title = function () {
 				if (training) {
@@ -276,8 +282,8 @@ window.TOONTALK.robot_backside =
 					$train_button.attr("title", "Click to stop training this robot.");
 				} else {
 					if (robot.get_body().is_empty()) {
-						$train_button.attr("title", "Click to start training this robot.");
-						$train_button.addClass("toontalk-train-backside-button");
+						$train_button.button("option", "label", "Train");
+						$train_button.attr("title", "Click to stop training this robot.");
 					} else {
 						$train_button.button("option", "label", "Re-train");
 						$train_button.attr("title", "Click to start training this robot all over again.");
