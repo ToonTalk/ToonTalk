@@ -177,8 +177,8 @@ window.TOONTALK.robot = (function (TT) {
 		// perhaps this should be moved to widget and number and box updated to differ in the to_HTML part
         var frontside = this.get_frontside();
 		var description = this.get_description();
-		var new_first_child, robot_image, thought_bubble, frontside_element, bubble_contents_element;
 		var bubble = this.get_bubble();
+		var new_first_child, robot_image, thought_bubble, frontside_element, bubble_contents_element, resource_becoming_instance;
         if (!frontside) {
             return;
         }
@@ -196,6 +196,7 @@ window.TOONTALK.robot = (function (TT) {
 			bubble_contents_element = bubble.get_frontside_element();
 			$(bubble_contents_element).addClass("toontalk-thought-bubble-contents");
 			thought_bubble.appendChild(bubble_contents_element);
+			resource_becoming_instance = frontside_element.firstChild && $(frontside_element.firstChild).is(".toontalk-robot-image");
 		}
         while (frontside_element.firstChild) {
             frontside_element.removeChild(frontside_element.firstChild);
@@ -213,6 +214,10 @@ window.TOONTALK.robot = (function (TT) {
 			setTimeout(
 				function () {
 					bubble.update_display();
+					if (resource_becoming_instance) {
+						// need to adjust for thought bubble
+						frontside_element.style.top = ($(frontside_element).position().top - $(robot_image).height()) + "px";
+					}
 				},
 				1);
 		}
@@ -223,6 +228,7 @@ window.TOONTALK.robot = (function (TT) {
 		image.src = this.get_image_url();
 		image.style.width = "100%";
 		image.style.height = "70%"; // other part is for thought bubble
+		$(image).addClass("toontalk-robot-image");
 		return image;	
 	};
 	
