@@ -206,9 +206,9 @@ window.TOONTALK.UTILITIES =
 						}
 						$element.data("json", json_object);
 						// following was text/plain but that caused an error in IE9
-						event.originalEvent.dataTransfer.setData("text", JSON.stringify(json_object)); 
+						event.originalEvent.dataTransfer.setData("text", JSON.stringify(json_object));
+						widget.drag_started(json_object, $element.is(".toontalk-top-level-resource"));
 					}
-					widget.drag_started(json_object, $element.is(".toontalk-top-level-resource"));
 					event.stopPropagation();
 				});
 			$element.on('dragend', 
@@ -270,7 +270,7 @@ window.TOONTALK.UTILITIES =
 						$source = $(source.get_frontside_element());
 					}
 					if ($target.is(".toontalk-backside")) {
-						target_position = $target.position();
+						target_position = TT.UTILITIES.absolute_position($target);
 						if (json_object) {
 							drag_x_offset = json_object.drag_x_offset;
 						    drag_y_offset = json_object.drag_y_offset;
@@ -320,12 +320,24 @@ window.TOONTALK.UTILITIES =
 // 			}); // .resizable(); -- works fine for backsides but need to fix frontside problem
 		},
 		
+		absolute_position: function ($element) {
+			var element_position;
+			var absolute_position = {left: 0, top: 0};
+			while ($element.parent().length > 0) {
+				element_position = $element.position();
+				absolute_position.left += element_position.left;
+				absolute_position.top += element_position.top;
+				$element = $element.parent();
+			}
+			return absolute_position;
+		},
+		
 		restore_resource: function ($dropped, dropped_widget) {
 			var dropped_copy, dropped_element_copy;
 			if ($dropped.is(".toontalk-top-level-resource")) {
 				// restore original
 				dropped_copy = dropped_widget.copy();
-				dropped_element_copy = dropped_copy.get_frontside_element(true);
+				dropped_element_copy = dropped_copy.get_frontside_element();
 				$dropped.removeClass("toontalk-top-level-resource");
 				$(dropped_element_copy).addClass("toontalk-top-level-resource");
 				$dropped.parent().append(dropped_element_copy);
