@@ -267,12 +267,15 @@ window.TOONTALK.box = (function (TT) {
 			$element_container.append(old_hole_element);
 			// since drag and drop is set up with absolute as the default
 			TT.UTILITIES.set_position_absolute(old_hole_element, false);
-			$(old_hole_element).addClass("toontalk-frontside-in-box");
+			if (!$(old_hole_element).is(".toontalk-empty-hole")) {
+				$(old_hole_element).addClass("toontalk-frontside-in-box");
+			}
 		}
 		hole_frontside.update_display();
 	};
 	
 	box.empty_hole = function (index, update_display) {
+		// could restore the 'original' empty_hole rather than create a new one here
 		this.set_hole(index, TT.box_empty_hole.create(index, this), update_display);
 	};
     

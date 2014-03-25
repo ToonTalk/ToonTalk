@@ -172,12 +172,14 @@ window.TOONTALK.UTILITIES =
 			// rewrote after noticing that this works fine: http://jsfiddle.net/KWut6/
  			$element.on('dragstart', 
 			    function (event) {
-					var $container = $element.parents(".toontalk-side:first");
-					var container = $container.data("owner");
 					var position = $element.get(0).getBoundingClientRect(); // $element.position();
 					var unique_id = TT.UTILITIES.generate_unique_id();
 					var widget = $element.data("owner");
 					var json_object;
+// 					if ($element.is(".toontalk-frontside-in-box")) {
+// 						// but not stopping propagation so can drag widget in the hole
+// 						return;
+// 					}
 					dragee = $element;
 					$element.css({position: "absolute"});
 					if ($element.is(".toontalk-frontside")) {
@@ -186,9 +188,6 @@ window.TOONTALK.UTILITIES =
 									  height: this.offsetHeight + "px"});
 					}
 					$element.attr("id", unique_id);
-					if (container) {
-					    container.removed($element.data("owner"), $element, event);
-					}
 					if (event.originalEvent.dataTransfer) {
 						event.originalEvent.dataTransfer.effectAllowed = 'move';
 						json_object = widget.get_json();
@@ -241,6 +240,7 @@ window.TOONTALK.UTILITIES =
                 function (event) {
 					var $source, source, $target, target, target_position, drag_x_offset, drag_y_offset;
 					var json_object = TT.UTILITIES.data_transfer_json_object(event);
+					var $container, container;
                     $source = dragee || (json_object && $("#" + json_object.id_of_original_dragree));
 					if (!$source && !json_object) {
 						if (!event.originalEvent.dataTransfer) {
@@ -258,7 +258,13 @@ window.TOONTALK.UTILITIES =
 							return;
 						}
 						source = $source.data("owner");
-						TT.UTILITIES.restore_resource($source, source);
+						$container = $source.parents(".toontalk-side:first");
+						container = $container.data("owner");
+						if (container) {
+							container.removed(source, $source, event);
+						} else {
+							TT.UTILITIES.restore_resource($source, source);
+						}
 					} else {
 						source = TT.UTILITIES.create_from_json(json_object);
 						$source = $(source.get_frontside_element());
