@@ -42,7 +42,7 @@ window.TOONTALK.frontside =
 				if ($frontside_ancestor_before_backside_element.is(".toontalk-top-level-resource")) {
 					return;					
 				}
-				while (!$frontside_ancestor_that_is_backside_element.is(".toontalk-backside")) {
+				while ($frontside_ancestor_that_is_backside_element.length > 0 && !$frontside_ancestor_that_is_backside_element.is(".toontalk-backside")) {
 					$frontside_ancestor_before_backside_element = $frontside_ancestor_that_is_backside_element;
 					$frontside_ancestor_that_is_backside_element = $frontside_ancestor_that_is_backside_element.parent();
 				}
