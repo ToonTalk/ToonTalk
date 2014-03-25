@@ -39,6 +39,9 @@ window.TOONTALK.frontside =
 				// frontside_ancestor_that_is_backside_element is first parent that is a toontalk-backside
 				$frontside_ancestor_that_is_backside_element = $(frontside_element).parent();
 				$frontside_ancestor_before_backside_element = $(frontside_element);
+				if ($frontside_ancestor_before_backside_element.is(".toontalk-top-level-resource")) {
+					return;					
+				}
 				while (!$frontside_ancestor_that_is_backside_element.is(".toontalk-backside")) {
 					$frontside_ancestor_before_backside_element = $frontside_ancestor_that_is_backside_element;
 					$frontside_ancestor_that_is_backside_element = $frontside_ancestor_that_is_backside_element.parent();
