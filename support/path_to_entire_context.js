@@ -12,7 +12,7 @@
     "use strict";
     return {
         toString: function () {
-            return "the entire context";
+            return "what he's working on";
         },
         
         get_json: function () {

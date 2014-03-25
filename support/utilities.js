@@ -85,6 +85,15 @@ window.TOONTALK.UTILITIES =
 			return widgets_copy;
 		},
 		
+		copy_array: function (array) {
+			var copy = [];
+			var i;
+			for (i = 0; i < array.length; i++) {
+				copy[i] = array[i];
+			}
+			return copy;
+		},
+		
 		generate_unique_id: function () {
 			id_counter += 1;
 		    return 'toontalk_id_' + id_counter;

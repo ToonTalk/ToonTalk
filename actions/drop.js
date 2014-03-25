@@ -25,7 +25,7 @@ window.TOONTALK.drop_on =
                     this.robot.get_thing_in_hand().drop_on(target);
                     return true;
                 }
-                console.log(this.robot.toString() + " is executing drop_on but has nothing in its hand.");
+                console.log("The robot that " + this.robot.toString() + " is executing drop_on but has nothing in its hand.");
             }
             return false;
         },

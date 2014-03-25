@@ -13,7 +13,7 @@ window.TOONTALK.robot = (function (TT) {
     robot.create = function (bubble, body, image_url, description, width, height, thing_in_hand) {
         // bubble holds the conditions that need to be matched to run
         // body holds the actions the robot does when it runs
-        var result = Object.create(this);
+        var new_robot = Object.create(this);
         if (!image_url) {
             image_url = "images/robot.png";
         }
@@ -24,62 +24,62 @@ window.TOONTALK.robot = (function (TT) {
 		if (!height) {
 			height = 100;
 		}
-        result.get_bubble = function () {
+        new_robot.get_bubble = function () {
             return bubble;
         };
-		result.set_bubble = function (new_value) {
+		new_robot.set_bubble = function (new_value) {
 			bubble = new_value;
 		};
-        result.get_body = function () {
+        new_robot.get_body = function () {
             return body;
         };
-        result.get_image_url = function () {
+        new_robot.get_image_url = function () {
             return image_url;
         };
-        result.set_image_url = function (new_value, update_display) {
+        new_robot.set_image_url = function (new_value, update_display) {
             image_url = new_value;
 			if (update_display) {
 				this.update_display();
 			}
         };
 		// should the following use 'width' from the frontside element?
-		result.get_width = function () {
+		new_robot.get_width = function () {
 			return width;
 		};
-		result.set_width = function (new_value) {
+		new_robot.set_width = function (new_value) {
 			width = new_value;
 		};
-		result.get_height = function () {
+		new_robot.get_height = function () {
 			return height;
 		};
-		result.set_height = function (new_value) {
+		new_robot.set_height = function (new_value) {
 			height = new_value;
 		};
-		result.get_description = function () {
+		new_robot.get_description = function () {
 			if (!description) {
-				return result.toString();
+				return new_robot.toString();
 			}
 			return description;
 		};
-		result.set_description = function (new_value, update_display) {
+		new_robot.set_description = function (new_value, update_display) {
 			description = new_value;
 			if (update_display) {
 				this.update_display();
 			}
 		};
-		result.get_thing_in_hand = function () {
+		new_robot.get_thing_in_hand = function () {
 			return thing_in_hand;
 		};
-		result.set_thing_in_hand = function (new_value) {
+		new_robot.set_thing_in_hand = function (new_value) {
 			thing_in_hand = new_value;
 		};
-        body.set_robot(result);
+        body.set_robot(new_robot);
 		if (TT.debugging) {
-			result.debug_string = result.toString();
+			new_robot.debug_string = new_robot.toString();
 		}
-		result = robot.add_sides_functionality(result);
-		result = robot.erasable(result);
-        return result;
+		new_robot = robot.add_sides_functionality(new_robot);
+		new_robot = robot.erasable(new_robot);
+        return new_robot;
     };
     
     robot.create_backside = function () {
@@ -87,7 +87,7 @@ window.TOONTALK.robot = (function (TT) {
 	};
     
     robot.copy = function (just_value) {
-		var copy = this.create(this.get_bubble().copy(), this.get_body(), this.get_image_url(), this.get_description(), this.get_width(), this.get_height());
+		var copy = this.create(this.get_bubble().copy(), this.get_body().copy(), this.get_image_url(), this.get_description(), this.get_width(), this.get_height());
 		if (just_value) {
 			return copy;
 		}

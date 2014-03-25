@@ -261,7 +261,6 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     };
 
     number.drop_on = function (other, side_of_other, event) {
-// 		console.log(this.toString() + " dropped on " + other.toString()); for debugging
         if (!other.number_dropped_on_me) {
 			if (other.widget_dropped_on_me) {
 				return other.widget_dropped_on_me(this, event);
@@ -273,7 +272,6 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
 		if (event) {
 			other.update_display();
 		}
-// 		console.log("Became " + other.toString());                        for debugging
 		this.remove();
 		return true;
     };

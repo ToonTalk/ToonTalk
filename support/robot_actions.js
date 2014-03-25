@@ -13,34 +13,37 @@ window.TOONTALK.actions =
     return {
         create: function (steps) {
             var robot;
-            var result = Object.create(this);
+            var new_actions = Object.create(this);
             if (!steps) {
                 steps = [];
             }
-            result.get_steps = function () {
+            new_actions.copy = function () {
+                return TT.actions.create(TT.UTILITIES.copy_array(steps));
+            };
+            new_actions.get_steps = function () {
                 return steps;
             };
-            result.is_empty = function () {
+            new_actions.is_empty = function () {
                 return steps.length === 0;
             };
-            result.reset_steps = function () {
+            new_actions.reset_steps = function () {
                 steps = [];
             };
-            result.add_step = function (step) {
-                step.robot = this.get_robot();
+            new_actions.add_step = function (step) {
+                step.robot = robot;
                 steps[steps.length] = step;
             };
-            result.get_robot = function () {
+            new_actions.get_robot = function () {
                 return robot;
             };
-            result.set_robot = function (robot_parameter) {
+            new_actions.set_robot = function (robot_parameter) {
                 var i;
                 robot = robot_parameter;
                 for (i = 0; i < steps.length; i += 1) {
                     steps[i].robot = robot;
                 }
             };
-            return result;
+            return new_actions;
         },
         
         run: function(context, queue) {

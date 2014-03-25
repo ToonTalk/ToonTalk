@@ -16,9 +16,9 @@ window.TOONTALK.widget = (function (TT) {
             widget.get_erased = function () {
                 return erased;
             };
-            widget.set_erased = function (new_value, update_display) {
+            widget.set_erased = function (new_value, update_now) {
                 erased = new_value;
-                if (update_display) {
+                if (update_now) {
                     this.update_display();
                 }
             };
