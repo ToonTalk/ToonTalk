@@ -247,7 +247,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         var font_width = font_height * 0.64; // .55 'worst' aspect ratio -- add a little extra
         // could find the font name and use the precise value
 		var max_decimal_places = client_width / font_width;
-		if (max_decimal_places < 4 && this.get_format() === 'decimal') {
+		if (max_decimal_places < 4) { // && this.get_format() === 'decimal') {
 			// better to use a smaller font than have too few digits
 			font_height = font_height * max_decimal_places / 4;
 			max_decimal_places = 4;
