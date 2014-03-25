@@ -28,6 +28,10 @@ window.TOONTALK.UTILITIES =
     return {
 		create_from_json: function (json) {
 			var widget, frontside_element, backside_widgets;
+			if (!json) {
+				// was undefined and still is
+				return;
+			}
 			if (json_creators[json.type]) {
 				widget = json_creators[json.type](json);
 			} else {

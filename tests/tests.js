@@ -42,7 +42,6 @@ window.TOONTALK.tests =
      
      // robot tests:
      add_or_duplicate_robot: function (erase_bubble, double, backside_element, runs) {
-//          var bubble = TT.number.create(2);
          var expected_result;
          var context = TT.number.create(2);
          if (backside_element) {
@@ -86,14 +85,14 @@ window.TOONTALK.tests =
          var body = TT.actions.create();
          var bubble = TT.number.create(1);
          bubble.set_erased(true);
-         return TT.robot.create(bubble, body);         
+         return TT.robot.create("images/robot.png", bubble, body);         
      },
      
      accept_box_robot: function(n) {
          var body = TT.actions.create();
          var bubble = TT.box.create(n);
          bubble.set_erased(true);
-         return TT.robot.create(bubble, body);         
+         return TT.robot.create("images/robot.png", bubble, body);         
      },
      
      add_one_robot: function () {
