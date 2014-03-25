@@ -216,6 +216,9 @@ window.TOONTALK.backside =
 											   left: position.left+10,
 											   top: position.top+10});
 				$(frontside_element).parent().append(frontside_element_copy);
+				if (TT.robot.in_training) {
+					TT.robot.in_training.copied(widget, widget_copy);
+				}
 			});
 			$copy_button.attr("title", "Click to make a copy of this " + widget.get_type_name());
 			return $copy_button.get(0);

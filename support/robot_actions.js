@@ -9,11 +9,11 @@
 window.TOONTALK.actions = 
 (function (TT) {
     "use strict";
-    // public methods
     return {
         create: function (steps) {
             var robot;
             var new_actions = Object.create(this);
+            var newly_created_widgets = [];
             if (!steps) {
                 steps = [];
             }
@@ -28,10 +28,14 @@ window.TOONTALK.actions =
             };
             new_actions.reset_steps = function () {
                 steps = [];
+                newly_created_widgets = [];
             };
-            new_actions.add_step = function (step) {
+            new_actions.add_step = function (step, new_widget) {
                 step.robot = robot;
                 steps[steps.length] = step;
+                if (new_widget) {
+                    newly_created_widgets[newly_created_widgets.length] = new_widget;
+                }
             };
             new_actions.get_robot = function () {
                 return robot;
@@ -43,6 +47,18 @@ window.TOONTALK.actions =
                     steps[i].robot = robot;
                 }
             };
+            new_actions.get_path_to = function (widget) {
+                var i;
+                for (i = 0; i < newly_created_widgets.length; i++) {
+                    if (newly_created_widgest[i] === widget) {
+                        return TT.actions_paths.create(i, new_actions);
+                    }
+                    // else see if sub-path inside newly_created_widgest[i] (add to TT.UTILITIES) 
+                }
+            };
+            new_actions.dereference = function (index) {
+                return newly_created_widgest[index];
+            }
             return new_actions;
         },
         
@@ -79,5 +95,20 @@ window.TOONTALK.actions =
             return TT.actions.create(TT.UTILITIES.create_array_from_json(json.steps));
         }
         
+    };
+}(window.TOONTALK));
+
+window.TOONTALK.actions_paths =
+// paths to widgets created by previous steps
+(function (TT) {
+    "use strict";
+    return {
+        create: function (index, actions) {
+            return {
+                dereference: function () {
+                    return actions.dereference(index);
+                }
+            };
+        }
     };
 }(window.TOONTALK));

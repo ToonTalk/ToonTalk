@@ -7,7 +7,7 @@
   /*jslint browser: true, devel: true, vars: true, white: true */
 
 
- window.TOONTALK.path_to_entire_context = 
+window.TOONTALK.path_to_entire_context = 
 (function (TT) {
     "use strict";
     return {

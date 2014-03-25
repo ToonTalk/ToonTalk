@@ -138,14 +138,20 @@ window.TOONTALK.robot = (function (TT) {
 		// note widget may be inside of something like a box
 		// widget is a resource then is like copy_constant...
 		var path, step;
+		var body = this.get_body();
 		if (is_resource) {
 			step = TT.copy_constant.create(widget);
 		} else {
-			// to do
+			// abstract the following
+			path = body.get_path_to(widget);
+			// if !path try other things
+			if (path) {
+				step = TT.pick_up(path);
+			}
 		}
 		this.set_thing_in_hand(widget);
 		if (step) {
-			this.get_body().add_step(step);
+			body.add_step(step);
 		}
 	};
 	
@@ -162,6 +168,19 @@ window.TOONTALK.robot = (function (TT) {
 			this.get_body().add_step(step);
 		}
 	};
+	
+	robot.copied = function (widget, widget_copy) {
+		var path, step;
+		if (widget === this.get_context()) {
+			path = TT.path_to_entire_context;
+		} else {
+			// to do
+		}
+		if (path) {
+			step = TT.copy.create(path);
+			this.get_body().add_step(step);
+		}
+	}
 	
 	robot.get_context = function () {
 		var frontside_element = this.get_frontside_element();
