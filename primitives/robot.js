@@ -248,7 +248,7 @@ window.TOONTALK.robot = (function (TT) {
 		var body = this.get_body();
 		var bubble_erased;
 		if (!bubble || !body || body.is_empty()) {
-			return "who has yet to be trained";
+			return "has yet to be trained";
 		}
 		bubble_erased = bubble.get_erased() ? " an erased " : " a ";
 		return "when given something that matches" + bubble_erased + bubble.toString() + " will " + body.toString();
