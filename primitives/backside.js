@@ -145,7 +145,8 @@ window.TOONTALK.backside =
 		
 		create_standard_buttons: function (backside, widget) { // extra arguments are extra buttons
 		    var run_or_erase_button;
-			if (!widget.get_erased() && $(widget.get_frontside_element()).parents(".toontalk-thought-bubble-contents").length === 0) {
+			var frontside_element = widget.get_frontside_element();
+			if (!widget.get_erased() && !$(frontside_element).is(".toontalk-thought-bubble-contents") && $(frontside_element).parents(".toontalk-thought-bubble-contents").length === 0) {
 				run_or_erase_button = TT.backside.create_run_button(backside, widget);
 			} else {
 				run_or_erase_button = TT.backside.create_erase_button(backside, widget);

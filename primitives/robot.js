@@ -91,7 +91,7 @@ window.TOONTALK.robot = (function (TT) {
     
     robot.copy = function (just_value) {
 		var bubble = this.get_bubble();
-		var bubble_copy = bubble ? bubble.copy() : undefined;
+		var bubble_copy = bubble ? bubble.copy(true) : undefined;
 		var copy = this.create(this.get_image_url(), bubble_copy, this.get_body().copy(), this.get_description(), this.get_width(), this.get_height());
 		if (just_value) {
 			return copy;
@@ -189,12 +189,13 @@ window.TOONTALK.robot = (function (TT) {
 	};
 	
 	robot.training_started = function () {
-		this.set_bubble(this.get_context());
+		this.set_bubble(this.get_context().copy(true));
 		$("div").css({cursor: 'url(' + TT.UTILITIES.cursor_of_image(this.get_image_url()) + '), default'});
 	};
 	
 	robot.training_finished = function () {
 		$("div").css({cursor: ''});
+		this.set_description(this.toString(), true);
 	};
 	
 	robot.update_display = function() {
