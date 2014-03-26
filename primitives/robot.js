@@ -15,7 +15,7 @@ window.TOONTALK.robot = (function (TT) {
         // body holds the actions the robot does when it runs
         var new_robot = Object.create(this);
         if (!image_url) {
-            image_url = "images/rb00.png";
+            image_url = "images/RB00.PNG";
         }
 		if (!body) {
 			body = TT.actions.create();
