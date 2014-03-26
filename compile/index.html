@@ -2,32 +2,30 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<link rel="stylesheet" media="all" href="../libraries/jquery-ui-1.10.4.custom.css">
-<link rel="stylesheet" media="all" href="../toontalk.css">
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
+<link rel="stylesheet" media="all" href="css/toontalk.css">
 <script>
 window.TOONTALK = {}; // create ToonTalk 'module' -- using 'window' as recommended by Caja
 </script>
-<script src="toontalk.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+<script src="js/toontalk.js"></script>
 <title>ToonTalk Reborn Test Page</title>
 <link rel="shortcut icon" href="favicon.ico" />
 </head>
 <body>
-<div id='top-level-backside'> </div>
-<div id='a-number' class='toontalk-top-level-resource'></div>
-<div id='a-box' class='toontalk-top-level-resource'></div>
-<p>Test robots</p>
-<table style='padding: 6px;'>
-<tr style='padding: 4px;'>
-<td style='padding: 4px;'><div id='add_one_robot' style='width: 20%; height: 20%;' class='toontalk-top-level-resource'></td>
-<td style='padding: 4px;'>This robot adds one to what it is given.</td>
-</tr>
-<tr style='padding: 4px;'>
-<td style='padding: 4px;'><div id='double_robot' style='width: 20%; height: 20%;' class='toontalk-top-level-resource'></td>
-<td style='padding: 4px;'>This robot doubles what it is given.</td>
-</tr>
-<tr style='padding: 4px;'>
-<td style='padding: 4px;'><div id='copy_first_hole_to_second_hole_robot' style='width: 20%; height: 20%;' class='toontalk-top-level-resource'></div></td>
-<td style='padding: 4px;'>This robot copies what is in the first hole and drops the copy on the second hole.</td>
+<div id='top-level-backside' />
+<table>
+<tr>
+<td>
+<div id='a-number' class='toontalk-top-level-resource' />
+</td>
+<td>
+<div id='a-box' class='toontalk-top-level-resource' />
+</td>
+<td>
+<div id='a-robot' class='toontalk-top-level-resource' />
+</td>
 </tr>
 </table>
 <script>
@@ -35,3 +33,4 @@ window.TOONTALK.initialise();
 </script>
 </body>
 </html>
+
