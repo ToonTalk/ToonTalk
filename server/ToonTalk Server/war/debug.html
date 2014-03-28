@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script>
+window.TOONTALK = {}; // create ToonTalk 'module' -- using 'window' as recommended by Caja documentation
+</script>
+  <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.4/themes/sunny/jquery-ui.css">
+  <link rel="stylesheet" media="all" href="css/toontalk.css">
+  <script src="http://code.jquery.com/jquery-2.1.0.js"></script>
+  <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+<script src="js/libraries/rationaljs.js"></script>
+<script src="js/primitives/widget.js"></script>
+<script src="js/primitives/number.js"></script>
+<script src="js/primitives/robot.js"></script>
+<script src="js/primitives/box.js"></script>
+<script src="js/primitives/backside.js"></script>
+<script src="js/primitives/frontside.js"></script>
+<script src="js/actions/drop.js"></script>
+<script src="js/actions/pick_up.js"></script>
+<script src="js/actions/pick_up_constant.js"></script>
+<script src="js/actions/copy.js"></script>
+<script src="js/actions/copy_constant.js"></script>
+<script src="js/support/robot_actions.js"></script>
+<script src="js/support/path_to_entire_context.js"></script>
+<script src="js/support/run_queue.js"></script>
+<script src="js/support/display_updates.js"></script>
+<!-- following should be after all the primitive widgets are defined --->
+<script src="js/support/utilities.js"></script>
+<!-- following only including during development/testing --->
+<script src="js/tests/tests.js"></script>
+<script src="js/index.js"></script>
+<title>ToonTalk Reborn Test Page</title>
+<link rel="shortcut icon" href="favicon.ico" />
+</head>
+<body>
+<div id='top-level-backside'> </div>
+<table>
+<tr>
+<td>
+<div id='a-number' class='toontalk-top-level-resource'> </div>
+</td>
+<td>
+<div id='a-box' class='toontalk-top-level-resource'> </div>
+</td>
+<td>
+<div id='a-robot' class='toontalk-top-level-resource'> </div>
+</td>
+</tr>
+</table>
+<script>
+window.TOONTALK.initialise();
+</script>
+</body>
+</html>
