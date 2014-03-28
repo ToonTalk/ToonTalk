@@ -49,17 +49,17 @@
                         return 0;
                     a = c
                 }
-                return a
+            return a;
             }};
         integer.gcd = integer.greatest_common_divisor;
         integer.fromRandom = function(a) {
-            return Math.random() * (1 << a) >>> 0
+            return Math.random() * (1 << a) >>> 0;
         };
         integer.fromMillitime = function() {
-            return +new Date
+            return +new Date;
         };
         integer.fromUnixtime = function() {
-            return 0.001 * integer.fromMillitime() | 0
+            return 0.001 * integer.fromMillitime() | 0;
         };
         "undefined" !== typeof exports && (exports.integer = integer);
         (function(a) {
@@ -73,7 +73,7 @@
             }
             var c = {};
             b._construct = function(a, d) {
-                return new b(a, d, c)
+                return new b(a, d, c);
             };
             var d = 1E7;
             b.base = d;
@@ -104,13 +104,13 @@
                             d = "0" + d;
                         a += d
                     }
-                    return a
+                    return a;
                 }
                 c = b.digits;
                 a = b.small[a];
                 for (var d = this._s, f = this.abs(), e = [], l; 0 !== f._s; )
                     l = f.divRem(a), f = l[0], l = l[1], e.push(c[l.valueOf()]);
-                return (0 > d ? "-" : "") + e.reverse().join("")
+                return (0 > d ? "-" : "") + e.reverse().join("");
             };
             b.radixRegex = [/^$/, /^$/, /^[01]*$/, /^[012]*$/, /^[0-3]*$/, /^[0-4]*$/, /^[0-5]*$/, 
                 /^[0-6]*$/, /^[0-7]*$/, /^[0-8]*$/, /^[0-9]*$/, /^[0-9aA]*$/, /^[0-9abAB]*$/, /^[0-9abcABC]*$/, /^[0-9a-dA-D]*$/, /^[0-9a-eA-E]*$/, /^[0-9a-fA-F]*$/, /^[0-9a-gA-G]*$/, /^[0-9a-hA-H]*$/, /^[0-9a-iA-I]*$/, /^[0-9a-jA-J]*$/, /^[0-9a-kA-K]*$/, /^[0-9a-lA-L]*$/, /^[0-9a-mA-M]*$/, /^[0-9a-nA-N]*$/, /^[0-9a-oA-O]*$/, /^[0-9a-pA-P]*$/, /^[0-9a-qA-Q]*$/, /^[0-9a-rA-R]*$/, /^[0-9a-sA-S]*$/, /^[0-9a-tA-T]*$/, /^[0-9a-uA-U]*$/, /^[0-9a-vA-V]*$/, /^[0-9a-wA-W]*$/, /^[0-9a-xA-X]*$/, /^[0-9a-yA-Y]*$/, /^[0-9a-zA-Z]*$/];
@@ -118,14 +118,14 @@
                 function e(a) {
                     a = 
                     a.replace(/\s*[*xX]\s*10\s*(\^|\*\*)\s*/, "e");
-                    return a.replace(/^([+\-])?(\d+)\.?(\d*)[eE]([+\-]?\d+)$/, function(a, b, c, d, p) {
+                    return a.replace(/^([+\-])?(\d+)\.?(\d*)[eE]([+\-]?\d+)$/, function(a, b, c, d, p) {;
                         p = +p;
                         var f = 0 > p, e = c.length + p;
                         a = (f ? c : d).length;
                         p = (p = Math.abs(p)) >= a ? p - a + f : 0;
                         a = Array(p + 1).join("0");
                         c += d;
-                        return (b || "") + (f ? c = a + c : c += a).substr(0, e += f ? a.length : 0) + (e < c.length ? "." + c.substr(e) : "")
+													return (b || "") + (f ? c = a + c : c += a).substr(0, e += f ? a.length : 0) + (e < c.length ? "." + c.substr(e) : "");
                     })
                 }
                 a = a.toString();
@@ -149,14 +149,14 @@
                         for (l = []; 7 <= n.length; )
                             l.push(parseInt(n.splice(n.length - b.base_log10, b.base_log10).join(""), 10));
                         l.push(parseInt(n.join(""), 10));
-                        return new b(l, g, c)
+                        return new b(l, g, c);
                     }
                     l = f;
                     d = 
                     b.small[d];
                     for (var m = b.small, k = 0; k < n.length; k++)
                         l = l.multiply(d).add(m[parseInt(n[k], 36)]);
-                    return new b(l._d, g, c)
+                    return new b(l._d, g, c);
                 }
                 throw Error("Invalid BigInteger format: " + a);
             };
@@ -178,13 +178,13 @@
                 for (m && 
                 (g[k] = m); k < e; k++)
                     g[k] = f[k];
-                return new b(g, this._s, c)
+                return new b(g, this._s, c);
             };
             b.prototype.negate = function() {
-                return new b(this._d, -this._s | 0, c)
+                return new b(this._d, -this._s | 0, c);
             };
             b.prototype.abs = function() {
-                return 0 > this._s ? this.negate() : this
+                return 0 > this._s ? this.negate() : this;
             };
             b.prototype.subtract = function(a) {
                 if (0 === this._s)
@@ -222,7 +222,7 @@
                 }
                 for (; k < n; k++)
                     l[k] = e[k];
-                return new b(l, g, c)
+                return new b(l, g, c);
             };
             (function() {
                 function a(p, f) {
@@ -233,7 +233,7 @@
                             break;
                         ++q
                     }
-                    return new b(g, f, c)
+                    return new b(g, f, c);
                 }
                 function f(a, p) {
                     for (var e = a._d, g = e.slice(), q = 0; ; ) {
@@ -246,27 +246,26 @@
                         }
                         ++q
                     }
-                    return new b(g, p, c)
+                    return new b(g, p, c);
                 }
                 b.prototype.next = function() {
                     switch (this._s) {
                         case 0:
-                            return e;
+                        return e;
                         case -1:
-                            return f(this, 
-                            -1);
+                        return f(this, -1);
                         default:
-                            return a(this, 1)
+                        return a(this, 1);
                     }
                 };
                 b.prototype.prev = function() {
                     switch (this._s) {
                         case 0:
-                            return g;
+                        return g;
                         case -1:
-                            return a(this, -1);
+                        return a(this, -1);
                         default:
-                            return f(this, 1)
+                        return f(this, 1);
                     }
                 }
             })();
@@ -292,17 +291,17 @@
                 for (c -= 1; 0 <= c; c--)
                     if (d[c] !== a[c])
                         return d[c] < a[c] ? -1 : 1;
-                return 0
+                return 0;
             };
             b.prototype.compare = function(a) {
                 if (this === 
                 a)
                     return 0;
                 a = b(a);
-                return 0 === this._s ? -a._s : this._s === a._s ? this.compareAbs(a) * this._s : this._s
+                return 0 === this._s ? -a._s : this._s === a._s ? this.compareAbs(a) * this._s : this._s;
             };
             b.prototype.isUnit = function() {
-                return this === e || this === g || 1 === this._d.length && 1 === this._d[0]
+                return this === e || this === g || 1 === this._d.length && 1 === this._d[0];
             };
             b.prototype.multiply = function(a) {
                 if (0 === this._s)
@@ -325,7 +324,7 @@
                         v = m[u] + t * g[u - k] + l, l = v / d | 0, m[u] = v % d | 0;
                     l && (v = m[u] + l, m[u] = v % d)
                 }
-                return new b(m, this._s * a._s, c)
+                return new b(m, this._s * a._s, c);
             };
             b.prototype.multiplySingleDigit = function(a) {
                 if (0 === a || 0 === this._s)
@@ -347,7 +346,7 @@
                 for (var m = l = 0; m < n; m++)
                     e = a * g[m] + l, l = e / d | 0, h[m] = e % d | 0;
                 l && (h[m] = l);
-                return new b(h, 1, c)
+                return new b(h, 1, c);
             };
             b.prototype.square = function() {
                 if (0 === this._s)
@@ -368,15 +367,15 @@
                     h[l] = n % d;
                     h[l + 1] += r
                 }
-                return new b(h, 1, c)
+                return new b(h, 1, c);
             };
             b.prototype.quotient = function(a) {
-                return this.divRem(a)[0]
+                return this.divRem(a)[0];
             };
             b.prototype.divide = 
             b.prototype.quotient;
             b.prototype.remainder = function(a) {
-                return this.divRem(a)[1]
+                return this.divRem(a)[1];
             };
             b.prototype.divRem = function(a) {
                 a = b(a);
@@ -388,9 +387,9 @@
                     return this.divRemSmall(a._s * a._d[0]);
                 switch (this.compareAbs(a)) {
                     case 0:
-                        return [this._s === a._s ? e : g, f];
+                    return [this._s === a._s ? e : g, f];
                     case -1:
-                        return [f, this]
+                    return [f, this];
                 }
                 var h = this._s * a._s, s = a.abs(), n = this._d, r = n.length, l = [], m, k = new b([], 0, c);
                 for (k._s = 1; r; )
@@ -417,7 +416,7 @@
                         l.push(m);
                         m && (m = k.subtract(t), k._d = m._d.slice(), 0 === k._d.length && (k._s = 0))
                     }
-                return [new b(l.reverse(), h, c), new b(k._d, this._s, c)]
+                return [new b(l.reverse(), h, c), new b(k._d, this._s, c)];
             };
             b.prototype.divRemSmall = function(a) {
                 a = +a;
@@ -437,33 +436,33 @@
                     a = new b([this._d[0] % a | 0], 1, c);
                     0 > e && (g = g.negate());
                     0 > this._s && (a = a.negate());
-                    return [g, a]
+                    return [g, a];
                 }
                 for (var n = this._d.slice(), g = Array(n.length), h = 0, l = 0, m = 0, k; n.length; )
                     h = h * d + n[n.length - 1], h < a ? (g[m++] = 0, n.pop(), l = d * l + h) : (k = 0 === h ? 0 : h / a | 0, l = h - a * k, (g[m++] = k) ? (n.pop(), h = l) : n.pop());
                 a = new b([l], 1, c);
                 0 > this._s && (a = a.negate());
-                return [new b(g.reverse(), e, c), a]
+                return [new b(g.reverse(), e, c), a];
             };
             b.prototype.isEven = 
             function() {
                 var a = this._d;
-                return 0 === this._s || 0 === a.length || 0 === a[0] % 2
+                return 0 === this._s || 0 === a.length || 0 === a[0] % 2;
             };
             b.prototype.isOdd = function() {
-                return !this.isEven()
+                return !this.isEven();
             };
             b.prototype.sign = function() {
-                return this._s
+                return this._s;
             };
             b.prototype.isPositive = function() {
-                return 0 < this._s
+                return 0 < this._s;
             };
             b.prototype.isNegative = function() {
-                return 0 > this._s
+                return 0 > this._s;
             };
             b.prototype.isZero = function() {
-                return 0 === this._s
+                return 0 === this._s;
             };
             b.prototype.exp10 = function(a) {
                 a = +a;
@@ -479,14 +478,14 @@
                         return d;
                     d._s = 1;
                     d = d.multiplySingleDigit(Math.pow(10, a));
-                    return 0 > this._s ? d.negate() : d
+                    return 0 > this._s ? d.negate() : d;
                 }
                 if (-a >= 7 * this._d.length)
                     return f;
                 d = new b(this._d.slice(), this._s, c);
                 for (a = -a; 7 <= a; a -= 7)
                     d._d.shift();
-                return 0 == a ? d : d.divRemSmall(Math.pow(10, a))[0]
+                return 0 == a ? d : d.divRemSmall(Math.pow(10, a))[0];
             };
             b.prototype.pow = function(a) {
                 if (this.isUnit())
@@ -497,7 +496,7 @@
                 if (0 > a._s) {
                     if (0 === this._s)
                         throw Error("Divide by zero");
-                    return f
+                    return f;
                 }
                 if (0 === this._s)
                     return f;
@@ -507,49 +506,49 @@
                     throw Error("exponent too large in BigInteger.pow");
                 for (var c = this, d = e, g = b.small[2]; a.isPositive() && (!a.isOdd() || (d = d.multiply(c), !a.isUnit())); )
                     c = c.square(), a = a.quotient(g);
-                return d
+                return d;
             };
             b.prototype.modPow = function(a, c) {
                 for (var d = e, f = this; a.isPositive(); )
                     a.isOdd() && (d = d.multiply(f).remainder(c)), a = a.quotient(b.small[2]), a.isPositive() && (f = f.square().remainder(c));
-                return d
+                return d;
             };
             b.prototype.log = function() {
                 switch (this._s) {
                     case 0:
-                        return -Infinity;
+                    return -Infinity;
                     case -1:
-                        return NaN
+                    return NaN;
                 }
                 var a = this._d.length;
                 if (30 > 
                 7 * a)
                     return Math.log(this.valueOf());
                 var e = Math.ceil(30 / 7), f = this._d.slice(a - e);
-                return Math.log((new b(f, 1, c)).valueOf()) + (a - e) * Math.log(d)
+                return Math.log((new b(f, 1, c)).valueOf()) + (a - e) * Math.log(d);
             };
             b.prototype.valueOf = function() {
-                return parseInt(this.toString(), 10)
+                return parseInt(this.toString(), 10);
             };
             b.prototype.toJSValue = function() {
-                return parseInt(this.toString(), 10)
+                return parseInt(this.toString(), 10);
             };
             var h = b(2147483647);
             b.MAX_EXP = h;
             (function() {
                 function a(c) {
-                    return function(a) {
-                        return c.call(b(a))
+                    return function(a) {;
+					return c.call(b(a));
                     }
                 }
                 function c(a) {
-                    return function(c, d) {
-                        return a.call(b(c), b(d))
+                    return function(c, d) {;
+					   return a.call(b(c), b(d));
                     }
                 }
                 function d(a) {
-                    return function(c, d, e) {
-                        return a.call(b(c), b(d), b(e))
+                    return function(c, d, e) {;
+					      return a.call(b(c), b(d), b(e));
                     }
                 }
                 (function() {
@@ -561,7 +560,7 @@
                     for (e = 0; e < k.length; e++)
                         f = k[e], b[f] = d(b.prototype[f]);
                     b.exp10 = function(a, c) {
-                        return b(a).exp10(c)
+                        return b(a).exp10(c);
                     }
                 })()
             })();
@@ -573,27 +572,27 @@
                     return BigInteger.ONE;
                 for (var c; !b.isZero(); )
                     c = b, b = a.remainder(b), a = c;
-                return a
+            return a;
             },create: function() {
-                return [0]
+                return [0];
             },clone: function(a) {
                 for (var b = [], c = 0, d = a.length; c < d; c++)
                     b[c] = a[c];
-                return b
+                return b;
             },copy: function(a, b) {
                 a = [];
                 for (var c = 0, d = b.length; c < d; c++)
                     a[c] = b[c];
-                return a
+                return a;
             },abs: function(a, b) {
                 a[0] = Math.abs(b[0]);
-                return a
+                return a;
             },str: function(a) {
-                return a[0].toString()
+                return a[0].toString();
             },toInteger: function(a) {
-                return out[0]
+                return out[0];
             },fromInteger: function(a) {
-                return [parseInt(a)]
+                return [parseInt(a)];
             }};
         bigint.ZERO = bigint.fromInteger(0);
         bigint.ONE = bigint.fromInteger(1);
@@ -610,70 +609,70 @@
             var a = new RAT_ARRAY_TYPE(2);
             a[0] = 0;
             a[1] = 1;
-            return a
+            return a;
         };
         rat.clone = function(a) {
             var b = new RAT_ARRAY_TYPE(2);
             b[0] = a[0];
             b[1] = a[1];
-            return b
+            return b;
         };
         rat.fromValues = function(a, b) {
             var c = new RAT_ARRAY_TYPE(2);
             c[0] = a;
             c[1] = b;
-            return rat.normalize(c, c)
+            return rat.normalize(c, c);
         };
         rat.copy = function(a, b) {
             a[0] = b[0];
             a[1] = b[1];
-            return a
+            return a;
         };
         rat.set = function(a, b, c) {
             a[0] = b;
             a[1] = c;
-            return rat.normalize(a, a)
+            return rat.normalize(a, a);
         };
         rat.abs = function(a, b) {
             a[0] = Math.abs(b[0]);
             a[1] = b[1];
-            return a
+            return a;
         };
         rat.invert = function(a, b) {
             var c = b[0];
             a[0] = b[1];
             a[1] = c;
-            return a
+            return a;
         };
         rat.reciprocal = rat.invert;
         rat.add = function(a, b, c) {
             b[1] === c[1] ? (a[0] = b[0] + c[0], a[1] = b[1]) : (a[0] = b[0] * c[1] + c[0] * b[1], a[1] = b[1] * c[1]);
-            return rat.normalize(a, a)
+            return rat.normalize(a, a);
         };
         rat.subtract = function(a, b, c) {
             b[1] === c[1] ? (a[0] = b[0] - c[0], a[1] = b[1]) : (a[0] = b[0] * c[1] - c[0] * b[1], a[1] = b[1] * c[1]);
-            return rat.normalize(a, a)
+            return rat.normalize(a, a);
         };
         rat.sub = rat.subtract;
         rat.multiply = function(a, b, c) {
             a[0] = b[0] * c[0];
             a[1] = b[1] * c[1];
-            return rat.normalize(a, a)
+            return rat.normalize(a, a);
         };
         rat.mul = rat.multiply;
         rat.mediant = function(a, b, c) {
             a[0] = b[0] + c[0];
             a[1] = b[1] + c[1];
-            return rat.normalize(a, a)
+            return rat.normalize(a, a);
         };
         rat.divide = function(a, b, c) {
             a[0] = b[0] * c[1];
             a[1] = b[1] * c[0];
-            return rat.normalize(a, a)
+            return rat.normalize(a, a);
         };
         rat.div = rat.divide;
         rat.equals = function(a, b) {
-            return 0 === a[0] && 0 === b[0] || 0 === a[1] && 0 === b[1] ? !0 : a[0] === b[0] && a[1] === b[1]
+            return 0 === a[0] && 0 === b[0] || 0 === a[1] && 0 === b[1] ? !0 : a[0] === b[0] && a[1] === b[1];
         };
         rat.approximates = function(a, b) {
             if (rat.equals(a, b))
@@ -681,34 +680,34 @@
             var c = rat.create();
             rat.sub(c, a, b);
             rat.abs(c, c);
-            return rat.isLessThan(c, rat.INFINITESIMAL)
+            return rat.isLessThan(c, rat.INFINITESIMAL);
         };
         rat.isGreaterThan = function(a, b) {
-            return rat.equals(a, b) ? !1 : a[0] * b[1] > b[0] * a[1]
+            return rat.equals(a, b) ? !1 : a[0] * b[1] > b[0] * a[1];
         };
         rat.isLessThan = function(a, b) {
-            return rat.equals(a, b) ? !1 : a[0] * b[1] < b[0] * a[1]
+            return rat.equals(a, b) ? !1 : a[0] * b[1] < b[0] * a[1];
         };
         rat.isNegative = function(a) {
-            return 0 > a[0]
+            return 0 > a[0];
         };
         rat.min = function(a, b, c) {
             rat.isLessThan(b, c) ? (a[0] = b[0], a[1] = b[1]) : (a[0] = c[0], a[1] = c[1]);
-            return a
+            return a;
         };
         rat.max = function(a, b, c) {
             rat.isGreaterThan(b, c) ? (a[0] = b[0], a[1] = b[1]) : (a[0] = c[0], a[1] = c[1]);
-            return a
+            return a;
         };
         rat.scalar_multiply = function(a, b, c) {
             a[0] = b[0] * c;
             a[1] = b[1];
-            return rat.normalize(a, a)
+            return rat.normalize(a, a);
         };
         rat.scalar_divide = function(a, b, c) {
             a[0] = b[0];
             a[1] = b[1] * c;
-            return rat.normalize(a, a)
+            return rat.normalize(a, a);
         };
         rat.normalize = function(a, b) {
             if (isNaN(b[0]) || isNaN(b[1]) || 0 === b[0] && 0 === b[1])
@@ -722,22 +721,22 @@
             0 < b[1] ? (a[0] = b[0], a[1] = b[1]) : (a[0] = -b[0], a[1] = -b[1]);
             var c = integer.greatest_common_divisor(Math.abs(a[0]), a[1]);
             1 < c && (a[0] /= c, a[1] /= c);
-            return a
+            return a;
         };
         rat.opposite = function(a, b) {
             a[0] = -b[0];
             a[1] = b[1];
-            return a
+            return a;
         };
         rat.negative = rat.opposite;
         rat.neg = rat.opposite;
         rat.power = function(a, b, c) {
             2 === c ? (a[0] = b[0] * b[0], a[1] = b[1] * b[1]) : 0 < c ? (a[0] = Math.pow(b[0], c), a[1] = Math.pow(b[1], c)) : 0 > c ? (c = Math.abs(c), a[0] = Math.pow(b[1], c), a[1] = Math.pow(b[0], c)) : rat.copy(a, rat.ONE);
-            return rat.normalize(a, a)
+            return rat.normalize(a, a);
         };
         rat.pow = rat.power;
         rat.sqrt = function(a, b) {
-            return rat.nthRoot(a, b, 2)
+            return rat.nthRoot(a, b, 2);
         };
         rat.nthRoot = function(a, b, c) {
             if (rat.equals(b, rat.ZERO))
@@ -755,47 +754,47 @@
                 rat.isLessThan(b, e) ? (f[0] += f[1], f[2] += f[3]) : (f[1] += f[0], f[3] += f[2]), a[0] = f[0] + f[1], a[1] = f[2] + f[3], 
                 rat.pow(e, a, c);
             d && (b[0] = -b[0], 1 === c % 2 && rat.neg(a, a));
-            return a
+            return a;
         };
         rat.dot = function(a, b) {
-            return a[0] * b[0] + a[1] * b[1]
+            return a[0] * b[0] + a[1] * b[1];
         };
         rat.str = function(a) {
-            return 1 === a[1] ? a[0].toString() : a[0] + "/" + a[1]
+            return 1 === a[1] ? a[0].toString() : a[0] + "/" + a[1];
         };
         rat.toDecimal = function(a) {
-            return a[0] / a[1]
+            return a[0] / a[1];
         };
         rat.dec = rat.toDecimal;
         rat.toInteger = function(a) {
-            return Math.round(rat.toDecimal(a))
+            return Math.round(rat.toDecimal(a));
         };
         rat.round = rat.toInteger;
         rat.floor = function(a) {
-            return Math.floor(rat.toDecimal(a))
+            return Math.floor(rat.toDecimal(a));
         };
         rat.ceil = function(a) {
-            return Math.ceil(rat.toDecimal(a))
+            return Math.ceil(rat.toDecimal(a));
         };
         rat.fromInteger_copy = function(a, b) {
             a[0] = parseInt(b);
             a[1] = 1;
-            return a
+            return a;
         };
         rat.fromInteger = function(a) {
-            return rat.fromInteger_copy(rat.create(), a)
+            return rat.fromInteger_copy(rat.create(), a);
         };
         rat.fromIntegerInverse_copy = function(a, b) {
             a[0] = 1;
             a[1] = parseInt(b);
             0 > a[1] && (a[0] = -a[0], a[1] = -a[1]);
-            return a
+            return a;
         };
         rat.fromIntegerInverse = function(a) {
-            return rat.fromIntegerInverse_copy(rat.create(), a)
+            return rat.fromIntegerInverse_copy(rat.create(), a);
         };
         rat.fromDecimal = function(a) {
-            return rat.fromDecimal_copy(rat.create(), a)
+            return rat.fromDecimal_copy(rat.create(), a);
         };
         rat.fromDecimal_copy = function(a, b) {
             b = parseFloat(b);
@@ -815,12 +814,12 @@
             for (var c = [1, 0, 0, 1], d = b, f = 1, e = rat.MAX_LOOPS; e-- && Math.abs(b - rat.toDecimal(a)) > rat.EPSILON; )
                 f = 
                 Math.floor(d), a[0] = f * c[0] + c[2], a[1] = f * c[1] + c[3], d = 1 / (d - f), c[2] = c[0], c[3] = c[1], c[0] = a[0], c[1] = a[1];
-            return a
+            return a;
         };
         rat.fromRandom = function(a) {
             a[0] = 0xfffffffffffff * Math.random() << 0;
             a[1] = Math.abs(0xfffffffffffff * Math.random() << 0);
-            return rat.normalize(a, a)
+            return rat.normalize(a, a);
         };
         rat.sin = function(a, b) {
             if (0 === b[1])
@@ -830,7 +829,7 @@
             rat.pow(c, b, 2);
             rat.add(c, c, rat.ONE);
             rat.divide(a, a, c);
-            return a
+            return a;
         };
         rat.cos = function(a, b) {
             if (0 === b[1])
@@ -841,7 +840,7 @@
             var d = rat.create();
             rat.add(d, rat.ONE, c);
             rat.divide(a, a, d);
-            return a
+            return a;
         };
         rat.tan = function(a, b) {
             rat.scalar_multiply(a, b, 2);
@@ -852,7 +851,7 @@
             rat.pow(c, b, 4);
             rat.sub(c, rat.ONE, c);
             rat.divide(a, a, c);
-            return a
+            return a;
         };
         rat.toEgyptian = function(a) {
             a = rat.clone(a);
@@ -864,7 +863,7 @@
             b || (b = "");
             for (var c = 1, d = rat.create(); 1 !== a[0]; )
                 c++, d = rat.fromValues(1, c), rat.isGreaterThan(a, d) && (b && (b += " + "), b += rat.str(d), rat.sub(a, a, d));
-            return a ? b ? b + " + " + rat.str(a) : rat.str(a) : b ? b : "0"
+            return a ? b ? b + " + " + rat.str(a) : rat.str(a) : b ? b : "0";
         };
         rat.toBabylonian = function(a) {
             var b = "", c = rat.toDecimal(a);
@@ -873,7 +872,7 @@
                 (d = a % 60) && (b = d + " * 60^" + f + (b ? " + " : "") + b), a = (a - d) / 60, f++;
             for (f = -1; 0 < c; )
                 c *= 60, d = parseInt(c + 1E-13), c -= d, -1E-13 > c || (d && (b += (b ? " + " : "") + d + " * 60^" + f), f--);
-            return b ? b : "0"
+            return b ? b : "0";
         };
         rat.traceSternBrocot = function(a) {
             var b = "";
@@ -894,7 +893,7 @@
                 rat.isLessThan(a, c) ? (d[0] += d[1], d[2] += d[3], e++, f && (b += "R", 1 !== f && (b += f), f = 0, b += " ")) : (d[1] += d[0], d[3] += d[2], f++, e && (b += "L", 1 !== e && (b += e), e = 0, b += " ")), c[0] = d[0] + d[1], c[1] = d[2] + d[3];
             e ? (b += "L", 1 !== e && (b += e)) : f && (b += "R", 1 !== f && (b += f));
             0 > g && (b += "...");
-            return b
+            return b;
         };
         rat.toContinuedFraction = function(a, b) {
             b = "undefined" === typeof b ? 65536 : parseInt(b);
@@ -917,17 +916,17 @@
             if (d)
                 for (var q in h)
                     h[q] = -h[q];
-            return h
+            return h;
         };
         rat.fromContinuedFraction = function(a, b) {
             rat.fromInteger_copy(a, b[b.length - 1]);
             for (var c = b.length - 2; -1 < c; c--)
                 rat.invert(a, a), rat.add(a, rat.fromInteger(b[c]), a);
-            return a
+            return a;
         };
         rat.dump = function(a) {
             rat.create();
-            return "rat\t" + rat.str(a) + "\n~\t" + rat.toDecimal(a) + "\nCF:\t[" + rat.toContinuedFraction(a) + "]\n"
+            return "rat\t" + rat.str(a) + "\n~\t" + rat.toDecimal(a) + "\nCF:\t[" + rat.toContinuedFraction(a) + "]\n";
         };
         rat.ZERO = rat.fromInteger(0);
         rat.ONE = rat.fromInteger(1);
@@ -947,76 +946,76 @@
             var a = [];
             a[0] = BigInteger.ZERO;
             a[1] = BigInteger.ONE;
-            return a
+            return a;
         };
         bigrat.clone = function(a) {
             var b = [];
             b[0] = a[0];
             b[1] = a[1];
-            return b
+            return b;
         };
         bigrat.fromValues = function(a, b) {
             var c = [];
             c[0] = new BigInteger(a);
             c[1] = new BigInteger(b);
-            return bigrat.normalize(c, c)
+            return bigrat.normalize(c, c);
         };
         bigrat.copy = function(a, b) {
             a[0] = b[0];
             a[1] = b[1];
-            return a
+            return a;
         };
         bigrat.set = function(a, b, c) {
             a[0] = b;
             a[1] = c;
-            return bigrat.normalize(a, a)
+            return bigrat.normalize(a, a);
         };
         bigrat.toRat = function(a, b) {
-            return rat.set(a, b[0].toJSValue(), b[1].toJSValue())
+            return rat.set(a, b[0].toJSValue(), b[1].toJSValue());
         };
         bigrat.fromRat = function(a, b) {
-            return bigrat.set(a, BigInteger(b[0]), BigInteger(b[1]))
+            return bigrat.set(a, BigInteger(b[0]), BigInteger(b[1]));
         };
         bigrat.abs = function(a, b) {
             a[0] = b[0].abs();
             a[1] = b[1];
-            return a
+            return a;
         };
         bigrat.invert = function(a, b) {
             var c = b[0];
             a[0] = b[1];
             a[1] = c;
-            return a
+            return a;
         };
         bigrat.reciprocal = bigrat.invert;
         bigrat.add = function(a, b, c) {
             0 === b[1].compare(c[1]) ? (a[0] = b[0].add(c[0]), a[1] = b[1]) : (a[0] = b[0].multiply(c[1]).add(c[0].multiply(b[1])), a[1] = b[1].multiply(c[1]));
-            return bigrat.normalize(a, a)
+            return bigrat.normalize(a, a);
         };
         bigrat.subtract = function(a, b, c) {
             0 === b[1].compare(c[1]) ? (a[0] = b[0].subtract(c[0]), a[1] = b[1]) : (a[0] = b[0].multiply(c[1]).subtract(c[0].multiply(b[1])), a[1] = b[1].multiply(c[1]));
-            return bigrat.normalize(a, a)
+            return bigrat.normalize(a, a);
         };
         bigrat.sub = bigrat.subtract;
         bigrat.multiply = function(a, b, c) {
             a[0] = b[0].multiply(c[0]);
             a[1] = b[1].multiply(c[1]);
-            return bigrat.normalize(a, a)
+            return bigrat.normalize(a, a);
         };
         bigrat.mul = bigrat.multiply;
         bigrat.mediant = function(a, b, c) {
             a[0] = b[0].add(c[0]);
             a[1] = b[1].add(c[1]);
-            return bigrat.normalize(a, a)
+            return bigrat.normalize(a, a);
         };
         bigrat.divide = function(a, b, c) {
             a[0] = b[0].multiply(c[1]);
             a[1] = b[1].multiply(c[0]);
-            return bigrat.normalize(a, a)
+            return bigrat.normalize(a, a);
         };
         bigrat.div = bigrat.divide;
         bigrat.equals = function(a, b) {
-            return a[0].isZero() && b[0].isZero() || a[1].isZero() && b[1].isZero() ? !0 : 0 === a[0].compare(b[0]) && 0 === a[1].compare(b[1])
+            return a[0].isZero() && b[0].isZero() || a[1].isZero() && b[1].isZero() ? !0 : 0 === a[0].compare(b[0]) && 0 === a[1].compare(b[1]);
         };
         bigrat.approximates = function(a, b) {
             if (bigrat.equals(a, b))
@@ -1024,34 +1023,34 @@
             var c = bigrat.create();
             bigrat.sub(c, a, b);
             bigrat.abs(c, c);
-            return bigrat.isLessThan(c, bigrat.INFINITESIMAL)
+            return bigrat.isLessThan(c, bigrat.INFINITESIMAL);
         };
         bigrat.isGreaterThan = function(a, b) {
-            return bigrat.equals(a, b) ? !1 : 0 < a[0].multiply(b[1]).compare(b[0].multiply(a[1]))
+            return bigrat.equals(a, b) ? !1 : 0 < a[0].multiply(b[1]).compare(b[0].multiply(a[1]));
         };
         bigrat.isLessThan = function(a, b) {
-            return bigrat.equals(a, b) ? !1 : 0 > a[0].multiply(b[1]).compare(b[0].multiply(a[1]))
+            return bigrat.equals(a, b) ? !1 : 0 > a[0].multiply(b[1]).compare(b[0].multiply(a[1]));
         };
         bigrat.isNegative = function(a) {
-            return a[0].isNegative()
+            return a[0].isNegative();
         };
         bigrat.min = function(a, b, c) {
             bigrat.isLessThan(b, c) ? (a[0] = b[0], a[1] = b[1]) : (a[0] = c[0], a[1] = c[1]);
-            return a
+            return a;
         };
         bigrat.max = function(a, b, c) {
             bigrat.isGreaterThan(b, c) ? (a[0] = b[0], a[1] = b[1]) : (a[0] = c[0], a[1] = c[1]);
-            return a
+            return a;
         };
         bigrat.scalar_multiply = function(a, b, c) {
             a[0] = b[0].multiply(c);
             a[1] = b[1];
-            return bigrat.normalize(a, a)
+            return bigrat.normalize(a, a);
         };
         bigrat.scalar_divide = function(a, b, c) {
             a[0] = b[0];
             a[1] = b[1].multiply(c);
-            return bigrat.normalize(a, a)
+            return bigrat.normalize(a, a);
         };
         bigrat.normalize = function(a, b) {
             if (b[0].isZero() || b[1].isZero())
@@ -1064,22 +1063,22 @@
                 return a;
             var c = bigint.greatest_common_divisor(a[0].abs(), a[1]);
             0 < c.compare(BigInteger.ONE) && (a[0] = a[0].quotient(c), a[1] = a[1].quotient(c));
-            return a
+            return a;
         };
         bigrat.opposite = function(a, b) {
             a[0] = b[0].negate();
             a[1] = b[1];
-            return a
+            return a;
         };
         bigrat.negative = bigrat.opposite;
         bigrat.neg = bigrat.opposite;
         bigrat.power = function(a, b, c) {
             2 === c ? (a[0] = b[0].square(), a[1] = b[1].square()) : 0 < c ? (a[0] = b[0].pow(c), a[1] = b[1].pow(c)) : 0 > c ? (c = Math.abs(c), a[0] = b[1].pow(c), a[1] = b[0].pow(c)) : bigrat.copy(a, bigrat.ONE);
-            return a
+            return a;
         };
         bigrat.pow = bigrat.power;
         bigrat.sqrt = function(a, b) {
-            return bigrat.nthRoot(a, b, 2)
+            return bigrat.nthRoot(a, b, 2);
         };
         bigrat.nthRoot = function(a, b, c) {
             if (bigrat.equals(b, bigrat.ZERO))
@@ -1097,50 +1096,50 @@
             e) && g--; )
                 bigrat.isLessThan(b, e) ? (f[0] = f[0].add(f[1]), f[2] = f[2].add(f[3])) : (f[1] = f[1].add(f[0]), f[3] = f[3].add(f[2])), a[0] = f[0].add(f[1]), a[1] = f[2].add(f[3]), bigrat.pow(e, a, c);
             d && (b[0] = b[0].negate(), 1 === c % 2 && bigrat.neg(a, a));
-            return a
+            return a;
         };
         bigrat.dot = function(a, b) {
-            return a[0].multiply(b[0]).add(a[1].multiply(b[1]))
+            return a[0].multiply(b[0]).add(a[1].multiply(b[1]));
         };
         bigrat.str = function(a) {
-            return 0 === a[1].compare(BigInteger.ONE) ? a[0].toString() : a[0].toString() + "/" + a[1].toString()
+            return 0 === a[1].compare(BigInteger.ONE) ? a[0].toString() : a[0].toString() + "/" + a[1].toString();
         };
         bigrat.toDecimal = function(a) {
-            return a[0].toJSValue() / a[1].toJSValue()
+            return a[0].toJSValue() / a[1].toJSValue();
         };
         bigrat.dec = bigrat.toDecimal;
         bigrat.toInteger = function(a) {
-            return a[0].quotient(a[1]).toJSValue()
+            return a[0].quotient(a[1]).toJSValue();
         };
         bigrat.round = bigrat.toInteger;
         bigrat.toBigInteger = function(a) {
-            return a[0].quotient(a[1])
+            return a[0].quotient(a[1]);
         };
         bigrat.floor = function(a) {
-            return Math.floor(bigrat.toDecimal(a))
+            return Math.floor(bigrat.toDecimal(a));
         };
         bigrat.ceil = function(a) {
-            return Math.ceil(bigrat.toDecimal(a))
+            return Math.ceil(bigrat.toDecimal(a));
         };
         bigrat.fromInteger_copy = function(a, b) {
             a[0] = BigInteger(b);
             a[1] = BigInteger.ONE;
-            return a
+            return a;
         };
         bigrat.fromInteger = function(a) {
-            return bigrat.fromInteger_copy(bigrat.create(), a)
+            return bigrat.fromInteger_copy(bigrat.create(), a);
         };
         bigrat.fromIntegerInverse_copy = function(a, b) {
             a[0] = BigInteger.ONE;
             a[1] = BigInteger(b);
             a[1].isNegative() && (a[0] = a[0].negate(), a[1] = a[1].negate());
-            return a
+            return a;
         };
         bigrat.fromIntegerInverse = function(a) {
-            return bigrat.fromIntegerInverse_copy(bigrat.create(), a)
+            return bigrat.fromIntegerInverse_copy(bigrat.create(), a);
         };
         bigrat.fromDecimal = function(a) {
-            return bigrat.fromDecimal_copy(bigrat.create(), a)
+            return bigrat.fromDecimal_copy(bigrat.create(), a);
         };
         bigrat.fromDecimal_copy = function(a, b) {
             b = parseFloat(b);
@@ -1160,12 +1159,12 @@
             for (var c = [BigInteger(1), BigInteger(0), 
                 BigInteger(0), BigInteger(1)], d = b, f = 1, e = bigrat.MAX_LOOPS; e-- && Math.abs(b - bigrat.toDecimal(a)) > bigrat.EPSILON; )
                 f = Math.floor(d), a[0] = BigInteger(f * c[0] + c[2]), a[1] = BigInteger(f * c[1] + c[3]), d = 1 / (d - f), c[2] = c[0], c[3] = c[1], c[0] = a[0], c[1] = a[1];
-            return a
+            return a;
         };
         bigrat.fromRandom = function(a) {
             a[0] = BigInteger(0xfffffffffffff * Math.random() << 0);
             a[1] = BigInteger(Math.abs(0xfffffffffffff * Math.random() << 0));
-            return bigrat.normalize(a, a)
+            return bigrat.normalize(a, a);
         };
         bigrat.sin = function(a, b) {
             if (b[1].isZero())
@@ -1175,7 +1174,7 @@
             bigrat.pow(c, b, 2);
             bigrat.add(c, c, bigrat.ONE);
             bigrat.divide(a, a, c);
-            return a
+            return a;
         };
         bigrat.cos = function(a, b) {
             if (b[1].isZero())
@@ -1186,7 +1185,7 @@
             var d = bigrat.create();
             bigrat.add(d, bigrat.ONE, c);
             bigrat.divide(a, a, d);
-            return a
+            return a;
         };
         bigrat.tan = function(a, b) {
             bigrat.scalar_multiply(a, b, 2);
@@ -1197,7 +1196,7 @@
             bigrat.pow(c, b, 4);
             bigrat.sub(c, bigrat.ONE, c);
             bigrat.divide(a, a, c);
-            return a
+            return a;
         };
         bigrat.toEgyptian = function(a) {
             a = bigrat.clone(a);
@@ -1209,7 +1208,7 @@
             b || (b = "");
             for (var c = 1, d = bigrat.create(); 1 !== a[0]; )
                 c++, d = bigrat.fromValues(1, c), bigrat.isGreaterThan(a, d) && (b && (b += " + "), b += bigrat.str(d), bigrat.sub(a, a, d));
-            return a ? b ? b + " + " + bigrat.str(a) : bigrat.str(a) : b ? b : "0"
+            return a ? b ? b + " + " + bigrat.str(a) : bigrat.str(a) : b ? b : "0";
         };
         bigrat.toBabylonian = function(a) {
             var b = "", c = bigrat.toDecimal(a);
@@ -1218,7 +1217,7 @@
                 (d = a % 60) && (b = d + " * 60^" + f + (b ? " + " : "") + b), a = (a - d) / 60, f++;
             for (f = -1; 0 < c; )
                 c *= 60, d = parseInt(c + 1E-13), c -= d, -1E-13 > c || (d && (b += (b ? " + " : "") + d + " * 60^" + f), f--);
-            return b ? b : "0"
+            return b ? b : "0";
         };
         bigrat.traceSternBrocot = function(a) {
             var b = "";
@@ -1231,7 +1230,7 @@
                 d[3] = d[3].add(d[2]), f++, e && (b += "L", 1 !== e && (b += e), e = 0, b += " ")), c[0] = d[0].add(d[1]), c[1] = d[2].add(d[3]);
             e ? (b += "L", 1 !== e && (b += e)) : f && (b += "R", 1 !== f && (b += f));
             0 > g && (b += "...");
-            return b
+            return b;
         };
         bigrat.toContinuedFraction = function(a, b) {
             b = "undefined" === typeof b ? 65536 : parseInt(b);
@@ -1254,13 +1253,13 @@
             if (d)
                 for (var q in h)
                     h[q] = -h[q];
-            return h
+            return h;
         };
         bigrat.fromContinuedFraction = function(a, b) {
             bigrat.fromInteger_copy(a, b[b.length - 1]);
             for (var c = b.length - 2; -1 < c; c--)
                 bigrat.invert(a, a), bigrat.add(a, bigrat.fromInteger(b[c]), a);
-            return a
+            return a;
         };
         bigrat.fromFactorial = function(a, b) {
             if ("undefined" !== typeof factorial.PREPARED[b])
@@ -1268,10 +1267,10 @@
             var c = factorial.PREPARED.length - 1;
             for (bigrat.fromInteger_copy(a, factorial.PREPARED[c]); c < b; )
                 bigrat.scalar_multiply(a, a, ++c);
-            return a
+            return a;
         };
         bigrat.dump = function(a) {
-            return "bigrat\t" + bigrat.str(a) + "\n~\t" + bigrat.toDecimal(a) + "\nCF:\t[" + bigrat.toContinuedFraction(a) + "]\n"
+            return "bigrat\t" + bigrat.str(a) + "\n~\t" + bigrat.toDecimal(a) + "\nCF:\t[" + bigrat.toContinuedFraction(a) + "]\n";
         };
         bigrat.ZERO = bigrat.fromInteger(0);
         bigrat.ONE = bigrat.fromInteger(1);
@@ -1285,85 +1284,85 @@
             this.a = rat.fromValues(parseInt(a), parseInt(b))
         };
         rational.prototype.toString = function() {
-            return rat.str(this.a)
+            return rat.str(this.a);
         };
         rational.prototype.toContinuedFraction = function(a) {
-            return rat.toContinuedFraction(this.a, a)
+            return rat.toContinuedFraction(this.a, a);
         };
         rational.prototype.invert = function() {
-            return rat.invert(this.a)
+            return rat.invert(this.a);
         };
         rational.prototype.reciprocal = rational.prototype.invert;
         rational.prototype.add = function(a) {
             var b = rat.create();
             rat.add(b, this.a, a.a);
-            return new rational(b[0], b[1])
+            return new rational(b[0], b[1]);
         };
         rational.prototype.plus = rational.prototype.add;
         rational.prototype.subtract = function(a) {
             var b = rat.create();
             rat.sub(b, this.a, a.a);
-            return new rational(b[0], b[1])
+            return new rational(b[0], b[1]);
         };
         rational.prototype.sub = rational.prototype.subtract;
         rational.prototype.minus = rational.prototype.subtract;
         rational.prototype.multiply = function(a) {
             var b = rat.create();
             rat.mul(b, this.a, a.a);
-            return new rational(b[0], b[1])
+            return new rational(b[0], b[1]);
         };
         rational.prototype.mul = rational.prototype.multiply;
         rational.prototype.times = rational.prototype.multiply;
         rational.prototype.mediant = function(a) {
             var b = rat.create();
             rat.mediant(b, this.a, a.a);
-            return new rational(b[0], b[1])
+            return new rational(b[0], b[1]);
         };
         rational.prototype.divide = function(a) {
             var b = rat.create();
             rat.div(b, this.a, a.a);
-            return new rational(b[0], b[1])
+            return new rational(b[0], b[1]);
         };
         rational.prototype.div = rational.prototype.divide;
         rational.prototype.divided_by = rational.prototype.divide;
         rational.prototype.power = function(a) {
             var b = rat.create();
             rat.pow(b, this.a, a);
-            return new rational(b[0], b[1])
+            return new rational(b[0], b[1]);
         };
         rational.prototype.pow = rational.prototype.power;
         rational.prototype.dump = function() {
-            return rat.dump(this.a)
+            return rat.dump(this.a);
         };
         rational.prototype.toRat = function() {
-            return rat.clone(this.a)
+            return rat.clone(this.a);
         };
         rational.prototype.toDecimal = function() {
-            return rat.toDecimal(this.a)
+            return rat.toDecimal(this.a);
         };
         rational.fromRat = function(a) {
             var b = new rational;
             b.a[0] = a[0];
             b.a[1] = a[1];
-            return b
+            return b;
         };
         rational.fromInteger = function(a) {
-            return rational.fromRat(rat.fromInteger(a))
+            return rational.fromRat(rat.fromInteger(a));
         };
         rational.fromIntegerInverse = function(a) {
-            return rational.fromRat(rat.fromIntegerInverse(a))
+            return rational.fromRat(rat.fromIntegerInverse(a));
         };
         rational.fromDecimal = function(a) {
-            return rational.fromRat(rat.fromDecimal(a))
+            return rational.fromRat(rat.fromDecimal(a));
         };
         rational.fromContinuedFraction = function(a) {
-            return rational.fromRat(rat.fromContinuedFraction(rat.create(), a))
+            return rational.fromRat(rat.fromContinuedFraction(rat.create(), a));
         };
         "undefined" !== typeof exports && (exports.rational = rational);
         var alpha = {GREEK: "\u03b1\u03b2\u03b3\u03b4\u03bc\u03c0\u03c1\u03c2\u03c4\u03c6\u03c7\u03c8\u03c9\u0398\u03a6\u03a9".split(""),iterator: function() {
                 this.i = 0;
                 this.next = function() {
-                    return this.i < alpha.GREEK.length ? alpha.GREEK[this.i++] : "?"
+                    return this.i < alpha.GREEK.length ? alpha.GREEK[this.i++] : "?";
                 }
             }};
         var RAT_ZERO = rat.ZERO, RAT_ONE = rat.ONE, RAT_INFINITY = rat.INFINITY, RAT_INFINULL = rat.INFINULL, RAT_INFINITESIMAL = rat.INFINITESIMAL;
