@@ -147,13 +147,15 @@
 }
 .toontalk-denominator {
 }
+.toontalk-text-input {
+    /* font: inherit; */
+    color: inherit;
+    background: none;
+    cursor: text;	
+}
 .toontalk-numerator-input {
-	/* width: 98%; */
-	/* border-radius: 4px; */
 }
 .toontalk-denominator-input {
-	/* width: 98%; */
-	/* border-radius: 4px; */
 }
 .toontalk-three-dots-in-number {
 	font-size: 30%;
@@ -173,9 +175,11 @@
 }
 .toontalk-robot-description-input {
 	width: 30em;
+	text-align: inherit;
 }
 .toontalk-image-url-input {
 	width: 30em;
+	text-align: inherit;
 }
 .toontalk-thought-bubble {
     background-image: url(images/BUBBL10.96x96.PNG);

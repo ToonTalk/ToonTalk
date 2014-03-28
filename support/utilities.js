@@ -449,7 +449,8 @@ window.TOONTALK.UTILITIES =
 			label_element.innerHTML = label;
 			label_element.htmlFor = input.id;
 			container = TT.UTILITIES.create_horizontal_table(label_element, input);
-			$(input).button();
+			$(input).button().addClass("toontalk-text-input");
+			$(input).css({"background-color": "white"});
             $(label_element).addClass("ui-widget");
 			return {container: container,
 				    button: input};
