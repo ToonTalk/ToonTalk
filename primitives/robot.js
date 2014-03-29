@@ -110,6 +110,7 @@ window.TOONTALK.robot = (function (TT) {
             if (!queue) {
                 queue = TT.QUEUE;
             }
+			this.get_body().reset_newly_created_widgets();
             queue.enqueue({robot: this, context: context, queue: queue});
             return match_status;
         case 'not matched':
@@ -146,7 +147,7 @@ window.TOONTALK.robot = (function (TT) {
 			path = body.get_path_to(widget);
 			// if !path try other things
 			if (path) {
-				step = TT.pick_up(path);
+				step = TT.pick_up.create(path);
 			}
 		}
 		this.set_thing_in_hand(widget);
@@ -169,7 +170,7 @@ window.TOONTALK.robot = (function (TT) {
 		}
 	};
 	
-	robot.copied = function (widget, widget_copy) {
+	robot.copied = function (widget, widget_copy, picked_up) {
 		var path, step;
 		if (widget === this.get_context()) {
 			path = TT.path_to_entire_context;
@@ -177,8 +178,12 @@ window.TOONTALK.robot = (function (TT) {
 			// to do
 		}
 		if (path) {
-			step = TT.copy.create(path);
-			this.get_body().add_step(step);
+			if (picked_up) {
+				step = TT.pick_up_copy.create(path);
+			} else {
+				step = TT.copy.create(path);
+			}
+			this.get_body().add_step(step, widget_copy);
 		}
 	}
 	
@@ -250,7 +255,7 @@ window.TOONTALK.robot = (function (TT) {
 	
 	robot.image = function () {
 		var image = document.createElement("img");
-		image.src = this.get_image_url();
+		image.src = this.get_image_url(); // causes Caja error
 		image.style.width = "100%";
 		image.style.height = "70%"; // other part is for thought bubble
 		$(image).addClass("toontalk-robot-image");
