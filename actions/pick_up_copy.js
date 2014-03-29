@@ -1,19 +1,19 @@
  /**
- * Implements ToonTalk's action of a robot copying something
+ * Implements ToonTalk's action of a robot copying something that ends up in its 'hand'
  * Authors: Ken Kahn
  * License: New BSD
  */
  
  /*jslint browser: true, devel: true, plusplus: true, vars: true, white: true */
 
-window.TOONTALK.copy = 
+window.TOONTALK.pick_up_copy = 
 (function (TT) {
     "use strict";
     return {
         create: function (path) {
             var result = Object.create(this);
             if (!path) {
-                console.log("path undefined in copy action");
+                console.log("path undefined in pick_up_copy action");
             }
             result.path = path;
             return result;
@@ -24,22 +24,22 @@ window.TOONTALK.copy =
             if (!referenced) {
                 return false;
             }
-            this.robot.get_body().add_newly_created_widget(referenced.copy(true));
+            this.robot.set_thing_in_hand(referenced.copy(true));
             return true;
         },
         
         toString: function () {
-            return "copy " + this.path.toString();
+            return "pick_up_copy " + this.path.toString();
         },
         
         get_json: function () {
-            return {type: "copy_action",
+            return {type: "pick_up_copy_action",
                     path: this.path.get_json()
                     };
         },
         
         create_from_json: function (json) {
-            return TT.copy.create(TT.UTILITIES.create_from_json(json.path));
+            return TT.pick_up_copy.create(TT.UTILITIES.create_from_json(json.path));
         }
 
     };
