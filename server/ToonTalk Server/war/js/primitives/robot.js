@@ -250,7 +250,11 @@ window.TOONTALK.robot = (function (TT) {
 	
 	robot.image = function () {
 		var image = document.createElement("img");
-		image.src = this.get_image_url();
+		// tried following but no src set
+//		image.innerHTML = "<img src='http://toontalk.appspot.com/images/RB00.PNG'></img>";
+		// following caused Caja error
+//		image.src = this.get_image_url();
+//		$(image).attr("src", this.get_image_url());
 		image.style.width = "100%";
 		image.style.height = "70%"; // other part is for thought bubble
 		$(image).addClass("toontalk-robot-image");
