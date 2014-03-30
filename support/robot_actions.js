@@ -54,7 +54,7 @@ window.TOONTALK.actions =
 //                 }
 //             };
             new_actions.get_path_to = function (widget) {
-                var i, j, sub_path, children;
+                var i, j, path, sub_path, children;
                 for (i = 0; i < newly_created_widgets.length; i++) {
                     if (newly_created_widgets[i] === widget) {
                         return TT.actions_path.create(i, new_actions);
@@ -62,7 +62,7 @@ window.TOONTALK.actions =
                         sub_path = newly_created_widgets[i].get_path_to(widget);
                         if (sub_path) {
                             path = TT.actions_path.create(i, new_actions);
-                            path = path.next_path = sub_path;
+                            path = path.next = sub_path;
                             return path;
                         }
                     }

@@ -278,25 +278,6 @@ window.TOONTALK.box = (function (TT) {
 		// could restore the 'original' empty_hole rather than create a new one here
 		this.set_hole(index, TT.box_empty_hole.create(index, this), update_display);
 	};
-    
-    box.dereference = function (path) {
-        var index, hole;
-        if (path) {
-            index = path.get_index && path.get_index();
-            if (typeof index === 'number') {
-                hole = this.get_hole(index);
-				if (hole) {
-					if (path.next) {
-                    	return hole.dereference(path.next);
-					}
-					return hole;
-				}
-            }
-            console.log("box " + this.toString() + " unable to dereference path " + path.toString());
-        } else {
-            return this;
-        }
-    };
 	
 	box.drop_on = function (other, side_of_other, event) {
         if (!other.box_dropped_on_me) {
@@ -335,6 +316,43 @@ window.TOONTALK.box = (function (TT) {
 			}
 		}
 	};
+	
+	box.get_path_to = function (widget, robot) {
+		var size = this.get_size();
+		var i, part, path, sub_path;
+		for (i = 0; i < size; i += 1) {
+			part = this.get_hole(i);
+			if (widget === part) {
+				return TT.box.path.create(i);
+			} else if (part.get_path_to) {
+				sub_path = part.get_path_to(widget, robot);
+				if (sub_path) {
+					path = TT.box.path.create(i);
+					path.next = sub_path;
+					return path;
+				}
+			}
+		}
+	};
+	
+    box.dereference = function (path) {
+        var index, hole;
+        if (path) {
+            index = path.get_index && path.get_index();
+            if (typeof index === 'number') {
+                hole = this.get_hole(index);
+				if (hole) {
+					if (path.next) {
+                    	return hole.dereference(path.next);
+					}
+					return hole;
+				}
+            }
+            console.log("box " + this.toString() + " unable to dereference path " + path.toString());
+        } else {
+            return this;
+        }
+    };
     
     box.path = {
 		create: function (index) {
@@ -441,6 +459,9 @@ window.TOONTALK.box_empty_hole =
 			};
 			empty_hole.copy = function (containing_box) {
 				return TT.box_empty_hole.create(index, containing_box);
+			};
+			empty_hole.match = function () {
+				return "matched";
 			};
 			$(hole_element).on('drop',
                 function (event) {

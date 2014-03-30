@@ -13,23 +13,30 @@ window.TOONTALK.path =
         get_path_to: function (widget, robot) {
             var context = robot.get_context();
             var body = robot.get_body();
-			var path;
+			var path, sub_path;
             if (context === widget) {
 			    return TT.path.to_entire_context;
 		    }
-            path = body.get_path_to(widget);
+			if (context.get_path_to) {
+				sub_path = context.get_path_to(widget, robot);
+				if (sub_path) {
+					path = TT.path.to_entire_context;
+					path.next = sub_path;
+					return path;
+				}
+			}
+            path = body.get_path_to(widget, robot);
             if (path) {
-              return path;
+                return path;
             }
-			console.log("get_path_to not fully implemented");
-          
+			console.log("TT.path.get_path_to not fully implemented.");
         },
 				
 		dereference_path: function (path, context) {
 			var reference;
 		    if (path) {
 				if (path.dereference) {
-					reference = path.dereference();
+					reference = path.dereference(context);
 				}
 				if (!reference) {
                 	reference = context.dereference(path);
@@ -44,14 +51,15 @@ window.TOONTALK.path =
         },
         to_entire_context: {
             // an action that applies to the entire context (i.e. what the robot is working on)
+			dereference: function (context) {
+				return context;
+			},
             toString: function () {
                 return "what he's working on";
             },
-        
             get_json: function () {
                 return {type: "path.to_entire_context"};
             },
-        
             create_from_json: function () {
                return TT.path.to_entire_context;
             }
