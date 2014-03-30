@@ -99,7 +99,7 @@ window.TOONTALK.tests =
          var robot = this.accept_number_robot();
          var body = robot.get_body();
          body.add_step(TT.pick_up_constant.create(TT.number.ONE()));
-         body.add_step(TT.drop_on.create(TT.path_to_entire_context));
+         body.add_step(TT.drop_on.create(TT.path.to_entire_context));
          robot.set_description("adds one to what it is given");
          return robot;
      },
@@ -107,8 +107,8 @@ window.TOONTALK.tests =
      double_robot: function () {
          var robot = this.accept_number_robot();
          var body = robot.get_body();
-         body.add_step(TT.pick_up_copy.create(TT.path_to_entire_context));
-         body.add_step(TT.drop_on.create(TT.path_to_entire_context));
+         body.add_step(TT.pick_up_copy.create(TT.path.to_entire_context));
+         body.add_step(TT.drop_on.create(TT.path.to_entire_context));
          robot.set_image_url("images/RB19.PNG");
          return robot;
      },

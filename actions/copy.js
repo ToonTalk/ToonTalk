@@ -19,12 +19,12 @@ window.TOONTALK.copy =
             return result;
         },
         
-        run: function (context) {
-            var referenced = TT.UTILITIES.dereference_path(this.path, context);
+        run: function (context, robot) {
+            var referenced = TT.path.dereference_path(this.path, context);
             if (!referenced) {
                 return false;
             }
-            this.robot.get_body().add_newly_created_widget(referenced.copy(true));
+            robot.get_body().add_newly_created_widget(referenced.copy(true));
             return true;
         },
         

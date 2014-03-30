@@ -11,7 +11,7 @@ window.TOONTALK.actions =
     "use strict";
     return {
         create: function (steps) {
-            var robot;
+//             var robot;
             var new_actions = Object.create(this);
             var newly_created_widgets = [];
             if (!steps) {
@@ -34,7 +34,7 @@ window.TOONTALK.actions =
                 newly_created_widgets = [];
             };
             new_actions.add_step = function (step, new_widget) {
-                step.robot = robot;
+//                 step.robot = robot;
                 steps[steps.length] = step;
                 if (new_widget) {
                     this.add_newly_created_widget(new_widget);
@@ -43,23 +43,29 @@ window.TOONTALK.actions =
             new_actions.add_newly_created_widget = function (new_widget) {
                 newly_created_widgets[newly_created_widgets.length] = new_widget;
             };
-            new_actions.get_robot = function () {
-                return robot;
-            };
-            new_actions.set_robot = function (robot_parameter) {
-                var i;
-                robot = robot_parameter;
-                for (i = 0; i < steps.length; i += 1) {
-                    steps[i].robot = robot;
-                }
-            };
+//             new_actions.get_robot = function () {
+//                 return robot;
+//             };
+//             new_actions.set_robot = function (robot_parameter) {
+//                 var i;
+//                 robot = robot_parameter;
+//                 for (i = 0; i < steps.length; i += 1) {
+//                     steps[i].robot = robot;
+//                 }
+//             };
             new_actions.get_path_to = function (widget) {
-                var i;
+                var i, j, sub_path, children;
                 for (i = 0; i < newly_created_widgets.length; i++) {
                     if (newly_created_widgets[i] === widget) {
-                        return TT.actions_paths.create(i, new_actions);
+                        return TT.actions_path.create(i, new_actions);
+                    } else if (newly_created_widgets[i].get_path_to) {
+                        sub_path = newly_created_widgets[i].get_path_to(widget);
+                        if (sub_path) {
+                            path = TT.actions_path.create(i, new_actions);
+                            path = path.next_path = sub_path;
+                            return path;
+                        }
                     }
-                    // else see if sub-path inside newly_created_widgest[i] (add to TT.UTILITIES) 
                 }
             };
             new_actions.dereference = function (index) {
@@ -68,13 +74,13 @@ window.TOONTALK.actions =
             return new_actions;
         },
         
-        run: function(context, queue) {
+        run: function(context, queue, robot) {
             var i;
             var steps = this.get_steps();
             for (i = 0; i < steps.length; i++) {
-                steps[i].run(context);
+                steps[i].run(context, robot);
             }
-            this.get_robot().run(context, queue);
+            robot.run(context, queue);
         },
         
         toString: function () {
@@ -104,7 +110,7 @@ window.TOONTALK.actions =
     };
 }(window.TOONTALK));
 
-window.TOONTALK.actions_paths =
+window.TOONTALK.actions_path =
 // paths to widgets created by previous steps
 (function (TT) {
     "use strict";

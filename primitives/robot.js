@@ -76,7 +76,7 @@ window.TOONTALK.robot = (function (TT) {
 		new_robot.set_thing_in_hand = function (new_value) {
 			thing_in_hand = new_value;
 		};
-        body.set_robot(new_robot);
+//         body.set_robot(new_robot);
 		if (TT.debugging) {
 			new_robot.debug_string = new_robot.toString();
 		}
@@ -132,20 +132,16 @@ window.TOONTALK.robot = (function (TT) {
     };
     
     robot.run_actions = function(context, queue) {
-        return this.get_body().run(context, queue);
+        return this.get_body().run(context, queue, this);
     };
 	
 	robot.picked_up = function (widget, json, is_resource) {
-		// note widget may be inside of something like a box
-		// widget is a resource then is like copy_constant...
 		var path, step;
 		var body = this.get_body();
 		if (is_resource) {
 			step = TT.copy_constant.create(widget);
 		} else {
-			// abstract the following
-			path = body.get_path_to(widget);
-			// if !path try other things
+			path = TT.path.get_path_to(widget, this);
 			if (path) {
 				step = TT.pick_up.create(path);
 			}
@@ -157,12 +153,10 @@ window.TOONTALK.robot = (function (TT) {
 	};
 	
 	robot.dropped_on = function (target_widget) {
-		var path, step;
-		var context = this.get_context();
-		if (context === target_widget) {
-			step = TT.drop_on.create(TT.path_to_entire_context);
-		} else {
-			// to do
+		var path = TT.path.get_path_to(target_widget, this);
+		var step;
+		if (path) {
+			step = TT.drop_on.create(path);
 		}
 		this.set_thing_in_hand(null);
 		if (step) {
@@ -171,12 +165,8 @@ window.TOONTALK.robot = (function (TT) {
 	};
 	
 	robot.copied = function (widget, widget_copy, picked_up) {
-		var path, step;
-		if (widget === this.get_context()) {
-			path = TT.path_to_entire_context;
-		} else {
-			// to do
-		}
+		var path = TT.path.get_path_to(widget, this);
+		var step;
 		if (path) {
 			if (picked_up) {
 				step = TT.pick_up_copy.create(path);

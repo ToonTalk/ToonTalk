@@ -18,21 +18,21 @@ window.TOONTALK.drop_on =
             return result;
         },
         
-        run: function (context) {
-            var target = TT.UTILITIES.dereference_path(this.path, context);
+        run: function (context, robot) {
+            var target = TT.path.dereference_path(this.path, context);
             var thing_in_hand;
             if (target) {
-                thing_in_hand = this.robot.get_thing_in_hand();
+                thing_in_hand = robot.get_thing_in_hand();
                 if (thing_in_hand) {
                     if (thing_in_hand.drop_on) {
                         thing_in_hand.drop_on(target);
                     } else {
-                        console.log("Thing in robot's hand doesn't handle 'drop_on': "  + thing_in_hand.toString() + ". Robot that " + this.robot.toString());
+                        console.log("Thing in robot's hand doesn't handle 'drop_on': "  + thing_in_hand.toString() + ". Robot that " + robot.toString());
                         return false;
                     }
                     return true;
                 }
-                console.log("The robot that " + this.robot.toString() + " is executing drop_on but has nothing in its hand.");
+                console.log("The robot that " + robot.toString() + " is executing drop_on but has nothing in its hand.");
             }
             return false;
         },

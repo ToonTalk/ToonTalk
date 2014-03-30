@@ -16,8 +16,8 @@ window.TOONTALK.copy_constant =
             return result;
         },
         
-        run: function (context) {
-            this.robot.set_thing_in_hand(this.constant_object.copy(true));
+        run: function (context, robot) {
+            robot.set_thing_in_hand(this.constant_object.copy(true));
             return true;
         },
         

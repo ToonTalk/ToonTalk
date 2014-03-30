@@ -6,8 +6,9 @@
  
   /*jslint browser: true, devel: true, vars: true, white: true */
 
+window.TOONTALK.path = {};
 
-window.TOONTALK.path_to_entire_context = 
+window.TOONTALK.path.to_entire_context = 
 (function (TT) {
     "use strict";
     return {
@@ -16,11 +17,11 @@ window.TOONTALK.path_to_entire_context =
         },
         
         get_json: function () {
-            return {type: "path_to_entire_context"};
+            return {type: "path.to_entire_context"};
         },
         
         create_from_json: function () {
-            return TT.path_to_entire_context;
+            return TT.path.to_entire_context;
         }
     };
 }(window.TOONTALK));

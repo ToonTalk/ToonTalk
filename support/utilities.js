@@ -23,7 +23,7 @@ window.TOONTALK.UTILITIES =
 						 "copy_action": TT.copy.create_from_json,
 						 "pick_up_copy_action": TT.pick_up_copy.create_from_json,
 						 "box_path": TT.box.path.create_from_json,
-						 "path_to_entire_context": TT.path_to_entire_context.create_from_json};
+						 "path.to_entire_context": TT.path.to_entire_context.create_from_json};
 	// id needs to be unique across ToonTalks due to drag and drop
 	var id_counter = new Date().getTime();
     return {
@@ -135,24 +135,6 @@ window.TOONTALK.UTILITIES =
 				}
 			}
 		},
-		
-		dereference_path: function (path, context) {
-			var reference;
-		    if (path) {
-				if (path.dereference) {
-					reference = path.dereference();
-				}
-				if (!reference) {
-                	reference = context.dereference(path);
-				}
-			    if (!reference) {
-			        console.log("Unable to dereference path: " + path.toString() + " in context: " + context.toString());
-			    }
-			    return reference;
-            }
-            // no path means entire context
-            return context;
-        },
 		
 		data_transfer_json_object: function (event) {
 			var json;

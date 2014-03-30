@@ -16,12 +16,12 @@
             return result;
         },
         
-        run: function (context) {
-            var referenced = TT.UTILITIES.dereference_path(this.path, context);
+        run: function (context, robot) {
+            var referenced = TT.path.dereference_path(this.path, context);
             if (!referenced) {
                 return false;
             }
-            this.robot.set_thing_in_hand(referenced);
+            robot.set_thing_in_hand(referenced);
             return true;
         },
         
