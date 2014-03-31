@@ -233,7 +233,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
 		var $dimensions_holder;
 		if ($(frontside_element).is(".toontalk-thought-bubble-contents")) {
 			$dimensions_holder = $(frontside_element);
-		} else if ($(frontside_element).parent().is(".toontalk-backside")) {
+		} else if ($(frontside_element).parent().is(".toontalk-backside, .toontalk-json")) {
 			$dimensions_holder = $(frontside_element);
 		} else {
 			$dimensions_holder = $(frontside_element).parent();

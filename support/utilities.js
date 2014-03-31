@@ -536,3 +536,20 @@ window.TOONTALK.UTILITIES =
     };
 	
 }(window.TOONTALK));
+
+$(document).ready(function () {
+	$(".toontalk-json").each(
+		function (index, element) {
+			var json = element.innerText;
+			var widget = window.TOONTALK.UTILITIES.create_from_json(JSON.parse(json));
+			if (widget) {
+				element.innerText = "";
+				element.appendChild(widget.get_frontside_element());
+				// delay until geometry settles down
+				setTimeout(function () {
+					widget.update_display();
+				},
+				1);
+			}
+	});
+});
