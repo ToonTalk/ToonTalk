@@ -481,6 +481,9 @@ window.TOONTALK.box_empty_hole =
 							// don't want it to look disabled just because you can't resize it
 							$dropped.removeClass('ui-state-disabled');
 						}
+						if (TT.robot.in_training) {
+							TT.robot.in_training.dropped_on(empty_hole);
+						}
 						box.set_hole(index, dropped_widget);
 						box.update_display();
 					}
