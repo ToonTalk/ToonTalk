@@ -62,6 +62,13 @@ window.TOONTALK.path =
         to_entire_context: {
             // an action that applies to the entire context (i.e. what the robot is working on)
 			dereference: function (context) {
+				if (this.next) {
+					if (context.dereference) {
+						return context.dereference(this.next);
+					} else {
+						console.log("Expected context to support dereference.");
+					}				
+				}
 				return context;
 			},
             toString: function () {
