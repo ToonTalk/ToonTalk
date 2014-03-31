@@ -290,12 +290,12 @@ window.TOONTALK.robot = (function (TT) {
 	};
     
     robot.create_from_json = function (json) {
-		return TT.robot.create(TT.UTILITIES.create_from_json(json.bubble),
+		return TT.robot.create(json.image_url,
+		                       TT.UTILITIES.create_from_json(json.bubble),
 		                       TT.UTILITIES.create_from_json(json.body),
-							   json.image_url,
+							   json.description,
 							   json.width,
-							   json.height,
-							   json.description);
+							   json.height);
 	};
     
     return robot;
