@@ -30,8 +30,7 @@ window.TOONTALK.path =
                 return path;
             }
 			console.log("TT.path.get_path_to not fully implemented.");
-        },
-				
+        },			
 		dereference_path: function (path, context) {
 			var reference;
 		    if (path) {

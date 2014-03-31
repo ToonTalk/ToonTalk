@@ -11,7 +11,6 @@ window.TOONTALK.actions =
     "use strict";
     return {
         create: function (steps) {
-//             var robot;
             var new_actions = Object.create(this);
             var newly_created_widgets = [];
             if (!steps) {
@@ -34,7 +33,6 @@ window.TOONTALK.actions =
                 newly_created_widgets = [];
             };
             new_actions.add_step = function (step, new_widget) {
-//                 step.robot = robot;
                 steps[steps.length] = step;
                 if (new_widget) {
                     this.add_newly_created_widget(new_widget);
@@ -43,16 +41,9 @@ window.TOONTALK.actions =
             new_actions.add_newly_created_widget = function (new_widget) {
                 newly_created_widgets[newly_created_widgets.length] = new_widget;
             };
-//             new_actions.get_robot = function () {
-//                 return robot;
-//             };
-//             new_actions.set_robot = function (robot_parameter) {
-//                 var i;
-//                 robot = robot_parameter;
-//                 for (i = 0; i < steps.length; i += 1) {
-//                     steps[i].robot = robot;
-//                 }
-//             };
+            new_actions.get_newly_created_widgets_length = function () {
+                return newly_created_widgets.length;
+            };
             new_actions.get_path_to = function (widget) {
                 var i, j, path, sub_path, children;
                 for (i = 0; i < newly_created_widgets.length; i++) {
@@ -90,9 +81,9 @@ window.TOONTALK.actions =
             for (i = 0; i < steps.length; i++) {
                 description += steps[i].toString();
                 if (i === steps.length-2) {
-                    description += " and ";
+                    description += " and\n";
                 } else if (i < steps.length-2) {
-                    description += ", ";
+                    description += ",\n";
                 }
             }
             return description;
@@ -119,6 +110,24 @@ window.TOONTALK.actions_path =
             return {
                 dereference: function () {
                     return actions.dereference(index);
+                },
+                toString: function () {
+                    var n = actions.get_newly_created_widgets_length() - index;
+                    var ordinal;
+                    switch (n) {
+                        case 1:
+                        ordinal = "last";
+                        break;
+                        case 2:
+                        ordinal = "second to last";
+                        break;
+                        case 2:
+                        ordinal = "third to last";
+                        break;
+                        default:
+                        ordinal = n + "th to last";
+                    }
+                    return "the " + ordinal + " widget he created";
                 }
             };
         }

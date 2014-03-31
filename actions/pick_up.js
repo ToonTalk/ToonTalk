@@ -31,7 +31,7 @@
         
         get_json: function () {
             return {type: "pick_up_action",
-                    path: this.path.get_json()
+                    path: this.path.get_json && this.path.get_json()
                     };
         },
         

@@ -580,9 +580,9 @@ window.TOONTALK.number_backside =
 			divide.button.onchange = update_operator;
 			power.button.onchange = update_operator;
 			backside.update_display = function () {
-				var number_widget = this.get_widget();
-				$(numerator_input.button).val(number_widget.numerator_string());
-				$(denominator_input.button).val(number_widget.denominator_string());
+// 				var number_widget = this.get_widget();
+				$(numerator_input.button).val(number.numerator_string());
+				$(denominator_input.button).val(number.denominator_string());
 			};
             return backside;
         }

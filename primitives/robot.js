@@ -59,9 +59,6 @@ window.TOONTALK.robot = (function (TT) {
 			height = new_value;
 		};
 		new_robot.get_description = function () {
-			if (!description) {
-				return new_robot.toString();
-			}
 			return description;
 		};
 		new_robot.set_description = function (new_value, update_display) {
@@ -184,19 +181,26 @@ window.TOONTALK.robot = (function (TT) {
 	};
 	
 	robot.training_started = function () {
-		this.set_bubble(this.get_context().copy(true));
+		var context = this.get_context();
+		if (!context) {
+			console.log("Robot started training but can't find its 'context'.");
+			return;
+		}
+		this.set_bubble(context.copy(true));
+		// use minature image as cursor (if there is one)
 		$("div").css({cursor: 'url(' + TT.UTILITIES.cursor_of_image(this.get_image_url()) + '), default'});
 	};
 	
 	robot.training_finished = function () {
-		$("div").css({cursor: ''});
-		this.set_description(this.toString(), true);
+		$("div").css({cursor: ''}); // restore cursor
+		this.update_display();
+		this.get_backside().update_display();
 	};
 	
 	robot.update_display = function() {
 		// perhaps this should be moved to widget and number and box updated to differ in the to_HTML part
         var frontside = this.get_frontside();
-		var description = this.get_description();
+		var description = this.get_description() || this.toString();
 		var bubble = this.get_bubble();
 		var new_first_child, robot_image, thought_bubble, frontside_element, bubble_contents_element, resource_becoming_instance;
         if (!frontside) {
@@ -266,11 +270,11 @@ window.TOONTALK.robot = (function (TT) {
 			return "has yet to be trained";
 		}
 		bubble_erased = bubble.get_erased() ? " an erased " : " a ";
-		return "when given something that matches" + bubble_erased + bubble.toString() + " will " + body.toString();
+		return "when working on something that matches" + bubble_erased + bubble.toString() + " will \n" + body.toString();
 	};
 	
 	robot.get_type_name = function () {
-		return "robot (" + this.get_description() + ")";
+		return "robot";
 	};
 	
 	robot.get_json = function () {
@@ -310,7 +314,10 @@ window.TOONTALK.robot_backside =
 			var backside_element = backside.get_element();
             // create_text_input should use JQuery????
             var image_url_input = TT.UTILITIES.create_text_input(robot.get_image_url(), "toontalk-image-url-input", "Image URL&nbsp;", "Type here to provide a URL for the appearance of this robot.");
-			var description_input = TT.UTILITIES.create_text_input(robot.get_description(), "toontalk-robot-description-input", "Description&nbsp;", "Type here to provide a better descprion of this robot.");
+			var description_input = TT.UTILITIES.create_text_input(robot.get_description() || robot.toString(), 
+			                                                       "toontalk-robot-description-input", 
+																   "Description&nbsp;",
+																   "Type here to provide a better descprion of this robot.");
             var input_table;
 			var standard_buttons = TT.backside.create_standard_buttons(backside, robot);
 			// don't do the following if already trained -- or offer to retrain?
@@ -325,6 +332,10 @@ window.TOONTALK.robot_backside =
 			$(input_table).css({width: "90%"});
 			backside_element.appendChild(input_table);
 			backside_element.appendChild(standard_buttons);
+			backside.update_display = function () {
+				$(description_input.button).val(robot.get_description() || robot.toString());
+				$(image_url_input.button).val(robot.get_image_url());
+			};
             return backside;
         },
 		
