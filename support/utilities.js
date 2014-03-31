@@ -26,6 +26,15 @@ window.TOONTALK.UTILITIES =
 						 "path.to_entire_context": TT.path.to_entire_context.create_from_json};
 	// id needs to be unique across ToonTalks due to drag and drop
 	var id_counter = new Date().getTime();
+	var toontalk_json_div = function (json) {
+		// convenience for dragging into documents (e.g. Word or WordPad -- not sure what else)
+		return "<div class='toontalk-div'>" + json + "</div>";
+	};	
+	var extract_json_from_div_string = function (div_string) {
+		var div_open_length = "<div class='toontalk-div'>".length;
+		var div_close_length = "</div>".length;
+		return div_string.substring(div_open_length, div_string.length - div_close_length);
+	};
     return {
 		create_from_json: function (json) {
 			var widget, frontside_element, backside_widgets;
@@ -147,6 +156,7 @@ window.TOONTALK.UTILITIES =
 				console.log("No data in dataTransfer in drop.");
 				return;
 			}
+			json = extract_json_from_div_string(json);
 			try {
 				return JSON.parse(json);
 			} catch (e) {
@@ -163,6 +173,7 @@ window.TOONTALK.UTILITIES =
 					var position = $element.get(0).getBoundingClientRect(); // $element.position();
 					var unique_id = TT.UTILITIES.generate_unique_id();
 					var widget = $element.data("owner");
+					var is_resource = $element.is(".toontalk-top-level-resource");
 					var json_object;
 // 					if ($element.is(".toontalk-frontside-in-box")) {
 // 						// but not stopping propagation so can drag widget in the hole
@@ -177,7 +188,7 @@ window.TOONTALK.UTILITIES =
 					}
 					$element.attr("id", unique_id);
 					if (event.originalEvent.dataTransfer && widget.get_json) {
-						event.originalEvent.dataTransfer.effectAllowed = 'move';
+						event.originalEvent.dataTransfer.effectAllowed = is_resource ? 'copy' : 'move';
 						json_object = widget.get_json();
 						json_object.id_of_original_dragree = unique_id;
 						json_object.drag_x_offset = event.originalEvent.clientX - position.left;
@@ -194,8 +205,8 @@ window.TOONTALK.UTILITIES =
 						}
 						$element.data("json", json_object);
 						// following was text/plain but that caused an error in IE9
-						event.originalEvent.dataTransfer.setData("text", JSON.stringify(json_object));
-						widget.drag_started(json_object, $element.is(".toontalk-top-level-resource"));
+						event.originalEvent.dataTransfer.setData("text", toontalk_json_div(JSON.stringify(json_object)));
+						widget.drag_started(json_object, is_resource);
 					}
 					event.stopPropagation();
 				});
@@ -228,6 +239,7 @@ window.TOONTALK.UTILITIES =
                 function (event) {
 					var $source, source, $target, target, target_position, drag_x_offset, drag_y_offset;
 					var json_object = TT.UTILITIES.data_transfer_json_object(event);
+					// should this set the dropEffect? https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer#dropEffect.28.29
 					var $container, container;
                     $source = dragee || (json_object && $("#" + json_object.id_of_original_dragree));
 					if (!$source && !json_object) {
