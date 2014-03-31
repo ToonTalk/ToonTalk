@@ -406,6 +406,19 @@ window.TOONTALK.UTILITIES =
 			}
 		},
 		
+		cardinal: function (n) {
+			switch (n) {
+				case 0:
+				return "first";
+				case 1:
+				return "second";
+				case 2:
+				return "third";
+				default:
+				return n + "th";
+			}
+		},
+		
 		cursor_of_image: function (url) {
 			var extensionStart = url.lastIndexOf('.');
 			if (extensionStart >= 0) {

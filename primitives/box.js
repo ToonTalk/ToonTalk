@@ -348,7 +348,7 @@ window.TOONTALK.box = (function (TT) {
 					return hole;
 				}
             }
-            console.log("box " + this.toString() + " unable to dereference path " + path.toString());
+            console.log("box " + this.toString() + " unable to dereference path " + TT.path.toString(path));
         } else {
             return this;
         }
@@ -361,7 +361,7 @@ window.TOONTALK.box = (function (TT) {
 					return index;
 				},         
 				toString: function () {
-					return "box hole " + index + (this.next ? "; " + this.next.toString() : "");
+					return "what is in the " + TT.UTILITIES.cardinal(index) + " hole " + (this.next ? "; " + this.next.toString() : "");
 				},
 				get_json: function () {
 					return {type: "box_path",

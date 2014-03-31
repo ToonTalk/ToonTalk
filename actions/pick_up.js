@@ -26,7 +26,7 @@
         },
         
         toString: function () {
-            return "pick up " + this.path.toString();
+            return "pick up " + TT.path.toString(this.path);
         },
         
         get_json: function () {

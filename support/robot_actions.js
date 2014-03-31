@@ -53,7 +53,7 @@ window.TOONTALK.actions =
                         sub_path = newly_created_widgets[i].get_path_to(widget);
                         if (sub_path) {
                             path = TT.actions_path.create(i, new_actions);
-                            path = path.next = sub_path;
+                            path.next = sub_path;
                             return path;
                         }
                     }
@@ -81,9 +81,9 @@ window.TOONTALK.actions =
             for (i = 0; i < steps.length; i++) {
                 description += steps[i].toString();
                 if (i === steps.length-2) {
-                    description += " and\n";
+                    description += " and \n";
                 } else if (i < steps.length-2) {
-                    description += ",\n";
+                    description += ", \n";
                 } else {
                     description += ".";
                 }

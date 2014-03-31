@@ -29,7 +29,7 @@ window.TOONTALK.copy =
         },
         
         toString: function () {
-            return "copy " + this.path.toString();
+            return "copy " + TT.path.toString(this.path);
         },
         
         get_json: function () {

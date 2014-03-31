@@ -29,7 +29,7 @@ window.TOONTALK.pick_up_copy =
         },
         
         toString: function () {
-            return "pick_up_copy " + this.path.toString();
+            return "pick up a copy of " + TT.path.toString(this.path);
         },
         
         get_json: function () {

@@ -43,7 +43,7 @@ window.TOONTALK.drop_on =
         },
         
         toString: function () {
-            return "drop it on " + this.path.toString();
+            return "drop it on " + TT.path.toString(this.path);
         },
         
         get_json: function () {

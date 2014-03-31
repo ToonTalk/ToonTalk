@@ -20,6 +20,10 @@ window.TOONTALK.path =
 			if (widget === "top-level-backside") {
 				return TT.path.top_level_backside;
 			}
+			path = body.get_path_to(widget, robot);
+            if (path) {
+                return path;
+            }
 			if (context.get_path_to) {
 				sub_path = context.get_path_to(widget, robot);
 				if (sub_path) {
@@ -28,10 +32,6 @@ window.TOONTALK.path =
 					return path;
 				}
 			}
-            path = body.get_path_to(widget, robot);
-            if (path) {
-                return path;
-            }
 			console.log("TT.path.get_path_to not fully implemented.");
         },			
 		dereference_path: function (path, context) {
@@ -44,13 +44,21 @@ window.TOONTALK.path =
                 	reference = context.dereference(path);
 				}
 			    if (!reference) {
-			        console.log("Unable to dereference path: " + path.toString() + " in context: " + context.toString());
+			        console.log("Unable to dereference path: " + TT.path.toString(path) + " in context: " + context.toString());
 			    }
 			    return reference;
             }
             // no path means entire context
             return context;
         },
+		toString: function (a_path) {
+			if (a_path.next) {
+				// will the first part always end in a space?
+				return TT.path.toString(a_path.next) + "of " + a_path.toString();
+			} else {
+				return a_path.toString();
+			}
+		},
         to_entire_context: {
             // an action that applies to the entire context (i.e. what the robot is working on)
 			dereference: function (context) {
