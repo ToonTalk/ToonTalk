@@ -202,8 +202,18 @@ window.TOONTALK.backside =
 			};
 			update_title();
 			$erase_button.click(function () {
+				var frontside_element = widget.get_frontside_element();
+				var $robot_element = $(frontside_element).parents(".toontalk-robot");
+				var robot = $robot_element.data("owner");
+				var robot_backside;
 				widget.set_erased(!widget.get_erased(), true);
 				update_title();
+				if (robot) {
+					robot_backside = robot.get_backside();
+					if (robot_backside) {
+						robot_backside.update_display();
+					}
+				}
 			});
 			$erase_button.attr("title", "Click to hide this.");
 			return $erase_button.get(0);

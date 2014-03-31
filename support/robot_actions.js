@@ -84,6 +84,8 @@ window.TOONTALK.actions =
                     description += " and\n";
                 } else if (i < steps.length-2) {
                     description += ",\n";
+                } else {
+                    description += ".";
                 }
             }
             return description;
