@@ -61,6 +61,13 @@ window.TOONTALK.backside =
 			        $backside_element.append($other_front_side_element);
 			        TT.UTILITIES.set_position_absolute(other_front_side_element, true, event); // when on the backside
 					$other_front_side_element.data("owner").update_display();
+					if (TT.robot.in_training) {
+						if ($backside_element.is(".toontalk-top-level-backside")) {
+							TT.robot.in_training.dropped_on("top-level-backside");
+						} else {
+							TT.robot.in_training.dropped_on(this);
+						}
+					}
 			        return true;
 		        };
 			TT.backside.associate_widget_with_backside_element(widget, backside, backside_element);

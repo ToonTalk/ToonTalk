@@ -25,7 +25,12 @@ window.TOONTALK.drop_on =
                 thing_in_hand = robot.get_thing_in_hand();
                 if (thing_in_hand) {
                     if (thing_in_hand.drop_on) {
-                        thing_in_hand.drop_on(target);
+                        if (target instanceof jQuery) {
+                            // e.g. dropped on top-level backside
+                            target.append(thing_in_hand.get_frontside_element());
+                        } else {
+                            thing_in_hand.drop_on(target);
+                        }
                     } else {
                         console.log("Thing in robot's hand doesn't handle 'drop_on': "  + thing_in_hand.toString() + ". Robot that " + robot.toString());
                         return false;

@@ -581,6 +581,7 @@ $(document).ready(function () {
     var backside_element = backside.get_element();
     var $backside_element = $(backside_element);
     $("body").append(backside_element);
+	$backside_element.addClass("toontalk-top-level-backside");
     $backside_element.css({width: "1000px",
                            height: "300px", // not sure why 50% didn't work
                            "background-color": "yellow",
