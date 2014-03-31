@@ -26,14 +26,14 @@ window.TOONTALK.UTILITIES =
 						 "path.to_entire_context": TT.path.to_entire_context.create_from_json};
 	// id needs to be unique across ToonTalks due to drag and drop
 	var id_counter = new Date().getTime();
+	var div_open = "<div class='toontalk-json'>";
+	var div_close = "</div>";
 	var toontalk_json_div = function (json) {
 		// convenience for dragging into documents (e.g. Word or WordPad -- not sure what else)
-		return "<div class='toontalk-div'>" + json + "</div>";
+		return div_open + json + div_close;
 	};	
 	var extract_json_from_div_string = function (div_string) {
-		var div_open_length = "<div class='toontalk-div'>".length;
-		var div_close_length = "</div>".length;
-		return div_string.substring(div_open_length, div_string.length - div_close_length);
+		return div_string.substring(div_open.length, div_string.length - div_close.length);
 	};
     return {
 		create_from_json: function (json) {
@@ -338,6 +338,9 @@ window.TOONTALK.UTILITIES =
 				// restore original
 				dropped_copy = dropped_widget.copy();
 				dropped_element_copy = dropped_copy.get_frontside_element();
+								// following didn't work
+				$(dropped_element_copy).css({width:  $dropped.width(),
+				                             height: $dropped.height()});
 				$dropped.removeClass("toontalk-top-level-resource");
 				$(dropped_element_copy).addClass("toontalk-top-level-resource");
 				$dropped.parent().append(dropped_element_copy);
@@ -550,13 +553,22 @@ window.TOONTALK.UTILITIES =
 }(window.TOONTALK));
 
 $(document).ready(function () {
+	"use strict"
+	var TT = window.TOONTALK;
 	$(".toontalk-json").each(
 		function (index, element) {
 			var json = element.innerText;
-			var widget = window.TOONTALK.UTILITIES.create_from_json(JSON.parse(json));
+			var widget, frontside_element;
+			if (!json) {
+				return;
+			}
+			widget = TT.UTILITIES.create_from_json(JSON.parse(json));
 			if (widget) {
 				element.innerText = "";
-				element.appendChild(widget.get_frontside_element());
+				$(element).addClass("toontalk-top-level-resource");
+				frontside_element = widget.get_frontside_element();
+				$(frontside_element).addClass("toontalk-top-level-resource");
+				element.appendChild(frontside_element);
 				// delay until geometry settles down
 				setTimeout(function () {
 					widget.update_display();
@@ -564,4 +576,16 @@ $(document).ready(function () {
 				1);
 			}
 	});
+	// clean up the following
+    var backside = TT.backside.create({});
+    var backside_element = backside.get_element();
+    var $backside_element = $(backside_element);
+    $("body").append(backside_element);
+    $backside_element.css({width: "1000px",
+                           height: "300px", // not sure why 50% didn't work
+                           "background-color": "yellow",
+                           position: "relative"});
+    backside_element.draggable = false;
+    TT.debugging = true; // remove this for production releases
+	TT.QUEUE.run();
 });
