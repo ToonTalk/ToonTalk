@@ -35,6 +35,43 @@ window.TOONTALK.UTILITIES =
 	var extract_json_from_div_string = function (div_string) {
 		return div_string.substring(div_open.length, div_string.length - div_close.length);
 	};
+	var initialise = function () {
+			$(".toontalk-json").each(
+				function (index, element) {
+					var json = element.innerText;
+					var widget, frontside_element;
+					if (!json) {
+						return;
+					}
+					widget = TT.UTILITIES.create_from_json(JSON.parse(json));
+					if (widget) {
+						element.innerText = "";
+						$(element).addClass("toontalk-top-level-resource");
+						frontside_element = widget.get_frontside_element();
+						$(frontside_element).addClass("toontalk-top-level-resource");
+						element.appendChild(frontside_element);
+						// delay until geometry settles down
+						setTimeout(function () {
+							widget.update_display();
+						},
+						1);
+					}
+			});
+			// clean up the following
+			var backside = TT.backside.create({});
+			var backside_element = backside.get_element();
+			var $backside_element = $(backside_element);
+			$("body").append(backside_element);
+			$backside_element.addClass("toontalk-top-level-backside");
+			$backside_element.css({width: "1000px",
+								   height: "300px", // not sure why 50% didn't work
+								   "background-color": "yellow",
+								   position: "relative"});
+			backside_element.draggable = false;
+			TT.debugging = true; // remove this for production releases
+			TT.QUEUE.run();
+		};
+	$(document).ready(initialise);
     return {
 		create_from_json: function (json) {
 			var widget, frontside_element, backside_widgets;
@@ -564,42 +601,3 @@ window.TOONTALK.UTILITIES =
     };
 	
 }(window.TOONTALK));
-
-$(document).ready(function () {
-	"use strict"
-	var TT = window.TOONTALK;
-	$(".toontalk-json").each(
-		function (index, element) {
-			var json = element.innerText;
-			var widget, frontside_element;
-			if (!json) {
-				return;
-			}
-			widget = TT.UTILITIES.create_from_json(JSON.parse(json));
-			if (widget) {
-				element.innerText = "";
-				$(element).addClass("toontalk-top-level-resource");
-				frontside_element = widget.get_frontside_element();
-				$(frontside_element).addClass("toontalk-top-level-resource");
-				element.appendChild(frontside_element);
-				// delay until geometry settles down
-				setTimeout(function () {
-					widget.update_display();
-				},
-				1);
-			}
-	});
-	// clean up the following
-    var backside = TT.backside.create({});
-    var backside_element = backside.get_element();
-    var $backside_element = $(backside_element);
-    $("body").append(backside_element);
-	$backside_element.addClass("toontalk-top-level-backside");
-    $backside_element.css({width: "1000px",
-                           height: "300px", // not sure why 50% didn't work
-                           "background-color": "yellow",
-                           position: "relative"});
-    backside_element.draggable = false;
-    TT.debugging = true; // remove this for production releases
-	TT.QUEUE.run();
-});
