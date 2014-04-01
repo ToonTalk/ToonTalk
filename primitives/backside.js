@@ -70,6 +70,22 @@ window.TOONTALK.backside =
 					}
 			        return true;
 		        };
+		    backside.add_backside_widgets = function (backside_widgets)  {
+				if (backside_widgets.length === 0) {
+					return;
+				}
+				// too soon to add these widgets so delay slightly
+				setTimeout(
+					function () {
+						var i, widget_frontside_element;
+						for (i = 0; i < backside_widgets.length; i++) {
+							widget_frontside_element = backside_widgets[i].get_frontside_element(true);
+							$(widget_frontside_element).data("owner", backside_widgets[i]);
+							$(backside_element).append(widget_frontside_element);
+						}
+					},
+					1);
+			};
 			TT.backside.associate_widget_with_backside_element(widget, backside, backside_element);
 			TT.UTILITIES.drag_and_drop($backside_element, widget);
 			// the following function should apply recursively...
@@ -125,17 +141,7 @@ window.TOONTALK.backside =
 			});
 			if (widget.get_backside_widgets) {
 				backside_widgets = widget.get_backside_widgets();
-				// too soon to add these widgets so delay slightly
-				setTimeout(
-					function ()  {
-						var i, widget_backside_element;
-						for (i = 0; i < backside_widgets.length; i++) {
-							widget_backside_element = backside_widgets[i].get_frontside_element(true);
-							$(widget_backside_element).data("owner", backside_widgets[i]);
-							$(backside_element).append(widget_backside_element);
-						}
-					},
-					1);
+			 	backside.add_backside_widgets(backside_widgets);
 			}
 			return backside;
 		},

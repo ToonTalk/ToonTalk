@@ -8,7 +8,6 @@
 
 window.TOONTALK.widget = (function (TT) {
     "use strict";
-
     return {
         
         erasable: function (widget) {
@@ -38,7 +37,7 @@ window.TOONTALK.widget = (function (TT) {
             widget.get_backside =
                 function (create) {
                     if (create && !backside) {
-                        // backides are customised by each kind of widget
+                        // backsides are customised by each kind of widget
                         backside = widget.create_backside();
                     }
                     return backside;
@@ -51,6 +50,11 @@ window.TOONTALK.widget = (function (TT) {
                     }
                     backside = undefined;
                 };
+            if (!widget.create_backside) {
+                widget.create_backside = function () {
+                    return TT.backside.create(widget);
+                }  
+            }
             return widget;
         },
         
@@ -84,7 +88,7 @@ window.TOONTALK.widget = (function (TT) {
         add_to_json: function (json) {
             var frontside_element, backside_widgets;
             if (json) {
-                if (this.get_erased()) {
+                if (this.get_erased && this.get_erased()) {
                     json.erased = true;
                 }
                 frontside_element = this.get_frontside_element && this.get_frontside_element();
@@ -118,6 +122,9 @@ window.TOONTALK.widget = (function (TT) {
         
         set_backside_widgets: function (backside_widgets) {
             this.backside_widgets = backside_widgets;
+            if (backside_widgets.length > 0 && this.get_backside()) {
+                this.get_backside().add_backside_widgets(backside_widgets);
+            }
         },
         
         add_to_copy: function (copy) {
@@ -185,11 +192,6 @@ window.TOONTALK.widget = (function (TT) {
             console.assert(false, "update_display not implemented");
         },
         
-//         to_HTML: function () {
-//             // should this be given the dimensions (in pixels) available? 
-//             console.assert(false, "to_HTML not implemented");
-//         },
-        
         equals_box: function () {
             // if a box didn't respond to this then not equal
             return false;
@@ -208,7 +210,28 @@ window.TOONTALK.widget = (function (TT) {
         match_number: function () {
             // if a number didn't respond to this then not matched
             return 'not matched';
-        }
+        },
         
+        top_level_widget: function () {
+            var widget = Object.create(TT.widget);
+            widget.get_json = function () {
+                var backside = this.get_backside();
+                var $backside_element = $(backside.get_element());
+                var json = {type: "top_level",
+                            color: $backside_element.attr("background-color"),
+                            width: $backside_element.width(),
+                            height: $backside_element.height()};
+                return this.add_to_json(json);
+            };
+            return widget.add_sides_functionality(widget);
+        },
+        
+        top_level_create_from_json: function (json) {
+            var widget = TT.widget.top_level_widget();
+            var $backside_element = $(widget.get_backside(true).get_element());
+            $backside_element.css({"background-color": json.color});
+            $backside_element.addClass("toontalk-top-level-backside");
+            return widget;
+        }
     };
 }(window.TOONTALK));

@@ -23,7 +23,8 @@ window.TOONTALK.UTILITIES =
 						 "copy_action": TT.copy.create_from_json,
 						 "pick_up_copy_action": TT.pick_up_copy.create_from_json,
 						 "box_path": TT.box.path.create_from_json,
-						 "path.to_entire_context": TT.path.to_entire_context.create_from_json};
+						 "path.to_entire_context": TT.path.to_entire_context.create_from_json,
+						 "top_level": TT.widget.top_level_create_from_json};
 	// id needs to be unique across ToonTalks due to drag and drop
 	var id_counter = new Date().getTime();
 	var div_open = "<div class='toontalk-json'>";
@@ -38,43 +39,50 @@ window.TOONTALK.UTILITIES =
 	var initialise = function () {
 			$(".toontalk-json").each(
 				function (index, element) {
-					var json = element.innerText;
-					var widget, frontside_element;
-					if (!json) {
+					var json_string = element.innerText;
+					var json, widget, frontside_element, backside_element, backside;
+					if (!json_string) {
 						return;
 					}
-					widget = TT.UTILITIES.create_from_json(JSON.parse(json));
+					json = JSON.parse(json_string);
+					widget = TT.UTILITIES.create_from_json(json);
 					if (widget) {
-						element.innerText = "";
-						$(element).addClass("toontalk-top-level-resource");
-						frontside_element = widget.get_frontside_element();
-						$(frontside_element).addClass("toontalk-top-level-resource");
-						element.appendChild(frontside_element);
-						// delay until geometry settles down
-						setTimeout(function () {
-							widget.update_display();
-						},
-						1);
+						element.innerText = ""; // served its purpose of being parsed as JSON
+						if (json.backside) {
+							backside = widget.get_backside(true);
+							backside_element = backside.get_element();
+							$(element).replaceWith(backside_element);
+// 							// delay until geometry settles down
+// 							setTimeout(function () {
+// 								backside.update_display();
+// 							},
+// 							1);
+						} else {
+							$(element).addClass("toontalk-top-level-resource");
+							frontside_element = widget.get_frontside_element();
+							$(frontside_element).addClass("toontalk-top-level-resource");
+							element.appendChild(frontside_element);
+							// delay until geometry settles down
+							setTimeout(function () {
+								widget.update_display();
+							},
+							1);
+						}
 					}
 			});
-			// clean up the following
-			var backside = TT.backside.create({});
-			var backside_element = backside.get_element();
-			var $backside_element = $(backside_element);
-			$("body").append(backside_element);
-			$backside_element.addClass("toontalk-top-level-backside");
-			$backside_element.css({width: "1000px",
-								   height: "300px", // not sure why 50% didn't work
-								   "background-color": "yellow",
-								   position: "relative"});
-			backside_element.draggable = false;
+// 			var backside = TT.backside.create(TT.widget.top_level_widget());
+// 			var backside_element = backside.get_element();
+// 			var $backside_element = $(backside_element);
+// 			$("body").append(backside_element);
+// 			$backside_element.addClass("toontalk-top-level-backside");
+// 			backside_element.draggable = false;
 			TT.debugging = true; // remove this for production releases
 			TT.QUEUE.run();
 		};
 	$(document).ready(initialise);
     return {
 		create_from_json: function (json) {
-			var widget, frontside_element, backside_widgets;
+			var widget, side_element, backside_widgets;
 			if (!json) {
 				// was undefined and still is
 				return;
@@ -90,12 +98,13 @@ window.TOONTALK.UTILITIES =
 					widget.set_erased(json.erased);
 				}
 				if (json.width) {
-					frontside_element = widget.get_frontside_element();
-					$(frontside_element).css({width: json.width,
-					                          height: json.height});
+					side_element = json.backside ? widget.get_backside(true).get_element() : widget.get_frontside_element();
+					$(side_element).css({width: json.width,
+					                     height: json.height});
 				}
 				if (json.backside_widgets) {
-					widget.set_backside_widgets(this.create_array_from_json(json.backside_widgets));
+					backside_widgets = this.create_array_from_json(json.backside_widgets);
+					widget.set_backside_widgets(backside_widgets);
 				}
 			}
 			return widget;
@@ -239,6 +248,9 @@ window.TOONTALK.UTILITIES =
 								json_object.original_width_fraction = 0.2;
 								json_object.original_height_fraction = 0.1;
 							}
+						}
+						if ($element.is(".toontalk-backside")) {
+							json_object.backside = true;
 						}
 						$element.data("json", json_object);
 						// following was text/plain but that caused an error in IE9
