@@ -283,23 +283,24 @@ window.TOONTALK.robot = (function (TT) {
 			bubble_json = this.get_bubble().get_json();
 		} 
 		return this.add_to_json(
-		    {type: "robot",
-		     bubble: bubble_json,
-		     body: this.get_body().get_json(),
-			 image_url: this.get_image_url(),
+			{semantic:
+				{type: "robot",
+				 bubble: bubble_json,
+				 body: this.get_body().get_json()},
+	        view:
+			 {image_url: this.get_image_url(),
 // 			 width: this.get_width(),
 // 			 height: this.get_height(),
-			 description: this.get_description()
-			});
+			 description: this.get_description()}});
 	};
     
-    robot.create_from_json = function (json) {
-		return TT.robot.create(json.image_url,
-		                       TT.UTILITIES.create_from_json(json.bubble),
-		                       TT.UTILITIES.create_from_json(json.body),
-							   json.description,
-							   json.width,
-							   json.height);
+    robot.create_from_json = function (json_semantic, json_view) {
+		return TT.robot.create(json_view.image_url,
+		                       TT.UTILITIES.create_from_json(json_semantic.bubble),
+		                       TT.UTILITIES.create_from_json(json_semantic.body),
+							   json_view.description,
+							   json_view.width,
+							   json_view.height);
 	};
     
     return robot;

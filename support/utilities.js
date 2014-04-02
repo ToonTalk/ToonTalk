@@ -48,7 +48,7 @@ window.TOONTALK.UTILITIES =
 					widget = TT.UTILITIES.create_from_json(json);
 					if (widget) {
 						element.innerText = ""; // served its purpose of being parsed as JSON
-						if (json.backside) {
+						if (json.view.backside) {
 							backside = widget.get_backside(true);
 							backside_element = backside.get_element();
 							$(element).replaceWith(backside_element);
@@ -82,28 +82,34 @@ window.TOONTALK.UTILITIES =
 	$(document).ready(initialise);
     return {
 		create_from_json: function (json) {
-			var widget, side_element, backside_widgets;
+			var widget, side_element, backside_widgets, json_semantic, json_view;
 			if (!json) {
 				// was undefined and still is
 				return;
 			}
-			if (json_creators[json.type]) {
-				widget = json_creators[json.type](json);
+			json_semantic = json.semantic;
+			if (!json_semantic) {
+				// e.g. body, paths, etc.
+				json_semantic = json;
+			}
+			json_view = json.view;
+			if (json_creators[json_semantic.type]) {
+				widget = json_creators[json_semantic.type](json_semantic, json_view);
 			} else {
-				console.log("json type " + json.type + " not yet supported.");
+				console.log("json type '" + json_semantic.type + "' not yet supported.");
 				return;
 			}
 			if (widget) {
-				if (json.erased) {
-					widget.set_erased(json.erased);
+				if (json_semantic.erased) {
+					widget.set_erased(json_semantic.erased);
 				}
-				if (json.width) {
+				if (json_view && json_view.frontside_width) {
 					side_element = json.backside ? widget.get_backside(true).get_element() : widget.get_frontside_element();
-					$(side_element).css({width: json.width,
-					                     height: json.height});
+					$(side_element).css({width: json_view.frontside_width,
+					                     height: json_view.frontside_height});
 				}
-				if (json.backside_widgets) {
-					backside_widgets = this.create_array_from_json(json.backside_widgets);
+				if (json_semantic.backside_widgets) {
+					backside_widgets = this.create_array_from_json(json_semantic.backside_widgets);
 					widget.set_backside_widgets(backside_widgets);
 				}
 			}
@@ -236,17 +242,17 @@ window.TOONTALK.UTILITIES =
 					if (event.originalEvent.dataTransfer && widget.get_json) {
 						event.originalEvent.dataTransfer.effectAllowed = is_resource ? 'copy' : 'move';
 						json_object = widget.get_json();
-						json_object.id_of_original_dragree = unique_id;
+						json_object.view.id_of_original_dragree = unique_id;
 						json_object.drag_x_offset = event.originalEvent.clientX - position.left;
 						json_object.drag_y_offset = event.originalEvent.clientY - position.top;
 						if (!json_object.width) {
 							if ($element.parent().is(".toontalk-backside")) {
-								json_object.original_width_fraction = $element.outerWidth() / $element.parent().outerWidth();
-								json_object.original_height_fraction = $element.outerHeight() / $element.parent().outerHeight();
+								json_object.view.original_width_fraction = $element.outerWidth() / $element.parent().outerWidth();
+								json_object.view.original_height_fraction = $element.outerHeight() / $element.parent().outerHeight();
 							} else {
 								// following should be kept in synch with toontalk-frontside-on-backside CSS
-								json_object.original_width_fraction = 0.2;
-								json_object.original_height_fraction = 0.1;
+								json_object.view.original_width_fraction = 0.2;
+								json_object.view.original_height_fraction = 0.1;
 							}
 						}
 						if ($element.is(".toontalk-backside")) {
@@ -267,8 +273,8 @@ window.TOONTALK.UTILITIES =
 							var json_object = $element.data("json");
 							if (json_object) {
 								$element.data("json", ""); // no point wasting memory on this anymore
-								$element.css({width:  json_object.width || json_object.original_width_fraction * 100 + "%",
-											  height: json_object.height || json_object.original_height_fraction * 100 + "%"});
+								$element.css({width:  json_object.view.frontside_width || json_object.view.original_width_fraction * 100 + "%",
+											  height: json_object.view.frontside_height || json_object.view.original_height_fraction * 100 + "%"});
 							}
 						} else {
 							$element.css({width:  "100%",
@@ -279,7 +285,7 @@ window.TOONTALK.UTILITIES =
 				});
 // 				greedy: true,
 // 				tolerance: "intersect", // at least 50%
-            $element.on('dragover', 
+            $element.on('dragover',
 			    function (event) {
 					event.preventDefault();
 					return false;
