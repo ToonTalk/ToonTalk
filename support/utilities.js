@@ -52,6 +52,10 @@ window.TOONTALK.UTILITIES =
 							backside = widget.get_backside(true);
 							backside_element = backside.get_element();
 							$(element).replaceWith(backside_element);
+							$(backside_element).css({width: json.view.backside_width,
+							                         height: json.view.backside_height});
+// 													 left: json.view.backside_left,
+// 													 top: json.view.backside_top});
 // 							// delay until geometry settles down
 // 							setTimeout(function () {
 // 								backside.update_display();
@@ -104,13 +108,13 @@ window.TOONTALK.UTILITIES =
 					widget.set_erased(json_semantic.erased);
 				}
 				if (json_view && json_view.frontside_width) {
-					side_element = json.backside ? widget.get_backside(true).get_element() : widget.get_frontside_element();
+					side_element = json_view.backside ? widget.get_backside(true).get_element() : widget.get_frontside_element();
 					$(side_element).css({width: json_view.frontside_width,
 					                     height: json_view.frontside_height});
 				}
 				if (json_semantic.backside_widgets) {
 					backside_widgets = this.create_array_from_json(json_semantic.backside_widgets);
-					widget.set_backside_widgets(backside_widgets);
+					widget.set_backside_widgets(backside_widgets, json_semantic.backside_widgets.map(function (json) { return json.view; }));
 				}
 			}
 			return widget;
@@ -243,8 +247,8 @@ window.TOONTALK.UTILITIES =
 						event.originalEvent.dataTransfer.effectAllowed = is_resource ? 'copy' : 'move';
 						json_object = widget.get_json();
 						json_object.view.id_of_original_dragree = unique_id;
-						json_object.drag_x_offset = event.originalEvent.clientX - position.left;
-						json_object.drag_y_offset = event.originalEvent.clientY - position.top;
+						json_object.view.drag_x_offset = event.originalEvent.clientX - position.left;
+						json_object.view.drag_y_offset = event.originalEvent.clientY - position.top;
 						if (!json_object.width) {
 							if ($element.parent().is(".toontalk-backside")) {
 								json_object.view.original_width_fraction = $element.outerWidth() / $element.parent().outerWidth();
@@ -256,7 +260,7 @@ window.TOONTALK.UTILITIES =
 							}
 						}
 						if ($element.is(".toontalk-backside")) {
-							json_object.backside = true;
+							json_object.view.backside = true;
 						}
 						$element.data("json", json_object);
 						// following was text/plain but that caused an error in IE9
@@ -316,7 +320,9 @@ window.TOONTALK.UTILITIES =
 						$container = $source.parents(".toontalk-side:first");
 						container = $container.data("owner");
 						if (container) {
-							container.removed(source, $source, event);
+							if ($container.is(".toontalk-frontside")) {
+								container.removed(source, $source, event);
+							}
 						} else {
 							TT.UTILITIES.restore_resource($source, source);
 						}
@@ -327,8 +333,8 @@ window.TOONTALK.UTILITIES =
 					if ($target.is(".toontalk-backside")) {
 						target_position = TT.UTILITIES.absolute_position($target);
 						if (json_object) {
-							drag_x_offset = json_object.drag_x_offset;
-						    drag_y_offset = json_object.drag_y_offset;
+							drag_x_offset = json_object.view.drag_x_offset;
+						    drag_y_offset = json_object.view.drag_y_offset;
 						} else {
 							drag_x_offset = 0;
 							drag_y_offset = 0;

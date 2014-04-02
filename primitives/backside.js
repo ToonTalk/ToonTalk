@@ -70,17 +70,29 @@ window.TOONTALK.backside =
 					}
 			        return true;
 		        };
-		    backside.add_backside_widgets = function (backside_widgets)  {
+		    backside.add_backside_widgets = function (backside_widgets, json_array)  {
 				if (backside_widgets.length === 0) {
 					return;
 				}
 				// too soon to add these widgets so delay slightly
 				setTimeout(
 					function () {
-						var i, widget_frontside_element;
+						var i, widget_frontside_element, json_view;
 						for (i = 0; i < backside_widgets.length; i++) {
 							widget_frontside_element = backside_widgets[i].get_frontside_element(true);
 							$(widget_frontside_element).data("owner", backside_widgets[i]);
+							if (json_array) {
+								json_view = json_array[i];
+								if (json_view && json_view.frontside_width) {
+									// what if it is backside that needs to be added?
+									$(widget_frontside_element).css({width: json_view.frontside_width,
+									                                 height: json_view.frontside_height});
+								}
+								if (json_view.frontside_left) {
+									$(widget_frontside_element).css({left: json_view.frontside_left,
+															         top: json_view.frontside_top});
+								}
+							}
 							$(backside_element).append(widget_frontside_element);
 						}
 					},
@@ -141,7 +153,7 @@ window.TOONTALK.backside =
 			});
 			if (widget.get_backside_widgets) {
 				backside_widgets = widget.get_backside_widgets();
-			 	backside.add_backside_widgets(backside_widgets);
+			 	backside.add_backside_widgets(backside_widgets, widget.get_backside_widgets_json_views());
 			}
 			return backside;
 		},
@@ -181,10 +193,23 @@ window.TOONTALK.backside =
 			var backside_element = backside.get_element();
 			var $backside_element = $(backside_element);
 			var $hide_button = $("<button>Hide</button>").button();
+			var record_backside_widget_positions = function () {
+				var backside_widgets = widget.get_backside_widgets();
+				var i, backside_widget_frontside_element;
+				for (i = 0; i < backside_widgets.length; i++) {
+					backside_widget_frontside_element = backside_widgets[i].get_frontside_element();
+					if (backside_widget_frontside_element) {
+						backside_widgets[i].position_when_hidden = $(backside_widget_frontside_element).position();
+					}
+				}
+			};
 			$hide_button.addClass("toontalk-hide-backside-button");
 			$hide_button.click(function () {
 				if (widget && widget.forget_backside) {
 					widget.forget_backside();
+				}
+				if (widget) {
+					record_backside_widget_positions();
 				}
 			    $backside_element.remove(); // could animate away
 			});

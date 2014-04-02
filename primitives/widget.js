@@ -96,7 +96,8 @@ window.TOONTALK.widget = (function (TT) {
                     json_view = {};
                 }
                 json = {semantic: json_semantic,
-                        view: json_view};
+                        view: json_view,
+                        version: 1};
                 if (this.get_erased && this.get_erased()) {
                     json_semantic.erased = true;
                 }
@@ -104,9 +105,18 @@ window.TOONTALK.widget = (function (TT) {
                 if (frontside_element) {
                     json_view.frontside_width = $(frontside_element).width();
                     json_view.frontside_height = $(frontside_element).height();
-                    position = $(frontside_element).position();
-                    json_view.frontside_left = position.left;
-                    json_view.frontside_top = position.top;
+                    if ($(frontside_element).is(":visible")) {
+                        position = $(frontside_element).position();
+                    } else {
+                        position = this.position_when_hidden;
+                    }
+//                     if (!position) {
+//                         position = [0, 0];
+//                     }
+                    if (position) {
+                        json_view.frontside_left = position.left;
+                        json_view.frontside_top = position.top;
+                    }
                 }
                 backside = this.get_backside();
                 if (backside) {
@@ -143,10 +153,18 @@ window.TOONTALK.widget = (function (TT) {
             return backside.get_widgets();
         },
         
-        set_backside_widgets: function (backside_widgets) {
+        get_backside_widgets_json_views: function () {
+            return this.backside_widgets_json_views;
+        },
+        
+        set_backside_widgets: function (backside_widgets, json_views) {
             this.backside_widgets = backside_widgets;
-            if (backside_widgets.length > 0 && this.get_backside()) {
-                this.get_backside().add_backside_widgets(backside_widgets);
+            if (backside_widgets.length > 0) { 
+                if (this.get_backside()) {
+                    this.get_backside().add_backside_widgets(backside_widgets, json_views);
+                } else {
+                    this.backside_widgets_json_views = json_views;
+                }
             }
         },
         
@@ -156,7 +174,7 @@ window.TOONTALK.widget = (function (TT) {
                 copy.set_erased(this.get_erased());
             }
             if (backside_widgets.length > 0) {
-                copy.set_backside_widgets(TT.UTILITIES.copy_widgets(backside_widgets));
+                copy.set_backside_widgets(TT.UTILITIES.copy_widgets(backside_widgets), this.get_backside_widgets_json_views());
             }
             return copy;
         },

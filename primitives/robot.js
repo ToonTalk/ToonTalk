@@ -284,14 +284,14 @@ window.TOONTALK.robot = (function (TT) {
 		} 
 		return this.add_to_json(
 			{semantic:
-				{type: "robot",
-				 bubble: bubble_json,
-				 body: this.get_body().get_json()},
-	        view:
-			 {image_url: this.get_image_url(),
+				 {type: "robot",
+				  bubble: bubble_json,
+				  body: this.get_body().get_json()},
+	         view:
+			     {image_url: this.get_image_url(),
 // 			 width: this.get_width(),
 // 			 height: this.get_height(),
-			 description: this.get_description()}});
+			      description: this.get_description()}});
 	};
     
     robot.create_from_json = function (json_semantic, json_view) {
