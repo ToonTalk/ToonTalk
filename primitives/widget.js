@@ -328,6 +328,7 @@ window.TOONTALK.widget = (function (TT) {
             $backside_element.click(
                 function (event) {
                    widget.set_running(!widget.get_running());
+                   event.stopPropagation();
                 }
             );
             return widget;

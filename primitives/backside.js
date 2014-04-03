@@ -204,7 +204,7 @@ window.TOONTALK.backside =
 				}
 			};
 			$hide_button.addClass("toontalk-hide-backside-button");
-			$hide_button.click(function () {
+			$hide_button.click(function (event) {
 				if (widget && widget.forget_backside) {
 					widget.forget_backside();
 				}
@@ -212,6 +212,7 @@ window.TOONTALK.backside =
 					record_backside_widget_positions();
 				}
 			    $backside_element.remove(); // could animate away
+				event.stopPropagation();
 			});
 			$hide_button.attr("title", "Click to hide this.");
 			return $hide_button.get(0);
@@ -232,7 +233,7 @@ window.TOONTALK.backside =
 				}
 			};
 			update_title();
-			$erase_button.click(function () {
+			$erase_button.click(function (event) {
 				var frontside_element = widget.get_frontside_element();
 				var $robot_element = $(frontside_element).parents(".toontalk-robot");
 				var robot = $robot_element.data("owner");
@@ -245,6 +246,7 @@ window.TOONTALK.backside =
 						robot_backside.update_display();
 					}
 				}
+				event.stopPropagation();
 			});
 			$erase_button.attr("title", "Click to hide this.");
 			return $erase_button.get(0);
@@ -255,7 +257,7 @@ window.TOONTALK.backside =
 			var $backside_element = $(backside_element);
 			var $copy_button = $("<button>Copy</button>").button();
 			$copy_button.addClass("toontalk-copy-backside-button");
-			$copy_button.click(function () {
+			$copy_button.click(function (event) {
 				var widget_copy = widget.copy();
 				var frontside_element = widget.get_frontside_element();
 				var frontside_element_copy = widget_copy.get_frontside_element();
@@ -268,6 +270,7 @@ window.TOONTALK.backside =
 				if (TT.robot.in_training) {
 					TT.robot.in_training.copied(widget, widget_copy, false);
 				}
+				event.stopPropagation();
 			});
 			$copy_button.attr("title", "Click to make a copy of this " + widget.get_type_name());
 			return $copy_button.get(0);
@@ -280,7 +283,7 @@ window.TOONTALK.backside =
 			var run = true;
 			var robot;
 			$run_button.addClass("toontalk-run-backside-button");
-			$run_button.click(function () {
+			$run_button.click(function (event) {
 				if (run) {
 					$run_button.button("option", "label", "Stop");
 					$run_button.attr("title", "Click to stop running the robots on this " + widget.get_type_name());
@@ -290,6 +293,7 @@ window.TOONTALK.backside =
 				}
 				widget.set_running(run);
 				run = !run;
+				event.stopPropagation();
 			});
 			$run_button.attr("title", "Click to run the robots on this " + widget.get_type_name());
 			return $run_button.get(0);
@@ -298,10 +302,11 @@ window.TOONTALK.backside =
 		create_remove_button: function (backside, widget) {
 			var $remove_button = $("<button>Remove</button>").button();
 			$remove_button.addClass("toontalk-remove-backside-button");
-			$remove_button.click(function () {
+			$remove_button.click(function (event) {
 				if (widget && widget.remove) {
 					widget.remove();
 				}
+				event.stopPropagation();
 			});
 			$remove_button.attr("title", "Click to remove this " + widget.get_type_name());
 			return $remove_button.get(0);

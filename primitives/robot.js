@@ -367,7 +367,7 @@ window.TOONTALK.robot_backside =
 				}
 			};
 			change_label_and_title();
-			$train_button.click(function () {
+			$train_button.click(function (event) {
 				training = !training;
 				change_label_and_title();
 				if (training) {
@@ -378,6 +378,7 @@ window.TOONTALK.robot_backside =
 					robot.training_finished();
 					TT.robot.in_training = null;
 				}
+				event.stopPropagation();
 			});
 			return $train_button.get(0);
 		}
