@@ -112,6 +112,7 @@ window.TOONTALK.widget = (function (TT) {
             if (frontside) {
                 frontside.remove();
             }
+            this.set_running(false);
         },
         
         get_frontside_element: function (update) {
