@@ -29,6 +29,12 @@
 	padding-left:  6px;
 	padding-right:  6px;
 }
+.toontalk-top-level-backside {
+    width: 1000px;
+	height: 300px;
+	background-color: yellow;
+	position: relative;
+}
 .toontalk-top-level-frontside {
 	-ms-touch-action: none;
 	position: absolute;
