@@ -81,18 +81,21 @@ window.TOONTALK.widget = (function (TT) {
             }
             if (!widget.set_running) {
                 widget.set_running = function (new_value) {
-                    var widgets = this.get_backside_widgets();
-                    var i, robot;
+                    var backside_widgets = this.get_backside_widgets();
+                    var i, backside_widget;
                     running = new_value;
-                    for (i = 0; i < widgets.length; i++) {
-                        robot = widgets[i];
-                        if (robot.get_type_name() === "robot") {
+                    for (i = 0; i < backside_widgets.length; i++) {
+                        backside_widget = backside_widgets[i];
+                        if (backside_widget.get_type_name() === "robot") {
+                                // could this set_stopped stuff be combined with set_running?
                             if (running) {
-                                robot.set_stopped(false);
-                                robot.run(widget);
+                                backside_widget.set_stopped(false);
+                                backside_widget.run(widget);
                             } else {
-                                robot.set_stopped(true);
+                                backside_widget.set_stopped(true);
                             }
+                        } else if (backside_widget.set_running) {
+                            backside_widget.set_running(new_value);
                         }
                     }
                 }
@@ -312,7 +315,9 @@ window.TOONTALK.widget = (function (TT) {
             widget.get_type_name = function () {
                  return "top-level";
             };
-            return widget.add_sides_functionality(widget);
+            widget = widget.add_sides_functionality(widget);
+            widget = widget.runnable(widget);
+            return widget;
         },
         
         top_level_create_from_json: function (json) {
@@ -320,6 +325,11 @@ window.TOONTALK.widget = (function (TT) {
             var $backside_element = $(widget.get_backside(true).get_element());
             $backside_element.css({"background-color": json.color});
             $backside_element.addClass("toontalk-top-level-backside");
+            $backside_element.click(
+                function (event) {
+                   widget.set_running(!widget.get_running());
+                }
+            );
             return widget;
         }
     };
