@@ -78,6 +78,14 @@ window.TOONTALK.UTILITIES =
 						}
 					}
 			});
+			$(document).click(function () {
+				$(".toontalk-frontside").each(function (index, element) {
+					var widget = $(element).data("owner");
+					if (widget && widget.set_running) {
+						widget.set_running(!widget.get_running());
+					}
+				});
+			})
 // 			var backside = TT.backside.create(TT.widget.top_level_widget());
 // 			var backside_element = backside.get_element();
 // 			var $backside_element = $(backside_element);
