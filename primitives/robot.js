@@ -13,7 +13,7 @@ window.TOONTALK.robot = (function (TT) {
     robot.create = function (image_url, bubble, body, description, width, height, thing_in_hand) {
         // bubble holds the conditions that need to be matched to run
         // body holds the actions the robot does when it runs
-        var new_robot = Object.create(this);
+        var new_robot = Object.create(robot);
         if (!image_url) {
             image_url = "images/RB00.PNG";
         }
@@ -73,12 +73,10 @@ window.TOONTALK.robot = (function (TT) {
 		new_robot.set_thing_in_hand = function (new_value) {
 			thing_in_hand = new_value;
 		};
-//         body.set_robot(new_robot);
 		if (TT.debugging) {
 			new_robot.debug_string = new_robot.toString();
 		}
-		new_robot = robot.add_sides_functionality(new_robot);
-		new_robot = robot.erasable(new_robot);
+		new_robot = new_robot.add_standard_widget_functionality(new_robot);
         return new_robot;
     };
     
@@ -222,6 +220,7 @@ window.TOONTALK.robot = (function (TT) {
 			thought_bubble.appendChild(bubble_contents_element);
 			resource_becoming_instance = frontside_element.firstChild && $(frontside_element.firstChild).is(".toontalk-robot-image");
 		}
+		// remove what's there first
         while (frontside_element.firstChild) {
             frontside_element.removeChild(frontside_element.firstChild);
         }
