@@ -55,8 +55,7 @@ window.TOONTALK.box = (function (TT) {
 				this.debug_string = this.toString();
 			}
         };
-        new_box = new_box.add_sides_functionality(new_box);
-		new_box = new_box.erasable(new_box);
+        new_box = new_box.add_standard_widget_functionality(new_box);
         return new_box;
     };
     

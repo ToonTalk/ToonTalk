@@ -281,17 +281,6 @@ window.TOONTALK.backside =
 			var robot;
 			$run_button.addClass("toontalk-run-backside-button");
 			$run_button.click(function () {
-				$backside_element.children(".toontalk-robot").each(function (index, element) {
-					robot = $(element).data("owner");
-					if (robot) {
-						if (run) {
-							robot.set_stopped(false);
-							robot.run(widget);
-						} else {
-							robot.set_stopped(true);
-						}
-					}
-				});
 				if (run) {
 					$run_button.button("option", "label", "Stop");
 					$run_button.attr("title", "Click to stop running the robots on this " + widget.get_type_name());
@@ -299,6 +288,7 @@ window.TOONTALK.backside =
 					$run_button.button("option", "label", "Run");
 					$run_button.attr("title", "Click to run the robots on this " + widget.get_type_name());
 				}
+				widget.set_running(run);
 				run = !run;
 			});
 			$run_button.attr("title", "Click to run the robots on this " + widget.get_type_name());

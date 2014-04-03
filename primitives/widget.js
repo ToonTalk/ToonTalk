@@ -10,15 +10,26 @@ window.TOONTALK.widget = (function (TT) {
     "use strict";
     return {
         
+        add_standard_widget_functionality: function (widget) {
+            this.erasable(widget);
+            this.add_sides_functionality(widget);
+            this.runnable(widget);
+            return widget;
+        },
+        
         erasable: function (widget) {
             var erased;
-            widget.get_erased = function () {
-                return erased;
-            };
-            widget.set_erased = function (new_value, update_now) {
-                erased = new_value;
-                if (update_now) {
-                    this.update_display();
+            if (!widget.get_erased) {
+                widget.get_erased = function () {
+                    return erased;
+                };
+            }
+            if (!widget.set_erased) {
+                widget.set_erased = function (new_value, update_now) {
+                    erased = new_value;
+                    if (update_now) {
+                        this.update_display();
+                    }
                 }
             };
             return widget;
@@ -26,35 +37,66 @@ window.TOONTALK.widget = (function (TT) {
         
         add_sides_functionality: function (widget) {
             var frontside, backside;
-            widget.get_frontside =
-                function (create) {
+            if (!widget.get_frontside) {
+                widget.get_frontside = function (create) {
                     if (create && !frontside) {
                         // all frontsides are the same
                         frontside = TT.frontside.create(widget);
                     }
                     return frontside;
-                };
-            widget.get_backside =
-                function (create) {
+               };
+            }
+            if (!widget.get_backside) {
+                widget.get_backside = function (create) {
                     if (create && !backside) {
                         // backsides are customised by each kind of widget
                         backside = widget.create_backside();
                     }
                     return backside;
                 };
-            widget.forget_backside =
-                function () {
+            }
+            if (!widget.forget_backside) {
+                widget.forget_backside = function () {
                     var widgets = this.get_backside_widgets();
                     if (widgets) {
                         this.backside_widgets = widgets;
                     }
                     backside = undefined;
                 };
+            }
             if (!widget.create_backside) {
                 widget.create_backside = function () {
                     return TT.backside.create(widget);
                 }  
             }
+            return widget;
+        },
+        
+        runnable: function (widget) {
+            var running = false;
+            if (!widget.get_running) {
+                widget.get_running = function () {
+                    return running;
+                };
+            }
+            if (!widget.set_running) {
+                widget.set_running = function (new_value) {
+                    var widgets = this.get_backside_widgets();
+                    var i, robot;
+                    running = new_value;
+                    for (i = 0; i < widgets.length; i++) {
+                        robot = widgets[i];
+                        if (robot.get_type_name() === "robot") {
+                            if (running) {
+                                robot.set_stopped(false);
+                                robot.run(widget);
+                            } else {
+                                robot.set_stopped(true);
+                            }
+                        }
+                    }
+                }
+            };
             return widget;
         },
         
@@ -100,6 +142,9 @@ window.TOONTALK.widget = (function (TT) {
                         version: 1};
                 if (this.get_erased && this.get_erased()) {
                     json_semantic.erased = true;
+                }
+                if (this.get_running && this.get_running()) {
+                    json_semantic.running = true;
                 }
                 frontside_element = this.get_frontside_element && this.get_frontside_element();
                 if (frontside_element) {
@@ -263,6 +308,9 @@ window.TOONTALK.widget = (function (TT) {
                             width: $backside_element.width(),
                             height: $backside_element.height()};
                 return this.add_to_json(json);
+            };
+            widget.get_type_name = function () {
+                 return "top-level";
             };
             return widget.add_sides_functionality(widget);
         },

@@ -180,8 +180,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             function () { 
                 return format; 
             };
-		result = number.add_sides_functionality(result);
-		result = number.erasable(result);
+		result = number.add_standard_widget_functionality(result);
         return result;
     };
 	

@@ -24,6 +24,7 @@ window.TOONTALK.UTILITIES =
 						 "pick_up_copy_action": TT.pick_up_copy.create_from_json,
 						 "box_path": TT.box.path.create_from_json,
 						 "path.to_entire_context": TT.path.to_entire_context.create_from_json,
+						 "path.top_level_backside": TT.path.top_level_backside.create_from_json,
 						 "top_level": TT.widget.top_level_create_from_json};
 	// id needs to be unique across ToonTalks due to drag and drop
 	var id_counter = new Date().getTime();
@@ -69,6 +70,9 @@ window.TOONTALK.UTILITIES =
 							// delay until geometry settles down
 							setTimeout(function () {
 								widget.update_display();
+								if (json.semantic.running) {
+									widget.set_running(true);
+								}
 							},
 							1);
 						}
@@ -291,6 +295,7 @@ window.TOONTALK.UTILITIES =
 // 				tolerance: "intersect", // at least 50%
             $element.on('dragover',
 			    function (event) {
+					// think about drop feedback
 					event.preventDefault();
 					return false;
 				});
@@ -344,16 +349,18 @@ window.TOONTALK.UTILITIES =
 						$source.css({left: event.originalEvent.clientX - (target_position.left + drag_x_offset),
 							          top: event.originalEvent.clientY - (target_position.top + drag_y_offset)});
 						if ($source.is(".toontalk-frontside") && !$source.is('.ui-resizable')) {
-// 							$source.css({resize: "both"}); // didn't work
 							$source.resizable(
 								{resize: function(event, ui) {
 									source.update_display();			
-								 },
+								    },
 								 // the corner handles caused the element to be stuck in resize mode when used
 								 handles: "n,e,s,w"});
 						    // when dropped on a backside will be enabled
 // 							$source.resizable("disable");
                         }
+						if (json_object.semantic.running) {
+							source.set_running(true);
+						}
 						event.stopPropagation();
 					} else if (!target) {
 						console.log("target element has no 'owner'");
@@ -399,12 +406,12 @@ window.TOONTALK.UTILITIES =
 				// restore original
 				dropped_copy = dropped_widget.copy();
 				dropped_element_copy = dropped_copy.get_frontside_element();
-								// following didn't work
 				$(dropped_element_copy).css({width:  $dropped.width(),
 				                             height: $dropped.height()});
 				$dropped.removeClass("toontalk-top-level-resource");
 				$(dropped_element_copy).addClass("toontalk-top-level-resource");
-				$dropped.parent().append(dropped_element_copy);
+				$dropped.get(0).parentElement.appendChild(dropped_element_copy);
+// 				$dropped.parent().append(dropped_element_copy);
 				dropped_copy.update_display();
 			}
 		},

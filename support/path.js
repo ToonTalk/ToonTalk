@@ -17,7 +17,7 @@ window.TOONTALK.path =
             if (context === widget) {
 			    return TT.path.to_entire_context;
 		    }
-			if (widget === "top-level-backside") {
+			if (widget === "top-level-backside" || widget.get_type_name() === "top-level") {
 				return TT.path.top_level_backside;
 			}
 			path = body.get_path_to(widget, robot);
@@ -86,7 +86,7 @@ window.TOONTALK.path =
 				return $(".toontalk-top-level-backside");
 			},
             toString: function () {
-                return "the top-level backside";
+                return "top-level backside";
             },
             get_json: function () {
                 return {type: "path.top_level_backside"};
