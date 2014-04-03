@@ -86,6 +86,8 @@ window.TOONTALK.UTILITIES =
 // 			backside_element.draggable = false;
 			TT.debugging = true; // remove this for production releases
 			TT.QUEUE.run();
+			// update display of widgets every 20ms
+			setInterval(TT.DISPLAY_UPDATES.update_display, 20);
 		};
 	$(document).ready(initialise);
     return {
