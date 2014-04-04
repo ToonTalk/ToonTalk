@@ -246,6 +246,9 @@ window.TOONTALK.backside =
 						robot_backside.update_display();
 					}
 				}
+				if (TT.robot.in_training) {
+					TT.robot.in_training.erased(widget);
+				}
 				event.stopPropagation();
 			});
 			$erase_button.attr("title", "Click to hide this.");
@@ -305,6 +308,9 @@ window.TOONTALK.backside =
 			$remove_button.click(function (event) {
 				if (widget && widget.remove) {
 					widget.remove();
+					if (TT.robot.in_training) {
+						TT.robot.in_training.removed(widget);
+					}
 				}
 				event.stopPropagation();
 			});

@@ -46,7 +46,7 @@ window.TOONTALK.queue =
                 next_robot_run = this.dequeue();
                 next_robot_run.robot.run_actions(next_robot_run.context, next_robot_run.queue);
                 if (steps_limit) {
-                    // only used for testing
+                    // steps_limit only used for testing
                     steps_limit -= 1;
                     if (steps_limit === 0) {
                         // clear the queue to be ready for the next test

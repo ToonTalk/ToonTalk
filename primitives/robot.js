@@ -170,7 +170,19 @@ window.TOONTALK.robot = (function (TT) {
 			}
 			this.get_body().add_step(step, widget_copy);
 		}
-	}
+	};
+	
+	robot.removed = function (widget) {
+		var path = TT.path.get_path_to(widget, this);
+		var step;
+		if (path) {
+			this.get_body().add_step(TT.remove.create(path));
+		}
+	};
+	
+	robot.erased = function (widget) {
+		console.log("Training of erasing not yet implemented");
+	};			
 	
 	robot.get_context = function () {
 		var frontside_element = this.get_frontside_element();

@@ -22,6 +22,7 @@ window.TOONTALK.UTILITIES =
 						 "copy_constant_action": TT.copy_constant.create_from_json,
 						 "copy_action": TT.copy.create_from_json,
 						 "pick_up_copy_action": TT.pick_up_copy.create_from_json,
+						 "remove_action": TT.remove.create_from_json,
 						 "box_path": TT.box.path.create_from_json,
 						 "path.to_entire_context": TT.path.to_entire_context.create_from_json,
 						 "path.top_level_backside": TT.path.top_level_backside.create_from_json,
