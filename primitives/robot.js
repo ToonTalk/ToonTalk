@@ -96,10 +96,15 @@ window.TOONTALK.robot = (function (TT) {
     
     robot.run = function (context, queue) {
         var match_status, i;
+		var bubble = this.get_bubble();
         if (this.stopped) {
             return 'not matched';
         }
-        match_status = this.get_bubble().match(context);
+		if (!bubble) {
+			console.log("Training robots without a context not yet implemented.");
+			return 'not matched';
+		}
+        match_status = bubble.match(context);
         switch (match_status) {
         case 'matched':
             if (!queue) {
@@ -336,10 +341,22 @@ window.TOONTALK.robot_backside =
 			// don't do the following if already trained -- or offer to retrain?
 			standard_buttons.insertBefore(this.create_train_button(backside, robot), standard_buttons.firstChild);
 			image_url_input.button.onchange = function () {
-                robot.set_image_url(image_url_input.button.value.trim(), true);
+				var image_url = image_url_input.button.value.trim();
+                robot.set_image_url(image_url, true);
+				if (TT.robot.in_training) {
+					TT.robot.in_training.edited(robot, {setter_name: "set_image_url",
+			                                            argument_1: image_url,
+												        toString: "change the image URL to " + image_url + " of the robot"});
+				}
             };
 			description_input.button.onchange = function () {
-                robot.set_description(description_input.button.value.trim(), true);
+				var description = description_input.button.value.trim();
+                robot.set_description(description, true);
+				if (TT.robot.in_training) {
+					TT.robot.in_training.edited(robot, {setter_name: "set_description",
+			                                            argument_1: description,
+												        toString: "change the description to '" + set_description + "'' of the robot"});
+				}
             };
 			input_table = TT.UTILITIES.create_vertical_table(description_input.container, image_url_input.container);
 			$(input_table).css({width: "90%"});
