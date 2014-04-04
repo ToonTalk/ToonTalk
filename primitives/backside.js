@@ -168,6 +168,11 @@ window.TOONTALK.backside =
 			$(this.get_element()).remove();
 		},
 		
+		visible: function () {
+			var backside_element = this.get_element();
+			return (backside_element && $(backside_element).is(":visible"));
+		},
+		
 		create_standard_buttons: function (backside, widget) { // extra arguments are extra buttons
 		    var run_or_erase_button;
 			var frontside_element = widget.get_frontside_element();

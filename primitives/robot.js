@@ -93,6 +93,11 @@ window.TOONTALK.robot = (function (TT) {
 		}
         return this.add_to_copy(copy);
     };
+	
+	robot.match = function () {
+		console.log("Robot-to-robot matching could be more sophisticated.");
+		return "matched";
+	};
     
     robot.run = function (context, queue) {
         var match_status, i;
@@ -120,6 +125,9 @@ window.TOONTALK.robot = (function (TT) {
             }
             return match_status;
         default:
+			if (!match_status) {
+				return 'not matched';
+			}
             for (i = 0; i < match_status.length; i += 1) {
                 match_status[i].run_when_non_empty(this);
             }
@@ -216,6 +224,7 @@ window.TOONTALK.robot = (function (TT) {
 	robot.update_display = function() {
 		// perhaps this should be moved to widget and number and box updated to differ in the to_HTML part
         var frontside = this.get_frontside();
+		var backside = this.get_backside();
 		var description = this.get_description() || this.toString();
 		var bubble = this.get_bubble();
 		var new_first_child, robot_image, thought_bubble, frontside_element, bubble_contents_element, resource_becoming_instance;
@@ -262,6 +271,9 @@ window.TOONTALK.robot = (function (TT) {
 				}
 			},
 			1);
+			if (backside && backside.visible()) {
+				backside.update_display();
+			}
     };
 	
 	robot.image = function () {
@@ -355,7 +367,7 @@ window.TOONTALK.robot_backside =
 				if (TT.robot.in_training) {
 					TT.robot.in_training.edited(robot, {setter_name: "set_description",
 			                                            argument_1: description,
-												        toString: "change the description to '" + set_description + "'' of the robot"});
+												        toString: "change the description to '" + description + "'' of the robot"});
 				}
             };
 			input_table = TT.UTILITIES.create_vertical_table(description_input.container, image_url_input.container);
@@ -372,8 +384,10 @@ window.TOONTALK.robot_backside =
 		update_display: function () {
             // use JQuery instead of get_first_child_with_class???
 			var image_url_input = TT.UTILITIES.get_first_child_with_class(this.get_element(), "toontalk-image-url-input");
+			var description_input = TT.UTILITIES.get_first_child_with_class(this.get_element(), "toontalk-robot-description-input ");
 			var robot = this.get_widget();
 			image_url_input.value = robot.get_image_url();
+			description_input.value = robot.get_description();
 		},
 		
 		create_train_button: function (backside, robot) {
