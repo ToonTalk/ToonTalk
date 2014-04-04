@@ -127,6 +127,9 @@ window.TOONTALK.robot = (function (TT) {
     };
     
     robot.run_actions = function(context, queue) {
+		if (this.stopped) {
+			return false;
+		}
         return this.get_body().run(context, queue, this);
     };
 	
@@ -170,6 +173,13 @@ window.TOONTALK.robot = (function (TT) {
 			this.get_body().add_step(TT.robot_action.create(path, "remove"));
 		}
 	};
+	
+	robot.edited = function (widget, details) {
+		var path = TT.path.get_path_to(widget, this);
+		if (path) {
+			this.get_body().add_step(TT.robot_action.create(path, "edit", details));
+		}
+	}
 	
 	robot.erased = function (widget) {
 		console.log("Training of erasing not yet implemented");

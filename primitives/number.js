@@ -526,7 +526,13 @@ window.TOONTALK.number_backside =
             };
 			var update_format = function () {
 				// use JQuery instead?
-				number.set_format(TT.UTILITIES.selected_radio_button(decimal_format.button, proper_format.button, improper_format.button).value, true);
+				var format = TT.UTILITIES.selected_radio_button(decimal_format.button, proper_format.button, improper_format.button).value;
+				number.set_format(format, true);
+				if (TT.robot.in_training) {
+					TT.robot.in_training.edited(number, {setter_name: "set_format",
+			                                             new_value: format,
+														 toString: "change the format to " + format + " of the number "});
+				}
 			};
 			var update_operator = function () {
 				number.set_operator(TT.UTILITIES.selected_radio_button(plus.button, minus.button, multiply.button, divide.button, power.button).value, true);
