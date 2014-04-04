@@ -243,7 +243,8 @@ window.TOONTALK.backside =
 				var $robot_element = $(frontside_element).parents(".toontalk-robot");
 				var robot = $robot_element.data("owner");
 				var robot_backside;
-				widget.set_erased(!widget.get_erased(), true);
+				var erased = !widget.get_erased();
+				widget.set_erased(erased, true);
 				update_title();
 				if (robot) {
 					robot_backside = robot.get_backside();
@@ -252,7 +253,7 @@ window.TOONTALK.backside =
 					}
 				}
 				if (TT.robot.in_training) {
-					TT.robot.in_training.erased(widget);
+					TT.robot.in_training.set_erased(widget, erased);
 				}
 				event.stopPropagation();
 			});

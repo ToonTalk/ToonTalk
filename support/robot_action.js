@@ -62,6 +62,10 @@ window.TOONTALK.robot_action =
              }
              return true;
          },
+         "set_erased": function (widget, context, robot, additional_info) {
+             widget.set_erased(additional_info.erased);
+             return true;
+         }
     };            
     return {
         create: function (path, action_name, additional_info) {

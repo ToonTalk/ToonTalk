@@ -194,8 +194,12 @@ window.TOONTALK.robot = (function (TT) {
 		}
 	}
 	
-	robot.erased = function (widget) {
-		console.log("Training of erasing not yet implemented");
+	robot.set_erased = function (widget, erased) {
+		var path = TT.path.get_path_to(widget, this);
+		if (path) {
+			this.get_body().add_step(TT.robot_action.create(path, "set_erased", {erased: erased,
+			                                                                     toString: erased ? "erase" : "un-erase"}));
+		}
 	};			
 	
 	robot.get_context = function () {
