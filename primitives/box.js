@@ -397,10 +397,23 @@ window.TOONTALK.box_backside =
 			var horizontal = TT.UTILITIES.create_radio_button("box_orientation", "horizontal", "Left to right", "Show box horizontally."); // might be nicer replaced by an icon
 			var vertical = TT.UTILITIES.create_radio_button("box_orientation", "vertical", "Top to bottom", "Show box vertically.");
             var update_value = function () {
-                box.set_size(parseInt(size_input.button.value.trim(), 10), true);
+				var new_size = parseInt(size_input.button.value.trim(), 10);
+                box.set_size(new_size, true);
+				if (TT.robot.in_training) {
+					TT.robot.in_training.edited(box, {setter_name: "set_size",
+			                                          argument_1: new_size,
+												      toString: "change the number of holes to " + new_size + " of the box"});
+				}
             };
 			var update_orientation = function () {
-				box.set_horizontal((TT.UTILITIES.selected_radio_button(horizontal.button, vertical.button).value === "horizontal"), true);
+				var orientation = TT.UTILITIES.selected_radio_button(horizontal.button, vertical.button).value;
+				var is_horizontal = (orientation === "horizontal");
+				box.set_horizontal(is_horizontal, true);
+				if (TT.robot.in_training) {
+					TT.robot.in_training.edited(box, {setter_name: "set_horizontal",
+			                                          argument_1: is_horizontal,
+												      toString: "change the orientation to " + orientation + " of the box"});
+				}
 			};
 			var backside_element = backside.get_element();
 			var standard_buttons = TT.backside.create_standard_buttons(backside, box);

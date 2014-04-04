@@ -72,7 +72,7 @@ window.TOONTALK.path =
 				return context;
 			},
             toString: function () {
-                return "what he's working on";
+                return "that he's working on";
             },
             get_json: function () {
                 return {type: "path.to_entire_context"};
