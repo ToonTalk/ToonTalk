@@ -522,7 +522,15 @@ window.TOONTALK.number_backside =
 			var divide = TT.UTILITIES.create_radio_button("operator", "/", "&divide;", "Divide me into what I'm dropped on.");
 			var power = TT.UTILITIES.create_radio_button("operator", "^", "Integer power", "Use me as the number of times to multiply together what I'm dropped on.");
             var update_value = function () {
-                number.set_from_values(numerator_input.button.value.trim(), denominator_input.button.value.trim(), true);
+				var numerator = numerator_input.button.value.trim();
+				var denominator = denominator_input.button.value.trim();
+                number.set_from_values(numerator, denominator, true);
+				if (TT.robot.in_training) {
+					TT.robot.in_training.edited(number, {setter_name: "set_from_values",
+			                                             argument_1: numerator,
+														 argument_2: denominator,
+														 toString: "change the value to " + numerator + "/" + denominator + " of the number"});
+				}
             };
 			var update_format = function () {
 				// use JQuery instead?
@@ -530,12 +538,18 @@ window.TOONTALK.number_backside =
 				number.set_format(format, true);
 				if (TT.robot.in_training) {
 					TT.robot.in_training.edited(number, {setter_name: "set_format",
-			                                             new_value: format,
-														 toString: "change the format to " + format + " of the number "});
+			                                             argument_1: format,
+														 toString: "change the format to " + format + " of the number"});
 				}
 			};
 			var update_operator = function () {
-				number.set_operator(TT.UTILITIES.selected_radio_button(plus.button, minus.button, multiply.button, divide.button, power.button).value, true);
+				var operator = TT.UTILITIES.selected_radio_button(plus.button, minus.button, multiply.button, divide.button, power.button).value;
+				number.set_operator(operator, true);
+				if (TT.robot.in_training) {
+					TT.robot.in_training.edited(number, {setter_name: "set_operator",
+			                                             argument_1: operator,
+														 toString: "change the operator to " + operator + " of the number"});
+				}
 			};
 			var number_set = TT.UTILITIES.create_horizontal_table(numerator_input.container, slash, denominator_input.container);
 			var format_set = $(TT.UTILITIES.create_horizontal_table(decimal_format.container, proper_format.container, improper_format.container)).buttonset().get(0);

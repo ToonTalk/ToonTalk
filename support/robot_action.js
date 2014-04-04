@@ -53,10 +53,14 @@ window.TOONTALK.robot_action =
                        return true;
          },
          "edit": function (widget, context, robot, additional_info) {
-             // user setter_name so can be JSONified
+             // user setter_name instead of the function itself so can be JSONified
              // could replace with function on first use if this is a performance issue
-                     widget[additional_info.setter_name].call(widget, additional_info.new_value, widget.visible());
-                     return true;
+             if (additional_info.argument_2) {
+                 widget[additional_info.setter_name].call(widget, additional_info.argument_1, additional_info.argument_2, widget.visible());
+             } else {
+                 widget[additional_info.setter_name].call(widget, additional_info.argument_1, widget.visible());
+             }
+             return true;
          },
     };            
     return {
