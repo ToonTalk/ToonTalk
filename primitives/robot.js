@@ -131,32 +131,24 @@ window.TOONTALK.robot = (function (TT) {
     };
 	
 	robot.picked_up = function (widget, json, is_resource) {
-		var path, step;
-		var body = this.get_body();
+		var path;
 		if (is_resource) {
-			step = TT.copy_constant.create(widget);
+			path = widget; // widget itself is the path -- will be a fresh copy created from JSON
 		} else {
 			path = TT.path.get_path_to(widget, this);
-			if (path) {
-				step = TT.pick_up.create(path);
-			}
+		}
+		if (path) {
+			this.get_body().add_step(TT.robot_action.create(path, "pick_up"));
 		}
 		this.set_thing_in_hand(widget);
-		if (step) {
-			body.add_step(step);
-		}
 	};
 	
 	robot.dropped_on = function (target_widget) {
 		var path = TT.path.get_path_to(target_widget, this);
-		var step;
 		if (path) {
-			step = TT.drop_on.create(path);
+			this.get_body().add_step(TT.robot_action.create(path, "drop_on"));
 		}
 		this.set_thing_in_hand(null);
-		if (step) {
-			this.get_body().add_step(step);
-		}
 	};
 	
 	robot.copied = function (widget, widget_copy, picked_up) {
@@ -164,9 +156,9 @@ window.TOONTALK.robot = (function (TT) {
 		var step;
 		if (path) {
 			if (picked_up) {
-				step = TT.pick_up_copy.create(path);
+				step = TT.robot_action.create(path, "pick_up_copy");
 			} else {
-				step = TT.copy.create(path);
+				step = TT.robot_action.create(path, "copy");
 			}
 			this.get_body().add_step(step, widget_copy);
 		}
@@ -174,9 +166,8 @@ window.TOONTALK.robot = (function (TT) {
 	
 	robot.removed = function (widget) {
 		var path = TT.path.get_path_to(widget, this);
-		var step;
 		if (path) {
-			this.get_body().add_step(TT.remove.create(path));
+			this.get_body().add_step(TT.robot_action.create(path, "remove"));
 		}
 	};
 	
