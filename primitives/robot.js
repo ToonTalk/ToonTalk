@@ -392,6 +392,7 @@ window.TOONTALK.robot_backside =
 			var robot = this.get_widget();
 			image_url_input.value = robot.get_image_url();
 			description_input.value = robot.get_description();
+			robot.title = description_input.value;
 		},
 		
 		create_train_button: function (backside, robot) {

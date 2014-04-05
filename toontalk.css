@@ -7,8 +7,8 @@
  .toontalk-top-level-resource {
 	 -ms-touch-action: none;
 	 position: relative;
-	 width: 100px;
-	 height: 100px;
+/* 	 width: 100px;
+	 height: 100px; */
 	 display:  inline-block;
  }
 .toontalk-top-level-resource:hover {
@@ -44,6 +44,9 @@
 	/* while testing: */
 	width: 20%;
 	height: 10%;
+}
+.toontalk-json {
+	display: inline-block;	
 }
 .toontalk-frontside {
 	-ms-touch-action: none;
@@ -126,6 +129,7 @@
 	border-radius: 6px;
 	text-align: center;
 	vertical-align: middle;
+	display: inline-block;
 }
 .toontalk-improper-fraction {
 	table-layout: fixed;
@@ -176,7 +180,7 @@
 	/* font-weight: bold; */
 }
 .toontalk-hide-backside-button {
-	position: absolute;
+/* 	position: absolute; */
 }
 .toontalk-robot-description-input {
 	width: 30em;

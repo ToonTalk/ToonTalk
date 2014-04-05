@@ -250,8 +250,10 @@ window.TOONTALK.UTILITIES =
 // 						return;
 // 					}
 					dragee = $element;
-					$element.css({position: "absolute"});
-					if ($element.is(".toontalk-frontside") && !$element.is(".toontalk-top-level-resource")) {
+					// following caused layout problems and it should be the case that
+					// draggable elements already are positioned absolutely
+// 					$element.css({position: "absolute"});
+					if ($element.is(".toontalk-frontside")) {//} && !$element.is(".toontalk-top-level-resource")) {
 						// save the current dimension so size doesn't change while being dragged
 						$element.css({width:  this.offsetWidth + "px",
 									  height: this.offsetHeight + "px"});
@@ -295,7 +297,7 @@ window.TOONTALK.UTILITIES =
 								$element.css({width:  json_object.view.frontside_width || json_object.view.original_width_fraction * 100 + "%",
 											  height: json_object.view.frontside_height || json_object.view.original_height_fraction * 100 + "%"});
 							}
-						} else if (!$element.parent().is(".toontalk-top-level-resource")) {
+						} else { // if (!$element.parent().is(".toontalk-top-level-resource")) {
 							$element.css({width:  "100%",
 									      height: "100%"});
 						}
@@ -357,8 +359,10 @@ window.TOONTALK.UTILITIES =
 						}
 						target.get_backside().widget_dropped_on_me(source, event);
 						// should the following use pageX instead?
+						// unclear why after working for weeks with target_position.top
+						// needed to switch to $target.get(0).offsetTop 
 						$source.css({left: event.originalEvent.clientX - (target_position.left + drag_x_offset),
-							          top: event.originalEvent.clientY - (target_position.top + drag_y_offset)});
+							          top: event.originalEvent.clientY - ($target.get(0).offsetTop + drag_y_offset)});
 						if ($source.is(".toontalk-frontside") && !$source.is('.ui-resizable')) {
 							$source.resizable(
 								{resize: function(event, ui) {
@@ -476,12 +480,12 @@ window.TOONTALK.UTILITIES =
 				$(element).css({left: left,
 				                 top: top});
 			} else {
-				if (element.style.position === "relative") {
-					return;
-				}
-				element.style.position = "relative";
-				element.style.left = "0";
-				element.style.top = "0";
+// 				if (element.style.position === "static") {
+// 					return;
+// 				}
+				element.style.position = "static";
+// 				element.style.left = "0";
+// 				element.style.top = "0";
 			}
 		},
 		
