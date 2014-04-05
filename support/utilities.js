@@ -302,6 +302,7 @@ window.TOONTALK.UTILITIES =
 									      height: "100%"});
 						}
 					}
+					dragee = undefined;
 					event.stopPropagation();
 				});
 // 				greedy: true,
