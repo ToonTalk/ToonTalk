@@ -297,7 +297,7 @@ window.TOONTALK.UTILITIES =
 								$element.css({width:  json_object.view.frontside_width || json_object.view.original_width_fraction * 100 + "%",
 											  height: json_object.view.frontside_height || json_object.view.original_height_fraction * 100 + "%"});
 							}
-						} else { // if (!$element.parent().is(".toontalk-top-level-resource")) {
+						} else if (!$element.parent().is(".toontalk-top-level-resource")) {
 							$element.css({width:  "100%",
 									      height: "100%"});
 						}
