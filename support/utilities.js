@@ -391,7 +391,7 @@ window.TOONTALK.UTILITIES =
 					}
 					if (target) {
 						if (target.widget_dropped_on_me) {
-							target.widget_dropped_on_me();
+							target.widget_dropped_on_me(source);
 						}
 					}
 					event.stopPropagation();
