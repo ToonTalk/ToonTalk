@@ -76,6 +76,7 @@ window.TOONTALK.UTILITIES =
 				}
 			});
 			if (!includes_top_level_backside) {
+				// since there is no backside 'work space' need a way to turn things on and off
 				$(document).click(function () {
 					$(".toontalk-frontside").each(function (index, element) {
 						var widget = $(element).data("owner");
@@ -250,7 +251,7 @@ window.TOONTALK.UTILITIES =
 // 					}
 					dragee = $element;
 					$element.css({position: "absolute"});
-					if ($element.is(".toontalk-frontside")) {
+					if ($element.is(".toontalk-frontside") && !$element.is(".toontalk-top-level-resource")) {
 						// save the current dimension so size doesn't change while being dragged
 						$element.css({width:  this.offsetWidth + "px",
 									  height: this.offsetHeight + "px"});
@@ -293,7 +294,7 @@ window.TOONTALK.UTILITIES =
 								$element.css({width:  json_object.view.frontside_width || json_object.view.original_width_fraction * 100 + "%",
 											  height: json_object.view.frontside_height || json_object.view.original_height_fraction * 100 + "%"});
 							}
-						} else {
+						} else if (!$element.parent().is(".toontalk-top-level-resource")) {
 							$element.css({width:  "100%",
 									      height: "100%"});
 						}
