@@ -329,9 +329,23 @@ window.TOONTALK.UTILITIES =
 					}
 					$target = $(event.target).closest(".toontalk-side");
 					target = $target.data("owner");
+					target_position = TT.UTILITIES.absolute_position($target);
+					if (json_object) {
+						drag_x_offset = json_object.view.drag_x_offset;
+						drag_y_offset = json_object.view.drag_y_offset;
+					} else {
+						drag_x_offset = 0;
+						drag_y_offset = 0;
+					}
 					if ($source && $source.length > 0) {
-						if ($source.get(0) === $target.get(0)) {
+						if ($source.get(0) === $target.get(0) || jQuery.contains($source.get(0), $target.get(0))) {
+							// dropped of itself or dropped on a part of itself
 							// just moved it a little bit
+							$source.css({left: $source.get(0).offsetLeft + (event.originalEvent.layerX - drag_x_offset),
+							              top: $source.get(0).offsetTop + (event.originalEvent.layerY - drag_y_offset)});
+							event.stopPropagation();
+							event.preventDefault();
+							dragee = undefined;
 							return;
 						}
 						source = $source.data("owner");
@@ -349,14 +363,6 @@ window.TOONTALK.UTILITIES =
 						$source = $(source.get_frontside_element());
 					}
 					if ($target.is(".toontalk-backside")) {
-						target_position = TT.UTILITIES.absolute_position($target);
-						if (json_object) {
-							drag_x_offset = json_object.view.drag_x_offset;
-						    drag_y_offset = json_object.view.drag_y_offset;
-						} else {
-							drag_x_offset = 0;
-							drag_y_offset = 0;
-						}
 						target.get_backside().widget_dropped_on_me(source, event);
 						// should the following use pageX instead?
 						// unclear why after working for weeks with target_position.top
@@ -387,6 +393,7 @@ window.TOONTALK.UTILITIES =
 							target.widget_dropped_on_me();
 						}
 					}
+					event.stopPropagation();
 					event.preventDefault();
 					dragee = undefined;
                 });
