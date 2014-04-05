@@ -33,54 +33,58 @@ window.TOONTALK.UTILITIES =
 		return div_string.substring(div_open.length, div_string.length - div_close.length);
 	};
 	var initialise = function () {
-			$(".toontalk-json").each(
-				function (index, element) {
-					var json_string = element.innerText;
-					var json, widget, frontside_element, backside_element, backside;
-					if (!json_string) {
-						return;
-					}
-					json = JSON.parse(json_string);
-					widget = TT.UTILITIES.create_from_json(json);
-					if (widget) {
-						element.innerText = ""; // served its purpose of being parsed as JSON
-						if (json.view.backside) {
-							backside = widget.get_backside(true);
-							backside_element = backside.get_element();
-							$(element).replaceWith(backside_element);
-							$(backside_element).css({width: json.view.backside_width,
-							                         height: json.view.backside_height});
-// 													 left: json.view.backside_left,
-// 													 top: json.view.backside_top});
+		var includes_top_level_backside = false;
+		$(".toontalk-json").each(
+			function (index, element) {
+				var json_string = element.innerText;
+				var json, widget, frontside_element, backside_element, backside;
+				if (!json_string) {
+					return;
+				}
+				json = JSON.parse(json_string);
+				widget = TT.UTILITIES.create_from_json(json);
+				if (widget) {
+					element.innerText = ""; // served its purpose of being parsed as JSON
+					if (json.view.backside) {
+						backside = widget.get_backside(true);
+						backside_element = backside.get_element();
+						$(element).replaceWith(backside_element);
+						$(backside_element).css({width: json.view.backside_width,
+							                     height: json.view.backside_height});
+// 											     left: json.view.backside_left,
+// 											     top: json.view.backside_top});
 // 							// delay until geometry settles down
 // 							setTimeout(function () {
 // 								backside.update_display();
 // 							},
 // 							1);
-						} else {
-							$(element).addClass("toontalk-top-level-resource");
-							frontside_element = widget.get_frontside_element();
-							$(frontside_element).addClass("toontalk-top-level-resource");
-							element.appendChild(frontside_element);
-							// delay until geometry settles down
-							setTimeout(function () {
-								widget.update_display();
-								if (json.semantic.running) {
-									widget.set_running(true);
-								}
-							},
-							1);
-						}
+						includes_top_level_backside = true;
+					} else {
+						$(element).addClass("toontalk-top-level-resource");
+						frontside_element = widget.get_frontside_element();
+						$(frontside_element).addClass("toontalk-top-level-resource");
+						element.appendChild(frontside_element);
+						// delay until geometry settles down
+						setTimeout(function () {
+							widget.update_display();
+							if (json.semantic.running) {
+								widget.set_running(true);
+							}
+						},
+						1);
 					}
+				}
 			});
-			$(document).click(function () {
-				$(".toontalk-frontside").each(function (index, element) {
-					var widget = $(element).data("owner");
-					if (widget && widget.set_running) {
-						widget.set_running(!widget.get_running());
-					}
+			if (!includes_top_level_backside) {
+				$(document).click(function () {
+					$(".toontalk-frontside").each(function (index, element) {
+						var widget = $(element).data("owner");
+						if (widget && widget.set_running) {
+							widget.set_running(!widget.get_running());
+						}
+					});
 				});
-			})
+			}
 // 			var backside = TT.backside.create(TT.widget.top_level_widget());
 // 			var backside_element = backside.get_element();
 // 			var $backside_element = $(backside_element);

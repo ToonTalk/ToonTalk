@@ -5,7 +5,9 @@
 <link rel="stylesheet" media="all" href="toontalk.css">
 <script src="libraries/jquery-2.1.0.js"></script>
 <script src="libraries/jquery-ui-1.10.4.custom/js/jquery-ui-1.10.4.custom.js"></script>
+<!--  not really using this
 <script src="libraries/jquery.ui.touch-punch.min.js"></script>
+--->
 <script src="libraries/rationaljs.js"></script>
 <script src="support/initial.js"></script>
 <script src="primitives/widget.js"></script>
@@ -14,13 +16,8 @@
 <script src="primitives/box.js"></script>
 <script src="primitives/backside.js"></script>
 <script src="primitives/frontside.js"></script>
-<script src="actions/drop.js"></script>
-<script src="actions/pick_up.js"></script>
-<script src="actions/pick_up_constant.js"></script>
-<script src="actions/pick_up_copy.js"></script>
-<script src="actions/copy.js"></script>
-<script src="actions/copy_constant.js"></script>
 <script src="support/robot_actions.js"></script>
+<script src="support/robot_action.js"></script>
 <script src="support/path.js"></script>
 <script src="support/run_queue.js"></script>
 <script src="support/display_updates.js"></script>
@@ -32,7 +29,9 @@
 <link rel="shortcut icon" href="favicon.ico" />
 </head>
 <body>
+Keeps counting
+<div class='toontalk-json'>{"semantic":{"type":"number","operator":"+","numerator":"10934","denominator":"1","format":"improper_fraction","running":true,"backside_widgets":[{"semantic":{"type":"robot","bubble":{"semantic":{"type":"number","operator":"+","numerator":"1","denominator":"1","format":"improper_fraction","erased":true,"running":true},"view":{"frontside_width":0,"frontside_height":0},"version":1},"body":{"type":"body","steps":[{"type":"robot_action","action_name":"pick_up","path":{"semantic":{"type":"number","operator":"+","numerator":"1","denominator":"1","format":"improper_fraction"},"view":{"frontside_width":172,"frontside_height":66},"version":1}},{"type":"robot_action","action_name":"drop_on","path":{"type":"path.to_entire_context"}}]}},"view":{"image_url":"images/RB00.PNG","frontside_width":65,"frontside_height":100,"frontside_left":376,"frontside_top":28},"version":1}]},"view":{"frontside_width":172,"frontside_height":66,"frontside_left":35,"frontside_top":20,"id_of_original_dragree":"toontalk_id_1396687902006","drag_x_offset":88,"drag_y_offset":26,"original_width_fraction":0.2598187311178248,"original_height_fraction":0.23826714801444043},"version":1}</div>
 
-
-<div class='toontalk-json'>{"semantic":{"type":"top_level","width":952,"height":261,"running":true,"backside_widgets":[{"semantic":{"type":"number","operator":"+","numerator":"1","denominator":"1","format":"improper_fraction"},"view":{"frontside_width":172,"frontside_height":66,"frontside_left":23,"frontside_top":108},"version":1},{"semantic":{"type":"number","operator":"+","numerator":"29551696","denominator":"1","format":"improper_fraction","backside_widgets":[{"semantic":{"type":"robot","bubble":{"semantic":{"type":"number","operator":"+","numerator":"1","denominator":"1","format":"improper_fraction","erased":true},"view":{"frontside_width":39,"frontside_height":40},"version":1},"body":{"type":"body","steps":[{"type":"copy_constant_action","constant_object":{"semantic":{"type":"number","operator":"+","numerator":"1","denominator":"1","format":"improper_fraction"},"view":{"frontside_width":100,"frontside_height":100},"version":1}},{"type":"drop_on_action","path":{"type":"path.to_entire_context"}}]}},"view":{"image_url":"images/RB00.PNG","frontside_width":65,"frontside_height":100},"version":1}]},"view":{"frontside_width":221,"frontside_height":66,"frontside_left":195,"frontside_top":17},"version":1}]},"view":{"frontside_width":0,"frontside_height":0,"backside_width":952,"backside_height":261,"backside_left":8,"backside_top":179,"id_of_original_dragree":"toontalk_id_1396543293447","drag_x_offset":857,"drag_y_offset":104,"original_width_fraction":0.2,"original_height_fraction":0.1,"backside":true},"version":1}</div></body>
+click anywhere to stop/start.
+</body>
 </html>
