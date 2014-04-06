@@ -248,7 +248,9 @@ window.TOONTALK.box = (function (TT) {
             return;
         }
 	    var hole = this.get_hole(index);
-		var hole_frontside, hole_frontside_element, box_frontside, $element_container;
+		var box_frontside = this.get_frontside();
+		var size = this.get_size();
+		var hole_frontside, hole_frontside_element, box_frontside_element, $element_container;
 		if (!hole) {
 			hole = TT.box_empty_hole.create(index, this);
 			this.set_hole(index, hole);
@@ -256,12 +258,12 @@ window.TOONTALK.box = (function (TT) {
 		hole_frontside = hole.get_frontside(true);
 		if (old_hole_element && old_hole_element.parentNode) {
 			hole_frontside_element = hole_frontside.get_element();
+			// use JQuery replaceWith instead?
 		    old_hole_element.parentNode.replaceChild(hole_frontside_element, old_hole_element);
 			TT.UTILITIES.set_position_absolute(hole_frontside_element, false);
 			$(hole_frontside_element).addClass("toontalk-frontside-in-box");
 		} else {
 			old_hole_element = hole.get_frontside(true).get_element();
-			box_frontside = this.get_frontside();
 			$element_container = $(box_frontside.get_element()).find(".toontalk-box-hole").eq(index); 
 			$element_container.append(old_hole_element);
 			// since drag and drop is set up with absolute as the default
@@ -270,6 +272,16 @@ window.TOONTALK.box = (function (TT) {
 				$(old_hole_element).addClass("toontalk-frontside-in-box");
 			}
 		}
+// 		// the following seems to be necessary but not clear why height as percentage fails
+// 		if (!this.get_horizontal()) {
+// 			setTimeout(function () {
+// 					if ($(old_hole_element).is(".toontalk-empty-hole")) {
+// 						box_frontside_element = box_frontside.get_element();
+// 						$(old_hole_element).css({"min-height": $(box_frontside_element).width() / size});
+// 					}
+// 				},
+// 				1);
+// 		}
 		hole_frontside.update_display();
 	};
 	
@@ -448,7 +460,12 @@ window.TOONTALK.box_empty_hole =
 				return hole_element;
 			};
 			empty_hole.update_display = function () {
-				// nothing to do
+				// should be nothing to do
+				// but height percentage not working as expected
+				if (!box.get_horizontal()) {
+					var box_frontside_element = box.get_frontside_element();
+					$(hole_element).css({"min-height": $(box_frontside_element).height() / box.get_size()});
+				}
 			};
 			empty_hole.get_frontside = function () {
 				// doubles as its own frontside
