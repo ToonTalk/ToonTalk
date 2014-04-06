@@ -422,19 +422,19 @@ window.TOONTALK.box_backside =
 			vertical.button.onchange = update_orientation;
             backside_element.appendChild(size_input.container);
 			backside_element.appendChild($(TT.UTILITIES.create_horizontal_table(horizontal.container, vertical.container)).buttonset().get(0));
-			if (box.get_horizontal()) {
-				TT.UTILITIES.check_radio_button(horizontal);
-			} else {
-				TT.UTILITIES.check_radio_button(vertical.button);
-			}
             backside_element.appendChild(standard_buttons);
+			backside.update_display = function () {
+				size_input.button.value = box.get_size().toString();
+				if (box.get_horizontal()) {
+					TT.UTILITIES.check_radio_button(horizontal);
+				} else {
+					TT.UTILITIES.check_radio_button(vertical);
+				}
+			};
+			backside.update_display();
             return backside;
         },		
-		update_display: function () {
-			var size_input = TT.UTILITIES.get_first_child_with_class(this.get_element(), "toontalk-box-size-input");
-			var box = this.get_widget();
-			size_input.value = box.get_size().toString();
-		}
+		
 
     };
 }(window.TOONTALK));
