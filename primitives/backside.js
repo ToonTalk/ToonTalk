@@ -289,23 +289,25 @@ window.TOONTALK.backside =
 			var backside_element = backside.get_element();
 			var $backside_element = $(backside_element);
 			var $run_button = $("<button>Run</button>").button();
-			var run = true;
-			var robot;
 			$run_button.addClass("toontalk-run-backside-button");
 			$run_button.click(function (event) {
-				if (run) {
-					$run_button.button("option", "label", "Stop");
-					$run_button.attr("title", "Click to stop running the robots on this " + widget.get_type_name());
-				} else {
-					$run_button.button("option", "label", "Run");
-					$run_button.attr("title", "Click to run the robots on this " + widget.get_type_name());
-				}
-				widget.set_running(run);
-				run = !run;
+				var will_run = !widget.get_running();
+				TT.backside.update_run_button($run_button, !will_run, widget);
+				widget.set_running(will_run);
 				event.stopPropagation();
 			});
 			$run_button.attr("title", "Click to run the robots on this " + widget.get_type_name());
 			return $run_button.get(0);
+		},
+		
+		update_run_button: function ($run_button, run, widget) {
+			if (run) {
+				$run_button.button("option", "label", "Run");
+				$run_button.attr("title", "Click to run the robots on this " + widget.get_type_name());
+			} else {
+				$run_button.button("option", "label", "Stop");
+				$run_button.attr("title", "Click to stop running the robots on this " + widget.get_type_name());
+			}
 		},
 		
 		create_remove_button: function (backside, widget) {

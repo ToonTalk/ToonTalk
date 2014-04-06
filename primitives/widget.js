@@ -82,12 +82,12 @@ window.TOONTALK.widget = (function (TT) {
             if (!widget.set_running) {
                 widget.set_running = function (new_value) {
                     var backside_widgets = this.get_backside_widgets();
-                    var i, backside_widget;
+                    var i, backside_widget, backside_element, $backside_run_button;
                     running = new_value;
                     for (i = 0; i < backside_widgets.length; i++) {
                         backside_widget = backside_widgets[i];
                         if (backside_widget.get_type_name() === "robot") {
-                                // could this set_stopped stuff be combined with set_running?
+                            // could this set_stopped stuff be combined with set_running?
                             if (running) {
                                 backside_widget.set_stopped(false);
                                 backside_widget.run(widget);
@@ -97,6 +97,12 @@ window.TOONTALK.widget = (function (TT) {
                         } else if (backside_widget.set_running) {
                             backside_widget.set_running(new_value);
                         }
+                    }
+                    backside_element = this.get_backside_element();
+                    if (backside_element) {
+                        $(backside_element).find(".toontalk-run-backside-button").each(function (index, element) {
+                            TT.backside.update_run_button($(element), !running, widget);
+                        });
                     }
                 }
             };
@@ -124,6 +130,13 @@ window.TOONTALK.widget = (function (TT) {
                 this.update_display();
             }
             return frontside.get_element();
+        },
+        
+        get_backside_element: function () {
+            var backside = this.get_backside && this.get_backside();
+            if (backside) {
+                return backside.get_element();
+            }
         },
         
         dereference: function () {
