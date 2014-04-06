@@ -331,15 +331,21 @@ window.TOONTALK.robot = (function (TT) {
 	};
 	
 	robot.get_json = function () {
-		var bubble_json;
+		var bubble_json, next_robot_json;
 		if (this.get_bubble()) {
 			bubble_json = this.get_bubble().get_json();
-		} 
+		}
+		if (this.get_next_robot()) {
+			next_robot_json = this.get_next_robot().get_json();
+		}
 		return this.add_to_json(
 			{semantic:
 				 {type: "robot",
 				  bubble: bubble_json,
-				  body: this.get_body().get_json()},
+				  body: this.get_body().get_json(),
+				  run_once: this.get_run_once(),
+				  next_robot: next_robot_json
+				  },
 	         view:
 			     {image_url: this.get_image_url(),
 // 			 width: this.get_width(),
@@ -348,12 +354,18 @@ window.TOONTALK.robot = (function (TT) {
 	};
     
     robot.create_from_json = function (json_semantic, json_view) {
+		var next_robot;
+		if (json_semantic.next_robot) {
+			json_semantic.next_robot = TT.UTILITIES.create_from_json(json_semantic.next_robot);
+		}
 		return TT.robot.create(json_view.image_url,
 		                       TT.UTILITIES.create_from_json(json_semantic.bubble),
 		                       TT.UTILITIES.create_from_json(json_semantic.body),
 							   json_view.description,
 							   json_view.width,
-							   json_view.height);
+							   json_view.height,
+							   json_semantic.run_once,
+							   next_robot);
 	};
     
     return robot;

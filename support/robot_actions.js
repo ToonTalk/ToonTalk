@@ -72,6 +72,7 @@ window.TOONTALK.actions =
                 steps[i].run(context, robot);
             }
             if (!robot.get_run_once()) {
+                // should really run first in team...
                 robot.run(context, queue);
             }
         },
