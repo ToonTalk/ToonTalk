@@ -10,7 +10,7 @@ window.TOONTALK.robot = (function (TT) {
     "use strict";
     var robot = Object.create(TT.widget);
     
-    robot.create = function (image_url, bubble, body, description, width, height, thing_in_hand) {
+    robot.create = function (image_url, bubble, body, description, width, height, thing_in_hand, run_once, next_robot) {
         // bubble holds the conditions that need to be matched to run
         // body holds the actions the robot does when it runs
         var new_robot = Object.create(robot);
@@ -73,6 +73,18 @@ window.TOONTALK.robot = (function (TT) {
 		new_robot.set_thing_in_hand = function (new_value) {
 			thing_in_hand = new_value;
 		};
+		new_robot.get_next_robot = function () {
+			return next_robot;
+		};
+		new_robot.set_next_robot = function (new_value) {
+			next_robot = new_value;
+		};
+		new_robot.get_run_once = function () {
+			return run_once;
+		};
+		new_robot.set_run_once = function (new_value) {
+			run_once = new_value;
+		};
 		if (TT.debugging) {
 			new_robot.debug_string = new_robot.toString();
 		}
@@ -87,7 +99,16 @@ window.TOONTALK.robot = (function (TT) {
     robot.copy = function (just_value) {
 		var bubble = this.get_bubble();
 		var bubble_copy = bubble ? bubble.copy(true) : undefined;
-		var copy = this.create(this.get_image_url(), bubble_copy, this.get_body().copy(), this.get_description(), this.get_width(), this.get_height());
+		var next_robot = this.get_next_robot();
+		var next_robot_copy = next_robot ? next_robot.copy(just_value) : undefined;
+		var copy = this.create(this.get_image_url(), 
+		                       bubble_copy,
+							   this.get_body().copy(),
+							   this.get_description(),
+							   this.get_width(),
+							   this.get_height(),
+							   this.get_run_once(),
+							   next_robot_copy);
 		if (just_value) {
 			return copy;
 		}
@@ -119,9 +140,8 @@ window.TOONTALK.robot = (function (TT) {
             queue.enqueue({robot: this, context: context, queue: queue});
             return match_status;
         case 'not matched':
-            // replace next_robot with get_next_robot()
-            if (this.next_robot) {
-                return this.next_robot.run(context, queue);
+            if (this.get_next_robot()) {
+                return this.get_next_robot().run(context, queue);
             }
             return match_status;
         default:
@@ -346,12 +366,14 @@ window.TOONTALK.robot_backside =
         create: function (robot) {
 	        var backside = TT.backside.create(robot);
 			var backside_element = backside.get_element();
-            // create_text_input should use JQuery????
             var image_url_input = TT.UTILITIES.create_text_input(robot.get_image_url(), "toontalk-image-url-input", "Image URL&nbsp;", "Type here to provide a URL for the appearance of this robot.");
 			var description_input = TT.UTILITIES.create_text_input(robot.get_description() || robot.toString(), 
 			                                                       "toontalk-robot-description-input", 
 																   "Description&nbsp;",
 																   "Type here to provide a better descprion of this robot.");
+			var run_once_input = TT.UTILITIES.create_check_box_button(!robot.get_run_once(), 
+			                                                          "When finished start again",
+																	  "Check this if you want the robot to start over again after finishing what he was trained to do.");
             var input_table;
 			var standard_buttons = TT.backside.create_standard_buttons(backside, robot);
 			// don't do the following if already trained -- or offer to retrain?
@@ -374,13 +396,24 @@ window.TOONTALK.robot_backside =
 												        toString: "change the description to '" + description + "'' of the robot"});
 				}
             };
-			input_table = TT.UTILITIES.create_vertical_table(description_input.container, image_url_input.container);
+			$(run_once_input.button).click(function (event) {
+				var keep_running = run_once_input.button.checked;
+				robot.set_run_once(!keep_running);
+				if (TT.robot.in_training) {
+					TT.robot.in_training.edited(robot, {setter_name: "set_run_once",
+			                                            argument_1: !keep_running,
+												        toString: "change to " + (keep_running ? "run again" : "run once") + " of the robot"});
+				}
+				event.stopPropagation();
+			});
+			input_table = TT.UTILITIES.create_vertical_table(description_input.container, image_url_input.container, run_once_input.container);
 			$(input_table).css({width: "90%"});
 			backside_element.appendChild(input_table);
 			backside_element.appendChild(standard_buttons);
 			backside.update_display = function () {
 				$(description_input.button).val(robot.get_description() || robot.toString());
 				$(image_url_input.button).val(robot.get_image_url());
+				$(run_once_input.button).val(!robot.get_run_once());
 			};
             return backside;
         },

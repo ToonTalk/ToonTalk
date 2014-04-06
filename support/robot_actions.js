@@ -71,7 +71,9 @@ window.TOONTALK.actions =
             for (i = 0; i < steps.length; i++) {
                 steps[i].run(context, robot);
             }
-            robot.run(context, queue);
+            if (!robot.get_run_once()) {
+                robot.run(context, queue);
+            }
         },
         
         toString: function () {

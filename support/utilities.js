@@ -366,10 +366,11 @@ window.TOONTALK.UTILITIES =
 					if ($target.is(".toontalk-backside")) {
 						target.get_backside().widget_dropped_on_me(source, event);
 						// should the following use pageX instead?
-						// unclear why after working for weeks with target_position.top
-						// needed to switch to $target.get(0).offsetTop 
+						// for a while using target_position.top didn't work while
+						// $target.get(0).offsetTop did and then it stopped working
+						// not sure what is happening or even whey they are different
 						$source.css({left: event.originalEvent.clientX - (target_position.left + drag_x_offset),
-							          top: event.originalEvent.clientY - ($target.get(0).offsetTop + drag_y_offset)});
+							          top: event.originalEvent.clientY - (target_position.top + drag_y_offset)});
 						if ($source.is(".toontalk-frontside") && !$source.is('.ui-resizable')) {
 							$source.resizable(
 								{resize: function(event, ui) {
@@ -580,7 +581,28 @@ window.TOONTALK.UTILITIES =
 				container.title = title;
 			}
 			$(input).button();
-// 			$(container).button();
+			return {container: container,
+			        button: input,
+					label: label_element};
+		},
+		
+		create_check_box_button: function (value, label, title) {
+			var container = document.createElement("div");
+			var input = document.createElement("input");
+			input.type = "checkbox";
+			input.className = "toontalk-checkbox";
+			input.value = value;
+			input.id = TT.UTILITIES.generate_unique_id();
+			var label_element = document.createElement("label");
+			label_element.innerHTML = label;
+			label_element.htmlFor = input.id;
+			$(label_element).addClass("ui-widget");
+			container.appendChild(input);
+			container.appendChild(label_element);
+			if (title) {
+				container.title = title;
+			}
+// 			$(input).button();
 			return {container: container,
 			        button: input,
 					label: label_element};

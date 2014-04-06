@@ -32,14 +32,14 @@ window.TOONTALK.queue =
             var end_time = new Date().getTime() + this.maximum_run;
             var that = this;
             var now, element;
-//             if (this.to_run.length > 0) console.log("start time: " + (end_time-this.maximum_run));
+//          if (this.to_run.length > 0) console.log("start time: " + (end_time-this.maximum_run));
             while (this.to_run.length > 0) {
                 if (this.paused) {
                     return;
                 }
                 now = new Date().getTime();
                 if (now >= end_time) {
-//                     console.log("end time:   " + now);
+//                  console.log("end time:   " + now);
                     break; 
                 }
                 // TODO: use an efficient implementation of queues (linked lists?)
