@@ -205,16 +205,6 @@ window.TOONTALK.UTILITIES =
 			return as_string;
 		},
 		
-		// replace calls with JQuery
-		get_first_child_with_class: function (element, class_name) {
-			var child;
-			for (child = element.firstChild; child; child = child.nextSibling) {
-                if (child.className === class_name) {
-					return child;
-				}
-			}
-		},
-		
 		data_transfer_json_object: function (event) {
 			var json;
 			if (!event.originalEvent.dataTransfer) {
