@@ -341,8 +341,11 @@ window.TOONTALK.widget = (function (TT) {
             $backside_element.addClass("toontalk-top-level-backside");
             $backside_element.click(
                 function (event) {
-                   widget.set_running(!widget.get_running());
-                   event.stopPropagation();
+                    if (event.target === $backside_element.get(0)) {
+                        // only if directly clicked upon
+                        widget.set_running(!widget.get_running());
+                        event.stopPropagation();
+                    }
                 }
             );
             return widget;
