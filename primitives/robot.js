@@ -354,7 +354,10 @@ window.TOONTALK.robot = (function (TT) {
 	};
     
     robot.create_from_json = function (json_semantic, json_view) {
-		var next_robot;
+		var next_robot, thing_in_hand;
+		if (json_semantic.thing_in_hand) {
+			thing_in_hand = TT.UTILITIES.create_from_json(json_semantic.thing_in_hand);
+		}
 		if (json_semantic.next_robot) {
 			json_semantic.next_robot = TT.UTILITIES.create_from_json(json_semantic.next_robot);
 		}
@@ -364,6 +367,7 @@ window.TOONTALK.robot = (function (TT) {
 							   json_view.description,
 							   json_view.width,
 							   json_view.height,
+							   thing_in_hand,
 							   json_semantic.run_once,
 							   next_robot);
 	};
