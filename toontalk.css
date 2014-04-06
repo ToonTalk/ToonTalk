@@ -197,9 +197,9 @@
     height: 96px;
 }
 .toontalk-thought-bubble-contents {
-    left: 10%;
+    left: 20%;
 	top: 15%;
-	width: 60%;
+	width: 90%;
 	height: 40%;
 	position: absolute;
 }
