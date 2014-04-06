@@ -53,6 +53,9 @@ window.TOONTALK.frontside =
 				$(backside_element).css({left: frontside_ancestor_before_backside_element.offsetLeft + frontside_ancestor_before_backside_element.offsetWidth,
 				                         top:  frontside_ancestor_before_backside_element.offsetTop});				
 				$frontside_ancestor_that_is_backside_element.append(backside_element);
+				if (backside.update_display) {
+					backside.update_display();
+				}
 				event.stopPropagation();
 			});
             return frontside;

@@ -427,22 +427,14 @@ window.TOONTALK.robot_backside =
 			backside_element.appendChild(input_table);
 			backside_element.appendChild(standard_buttons);
 			backside.update_display = function () {
-				$(description_input.button).val(robot.get_description() || robot.toString());
+				var title = robot.get_description() || robot.toString();
+				$(description_input.button).val(title);
 				$(image_url_input.button).val(robot.get_image_url());
-				$(run_once_input.button).val(!robot.get_run_once());
+				$(run_once_input.button).prop("checked", !robot.get_run_once());
+				robot.title = title;
 			};
             return backside;
         },
-		
-		update_display: function () {
-            // use JQuery instead of get_first_child_with_class???
-			var image_url_input = TT.UTILITIES.get_first_child_with_class(this.get_element(), "toontalk-image-url-input");
-			var description_input = TT.UTILITIES.get_first_child_with_class(this.get_element(), "toontalk-robot-description-input ");
-			var robot = this.get_widget();
-			image_url_input.value = robot.get_image_url();
-			description_input.value = robot.get_description();
-			robot.title = description_input.value;
-		},
 		
 		create_train_button: function (backside, robot) {
 			var backside_element = backside.get_element();

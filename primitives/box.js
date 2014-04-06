@@ -433,10 +433,7 @@ window.TOONTALK.box_backside =
 			};
 			backside.update_display();
             return backside;
-        },		
-		
-
-    };
+        }};
 }(window.TOONTALK));
 
 window.TOONTALK.box_empty_hole = 
