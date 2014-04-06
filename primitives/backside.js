@@ -301,6 +301,9 @@ window.TOONTALK.backside =
 		},
 		
 		update_run_button: function ($run_button, run, widget) {
+			if (!$run_button.is(":visible")) {
+				return;
+			}
 			if (run) {
 				$run_button.button("option", "label", "Run");
 				$run_button.attr("title", "Click to run the robots on this " + widget.get_type_name());
