@@ -306,7 +306,7 @@ window.TOONTALK.UTILITIES =
 				});
 			$element.on('drop',
                 function (event) {
-					var $source, source, $target, target, target_position, drag_x_offset, drag_y_offset;
+					var $source, source, $target, target, target_position, drag_x_offset, drag_y_offset, target_is_a_backside;
 					var json_object = TT.UTILITIES.data_transfer_json_object(event);
 					// should this set the dropEffect? https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer#dropEffect.28.29
 					var $container, container;
@@ -353,8 +353,10 @@ window.TOONTALK.UTILITIES =
 					} else {
 						source = TT.UTILITIES.create_from_json(json_object);
 						$source = $(source.get_frontside_element());
-					}
-					if ($target.is(".toontalk-backside")) {
+					}		
+					target_is_a_backside = $target.is(".toontalk-backside");
+					if (target_is_a_backside) {
+						// widget_dropped_on_me needed here to get geometry right
 						target.get_backside().widget_dropped_on_me(source, event);
 						// should the following use pageX instead?
 						// for a while using target_position.top didn't work while
@@ -381,7 +383,7 @@ window.TOONTALK.UTILITIES =
 					} else if (source.drop_on(target, $target, event)) {
 						event.stopPropagation();
 					}
-					if (target) {
+					if (target && !target_is_a_backside) {
 						if (target.widget_dropped_on_me) {
 							target.widget_dropped_on_me(source);
 						}
