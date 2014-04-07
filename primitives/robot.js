@@ -249,7 +249,6 @@ window.TOONTALK.robot = (function (TT) {
 		// perhaps this should be moved to widget and number and box updated to differ in the to_HTML part
         var frontside = this.get_frontside();
 		var backside = this.get_backside();
-		var description = this.get_description() || this.toString();
 		var bubble = this.get_bubble();
 		var new_first_child, robot_image, thought_bubble, frontside_element, bubble_contents_element, resource_becoming_instance;
         if (!frontside) {
@@ -275,7 +274,7 @@ window.TOONTALK.robot = (function (TT) {
         while (frontside_element.firstChild) {
             frontside_element.removeChild(frontside_element.firstChild);
         }
-		frontside_element.title = description ? "This robot " + description : "This is a " + this.toString();
+		frontside_element.title = this.get_title();
 		$(frontside_element).addClass("toontalk-robot");
 		$(new_first_child).addClass("toontalk-widget");
 		frontside_element.style.width = this.get_width();
@@ -299,6 +298,10 @@ window.TOONTALK.robot = (function (TT) {
 				backside.update_display();
 			}
     };
+	
+	robot.get_title = function() {
+		return "This robot " + (this.get_description() || this.toString());
+	};
 	
 	robot.image = function () {
 		var image = document.createElement("img");
@@ -427,11 +430,14 @@ window.TOONTALK.robot_backside =
 			backside_element.appendChild(input_table);
 			backside_element.appendChild(standard_buttons);
 			backside.update_display = function () {
-				var title = robot.get_description() || robot.toString();
+				var title = robot.get_title();
+				var frontside_element = robot.get_frontside_element();
 				$(description_input.button).val(title);
 				$(image_url_input.button).val(robot.get_image_url());
 				$(run_once_input.button).prop("checked", !robot.get_run_once());
-				robot.title = title;
+				if (frontside_element) {
+					frontside_element.title = title;
+				}
 			};
             return backside;
         },
