@@ -20,6 +20,7 @@ window.TOONTALK.UTILITIES =
 						 "box_path": TT.box.path.create_from_json,
 						 "path.to_entire_context": TT.path.to_entire_context.create_from_json,
 						 "path.top_level_backside": TT.path.top_level_backside.create_from_json,
+						 "newly_created_widgets_path": TT.newly_created_widgets_path.create_from_json,
 						 "top_level": TT.widget.top_level_create_from_json};
 	// id needs to be unique across ToonTalks due to drag and drop
 	var id_counter = new Date().getTime();
@@ -99,7 +100,7 @@ window.TOONTALK.UTILITIES =
 		};
 	$(document).ready(initialise);
     return {
-		create_from_json: function (json) {
+		create_from_json: function (json, additional_info) {
 			var widget, side_element, backside_widgets, json_semantic, json_view;
 			if (!json) {
 				// was undefined and still is
@@ -112,7 +113,7 @@ window.TOONTALK.UTILITIES =
 			}
 			json_view = json.view;
 			if (json_creators[json_semantic.type]) {
-				widget = json_creators[json_semantic.type](json_semantic, json_view);
+				widget = json_creators[json_semantic.type](json_semantic, json_view, additional_info);
 			} else {
 				console.log("json type '" + json_semantic.type + "' not yet supported.");
 				return;
@@ -134,12 +135,12 @@ window.TOONTALK.UTILITIES =
 			return widget;
 		},
 		
-		create_array_from_json: function (json_array) {
+		create_array_from_json: function (json_array, additional_info) {
 			var new_array = [];
 			var i;
 			for (i = 0; i < json_array.length; i += 1) {
 				if (json_array[i]) {
-					new_array[i] = TT.UTILITIES.create_from_json(json_array[i]);
+					new_array[i] = TT.UTILITIES.create_from_json(json_array[i], additional_info);
 				}
 			}
 			return new_array;

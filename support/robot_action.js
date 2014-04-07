@@ -100,11 +100,11 @@ window.TOONTALK.robot_action =
             };
             return new_action;  
         },
-        create_from_json: function (json) {
+        create_from_json: function (json, ignore_view, additional_info) {
             if (json.additional_info) {
-                return TT.robot_action.create(TT.UTILITIES.create_from_json(json.path), json.action_name, json.additional_info);
+                return TT.robot_action.create(TT.UTILITIES.create_from_json(json.path, additional_info), json.action_name, json.additional_info);
             } else {
-                return TT.robot_action.create(TT.UTILITIES.create_from_json(json.path), json.action_name);
+                return TT.robot_action.create(TT.UTILITIES.create_from_json(json.path, additional_info), json.action_name);
             }
         }};
 }(window.TOONTALK));

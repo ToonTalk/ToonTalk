@@ -33,7 +33,7 @@ window.TOONTALK.path =
 				}
 			}
 			console.log("TT.path.get_path_to not fully implemented.");
-        },			
+        },
 		dereference_path: function (path, context) {
 			var reference;
 		    if (path) {
@@ -78,7 +78,7 @@ window.TOONTALK.path =
                 return {type: "path.to_entire_context"};
             },
             create_from_json: function () {
-               return TT.path.to_entire_context;
+                return TT.path.to_entire_context;
             }
         },
 		top_level_backside: {

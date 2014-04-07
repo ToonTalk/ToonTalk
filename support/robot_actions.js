@@ -22,6 +22,9 @@ window.TOONTALK.actions =
             new_actions.get_steps = function () {
                 return steps;
             };
+            new_actions.initialise_steps = function (initial_steps) {
+                steps = initial_steps;
+            };
             new_actions.is_empty = function () {
                 return steps.length === 0;
             };
@@ -41,18 +44,18 @@ window.TOONTALK.actions =
             new_actions.add_newly_created_widget = function (new_widget) {
                 newly_created_widgets[newly_created_widgets.length] = new_widget;
             };
-            new_actions.get_newly_created_widgets_length = function () {
-                return newly_created_widgets.length;
+            new_actions.get_newly_created_widgets = function () {
+                return newly_created_widgets;
             };
             new_actions.get_path_to = function (widget) {
                 var i, j, path, sub_path, children;
                 for (i = 0; i < newly_created_widgets.length; i++) {
                     if (newly_created_widgets[i] === widget) {
-                        return TT.actions_path.create(i, new_actions);
+                        return TT.newly_created_widgets_path.create(i, new_actions);
                     } else if (newly_created_widgets[i].get_path_to) {
                         sub_path = newly_created_widgets[i].get_path_to(widget);
                         if (sub_path) {
-                            path = TT.actions_path.create(i, new_actions);
+                            path = TT.newly_created_widgets_path.create(i, new_actions);
                             path.next = sub_path;
                             return path;
                         }
@@ -100,13 +103,16 @@ window.TOONTALK.actions =
         },
         
         create_from_json: function (json) {
-            return TT.actions.create(TT.UTILITIES.create_array_from_json(json.steps));
+            var actions = TT.actions.create();
+            // some steps need to refer back to this (i.e. the body)
+            actions.initialise_steps(TT.UTILITIES.create_array_from_json(json.steps, {body: actions}));
+            return actions;
         }
         
     };
 }(window.TOONTALK));
 
-window.TOONTALK.actions_path =
+window.TOONTALK.newly_created_widgets_path =
 // paths to widgets created by previous steps
 (function (TT) {
     "use strict";
@@ -117,7 +123,7 @@ window.TOONTALK.actions_path =
                     return actions.dereference(index);
                 },
                 toString: function () {
-                    var n = actions.get_newly_created_widgets_length() - index;
+                    var n = actions.get_newly_created_widgets().length - index;
                     var ordinal;
                     switch (n) {
                         case 1:
@@ -133,8 +139,15 @@ window.TOONTALK.actions_path =
                         ordinal = n + "th to last";
                     }
                     return "the " + ordinal + " widget he created";
+                },
+                get_json: function () {
+                    return {type: "newly_created_widgets_path",
+                            index: index};
                 }
             };
+        },
+        create_from_json: function (json, ignore_view, additional_info) {
+            return TT.newly_created_widgets_path.create(json.index, additional_info.body);
         }
     };
 }(window.TOONTALK));
