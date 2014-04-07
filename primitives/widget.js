@@ -329,6 +329,9 @@ window.TOONTALK.widget = (function (TT) {
             widget.get_type_name = function () {
                  return "top-level";
             };
+            widget.toString = function () {
+                return "top level widget";
+            };
             widget = widget.add_sides_functionality(widget);
             widget = widget.runnable(widget);
             return widget;

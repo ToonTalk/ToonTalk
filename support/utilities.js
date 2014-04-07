@@ -306,7 +306,7 @@ window.TOONTALK.UTILITIES =
 				});
 			$element.on('drop',
                 function (event) {
-					var $source, source, $target, target, target_position, drag_x_offset, drag_y_offset, target_is_a_backside;
+					var $source, source, $target, target, target_position, drag_x_offset, drag_y_offset, target_is_a_backside, new_target;
 					var json_object = TT.UTILITIES.data_transfer_json_object(event);
 					// should this set the dropEffect? https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer#dropEffect.28.29
 					var $container, container;
@@ -320,6 +320,17 @@ window.TOONTALK.UTILITIES =
 						return;
 					}
 					$target = $(event.target).closest(".toontalk-side");
+					if ($source && $source.length > 0 &&
+					    ($source.get(0) === $target.get(0) || jQuery.contains($source.get(0), $target.get(0)))) {
+					    // not dropping on itself but on the widget underneath
+						// to not find $target again temporarily hide it
+						$target.hide();
+					    new_target = document.elementFromPoint(event.originalEvent.pageX, event.originalEvent.pageY);
+						$target.show();
+						if (new_target) {
+							$target = $(new_target).closest(".toontalk-side");
+						}
+					}
 					target = $target.data("owner");
 					target_position = TT.UTILITIES.absolute_position($target);
 					if (json_object) {
