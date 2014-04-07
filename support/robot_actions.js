@@ -132,7 +132,7 @@ window.TOONTALK.newly_created_widgets_path =
                         case 2:
                         ordinal = "second to last";
                         break;
-                        case 2:
+                        case 3:
                         ordinal = "third to last";
                         break;
                         default:
