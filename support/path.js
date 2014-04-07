@@ -72,7 +72,7 @@ window.TOONTALK.path =
 				return context;
 			},
             toString: function () {
-                return "that he's working on";
+                return "what he's working on";
             },
             get_json: function () {
                 return {type: "path.to_entire_context"};
@@ -86,7 +86,7 @@ window.TOONTALK.path =
 				return $(".toontalk-top-level-backside");
 			},
             toString: function () {
-                return "top-level backside";
+                return "the top-level backside";
             },
             get_json: function () {
                 return {type: "path.top_level_backside"};

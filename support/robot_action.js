@@ -18,15 +18,15 @@ window.TOONTALK.robot_action =
 //                               robot.set_thing_in_hand(widget.copy(true));
 //                               return true;
 //          },
-         "pick_up": function (widget, context, robot) {
+         "pick up": function (widget, context, robot) {
                         robot.set_thing_in_hand(widget);
                         return true;
          },
-         "pick_up_copy": function (widget, context, robot) {
+         "pick up a copy": function (widget, context, robot) {
                              robot.set_thing_in_hand(widget.copy(true));
                              return true;
          },
-         "drop_on": function (target, context, robot) {
+         "drop it on": function (target, context, robot) {
                         var thing_in_hand;
                         if (target) {
                             thing_in_hand = robot.get_thing_in_hand();

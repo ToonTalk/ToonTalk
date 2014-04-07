@@ -174,7 +174,7 @@ window.TOONTALK.robot = (function (TT) {
 			path = TT.path.get_path_to(widget, this);
 		}
 		if (path) {
-			this.get_body().add_step(TT.robot_action.create(path, "pick_up"));
+			this.get_body().add_step(TT.robot_action.create(path, "pick up"));
 		}
 		this.set_thing_in_hand(widget);
 	};
@@ -182,7 +182,7 @@ window.TOONTALK.robot = (function (TT) {
 	robot.dropped_on = function (target_widget) {
 		var path = TT.path.get_path_to(target_widget, this);
 		if (path) {
-			this.get_body().add_step(TT.robot_action.create(path, "drop_on"));
+			this.get_body().add_step(TT.robot_action.create(path, "drop it on"));
 		}
 		this.set_thing_in_hand(null);
 	};
@@ -192,7 +192,7 @@ window.TOONTALK.robot = (function (TT) {
 		var step;
 		if (path) {
 			if (picked_up) {
-				step = TT.robot_action.create(path, "pick_up_copy");
+				step = TT.robot_action.create(path, "pick up a copy");
 			} else {
 				step = TT.robot_action.create(path, "copy");
 			}
