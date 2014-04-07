@@ -275,7 +275,7 @@ window.TOONTALK.backside =
 				                               height: $(frontside_element).height(),
 											   left: position.left+10,
 											   top: position.top+10});
-				$(frontside_element).parent().append(frontside_element_copy);
+				$(frontside_element).closest(".toontalk-backside").append(frontside_element_copy);
 				if (TT.robot.in_training) {
 					TT.robot.in_training.copied(widget, widget_copy, false);
 				}
