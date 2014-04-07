@@ -344,6 +344,7 @@ window.TOONTALK.UTILITIES =
 						if ($source.get(0) === $target.get(0) || jQuery.contains($source.get(0), $target.get(0))) {
 							// dropped of itself or dropped on a part of itself
 							// just moved it a little bit
+							// perhaps this is never called now that elementFromPoint is used to find another target
 							$source.css({left: $source.get(0).offsetLeft + (event.originalEvent.layerX - drag_x_offset),
 							              top: $source.get(0).offsetTop + (event.originalEvent.layerY - drag_y_offset)});
 							event.stopPropagation();
@@ -489,7 +490,7 @@ window.TOONTALK.UTILITIES =
 					left = position.left;
 					top = position.top;
 				}
-//				element.style.position = "absolute";
+				element.style.position = "absolute";
 				$(element).css({left: left,
 				                 top: top});
 			} else {
