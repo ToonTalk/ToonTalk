@@ -483,6 +483,9 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         if (this.get_erased()) {
             return context.match_with_any_number();
         }
+		if (!context.match_with_this_number) {
+			return 'not matched';
+		}
         return context.match_with_this_number(this);
     };
 
