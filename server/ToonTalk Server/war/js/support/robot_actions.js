@@ -11,7 +11,6 @@ window.TOONTALK.actions =
     "use strict";
     return {
         create: function (steps) {
-            var robot;
             var new_actions = Object.create(this);
             var newly_created_widgets = [];
             if (!steps) {
@@ -23,52 +22,62 @@ window.TOONTALK.actions =
             new_actions.get_steps = function () {
                 return steps;
             };
+            new_actions.initialise_steps = function (initial_steps) {
+                steps = initial_steps;
+            };
             new_actions.is_empty = function () {
                 return steps.length === 0;
             };
             new_actions.reset_steps = function () {
                 steps = [];
+                this.reset_newly_created_widgets();
+            };
+            new_actions.reset_newly_created_widgets = function () {
                 newly_created_widgets = [];
             };
             new_actions.add_step = function (step, new_widget) {
-                step.robot = robot;
                 steps[steps.length] = step;
                 if (new_widget) {
-                    newly_created_widgets[newly_created_widgets.length] = new_widget;
+                    this.add_newly_created_widget(new_widget);
                 }
             };
-            new_actions.get_robot = function () {
-                return robot;
+            new_actions.add_newly_created_widget = function (new_widget) {
+                newly_created_widgets[newly_created_widgets.length] = new_widget;
             };
-            new_actions.set_robot = function (robot_parameter) {
-                var i;
-                robot = robot_parameter;
-                for (i = 0; i < steps.length; i += 1) {
-                    steps[i].robot = robot;
-                }
+            new_actions.get_newly_created_widgets = function () {
+                return newly_created_widgets;
             };
             new_actions.get_path_to = function (widget) {
-                var i;
+                var i, j, path, sub_path, children;
                 for (i = 0; i < newly_created_widgets.length; i++) {
-                    if (newly_created_widgest[i] === widget) {
-                        return TT.actions_paths.create(i, new_actions);
+                    if (newly_created_widgets[i] === widget) {
+                        return TT.newly_created_widgets_path.create(i, new_actions);
+                    } else if (newly_created_widgets[i].get_path_to) {
+                        sub_path = newly_created_widgets[i].get_path_to(widget);
+                        if (sub_path) {
+                            path = TT.newly_created_widgets_path.create(i, new_actions);
+                            path.next = sub_path;
+                            return path;
+                        }
                     }
-                    // else see if sub-path inside newly_created_widgest[i] (add to TT.UTILITIES) 
                 }
             };
             new_actions.dereference = function (index) {
-                return newly_created_widgest[index];
+                return newly_created_widgets[index];
             }
             return new_actions;
         },
         
-        run: function(context, queue) {
+        run: function(context, queue, robot) {
             var i;
             var steps = this.get_steps();
             for (i = 0; i < steps.length; i++) {
-                steps[i].run(context);
+                steps[i].run(context, robot);
             }
-            this.get_robot().run(context, queue);
+            if (!robot.get_run_once()) {
+                // should really run first in team...
+                robot.run(context, queue);
+            }
         },
         
         toString: function () {
@@ -78,9 +87,11 @@ window.TOONTALK.actions =
             for (i = 0; i < steps.length; i++) {
                 description += steps[i].toString();
                 if (i === steps.length-2) {
-                    description += " and ";
+                    description += " and \n";
                 } else if (i < steps.length-2) {
-                    description += ", ";
+                    description += ", \n";
+                } else {
+                    description += ".";
                 }
             }
             return description;
@@ -92,13 +103,16 @@ window.TOONTALK.actions =
         },
         
         create_from_json: function (json) {
-            return TT.actions.create(TT.UTILITIES.create_array_from_json(json.steps));
+            var actions = TT.actions.create();
+            // some steps need to refer back to this (i.e. the body)
+            actions.initialise_steps(TT.UTILITIES.create_array_from_json(json.steps, {body: actions}));
+            return actions;
         }
         
     };
 }(window.TOONTALK));
 
-window.TOONTALK.actions_paths =
+window.TOONTALK.newly_created_widgets_path =
 // paths to widgets created by previous steps
 (function (TT) {
     "use strict";
@@ -107,8 +121,33 @@ window.TOONTALK.actions_paths =
             return {
                 dereference: function () {
                     return actions.dereference(index);
+                },
+                toString: function () {
+                    var n = actions.get_newly_created_widgets().length - index;
+                    var ordinal;
+                    switch (n) {
+                        case 1:
+                        ordinal = "last";
+                        break;
+                        case 2:
+                        ordinal = "second to last";
+                        break;
+                        case 3:
+                        ordinal = "third to last";
+                        break;
+                        default:
+                        ordinal = n + "th to last";
+                    }
+                    return "the " + ordinal + " widget he created";
+                },
+                get_json: function () {
+                    return {type: "newly_created_widgets_path",
+                            index: index};
                 }
             };
+        },
+        create_from_json: function (json, ignore_view, additional_info) {
+            return TT.newly_created_widgets_path.create(json.index, additional_info.body);
         }
     };
 }(window.TOONTALK));

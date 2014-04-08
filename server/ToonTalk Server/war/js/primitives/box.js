@@ -55,8 +55,7 @@ window.TOONTALK.box = (function (TT) {
 				this.debug_string = this.toString();
 			}
         };
-        new_box = new_box.add_sides_functionality(new_box);
-		new_box = new_box.erasable(new_box);
+        new_box = new_box.add_standard_widget_functionality(new_box);
         return new_box;
     };
     
@@ -70,14 +69,11 @@ window.TOONTALK.box = (function (TT) {
                 copy.set_hole(i, hole.copy(copy));
             }
         }
-		if (just_value) {
-			return copy;
-		}
-        return this.add_to_copy(copy);
+        return this.add_to_copy(copy, just_value);
     };
     
     box.create_backside = function () {
-		return TT.box_backside.create(this);
+		return TT.box_backside.create(this).update_run_button_disabled_attribute();;
 	};
     
     box.equals = function (other) {
@@ -167,7 +163,7 @@ window.TOONTALK.box = (function (TT) {
                 contents += " | ";
             }
         }
-        return '[' + contents + ']';
+        return "box that looks like [" + contents + ']';
     };
 	
 	box.get_type_name = function () {
@@ -249,7 +245,9 @@ window.TOONTALK.box = (function (TT) {
             return;
         }
 	    var hole = this.get_hole(index);
-		var hole_frontside, hole_frontside_element, box_frontside, $element_container;
+		var box_frontside = this.get_frontside();
+		var size = this.get_size();
+		var hole_frontside, hole_frontside_element, box_frontside_element, $element_container;
 		if (!hole) {
 			hole = TT.box_empty_hole.create(index, this);
 			this.set_hole(index, hole);
@@ -257,12 +255,12 @@ window.TOONTALK.box = (function (TT) {
 		hole_frontside = hole.get_frontside(true);
 		if (old_hole_element && old_hole_element.parentNode) {
 			hole_frontside_element = hole_frontside.get_element();
+			// use JQuery replaceWith instead?
 		    old_hole_element.parentNode.replaceChild(hole_frontside_element, old_hole_element);
 			TT.UTILITIES.set_position_absolute(hole_frontside_element, false);
 			$(hole_frontside_element).addClass("toontalk-frontside-in-box");
 		} else {
 			old_hole_element = hole.get_frontside(true).get_element();
-			box_frontside = this.get_frontside();
 			$element_container = $(box_frontside.get_element()).find(".toontalk-box-hole").eq(index); 
 			$element_container.append(old_hole_element);
 			// since drag and drop is set up with absolute as the default
@@ -271,6 +269,16 @@ window.TOONTALK.box = (function (TT) {
 				$(old_hole_element).addClass("toontalk-frontside-in-box");
 			}
 		}
+// 		// the following seems to be necessary but not clear why height as percentage fails
+// 		if (!this.get_horizontal()) {
+// 			setTimeout(function () {
+// 					if ($(old_hole_element).is(".toontalk-empty-hole")) {
+// 						box_frontside_element = box_frontside.get_element();
+// 						$(old_hole_element).css({"min-height": $(box_frontside_element).width() / size});
+// 					}
+// 				},
+// 				1);
+// 		}
 		hole_frontside.update_display();
 	};
 	
@@ -278,25 +286,6 @@ window.TOONTALK.box = (function (TT) {
 		// could restore the 'original' empty_hole rather than create a new one here
 		this.set_hole(index, TT.box_empty_hole.create(index, this), update_display);
 	};
-    
-    box.dereference = function (path) {
-        var index, hole;
-        if (path) {
-            index = path.get_index && path.get_index();
-            if (typeof index === 'number') {
-                hole = this.get_hole(index);
-				if (hole) {
-					if (path.next) {
-                    	return hole.dereference(path.next);
-					}
-					return hole;
-				}
-            }
-            console.log("box " + this.toString() + " unable to dereference path " + path.toString());
-        } else {
-            return this;
-        }
-    };
 	
 	box.drop_on = function (other, side_of_other, event) {
         if (!other.box_dropped_on_me) {
@@ -335,6 +324,43 @@ window.TOONTALK.box = (function (TT) {
 			}
 		}
 	};
+	
+	box.get_path_to = function (widget, robot) {
+		var size = this.get_size();
+		var i, part, path, sub_path;
+		for (i = 0; i < size; i += 1) {
+			part = this.get_hole(i);
+			if (widget === part) {
+				return TT.box.path.create(i);
+			} else if (part.get_path_to) {
+				sub_path = part.get_path_to(widget, robot);
+				if (sub_path) {
+					path = TT.box.path.create(i);
+					path.next = sub_path;
+					return path;
+				}
+			}
+		}
+	};
+	
+    box.dereference = function (path) {
+        var index, hole;
+        if (path) {
+            index = path.get_index && path.get_index();
+            if (typeof index === 'number') {
+                hole = this.get_hole(index);
+				if (hole) {
+					if (path.next) {
+                    	return hole.dereference(path.next);
+					}
+					return hole;
+				}
+            }
+            console.log("box " + this.toString() + " unable to dereference path " + TT.path.toString(path));
+        } else {
+            return this;
+        }
+    };
     
     box.path = {
 		create: function (index) {
@@ -343,7 +369,7 @@ window.TOONTALK.box = (function (TT) {
 					return index;
 				},         
 				toString: function () {
-					return "box hole " + index + (this.next ? "; " + this.next.toString() : "");
+					return "what is in the " + TT.UTILITIES.cardinal(index) + " hole "; // + (this.next ? "; " + TT.path.toString(this.next) : "");
 				},
 				get_json: function () {
 					return {type: "box_path",
@@ -375,15 +401,28 @@ window.TOONTALK.box_backside =
 	
     return {
         create: function (box) {
-	        var backside = TT.backside.create(this);
+	        var backside = TT.backside.create(box);
             var size_input = TT.UTILITIES.create_text_input(box.get_size().toString(), 'toontalk-box-size-input', "Number of holes", "Type here to edit the number of holes.");
 			var horizontal = TT.UTILITIES.create_radio_button("box_orientation", "horizontal", "Left to right", "Show box horizontally."); // might be nicer replaced by an icon
 			var vertical = TT.UTILITIES.create_radio_button("box_orientation", "vertical", "Top to bottom", "Show box vertically.");
             var update_value = function () {
-                box.set_size(parseInt(size_input.button.value.trim(), 10), true);
+				var new_size = parseInt(size_input.button.value.trim(), 10);
+                box.set_size(new_size, true);
+				if (TT.robot.in_training) {
+					TT.robot.in_training.edited(box, {setter_name: "set_size",
+			                                          argument_1: new_size,
+												      toString: "change the number of holes to " + new_size + " of the box"});
+				}
             };
 			var update_orientation = function () {
-				box.set_horizontal((TT.UTILITIES.selected_radio_button(horizontal.button, vertical.button).value === "horizontal"), true);
+				var orientation = TT.UTILITIES.selected_radio_button(horizontal.button, vertical.button).value;
+				var is_horizontal = (orientation === "horizontal");
+				box.set_horizontal(is_horizontal, true);
+				if (TT.robot.in_training) {
+					TT.robot.in_training.edited(box, {setter_name: "set_horizontal",
+			                                          argument_1: is_horizontal,
+												      toString: "change the orientation to " + orientation + " of the box"});
+				}
 			};
 			var backside_element = backside.get_element();
 			var standard_buttons = TT.backside.create_standard_buttons(backside, box);
@@ -392,21 +431,18 @@ window.TOONTALK.box_backside =
 			vertical.button.onchange = update_orientation;
             backside_element.appendChild(size_input.container);
 			backside_element.appendChild($(TT.UTILITIES.create_horizontal_table(horizontal.container, vertical.container)).buttonset().get(0));
-			if (box.get_horizontal()) {
-				TT.UTILITIES.check_radio_button(horizontal);
-			} else {
-				TT.UTILITIES.check_radio_button(vertical.button);
-			}
             backside_element.appendChild(standard_buttons);
+			backside.update_display = function () {
+				size_input.button.value = box.get_size().toString();
+				if (box.get_horizontal()) {
+					TT.UTILITIES.check_radio_button(horizontal);
+				} else {
+					TT.UTILITIES.check_radio_button(vertical);
+				}
+			};
+			backside.update_display();
             return backside;
-        },		
-		update_display: function () {
-			var size_input = TT.UTILITIES.get_first_child_with_class(this.get_element(), "toontalk-box-size-input");
-			var box = this.get_widget();
-			size_input.value = box.get_size().toString();
-		}
-
-    };
+        }};
 }(window.TOONTALK));
 
 window.TOONTALK.box_empty_hole = 
@@ -421,7 +457,12 @@ window.TOONTALK.box_empty_hole =
 				return hole_element;
 			};
 			empty_hole.update_display = function () {
-				// nothing to do
+				// should be nothing to do
+				// but height percentage not working as expected
+				if (!box.get_horizontal()) {
+					var box_frontside_element = box.get_frontside_element();
+					$(hole_element).css({"min-height": $(box_frontside_element).height() / box.get_size()});
+				}
 			};
 			empty_hole.get_frontside = function () {
 				// doubles as its own frontside
@@ -442,10 +483,19 @@ window.TOONTALK.box_empty_hole =
 			empty_hole.copy = function (containing_box) {
 				return TT.box_empty_hole.create(index, containing_box);
 			};
+			empty_hole.match = function () {
+				return "matched";
+			};
+			empty_hole.get_type_name = function () {
+				return "empty hole";
+			};
+			empty_hole.visible = function () {
+				return false; // you can't see it
+			};
 			$(hole_element).on('drop',
                 function (event) {
 					var json_object = TT.UTILITIES.data_transfer_json_object(event);
-                    var $dropped = $("#" + json_object.id_of_original_dragree);
+                    var $dropped = TT.UTILITIES.get_dragee(); // $("#" + json_object.id_of_original_dragree);
 					var dropped_widget;
 					if ($dropped.length > 0) {
 						event.stopPropagation();
@@ -459,6 +509,9 @@ window.TOONTALK.box_empty_hole =
 							$dropped.resizable("disable");
 							// don't want it to look disabled just because you can't resize it
 							$dropped.removeClass('ui-state-disabled');
+						}
+						if (TT.robot.in_training) {
+							TT.robot.in_training.dropped_on(empty_hole);
 						}
 						box.set_hole(index, dropped_widget);
 						box.update_display();

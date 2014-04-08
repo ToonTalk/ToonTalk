@@ -180,13 +180,12 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             function () { 
                 return format; 
             };
-		result = number.add_sides_functionality(result);
-		result = number.erasable(result);
+		result = number.add_standard_widget_functionality(result);
         return result;
     };
 	
 	number.create_backside = function () {
-		return TT.number_backside.create(this);
+		return TT.number_backside.create(this).update_run_button_disabled_attribute();
 	};
         
     number.set_from_values = function (numerator, denominator, update_now) {
@@ -202,11 +201,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     };
 
     number.copy = function (just_value) {
-        var copy = number.create(this.get_value()[0], this.get_value()[1], this.get_operator(), this.get_format());
-		if (just_value) {
-			return copy;
-		}
-		return this.add_to_copy(copy);
+		return this.add_to_copy(number.create(this.get_value()[0], this.get_value()[1], this.get_operator(), this.get_format()), just_value);
     };
     
     number.is_number = function () {
@@ -233,7 +228,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
 		var $dimensions_holder;
 		if ($(frontside_element).is(".toontalk-thought-bubble-contents")) {
 			$dimensions_holder = $(frontside_element);
-		} else if ($(frontside_element).parent().is(".toontalk-backside")) {
+		} else if ($(frontside_element).parent().is(".toontalk-backside, .toontalk-json")) {
 			$dimensions_holder = $(frontside_element);
 		} else {
 			$dimensions_holder = $(frontside_element).parent();
@@ -482,8 +477,14 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
 
     number.match = function (context) {
         if (this.get_erased()) {
-            return context.match_with_any_number();
+			if (context.match_with_any_number) {
+            	return context.match_with_any_number();
+			}
+			return 'not matched'; // since doesn't handle match_with_any_number
         }
+		if (!context.match_with_this_number) {
+			return 'not matched';
+		}
         return context.match_with_this_number(this);
     };
 
@@ -523,14 +524,34 @@ window.TOONTALK.number_backside =
 			var divide = TT.UTILITIES.create_radio_button("operator", "/", "&divide;", "Divide me into what I'm dropped on.");
 			var power = TT.UTILITIES.create_radio_button("operator", "^", "Integer power", "Use me as the number of times to multiply together what I'm dropped on.");
             var update_value = function () {
-                number.set_from_values(numerator_input.button.value.trim(), denominator_input.button.value.trim(), true);
+				var numerator = numerator_input.button.value.trim();
+				var denominator = denominator_input.button.value.trim();
+                number.set_from_values(numerator, denominator, true);
+				if (TT.robot.in_training) {
+					TT.robot.in_training.edited(number, {setter_name: "set_from_values",
+			                                             argument_1: numerator,
+														 argument_2: denominator,
+														 toString: "change the value to " + numerator + "/" + denominator + " of the number"});
+				}
             };
 			var update_format = function () {
 				// use JQuery instead?
-				number.set_format(TT.UTILITIES.selected_radio_button(decimal_format.button, proper_format.button, improper_format.button).value, true);
+				var format = TT.UTILITIES.selected_radio_button(decimal_format.button, proper_format.button, improper_format.button).value;
+				number.set_format(format, true);
+				if (TT.robot.in_training) {
+					TT.robot.in_training.edited(number, {setter_name: "set_format",
+			                                             argument_1: format,
+														 toString: "change the format to " + format + " of the number"});
+				}
 			};
 			var update_operator = function () {
-				number.set_operator(TT.UTILITIES.selected_radio_button(plus.button, minus.button, multiply.button, divide.button, power.button).value, true);
+				var operator = TT.UTILITIES.selected_radio_button(plus.button, minus.button, multiply.button, divide.button, power.button).value;
+				number.set_operator(operator, true);
+				if (TT.robot.in_training) {
+					TT.robot.in_training.edited(number, {setter_name: "set_operator",
+			                                             argument_1: operator,
+														 toString: "change the operator to " + operator + " of the number"});
+				}
 			};
 			var number_set = TT.UTILITIES.create_horizontal_table(numerator_input.container, slash, denominator_input.container);
 			var format_set = $(TT.UTILITIES.create_horizontal_table(decimal_format.container, proper_format.container, improper_format.container)).buttonset().get(0);
@@ -580,9 +601,9 @@ window.TOONTALK.number_backside =
 			divide.button.onchange = update_operator;
 			power.button.onchange = update_operator;
 			backside.update_display = function () {
-				var number_widget = this.get_widget();
-				$(numerator_input.button).val(number_widget.numerator_string());
-				$(denominator_input.button).val(number_widget.denominator_string());
+// 				var number_widget = this.get_widget();
+				$(numerator_input.button).val(number.numerator_string());
+				$(denominator_input.button).val(number.denominator_string());
 			};
             return backside;
         }

@@ -32,19 +32,21 @@ window.TOONTALK.queue =
             var end_time = new Date().getTime() + this.maximum_run;
             var that = this;
             var now, element;
+//          if (this.to_run.length > 0) console.log("start time: " + (end_time-this.maximum_run));
             while (this.to_run.length > 0) {
                 if (this.paused) {
                     return;
                 }
                 now = new Date().getTime();
                 if (now >= end_time) {
+//                  console.log("end time:   " + now);
                     break; 
                 }
                 // TODO: use an efficient implementation of queues (linked lists?)
                 next_robot_run = this.dequeue();
                 next_robot_run.robot.run_actions(next_robot_run.context, next_robot_run.queue);
                 if (steps_limit) {
-                    // only used for testing
+                    // steps_limit only used for testing
                     steps_limit -= 1;
                     if (steps_limit === 0) {
                         // clear the queue to be ready for the next test
@@ -57,7 +59,7 @@ window.TOONTALK.queue =
                     }
                 }
             }
-            TT.DISPLAY_UPDATES.update_display();
+//             TT.DISPLAY_UPDATES.update_display();
             setTimeout(function () {
                           that.run(steps_limit, run_after_steps_limit);
                        },

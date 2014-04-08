@@ -1,54 +1,47 @@
 <!DOCTYPE html>
 <html>
 <head>
-<script>
-window.TOONTALK = {}; // create ToonTalk 'module' -- using 'window' as recommended by Caja documentation
-</script>
-  <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.4/themes/sunny/jquery-ui.css">
-  <link rel="stylesheet" media="all" href="css/toontalk.css">
-  <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
-  <script src="https://code.jquery.com/ui/1.8.21/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.10.4/themes/sunny/jquery-ui.css">
+<link rel="stylesheet" media="all" href="css/toontalk.css">
+<script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
+<script src="https://code.jquery.com/ui/1.8.21/jquery-ui.min.js"></script>
 <script src="js/libraries/rationaljs.js"></script>
+<script src="js/support/initial.js"></script>
 <script src="js/primitives/widget.js"></script>
 <script src="js/primitives/number.js"></script>
 <script src="js/primitives/robot.js"></script>
 <script src="js/primitives/box.js"></script>
 <script src="js/primitives/backside.js"></script>
 <script src="js/primitives/frontside.js"></script>
-<script src="js/actions/drop.js"></script>
-<script src="js/actions/pick_up.js"></script>
-<script src="js/actions/pick_up_constant.js"></script>
-<script src="js/actions/copy.js"></script>
-<script src="js/actions/copy_constant.js"></script>
 <script src="js/support/robot_actions.js"></script>
-<script src="js/support/path_to_entire_context.js"></script>
+<script src="js/support/robot_action.js"></script>
+<script src="js/support/path.js"></script>
 <script src="js/support/run_queue.js"></script>
 <script src="js/support/display_updates.js"></script>
 <!-- following should be after all the primitive widgets are defined --->
 <script src="js/support/utilities.js"></script>
-<!-- following only including during development/testing --->
-<script src="js/tests/tests.js"></script>
-<script src="js/index.js"></script>
 <title>ToonTalk Reborn Test Page</title>
 <link rel="shortcut icon" href="favicon.ico" />
 </head>
 <body>
-<div id='top-level-backside'> </div>
-<table>
+<p>
+<a href='https://github.com/ToonTalk/ToonTalk/blob/master/README' target='_blank'>ToonTalk Reborn</a>
+<table style='padding: 8px;'>
 <tr>
-<td>
-<div id='a-number' class='toontalk-top-level-resource'> </div>
+<td style='width: 200px;'>
+<div class='toontalk-json'>{"semantic":{"type":"number","operator":"+","numerator":"1","denominator":"1","format":"improper_fraction"},
+                                "view": {"frontside_width":172,"frontside_height":66,"id_of_original_dragree":"toontalk_id_1396262997243","drag_x_offset":67,"drag_y_offset":38}}</div>
 </td>
-<td>
-<div id='a-box' class='toontalk-top-level-resource'> </div>
+<td style='width: 200px;'>
+<div class='toontalk-json'>{"semantic":{"type":"box","contents":[null],"horizontal":true},
+                                "view": {"frontside_width":169,"frontside_height":100,"id_of_original_dragree":"toontalk_id_1396262997247","drag_x_offset":81,"drag_y_offset":50}}</div>
 </td>
-<td>
-<div id='a-robot' class='toontalk-top-level-resource'> </div>
+<td style='width: 200px;'>
+<div class='toontalk-json'>{"semantic":{"type":"robot","body":{"type":"body","steps":[],"run_once":false}},
+                                "view": {"image_url":"images/RB00.PNG","frontside_width":65,"frontside_height":100,"id_of_original_dragree":"toontalk_id_1396262997253","drag_x_offset":31,"drag_y_offset":48}}</div>
 </td>
 </tr>
 </table>
-<script>
-window.TOONTALK.initialise();
-</script>
+<div class='toontalk-json'>{"semantic":{"type":"top_level","width":646,"height":261},"view":{"frontside_width":0,"frontside_height":0,"backside_width":646,"backside_height":261,"backside_left":8,"backside_top":179,"id_of_original_dragree":"toontalk_id_1396518462430","drag_x_offset":269,"drag_y_offset":133,"original_width_fraction":0.2,"original_height_fraction":0.1,"backside":true},"version":1}</div>
 </body>
 </html>

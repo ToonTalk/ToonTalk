@@ -7,8 +7,8 @@
  .toontalk-top-level-resource {
 	 -ms-touch-action: none;
 	 position: relative;
-	 width: 100px;
-	 height: 100px;
+/* 	 width: 100px;
+	 height: 100px; */
 	 display:  inline-block;
  }
 .toontalk-top-level-resource:hover {
@@ -29,6 +29,12 @@
 	padding-left:  6px;
 	padding-right:  6px;
 }
+.toontalk-top-level-backside {
+    width: 1000px;
+	height: 300px;
+	background-color: yellow;
+	position: relative;
+}
 .toontalk-top-level-frontside {
 	-ms-touch-action: none;
 	position: absolute;
@@ -38,6 +44,9 @@
 	/* while testing: */
 	width: 20%;
 	height: 10%;
+}
+.toontalk-json {
+	display: inline-block;	
 }
 .toontalk-frontside {
 	-ms-touch-action: none;
@@ -120,6 +129,7 @@
 	border-radius: 6px;
 	text-align: center;
 	vertical-align: middle;
+	display: inline-block;
 }
 .toontalk-improper-fraction {
 	table-layout: fixed;
@@ -147,13 +157,14 @@
 }
 .toontalk-denominator {
 }
+.toontalk-text-input {
+    color: inherit;
+    background: none;
+    cursor: text;	
+}
 .toontalk-numerator-input {
-	/* width: 98%; */
-	/* border-radius: 4px; */
 }
 .toontalk-denominator-input {
-	/* width: 98%; */
-	/* border-radius: 4px; */
 }
 .toontalk-three-dots-in-number {
 	font-size: 30%;
@@ -169,15 +180,15 @@
 	/* font-weight: bold; */
 }
 .toontalk-hide-backside-button {
-	position: absolute;
+/* 	position: absolute; */
 }
 .toontalk-robot-description-input {
 	width: 30em;
-}
-.toontalk-robot-image {
+	text-align: inherit;
 }
 .toontalk-image-url-input {
 	width: 30em;
+	text-align: inherit;
 }
 .toontalk-thought-bubble {
     background-image: url(images/BUBBL10.96x96.PNG);
@@ -186,9 +197,9 @@
     height: 96px;
 }
 .toontalk-thought-bubble-contents {
-    left: 10%;
+    left: 20%;
 	top: 15%;
-	width: 60%;
+	width: 90%;
 	height: 40%;
 	position: absolute;
 }

@@ -93,7 +93,7 @@ window.TOONTALK.robot = (function (TT) {
     };
     
     robot.create_backside = function () {
-		return TT.robot_backside.create(this);
+		return TT.robot_backside.create(this).update_run_button_disabled_attribute();;
 	};
     
     robot.copy = function (just_value) {
