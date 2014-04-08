@@ -109,10 +109,7 @@ window.TOONTALK.robot = (function (TT) {
 							   this.get_height(),
 							   this.get_run_once(),
 							   next_robot_copy);
-		if (just_value) {
-			return copy;
-		}
-        return this.add_to_copy(copy);
+        return this.add_to_copy(copy, just_value);
     };
 	
 	robot.match = function () {

@@ -201,11 +201,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     };
 
     number.copy = function (just_value) {
-        var copy = number.create(this.get_value()[0], this.get_value()[1], this.get_operator(), this.get_format());
-		if (just_value) {
-			return copy;
-		}
-		return this.add_to_copy(copy);
+		return this.add_to_copy(number.create(this.get_value()[0], this.get_value()[1], this.get_operator(), this.get_format()), just_value);
     };
     
     number.is_number = function () {

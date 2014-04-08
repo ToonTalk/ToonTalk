@@ -265,13 +265,16 @@ window.TOONTALK.widget = (function (TT) {
             return false;
         },
         
-        add_to_copy: function (copy) {
-            var backside_widgets = this.get_backside_widgets();
+        add_to_copy: function (copy, just_value) {
+            var backside_widgets;
             if (this.get_erased()) {
                 copy.set_erased(this.get_erased());
             }
-            if (backside_widgets.length > 0) {
-                copy.set_backside_widgets(TT.UTILITIES.copy_widgets(backside_widgets), this.get_backside_widgets_json_views());
+            if (!just_value) {
+                backside_widgets = this.get_backside_widgets();
+                if (backside_widgets.length > 0) {
+                    copy.set_backside_widgets(TT.UTILITIES.copy_widgets(backside_widgets), this.get_backside_widgets_json_views());
+                }
             }
             return copy;
         },

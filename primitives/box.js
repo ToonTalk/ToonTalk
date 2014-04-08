@@ -69,10 +69,7 @@ window.TOONTALK.box = (function (TT) {
                 copy.set_hole(i, hole.copy(copy));
             }
         }
-		if (just_value) {
-			return copy;
-		}
-        return this.add_to_copy(copy);
+        return this.add_to_copy(copy, just_value);
     };
     
     box.create_backside = function () {
