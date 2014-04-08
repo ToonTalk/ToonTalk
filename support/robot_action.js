@@ -11,46 +11,45 @@ window.TOONTALK.robot_action =
     "use strict";
     var run_functions =
         {"copy": function (widget, context, robot) {
-                     robot.get_body().add_newly_created_widget(widget.copy(true));
-                     return true;
+            robot.get_body().add_newly_created_widget(widget.copy(true));
+            return true;
           },
-//          "copy_constant": function (widget, context, robot) {
-//                               robot.set_thing_in_hand(widget.copy(true));
-//                               return true;
-//          },
          "pick up": function (widget, context, robot) {
-                        robot.set_thing_in_hand(widget);
-                        return true;
+             robot.set_thing_in_hand(widget);
+             return true;
          },
          "pick up a copy": function (widget, context, robot) {
-                             robot.set_thing_in_hand(widget.copy(true));
-                             return true;
+             robot.set_thing_in_hand(widget.copy(true));
+             return true;
          },
          "drop it on": function (target, context, robot) {
-                        var thing_in_hand;
-                        if (target) {
-                            thing_in_hand = robot.get_thing_in_hand();
-                            if (thing_in_hand) {
-                                if (thing_in_hand.drop_on) {
-                                    if (target instanceof jQuery) {
-                                        // e.g. dropped on top-level backside
-                                        target.append(thing_in_hand.get_frontside_element());
-                                    } else {
-                                        thing_in_hand.drop_on(target);
-                                    }
-                                } else {
-                                    console.log("Thing in robot's hand doesn't handle 'drop_on': "  + thing_in_hand.toString() + ". Robot that " + robot.toString());
-                                    return false;
-                                }
-                                return true;
-                            }
-                            console.log("The robot that " + robot.toString() + " is executing drop_on but has nothing in its hand.");
-                        }
-                        return false;
+             var thing_in_hand;
+             if (target) {
+                 thing_in_hand = robot.get_thing_in_hand();
+                 if (thing_in_hand) {
+                     if (thing_in_hand.drop_on) {
+                         if (target instanceof jQuery) {
+                             // e.g. dropped on top-level backside
+                             target.append(thing_in_hand.get_frontside_element());
+                         } else {
+                             thing_in_hand.drop_on(target);
+                             if (target.visible()) {
+                                 target.update_display();
+                             }
+                         }
+                     } else {
+                         console.log("Thing in robot's hand doesn't handle 'drop_on': "  + thing_in_hand.toString() + ". Robot that " + robot.toString());
+                         return false;
+                     }
+                     return true;
+                 }
+                 console.log("The robot that " + robot.toString() + " is executing drop_on but has nothing in its hand.");
+            }
+            return false;
          },
          "remove": function (widget, context, robot) {
-                       widget.remove();     
-                       return true;
+             widget.remove();     
+             return true;
          },
          "edit": function (widget, context, robot, additional_info) {
              // user setter_name instead of the function itself so can be JSONified
@@ -80,6 +79,7 @@ window.TOONTALK.robot_action =
             new_action.run = function (context, robot) {
                 var referenced = TT.path.dereference_path(path, context);
                 if (!referenced) {
+			        console.log("Unable to dereference path: " + TT.path.toString(path) + " in context: " + context.toString());
                     return false;
                 }
                 return run_function(referenced, context, robot, additional_info);

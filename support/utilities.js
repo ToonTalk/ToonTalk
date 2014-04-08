@@ -20,6 +20,7 @@ window.TOONTALK.UTILITIES =
 						 "box_path": TT.box.path.create_from_json,
 						 "path.to_entire_context": TT.path.to_entire_context.create_from_json,
 						 "path.top_level_backside": TT.path.top_level_backside.create_from_json,
+						 "path.to_resource": TT.path.path_to_resource_create_from_json,
 						 "newly_created_widgets_path": TT.newly_created_widgets_path.create_from_json,
 						 "top_level": TT.widget.top_level_create_from_json};
 	// id needs to be unique across ToonTalks due to drag and drop
@@ -677,6 +678,10 @@ window.TOONTALK.UTILITIES =
 					return arguments[i];
 				}
 			}
+		},
+		
+		get_dragee: function () {
+			return dragee;
 		}
 	
     };

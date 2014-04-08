@@ -253,7 +253,7 @@ window.TOONTALK.widget = (function (TT) {
         visible: function () {
             var frontside = this.get_frontside();
             if (!frontside) {
-               return false;
+                return false;
             }
             return $(frontside.get_element()).is(":visible");
         },
@@ -331,6 +331,9 @@ window.TOONTALK.widget = (function (TT) {
             };
             widget.toString = function () {
                 return "top level widget";
+            };
+            widget.visible = function () {
+                return true;
             };
             widget = widget.add_sides_functionality(widget);
             widget = widget.runnable(widget);

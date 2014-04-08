@@ -166,7 +166,7 @@ window.TOONTALK.box = (function (TT) {
                 contents += " | ";
             }
         }
-        return '[' + contents + ']';
+        return "box that looks like [" + contents + ']';
     };
 	
 	box.get_type_name = function () {
@@ -489,10 +489,16 @@ window.TOONTALK.box_empty_hole =
 			empty_hole.match = function () {
 				return "matched";
 			};
+			empty_hole.get_type_name = function () {
+				return "empty hole";
+			};
+			empty_hole.visible = function () {
+				return false; // you can't see it
+			};
 			$(hole_element).on('drop',
                 function (event) {
 					var json_object = TT.UTILITIES.data_transfer_json_object(event);
-                    var $dropped = $("#" + json_object.id_of_original_dragree);
+                    var $dropped = TT.UTILITIES.get_dragee(); // $("#" + json_object.id_of_original_dragree);
 					var dropped_widget;
 					if ($dropped.length > 0) {
 						event.stopPropagation();

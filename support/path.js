@@ -35,20 +35,13 @@ window.TOONTALK.path =
 			console.log("TT.path.get_path_to not fully implemented.");
         },
 		dereference_path: function (path, context) {
-			var reference;
 		    if (path) {
 				if (path.dereference) {
-					reference = path.dereference(context);
+					return path.dereference(context);
 				}
-				if (!reference) {
-                	reference = context.dereference(path);
-				}
-			    if (!reference) {
-			        console.log("Unable to dereference path: " + TT.path.toString(path) + " in context: " + context.toString());
-			    }
-			    return reference;
+                return context.dereference(path);
             }
-            // no path means entire context
+            // no path means entire context -- I don't think this is still true
             return context;
         },
 		toString: function (a_path) {
@@ -81,6 +74,27 @@ window.TOONTALK.path =
                 return TT.path.to_entire_context;
             }
         },
+		get_path_to_resource: function (widget) {
+			return {dereference: function (context) {
+						return widget.copy();
+					},
+					toString: function () {
+						var widget_string = widget.toString();
+						var first_character = widget_string.charAt(0);
+						if ("aeiou".indexOf(first_character) < 0) {
+							return "a " + widget_string;
+						}
+						return "an " + widget_string;
+					},
+					get_json: function () {
+						return {type: "path.to_resource",
+								widget: TT.UTILITIES.get_json(widget)};
+					}
+			};
+		},
+        path_to_resource_create_from_json: function (json) {
+            return TT.path.path_to_resource(json.create_from_json(json.widget));
+		},
 		top_level_backside: {
 			dereference: function () {
 				return $(".toontalk-top-level-backside");

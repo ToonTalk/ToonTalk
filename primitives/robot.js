@@ -169,7 +169,8 @@ window.TOONTALK.robot = (function (TT) {
 	robot.picked_up = function (widget, json, is_resource) {
 		var path;
 		if (is_resource) {
-			path = widget; // widget itself is the path -- will be a fresh copy created from JSON
+			// robot needs a copy of the resource to avoid sharing it with training widget
+			path = TT.path.get_path_to_resource(widget.copy());
 		} else {
 			path = TT.path.get_path_to(widget, this);
 		}
