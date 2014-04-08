@@ -106,7 +106,7 @@ window.TOONTALK.path =
 					},
 					get_json: function () {
 						return {type: "path.to_resource",
-								widget: TT.UTILITIES.get_json(widget)};
+								widget: TT.path.get_json(widget)};
 					}
 			};
 		},
