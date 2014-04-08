@@ -15,7 +15,7 @@ window.TOONTALK.path =
             var body = robot.get_body();
 			var path, sub_path;
             if (context === widget) {
-			    return TT.path.to_entire_context;
+			    return TT.path.to_entire_context();
 		    }
 			if (widget === "top-level-backside" || widget.get_type_name() === "top-level") {
 				return TT.path.top_level_backside;
@@ -27,7 +27,7 @@ window.TOONTALK.path =
 			if (context.get_path_to) {
 				sub_path = context.get_path_to(widget, robot);
 				if (sub_path) {
-					path = TT.path.to_entire_context;
+					path = TT.path.to_entire_context();
 					path.next = sub_path;
 					return path;
 				}
@@ -52,27 +52,29 @@ window.TOONTALK.path =
 				return a_path.toString();
 			}
 		},
-        to_entire_context: {
+        to_entire_context: function () {
             // an action that applies to the entire context (i.e. what the robot is working on)
-			dereference: function (context) {
-				if (this.next) {
-					if (context.dereference) {
-						return context.dereference(this.next);
-					} else {
-						console.log("Expected context to support dereference.");
-					}				
-				}
-				return context;
-			},
-            toString: function () {
-                return "what he's working on";
-            },
-            get_json: function () {
-                return {type: "path.to_entire_context"};
-            },
-            create_from_json: function () {
-                return TT.path.to_entire_context;
-            }
+			// need to create fresh ones since if there is a sub-path they shouldn't be sharing
+			return {dereference: function (context) {
+						if (this.next) {
+							if (context.dereference) {
+								return context.dereference(this.next);
+							} else {
+								console.log("Expected context to support dereference.");
+							}				
+						}
+						return context;
+					},
+					toString: function () {
+						return "what he's working on";
+					},
+					get_json: function () {
+						return {type: "path.to_entire_context"};
+					}
+			};
+        },
+        create_from_json: function () {
+            return TT.path.to_entire_context();
         },
 		get_path_to_resource: function (widget) {
 			return {dereference: function (context) {
