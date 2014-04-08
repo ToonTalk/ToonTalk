@@ -42,6 +42,7 @@ window.TOONTALK.backside =
 // 						$side_element_of_other.resizable("enable");
                         other.update_display();
 			        }
+					backside.update_run_button_disabled_attribute();
 					return true;
 			    };
 			}
@@ -68,6 +69,9 @@ window.TOONTALK.backside =
 							TT.robot.in_training.dropped_on(this);
 						}
 					}
+					this.get_widget().add_backside_widget(other);
+					// following called by add_backside_widget
+// 					backside.update_run_button_disabled_attribute();
 			        return true;
 		        };
 		    backside.add_backside_widgets = function (backside_widgets, json_array)  {
@@ -171,6 +175,17 @@ window.TOONTALK.backside =
 		visible: function () {
 			var backside_element = this.get_element();
 			return (backside_element && $(backside_element).is(":visible"));
+		},
+		
+		update_run_button_disabled_attribute: function () {
+			var backside_element = this.get_element();
+			var $run_button;
+			if (!backside_element) {
+				return;
+			}
+			$run_button = $(backside_element).find(".toontalk-run-backside-button");
+			$run_button.button("option", "disabled", !this.get_widget().can_run());
+			return this;
 		},
 		
 		create_standard_buttons: function (backside, widget) { // extra arguments are extra buttons

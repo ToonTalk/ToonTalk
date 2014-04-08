@@ -215,11 +215,21 @@ window.TOONTALK.widget = (function (TT) {
             return backside.get_widgets();
         },
         
-        get_backside_widgets_json_views: function () {
-            return this.backside_widgets_json_views;
+        add_backside_widget: function (widget) {
+            var backside_widgets = this.get_backside_widgets();
+            var backside = this.get_backside();
+            if (!backside_widgets) {
+                this.backside_widgets = [widget];
+            } else if (backside_widgets.indexOf(widget) < 0) {
+                backside_widgets[backside_widgets.length] = widget;                            
+            }
+            if (backside) {
+                backside.update_run_button_disabled_attribute();
+            }
         },
         
         set_backside_widgets: function (backside_widgets, json_views) {
+            var backside = this.get_backside();
             this.backside_widgets = backside_widgets;
             if (backside_widgets.length > 0) { 
                 if (this.get_backside()) {
@@ -229,6 +239,30 @@ window.TOONTALK.widget = (function (TT) {
                     this.backside_widgets_json_views = json_views;
                 }
             }
+            if (backside) {
+                backside.update_run_button_disabled_attribute();
+            }
+        },
+              
+        get_backside_widgets_json_views: function () {
+            return this.backside_widgets_json_views;
+        },
+        
+        can_run: function () {
+            // returns true if a backside element is a trained robot or 
+            // or a widget this can_run
+            var backside_widgets = this.get_backside_widgets();
+            var i, widget;
+            for (i = 0; i < backside_widgets.length; i++) {
+                widget = backside_widgets[i];
+                if (widget.get_body && !widget.get_body().is_empty()) {
+                    return true;
+                }      
+                if (widget.can_run()) {
+                    return true;
+                }
+            }
+            return false;
         },
         
         add_to_copy: function (copy) {

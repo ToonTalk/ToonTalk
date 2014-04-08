@@ -433,12 +433,18 @@ window.TOONTALK.robot_backside =
 			backside.update_display = function () {
 				var title = robot.get_title();
 				var frontside_element = robot.get_frontside_element();
+				var $containing_backside_element;
 				$(description_input.button).val(title);
 				$(image_url_input.button).val(robot.get_image_url());
 				$(run_once_input.button).prop("checked", !robot.get_run_once());
 				if (frontside_element) {
 					frontside_element.title = title;
+					$containing_backside_element = $(frontside_element).closest(".toontalk-backside");
+					if ($containing_backside_element.length > 0) {
+						$containing_backside_element.data("owner").get_backside().update_run_button_disabled_attribute();
+					}					
 				}
+				backside.update_run_button_disabled_attribute();
 			};
             return backside;
         },
