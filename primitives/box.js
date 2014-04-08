@@ -155,6 +155,7 @@ window.TOONTALK.box = (function (TT) {
         var contents = "";
         var size = this.get_size();
         var i, hole;
+		var extra_text = "box that looks like ";
         for (i = 0; i < size; i += 1) {
             hole = this.get_hole(i);
 			if (hole) {
@@ -166,7 +167,8 @@ window.TOONTALK.box = (function (TT) {
                 contents += " | ";
             }
         }
-        return "box that looks like [" + contents + ']';
+		// only want the extra_text on the topmost level
+        return extra_text + "[" + contents.replace(extra_text, "") + ']';
     };
 	
 	box.get_type_name = function () {
