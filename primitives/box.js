@@ -73,7 +73,7 @@ window.TOONTALK.box = (function (TT) {
     };
     
     box.create_backside = function () {
-		return TT.box_backside.create(this);
+		return TT.box_backside.create(this).update_run_button_disabled_attribute();;
 	};
     
     box.equals = function (other) {
@@ -107,6 +107,9 @@ window.TOONTALK.box = (function (TT) {
 			}
 			return 'not matched';
         }
+		if (!context.match_with_this_box) {
+			return 'not matched';
+		}
         return context.match_with_this_box(this);
     };
     
