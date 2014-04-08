@@ -359,6 +359,8 @@ window.TOONTALK.UTILITIES =
 						if (container) {
 							if ($container.is(".toontalk-frontside")) {
 								container.removed(source, $source, event);
+							} else {
+								container.get_backside().removed(source, $source, event);
 							}
 						} else {
 							TT.UTILITIES.restore_resource($source, source);

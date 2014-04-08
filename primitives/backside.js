@@ -172,6 +172,10 @@ window.TOONTALK.backside =
 			$(this.get_element()).remove();
 		},
 		
+		removed: function (part, element, event) {
+			this.get_widget().remove_backside_widget(part);
+		},
+		
 		visible: function () {
 			var backside_element = this.get_element();
 			return (backside_element && $(backside_element).is(":visible"));
@@ -181,6 +185,10 @@ window.TOONTALK.backside =
 			var backside_element = this.get_element();
 			var $run_button;
 			if (!backside_element) {
+				return;
+			}
+			if ($(backside_element).is(".toontalk-top-level-backside")) {
+				// has no buttons
 				return;
 			}
 			$run_button = $(backside_element).find(".toontalk-run-backside-button");

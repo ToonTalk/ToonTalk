@@ -203,13 +203,12 @@ window.TOONTALK.widget = (function (TT) {
         },
         
         get_backside_widgets: function () {
-            var backside = this.get_backside();
-            var backside_element;
+            var backside;
+            if (typeof this.backside_widgets !== 'undefined') {
+                return this.backside_widgets;
+            }
+            backside = this.get_backside();  
             if (!backside) {
-                if (this.backside_widgets) {
-                    // backside never displayed so use widgets added by copy or drop
-                    return this.backside_widgets;
-                }
                 return [];
             }
             return backside.get_widgets();
@@ -223,6 +222,26 @@ window.TOONTALK.widget = (function (TT) {
             } else if (backside_widgets.indexOf(widget) < 0) {
                 backside_widgets[backside_widgets.length] = widget;                            
             }
+            if (backside) {
+                backside.update_run_button_disabled_attribute();
+            }
+        },
+        
+        remove_backside_widget: function (widget) {
+            var backside_widgets = this.get_backside_widgets();
+            var backside = this.get_backside();
+            var widget_index;
+            if (!backside_widgets) {
+                console.log("Couldn't remove a widget from backside widgets.");
+                return;
+            }
+            widget_index = backside_widgets.indexOf(widget);
+            if (widget_index < 0) {
+                console.log("Couldn't find a widget to remove it from backside widgets.");
+                return;                        
+            }
+            backside_widgets.splice(widget_index, 1);
+            this.backside_widgets = backside_widgets;
             if (backside) {
                 backside.update_run_button_disabled_attribute();
             }
