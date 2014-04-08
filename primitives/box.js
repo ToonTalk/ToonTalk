@@ -404,7 +404,7 @@ window.TOONTALK.box_backside =
 	
     return {
         create: function (box) {
-	        var backside = TT.backside.create(this);
+	        var backside = TT.backside.create(box);
             var size_input = TT.UTILITIES.create_text_input(box.get_size().toString(), 'toontalk-box-size-input', "Number of holes", "Type here to edit the number of holes.");
 			var horizontal = TT.UTILITIES.create_radio_button("box_orientation", "horizontal", "Left to right", "Show box horizontally."); // might be nicer replaced by an icon
 			var vertical = TT.UTILITIES.create_radio_button("box_orientation", "vertical", "Top to bottom", "Show box vertically.");
