@@ -481,7 +481,10 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
 
     number.match = function (context) {
         if (this.get_erased()) {
-            return context.match_with_any_number();
+			if (context.match_with_any_number) {
+            	return context.match_with_any_number();
+			}
+			return 'not matched'; // since doesn't handle match_with_any_number
         }
 		if (!context.match_with_this_number) {
 			return 'not matched';
