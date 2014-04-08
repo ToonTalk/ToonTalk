@@ -91,8 +91,7 @@ window.TOONTALK.robot_action =
             new_action.get_json = function () {
                 var json = {type: "robot_action",
                             action_name: action_name,
-                            path: path.get_json()
-                };
+                            path: TT.path.get_json(path)};
                 if (additional_info) {
                     json.additional_info = additional_info;
                 }
@@ -102,9 +101,9 @@ window.TOONTALK.robot_action =
         },
         create_from_json: function (json, ignore_view, additional_info) {
             if (json.additional_info) {
-                return TT.robot_action.create(TT.UTILITIES.create_from_json(json.path, additional_info), json.action_name, json.additional_info);
+                return TT.robot_action.create(TT.path.create_from_json(json.path, additional_info), json.action_name, json.additional_info);
             } else {
-                return TT.robot_action.create(TT.UTILITIES.create_from_json(json.path, additional_info), json.action_name);
+                return TT.robot_action.create(TT.path.create_from_json(json.path, additional_info), json.action_name);
             }
         }};
 }(window.TOONTALK));

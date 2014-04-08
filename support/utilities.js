@@ -18,7 +18,7 @@ window.TOONTALK.UTILITIES =
 						 "body": TT.actions.create_from_json,
 						 "robot_action": TT.robot_action.create_from_json,
 						 "box_path": TT.box.path.create_from_json,
-						 "path.to_entire_context": TT.path.to_entire_context.create_from_json,
+						 "path.to_entire_context": TT.path.entire_context_create_from_json,
 						 "path.top_level_backside": TT.path.top_level_backside.create_from_json,
 						 "path.to_resource": TT.path.path_to_resource_create_from_json,
 						 "newly_created_widgets_path": TT.newly_created_widgets_path.create_from_json,
@@ -345,7 +345,7 @@ window.TOONTALK.UTILITIES =
 						if ($source.get(0) === $target.get(0) || jQuery.contains($source.get(0), $target.get(0))) {
 							// dropped of itself or dropped on a part of itself
 							// just moved it a little bit
-							// perhaps this is never called now that elementFromPoint is used to find another target
+							// only called now that elementFromPoint is used to find another target when dropped on part of itself
 							$source.css({left: $source.get(0).offsetLeft + (event.originalEvent.layerX - drag_x_offset),
 							              top: $source.get(0).offsetTop + (event.originalEvent.layerY - drag_y_offset)});
 							event.stopPropagation();

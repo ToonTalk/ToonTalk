@@ -52,6 +52,22 @@ window.TOONTALK.path =
 				return a_path.toString();
 			}
 		},
+		get_json: function (a_path) {
+			var json = a_path.get_json();
+			if (a_path.next) {
+				json.next_path = TT.path.get_json(a_path.next);
+			}
+			return json;
+		},
+		create_from_json: function (json, additional_info) {
+			var path = TT.UTILITIES.create_from_json(json, additional_info);
+			var next_path;
+			if (json.next_path) {
+				next_path = TT.UTILITIES.create_from_json(json.next_path, additional_info);
+				path.next = next_path;
+			}
+			return path;
+		},
         to_entire_context: function () {
             // an action that applies to the entire context (i.e. what the robot is working on)
 			// need to create fresh ones since if there is a sub-path they shouldn't be sharing
@@ -73,7 +89,7 @@ window.TOONTALK.path =
 					}
 			};
         },
-        create_from_json: function () {
+        entire_context_create_from_json: function () {
             return TT.path.to_entire_context();
         },
 		get_path_to_resource: function (widget) {
@@ -98,6 +114,8 @@ window.TOONTALK.path =
             return TT.path.path_to_resource(json.create_from_json(json.widget));
 		},
 		top_level_backside: {
+			// this can be shared by all since only used to drop on -- not to pick up
+			// if pick up then needs to be a fresh copy like get_path_to_resource
 			dereference: function () {
 				return $(".toontalk-top-level-backside");
 			},
@@ -108,7 +126,7 @@ window.TOONTALK.path =
                 return {type: "path.top_level_backside"};
             },
             create_from_json: function () {
-               return TT.path.top_level_backside;
+                return TT.path.top_level_backside;
             }
 		}
     };

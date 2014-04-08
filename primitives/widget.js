@@ -225,6 +225,7 @@ window.TOONTALK.widget = (function (TT) {
                 if (this.get_backside()) {
                     this.get_backside().add_backside_widgets(backside_widgets, json_views);
                 } else {
+                    // keep this for when backside is created
                     this.backside_widgets_json_views = json_views;
                 }
             }
