@@ -294,11 +294,16 @@ window.TOONTALK.backside =
 				var frontside_element = widget.get_frontside_element();
 				var frontside_element_copy = widget_copy.get_frontside_element();
 				var position = $(frontside_element).position();
+				var $container_element = $(frontside_element).closest(".toontalk-backside");
+				var container_widget = $container_element.data("owner");
 				$(frontside_element_copy).css({width: $(frontside_element).width(),
 				                               height: $(frontside_element).height(),
 											   left: position.left+10,
 											   top: position.top+10});
-				$(frontside_element).closest(".toontalk-backside").append(frontside_element_copy);
+				$container_element.append(frontside_element_copy);
+				if (container_widget) {
+					container_widget.add_backside_widget(widget_copy);
+				}
 				if (TT.robot.in_training) {
 					TT.robot.in_training.copied(widget, widget_copy, false);
 				}
