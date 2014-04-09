@@ -326,6 +326,9 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
 			other.update_display();
 		}
 		this.remove();
+		if (TT.robot.in_training) {
+            TT.robot.in_training.dropped_on(other);
+        }
 		return true;
     };
 
