@@ -483,6 +483,7 @@ window.TOONTALK.box_empty_hole =
 				}
 				box.set_hole(index, dropped, true);
 				box.update_display();
+				return true;
 			};
 			empty_hole.get_json = function () {
 				// no need to put anything into the array

@@ -303,7 +303,7 @@ window.TOONTALK.UTILITIES =
 				});
 			$element.on('drop',
                 function (event) {
-					var $source, source, $target, target, target_position, drag_x_offset, drag_y_offset, target_is_a_backside, new_target;
+					var $source, source, $target, target, target_position, drag_x_offset, drag_y_offset, drop_handled, new_target;
 					var json_object = TT.UTILITIES.data_transfer_json_object(event);
 					// should this set the dropEffect? https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer#dropEffect.28.29
 					var $container, container;
@@ -365,10 +365,10 @@ window.TOONTALK.UTILITIES =
 						source = TT.UTILITIES.create_from_json(json_object);
 						$source = $(source.get_frontside_element());
 					}		
-					target_is_a_backside = $target.is(".toontalk-backside");
-					if (target_is_a_backside) {
+					if ($target.is(".toontalk-backside")) {
 						// widget_dropped_on_me needed here to get geometry right
 						target.get_backside().widget_dropped_on_me(source, event);
+						drop_handled = true;
 						// should the following use pageX instead?
 						// for a while using target_position.top didn't work while
 						// $target.get(0).offsetTop did and then it stopped working
@@ -388,13 +388,12 @@ window.TOONTALK.UTILITIES =
 						if (json_object.semantic.running) {
 							source.set_running(true);
 						}
-						event.stopPropagation();
 					} else if (!target) {
 						console.log("target element has no 'owner'");
 					} else if (source.drop_on(target, $target, event)) {
-						event.stopPropagation();
+						drop_handled = true;
 					}
-					if (target && !target_is_a_backside) {
+					if (target && !drop_handled) {
 						if (target.widget_dropped_on_me) {
 							target.widget_dropped_on_me(source);
 						}

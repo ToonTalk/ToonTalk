@@ -327,6 +327,7 @@ window.TOONTALK.widget = (function (TT) {
             if (TT.robot.in_training) {
                 TT.robot.in_training.dropped_on(this);
             }
+            return true;
         },
         
         equals: function (other) {
