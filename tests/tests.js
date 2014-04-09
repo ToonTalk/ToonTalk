@@ -71,14 +71,13 @@ window.TOONTALK.tests =
          var queue = TT.queue.create();
          var context_copy = context.copy();
          robot.run(context, queue);
-         var that = this;
          queue.run(runs, function () {
                              var message = robot.toString() + " when given " + context_copy.toString() + " expected " + expected_result.toString() + " not " + context.toString() + " when run " + runs + " times. ";
-                             that.assert_equals(context, expected_result, message);
+                             this.assert_equals(context, expected_result, message);
                              if (run_when_completed) {
                                  run_when_completed();
                              }
-                    });                             
+                    }.bind(this));                             
      },
      
      accept_number_robot: function() {

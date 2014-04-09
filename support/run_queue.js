@@ -30,7 +30,6 @@ window.TOONTALK.queue =
         run: function (steps_limit, run_after_steps_limit) {
             var next_robot_run, context;
             var end_time = new Date().getTime() + this.maximum_run;
-            var that = this;
             var now, element;
 //          if (this.to_run.length > 0) console.log("start time: " + (end_time-this.maximum_run));
             while (this.to_run.length > 0) {
@@ -59,10 +58,9 @@ window.TOONTALK.queue =
                     }
                 }
             }
-//             TT.DISPLAY_UPDATES.update_display();
             setTimeout(function () {
-                          that.run(steps_limit, run_after_steps_limit);
-                       },
+                          this.run(steps_limit, run_after_steps_limit);
+                       }.bind(this),
                        0); // give browser a chance to run
         }
         
