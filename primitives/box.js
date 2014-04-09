@@ -243,6 +243,7 @@ window.TOONTALK.box = (function (TT) {
 			// can't just use box.update_hole_display because then 'this' isn't bound to the box
 			that.update_hole_display(index, element);
 		});
+		frontside_element.title = this.get_title();
     };
 	
 	box.update_hole_display = function (index, old_hole_element) {

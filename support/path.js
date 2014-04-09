@@ -97,12 +97,7 @@ window.TOONTALK.path =
 						return widget.copy();
 					},
 					toString: function () {
-						var widget_string = widget.toString();
-						var first_character = widget_string.charAt(0);
-						if ("aeiou".indexOf(first_character) < 0) {
-							return "a " + widget_string;
-						}
-						return "an " + widget_string;
+						return TT.UTILITIES.add_a_or_an(widget.toString());
 					},
 					get_json: function () {
 						return {type: "path.to_resource",

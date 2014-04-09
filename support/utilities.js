@@ -701,6 +701,20 @@ window.TOONTALK.UTILITIES =
 		
 		get_dragee: function () {
 			return dragee;
+		},
+		
+		add_a_or_an: function (word, upper_case) {
+			var first_character = word.charAt(0);
+			if ("aeiou".indexOf(first_character) < 0) {
+				if (upper_case) {
+					return "A " + word;
+				}
+				return "a " + word;
+			}
+			if (upper_case) {
+				return "An " + word;
+			}
+			return "an " + word;
 		}
 	
     };

@@ -311,6 +311,7 @@ window.TOONTALK.robot = (function (TT) {
 	
 	robot.get_title = function() {
 		var description = this.get_description();
+		var frontside_element;
 		if (description) {
 			description = "This robot " + description;
 			if (description.lastIndexOf('.') < 0) {
@@ -318,6 +319,10 @@ window.TOONTALK.robot = (function (TT) {
 			}
 			return description + "\n" + this.toString();
 		}
+		frontside_element = this.get_frontside_element();
+		if ($(frontside_element).is(".toontalk-top-level-resource")) {
+            return "Drag this robot to a work area.";   
+        }
 		return this.toString();
 	};
 	

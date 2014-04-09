@@ -14,6 +14,20 @@ window.TOONTALK.widget = (function (TT) {
             this.erasable(widget);
             this.add_sides_functionality(widget);
             this.runnable(widget);
+            if (!widget.get_title) {
+                widget.get_title = function () {
+                    var type_name = this.get_type_name();
+                    var backside = this.get_backside();
+                    var frontside_element = this.get_frontside_element();
+                    if ($(frontside_element).is(".toontalk-top-level-resource")) {
+                        return "Drag this " + type_name + " to a work area.";   
+                    }
+                    if (!backside || !backside.get_element()) {
+                        return "Click to see the back side of this " + type_name;
+                    }
+                    return TT.UTILITIES.add_a_or_an(type_name, true);
+                }
+            }
             return widget;
         },
         

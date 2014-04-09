@@ -248,6 +248,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         }
         frontside_element.firstChild.innerHTML = new_HTML;
 		$(frontside_element.firstChild).addClass("toontalk-widget");
+		frontside_element.title = this.get_title();
     };
 	
     number.to_HTML = function (max_characters, font_size, format, top_level, operator) {
