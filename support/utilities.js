@@ -567,6 +567,28 @@ window.TOONTALK.UTILITIES =
 				    button: input};
 		},
 		
+		create_text_area: function (value, class_name, label, title) {
+			var text_area = document.createElement("textarea");
+			var label_element, container;
+			if (class_name) {
+				text_area.className = class_name;
+			}
+			text_area.value = value;
+			if (title) {
+				text_area.title = title;
+			}
+			text_area.id = TT.UTILITIES.generate_unique_id();
+			label_element = document.createElement("label");
+			label_element.innerHTML = label;
+			label_element.htmlFor = text_area.id;
+			container = TT.UTILITIES.create_horizontal_table(label_element, text_area);
+			$(text_area).button().addClass("toontalk-text-text_area");
+			$(text_area).css({"background-color": "white"});
+            $(label_element).addClass("ui-widget");
+			return {container: container,
+				    button: text_area};
+		},
+		
 		create_radio_button: function (name, value, label, title) {
 			var container = document.createElement("div");
 			var input = document.createElement("input");

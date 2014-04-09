@@ -390,6 +390,11 @@ window.TOONTALK.widget = (function (TT) {
             widget.toString = function () {
                 return "top level widget";
             };
+            widget.copy = function () {
+                // revisit this if ever there are multiple top-level backsides
+                // copied when training a robot
+                return this;
+            };
             widget.visible = function () {
                 return true;
             };
