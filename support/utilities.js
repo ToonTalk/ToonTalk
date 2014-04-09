@@ -233,7 +233,6 @@ window.TOONTALK.UTILITIES =
  			$element.on('dragstart', 
 			    function (event) {
 					var position = $element.get(0).getBoundingClientRect(); // $element.position();
-// 					var unique_id = TT.UTILITIES.generate_unique_id();
 					var widget = $element.data("owner");
 					var is_resource = $element.is(".toontalk-top-level-resource");
 					var json_object;
@@ -250,12 +249,9 @@ window.TOONTALK.UTILITIES =
 						$element.css({width:  this.offsetWidth + "px",
 									  height: this.offsetHeight + "px"});
 					}
-					// this use of ids made obsolete by the dragee closure variable
-// 					$element.attr("id", unique_id);
 					if (event.originalEvent.dataTransfer && widget.get_json) {
 						event.originalEvent.dataTransfer.effectAllowed = is_resource ? 'copy' : 'move';
 						json_object = widget.get_json();
-// 						json_object.view.id_of_original_dragree = unique_id;
 						json_object.view.drag_x_offset = event.originalEvent.clientX - position.left;
 						json_object.view.drag_y_offset = event.originalEvent.clientY - position.top;
 						if (!json_object.width) {
