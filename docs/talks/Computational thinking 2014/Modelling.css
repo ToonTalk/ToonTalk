@@ -1,0 +1,63 @@
+BODY
+{
+   font-weight: bold;
+   font-size: 24pt;
+   background-image: url('vaccine.png');
+   color: white;
+   font-family: 'Comic Sans MS'
+}
+
+
+INPUT
+{
+   font-weight: bold;
+   font-size: 12pt;
+   cursor: hand;
+   color: blue;
+   font-family: 'Comic Sans MS';
+}
+.button
+{
+   font-weight: bold;
+   font-size: 12pt;
+   color: blue;
+   font-family: 'Comic Sans MS';
+}
+.text
+{
+   font-weight: bold;
+   font-size: 14pt;
+   cursor: text;
+   color: purple;
+   font-family: 'Comic Sans MS';
+}
+A
+{
+color: yellow;
+}
+P
+{
+   font-weight: bold;
+   font-size: 14pt;
+   font-family: 'Comic Sans MS';
+
+}
+BUTTON
+{
+   font-weight: bold;
+   font-size: 12pt;
+   color: blue;
+   font-family: 'Comic Sans MS';
+}
+CAPTION
+{
+   font-weight: bold;
+   font-size: 14pt;
+}
+
+SELECT
+{
+   font-weight: bold;
+   font-size: 12pt;
+   font-family: 'Comic Sans MS';
+}
