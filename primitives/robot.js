@@ -346,16 +346,20 @@ window.TOONTALK.robot = (function (TT) {
 		var body = this.get_body();
 		var prefix = "";
 		var postfix = "";
-		var bubble_erased;
+		var bubble_string;
 		if (!bubble) {
 			return "This robot has yet to be trained.";
 		}
+		bubble_string = bubble.toString();
 		if (this.being_trained) {
 			prefix = "This robot is being trained.\n";
 			postfix = "\n..."; // to indicates still being constructed
 		}
-		bubble_erased = bubble.get_erased() ? " an erased " : " a ";
-		return prefix + "When working on something that matches" + bubble_erased + bubble.toString() + " he will \n" + body.toString() + postfix;
+		if (bubble.get_erased && bubble.get_erased()) {
+			bubble_string = "erased " + bubble_string;
+		}
+		bubble_string = TT.UTILITIES.add_a_or_an(bubble_string);
+		return prefix + "When working on something that matches " + bubble_string + " he will \n" + body.toString() + postfix;
 	};
 	
 	robot.get_type_name = function () {
