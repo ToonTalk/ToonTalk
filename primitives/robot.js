@@ -475,7 +475,7 @@ window.TOONTALK.robot_backside =
 			backside_element.appendChild(input_table);
 			backside_element.appendChild(standard_buttons);
 			if (next_robot) {
-				$next_robot_area(append(next_robot.get_frontside_element()));
+				$next_robot_area.append(next_robot.get_frontside_element());
 			}
 			backside_element.appendChild($next_robot_area.get(0));
 			backside.update_display = function () {
