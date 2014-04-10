@@ -103,7 +103,7 @@ window.TOONTALK.backside =
 					1);
 			};
 			TT.backside.associate_widget_with_backside_element(widget, backside, backside_element);
-			TT.UTILITIES.drag_and_drop($backside_element, widget);
+			TT.UTILITIES.drag_and_drop($backside_element);
 			// the following function should apply recursively...
 			$backside_element.resizable(
 				{start: function () {

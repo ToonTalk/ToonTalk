@@ -18,7 +18,7 @@ window.TOONTALK.frontside =
 // 			var $frontside_container = $frontside_element.parents(".toontalk-frontside:first");
 			$(frontside_element).addClass("toontalk-frontside toontalk-side");
 			$frontside_element.data("owner", widget);
-			TT.UTILITIES.drag_and_drop($frontside_element, widget);
+			TT.UTILITIES.drag_and_drop($frontside_element);
             frontside.get_element = function () {
                 return frontside_element;
             };
