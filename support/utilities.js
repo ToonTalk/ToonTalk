@@ -227,6 +227,11 @@ window.TOONTALK.UTILITIES =
 		},
 		
 		drag_and_drop: function ($element) {
+			TT.UTILITIES.draggable($element);
+			TT.UTILITIES.can_receive_drops($element);
+		},
+		
+		draggable: function ($element) {
 			$element.attr("draggable", true);
 			// draggable causes dataTransfer to be null
 			// rewrote after noticing that this works fine: http://jsfiddle.net/KWut6/
@@ -294,8 +299,11 @@ window.TOONTALK.UTILITIES =
 					event.stopPropagation();
 				});
 // 				greedy: true,
-// 				tolerance: "intersect", // at least 50%
-            $element.on('dragover',
+// 				tolerance: "intersect", // at least 50%		
+		},
+		
+		can_receive_drops: function ($element) {
+			$element.on('dragover',
 			    function (event) {
 					// think about drop feedback
 					event.preventDefault();
@@ -412,7 +420,7 @@ window.TOONTALK.UTILITIES =
 // 				greedy: true,
 // // 				containment: false, // doesn't seem to work... -- nor does "none"
 // 				stack: ".toontalk-side",
-// 			}); // .resizable(); -- works fine for backsides but need to fix frontside problem
+// 			}); 
 		},
 		
 		absolute_position: function ($element) {
