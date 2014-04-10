@@ -350,13 +350,14 @@ window.TOONTALK.robot = (function (TT) {
 		if (!bubble) {
 			return "This robot has yet to be trained.";
 		}
-		bubble_string = bubble.toString();
 		if (this.being_trained) {
 			prefix = "This robot is being trained.\n";
 			postfix = "\n..."; // to indicates still being constructed
 		}
 		if (bubble.get_erased && bubble.get_erased()) {
-			bubble_string = "erased " + bubble_string;
+			bubble_string = "erased " + bubble.get_type_name();
+		} else {
+			bubble_string = bubble.toString();
 		}
 		bubble_string = TT.UTILITIES.add_a_or_an(bubble_string);
 		return prefix + "When working on something that matches " + bubble_string + " he will \n" + body.toString() + postfix;
