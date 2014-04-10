@@ -61,7 +61,7 @@ window.TOONTALK.backside =
 			        var $other_front_side_element = $(other_front_side_element);
 			        $backside_element.append($other_front_side_element);
 			        TT.UTILITIES.set_position_absolute(other_front_side_element, true, event); // when on the backside
-					$other_front_side_element.data("owner").update_display();
+					other.update_display(); // why was this $other_front_side_element.data("owner").update_display() instead?
 					if (TT.robot.in_training) {
 						if ($backside_element.is(".toontalk-top-level-backside")) {
 							TT.robot.in_training.dropped_on("top-level-backside");

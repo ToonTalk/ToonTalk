@@ -368,7 +368,7 @@ window.TOONTALK.widget = (function (TT) {
         },
         
         update_display: function () {
-            console.assert(false, "update_display not implemented");
+            console.log("update_display not implemented");
         },
         
         equals_box: function () {

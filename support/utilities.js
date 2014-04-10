@@ -331,6 +331,9 @@ window.TOONTALK.UTILITIES =
 					} else {
 						$target = $(event.target).closest(".toontalk-side");
 					}
+					if ($target.length === 0) {
+						return;
+					}
 					if ($source && $source.length > 0 &&
 					    ($source.get(0) === $target.get(0) || jQuery.contains($source.get(0), $target.get(0)))) {
 					    // not dropping on itself but on the widget underneath
