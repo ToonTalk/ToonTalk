@@ -80,7 +80,17 @@ window.TOONTALK.robot = (function (TT) {
 			return next_robot;
 		};
 		new_robot.set_next_robot = function (new_value) {
+			var backside_element = this.get_backside_element();
+			var drop_area_instructions;
 			next_robot = new_value;
+			if (backside_element) {
+				if (new_value) {
+					drop_area_instructions = "When the robot can't run then this one will try: ";
+				} else {
+					drop_area_instructions = window.TOONTALK.robot.empty_drop_area_instructions;
+				}
+				$(backside_element).find(".toontalk-drop-area-instructions").get(0).innerHTML = drop_area_instructions;
+			}
 		};
 		new_robot.get_run_once = function () {
 			return run_once;
@@ -329,8 +339,6 @@ window.TOONTALK.robot = (function (TT) {
 	robot.image = function () {
 		var image = document.createElement("img");
 		image.src = this.get_image_url(); // causes Caja error
-		image.style.width = "100%";
-		image.style.height = "70%"; // other part is for thought bubble
 		$(image).addClass("toontalk-robot-image");
 		return image;	
 	};
@@ -348,10 +356,10 @@ window.TOONTALK.robot = (function (TT) {
 		var postfix = "";
 		var bubble_string;
 		if (!bubble) {
-			return "This robot has yet to be trained.";
+			return "has yet to be trained.";
 		}
 		if (this.being_trained) {
-			prefix = "This robot is being trained.\n";
+			prefix = "is being trained.\n";
 			postfix = "\n..."; // to indicates still being constructed
 		}
 		if (bubble.get_erased && bubble.get_erased()) {
@@ -396,7 +404,7 @@ window.TOONTALK.robot = (function (TT) {
 			thing_in_hand = TT.UTILITIES.create_from_json(json_semantic.thing_in_hand);
 		}
 		if (json_semantic.next_robot) {
-			json_semantic.next_robot = TT.UTILITIES.create_from_json(json_semantic.next_robot);
+			next_robot = TT.UTILITIES.create_from_json(json_semantic.next_robot);
 		}
 		return TT.robot.create(json_view.image_url,
 		                       TT.UTILITIES.create_from_json(json_semantic.bubble),
@@ -427,8 +435,11 @@ window.TOONTALK.robot_backside =
 			var run_once_input = TT.UTILITIES.create_check_box_button(!robot.get_run_once(), 
 			                                                          "When finished start again",
 																	  "Check this if you want the robot to start over again after finishing what he was trained to do.");
-            var input_table;
+			var $next_robot_area = TT.UTILITIES.create_drop_area(window.TOONTALK.robot.empty_drop_area_instructions);
+			var next_robot = robot.get_next_robot();
 			var standard_buttons = TT.backside.create_standard_buttons(backside, robot);
+			var input_table;
+			$next_robot_area.data("drop_area_owner", robot);
 			// don't do the following if already trained -- or offer to retrain?
 			standard_buttons.insertBefore(this.create_train_button(backside, robot), standard_buttons.firstChild);
 			image_url_input.button.onchange = function () {
@@ -463,6 +474,10 @@ window.TOONTALK.robot_backside =
 			$(input_table).css({width: "90%"});
 			backside_element.appendChild(input_table);
 			backside_element.appendChild(standard_buttons);
+			if (next_robot) {
+				$next_robot_area(append(next_robot.get_frontside_element()));
+			}
+			backside_element.appendChild($next_robot_area.get(0));
 			backside.update_display = function () {
 				var frontside_element = robot.get_frontside_element();
 				var $containing_backside_element;
@@ -520,3 +535,5 @@ window.TOONTALK.robot_backside =
 		
     };
 }(window.TOONTALK));
+
+window.TOONTALK.robot.empty_drop_area_instructions = "Drop a robot here to run when this robot can't."

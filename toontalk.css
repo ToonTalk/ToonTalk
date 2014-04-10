@@ -186,6 +186,12 @@
 	width: 30em;
 	text-align: inherit;
 }
+.toontalk-robot-image {
+    width: 100%;
+/* 	rest of the height is for thought bubble */
+	
+    height: 70%;
+}
 .toontalk-image-url-input {
 	width: 30em;
 	text-align: inherit;
@@ -202,4 +208,25 @@
 	width: 90%;
 	height: 40%;
 	position: absolute;
+}
+.toontalk-drop-area {
+	background-color: rgb(187, 246, 248);
+	min-height: 35%;
+	border: solid rgb(126, 148, 206) 2px;
+	border-radius: 6px;
+	width:  95%;
+	padding-top: 10px;
+	/* display:  inline; */
+}
+.toontalk-drop-area-instructions {
+	opacity: .4;
+	display:  inline;
+	vertical-align: middle;
+}
+.toontalk-widget-in-drop_area {
+	width: 32px;
+	height: 32px;
+	display:  inline-block;
+	vertical-align: middle;
+	padding:  8pt;
 }

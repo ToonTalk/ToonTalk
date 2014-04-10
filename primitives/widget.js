@@ -231,6 +231,10 @@ window.TOONTALK.widget = (function (TT) {
         add_backside_widget: function (widget) {
             var backside_widgets = this.get_backside_widgets();
             var backside = this.get_backside();
+            if (TT.debugging && widget === this) {
+                console.log("Adding a widget to a list of its backside widgets!");
+                return;
+            }
             if (!backside_widgets) {
                 this.backside_widgets = [widget];
             } else if (backside_widgets.indexOf(widget) < 0) {
@@ -285,13 +289,13 @@ window.TOONTALK.widget = (function (TT) {
             // returns true if a backside element is a trained robot or 
             // or a widget this can_run
             var backside_widgets = this.get_backside_widgets();
-            var i, widget;
+            var i, backside_widget;
             for (i = 0; i < backside_widgets.length; i++) {
-                widget = backside_widgets[i];
-                if (widget.get_body && !widget.get_body().is_empty()) {
+                backside_widget = backside_widgets[i];
+                if (backside_widget.get_body && !backside_widget.get_body().is_empty()) {
                     return true;
                 }      
-                if (widget.can_run()) {
+                if (backside_widget.can_run()) {
                     return true;
                 }
             }
