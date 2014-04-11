@@ -383,8 +383,10 @@ window.TOONTALK.UTILITIES =
 									// leave the source there but create a copy
 									source_widget = source_widget.copy();
 									$source = $(source_widget.get_frontside_element(true));
-									$source.css({width:  json_object.view.frontside_width,
-											     height: json_object.view.frontside_height});
+									if ($target.is(".toontalk-backside")) {
+										$source.css({width:  json_object.view.frontside_width,
+													 height: json_object.view.frontside_height});
+									}
 								} else if ($container.is(".toontalk-frontside")) {
 									container.removed(source_widget, $source, event);
 								} else {
