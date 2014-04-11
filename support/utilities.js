@@ -311,7 +311,7 @@ window.TOONTALK.UTILITIES =
 				});
 			$element.on('drop',
                 function (event) {
-					var $source, source, $target, target_widget, target_position, drag_x_offset, drag_y_offset, drop_handled, new_target;
+					var $source, source_widget, $target, target_widget, target_position, drag_x_offset, drag_y_offset, drop_handled, new_target;
 					var json_object = TT.UTILITIES.data_transfer_json_object(event);
 					// should this set the dropEffect? https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer#dropEffect.28.29
 					var $container, container;
@@ -322,6 +322,7 @@ window.TOONTALK.UTILITIES =
 						} else {
 							console.log("Drop failed since unable to parse " + event.originalEvent.dataTransfer);
 						}
+						dragee = undefined;
 						return;
 					}
 					if ($(event.target).is(".toontalk-drop-area-instructions")) {
@@ -332,6 +333,7 @@ window.TOONTALK.UTILITIES =
 						$target = $(event.target).closest(".toontalk-side");
 					}
 					if ($target.length === 0) {
+						dragee = undefined;
 						return;
 					}
 					if ($source && $source.length > 0 &&
@@ -366,7 +368,7 @@ window.TOONTALK.UTILITIES =
 							dragee = undefined;
 							return;
 						}
-						source = $source.data("owner");
+						source_widget = $source.data("owner");
 						if ($source.parent().is(".toontalk-drop-area")) {
 							$source.removeClass("toontalk-widget-in-drop_area");
 							$source.parent().data("drop_area_owner").set_next_robot(undefined);
@@ -375,21 +377,28 @@ window.TOONTALK.UTILITIES =
 							container = $container.data("owner");
 							if (container) {
 								if ($container.is(".toontalk-frontside")) {
-									container.removed(source, $source, event);
+									container.removed(source_widget, $source, event);
 								} else {
-									container.get_backside().removed(source, $source, event);
+									container.get_backside().removed(source_widget, $source, event);
 								}
 							} else {
-								TT.UTILITIES.restore_resource($source, source);
+								TT.UTILITIES.restore_resource($source, source_widget);
 							}
 						}
 					} else {
-						source = TT.UTILITIES.create_from_json(json_object);
-						$source = $(source.get_frontside_element());
-					}		
+						source_widget = TT.UTILITIES.create_from_json(json_object);
+						$source = $(source_widget.get_frontside_element());
+					}	
+					if (source_widget === target_widget) {
+						// dropping front side on back side so ignore
+						dragee = undefined;
+						event.stopPropagation();
+						event.preventDefault();
+						return;
+					}
 					if ($target.is(".toontalk-backside")) {
 						// widget_dropped_on_me needed here to get geometry right
-						target_widget.get_backside().widget_dropped_on_me(source, event);
+						target_widget.get_backside().widget_dropped_on_me(source_widget, event);
 						drop_handled = true;
 						// should the following use pageX instead?
 						// for a while using target_position.top didn't work while
@@ -400,7 +409,7 @@ window.TOONTALK.UTILITIES =
 						if ($source.is(".toontalk-frontside") && !$source.is('.ui-resizable')) {
 							$source.resizable(
 								{resize: function(event, ui) {
-									source.update_display();			
+									source_widget.update_display();			
 								    },
 								 // the corner handles caused the element to be stuck in resize mode when used
 								 handles: "n,e,s,w"});
@@ -408,7 +417,7 @@ window.TOONTALK.UTILITIES =
 // 							$source.resizable("disable");
                         }
 						if (json_object.semantic.running) {
-							source.set_running(true);
+							source_widget.set_running(true);
 						}
 					} else if ($target.is(".toontalk-drop-area")) {
 						$source.addClass("toontalk-widget-in-drop_area");
@@ -419,12 +428,12 @@ window.TOONTALK.UTILITIES =
 						drop_handled = true;
 					} else if (!target_widget) {
 						console.log("target element has no 'owner'");	
-					} else if (source.drop_on(target_widget, $target, event)) {
+					} else if (source_widget.drop_on(target_widget, $target, event)) {
 						drop_handled = true;
 					}
 					if (target_widget && !drop_handled) {
 						if (target_widget.widget_dropped_on_me) {
-							target_widget.widget_dropped_on_me(source);
+							target_widget.widget_dropped_on_me(source_widget);
 						}
 					}
 					event.stopPropagation();
