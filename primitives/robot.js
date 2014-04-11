@@ -198,7 +198,7 @@ window.TOONTALK.robot = (function (TT) {
 	
 	robot.picked_up = function (widget, json, is_resource) {
 		var path;
-		if (is_resource) {
+		if (is_resource || widget.get_infinite_stack()) {
 			// robot needs a copy of the resource to avoid sharing it with training widget
 			path = TT.path.get_path_to_resource(widget.copy());
 		} else {
@@ -374,12 +374,13 @@ window.TOONTALK.robot = (function (TT) {
 		var body = this.get_body();
 		var prefix = "";
 		var postfix = "";
-		var bubble_string = bubble.get_description();
+		var bubble_string;
 		var next_robot = this.get_next_robot();
 		var robot_description;
 		if (!bubble) {
 			return "has yet to be trained.";
 		}
+		bubble_string = bubble.get_description();
 		if (this.being_trained) {
 			prefix = "is being trained.\n";
 			postfix = "\n..."; // to indicates still being constructed
@@ -459,6 +460,7 @@ window.TOONTALK.robot_backside =
 			var $next_robot_area = TT.UTILITIES.create_drop_area(window.TOONTALK.robot.empty_drop_area_instructions);
 			var next_robot = robot.get_next_robot();
 			var standard_buttons = TT.backside.create_standard_buttons(backside, robot);
+			var infinite_stack_check_box = TT.backside.create_infinite_stack_check_box(backside, robot);
 			var input_table;
 			$next_robot_area.data("drop_area_owner", robot);
 			// don't do the following if already trained -- or offer to retrain?
@@ -495,6 +497,7 @@ window.TOONTALK.robot_backside =
 			$(input_table).css({width: "90%"});
 			backside_element.appendChild(input_table);
 			backside_element.appendChild(standard_buttons);
+			backside_element.appendChild(infinite_stack_check_box.container);
 			if (next_robot) {
 				$next_robot_area.append(next_robot.get_frontside_element());
 			}

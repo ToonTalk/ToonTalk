@@ -123,6 +123,9 @@ window.TOONTALK.UTILITIES =
 				if (json_semantic.erased) {
 					widget.set_erased(json_semantic.erased);
 				}
+				if (json_semantic.infinite_stack) {
+					widget.set_infinite_stack(json_semantic.infinite_stack);
+				}
 				if (json_view && json_view.frontside_width) {
 					side_element = json_view.backside ? widget.get_backside(true).get_element() : widget.get_frontside_element();
 					$(side_element).css({width: json_view.frontside_width,
@@ -376,7 +379,13 @@ window.TOONTALK.UTILITIES =
 							$container = $source.parents(".toontalk-side:first");
 							container = $container.data("owner");
 							if (container) {
-								if ($container.is(".toontalk-frontside")) {
+								if (source_widget.get_infinite_stack()) {
+									// leave the source there but create a copy
+									source_widget = source_widget.copy();
+									$source = $(source_widget.get_frontside_element(true));
+									$source.css({width:  json_object.view.frontside_width,
+											     height: json_object.view.frontside_height});
+								} else if ($container.is(".toontalk-frontside")) {
 									container.removed(source_widget, $source, event);
 								} else {
 									container.get_backside().removed(source_widget, $source, event);
@@ -661,12 +670,12 @@ window.TOONTALK.UTILITIES =
 					label: label_element};
 		},
 		
-		create_check_box_button: function (value, label, title) {
+		create_check_box: function (value, label, title) {
 			var container = document.createElement("div");
 			var input = document.createElement("input");
 			input.type = "checkbox";
 			input.className = "toontalk-checkbox";
-			input.value = value;
+			input.checked = value;
 			input.id = TT.UTILITIES.generate_unique_id();
 			var label_element = document.createElement("label");
 			label_element.innerHTML = label;

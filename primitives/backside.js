@@ -196,6 +196,31 @@ window.TOONTALK.backside =
 			return this;
 		},
 		
+		create_infinite_stack_check_box: function (backside, widget) {
+			var check_box = TT.UTILITIES.create_check_box(widget.get_infinite_stack(), 
+			                                              "Copy when dragged.",
+													      "Check this if you want the " + widget.get_type_name()
+														  + " to be copied instead of moved.");
+			$(check_box.button).addClass("toontalk-infinite-stack-check-box");
+			$(check_box.button).click(function (event)  {
+				var infinite_stack = check_box.button.checked;
+				var action_string;
+				widget.set_infinite_stack(infinite_stack);
+				if (TT.robot.in_training) {
+					if (infinite_stack) {
+						action_string = "change dragging to make a copy of ";
+					} else {
+						action_string = "change dragging back to moving for ";
+					}
+					TT.robot.in_training.edited(widget, {setter_name: "set_infinite_stack",
+			                                             argument_1: infinite_stack,
+												         toString: action_string});
+				}
+				event.stopPropagation();
+			});
+		    return check_box;
+		},
+		
 		create_standard_buttons: function (backside, widget) { // extra arguments are extra buttons
 		    var run_or_erase_button;
 			var frontside_element = widget.get_frontside_element();

@@ -432,12 +432,14 @@ window.TOONTALK.box_backside =
 			};
 			var backside_element = backside.get_element();
 			var standard_buttons = TT.backside.create_standard_buttons(backside, box);
+			var infinite_stack_check_box = TT.backside.create_infinite_stack_check_box(backside, box);
             size_input.button.onchange = update_value;
 			horizontal.button.onchange = update_orientation;
 			vertical.button.onchange = update_orientation;
             backside_element.appendChild(size_input.container);
 			backside_element.appendChild($(TT.UTILITIES.create_horizontal_table(horizontal.container, vertical.container)).buttonset().get(0));
             backside_element.appendChild(standard_buttons);
+			backside_element.appendChild(infinite_stack_check_box.container);
 			backside.update_display = function () {
 				size_input.button.value = box.get_size().toString();
 				if (box.get_horizontal()) {

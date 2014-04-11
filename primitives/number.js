@@ -561,10 +561,12 @@ window.TOONTALK.number_backside =
 			var format_set = $(TT.UTILITIES.create_horizontal_table(decimal_format.container, proper_format.container, improper_format.container)).buttonset().get(0);
             var operator_set = $(TT.UTILITIES.create_horizontal_table(plus.container, minus.container, multiply.container, divide.container, power.container)).buttonset().get(0);
 			var standard_buttons = TT.backside.create_standard_buttons(backside, number);
+			var infinite_stack_check_box = TT.backside.create_infinite_stack_check_box(backside, number);
 			backside_element.appendChild(number_set);
 			backside_element.appendChild(format_set);
 			backside_element.appendChild(operator_set);
 			backside_element.appendChild(standard_buttons);
+			backside_element.appendChild(infinite_stack_check_box.container);
 			// use JQuery UI for the following???
             numerator_input.button.onchange = update_value;
             denominator_input.button.onchange = update_value;

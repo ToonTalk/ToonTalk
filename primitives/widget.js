@@ -14,6 +14,7 @@ window.TOONTALK.widget = (function (TT) {
             this.erasable(widget);
             this.add_sides_functionality(widget);
             this.runnable(widget);
+            this.stackable(widget);
             if (!widget.get_title) {
                 widget.get_title = function () {
                     var type_name = this.get_type_name();
@@ -123,6 +124,24 @@ window.TOONTALK.widget = (function (TT) {
             return widget;
         },
         
+        stackable: function (widget) {
+            var infinite_stack = false;
+            if (!widget.get_infinite_stack) {
+                widget.get_infinite_stack = function () {
+                    return infinite_stack;
+                };
+            }
+            if (!widget.set_infinite_stack) {
+                widget.set_infinite_stack = function (new_value) {
+                    var backside_element = widget.get_backside_element();
+                    infinite_stack = new_value;
+                    if (backside_element) {
+                        $(backside_element).find(".toontalk-infinite-stack-check-box").prop("checked", new_value);
+                    }                    
+                };
+            }
+        },
+        
         remove: function () {
             var backside = this.get_backside();
             var frontside = this.get_frontside();
@@ -173,6 +192,9 @@ window.TOONTALK.widget = (function (TT) {
                         version: 1};
                 if (this.get_erased && this.get_erased()) {
                     json_semantic.erased = true;
+                }
+                if (this.get_erased && this.get_infinite_stack()) {
+                    json_semantic.infinite_stack = true;
                 }
                 if (this.get_running && this.get_running()) {
                     json_semantic.running = true;
