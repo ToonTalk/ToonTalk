@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" media="all" href="libraries/jquery-ui-1.10.4.custom/css/sunny/jquery-ui-1.10.4.custom.css">
+<link rel="stylesheet" media="all" href="toontalk.css">
+<script src="libraries/jquery-2.1.0.js"></script>
+<script src="libraries/jquery-ui-1.10.4.custom/js/jquery-ui-1.10.4.custom.js"></script>
+<!--  not really using this
+<script src="libraries/jquery.ui.touch-punch.min.js"></script>
+--->
+<script src="libraries/rationaljs.js"></script>
+<script src="support/initial.js"></script>
+<script src="primitives/widget.js"></script>
+<script src="primitives/number.js"></script>
+<script src="primitives/robot.js"></script>
+<script src="primitives/box.js"></script>
+<script src="primitives/backside.js"></script>
+<script src="primitives/frontside.js"></script>
+<script src="support/robot_actions.js"></script>
+<script src="support/robot_action.js"></script>
+<script src="support/path.js"></script>
+<script src="support/run_queue.js"></script>
+<script src="support/display_updates.js"></script>
+<!-- following should be after all the primitive widgets are defined --->
+<script src="support/utilities.js"></script>
+<!-- following only including during development/testing --->
+<script src="tests/tests.js"></script>
+<title>ToonTalk Reborn Test Page</title>
+<link rel="shortcut icon" href="favicon.ico" />
+</head>
+<body>
+
+<div class='toontalk-json'>{"semantic":{"type":"robot","bubble":{"semantic":{"type":"box","contents":[null,{"semantic":{"type":"box","contents":[null,null,{"semantic":{"type":"number","operator":"+","numerator":"1","denominator":"1","format":"improper_fraction"},"view":{"frontside_width":0,"frontside_height":20,"frontside_left":48,"frontside_top":12},"version":1}],"horizontal":true},"view":{"frontside_width":20,"frontside_height":37,"frontside_left":32,"frontside_top":6},"version":1}],"horizontal":true},"view":{"frontside_width":59,"frontside_height":40,"frontside_left":13,"frontside_top":15,"backside_width":366,"backside_height":148,"backside_left":415,"backside_top":0},"version":1},"body":{"type":"body","steps":[{"type":"robot_action","action_name":"pick up","path":{"type":"path.to_entire_context","next_path":{"type":"box_path","index":1,"next":{"type":"box_path","index":2},"next_path":{"type":"box_path","index":2}}}},{"type":"robot_action","action_name":"drop it on","path":{"type":"path.to_entire_context","next_path":{"type":"box_path","index":0}}}]}},"view":{"image_url":"images/RB00.PNG","frontside_width":65,"frontside_height":100,"frontside_left":350,"frontside_top":0,"drag_x_offset":28,"drag_y_offset":124,"original_width_fraction":0.15402843601895735,"original_height_fraction":0.6097560975609756},"version":1}</div>
+
+</body>
+</html>

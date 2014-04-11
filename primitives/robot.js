@@ -14,6 +14,7 @@ window.TOONTALK.robot = (function (TT) {
         // bubble holds the conditions that need to be matched to run
         // body holds the actions the robot does when it runs
         var new_robot = Object.create(robot);
+		var first_in_team; // who should do the 'repeating'
         if (!image_url) {
             image_url = "images/RB00.PNG";
         }
@@ -29,6 +30,9 @@ window.TOONTALK.robot = (function (TT) {
 		}
 		if (!height) {
 			height = 100;
+		}
+		if (!first_in_team) {
+			first_in_team = new_robot;
 		}
         new_robot.get_bubble = function () {
             return bubble;
@@ -82,6 +86,13 @@ window.TOONTALK.robot = (function (TT) {
 		new_robot.set_next_robot = function (new_value) {
 			var backside_element = this.get_backside_element();
 			var drop_area_instructions;
+			if (new_value) {
+				new_value.set_first_in_team(this.get_first_in_team());
+			}
+			if (!new_value && next_robot) {
+				// next guy is no longer in this team
+				next_robot.set_first_in_team(next_robot);
+			}
 			next_robot = new_value;
 			if (backside_element) {
 				if (new_value) {
@@ -90,6 +101,15 @@ window.TOONTALK.robot = (function (TT) {
 					drop_area_instructions = window.TOONTALK.robot.empty_drop_area_instructions;
 				}
 				$(backside_element).find(".toontalk-drop-area-instructions").get(0).innerHTML = drop_area_instructions;
+			}
+		};
+		new_robot.get_first_in_team = function () {
+			return first_in_team;
+		};
+		new_robot.set_first_in_team = function (new_value) {
+			first_in_team = new_value;
+			if (next_robot) {
+				next_robot.set_first_in_team(new_value);
 			}
 		};
 		new_robot.get_run_once = function () {
