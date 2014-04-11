@@ -230,3 +230,6 @@
 	vertical-align: middle;
 	padding:  8pt;
 }
+.toontalk-infinite-stack {
+	box-shadow: 10px 5px 5px black;
+}

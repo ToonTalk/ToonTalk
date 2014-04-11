@@ -134,10 +134,18 @@ window.TOONTALK.widget = (function (TT) {
             if (!widget.set_infinite_stack) {
                 widget.set_infinite_stack = function (new_value) {
                     var backside_element = widget.get_backside_element();
+                    var frontside_element = widget.get_frontside_element();
                     infinite_stack = new_value;
                     if (backside_element) {
                         $(backside_element).find(".toontalk-infinite-stack-check-box").prop("checked", new_value);
-                    }                    
+                    }
+                    if (frontside_element) {
+                        if (new_value) {
+                            $(frontside_element).addClass("toontalk-infinite-stack");
+                        } else {
+                            $(frontside_element).removeClass("toontalk-infinite-stack");   
+                        }
+                    }
                 };
             }
         },
