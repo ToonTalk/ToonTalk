@@ -197,15 +197,20 @@ window.TOONTALK.robot = (function (TT) {
     };
 	
 	robot.picked_up = function (widget, json, is_resource) {
-		var path;
-		if (is_resource || widget.get_infinite_stack()) {
+		var path, action_name;
+		if (is_resource) {
 			// robot needs a copy of the resource to avoid sharing it with training widget
 			path = TT.path.get_path_to_resource(widget.copy());
 		} else {
 			path = TT.path.get_path_to(widget, this);
 		}
 		if (path) {
-			this.add_step(TT.robot_action.create(path, "pick up"));
+			if (widget.get_infinite_stack()) {
+				action_name = "pick up a copy";
+			} else {
+				action_name = "pick up";
+			}
+			this.add_step(TT.robot_action.create(path, action_name));
 		}
 		this.set_thing_in_hand(widget);
 	};
@@ -454,9 +459,9 @@ window.TOONTALK.robot_backside =
 			                                                          "toontalk-robot-description-input", 
 																      "This&nbsp;robot&nbsp;",
 																      "Type here to provide additional information about this robot.");
-			var run_once_input = TT.UTILITIES.create_check_box_button(!robot.get_run_once(), 
-			                                                          "When finished start again",
-																	  "Check this if you want the robot to start over again after finishing what he was trained to do.");
+			var run_once_input = TT.UTILITIES.create_check_box(!robot.get_run_once(), 
+			                                                   "When finished start again",
+														       "Check this if you want the robot to start over again after finishing what he was trained to do.");
 			var $next_robot_area = TT.UTILITIES.create_drop_area(window.TOONTALK.robot.empty_drop_area_instructions);
 			var next_robot = robot.get_next_robot();
 			var standard_buttons = TT.backside.create_standard_buttons(backside, robot);
