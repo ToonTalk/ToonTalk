@@ -159,7 +159,7 @@ window.TOONTALK.box = (function (TT) {
         for (i = 0; i < size; i += 1) {
             hole = this.get_hole(i);
 			if (hole) {
-                contents += hole.toString();
+                contents += hole.get_description();
 			} else {
 				contents += "_";
 			}
@@ -532,6 +532,9 @@ window.TOONTALK.box_empty_hole =
 	        return empty_hole;
 	    },
 		toString: function () {
+			return "_";
+		},
+		get_description: function () {
 			return "_";
 		}
 	};

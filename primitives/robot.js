@@ -374,7 +374,9 @@ window.TOONTALK.robot = (function (TT) {
 		var body = this.get_body();
 		var prefix = "";
 		var postfix = "";
-		var bubble_string;
+		var bubble_string = bubble.get_description();
+		var next_robot = this.get_next_robot();
+		var robot_description;
 		if (!bubble) {
 			return "has yet to be trained.";
 		}
@@ -382,13 +384,12 @@ window.TOONTALK.robot = (function (TT) {
 			prefix = "is being trained.\n";
 			postfix = "\n..."; // to indicates still being constructed
 		}
-		if (bubble.get_erased && bubble.get_erased()) {
-			bubble_string = "erased " + bubble.get_type_name();
-		} else {
-			bubble_string = bubble.toString();
-		}
 		bubble_string = TT.UTILITIES.add_a_or_an(bubble_string);
-		return prefix + "When working on something that matches " + bubble_string + " he will \n" + body.toString() + postfix;
+		robot_description = prefix + "When working on something that matches " + bubble_string + " he will \n" + body.toString() + postfix;
+		if (next_robot) {
+			robot_description += "\nIf it doesn't match then the next robot will try to run.\n" + next_robot.toString();
+		}
+		return robot_description;
 	};
 	
 	robot.get_type_name = function () {

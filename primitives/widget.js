@@ -321,6 +321,13 @@ window.TOONTALK.widget = (function (TT) {
             return "";
         },
         
+        get_description: function () {
+            if (this.get_erased()) {
+                return "erased " + this.get_type_name();
+            }
+            return this.toString();
+        },
+        
         copy: function () {
             console.assert(false, "copy not implemented");
         },
