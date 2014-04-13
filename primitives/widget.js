@@ -352,7 +352,7 @@ window.TOONTALK.widget = (function (TT) {
         },
         
         get_description: function () {
-            if (this.get_erased()) {
+            if (this.get_erased && this.get_erased()) {
                 return "erased " + this.get_type_name();
             }
             return this.toString();
@@ -391,7 +391,7 @@ window.TOONTALK.widget = (function (TT) {
         
         match: function (context) {
             // should return 'matched', 'not-matched', or an array of nests waiting for objects to arrive
-            console.assert(false, "copy not implemented");
+            console.assert(false, "match not implemented for " + context.toString());
         },
         
         drop_on: function (other, side_of_other, event) {
@@ -444,6 +444,12 @@ window.TOONTALK.widget = (function (TT) {
             };
             widget.toString = function () {
                 return "top level widget";
+            };
+            widget.match = function () {
+                return 'matched';
+            };
+            widget.update_display = function () {
+                // no need to do anything
             };
             widget.copy = function () {
                 // revisit this if ever there are multiple top-level backsides
