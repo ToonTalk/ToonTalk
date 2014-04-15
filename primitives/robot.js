@@ -197,22 +197,24 @@ window.TOONTALK.robot = (function (TT) {
     };
 	
 	robot.picked_up = function (widget, json, is_resource) {
-		var path, action_name;
+		var path, action_name, widget_copy;
 		if (is_resource) {
 			// robot needs a copy of the resource to avoid sharing it with training widget
-			path = TT.path.get_path_to_resource(widget.copy());
+			widget_copy = widget.copy();
+			path = TT.path.get_path_to_resource(widget_copy);
 		} else {
 			path = TT.path.get_path_to(widget, this);
 		}
 		if (path) {
 			if (widget.get_infinite_stack()) {
+				// should this cause an addition to newly created backside widgets?
 				action_name = "pick up a copy";
 			} else {
 				action_name = "pick up";
 			}
-			this.add_step(TT.robot_action.create(path, action_name));
+			this.add_step(TT.robot_action.create(path, action_name), widget_copy);
 		}
-		this.set_thing_in_hand(widget);
+		this.set_thing_in_hand(widget_copy || widget);
 	};
 	
 	robot.dropped_on = function (target_widget) {
