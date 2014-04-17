@@ -31,6 +31,7 @@ window.TOONTALK.robot_action =
                          if (target instanceof jQuery) {
                              // e.g. dropped on top-level backside
                              target.append(thing_in_hand.get_frontside_element());
+                             robot.get_body().add_newly_created_widget(thing_in_hand);
                          } else {
                              thing_in_hand.drop_on(target);
                              if (target.visible()) {
