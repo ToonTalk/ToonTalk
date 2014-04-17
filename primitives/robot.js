@@ -122,6 +122,10 @@ window.TOONTALK.robot = (function (TT) {
 			new_robot.debug_string = new_robot.toString();
 		}
 		new_robot = new_robot.add_standard_widget_functionality(new_robot);
+		if (TT.debugging) {
+			new_robot.debug_string = new_robot.toString();
+			new_robot.debug_id = TT.UTILITIES.generate_unique_id();
+		}
         return new_robot;
     };
     
@@ -212,9 +216,9 @@ window.TOONTALK.robot = (function (TT) {
 			} else {
 				action_name = "pick up";
 			}
-			this.add_step(TT.robot_action.create(path, action_name), widget_copy);
+			this.add_step(TT.robot_action.create(path, action_name), widget);
 		}
-		this.set_thing_in_hand(widget_copy || widget);
+		this.set_thing_in_hand(widget);
 	};
 	
 	robot.dropped_on = function (target_widget) {
