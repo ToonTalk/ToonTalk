@@ -36,6 +36,7 @@ window.TOONTALK.UTILITIES =
 	};
 	var initialise = function () {
 		var includes_top_level_backside = false;
+	    TT.debugging = true; // remove this for production releases
 		$(".toontalk-json").each(
 			function (index, element) {
 				var json_string = element.innerText;
@@ -94,7 +95,6 @@ window.TOONTALK.UTILITIES =
 // 			$("body").append(backside_element);
 // 			$backside_element.addClass("toontalk-top-level-backside");
 // 			backside_element.draggable = false;
-			TT.debugging = true; // remove this for production releases
 			TT.QUEUE.run();
 			// update display of widgets every 20ms
 			setInterval(TT.DISPLAY_UPDATES.update_display, 20);

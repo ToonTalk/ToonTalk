@@ -56,6 +56,10 @@ window.TOONTALK.box = (function (TT) {
 			}
         };
         new_box = new_box.add_standard_widget_functionality(new_box);
+		if (TT.debugging) {
+			new_box.debug_string = new_box.toString();
+			new_box.debug_id = TT.UTILITIES.generate_unique_id();
+		}
         return new_box;
     };
     
