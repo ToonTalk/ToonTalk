@@ -467,10 +467,14 @@ window.TOONTALK.widget = (function (TT) {
         top_level_create_from_json: function (json) {
             var widget = TT.widget.top_level_widget();
             var $backside_element = $(widget.get_backside(true).get_element());
-            if (json.color && json.width && json.height) {
-                $backside_element.css({"background-color": json.color,
-                                       width: json.width,
-                                       height: json.height});
+            var css;
+            if (json.width && json.height) {
+                css = {width: json.width,
+                       height: json.height};
+                if (json.color) {
+                    css["background-color"] = json.color;
+                }
+                $backside_element.css(css);
             }
             $backside_element.addClass("toontalk-top-level-backside");
             $backside_element.click(

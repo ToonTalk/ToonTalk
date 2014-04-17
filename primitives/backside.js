@@ -57,10 +57,15 @@ window.TOONTALK.backside =
             }
 			backside.widget_dropped_on_me = 
 			    function (other, event) {
-			        var other_front_side_element = other.get_frontside(true).get_element();
-			        var $other_front_side_element = $(other_front_side_element);
-			        $backside_element.append($other_front_side_element);
-			        TT.UTILITIES.set_position_absolute(other_front_side_element, true, event); // when on the backside
+			        var other_side_element, $other_side_element;
+					if (other.get_type_name() === 'top-level') {
+						other_side_element = other.get_backside_element(true);
+					} else {
+						other_side_element = other.get_frontside(true).get_element();
+					}
+					$other_side_element = $(other_side_element);
+			        $backside_element.append($other_side_element);
+			        TT.UTILITIES.set_position_absolute(other_side_element, true, event); // when on the backside
 					other.update_display(); // why was this $other_front_side_element.data("owner").update_display() instead?
 					if (TT.robot.in_training) {
 						if ($backside_element.is(".toontalk-top-level-backside")) {
