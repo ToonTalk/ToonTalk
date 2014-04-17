@@ -409,9 +409,14 @@ window.TOONTALK.robot = (function (TT) {
 	};
 	
 	robot.get_json = function () {
+		var bubble = this.get_bubble();
 		var bubble_json, next_robot_json;
-		if (this.get_bubble()) {
-			bubble_json = this.get_bubble().get_json();
+		if (bubble) {
+			if (bubble.get_type_name() === 'top-level') {
+				bubble_json = {type: "top_level"};
+			} else {
+				bubble_json = bubble.get_json();
+		    }
 		}
 		if (this.get_next_robot()) {
 			next_robot_json = this.get_next_robot().get_json();
