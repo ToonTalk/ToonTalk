@@ -125,9 +125,6 @@ window.TOONTALK.robot = (function (TT) {
 		new_robot.set_run_once = function (new_value) {
 			run_once = new_value;
 		};
-		if (TT.debugging) {
-			new_robot.debug_string = new_robot.toString();
-		}
 		new_robot = new_robot.add_standard_widget_functionality(new_robot);
 		if (TT.debugging) {
 			new_robot.debug_string = new_robot.toString();
@@ -312,6 +309,9 @@ window.TOONTALK.robot = (function (TT) {
 		var backside = this.get_backside();
 		var bubble = this.get_bubble();
 		var new_first_child, robot_image, thought_bubble, frontside_element, bubble_contents_element, resource_becoming_instance;
+		if (TT.debugging) {
+			this.debug_string = this.toString();
+		}
         if (!frontside) {
             return;
         }
