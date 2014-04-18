@@ -397,11 +397,6 @@ window.TOONTALK.box = (function (TT) {
 			return path;
 		}
     };
-	
-	if (TT.debugging) {
-		box.debug_string = this.toString();
-	}
-    
     return box;
 }(window.TOONTALK));
 
