@@ -15,6 +15,7 @@ window.TOONTALK.robot = (function (TT) {
         // body holds the actions the robot does when it runs
         var new_robot = Object.create(robot);
 		var first_in_team; // who should do the 'repeating'
+		var running = false; // true if animating due to being run while watched
         if (!image_url) {
             image_url = "images/RB00.PNG";
         }
@@ -52,6 +53,12 @@ window.TOONTALK.robot = (function (TT) {
 				this.update_display();
 			}
         };
+		new_robot.running = function () {
+			return running;
+		};
+	    new_robot.set_running = function (new_value) {
+			running = new_value;
+		};
 		// should the following use 'width' from the frontside element?
 		new_robot.get_width = function () {
 			return width;
@@ -194,10 +201,13 @@ window.TOONTALK.robot = (function (TT) {
     };
     
     robot.run_actions = function(context, queue) {
-		if (this.stopped) {
+		if (this.stopped) { // replace with a method?
 			return false;
 		}
-        return this.get_body().run(context, queue, this);
+		if (this.visible()) {
+			return this.get_body().run_watched(context, queue, this);
+		}
+        return this.get_body().run_unwatched(context, queue, this);
     };
 	
 	robot.picked_up = function (widget, json, is_resource) {
