@@ -9,7 +9,7 @@
 window.TOONTALK.robot_action = 
 (function (TT) {
     "use strict";
-    var run_functions =
+    var unwatched_run_functions =
         {"copy": function (widget, context, robot) {
             robot.get_body().add_newly_created_widget(widget.copy(true));
             return true;
@@ -31,6 +31,7 @@ window.TOONTALK.robot_action =
                          if (target instanceof jQuery) {
                              // e.g. dropped on top-level backside
                              target.append(thing_in_hand.get_frontside_element());
+                             robot.get_body().add_newly_created_widget(thing_in_hand);
                          } else {
                              thing_in_hand.drop_on(target);
                              if (target.visible()) {
@@ -65,24 +66,40 @@ window.TOONTALK.robot_action =
              widget.set_erased(additional_info.erased);
              return true;
          }
-    };            
+    };
+    var watched_run_functions = {};
     return {
         create: function (path, action_name, additional_info) {
             var new_action = Object.create(this);
-            var run_function = run_functions[action_name];
+            var unwatched_run_function = unwatched_run_functions[action_name];
+            var watched_run_function = watched_run_functions[action_name];
+            if (!watched_run_function) {
+                watched_run_function = function (referenced, context, robot, additional_info, continuation) {
+                    unwatched_run_function(referenced, context, robot, additional_info);
+                    continuation();
+                }
+            }
             if (!path) {
                 console.log("path undefined in " + action_name + " action");
             }
-            if (!run_function) {
+            if (!unwatched_run_function) {
                 console.log("no run_function for " + action_name);
             }
-            new_action.run = function (context, robot) {
+            new_action.run_unwatched = function (context, robot) {
                 var referenced = TT.path.dereference_path(path, context);
                 if (!referenced) {
 			        console.log("Unable to dereference path: " + TT.path.toString(path) + " in context: " + context.toString());
                     return false;
                 }
-                return run_function(referenced, context, robot, additional_info);
+                return unwatched_run_function(referenced, context, robot, additional_info);
+            };
+            new_action.run_watched = function (context, robot, continuation) {
+                var referenced = TT.path.dereference_path(path, context);
+                if (!referenced) {
+			        console.log("Unable to dereference path: " + TT.path.toString(path) + " in context: " + context.toString());
+                    return false;
+                }
+                return watched_run_function(referenced, context, robot, additional_info, continuation);
             };
             new_action.toString = function () {
                 var action = additional_info && additional_info.toString ? additional_info.toString : action_name;

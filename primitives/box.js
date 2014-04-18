@@ -56,6 +56,10 @@ window.TOONTALK.box = (function (TT) {
 			}
         };
         new_box = new_box.add_standard_widget_functionality(new_box);
+		if (TT.debugging) {
+			new_box.debug_string = new_box.toString();
+			new_box.debug_id = TT.UTILITIES.generate_unique_id();
+		}
         return new_box;
     };
     
@@ -159,7 +163,7 @@ window.TOONTALK.box = (function (TT) {
         for (i = 0; i < size; i += 1) {
             hole = this.get_hole(i);
 			if (hole) {
-                contents += hole.toString();
+                contents += hole.get_description();
 			} else {
 				contents += "_";
 			}
@@ -393,11 +397,6 @@ window.TOONTALK.box = (function (TT) {
 			return path;
 		}
     };
-	
-	if (TT.debugging) {
-		box.debug_string = this.toString();
-	}
-    
     return box;
 }(window.TOONTALK));
 
@@ -432,12 +431,14 @@ window.TOONTALK.box_backside =
 			};
 			var backside_element = backside.get_element();
 			var standard_buttons = TT.backside.create_standard_buttons(backside, box);
+			var infinite_stack_check_box = TT.backside.create_infinite_stack_check_box(backside, box);
             size_input.button.onchange = update_value;
 			horizontal.button.onchange = update_orientation;
 			vertical.button.onchange = update_orientation;
             backside_element.appendChild(size_input.container);
 			backside_element.appendChild($(TT.UTILITIES.create_horizontal_table(horizontal.container, vertical.container)).buttonset().get(0));
             backside_element.appendChild(standard_buttons);
+			backside_element.appendChild(infinite_stack_check_box.container);
 			backside.update_display = function () {
 				size_input.button.value = box.get_size().toString();
 				if (box.get_horizontal()) {
@@ -532,6 +533,9 @@ window.TOONTALK.box_empty_hole =
 	        return empty_hole;
 	    },
 		toString: function () {
+			return "_";
+		},
+		get_description: function () {
 			return "_";
 		}
 	};

@@ -215,3 +215,6 @@ pip-log.txt
 .mr.developer.cfg
 compile/all-in-one-2.html
 *.html#
+caja/
+libraries/
+

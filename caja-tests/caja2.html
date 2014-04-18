@@ -2,7 +2,7 @@
   <head>
     <title>Caja host page</title>
     <script type="text/javascript"
-            src="http://caja.appspot.com/caja.js">
+            src="caja.js">
     </script>
   </head>
 
@@ -11,13 +11,13 @@
     <div id="guest"></div>
     <script type="text/javascript">
       caja.initialize({
-        cajaServer: 'https://caja.appspot.com/',
-        es5Mode: true,
+        cajaServer: '.',
+        es5Mode: undefined,
         maxAcceptableSeverity: 'NO_KNOWN_EXPLOIT_SPEC_VIOLATION',
         debug: true
       });
       caja.load(document.getElementById('guest'), undefined, function(frame) {
-        frame.code('http://toontalk.appspot.com/accordian.html',
+        frame.code('http://15.toontalk.appspot.com/accordion.html',
                    'text/html')
              .run();
       });

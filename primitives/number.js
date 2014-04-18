@@ -122,7 +122,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
 
     // public methods
     number.create = function (numerator, denominator, operator, format) {
-        var result = Object.create(number);
+        var new_number = Object.create(number);
         // value is a private variable closed over below
         var value = bigrat_from_values(numerator, denominator);
         if (!format) {
@@ -131,7 +131,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
 		if (!operator) {
 			operator = '+';
 		} 
-        result.set_value =
+        new_number.set_value =
             function (new_value, update_now) {
 				var frontside, backside;
                 value = new_value;
@@ -152,11 +152,11 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
 				}
                 return this;
             };
-        result.get_value =
+        new_number.get_value =
             function () { 
                 return value; 
             };
-        result.set_format =
+        new_number.set_format =
             function (new_value, update_now) { 
                 format = new_value;
                 if (update_now) {
@@ -164,11 +164,11 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
                 }
                 return this;
             };
-        result.get_operator =
+        new_number.get_operator =
             function () { 
                 return operator; 
             };
-		result.set_operator =
+		new_number.set_operator =
             function (new_value, update_now) { 
                 operator = new_value;
                 if (update_now) {
@@ -176,12 +176,16 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
                 }
                 return this;
             };
-        result.get_format =
+        new_number.get_format =
             function () { 
                 return format; 
             };
-		result = number.add_standard_widget_functionality(result);
-        return result;
+		new_number = number.add_standard_widget_functionality(new_number);
+		if (TT.debugging) {
+			new_number.debug_string = new_number.toString();
+			new_number.debug_id = TT.UTILITIES.generate_unique_id();
+		}
+        return new_number;
     };
 	
 	number.create_backside = function () {
@@ -561,10 +565,12 @@ window.TOONTALK.number_backside =
 			var format_set = $(TT.UTILITIES.create_horizontal_table(decimal_format.container, proper_format.container, improper_format.container)).buttonset().get(0);
             var operator_set = $(TT.UTILITIES.create_horizontal_table(plus.container, minus.container, multiply.container, divide.container, power.container)).buttonset().get(0);
 			var standard_buttons = TT.backside.create_standard_buttons(backside, number);
+			var infinite_stack_check_box = TT.backside.create_infinite_stack_check_box(backside, number);
 			backside_element.appendChild(number_set);
 			backside_element.appendChild(format_set);
 			backside_element.appendChild(operator_set);
 			backside_element.appendChild(standard_buttons);
+			backside_element.appendChild(infinite_stack_check_box.container);
 			// use JQuery UI for the following???
             numerator_input.button.onchange = update_value;
             denominator_input.button.onchange = update_value;

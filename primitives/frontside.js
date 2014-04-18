@@ -18,14 +18,15 @@ window.TOONTALK.frontside =
 // 			var $frontside_container = $frontside_element.parents(".toontalk-frontside:first");
 			$(frontside_element).addClass("toontalk-frontside toontalk-side");
 			$frontside_element.data("owner", widget);
-			TT.UTILITIES.drag_and_drop($frontside_element, widget);
+// 			console.log("frontside associated with " + widget.debug_id);
+			TT.UTILITIES.drag_and_drop($frontside_element);
             frontside.get_element = function () {
                 return frontside_element;
             };
             frontside.get_widget = function () {
                 return widget;
             };
-			$frontside_element.click(function (event) {
+			frontside_element.onclick = function (event) {
 				var backside = widget.get_backside();
 				var backside_element, $frontside_ancestor_that_is_backside_element, $frontside_ancestor_before_backside_element, frontside_ancestor_before_backside_element;
 				if ($(event.target).is('.ui-resizable-handle')) { 
@@ -57,7 +58,7 @@ window.TOONTALK.frontside =
 					backside.update_display();
 				}
 				event.stopPropagation();
-			});
+			};
             return frontside;
         },
 		

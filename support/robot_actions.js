@@ -68,16 +68,39 @@ window.TOONTALK.actions =
             return new_actions;
         },
         
-        run: function(context, queue, robot) {
+        run_unwatched: function(context, queue, robot) {
             var i;
             var steps = this.get_steps();
             for (i = 0; i < steps.length; i++) {
-                steps[i].run(context, robot);
+                steps[i].run_unwatched(context, robot);
             }
             if (!robot.get_run_once()) {
-                // should really run first in team...
-                robot.run(context, queue);
+                robot.get_first_in_team().run(context, queue);
             }
+        },
+        
+        run_watched: function(context, queue, robot) {
+            var run_watched_step = function (i) {
+                var steps = this.get_steps();
+                var continuation = function () {
+                    run_watched_step(i+1);
+                };
+                if (i < steps.length) {
+                    steps[i].run_watched(context, robot, continuation);
+                } else {
+                    robot.set_running(false);
+                    if (!robot.get_run_once()) {
+                        robot.get_first_in_team().run(context, queue);
+                    }
+                }
+            }.bind(this);
+            if (robot.running()) {
+                // is animating to run a step while watched
+                return true;
+            }
+            robot.set_running(true);
+            run_watched_step(0);
+            return true;             
         },
         
         toString: function () {

@@ -106,7 +106,7 @@ window.TOONTALK.path =
 			};
 		},
         path_to_resource_create_from_json: function (json) {
-            return TT.path.path_to_resource(json.create_from_json(json.widget));
+            return TT.path.get_path_to_resource(TT.UTILITIES.create_from_json(json.widget));
 		},
 		top_level_backside: {
 			// this can be shared by all since only used to drop on -- not to pick up

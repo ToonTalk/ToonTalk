@@ -57,11 +57,16 @@ window.TOONTALK.backside =
             }
 			backside.widget_dropped_on_me = 
 			    function (other, event) {
-			        var other_front_side_element = other.get_frontside(true).get_element();
-			        var $other_front_side_element = $(other_front_side_element);
-			        $backside_element.append($other_front_side_element);
-			        TT.UTILITIES.set_position_absolute(other_front_side_element, true, event); // when on the backside
-					$other_front_side_element.data("owner").update_display();
+			        var other_side_element, $other_side_element;
+					if (other.get_type_name() === 'top-level') {
+						other_side_element = other.get_backside_element(true);
+					} else {
+						other_side_element = other.get_frontside(true).get_element();
+					}
+					$other_side_element = $(other_side_element);
+			        $backside_element.append($other_side_element);
+			        TT.UTILITIES.set_position_absolute(other_side_element, true, event); // when on the backside
+					other.update_display(); // why was this $other_front_side_element.data("owner").update_display() instead?
 					if (TT.robot.in_training) {
 						if ($backside_element.is(".toontalk-top-level-backside")) {
 							TT.robot.in_training.dropped_on("top-level-backside");
@@ -103,7 +108,7 @@ window.TOONTALK.backside =
 					1);
 			};
 			TT.backside.associate_widget_with_backside_element(widget, backside, backside_element);
-			TT.UTILITIES.drag_and_drop($backside_element, widget);
+			TT.UTILITIES.drag_and_drop($backside_element);
 			// the following function should apply recursively...
 			$backside_element.resizable(
 				{start: function () {
@@ -194,6 +199,31 @@ window.TOONTALK.backside =
 			$run_button = $(backside_element).find(".toontalk-run-backside-button");
 			$run_button.button("option", "disabled", !this.get_widget().can_run());
 			return this;
+		},
+		
+		create_infinite_stack_check_box: function (backside, widget) {
+			var check_box = TT.UTILITIES.create_check_box(widget.get_infinite_stack(), 
+			                                              "Copy when dragged.",
+													      "Check this if you want the " + widget.get_type_name()
+														  + " to be copied instead of moved.");
+			$(check_box.button).addClass("toontalk-infinite-stack-check-box");
+			$(check_box.button).click(function (event)  {
+				var infinite_stack = check_box.button.checked;
+				var action_string;
+				widget.set_infinite_stack(infinite_stack);
+				if (TT.robot.in_training) {
+					if (infinite_stack) {
+						action_string = "change dragging to make a copy of ";
+					} else {
+						action_string = "change dragging back to moving for ";
+					}
+					TT.robot.in_training.edited(widget, {setter_name: "set_infinite_stack",
+			                                             argument_1: infinite_stack,
+												         toString: action_string});
+				}
+				event.stopPropagation();
+			});
+		    return check_box;
 		},
 		
 		create_standard_buttons: function (backside, widget) { // extra arguments are extra buttons

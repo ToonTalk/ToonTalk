@@ -36,6 +36,7 @@ window.TOONTALK.UTILITIES =
 	};
 	var initialise = function () {
 		var includes_top_level_backside = false;
+	    TT.debugging = true; // remove this for production releases
 		$(".toontalk-json").each(
 			function (index, element) {
 				var json_string = element.innerText;
@@ -94,7 +95,6 @@ window.TOONTALK.UTILITIES =
 // 			$("body").append(backside_element);
 // 			$backside_element.addClass("toontalk-top-level-backside");
 // 			backside_element.draggable = false;
-			TT.debugging = true; // remove this for production releases
 			TT.QUEUE.run();
 			// update display of widgets every 20ms
 			setInterval(TT.DISPLAY_UPDATES.update_display, 20);
@@ -122,6 +122,9 @@ window.TOONTALK.UTILITIES =
 			if (widget) {
 				if (json_semantic.erased) {
 					widget.set_erased(json_semantic.erased);
+				}
+				if (json_semantic.infinite_stack) {
+					widget.set_infinite_stack(json_semantic.infinite_stack);
 				}
 				if (json_view && json_view.frontside_width) {
 					side_element = json_view.backside ? widget.get_backside(true).get_element() : widget.get_frontside_element();
@@ -290,7 +293,7 @@ window.TOONTALK.UTILITIES =
 								$element.css({width:  json_object.view.frontside_width || json_object.view.original_width_fraction * 100 + "%",
 											  height: json_object.view.frontside_height || json_object.view.original_height_fraction * 100 + "%"});
 							}
-						} else if (!$element.parent().is(".toontalk-top-level-resource")) {
+						} else if (!$element.parent().is(".toontalk-top-level-resource, .toontalk-drop-area")) {
 							$element.css({width:  "100%",
 									      height: "100%"});
 						}
@@ -311,7 +314,7 @@ window.TOONTALK.UTILITIES =
 				});
 			$element.on('drop',
                 function (event) {
-					var $source, source, $target, target, target_position, drag_x_offset, drag_y_offset, drop_handled, new_target;
+					var $source, source_widget, $target, target_widget, target_position, drag_x_offset, drag_y_offset, drop_handled, new_target;
 					var json_object = TT.UTILITIES.data_transfer_json_object(event);
 					// should this set the dropEffect? https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer#dropEffect.28.29
 					var $container, container;
@@ -322,9 +325,20 @@ window.TOONTALK.UTILITIES =
 						} else {
 							console.log("Drop failed since unable to parse " + event.originalEvent.dataTransfer);
 						}
+						dragee = undefined;
 						return;
 					}
-					$target = $(event.target).closest(".toontalk-side");
+					if ($(event.target).is(".toontalk-drop-area-instructions")) {
+						$target = $(event.target).parent();
+					} else if ($(event.target).is(".toontalk-drop-area")) {
+						$target = $(event.target);
+					} else {
+						$target = $(event.target).closest(".toontalk-side");
+					}
+					if ($target.length === 0) {
+						dragee = undefined;
+						return;
+					}
 					if ($source && $source.length > 0 &&
 					    ($source.get(0) === $target.get(0) || jQuery.contains($source.get(0), $target.get(0)))) {
 					    // not dropping on itself but on the widget underneath
@@ -336,7 +350,7 @@ window.TOONTALK.UTILITIES =
 							$target = $(new_target).closest(".toontalk-side");
 						}
 					}
-					target = $target.data("owner");
+					target_widget = $target.data("owner");
 					target_position = TT.UTILITIES.absolute_position($target);
 					if (json_object) {
 						drag_x_offset = json_object.view.drag_x_offset;
@@ -357,25 +371,45 @@ window.TOONTALK.UTILITIES =
 							dragee = undefined;
 							return;
 						}
-						source = $source.data("owner");
-						$container = $source.parents(".toontalk-side:first");
-						container = $container.data("owner");
-						if (container) {
-							if ($container.is(".toontalk-frontside")) {
-								container.removed(source, $source, event);
-							} else {
-								container.get_backside().removed(source, $source, event);
-							}
+						source_widget = $source.data("owner");
+						if ($source.parent().is(".toontalk-drop-area")) {
+							$source.removeClass("toontalk-widget-in-drop_area");
+							$source.parent().data("drop_area_owner").set_next_robot(undefined);
 						} else {
-							TT.UTILITIES.restore_resource($source, source);
+							$container = $source.parents(".toontalk-side:first");
+							container = $container.data("owner");
+							if (container) {
+								if (source_widget.get_infinite_stack()) {
+									// leave the source there but create a copy
+									source_widget = source_widget.copy();
+									$source = $(source_widget.get_frontside_element(true));
+									if ($target.is(".toontalk-backside")) {
+										$source.css({width:  json_object.view.frontside_width,
+													 height: json_object.view.frontside_height});
+									}
+								} else if ($container.is(".toontalk-frontside")) {
+									container.removed(source_widget, $source, event);
+								} else {
+									container.get_backside().removed(source_widget, $source, event);
+								}
+							} else {
+								TT.UTILITIES.restore_resource($source, source_widget);
+							}
 						}
 					} else {
-						source = TT.UTILITIES.create_from_json(json_object);
-						$source = $(source.get_frontside_element());
-					}		
+						source_widget = TT.UTILITIES.create_from_json(json_object);
+						$source = $(source_widget.get_frontside_element());
+					}	
+					if (source_widget === target_widget) {
+						// dropping front side on back side so ignore
+						dragee = undefined;
+						event.stopPropagation();
+						event.preventDefault();
+						return;
+					}
 					if ($target.is(".toontalk-backside")) {
 						// widget_dropped_on_me needed here to get geometry right
-						target.get_backside().widget_dropped_on_me(source, event);
+						target_widget.get_backside().widget_dropped_on_me(source_widget, event);
 						drop_handled = true;
 						// should the following use pageX instead?
 						// for a while using target_position.top didn't work while
@@ -386,7 +420,7 @@ window.TOONTALK.UTILITIES =
 						if ($source.is(".toontalk-frontside") && !$source.is('.ui-resizable')) {
 							$source.resizable(
 								{resize: function(event, ui) {
-									source.update_display();			
+									source_widget.update_display();			
 								    },
 								 // the corner handles caused the element to be stuck in resize mode when used
 								 handles: "n,e,s,w"});
@@ -394,16 +428,23 @@ window.TOONTALK.UTILITIES =
 // 							$source.resizable("disable");
                         }
 						if (json_object.semantic.running) {
-							source.set_running(true);
+							source_widget.set_running(true);
 						}
-					} else if (!target) {
-						console.log("target element has no 'owner'");
-					} else if (source.drop_on(target, $target, event)) {
+					} else if ($target.is(".toontalk-drop-area")) {
+						$source.addClass("toontalk-widget-in-drop_area");
+						$target.append($source.get(0));
+						if ($source.is(".toontalk-robot")) {
+							$target.data("drop_area_owner").set_next_robot($source.data("owner"));
+						}
+						drop_handled = true;
+					} else if (!target_widget) {
+						console.log("target element has no 'owner'");	
+					} else if (source_widget.drop_on(target_widget, $target, event)) {
 						drop_handled = true;
 					}
-					if (target && !drop_handled) {
-						if (target.widget_dropped_on_me) {
-							target.widget_dropped_on_me(source);
+					if (target_widget && !drop_handled) {
+						if (target_widget.widget_dropped_on_me) {
+							target_widget.widget_dropped_on_me(source_widget);
 						}
 					}
 					event.stopPropagation();
@@ -421,6 +462,18 @@ window.TOONTALK.UTILITIES =
 // // 				containment: false, // doesn't seem to work... -- nor does "none"
 // 				stack: ".toontalk-side",
 // 			}); 
+		},
+		
+		create_drop_area: function (instructions) {
+			// instructions can be HTML or plain text
+			var $drop_area = $(document.createElement("div"));
+			var drop_area_instructions = document.createElement("div");
+			drop_area_instructions.innerHTML = instructions;
+			$(drop_area_instructions).addClass("toontalk-drop-area-instructions ui-widget");
+			$drop_area.addClass("toontalk-drop-area");
+			$drop_area.append(drop_area_instructions);
+			TT.UTILITIES.can_receive_drops($drop_area);
+			return $drop_area;
 		},
 		
 		absolute_position: function ($element) {
@@ -619,12 +672,12 @@ window.TOONTALK.UTILITIES =
 					label: label_element};
 		},
 		
-		create_check_box_button: function (value, label, title) {
+		create_check_box: function (value, label, title) {
 			var container = document.createElement("div");
 			var input = document.createElement("input");
 			input.type = "checkbox";
 			input.className = "toontalk-checkbox";
-			input.value = value;
+			input.checked = value;
 			input.id = TT.UTILITIES.generate_unique_id();
 			var label_element = document.createElement("label");
 			label_element.innerHTML = label;
