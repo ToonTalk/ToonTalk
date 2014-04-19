@@ -295,7 +295,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         if (format === 'proper_fraction') {
             integer_part = this.integer_part();
             if (integer_part.is_zero()) {
-                return this.to_HTML(max_characters, font_size, 'improper_fraction', top_level);
+                return this.to_HTML(max_characters, font_size, 'improper_fraction', top_level, operator);
             }
             fractional_part = this.copy().subtract(integer_part).absolute_value();
             // split max_characters between the two parts and recur for each them
@@ -571,12 +571,11 @@ window.TOONTALK.number_backside =
 			backside_element.appendChild(operator_set);
 			backside_element.appendChild(standard_buttons);
 			backside_element.appendChild(infinite_stack_check_box.container);
-			// use JQuery UI for the following???
-            numerator_input.button.onchange = update_value;
-            denominator_input.button.onchange = update_value;
-			decimal_format.button.onchange = update_format;
-			proper_format.button.onchange = update_format;
-			improper_format.button.onchange = update_format;
+            numerator_input.button.addEventListener('change', update_value);
+            denominator_input.button.addEventListener('change', update_value);
+			decimal_format.button.addEventListener('change', update_format);
+			proper_format.button.addEventListener('change', update_format);
+			improper_format.button.addEventListener('change', update_format);
 			switch (number.get_format()) {
 				case "decimal":
 				TT.UTILITIES.check_radio_button(decimal_format);
@@ -605,11 +604,11 @@ window.TOONTALK.number_backside =
 				TT.UTILITIES.check_radio_button(power);
 				break;
 			}
-			plus.button.onchange = update_operator;
-			minus.button.onchange = update_operator;
-			multiply.button.onchange = update_operator;
-			divide.button.onchange = update_operator;
-			power.button.onchange = update_operator;
+			plus.button.addEventListener('change', update_operator);
+			minus.button.addEventListener('change', update_operator);
+			multiply.button.addEventListener('change', update_operator);
+			divide.button.addEventListener('change', update_operator);
+			power.button.addEventListener('change', update_operator);
 			backside.update_display = function () {
 // 				var number_widget = this.get_widget();
 				$(numerator_input.button).val(number.numerator_string());
