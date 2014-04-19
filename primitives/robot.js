@@ -355,10 +355,14 @@ window.TOONTALK.robot = (function (TT) {
 				}
 			},
 			1);
-			if (backside && backside.visible()) {
-				backside.update_display();
-			}
+		if (backside && backside.visible()) {
+			backside.update_display();
+		}
     };
+	
+	robot.add_newly_created_widget = function (new_widget) {
+		return this.get_body().add_newly_created_widget(new_widget);
+	};
 	
 	robot.get_title = function() {
 		var description = this.get_description();

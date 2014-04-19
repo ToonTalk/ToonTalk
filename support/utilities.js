@@ -387,6 +387,9 @@ window.TOONTALK.UTILITIES =
 										$source.css({width:  json_object.view.frontside_width,
 													 height: json_object.view.frontside_height});
 									}
+									if (TT.robot.in_training) {
+										TT.robot.in_training.add_newly_created_widget(source_widget);
+									}
 								} else if ($container.is(".toontalk-frontside")) {
 									container.removed(source_widget, $source, event);
 								} else {

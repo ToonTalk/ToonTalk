@@ -11,7 +11,7 @@ window.TOONTALK.robot_action =
     "use strict";
     var unwatched_run_functions =
         {"copy": function (widget, context, robot) {
-            robot.get_body().add_newly_created_widget(widget.copy(true));
+            robot.add_newly_created_widget(widget.copy(true));
             return true;
           },
          "pick up": function (widget, context, robot) {
@@ -19,7 +19,9 @@ window.TOONTALK.robot_action =
              return true;
          },
          "pick up a copy": function (widget, context, robot) {
-             robot.set_thing_in_hand(widget.copy(true));
+			 var widget_copy = widget.copy();
+			 robot.add_newly_created_widget(widget_copy);
+             robot.set_thing_in_hand(widget_copy);
              return true;
          },
          "drop it on": function (target, context, robot) {
@@ -31,7 +33,7 @@ window.TOONTALK.robot_action =
                          if (target instanceof jQuery) {
                              // e.g. dropped on top-level backside
                              target.append(thing_in_hand.get_frontside_element());
-                             robot.get_body().add_newly_created_widget(thing_in_hand);
+                             robot.add_newly_created_widget(thing_in_hand);
                          } else {
                              thing_in_hand.drop_on(target);
                              if (target.visible()) {
