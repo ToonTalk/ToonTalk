@@ -176,6 +176,15 @@ window.TOONTALK.widget = (function (TT) {
             }
         },
         
+        get_side_element: function () {
+            // returns frontside if showing othewise backside
+            if (this.visible()) {
+                return this.get_frontside_element();
+            } else {
+                return this.get_backside_element();
+            }
+        },
+        
         dereference: function () {
             // is already dereferenced when used as part of a path
             return this;
@@ -438,7 +447,7 @@ window.TOONTALK.widget = (function (TT) {
                 return this;
             };
             widget.visible = function () {
-                return true;
+                return false;
             };
             widget = widget.add_sides_functionality(widget);
             widget = widget.runnable(widget);

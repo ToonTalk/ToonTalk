@@ -71,27 +71,51 @@ window.TOONTALK.robot_action =
     };
 	var move_to_widget = function (moving_widget, target_widget) {
 		// perhaps move this to widget
-		var widget_frontside = target_widget.get_frontside_element();
+		var widget_element = target_widget.get_side_element();
 		var mover_frontside = moving_widget.get_frontside_element();
-		var widget_absolute_position = TT.UTILITIES.absolute_position($(widget_frontside));
+		var widget_absolute_position = TT.UTILITIES.absolute_position($(widget_element));
 		var mover_absolute_position = TT.UTILITIES.absolute_position($(mover_frontside));
 		var mover_relative_position = $(mover_frontside).position();
+		var remove_transition_class = function () {
+			$(mover_frontside).removeClass("toontalk-side-animating");
+			mover_frontside.removeEventListener("transitionend", remove_transition_class);
+		};
+		mover_frontside.addEventListener("transitionend", remove_transition_class);
+		$(mover_frontside).addClass("toontalk-side-animating");
 		mover_frontside.style.left = (mover_relative_position.left + (widget_absolute_position.left - mover_absolute_position.left)) + "px";
 	    mover_frontside.style.top = (mover_relative_position.top + (widget_absolute_position.top - mover_absolute_position.top)) + "px";
 	};
-	var pick_up_animation = function (widget, context, robot, continuation) {
+	var move_robot_animation = function (widget, context, robot, continuation) {
 		var robot_frontside_element = robot.get_frontside_element();
 		var one_shot_continuation = function () {
 			continuation();
 			robot_frontside_element.removeEventListener("transitionend", one_shot_continuation);
 		};
+		var thing_in_hand = robot.get_thing_in_hand();
+		if (widget instanceof jQuery) {
+			// top-level backside
+			widget = widget.data("owner");
+		}
 		move_to_widget(robot, widget);
+		if (thing_in_hand) {
+			move_to_widget(thing_in_hand, widget);
+		}
 		robot_frontside_element.addEventListener("transitionend", one_shot_continuation);
 // 		setTimeout(continuation, 3000);
 	};
+// 	var drop_it_on_animation = function (widget, context, robot, continuation) {
+// 		var robot_frontside_element = robot.get_frontside_element();
+// 		var one_shot_continuation = function () {
+// 			continuation();
+// 			robot_frontside_element.removeEventListener("transitionend", one_shot_continuation);
+// 		};
+// 		move_to_widget(robot, widget);
+// 		robot_frontside_element.addEventListener("transitionend", one_shot_continuation);
+// 	};
     var watched_run_functions = 
-		{"pick up": pick_up_animation,
-		 "pick up a copy": pick_up_animation
+		{"pick up": move_robot_animation,
+		 "pick up a copy": move_robot_animation,
+		 "drop it on": move_robot_animation
 	};
     return {
         create: function (path, action_name, additional_info) {

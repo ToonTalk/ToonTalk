@@ -57,13 +57,7 @@ window.TOONTALK.robot = (function (TT) {
 			return animating;
 		};
 	    new_robot.set_animating = function (new_value) {
-			var $frontside_element = $(this.get_frontside_element());
 			animating = new_value;
-			if (new_value) {
-				$frontside_element.addClass("toontalk-side-animating");
-			} else {
-				$frontside_element.removeClass("toontalk-side-animating");
-			} 
 		};
 		// should the following use 'width' from the frontside element?
 		new_robot.get_width = function () {
