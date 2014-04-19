@@ -96,7 +96,7 @@ window.TOONTALK.robot_action =
 			// top-level backside
 			widget = widget.data("owner");
 		}
-		move_to_widget(robot, widget, $(robot_frontside_element).width() * 0.5, $(robot_frontside_element).height() * 0.25);
+		move_to_widget(robot, widget, $(robot_frontside_element).width() * 0.5, 0); //$(robot_frontside_element).height() * 0.25);
 		if (thing_in_hand) {
 			move_to_widget(thing_in_hand, widget);
 		}
