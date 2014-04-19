@@ -69,14 +69,20 @@ window.TOONTALK.robot_action =
              return true;
          }
     };
-    var watched_run_functions = {};
+    var watched_run_functions = 
+		{"pick up": function (widget, context, robot, continuation) {
+			// to do
+			
+			continuation();
+		 }
+	};
     return {
         create: function (path, action_name, additional_info) {
             var new_action = Object.create(this);
             var unwatched_run_function = unwatched_run_functions[action_name];
             var watched_run_function = watched_run_functions[action_name];
             if (!watched_run_function) {
-                watched_run_function = function (referenced, context, robot, additional_info, continuation) {
+                watched_run_function = function (referenced, context, robot, continuation, additional_info) {
                     unwatched_run_function(referenced, context, robot, additional_info);
                     continuation();
                 }
@@ -101,7 +107,7 @@ window.TOONTALK.robot_action =
 			        console.log("Unable to dereference path: " + TT.path.toString(path) + " in context: " + context.toString());
                     return false;
                 }
-                return watched_run_function(referenced, context, robot, additional_info, continuation);
+                return watched_run_function(referenced, context, robot, continuation, additional_info);
             };
             new_action.toString = function () {
                 var action = additional_info && additional_info.toString ? additional_info.toString : action_name;

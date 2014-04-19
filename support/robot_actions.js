@@ -83,6 +83,7 @@ window.TOONTALK.actions =
             var run_watched_step = function (i) {
                 var steps = this.get_steps();
                 var continuation = function () {
+                    steps[i].run_unwatched(context, robot);
                     run_watched_step(i+1);
                 };
                 if (i < steps.length) {
