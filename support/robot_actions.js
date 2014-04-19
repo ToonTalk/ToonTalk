@@ -88,17 +88,17 @@ window.TOONTALK.actions =
                 if (i < steps.length) {
                     steps[i].run_watched(context, robot, continuation);
                 } else {
-                    robot.set_running(false);
+                    robot.set_animating(false);
                     if (!robot.get_run_once()) {
                         robot.get_first_in_team().run(context, queue);
                     }
                 }
             }.bind(this);
-            if (robot.running()) {
+            if (robot.animating()) {
                 // is animating to run a step while watched
                 return true;
             }
-            robot.set_running(true);
+            robot.set_animating(true);
             run_watched_step(0);
             return true;             
         },
