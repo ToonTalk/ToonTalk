@@ -69,11 +69,17 @@ window.TOONTALK.robot_action =
              return true;
          }
     };
-	var pick_up_animation = function (widget, context, robot, continuation) {
+	var move_to_widget = function (widget) {
 		var widget_frontside = widget.get_frontside_element();
 		var robot_frontside = robot.get_frontside_element();
-		robot_frontside.style.left = widget_frontside.style.left;
-	    robot_frontside.style.top = widget_frontside.style.top;
+		var widget_absolute_position = TT.UTILITIES.absolute_position($(widget_frontside));
+		var robot_absolute_position = TT.UTILITIES.absolute_position($(robot_frontside));
+		var robot_relative_position = $(robot_frontside).position();
+		robot_frontside.style.left = (robot_relative_position.left + (widget_absolute_position.left - robot_absolute_position.left)) + "px";
+	    robot_frontside.style.top = (robot_relative_position.top + (widget_absolute_position.top - robot_absolute_position.top)) + "px";
+	};
+	var pick_up_animation = function (widget, context, robot, continuation) {
+		this.move_to_widget(widget);
 // 		robot_frontside.addEventListener("transitionend", continuation);
 		setTimeout(continuation, 3500);
 	};

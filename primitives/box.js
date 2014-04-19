@@ -248,6 +248,9 @@ window.TOONTALK.box = (function (TT) {
 			that.update_hole_display(index, element);
 		});
 		frontside_element.title = this.get_title();
+		if (TT.debugging) {
+			this.debug_string = this.toString();
+		}
     };
 	
 	box.update_hole_display = function (index, old_hole_element) {
@@ -274,6 +277,7 @@ window.TOONTALK.box = (function (TT) {
 			$element_container = $(box_frontside.get_element()).find(".toontalk-box-hole").eq(index); 
 			$element_container.append(old_hole_element);
 			// since drag and drop is set up with absolute as the default
+			// is this redundant now?
 			TT.UTILITIES.set_position_absolute(old_hole_element, false);
 			if (!$(old_hole_element).is(".toontalk-empty-hole")) {
 				$(old_hole_element).addClass("toontalk-frontside-in-box");
