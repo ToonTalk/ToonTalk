@@ -295,7 +295,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         if (format === 'proper_fraction') {
             integer_part = this.integer_part();
             if (integer_part.is_zero()) {
-                return this.to_HTML(max_characters, font_size, 'improper_fraction', top_level);
+                return this.to_HTML(max_characters, font_size, 'improper_fraction', top_level, operator);
             }
             fractional_part = this.copy().subtract(integer_part).absolute_value();
             // split max_characters between the two parts and recur for each them
