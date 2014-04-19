@@ -80,22 +80,31 @@ window.TOONTALK.actions =
         },
         
         run_watched: function(context, queue, robot) {
+            var steps = this.get_steps();
+            var frontside_element = robot.get_frontside_element();
+            var robot_start_position = $(frontside_element).position();
+            var restore_after_last_event = function () {
+                robot.set_animating(false);
+                if (!robot.get_run_once()) {
+                    robot.get_first_in_team().run(context, queue);
+                }
+                frontside_element.removeEventListener("transitionend", restore_after_last_event);
+            };
             var run_watched_step = function (i) {
-                var steps = this.get_steps();
                 var continuation = function () {
                     steps[i].run_unwatched(context, robot);
                     setTimeout(function () {
                         run_watched_step(i+1);
                         },
-                        100); // give the previous step a chance to update the DOM
+                        500); // pause between steps and give the previous step a chance to update the DOM
                 };
                 if (i < steps.length) {
                     steps[i].run_watched(context, robot, continuation);
                 } else {
-                    robot.set_animating(false);
-                    if (!robot.get_run_once()) {
-                        robot.get_first_in_team().run(context, queue);
-                    }
+                    // restore position
+                    frontside_element.style.left = robot_start_position.left + "px";
+                    frontside_element.style.top = robot_start_position.top + "px";
+                    frontside_element.addEventListener("transitionend", restore_after_last_event);
                 }
             }.bind(this);
             if (robot.get_animating()) {

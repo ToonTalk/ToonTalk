@@ -69,19 +69,25 @@ window.TOONTALK.robot_action =
              return true;
          }
     };
-	var move_to_widget = function (widget) {
-		var widget_frontside = widget.get_frontside_element();
-		var robot_frontside = robot.get_frontside_element();
+	var move_to_widget = function (moving_widget, target_widget) {
+		// perhaps move this to widget
+		var widget_frontside = target_widget.get_frontside_element();
+		var mover_frontside = moving_widget.get_frontside_element();
 		var widget_absolute_position = TT.UTILITIES.absolute_position($(widget_frontside));
-		var robot_absolute_position = TT.UTILITIES.absolute_position($(robot_frontside));
-		var robot_relative_position = $(robot_frontside).position();
-		robot_frontside.style.left = (robot_relative_position.left + (widget_absolute_position.left - robot_absolute_position.left)) + "px";
-	    robot_frontside.style.top = (robot_relative_position.top + (widget_absolute_position.top - robot_absolute_position.top)) + "px";
+		var mover_absolute_position = TT.UTILITIES.absolute_position($(mover_frontside));
+		var mover_relative_position = $(mover_frontside).position();
+		mover_frontside.style.left = (mover_relative_position.left + (widget_absolute_position.left - mover_absolute_position.left)) + "px";
+	    mover_frontside.style.top = (mover_relative_position.top + (widget_absolute_position.top - mover_absolute_position.top)) + "px";
 	};
 	var pick_up_animation = function (widget, context, robot, continuation) {
-		this.move_to_widget(widget);
-// 		robot_frontside.addEventListener("transitionend", continuation);
-		setTimeout(continuation, 3500);
+		var robot_frontside_element = robot.get_frontside_element();
+		var one_shot_continuation = function () {
+			continuation();
+			robot_frontside_element.removeEventListener("transitionend", one_shot_continuation);
+		};
+		move_to_widget(robot, widget);
+		robot_frontside_element.addEventListener("transitionend", one_shot_continuation);
+// 		setTimeout(continuation, 3000);
 	};
     var watched_run_functions = 
 		{"pick up": pick_up_animation,
@@ -94,9 +100,12 @@ window.TOONTALK.robot_action =
             var watched_run_function = watched_run_functions[action_name];
             if (!watched_run_function) {
                 watched_run_function = function (referenced, context, robot, continuation, additional_info) {
-                    unwatched_run_function(referenced, context, robot, additional_info);
-                    continuation();
-                }
+					setTimeout(function ()  {
+						unwatched_run_function(referenced, context, robot, additional_info);
+						continuation();
+						},
+						3000);
+                };
             }
             if (!path) {
                 console.log("path undefined in " + action_name + " action");
