@@ -84,6 +84,7 @@ window.TOONTALK.actions =
             var frontside_element = robot.get_frontside_element();
             var robot_start_position = $(frontside_element).position();
             var restore_after_last_event = function () {
+                $(frontside_element).removeClass("toontalk-side-animating");
                 robot.set_animating(false);
                 if (!robot.get_run_once()) {
                     robot.get_first_in_team().run(context, queue);
@@ -102,6 +103,7 @@ window.TOONTALK.actions =
                     steps[i].run_watched(context, robot, continuation);
                 } else {
                     // restore position
+                    $(frontside_element).addClass("toontalk-side-animating");
                     frontside_element.style.left = robot_start_position.left + "px";
                     frontside_element.style.top = robot_start_position.top + "px";
                     frontside_element.addEventListener("transitionend", restore_after_last_event);
