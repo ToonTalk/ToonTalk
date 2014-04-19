@@ -26,7 +26,7 @@ window.TOONTALK.frontside =
             frontside.get_widget = function () {
                 return widget;
             };
-			frontside_element.onclick = function (event) {
+			frontside_element.addEventListener('click', function (event) {
 				var backside = widget.get_backside();
 				var backside_element, $frontside_ancestor_that_is_backside_element, $frontside_ancestor_before_backside_element, frontside_ancestor_before_backside_element;
 				if ($(event.target).is('.ui-resizable-handle')) { 
@@ -58,7 +58,7 @@ window.TOONTALK.frontside =
 					backside.update_display();
 				}
 				event.stopPropagation();
-			};
+			});
             return frontside;
         },
 		

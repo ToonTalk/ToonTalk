@@ -432,9 +432,9 @@ window.TOONTALK.box_backside =
 			var backside_element = backside.get_element();
 			var standard_buttons = TT.backside.create_standard_buttons(backside, box);
 			var infinite_stack_check_box = TT.backside.create_infinite_stack_check_box(backside, box);
-            size_input.button.onchange = update_value;
-			horizontal.button.onchange = update_orientation;
-			vertical.button.onchange = update_orientation;
+            size_input.button.addEventListener('change', update_value);
+			horizontal.button.addEventListener('change', update_orientation);
+			vertical.button.addEventListener('change', update_orientation);
             backside_element.appendChild(size_input.container);
 			backside_element.appendChild($(TT.UTILITIES.create_horizontal_table(horizontal.container, vertical.container)).buttonset().get(0));
             backside_element.appendChild(standard_buttons);

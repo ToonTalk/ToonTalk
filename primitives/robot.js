@@ -491,7 +491,7 @@ window.TOONTALK.robot_backside =
 			$next_robot_area.data("drop_area_owner", robot);
 			// don't do the following if already trained -- or offer to retrain?
 			standard_buttons.insertBefore(this.create_train_button(backside, robot), standard_buttons.firstChild);
-			image_url_input.button.onchange = function () {
+			image_url_input.button.addEventListener('change', function () {
 				var image_url = image_url_input.button.value.trim();
                 robot.set_image_url(image_url, true);
 				if (TT.robot.in_training) {
@@ -499,8 +499,8 @@ window.TOONTALK.robot_backside =
 			                                            argument_1: image_url,
 												        toString: "change the image URL to " + image_url + " of the robot"});
 				}
-            };
-			description_text_area.button.onchange = function () {
+            });
+			description_text_area.button.addEventListener('change', function () {
 				var description = description_text_area.button.value.trim();
                 robot.set_description(description, true);
 				if (TT.robot.in_training) {
@@ -508,7 +508,7 @@ window.TOONTALK.robot_backside =
 			                                            argument_1: description,
 												        toString: "change the description to '" + description + "'' of the robot"});
 				}
-            };
+            });
 			$(run_once_input.button).click(function (event) {
 				var keep_running = run_once_input.button.checked;
 				robot.set_run_once(!keep_running);
