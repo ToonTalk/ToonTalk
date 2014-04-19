@@ -69,12 +69,17 @@ window.TOONTALK.robot_action =
              return true;
          }
     };
+	var pick_up_animation = function (widget, context, robot, continuation) {
+		var widget_frontside = widget.get_frontside_element();
+		var robot_frontside = robot.get_frontside_element();
+		robot_frontside.style.left = widget_frontside.style.left;
+	    robot_frontside.style.top = widget_frontside.style.top;
+// 		robot_frontside.addEventListener("transitionend", continuation);
+		setTimeout(continuation, 3500);
+	};
     var watched_run_functions = 
-		{"pick up": function (widget, context, robot, continuation) {
-			// to do
-			
-			continuation();
-		 }
+		{"pick up": pick_up_animation,
+		 "pick up a copy": pick_up_animation
 	};
     return {
         create: function (path, action_name, additional_info) {

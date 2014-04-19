@@ -84,7 +84,10 @@ window.TOONTALK.actions =
                 var steps = this.get_steps();
                 var continuation = function () {
                     steps[i].run_unwatched(context, robot);
-                    run_watched_step(i+1);
+                    setTimeout(function () {
+                        run_watched_step(i+1);
+                        },
+                        100); // give the previous step a chance to update the DOM
                 };
                 if (i < steps.length) {
                     steps[i].run_watched(context, robot, continuation);
@@ -95,7 +98,7 @@ window.TOONTALK.actions =
                     }
                 }
             }.bind(this);
-            if (robot.animating()) {
+            if (robot.get_animating()) {
                 // is animating to run a step while watched
                 return true;
             }
@@ -148,6 +151,9 @@ window.TOONTALK.newly_created_widgets_path =
                 },
                 toString: function () {
                     var n = actions.get_newly_created_widgets().length - index;
+                    if (n <= 0) {
+                        console.log("Expected to have more newly_created_widgets than " + actions.get_newly_created_widgets().length);
+                    }
                     var ordinal;
                     switch (n) {
                         case 1:
