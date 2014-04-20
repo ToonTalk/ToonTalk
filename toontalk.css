@@ -15,9 +15,9 @@
 	cursor: move;
 }
 .toontalk-side-animating {
-	-moz-transition: all 2s;  
+/* 	-moz-transition: all 2s;  
 	-ms-transition: all 2s;  
-	-o-transition: all 2s; 
+	-o-transition: all 2s;  */
 /* 	following from http://easings.net/#easeInOutBack */
 	-webkit-transition: all 2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
     transition:         all 2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
@@ -195,10 +195,9 @@
 	text-align: inherit;
 }
 .toontalk-robot-image {
-    width: 100%;
-/* 	rest of the height is for thought bubble */
-	
-    height: 70%;
+/*     width: 100%; */
+/* 	rest of the height is for thought bubble */	
+/*     height: 70%; */
 }
 .toontalk-image-url-input {
 	width: 30em;
