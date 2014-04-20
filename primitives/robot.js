@@ -209,14 +209,13 @@ window.TOONTALK.robot = (function (TT) {
 	
 	robot.picked_up = function (widget, json, is_resource) {
 		var path, action_name, widget_copy;
+		// current_action_name is used to distinguish between removing something from its container versus referring to it
 		if (widget.get_infinite_stack()) {
 			// does this cause an addition to newly created backside widgets?
-			action_name = "pick up a copy";
+			this.current_action_name = "pick up a copy";
 		} else {
-			action_name = "pick up";
-		}
-		// current_action_name is used to distinguish between removing something from its container versus referring to it
-		this.current_action_name = action_name;
+			this.current_action_name = "pick up";
+		}		
 		if (is_resource) {
 			// robot needs a copy of the resource to avoid sharing it with training widget
 			widget_copy = widget.copy();
@@ -225,15 +224,16 @@ window.TOONTALK.robot = (function (TT) {
 			path = TT.path.get_path_to(widget, this);
 		}
 		if (path) {
-			this.add_step(TT.robot_action.create(path, action_name), widget);
+			this.add_step(TT.robot_action.create(path, this.current_action_name), widget);
 		}
 		this.current_action_name = undefined;
 		this.set_thing_in_hand(widget);
 	};
 	
 	robot.dropped_on = function (target_widget) {
-		var path = TT.path.get_path_to(target_widget, this);
+		var path; 
 		this.current_action_name = "drop it on";
+		path = TT.path.get_path_to(target_widget, this);
 		if (path) {
 			this.add_step(TT.robot_action.create(path, this.current_action_name));
 		}
@@ -242,38 +242,48 @@ window.TOONTALK.robot = (function (TT) {
 	};
 	
 	robot.copied = function (widget, widget_copy, picked_up) {
-		var path = TT.path.get_path_to(widget, this);
-		var step;
-		if (path) {
-			if (picked_up) {
-				step = TT.robot_action.create(path, "pick up a copy");
-			} else {
-				step = TT.robot_action.create(path, "copy");
-			}
-			this.add_step(step, widget_copy);
+		var path;
+		if (picked_up) {
+			this.current_action_name = "pick up a copy";
+		} else {
+			this.current_action_name = "copy";
 		}
+		path = TT.path.get_path_to(widget, this);
+		if (path) {
+			this.add_step(TT.robot_action.create(path, this.current_action_name), widget_copy);
+		}
+		this.current_action_name = undefined;
 	};
 	
 	robot.removed = function (widget) {
-		var path = TT.path.get_path_to(widget, this);
+		var path;
+		this.current_action_name = "remove"; 
+		path = TT.path.get_path_to(widget, this);
 		if (path) {
-			this.add_step(TT.robot_action.create(path, "remove"));
+			this.add_step(TT.robot_action.create(path, this.current_action_name));
 		}
+		this.current_action_name = undefined;
 	};
 	
 	robot.edited = function (widget, details) {
-		var path = TT.path.get_path_to(widget, this);
+		var path;
+		this.current_action_name = "edit";
+		path = TT.path.get_path_to(widget, this);
 		if (path) {
-			this.add_step(TT.robot_action.create(path, "edit", details));
+			this.add_step(TT.robot_action.create(path, current_action_name, details));
 		}
+		this.current_action_name = undefined;
 	}
 	
 	robot.set_erased = function (widget, erased) {
-		var path = TT.path.get_path_to(widget, this);
+		var path;
+		this.current_action_name = "set_erased";
+		path = TT.path.get_path_to(widget, this);
 		if (path) {
-			this.add_step(TT.robot_action.create(path, "set_erased", {erased: erased,
-			                                                                     toString: erased ? "erase" : "un-erase"}));
+			this.add_step(TT.robot_action.create(path, this.current_action_name, {erased: erased,
+			                                                                      toString: erased ? "erase" : "un-erase"}));
 		}
+		this.current_action_name = undefined;
 	};
 	
 	robot.add_step = function (step, new_widget) {
