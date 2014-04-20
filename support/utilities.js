@@ -351,7 +351,7 @@ window.TOONTALK.UTILITIES =
 						}
 					}
 					target_widget = $target.data("owner");
-					target_position = TT.UTILITIES.absolute_position($target);
+					target_position = $target.offset();
 					if (json_object) {
 						drag_x_offset = json_object.view.drag_x_offset;
 						drag_y_offset = json_object.view.drag_y_offset;
@@ -479,17 +479,17 @@ window.TOONTALK.UTILITIES =
 			return $drop_area;
 		},
 		
-		absolute_position: function ($element) {
-			var element_position;
-			var absolute_position = {left: 0, top: 0};
-			while ($element.parent().length > 0) {
-				element_position = $element.position();
-				absolute_position.left += element_position.left;
-				absolute_position.top += element_position.top;
-				$element = $element.parent();
-			}
-			return absolute_position;
-		},
+// 		absolute_position: function ($element) {
+// 			var element_position;
+// 			var absolute_position = {left: 0, top: 0};
+// 			while ($element.parent().length > 0) {
+// 				element_position = $element.position();
+// 				absolute_position.left += element_position.left;
+// 				absolute_position.top += element_position.top;
+// 				$element = $element.parent();
+// 			}
+// 			return absolute_position;
+// 		},
 		
 		set_absolute_position: function ($element, absolute_position) {
 			var ancestor_position;
@@ -518,6 +518,19 @@ window.TOONTALK.UTILITIES =
 // 				$dropped.parent().append(dropped_element_copy);
 				dropped_copy.update_display();
 			}
+		},
+		
+		find_resource_equal_to_widget: function (widget) {
+			var element_found;
+			$(".toontalk-top-level-resource").each(function (index, element) {
+				var $resource_element = $(element).children(":first");
+				var owner = $resource_element.data("owner");
+				if (owner && widget.equals(owner)) {
+					element_found = $resource_element.get(0);
+					return false; // stop the 'each'
+				}
+			});
+			return element_found;
 		},
 		
 // 		recursively_change_dimensions_to_percentages: function ($element) {

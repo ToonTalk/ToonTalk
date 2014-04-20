@@ -70,12 +70,19 @@ window.TOONTALK.robot_action =
              return true;
          }
     };
+	var find_widget_element = function (widget) {
+		var widget_element = widget.get_side_element();
+		if (!widget_element) {
+			widget_element = TT.UTILITIES.find_resource_equal_to_widget(widget);
+		}
+		return widget_element;
+	};
 	var move_to_widget = function (moving_widget, target_widget, left_offset, top_offset) {
-		// perhaps move this to widget
-		var widget_element = target_widget.get_frontside_element(true); // what about backside?
+		// perhaps move this to widget file
+		var widget_element = find_widget_element(target_widget);
 		var mover_frontside_element = moving_widget.get_frontside_element();
-		var widget_absolute_position = TT.UTILITIES.absolute_position($(widget_element));
-		var mover_absolute_position = TT.UTILITIES.absolute_position($(mover_frontside_element));
+		var widget_absolute_position = $(widget_element).offset();
+		var mover_absolute_position = $(mover_frontside_element).offset();
 		var mover_relative_position = $(mover_frontside_element).position();
 		var remove_transition_class = function () {
 			$(mover_frontside_element).removeClass("toontalk-side-animating");
@@ -108,14 +115,21 @@ window.TOONTALK.robot_action =
 		TT.UTILITIES.add_one_shot_transition_end_handler(robot_frontside_element, continuation);
 	};
 	var move_robot_animation_and_drop_it = function (widget, context, robot, continuation) {
-		var $thing_in_hand_frontside_element = $(robot.get_thing_in_hand().get_frontside_element());
-		var adjust_dropped_location = function () {
-			var thing_in_hand_position = TT.UTILITIES.absolute_position($thing_in_hand_frontside_element);
+		var thing_in_hand = robot.get_thing_in_hand();
+		var $thing_in_hand_frontside_element, adjust_dropped_location;
+		if (!thing_in_hand) {
+			console.log("expected " + robot + " to have thing_in_hand.");
+			move_robot_animation(widget, context, robot, continuation);
+			return;
+		}
+		$thing_in_hand_frontside_element = $(thing_in_hand.get_frontside_element());
+		adjust_dropped_location = function () {
+			var thing_in_hand_position = $thing_in_hand_frontside_element.offset();
 			continuation();
 			if ($thing_in_hand_frontside_element.is(":visible")) {
 				TT.UTILITIES.set_absolute_position($thing_in_hand_frontside_element, thing_in_hand_position);
 			}
-		}
+		};
 		move_robot_animation(widget, context, robot, adjust_dropped_location);
 	};
 // 	var drop_it_on_animation = function (widget, context, robot, continuation) {
