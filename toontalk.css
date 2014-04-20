@@ -15,11 +15,12 @@
 	cursor: move;
 }
 .toontalk-side-animating {
-	-moz-transition: all 3s; 
-	-webkit-transition: all 3s;  
-	-ms-transition: all 3s;  
-	-o-transition: all 3s;  
-	transition: all 3s; 
+	-moz-transition: all 2s;  
+	-ms-transition: all 2s;  
+	-o-transition: all 2s; 
+/* 	following from http://easings.net/#easeInOutBack */
+	-webkit-transition: all 2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    transition:         all 2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 .toontalk-backside {
 	-ms-touch-action: none;
