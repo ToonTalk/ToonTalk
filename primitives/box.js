@@ -520,7 +520,7 @@ window.TOONTALK.box_empty_hole =
 				return "empty hole";
 			};
 			empty_hole.visible = function () {
-				return false; // you can't see it
+				return box.visible(); // you can't see it but if box is visible then it is 
 			};
 // 			$(hole_element).on('drop',
 //                 function (event) {
