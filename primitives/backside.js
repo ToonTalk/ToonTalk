@@ -164,6 +164,9 @@ window.TOONTALK.backside =
 				backside_widgets = widget.get_backside_widgets();
 			 	backside.add_backside_widgets(backside_widgets, widget.get_backside_widgets_json_views());
 			}
+			if (TT.debugging) {
+				backside_element.id = widget.debug_id;
+			}
 			return backside;
 		},
 		

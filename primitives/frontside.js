@@ -57,6 +57,9 @@ window.TOONTALK.frontside =
 				TT.DISPLAY_UPDATES.pending_update(backside);
 				event.stopPropagation();
 			});
+			if (TT.debugging) {
+				frontside_element.id = widget.debug_id;
+			}
             return frontside;
         },
 		
