@@ -352,6 +352,26 @@ window.TOONTALK.widget = (function (TT) {
             console.assert(false, "copy not implemented");
         },
         
+        add_copy_to_container: function () {
+			var widget_copy = this.copy();
+			var frontside_element = this.get_frontside_element();
+			var frontside_element_copy = widget_copy.get_frontside_element();
+			var position = $(frontside_element).position();
+			var $container_element = $(frontside_element).closest(".toontalk-backside");
+			var container_widget = $container_element.data("owner");
+			$(frontside_element_copy).css({width: $(frontside_element).width(),
+				                           height: $(frontside_element).height(),
+										   left: position.left+10,
+										   top: position.top+10});
+			$container_element.append(frontside_element_copy);
+			if (container_widget) {
+				container_widget.add_backside_widget(widget_copy);
+			}
+			if (TT.robot.in_training) {
+				TT.robot.in_training.copied(this, widget_copy, false);
+			}
+		},
+        
         visible: function () {
             var frontside = this.get_frontside();
             if (!frontside) {
