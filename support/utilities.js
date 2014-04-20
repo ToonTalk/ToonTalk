@@ -47,7 +47,7 @@ window.TOONTALK.UTILITIES =
 				json = JSON.parse(json_string);
 				widget = TT.UTILITIES.create_from_json(json);
 				if (widget) {
-					element.innerText = ""; // served its purpose of being parsed as JSON
+					element.textContent = ""; // served its purpose of being parsed as JSON
 					if (json.view.backside) {
 						backside = widget.get_backside(true);
 						backside_element = backside.get_element();
@@ -76,6 +76,8 @@ window.TOONTALK.UTILITIES =
 						},
 						1);
 					}
+				} else {
+					console.log("Could not recreate a widget from this JSON: " + json_string);
 				}
 			});
 			if (!includes_top_level_backside) {
