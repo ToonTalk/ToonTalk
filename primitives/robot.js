@@ -344,8 +344,8 @@ window.TOONTALK.robot = (function (TT) {
 		frontside_element.title = this.get_title();
 		$(frontside_element).addClass("toontalk-robot");
 		$(new_first_child).addClass("toontalk-widget");
-		frontside_element.style.width = this.get_width();
-		frontside_element.style.height = this.get_height();
+		frontside_element.style.width = this.get_width() + "px";
+		frontside_element.style.height = this.get_height() + "px";
 		// following interfered with resizable
 // 		$(frontside_element).css({width: this.get_width(),
 // 		                          height: this.get_height()});
