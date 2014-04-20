@@ -136,15 +136,15 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
 				var frontside, backside;
                 value = new_value;
                 if (update_now) {
-                    this.update_display();
+                    TT.DISPLAY_UPDATES.pending_update(this);
                 } else {
 					frontside = this.get_frontside();
 					backside = this.get_backside();
                     if (frontside) {
-                        TT.DISPLAY_UPDATES.add_dirty_side(frontside);
+                        TT.DISPLAY_UPDATES.pending_update(frontside);
                     }
                     if (backside) {
-                        TT.DISPLAY_UPDATES.add_dirty_side(backside);
+                        TT.DISPLAY_UPDATES.pending_update(backside);
                     }
                 }
 				if (TT.debugging) {
@@ -160,7 +160,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             function (new_value, update_now) { 
                 format = new_value;
                 if (update_now) {
-                    this.update_display();
+                    TT.DISPLAY_UPDATES.pending_update(this);
                 }
                 return this;
             };
@@ -172,7 +172,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             function (new_value, update_now) { 
                 operator = new_value;
                 if (update_now) {
-                    this.update_display();
+                    TT.DISPLAY_UPDATES.pending_update(this);
                 }
                 return this;
             };
@@ -327,7 +327,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
 		}
         var result = other.number_dropped_on_me(this, event);
 		if (event) {
-			other.update_display();
+			TT.DISPLAY_UPDATES.pending_update(other);
 		}
 		this.remove();
 		if (TT.robot.in_training) {

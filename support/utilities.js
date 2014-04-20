@@ -425,7 +425,7 @@ window.TOONTALK.UTILITIES =
 						if ($source.is(".toontalk-frontside") && !$source.is('.ui-resizable')) {
 							$source.resizable(
 								{resize: function(event, ui) {
-									source_widget.update_display();			
+									TT.DISPLAY_UPDATES.pending_update(source_widget);			
 								    },
 								 // the corner handles caused the element to be stuck in resize mode when used
 								 handles: "n,e,s,w"});
@@ -518,7 +518,7 @@ window.TOONTALK.UTILITIES =
 				$(dropped_element_copy).addClass("toontalk-top-level-resource");
 				$dropped.get(0).parentElement.appendChild(dropped_element_copy);
 // 				$dropped.parent().append(dropped_element_copy);
-				dropped_copy.update_display();
+				TT.DISPLAY_UPDATES.pending_update(dropped_copy);
 			}
 		},
 		

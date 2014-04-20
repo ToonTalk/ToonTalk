@@ -37,7 +37,7 @@ window.TOONTALK.robot_action =
                          } else {
                              thing_in_hand.drop_on(target);
                              if (target.visible()) {
-                                 TT.DISPLAY_UPDATES.add_dirty_side(target);
+                                 TT.DISPLAY_UPDATES.pending_update(target);
                              }
                          }
 						 robot.set_thing_in_hand(undefined);
@@ -107,9 +107,11 @@ window.TOONTALK.robot_action =
 		}
 		move_to_widget(robot, widget, 0, -$(robot_frontside_element).height());
 		if (thing_in_hand) {
-			if (thing_in_hand.update_display) {
-				thing_in_hand.update_display();
-			}
+			// so robot displays what he's holding
+			TT.DISPLAY_UPDATES.pending_update(robot);
+// 			if (thing_in_hand.update_display) {
+// 				thing_in_hand.update_display();
+// 			}
 // 			move_to_widget(thing_in_hand, widget);
 		}
 		TT.UTILITIES.add_one_shot_transition_end_handler(robot_frontside_element, continuation);
@@ -125,6 +127,7 @@ window.TOONTALK.robot_action =
 		$thing_in_hand_frontside_element = $(thing_in_hand.get_frontside_element());
 		adjust_dropped_location = function () {
 			var thing_in_hand_position = $thing_in_hand_frontside_element.offset();
+			$thing_in_hand_frontside_element.removeClass("toontalk-held-by-robot");
 			continuation();
 			if ($thing_in_hand_frontside_element.is(":visible")) {
 				TT.UTILITIES.set_absolute_position($thing_in_hand_frontside_element, thing_in_hand_position);

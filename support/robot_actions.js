@@ -97,7 +97,7 @@ window.TOONTALK.actions =
 //                         if (!thing_in_hand.visible()) {
 //                             TT.UTILITIES.add_frontside_element_to_container(thing_in_hand, robot);
 //                         }
-                        robot.update_display();
+                        TT.DISPLAY_UPDATES.pending_update(robot);
                     }
                     setTimeout(function () {
                         run_watched_step(i+1);

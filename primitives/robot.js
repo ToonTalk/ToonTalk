@@ -50,7 +50,7 @@ window.TOONTALK.robot = (function (TT) {
         new_robot.set_image_url = function (new_value, update_display) {
             image_url = new_value;
 			if (update_display) {
-				this.update_display();
+				TT.DISPLAY_UPDATES.pending_update(this);
 			}
         };
 		new_robot.get_animating = function () {
@@ -78,7 +78,7 @@ window.TOONTALK.robot = (function (TT) {
 		new_robot.set_description = function (new_value, update_display) {
 			description = new_value;
 			if (update_display) {
-				this.update_display();
+				TT.DISPLAY_UPDATES.pending_update(this);
 			}
 		};
 		new_robot.get_thing_in_hand = function () {
@@ -297,8 +297,8 @@ window.TOONTALK.robot = (function (TT) {
 	
 	robot.training_finished = function () {
 		$("div").css({cursor: ''}); // restore cursor
-		this.update_display();
-		this.get_backside().update_display();
+		TT.DISPLAY_UPDATES.pending_update(this);
+		TT.DISPLAY_UPDATES.pending_update(this.get_backside());
 		this.being_trained = false;
 		this.get_frontside_element().title = this.get_title();
 	};
@@ -350,26 +350,24 @@ window.TOONTALK.robot = (function (TT) {
 // 		$(frontside_element).css({width: this.get_width(),
 // 		                          height: this.get_height()});
 		frontside_element.appendChild(new_first_child);
+		if (bubble_contents_element) {
+			TT.DISPLAY_UPDATES.pending_update(bubble);
+		}
+		if (thing_in_hand) {
+			$(thing_in_hand_frontside_element).addClass("toontalk-held-by-robot");
+			TT.DISPLAY_UPDATES.pending_update(thing_in_hand);
+		}
+		if (backside && backside.visible()) {
+			TT.DISPLAY_UPDATES.pending_update(backside);
+		}
 		setTimeout( // wait for layout to settle down
 			function () {
-				if (bubble_contents_element) {
-					bubble.update_display();
-				}
 				if (resource_becoming_instance) {
 					// need to adjust for thought bubble
 					frontside_element.style.top = ($(frontside_element).position().top - $(robot_image).height()) + "px";
 				}
-				if (thing_in_hand) {
-					$(thing_in_hand_frontside_element).css({top: "75%",
-					                                        width: $(robot_image).width(),
-														    height: $(robot_image).height()/2});
-					thing_in_hand.update_display();
-				}
 			},
 			1);
-		if (backside && backside.visible()) {
-			backside.update_display();
-		}
     };
 	
 	robot.add_newly_created_widget = function (new_widget) {

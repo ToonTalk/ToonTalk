@@ -216,6 +216,12 @@
 	height: 40%;
 	position: absolute;
 }
+.toontalk-held-by-robot {
+	top: 75%;
+/* 	width: 50%;
+	height: 25%; */
+	z-index: 1000
+}
 .toontalk-drop-area {
 	background-color: rgb(187, 246, 248);
 	min-height: 35%;

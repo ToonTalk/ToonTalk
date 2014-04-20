@@ -50,7 +50,7 @@ window.TOONTALK.queue =
                     if (steps_limit === 0) {
                         // clear the queue to be ready for the next test
                         this.to_run = [];
-                        TT.DISPLAY_UPDATES.update_display();
+//                         TT.DISPLAY_UPDATES.update_display();
                         if (run_after_steps_limit) {
                             run_after_steps_limit();
                         }

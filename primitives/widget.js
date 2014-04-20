@@ -43,7 +43,7 @@ window.TOONTALK.widget = (function (TT) {
                 widget.set_erased = function (new_value, update_now) {
                     erased = new_value;
                     if (update_now) {
-                        this.update_display();
+                        TT.DISPLAY_UPDATES.pending_update(this);
                     }
                 };
             }
@@ -164,7 +164,7 @@ window.TOONTALK.widget = (function (TT) {
                 return;
             }
             if (update) {
-                this.update_display();
+                TT.DISPLAY_UPDATES.pending_update(this);
             }
             return frontside.get_element();
         },

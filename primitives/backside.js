@@ -33,14 +33,12 @@ window.TOONTALK.backside =
 				// TO DO: determine if this is needed -- top-level backside can't be added to something - can it?
 			    widget.drop_on = function (other, $side_element_of_other, event) {
 					$backside_element.append($side_element_of_other);
-// 					$backside_element.addClass("toontalk-on-backside");
 				    TT.UTILITIES.set_position_absolute($side_element_of_other.get(0), true, event); // when on the backside
 					if ($side_element_of_other.is(".toontalk-frontside")) {
 						// better to have a preferrred size that it goes to when on backside
 						// recorded when dropped into something that changes its size -- e.g. a box
                         $side_element_of_other.addClass("toontalk-frontside-on-backside");
-// 						$side_element_of_other.resizable("enable");
-                        other.update_display();
+                        TT.DISPLAY_UPDATES.pending_update(other);
 			        }
 					backside.update_run_button_disabled_attribute();
 					return true;
@@ -49,24 +47,25 @@ window.TOONTALK.backside =
 			if (!widget.removed) {
 			    widget.removed = function (other, $side_element_of_other, event) {
 					$side_element_of_other.removeClass("toontalk-frontside-on-backside");
-// 					$side_element_of_other.resizable("disable");
-					// need to disable resizable -- probably should add it it and disable elsewhere
-// 					$element.removeClass("toontalk-on-backside");
-				    // no need to do anything since can find all children and their 'owners' easily enough
+				    // no need to do more since can find all children and their 'owners' easily enough
 			    };
             }
 			backside.widget_dropped_on_me = 
 			    function (other, event) {
-			        var other_side_element, $other_side_element;
+					// perhaps should be renamed side_of_other, etc.
+			        var other_side, other_side_element, $other_side_element;
 					if (other.get_type_name() === 'top-level') {
-						other_side_element = other.get_backside_element(true);
+						other_side = other.get_backside(true);
+						other_side_element = other_side.get_element();
 					} else {
-						other_side_element = other.get_frontside(true).get_element();
+						other_side = other.get_frontside(true);
+						other_side_element = other_side.get_element();
 					}
 					$other_side_element = $(other_side_element);
 			        $backside_element.append($other_side_element);
 			        TT.UTILITIES.set_position_absolute(other_side_element, true, event); // when on the backside
-					other.update_display(); // why was this $other_front_side_element.data("owner").update_display() instead?
+// 					other.update_display(); // why was this $other_front_side_element.data("owner").update_display() instead?
+					TT.DISPLAY_UPDATES.pending_update(other_side);
 					if (TT.robot.in_training) {
 						if ($backside_element.is(".toontalk-top-level-backside")) {
 							TT.robot.in_training.dropped_on("top-level-backside");
@@ -136,7 +135,8 @@ window.TOONTALK.backside =
 					}
 					owner_widget = $source.data("owner");
 					if (owner_widget) {
-						owner_widget.update_display();
+						TT.DISPLAY_UPDATES.pending_update(owner_widget);
+// 						owner_widget.update_display();
 					}
 				} 
 // 				else if ($source.is(".toontalk-backside")) {
@@ -302,7 +302,7 @@ window.TOONTALK.backside =
 				if (robot) {
 					robot_backside = robot.get_backside();
 					if (robot_backside) {
-						robot_backside.update_display();
+						TT.DISPLAY_UPDATES.pending_update(robot_backside);
 					}
 				}
 				if (TT.robot.in_training) {

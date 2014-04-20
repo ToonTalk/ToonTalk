@@ -26,7 +26,7 @@ window.TOONTALK.box = (function (TT) {
             size = new_size;
 			contents.length = size;
 			if (update_display) {
-			    this.update_display();
+				TT.DISPLAY_UPDATES.pending_update(this);
 			}
 			if (TT.debugging) {
 				this.debug_string = this.toString();
@@ -39,7 +39,7 @@ window.TOONTALK.box = (function (TT) {
         new_box.set_horizontal = function (new_horizontal, update_display) {
             horizontal = new_horizontal;
 			if (update_display) {
-			    this.update_display();
+			    TT.DISPLAY_UPDATES.pending_update(this);
 			}
             return this;
         };
@@ -293,7 +293,7 @@ window.TOONTALK.box = (function (TT) {
 // 				},
 // 				1);
 // 		}
-		hole_frontside.update_display();
+        TT.DISPLAY_UPDATES.pending_update(hole_frontside);
 	};
 	
 	box.empty_hole = function (index, update_display) {
@@ -311,7 +311,7 @@ window.TOONTALK.box = (function (TT) {
 		}
         var result = other.box_dropped_on_me(this, event);
 		if (event) {
-			other.update_display();
+			TT.DISPLAY_UPDATES.pending_update(other);
 		}
 		this.remove();
 		return result;
@@ -451,7 +451,7 @@ window.TOONTALK.box_backside =
 					TT.UTILITIES.check_radio_button(vertical);
 				}
 			};
-			backside.update_display();
+			TT.DISPLAY_UPDATES.pending_update(backside);
             return backside;
         }};
 }(window.TOONTALK));
@@ -488,7 +488,7 @@ window.TOONTALK.box_empty_hole =
 					TT.robot.in_training.dropped_on(empty_hole);
 				}
 				box.set_hole(index, dropped, true);
-				box.update_display();
+				TT.DISPLAY_UPDATES.pending_update(box);
 				return true;
 			};
 			empty_hole.get_json = function () {
