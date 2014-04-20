@@ -39,7 +39,7 @@ window.TOONTALK.UTILITIES =
 	    TT.debugging = true; // remove this for production releases
 		$(".toontalk-json").each(
 			function (index, element) {
-				var json_string = element.innerText;
+				var json_string = element.textContent;
 				var json, widget, frontside_element, backside_element, backside;
 				if (!json_string) {
 					return;
@@ -621,7 +621,7 @@ window.TOONTALK.UTILITIES =
 						one_shot_handler();
 					}
 				},
-				3500);
+				2500);
 		},
 		
 // 		add_frontside_element_to_container: function (widget, widget_with_container) {

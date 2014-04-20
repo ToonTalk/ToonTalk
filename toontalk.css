@@ -241,3 +241,9 @@
 .toontalk-infinite-stack {
 	box-shadow: 10px 5px 5px black;
 }
+.toontalk-resource-table {
+	padding: 8px;
+}
+.toontalk-resource-table td {
+	width: 200px;
+}
