@@ -91,12 +91,9 @@ window.TOONTALK.actions =
                 }
             };
             var run_watched_step = function (i) {
-                var continuation = function () {
-                    steps[i].run_unwatched(context, robot);
+                var continuation = function (referenced) {
+                    steps[i].do_step(referenced, context, robot);
                     if (robot.get_thing_in_hand()) {
-//                         if (!thing_in_hand.visible()) {
-//                             TT.UTILITIES.add_frontside_element_to_container(thing_in_hand, robot);
-//                         }
                         TT.DISPLAY_UPDATES.pending_update(robot);
                     }
                     setTimeout(function () {

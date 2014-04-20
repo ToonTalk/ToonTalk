@@ -322,7 +322,7 @@ window.TOONTALK.box = (function (TT) {
 		return false;
 	};
 	
-	box.removed = function (part, element, event) {
+	box.removed = function (part, ignore_element, event) {
 		var size = this.get_size();
 		var i;
 		var part_frontside = part.get_frontside();
@@ -342,10 +342,11 @@ window.TOONTALK.box = (function (TT) {
 	box.get_path_to = function (widget, robot) {
 		var size = this.get_size();
 		var i, part, path, sub_path;
+		var removing_widget = robot.current_action_name === 'pick up';
 		for (i = 0; i < size; i += 1) {
 			part = this.get_hole(i);
 			if (widget === part) {
-				return TT.box.path.create(i);
+				return TT.box.path.create(i, removing_widget);
 			} else if (part.get_path_to) {
 				sub_path = part.get_path_to(widget, robot);
 				if (sub_path) {
@@ -367,6 +368,13 @@ window.TOONTALK.box = (function (TT) {
 					if (path.next) {
                     	return hole.dereference(path.next);
 					}
+					if (path.removing_widget()) {
+						if (hole.get_type_name() === 'empty hole') {
+							console.log("Robot is trying to remove something from an empty hole. ");
+						} else if (!hole.get_infinite_stack()) {
+							this.removed(hole);
+						}
+					}
 					return hole;
 				}
             }
@@ -377,24 +385,28 @@ window.TOONTALK.box = (function (TT) {
     };
     
     box.path = {
-		create: function (index) {
+		create: function (index, removing_widget) {
 			return {
 				get_index: function () {
 					return index;
-				},         
+				},
+				removing_widget: function () {
+					return removing_widget;
+				},
 				toString: function () {
 					return "what is in the " + TT.UTILITIES.cardinal(index) + " hole "; // + (this.next ? "; " + TT.path.toString(this.next) : "");
 				},
 				get_json: function () {
 					return {type: "box_path",
 							index: index,
+							removing_widget: removing_widget,
 							next: this.next && this.next.get_json()};
 				}
 			};
     	},
 	
 	    create_from_json: function (json) {
-			var path = box.path.create(json.index);
+			var path = box.path.create(json.index, json.removing_widget);
 			if (json.next) {
 				path.next = TT.UTILITIES.create_from_json(json.next);
 			}
@@ -465,6 +477,9 @@ window.TOONTALK.box_empty_hole =
 			var hole_element = document.createElement("div");
 			hole_element.className = "toontalk-empty-hole toontalk-frontside toontalk-side";
 			empty_hole.get_frontside = function () {
+				return hole_element;
+			};
+			empty_hole.get_side_element = function () {
 				return hole_element;
 			};
 			empty_hole.update_display = function () {

@@ -209,6 +209,14 @@ window.TOONTALK.robot = (function (TT) {
 	
 	robot.picked_up = function (widget, json, is_resource) {
 		var path, action_name, widget_copy;
+		if (widget.get_infinite_stack()) {
+			// does this cause an addition to newly created backside widgets?
+			action_name = "pick up a copy";
+		} else {
+			action_name = "pick up";
+		}
+		// current_action_name is used to distinguish between removing something from its container versus referring to it
+		this.current_action_name = action_name;
 		if (is_resource) {
 			// robot needs a copy of the resource to avoid sharing it with training widget
 			widget_copy = widget.copy();
@@ -217,22 +225,19 @@ window.TOONTALK.robot = (function (TT) {
 			path = TT.path.get_path_to(widget, this);
 		}
 		if (path) {
-			if (widget.get_infinite_stack()) {
-				// should this cause an addition to newly created backside widgets?
-				action_name = "pick up a copy";
-			} else {
-				action_name = "pick up";
-			}
 			this.add_step(TT.robot_action.create(path, action_name), widget);
 		}
+		this.current_action_name = undefined;
 		this.set_thing_in_hand(widget);
 	};
 	
 	robot.dropped_on = function (target_widget) {
 		var path = TT.path.get_path_to(target_widget, this);
+		this.current_action_name = "drop it on";
 		if (path) {
-			this.add_step(TT.robot_action.create(path, "drop it on"));
+			this.add_step(TT.robot_action.create(path, this.current_action_name));
 		}
+		this.current_action_name = undefined;
 		this.set_thing_in_hand(undefined);
 	};
 	

@@ -609,6 +609,7 @@ window.TOONTALK.UTILITIES =
 		add_one_shot_transition_end_handler: function (element, handler) {
 			var handler_run = false;
 			var one_shot_handler = function () {
+				// could support any number of parameters but not needed
 				handler_run = true;
 				handler();
 				element.removeEventListener("transitionend", one_shot_handler);

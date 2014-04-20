@@ -135,15 +135,6 @@ window.TOONTALK.robot_action =
 		};
 		move_robot_animation(widget, context, robot, adjust_dropped_location);
 	};
-// 	var drop_it_on_animation = function (widget, context, robot, continuation) {
-// 		var robot_frontside_element = robot.get_frontside_element();
-// 		var one_shot_continuation = function () {
-// 			continuation();
-// 			robot_frontside_element.removeEventListener("transitionend", one_shot_continuation);
-// 		};
-// 		move_to_widget(robot, widget);
-// 		robot_frontside_element.addEventListener("transitionend", one_shot_continuation);
-// 	};
     var watched_run_functions = 
 		{"pick up": move_robot_animation,
 		 "pick up a copy": move_robot_animation,
@@ -157,8 +148,8 @@ window.TOONTALK.robot_action =
             if (!watched_run_function) {
                 watched_run_function = function (referenced, context, robot, continuation, additional_info) {
 					setTimeout(function ()  {
-						unwatched_run_function(referenced, context, robot, additional_info);
-						continuation();
+// 						unwatched_run_function(referenced, context, robot, additional_info);
+						continuation(referenced);
 						},
 						3000);
                 };
@@ -177,13 +168,19 @@ window.TOONTALK.robot_action =
                 }
                 return unwatched_run_function(referenced, context, robot, additional_info);
             };
+			new_action.do_step = function (referenced, context, robot, additional_info) {
+				 return unwatched_run_function(referenced, context, robot, additional_info);
+			};
             new_action.run_watched = function (context, robot, continuation) {
                 var referenced = TT.path.dereference_path(path, context);
+				var new_continuation = function () {
+					continuation(referenced);
+				};
                 if (!referenced) {
 			        console.log("Unable to dereference path: " + TT.path.toString(path) + " in context: " + context.toString());
                     return false;
                 }
-                return watched_run_function(referenced, context, robot, continuation, additional_info);
+                return watched_run_function(referenced, context, robot, new_continuation, additional_info);
             };
             new_action.toString = function () {
                 var action = additional_info && additional_info.toString ? additional_info.toString : action_name;
