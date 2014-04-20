@@ -37,9 +37,10 @@ window.TOONTALK.robot_action =
                          } else {
                              thing_in_hand.drop_on(target);
                              if (target.visible()) {
-                                 target.update_display();
+                                 TT.DISPLAY_UPDATES.add_dirty_side(target);
                              }
                          }
+						 robot.set_thing_in_hand(undefined);
                      } else {
                          console.log("Thing in robot's hand doesn't handle 'drop_on': "  + thing_in_hand.toString() + ". Robot that " + robot.toString());
                          return false;
@@ -71,37 +72,51 @@ window.TOONTALK.robot_action =
     };
 	var move_to_widget = function (moving_widget, target_widget, left_offset, top_offset) {
 		// perhaps move this to widget
-		var widget_element = target_widget.get_side_element();
-		var mover_frontside = moving_widget.get_frontside_element();
+		var widget_element = target_widget.get_frontside_element(true); // what about backside?
+		var mover_frontside_element = moving_widget.get_frontside_element();
 		var widget_absolute_position = TT.UTILITIES.absolute_position($(widget_element));
-		var mover_absolute_position = TT.UTILITIES.absolute_position($(mover_frontside));
-		var mover_relative_position = $(mover_frontside).position();
+		var mover_absolute_position = TT.UTILITIES.absolute_position($(mover_frontside_element));
+		var mover_relative_position = $(mover_frontside_element).position();
 		var remove_transition_class = function () {
-			$(mover_frontside).removeClass("toontalk-side-animating");
-			mover_frontside.removeEventListener("transitionend", remove_transition_class);
+			$(mover_frontside_element).removeClass("toontalk-side-animating");
 		};
-		mover_frontside.addEventListener("transitionend", remove_transition_class);
-		$(mover_frontside).addClass("toontalk-side-animating");
-		mover_frontside.style.left = (mover_relative_position.left + left_offset + (widget_absolute_position.left - mover_absolute_position.left)) + "px";
-	    mover_frontside.style.top = (mover_relative_position.top + top_offset + (widget_absolute_position.top - mover_absolute_position.top)) + "px";
+		if (!left_offset) {
+			left_offset = 0;
+		}
+		if (!top_offset) {
+			top_offset = 0;
+		}
+		TT.UTILITIES.add_one_shot_transition_end_handler(mover_frontside_element, remove_transition_class);
+		$(mover_frontside_element).addClass("toontalk-side-animating");
+		mover_frontside_element.style.left = (mover_relative_position.left + left_offset + (widget_absolute_position.left - mover_absolute_position.left)) + "px";
+	    mover_frontside_element.style.top = (mover_relative_position.top + top_offset + (widget_absolute_position.top - mover_absolute_position.top)) + "px";
 	};
 	var move_robot_animation = function (widget, context, robot, continuation) {
 		var robot_frontside_element = robot.get_frontside_element();
-		var one_shot_continuation = function () {
-			continuation();
-			robot_frontside_element.removeEventListener("transitionend", one_shot_continuation);
-		};
 		var thing_in_hand = robot.get_thing_in_hand();
 		if (widget instanceof jQuery) {
 			// top-level backside
 			widget = widget.data("owner");
 		}
-		move_to_widget(robot, widget, $(robot_frontside_element).width() * 0.5, 0); //$(robot_frontside_element).height() * 0.25);
+		move_to_widget(robot, widget, 0, -$(robot_frontside_element).height());
 		if (thing_in_hand) {
-			move_to_widget(thing_in_hand, widget);
+			if (thing_in_hand.update_display) {
+				thing_in_hand.update_display();
+			}
+// 			move_to_widget(thing_in_hand, widget);
 		}
-		robot_frontside_element.addEventListener("transitionend", one_shot_continuation);
-// 		setTimeout(continuation, 3000);
+		TT.UTILITIES.add_one_shot_transition_end_handler(robot_frontside_element, continuation);
+	};
+	var move_robot_animation_and_drop_it = function (widget, context, robot, continuation) {
+		var $thing_in_hand_frontside_element = $(robot.get_thing_in_hand().get_frontside_element());
+		var adjust_dropped_location = function () {
+			var thing_in_hand_position = TT.UTILITIES.absolute_position($thing_in_hand_frontside_element);
+			continuation();
+			if ($thing_in_hand_frontside_element.is(":visible")) {
+				TT.UTILITIES.set_absolute_position($thing_in_hand_frontside_element, thing_in_hand_position);
+			}
+		}
+		move_robot_animation(widget, context, robot, adjust_dropped_location);
 	};
 // 	var drop_it_on_animation = function (widget, context, robot, continuation) {
 // 		var robot_frontside_element = robot.get_frontside_element();
@@ -115,7 +130,7 @@ window.TOONTALK.robot_action =
     var watched_run_functions = 
 		{"pick up": move_robot_animation,
 		 "pick up a copy": move_robot_animation,
-		 "drop it on": move_robot_animation
+		 "drop it on": move_robot_animation_and_drop_it
 	};
     return {
         create: function (path, action_name, additional_info) {

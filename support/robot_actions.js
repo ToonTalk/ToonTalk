@@ -89,11 +89,16 @@ window.TOONTALK.actions =
                 if (!robot.get_run_once()) {
                     robot.get_first_in_team().run(context, queue);
                 }
-                frontside_element.removeEventListener("transitionend", restore_after_last_event);
             };
             var run_watched_step = function (i) {
                 var continuation = function () {
                     steps[i].run_unwatched(context, robot);
+                    if (robot.get_thing_in_hand()) {
+//                         if (!thing_in_hand.visible()) {
+//                             TT.UTILITIES.add_frontside_element_to_container(thing_in_hand, robot);
+//                         }
+                        robot.update_display();
+                    }
                     setTimeout(function () {
                         run_watched_step(i+1);
                         },
@@ -106,7 +111,7 @@ window.TOONTALK.actions =
                     $(frontside_element).addClass("toontalk-side-animating");
                     frontside_element.style.left = robot_start_position.left + "px";
                     frontside_element.style.top = robot_start_position.top + "px";
-                    frontside_element.addEventListener("transitionend", restore_after_last_event);
+                    TT.UTILITIES.add_one_shot_transition_end_handler(frontside_element, restore_after_last_event);
                 }
             }.bind(this);
             if (robot.get_animating()) {

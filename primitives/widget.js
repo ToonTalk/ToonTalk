@@ -176,12 +176,12 @@ window.TOONTALK.widget = (function (TT) {
             }
         },
         
-        get_side_element: function () {
+        get_side_element: function (create) {
             // returns frontside if showing othewise backside
             if (this.visible()) {
-                return this.get_frontside_element();
+                return this.get_frontside_element(create);
             } else {
-                return this.get_backside_element();
+                return this.get_backside_element(create);
             }
         },
         
@@ -357,7 +357,7 @@ window.TOONTALK.widget = (function (TT) {
             if (!frontside) {
                 return false;
             }
-            return $(frontside.get_element()).is(":visible");
+            return $(frontside.get_element()).is(":visible"); 
         },
         
         drag_started: function (json, is_resource) {

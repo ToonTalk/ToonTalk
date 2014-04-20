@@ -233,7 +233,7 @@ window.TOONTALK.robot = (function (TT) {
 		if (path) {
 			this.add_step(TT.robot_action.create(path, "drop it on"));
 		}
-		this.set_thing_in_hand(null);
+		this.set_thing_in_hand(undefined);
 	};
 	
 	robot.copied = function (widget, widget_copy, picked_up) {
@@ -309,6 +309,8 @@ window.TOONTALK.robot = (function (TT) {
 		var backside = this.get_backside();
 		var bubble = this.get_bubble();
 		var new_first_child, robot_image, thought_bubble, frontside_element, bubble_contents_element, resource_becoming_instance;
+		var thing_in_hand = this.get_thing_in_hand();
+		var thing_in_hand_frontside_element;
 		if (TT.debugging) {
 			this.debug_string = this.toString();
 		}
@@ -325,6 +327,10 @@ window.TOONTALK.robot = (function (TT) {
 			$(new_first_child).css({position: "absolute"});
 			new_first_child.appendChild(thought_bubble);
 			$(robot_image).css({top: "30%"});
+			if (thing_in_hand) {
+				thing_in_hand_frontside_element = thing_in_hand.get_frontside_element();
+				new_first_child.appendChild(thing_in_hand_frontside_element);
+			}
 			new_first_child.appendChild(robot_image);
 			bubble_contents_element = bubble.get_frontside_element();
 			$(bubble_contents_element).addClass("toontalk-thought-bubble-contents");
@@ -352,6 +358,12 @@ window.TOONTALK.robot = (function (TT) {
 				if (resource_becoming_instance) {
 					// need to adjust for thought bubble
 					frontside_element.style.top = ($(frontside_element).position().top - $(robot_image).height()) + "px";
+				}
+				if (thing_in_hand) {
+					$(thing_in_hand_frontside_element).css({top: "75%",
+					                                        width: $(robot_image).width(),
+														    height: $(robot_image).height()/2});
+					thing_in_hand.update_display();
 				}
 			},
 			1);

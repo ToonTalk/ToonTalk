@@ -491,6 +491,19 @@ window.TOONTALK.UTILITIES =
 			return absolute_position;
 		},
 		
+		set_absolute_position: function ($element, absolute_position) {
+			var ancestor_position;
+			var $ancestor = $element.parent();
+			while (!$ancestor.is("html")) {
+				ancestor_position = $ancestor.position();
+				absolute_position.left -= ancestor_position.left;
+				absolute_position.top -= ancestor_position.top;
+				$ancestor = $ancestor.parent();
+			}
+			$element.css({left: absolute_position.left,
+			              top:  absolute_position.top});
+		},
+		
 		restore_resource: function ($dropped, dropped_widget) {
 			var dropped_copy, dropped_element_copy;
 			if ($dropped.is(".toontalk-top-level-resource")) {
@@ -577,6 +590,41 @@ window.TOONTALK.UTILITIES =
 				return n + "th";
 			}
 		},
+		
+		add_one_shot_transition_end_handler: function (element, handler) {
+			var handler_run = false;
+			var one_shot_handler = function () {
+				handler_run = true;
+				handler();
+				element.removeEventListener("transitionend", one_shot_handler);
+			}
+			element.addEventListener("transitionend", one_shot_handler);
+			// transitionend events might not be triggered
+			// As https://developer.mozilla.org/en-US/docs/Web/Guide/CSS/Using_CSS_transitions says: 
+			// The transitionend event doesn't fire if the transition is aborted because the animating property's value is changed before the transition is completed.
+			setTimeout(
+				function () {
+					if (!handler_run) {
+						one_shot_handler();
+					}
+				},
+				3500);
+		},
+		
+// 		add_frontside_element_to_container: function (widget, widget_with_container) {
+// 			var widget_frontside_element = widget.get_frontside_element();
+// 			var element_with_container = widget_with_container.get_frontside_element();
+// 			var element_with_container_position = $(element_with_container).position();
+// 			var element_with_container_width = $(element_with_container).width();
+// 			var element_with_container_height = $(element_with_container).height();
+// // 			element_with_container.appendChild(widget_frontside_element);
+// 			$(element_with_container).closest(".toontalk-side").append(widget_frontside_element);
+// 			$(widget_frontside_element).css({left: element_with_container_position.left + element_with_container_width * 0.25,
+// 			                                 top: element_with_container_position.top + element_with_container_height * 0.75,
+// 											 width: element_with_container_width/2,
+// 											 height: element_with_container_height/2});
+// 			widget_frontside_element.style.zIndex = 1000;
+// 		},			
 		
 		cursor_of_image: function (url) {
 			var extensionStart = url.lastIndexOf('.');
