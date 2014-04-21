@@ -24,20 +24,25 @@ window.TOONTALK.robot_action =
              robot.set_thing_in_hand(widget_copy);
              return true;
          },
-         "drop it on": function (target, context, robot) {
-             var thing_in_hand;
-             if (target) {
+         "drop it on": function (target_element, context, robot) {
+             var thing_in_hand, thing_in_hand_frontside_element;
+             if (target_element) {
                  thing_in_hand = robot.get_thing_in_hand();
                  if (thing_in_hand) {
                      if (thing_in_hand.drop_on) {
-                         if (target instanceof jQuery) {
+                         if (target_element instanceof jQuery) {
                              // e.g. dropped on top-level backside
-                             target.append(thing_in_hand.get_frontside_element());
+							 thing_in_hand_frontside_element = thing_in_hand.get_frontside_element();
+							 // pick a random spot
+							 $(thing_in_hand_frontside_element).css({left: Math.random()*$(target_element).width(),
+						                                             top:  Math.random()*$(target_element).height()});
+                             target_element.append(thing_in_hand_frontside_element);
+							 // following shouldn't be needed if pick ups that copy do everything right
                              robot.add_newly_created_widget(thing_in_hand);
                          } else {
-                             thing_in_hand.drop_on(target);
-                             if (target.visible()) {
-                                 TT.DISPLAY_UPDATES.pending_update(target);
+                             thing_in_hand.drop_on(target_element);
+                             if (target_element.visible()) {
+                                 TT.DISPLAY_UPDATES.pending_update(target_element);
                              }
                          }
 						 robot.set_thing_in_hand(undefined);
