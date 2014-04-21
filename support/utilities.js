@@ -318,7 +318,7 @@ window.TOONTALK.UTILITIES =
                 function (event) {
 					var $source, source_widget, $target, target_widget, target_position, drag_x_offset, drag_y_offset, drop_handled, new_target;
 					var json_object = TT.UTILITIES.data_transfer_json_object(event);
-					// should this set the dropEffect? https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer#dropEffect.28.29
+					// should this set the dropEffect? https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer#dropEffect.28.29 
 					var $container, container;
                     $source = dragee; // || (json_object && $("#" + json_object.id_of_original_dragree));
 					if (!$source && !json_object) {
@@ -335,6 +335,7 @@ window.TOONTALK.UTILITIES =
 					} else if ($(event.target).is(".toontalk-drop-area")) {
 						$target = $(event.target);
 					} else {
+						// closest includes 'self'
 						$target = $(event.target).closest(".toontalk-side");
 					}
 					if ($target.length === 0) {
@@ -343,6 +344,9 @@ window.TOONTALK.UTILITIES =
 					}
 					if ($source && $source.length > 0 &&
 					    ($source.get(0) === $target.get(0) || jQuery.contains($source.get(0), $target.get(0)))) {
+				        if ($source.is(".toontalk-top-level-backside")) {
+							return; // let event propagate since this doesn't make sense
+						}
 					    // not dropping on itself but on the widget underneath
 						// to not find $target again temporarily hide it
 						$target.hide();
@@ -443,7 +447,8 @@ window.TOONTALK.UTILITIES =
 						}
 						drop_handled = true;
 					} else if (!target_widget) {
-						console.log("target element has no 'owner'");	
+						console.log("target element has no 'owner'");
+						return; // let event propagate
 					} else if (source_widget.drop_on(target_widget, $target, event)) {
 						drop_handled = true;
 					}
