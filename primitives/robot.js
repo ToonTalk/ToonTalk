@@ -161,7 +161,7 @@ window.TOONTALK.robot = (function (TT) {
     robot.run = function (context, queue) {
         var match_status, i;
 		var bubble = this.get_bubble();
-        if (this.stopped) {
+        if (this.stopped || this.being_trained) {
             return 'not matched';
         }
 		if (!bubble) {
