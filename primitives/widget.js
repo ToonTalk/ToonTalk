@@ -352,8 +352,10 @@ window.TOONTALK.widget = (function (TT) {
             console.assert(false, "copy not implemented");
         },
         
-        add_copy_to_container: function () {
-			var widget_copy = this.copy();
+        add_copy_to_container: function (widget_copy) {
+			if (!widget_copy) {
+                widget_copy = this.copy();
+			}
 			var frontside_element = this.get_frontside_element();
 			var frontside_element_copy = widget_copy.get_frontside_element();
 			var position = $(frontside_element).position();
@@ -370,6 +372,7 @@ window.TOONTALK.widget = (function (TT) {
 			if (TT.robot.in_training) {
 				TT.robot.in_training.copied(this, widget_copy, false);
 			}
+            return widget_copy;
 		},
         
         visible: function () {

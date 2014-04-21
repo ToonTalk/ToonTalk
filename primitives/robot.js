@@ -389,6 +389,11 @@ window.TOONTALK.robot = (function (TT) {
 		return this.get_body().add_newly_created_widget(new_widget);
 	};
 	
+	robot.get_recently_created_widget = function () {
+		var newly_created_widgets = this.get_body().get_newly_created_widgets();
+		return newly_created_widgets[newly_created_widgets.length-1];
+	};
+	
 	robot.get_title = function() {
 		var description = this.get_description();
 		var frontside_element;
