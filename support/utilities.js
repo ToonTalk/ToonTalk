@@ -449,7 +449,7 @@ window.TOONTALK.UTILITIES =
 					} else if (!target_widget) {
 						console.log("target element has no 'owner'");
 						return; // let event propagate
-					} else if (source_widget.drop_on(target_widget, $target, event)) {
+					} else if (source_widget.drop_on && source_widget.drop_on(target_widget, $target, event)) {
 						drop_handled = true;
 					}
 					if (target_widget && !drop_handled) {
