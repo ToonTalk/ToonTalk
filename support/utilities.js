@@ -616,7 +616,9 @@ window.TOONTALK.UTILITIES =
 			var one_shot_handler = function () {
 				// could support any number of parameters but not needed
 				handler_run = true;
-				handler();
+				if (handler) {
+					handler();
+				}
 				element.removeEventListener("transitionend", one_shot_handler);
 			}
 			element.addEventListener("transitionend", one_shot_handler);

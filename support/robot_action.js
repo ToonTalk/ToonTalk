@@ -25,7 +25,7 @@ window.TOONTALK.robot_action =
              return true;
          },
          "drop it on": function (target_element, context, robot) {
-             var thing_in_hand, thing_in_hand_frontside_element;
+             var thing_in_hand, thing_in_hand_frontside_element, context_frontside_position, robot_visible;
              if (target_element) {
                  thing_in_hand = robot.get_thing_in_hand();
                  if (thing_in_hand) {
@@ -33,12 +33,19 @@ window.TOONTALK.robot_action =
                          if (target_element instanceof jQuery) {
                              // e.g. dropped on top-level backside
 							 thing_in_hand_frontside_element = thing_in_hand.get_frontside_element();
-							 // pick a random spot
-							 $(thing_in_hand_frontside_element).css({left: Math.random()*$(target_element).width(),
-						                                             top:  Math.random()*$(target_element).height()});
+							 robot_visible = robot.visible();
+							 if (!robot_visible) {
+								 context_frontside_position = $(context.get_frontside_element()).position();
+								 $(thing_in_hand_frontside_element).css({left: context_frontside_position.left,
+																		 top:  context_frontside_position.top});
+							 }
                              target_element.append(thing_in_hand_frontside_element);
 							 // following shouldn't be needed if pick ups that copy do everything right
                              robot.add_newly_created_widget(thing_in_hand);
+							 if (!robot_visible) {
+								 // pick a random spot to move to
+								 thing_in_hand.animate_to_element(target_element.get(0));
+							 }
                          } else {
                              thing_in_hand.drop_on(target_element);
                              if (target_element.visible()) {
@@ -75,45 +82,13 @@ window.TOONTALK.robot_action =
              return true;
          }
     };
-	var find_widget_element = function (widget) {
-		var widget_element = widget.get_side_element();
-		if (!widget_element) {
-			widget_element = TT.UTILITIES.find_resource_equal_to_widget(widget);
-		}
-		return widget_element;
-	};
-	var move_to_element = function (moving_widget, target_element, continuation, left_offset, top_offset) {
-		// perhaps move this to widget file
-		var mover_frontside_element = moving_widget.get_frontside_element();
-		var target_absolute_position = $(target_element).offset();
-		var mover_absolute_position = $(mover_frontside_element).offset();
-		var mover_relative_position = $(mover_frontside_element).position();
-		var remove_transition_class = function () {
-			$(mover_frontside_element).removeClass("toontalk-side-animating");
-		};
-		if (!left_offset) {
-			left_offset = 0;
-		}
-		if (!top_offset) {
-			top_offset = 0;
-		}
-		TT.UTILITIES.add_one_shot_transition_end_handler(mover_frontside_element, remove_transition_class);
-		$(mover_frontside_element).addClass("toontalk-side-animating");
-		mover_frontside_element.style.left = (mover_relative_position.left + left_offset + (target_absolute_position.left - mover_absolute_position.left)) + "px";
-	    mover_frontside_element.style.top = (mover_relative_position.top + top_offset + (target_absolute_position.top - mover_absolute_position.top)) + "px";
-		TT.UTILITIES.add_one_shot_transition_end_handler(mover_frontside_element, continuation);
-	};
-	var move_to_widget = function (moving_widget, target_widget, continuation, left_offset, top_offset) {
-		move_to_element(moving_widget, find_widget_element(target_widget), continuation, left_offset, top_offset);
-	};
-	var move_robot_animation = function (widget, context, robot, continuation) {
-		var robot_frontside_element = robot.get_frontside_element();
+	var move_robot_animation = function (widget, context, robot, continuation, left_offset, top_offset) {
 		var thing_in_hand = robot.get_thing_in_hand();
 		if (widget instanceof jQuery) {
 			// top-level backside
 			widget = widget.data("owner");
 		}
-		move_to_widget(robot, widget, continuation, 0, -$(robot_frontside_element).height());
+		robot.animate_to_widget(widget, continuation);
 		if (thing_in_hand) {
 			// so robot displays what he's holding
 			TT.DISPLAY_UPDATES.pending_update(robot);
@@ -121,14 +96,15 @@ window.TOONTALK.robot_action =
 	};
 	var move_robot_animation_and_drop_it = function (widget, context, robot, continuation) {
 		var thing_in_hand = robot.get_thing_in_hand();
-		var $thing_in_hand_frontside_element, adjust_dropped_location;
+		var $thing_in_hand_frontside_element, adjust_dropped_location_continuation;
+		var robot_frontside_element = robot.get_frontside_element();
 		if (!thing_in_hand) {
 			console.log("expected " + robot + " to have thing_in_hand.");
 			move_robot_animation(widget, context, robot, continuation);
 			return;
 		}
 		$thing_in_hand_frontside_element = $(thing_in_hand.get_frontside_element());
-		adjust_dropped_location = function () {
+		adjust_dropped_location_continuation = function () {
 			var thing_in_hand_position = $thing_in_hand_frontside_element.offset();
 			$thing_in_hand_frontside_element.removeClass("toontalk-held-by-robot");
 			continuation();
@@ -136,7 +112,7 @@ window.TOONTALK.robot_action =
 				TT.UTILITIES.set_absolute_position($thing_in_hand_frontside_element, thing_in_hand_position);
 			}
 		};
-		move_robot_animation(widget, context, robot, adjust_dropped_location);
+		move_robot_animation(widget, context, robot, adjust_dropped_location_continuation, 0, -$(robot_frontside_element).height());
 	};
 	var find_sibling = function (widget, class_name_selector) {
 		// move this to UTILITIES?
@@ -151,7 +127,7 @@ window.TOONTALK.robot_action =
 			continuation();
 			widget.add_copy_to_container(robot.get_recently_created_widget());
 		};
-		move_to_element(robot, button_element, new_continuation, 0, -$(robot_frontside_element).height());
+		robot.animate_to_element(button_element, new_continuation, 0, -$(robot_frontside_element).height());
 	};
     var watched_run_functions = 
 		{"copy": copy_animation,

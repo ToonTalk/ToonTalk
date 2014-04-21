@@ -62,12 +62,11 @@ window.TOONTALK.backside =
 						other_side_element = other_side.get_element();
 					}
 					$other_side_element = $(other_side_element);
+					$backside_element.append($other_side_element);
 					if (!event) {
 						// i.e. by a robot -- then pick a random spot
-						$other_side_element.css({left: Math.random()*$backside_element.width(),
-						                         top:  Math.random()*$backside_element.height()});
+						other.animate_to_element(backside_element);
 					}
-			        $backside_element.append($other_side_element);
 			        TT.UTILITIES.set_position_absolute(other_side_element, true, event); // when on the backside
 // 					other.update_display(); // why was this $other_front_side_element.data("owner").update_display() instead?
 					TT.DISPLAY_UPDATES.pending_update(other_side);
