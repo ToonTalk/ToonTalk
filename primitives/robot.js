@@ -223,17 +223,20 @@ window.TOONTALK.robot = (function (TT) {
 		if (path) {
 			this.add_step(TT.robot_action.create(path, this.current_action_name), widget_copy);
 		}
+		widget.last_action = this.current_action_name;
 		this.current_action_name = undefined;
 		this.set_thing_in_hand(widget);
 	};
 	
 	robot.dropped_on = function (target_widget) {
+		// need to support dropping on backside of a widget as well as which side of a box
 		var path; 
 		this.current_action_name = "drop it on";
 		path = TT.path.get_path_to(target_widget, this);
 		if (path) {
 			this.add_step(TT.robot_action.create(path, this.current_action_name));
 		}
+		widget.last_action = this.current_action_name + " " + target_widget.get_type_name();
 		this.current_action_name = undefined;
 		this.set_thing_in_hand(undefined);
 	};
@@ -249,16 +252,18 @@ window.TOONTALK.robot = (function (TT) {
 		if (path) {
 			this.add_step(TT.robot_action.create(path, this.current_action_name), widget_copy);
 		}
+		widget_copy.last_action = this.current_action_name;
 		this.current_action_name = undefined;
 	};
 	
 	robot.removed = function (widget) {
 		var path;
-		this.current_action_name = "remove"; 
+		this.current_action_name = "remove";
 		path = TT.path.get_path_to(widget, this);
 		if (path) {
 			this.add_step(TT.robot_action.create(path, this.current_action_name));
 		}
+		widget.last_action = this.current_action_name;
 		this.current_action_name = undefined;
 	};
 	
@@ -269,6 +274,7 @@ window.TOONTALK.robot = (function (TT) {
 		if (path) {
 			this.add_step(TT.robot_action.create(path, current_action_name, details));
 		}
+		// no need to update widget.last_action = this.current_action_name;
 		this.current_action_name = undefined;
 	}
 	
@@ -280,6 +286,7 @@ window.TOONTALK.robot = (function (TT) {
 			this.add_step(TT.robot_action.create(path, this.current_action_name, {erased: erased,
 			                                                                      toString: erased ? "erase" : "un-erase"}));
 		}
+		// no need to update widget.last_action = this.current_action_name;
 		this.current_action_name = undefined;
 	};
 	
@@ -308,7 +315,15 @@ window.TOONTALK.robot = (function (TT) {
 	};
 	
 	robot.training_finished = function () {
+		var newly_created_widgets = this.get_body().get_newly_created_widgets();
+		var i, widget;
 		$("div").css({cursor: ''}); // restore cursor
+		for (i = 0; i < newly_created_widgets.length; i++) {
+			widget = newly_created_widgets[i];
+			if (widget.last_action === "drop it on top-level" || widget.last_action === "copy") {
+				this.add_step(TT.robot_action.create(TT.newly_created_widgets_path.create(i, this.get_body()), "add to the top-level backside"));
+			}
+		}
 		TT.DISPLAY_UPDATES.pending_update(this);
 		TT.DISPLAY_UPDATES.pending_update(this.get_backside());
 		this.being_trained = false;

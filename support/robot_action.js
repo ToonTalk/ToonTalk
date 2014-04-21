@@ -25,7 +25,7 @@ window.TOONTALK.robot_action =
              return true;
          },
          "drop it on": function (target_element, context, robot) {
-             var thing_in_hand, thing_in_hand_frontside_element, context_frontside_position, robot_visible;
+             var thing_in_hand, thing_in_hand_frontside_element, context_frontside_position;
              if (target_element) {
                  thing_in_hand = robot.get_thing_in_hand();
                  if (thing_in_hand) {
@@ -33,19 +33,9 @@ window.TOONTALK.robot_action =
                          if (target_element instanceof jQuery) {
                              // e.g. dropped on top-level backside
 							 thing_in_hand_frontside_element = thing_in_hand.get_frontside_element();
-							 robot_visible = robot.visible();
-							 if (!robot_visible) {
-								 context_frontside_position = $(context.get_frontside_element()).position();
-								 $(thing_in_hand_frontside_element).css({left: context_frontside_position.left,
-																		 top:  context_frontside_position.top});
-							 }
                              target_element.append(thing_in_hand_frontside_element);
 							 // following is only needed if a 'constant' is in the hand
                              robot.add_newly_created_widget(thing_in_hand);
-							 if (!robot_visible) {
-								 // pick a random spot to move to
-								 thing_in_hand.animate_to_element(target_element.get(0));
-							 }
                          } else {
                              thing_in_hand.drop_on(target_element);
                              if (target_element.visible()) {
@@ -80,7 +70,20 @@ window.TOONTALK.robot_action =
          "set_erased": function (widget, context, robot, additional_info) {
              widget.set_erased(additional_info.erased);
              return true;
-         }
+         },
+		 "add to the top-level backside": function (widget, context, robot, additional_info) {
+			 var context_frontside_position, widget_frontside_element, top_level_element;
+			 if (!robot.visible()) {
+				 widget_frontside_element = widget.get_frontside_element(true);
+				 context_frontside_position = $(context.get_frontside_element()).position();
+				 top_level_element = $(".toontalk-top-level-backside").get(0);
+				 $(widget_frontside_element).css({left: context_frontside_position.left,
+												  top:  context_frontside_position.top});
+				 top_level_element.appendChild(widget_frontside_element);
+    			 // pick a random spot to move to within the top-level element
+				 widget.animate_to_element(top_level_element);
+			 }
+		 }
     };
 	var move_robot_animation = function (widget, context, robot, continuation, left_offset, top_offset) {
 		var thing_in_hand = robot.get_thing_in_hand();
@@ -133,7 +136,8 @@ window.TOONTALK.robot_action =
 		{"copy": copy_animation,
 		 "pick up": move_robot_animation,
 		 "pick up a copy": move_robot_animation,
-		 "drop it on": move_robot_animation_and_drop_it
+		 "drop it on": move_robot_animation_and_drop_it,
+		 "add to the top-level backside": function () {} // do nothing -- only needed if unwatched
 		};
     return {
         create: function (path, action_name, additional_info) {
