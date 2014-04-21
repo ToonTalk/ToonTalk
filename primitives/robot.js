@@ -126,10 +126,6 @@ window.TOONTALK.robot = (function (TT) {
 			run_once = new_value;
 		};
 		new_robot = new_robot.add_standard_widget_functionality(new_robot);
-		if (TT.debugging) {
-			new_robot.debug_string = new_robot.toString();
-			new_robot.debug_id = TT.UTILITIES.generate_unique_id();
-		}
         return new_robot;
     };
     
@@ -148,6 +144,7 @@ window.TOONTALK.robot = (function (TT) {
 							   this.get_description(),
 							   this.get_width(),
 							   this.get_height(),
+							   this.get_thing_in_hand(),
 							   this.get_run_once(),
 							   next_robot_copy);
         return this.add_to_copy(copy, just_value);
@@ -326,8 +323,12 @@ window.TOONTALK.robot = (function (TT) {
 		var new_first_child, robot_image, thought_bubble, frontside_element, bubble_contents_element, resource_becoming_instance;
 		var thing_in_hand = this.get_thing_in_hand();
 		var thing_in_hand_frontside_element;
+		// following can't happen during robot creation since robot actions references to newly_created_widgets is premature
 		if (TT.debugging) {
 			this.debug_string = this.toString();
+			if (!this.debug_id) {
+				this.debug_id = TT.UTILITIES.generate_unique_id();
+			}
 		}
         if (!frontside) {
             return;
