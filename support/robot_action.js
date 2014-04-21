@@ -137,8 +137,11 @@ window.TOONTALK.robot_action =
 		 "pick up": move_robot_animation,
 		 "pick up a copy": move_robot_animation,
 		 "drop it on": move_robot_animation_and_drop_it,
-		 "add to the top-level backside": function () {} // do nothing -- only needed if unwatched
-		};
+		 "add to the top-level backside": function (widget, context, robot, continuation) {
+			 // do nothing -- only needed if unwatched
+			 continuation();
+		 } 
+	};
     return {
         create: function (path, action_name, additional_info) {
             var new_action = Object.create(this);
