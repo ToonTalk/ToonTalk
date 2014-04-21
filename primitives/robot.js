@@ -224,7 +224,7 @@ window.TOONTALK.robot = (function (TT) {
 			path = TT.path.get_path_to(widget, this);
 		}
 		if (path) {
-			this.add_step(TT.robot_action.create(path, this.current_action_name), widget);
+			this.add_step(TT.robot_action.create(path, this.current_action_name), widget_copy);
 		}
 		this.current_action_name = undefined;
 		this.set_thing_in_hand(widget);
