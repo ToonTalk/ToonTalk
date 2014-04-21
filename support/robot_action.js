@@ -13,7 +13,7 @@ window.TOONTALK.robot_action =
         {"copy": function (widget, context, robot) {
             robot.add_newly_created_widget(widget.copy());
             return true;
-          },
+         },
          "pick up": function (widget, context, robot) {
              robot.set_thing_in_hand(widget);
              return true;
@@ -80,6 +80,7 @@ window.TOONTALK.robot_action =
 				 $(widget_frontside_element).css({left: context_frontside_position.left,
 												  top:  context_frontside_position.top});
 				 top_level_element.appendChild(widget_frontside_element);
+				 $(top_level_element).data("owner").add_backside_widget(widget);
     			 // pick a random spot to move to within the top-level element
 				 widget.animate_to_element(top_level_element);
 			 }
