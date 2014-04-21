@@ -432,7 +432,7 @@ window.TOONTALK.UTILITIES =
 									TT.DISPLAY_UPDATES.pending_update(source_widget);			
 								    },
 								 // the corner handles caused the element to be stuck in resize mode when used
-								 handles: "n,e,s,w"});
+								 handles: "e,s,se"}); // "n,e,s,w"});
 						    // when dropped on a backside will be enabled
 // 							$source.resizable("disable");
                         }

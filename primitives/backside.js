@@ -126,7 +126,7 @@ window.TOONTALK.backside =
 					var percentage = 100 * Math.min(1, $backside_element.width() / original_width, $backside_element.height() / original_height);
 					$backside_element.css({"font-size": percentage + "%"});
 				},
-				handles: "n,e,s,w,se,ne,sw,nw"});
+				handles: "e,s,se"}); // was "n,e,s,w,se,ne,sw,nw" but interfered with buttons
             // following should be done by something like GWT's onLoad...
             // but DOMNodeInserted is deprecated and MutationObserver is only in IE11.
 			$(backside_element).on('DOMNodeInserted', function (event) {
