@@ -163,23 +163,19 @@ window.TOONTALK.newly_created_widgets_path =
                     return robot.get_body().dereference(index);
                 },
                 toString: function () {
-//                     var n = actions.get_newly_created_widgets().length - index;
-//                     if (n <= 0) {
-//                         console.log("Expected to have more newly_created_widgets than " + actions.get_newly_created_widgets().length);
-//                     }
                     var ordinal;
                     switch (index) {
+                        case 0:
+                        ordinal = "first";
+                        break;
                         case 1:
-                        ordinal = "last";
+                        ordinal = "second";
                         break;
                         case 2:
-                        ordinal = "second to last";
-                        break;
-                        case 3:
-                        ordinal = "third to last";
+                        ordinal = "third";
                         break;
                         default:
-                        ordinal = index + "th to last";
+                        ordinal = index + "th";
                     }
                     return "the " + ordinal + " widget he created";
                 },
