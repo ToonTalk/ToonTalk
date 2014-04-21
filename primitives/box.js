@@ -358,7 +358,7 @@ window.TOONTALK.box = (function (TT) {
         }
     };
     
-    box.dereference = function (path) {
+    box.dereference = function (path, robot) {
         var index, hole;
         if (path) {
             index = path.get_index && path.get_index();
@@ -366,7 +366,7 @@ window.TOONTALK.box = (function (TT) {
                 hole = this.get_hole(index);
                 if (hole) {
                     if (path.next) {
-                        return hole.dereference(path.next);
+                        return hole.dereference(path.next, robot);
                     }
                     if (path.removing_widget()) {
                         if (hole.get_type_name() === 'empty hole') {

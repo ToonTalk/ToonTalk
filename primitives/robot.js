@@ -321,7 +321,7 @@ window.TOONTALK.robot = (function (TT) {
         for (i = 0; i < newly_created_widgets.length; i++) {
             widget = newly_created_widgets[i];
             if (widget.last_action === "drop it on top-level" || widget.last_action === "copy") {
-                this.add_step(TT.robot_action.create(TT.newly_created_widgets_path.create(i, this.get_body()), "add to the top-level backside"));
+                this.add_step(TT.robot_action.create(TT.newly_created_widgets_path.create(i), "add to the top-level backside"));
             }
         }
         TT.DISPLAY_UPDATES.pending_update(this);

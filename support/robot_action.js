@@ -164,7 +164,7 @@ window.TOONTALK.robot_action =
                 console.log("no run_function for " + action_name);
             }
             new_action.run_unwatched = function (context, robot) {
-                var referenced = TT.path.dereference_path(path, context);
+                var referenced = TT.path.dereference_path(path, context, robot);
                 if (!referenced) {
                     console.log("Unable to dereference path: " + TT.path.toString(path) + " in context: " + context.toString());
                     return false;
@@ -175,7 +175,7 @@ window.TOONTALK.robot_action =
                  return unwatched_run_function(referenced, context, robot, additional_info);
             };
             new_action.run_watched = function (context, robot, continuation) {
-                var referenced = TT.path.dereference_path(path, context);
+                var referenced = TT.path.dereference_path(path, context, robot);
                 var new_continuation = function () {
                     continuation(referenced);
                 };

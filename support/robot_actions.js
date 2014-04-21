@@ -51,11 +51,11 @@ window.TOONTALK.actions =
                 var i, j, path, sub_path, children;
                 for (i = 0; i < newly_created_widgets.length; i++) {
                     if (newly_created_widgets[i] === widget) {
-                        return TT.newly_created_widgets_path.create(i, new_actions);
+                        return TT.newly_created_widgets_path.create(i);
                     } else if (newly_created_widgets[i].get_path_to) {
                         sub_path = newly_created_widgets[i].get_path_to(widget);
                         if (sub_path) {
-                            path = TT.newly_created_widgets_path.create(i, new_actions);
+                            path = TT.newly_created_widgets_path.create(i);
                             path.next = sub_path;
                             return path;
                         }
@@ -157,18 +157,18 @@ window.TOONTALK.newly_created_widgets_path =
 (function (TT) {
     "use strict";
     return {
-        create: function (index, actions) {
+        create: function (index) {
             return {
-                dereference: function () {
-                    return actions.dereference(index);
+                dereference: function (context, robot) {
+                    return robot.get_body().dereference(index);
                 },
                 toString: function () {
-                    var n = actions.get_newly_created_widgets().length - index;
-                    if (n <= 0) {
-                        console.log("Expected to have more newly_created_widgets than " + actions.get_newly_created_widgets().length);
-                    }
+//                     var n = actions.get_newly_created_widgets().length - index;
+//                     if (n <= 0) {
+//                         console.log("Expected to have more newly_created_widgets than " + actions.get_newly_created_widgets().length);
+//                     }
                     var ordinal;
-                    switch (n) {
+                    switch (index) {
                         case 1:
                         ordinal = "last";
                         break;
@@ -179,7 +179,7 @@ window.TOONTALK.newly_created_widgets_path =
                         ordinal = "third to last";
                         break;
                         default:
-                        ordinal = n + "th to last";
+                        ordinal = index + "th to last";
                     }
                     return "the " + ordinal + " widget he created";
                 },
@@ -189,8 +189,8 @@ window.TOONTALK.newly_created_widgets_path =
                 }
             };
         },
-        create_from_json: function (json, ignore_view, additional_info) {
-            return TT.newly_created_widgets_path.create(json.index, additional_info.body);
+        create_from_json: function (json) {
+            return TT.newly_created_widgets_path.create(json.index);
         }
     };
 }(window.TOONTALK));

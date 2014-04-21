@@ -34,12 +34,12 @@ window.TOONTALK.path =
             }
             console.log("TT.path.get_path_to not fully implemented.");
         },
-        dereference_path: function (path, context) {
+        dereference_path: function (path, context, robot) {
             if (path) {
                 if (path.dereference) {
-                    return path.dereference(context);
+                    return path.dereference(context, robot);
                 }
-                return context.dereference(path);
+                return context.dereference(path, robot);
             }
             // no path means entire context -- I don't think this is still true
             return context;
@@ -71,10 +71,10 @@ window.TOONTALK.path =
         to_entire_context: function () {
             // an action that applies to the entire context (i.e. what the robot is working on)
             // need to create fresh ones since if there is a sub-path they shouldn't be sharing
-            return {dereference: function (context) {
+            return {dereference: function (context, robot) {
                         if (this.next) {
                             if (context.dereference) {
-                                return context.dereference(this.next);
+                                return context.dereference(this.next, robot);
                             } else {
                                 console.log("Expected context to support dereference.");
                             }                
