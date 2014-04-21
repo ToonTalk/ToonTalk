@@ -11,7 +11,7 @@ window.TOONTALK.robot_action =
     "use strict";
     var unwatched_run_functions =
         {"copy": function (widget, context, robot) {
-            robot.add_newly_created_widget(widget.copy(true));
+            robot.add_newly_created_widget(widget.copy());
             return true;
           },
          "pick up": function (widget, context, robot) {
@@ -40,7 +40,7 @@ window.TOONTALK.robot_action =
 																		 top:  context_frontside_position.top});
 							 }
                              target_element.append(thing_in_hand_frontside_element);
-							 // following shouldn't be needed if pick ups that copy do everything right
+							 // following is only needed if a 'constant' is in the hand
                              robot.add_newly_created_widget(thing_in_hand);
 							 if (!robot_visible) {
 								 // pick a random spot to move to
