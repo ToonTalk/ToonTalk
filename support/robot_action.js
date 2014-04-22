@@ -87,11 +87,15 @@ window.TOONTALK.robot_action =
     var move_robot_animation = function (widget, context, robot, continuation) {
         var thing_in_hand = robot.get_thing_in_hand();
         var robot_frontside_element = robot.get_frontside_element();
+        var left_offset, top_offset;
         if (widget instanceof jQuery) {
             // top-level backside
             widget = widget.data("owner");
+        } else {
+            left_offset = 0;
+            top_offset = -$(robot_frontside_element).height();
         }
-        robot.animate_to_widget(widget, continuation, 0, -$(robot_frontside_element).height());
+        robot.animate_to_widget(widget, continuation, left_offset, top_offset);
         if (thing_in_hand) {
             // so robot displays what he's holding
             TT.DISPLAY_UPDATES.pending_update(robot);
