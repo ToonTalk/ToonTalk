@@ -70,7 +70,7 @@ window.TOONTALK.box = (function (TT) {
         for (i = 0; i < size; i += 1) {
             hole = this.get_hole(i);
             if (hole) {
-                copy.set_hole(i, hole.copy(copy));
+                copy.set_hole(i, hole.copy(just_value, copy));
             }
         }
         return this.add_to_copy(copy, just_value);
@@ -510,7 +510,7 @@ window.TOONTALK.box_empty_hole =
                 // no need to put anything into the array
                 return null;
             };
-            empty_hole.copy = function (containing_box) {
+            empty_hole.copy = function (just_value, containing_box) {
                 return TT.box_empty_hole.create(index, containing_box);
             };
             empty_hole.match = function () {
