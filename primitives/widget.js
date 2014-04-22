@@ -313,7 +313,7 @@ window.TOONTALK.widget = (function (TT) {
             } else if (this.backside_widgets.indexOf(widget) < 0) {
                 this.backside_widgets[this.backside_widgets.length] = widget;                            
             }
-            console.log("Added " + widget + " (" + widget.debug_id + ") to list of backside widgets of " + this + ". Now has " + this.backside_widgets.length + " widgets.");
+//             console.log("Added " + widget + " (" + widget.debug_id + ") to list of backside widgets of " + this + ". Now has " + this.backside_widgets.length + " widgets.");
             if (backside) {
                 backside.update_run_button_disabled_attribute();
             }
@@ -332,7 +332,7 @@ window.TOONTALK.widget = (function (TT) {
                 return;                        
             }
             this.backside_widgets = this.backside_widgets.splice(widget_index, 1);
-            console.log("Removed " + widget + " (" + widget.debug_id + ") from list of backside widgets of " + this);
+//             console.log("Removed " + widget + " (" + widget.debug_id + ") from list of backside widgets of " + this);
             if (backside) {
                 backside.update_run_button_disabled_attribute();
             }
@@ -340,7 +340,7 @@ window.TOONTALK.widget = (function (TT) {
         
         set_backside_widgets: function (backside_widgets, json_views) {
             var backside = this.get_backside();
-            console.log("setting backside_widgets of " + this + " were " + this.backside_widgets + " and is now " + backside_widgets);
+//             console.log("setting backside_widgets of " + this + " were " + this.backside_widgets + " and is now " + backside_widgets);
             this.backside_widgets = backside_widgets;
             if (backside_widgets.length > 0) { 
                 if (this.get_backside()) {

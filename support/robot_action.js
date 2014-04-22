@@ -34,8 +34,6 @@ window.TOONTALK.robot_action =
                              // e.g. dropped on top-level backside
                              thing_in_hand_frontside_element = thing_in_hand.get_frontside_element();
                              target_element.append(thing_in_hand_frontside_element);
-                             // following is only needed if a 'constant' is in the hand
-                             robot.add_newly_created_widget(thing_in_hand);
                          } else {
                              thing_in_hand.drop_on(target_element);
                              if (target_element.visible()) {

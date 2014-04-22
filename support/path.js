@@ -32,7 +32,7 @@ window.TOONTALK.path =
                     return path;
                 }
             }
-            console.log("TT.path.get_path_to not fully implemented. ");
+            console.log("TT.path.get_path_to not fully implemented.");
         },
         dereference_path: function (path, context, robot) {
             if (path) {
@@ -93,8 +93,10 @@ window.TOONTALK.path =
             return TT.path.to_entire_context();
         },
         get_path_to_resource: function (widget) {
-            return {dereference: function (context) {
-                        return widget.copy();
+            return {dereference: function (context, robot) {
+                        var widget_copy = widget.copy();
+                        robot.add_newly_created_widget(widget_copy);
+                        return widget_copy;
                     },
                     toString: function () {
                         return TT.UTILITIES.add_a_or_an(widget.toString());
