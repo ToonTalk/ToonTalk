@@ -213,9 +213,10 @@
 	background-image: url(images/BUBBL10.96x96.red.PNG);
 }
 .toontalk-thought-bubble-contents {
-    left: 20%;
+    left: 15%;
 	top: 15%;
-	width: 90%;
+	
+    width: 60%;
 	height: 40%;
 	position: absolute;
 }
