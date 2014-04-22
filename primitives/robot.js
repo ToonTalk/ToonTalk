@@ -64,7 +64,7 @@ window.TOONTALK.robot = (function (TT) {
                 // the following didn't work when added to the CSS of toontalk-side-animating
                 frontside_element.style["z-index"] = 1000;
             } else {
-                frontside_element.style["z-index"] = auto';
+                frontside_element.style["z-index"] = 'auto';
             }
         };
         // should the following use 'width' from the frontside element?
