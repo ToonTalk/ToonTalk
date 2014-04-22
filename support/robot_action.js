@@ -103,11 +103,11 @@ window.TOONTALK.robot_action =
                                   height: frontside_element.offsetHeight + "px"});
         move_robot_animation(widget, context, robot, continuation);
     };
-    var move_robot_animation_and_drop_it = function (widget, context, robot, continuation) {
+    var drop_it_on_animation = function (widget, context, robot, continuation) {
         var thing_in_hand = robot.get_thing_in_hand();
         var $thing_in_hand_frontside_element, adjust_dropped_location_continuation;
         if (!thing_in_hand) {
-            console.log("expected " + robot + " to have thing_in_hand.");
+            console.log("Expected " + robot + " to have thing_in_hand.");
             move_robot_animation(widget, context, robot, continuation);
             return;
         }
@@ -141,7 +141,7 @@ window.TOONTALK.robot_action =
         {"copy": copy_animation,
          "pick up": pick_up_animation,
          "pick up a copy": move_robot_animation,
-         "drop it on": move_robot_animation_and_drop_it,
+         "drop it on": drop_it_on_animation,
          "add to the top-level backside": function (widget, context, robot, continuation) {
              // do nothing -- only needed if unwatched
              continuation();

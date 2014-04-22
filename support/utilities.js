@@ -505,7 +505,8 @@ window.TOONTALK.UTILITIES =
                 $ancestor = $ancestor.parent();
             }
             $element.css({left: absolute_position.left,
-                          top:  absolute_position.top});
+                          top:  absolute_position.top,
+                          position: "absolute"});
         },
         
         restore_resource: function ($dropped, dropped_widget) {
@@ -582,9 +583,10 @@ window.TOONTALK.UTILITIES =
                     left = position.left;
                     top = position.top;
                 }
-                element.style.position = "absolute";
+//                 element.style.position = "absolute";
                 $(element).css({left: left,
-                                 top: top});
+                                 top: top,
+                                 position: "absolute"});
             } else {
 //                 if (element.style.position === "static") {
 //                     return;

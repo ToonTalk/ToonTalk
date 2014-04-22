@@ -376,6 +376,7 @@ window.TOONTALK.robot = (function (TT) {
             $(robot_image).css({top: "30%"});
             if (thing_in_hand) {
                 thing_in_hand_frontside_element = thing_in_hand.get_frontside_element();
+                $(thing_in_hand_frontside_element).css({position: "static"});  
                 new_first_child.appendChild(thing_in_hand_frontside_element);
             }
             new_first_child.appendChild(robot_image);
