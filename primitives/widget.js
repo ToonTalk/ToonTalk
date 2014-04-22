@@ -328,11 +328,11 @@ window.TOONTALK.widget = (function (TT) {
             }
             widget_index = this.backside_widgets.indexOf(widget);
             if (widget_index < 0) {
-                console.log("Couldn't find a widget to remove it from backside widgets.");
+                console.log("Couldn't find a widget to remove it from backside widgets. " + widget + " (" + widget.debug_id + ")");
                 return;                        
             }
-            this.backside_widgets = this.backside_widgets.splice(widget_index, 1);
-//             console.log("Removed " + widget + " (" + widget.debug_id + ") from list of backside widgets of " + this);
+            this.backside_widgets.splice(widget_index, 1);
+//             console.log("Removed " + widget + " (" + widget.debug_id + ") from list of backside widgets of " + this + ". Length is now " +  this.backside_widgets.length);
             if (backside) {
                 backside.update_run_button_disabled_attribute();
             }
