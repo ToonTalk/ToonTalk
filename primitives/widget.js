@@ -241,7 +241,7 @@ window.TOONTALK.widget = (function (TT) {
             return this;
         },
         
-        add_to_json: function (json_semantic) {
+        add_to_json: function (json_semantic, top_level) {
             var json_view, json, position, frontside_element, backside, backside_element, backside_widgets;
             if (json_semantic) {
                 if (json_semantic.view) {
@@ -263,18 +263,20 @@ window.TOONTALK.widget = (function (TT) {
                 if (this.get_running && this.get_running()) {
                     json_semantic.running = true;
                 }
-                frontside_element = this.get_frontside_element && this.get_frontside_element();
-                if (frontside_element) {
-                    json_view.frontside_width = $(frontside_element).width();
-                    json_view.frontside_height = $(frontside_element).height();
-                    if ($(frontside_element).is(":visible")) {
-                        position = $(frontside_element).position();
-                    } else {
-                        position = this.position_when_hidden;
-                    }
-                    if (position) {
-                        json_view.frontside_left = position.left;
-                        json_view.frontside_top = position.top;
+                if (top_level) {
+                    frontside_element = this.get_frontside_element && this.get_frontside_element();
+                    if (frontside_element) {
+                        json_view.frontside_width = $(frontside_element).width();
+                        json_view.frontside_height = $(frontside_element).height();
+                        if ($(frontside_element).is(":visible")) {
+                            position = $(frontside_element).position();
+                        } else {
+                            position = this.position_when_hidden;
+                        }
+                        if (position) {
+                            json_view.frontside_left = position.left;
+                            json_view.frontside_top = position.top;
+                        }
                     }
                 }
                 backside = this.get_backside();
@@ -290,7 +292,7 @@ window.TOONTALK.widget = (function (TT) {
                 }
                 backside_widgets = this.get_backside_widgets();
                 if (backside_widgets.length > 0) {
-                    json_semantic.backside_widgets = TT.UTILITIES.get_json_of_array(backside_widgets);
+                    json_semantic.backside_widgets = TT.UTILITIES.get_json_of_array(backside_widgets, false);
                 }
                 return json;
             }
@@ -489,14 +491,14 @@ window.TOONTALK.widget = (function (TT) {
         
         top_level_widget: function () {
             var widget = Object.create(TT.widget);
-            widget.get_json = function () {
+            widget.get_json = function (top_level) {
                 var backside = this.get_backside();
                 var $backside_element = $(backside.get_element());
                 var json = {type: "top_level",
                             color: $backside_element.attr("background-color"),
                             backside_width: $backside_element.width(),
                             backside_height: $backside_element.height()};
-                return this.add_to_json(json);
+                return this.add_to_json(json, top_level);
             };
             widget.get_type_name = function () {
                  return "top-level";

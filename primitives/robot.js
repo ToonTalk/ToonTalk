@@ -496,18 +496,18 @@ window.TOONTALK.robot = (function (TT) {
         return "robot";
     };
     
-    robot.get_json = function () {
+    robot.get_json = function (top_level) {
         var bubble = this.get_bubble();
         var bubble_json, next_robot_json;
         if (bubble) {
             if (bubble.get_type_name() === 'top-level') {
                 bubble_json = {type: "top_level"};
             } else {
-                bubble_json = bubble.get_json();
+                bubble_json = bubble.get_json(false);
             }
         }
         if (this.get_next_robot()) {
-            next_robot_json = this.get_next_robot().get_json();
+            next_robot_json = this.get_next_robot().get_json(true); // not top-level but geometry worth preserving
         }
         return this.add_to_json(
             {semantic:
@@ -521,7 +521,8 @@ window.TOONTALK.robot = (function (TT) {
                  {image_url: this.get_image_url(),
 //              width: this.get_width(),
 //              height: this.get_height(),
-                  description: this.get_description()}});
+                  description: this.get_description()}},
+            top_level);
     };
     
     robot.create_from_json = function (json_semantic, json_view) {

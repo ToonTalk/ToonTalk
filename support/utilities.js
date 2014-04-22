@@ -147,13 +147,13 @@ window.TOONTALK.UTILITIES =
             return new_array;
         },
         
-        get_json_of_array: function (array) {
+        get_json_of_array: function (array, top_level) {
             var json = [];
             var i;
             for (i = 0; i < array.length; i += 1) {
                 if (array[i]) {
                     if (array[i].get_json) {
-                        json[i] = array[i].get_json();
+                        json[i] = array[i].get_json(top_level);
                     } else {
                         console.log("No get_json for " + array[i].toString());
                     }
@@ -256,7 +256,7 @@ window.TOONTALK.UTILITIES =
                     }
                     if (event.originalEvent.dataTransfer && widget.get_json) {
                         event.originalEvent.dataTransfer.effectAllowed = is_resource ? 'copy' : 'move';
-                        json_object = widget.get_json();
+                        json_object = widget.get_json(true);
                         json_object.view.drag_x_offset = event.originalEvent.clientX - position.left;
                         json_object.view.drag_y_offset = event.originalEvent.clientY - position.top;
                         if (!json_object.width) {
