@@ -205,7 +205,7 @@ window.TOONTALK.robot = (function (TT) {
     };
     
     robot.picked_up = function (widget, json, is_resource) {
-        var path, action_name, widget_copy;
+        var path, action_name, widget_copy, new_widget;
         // current_action_name is used to distinguish between removing something from its container versus referring to it
         if (widget.get_infinite_stack()) {
             // does this cause an addition to newly created backside widgets?
@@ -214,6 +214,7 @@ window.TOONTALK.robot = (function (TT) {
             this.current_action_name = "pick up";
         }        
         if (is_resource) {
+            new_widget = widget; // this widget was just created
             // robot needs a copy of the resource to avoid sharing it with training widget
             widget_copy = widget.copy();
             path = TT.path.get_path_to_resource(widget_copy);
@@ -221,7 +222,7 @@ window.TOONTALK.robot = (function (TT) {
             path = TT.path.get_path_to(widget, this);
         }
         if (path) {
-            this.add_step(TT.robot_action.create(path, this.current_action_name), widget_copy);
+            this.add_step(TT.robot_action.create(path, this.current_action_name), new_widget);
         }
         widget.last_action = this.current_action_name;
         this.current_action_name = undefined;
