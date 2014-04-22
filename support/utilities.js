@@ -424,14 +424,16 @@ window.TOONTALK.UTILITIES =
                         $source.css({left: event.originalEvent.clientX - (target_position.left + drag_x_offset),
                                       top: event.originalEvent.clientY - (target_position.top + drag_y_offset)});
                         if ($source.is(".toontalk-frontside") && !$source.is('.ui-resizable')) {
-                            $source.resizable(
-                                {resize: function(event, ui) {
-                                    TT.DISPLAY_UPDATES.pending_update(source_widget);            
-                                    },
-                                 // the corner handles caused the element to be stuck in resize mode when used
-                                 handles: "e,s,se"}); // "n,e,s,w"});
-                            // when dropped on a backside will be enabled
-//                             $source.resizable("disable");
+                            // without the setTimeout the following prevents dragging components (e.g. widgets in boxes)
+                            setTimeout(function ()  {
+                               $source.resizable(
+                                   {resize: function(event, ui) {
+                                       TT.DISPLAY_UPDATES.pending_update(source_widget);            
+                                        },
+                                    // the corner handles caused the element to be stuck in resize mode when used
+                                    handles: "e,s,se"}); // "n,e,s,w"});
+                                },
+                                0);
                         }
                         if (json_object.semantic.running) {
                             source_widget.set_running(true);
