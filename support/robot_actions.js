@@ -89,6 +89,7 @@ window.TOONTALK.actions =
                 if (!robot.get_run_once()) {
                     robot.get_first_in_team().run(context, queue);
                 }
+                TT.DISPLAY_UPDATES.pending_update(robot);
             };
             var run_watched_step = function (i) {
                 var continuation = function (referenced) {

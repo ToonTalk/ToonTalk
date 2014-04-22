@@ -106,6 +106,7 @@ window.TOONTALK.widget = (function (TT) {
                             } else {
                                 backside_widget.set_stopped(true);
                             }
+                            TT.DISPLAY_UPDATES.pending_update(backside_widget);
                         } else if (backside_widget.set_running) {
                             backside_widget.set_running(new_value);
                         }
@@ -116,6 +117,7 @@ window.TOONTALK.widget = (function (TT) {
                             TT.backside.update_run_button($(element), !running, widget);
                         });
                     }
+                    TT.DISPLAY_UPDATES.pending_update(this);
                 };
             }
             return widget;

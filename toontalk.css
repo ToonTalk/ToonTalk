@@ -209,6 +209,9 @@
     width: 96px;
     height: 96px;
 }
+.toontalk-thought-bubble-not-matched {
+	background-image: url(images/BUBBL10.96x96.red.PNG);
+}
 .toontalk-thought-bubble-contents {
     left: 20%;
 	top: 15%;

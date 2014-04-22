@@ -156,7 +156,7 @@ window.TOONTALK.robot = (function (TT) {
     };
     
     robot.run = function (context, queue) {
-        var match_status, i;
+        var i;
         var bubble = this.get_bubble();
         if (this.stopped || this.being_trained) {
             return 'not matched';
@@ -165,28 +165,28 @@ window.TOONTALK.robot = (function (TT) {
             console.log("Training robots without a context not yet implemented.");
             return 'not matched';
         }
-        match_status = bubble.match(context);
-        switch (match_status) {
+        this.match_status = bubble.match(context);
+        if (!this.match_status) {
+            this.match_status = 'not matched';
+        }
+        switch (this.match_status) {
         case 'matched':
             if (!queue) {
                 queue = TT.QUEUE;
             }
             this.get_body().reset_newly_created_widgets();
             queue.enqueue({robot: this, context: context, queue: queue});
-            return match_status;
+            return this.match_status;
         case 'not matched':
             if (this.get_next_robot()) {
                 return this.get_next_robot().run(context, queue);
             }
-            return match_status;
+            return this.match_status;
         default:
-            if (!match_status) {
-                return 'not matched';
-            }
             for (i = 0; i < match_status.length; i += 1) {
-                match_status[i].run_when_non_empty(this);
+                this.match_status[i].run_when_non_empty(this);
             }
-            return match_status;                    
+            return this.match_status;                    
         }
     };
     
@@ -236,7 +236,7 @@ window.TOONTALK.robot = (function (TT) {
         if (path) {
             this.add_step(TT.robot_action.create(path, this.current_action_name));
         }
-        widget.last_action = this.current_action_name + " " + target_widget.get_type_name();
+        target_widget.last_action = this.current_action_name + " " + target_widget.get_type_name();
         this.current_action_name = undefined;
         this.set_thing_in_hand(undefined);
     };
@@ -338,8 +338,8 @@ window.TOONTALK.robot = (function (TT) {
         var new_first_child, robot_image, thought_bubble, frontside_element, bubble_contents_element, resource_becoming_instance;
         var thing_in_hand = this.get_thing_in_hand();
         var thing_in_hand_frontside_element;
-        // following can't happen during robot creation since robot actions references to newly_created_widgets is premature
         if (TT.debugging) {
+             // this can't be done during robot creation since robot actions references to newly_created_widgets is premature
             this.debug_string = this.toString();
             if (!this.debug_id) {
                 this.debug_id = TT.UTILITIES.generate_unique_id();
@@ -437,6 +437,9 @@ window.TOONTALK.robot = (function (TT) {
     robot.thought_bubble_div = function () {
         var thought_bubble = document.createElement("div");
         $(thought_bubble).addClass("toontalk-thought-bubble");
+        if (this.match_status === 'not matched') {
+            $(thought_bubble).addClass("toontalk-thought-bubble-not-matched");
+        }
         return thought_bubble;
     };
     
