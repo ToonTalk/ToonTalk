@@ -53,14 +53,9 @@ window.TOONTALK.UTILITIES =
                         backside_element = backside.get_element();
                         $(element).replaceWith(backside_element);
                         $(backside_element).css({width: json.view.backside_width,
-                                                 height: json.view.backside_height});
-//                                                  left: json.view.backside_left,
-//                                                  top: json.view.backside_top});
-//                             // delay until geometry settles down
-//                             setTimeout(function () {
-//                                 backside.update_display();
-//                             },
-//                             1);
+                                                 height: json.view.backside_height,
+                                                 // color may be undefined
+                                                 "background-color": json.view.background_color});
                         includes_top_level_backside = true;
                     } else {
                         $(element).addClass("toontalk-top-level-resource");
