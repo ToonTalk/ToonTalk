@@ -86,13 +86,14 @@ window.TOONTALK.robot_action =
              }
          }
     };
-    var move_robot_animation = function (widget, context, robot, continuation, left_offset, top_offset) {
+    var move_robot_animation = function (widget, context, robot, continuation) {
         var thing_in_hand = robot.get_thing_in_hand();
+        var robot_frontside_element = robot.get_frontside_element();
         if (widget instanceof jQuery) {
             // top-level backside
             widget = widget.data("owner");
         }
-        robot.animate_to_widget(widget, continuation);
+        robot.animate_to_widget(widget, continuation, 0, -$(robot_frontside_element).height());
         if (thing_in_hand) {
             // so robot displays what he's holding
             TT.DISPLAY_UPDATES.pending_update(robot);
@@ -101,7 +102,6 @@ window.TOONTALK.robot_action =
     var move_robot_animation_and_drop_it = function (widget, context, robot, continuation) {
         var thing_in_hand = robot.get_thing_in_hand();
         var $thing_in_hand_frontside_element, adjust_dropped_location_continuation;
-        var robot_frontside_element = robot.get_frontside_element();
         if (!thing_in_hand) {
             console.log("expected " + robot + " to have thing_in_hand.");
             move_robot_animation(widget, context, robot, continuation);
@@ -116,7 +116,7 @@ window.TOONTALK.robot_action =
                 TT.UTILITIES.set_absolute_position($thing_in_hand_frontside_element, thing_in_hand_position);
             }
         };
-        move_robot_animation(widget, context, robot, adjust_dropped_location_continuation, 0, -$(robot_frontside_element).height());
+        move_robot_animation(widget, context, robot, adjust_dropped_location_continuation);
     };
     var find_sibling = function (widget, class_name_selector) {
         // move this to UTILITIES?
