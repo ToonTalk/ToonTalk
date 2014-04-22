@@ -162,11 +162,11 @@ window.TOONTALK.UTILITIES =
             return json;
         },
         
-        copy_widgets: function (widgets) {
+        copy_widgets: function (widgets, just_value, container) {
             var widgets_copy = [];
             var i;
             for (i = 0; i < widgets.length; i++) {
-                widgets_copy[i] = widgets[i].copy();
+                widgets_copy[i] = widgets[i].copy(just_value, container);
             }
             return widgets_copy;
         },

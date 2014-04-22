@@ -55,6 +55,13 @@ window.TOONTALK.box = (function (TT) {
                 this.debug_string = this.toString();
             }
         };
+        new_box.get_contents = function () {
+            // would be nice to make this private - needed by copy
+            return contents;
+        };
+        new_box.set_contents = function (new_value) {
+            contents = new_value;
+        };
         new_box = new_box.add_standard_widget_functionality(new_box);
         if (TT.debugging) {
             new_box.debug_string = new_box.toString();
@@ -65,14 +72,15 @@ window.TOONTALK.box = (function (TT) {
     
     box.copy = function (just_value) {
         var copy = box.create(this.get_size(), this.get_horizontal());
-        var size = this.get_size();
-        var i, hole;
-        for (i = 0; i < size; i += 1) {
-            hole = this.get_hole(i);
-            if (hole) {
-                copy.set_hole(i, hole.copy(just_value, copy));
-            }
-        }
+        copy.set_contents(TT.UTILITIES.copy_widgets(this.get_contents(), just_value, copy));
+//         var size = this.get_size();
+//         var i, hole;
+//         for (i = 0; i < size; i += 1) {
+//             hole = this.get_hole(i);
+//             if (hole) {
+//                 copy.set_hole(i, hole.copy(just_value, copy));
+//             }
+//         }
         return this.add_to_copy(copy, just_value);
     };
     
