@@ -277,7 +277,7 @@ window.TOONTALK.robot = (function (TT) {
         }
         // no need to update widget.last_action = this.current_action_name;
         this.current_action_name = undefined;
-    }
+    };
     
     robot.set_erased = function (widget, erased) {
         var path;
@@ -289,6 +289,21 @@ window.TOONTALK.robot = (function (TT) {
         }
         // no need to update widget.last_action = this.current_action_name;
         this.current_action_name = undefined;
+    };
+    
+    robot.remove_from_container = function (part, container) {
+        // this is used when running a robot -- not training
+        if (this.get_animating()) {
+            // if animating then delay removing it
+            // otherwise hole empties before the robot gets there
+            TT.UTILITIES.add_one_shot_transition_end_handler(this.get_frontside_element(), function () {
+                container.removed_from_container(part);
+                });
+        } else {
+            container.removed_from_container(part);
+        }
+        // might be new -- following does nothing if already known
+        this.add_newly_created_widget(part);
     };
     
     robot.add_step = function (step, new_widget) {

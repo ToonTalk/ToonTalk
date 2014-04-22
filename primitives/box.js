@@ -372,9 +372,7 @@ window.TOONTALK.box = (function (TT) {
                         if (hole.get_type_name() === 'empty hole') {
                             console.log("Robot is trying to remove something from an empty hole. ");
                         } else if (!hole.get_infinite_stack()) {
-                            this.removed_from_container(hole);
-                            // might be new -- following does nothing if already known
-                            robot.add_newly_created_widget(hole);
+                            robot.remove_from_container(hole, this);
                         }
                     }
                     return hole;
