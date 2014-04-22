@@ -97,6 +97,12 @@ window.TOONTALK.robot_action =
             TT.DISPLAY_UPDATES.pending_update(robot);
         }
     };
+    var freeze_size_and_move_robot_animation = function (widget, context, robot, continuation) {
+        var frontside_element = widget.get_frontside_element();
+        $(frontside_element).css({width:  frontside_element.offsetWidth + "px",
+                                  height: frontside_element.offsetHeight + "px"});
+        move_robot_animation(widget, context, robot, continuation);
+    };
     var move_robot_animation_and_drop_it = function (widget, context, robot, continuation) {
         var thing_in_hand = robot.get_thing_in_hand();
         var $thing_in_hand_frontside_element, adjust_dropped_location_continuation;
@@ -133,7 +139,7 @@ window.TOONTALK.robot_action =
     };
     var watched_run_functions = 
         {"copy": copy_animation,
-         "pick up": move_robot_animation,
+         "pick up": freeze_size_and_move_robot_animation,
          "pick up a copy": move_robot_animation,
          "drop it on": move_robot_animation_and_drop_it,
          "add to the top-level backside": function (widget, context, robot, continuation) {
