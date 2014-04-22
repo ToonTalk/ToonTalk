@@ -229,7 +229,7 @@ window.TOONTALK.robot = (function (TT) {
         this.set_thing_in_hand(widget);
     };
     
-    robot.dropped_on = function (target_widget) {
+    robot.dropped_on = function (source_widget, target_widget) {
         // need to support dropping on backside of a widget as well as which side of a box
         var path; 
         this.current_action_name = "drop it on";
@@ -237,7 +237,7 @@ window.TOONTALK.robot = (function (TT) {
         if (path) {
             this.add_step(TT.robot_action.create(path, this.current_action_name));
         }
-        target_widget.last_action = this.current_action_name + " " + target_widget.get_type_name();
+        source_widget.last_action = this.current_action_name + " " + target_widget.get_type_name();
         this.current_action_name = undefined;
         this.set_thing_in_hand(undefined);
     };

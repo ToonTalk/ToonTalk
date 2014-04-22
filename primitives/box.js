@@ -500,7 +500,7 @@ window.TOONTALK.box_empty_hole =
             };
             empty_hole.widget_dropped_on_me = function (dropped) {
                 if (TT.robot.in_training) {
-                    TT.robot.in_training.dropped_on(empty_hole);
+                    TT.robot.in_training.dropped_on(dropped, empty_hole);
                 }
                 box.set_hole(index, dropped, true);
                 TT.DISPLAY_UPDATES.pending_update(box);

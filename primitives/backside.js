@@ -74,7 +74,7 @@ window.TOONTALK.backside =
 //                         if ($backside_element.is(".toontalk-top-level-backside")) {
 //                             TT.robot.in_training.dropped_on("top-level-backside");
 //                         } else {
-                        TT.robot.in_training.dropped_on(this.get_widget());
+                        TT.robot.in_training.dropped_on(other, this.get_widget());
 //                         }
                     }
                     this.get_widget().add_backside_widget(other);

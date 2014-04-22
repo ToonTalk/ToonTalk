@@ -446,9 +446,9 @@ window.TOONTALK.widget = (function (TT) {
             }
         },
         
-        widget_dropped_on_me: function () {
+        widget_dropped_on_me: function (widget) {
             if (TT.robot.in_training) {
-                TT.robot.in_training.dropped_on(this);
+                TT.robot.in_training.dropped_on(widget, this);
             }
             return true;
         },
