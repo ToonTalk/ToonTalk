@@ -71,11 +71,11 @@ window.TOONTALK.backside =
 //                     other.update_display(); // why was this $other_front_side_element.data("owner").update_display() instead?
                     TT.DISPLAY_UPDATES.pending_update(other_side);
                     if (TT.robot.in_training) {
-                        if ($backside_element.is(".toontalk-top-level-backside")) {
-                            TT.robot.in_training.dropped_on("top-level-backside");
-                        } else {
-                            TT.robot.in_training.dropped_on(this);
-                        }
+//                         if ($backside_element.is(".toontalk-top-level-backside")) {
+//                             TT.robot.in_training.dropped_on("top-level-backside");
+//                         } else {
+                        TT.robot.in_training.dropped_on(this.get_widget());
+//                         }
                     }
                     this.get_widget().add_backside_widget(other);
                     // following called by add_backside_widget

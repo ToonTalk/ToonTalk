@@ -17,7 +17,7 @@ window.TOONTALK.path =
             if (context === widget) {
                 return TT.path.to_entire_context();
             }
-            if (widget === "top-level-backside" || widget.get_type_name() === "top-level") {
+            if (widget.get_type_name() === "top-level") {
                 return TT.path.top_level_backside;
             }
             path = body.get_path_to(widget, robot);
@@ -32,7 +32,7 @@ window.TOONTALK.path =
                     return path;
                 }
             }
-            console.log("TT.path.get_path_to not fully implemented.");
+            console.log("TT.path.get_path_to not fully implemented. ");
         },
         dereference_path: function (path, context, robot) {
             if (path) {
