@@ -388,16 +388,18 @@ window.TOONTALK.UTILITIES =
                                         $source.css({width:  json_object.view.frontside_width,
                                                      height: json_object.view.frontside_height});
                                     }
-                                    if (TT.robot.in_training) {
-                                        TT.robot.in_training.add_newly_created_widget(source_widget);
-                                    }
                                 } else if ($container.is(".toontalk-frontside")) {
-                                    container.removed(source_widget, $source, event);
+                                    container.removed_from_container(source_widget, $source, event);
                                 } else {
-                                    container.get_backside().removed(source_widget, $source, event);
+                                    container.get_backside().removed_from_container(source_widget, $source, event);
                                 }
                             } else {
                                 TT.UTILITIES.restore_resource($source, source_widget);
+                            }
+                            if (TT.robot.in_training) {
+                                // maybe have been copied
+                                // or removed from a container (and not 'seen' before)
+                                TT.robot.in_training.add_newly_created_widget(source_widget);
                             }
                         }
                     } else {

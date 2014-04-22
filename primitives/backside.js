@@ -44,8 +44,8 @@ window.TOONTALK.backside =
                     return true;
                 };
             }
-            if (!widget.removed) {
-                widget.removed = function (other, $side_element_of_other, event) {
+            if (!widget.removed_from_container) {
+                widget.removed_from_container = function (other, $side_element_of_other, event) {
                     $side_element_of_other.removeClass("toontalk-frontside-on-backside");
                     // no need to do more since can find all children and their 'owners' easily enough
                 };
@@ -184,7 +184,7 @@ window.TOONTALK.backside =
             $(this.get_element()).remove();
         },
         
-        removed: function (part, element, event) {
+        removed_from_container: function (part, element, event) {
             this.get_widget().remove_backside_widget(part);
         },
         

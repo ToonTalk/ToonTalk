@@ -322,7 +322,7 @@ window.TOONTALK.box = (function (TT) {
         return false;
     };
     
-    box.removed = function (part, ignore_element, event) {
+    box.removed_from_container = function (part, ignore_element, event) {
         var size = this.get_size();
         var i;
         var part_frontside = part.get_frontside();
@@ -372,7 +372,9 @@ window.TOONTALK.box = (function (TT) {
                         if (hole.get_type_name() === 'empty hole') {
                             console.log("Robot is trying to remove something from an empty hole. ");
                         } else if (!hole.get_infinite_stack()) {
-                            this.removed(hole);
+                            this.removed_from_container(hole);
+                            // might be new -- following does nothing if already known
+                            robot.add_newly_created_widget(hole);
                         }
                     }
                     return hole;
