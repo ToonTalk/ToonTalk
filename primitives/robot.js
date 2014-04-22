@@ -17,7 +17,8 @@ window.TOONTALK.robot = (function (TT) {
         var first_in_team; // who should do the 'repeating'
         var animating = false; // true if animating due to being run while watched
         if (!image_url) {
-            image_url = "images/RB00.PNG";
+            // absolute path so saved JSON will work in any environment
+            image_url = "http://toontalk.appspot.com/images/RB00.PNG";
         }
         if (!body) {
             body = TT.actions.create();
@@ -57,7 +58,14 @@ window.TOONTALK.robot = (function (TT) {
             return animating;
         };
         new_robot.set_animating = function (new_value) {
+            var frontside_element = this.get_frontside_element();
             animating = new_value;
+            if (animating) {
+                // the following didn't work when added to the CSS of toontalk-side-animating
+                frontside_element.style["z-index"] = 1000;
+            } else {
+                frontside_element.style["z-index"] = auto';
+            }
         };
         // should the following use 'width' from the frontside element?
         new_robot.get_width = function () {

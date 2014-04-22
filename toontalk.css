@@ -15,6 +15,8 @@
 	cursor: move;
 }
 .toontalk-side-animating {
+/* 	 not sure why the following made things worse */
+/* 	z-index: 10000; */
 /* 	-moz-transition: all 2s;  
 	-ms-transition: all 2s;  
 	-o-transition: all 2s;  */
