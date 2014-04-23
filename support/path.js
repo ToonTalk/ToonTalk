@@ -95,7 +95,21 @@ window.TOONTALK.path =
         get_path_to_resource: function (widget) {
             return {dereference: function (context, robot) {
                         var widget_copy = widget.copy();
+                        var widget_frontside_element, copy_frontside_element;
                         robot.add_newly_created_widget(widget_copy);
+                        if (robot.visible() && !widget.visible()) {
+                            // picking up a copy of a resource
+                            // but robot isn't referring to the resource itself just the 'value'
+                            widget_frontside_element = TT.UTILITIES.find_resource_equal_to_widget(widget);
+                            if (widget_frontside_element) {
+                                copy_frontside_element = widget_copy.get_frontside_element();
+                                setTimeout(function ()  {
+                                    $(copy_frontside_element).css({width:  widget_frontside_element.offsetWidth,
+                                                                   height: widget_frontside_element.offsetHeight});
+                                    },
+                                    0);
+                            }
+                        }
                         return widget_copy;
                     },
                     toString: function () {
