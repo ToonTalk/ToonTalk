@@ -54,6 +54,7 @@ window.TOONTALK.backside =
             }
             backside.widget_dropped_on_me = 
                 function (other, other_is_backside, event) {
+                    // event serves 2 functions: info for adjusting for scrolling and whether to update the display
                     // perhaps should be renamed side_of_other, etc.
                     var other_side, other_side_element, $other_side_element;
                     if (other_is_backside) { // other.get_type_name() === 'top-level'

@@ -52,7 +52,7 @@ window.TOONTALK.robot_action =
             return false;
          },
          "remove": function (widget, context, robot) {
-             widget.remove();     
+             widget.remove(); 
              return true;
          },
          "edit": function (widget, context, robot, additional_info) {
@@ -132,22 +132,33 @@ window.TOONTALK.robot_action =
         var $container_element = $(frontside_element).closest(".toontalk-backside");
         return $container_element.find(class_name_selector).get(0);
     };
-    var copy_animation = function (widget, context, robot, continuation) {
-        var button_element = find_sibling(robot, ".toontalk-copy-backside-button");
+    var button_use_animation = function (widget, context, robot, continuation, class_name_selector) {
+        var button_element = find_sibling(robot, class_name_selector);
         var robot_frontside_element = robot.get_frontside_element();
+        robot.animate_to_element(button_element, continuation, 0, -$(robot_frontside_element).height());
+    };
+    var copy_animation = function (widget, context, robot, continuation) {
         var new_continuation = function () {
             continuation();
             widget.add_copy_to_container(robot.get_recently_created_widget());
         };
-        robot.animate_to_element(button_element, new_continuation, 0, -$(robot_frontside_element).height());
+        button_use_animation(widget, context, robot, new_continuation, ".toontalk-copy-backside-button");
+    };
+    var remove_animation = function (widget, context, robot, continuation) {
+        var new_continuation = function () {
+            widget.remove();
+            continuation();
+        };
+        button_use_animation(widget, context, robot, new_continuation, ".toontalk-remove-backside-button");
     };
     var watched_run_functions = 
         {"copy": copy_animation,
          "pick up": pick_up_animation,
          "pick up a copy": move_robot_animation,
          "drop it on": drop_it_on_animation,
+         "remove": remove_animation,
          "add to the top-level backside": function (widget, context, robot, continuation) {
-             // do nothing -- only needed if unwatched
+             // do nothing -- this action is only needed if unwatched
              continuation();
          } 
     };
