@@ -337,7 +337,7 @@ window.TOONTALK.box = (function (TT) {
     box.drop_on = function (other, side_of_other, event) {
         if (!other.box_dropped_on_me) {
             if (other.widget_dropped_on_me) {
-                return other.widget_dropped_on_me(this, event);
+                return other.widget_dropped_on_me(this, false, event);
             }
             console.log("No handler for drop of " + this.toString() + " on " + other.toString());
             return;
@@ -355,7 +355,7 @@ window.TOONTALK.box = (function (TT) {
         return false;
     };
     
-    box.removed_from_container = function (part, event) {
+    box.removed_from_container = function (part, backside_removed, event) {
         var size = this.get_size();
         var update_display = !!event;
         var i, part_frontside_element;

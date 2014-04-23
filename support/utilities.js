@@ -304,7 +304,7 @@ window.TOONTALK.UTILITIES =
                 });
             $element.on('drop',
                 function (event) {
-                    var $source, source_widget, $target, target_widget, target_position, drag_x_offset, drag_y_offset, drop_handled, new_target;
+                    var $source, source_widget, $target, target_widget, target_position, drag_x_offset, drag_y_offset, drop_handled, new_target, source_is_backside;
                     var json_object = TT.UTILITIES.data_transfer_json_object(event);
                     // should this set the dropEffect? https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer#dropEffect.28.29 
                     var $container, container;
@@ -365,6 +365,7 @@ window.TOONTALK.UTILITIES =
                             dragee = undefined;
                             return;
                         }
+                        source_is_backside = $source.is(".toontalk-backside");
                         source_widget = $source.data("owner");
                         if ($source.parent().is(".toontalk-drop-area")) {
                             $source.removeClass("toontalk-widget-in-drop_area");
@@ -373,7 +374,7 @@ window.TOONTALK.UTILITIES =
                             $container = $source.parents(".toontalk-side:first");
                             container = $container.data("owner");
                             if (container) {
-                                if (source_widget.get_infinite_stack()) {
+                                if (!source_is_backside && source_widget.get_infinite_stack()) {
                                     // leave the source there but create a copy
                                     source_widget = source_widget.copy();
                                     $source = $(source_widget.get_frontside_element(true));
@@ -381,10 +382,8 @@ window.TOONTALK.UTILITIES =
                                         $source.css({width:  json_object.view.frontside_width,
                                                      height: json_object.view.frontside_height});
                                     }
-                                } else if ($container.is(".toontalk-frontside")) {
-                                    container.removed_from_container(source_widget, event);
                                 } else {
-                                    container.get_backside().removed_from_container(source_widget, event);
+                                    container.removed_from_container(source_widget, source_is_backside, event);
                                 }
                             } else {
                                 TT.UTILITIES.restore_resource($source, source_widget);
@@ -408,7 +407,7 @@ window.TOONTALK.UTILITIES =
                     }
                     if ($target.is(".toontalk-backside")) {
                         // widget_dropped_on_me needed here to get geometry right
-                        target_widget.get_backside().widget_dropped_on_me(source_widget, event);
+                        target_widget.get_backside().widget_dropped_on_me(source_widget, source_is_backside, event);
                         drop_handled = true;
                         // should the following use pageX instead?
                         // for a while using target_position.top didn't work while
@@ -446,7 +445,7 @@ window.TOONTALK.UTILITIES =
                     }
                     if (target_widget && !drop_handled) {
                         if (target_widget.widget_dropped_on_me) {
-                            target_widget.widget_dropped_on_me(source_widget);
+                            target_widget.widget_dropped_on_me(source_widget, source_is_backside, event);
                         }
                     }
                     event.stopPropagation();

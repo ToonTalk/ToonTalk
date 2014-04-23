@@ -45,17 +45,18 @@ window.TOONTALK.backside =
                 };
             }
             if (!widget.removed_from_container) {
-                widget.removed_from_container = function (other, event) {
-                    var other_front_side_element = other.get_frontside_element();
-                    $(other_front_side_element).removeClass("toontalk-frontside-on-backside");
+                widget.removed_from_container = function (other, backside_removed, event) {
+                    if (!backside_removed) {
+                        $(other.get_frontside_element()).removeClass("toontalk-frontside-on-backside");
+                    }
                     // what about removing backside_widgets here?
                 };
             }
             backside.widget_dropped_on_me = 
-                function (other, event) {
+                function (other, other_is_backside, event) {
                     // perhaps should be renamed side_of_other, etc.
                     var other_side, other_side_element, $other_side_element;
-                    if (other.get_type_name() === 'top-level') {
+                    if (other_is_backside) { // other.get_type_name() === 'top-level'
                         other_side = other.get_backside(true);
                         other_side_element = other_side.get_element();
                     } else {
@@ -78,7 +79,10 @@ window.TOONTALK.backside =
                         TT.robot.in_training.dropped_on(other, this.get_widget());
 //                         }
                     }
-                    this.get_widget().add_backside_widget(other);
+                    if (!other_is_backside) {
+                        // in the future backsides will be separated from frontsides and 'first class'
+                        this.get_widget().add_backside_widget(other);
+                    }
                     // following called by add_backside_widget
 //                     backside.update_run_button_disabled_attribute();
                     return true;
@@ -185,9 +189,9 @@ window.TOONTALK.backside =
             $(this.get_element()).remove();
         },
         
-        removed_from_container: function (part, event) {
-            this.get_widget().remove_backside_widget(part);
-        },
+//         removed_from_container: function (part, event) {
+//             this.get_widget().remove_backside_widget(part);
+//         },
         
         visible: function () {
             var backside_element = this.get_element();
