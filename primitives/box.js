@@ -264,16 +264,14 @@ window.TOONTALK.box = (function (TT) {
         var frontside = this.get_frontside();
         var frontside_element = frontside.get_element();
         var new_HTML = this.to_HTML();
-        var that = this;
         if (!frontside_element.firstChild) {
             frontside_element.appendChild(document.createElement('div'));
         }
         frontside_element.firstChild.innerHTML = new_HTML;
         $(frontside_element.firstChild).addClass("toontalk-widget");
         $(".toontalk-hole-about-to-be-replaced").each(function (index, element) {
-            // can't just use box.update_hole_display because then 'this' isn't bound to the box
-            that.update_hole_display(index, element);
-        });
+            this.update_hole_display(index, element);
+        }.bind(this));
         frontside_element.title = this.get_title();
         if (TT.debugging) {
             this.debug_string = this.toString();
@@ -284,7 +282,7 @@ window.TOONTALK.box = (function (TT) {
         if (!this.visible()) {
             return;
         }
-        var hole = this.get_hole(index);
+        var hole = this.get_hole(index); // maybe should rename to to hole_contents or the like
         var box_frontside = this.get_frontside();
         var size = this.get_size();
         var hole_frontside, hole_frontside_element, box_frontside_element, $element_container;
@@ -300,15 +298,23 @@ window.TOONTALK.box = (function (TT) {
             TT.UTILITIES.set_position_absolute(hole_frontside_element, false);
             $(hole_frontside_element).addClass("toontalk-frontside-in-box");
         } else {
-            old_hole_element = hole.get_frontside(true).get_element();
-            $element_container = $(box_frontside.get_element()).find(".toontalk-box-hole").eq(index); 
+            old_hole_element = hole_frontside.get_element();
+            $element_container = $(box_frontside.get_element()).find(".toontalk-box-hole").eq(index);
+            old_hole_element.width_before_in_box = $(old_hole_element).width();
+            old_hole_element.height_before_in_box = $(old_hole_element).height();
+            if (this.get_horizontal()) {
+                $(old_hole_element).css({width: 'auto',
+                                         height: $element_container.height()});
+            } else {
+                $(old_hole_element).css({width: $element_container.width(),
+                                         height: 'auto'});
+            }
+            hole.update_display();
             $element_container.append(old_hole_element);
             // since drag and drop is set up with absolute as the default
             // is this redundant now?
             TT.UTILITIES.set_position_absolute(old_hole_element, false);
-//             if (!$(old_hole_element).is(".toontalk-empty-hole")) {
             $(old_hole_element).addClass("toontalk-frontside-in-box");
-//             }
         }
 //         // the following seems to be necessary but not clear why height as percentage fails
 //         if (!this.get_horizontal()) {
@@ -351,12 +357,8 @@ window.TOONTALK.box = (function (TT) {
     
     box.removed_from_container = function (part, event) {
         var size = this.get_size();
-        var i;
-        var part_frontside = part.get_frontside();
         var update_display = !!event;
-        if (part_frontside) {
-            $(part_frontside.get_element()).removeClass("toontalk-frontside-in-box");
-        }
+        var i, part_frontside_element;
         for (i = 0; i < size; i += 1) {
 //             console.log("Part is " + part.toString() + " hole " + i + " is " + this.get_hole(i).toString()); for debugging
             if (part === this.get_hole(i)) {
@@ -365,6 +367,15 @@ window.TOONTALK.box = (function (TT) {
                     TT.DISPLAY_UPDATES.pending_update(this);
                 }
                 return this;
+            }
+        }
+        if (update_display) {
+            part_frontside_element = part_frontside_element();
+            $(part_frontside_element).removeClass("toontalk-frontside-in-box");
+            if (part_frontside_element.width_before_in_box) {
+                $(part_frontside_element).css({width: part_frontside_element.width_before_in_box,
+                                               height: part_frontside_element.height_before_in_box});
+                TT.DISPLAY_UPDATES.pending_update(part);
             }
         }
     };
