@@ -135,7 +135,15 @@ window.TOONTALK.robot_action =
     var button_use_animation = function (widget, context, robot, continuation, class_name_selector) {
         var button_element = find_sibling(robot, class_name_selector);
         var robot_frontside_element = robot.get_frontside_element();
-        robot.animate_to_element(button_element, continuation, 0, -$(robot_frontside_element).height());
+        var new_continuation = function () {
+            continuation();
+            $(button_element).addClass("ui-state-active");
+            setTimeout(function () {
+                $(button_element).removeClass("ui-state-active");
+                },
+                500);
+        };
+        robot.animate_to_element(button_element, new_continuation, 0, -$(robot_frontside_element).height());
     };
     var copy_animation = function (widget, context, robot, continuation) {
         var new_continuation = function () {
