@@ -42,7 +42,18 @@ window.TOONTALK.actions =
                     this.add_newly_created_widget(new_widget);
                 }
             };
+            new_actions.add_newly_created_widget_if_new = function (new_widget) {
+                // some callers don't know if the widget is really new
+                if (newly_created_widgets.indexOf(new_widget) >= 0) {
+                    return;
+                }
+                this.add_newly_created_widget(new_widget);
+            };                
             new_actions.add_newly_created_widget = function (new_widget) {
+                 if (TT.debugging && newly_created_widgets.indexOf(new_widget) >= 0) {
+                     console.log("add_newly_created_widget called with not new widget.");
+                     return;
+                }
                 newly_created_widgets[newly_created_widgets.length] = new_widget;
 //                 console.log("Added " + new_widget + " (" + new_widget.debug_id + ") to list of newly_created_widgets. Length is " + newly_created_widgets.length);
             };

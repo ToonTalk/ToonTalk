@@ -392,7 +392,7 @@ window.TOONTALK.UTILITIES =
                             if (TT.robot.in_training) {
                                 // maybe have been copied
                                 // or removed from a container (and not 'seen' before)
-                                TT.robot.in_training.add_newly_created_widget(source_widget);
+                                TT.robot.in_training.add_newly_created_widget_if_new(source_widget);
                             }
                         }
                     } else {
