@@ -409,7 +409,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         return "number";
     };
     
-    number.get_json = function (top_level) {
+    number.get_json = function () {
 //         var super_prototype = Object.getPrototypeOf(Object.getPrototypeOf(this));
         return this.add_to_json(
            {type: "number",
@@ -417,8 +417,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             numerator: this.numerator_string(),
             denominator: this.denominator_string(),
             format: this.get_format()
-            },
-            top_level);
+            });
     };
     
     number.create_from_json = function (json) {

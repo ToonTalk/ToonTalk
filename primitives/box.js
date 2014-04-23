@@ -206,21 +206,20 @@ window.TOONTALK.box = (function (TT) {
         return "box";
     };
 
-    box.get_json = function (top_level) {
+    box.get_json = function () {
         var contents_json = [];
         var size = this.get_size();
         var i;
         for (i = 0; i < size; i += 1) {
             if (this.get_hole(i)) {
-                contents_json[i] = this.get_hole(i).get_json(false);
+                contents_json[i] = this.get_hole(i).get_json();
             }
         }
         return this.add_to_json(
            {type: "box",
             contents: contents_json,
             horizontal: this.get_horizontal()
-           },
-           top_level);
+           });
     };
     
     box.create_from_json = function (json) {

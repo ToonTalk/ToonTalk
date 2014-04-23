@@ -203,12 +203,16 @@ window.TOONTALK.widget = (function (TT) {
         },
         
         has_parent: function (widget) {
-            var parent;
+            var parent, on_backside_of_parent;
             widget.get_parent = function () {
                 return parent;
             };
-            widget.set_parent = function (new_value) {
+            widget.get_on_backside_of_parent = function () {
+                return on_backside_of_parent;
+            };
+            widget.set_parent = function (new_value, backside) {
                 parent = new_value;
+                on_backside_of_parent = backside;
             };
         },
         
@@ -260,7 +264,7 @@ window.TOONTALK.widget = (function (TT) {
             return this;
         },
         
-        add_to_json: function (json_semantic, top_level) {
+        add_to_json: function (json_semantic) {
             var json_view, json, position, frontside_element, backside, backside_element, backside_widgets;
             if (json_semantic) {
                 if (json_semantic.view) {
@@ -282,7 +286,8 @@ window.TOONTALK.widget = (function (TT) {
                 if (this.get_running && this.get_running()) {
                     json_semantic.running = true;
                 }
-                if (top_level) {
+                if (!this.get_parent() || this.get_on_backside_of_parent()) {
+                    // otherwise geometry isn't needed
                     frontside_element = this.get_frontside_element && this.get_frontside_element();
                     if (frontside_element) {
                         json_view.frontside_width = $(frontside_element).width();
@@ -311,7 +316,7 @@ window.TOONTALK.widget = (function (TT) {
                 }
                 backside_widgets = this.get_backside_widgets();
                 if (backside_widgets.length > 0) {
-                    json_semantic.backside_widgets = TT.UTILITIES.get_json_of_array(backside_widgets, false);
+                    json_semantic.backside_widgets = TT.UTILITIES.get_json_of_array(backside_widgets);
                 }
                 return json;
             }
@@ -334,6 +339,7 @@ window.TOONTALK.widget = (function (TT) {
             } else if (this.backside_widgets.indexOf(widget) < 0) {
                 this.backside_widgets[this.backside_widgets.length] = widget;                            
             }
+            widget.set_parent(this, true);
 //             console.log("Added " + widget + " (" + widget.debug_id + ") to list of backside widgets of " + this + ". Now has " + this.backside_widgets.length + " widgets.");
             if (backside) {
                 backside.update_run_button_disabled_attribute();
@@ -510,14 +516,14 @@ window.TOONTALK.widget = (function (TT) {
         
         top_level_widget: function () {
             var widget = Object.create(TT.widget);
-            widget.get_json = function (top_level) {
+            widget.get_json = function () {
                 var backside = this.get_backside();
                 var $backside_element = $(backside.get_element());
                 var json = {type: "top_level",
                             color: $backside_element.attr("background-color"),
                             backside_width: $backside_element.width(),
                             backside_height: $backside_element.height()};
-                return this.add_to_json(json, top_level);
+                return this.add_to_json(json);
             };
             widget.get_type_name = function () {
                  return "top-level";
