@@ -97,7 +97,7 @@ window.TOONTALK.box = (function (TT) {
 //         for (i = 0; i < size; i += 1) {
 //             hole = this.get_hole(i);
 //             if (hole) {
-//                 copy.set_hole(i, hole.copy(just_value, copy));
+//                 copy.set_hole(i, hole.copy(just_value));
 //             }
 //         }
         return this.add_to_copy(copy, just_value);
@@ -289,7 +289,7 @@ window.TOONTALK.box = (function (TT) {
         var size = this.get_size();
         var hole_frontside, hole_frontside_element, box_frontside_element, $element_container;
         if (!hole) {
-            hole = TT.box_empty_hole.create(index, this);
+            hole = TT.box_empty_hole.create(index);
             this.set_hole(index, hole);
         }
         hole_frontside = hole.get_frontside(true);
@@ -325,7 +325,7 @@ window.TOONTALK.box = (function (TT) {
     
     box.empty_hole = function (index, update_display) {
         // could restore the 'original' empty_hole rather than create a new one here
-        this.set_hole(index, TT.box_empty_hole.create(index, this), update_display);
+        this.set_hole(index, TT.box_empty_hole.create(index), update_display);
     };
     
     box.drop_on = function (other, side_of_other, event) {
@@ -502,7 +502,7 @@ window.TOONTALK.box_empty_hole =
 (function (TT) {
     "use strict";
     return {
-        create: function (index, box) {
+        create: function (index) {
             // this should share more code with widget (e.g. done below with widget.has_parent)
             // box and parent should be same now -- simplify
             var empty_hole = Object.create(this);
@@ -525,7 +525,8 @@ window.TOONTALK.box_empty_hole =
                 // should be nothing to do
                 // but height percentage not working as expected
                 var box_frontside_element;
-                if (!box.get_horizontal()) {
+                var box = this.get_parent();
+                if (box && !box.get_horizontal()) {
                     box_frontside_element = box.get_frontside_element();
                     $(this.get_element()).css({"min-height": $(box_frontside_element).height() / box.get_size()});
                 }
@@ -535,6 +536,7 @@ window.TOONTALK.box_empty_hole =
                 return this;
             };
             empty_hole.widget_dropped_on_me = function (dropped) {
+                var box = this.get_parent();
                 if (TT.robot.in_training) {
                     TT.robot.in_training.dropped_on(dropped, empty_hole);
                 }
@@ -546,8 +548,8 @@ window.TOONTALK.box_empty_hole =
                 // no need to put anything into the array
                 return null;
             };
-            empty_hole.copy = function (just_value, containing_box) {
-                return TT.box_empty_hole.create(index, containing_box);
+            empty_hole.copy = function (just_value) {
+                return TT.box_empty_hole.create(index);
             };
             empty_hole.match = function () {
                 return "matched";
@@ -556,7 +558,7 @@ window.TOONTALK.box_empty_hole =
                 return "empty hole";
             };
             empty_hole.visible = function () {
-                return box.visible(); // you can't see it but if box is visible then it is 
+                return this.get_parent().visible(); // you can't see it but if box is visible then it is 
             };
             TT.widget.has_parent(empty_hole);
 //             $(hole_element).on('drop',
