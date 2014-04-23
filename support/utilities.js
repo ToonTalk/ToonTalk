@@ -241,15 +241,8 @@ window.TOONTALK.UTILITIES =
                     var widget = $element.data("owner");
                     var is_resource = $element.is(".toontalk-top-level-resource");
                     var json_object;
-//                     if ($element.is(".toontalk-frontside-in-box")) {
-//                         // but not stopping propagation so can drag widget in the hole
-//                         return;
-//                     }
                     dragee = $element;
-                    // following caused layout problems and it should be the case that
-                    // draggable elements already are positioned absolutely
-//                     $element.css({position: "absolute"});
-                    if ($element.is(".toontalk-frontside")) {//} && !$element.is(".toontalk-top-level-resource")) {
+                    if ($element.is(".toontalk-frontside")) {
                         // save the current dimension so size doesn't change while being dragged
                         $element.css({width:  this.offsetWidth + "px",
                                       height: this.offsetHeight + "px"});
@@ -389,9 +382,9 @@ window.TOONTALK.UTILITIES =
                                                      height: json_object.view.frontside_height});
                                     }
                                 } else if ($container.is(".toontalk-frontside")) {
-                                    container.removed_from_container(source_widget, $source, event);
+                                    container.removed_from_container(source_widget, event);
                                 } else {
-                                    container.get_backside().removed_from_container(source_widget, $source, event);
+                                    container.get_backside().removed_from_container(source_widget, event);
                                 }
                             } else {
                                 TT.UTILITIES.restore_resource($source, source_widget);

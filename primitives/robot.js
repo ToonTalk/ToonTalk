@@ -305,7 +305,7 @@ window.TOONTALK.robot = (function (TT) {
             // if animating then delay removing it
             // otherwise hole empties before the robot gets there
             TT.UTILITIES.add_one_shot_transition_end_handler(this.get_frontside_element(), function () {
-                container.removed_from_container(part, undefined, true);
+                container.removed_from_container(part, true);
                 });
         } else {
             container.removed_from_container(part);

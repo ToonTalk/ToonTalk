@@ -16,20 +16,8 @@ window.TOONTALK.widget = (function (TT) {
             this.runnable(widget);
             this.stackable(widget);
             this.animatable(widget);
-            if (!widget.get_title) {
-                widget.get_title = function () {
-                    var type_name = this.get_type_name();
-                    var backside = this.get_backside();
-                    var frontside_element = this.get_frontside_element();
-                    if ($(frontside_element).is(".toontalk-top-level-resource")) {
-                        return "Drag this " + type_name + " to a work area.";   
-                    }
-                    if (!backside || !backside.get_element()) {
-                        return "Click to see the back side of this " + type_name;
-                    }
-                    return TT.UTILITIES.add_a_or_an(type_name, true);
-                };
-            }
+            this.has_title(widget);
+            this.has_parent(widget);
             return widget;
         },
         
@@ -197,14 +185,45 @@ window.TOONTALK.widget = (function (TT) {
             }
         },
         
-        remove: function () {
+        has_title: function (widget) {
+            if (!widget.get_title) {
+                widget.get_title = function () {
+                    var type_name = this.get_type_name();
+                    var backside = this.get_backside();
+                    var frontside_element = this.get_frontside_element();
+                    if ($(frontside_element).is(".toontalk-top-level-resource")) {
+                        return "Drag this " + type_name + " to a work area.";   
+                    }
+                    if (!backside || !backside.get_element()) {
+                        return "Click to see the back side of this " + type_name;
+                    }
+                    return TT.UTILITIES.add_a_or_an(type_name, true);
+                };
+            }
+        },
+        
+        has_parent: function (widget) {
+            var parent;
+            widget.get_parent = function () {
+                return parent;
+            };
+            widget.set_parent = function (new_value) {
+                parent = new_value;
+            };
+        },
+        
+        remove: function (event) {
             var backside = this.get_backside();
             var frontside = this.get_frontside();
+            var parent = this.get_parent();
             if (backside) {
                 backside.remove();
             }
             if (frontside) {
                 frontside.remove();
+            }
+            if (parent) {
+                parent.removed_from_container(this, event);
             }
             this.set_running(false);
         },

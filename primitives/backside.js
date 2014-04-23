@@ -45,9 +45,10 @@ window.TOONTALK.backside =
                 };
             }
             if (!widget.removed_from_container) {
-                widget.removed_from_container = function (other, $side_element_of_other, event) {
-                    $side_element_of_other.removeClass("toontalk-frontside-on-backside");
-                    // no need to do more since can find all children and their 'owners' easily enough
+                widget.removed_from_container = function (other, event) {
+                    var other_front_side_element = other.get_frontside_element();
+                    $(other_front_side_element).removeClass("toontalk-frontside-on-backside");
+                    // what about removing backside_widgets here?
                 };
             }
             backside.widget_dropped_on_me = 
@@ -184,7 +185,7 @@ window.TOONTALK.backside =
             $(this.get_element()).remove();
         },
         
-        removed_from_container: function (part, element, event) {
+        removed_from_container: function (part, event) {
             this.get_widget().remove_backside_widget(part);
         },
         
@@ -366,12 +367,12 @@ window.TOONTALK.backside =
             var $remove_button = $("<button>Remove</button>").button();
             $remove_button.addClass("toontalk-remove-backside-button");
             $remove_button.click(function (event) {
-                if (widget && widget.remove) {
-                    widget.remove();
+                if (widget.remove) {
+                    widget.remove(event);
                     if (TT.robot.in_training) {
                         TT.robot.in_training.removed(widget);
                     }
-                }
+                } // else warn??
                 event.stopPropagation();
             });
             $remove_button.attr("title", "Click to remove this " + widget.get_type_name());
