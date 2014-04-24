@@ -16,7 +16,7 @@ window.TOONTALK.box = (function (TT) {
         if (!contents) {
             contents = [];
         }
-        if (!horizontal) {
+        if (typeof horizontal === 'undefined') {
             horizontal = true;
         }
         new_box.get_size = function () {
