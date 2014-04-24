@@ -545,6 +545,9 @@ window.TOONTALK.widget = (function (TT) {
             widget.visible = function () {
                 return false;
             };
+            widget.get_parent = function () {
+                return undefined;
+            };
             widget.get_on_backside_of_parent = function () {
                 return false;
             };
