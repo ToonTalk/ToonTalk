@@ -672,20 +672,21 @@ window.TOONTALK.UTILITIES =
             return container;
         },
         
+        // the following methods uses htmlFor instead of making the input a child of the label
+        // because couldn't get JQuery buttons to work for radio buttons otherwise
+        // and because of a comment about disability software
+        // see http://stackoverflow.com/questions/774054/should-i-put-input-tag-inside-label-tag
+        
         create_text_input: function (value, class_name, label, title) {
             var input = document.createElement("input");
             var label_element, container;
             input.type = "text";
-            if (class_name) {
-                input.className = class_name;
-            }
+            input.className = class_name;
             input.value = value;
-            if (title) {
-                input.title = title;
-            }
-            input.id = TT.UTILITIES.generate_unique_id();
+            input.title = title;
             label_element = document.createElement("label");
             label_element.innerHTML = label;
+            input.id = TT.UTILITIES.generate_unique_id();
             label_element.htmlFor = input.id;
             container = TT.UTILITIES.create_horizontal_table(label_element, input);
             $(input).button().addClass("toontalk-text-input");
@@ -698,16 +699,12 @@ window.TOONTALK.UTILITIES =
         create_text_area: function (value, class_name, label, title) {
             var text_area = document.createElement("textarea");
             var label_element, container;
-            if (class_name) {
-                text_area.className = class_name;
-            }
+            text_area.className = class_name;
             text_area.value = value;
-            if (title) {
-                text_area.title = title;
-            }
-            text_area.id = TT.UTILITIES.generate_unique_id();
+            text_area.title = title;
             label_element = document.createElement("label");
             label_element.innerHTML = label;
+            text_area.id = TT.UTILITIES.generate_unique_id();
             label_element.htmlFor = text_area.id;
             container = TT.UTILITIES.create_horizontal_table(label_element, text_area);
             $(text_area).button().addClass("toontalk-text-text_area");
@@ -717,81 +714,49 @@ window.TOONTALK.UTILITIES =
                     button: text_area};
         },
         
-        create_radio_button: function (name, value, label, title) {
+        create_radio_button: function (name, value, class_name, label, title) {
             var container = document.createElement("div");
             var input = document.createElement("input");
+            var label_element = document.createElement("label");
             input.type = "radio";
-            input.className = "toontalk-radio-button";
+            input.className = class_name;
             input.name = name;
             input.value = value;
-            input.id = TT.UTILITIES.generate_unique_id();
-            var label_element = document.createElement("label");
             label_element.innerHTML = label;
+            input.id = TT.UTILITIES.generate_unique_id();
             label_element.htmlFor = input.id;
             container.appendChild(input);
             container.appendChild(label_element);
-            if (title) {
-                container.title = title;
-            }
+            container.title = title;
+            // the following breaks the change listener
+            // used to work with use htmlFor to connect label and input
             $(input).button();
+//             $(label_element).button();
             return {container: container,
                     button: input,
                     label: label_element};
         },
         
-        create_check_box: function (value, label, title) {
+        create_check_box: function (value, class_name, label, title) {
             var container = document.createElement("div");
             var input = document.createElement("input");
-            input.type = "checkbox";
-            input.className = "toontalk-checkbox";
-            input.checked = value;
-            input.id = TT.UTILITIES.generate_unique_id();
             var label_element = document.createElement("label");
+            input.type = "checkbox";
+            input.className = class_name;
+            input.checked = value;
             label_element.innerHTML = label;
+            input.id = TT.UTILITIES.generate_unique_id();
             label_element.htmlFor = input.id;
             $(label_element).addClass("ui-widget");
             container.appendChild(input);
             container.appendChild(label_element);
-            if (title) {
-                container.title = title;
-            }
-//             $(input).button();
+            container.title = title;
+//             $(input).button(); // commented out since looked bad
             return {container: container,
                     button: input,
                     label: label_element};
         },
-        
-//         get_radio_button_element: function (container) {
-//             return $(container).children(".toontalk-radio-button").get(0);
-//         },
-        
-//         label_radio_button: function (button, label, title, label_class_name) {
-//             // consider merging this with create_radio_button
-//             var container = document.createElement("div");
-//             var label_element = document.createElement("label");
-//             if (!button.id) {
-//                 button.id = TT.UTILITIES.generate_unique_id();
-//             }
-//             label_element.innerHTML = label;
-//             label_element.for = input.id;
-//             // still worth doing here?
-//             label_element.className += " " + label_class_name;
-//             container.appendChild(button);
-//             container.appendChild(label_element);
-//             if (title) {
-//                 container.title = title;
-//             }
-//             $(container).button();
-//             return container;        
-//         },
-        
-//         create_label: function (html) {
-//             var label_element = document.createElement("span");
-//             label_element.className = "toontalk-label";
-//             label_element.innerHTML = html;
-//             return label_element;
-//         },
-        
+
         create_horizontal_table: function () { // takes any number of parameters
             var table = document.createElement("table");
             var i, row, table_element;

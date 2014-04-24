@@ -370,7 +370,7 @@ window.TOONTALK.box = (function (TT) {
             }
         }
         if (update_display) {
-            part_frontside_element = part_frontside_element();
+            part_frontside_element = part.get_frontside_element();
             $(part_frontside_element).removeClass("toontalk-frontside-in-box");
             if (part_frontside_element.width_before_in_box) {
                 $(part_frontside_element).css({width: part_frontside_element.width_before_in_box,
@@ -465,25 +465,29 @@ window.TOONTALK.box_backside =
         create: function (box) {
             var backside = TT.backside.create(box);
             var size_input = TT.UTILITIES.create_text_input(box.get_size().toString(), 'toontalk-box-size-input', "Number of holes", "Type here to edit the number of holes.");
-            var horizontal = TT.UTILITIES.create_radio_button("box_orientation", "horizontal", "Left to right", "Show box horizontally."); // might be nicer replaced by an icon
-            var vertical = TT.UTILITIES.create_radio_button("box_orientation", "vertical", "Top to bottom", "Show box vertically.");
+            var horizontal = TT.UTILITIES.create_radio_button("box_orientation", "horizontal", "toontalk-horizontal-radio-button", "Left to right", "Show box horizontally."); // might be nicer replaced by an icon
+            var vertical = TT.UTILITIES.create_radio_button("box_orientation", "vertical", "toontalk-vertical-radio-button", "Top to bottom", "Show box vertically.");
             var update_value = function () {
                 var new_size = parseInt(size_input.button.value.trim(), 10);
                 box.set_size(new_size, true);
                 if (TT.robot.in_training) {
                     TT.robot.in_training.edited(box, {setter_name: "set_size",
                                                       argument_1: new_size,
-                                                      toString: "change the number of holes to " + new_size + " of the box"});
+                                                      toString: "change the number of holes to " + new_size + " of the box",
+                                                      button_selector: ".toontalk-box-size-input"});
                 }
             };
             var update_orientation = function () {
-                var orientation = TT.UTILITIES.selected_radio_button(horizontal.button, vertical.button).value;
+                var selected_button = TT.UTILITIES.selected_radio_button(horizontal.button, vertical.button);
+                var orientation = selected_button.value;
                 var is_horizontal = (orientation === "horizontal");
                 box.set_horizontal(is_horizontal, true);
                 if (TT.robot.in_training) {
                     TT.robot.in_training.edited(box, {setter_name: "set_horizontal",
                                                       argument_1: is_horizontal,
-                                                      toString: "change the orientation to " + orientation + " of the box"});
+                                                      toString: "change the orientation to " + orientation + " of the box",
+                                                      // just use the first className to find this button later
+                                                      button_selector: "." + selected_button.className.split(" ", 1)[0]});
                 }
             };
             var backside_element = backside.get_element();
@@ -492,6 +496,8 @@ window.TOONTALK.box_backside =
             size_input.button.addEventListener('change', update_value);
             horizontal.button.addEventListener('change', update_orientation);
             vertical.button.addEventListener('change', update_orientation);
+//             $(horizontal.label).change(update_orientation);
+//             $(vertical.label).change(update_orientation);
             backside_element.appendChild(size_input.container);
             backside_element.appendChild($(TT.UTILITIES.create_horizontal_table(horizontal.container, vertical.container)).buttonset().get(0));
             backside_element.appendChild(standard_buttons);

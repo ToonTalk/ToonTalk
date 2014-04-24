@@ -523,42 +523,55 @@ window.TOONTALK.number_backside =
             slash.innerHTML = "/";
             $(slash).addClass("ui-widget"); // to look nice
             var denominator_input = TT.UTILITIES.create_text_input(number.denominator_string(), "toontalk-denominator-input", "", "Type here to edit the denominator");
-            var decimal_format = TT.UTILITIES.create_radio_button("number_format", "decimal", "Decimal", "Display number as a decimal.");
-            var proper_format = TT.UTILITIES.create_radio_button("number_format", "proper_fraction", "Proper fraction", "Display number as a proper fraction with an integer part and a fraction.");
-            var improper_format =TT.UTILITIES.create_radio_button("number_format", "improper_fraction", "Improper fraction", "Display number as a simple fraction.");
-            var plus = TT.UTILITIES.create_radio_button("operator", "+", "+", "Add me to what I'm dropped on."); // no need for &plus; and it doesn't work in IE9
-            var minus = TT.UTILITIES.create_radio_button("operator", "-", "&minus;", "Subtract me from what I'm dropped on.");
-            var multiply = TT.UTILITIES.create_radio_button("operator", "*", "&times;", "Multiply me with what I'm dropped on.");
-            var divide = TT.UTILITIES.create_radio_button("operator", "/", "&divide;", "Divide me into what I'm dropped on.");
-            var power = TT.UTILITIES.create_radio_button("operator", "^", "Integer power", "Use me as the number of times to multiply together what I'm dropped on.");
-            var update_value = function () {
+            var decimal_format = TT.UTILITIES.create_radio_button("number_format", "decimal", "toontalk-decimal-radio-button", "Decimal", "Display number as a decimal.");
+            var proper_format = TT.UTILITIES.create_radio_button("number_format", "proper_fraction", "toontalk-proper-fraction-radio-button", "Proper fraction", "Display number as a proper fraction with an integer part and a fraction.");
+            var improper_format =TT.UTILITIES.create_radio_button("number_format", "improper_fraction", "toontalk-improper-fraction-radio-button", "Improper fraction", "Display number as a simple fraction.");
+            var plus = TT.UTILITIES.create_radio_button("operator", "+", "toontalk-plus-radio-button", "+", "Add me to what I'm dropped on."); // no need for &plus; and it doesn't work in IE9
+            var minus = TT.UTILITIES.create_radio_button("operator", "-", "toontalk-minus-radio-button", "&minus;", "Subtract me from what I'm dropped on.");
+            var multiply = TT.UTILITIES.create_radio_button("operator", "*", "toontalk-times-radio-button", "&times;", "Multiply me with what I'm dropped on.");
+            var divide = TT.UTILITIES.create_radio_button("operator", "/", "toontalk-dividie-radio-button", "&divide;", "Divide me into what I'm dropped on.");
+            var power = TT.UTILITIES.create_radio_button("operator", "^", "toontalk-power-radio-button", "Integer power", "Use me as the number of times to multiply together what I'm dropped on.");
+            var update_value = function (event) {
                 var numerator = numerator_input.button.value.trim();
                 var denominator = denominator_input.button.value.trim();
+                var string, first_class_name;
                 number.set_from_values(numerator, denominator, true);
                 if (TT.robot.in_training) {
+                    first_class_name = event.srcElement.className.split(" ", 1)[0];
+                    if (first_class_name === "toontalk-denominator-input") {
+                        string = "change value of the denominator to " + denominator + " of the number";
+                    } else {
+                        string = "change value of the numerator to " + numerator + " of the number";
+                    }
                     TT.robot.in_training.edited(number, {setter_name: "set_from_values",
                                                          argument_1: numerator,
                                                          argument_2: denominator,
-                                                         toString: "change the value to " + numerator + "/" + denominator + " of the number"});
+                                                         toString: string,
+                                                         button_selector: "." + first_class_name});
                 }
             };
             var update_format = function () {
-                // use JQuery instead?
-                var format = TT.UTILITIES.selected_radio_button(decimal_format.button, proper_format.button, improper_format.button).value;
+                var selected_button = TT.UTILITIES.selected_radio_button(decimal_format.button, proper_format.button, improper_format.button);
+                var format = selected_button.value;
                 number.set_format(format, true);
                 if (TT.robot.in_training) {
                     TT.robot.in_training.edited(number, {setter_name: "set_format",
                                                          argument_1: format,
-                                                         toString: "change the format to " + format + " of the number"});
+                                                         toString: "change the format to " + format + " of the number",
+                                                         // just use the first className to find this button later
+                                                         button_selector: "." + selected_button.className.split(" ", 1)[0]});
                 }
             };
             var update_operator = function () {
-                var operator = TT.UTILITIES.selected_radio_button(plus.button, minus.button, multiply.button, divide.button, power.button).value;
+                var selected_button = TT.UTILITIES.selected_radio_button(plus.button, minus.button, multiply.button, divide.button, power.button);
+                var operator = selected_button.value;
                 number.set_operator(operator, true);
                 if (TT.robot.in_training) {
                     TT.robot.in_training.edited(number, {setter_name: "set_operator",
                                                          argument_1: operator,
-                                                         toString: "change the operator to " + operator + " of the number"});
+                                                         toString: "change the operator to " + operator + " of the number",
+                                                         // just use the first className to find this button later
+                                                         button_selector: "." + selected_button.className.split(" ", 1)[0]});
                 }
             };
             var number_set = TT.UTILITIES.create_horizontal_table(numerator_input.container, slash, denominator_input.container);
@@ -610,7 +623,6 @@ window.TOONTALK.number_backside =
             divide.button.addEventListener('change', update_operator);
             power.button.addEventListener('change', update_operator);
             backside.update_display = function () {
-//                 var number_widget = this.get_widget();
                 $(numerator_input.button).val(number.numerator_string());
                 $(denominator_input.button).val(number.denominator_string());
             };

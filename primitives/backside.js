@@ -216,10 +216,10 @@ window.TOONTALK.backside =
         
         create_infinite_stack_check_box: function (backside, widget) {
             var check_box = TT.UTILITIES.create_check_box(widget.get_infinite_stack(), 
+                                                          "toontalk-infinite-stack-check-box",
                                                           "Copy when dragged.",
                                                           "Check this if you want the " + widget.get_type_name()
                                                           + " to be copied instead of moved.");
-            $(check_box.button).addClass("toontalk-infinite-stack-check-box");
             $(check_box.button).click(function (event)  {
                 var infinite_stack = check_box.button.checked;
                 var action_string;
@@ -232,7 +232,8 @@ window.TOONTALK.backside =
                     }
                     TT.robot.in_training.edited(widget, {setter_name: "set_infinite_stack",
                                                          argument_1: infinite_stack,
-                                                         toString: action_string});
+                                                         toString: action_string,
+                                                         button_selector: ".toontalk-infinite-stack-check-box"});
                 }
                 event.stopPropagation();
             });

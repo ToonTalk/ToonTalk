@@ -281,7 +281,7 @@ window.TOONTALK.robot = (function (TT) {
         this.current_action_name = "edit";
         path = TT.path.get_path_to(widget, this);
         if (path) {
-            this.add_step(TT.robot_action.create(path, current_action_name, details));
+            this.add_step(TT.robot_action.create(path, this.current_action_name, details));
         }
         // no need to update widget.last_action = this.current_action_name;
         this.current_action_name = undefined;
@@ -562,7 +562,8 @@ window.TOONTALK.robot_backside =
                                                                       "toontalk-robot-description-input", 
                                                                       "This&nbsp;robot&nbsp;",
                                                                       "Type here to provide additional information about this robot.");
-            var run_once_input = TT.UTILITIES.create_check_box(!robot.get_run_once(), 
+            var run_once_input = TT.UTILITIES.create_check_box(!robot.get_run_once(),
+                                                               "toontalk-run-once-check-box",
                                                                "When finished start again",
                                                                "Check this if you want the robot to start over again after finishing what he was trained to do.");
             var $next_robot_area = TT.UTILITIES.create_drop_area(window.TOONTALK.robot.empty_drop_area_instructions);
@@ -579,7 +580,8 @@ window.TOONTALK.robot_backside =
                 if (TT.robot.in_training) {
                     TT.robot.in_training.edited(robot, {setter_name: "set_image_url",
                                                         argument_1: image_url,
-                                                        toString: "change the image URL to " + image_url + " of the robot"});
+                                                        toString: "change the image URL to " + image_url + " of the robot",
+                                                        button_selector: ".toontalk-run-once-check-box"});
                 }
             });
             description_text_area.button.addEventListener('change', function () {
@@ -588,7 +590,8 @@ window.TOONTALK.robot_backside =
                 if (TT.robot.in_training) {
                     TT.robot.in_training.edited(robot, {setter_name: "set_description",
                                                         argument_1: description,
-                                                        toString: "change the description to '" + description + "'' of the robot"});
+                                                        toString: "change the description to '" + description + "'' of the robot",
+                                                        button_selector: ",toontalk-robot-description-input"});
                 }
             });
             $(run_once_input.button).click(function (event) {
@@ -597,7 +600,8 @@ window.TOONTALK.robot_backside =
                 if (TT.robot.in_training) {
                     TT.robot.in_training.edited(robot, {setter_name: "set_run_once",
                                                         argument_1: !keep_running,
-                                                        toString: "change to " + (keep_running ? "run again" : "run once") + " of the robot"});
+                                                        toString: "change to " + (keep_running ? "run again" : "run once") + " of the robot",
+                                                        button_selector: ".toontalk-run-once-check-box"});
                 }
                 event.stopPropagation();
             });

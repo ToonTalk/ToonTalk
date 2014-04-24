@@ -56,7 +56,7 @@ window.TOONTALK.robot_action =
              return true;
          },
          "edit": function (widget, context, robot, additional_info) {
-             // user setter_name instead of the function itself so can be JSONified
+             // uses setter_name instead of the function itself so can be JSONified
              // could replace with function on first use if this is a performance issue
              if (additional_info.argument_2) {
                  widget[additional_info.setter_name].call(widget, additional_info.argument_1, additional_info.argument_2, widget.visible());
@@ -153,11 +153,14 @@ window.TOONTALK.robot_action =
         button_use_animation(widget, context, robot, new_continuation, ".toontalk-copy-backside-button");
     };
     var remove_animation = function (widget, context, robot, continuation) {
+        button_use_animation(widget, context, robot, continuation, ".toontalk-remove-backside-button");
+    };
+    var edit_animation = function (widget, context, robot, continuation, additional_info) {
         var new_continuation = function () {
-            widget.remove();
+            widget.get_backside().update_display();
             continuation();
         };
-        button_use_animation(widget, context, robot, new_continuation, ".toontalk-remove-backside-button");
+        button_use_animation(widget, context, robot, new_continuation, additional_info.button_selector);
     };
     var watched_run_functions = 
         {"copy": copy_animation,
@@ -165,6 +168,7 @@ window.TOONTALK.robot_action =
          "pick up a copy": move_robot_animation,
          "drop it on": drop_it_on_animation,
          "remove": remove_animation,
+         "edit": edit_animation,
          "add to the top-level backside": function (widget, context, robot, continuation) {
              // do nothing -- this action is only needed if unwatched
              continuation();
@@ -198,7 +202,7 @@ window.TOONTALK.robot_action =
                 }
                 return unwatched_run_function(referenced, context, robot, additional_info);
             };
-            new_action.do_step = function (referenced, context, robot, additional_info) {
+            new_action.do_step = function (referenced, context, robot) {
                  return unwatched_run_function(referenced, context, robot, additional_info);
             };
             new_action.run_watched = function (context, robot, continuation) {
@@ -217,13 +221,10 @@ window.TOONTALK.robot_action =
                 return action + " " + TT.path.toString(path);
             };
             new_action.get_json = function () {
-                var json = {type: "robot_action",
-                            action_name: action_name,
-                            path: TT.path.get_json(path)};
-                if (additional_info) {
-                    json.additional_info = additional_info;
-                }
-                return json;                           
+                return {type: "robot_action",
+                        action_name: action_name,
+                        path: TT.path.get_json(path),
+                        additional_info: additional_info};        
             };
             return new_action;  
         },
