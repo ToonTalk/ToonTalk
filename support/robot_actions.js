@@ -33,6 +33,7 @@ window.TOONTALK.actions =
                 this.reset_newly_created_widgets();
             };
             new_actions.reset_newly_created_widgets = function () {
+//                 console.log("reset newly_created_widgets. Length was " + newly_created_widgets.length);
                 newly_created_widgets = [];
             };
             new_actions.add_step = function (step, new_widget) {
@@ -41,8 +42,20 @@ window.TOONTALK.actions =
                     this.add_newly_created_widget(new_widget);
                 }
             };
+            new_actions.add_newly_created_widget_if_new = function (new_widget) {
+                // some callers don't know if the widget is really new
+                if (newly_created_widgets.indexOf(new_widget) >= 0) {
+                    return;
+                }
+                this.add_newly_created_widget(new_widget);
+            };                
             new_actions.add_newly_created_widget = function (new_widget) {
+                 if (TT.debugging && newly_created_widgets.indexOf(new_widget) >= 0) {
+                     console.log("add_newly_created_widget called with not new widget.");
+                     return;
+                }
                 newly_created_widgets[newly_created_widgets.length] = new_widget;
+//                 console.log("Added " + new_widget + " (" + new_widget.debug_id + ") to list of newly_created_widgets. Length is " + newly_created_widgets.length);
             };
             new_actions.get_newly_created_widgets = function () {
                 return newly_created_widgets;
@@ -51,11 +64,11 @@ window.TOONTALK.actions =
                 var i, j, path, sub_path, children;
                 for (i = 0; i < newly_created_widgets.length; i++) {
                     if (newly_created_widgets[i] === widget) {
-                        return TT.newly_created_widgets_path.create(i, new_actions);
+                        return TT.newly_created_widgets_path.create(i);
                     } else if (newly_created_widgets[i].get_path_to) {
                         sub_path = newly_created_widgets[i].get_path_to(widget);
                         if (sub_path) {
-                            path = TT.newly_created_widgets_path.create(i, new_actions);
+                            path = TT.newly_created_widgets_path.create(i);
                             path.next = sub_path;
                             return path;
                         }
@@ -80,25 +93,53 @@ window.TOONTALK.actions =
         },
         
         run_watched: function(context, queue, robot) {
+            var steps = this.get_steps();
+            var frontside_element = robot.get_frontside_element();
+            var robot_start_position = $(frontside_element).position();
+            var restore_after_last_event = function () {
+                $(frontside_element).removeClass("toontalk-side-animating");
+                robot.set_animating(false);
+                if (!robot.get_run_once()) {
+                    robot.get_first_in_team().run(context, queue);
+                }
+                TT.DISPLAY_UPDATES.pending_update(robot);
+            };
             var run_watched_step = function (i) {
-                var steps = this.get_steps();
-                var continuation = function () {
-                    run_watched_step(i+1);
+                var continuation = function (referenced) {
+                    steps[i].do_step(referenced, context, robot);
+                    if (robot.get_thing_in_hand()) {
+                        TT.DISPLAY_UPDATES.pending_update(robot);
+                    }
+                    setTimeout(function () {
+                        if (robot.visible()) {
+                            run_watched_step(i+1);
+                        } else {
+                            // maybe user hide the robot while running
+                            for (i = i+1; i < steps.length; i++) {
+                                steps[i].do_step(referenced, context, robot);
+                            }
+                            if (!robot.get_run_once()) {
+                                robot.get_first_in_team().run(context, queue);
+                            }
+                        }
+                        },
+                        500); // pause between steps and give the previous step a chance to update the DOM
                 };
                 if (i < steps.length) {
                     steps[i].run_watched(context, robot, continuation);
                 } else {
-                    robot.set_running(false);
-                    if (!robot.get_run_once()) {
-                        robot.get_first_in_team().run(context, queue);
-                    }
+                    // restore position
+                    $(frontside_element).addClass("toontalk-side-animating");
+                    frontside_element.style.left = robot_start_position.left + "px";
+                    frontside_element.style.top = robot_start_position.top + "px";
+                    TT.UTILITIES.add_one_shot_transition_end_handler(frontside_element, restore_after_last_event);
                 }
             }.bind(this);
-            if (robot.running()) {
+            if (robot.get_animating()) {
                 // is animating to run a step while watched
                 return true;
             }
-            robot.set_running(true);
+            robot.set_animating(true);
             run_watched_step(0);
             return true;             
         },
@@ -140,26 +181,25 @@ window.TOONTALK.newly_created_widgets_path =
 (function (TT) {
     "use strict";
     return {
-        create: function (index, actions) {
+        create: function (index) {
             return {
-                dereference: function () {
-                    return actions.dereference(index);
+                dereference: function (context, robot) {
+                    return robot.get_body().dereference(index);
                 },
                 toString: function () {
-                    var n = actions.get_newly_created_widgets().length - index;
                     var ordinal;
-                    switch (n) {
+                    switch (index) {
+                        case 0:
+                        ordinal = "first";
+                        break;
                         case 1:
-                        ordinal = "last";
+                        ordinal = "second";
                         break;
                         case 2:
-                        ordinal = "second to last";
-                        break;
-                        case 3:
-                        ordinal = "third to last";
+                        ordinal = "third";
                         break;
                         default:
-                        ordinal = n + "th to last";
+                        ordinal = index + "th";
                     }
                     return "the " + ordinal + " widget he created";
                 },
@@ -169,8 +209,8 @@ window.TOONTALK.newly_created_widgets_path =
                 }
             };
         },
-        create_from_json: function (json, ignore_view, additional_info) {
-            return TT.newly_created_widgets_path.create(json.index, additional_info.body);
+        create_from_json: function (json) {
+            return TT.newly_created_widgets_path.create(json.index);
         }
     };
 }(window.TOONTALK));

@@ -15,20 +15,9 @@ window.TOONTALK.widget = (function (TT) {
             this.add_sides_functionality(widget);
             this.runnable(widget);
             this.stackable(widget);
-            if (!widget.get_title) {
-                widget.get_title = function () {
-                    var type_name = this.get_type_name();
-                    var backside = this.get_backside();
-                    var frontside_element = this.get_frontside_element();
-                    if ($(frontside_element).is(".toontalk-top-level-resource")) {
-                        return "Drag this " + type_name + " to a work area.";   
-                    }
-                    if (!backside || !backside.get_element()) {
-                        return "Click to see the back side of this " + type_name;
-                    }
-                    return TT.UTILITIES.add_a_or_an(type_name, true);
-                };
-            }
+            this.animatable(widget);
+            this.has_title(widget);
+            this.has_parent(widget);
             return widget;
         },
         
@@ -43,7 +32,7 @@ window.TOONTALK.widget = (function (TT) {
                 widget.set_erased = function (new_value, update_now) {
                     erased = new_value;
                     if (update_now) {
-                        this.update_display();
+                        TT.DISPLAY_UPDATES.pending_update(this);
                     }
                 };
             }
@@ -105,6 +94,7 @@ window.TOONTALK.widget = (function (TT) {
                             } else {
                                 backside_widget.set_stopped(true);
                             }
+                            TT.DISPLAY_UPDATES.pending_update(backside_widget);
                         } else if (backside_widget.set_running) {
                             backside_widget.set_running(new_value);
                         }
@@ -115,6 +105,7 @@ window.TOONTALK.widget = (function (TT) {
                             TT.backside.update_run_button($(element), !running, widget);
                         });
                     }
+                    TT.DISPLAY_UPDATES.pending_update(this);
                 };
             }
             return widget;
@@ -146,14 +137,97 @@ window.TOONTALK.widget = (function (TT) {
             }
         },
         
-        remove: function () {
+        animatable: function (widget) {
+            var find_widget_element;
+            if (!widget.animate_to_widget) {
+                find_widget_element = function (widget) {
+                    var widget_element = widget.get_side_element();
+                    if (!widget_element) {        
+                        // widget is assumed to be a fresh copy of a resource that has yet to be added to anything
+                        widget_element = TT.UTILITIES.find_resource_equal_to_widget(widget);
+                    }
+                    return widget_element;
+                };
+                widget.animate_to_widget = function (target_widget, continuation, left_offset, top_offset) {
+                    this.animate_to_element(find_widget_element(target_widget), continuation, left_offset, top_offset);
+                };
+            }
+            if (!widget.animate_to_element) {
+                widget.animate_to_element = function (target_element, continuation, left_offset, top_offset) {
+                    var target_absolute_position = $(target_element).offset();
+                    var $frontside_element = $(this.get_frontside_element());
+                    if (!left_offset) {
+                        // pick a random location completely inside the target
+                        left_offset = ($(target_element).width()-$frontside_element.width()) * Math.random();
+                    }
+                    if (!top_offset) {
+                        top_offset = ($(target_element).height()-$frontside_element.height()) * Math.random();
+                    }
+                    target_absolute_position.left += left_offset;
+                    target_absolute_position.top += top_offset;
+                    this.animate_to_absolute_position(target_absolute_position, continuation);
+                };
+            }
+            if (!widget.animate_to_absolute_position) {
+                widget.animate_to_absolute_position = function (target_absolute_position, continuation) {
+                    var mover_frontside_element = this.get_frontside_element();
+                    var mover_absolute_position = $(mover_frontside_element).offset();
+                    var mover_relative_position = $(mover_frontside_element).position();
+                    var remove_transition_class = function () {
+                        $(mover_frontside_element).removeClass("toontalk-side-animating");
+                    };
+                    TT.UTILITIES.add_one_shot_transition_end_handler(mover_frontside_element, remove_transition_class);
+                    $(mover_frontside_element).addClass("toontalk-side-animating");
+                    mover_frontside_element.style.left = (mover_relative_position.left + (target_absolute_position.left - mover_absolute_position.left)) + "px";
+                    mover_frontside_element.style.top = (mover_relative_position.top + (target_absolute_position.top - mover_absolute_position.top)) + "px";
+                    TT.UTILITIES.add_one_shot_transition_end_handler(mover_frontside_element, continuation);
+                };
+            }
+        },
+        
+        has_title: function (widget) {
+            if (!widget.get_title) {
+                widget.get_title = function () {
+                    var type_name = this.get_type_name();
+                    var backside = this.get_backside();
+                    var frontside_element = this.get_frontside_element();
+                    if ($(frontside_element).is(".toontalk-top-level-resource")) {
+                        return "Drag this " + type_name + " to a work area.";   
+                    }
+                    if (!backside || !backside.get_element()) {
+                        return "Click to see the back side of this " + type_name;
+                    }
+                    return TT.UTILITIES.add_a_or_an(type_name, true);
+                };
+            }
+        },
+        
+        has_parent: function (widget) {
+            var parent, on_backside_of_parent;
+            widget.get_parent = function () {
+                return parent;
+            };
+            widget.get_on_backside_of_parent = function () {
+                return on_backside_of_parent;
+            };
+            widget.set_parent = function (new_value, backside) {
+                parent = new_value;
+                on_backside_of_parent = backside;
+            };
+        },
+        
+        remove: function (event) {
             var backside = this.get_backside();
             var frontside = this.get_frontside();
+            var parent = this.get_parent();
             if (backside) {
                 backside.remove();
             }
             if (frontside) {
                 frontside.remove();
+            }
+            if (parent) {
+                parent.removed_from_container(this, false, event);
             }
             this.set_running(false);
         },
@@ -164,7 +238,7 @@ window.TOONTALK.widget = (function (TT) {
                 return;
             }
             if (update) {
-                this.update_display();
+                TT.DISPLAY_UPDATES.pending_update(this);
             }
             return frontside.get_element();
         },
@@ -173,6 +247,15 @@ window.TOONTALK.widget = (function (TT) {
             var backside = this.get_backside && this.get_backside();
             if (backside) {
                 return backside.get_element();
+            }
+        },
+        
+        get_side_element: function (create) {
+            // returns frontside if showing othewise backside
+            if (this.visible()) {
+                return this.get_frontside_element(create);
+            } else {
+                return this.get_backside_element(create);
             }
         },
         
@@ -203,18 +286,21 @@ window.TOONTALK.widget = (function (TT) {
                 if (this.get_running && this.get_running()) {
                     json_semantic.running = true;
                 }
-                frontside_element = this.get_frontside_element && this.get_frontside_element();
-                if (frontside_element) {
-                    json_view.frontside_width = $(frontside_element).width();
-                    json_view.frontside_height = $(frontside_element).height();
-                    if ($(frontside_element).is(":visible")) {
-                        position = $(frontside_element).position();
-                    } else {
-                        position = this.position_when_hidden;
-                    }
-                    if (position) {
-                        json_view.frontside_left = position.left;
-                        json_view.frontside_top = position.top;
+                if (!this.get_parent() || this.get_on_backside_of_parent()) {
+                    // otherwise geometry isn't needed
+                    frontside_element = this.get_frontside_element && this.get_frontside_element();
+                    if (frontside_element) {
+                        json_view.frontside_width = $(frontside_element).width();
+                        json_view.frontside_height = $(frontside_element).height();
+                        if ($(frontside_element).is(":visible")) {
+                            position = $(frontside_element).position();
+                        } else {
+                            position = this.position_when_hidden;
+                        }
+                        if (position) {
+                            json_view.frontside_left = position.left;
+                            json_view.frontside_top = position.top;
+                        }
                     }
                 }
                 backside = this.get_backside();
@@ -253,6 +339,8 @@ window.TOONTALK.widget = (function (TT) {
             } else if (this.backside_widgets.indexOf(widget) < 0) {
                 this.backside_widgets[this.backside_widgets.length] = widget;                            
             }
+            widget.set_parent(this, true);
+//             console.log("Added " + widget + " (" + widget.debug_id + ") to list of backside widgets of " + this + ". Now has " + this.backside_widgets.length + " widgets.");
             if (backside) {
                 backside.update_run_button_disabled_attribute();
             }
@@ -267,10 +355,11 @@ window.TOONTALK.widget = (function (TT) {
             }
             widget_index = this.backside_widgets.indexOf(widget);
             if (widget_index < 0) {
-                console.log("Couldn't find a widget to remove it from backside widgets.");
+                console.log("Couldn't find a widget to remove it from backside widgets. " + widget + " (" + widget.debug_id + ")");
                 return;                        
             }
-            this.backside_widgets = this.backside_widgets.splice(widget_index, 1);
+            this.backside_widgets.splice(widget_index, 1);
+//             console.log("Removed " + widget + " (" + widget.debug_id + ") from list of backside widgets of " + this + ". Length is now " +  this.backside_widgets.length);
             if (backside) {
                 backside.update_run_button_disabled_attribute();
             }
@@ -278,6 +367,7 @@ window.TOONTALK.widget = (function (TT) {
         
         set_backside_widgets: function (backside_widgets, json_views) {
             var backside = this.get_backside();
+//             console.log("setting backside_widgets of " + this + " were " + this.backside_widgets + " and is now " + backside_widgets);
             this.backside_widgets = backside_widgets;
             if (backside_widgets.length > 0) { 
                 if (this.get_backside()) {
@@ -343,12 +433,36 @@ window.TOONTALK.widget = (function (TT) {
             console.assert(false, "copy not implemented");
         },
         
+        add_copy_to_container: function (widget_copy) {
+            if (!widget_copy) {
+                widget_copy = this.copy();
+            }
+            var frontside_element = this.get_frontside_element();
+            var frontside_element_copy = widget_copy.get_frontside_element();
+            var position = $(frontside_element).position();
+            var $container_element = $(frontside_element).closest(".toontalk-backside");
+            var container_widget = $container_element.data("owner");
+            $(frontside_element_copy).css({width: $(frontside_element).width(),
+                                           height: $(frontside_element).height(),
+                                           left: position.left+10,
+                                           top: position.top+10});
+            $container_element.append(frontside_element_copy);
+            if (container_widget) {
+                container_widget.add_backside_widget(widget_copy);
+//                 console.log("Added the copy " + widget_copy + " (" + widget_copy.debug_id + ") to " + container_widget + " (" + container_widget.debug_id + ")");
+            }
+            if (TT.robot.in_training) {
+                TT.robot.in_training.copied(this, widget_copy, false);
+            }
+            return widget_copy;
+        },
+        
         visible: function () {
             var frontside = this.get_frontside();
             if (!frontside) {
                 return false;
             }
-            return $(frontside.get_element()).is(":visible");
+            return $(frontside.get_element()).is(":visible"); 
         },
         
         drag_started: function (json, is_resource) {
@@ -359,9 +473,9 @@ window.TOONTALK.widget = (function (TT) {
             }
         },
         
-        widget_dropped_on_me: function () {
+        widget_dropped_on_me: function (widget) {
             if (TT.robot.in_training) {
-                TT.robot.in_training.dropped_on(this);
+                TT.robot.in_training.dropped_on(widget, this);
             }
             return true;
         },
@@ -374,19 +488,10 @@ window.TOONTALK.widget = (function (TT) {
             // should return 'matched', 'not-matched', or an array of nests waiting for objects to arrive
             console.assert(false, "match not implemented for " + context.toString());
         },
-        
-        drop_on: function (other, side_of_other, event) {
-            console.log("drop_on not implemented; this is " + this.toString() + " and other is " + other.toString());
-            return false;
-        },
                    
         removed: function (part) {
             // part should be a ToonTalk widget that is part of this
             console.log("removed not implemented");
-        },
-        
-        update_display: function () {
-            console.log("update_display not implemented");
         },
         
         equals_box: function () {
@@ -416,8 +521,8 @@ window.TOONTALK.widget = (function (TT) {
                 var $backside_element = $(backside.get_element());
                 var json = {type: "top_level",
                             color: $backside_element.attr("background-color"),
-                            width: $backside_element.width(),
-                            height: $backside_element.height()};
+                            backside_width: $backside_element.width(),
+                            backside_height: $backside_element.height()};
                 return this.add_to_json(json);
             };
             widget.get_type_name = function () {
@@ -438,7 +543,13 @@ window.TOONTALK.widget = (function (TT) {
                 return this;
             };
             widget.visible = function () {
-                return true;
+                return false;
+            };
+            widget.get_parent = function () {
+                return undefined;
+            };
+            widget.get_on_backside_of_parent = function () {
+                return false;
             };
             widget = widget.add_sides_functionality(widget);
             widget = widget.runnable(widget);
@@ -448,15 +559,6 @@ window.TOONTALK.widget = (function (TT) {
         top_level_create_from_json: function (json) {
             var widget = TT.widget.top_level_widget();
             var $backside_element = $(widget.get_backside(true).get_element());
-            var css;
-            if (json.width && json.height) {
-                css = {width: json.width,
-                       height: json.height};
-                if (json.color) {
-                    css["background-color"] = json.color;
-                }
-                $backside_element.css(css);
-            }
             $backside_element.addClass("toontalk-top-level-backside");
             $backside_element.click(
                 function (event) {

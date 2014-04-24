@@ -1,5 +1,5 @@
  /**
- * Implements ToonTalk's list of updates to the HTML of elements
+ * Implements ToonTalk's list of pending updates to the appearance of widgets
  * Authors: Ken Kahn
  * License: New BSD
  */
@@ -7,28 +7,26 @@
 window.TOONTALK.DISPLAY_UPDATES = 
 (function (TT) {
     "use strict";
-    // for now only backsides and frontsides can be 'dirty'
-    var dirty_sides = [];
+    // backsides, frontsides, and widgets (typically both sides) can be 'dirty'
+    var pending_updates = [];
     return {
-        add_dirty_side: function (side) {
+        pending_update: function (x) {
             var i;
-            if (!side.update_display) {
+            if (!x.update_display) {
                 return;
             }
-            for (i = 0; i < dirty_sides.length; i += 1) {
-                if (dirty_sides[i] === side) {
-                    return;
-                }
+            if (pending_updates.indexOf(x) >= 0) {
+                return;
             }
-            dirty_sides.push(side);
+            pending_updates.push(x);
         },
         
         update_display: function () {
             var i;
-            for (i = 0; i < dirty_sides.length; i += 1) {
-                dirty_sides[i].update_display();
+            for (i = 0; i < pending_updates.length; i++) {
+                pending_updates[i].update_display();
             }
-            dirty_sides = [];
+            pending_updates = [];
         }
     };
 }(window.TOONTALK));
