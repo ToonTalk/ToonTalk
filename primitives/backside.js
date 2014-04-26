@@ -374,10 +374,10 @@ window.TOONTALK.backside =
             $remove_button.addClass("toontalk-remove-backside-button");
             $remove_button.click(function (event) {
                 if (widget.remove) {
-                    widget.remove(event);
                     if (TT.robot.in_training) {
                         TT.robot.in_training.removed(widget);
                     }
+                    widget.remove(event);
                 } // else warn??
                 event.stopPropagation();
             });
