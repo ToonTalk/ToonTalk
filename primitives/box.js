@@ -435,7 +435,7 @@ window.TOONTALK.box = (function (TT) {
                     return removing_widget;
                 },
                 toString: function () {
-                    return "what is in the " + TT.UTILITIES.cardinal(index) + " hole "; // + (this.next ? "; " + TT.path.toString(this.next) : "");
+                    return "that is in the " + TT.UTILITIES.cardinal(index) + " hole "; // + (this.next ? "; " + TT.path.toString(this.next) : "");
                 },
                 get_json: function () {
                     return {type: "box_path",
