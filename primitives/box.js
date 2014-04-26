@@ -307,6 +307,10 @@ window.TOONTALK.box = (function (TT) {
                                          height: 'auto'});
             }
             hole.update_display();
+            if ($element_container.children(".toontalk-empty-hole").length > 0) {
+                // if an empty hole was there then remove it (though could make it invisible instead so easier to restore)
+                $element_container.empty();
+            }
             $element_container.append(old_hole_element);
             // since drag and drop is set up with absolute as the default
             // is this redundant now?
@@ -362,17 +366,20 @@ window.TOONTALK.box = (function (TT) {
                 this.empty_hole(i, update_display);
                 if (update_display) {
                     TT.DISPLAY_UPDATES.pending_update(this);
+                    part_frontside_element = part.get_frontside_element();
+                    $(part_frontside_element).removeClass("toontalk-frontside-in-box");
+                    if (part_frontside_element.width_before_in_box) {
+                        // without this timeout the resizing doesn't apply
+                        // not sure why
+                        setTimeout(function () {
+                            $(part_frontside_element).css({width: part_frontside_element.width_before_in_box,
+                                                           height: part_frontside_element.height_before_in_box});
+                            TT.DISPLAY_UPDATES.pending_update(part);
+                        },
+                        10);
+                    }
                 }
                 return this;
-            }
-        }
-        if (update_display) {
-            part_frontside_element = part.get_frontside_element();
-            $(part_frontside_element).removeClass("toontalk-frontside-in-box");
-            if (part_frontside_element.width_before_in_box) {
-                $(part_frontside_element).css({width: part_frontside_element.width_before_in_box,
-                                               height: part_frontside_element.height_before_in_box});
-                TT.DISPLAY_UPDATES.pending_update(part);
             }
         }
     };
