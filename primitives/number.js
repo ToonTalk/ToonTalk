@@ -518,11 +518,11 @@ window.TOONTALK.number_backside =
         create: function (number) {
             var backside = TT.backside.create(number);
             var backside_element = backside.get_element();
-            var numerator_input = TT.UTILITIES.create_text_input(number.numerator_string(), "toontalk-numerator-input", "", "Type here to edit the numerator");
             var slash = document.createElement("div");
             slash.innerHTML = "/";
             $(slash).addClass("ui-widget"); // to look nice
-            var denominator_input = TT.UTILITIES.create_text_input(number.denominator_string(), "toontalk-denominator-input", "", "Type here to edit the denominator");
+            var numerator_input = TT.UTILITIES.create_text_area(number.numerator_string(), "toontalk-numerator-input", "", "Type here to edit the numerator");
+            var denominator_input = TT.UTILITIES.create_text_area(number.denominator_string(), "toontalk-denominator-input", "", "Type here to edit the denominator");
             var decimal_format = TT.UTILITIES.create_radio_button("number_format", "decimal", "toontalk-decimal-radio-button", "Decimal", "Display number as a decimal.");
             var proper_format = TT.UTILITIES.create_radio_button("number_format", "proper_fraction", "toontalk-proper-fraction-radio-button", "Proper fraction", "Display number as a proper fraction with an integer part and a fraction.");
             var improper_format =TT.UTILITIES.create_radio_button("number_format", "improper_fraction", "toontalk-improper-fraction-radio-button", "Improper fraction", "Display number as a simple fraction.");
