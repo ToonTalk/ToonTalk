@@ -32,7 +32,13 @@ window.TOONTALK.UTILITIES =
         return div_open + json + div_close;
     };    
     var extract_json_from_div_string = function (div_string) {
-        return div_string.substring(div_open.length, div_string.length - div_close.length);
+        var json_start = div_string.indexOf('{');
+        var json_end = div_string.lastIndexOf('}');
+        if (json_start < 0 || json_end < 0) {
+            console.log("Paste missing JSON encoding.");
+            return;
+        }
+        return div_string.substring(json_start, json_end+1);
     };
     var initialise = function () {
         var includes_top_level_backside = false;
