@@ -23,6 +23,9 @@
 	-webkit-transition: all 2s cubic-bezier(0.6, -0.28, 0.735, 0.045);
     transition:         all 2s cubic-bezier(0.6, -0.28, 0.735, 0.045);
 }
+.toontalk-robot-animating {
+	opacity: .8;
+}
 .toontalk-backside {
 	position: absolute;
 	background-color: rgba(245, 240, 240, 0.94);
