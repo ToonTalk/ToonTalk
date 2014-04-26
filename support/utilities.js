@@ -251,17 +251,18 @@ window.TOONTALK.UTILITIES =
             $element.attr("draggable", true);
             // draggable causes dataTransfer to be null
             // rewrote after noticing that this works fine: http://jsfiddle.net/KWut6/
-             $element.on('dragstart', 
+            $element.on('dragstart', 
                 function (event) {
-                    var position = $element.get(0).getBoundingClientRect(); // $element.position();
-                    var widget = $element.data("owner");
-                    var is_resource = $element.is(".toontalk-top-level-resource");
+                    var $source_element = $(event.originalEvent.srcElement).closest(".toontalk-side");
+                    var position = $source_element.get(0).getBoundingClientRect(); // $element.position();
+                    var widget = $source_element.data("owner");
+                    var is_resource = $source_element.is(".toontalk-top-level-resource");
                     var json_object, json_div;
-                    dragee = $element;
-                    if ($element.is(".toontalk-frontside")) {
+                    dragee = ($source_element || $element);
+                    if (dragee.is(".toontalk-frontside")) {
                         // save the current dimension so size doesn't change while being dragged
-                        $element.css({width:  this.offsetWidth + "px",
-                                      height: this.offsetHeight + "px"});
+                        dragee.css({width:  this.offsetWidth + "px",
+                                    height: this.offsetHeight + "px"});
                     }
                     if (event.originalEvent.dataTransfer && widget.get_json) {
                         event.originalEvent.dataTransfer.effectAllowed = is_resource ? 'copy' : 'move';
@@ -269,16 +270,16 @@ window.TOONTALK.UTILITIES =
                         json_object.view.drag_x_offset = event.originalEvent.clientX - position.left;
                         json_object.view.drag_y_offset = event.originalEvent.clientY - position.top;
                         if (!json_object.width) {
-                            if ($element.parent().is(".toontalk-backside")) {
-                                json_object.view.original_width_fraction = $element.outerWidth() / $element.parent().outerWidth();
-                                json_object.view.original_height_fraction = $element.outerHeight() / $element.parent().outerHeight();
+                            if (dragee.parent().is(".toontalk-backside")) {
+                                json_object.view.original_width_fraction = dragee.outerWidth() / dragee.parent().outerWidth();
+                                json_object.view.original_height_fraction = dragee.outerHeight() / dragee.parent().outerHeight();
                             } else {
                                 // following should be kept in synch with toontalk-frontside-on-backside CSS
                                 json_object.view.original_width_fraction = 0.2;
                                 json_object.view.original_height_fraction = 0.1;
                             }
                         }
-                        if ($element.is(".toontalk-backside")) {
+                        if (dragee.is(".toontalk-backside")) {
                             json_object.view.backside = true;
                         }
                         $element.data("json", json_object);
@@ -292,25 +293,26 @@ window.TOONTALK.UTILITIES =
                 });
             $element.on('dragend', 
                 function (event) {
-                    if ($element.is(".toontalk-frontside")) {
-                        if ($element.parent().is(".toontalk-backside")) {
+                    if (!dragee) {
+                        dragee = $(event.originalEvent.srcElement).closest(".toontalk-side");
+                    }
+                    if (dragee.is(".toontalk-frontside")) {
+                        if (dragee.parent().is(".toontalk-backside")) {
                             // restore ordinary size styles
-                            var json_object = $element.data("json");
+                            var json_object = dragee.data("json");
                             if (json_object) {
-                                $element.data("json", ""); // no point wasting memory on this anymore
-                                $element.css({width:  json_object.view.frontside_width || json_object.view.original_width_fraction * 100 + "%",
-                                              height: json_object.view.frontside_height || json_object.view.original_height_fraction * 100 + "%"});
+                                dragee.data("json", ""); // no point wasting memory on this anymore
+                                dragee.css({width:  json_object.view.frontside_width || json_object.view.original_width_fraction * 100 + "%",
+                                            height: json_object.view.frontside_height || json_object.view.original_height_fraction * 100 + "%"});
                             }
-                        } else if (!$element.parent().is(".toontalk-top-level-resource, .toontalk-drop-area")) {
-                            $element.css({width:  "100%",
-                                          height: "100%"});
+                        } else if (!dragee.parent().is(".toontalk-top-level-resource, .toontalk-drop-area")) {
+                            dragee.css({width:  "100%",
+                                        height: "100%"});
                         }
                     }
                     dragee = undefined;
                     event.stopPropagation();
-                });
-//                 greedy: true,
-//                 tolerance: "intersect", // at least 50%        
+                });       
         },
         
         can_receive_drops: function ($element) {
