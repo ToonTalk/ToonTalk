@@ -13,7 +13,13 @@ window.TOONTALK.box = (function (TT) {
 
     box.create = function (size, horizontal, contents) {
         var new_box = Object.create(box);
-        if (!contents) {
+        if (contents) {
+            contents.forEach(function (widget) {
+                if (widget) {
+                    widget.set_parent(new_box);
+                }
+            });
+        } else {
             contents = [];
         }
         if (typeof horizontal === 'undefined') {
@@ -90,16 +96,7 @@ window.TOONTALK.box = (function (TT) {
     };
     
     box.copy = function (just_value) {
-        var copy = box.create(this.get_size(), this.get_horizontal());
-        copy.set_contents(TT.UTILITIES.copy_widgets(this.get_contents(), just_value, copy));
-//         var size = this.get_size();
-//         var i, hole;
-//         for (i = 0; i < size; i += 1) {
-//             hole = this.get_hole(i);
-//             if (hole) {
-//                 copy.set_hole(i, hole.copy(just_value));
-//             }
-//         }
+        var copy = box.create(this.get_size(), this.get_horizontal(), TT.UTILITIES.copy_widgets(this.get_contents(), just_value, copy));
         return this.add_to_copy(copy, just_value);
     };
     
@@ -435,7 +432,7 @@ window.TOONTALK.box = (function (TT) {
                     return removing_widget;
                 },
                 toString: function () {
-                    return "that is in the " + TT.UTILITIES.cardinal(index) + " hole "; // + (this.next ? "; " + TT.path.toString(this.next) : "");
+                    return "the " + TT.UTILITIES.cardinal(index) + " hole "; // + (this.next ? "; " + TT.path.toString(this.next) : "");
                 },
                 get_json: function () {
                     return {type: "box_path",
