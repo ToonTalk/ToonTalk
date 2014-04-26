@@ -32,6 +32,8 @@ window.TOONTALK.UTILITIES =
         return div_open + json + div_close;
     };    
     var extract_json_from_div_string = function (div_string) {
+        // expecting div_string to begin with div_open and end with div_close
+        // but users may be dragging something different
         var json_start = div_string.indexOf('{');
         var json_end = div_string.lastIndexOf('}');
         if (json_start < 0 || json_end < 0) {
@@ -214,17 +216,25 @@ window.TOONTALK.UTILITIES =
         },
         
         data_transfer_json_object: function (event) {
-            var json;
+            var data, json;
             if (!event.originalEvent.dataTransfer) {
                 console.log("no dataTransfer in drop event");
                 return;
             }
-            json = event.originalEvent.dataTransfer.getData("text");
-            if (!json) {
+            // unless in IE9 should really use text/html first
+            data = event.originalEvent.dataTransfer.getData("text");
+            if (!data) {
+                // the following causes errors in IE9
+                data = event.originalEvent.dataTransfer.getData("text/html"); 
+            }
+            if (!data) {
                 console.log("No data in dataTransfer in drop.");
                 return;
             }
-            json = extract_json_from_div_string(json);
+            json = extract_json_from_div_string(data);
+            if (!json) {
+                return;
+            }
             try {
                 return JSON.parse(json);
             } catch (e) {
@@ -246,7 +256,7 @@ window.TOONTALK.UTILITIES =
                     var position = $element.get(0).getBoundingClientRect(); // $element.position();
                     var widget = $element.data("owner");
                     var is_resource = $element.is(".toontalk-top-level-resource");
-                    var json_object;
+                    var json_object, json_div;
                     dragee = $element;
                     if ($element.is(".toontalk-frontside")) {
                         // save the current dimension so size doesn't change while being dragged
@@ -272,8 +282,10 @@ window.TOONTALK.UTILITIES =
                             json_object.view.backside = true;
                         }
                         $element.data("json", json_object);
-                        // following was text/plain but that caused an error in IE9
-                        event.originalEvent.dataTransfer.setData("text", toontalk_json_div(JSON.stringify(json_object)));
+                        json_div = toontalk_json_div(JSON.stringify(json_object));
+                        event.originalEvent.dataTransfer.setData("text/html", json_div);
+                        // the above causes IE9 errors when received so the following added just for IE9
+                        event.originalEvent.dataTransfer.setData("text", json_div);
                         widget.drag_started(json_object, is_resource);
                     }
                     event.stopPropagation();
@@ -319,9 +331,12 @@ window.TOONTALK.UTILITIES =
                         if (!event.originalEvent.dataTransfer) {
                             console.log("Drop failed since there is no event.originalEvent.dataTransfer");
                         } else {
-                            console.log("Drop failed since unable to parse " + event.originalEvent.dataTransfer);
+                            console.log("Drop failed since unable to parse as JSON."); // + event.originalEvent.dataTransfer.get("text/html"));
                         }
                         dragee = undefined;
+                        // without the following it can load a new page
+                        event.stopPropagation();
+                        event.preventDefault();
                         return;
                     }
                     if ($(event.target).is(".toontalk-drop-area-instructions")) {
