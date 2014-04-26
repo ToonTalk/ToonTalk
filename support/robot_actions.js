@@ -199,7 +199,7 @@ window.TOONTALK.newly_created_widgets_path =
                         ordinal = "third";
                         break;
                         default:
-                        ordinal = index + "th";
+                        ordinal = (index + 1) + "th";
                     }
                     return "the " + ordinal + " widget he created";
                 },
