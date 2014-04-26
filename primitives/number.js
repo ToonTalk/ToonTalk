@@ -259,7 +259,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     };
     
     number.to_HTML = function (max_characters, font_size, format, top_level, operator) {
-        var integer_as_string, integer_part, fractional_part, improper_fraction_HTML;
+        var integer_as_string, integer_part, fractional_part, improper_fraction_HTML, digits_needed, shrinkage;
         var extra_class = (top_level !== false) ? ' toontalk-top-level-number' : '';
         var operator_HTML = operator ? html_for_operator(operator) : "";
         if (!max_characters) {
@@ -276,9 +276,14 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         }
         if (this.is_integer()) {
             integer_as_string = bigrat.toBigInteger(this.get_value()).toString();
-            if (max_characters < 4 && integer_as_string.length >= 4) {
-                font_size *= max_characters / 4;
-                max_characters = 4;
+            digits_needed = integer_as_string.length;
+            if (operator_HTML.length > 0) {
+                digits_needed++;
+            }
+            if (max_characters < 4 && digits_needed > max_characters) {
+                shrinkage = Math.min(4, digits_needed);
+                font_size *= max_characters / shrinkage;
+                max_characters = shrinkage;
             }
             return '<div class="toontalk-number toontalk-integer' + extra_class + '" style="font-size: ' + font_size + 'px;">' + operator_HTML + fit_string_to_length(integer_as_string, max_characters) + '</div>';
         }
