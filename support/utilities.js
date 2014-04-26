@@ -255,10 +255,14 @@ window.TOONTALK.UTILITIES =
                 function (event) {
                     var $source_element = $(event.originalEvent.srcElement).closest(".toontalk-side");
                     var position = $source_element.get(0).getBoundingClientRect(); // $element.position();
-                    var widget = $source_element.data("owner");
-                    var is_resource = $source_element.is(".toontalk-top-level-resource");
-                    var json_object, json_div;
+                    var json_object, json_div, widget, is_resource;
                     dragee = ($source_element || $element);
+                    widget = dragee.data("owner");
+                    if (!widget) {
+                        widget = $element.data("owner");
+                        dragee = $element;
+                    }
+                    is_resource = dragee.is(".toontalk-top-level-resource");
                     if (dragee.is(".toontalk-frontside")) {
                         // save the current dimension so size doesn't change while being dragged
                         dragee.css({width:  this.offsetWidth + "px",
