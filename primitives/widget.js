@@ -156,6 +156,10 @@ window.TOONTALK.widget = (function (TT) {
                 widget.animate_to_element = function (target_element, continuation, left_offset, top_offset) {
                     var target_absolute_position = $(target_element).offset();
                     var $frontside_element = $(this.get_frontside_element());
+                    if (!target_element || ! $(target_element).is(":visible")) {
+                        continuation();
+                        return;
+                    }
                     if (!left_offset) {
                         // pick a random location completely inside the target
                         left_offset = ($(target_element).width()-$frontside_element.width()) * Math.random();
