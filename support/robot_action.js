@@ -128,12 +128,16 @@ window.TOONTALK.robot_action =
     };
     var find_sibling = function (widget, class_name_selector) {
         // move this to UTILITIES?
-        var frontside_element = widget.get_frontside_element();
+        var frontside_element = widget.get_frontside_element(true);
         var $container_element = $(frontside_element).closest(".toontalk-backside");
         return $container_element.find(class_name_selector).get(0);
     };
+    var find_backside_element = function (widget, class_name_selector) {
+        var backside_element = widget.get_backside_element(true);
+        return $(backside_element).find(class_name_selector).get(0);
+    };
     var button_use_animation = function (widget, context, robot, continuation, class_name_selector) {
-        var button_element = find_sibling(robot, class_name_selector);
+        var button_element = find_backside_element(widget, class_name_selector);
         var robot_frontside_element = robot.get_frontside_element();
         var new_continuation = function () {
             continuation();
@@ -157,7 +161,11 @@ window.TOONTALK.robot_action =
     };
     var edit_animation = function (widget, context, robot, continuation, additional_info) {
         var new_continuation = function () {
-            widget.get_backside().update_display();
+            var widget_backside = widget.get_backside();
+            if (widget_backside) {
+                // maybe this should have been created and displayed
+                widget.get_backside().update_display();
+            }
             continuation();
         };
         button_use_animation(widget, context, robot, new_continuation, additional_info.button_selector);
