@@ -63,8 +63,10 @@ window.TOONTALK.robot = (function (TT) {
             if (animating) {
                 // the following didn't work when added to the CSS of toontalk-side-animating
                 frontside_element.style["z-index"] = 1000;
+                $(frontside_element).addClass("toontalk-robot-animating");
             } else {
                 frontside_element.style["z-index"] = 'auto';
+                $(frontside_element).removeClass("toontalk-robot-animating");
             }
         };
         // should the following use 'width' from the frontside element?

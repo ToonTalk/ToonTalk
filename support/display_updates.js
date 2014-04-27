@@ -9,6 +9,7 @@ window.TOONTALK.DISPLAY_UPDATES =
     "use strict";
     // backsides, frontsides, and widgets (typically both sides) can be 'dirty'
     var pending_updates = [];
+    var time_of_last_update = 0;
     return {
         pending_update: function (x) {
             var i;
@@ -27,6 +28,16 @@ window.TOONTALK.DISPLAY_UPDATES =
                 pending_updates[i].update_display();
             }
             pending_updates = [];
+        },
+        
+        run_cycle_is_over: function () {
+            var now = new Date().getTime();
+            if (now-time_of_last_update >= 20) {
+                // every 20ms but rather than use setInterval this way
+                // updates don't happen while a robot is running
+                this.update_display();
+                time_of_last_update = now;
+            }  
         }
     };
 }(window.TOONTALK));

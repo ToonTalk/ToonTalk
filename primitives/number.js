@@ -240,6 +240,9 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         var client_width = $dimensions_holder.width();
         var client_height = $dimensions_holder.height();
         var font_height = client_height * 0.8;
+        if (client_height === 0) {
+            return;
+        }
 //      font_size = TT.UTILITIES.get_style_numeric_property(frontside, "font-size");
         // according to http://www.webspaceworks.com/resources/fonts-web-typography/43/
         // the aspect ratio of monospace fonts varies from .43 to .55 
@@ -256,7 +259,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     };
     
     number.to_HTML = function (max_characters, font_size, format, top_level, operator) {
-        var integer_as_string, integer_part, fractional_part, improper_fraction_HTML;
+        var integer_as_string, integer_part, fractional_part, improper_fraction_HTML, digits_needed, shrinkage;
         var extra_class = (top_level !== false) ? ' toontalk-top-level-number' : '';
         var operator_HTML = operator ? html_for_operator(operator) : "";
         if (!max_characters) {
@@ -273,9 +276,14 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         }
         if (this.is_integer()) {
             integer_as_string = bigrat.toBigInteger(this.get_value()).toString();
-            if (max_characters < 4 && integer_as_string.length >= 4) {
-                font_size *= max_characters / 4;
-                max_characters = 4;
+            digits_needed = integer_as_string.length;
+            if (operator_HTML.length > 0) {
+                digits_needed++;
+            }
+            if (max_characters < 4 && digits_needed > max_characters) {
+                shrinkage = Math.min(4, digits_needed);
+                font_size *= max_characters / shrinkage;
+                max_characters = shrinkage;
             }
             return '<div class="toontalk-number toontalk-integer' + extra_class + '" style="font-size: ' + font_size + 'px;">' + operator_HTML + fit_string_to_length(integer_as_string, max_characters) + '</div>';
         }
@@ -518,11 +526,11 @@ window.TOONTALK.number_backside =
         create: function (number) {
             var backside = TT.backside.create(number);
             var backside_element = backside.get_element();
-            var numerator_input = TT.UTILITIES.create_text_input(number.numerator_string(), "toontalk-numerator-input", "", "Type here to edit the numerator");
             var slash = document.createElement("div");
             slash.innerHTML = "/";
             $(slash).addClass("ui-widget"); // to look nice
-            var denominator_input = TT.UTILITIES.create_text_input(number.denominator_string(), "toontalk-denominator-input", "", "Type here to edit the denominator");
+            var numerator_input = TT.UTILITIES.create_text_area(number.numerator_string(), "toontalk-numerator-input", "", "Type here to edit the numerator");
+            var denominator_input = TT.UTILITIES.create_text_area(number.denominator_string(), "toontalk-denominator-input", "", "Type here to edit the denominator");
             var decimal_format = TT.UTILITIES.create_radio_button("number_format", "decimal", "toontalk-decimal-radio-button", "Decimal", "Display number as a decimal.");
             var proper_format = TT.UTILITIES.create_radio_button("number_format", "proper_fraction", "toontalk-proper-fraction-radio-button", "Proper fraction", "Display number as a proper fraction with an integer part and a fraction.");
             var improper_format =TT.UTILITIES.create_radio_button("number_format", "improper_fraction", "toontalk-improper-fraction-radio-button", "Improper fraction", "Display number as a simple fraction.");

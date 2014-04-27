@@ -13,7 +13,13 @@ window.TOONTALK.box = (function (TT) {
 
     box.create = function (size, horizontal, contents) {
         var new_box = Object.create(box);
-        if (!contents) {
+        if (contents) {
+            contents.forEach(function (widget) {
+                if (widget) {
+                    widget.set_parent(new_box);
+                }
+            });
+        } else {
             contents = [];
         }
         if (typeof horizontal === 'undefined') {
@@ -90,16 +96,7 @@ window.TOONTALK.box = (function (TT) {
     };
     
     box.copy = function (just_value) {
-        var copy = box.create(this.get_size(), this.get_horizontal());
-        copy.set_contents(TT.UTILITIES.copy_widgets(this.get_contents(), just_value, copy));
-//         var size = this.get_size();
-//         var i, hole;
-//         for (i = 0; i < size; i += 1) {
-//             hole = this.get_hole(i);
-//             if (hole) {
-//                 copy.set_hole(i, hole.copy(just_value));
-//             }
-//         }
+        var copy = box.create(this.get_size(), this.get_horizontal(), TT.UTILITIES.copy_widgets(this.get_contents(), just_value, copy));
         return this.add_to_copy(copy, just_value);
     };
     
@@ -310,6 +307,10 @@ window.TOONTALK.box = (function (TT) {
                                          height: 'auto'});
             }
             hole.update_display();
+            if ($element_container.children(".toontalk-empty-hole").length > 0) {
+                // if an empty hole was there then remove it (though could make it invisible instead so easier to restore)
+                $element_container.empty();
+            }
             $element_container.append(old_hole_element);
             // since drag and drop is set up with absolute as the default
             // is this redundant now?
@@ -365,17 +366,20 @@ window.TOONTALK.box = (function (TT) {
                 this.empty_hole(i, update_display);
                 if (update_display) {
                     TT.DISPLAY_UPDATES.pending_update(this);
+                    part_frontside_element = part.get_frontside_element();
+                    $(part_frontside_element).removeClass("toontalk-frontside-in-box");
+                    if (part_frontside_element.width_before_in_box) {
+                        // without this timeout the resizing doesn't apply
+                        // not sure why
+                        setTimeout(function () {
+                            $(part_frontside_element).css({width: part_frontside_element.width_before_in_box,
+                                                           height: part_frontside_element.height_before_in_box});
+                            TT.DISPLAY_UPDATES.pending_update(part);
+                        },
+                        10);
+                    }
                 }
                 return this;
-            }
-        }
-        if (update_display) {
-            part_frontside_element = part.get_frontside_element();
-            $(part_frontside_element).removeClass("toontalk-frontside-in-box");
-            if (part_frontside_element.width_before_in_box) {
-                $(part_frontside_element).css({width: part_frontside_element.width_before_in_box,
-                                               height: part_frontside_element.height_before_in_box});
-                TT.DISPLAY_UPDATES.pending_update(part);
             }
         }
     };
@@ -435,7 +439,7 @@ window.TOONTALK.box = (function (TT) {
                     return removing_widget;
                 },
                 toString: function () {
-                    return "what is in the " + TT.UTILITIES.cardinal(index) + " hole "; // + (this.next ? "; " + TT.path.toString(this.next) : "");
+                    return "the " + TT.UTILITIES.cardinal(index) + " hole "; // + (this.next ? "; " + TT.path.toString(this.next) : "");
                 },
                 get_json: function () {
                     return {type: "box_path",
