@@ -88,10 +88,11 @@ window.TOONTALK.element_backside =
                     // no change
                     return;
                 }
+                element_widget.set_HTML(new_html);
                 // remove children so will be updated
-                $(frontside_element).remove(); 
+                $(frontside_element).children(":not(.ui-resizable-handle)").remove(); 
                 if (TT.robot.in_training) {
-                    TT.robot.in_training.edited(element_widget, {setter_name: "set_html",
+                    TT.robot.in_training.edited(element_widget, {setter_name: "set_HTML",
                                                                  argument_1: new_html,
                                                                  toString: "change to HTML to " + new_html + " of the element",
                                                                  button_selector: ".toontalk-html-input"});
