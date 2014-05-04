@@ -193,7 +193,7 @@ window.TOONTALK.robot = (function (TT) {
             }
             return this.match_status;
         default:
-            for (i = 0; i < match_status.length; i += 1) {
+            for (i = 0; i < this.match_status.length; i += 1) {
                 this.match_status[i].run_when_non_empty(this);
             }
             return this.match_status;                    
@@ -217,7 +217,7 @@ window.TOONTALK.robot = (function (TT) {
     robot.picked_up = function (widget, json, is_resource) {
         var path, action_name, widget_copy, new_widget;
         // current_action_name is used to distinguish between removing something from its container versus referring to it
-        if (widget.get_infinite_stack()) {
+        if (widget.get_infinite_stack && widget.get_infinite_stack()) {
             // does this cause an addition to newly created backside widgets?
             this.current_action_name = "pick up a copy";
         } else {

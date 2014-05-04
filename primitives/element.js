@@ -18,7 +18,16 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             return html;
         };
         new_element.set_HTML = function (new_value) {
+            var frontside_element = this.get_frontside_element();
+            if (!frontside_element) {
+                return;
+            }
             html = new_value;
+            // remove children so will be updated
+            $(frontside_element).children(":not(.ui-resizable-handle)").remove(); 
+            if (this.visible()) {
+                TT.DISPLAY_UPDATES.pending_update(this);
+            }
         };
         new_element = new_element.add_standard_widget_functionality(new_element);
         if (TT.debugging) {
@@ -33,6 +42,31 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         return this.add_to_copy(copy, just_value);
     };
     
+    element.match = function (context) {
+        if (this.get_erased()) {
+            if (context.match_with_any_element) {
+                return context.match_with_any_element();
+            }
+            return 'not matched';
+        }
+        if (!context.match_with_this_element) {
+            return 'not matched';
+        }
+        return context.match_with_this_element(this);
+    };
+    
+    element.match_with_any_element = function () {
+        return 'matched';
+    };
+    
+    element.match_with_this_element = function (other_element) {
+        if (this.get_HTML() === other_element.get_HTML()) {
+            return 'matched';
+        } else {
+            return 'not matched';
+        }
+    };
+    
     element.create_backside = function () {
         return TT.element_backside.create(this).update_run_button_disabled_attribute();
     };
@@ -40,8 +74,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     element.update_display = function () {
         var frontside_element = this.get_frontside_element();
         var rendering;
+        if (this.get_erased()) {
+            return;
+        }
         if (frontside_element.children.length === $(frontside_element).children(".ui-resizable-handle").length) {
-            // or the HTML has been reset via the backside interface
+            // only children are resize handles
             rendering = document.createElement('div');
             rendering.innerHTML = this.get_HTML();
             frontside_element.appendChild(rendering);
@@ -49,7 +86,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     };
         
     element.toString = function () {
-       return "element: " + this.get_HTML();
+       return "element whose HTML is '" + this.get_HTML() +"'";
     };
     
     element.get_type_name = function () {
@@ -84,17 +121,11 @@ window.TOONTALK.element_backside =
             var update_html = function (event) {
                 var new_html = html_input.button.value.trim();
                 var frontside_element = element_widget.get_frontside_element();
-                if (new_html === html) {
-                    // no change
-                    return;
-                }
                 element_widget.set_HTML(new_html);
-                // remove children so will be updated
-                $(frontside_element).children(":not(.ui-resizable-handle)").remove(); 
                 if (TT.robot.in_training) {
                     TT.robot.in_training.edited(element_widget, {setter_name: "set_HTML",
                                                                  argument_1: new_html,
-                                                                 toString: "change to HTML to " + new_html + " of the element",
+                                                                 toString: "change the HTML to " + new_html + " of",
                                                                  button_selector: ".toontalk-html-input"});
                 }
             };

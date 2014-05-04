@@ -131,7 +131,7 @@ window.TOONTALK.box = (function (TT) {
     box.match = function (context) {
         if (this.get_erased()) {
             if (context.match_with_any_box) {
-                   return context.match_with_any_box();
+                return context.match_with_any_box();
             }
             return 'not matched';
         }
