@@ -101,7 +101,7 @@ window.TOONTALK.box = (function (TT) {
     };
     
     box.create_backside = function () {
-        return TT.box_backside.create(this).update_run_button_disabled_attribute();;
+        return TT.box_backside.create(this).update_run_button_disabled_attribute();
     };
     
     box.equals = function (other) {

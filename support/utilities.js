@@ -15,6 +15,7 @@ window.TOONTALK.UTILITIES =
     var json_creators = {"box": TT.box.create_from_json,
                          "number": TT.number.create_from_json,
                          "robot": TT.robot.create_from_json,
+                         "element": TT.element.create_from_json,
                          "body": TT.actions.create_from_json,
                          "robot_action": TT.robot_action.create_from_json,
                          "box_path": TT.box.path.create_from_json,
@@ -37,7 +38,7 @@ window.TOONTALK.UTILITIES =
         var json_start = div_string.indexOf('{');
         var json_end = div_string.lastIndexOf('}');
         if (json_start < 0 || json_end < 0) {
-            console.log("Paste missing JSON encoding.");
+//             console.log("Paste missing JSON encoding.");
             return;
         }
         return div_string.substring(json_start, json_end+1);
@@ -234,7 +235,7 @@ window.TOONTALK.UTILITIES =
             }
             json = extract_json_from_div_string(data);
             if (!json) {
-                return;
+                return TT.element.create(data).get_json();
             }
             try {
                 return JSON.parse(json);
@@ -374,7 +375,7 @@ window.TOONTALK.UTILITIES =
                     }
                     target_widget = $target.data("owner");
                     target_position = $target.offset();
-                    if (json_object) {
+                    if (json_object && json_object.view) {
                         drag_x_offset = json_object.view.drag_x_offset;
                         drag_y_offset = json_object.view.drag_y_offset;
                     } else {
@@ -424,6 +425,13 @@ window.TOONTALK.UTILITIES =
                         }
                     } else {
                         source_widget = TT.UTILITIES.create_from_json(json_object);
+                        if (!source_widget) {
+                            console.log("Unable to construct a ToonTalk widget from the JSON.");
+                            dragee = undefined;
+                            event.stopPropagation();
+                            event.preventDefault();
+                            return;
+                        }
                         $source = $(source_widget.get_frontside_element());
                     }    
                     if (source_widget === target_widget) {

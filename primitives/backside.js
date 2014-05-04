@@ -71,21 +71,14 @@ window.TOONTALK.backside =
                         other.animate_to_element(backside_element);
                     }
                     TT.UTILITIES.set_position_absolute(other_side_element, true, event); // when on the backside
-//                     other.update_display(); // why was this $other_front_side_element.data("owner").update_display() instead?
                     TT.DISPLAY_UPDATES.pending_update(other_side);
                     if (TT.robot.in_training) {
-//                         if ($backside_element.is(".toontalk-top-level-backside")) {
-//                             TT.robot.in_training.dropped_on("top-level-backside");
-//                         } else {
                         TT.robot.in_training.dropped_on(other, this.get_widget());
-//                         }
                     }
                     if (!other_is_backside) {
                         // in the future backsides will be separated from frontsides and 'first class'
                         this.get_widget().add_backside_widget(other);
                     }
-                    // following called by add_backside_widget
-//                     backside.update_run_button_disabled_attribute();
                     return true;
                 };
             backside.add_backside_widgets = function (backside_widgets, json_array)  {
