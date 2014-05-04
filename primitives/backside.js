@@ -348,7 +348,7 @@ window.TOONTALK.backside =
             $run_button.addClass("toontalk-run-backside-button");
             $run_button.click(function (event) {
                 var will_run = !widget.get_running();
-                TT.backside.update_run_button($run_button, !will_run, widget);
+                TT.backside.update_run_button($run_button, widget);
                 widget.set_running(will_run);
                 event.stopPropagation();
             });
@@ -356,11 +356,12 @@ window.TOONTALK.backside =
             return $run_button.get(0);
         },
         
-        update_run_button: function ($run_button, run, widget) {
+        update_run_button: function ($run_button, widget) {
+            var running = widget.get_running();
             if (!$run_button.is(":visible")) {
                 return;
             }
-            if (run) {
+            if (!running) {
                 $run_button.button("option", "label", "Run");
                 $run_button.attr("title", "Click to run the robots on this " + widget.get_type_name());
             } else {
