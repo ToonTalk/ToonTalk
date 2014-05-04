@@ -227,6 +227,10 @@ window.TOONTALK.UTILITIES =
                 // the following causes errors in IE9
                 data = event.originalEvent.dataTransfer.getData("text/html");
             } catch (e) {
+                // will try other things below
+            }
+            if (!data) {
+                // may not have been text/html but just plain text
                 data = event.originalEvent.dataTransfer.getData("text");
             }
             if (!data) {
