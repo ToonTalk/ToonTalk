@@ -221,11 +221,12 @@ window.TOONTALK.UTILITIES =
                 console.log("no dataTransfer in drop event");
                 return;
             }
-            // unless in IE9 should really use text/html first
-            data = event.originalEvent.dataTransfer.getData("text");
-            if (!data) {
+            // unless in IE9 should use text/html to enable dragging of HTML elements
+            try {
                 // the following causes errors in IE9
-                data = event.originalEvent.dataTransfer.getData("text/html"); 
+                data = event.originalEvent.dataTransfer.getData("text/html");
+            } catch (e) {
+                data = event.originalEvent.dataTransfer.getData("text");
             }
             if (!data) {
                 console.log("No data in dataTransfer in drop.");
