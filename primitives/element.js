@@ -14,6 +14,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     
     element.create = function (html) {
         var new_element = Object.create(element);
+        var style_attributes = [];
         new_element.get_HTML = function () {
             return html;
         };
@@ -28,6 +29,12 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             if (this.visible()) {
                 TT.DISPLAY_UPDATES.pending_update(this);
             }
+        };
+        new_element.get_style_attributes = function () {
+            return style_attributes;
+        };
+        new_element.set_style_attributes = function (new_value) {
+            style_attributes = new_value;
         };
         new_element = new_element.add_standard_widget_functionality(new_element);
         if (TT.debugging) {
@@ -111,12 +118,55 @@ window.TOONTALK.element_backside =
 (function (TT) {
     "use strict";
     
+    var create_style_attribute_chooser = function (element_widget) {
+        var options = ["left", "top", "width", "height"];
+        var menu = document.createElement("ul");
+        var add_style_attribute = function (attribute) {
+            var style_attributes = element_widget.get_style_attributes();
+            if (style_attributes.indexOf(attribute) < 0) {
+               style_attributes = style_attributes[style_attributes.length] = attribute; 
+            }
+        };
+        var create_menu_item = function (text) {
+            var item = document.createElement("li");
+            var anchor = document.createElement("a");
+            anchor.textContent = text;
+            anchor.href = "#";
+            item.appendChild(anchor);
+            return item;
+        };
+        var geometry_menu = create_menu_item("Geometry");
+        var geometry_list = document.createElement("ul");
+        geometry_menu.appendChild(geometry_list);
+        options.forEach(function (option) {
+            geometry_list.appendChild(create_menu_item(option));
+        });
+        menu.appendChild(geometry_menu);
+        $(menu).menu({
+            select: function (event, ui) {
+                add_style_attribute(ui.item.text());
+            }
+        });
+        return menu;
+    };
+    
+    var create_style_attribute_table = function (element_widget) {
+        var element_widget.get_style_attributes();
+        var table = document.createElement("table");
+        // construct a table of names and values
+        
+        
+        return table;
+    };
+    
     return {
         create: function (element_widget) {
             var backside = TT.backside.create(element_widget);
             var backside_element = backside.get_element();
             var html = element_widget.get_HTML();
             var html_input = TT.UTILITIES.create_text_area(html, "toontalk-html-input", "", "Type here to edit the html.");
+            var chooser = create_style_attribute_chooser(element_widget);
+            var attribute_table = create_style_attribute_table(element_widget);
             var standard_buttons = TT.backside.create_standard_buttons(backside, element_widget);
             var update_html = function (event) {
                 var new_html = html_input.button.value.trim();
@@ -131,6 +181,7 @@ window.TOONTALK.element_backside =
             };
             html_input.button.addEventListener('change', update_html);
             backside_element.appendChild(html_input.container);
+            backside_element.appendChild(chooser);
             backside_element.appendChild(standard_buttons);
             backside.update_display = function () {
                 $(html_input.button).val(element_widget.get_HTML());
