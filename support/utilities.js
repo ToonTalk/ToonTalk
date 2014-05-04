@@ -232,6 +232,9 @@ window.TOONTALK.UTILITIES =
             if (!data) {
                 // may not have been text/html but just plain text
                 data = event.originalEvent.dataTransfer.getData("text");
+                if (data) {
+                    data = "<pre>" + data + "</pre>";
+                }
             }
             if (!data) {
                 console.log("No data in dataTransfer in drop.");
