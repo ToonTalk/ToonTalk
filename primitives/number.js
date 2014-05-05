@@ -599,7 +599,7 @@ window.TOONTALK.number_backside =
             backside_element.appendChild(infinite_stack_check_box.container);
             numerator_input.button.addEventListener('change', update_value);
             numerator_input.button.addEventListener('mouseout', update_value);
-            numerator_input.button.addEventListener('mousein', function () {
+            numerator_input.button.addEventListener('mouseenter', function () {
                 current_numerator = numerator_input.button.value.trim();
                 current_denominator = denominator_input.button.value.trim();
             });
