@@ -119,43 +119,43 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         return true;
     };
     
-    element.dropped_on_style_attribute = function (widget, attribute_input_element) {
-        var widget_string, widget_number, attribute_name, attribute_value, attribute_numerical_value;
-        if (!widget) {
+    element.dropped_on_style_attribute = function (dropped, attribute_input_element) {
+        var widget_string, widget_number, attribute_name, attribute_value, attribute_numerical_value, new_value;
+        if (!dropped) {
             return;
         }
-        widget_string = widget.toString();
+        widget_string = dropped.toString();
         attribute_name = attribute_input_element.name;
         attribute_value = this.get_attribute(attribute_name);
-        if (widget.get_type_name() === 'number') {
+        if (dropped.get_type_name() === 'number') {
             attribute_numerical_value = parseFloat(attribute_value.replace("px", ""));
-            widget_number = widget.to_float();
+            widget_number = dropped.to_float();
             switch (widget_string.substring(0, 1)) {
                 case '-':
-                this.set_attribute(attribute_name, attribute_numerical_value - widget_number);
+                new_value = attribute_numerical_value - widget_number;
                 break;
                 case '*':
-                this.set_attribute(attribute_name, attribute_numerical_value * widget_number);
+                new_value = attribute_numerical_value * widget_number;
                 break;
                 case '/':
-                this.set_attribute(attribute_name, attribute_numerical_value / widget_number);
+                new_value = attribute_numerical_value / widget_number;
                 break;
                 case '^':
-                this.set_attribute(attribute_name, Math.pow(attribute_numerical_value, widget_number));
+                new_value = Math.pow(attribute_numerical_value, widget_number);
                 break;
                 default:
-                this.set_attribute(attribute_name, attribute_numerical_value + widget_number);
+                new_value = attribute_numerical_value + widget_number;
             }
+            this.set_attribute(attribute_name, new_value);
         }
-        widget.remove();
-        
-//          if (TT.robot.in_training) {
-//             TT.robot.in_training.edited(this, {setter_name: "set_attribute",
-//                                                argument_1: attribute,
-//                                                argument_2: new_value,
-//                                                toString: "change the '" + attribute + "' style to " + new_value + " of",
-//                                                button_selector: ".toontalk-element-" + attribute + "-attribute-input"});
-//         }
+        dropped.remove();  
+        if (TT.robot.in_training) {
+            TT.robot.in_training.dropped_on(dropped, {element_widget: this,
+                                                      attribute: attribute_name,
+                                                      get_type_name: function () {
+                                                          return "attribute " + attribute_name;
+                                                      }});
+        }
     };
     
     element.update_display = function () {
@@ -195,6 +195,31 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         return element.create(json.html);
     };
     
+    element.create_attribute_path = function (attribute_widget, robot) {
+        var path_to_element_widget = TT.path.get_path_to(attribute_widget.element_widget, robot);
+        return {
+            dereference: function () {
+                return attribute_widget;
+            },
+            toString: function () {
+                return "the '" + attribute_widget.attribute + "' of " + path_to_element_widget;
+            },
+            get_json: function () {
+                return {type: "path_to_style_attribute",
+                        attribute: attribute_widget.attribute,
+                        element_widget: path_to_element_widget.get_json()};
+            }};
+    };
+    
+    element.create_path_from_json = function (json) {
+        var element_widget = TT.UTILITIES.create_from_json(json.element_widget);
+        return {attribute: json.attribute,
+                element_widget: element_widget,
+                get_type_name: function () {
+                    return "attribute " + json.attribute;
+               }};
+    };
+    
     return element;
 }(window.TOONTALK));
 
@@ -203,6 +228,8 @@ window.TOONTALK.element_backside =
     "use strict";
     
     var update_style_attribute_chooser = function (attributes_chooser, element_widget, attribute_table) {
+        // the following could be made the default
+        // but if TT.attribute_options is set use it instead
         var options = [{label: "Geometry attributes",
                         sub_menus: ["left", "top", "width", "height"]},
                        {label: "Color attributes",

@@ -23,6 +23,7 @@ window.TOONTALK.UTILITIES =
                          "path.top_level_backside": TT.path.top_level_backside.create_from_json,
                          "path.to_resource": TT.path.path_to_resource_create_from_json,
                          "newly_created_widgets_path": TT.newly_created_widgets_path.create_from_json,
+                         "path_to_style_attribute": TT.element.create_path_from_json,
                          "top_level": TT.widget.top_level_create_from_json};
     // id needs to be unique across ToonTalks due to drag and drop
     var id_counter = new Date().getTime();
@@ -367,6 +368,7 @@ window.TOONTALK.UTILITIES =
                             } else {
                                 source_widget = TT.UTILITIES.create_from_json(json_object);
                             }
+                            TT.UTILITIES.restore_resource($source, source_widget);
                             target_widget.dropped_on_style_attribute(source_widget, event.target);
                             event.stopPropagation();
                             event.preventDefault();
