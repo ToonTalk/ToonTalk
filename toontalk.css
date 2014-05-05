@@ -260,3 +260,10 @@
 	background-color: white;
 	border: solid black 1px;
 }
+.toontalk-attributes-chooser {
+	background-color: white;
+    border-style: solid;
+	border-width: 2px;
+	border-color: rgb(185, 113, 141);
+	border-radius: 10px;
+}

@@ -5,7 +5,7 @@
  */
 
 /*jslint browser: true, devel: true, plusplus: true, vars: true, white: true */
-/*global BigInteger, bigrat */
+/*global $, BigInteger, bigrat */
 
 window.TOONTALK.element = (function (TT) { // TT is for convenience and more legible code
     "use strict";
@@ -84,6 +84,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     element.update_display = function () {
         var frontside_element = this.get_frontside_element();
         var rendering;
+        var backside = this.get_backside();
         if (this.get_erased()) {
             return;
         }
@@ -92,6 +93,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             rendering = document.createElement('div');
             rendering.innerHTML = this.get_HTML();
             frontside_element.appendChild(rendering);
+        }
+        if (backside) {
+            backside.update_display();
         }
     };
         
@@ -121,44 +125,77 @@ window.TOONTALK.element_backside =
 (function (TT) {
     "use strict";
     
-    var create_style_attribute_chooser = function (element_widget, attribute_table) {
-        var options = ["left", "top", "width", "height"];
-        var menu = document.createElement("ul");
+    var update_style_attribute_chooser = function (attributes_chooser, element_widget, attribute_table) {
+        var options = [{label: "Geometry attributes",
+                        sub_menus: ["left", "top", "width", "height"]},
+                       {label: "Color attributes",
+                        sub_menus: ["background-color", "color"]}];
         var add_style_attribute = function (attribute) {
             var style_attributes = element_widget.get_style_attributes();
             if (style_attributes.indexOf(attribute) < 0) {
-               style_attributes = style_attributes[style_attributes.length] = attribute; 
+               style_attributes[style_attributes.length] = attribute;
+               update_style_attribute_chooser(attributes_chooser, element_widget, attribute_table);
+            }
+        };
+        var remove_style_attribute = function (attribute) {
+            var style_attributes = element_widget.get_style_attributes();
+            var index = style_attributes.indexOf(attribute);
+            if (index >= 0) {
+               style_attributes.splice(index, 1);
+               update_style_attribute_chooser(attributes_chooser, element_widget, attribute_table);
             }
         };
         var create_menu_item = function (text) {
             var item = document.createElement("li");
             var anchor = document.createElement("a");
-            anchor.textContent = text;
+            anchor.innerHTML = text;
             anchor.href = "#";
             item.appendChild(anchor);
             return item;
         };
-        // generalise this with options being a tree of lists
-        var geometry_menu = create_menu_item("Geometry");
-        var geometry_list = document.createElement("ul");
-        geometry_menu.appendChild(geometry_list);
-        options.forEach(function (option) {
-            var menu_item = create_menu_item(option);
-            geometry_list.appendChild(menu_item);
-            menu_item.addEventListener('click', function (event) {
-                add_style_attribute(option);
-                update_style_attribute_table(attribute_table, element_widget);
+        var process_menu_item = function (option, menu_list) {
+            var style_attributes = element_widget.get_style_attributes();
+            var already_added = style_attributes.indexOf(option) >= 0;
+//             var menu_label = already_added ? "Remove&nbsp;" + option : "Add&nbsp;" + option;
+//             var menu_item = create_menu_item(menu_label);
+            var title = "Click to add or remove the '" + option + "' style attribute from the backside of this element.";
+            var check_box = TT.UTILITIES.create_check_box(already_added, "toontalk-style-attribute-check-box", option, title);
+            menu_list.appendChild(check_box.container);
+            check_box.button.addEventListener('click', function (event) {
+                if (check_box.button.checked) {
+                    add_style_attribute(option);
+                } else {
+                    remove_style_attribute(option);
+                }
+                update_style_attributes_table(attribute_table, element_widget);
             });
-        });
-        menu.appendChild(geometry_menu);
-        $(menu).menu();
-        return menu;
+        };
+        var process_options = function (sub_tree, menu_list) {
+            var category_header, sub_menu_list;
+            if (typeof sub_tree === 'string') {
+                process_menu_item(sub_tree, menu_list);
+            } else if (sub_tree.label) {
+                category_header = TT.UTILITIES.create_text_element(sub_tree.label);
+                sub_menu_list = document.createElement("ul");
+                category_header.appendChild(sub_menu_list);
+                menu_list.appendChild(category_header);
+                process_options(sub_tree.sub_menus, sub_menu_list);
+            } else {
+                // is an array
+                sub_tree.forEach(function (sub_sub_tree) {
+                    process_options(sub_sub_tree, menu_list);
+                });               
+            }
+        };
+        $(attributes_chooser).empty();
+        process_options(options, attributes_chooser);
+        return attributes_chooser;
     };
     
-    var update_style_attribute_table = function (table, element_widget) {
+    var update_style_attributes_table = function (table, element_widget) {
         var style_attributes = element_widget.get_style_attributes();
         var frontside_element = element_widget.get_frontside_element();
-        var i, row, td, attribute_value_editor;
+        var row, td, attribute_value_editor;
         $(table).empty();
         style_attributes.forEach(function (attribute) {
             var value = $(frontside_element).css(attribute);
@@ -189,6 +226,28 @@ window.TOONTALK.element_backside =
         return table;
     };
     
+    var create_show_attributes_chooser = function (attributes_chooser) {
+        var show_label = "Add or remove style attributes";
+        var show_title = "Click to add widgets for reading and writing style attributes of this element.";
+        var hide_label = "Hide style attributes list";
+        var hide_title = "Click to hide the list of attributes that can be added or removed.";
+        var $show_chooser_button = $("<button>" + show_label + "</button>").button();
+        $show_chooser_button.addClass("toontalk-show-attributes-chooser-button");
+        $show_chooser_button.click(function (event) {
+            if ($(attributes_chooser).is(":visible")) {
+                $(attributes_chooser).hide();
+                $show_chooser_button.button("option", "label", show_label);
+                $show_chooser_button.attr("title", show_title);
+            } else {
+                $(attributes_chooser).show();
+                $show_chooser_button.button("option", "label", hide_label);
+                $show_chooser_button.attr("title", hide_title);
+            }
+        });
+        $show_chooser_button.attr("title", show_title);
+        return $show_chooser_button.get(0);
+    };
+    
     return {
         create: function (element_widget) {
             var backside = TT.backside.create(element_widget);
@@ -196,7 +255,8 @@ window.TOONTALK.element_backside =
             var html = element_widget.get_HTML();
             var html_input = TT.UTILITIES.create_text_area(html, "toontalk-html-input", "", "Type here to edit the html.");
             var attribute_table = document.createElement("table");
-            var chooser = create_style_attribute_chooser(element_widget, attribute_table);
+            var attributes_chooser = document.createElement("ul");
+            var show_attributes_chooser = create_show_attributes_chooser(attributes_chooser);
             var standard_buttons = TT.backside.create_standard_buttons(backside, element_widget);
             var update_html = function (event) {
                 var new_html = html_input.button.value.trim();
@@ -209,19 +269,42 @@ window.TOONTALK.element_backside =
                                                                  button_selector: ".toontalk-html-input"});
                 }
             };
+            backside.get_attributes_chooser = function () {
+                return attributes_chooser;
+            };
+            update_style_attribute_chooser(attributes_chooser, element_widget, attribute_table);
             $(html_input.container).resizable();
             $(html_input.container).css({width: "100%"});
             $(html_input.button).css({width: "100%"});
             html_input.button.addEventListener('change', update_html);
             backside_element.appendChild(html_input.container);
-            backside_element.appendChild(chooser);
-            update_style_attribute_table(attribute_table, element_widget);
+            update_style_attributes_table(attribute_table, element_widget);
             backside_element.appendChild(attribute_table);
             backside_element.appendChild(standard_buttons);
+            backside_element.appendChild(show_attributes_chooser);
+            backside_element.appendChild(attributes_chooser);
+            $(attributes_chooser).hide();
+            $(attributes_chooser).addClass("toontalk-attributes-chooser");
             backside.update_display = function () {
                 $(html_input.button).val(element_widget.get_HTML());
-                update_style_attribute_table(attribute_table, element_widget);
+                update_style_attributes_table(attribute_table, element_widget);
+//                 if (!attributes_chooser.parentELement) {
+//                     backside_element.parentElement.appendChild(attributes_chooser);
+//                     $(attributes_chooser).addClass("toontalk-attributes-chooser");
+//                     $(attributes_chooser).css({left: $(backside_element).css("left") + $(backside_element).css("width"),
+//                                                 top: $(backside_element).css("top")});
+// //                     $(attributes_chooser).resizable();
+//                     // draggable too?
+//                     $(attributes_chooser).hide();
+//                 }
+                if ($(attributes_chooser).is(":visible")) {
+                    update_style_attribute_chooser(attributes_chooser, element_widget, attribute_table);
+                }
             };
+            // if the backside is hidden then so should the attributes chooser
+            $(backside_element).find(".toontalk-hide-backside-button").click(function (event) {
+                $(attributes_chooser).hide();
+            });
             return backside;
         }};
 }(window.TOONTALK));
