@@ -256,3 +256,7 @@
 .toontalk-resource-table td {
 	width: 200px;
 }
+.toontalk-text {
+	background-color: white;
+	border: solid black 1px;
+}

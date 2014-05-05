@@ -234,7 +234,7 @@ window.TOONTALK.UTILITIES =
                 // may not have been text/html but just plain text
                 data = event.originalEvent.dataTransfer.getData("text");
                 if (data) {
-                    data = "<pre>" + data + "</pre>";
+                    data = "<div class='ui-widget'>" + data + "</div>";
                 }
             }
             if (!data) {
@@ -716,6 +716,13 @@ window.TOONTALK.UTILITIES =
             return container;
         },
         
+        create_text_element: function (text) {
+            var div = document.createElement("div");
+            div.textContent = text;
+            $(div).addClass('ui-widget');
+            return div;
+        },
+        
         // the following methods uses htmlFor instead of making the input a child of the label
         // because couldn't get JQuery buttons to work for radio buttons otherwise
         // and because of a comment about disability software
@@ -728,14 +735,18 @@ window.TOONTALK.UTILITIES =
             input.className = class_name;
             input.value = value;
             input.title = title;
-            label_element = document.createElement("label");
-            label_element.innerHTML = label;
-            input.id = TT.UTILITIES.generate_unique_id();
-            label_element.htmlFor = input.id;
-            container = TT.UTILITIES.create_horizontal_table(label_element, input);
+            if (label) {
+                label_element = document.createElement("label");
+                label_element.innerHTML = label;
+                input.id = TT.UTILITIES.generate_unique_id();
+                label_element.htmlFor = input.id;
+                container = TT.UTILITIES.create_horizontal_table(label_element, input);
+                $(label_element).addClass("ui-widget");
+            } else {
+                container = input;
+            }     
             $(input).button().addClass("toontalk-text-input");
             $(input).css({"background-color": "white"});
-            $(label_element).addClass("ui-widget");
             return {container: container,
                     button: input};
         },
