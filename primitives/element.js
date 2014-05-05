@@ -199,6 +199,17 @@ window.TOONTALK.element_backside =
         $(table).empty();
         style_attributes.forEach(function (attribute) {
             var value = $(frontside_element).css(attribute);
+            var update_value = function (event) {
+                var new_value = this.value.trim();
+                var new_value_number = parseFloat(new_value);
+                if (new_value === (new_value_number + "")) {
+                    // has no units
+                    new_value = new_value_number;
+                }
+                var css = {};
+                css[attribute] = new_value;
+                $(frontside_element).css(css); 
+            };
             row = document.createElement("tr");
             table.appendChild(row);
             td = document.createElement("td");
@@ -210,17 +221,8 @@ window.TOONTALK.element_backside =
                                                                     "toontalk-element-attribute-input",
                                                                     undefined,
                                                                     "Click here to edit the '" + attribute + "' style attribute of this element.");
-            attribute_value_editor.button.addEventListener('change', function (event) {
-                var new_value = this.value.trim();
-                var new_value_number = parseFloat(new_value);
-                if (new_value === (new_value_number + "")) {
-                    // has no units
-                    new_value = new_value_number;
-                }
-                var css = {};
-                css[attribute] = new_value;
-                $(frontside_element).css(css); 
-            });
+            attribute_value_editor.button.addEventListener('change', update_value);
+            attribute_value_editor.button.addEventListener('mouseout', update_value);
             td.appendChild(attribute_value_editor.container);
         });
         return table;
@@ -277,6 +279,7 @@ window.TOONTALK.element_backside =
             $(html_input.container).css({width: "100%"});
             $(html_input.button).css({width: "100%"});
             html_input.button.addEventListener('change', update_html);
+            html_input.button.addEventListener('mouseout', update_html);
             backside_element.appendChild(html_input.container);
             update_style_attributes_table(attribute_table, element_widget);
             backside_element.appendChild(attribute_table);

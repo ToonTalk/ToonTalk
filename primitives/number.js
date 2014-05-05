@@ -593,7 +593,9 @@ window.TOONTALK.number_backside =
             backside_element.appendChild(standard_buttons);
             backside_element.appendChild(infinite_stack_check_box.container);
             numerator_input.button.addEventListener('change', update_value);
+            numerator_input.button.addEventListener('mouseout', update_value);
             denominator_input.button.addEventListener('change', update_value);
+            denominator_input.button.addEventListener('mouseout', update_value);
             decimal_format.button.addEventListener('change', update_format);
             proper_format.button.addEventListener('change', update_format);
             improper_format.button.addEventListener('change', update_format);

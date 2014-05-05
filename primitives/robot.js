@@ -572,11 +572,7 @@ window.TOONTALK.robot_backside =
             var next_robot = robot.get_next_robot();
             var standard_buttons = TT.backside.create_standard_buttons(backside, robot);
             var infinite_stack_check_box = TT.backside.create_infinite_stack_check_box(backside, robot);
-            var input_table;
-            $next_robot_area.data("drop_area_owner", robot);
-            // don't do the following if already trained -- or offer to retrain?
-            standard_buttons.insertBefore(this.create_train_button(backside, robot), standard_buttons.firstChild);
-            image_url_input.button.addEventListener('change', function () {
+            var image_url_change = function () {
                 var image_url = image_url_input.button.value.trim();
                 robot.set_image_url(image_url, true);
                 if (TT.robot.in_training) {
@@ -585,8 +581,8 @@ window.TOONTALK.robot_backside =
                                                         toString: "change the image URL to " + image_url + " of the robot",
                                                         button_selector: ".toontalk-run-once-check-box"});
                 }
-            });
-            description_text_area.button.addEventListener('change', function () {
+            };
+            var description_change = function () {
                 var description = description_text_area.button.value.trim();
                 robot.set_description(description, true);
                 if (TT.robot.in_training) {
@@ -595,7 +591,15 @@ window.TOONTALK.robot_backside =
                                                         toString: "change the description to '" + description + "'' of the robot",
                                                         button_selector: ",toontalk-robot-description-input"});
                 }
-            });
+            };
+            var input_table;
+            $next_robot_area.data("drop_area_owner", robot);
+            // don't do the following if already trained -- or offer to retrain?
+            standard_buttons.insertBefore(this.create_train_button(backside, robot), standard_buttons.firstChild);
+            image_url_input.button.addEventListener('change', image_url_change);
+            image_url_input.button.addEventListener('mouseout', image_url_change);
+            description_text_area.button.addEventListener('change', description_change);
+            description_text_area.button.addEventListener('mouseout', description_change);
             $(run_once_input.button).click(function (event) {
                 var keep_running = run_once_input.button.checked;
                 robot.set_run_once(!keep_running);

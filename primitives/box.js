@@ -498,6 +498,7 @@ window.TOONTALK.box_backside =
             var standard_buttons = TT.backside.create_standard_buttons(backside, box);
             var infinite_stack_check_box = TT.backside.create_infinite_stack_check_box(backside, box);
             size_input.button.addEventListener('change', update_value);
+            size_input.button.addEventListener('mouseout', update_value);
             horizontal.button.addEventListener('change', update_orientation);
             vertical.button.addEventListener('change', update_orientation);
 //             $(horizontal.label).change(update_orientation);
