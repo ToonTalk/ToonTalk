@@ -85,9 +85,16 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         return TT.element_backside.create(this).update_run_button_disabled_attribute();
     };
     
+    element.get_attribute = function (attribute) {
+        var frontside_element = this.get_frontside_element();
+        return $(frontside_element).css(attribute);
+    };
+    
     element.set_attribute = function (attribute, new_value) {
         var frontside_element = this.get_frontside_element();
+        var backside = this.get_backside();
         var css = {};
+        var backside_element;
         if (!frontside_element) {
             return false;
         }
@@ -103,7 +110,52 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                                toString: "change the '" + attribute + "' style to " + new_value + " of",
                                                button_selector: ".toontalk-element-" + attribute + "-attribute-input"});
         }
+        if (backside) {
+            backside_element = this.get_backside_element();
+            if (backside_element) {
+                backside.update_display();
+            }
+        }
         return true;
+    };
+    
+    element.dropped_on_style_attribute = function (widget, attribute_input_element) {
+        var widget_string, widget_number, attribute_name, attribute_value, attribute_numerical_value;
+        if (!widget) {
+            return;
+        }
+        widget_string = widget.toString();
+        attribute_name = attribute_input_element.name;
+        attribute_value = this.get_attribute(attribute_name);
+        if (widget.get_type_name() === 'number') {
+            attribute_numerical_value = parseFloat(attribute_value.replace("px", ""));
+            widget_number = widget.to_float();
+            switch (widget_string.substring(0, 1)) {
+                case '-':
+                this.set_attribute(attribute_name, attribute_numerical_value - widget_number);
+                break;
+                case '*':
+                this.set_attribute(attribute_name, attribute_numerical_value * widget_number);
+                break;
+                case '/':
+                this.set_attribute(attribute_name, attribute_numerical_value / widget_number);
+                break;
+                case '^':
+                this.set_attribute(attribute_name, Math.pow(attribute_numerical_value, widget_number));
+                break;
+                default:
+                this.set_attribute(attribute_name, attribute_numerical_value + widget_number);
+            }
+        }
+        widget.remove();
+        
+//          if (TT.robot.in_training) {
+//             TT.robot.in_training.edited(this, {setter_name: "set_attribute",
+//                                                argument_1: attribute,
+//                                                argument_2: new_value,
+//                                                toString: "change the '" + attribute + "' style to " + new_value + " of",
+//                                                button_selector: ".toontalk-element-" + attribute + "-attribute-input"});
+//         }
     };
     
     element.update_display = function () {
@@ -245,8 +297,10 @@ window.TOONTALK.element_backside =
                                                                     classes,
                                                                     undefined,
                                                                     "Click here to edit the '" + attribute + "' style attribute of this element.");
+            attribute_value_editor.button.name = attribute;
             attribute_value_editor.button.addEventListener('change', update_value);
             attribute_value_editor.button.addEventListener('mouseout', update_value);
+            TT.UTILITIES.can_receive_drops($(attribute_value_editor));
             td.appendChild(attribute_value_editor.container);
         });
         return table;

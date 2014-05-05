@@ -357,6 +357,21 @@ window.TOONTALK.UTILITIES =
                     }
                     if ($(event.target).is(".toontalk-drop-area-instructions")) {
                         $target = $(event.target).parent();
+                    } else if ($(event.target).is(".toontalk-element-attribute-input")) {
+                        // should work for any input -- need to generalise this
+                        $target = $(event.target).closest(".toontalk-side");
+                        target_widget = $target.data("owner");
+                        if (target_widget) {
+                            if ($source) {
+                                source_widget = $source.data("owner");
+                            } else {
+                                source_widget = TT.UTILITIES.create_from_json(json_object);
+                            }
+                            target_widget.dropped_on_style_attribute(source_widget, event.target);
+                            event.stopPropagation();
+                            event.preventDefault();
+                            return;
+                        }
                     } else if ($(event.target).is(".toontalk-drop-area")) {
                         $target = $(event.target);
                     } else {

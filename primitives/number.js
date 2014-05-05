@@ -413,6 +413,10 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         return operator_string + bigrat.str(this.get_value());
     };
     
+    number.to_float = function () {
+        return bigrat.toDecimal(this.get_value());
+    };
+    
     number.get_type_name = function () {
         return "number";
     };
