@@ -145,22 +145,21 @@ window.TOONTALK.element_backside =
                update_style_attribute_chooser(attributes_chooser, element_widget, attribute_table);
             }
         };
-        var create_menu_item = function (text) {
-            var item = document.createElement("li");
-            var anchor = document.createElement("a");
-            anchor.innerHTML = text;
-            anchor.href = "#";
-            item.appendChild(anchor);
-            return item;
-        };
+//         var create_menu_item = function (text) {
+//             var item = document.createElement("li");
+//             var anchor = document.createElement("a");
+//             anchor.innerHTML = text;
+//             anchor.href = "#";
+//             item.appendChild(anchor);
+//             return item;
+//         };
         var process_menu_item = function (option, menu_list) {
             var style_attributes = element_widget.get_style_attributes();
             var already_added = style_attributes.indexOf(option) >= 0;
-//             var menu_label = already_added ? "Remove&nbsp;" + option : "Add&nbsp;" + option;
-//             var menu_item = create_menu_item(menu_label);
             var title = "Click to add or remove the '" + option + "' style attribute from the backside of this element.";
             var check_box = TT.UTILITIES.create_check_box(already_added, "toontalk-style-attribute-check-box", option, title);
-            menu_list.appendChild(check_box.container);
+            var documentation_link = TT.UTILITIES.create_anchor_element(" (?)", "http://www.w3.org/wiki/CSS/Properties/" + option);
+            check_box.container.appendChild(documentation_link);
             check_box.button.addEventListener('click', function (event) {
                 if (check_box.button.checked) {
                     add_style_attribute(option);
@@ -169,7 +168,8 @@ window.TOONTALK.element_backside =
                 }
                 update_style_attributes_table(attribute_table, element_widget);
             });
-        };
+            menu_list.appendChild(check_box.container);
+         };
         var process_options = function (sub_tree, menu_list) {
             var category_header, sub_menu_list;
             if (typeof sub_tree === 'string') {

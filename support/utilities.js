@@ -723,6 +723,14 @@ window.TOONTALK.UTILITIES =
             return div;
         },
         
+        create_anchor_element: function (html, url) {
+            var anchor = document.createElement("a");
+            anchor.innerHTML = html;
+            anchor.href= url;
+            anchor.target = '_blank';
+            return anchor;
+        },
+        
         // the following methods uses htmlFor instead of making the input a child of the label
         // because couldn't get JQuery buttons to work for radio buttons otherwise
         // and because of a comment about disability software
