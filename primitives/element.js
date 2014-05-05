@@ -23,7 +23,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         new_element.set_HTML = function (new_value) {
             var frontside_element = this.get_frontside_element();
             if (!frontside_element) {
-                return;
+                return false;
+            }
+            if (html === new_value) {
+                return false;
             }
             html = new_value;
             // remove children so will be updated
@@ -31,6 +34,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             if (this.visible()) {
                 TT.DISPLAY_UPDATES.pending_update(this);
             }
+            return true;
         };
         new_element.get_style_attributes = function () {
             return style_attributes;
@@ -79,6 +83,27 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     
     element.create_backside = function () {
         return TT.element_backside.create(this).update_run_button_disabled_attribute();
+    };
+    
+    element.set_attribute = function (attribute, new_value) {
+        var frontside_element = this.get_frontside_element();
+        var css = {};
+        if (!frontside_element) {
+            return false;
+        }
+        if ($(frontside_element).css(attribute) === new_value) {
+            return false;
+        }
+        css[attribute] = new_value;
+        $(frontside_element).css(css);
+        if (TT.robot.in_training) {
+            TT.robot.in_training.edited(this, {setter_name: "set_attribute",
+                                               argument_1: attribute,
+                                               argument_2: new_value,
+                                               toString: "change the '" + attribute + "' style to " + new_value + " of",
+                                               button_selector: ".toontalk-element-" + attribute + "-attribute-input"});
+        }
+        return true;
     };
     
     element.update_display = function () {
@@ -206,10 +231,9 @@ window.TOONTALK.element_backside =
                     // has no units
                     new_value = new_value_number;
                 }
-                var css = {};
-                css[attribute] = new_value;
-                $(frontside_element).css(css); 
+                element_widget.set_attribute(attribute, new_value);
             };
+            var classes = "toontalk-element-attribute-input toontalk-element-" + attribute + "-attribute-input";
             row = document.createElement("tr");
             table.appendChild(row);
             td = document.createElement("td");
@@ -218,7 +242,7 @@ window.TOONTALK.element_backside =
             td = document.createElement("td");
             row.appendChild(td);
             attribute_value_editor = TT.UTILITIES.create_text_input(value.replace("px", ""),
-                                                                    "toontalk-element-attribute-input",
+                                                                    classes,
                                                                     undefined,
                                                                     "Click here to edit the '" + attribute + "' style attribute of this element.");
             attribute_value_editor.button.addEventListener('change', update_value);
@@ -263,8 +287,7 @@ window.TOONTALK.element_backside =
             var update_html = function (event) {
                 var new_html = html_input.button.value.trim();
                 var frontside_element = element_widget.get_frontside_element();
-                element_widget.set_HTML(new_html);
-                if (TT.robot.in_training) {
+                if (element_widget.set_HTML(new_html) && TT.robot.in_training) {
                     TT.robot.in_training.edited(element_widget, {setter_name: "set_HTML",
                                                                  argument_1: new_html,
                                                                  toString: "change the HTML to " + new_html + " of",
@@ -291,15 +314,6 @@ window.TOONTALK.element_backside =
             backside.update_display = function () {
                 $(html_input.button).val(element_widget.get_HTML());
                 update_style_attributes_table(attribute_table, element_widget);
-//                 if (!attributes_chooser.parentELement) {
-//                     backside_element.parentElement.appendChild(attributes_chooser);
-//                     $(attributes_chooser).addClass("toontalk-attributes-chooser");
-//                     $(attributes_chooser).css({left: $(backside_element).css("left") + $(backside_element).css("width"),
-//                                                 top: $(backside_element).css("top")});
-// //                     $(attributes_chooser).resizable();
-//                     // draggable too?
-//                     $(attributes_chooser).hide();
-//                 }
                 if ($(attributes_chooser).is(":visible")) {
                     update_style_attribute_chooser(attributes_chooser, element_widget, attribute_table);
                 }
@@ -309,5 +323,5 @@ window.TOONTALK.element_backside =
                 $(attributes_chooser).hide();
             });
             return backside;
-        }};
+    }};
 }(window.TOONTALK));

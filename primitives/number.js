@@ -527,10 +527,10 @@ window.TOONTALK.number_backside =
             var backside = TT.backside.create(number);
             var backside_element = backside.get_element();
             var slash = document.createElement("div");
-            slash.innerHTML = "/";
-            $(slash).addClass("ui-widget"); // to look nice
-            var numerator_input = TT.UTILITIES.create_text_area(number.numerator_string(), "toontalk-numerator-input", "", "Type here to edit the numerator");
-            var denominator_input = TT.UTILITIES.create_text_area(number.denominator_string(), "toontalk-denominator-input", "", "Type here to edit the denominator");
+            var current_numerator = number.numerator_string();
+            var current_denominator = number.denominator_string();
+            var numerator_input = TT.UTILITIES.create_text_area(current_numerator, "toontalk-numerator-input", "", "Type here to edit the numerator");
+            var denominator_input = TT.UTILITIES.create_text_area(current_denominator, "toontalk-denominator-input", "", "Type here to edit the denominator");
             var decimal_format = TT.UTILITIES.create_radio_button("number_format", "decimal", "toontalk-decimal-radio-button", "Decimal", "Display number as a decimal.");
             var proper_format = TT.UTILITIES.create_radio_button("number_format", "proper_fraction", "toontalk-proper-fraction-radio-button", "Proper fraction", "Display number as a proper fraction with an integer part and a fraction.");
             var improper_format =TT.UTILITIES.create_radio_button("number_format", "improper_fraction", "toontalk-improper-fraction-radio-button", "Improper fraction", "Display number as a simple fraction.");
@@ -543,6 +543,9 @@ window.TOONTALK.number_backside =
                 var numerator = numerator_input.button.value.trim();
                 var denominator = denominator_input.button.value.trim();
                 var string, first_class_name;
+                if (numerator === current_numerator && denominator === current_denominator) {
+                    return;
+                }
                 number.set_from_values(numerator, denominator, true);
                 if (TT.robot.in_training) {
                     first_class_name = event.srcElement.className.split(" ", 1)[0];
@@ -587,6 +590,8 @@ window.TOONTALK.number_backside =
             var operator_set = $(TT.UTILITIES.create_horizontal_table(plus.container, minus.container, multiply.container, divide.container, power.container)).buttonset().get(0);
             var standard_buttons = TT.backside.create_standard_buttons(backside, number);
             var infinite_stack_check_box = TT.backside.create_infinite_stack_check_box(backside, number);
+            slash.innerHTML = "/";
+            $(slash).addClass("ui-widget"); // to look nice
             backside_element.appendChild(number_set);
             backside_element.appendChild(format_set);
             backside_element.appendChild(operator_set);
@@ -594,6 +599,10 @@ window.TOONTALK.number_backside =
             backside_element.appendChild(infinite_stack_check_box.container);
             numerator_input.button.addEventListener('change', update_value);
             numerator_input.button.addEventListener('mouseout', update_value);
+            numerator_input.button.addEventListener('mousein', function () {
+                current_numerator = numerator_input.button.value.trim();
+                current_denominator = denominator_input.button.value.trim();
+            });
             denominator_input.button.addEventListener('change', update_value);
             denominator_input.button.addEventListener('mouseout', update_value);
             decimal_format.button.addEventListener('change', update_format);

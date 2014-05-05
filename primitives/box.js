@@ -29,6 +29,9 @@ window.TOONTALK.box = (function (TT) {
             return size;
         };
         new_box.set_size = function (new_size, update_display) {
+            if (size === new_size) {
+                return false;
+            }
             size = new_size;
             contents.length = size;
             if (update_display) {
@@ -37,7 +40,7 @@ window.TOONTALK.box = (function (TT) {
             if (TT.debugging) {
                 this.debug_string = this.toString();
             }
-            return this;
+            return true;
         };
         new_box.get_horizontal = function () {
             return horizontal;
@@ -473,8 +476,7 @@ window.TOONTALK.box_backside =
             var vertical = TT.UTILITIES.create_radio_button("box_orientation", "vertical", "toontalk-vertical-radio-button", "Top to bottom", "Show box vertically.");
             var update_value = function () {
                 var new_size = parseInt(size_input.button.value.trim(), 10);
-                box.set_size(new_size, true);
-                if (TT.robot.in_training) {
+                if (box.set_size(new_size, true) && TT.robot.in_training) {
                     TT.robot.in_training.edited(box, {setter_name: "set_size",
                                                       argument_1: new_size,
                                                       toString: "change the number of holes to " + new_size + " of the box",
