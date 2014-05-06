@@ -483,8 +483,9 @@ window.TOONTALK.UTILITIES =
                                    {resize: function(event, ui) {
                                        TT.DISPLAY_UPDATES.pending_update(source_widget);            
                                         },
-                                    // the corner handles caused the element to be stuck in resize mode when used
-                                    handles: "e,s,se"}); // "n,e,s,w"});
+                                    // the corner handles looked bad on element widgets
+                                    // and generally got in the way
+                                    handles: "n,e,s,w"}); 
                                 },
                                 0);
                         }
