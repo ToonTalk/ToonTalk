@@ -25,7 +25,7 @@ window.TOONTALK.path =
             if (path) {
                 return path;
             }
-            if (context.get_path_to) {
+            if (context && context.get_path_to) {
                 sub_path = context.get_path_to(widget, robot);
                 if (sub_path) {
                     path = TT.path.to_entire_context();
@@ -34,7 +34,7 @@ window.TOONTALK.path =
                 }
             }
             if (widget_type === "element attribute") { 
-                path = TT.element.create_attribute_path(widget, robot);
+                return TT.element.create_attribute_path(widget, robot);
             }
             console.log("TT.path.get_path_to not fully implemented.");
         },

@@ -35,7 +35,7 @@ window.TOONTALK.robot_action =
                              thing_in_hand_frontside_element = thing_in_hand.get_frontside_element();
                              target_element.append(thing_in_hand_frontside_element);
                          } else {
-                             if (target_element.visible()) {
+                             if (target_element.visible && target_element.visible()) {
                                  TT.DISPLAY_UPDATES.pending_update(target_element);
                              }
                              thing_in_hand.drop_on(target_element);
