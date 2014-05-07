@@ -13,24 +13,28 @@ window.TOONTALK.path =
         get_path_to: function (widget, robot) {
             var context = robot.get_context();
             var body = robot.get_body();
-            var path, sub_path;
+            var path, sub_path, widget_type;
             if (context === widget) {
                 return TT.path.to_entire_context();
             }
-            if (widget.get_type_name() === "top-level") {
+            widget_type = widget.get_type_name();
+            if (widget_type === "top-level") {
                 return TT.path.top_level_backside;
             }
             path = body.get_path_to(widget, robot);
             if (path) {
                 return path;
             }
-            if (context.get_path_to) {
+            if (context && context.get_path_to) {
                 sub_path = context.get_path_to(widget, robot);
                 if (sub_path) {
                     path = TT.path.to_entire_context();
                     path.next = sub_path;
                     return path;
                 }
+            }
+            if (widget_type === "element attribute") { 
+                return TT.element.create_attribute_path(widget, robot);
             }
             console.log("TT.path.get_path_to not fully implemented.");
         },

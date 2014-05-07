@@ -15,6 +15,7 @@ window.TOONTALK.UTILITIES =
     var json_creators = {"box": TT.box.create_from_json,
                          "number": TT.number.create_from_json,
                          "robot": TT.robot.create_from_json,
+                         "element": TT.element.create_from_json,
                          "body": TT.actions.create_from_json,
                          "robot_action": TT.robot_action.create_from_json,
                          "box_path": TT.box.path.create_from_json,
@@ -22,6 +23,7 @@ window.TOONTALK.UTILITIES =
                          "path.top_level_backside": TT.path.top_level_backside.create_from_json,
                          "path.to_resource": TT.path.path_to_resource_create_from_json,
                          "newly_created_widgets_path": TT.newly_created_widgets_path.create_from_json,
+                         "path_to_style_attribute": TT.element.create_path_from_json,
                          "top_level": TT.widget.top_level_create_from_json};
     // id needs to be unique across ToonTalks due to drag and drop
     var id_counter = new Date().getTime();
@@ -37,7 +39,7 @@ window.TOONTALK.UTILITIES =
         var json_start = div_string.indexOf('{');
         var json_end = div_string.lastIndexOf('}');
         if (json_start < 0 || json_end < 0) {
-            console.log("Paste missing JSON encoding.");
+//             console.log("Paste missing JSON encoding.");
             return;
         }
         return div_string.substring(json_start, json_end+1);
@@ -221,11 +223,20 @@ window.TOONTALK.UTILITIES =
                 console.log("no dataTransfer in drop event");
                 return;
             }
-            // unless in IE9 should really use text/html first
-            data = event.originalEvent.dataTransfer.getData("text");
-            if (!data) {
+            // unless in IE9 should use text/html to enable dragging of HTML elements
+            try {
                 // the following causes errors in IE9
-                data = event.originalEvent.dataTransfer.getData("text/html"); 
+                data = event.originalEvent.dataTransfer.getData("text/html");
+            } catch (e) {
+                // should only occur in IE9
+                data = event.originalEvent.dataTransfer.getData("text");
+            }
+            if (!data) {
+                // may not have been text/html but just plain text
+                data = event.originalEvent.dataTransfer.getData("text");
+                if (data) {
+                    data = "<div class='ui-widget'>" + data + "</div>";
+                }
             }
             if (!data) {
                 console.log("No data in dataTransfer in drop.");
@@ -233,7 +244,7 @@ window.TOONTALK.UTILITIES =
             }
             json = extract_json_from_div_string(data);
             if (!json) {
-                return;
+                return TT.element.create(data).get_json();
             }
             try {
                 return JSON.parse(json);
@@ -347,6 +358,22 @@ window.TOONTALK.UTILITIES =
                     }
                     if ($(event.target).is(".toontalk-drop-area-instructions")) {
                         $target = $(event.target).parent();
+                    } else if ($(event.target).is(".toontalk-element-attribute-input")) {
+                        // should work for any input -- need to generalise this
+                        $target = $(event.target).closest(".toontalk-side");
+                        target_widget = $target.data("owner");
+                        if (target_widget) {
+                            if ($source) {
+                                source_widget = $source.data("owner");
+                            } else {
+                                source_widget = TT.UTILITIES.create_from_json(json_object);
+                            }
+                            TT.UTILITIES.restore_resource($source, source_widget);
+                            target_widget.dropped_on_style_attribute(source_widget, event.target.name);
+                            event.stopPropagation();
+                            event.preventDefault();
+                            return;
+                        }
                     } else if ($(event.target).is(".toontalk-drop-area")) {
                         $target = $(event.target);
                     } else {
@@ -373,7 +400,7 @@ window.TOONTALK.UTILITIES =
                     }
                     target_widget = $target.data("owner");
                     target_position = $target.offset();
-                    if (json_object) {
+                    if (json_object && json_object.view) {
                         drag_x_offset = json_object.view.drag_x_offset;
                         drag_y_offset = json_object.view.drag_y_offset;
                     } else {
@@ -423,6 +450,13 @@ window.TOONTALK.UTILITIES =
                         }
                     } else {
                         source_widget = TT.UTILITIES.create_from_json(json_object);
+                        if (!source_widget) {
+                            console.log("Unable to construct a ToonTalk widget from the JSON.");
+                            dragee = undefined;
+                            event.stopPropagation();
+                            event.preventDefault();
+                            return;
+                        }
                         $source = $(source_widget.get_frontside_element());
                     }    
                     if (source_widget === target_widget) {
@@ -449,8 +483,9 @@ window.TOONTALK.UTILITIES =
                                    {resize: function(event, ui) {
                                        TT.DISPLAY_UPDATES.pending_update(source_widget);            
                                         },
-                                    // the corner handles caused the element to be stuck in resize mode when used
-                                    handles: "e,s,se"}); // "n,e,s,w"});
+                                    // the corner handles looked bad on element widgets
+                                    // and generally got in the way
+                                    handles: "n,e,s,w"}); 
                                 },
                                 0);
                         }
@@ -699,6 +734,21 @@ window.TOONTALK.UTILITIES =
             return container;
         },
         
+        create_text_element: function (text) {
+            var div = document.createElement("div");
+            div.textContent = text;
+            $(div).addClass('ui-widget');
+            return div;
+        },
+        
+        create_anchor_element: function (html, url) {
+            var anchor = document.createElement("a");
+            anchor.innerHTML = html;
+            anchor.href= url;
+            anchor.target = '_blank';
+            return anchor;
+        },
+        
         // the following methods uses htmlFor instead of making the input a child of the label
         // because couldn't get JQuery buttons to work for radio buttons otherwise
         // and because of a comment about disability software
@@ -711,14 +761,18 @@ window.TOONTALK.UTILITIES =
             input.className = class_name;
             input.value = value;
             input.title = title;
-            label_element = document.createElement("label");
-            label_element.innerHTML = label;
-            input.id = TT.UTILITIES.generate_unique_id();
-            label_element.htmlFor = input.id;
-            container = TT.UTILITIES.create_horizontal_table(label_element, input);
+            if (label) {
+                label_element = document.createElement("label");
+                label_element.innerHTML = label;
+                input.id = TT.UTILITIES.generate_unique_id();
+                label_element.htmlFor = input.id;
+                container = TT.UTILITIES.create_horizontal_table(label_element, input);
+                $(label_element).addClass("ui-widget");
+            } else {
+                container = input;
+            }     
             $(input).button().addClass("toontalk-text-input");
             $(input).css({"background-color": "white"});
-            $(label_element).addClass("ui-widget");
             return {container: container,
                     button: input};
         },

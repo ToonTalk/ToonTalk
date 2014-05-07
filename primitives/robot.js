@@ -49,10 +49,14 @@ window.TOONTALK.robot = (function (TT) {
             return image_url;
         };
         new_robot.set_image_url = function (new_value, update_display) {
+            if (image_url === new_value) {
+                return false;
+            }
             image_url = new_value;
             if (update_display) {
                 TT.DISPLAY_UPDATES.pending_update(this);
             }
+            return true;
         };
         new_robot.get_animating = function () {
             return animating;
@@ -86,10 +90,14 @@ window.TOONTALK.robot = (function (TT) {
             return description;
         };
         new_robot.set_description = function (new_value, update_display) {
+            if (description === new_value) {
+                return false;
+            }
             description = new_value;
             if (update_display) {
                 TT.DISPLAY_UPDATES.pending_update(this);
             }
+            return true;
         };
         new_robot.get_thing_in_hand = function () {
             return thing_in_hand;
@@ -193,7 +201,7 @@ window.TOONTALK.robot = (function (TT) {
             }
             return this.match_status;
         default:
-            for (i = 0; i < match_status.length; i += 1) {
+            for (i = 0; i < this.match_status.length; i += 1) {
                 this.match_status[i].run_when_non_empty(this);
             }
             return this.match_status;                    
@@ -217,7 +225,7 @@ window.TOONTALK.robot = (function (TT) {
     robot.picked_up = function (widget, json, is_resource) {
         var path, action_name, widget_copy, new_widget;
         // current_action_name is used to distinguish between removing something from its container versus referring to it
-        if (widget.get_infinite_stack()) {
+        if (widget.get_infinite_stack && widget.get_infinite_stack()) {
             // does this cause an addition to newly created backside widgets?
             this.current_action_name = "pick up a copy";
         } else {
@@ -572,30 +580,32 @@ window.TOONTALK.robot_backside =
             var next_robot = robot.get_next_robot();
             var standard_buttons = TT.backside.create_standard_buttons(backside, robot);
             var infinite_stack_check_box = TT.backside.create_infinite_stack_check_box(backside, robot);
-            var input_table;
-            $next_robot_area.data("drop_area_owner", robot);
-            // don't do the following if already trained -- or offer to retrain?
-            standard_buttons.insertBefore(this.create_train_button(backside, robot), standard_buttons.firstChild);
-            image_url_input.button.addEventListener('change', function () {
+            var image_url_change = function () {
                 var image_url = image_url_input.button.value.trim();
-                robot.set_image_url(image_url, true);
-                if (TT.robot.in_training) {
+                if (robot.set_image_url(image_url, true) && TT.robot.in_training) {
                     TT.robot.in_training.edited(robot, {setter_name: "set_image_url",
                                                         argument_1: image_url,
                                                         toString: "change the image URL to " + image_url + " of the robot",
                                                         button_selector: ".toontalk-run-once-check-box"});
                 }
-            });
-            description_text_area.button.addEventListener('change', function () {
+            };
+            var description_change = function () {
                 var description = description_text_area.button.value.trim();
-                robot.set_description(description, true);
-                if (TT.robot.in_training) {
+                if (robot.set_description(description, true) && TT.robot.in_training) {
                     TT.robot.in_training.edited(robot, {setter_name: "set_description",
                                                         argument_1: description,
                                                         toString: "change the description to '" + description + "'' of the robot",
                                                         button_selector: ",toontalk-robot-description-input"});
                 }
-            });
+            };
+            var input_table;
+            $next_robot_area.data("drop_area_owner", robot);
+            // don't do the following if already trained -- or offer to retrain?
+            standard_buttons.insertBefore(this.create_train_button(backside, robot), standard_buttons.firstChild);
+            image_url_input.button.addEventListener('change', image_url_change);
+            image_url_input.button.addEventListener('mouseout', image_url_change);
+            description_text_area.button.addEventListener('change', description_change);
+            description_text_area.button.addEventListener('mouseout', description_change);
             $(run_once_input.button).click(function (event) {
                 var keep_running = run_once_input.button.checked;
                 robot.set_run_once(!keep_running);

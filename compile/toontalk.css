@@ -5,17 +5,28 @@
  */
  
  .toontalk-top-level-resource {
-	 -ms-touch-action: none;
 	 position: relative;
-	 width: 100px;
-	 height: 100px;
+/* 	 width: 100px;
+	 height: 100px; */
 	 display:  inline-block;
  }
 .toontalk-top-level-resource:hover {
 	cursor: move;
 }
+.toontalk-side-animating {
+/* 	 not sure why the following made things worse */
+/* 	z-index: 10000; */
+/* 	-moz-transition: all 2s;  
+	-ms-transition: all 2s;  
+	-o-transition: all 2s;  */
+/* 	following from http://easings.net/#easeInBack */
+	-webkit-transition: all 2s cubic-bezier(0.6, -0.28, 0.735, 0.045);
+    transition:         all 2s cubic-bezier(0.6, -0.28, 0.735, 0.045);
+}
+.toontalk-robot-animating {
+	opacity: .8;
+}
 .toontalk-backside {
-	-ms-touch-action: none;
 	position: absolute;
 	background-color: rgba(245, 240, 240, 0.94);
     cursor: move;
@@ -36,7 +47,6 @@
 	position: relative;
 }
 .toontalk-top-level-frontside {
-	-ms-touch-action: none;
 	position: absolute;
 	cursor: move;
 	border: none;
@@ -45,8 +55,10 @@
 	width: 20%;
 	height: 10%;
 }
+.toontalk-json {
+	display: inline-block;	
+}
 .toontalk-frontside {
-	-ms-touch-action: none;
 }
 .toontalk-frontside-on-backside {
 	position: absolute;
@@ -116,7 +128,7 @@
 .toontalk-top-level-number {
 	/* numbers look better with fixed widths -- easier to compare visually */
 	font-family: monospace;
-	background-color: rgb(237, 247, 240);
+	background-color: rgb(190, 244, 206);
 	width: 100%;
 	height: 100%;
 	min-width: 100%;
@@ -126,6 +138,7 @@
 	border-radius: 6px;
 	text-align: center;
 	vertical-align: middle;
+	display: inline-block;
 }
 .toontalk-improper-fraction {
 	table-layout: fixed;
@@ -176,11 +189,16 @@
 	/* font-weight: bold; */
 }
 .toontalk-hide-backside-button {
-	position: absolute;
+/* 	position: absolute; */
 }
 .toontalk-robot-description-input {
 	width: 30em;
 	text-align: inherit;
+}
+.toontalk-robot-image {
+/*     width: 100%; */
+/* 	rest of the height is for thought bubble */	
+/*     height: 70%; */
 }
 .toontalk-image-url-input {
 	width: 30em;
@@ -192,10 +210,60 @@
     width: 96px;
     height: 96px;
 }
+.toontalk-thought-bubble-not-matched {
+	background-image: url(images/BUBBL10.96x96.red.PNG);
+}
 .toontalk-thought-bubble-contents {
-    left: 10%;
+    left: 15%;
 	top: 15%;
-	width: 60%;
+    width: 60%;
 	height: 40%;
 	position: absolute;
+}
+.toontalk-held-by-robot {
+	top: 75%;
+/* 	width: 50%;
+	height: 25%; */
+	z-index: 1000
+}
+.toontalk-drop-area {
+	background-color: rgb(187, 246, 248);
+	min-height: 35%;
+	border: solid rgb(126, 148, 206) 2px;
+	border-radius: 6px;
+	width:  95%;
+	padding-top: 10px;
+	/* display:  inline; */
+}
+.toontalk-drop-area-instructions {
+	opacity: .4;
+	display:  inline;
+	vertical-align: middle;
+}
+.toontalk-widget-in-drop_area {
+	width: 32px;
+	height: 32px;
+	display:  inline-block;
+	vertical-align: middle;
+	padding:  8pt;
+}
+.toontalk-infinite-stack {
+	box-shadow: 10px 5px 5px black;
+}
+.toontalk-resource-table {
+	padding: 8px;
+}
+.toontalk-resource-table td {
+	width: 200px;
+}
+.toontalk-text {
+	background-color: white;
+	border: solid black 1px;
+}
+.toontalk-attributes-chooser {
+	background-color: white;
+    border-style: solid;
+	border-width: 2px;
+	border-color: rgb(185, 113, 141);
+	border-radius: 10px;
 }

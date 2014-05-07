@@ -29,6 +29,9 @@ window.TOONTALK.box = (function (TT) {
             return size;
         };
         new_box.set_size = function (new_size, update_display) {
+            if (size === new_size) {
+                return false;
+            }
             size = new_size;
             contents.length = size;
             if (update_display) {
@@ -37,7 +40,7 @@ window.TOONTALK.box = (function (TT) {
             if (TT.debugging) {
                 this.debug_string = this.toString();
             }
-            return this;
+            return true;
         };
         new_box.get_horizontal = function () {
             return horizontal;
@@ -101,7 +104,7 @@ window.TOONTALK.box = (function (TT) {
     };
     
     box.create_backside = function () {
-        return TT.box_backside.create(this).update_run_button_disabled_attribute();;
+        return TT.box_backside.create(this).update_run_button_disabled_attribute();
     };
     
     box.equals = function (other) {
@@ -131,7 +134,7 @@ window.TOONTALK.box = (function (TT) {
     box.match = function (context) {
         if (this.get_erased()) {
             if (context.match_with_any_box) {
-                   return context.match_with_any_box();
+                return context.match_with_any_box();
             }
             return 'not matched';
         }
@@ -473,8 +476,7 @@ window.TOONTALK.box_backside =
             var vertical = TT.UTILITIES.create_radio_button("box_orientation", "vertical", "toontalk-vertical-radio-button", "Top to bottom", "Show box vertically.");
             var update_value = function () {
                 var new_size = parseInt(size_input.button.value.trim(), 10);
-                box.set_size(new_size, true);
-                if (TT.robot.in_training) {
+                if (box.set_size(new_size, true) && TT.robot.in_training) {
                     TT.robot.in_training.edited(box, {setter_name: "set_size",
                                                       argument_1: new_size,
                                                       toString: "change the number of holes to " + new_size + " of the box",
@@ -498,6 +500,7 @@ window.TOONTALK.box_backside =
             var standard_buttons = TT.backside.create_standard_buttons(backside, box);
             var infinite_stack_check_box = TT.backside.create_infinite_stack_check_box(backside, box);
             size_input.button.addEventListener('change', update_value);
+            size_input.button.addEventListener('mouseout', update_value);
             horizontal.button.addEventListener('change', update_orientation);
             vertical.button.addEventListener('change', update_orientation);
 //             $(horizontal.label).change(update_orientation);
