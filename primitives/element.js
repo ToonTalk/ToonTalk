@@ -14,6 +14,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     
     element.create = function (html, style_attributes) {
         var new_element = Object.create(element);
+        var new_css, $image_element;
         if (!style_attributes) {
             style_attributes = [];
         }
@@ -42,6 +43,37 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         new_element.set_style_attributes = function (new_value) {
             style_attributes = new_value;
         };
+        new_element.add_to_css = function (attribute, value) {
+            if (!new_css) {
+                new_css = {};
+            }
+            new_css[attribute] = value;
+        };
+        new_element.apply_css = function() {
+            var frontside_element, image_css;
+            if (!new_css) {
+                return;
+            }
+            frontside_element = this.get_frontside_element();
+            if (!frontside_element) {
+                return;
+            }
+            $(frontside_element).css(new_css);
+            // if it contains an image then change it too (needed only for width and height)
+            if ($image_element && (new_css.width || new_css.height)) {
+                image_css = {};
+                image_css.width = new_css.width;
+                image_css.height = new_css.height;
+                $image_element.css(image_css);
+            }
+            new_css = undefined;
+        };
+        new_element.set_image_element = function (element) {
+            $image_element = $(element).find("img");
+            if ($image_element.length === 0) {
+                $image_element = undefined;
+            }
+        }
         new_element = new_element.add_standard_widget_functionality(new_element);
         if (TT.debugging) {
             new_element.debug_string = new_element.toString();
@@ -91,7 +123,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     };
     
     element.set_attribute = function (attribute, new_value, handle_training) {
-        var frontside_element = this.get_frontside_element();
+        var frontside = this.get_frontside();
+        var frontside_element = frontside.get_element();
         var backside = this.get_backside();
         var css = {};
         var backside_element, current_value, new_value_number;
@@ -119,16 +152,17 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 new_value = new_value_number;
             }
         }
-        css[attribute] = new_value;
-        $(frontside_element).css(css);
-        // if it contains an image then change it too (needed at least for width and height)
-        $(frontside_element).find("img").css(css);
-        if (backside) {
-            backside_element = this.get_backside_element();
-            if (backside_element) {
-                backside.update_display();
-            }
+        this.add_to_css(attribute, new_value);
+        if ($(frontside_element).is(":visible")) {
+            TT.DISPLAY_UPDATES.pending_update(frontside);
         }
+        // frontside will do this...
+//         if (backside) {
+//             backside_element = this.get_backside_element();
+//             if (backside_element) {
+//                 TT.DISPLAY_UPDATES.pending_update(backside);
+//             }
+//         }
         return true;
     };
     
@@ -222,7 +256,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             rendering = document.createElement('div');
             rendering.innerHTML = this.get_HTML();
             frontside_element.appendChild(rendering);
+            this.set_image_element(rendering);
         }
+        this.apply_css();
         if (backside) {
             backside.update_display();
         }
