@@ -14,7 +14,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     
     element.create = function (html, style_attributes) {
         var new_element = Object.create(element);
-        var pending_css, $image_element;
+        var pending_css, transform_css, $image_element;
         if (!style_attributes) {
             style_attributes = [];
         }
@@ -46,20 +46,39 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         new_element.get_pending_css = function () {
             return pending_css;
         };
+        new_element.get_transform_css = function () {
+            return transform_css;
+        };
         new_element.add_to_css = function (attribute, value) {
+            if (attribute === 'rotation') {
+                if (!transform_css) {
+                    transform_css = {};
+                }
+                transform_css[attribute] = value;
+            }
             if (!pending_css) {
                 pending_css = {};
             }
             pending_css[attribute] = value;
         };
         new_element.apply_css = function() {
-            var frontside_element, image_css;
+            var frontside_element, image_css, transform;
             if (!pending_css) {
                 return;
             }
             frontside_element = this.get_frontside_element();
             if (!frontside_element) {
                 return;
+            }
+            if (transform_css) {
+                if (transform_css.rotation) {
+                    transform = 'rotate(' + transform_css.rotation + 'deg)';
+                    pending_css['-webkit-transform'] = transform;
+                    pending_css['-moz-transform'] = transform;
+                    pending_css['-ms-transform'] = transform;
+                    pending_css['o-transform'] = transform;
+                    pending_css['transform'] = transform;
+                }
             }
             $(frontside_element).css(pending_css);
             // if it contains an image then change it too (needed only for width and height)
@@ -129,12 +148,22 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     
     element.get_attribute = function (attribute) {
         var pending_css = this.get_pending_css();
+        var frontside_element, transform_css, value;
         if (pending_css && pending_css[attribute]) {
             return pending_css[attribute];
         }
-        var frontside_element;
+        transform_css = this.get_transform_css();
+        if (transform_css && transform_css[attribute]) {
+            return transform_css[attribute];
+        }
         frontside_element = this.get_frontside_element();
-        return $(frontside_element).css(attribute);
+        value = $(frontside_element).css(attribute);
+        if (!value) {
+            // zero is the default value -- e.g. for rotation
+            return 0;
+        }
+        // should really check that px is at the end the rest is a number
+        return value.replace("px", "");
     };
     
     element.set_attribute = function (attribute, new_value, handle_training) {
@@ -147,7 +176,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             return false;
         }
         if (handle_training) {
-            current_value = $(frontside_element).css(attribute).replace("px", "");
+            current_value = this.get_attribute(attribute);
             if (current_value === new_value) {
                 return false;
             }
@@ -171,13 +200,6 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         if ($(frontside_element).is(":visible")) {
             TT.DISPLAY_UPDATES.pending_update(this);
         }
-        // frontside will do this...
-//         if (backside) {
-//             backside_element = this.get_backside_element();
-//             if (backside_element) {
-//                 TT.DISPLAY_UPDATES.pending_update(backside);
-//             }
-//         }
         return true;
     };
     
@@ -203,7 +225,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     attribute_numerical_value = 0;
                 }
             } else {
-                attribute_numerical_value = parseFloat(attribute_value.replace("px", ""));
+                attribute_numerical_value = parseFloat(attribute_value);
                 // what if NaN?
             }
             widget_number = dropped.to_float();
@@ -213,6 +235,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 break;
                 case '*':
                 new_value = attribute_numerical_value * widget_number;
+                console.log(new_value);
                 break;
                 case '/':
                 new_value = attribute_numerical_value / widget_number;
@@ -355,7 +378,9 @@ window.TOONTALK.element_backside =
         var options = [{label: "Geometry attributes",
                         sub_menus: ["left", "top", "width", "height"]},
                        {label: "Color attributes",
-                        sub_menus: ["background-color", "color"]}];
+                        sub_menus: ["background-color", "color", "opacity"]},
+                       {label: "Transformations",
+                        sub_menus: ["rotation"]}];
         var add_style_attribute = function (attribute) {
             var style_attributes = element_widget.get_style_attributes();
             if (style_attributes.indexOf(attribute) < 0) {
@@ -424,7 +449,7 @@ window.TOONTALK.element_backside =
         var row, td, attribute_value_editor;
         $(table).empty();
         style_attributes.forEach(function (attribute) {
-            var value = $(frontside_element).css(attribute);
+            var value = element_widget.get_attribute(attribute);
             var update_value = function (event) {
                 element_widget.set_attribute(attribute, this.value.trim(), true);
             };
@@ -436,7 +461,7 @@ window.TOONTALK.element_backside =
             td.appendChild(TT.UTILITIES.create_text_element(attribute));
             td = document.createElement("td");
             row.appendChild(td);
-            attribute_value_editor = TT.UTILITIES.create_text_input(value.replace("px", ""),
+            attribute_value_editor = TT.UTILITIES.create_text_input(value,
                                                                     classes,
                                                                     undefined,
                                                                     "Click here to edit the '" + attribute + "' style attribute of this element.");
