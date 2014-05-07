@@ -223,12 +223,13 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     element.get_json = function () {
         return this.add_to_json(
            {type: "element",
-            html: this.get_HTML()
+            html: this.get_HTML(),
+            attributes: this.get_style_attributes()
             });
     };
     
     element.create_from_json = function (json) {
-        return element.create(json.html);
+        return element.create(json.html, json.attributes);
     };
     
     element.create_attribute_path = function (attribute_widget, robot) {
