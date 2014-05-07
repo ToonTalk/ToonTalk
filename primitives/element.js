@@ -14,7 +14,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     
     element.create = function (html, style_attributes) {
         var new_element = Object.create(element);
-        var new_css, $image_element;
+        var pending_css, $image_element;
         if (!style_attributes) {
             style_attributes = [];
         }
@@ -43,30 +43,33 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         new_element.set_style_attributes = function (new_value) {
             style_attributes = new_value;
         };
+        new_element.get_pending_css = function () {
+            return pending_css;
+        };
         new_element.add_to_css = function (attribute, value) {
-            if (!new_css) {
-                new_css = {};
+            if (!pending_css) {
+                pending_css = {};
             }
-            new_css[attribute] = value;
+            pending_css[attribute] = value;
         };
         new_element.apply_css = function() {
             var frontside_element, image_css;
-            if (!new_css) {
+            if (!pending_css) {
                 return;
             }
             frontside_element = this.get_frontside_element();
             if (!frontside_element) {
                 return;
             }
-            $(frontside_element).css(new_css);
+            $(frontside_element).css(pending_css);
             // if it contains an image then change it too (needed only for width and height)
-            if ($image_element && (new_css.width || new_css.height)) {
+            if ($image_element && (pending_css.width || pending_css.height)) {
                 image_css = {};
-                image_css.width = new_css.width;
-                image_css.height = new_css.height;
+                image_css.width = pending_css.width;
+                image_css.height = pending_css.height;
                 $image_element.css(image_css);
             }
-            new_css = undefined;
+            pending_css = undefined;
         };
         new_element.set_image_element = function (element) {
             $image_element = $(element).find("img");
@@ -118,7 +121,12 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     };
     
     element.get_attribute = function (attribute) {
-        var frontside_element = this.get_frontside_element();
+        var pending_css = this.get_pending_css();
+        if (pending_css && pending_css[attribute]) {
+            return pending_css[attribute];
+        }
+        var frontside_element;
+        frontside_element = this.get_frontside_element();
         return $(frontside_element).css(attribute);
     };
     
@@ -174,7 +182,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         widget_string = dropped.toString();
         if (dropped.get_type_name() === 'number') {
             attribute_value = this.get_attribute(attribute_name);
-            if (attribute_value === 'auto') {
+            if (typeof attribute_value === 'number') {
+                attribute_numerical_value = attribute_value;
+            } else if (attribute_value === 'auto') {
                 switch (attribute_name) {
                     case "left":
                     attribute_numerical_value = $(this.get_frontside_element()).offset().left;
@@ -470,10 +480,10 @@ window.TOONTALK.element_backside =
             html_input.button.addEventListener('mouseout', update_html);
             backside_element.appendChild(html_input.container);
             update_style_attributes_table(attribute_table, element_widget);
+            backside_element.appendChild(attributes_chooser);
+            backside_element.appendChild(show_attributes_chooser);
             backside_element.appendChild(attribute_table);
             backside_element.appendChild(standard_buttons);
-            backside_element.appendChild(show_attributes_chooser);
-            backside_element.appendChild(attributes_chooser);
             $(attributes_chooser).hide();
             $(attributes_chooser).addClass("toontalk-attributes-chooser");
             backside.update_display = function () {
