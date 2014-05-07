@@ -136,9 +136,23 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             return;
         }
         widget_string = dropped.toString();
-        attribute_value = this.get_attribute(attribute_name);
         if (dropped.get_type_name() === 'number') {
-            attribute_numerical_value = parseFloat(attribute_value.replace("px", ""));
+            attribute_value = this.get_attribute(attribute_name);
+            if (attribute_value === 'auto') {
+                switch (attribute_name) {
+                    case "left":
+                    attribute_numerical_value = $(this.get_frontside_element()).offset().left;
+                    break;
+                    case "top":
+                    attribute_numerical_value = $(this.get_frontside_element()).offset().top;
+                    break;
+                    default:
+                    attribute_numerical_value = 0;
+                }
+            } else {
+                attribute_numerical_value = parseFloat(attribute_value.replace("px", ""));
+                // what if NaN?
+            }
             widget_number = dropped.to_float();
             switch (widget_string.substring(0, 1)) {
                 case '-':
