@@ -121,6 +121,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         }
         css[attribute] = new_value;
         $(frontside_element).css(css);
+        // if it contains an image then change it too (needed at least for width and height)
+        $(frontside_element).find("img").css(css);
         if (backside) {
             backside_element = this.get_backside_element();
             if (backside_element) {
