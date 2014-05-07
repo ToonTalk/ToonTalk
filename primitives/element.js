@@ -71,10 +71,14 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             }
             pending_css = undefined;
         };
-        new_element.set_image_element = function (element) {
+        new_element.set_image_element = function (element, frontside_element) {
             $image_element = $(element).find("img");
             if ($image_element.length === 0) {
                 $image_element = undefined;
+            } else {
+                // make sure that the front side has the same dimensions as its image
+                $(frontside_element).width($image_element.width());
+                $(frontside_element).height($image_element.height());
             }
         }
         new_element = new_element.add_standard_widget_functionality(new_element);
@@ -162,7 +166,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         }
         this.add_to_css(attribute, new_value);
         if ($(frontside_element).is(":visible")) {
-            TT.DISPLAY_UPDATES.pending_update(frontside);
+            TT.DISPLAY_UPDATES.pending_update(this);
         }
         // frontside will do this...
 //         if (backside) {
@@ -266,7 +270,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             rendering = document.createElement('div');
             rendering.innerHTML = this.get_HTML();
             frontside_element.appendChild(rendering);
-            this.set_image_element(rendering);
+            this.set_image_element(rendering, frontside_element);
         }
         this.apply_css();
         if (backside) {
