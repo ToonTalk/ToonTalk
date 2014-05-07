@@ -384,7 +384,7 @@ window.TOONTALK.element_backside =
             var already_added = style_attributes.indexOf(option) >= 0;
             var title = "Click to add or remove the '" + option + "' style attribute from the backside of this element.";
             var check_box = TT.UTILITIES.create_check_box(already_added, "toontalk-style-attribute-check-box", option, title);
-            var documentation_link = TT.UTILITIES.create_anchor_element(" (?)", "http://www.w3.org/wiki/CSS/Properties/" + option);
+            var documentation_link = TT.UTILITIES.create_anchor_element(" (?)", "http://www.w3.org/community/webed/wiki/CSS/Properties/" + option);
             check_box.container.appendChild(documentation_link);
             check_box.button.addEventListener('click', function (event) {
                 if (check_box.button.checked) {
