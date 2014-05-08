@@ -50,11 +50,12 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             return transform_css;
         };
         new_element.add_to_css = function (attribute, value) {
-            if (attribute === 'rotation') {
+            if (attribute === 'rotation' || attribute === 'skew-x' || attribute === 'skew-y') {
                 if (!transform_css) {
                     transform_css = {};
                 }
                 transform_css[attribute] = value;
+                return;
             }
             if (!pending_css) {
                 pending_css = {};
@@ -71,8 +72,22 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 return;
             }
             if (transform_css) {
-                if (transform_css.rotation) {
-                    transform = 'rotate(' + transform_css.rotation + 'deg)';
+                if (transform_css['rotation']) {
+                    transform = 'rotate(' + transform_css['rotation'] + 'deg)';
+                }
+                if (transform_css['skew-x']) {
+                    if (!transform) {
+                        transform = "";
+                    }
+                    transform += 'skewX(' + transform_css['skew-x'] + 'deg)';
+                }
+                if (transform_css['skew-y']) {
+                    if (!transform) {
+                        transform = "";
+                    }
+                    transform += 'skewY(' + transform_css['skew-y'] + 'deg)';
+                }
+                if (transform) {
                     pending_css['-webkit-transform'] = transform;
                     pending_css['-moz-transform'] = transform;
                     pending_css['-ms-transform'] = transform;
@@ -384,7 +399,7 @@ window.TOONTALK.element_backside =
                        {label: "Font attributes",
                         sub_menus: ["font-size", "font-weight"]},
                        {label: "Transformations",
-                        sub_menus: ["rotation"]}];
+                        sub_menus: ["rotation", "skew-x", "skew-y"]}];
         var add_style_attribute = function (attribute) {
             var style_attributes = element_widget.get_style_attributes();
             if (style_attributes.indexOf(attribute) < 0) {
