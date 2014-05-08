@@ -162,6 +162,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             // zero is the default value -- e.g. for rotation
             return 0;
         }
+        if (typeof value === 'number') {
+            return value;
+        }
         // should really check that px is at the end the rest is a number
         return value.replace("px", "");
     };
@@ -169,9 +172,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     element.set_attribute = function (attribute, new_value, handle_training) {
         var frontside = this.get_frontside();
         var frontside_element = frontside.get_element();
-        var backside = this.get_backside();
         var css = {};
-        var backside_element, current_value, new_value_number;
+        var current_value, new_value_number;
         if (!frontside_element) {
             return false;
         }
@@ -379,6 +381,8 @@ window.TOONTALK.element_backside =
                         sub_menus: ["left", "top", "width", "height"]},
                        {label: "Color attributes",
                         sub_menus: ["background-color", "color", "opacity"]},
+                       {label: "Font attributes",
+                        sub_menus: ["font-size", "font-weight"]},
                        {label: "Transformations",
                         sub_menus: ["rotation"]}];
         var add_style_attribute = function (attribute) {
