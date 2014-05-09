@@ -44,6 +44,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         new_element.get_style_attributes = function () {
             return style_attributes;
         };
+        new_element.get_style_attribute_values = function () {
+            return style_attributes.map(this.get_attribute.bind(this));
+        };
         new_element.set_style_attributes = function (new_value) {
             style_attributes = new_value;
         };
@@ -352,12 +355,17 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         return this.add_to_json(
            {type: "element",
             html: this.get_HTML(),
-            attributes: this.get_style_attributes()
+            attributes: this.get_style_attributes(),
+            attribute_values: this.get_style_attribute_values()
             });
     };
     
     element.create_from_json = function (json) {
-        return element.create(json.html, json.attributes);
+        var reconstructed_element = element.create(json.html, json.attributes);
+        json.attribute_values.forEach(function (value, index) {
+            reconstructed_element.add_to_css(json.attributes[index], value);
+        });
+        return reconstructed_element;
     };
     
     element.create_attribute_path = function (attribute_widget, robot) {
