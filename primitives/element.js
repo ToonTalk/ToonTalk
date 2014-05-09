@@ -57,7 +57,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             return transform_css;
         };
         new_element.add_to_css = function (attribute, value) {
-            if (TT.element.is_transformation_option(attribute)) {
+            if (element.is_transformation_option(attribute)) {
+                // could remove attribute if value is 0
                 if (!transform_css) {
                     transform_css = {};
                 }
@@ -71,7 +72,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         };
         new_element.apply_css = function() {
             var frontside_element, image_css, transform;
-            if (!pending_css) {
+            if (!pending_css && !transform_css) {
                 return;
             }
             frontside_element = this.get_frontside_element();
@@ -95,6 +96,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     transform += 'skewY(' + transform_css['skewY'] + 'deg)';
                 }
                 if (transform) {
+                    if (!pending_css) {
+                        pending_css = {};
+                    }
                     pending_css['-webkit-transform'] = transform;
                     pending_css['-moz-transform'] = transform;
                     pending_css['-ms-transform'] = transform;
@@ -135,7 +139,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     
     element.copy = function (just_value) {
         // copy has a copy of the attributes array as well
-        var copy = TT.element.create(this.get_HTML(), this.get_style_attributes().slice());
+        var copy = element.create(this.get_HTML(), this.get_style_attributes().slice());
         return this.add_to_copy(copy, just_value);
     };
     
@@ -191,6 +195,24 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         return value.replace("px", "");
     };
     
+    element.value_in_pixels = function (value) {
+        var last_character, number;
+        if (typeof value === 'number') {
+            return value;
+        }
+        if (value.length === 0) {
+            return 0;
+        }
+        last_character = value.substring(value.length-1);
+        if ("0123456789x".indexOf(last_character) >= 0) {
+            // assumes that only CSS units ending in 'x' is 'px'
+            number = parseFloat(value);
+            if (!isNaN(number)) {
+                return number;
+            }
+        }
+    };
+    
     element.set_attribute = function (attribute, new_value, handle_training) {
         var frontside = this.get_frontside();
         var frontside_element = frontside.get_element();
@@ -199,25 +221,25 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         if (!frontside_element) {
             return false;
         }
-        if (handle_training) {
-            current_value = this.get_attribute(attribute);
-            if (current_value === new_value) {
-                return false;
+        current_value = this.get_attribute(attribute);
+        if (current_value === new_value) {
+            return false;
+        }
+        // need to use a number for JQuery's css otherwise treats "100" as "auto"
+        new_value_number = element.value_in_pixels(new_value);
+        if (new_value_number) {
+            if (current_value === new_value_number) {
+                return;
             }
+            new_value = new_value_number;
+        }
+        if (handle_training) {
             if (TT.robot.in_training) {
                 TT.robot.in_training.edited(this, {setter_name: "set_attribute",
                                                    argument_1: attribute,
                                                    argument_2: new_value,
                                                    toString: "change the '" + attribute + "' style to " + new_value + " of",
                                                    button_selector: ".toontalk-element-" + attribute + "-attribute-input"});
-            }
-        }
-        if (typeof new_value === 'string') {
-            // test whether this is really needed...
-            new_value_number = parseFloat(new_value);
-            if (new_value === (new_value_number + "")) {
-                // has no units
-                new_value = new_value_number;
             }
         }
         this.add_to_css(attribute, new_value);
@@ -363,7 +385,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     element.create_from_json = function (json) {
         var reconstructed_element = element.create(json.html, json.attributes);
         json.attribute_values.forEach(function (value, index) {
-            reconstructed_element.add_to_css(json.attributes[index], value);
+            reconstructed_element.add_to_css(json.attributes[index], element.value_in_pixels(value) || value);
         });
         return reconstructed_element;
     };
@@ -391,7 +413,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     
     element.create_path_from_json = function (json) {
         var element_widget_path = TT.UTILITIES.create_from_json(json.element_widget_path);
-        return TT.element.extend_attribute_path(element_widget_path, json.attribute);
+        return element.extend_attribute_path(element_widget_path, json.attribute);
     };
     
     return element;

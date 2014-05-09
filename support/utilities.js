@@ -200,7 +200,7 @@ window.TOONTALK.UTILITIES =
                 return element.currentStyle[style_property];
             } 
             if (window.getComputedStyle) {
-                 return document.defaultView.getComputedStyle(element,null).getPropertyValue(style_property);
+                 return document.defaultView.getComputedStyle(element, null).getPropertyValue(style_property);
             }
         },
 
