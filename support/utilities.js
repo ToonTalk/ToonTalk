@@ -231,7 +231,9 @@ window.TOONTALK.UTILITIES =
                 // should only occur in IE9
                 data = event.originalEvent.dataTransfer.getData("text");
             }
-            if (!data) {
+            if (!data || data.match(/[\u3400-\u9FBF]/)) {
+                // match(/[\u3400-\u9FBF]/) tests for Chinese which FireFox does
+                // see https://bugzilla.mozilla.org/show_bug.cgi?id=900414
                 // may not have been text/html but just plain text
                 data = event.originalEvent.dataTransfer.getData("text");
                 if (data) {
