@@ -13,7 +13,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     var element = Object.create(TT.widget);
     
     element.is_transformation_option = function (attribute) {
-        return (attribute === 'rotate' || attribute === 'skewX' || attribute === 'skewY');
+        return (attribute === 'rotate' || attribute === 'skewX' || attribute === 'skewY' || attribute === 'transform-origin-x' || attribute === 'transform-origin-y');
     };
     
     element.create = function (html, style_attributes) {
@@ -95,6 +95,12 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     }
                     transform += 'skewY(' + transform_css['skewY'] + 'deg)';
                 }
+                if (transform_css['transform-origin-x'] || transform_css['transform-origin-y']) {
+                    if (!pending_css) {
+                        pending_css = {};
+                    }
+                    pending_css['transform-origin'] = (transform_css['transform-origin-x'] || 0) + ' ' + (transform_css['transform-origin-y'] || 0);
+                } 
                 if (transform) {
                     if (!pending_css) {
                         pending_css = {};
@@ -433,7 +439,7 @@ window.TOONTALK.element_backside =
                        {label: "Font attributes",
                         sub_menus: ["font-size", "font-weight"]},
                        {label: "Transformations",
-                        sub_menus: ["rotate", "skewX", "skewY"]}];
+                        sub_menus: ["rotate", "skewX", "skewY", "transform-origin-x", "transform-origin-y"]}];
         var add_style_attribute = function (attribute) {
             var style_attributes = element_widget.get_style_attributes();
             if (style_attributes.indexOf(attribute) < 0) {
@@ -450,7 +456,10 @@ window.TOONTALK.element_backside =
             }
         };
         var documentation_source = function (attribute) {
-            if (TT.element.is_transformation_option(attribute)) {
+            if (attribute === 'transform-origin-x' || attribute === 'transform-origin-y') {
+                // # added so rest is ignored
+                return "https://developer.mozilla.org/en-US/docs/Web/CSS/transform-origin#"
+            } else if (TT.element.is_transformation_option(attribute)) {
                 return "https://developer.mozilla.org/en-US/docs/Web/CSS/transform#";
             } else {
                 return "http://www.w3.org/community/webed/wiki/CSS/Properties/";
