@@ -12,6 +12,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     
     var element = Object.create(TT.widget);
     
+    element.is_transformation_option = function (attribute) {
+        return (attribute === 'rotate' || attribute === 'skewX' || attribute === 'skewY');
+    };
+    
     element.create = function (html, style_attributes) {
         var new_element = Object.create(element);
         var pending_css, transform_css, $image_element;
@@ -50,7 +54,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             return transform_css;
         };
         new_element.add_to_css = function (attribute, value) {
-            if (attribute === 'rotation' || attribute === 'skew-x' || attribute === 'skew-y') {
+            if (TT.element.is_transformation_option(attribute)) {
                 if (!transform_css) {
                     transform_css = {};
                 }
@@ -72,20 +76,20 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 return;
             }
             if (transform_css) {
-                if (transform_css['rotation']) {
-                    transform = 'rotate(' + transform_css['rotation'] + 'deg)';
+                if (transform_css['rotate']) {
+                    transform = 'rotate(' + transform_css['rotate'] + 'deg)';
                 }
-                if (transform_css['skew-x']) {
+                if (transform_css['skewX']) {
                     if (!transform) {
                         transform = "";
                     }
-                    transform += 'skewX(' + transform_css['skew-x'] + 'deg)';
+                    transform += 'skewX(' + transform_css['skewX'] + 'deg)';
                 }
-                if (transform_css['skew-y']) {
+                if (transform_css['skewY']) {
                     if (!transform) {
                         transform = "";
                     }
-                    transform += 'skewY(' + transform_css['skew-y'] + 'deg)';
+                    transform += 'skewY(' + transform_css['skewY'] + 'deg)';
                 }
                 if (transform) {
                     pending_css['-webkit-transform'] = transform;
@@ -174,7 +178,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         frontside_element = this.get_frontside_element();
         value = $(frontside_element).css(attribute);
         if (!value) {
-            // zero is the default value -- e.g. for rotation
+            // zero is the default value -- e.g. for transformations such as rotate
             return 0;
         }
         if (typeof value === 'number') {
@@ -399,7 +403,7 @@ window.TOONTALK.element_backside =
                        {label: "Font attributes",
                         sub_menus: ["font-size", "font-weight"]},
                        {label: "Transformations",
-                        sub_menus: ["rotation", "skew-x", "skew-y"]}];
+                        sub_menus: ["rotate", "skewX", "skewY"]}];
         var add_style_attribute = function (attribute) {
             var style_attributes = element_widget.get_style_attributes();
             if (style_attributes.indexOf(attribute) < 0) {
@@ -415,20 +419,19 @@ window.TOONTALK.element_backside =
                update_style_attribute_chooser(attributes_chooser, element_widget, attribute_table);
             }
         };
-//         var create_menu_item = function (text) {
-//             var item = document.createElement("li");
-//             var anchor = document.createElement("a");
-//             anchor.innerHTML = text;
-//             anchor.href = "#";
-//             item.appendChild(anchor);
-//             return item;
-//         };
+        var documentation_source = function (attribute) {
+            if (TT.element.is_transformation_option(attribute)) {
+                return "https://developer.mozilla.org/en-US/docs/Web/CSS/transform#";
+            } else {
+                return "http://www.w3.org/community/webed/wiki/CSS/Properties/";
+            }
+        }; 
         var process_menu_item = function (option, menu_list) {
             var style_attributes = element_widget.get_style_attributes();
             var already_added = style_attributes.indexOf(option) >= 0;
             var title = "Click to add or remove the '" + option + "' style attribute from the backside of this element.";
             var check_box = TT.UTILITIES.create_check_box(already_added, "toontalk-style-attribute-check-box", option, title);
-            var documentation_link = TT.UTILITIES.create_anchor_element(" (?)", "http://www.w3.org/community/webed/wiki/CSS/Properties/" + option);
+            var documentation_link = TT.UTILITIES.create_anchor_element(" (?)", documentation_source(option) + option);
             check_box.container.appendChild(documentation_link);
             check_box.button.addEventListener('click', function (event) {
                 if (check_box.button.checked) {

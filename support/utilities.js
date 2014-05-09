@@ -890,6 +890,15 @@ window.TOONTALK.UTILITIES =
             }
             return "an " + word;
         }
+        
+//         create_menu_item: function (text) {
+//             var item = document.createElement("li");
+//             var anchor = document.createElement("a");
+//             anchor.innerHTML = text;
+//             anchor.href = "#";
+//             item.appendChild(anchor);
+//             return item;
+//         }
     
     };
     
