@@ -36,7 +36,8 @@ window.TOONTALK.path =
             if (widget_type === "element attribute") { 
                 return TT.element.create_attribute_path(widget, robot);
             }
-            console.log("TT.path.get_path_to not fully implemented.");
+            return TT.path.get_path_to_resource(widget.copy());
+//             console.log("TT.path.get_path_to not fully implemented.");
         },
         dereference_path: function (path, context, robot) {
             if (path) {

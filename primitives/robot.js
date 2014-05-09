@@ -432,6 +432,9 @@ window.TOONTALK.robot = (function (TT) {
                     // need to adjust for thought bubble
                     frontside_element.style.top = ($(frontside_element).position().top - $(robot_image).height()) + "px";
                 }
+                if (bubble && bubble.is_in_thought_bubble) {
+                    bubble.is_in_thought_bubble();
+                }
             },
             1);
     };

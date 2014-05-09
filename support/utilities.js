@@ -200,7 +200,7 @@ window.TOONTALK.UTILITIES =
                 return element.currentStyle[style_property];
             } 
             if (window.getComputedStyle) {
-                 return document.defaultView.getComputedStyle(element,null).getPropertyValue(style_property);
+                 return document.defaultView.getComputedStyle(element, null).getPropertyValue(style_property);
             }
         },
 
@@ -231,7 +231,9 @@ window.TOONTALK.UTILITIES =
                 // should only occur in IE9
                 data = event.originalEvent.dataTransfer.getData("text");
             }
-            if (!data) {
+            if (!data || data.match(/[\u3400-\u9FBF]/)) {
+                // match(/[\u3400-\u9FBF]/) tests for Chinese which FireFox does
+                // see https://bugzilla.mozilla.org/show_bug.cgi?id=900414
                 // may not have been text/html but just plain text
                 data = event.originalEvent.dataTransfer.getData("text");
                 if (data) {
@@ -890,6 +892,15 @@ window.TOONTALK.UTILITIES =
             }
             return "an " + word;
         }
+        
+//         create_menu_item: function (text) {
+//             var item = document.createElement("li");
+//             var anchor = document.createElement("a");
+//             anchor.innerHTML = text;
+//             anchor.href = "#";
+//             item.appendChild(anchor);
+//             return item;
+//         }
     
     };
     
