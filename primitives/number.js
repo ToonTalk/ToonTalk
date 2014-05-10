@@ -361,6 +361,11 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             return this;
         }
     };
+    
+    number.widget_dropped_on_me = function (widget) {
+        // only numbers can be dropped on numbers (for now at least)
+        return false;
+    };
 
     number.add = function (other) {
         // other is another rational number

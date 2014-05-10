@@ -406,7 +406,7 @@ window.TOONTALK.UTILITIES =
                     }
                     target_widget = $target.data("owner");
                     target_position = $target.offset();
-                    if (json_object && json_object.view) {
+                    if (json_object && json_object.view && json_object.view.drag_x_offset) {
                         drag_x_offset = json_object.view.drag_x_offset;
                         drag_y_offset = json_object.view.drag_y_offset;
                     } else {
@@ -508,6 +508,22 @@ window.TOONTALK.UTILITIES =
                         return; // let event propagate
                     } else if (source_widget.drop_on && source_widget.drop_on(target_widget, $target, event)) {
                         drop_handled = true;
+                    } else {
+                        // ignore the current target and replace with the backside it is on
+                        new_target = $target.closest(".toontalk-backside");
+                        if (new_target.length > 0) {
+                            target_widget = new_target.data("owner");
+                            if (target_widget) {
+                                target_widget.get_backside().widget_dropped_on_me(source_widget, source_is_backside, event);
+                                // place it directly underneath the original target
+                                $source.css({left: $target.position().left,
+                                             top:  $target.position().top + $target.height()});
+                                // following didn't work -- placed far to left of where it was expected
+//                                 $source.css({left: event.originalEvent.layerX,
+//                                              top:  event.originalEvent.layerY});
+                                drop_handled = true;
+                            }
+                        }
                     }
                     if (target_widget && !drop_handled) {
                         if (target_widget.widget_dropped_on_me) {
