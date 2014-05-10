@@ -25,7 +25,11 @@ window.TOONTALK.path =
             if (path) {
                 return path;
             }
-            if (context && context.get_path_to) {
+            if (widget_type === "element attribute") { 
+                return TT.element.create_attribute_path(widget, robot);
+            }
+            // context is undefined something is wrong much earlier
+            if (context.get_path_to) {
                 sub_path = context.get_path_to(widget, robot);
                 if (sub_path) {
                     path = TT.path.to_entire_context();
@@ -33,8 +37,24 @@ window.TOONTALK.path =
                     return path;
                 }
             }
-            if (widget_type === "element attribute") { 
-                return TT.element.create_attribute_path(widget, robot);
+            context.backside_widgets.some(function (backside_widget) {
+                // widget might be on the backside of the context
+                var sub_path;
+                if (backside_widget === widget) {
+                    path = TT.path.get_path_to_backside_widget_of_context(backside_widget.get_type_name());
+                    return true; // stop searching
+                } else if (backside_widget.get_path_to) {
+                    // e.g. might be in a box
+                    sub_path = backside_widget.get_path_to(widget, robot);
+                    if (sub_path) {
+                        path = TT.path.get_path_to_backside_widget_of_context(backside_widget.get_type_name());
+                        path.next = sub_path;
+                        return true; // stop searching
+                    }
+                }
+            });
+            if (path) {
+                return path;
             }
             return TT.path.get_path_to_resource(widget.copy());
 //             console.log("TT.path.get_path_to not fully implemented.");
@@ -128,6 +148,38 @@ window.TOONTALK.path =
         },
         path_to_resource_create_from_json: function (json) {
             return TT.path.get_path_to_resource(TT.UTILITIES.create_from_json(json.widget));
+        },
+        get_path_to_backside_widget_of_context: function (type_name) {
+             return {dereference: function (context, robot) {
+                        var referenced;
+                        context.backside_widgets.some(function (backside_widget) {
+                            if (backside_widget.get_type_name() === type_name) {
+                                referenced = backside_widget;
+                                return true; // stop searching
+                            }
+                        });
+                        if (referenced) {
+                            if (this.next) {
+                                if (referenced.dereference) {
+                                    return referenced.dereference(this.next, robot);
+                                } else {
+                                    console.log("Expected " + referenced + " to support dereference.");
+                                }                
+                            }
+                            return referenced;
+                        }
+                    },
+                    toString: function () {
+                        return "the " + type_name + " on the back of what he's working on";
+                    },
+                    get_json: function () {
+                        return {type: "path.to_backside_widget_of_context",
+                                type_name: type_name};
+                    }
+            };
+        },
+        path_to_backside_widget_of_context_create_from_json: function (json) {
+            return TT.path.get_path_to_backside_widget_of_context(json.type_name)
         },
         top_level_backside: {
             // this can be shared by all since only used to drop on -- not to pick up

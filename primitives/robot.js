@@ -227,7 +227,7 @@ window.TOONTALK.robot = (function (TT) {
         // current_action_name is used to distinguish between removing something from its container versus referring to it
         if (widget.get_infinite_stack && widget.get_infinite_stack()) {
             // does this cause an addition to newly created backside widgets?
-            this.current_action_name = "pick up a copy";
+            this.current_action_name = "pick up a copy of";
         } else {
             this.current_action_name = "pick up";
         }        
@@ -263,7 +263,7 @@ window.TOONTALK.robot = (function (TT) {
     robot.copied = function (widget, widget_copy, picked_up) {
         var path;
         if (picked_up) {
-            this.current_action_name = "pick up a copy";
+            this.current_action_name = "pick up a copy of";
         } else {
             this.current_action_name = "copy";
         }

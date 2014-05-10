@@ -18,7 +18,7 @@ window.TOONTALK.robot_action =
              robot.set_thing_in_hand(widget);
              return true;
          },
-         "pick up a copy": function (widget, context, robot) {
+         "pick up a copy of": function (widget, context, robot) {
              var widget_copy = widget.copy();
              robot.add_newly_created_widget(widget_copy);
              robot.set_thing_in_hand(widget_copy);
@@ -177,7 +177,7 @@ window.TOONTALK.robot_action =
     var watched_run_functions = 
         {"copy": copy_animation,
          "pick up": pick_up_animation,
-         "pick up a copy": move_robot_animation,
+         "pick up a copy of": move_robot_animation,
          "drop it on": drop_it_on_animation,
          "remove": remove_animation,
          "edit": edit_animation,
