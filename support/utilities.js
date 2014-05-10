@@ -308,9 +308,11 @@ window.TOONTALK.UTILITIES =
                         widget.drag_started(json_object, is_resource);
                     }
                     event.stopPropagation();
+//                     console.log("drag start. dragee is " + dragee);
                 });
             $element.on('dragend', 
                 function (event) {
+//                     console.log("drag end. dragee is " + dragee);
                     if (!dragee) {
                         dragee = $(event.originalEvent.srcElement).closest(".toontalk-side");
                     }
@@ -346,17 +348,19 @@ window.TOONTALK.UTILITIES =
                     var json_object = TT.UTILITIES.data_transfer_json_object(event);
                     // should this set the dropEffect? https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer#dropEffect.28.29 
                     var $container, container;
-                    $source = dragee; // || (json_object && $("#" + json_object.id_of_original_dragree));
+                    // prevent default first so if there is an exception the default behaviour for some drags of going to a new page is prevented
+                    event.preventDefault();
+//                     console.log("drop. dragee is " + dragee);
+                    $source = dragee;
                     if (!$source && !json_object) {
                         if (!event.originalEvent.dataTransfer) {
                             console.log("Drop failed since there is no event.originalEvent.dataTransfer");
                         } else {
-                            console.log("Drop failed since unable to parse as JSON."); // + event.originalEvent.dataTransfer.get("text/html"));
+                            console.log("Drop failed since unable to parse as JSON."); 
                         }
                         dragee = undefined;
-                        // without the following it can load a new page
+                        // without the following it may load a new page
                         event.stopPropagation();
-                        event.preventDefault();
                         return;
                     }
                     if ($(event.target).is(".toontalk-drop-area-instructions")) {
@@ -374,7 +378,6 @@ window.TOONTALK.UTILITIES =
                             TT.UTILITIES.restore_resource($source, source_widget);
                             target_widget.dropped_on_style_attribute(source_widget, event.target.name);
                             event.stopPropagation();
-                            event.preventDefault();
                             return;
                         }
                     } else if ($(event.target).is(".toontalk-drop-area")) {
@@ -418,7 +421,6 @@ window.TOONTALK.UTILITIES =
                             $source.css({left: $source.get(0).offsetLeft + (event.originalEvent.layerX - drag_x_offset),
                                           top: $source.get(0).offsetTop + (event.originalEvent.layerY - drag_y_offset)});
                             event.stopPropagation();
-                            event.preventDefault();
                             dragee = undefined;
                             return;
                         }
@@ -457,7 +459,6 @@ window.TOONTALK.UTILITIES =
                             console.log("Unable to construct a ToonTalk widget from the JSON.");
                             dragee = undefined;
                             event.stopPropagation();
-                            event.preventDefault();
                             return;
                         }
                         $source = $(source_widget.get_frontside_element());
@@ -466,7 +467,6 @@ window.TOONTALK.UTILITIES =
                         // dropping front side on back side so ignore
                         dragee = undefined;
                         event.stopPropagation();
-                        event.preventDefault();
                         return;
                     }
                     if ($target.is(".toontalk-backside")) {
@@ -514,7 +514,6 @@ window.TOONTALK.UTILITIES =
                         }
                     }
                     event.stopPropagation();
-                    event.preventDefault();
                     dragee = undefined;
                 });
             // following provides mouseevents rather than dragstart and the like
