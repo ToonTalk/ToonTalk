@@ -35,7 +35,12 @@ window.TOONTALK.frontside =
                     return;
                 }
                 if (backside) {
-                    return; // could highlight it...
+                    backside_element = backside.get_element();
+                    if ($(backside_element).is(":visible")) {
+                        TT.UTILITIES.highlight_element(backside_element, 1000);
+                        return;
+                    }
+                    // need to see if on backside is on the backside of another (and that is closed)
                 }
                 // frontside_ancestor_that_is_backside_element is first parent that is a toontalk-backside
                 $frontside_ancestor_that_is_backside_element = $(frontside_element).parent();

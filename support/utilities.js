@@ -709,6 +709,17 @@ window.TOONTALK.UTILITIES =
                 2500);
         },
         
+        highlight_element: function (element, duration) {
+            if (!duration) {
+                duration = 1000;
+            }
+            $(element).addClass("toontalk-highlight");
+            setTimeout(function () {
+                $(element).removeClass("toontalk-highlight");
+            },
+            duration);
+        },
+        
 //         add_frontside_element_to_container: function (widget, widget_with_container) {
 //             var widget_frontside_element = widget.get_frontside_element();
 //             var element_with_container = widget_with_container.get_frontside_element();

@@ -267,3 +267,6 @@
 	border-color: rgb(185, 113, 141);
 	border-radius: 10px;
 }
+.toontalk-highlight {
+	border: solid 4px red;
+}
