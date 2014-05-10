@@ -269,6 +269,10 @@ window.TOONTALK.UTILITIES =
                 function (event) {
                     var $source_element = $(event.originalEvent.srcElement).closest(".toontalk-side");
                     var position, json_object, json_div, widget, is_resource;
+                    if (event.originalEvent.dataTransfer.getData("text/plain").length > 0) {
+                        // e.g. dragging some text off the backside of a widget
+                        return;
+                    }
                     dragee = ($source_element || $element);
                     widget = dragee.data("owner");
                     if (!widget) {
