@@ -16,7 +16,8 @@ window.TOONTALK.box = (function (TT) {
         if (contents) {
             contents.forEach(function (widget) {
                 if (widget) {
-                    widget.set_parent(new_box);
+                    // assumes only frontsides end up in boxes -- relax this someday
+                    widget.set_parent_of_frontside(new_box);
                 }
             });
         } else {
@@ -57,10 +58,10 @@ window.TOONTALK.box = (function (TT) {
         };
         new_box.set_hole = function (index, new_value, update_display) {
             if (contents[index]) {
-                contents[index].set_parent(undefined);
+                contents[index].set_parent_of_frontside(undefined);
             }
             contents[index] = new_value;
-            contents[index].set_parent(this);
+            contents[index].set_parent_of_frontside(this);
             if (update_display) {
                 this.update_hole_display(index);
             }
@@ -78,7 +79,7 @@ window.TOONTALK.box = (function (TT) {
                 for (i = 0; i < contents.length; i++) {
                     widget = contents[i];
                     if (widget) {
-                        widget.set_parent(undefined);
+                        widget.set_parent_of_frontside(undefined);
                     }
                 }
             }
@@ -86,7 +87,7 @@ window.TOONTALK.box = (function (TT) {
             for (i = 0; i < contents.length; i++) {
                 widget = contents[i];
                 if (widget) {
-                    widget.set_parent(this);
+                    widget.set_parent_of_frontside(this);
                 }
             }
         };
@@ -549,7 +550,7 @@ window.TOONTALK.box_empty_hole =
                 // should be nothing to do
                 // but height percentage not working as expected
                 var box_frontside_element;
-                var box = this.get_parent();
+                var box = this.get_parent_of_frontside().widget;
                 if (box && !box.get_horizontal()) {
                     box_frontside_element = box.get_frontside_element();
                     $(this.get_element()).css({"min-height": $(box_frontside_element).height() / box.get_size()});
@@ -560,7 +561,7 @@ window.TOONTALK.box_empty_hole =
                 return this;
             };
             empty_hole.widget_dropped_on_me = function (dropped) {
-                var box = this.get_parent();
+                var box = this.get_parent_of_frontside().widget;
                 if (TT.robot.in_training) {
                     TT.robot.in_training.dropped_on(dropped, empty_hole);
                 }
@@ -582,7 +583,7 @@ window.TOONTALK.box_empty_hole =
                 return "empty hole";
             };
             empty_hole.visible = function () {
-                return this.get_parent().visible(); // you can't see it but if box is visible then it is 
+                return this.get_parent_of_frontside().widget.visible(); // you can't see it but if box is visible then it is 
             };
             TT.widget.has_parent(empty_hole);
 //             $(hole_element).on('drop',
