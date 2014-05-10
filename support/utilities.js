@@ -508,6 +508,8 @@ window.TOONTALK.UTILITIES =
                         return; // let event propagate
                     } else if (source_widget.drop_on && source_widget.drop_on(target_widget, $target, event)) {
                         drop_handled = true;
+                    } else if (target_widget.widget_dropped_on_me && target_widget.widget_dropped_on_me(source_widget, source_is_backside, event)) {
+                        drop_handled = true;
                     } else {
                         // ignore the current target and replace with the backside it is on
                         new_target = $target.closest(".toontalk-backside");
@@ -526,6 +528,7 @@ window.TOONTALK.UTILITIES =
                         }
                     }
                     if (target_widget && !drop_handled) {
+                        // is the obsolete? If so is drop_handled?
                         if (target_widget.widget_dropped_on_me) {
                             target_widget.widget_dropped_on_me(source_widget, source_is_backside, event);
                         }
