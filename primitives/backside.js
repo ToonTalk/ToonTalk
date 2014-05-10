@@ -351,7 +351,7 @@ window.TOONTALK.backside =
         
         update_run_button: function ($run_button, widget) {
             var running = widget.get_running();
-            if (!$run_button.is(":visible")) {
+            if (!$run_button.is(":visible") || !$run_button.is(":enabled")) {
                 return;
             }
             if (!running) {
