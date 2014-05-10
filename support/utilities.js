@@ -477,6 +477,7 @@ window.TOONTALK.UTILITIES =
                         // for a while using target_position.top didn't work while
                         // $target.get(0).offsetTop did and then it stopped working
                         // not sure what is happening or even whey they are different
+                        // consider also using layerX and layerY
                         $source.css({left: event.originalEvent.clientX - (target_position.left + drag_x_offset),
                                       top: event.originalEvent.clientY - (target_position.top + drag_y_offset)});
                         if ($source.is(".toontalk-frontside") && !$source.is('.ui-resizable')) {
@@ -627,31 +628,25 @@ window.TOONTALK.UTILITIES =
                         return;
                     }
                 }
-                if (event) {
-                    left = event.pageX;
-                    top = event.pageY;
-                    ancestor = element.parentElement;
-                    while (ancestor) {
-                        left -= ancestor.offsetLeft;
-                        top -= ancestor.offsetTop;
-                        ancestor = ancestor.parentElement;
-                    }
-                } else {
+//                 if (event) {
+//                     left = event.pageX;
+//                     top = event.pageY;
+//                     ancestor = element.parentElement;
+//                     while (ancestor) {
+//                         left -= ancestor.offsetLeft;
+//                         top -= ancestor.offsetTop;
+//                         ancestor = ancestor.parentElement;
+//                     }
+//                 } else {
                     position = $(element).position();
                     left = position.left;
                     top = position.top;
-                }
-//                 element.style.position = "absolute";
+//                 }
                 $(element).css({left: left,
                                  top: top,
                                  position: "absolute"});
             } else {
-//                 if (element.style.position === "static") {
-//                     return;
-//                 }
                 element.style.position = "static";
-//                 element.style.left = "0";
-//                 element.style.top = "0";
             }
         },
         
