@@ -136,6 +136,7 @@ window.TOONTALK.widget = (function (TT) {
                     }
                 };
             }
+            return widget;
         },
         
         animatable: function (widget) {
@@ -193,6 +194,7 @@ window.TOONTALK.widget = (function (TT) {
                     TT.UTILITIES.add_one_shot_transition_end_handler(mover_frontside_element, continuation);
                 };
             }
+            return widget;
         },
         
         has_title: function (widget) {
@@ -210,6 +212,7 @@ window.TOONTALK.widget = (function (TT) {
                     return TT.UTILITIES.add_a_or_an(type_name, true);
                 };
             }
+            return widget;
         },
         
         has_parent: function (widget) {
@@ -228,6 +231,7 @@ window.TOONTALK.widget = (function (TT) {
                 parent_of_backside = {widget: new_value,
                                       is_backside: parent_is_backside};
             };
+            return widget;
         },
         
         remove: function (event) {
@@ -261,8 +265,8 @@ window.TOONTALK.widget = (function (TT) {
             return frontside.get_element();
         },
         
-        get_backside_element: function () {
-            var backside = this.get_backside && this.get_backside();
+        get_backside_element: function (create) {
+            var backside = this.get_backside && this.get_backside(create);
             if (backside) {
                 return backside.get_element();
             }
@@ -298,7 +302,7 @@ window.TOONTALK.widget = (function (TT) {
                 if (this.get_erased && this.get_erased()) {
                     json_semantic.erased = true;
                 }
-                if (this.get_erased && this.get_infinite_stack()) {
+                if (this.get_infinite_stack && this.get_infinite_stack()) {
                     json_semantic.infinite_stack = true;
                 }
                 if (this.get_running && this.get_running()) {
@@ -627,6 +631,7 @@ window.TOONTALK.widget = (function (TT) {
             };
             widget = widget.add_sides_functionality(widget);
             widget = widget.runnable(widget);
+            widget = widget.has_parent(widget);
             return widget;
         },
         

@@ -146,7 +146,7 @@ window.TOONTALK.UTILITIES =
                 }
                 if (json_semantic.backside_widgets) {
                     backside_widgets = this.create_array_from_json(json_semantic.backside_widgets);
-                    widget.set_backside_widgets(backside_widgets, json_semantic.backside_widgets.map(function (json) { return json.view; }));
+                    widget.set_backside_widgets(backside_widgets, json_semantic.backside_widgets.map(function (json) { return json.widget.view; }));
                 }
             }
             return widget;

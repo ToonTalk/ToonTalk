@@ -84,23 +84,31 @@ window.TOONTALK.backside =
                 // too soon to add these widgets so delay slightly
                 setTimeout(
                     function () {
-                        var widget_frontside_element, json_view;
+                        var widget_side_element, json_view;
                         backside_widgets.forEach(function (backside_widget_side, index) {
-                            widget_frontside_element = backside_widget_side.widget.get_frontside_element(true);
-                            $(widget_frontside_element).data("owner", backside_widget_side.widget);
+                            if (backside_widget_side.is_backside) {
+                                widget_side_element = backside_widget_side.widget.get_backside_element(true);
+                            } else {
+                                widget_side_element = backside_widget_side.widget.get_frontside_element(true);
+                            }
+                            $(widget_side_element).data("owner", backside_widget_side.widget);
                             if (json_array) {
                                 json_view = json_array[index];
-                                if (json_view && json_view.frontside_width) {
-                                    // what if it is backside that needs to be added?
-                                    $(widget_frontside_element).css({width: json_view.frontside_width,
-                                                                     height: json_view.frontside_height});
-                                }
-                                if (json_view.frontside_left) {
-                                    $(widget_frontside_element).css({left: json_view.frontside_left,
-                                                                     top: json_view.frontside_top});
+                                if (json_view) {
+                                    if (backside_widget_side.is_backside) {
+                                         $(widget_side_element).css({left: json_view.backside_left,
+                                                                     top: json_view.backside_top,
+                                                                     width: json_view.backside_width,
+                                                                     height: json_view.backside_height});
+                                    } else {
+                                         $(widget_side_element).css({left: json_view.frontside_left,
+                                                                     top: json_view.frontside_top,
+                                                                     width: json_view.frontside_width,
+                                                                     height: json_view.frontside_heigh});
+                                    }
                                 }
                             }
-                            $(backside_element).append(widget_frontside_element);
+                            $(backside_element).append(widget_side_element);
                         });
                     },
                     1);
