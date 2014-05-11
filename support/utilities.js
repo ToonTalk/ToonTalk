@@ -115,6 +115,11 @@ window.TOONTALK.UTILITIES =
                 // was undefined and still is
                 return;
             }
+            if (json.widget) {
+                // is a context where need to know which side of the widget
+                return {widget: TT.UTILITIES.create_from_json(json.widget, additional_info),
+                        is_backside: json.is_backside};
+            }
             json_semantic = json.semantic;
             if (!json_semantic) {
                 // e.g. body, paths, etc.
@@ -135,7 +140,7 @@ window.TOONTALK.UTILITIES =
                     widget.set_infinite_stack(json_semantic.infinite_stack);
                 }
                 if (json_view && json_view.frontside_width) {
-                    side_element = json_view.backside ? widget.get_backside(true).get_element() : widget.get_frontside_element();
+                    side_element = json.view.backside ? widget.get_backside(true).get_element() : widget.get_frontside_element();
                     $(side_element).css({width: json_view.frontside_width,
                                          height: json_view.frontside_height});
                 }
@@ -160,20 +165,29 @@ window.TOONTALK.UTILITIES =
         
         get_json_of_array: function (array) {
             var json = [];
-            var i;
-            for (i = 0; i < array.length; i += 1) {
-                if (array[i]) {
-                    if (array[i].get_json) {
-                        json[i] = array[i].get_json();
+            array.forEach(function (widget_side, index) {
+                if (widget_side) {
+                    if (!widget_side.widget) {
+                        if (widget_side.get_type_name) {
+                            // older scheme where 'naked' widget is there meaning frontside
+                            json[index] = {widget: widget_side.get_json()};
+                        } else {
+                            // isn't a widget -- e.g. is a path
+                            json[index] = widget_side.get_json();
+                        }
+                    } else if (widget_side.widget.get_json) {
+                        json[index] = {widget: widget_side.widget.get_json(),
+                                       is_backside: widget_side.is_backside};
                     } else {
                         console.log("No get_json for " + array[i].toString());
                     }
                 }
-            }
+            });
             return json;
         },
         
         copy_widgets: function (widgets, just_value) {
+            // rewrite using map
             var widgets_copy = [];
             var i;
             for (i = 0; i < widgets.length; i++) {
@@ -183,6 +197,7 @@ window.TOONTALK.UTILITIES =
         },
         
         copy_array: function (array) {
+            // rewrite using splice or map
             var copy = [];
             var i;
             for (i = 0; i < array.length; i++) {
@@ -263,7 +278,7 @@ window.TOONTALK.UTILITIES =
         
         draggable: function ($element) {
             $element.attr("draggable", true);
-            // draggable causes dataTransfer to be null
+            // JQuery UI's draggable causes dataTransfer to be null
             // rewrote after noticing that this works fine: http://jsfiddle.net/KWut6/
             $element.on('dragstart', 
                 function (event) {
@@ -289,6 +304,7 @@ window.TOONTALK.UTILITIES =
                     if (event.originalEvent.dataTransfer && widget.get_json) {
                         event.originalEvent.dataTransfer.effectAllowed = is_resource ? 'copy' : 'move';
                         json_object = widget.get_json();
+                        // not sure if the following is obsolete
                         json_object.view.drag_x_offset = event.originalEvent.clientX - position.left;
                         json_object.view.drag_y_offset = event.originalEvent.clientY - position.top;
                         if (!json_object.width) {
@@ -348,10 +364,9 @@ window.TOONTALK.UTILITIES =
                 });
             $element.on('drop',
                 function (event) {
-                    var $source, source_widget, $target, target_widget, target_position, drag_x_offset, drag_y_offset, drop_handled, new_target, source_is_backside;
+                    var $source, source_widget, $target, target_widget, target_position, drag_x_offset, drag_y_offset, drop_handled, new_target, source_is_backside, $container, container;
                     var json_object = TT.UTILITIES.data_transfer_json_object(event);
                     // should this set the dropEffect? https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer#dropEffect.28.29 
-                    var $container, container;
                     // prevent default first so if there is an exception the default behaviour for some drags of going to a new page is prevented
                     event.preventDefault();
 //                     console.log("drop. dragee is " + dragee);
@@ -465,7 +480,17 @@ window.TOONTALK.UTILITIES =
                             event.stopPropagation();
                             return;
                         }
-                        $source = $(source_widget.get_frontside_element());
+                        
+                        source_is_backside = json_object.view.backside;
+                        if (source_is_backside) {
+                            $source = $(source_widget.get_backside_element());
+                            $source.css({width: json_object.view.backside_width,
+                                         height: json_object.view.backside_height,
+                                         // color may be undefined
+                                         "background-color": json_object.view.background_color});
+                        } else {
+                            $source = $(source_widget.get_frontside_element());
+                        }
                     }    
                     if (source_widget === target_widget) {
                         // dropping front side on back side so ignore

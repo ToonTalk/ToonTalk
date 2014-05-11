@@ -118,6 +118,11 @@ window.TOONTALK.path =
             return TT.path.to_entire_context();
         },
         get_path_to_resource: function (widget) {
+            if (widget.widget) {
+                // ignore the side information and just use the widget
+                // revisit this if resources are ever backside resources
+                widget = widget.widget;
+            }
             return {dereference: function (context, robot) {
                         var widget_copy = widget.copy();
                         var widget_frontside_element, copy_frontside_element;
@@ -142,12 +147,12 @@ window.TOONTALK.path =
                     },
                     get_json: function () {
                         return {type: "path.to_resource",
-                                widget: TT.path.get_json(widget)};
+                                resource: TT.path.get_json(widget)};
                     }
             };
         },
         path_to_resource_create_from_json: function (json) {
-            return TT.path.get_path_to_resource(TT.UTILITIES.create_from_json(json.widget));
+            return TT.path.get_path_to_resource(TT.UTILITIES.create_from_json(json.resource));
         },
         get_path_to_backside_widget_of_context: function (type_name) {
              return {dereference: function (context, robot) {

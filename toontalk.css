@@ -20,6 +20,8 @@
 	-ms-transition: all 2s;  
 	-o-transition: all 2s;  */
 /* 	following from http://easings.net/#easeInBack */
+/* add_one_shot_transition_end_handler waits 2.5 seconds in case the following transitions didn't fire */
+/* If the duration is changed also change it there */
 	-webkit-transition: all 2s cubic-bezier(0.6, -0.28, 0.735, 0.045);
     transition:         all 2s cubic-bezier(0.6, -0.28, 0.735, 0.045);
 }
