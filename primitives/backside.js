@@ -16,7 +16,7 @@ window.TOONTALK.backside =
             var $backside_element = $(backside_element);
             var original_width, original_height;
             var backside_widgets;
-            $backside_element.addClass("toontalk-backside toontalk-side");
+            $backside_element.addClass("toontalk-backside toontalk-side " + "toontalk-backside-of-" + widget.get_type_name());
             backside.get_element = function () {
                 return backside_element;
             };

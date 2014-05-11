@@ -42,6 +42,15 @@
 	padding-left:  6px;
 	padding-right:  6px;
 }
+.toontalk-backside-of-number {
+	background-color: rgba(220, 255, 236, .94);
+}
+.toontalk-backside-of-box {
+	background-color: rgba(255, 213, 255, .94);
+}
+.toontalk-backside-of-robot {
+	background-color: rgba(230, 230, 255, .94);
+}
 .toontalk-top-level-backside {
     width: 1000px;
 	height: 300px;
