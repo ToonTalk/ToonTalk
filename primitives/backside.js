@@ -282,13 +282,26 @@ window.TOONTALK.backside =
                 var frontside_element = widget.get_frontside_element();
                 var backside_position = $backside_element.position();
                 var $backside_container = $backside_element.parent().closest(".toontalk-backside");
+                var animate_disappearance = 
+                        function ($element) {
+                            var frontside_position = $(frontside_element).position();
+                            var remove_element = function () {
+                                $element.remove();
+                            };
+                            $element.addClass("toontalk-side-appearing");
+                            TT.UTILITIES.add_one_shot_transition_end_handler($element.get(0), remove_element);
+                            $element.css({left: frontside_position.left,
+                                          top: frontside_position.top,
+                                          opacity: .1});
+                                        
+                }
                 if (widget && widget.forget_backside) {
                     widget.forget_backside();
                 }
                 if (widget) {
                     record_backside_widget_positions();
                 }
-                $backside_element.remove(); // could animate away
+                animate_disappearance($backside_element)
                 if (!$(frontside_element).is(":visible")) {
                    $(frontside_element).css({left: backside_position.left,
                                              top:  backside_position.top});

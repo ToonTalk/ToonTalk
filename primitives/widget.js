@@ -561,6 +561,21 @@ window.TOONTALK.widget = (function (TT) {
         
         open_backside: function () {
             var backside = this.get_backside();
+            var animate_backside_appearance = 
+                function (element, final_left, final_top, final_opacity) {
+                    setTimeout(
+                        function ()  {
+                            var remove_transition_class = function () {
+                                $(element).removeClass("toontalk-side-appearing");
+                            };
+                            $(element).addClass("toontalk-side-appearing");
+                            TT.UTILITIES.add_one_shot_transition_end_handler(element, remove_transition_class);
+                            $(element).css({left: final_left,
+                                            top: final_top,
+                                            opacity: final_opacity});
+                        },
+                        1);
+                };
             var backside_element, frontside_element, parent, $frontside_ancestor_that_is_backside_element, $frontside_ancestor_before_backside_element, frontside_ancestor_before_backside_element;
             if (backside) {
                 backside_element = backside.get_element();
@@ -590,11 +605,17 @@ window.TOONTALK.widget = (function (TT) {
             backside = this.get_backside(true);
             backside_element = backside.get_element();
             $(backside_element).data("owner", this);
+            // start on the frontside (same upper left corner)
             $(backside_element).css({
-                left: frontside_ancestor_before_backside_element.offsetLeft + frontside_ancestor_before_backside_element.offsetWidth,
-                top: frontside_ancestor_before_backside_element.offsetTop
+                left: frontside_ancestor_before_backside_element.offsetLeft,
+                top: frontside_ancestor_before_backside_element.offsetTop,
+                opacity: .01
             });
             $frontside_ancestor_that_is_backside_element.append(backside_element);
+            animate_backside_appearance(backside_element, 
+                                        frontside_ancestor_before_backside_element.offsetLeft + frontside_ancestor_before_backside_element.offsetWidth,
+                                        frontside_ancestor_before_backside_element.offsetTop,
+                                        "inherit");
             TT.DISPLAY_UPDATES.pending_update(backside);
         },
         
