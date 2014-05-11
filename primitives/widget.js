@@ -80,7 +80,7 @@ window.TOONTALK.widget = (function (TT) {
                 };
             }
             if (!widget.set_running) {
-                widget.set_running = function (new_value) {
+                widget.set_running = function (new_value, top_level_context) {
                     var backside_widgets = this.get_backside_widgets();
                     var backside_widget, backside_element;
                     running = new_value;
@@ -90,14 +90,20 @@ window.TOONTALK.widget = (function (TT) {
                             // could this set_stopped stuff be combined with set_running?
                             if (running) {
                                 backside_widget.set_stopped(false);
-                                backside_widget.run(widget);
+                                backside_widget.run(top_level_context || widget);
                             } else {
                                 backside_widget.set_stopped(true);
                             }
                             TT.DISPLAY_UPDATES.pending_update(backside_widget);
                         } else if (backside_widget.set_running) {
-                            // what if backside_widget_side.is_backside ??
-                            backside_widget.set_running(new_value);
+                            if (!top_level_context && backside_widget_side.is_backside && widget.get_type_name() !== "top-level") {
+                                // a robot is on the backside of a widget that is on the backside of another
+                                // then its context is the containing widget
+                                backside_widget.set_running(new_value, widget);
+                            } else {
+                                // if frontside then its context is the widget of the frontside (i.e. backside_widget)
+                                backside_widget.set_running(new_value);
+                            }
                         }
                     });
                     backside_element = this.get_backside_element();
