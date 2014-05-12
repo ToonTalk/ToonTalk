@@ -61,19 +61,21 @@ window.TOONTALK.actions =
                 return newly_created_widgets;
             };
             new_actions.get_path_to = function (widget) {
-                var i, j, path, sub_path, children;
-                for (i = 0; i < newly_created_widgets.length; i++) {
-                    if (newly_created_widgets[i] === widget) {
-                        return TT.newly_created_widgets_path.create(i);
-                    } else if (newly_created_widgets[i].get_path_to) {
-                        sub_path = newly_created_widgets[i].get_path_to(widget);
+                var path, sub_path, children;
+                newly_created_widgets.some(function (newly_created_widget, index) {
+                    if (newly_created_widget === widget) {
+                        path = TT.newly_created_widgets_path.create(index);
+                        return true;
+                    } else if (newly_created_widget.get_path_to) {
+                        sub_path = newly_created_widget.get_path_to(widget);
                         if (sub_path) {
-                            path = TT.newly_created_widgets_path.create(i);
+                            path = TT.newly_created_widgets_path.create(index);
                             path.next = sub_path;
-                            return path;
+                            return true;
                         }
                     }
-                }
+                });
+                return path;
             };
             new_actions.dereference = function (index) {
                 return newly_created_widgets[index];
@@ -82,11 +84,10 @@ window.TOONTALK.actions =
         },
         
         run_unwatched: function(context, queue, robot) {
-            var i;
             var steps = this.get_steps();
-            for (i = 0; i < steps.length; i++) {
-                steps[i].run_unwatched(context, robot);
-            }
+            steps.forEach(function (step) {
+                step.run_unwatched(context, robot);
+            });
             if (!robot.get_run_once()) {
                 robot.get_first_in_team().run(context, queue);
             }
@@ -146,18 +147,17 @@ window.TOONTALK.actions =
         
         toString: function () {
             var description = "";
-            var i;
             var steps = this.get_steps();
-            for (i = 0; i < steps.length; i++) {
-                description += steps[i].toString();
-                if (i === steps.length-2) {
+            steps.forEach(function (step, index) {
+                description += step.toString();
+                if (index === steps.length-2) {
                     description += " and \n";
-                } else if (i < steps.length-2) {
+                } else if (index < steps.length-2) {
                     description += ", \n";
                 } else {
                     description += ".";
                 }
-            }
+            });
             return description;
         },
         

@@ -201,9 +201,9 @@ window.TOONTALK.robot = (function (TT) {
             }
             return this.match_status;
         default:
-            for (i = 0; i < this.match_status.length; i += 1) {
-                this.match_status[i].run_when_non_empty(this);
-            }
+            this.match_status.forEach(function (sub_match_status) {
+                sub_match_status.run_when_non_empty(this);
+            }.bind(this));
             return this.match_status;                    
         }
     };

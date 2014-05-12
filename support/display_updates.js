@@ -12,7 +12,6 @@ window.TOONTALK.DISPLAY_UPDATES =
     var time_of_last_update = 0;
     return {
         pending_update: function (x) {
-            var i;
             if (!x.update_display) {
                 return;
             }
@@ -23,10 +22,9 @@ window.TOONTALK.DISPLAY_UPDATES =
         },
         
         update_display: function () {
-            var i;
-            for (i = 0; i < pending_updates.length; i++) {
-                pending_updates[i].update_display();
-            }
+            pending_updates.forEach(function (pending_update) {
+                pending_update.update_display();
+            });
             pending_updates = [];
         },
         

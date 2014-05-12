@@ -154,12 +154,11 @@ window.TOONTALK.UTILITIES =
         
         create_array_from_json: function (json_array, additional_info) {
             var new_array = [];
-            var i;
-            for (i = 0; i < json_array.length; i += 1) {
-                if (json_array[i]) {
-                    new_array[i] = TT.UTILITIES.create_from_json(json_array[i], additional_info);
+            json_array.forEach(function (json_item, index) {
+                if (json_item) {
+                    new_array[index] = TT.UTILITIES.create_from_json(json_item, additional_info);
                 }
-            }
+            });
             return new_array;
         },
         
@@ -197,13 +196,7 @@ window.TOONTALK.UTILITIES =
         },
         
         copy_array: function (array) {
-            // rewrite using splice or map
-            var copy = [];
-            var i;
-            for (i = 0; i < array.length; i++) {
-                copy[i] = array[i];
-            }
-            return copy;
+            return array.slice();
         },
         
         generate_unique_id: function () {
@@ -507,8 +500,8 @@ window.TOONTALK.UTILITIES =
                         // $target.get(0).offsetTop did and then it stopped working
                         // not sure what is happening or even whey they are different
                         // consider also using layerX and layerY
-                        $source.css({left: event.originalEvent.clientX - (target_position.left + drag_x_offset),
-                                      top: event.originalEvent.clientY - (target_position.top + drag_y_offset)});
+                        $source.css({left: event.originalEvent.pageX - (target_position.left + drag_x_offset),
+                                      top: event.originalEvent.pageY - (target_position.top + drag_y_offset)});
                         if ($source.is(".toontalk-frontside") && !$source.is('.ui-resizable')) {
                             // without the setTimeout the following prevents dragging components (e.g. widgets in boxes)
                             setTimeout(function ()  {
@@ -670,12 +663,12 @@ window.TOONTALK.UTILITIES =
                 }
             }
             if (absolute) {
-                if (element.style.position === "absolute") {                    
-                    if (!event || (event.pageX === event.clientX && event.pageY === event.clientY)) {
-                        // is already absolute and no need to adjust for scrolling
-                        return;
-                    }
-                }
+//                 if (element.style.position === "absolute") {                    
+//                     if (!event || (event.pageX === event.clientX && event.pageY === event.clientY)) {
+//                         // is already absolute and no need to adjust for scrolling
+//                         return;
+//                     }
+//                 }
 //                 if (event) {
 //                     left = event.pageX;
 //                     top = event.pageY;
@@ -776,16 +769,15 @@ window.TOONTALK.UTILITIES =
         create_button_set: function () { 
             // takes any number of parameters, any of which can be an array of buttons
             var container = document.createElement("div");
-            var i, j;
-            for (i = 0; i < arguments.length; i++) {
-                if (arguments[i].length >= 0) {
-                    for (j = 0; j < arguments[i].length; j++) {
-                        container.appendChild(arguments[i][j]);
-                    }
+            arguments.forEach(function (argument) {
+               if (argument.length >= 0) {
+                    argument.forEach(function (sub_argument) {
+                        container.appendChild(sub_argument);
+                    });
                 } else { 
                     container.appendChild(arguments[i]);
                 }
-            }
+            });
             $(container).buttonset();
             return container;
         },
@@ -910,23 +902,25 @@ window.TOONTALK.UTILITIES =
         create_vertical_table: function () { // takes any number of parameters
             var table = document.createElement("table");
             var i, row, table_element;
-            for (i = 0; i < arguments.length; i += 1) {
+            arguments.forEach(function (argument) {
                 row = document.createElement("tr");
                 table.appendChild(row);
                 table_element = document.createElement("td");
                 row.appendChild(table_element);
-                table_element.appendChild(arguments[i]);
-            }
+                table_element.appendChild(argument);
+            });
             return table;
         },
         
         selected_radio_button: function () {
-            var i;
-            for (i = 0; i < arguments.length; i += 1) {
-                if (arguments[i].checked) {
-                    return arguments[i];
+            var selected;
+            arguments.some(function (argument) {
+                if (argument.checked) {
+                    selected = argument;
+                    return true;
                 }
-            }
+            });
+            return selected;
         },
         
         get_dragee: function () {
