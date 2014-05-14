@@ -32,7 +32,11 @@ window.TOONTALK.frontside =
                     // see http://stackoverflow.com/questions/5709220/how-to-cancel-click-after-resizable-events
                     return;
                 }
-                widget.open_backside();
+                if ($frontside_element.is(".toontalk-top-level-resource")) {
+                    widget.set_running(!widget.get_running());
+                } else {
+                    widget.open_backside();
+                }
                 event.stopPropagation();
             });
             if (TT.debugging) {

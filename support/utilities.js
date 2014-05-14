@@ -87,12 +87,12 @@ window.TOONTALK.UTILITIES =
                 }
             });
             if (!includes_top_level_backside) {
-                // since there is no backside 'work space' need a way to turn things on and off
+                // since there is no backside 'work space' need a way to turn things off
                 $(document).click(function () {
                     $(".toontalk-frontside").each(function (index, element) {
                         var widget = $(element).data("owner");
                         if (widget && widget.set_running) {
-                            widget.set_running(!widget.get_running());
+                            widget.set_running(false); // !widget.get_running());
                         }
                     });
                 });
@@ -769,15 +769,17 @@ window.TOONTALK.UTILITIES =
         create_button_set: function () { 
             // takes any number of parameters, any of which can be an array of buttons
             var container = document.createElement("div");
-            arguments.forEach(function (argument) {
-               if (argument.length >= 0) {
-                    argument.forEach(function (sub_argument) {
-                        container.appendChild(sub_argument);
-                    });
+            var i, j;
+            // arguments isn't an ordinary array so can't use forEach
+            for (i = 0; i < arguments.length; i++) {
+                if (arguments[i].length >= 0) {
+                    for (j = 0; j < arguments[i].length; j++) {
+                        container.appendChild(arguments[i][j]);
+                    }
                 } else { 
                     container.appendChild(arguments[i]);
                 }
-            });
+            }
             $(container).buttonset();
             return container;
         },
@@ -902,24 +904,23 @@ window.TOONTALK.UTILITIES =
         create_vertical_table: function () { // takes any number of parameters
             var table = document.createElement("table");
             var i, row, table_element;
-            arguments.forEach(function (argument) {
+            for (i = 0; i < arguments.length; i += 1) {
                 row = document.createElement("tr");
                 table.appendChild(row);
                 table_element = document.createElement("td");
                 row.appendChild(table_element);
-                table_element.appendChild(argument);
-            });
+                table_element.appendChild(arguments[i]);
+            }
             return table;
         },
         
         selected_radio_button: function () {
-            var selected;
-            arguments.some(function (argument) {
-                if (argument.checked) {
-                    selected = argument;
-                    return true;
+            var i, selected;
+            for (i = 0; i < arguments.length; i += 1) {
+                if (arguments[i].checked) {
+                    return arguments[i];
                 }
-            });
+            }
             return selected;
         },
         
