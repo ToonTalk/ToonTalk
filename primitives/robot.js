@@ -398,7 +398,7 @@ window.TOONTALK.robot = (function (TT) {
                 new_first_child.appendChild(thing_in_hand_frontside_element);
             }
             new_first_child.appendChild(robot_image);
-            bubble_contents_element = bubble.get_frontside_element();
+            bubble_contents_element = bubble.get_frontside_element(true);
             $(bubble_contents_element).addClass("toontalk-thought-bubble-contents");
             thought_bubble.appendChild(bubble_contents_element);
             resource_becoming_instance = frontside_element.firstChild && $(frontside_element.firstChild).is(".toontalk-robot-image");
@@ -416,9 +416,6 @@ window.TOONTALK.robot = (function (TT) {
 //         $(frontside_element).css({width: this.get_width(),
 //                                   height: this.get_height()});
         frontside_element.appendChild(new_first_child);
-        if (bubble_contents_element) {
-            TT.DISPLAY_UPDATES.pending_update(bubble);
-        }
         if (thing_in_hand) {
             $(thing_in_hand_frontside_element).addClass("toontalk-held-by-robot");
             TT.DISPLAY_UPDATES.pending_update(thing_in_hand);
@@ -431,6 +428,10 @@ window.TOONTALK.robot = (function (TT) {
                 if (resource_becoming_instance) {
                     // need to adjust for thought bubble
                     frontside_element.style.top = ($(frontside_element).position().top - $(robot_image).height()) + "px";
+                }
+                if (bubble_contents_element) {
+                    // unclear why but if this outside of the timeout then it has no affect
+                    TT.DISPLAY_UPDATES.pending_update(bubble);
                 }
                 if (bubble && bubble.is_in_thought_bubble) {
                     bubble.is_in_thought_bubble();
