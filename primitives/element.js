@@ -444,7 +444,7 @@ window.TOONTALK.element_backside =
             var style_attributes = element_widget.get_style_attributes();
             if (style_attributes.indexOf(attribute) < 0) {
                style_attributes[style_attributes.length] = attribute;
-               update_style_attribute_chooser(attributes_chooser, element_widget, attribute_table);
+//                update_style_attribute_chooser(attributes_chooser, element_widget, attribute_table);
             }
         };
         var remove_style_attribute = function (attribute) {
@@ -471,6 +471,7 @@ window.TOONTALK.element_backside =
             var title = "Click to add or remove the '" + option + "' style attribute from the backside of this element.";
             var check_box = TT.UTILITIES.create_check_box(already_added, "toontalk-style-attribute-check-box", option, title);
             var documentation_link = TT.UTILITIES.create_anchor_element(" (?)", documentation_source(option) + option);
+            var list_item = document.createElement("li");
             check_box.container.appendChild(documentation_link);
             check_box.button.addEventListener('click', function (event) {
                 if (check_box.button.checked) {
@@ -480,17 +481,19 @@ window.TOONTALK.element_backside =
                 }
                 update_style_attributes_table(attribute_table, element_widget);
             });
-            menu_list.appendChild(check_box.container);
+            list_item.appendChild(check_box.container);
+            menu_list.appendChild(list_item);
          };
         var process_options = function (sub_tree, menu_list) {
             var category_header, sub_menu_list;
             if (typeof sub_tree === 'string') {
                 process_menu_item(sub_tree, menu_list);
             } else if (sub_tree.label) {
-                category_header = TT.UTILITIES.create_text_element(sub_tree.label);
+                category_header = document.createElement("h3");
+                category_header.textContent = sub_tree.label;
                 sub_menu_list = document.createElement("ul");
-                category_header.appendChild(sub_menu_list);
                 menu_list.appendChild(category_header);
+                menu_list.appendChild(sub_menu_list);   
                 process_options(sub_tree.sub_menus, sub_menu_list);
             } else {
                 // is an array
@@ -501,6 +504,8 @@ window.TOONTALK.element_backside =
         };
         $(attributes_chooser).empty();
         process_options(options, attributes_chooser);
+        $(attributes_chooser).accordion({active: 0,
+                                         heightStyle: "content"});
         return attributes_chooser;
     };
     
@@ -564,7 +569,7 @@ window.TOONTALK.element_backside =
             var html = element_widget.get_HTML();
             var html_input = TT.UTILITIES.create_text_area(html, "toontalk-html-input", "", "Type here to edit the html.");
             var attribute_table = document.createElement("table");
-            var attributes_chooser = document.createElement("ul");
+            var attributes_chooser = document.createElement("div");
             var show_attributes_chooser = create_show_attributes_chooser(attributes_chooser);
             var standard_buttons = TT.backside.create_standard_buttons(backside, element_widget);
             var update_html = function (event) {
