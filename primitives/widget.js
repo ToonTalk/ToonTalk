@@ -401,7 +401,7 @@ window.TOONTALK.widget = (function (TT) {
             }
         },
         
-        set_backside_widgets: function (backside_widgets, json_views) {
+        set_backside_widget_sides: function (backside_widgets, json_views) {
             var backside = this.get_backside();
 //             console.log("setting backside_widgets of " + this + " were " + this.backside_widgets + " and is now " + backside_widgets);
             this.backside_widgets = backside_widgets;
@@ -456,7 +456,7 @@ window.TOONTALK.widget = (function (TT) {
             if (!just_value) {
                 backside_widgets = this.get_backside_widgets();
                 if (backside_widgets.length > 0) {
-                    copy.set_backside_widgets(TT.UTILITIES.copy_widgets(backside_widgets), this.get_backside_widgets_json_views());
+                    copy.set_backside_widget_sides(TT.UTILITIES.copy_widget_sides(backside_widgets), this.get_backside_widgets_json_views());
                 }
             }
             return copy;

@@ -146,7 +146,7 @@ window.TOONTALK.UTILITIES =
                 }
                 if (json_semantic.backside_widgets) {
                     backside_widgets = this.create_array_from_json(json_semantic.backside_widgets);
-                    widget.set_backside_widgets(backside_widgets, json_semantic.backside_widgets.map(function (json) { return json.widget.view; }));
+                    widget.set_backside_widget_sides(backside_widgets, json_semantic.backside_widgets.map(function (json) { return json.widget.view; }));
                 }
             }
             return widget;
@@ -193,6 +193,13 @@ window.TOONTALK.UTILITIES =
                 widgets_copy[i] = widgets[i].copy(just_value);
             }
             return widgets_copy;
+        },
+        
+        copy_widget_sides: function (widget_sides, just_value) {
+            return widget_sides.map(function (widget_side) {
+                return {widget: widget_side.widget.copy(just_value),
+                        is_backside: widget_side.is_backside};
+            });
         },
         
         copy_array: function (array) {
