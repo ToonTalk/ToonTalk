@@ -301,7 +301,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             // following doesn't handle training since is handled below
             this.set_attribute(attribute_name, new_value, false);
         }
-        dropped.remove();  
+        if (!dropped.get_infinite_stack()) {
+            dropped.remove();
+        }
         if (TT.robot.in_training) {
             TT.robot.in_training.dropped_on(dropped, this.create_attribute_object(attribute_name));
         }
