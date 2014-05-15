@@ -252,7 +252,7 @@ window.TOONTALK.robot = (function (TT) {
     };
     
     robot.dropped_on = function (source_widget, target_widget) {
-        // need to support dropping on backside of a widget as well as which side of a box
+        // need to support dropping on backside of a widget as well as which side of a box 
         var path; 
         this.current_action_name = "drop it on";
         path = TT.path.get_path_to(target_widget, this);

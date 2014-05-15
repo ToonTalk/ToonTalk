@@ -1,5 +1,5 @@
  /**
- * Implements ToonTalk's path to widgets 
+ * Implements ToonTalk's path to widgets to enable robots to reference widgets
  * Authors: Ken Kahn
  * License: New BSD
  */
@@ -9,7 +9,7 @@
 window.TOONTALK.path = 
 (function (TT) {
     "use strict";
-    return {
+    return { 
         get_path_to: function (widget, robot) {
             var context = robot.get_context();
             var body = robot.get_body();
@@ -37,8 +37,9 @@ window.TOONTALK.path =
                     return path;
                 }
             }
-            context.backside_widgets.some(function (backside_widget) {
+            context.backside_widgets.some(function (backside_widget_side) {
                 // widget might be on the backside of the context
+                var backside_widget = backside_widget_side.widget;
                 var sub_path;
                 if (backside_widget === widget) {
                     path = TT.path.get_path_to_backside_widget_of_context(backside_widget.get_type_name());
@@ -157,8 +158,8 @@ window.TOONTALK.path =
         get_path_to_backside_widget_of_context: function (type_name) {
              return {dereference: function (context, robot) {
                         var referenced;
-                        context.backside_widgets.some(function (backside_widget) {
-                            if (backside_widget.get_type_name() === type_name) {
+                        context.backside_widgets.some(function (backside_widget_side) {
+                            if (backside_widget_side.widget.get_type_name() === type_name) {
                                 referenced = backside_widget;
                                 return true; // stop searching
                             }
