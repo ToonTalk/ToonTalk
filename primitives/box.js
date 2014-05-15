@@ -133,7 +133,7 @@ window.TOONTALK.box = (function (TT) {
     };
     
     box.match = function (context) {
-        if (this.get_erased()) {
+        if (this.get_erased && this.get_erased()) {
             if (context.match_with_any_box) {
                 return context.match_with_any_box();
             }
@@ -236,7 +236,7 @@ window.TOONTALK.box = (function (TT) {
         var percentage = size === 0 ? 1 : 100 / size;
         var horizontal_style = horizontal ? " style='width:" + percentage + "%;'" : "";
         var vertical_style =   horizontal ? "" : " style='height:" + percentage + "%;'";
-        var erased = this.get_erased();
+        var erased = this.get_erased && this.get_erased();
         html += "<tr" + vertical_style + ">";
         for (i = 0; i < size; i += 1) {
             html += "<td class='toontalk-box-hole toontalk-box-hole-" + extra_classes + "'" + horizontal_style + ">";

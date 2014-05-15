@@ -11,7 +11,7 @@ window.TOONTALK.widget = (function (TT) {
     return {
         
         add_standard_widget_functionality: function (widget) {
-            this.erasable(widget);
+//             this.erasable(widget);
             this.add_sides_functionality(widget);
             this.runnable(widget);
             this.stackable(widget);
@@ -450,7 +450,7 @@ window.TOONTALK.widget = (function (TT) {
         
         add_to_copy: function (copy, just_value) {
             var backside_widgets;
-            if (this.get_erased()) {
+            if (this.get_erased && this.get_erased()) {
                 copy.set_erased(this.get_erased());
             }
             if (!just_value) {

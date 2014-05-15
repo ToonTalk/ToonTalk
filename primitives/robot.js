@@ -41,6 +41,10 @@ window.TOONTALK.robot = (function (TT) {
         };
         new_robot.set_bubble = function (new_value) {
             bubble = new_value;
+            if (bubble) {
+                // only makes sense to erase things in thought bubbles
+                TT.widget.erasable(bubble);
+            }
         };
         new_robot.get_body = function () {
             return body;

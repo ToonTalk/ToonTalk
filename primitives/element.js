@@ -328,7 +328,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     }
                 },
                 visible: function () {
-                    return  $attribute_input && $attribute_input.is(":visible");
+                    return $attribute_input && $attribute_input.is(":visible");
                 },
                 widget_dropped_on_me: function (other) {
                     this.element_widget.dropped_on_style_attribute(other, attribute_name);
@@ -340,8 +340,14 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         var frontside_element = this.get_frontside_element();
         var rendering;
         var backside = this.get_backside();
-        if (this.get_erased()) {
+        if (this.get_erased && this.get_erased()) {
+            // could save the current opacity and restore it below
+            $(frontside_element).css({opacity: 0});
             return;
+        }
+        if (this.get_erased && $(frontside_element).css("opacity") === "0") {
+            // was erased but no longer
+            $(frontside_element).css({opacity: 1});
         }
         if (frontside_element.children.length === $(frontside_element).children(".ui-resizable-handle").length) {
             // only children are resize handles
