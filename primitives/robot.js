@@ -416,10 +416,6 @@ window.TOONTALK.robot = (function (TT) {
 //         $(frontside_element).css({width: this.get_width(),
 //                                   height: this.get_height()});
         frontside_element.appendChild(new_first_child);
-        if (thing_in_hand) {
-            $(thing_in_hand_frontside_element).addClass("toontalk-held-by-robot");
-            TT.DISPLAY_UPDATES.pending_update(thing_in_hand);
-        }
         if (backside && backside.visible()) {
             TT.DISPLAY_UPDATES.pending_update(backside);
         }
@@ -435,6 +431,10 @@ window.TOONTALK.robot = (function (TT) {
                 }
                 if (bubble && bubble.is_in_thought_bubble) {
                     bubble.is_in_thought_bubble();
+                }
+                if (thing_in_hand) {
+                    $(thing_in_hand_frontside_element).addClass("toontalk-held-by-robot");
+                    TT.DISPLAY_UPDATES.pending_update(thing_in_hand);
                 }
             },
             1);
