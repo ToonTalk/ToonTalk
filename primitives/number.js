@@ -500,7 +500,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     };
 
     number.match = function (context) {
-        if (this.get_erasedm && this.get_erased()) {
+        if (this.get_erased && this.get_erased()) {
             if (context.match_with_any_number) {
                 return context.match_with_any_number();
             }
