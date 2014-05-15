@@ -150,7 +150,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     };
     
     element.match = function (context) {
-        if (this.get_erased()) {
+        if (this.get_erased && this.get_erased()) {
             if (context.match_with_any_element) {
                 return context.match_with_any_element();
             }

@@ -160,7 +160,7 @@ window.TOONTALK.path =
                         var referenced;
                         context.backside_widgets.some(function (backside_widget_side) {
                             if (backside_widget_side.widget.get_type_name() === type_name) {
-                                referenced = backside_widget;
+                                referenced = backside_widget_side.widget;
                                 return true; // stop searching
                             }
                         });
