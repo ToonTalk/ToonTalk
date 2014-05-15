@@ -390,14 +390,14 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     element.get_json = function () {
         return this.add_to_json(
            {type: "element",
-            html: this.get_HTML(),
+            html: this.get_HTML(), //TT.UTILITIES.encode_url(
             attributes: this.get_style_attributes(),
             attribute_values: this.get_style_attribute_values()
             });
     };
     
     element.create_from_json = function (json) {
-        var reconstructed_element = element.create(json.html, json.attributes);
+        var reconstructed_element = element.create(json.html, json.attributes); // TT.UTILITIES.decode_url(
         json.attribute_values.forEach(function (value, index) {
             reconstructed_element.add_to_css(json.attributes[index], element.value_in_pixels(value) || value);
         });
