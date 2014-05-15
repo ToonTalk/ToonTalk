@@ -318,6 +318,7 @@ window.TOONTALK.backside =
             var $backside_element = $(backside_element);
             var $erase_button = $("<button>Erase</button>").button();
             $erase_button.addClass("toontalk-erase-backside-button");
+            TT.widget.erasable(widget); // should already be so but can't hurt to be sure
             var update_title = function () {
                 if (widget.get_erased()) {
                     $erase_button.button("option", "label", "Un-erase");

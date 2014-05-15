@@ -10,21 +10,21 @@ window.TOONTALK.robot_action =
 (function (TT) {
     "use strict";
     var unwatched_run_functions =
-        {"copy": function (widget, context, robot) {
+        {"copy": function (widget, context, top_level_context, robot) {
             robot.add_newly_created_widget(widget.copy());
             return true;
          },
-         "pick up": function (widget, context, robot) {
+         "pick up": function (widget, context, top_level_context, robot) {
              robot.set_thing_in_hand(widget);
              return true;
          },
-         "pick up a copy of": function (widget, context, robot) {
+         "pick up a copy of": function (widget, context, top_level_context, robot) {
              var widget_copy = widget.copy();
              robot.add_newly_created_widget(widget_copy);
              robot.set_thing_in_hand(widget_copy);
              return true;
          },
-         "drop it on": function (target_element, context, robot) {
+         "drop it on": function (target_element, context, top_level_context, robot) {
              var thing_in_hand, thing_in_hand_frontside_element, context_frontside_position;
              if (target_element) {
                  thing_in_hand = robot.get_thing_in_hand();
@@ -47,15 +47,15 @@ window.TOONTALK.robot_action =
                      }
                      return true;
                  }
-                 console.log("The robot that " + robot.toString() + " is executing drop_on but has nothing in its hand.");
+                 console.log("The robot that '" + robot.toString() + "' is executing drop_on but has nothing in its hand.");
             }
             return false;
          },
-         "remove": function (widget, context, robot) {
+         "remove": function (widget, context, top_level_context, robot) {
              widget.remove(); 
              return true;
          },
-         "edit": function (widget, context, robot, additional_info) {
+         "edit": function (widget, context, top_level_context, robot, additional_info) {
              // uses setter_name instead of the function itself so can be JSONified
              // could replace with function on first use if this is a performance issue
              if (!widget[additional_info.setter_name]) {
@@ -69,11 +69,11 @@ window.TOONTALK.robot_action =
              }
              return true;
          },
-         "set_erased": function (widget, context, robot, additional_info) {
+         "set_erased": function (widget, context, top_level_context, robot, additional_info) {
              widget.set_erased(additional_info.erased);
              return true;
          },
-         "add to the top-level backside": function (widget, context, robot, additional_info) {
+         "add to the top-level backside": function (widget, context, top_level_context, robot, additional_info) {
              var context_frontside_position, widget_frontside_element, top_level_element;
              if (!robot.visible()) {
                  widget_frontside_element = widget.get_frontside_element(true);
@@ -88,7 +88,7 @@ window.TOONTALK.robot_action =
              }
          }
     };
-    var move_robot_animation = function (widget, context, robot, continuation) {
+    var move_robot_animation = function (widget, context, top_level_context, robot, continuation) {
         var thing_in_hand = robot.get_thing_in_hand();
         var robot_frontside_element = robot.get_frontside_element();
         var left_offset, top_offset;
@@ -105,18 +105,18 @@ window.TOONTALK.robot_action =
             TT.DISPLAY_UPDATES.pending_update(robot);
         }
     };
-    var pick_up_animation = function (widget, context, robot, continuation) {
+    var pick_up_animation = function (widget, context, top_level_context, robot, continuation) {
         var frontside_element = widget.get_frontside_element();
         $(frontside_element).css({width:  frontside_element.offsetWidth + "px",
                                   height: frontside_element.offsetHeight + "px"});
-        move_robot_animation(widget, context, robot, continuation);
+        move_robot_animation(widget, context, top_level_context, robot, continuation);
     };
-    var drop_it_on_animation = function (widget, context, robot, continuation) {
+    var drop_it_on_animation = function (widget, context, top_level_context, robot, continuation) {
         var thing_in_hand = robot.get_thing_in_hand();
         var $thing_in_hand_frontside_element, adjust_dropped_location_continuation;
         if (!thing_in_hand) {
             console.log("Expected " + robot + " to have thing_in_hand.");
-            move_robot_animation(widget, context, robot, continuation);
+            move_robot_animation(widget, context, top_level_context, robot, continuation);
             return;
         }
         $thing_in_hand_frontside_element = $(thing_in_hand.get_frontside_element());
@@ -128,7 +128,7 @@ window.TOONTALK.robot_action =
                 TT.UTILITIES.set_absolute_position($thing_in_hand_frontside_element, thing_in_hand_position);
             }
         };
-        move_robot_animation(widget, context, robot, adjust_dropped_location_continuation);
+        move_robot_animation(widget, context, top_level_context, robot, adjust_dropped_location_continuation);
     };
     var find_sibling = function (widget, class_name_selector) {
         // move this to UTILITIES?
@@ -140,7 +140,7 @@ window.TOONTALK.robot_action =
         var backside_element = widget.get_backside_element(true);
         return $(backside_element).find(class_name_selector).get(0);
     };
-    var button_use_animation = function (widget, context, robot, continuation, class_name_selector) {
+    var button_use_animation = function (widget, context, top_level_context, robot, continuation, class_name_selector) {
         var button_element = find_backside_element(widget, class_name_selector);
         var robot_frontside_element = robot.get_frontside_element();
         var new_continuation = function () {
@@ -153,17 +153,17 @@ window.TOONTALK.robot_action =
         };
         robot.animate_to_element(button_element, new_continuation, 0, -$(robot_frontside_element).height());
     };
-    var copy_animation = function (widget, context, robot, continuation) {
+    var copy_animation = function (widget, context, top_level_context, robot, continuation) {
         var new_continuation = function () {
             continuation();
             widget.add_copy_to_container(robot.get_recently_created_widget());
         };
-        button_use_animation(widget, context, robot, new_continuation, ".toontalk-copy-backside-button");
+        button_use_animation(widget, context, top_level_context, robot, new_continuation, ".toontalk-copy-backside-button");
     };
-    var remove_animation = function (widget, context, robot, continuation) {
-        button_use_animation(widget, context, robot, continuation, ".toontalk-remove-backside-button");
+    var remove_animation = function (widget, context, top_level_context, robot, continuation) {
+        button_use_animation(widget, context, top_level_context, robot, continuation, ".toontalk-remove-backside-button");
     };
-    var edit_animation = function (widget, context, robot, continuation, additional_info) {
+    var edit_animation = function (widget, context, top_level_context, robot, continuation, additional_info) {
         var new_continuation = function () {
             var widget_backside = widget.get_backside();
             if (widget_backside) {
@@ -172,7 +172,7 @@ window.TOONTALK.robot_action =
             }
             continuation();
         };
-        button_use_animation(widget, context, robot, new_continuation, additional_info.button_selector);
+        button_use_animation(widget, context, top_level_context, robot, new_continuation, additional_info.button_selector);
     };
     var watched_run_functions = 
         {"copy": copy_animation,
@@ -181,7 +181,7 @@ window.TOONTALK.robot_action =
          "drop it on": drop_it_on_animation,
          "remove": remove_animation,
          "edit": edit_animation,
-         "add to the top-level backside": function (widget, context, robot, continuation) {
+         "add to the top-level backside": function (widget, context, top_level_context, robot, continuation) {
              // do nothing -- this action is only needed if unwatched
              continuation();
          } 
@@ -192,9 +192,8 @@ window.TOONTALK.robot_action =
             var unwatched_run_function = unwatched_run_functions[action_name];
             var watched_run_function = watched_run_functions[action_name];
             if (!watched_run_function) {
-                watched_run_function = function (referenced, context, robot, continuation, additional_info) {
+                watched_run_function = function (referenced, context, top_level_context, robot, continuation, additional_info) {
                     setTimeout(function ()  {
-//                         unwatched_run_function(referenced, context, robot, additional_info);
                         continuation(referenced);
                         },
                         3000);
@@ -206,19 +205,19 @@ window.TOONTALK.robot_action =
             if (!unwatched_run_function) {
                 console.log("no run_function for " + action_name);
             }
-            new_action.run_unwatched = function (context, robot) {
-                var referenced = TT.path.dereference_path(path, context, robot);
+            new_action.run_unwatched = function (context, top_level_context, robot) {
+                var referenced = TT.path.dereference_path(path, context, top_level_context, robot);
                 if (!referenced) {
                     console.log("Unable to dereference path: " + TT.path.toString(path) + " in context: " + context.toString());
                     return false;
                 }
-                return unwatched_run_function(referenced, context, robot, additional_info);
+                return unwatched_run_function(referenced, context, top_level_context, robot, additional_info);
             };
-            new_action.do_step = function (referenced, context, robot) {
-                 return unwatched_run_function(referenced, context, robot, additional_info);
+            new_action.do_step = function (referenced, context, top_level_context, robot) {
+                 return unwatched_run_function(referenced, context, top_level_context, robot, additional_info);
             };
-            new_action.run_watched = function (context, robot, continuation) {
-                var referenced = TT.path.dereference_path(path, context, robot);
+            new_action.run_watched = function (context, top_level_context, robot, continuation) {
+                var referenced = TT.path.dereference_path(path, context, top_level_context, robot);
                 var new_continuation = function () {
                     continuation(referenced);
                 };
@@ -226,7 +225,7 @@ window.TOONTALK.robot_action =
                     console.log("Unable to dereference the path: " + TT.path.toString(path) + " in context: " + context.toString());
                     return false;
                 }
-                return watched_run_function(referenced, context, robot, new_continuation, additional_info);
+                return watched_run_function(referenced, context, top_level_context, robot, new_continuation, additional_info);
             };
             new_action.toString = function () {
                 var action = additional_info && additional_info.toString ? additional_info.toString : action_name;

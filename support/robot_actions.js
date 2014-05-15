@@ -83,17 +83,17 @@ window.TOONTALK.actions =
             return new_actions;
         },
         
-        run_unwatched: function(context, queue, robot) {
+        run_unwatched: function(context, top_level_context, queue, robot) {
             var steps = this.get_steps();
             steps.forEach(function (step) {
-                step.run_unwatched(context, robot);
+                step.run_unwatched(context, top_level_context, robot);
             });
             if (!robot.get_run_once()) {
-                robot.get_first_in_team().run(context, queue);
+                robot.get_first_in_team().run(context, top_level_context, queue);
             }
         },
         
-        run_watched: function(context, queue, robot) {
+        run_watched: function(context, top_level_context, queue, robot) {
             var steps = this.get_steps();
             var frontside_element = robot.get_frontside_element();
             var robot_start_position = $(frontside_element).position();
@@ -101,13 +101,13 @@ window.TOONTALK.actions =
                 $(frontside_element).removeClass("toontalk-side-animating");
                 robot.set_animating(false);
                 if (!robot.get_run_once()) {
-                    robot.get_first_in_team().run(context, queue);
+                    robot.get_first_in_team().run(context, top_level_context, queue);
                 }
                 TT.DISPLAY_UPDATES.pending_update(robot);
             };
             var run_watched_step = function (i) {
                 var continuation = function (referenced) {
-                    steps[i].do_step(referenced, context, robot);
+                    steps[i].do_step(referenced, context, top_level_context, robot);
                     if (robot.get_thing_in_hand()) {
                         TT.DISPLAY_UPDATES.pending_update(robot);
                     }
@@ -117,17 +117,17 @@ window.TOONTALK.actions =
                         } else {
                             // maybe user hide the robot while running
                             for (i = i+1; i < steps.length; i++) {
-                                steps[i].do_step(referenced, context, robot);
+                                steps[i].do_step(referenced, context, top_level_context, robot);
                             }
                             if (!robot.get_run_once()) {
-                                robot.get_first_in_team().run(context, queue);
+                                robot.get_first_in_team().run(context, top_level_context, queue);
                             }
                         }
                         },
                         500); // pause between steps and give the previous step a chance to update the DOM
                 };
                 if (i < steps.length) {
-                    steps[i].run_watched(context, robot, continuation);
+                    steps[i].run_watched(context, top_level_context, robot, continuation);
                 } else {
                     // restore position
                     $(frontside_element).addClass("toontalk-side-animating");
@@ -183,7 +183,7 @@ window.TOONTALK.newly_created_widgets_path =
     return {
         create: function (index) {
             return {
-                dereference: function (context, robot) {
+                dereference: function (context, top_level_context, robot) {
                     return robot.get_body().dereference(index);
                 },
                 toString: function () {

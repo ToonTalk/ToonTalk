@@ -134,6 +134,7 @@ window.TOONTALK.UTILITIES =
             }
             if (widget) {
                 if (json_semantic.erased) {
+                    TT.widget.erasable(widget);
                     widget.set_erased(json_semantic.erased);
                 }
                 if (json_semantic.infinite_stack) {

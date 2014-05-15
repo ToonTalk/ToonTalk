@@ -60,12 +60,12 @@ window.TOONTALK.path =
             return TT.path.get_path_to_resource(widget.copy());
 //             console.log("TT.path.get_path_to not fully implemented.");
         },
-        dereference_path: function (path, context, robot) {
+        dereference_path: function (path, context, top_level_context, robot) {
             if (path) {
                 if (path.dereference) {
-                    return path.dereference(context, robot);
+                    return path.dereference(context, top_level_context, robot);
                 }
-                return context.dereference(path, robot);
+                return context.dereference(path, top_level_context, robot);
             }
             // no path means entire context -- I don't think this is still true
             return context;
@@ -97,7 +97,7 @@ window.TOONTALK.path =
         to_entire_context: function () {
             // an action that applies to the entire context (i.e. what the robot is working on)
             // need to create fresh ones since if there is a sub-path they shouldn't be sharing
-            return {dereference: function (context, robot) {
+            return {dereference: function (context, top_level_context, robot) {
                         if (this.next) {
                             if (context.dereference) {
                                 return context.dereference(this.next, robot);
@@ -124,7 +124,7 @@ window.TOONTALK.path =
                 // revisit this if resources are ever backside resources
                 widget = widget.widget;
             }
-            return {dereference: function (context, robot) {
+            return {dereference: function (context, top_level_context, robot) {
                         var widget_copy = widget.copy();
                         var widget_frontside_element, copy_frontside_element;
                         robot.add_newly_created_widget(widget_copy);
@@ -156,7 +156,7 @@ window.TOONTALK.path =
             return TT.path.get_path_to_resource(TT.UTILITIES.create_from_json(json.resource));
         },
         get_path_to_backside_widget_of_context: function (type_name) {
-             return {dereference: function (context, robot) {
+             return {dereference: function (context, top_level_context, robot) {
                         var referenced;
                         context.backside_widgets.some(function (backside_widget_side) {
                             if (backside_widget_side.widget.get_type_name() === type_name) {

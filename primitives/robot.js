@@ -177,7 +177,7 @@ window.TOONTALK.robot = (function (TT) {
         return "matched";
     };
     
-    robot.run = function (context, queue) {
+    robot.run = function (context, top_level_context, queue) {
         var i;
         var bubble = this.get_bubble();
         if (this.stopped || this.being_trained) {
@@ -197,11 +197,11 @@ window.TOONTALK.robot = (function (TT) {
                 queue = TT.QUEUE;
             }
             this.get_body().reset_newly_created_widgets();
-            queue.enqueue({robot: this, context: context, queue: queue});
+            queue.enqueue({robot: this, context: context, top_level_context: top_level_context, queue: queue});
             return this.match_status;
         case 'not matched':
             if (this.get_next_robot()) {
-                return this.get_next_robot().run(context, queue);
+                return this.get_next_robot().run(context, top_level_context, queue);
             }
             return this.match_status;
         default:
@@ -216,14 +216,14 @@ window.TOONTALK.robot = (function (TT) {
         this.stopped = new_value;
     };
     
-    robot.run_actions = function(context, queue) {
+    robot.run_actions = function(context, top_level_context, queue) {
         if (this.stopped) { // replace with a method?
             return false;
         }
         if (this.visible()) {
-            return this.get_body().run_watched(context, queue, this);
+            return this.get_body().run_watched(context, top_level_context, queue, this);
         }
-        return this.get_body().run_unwatched(context, queue, this);
+        return this.get_body().run_unwatched(context, top_level_context, queue, this);
     };
     
     robot.picked_up = function (widget, json, is_resource) {

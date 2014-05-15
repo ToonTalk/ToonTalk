@@ -411,8 +411,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     
     element.extend_attribute_path = function (path_to_element_widget, attribute_name) {
        return {
-            dereference: function (context, robot) {
-                var element_widget = path_to_element_widget.dereference(context, robot);
+            dereference: function (context, top_level_context, robot) {
+                // if the robot is running on the backside of a widget that is on the backside of the top_level_context
+                // then use the top_level_context
+                var element_widget = path_to_element_widget.dereference((top_level_context || context), undefined, robot);
                 return element_widget.create_attribute_object(attribute_name);
             },
             toString: function () {

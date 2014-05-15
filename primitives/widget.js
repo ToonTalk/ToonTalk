@@ -90,7 +90,7 @@ window.TOONTALK.widget = (function (TT) {
                             // could this set_stopped stuff be combined with set_running?
                             if (running) {
                                 backside_widget.set_stopped(false);
-                                backside_widget.run(top_level_context || widget);
+                                backside_widget.run(widget, top_level_context);
                             } else {
                                 backside_widget.set_stopped(true);
                             }
