@@ -268,7 +268,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         if (!font_size) {
             font_size = 16;
         }
-        if (this.get_erased()) {
+        if (this.get_erased && this.get_erased()) {
             return '<div class="toontalk-number toontalk-integer' + extra_class + '" style="font-size: ' + font_size + 'px;"></div>';
         }
         if (operator_HTML.length > 0) {
@@ -361,6 +361,11 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             return this;
         }
     };
+    
+    number.widget_dropped_on_me = function (widget) {
+        // only numbers can be dropped on numbers (for now at least)
+        return false;
+    };
 
     number.add = function (other) {
         // other is another rational number
@@ -422,7 +427,6 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     };
     
     number.get_json = function () {
-//         var super_prototype = Object.getPrototypeOf(Object.getPrototypeOf(this));
         return this.add_to_json(
            {type: "number",
             operator: this.get_operator(),
@@ -496,7 +500,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     };
 
     number.match = function (context) {
-        if (this.get_erased()) {
+        if (this.get_erasedm && this.get_erased()) {
             if (context.match_with_any_number) {
                 return context.match_with_any_number();
             }

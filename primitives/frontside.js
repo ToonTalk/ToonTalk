@@ -27,34 +27,16 @@ window.TOONTALK.frontside =
                 return widget;
             };
             frontside_element.addEventListener('click', function (event) {
-                var backside = widget.get_backside();
-                var backside_element, $frontside_ancestor_that_is_backside_element, $frontside_ancestor_before_backside_element, frontside_ancestor_before_backside_element;
                 if ($(event.target).is('.ui-resizable-handle')) { 
                     // don't let resize events cause click response
                     // see http://stackoverflow.com/questions/5709220/how-to-cancel-click-after-resizable-events
                     return;
                 }
-                if (backside) {
-                    return; // could highlight it...
+                if ($frontside_element.is(".toontalk-top-level-resource")) {
+                    widget.set_running(!widget.get_running());
+                } else {
+                    widget.open_backside();
                 }
-                // frontside_ancestor_that_is_backside_element is first parent that is a toontalk-backside
-                $frontside_ancestor_that_is_backside_element = $(frontside_element).parent();
-                $frontside_ancestor_before_backside_element = $(frontside_element);
-                if ($frontside_ancestor_before_backside_element.is(".toontalk-top-level-resource")) {
-                    return;                    
-                }
-                while ($frontside_ancestor_that_is_backside_element.length > 0 && !$frontside_ancestor_that_is_backside_element.is(".toontalk-backside")) {
-                    $frontside_ancestor_before_backside_element = $frontside_ancestor_that_is_backside_element;
-                    $frontside_ancestor_that_is_backside_element = $frontside_ancestor_that_is_backside_element.parent();
-                }
-                frontside_ancestor_before_backside_element = $frontside_ancestor_before_backside_element.get(0);
-                backside = widget.get_backside(true);
-                backside_element = backside.get_element();
-                $(backside_element).data("owner", widget);
-                $(backside_element).css({left: frontside_ancestor_before_backside_element.offsetLeft + frontside_ancestor_before_backside_element.offsetWidth,
-                                         top:  frontside_ancestor_before_backside_element.offsetTop});                
-                $frontside_ancestor_that_is_backside_element.append(backside_element);
-                TT.DISPLAY_UPDATES.pending_update(backside);
                 event.stopPropagation();
             });
             if (TT.debugging) {

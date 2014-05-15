@@ -41,6 +41,10 @@ window.TOONTALK.robot = (function (TT) {
         };
         new_robot.set_bubble = function (new_value) {
             bubble = new_value;
+            if (bubble) {
+                // only makes sense to erase things in thought bubbles
+                TT.widget.erasable(bubble);
+            }
         };
         new_robot.get_body = function () {
             return body;
@@ -173,7 +177,7 @@ window.TOONTALK.robot = (function (TT) {
         return "matched";
     };
     
-    robot.run = function (context, queue) {
+    robot.run = function (context, top_level_context, queue) {
         var i;
         var bubble = this.get_bubble();
         if (this.stopped || this.being_trained) {
@@ -193,17 +197,17 @@ window.TOONTALK.robot = (function (TT) {
                 queue = TT.QUEUE;
             }
             this.get_body().reset_newly_created_widgets();
-            queue.enqueue({robot: this, context: context, queue: queue});
+            queue.enqueue({robot: this, context: context, top_level_context: top_level_context, queue: queue});
             return this.match_status;
         case 'not matched':
             if (this.get_next_robot()) {
-                return this.get_next_robot().run(context, queue);
+                return this.get_next_robot().run(context, top_level_context, queue);
             }
             return this.match_status;
         default:
-            for (i = 0; i < this.match_status.length; i += 1) {
-                this.match_status[i].run_when_non_empty(this);
-            }
+            this.match_status.forEach(function (sub_match_status) {
+                sub_match_status.run_when_non_empty(this);
+            }.bind(this));
             return this.match_status;                    
         }
     };
@@ -212,14 +216,14 @@ window.TOONTALK.robot = (function (TT) {
         this.stopped = new_value;
     };
     
-    robot.run_actions = function(context, queue) {
+    robot.run_actions = function(context, top_level_context, queue) {
         if (this.stopped) { // replace with a method?
             return false;
         }
         if (this.visible()) {
-            return this.get_body().run_watched(context, queue, this);
+            return this.get_body().run_watched(context, top_level_context, queue, this);
         }
-        return this.get_body().run_unwatched(context, queue, this);
+        return this.get_body().run_unwatched(context, top_level_context, queue, this);
     };
     
     robot.picked_up = function (widget, json, is_resource) {
@@ -227,7 +231,7 @@ window.TOONTALK.robot = (function (TT) {
         // current_action_name is used to distinguish between removing something from its container versus referring to it
         if (widget.get_infinite_stack && widget.get_infinite_stack()) {
             // does this cause an addition to newly created backside widgets?
-            this.current_action_name = "pick up a copy";
+            this.current_action_name = "pick up a copy of";
         } else {
             this.current_action_name = "pick up";
         }        
@@ -248,7 +252,7 @@ window.TOONTALK.robot = (function (TT) {
     };
     
     robot.dropped_on = function (source_widget, target_widget) {
-        // need to support dropping on backside of a widget as well as which side of a box
+        // need to support dropping on backside of a widget as well as which side of a box 
         var path; 
         this.current_action_name = "drop it on";
         path = TT.path.get_path_to(target_widget, this);
@@ -263,7 +267,7 @@ window.TOONTALK.robot = (function (TT) {
     robot.copied = function (widget, widget_copy, picked_up) {
         var path;
         if (picked_up) {
-            this.current_action_name = "pick up a copy";
+            this.current_action_name = "pick up a copy of";
         } else {
             this.current_action_name = "copy";
         }
@@ -398,7 +402,7 @@ window.TOONTALK.robot = (function (TT) {
                 new_first_child.appendChild(thing_in_hand_frontside_element);
             }
             new_first_child.appendChild(robot_image);
-            bubble_contents_element = bubble.get_frontside_element();
+            bubble_contents_element = bubble.get_frontside_element(true);
             $(bubble_contents_element).addClass("toontalk-thought-bubble-contents");
             thought_bubble.appendChild(bubble_contents_element);
             resource_becoming_instance = frontside_element.firstChild && $(frontside_element.firstChild).is(".toontalk-robot-image");
@@ -416,13 +420,6 @@ window.TOONTALK.robot = (function (TT) {
 //         $(frontside_element).css({width: this.get_width(),
 //                                   height: this.get_height()});
         frontside_element.appendChild(new_first_child);
-        if (bubble_contents_element) {
-            TT.DISPLAY_UPDATES.pending_update(bubble);
-        }
-        if (thing_in_hand) {
-            $(thing_in_hand_frontside_element).addClass("toontalk-held-by-robot");
-            TT.DISPLAY_UPDATES.pending_update(thing_in_hand);
-        }
         if (backside && backside.visible()) {
             TT.DISPLAY_UPDATES.pending_update(backside);
         }
@@ -432,8 +429,16 @@ window.TOONTALK.robot = (function (TT) {
                     // need to adjust for thought bubble
                     frontside_element.style.top = ($(frontside_element).position().top - $(robot_image).height()) + "px";
                 }
+                if (bubble_contents_element) {
+                    // unclear why but if this outside of the timeout then it has no affect
+                    TT.DISPLAY_UPDATES.pending_update(bubble);
+                }
                 if (bubble && bubble.is_in_thought_bubble) {
                     bubble.is_in_thought_bubble();
+                }
+                if (thing_in_hand) {
+                    $(thing_in_hand_frontside_element).addClass("toontalk-held-by-robot");
+                    TT.DISPLAY_UPDATES.pending_update(thing_in_hand);
                 }
             },
             1);

@@ -43,7 +43,7 @@ window.TOONTALK.queue =
                 }
                 // TODO: use an efficient implementation of queues (linked lists?)
                 next_robot_run = this.dequeue();
-                next_robot_run.robot.run_actions(next_robot_run.context, next_robot_run.queue);
+                next_robot_run.robot.run_actions(next_robot_run.context, next_robot_run.top_level_context, next_robot_run.queue);
                 if (steps_limit) {
                     // steps_limit only used for testing
                     steps_limit -= 1;
