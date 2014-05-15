@@ -500,7 +500,11 @@ window.TOONTALK.UTILITIES =
                     }
                     if ($target.is(".toontalk-backside")) {
                         // widget_dropped_on_me needed here to get geometry right
-                        target_widget.get_backside().widget_dropped_on_me(source_widget, source_is_backside, event);
+                        if (source_widget) {
+                            target_widget.get_backside().widget_dropped_on_me(source_widget, source_is_backside, event);
+                        } else {
+                            console.log("No source_widget");
+                        }
                         drop_handled = true;
                         // should the following use pageX instead?
                         // for a while using target_position.top didn't work while
