@@ -240,6 +240,7 @@ window.TOONTALK.UTILITIES =
                 console.log("no dataTransfer in drop event");
                 return;
             }
+            // following code could be simplified by using event.originalEvent.dataTransfer.types
             // unless in IE9 should use text/html to enable dragging of HTML elements
             try {
                 // the following causes errors in IE9
@@ -570,6 +571,22 @@ window.TOONTALK.UTILITIES =
                     event.stopPropagation();
                     dragee = undefined;
                 });
+//             $element.on('dragenter', function (event) {
+//                 if (!$element.is(".toontalk-top-level-backside") && !$element.is(".toontalk-top-level-resource")) {
+//                     $element.addClass("toontalk-highlight");
+//                 }
+//                 event.stopPropagation();
+//                 event.preventDefault();
+//             });
+//             $element.on('dragleave', function (event) {
+//                 $element.removeClass("toontalk-highlight");
+//                 event.stopPropagation();
+//             });
+//                $element.on('mousemove', function (event) {
+//                    if (dragee && dragee !== $lement.get(0) && !$element.is(".toontalk-top-level-backside") && !$element.is(".toontalk-top-level-resource")) {
+//                        $element.addClass("toontalk-highlight");
+//                    }
+//                 });
             // following provides mouseevents rather than dragstart and the like
             // which doesn't have a dataTransfer attribute
 //             $element.draggable({
@@ -717,6 +734,7 @@ window.TOONTALK.UTILITIES =
         },
         
         add_one_shot_transition_end_handler: function (element, handler) {
+            // could replace the first part of this by http://api.jquery.com/one/
             var handler_run = false;
             var one_shot_handler = function () {
                 // could support any number of parameters but not needed
