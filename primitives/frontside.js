@@ -26,7 +26,7 @@ window.TOONTALK.frontside =
             frontside.get_widget = function () {
                 return widget;
             };
-            frontside_element.addEventListener('click', function (event) {
+            $frontside_element.on('click', function (event) {
                 if ($(event.target).is('.ui-resizable-handle')) { 
                     // don't let resize events cause click response
                     // see http://stackoverflow.com/questions/5709220/how-to-cancel-click-after-resizable-events
@@ -38,6 +38,18 @@ window.TOONTALK.frontside =
                     widget.open_backside();
                 }
                 event.stopPropagation();
+            });
+            $frontside_element.on("mouseenter", function (event) {
+               var backside = widget.get_backside();
+               if (backside) {
+                   $(backside.get_element()).addClass("toontalk-highlight");
+               }
+            });
+            $frontside_element.on("mouseleave", function (event) {
+               var backside = widget.get_backside();
+               if (backside) {
+                   $(backside.get_element()).removeClass("toontalk-highlight");
+               }
             });
             if (TT.debugging) {
                 frontside_element.id = widget.debug_id;
