@@ -300,3 +300,6 @@
 .toontalk-highlight {
 	border: solid 3px red;
 }
+.toontalk-being-dragged {
+	opacity: 0.6;
+}

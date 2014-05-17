@@ -329,12 +329,14 @@ window.TOONTALK.UTILITIES =
                         event.originalEvent.dataTransfer.setData("text", json_div);
                         widget.drag_started(json_object, is_resource);
                     }
+                    $element.addClass("toontalk-being-dragged");
                     event.stopPropagation();
 //                     console.log("drag start. dragee is " + dragee);
                 });
             $element.on('dragend', 
                 function (event) {
 //                     console.log("drag end. dragee is " + dragee);
+                    $element.removeClass("toontalk-being-dragged");
                     if (!dragee) {
                         dragee = $(event.originalEvent.srcElement).closest(".toontalk-side");
                     }
