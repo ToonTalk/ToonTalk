@@ -308,6 +308,7 @@ window.TOONTALK.backside =
                                           opacity: .1});
                                         
                 }
+                $(frontside_element).removeClass("toontalk-highlight");
                 if (widget && widget.forget_backside) {
                     widget.forget_backside();
                 }
