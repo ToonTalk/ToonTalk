@@ -352,6 +352,8 @@ window.TOONTALK.UTILITIES =
                                         height: "100%"});
                         }
                     }
+                    // restore drag handles
+                    $(".ui-resizable-handle").css({"pointer-events": ''});
                     dragee = undefined;
                     event.stopPropagation();
                 });       
@@ -411,6 +413,7 @@ window.TOONTALK.UTILITIES =
                         dragee = undefined;
                         return;
                     }
+                    $target.removeClass("toontalk-highlight");
                     if ($source && $source.length > 0 &&
                         ($source.get(0) === $target.get(0) || jQuery.contains($source.get(0), $target.get(0)))) {
                         if ($source.is(".toontalk-top-level-backside")) {
@@ -571,17 +574,21 @@ window.TOONTALK.UTILITIES =
                     event.stopPropagation();
                     dragee = undefined;
                 });
-//             $element.on('dragenter', function (event) {
-//                 if (!$element.is(".toontalk-top-level-backside") && !$element.is(".toontalk-top-level-resource")) {
-//                     $element.addClass("toontalk-highlight");
-//                 }
-//                 event.stopPropagation();
-//                 event.preventDefault();
-//             });
-//             $element.on('dragleave', function (event) {
-//                 $element.removeClass("toontalk-highlight");
-//                 event.stopPropagation();
-//             });
+            $element.on('dragenter', function (event) {
+                if (!$element.is(".toontalk-top-level-backside") && !$element.is(".toontalk-top-level-resource")) {
+                    $element.addClass("toontalk-highlight");
+                    // moving over the resize handles triggers dragleave unless their pointer events are turned off
+                    // they are restored on dragend
+                    $element.children(".ui-resizable-handle").css({"pointer-events": 'none'});
+                }
+                event.stopPropagation();
+            });
+            $element.on('dragleave', function (event) {
+                if (!$element.is(".toontalk-top-level-backside") && !$element.is(".toontalk-top-level-resource")) {
+                    $element.removeClass("toontalk-highlight");
+                }
+                event.stopPropagation();
+            });
 //                $element.on('mousemove', function (event) {
 //                    if (dragee && dragee !== $lement.get(0) && !$element.is(".toontalk-top-level-backside") && !$element.is(".toontalk-top-level-resource")) {
 //                        $element.addClass("toontalk-highlight");
