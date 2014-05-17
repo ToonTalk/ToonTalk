@@ -108,7 +108,7 @@ window.TOONTALK.backside =
                                     }
                                 }
                             }
-                            $(backside_element).append(widget_side_element);
+                            $backside_element.append(widget_side_element);
                         });
                     },
                     1);
@@ -132,7 +132,7 @@ window.TOONTALK.backside =
                 handles: "e,s,se"}); // was "n,e,s,w,se,ne,sw,nw" but interfered with buttons
             // following should be done by something like GWT's onLoad...
             // but DOMNodeInserted is deprecated and MutationObserver is only in IE11.
-            $(backside_element).on('DOMNodeInserted', function (event) {
+            $backside_element.on('DOMNodeInserted', function (event) {
                 var $source = $(event.originalEvent.srcElement);
                 var owner_widget;
                 if ($source.is(".toontalk-frontside") && $source.parent().is(".toontalk-backside")) {
@@ -155,7 +155,7 @@ window.TOONTALK.backside =
 //                 }
                 event.stopPropagation();
             });
-            $(backside_element).on('DOMNodeRemoved', function (event) {
+            $backside_element.on('DOMNodeRemoved', function (event) {
                 var $source = $(event.originalEvent.srcElement);
                 if ($source.is(".toontalk-frontside")) {
                     $source.removeClass("toontalk-frontside-on-backside");
@@ -166,6 +166,18 @@ window.TOONTALK.backside =
 //                     }
                 }
                 event.stopPropagation();
+            });
+            $backside_element.on("mouseenter", function (event) {
+               var frontside = widget.get_frontside();
+               if (frontside) {
+                   $(frontside.get_element()).addClass("toontalk-highlight");
+               }
+            });
+            $backside_element.on("mouseleave", function (event) {
+               var frontside = widget.get_frontside();
+               if (frontside) {
+                   $(frontside.get_element()).removeClass("toontalk-highlight");
+               }
             });
             if (widget.get_backside_widgets) {
                 backside_widgets = widget.get_backside_widgets();
