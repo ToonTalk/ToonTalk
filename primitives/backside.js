@@ -169,7 +169,8 @@ window.TOONTALK.backside =
             });
             $backside_element.on("mouseenter", function (event) {
                var frontside = widget.get_frontside();
-               if (frontside) {
+               var parent_of_backside = widget.get_parent_of_backside();
+               if (frontside && (!parent_of_backside || parent_of_backside.widget.get_type_name() === "top-level")) {
                    $(frontside.get_element()).addClass("toontalk-highlight");
                }
             });
