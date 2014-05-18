@@ -81,9 +81,6 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         new_element.get_style_attributes = function () {
             return style_attributes;
         };
-        new_element.get_style_attribute_values = function () {
-            return style_attributes.map(this.get_attribute.bind(this));
-        };
         new_element.set_style_attributes = function (new_value) {
             style_attributes = new_value;
         };
@@ -399,7 +396,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     };
         
     element.toString = function () {
-       return "element whose HTML is '" + this.get_HTML() +"'";
+        return "element whose HTML is '" + this.get_HTML() +"'";
     };
     
     element.get_type_name = function () {
@@ -407,11 +404,19 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     };
     
     element.get_json = function () {
+        var attributes = this.get_style_attributes();
+        var json_attributes = [];
+        attributes.forEach(function (item) {
+            // don't want them to appear where they were in the source page
+            if (item !== "left" && item !== "top") {
+                json_attributes.push(item);
+            }
+        });
         return this.add_to_json(
            {type: "element",
             html: encodeURIComponent(this.get_HTML()), 
-            attributes: this.get_style_attributes(),
-            attribute_values: this.get_style_attribute_values()
+            attributes: json_attributes,
+            attribute_values: json_attributes.map(this.get_attribute.bind(this))
             });
     };
     
