@@ -14,7 +14,9 @@ window.TOONTALK.backside =
             var backside = Object.create(this);
             var backside_element = document.createElement("div");
             var $backside_element = $(backside_element);
-            var original_width, original_height;
+            var x_scale = 1; // so can shrink this down
+            var y_scale = 1;
+            var original_width, original_height, width_at_resize_start, height_at_resize_start;
             var backside_widgets;
             $backside_element.addClass("toontalk-backside toontalk-side " + "toontalk-backside-of-" + widget.get_type_name());
             backside.get_element = function () {
@@ -113,21 +115,36 @@ window.TOONTALK.backside =
                     },
                     1);
             };
+            backside.get_backside_dimensions = function () {
+                 return {x_scale: x_scale, 
+                         y_scale: y_scale, 
+                         original_width: original_width, 
+                         original_height: original_height};
+            };
             TT.backside.associate_widget_with_backside_element(widget, backside, backside_element);
             TT.UTILITIES.drag_and_drop($backside_element);
             // the following function should apply recursively...
             $backside_element.resizable(
                 {start: function () {
+                    width_at_resize_start = $backside_element.width();
+                    height_at_resize_start = $backside_element.height();
                     if (!original_width) {
-                        original_width = $backside_element.width();
+                        original_width = width_at_resize_start;
                     }
                     if (!original_height) {
-                        original_height = $backside_element.height();
+                        original_height = height_at_resize_start;
                     }
                 },
                 resize: function (event, ui) {
-                    var percentage = 100 * Math.min(1, $backside_element.width() / original_width, $backside_element.height() / original_height);
-                    $backside_element.css({"font-size": percentage + "%"});
+                     var percentage = 100 * Math.min($backside_element.width() / original_width, $backside_element.height() / original_height);
+                     if (percentage < 100) {
+                         $backside_element.css({"font-size": percentage + "%"});
+                     }
+                },
+                stop: function (event, ui) {
+                    x_scale *= $backside_element.width() / width_at_resize_start;
+                    y_scale *= $backside_element.height() / height_at_resize_start;
+                    TT.backside.scale_backside($backside_element, x_scale, y_scale, original_width, original_height);
                 },
                 handles: "e,s,se"}); // was "n,e,s,w,se,ne,sw,nw" but interfered with buttons
             // following should be done by something like GWT's onLoad...
@@ -314,12 +331,13 @@ window.TOONTALK.backside =
                 }
                 if (widget) {
                     record_backside_widget_positions();
+                    widget.backside_geometry = backside.get_backside_dimensions();
                 }
                 animate_disappearance($backside_element)
                 if (!$(frontside_element).is(":visible")) {
-                   $(frontside_element).css({left: backside_position.left,
-                                             top:  backside_position.top});
-                   $backside_container.append(frontside_element);
+                    $(frontside_element).css({left: backside_position.left,
+                                              top:  backside_position.top});
+                    $backside_container.append(frontside_element);
                 }
                 event.stopPropagation();
             });
@@ -433,6 +451,14 @@ window.TOONTALK.backside =
                 }
             });
             return widgets;
+        },
+        
+        scale_backside: function ($backside_element, x_scale, y_scale, original_width, original_height) {
+            var scale = Math.min(1, x_scale, y_scale);
+            $backside_element.css({transform: "scale(" + scale + ", " + scale + ")",
+                                   "transform-origin": "top left", 
+                                    width: original_width * x_scale / scale,
+                                    height: original_height * y_scale / scale});
         }
 
     };

@@ -561,6 +561,7 @@ window.TOONTALK.widget = (function (TT) {
         
         open_backside: function () {
             var backside = this.get_backside();
+            var backside_geometry = this.backside_geometry;
             var animate_backside_appearance = 
                 function (element, final_left, final_top, final_opacity) {
                     setTimeout(
@@ -573,6 +574,9 @@ window.TOONTALK.widget = (function (TT) {
                             $(element).css({left: final_left,
                                             top: final_top,
                                             opacity: final_opacity});
+                            if (backside_geometry) {
+                                TT.backside.scale_backside($(element), backside_geometry.x_scale, backside_geometry.y_scale, backside_geometry.original_width, backside_geometry.original_height);
+                            }
                         },
                         1);
                 };
