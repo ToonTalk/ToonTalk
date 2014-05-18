@@ -463,8 +463,8 @@ window.TOONTALK.UTILITIES =
                                         height: "100%"});
                         }
                     }
-                    // restore drag handles
-                    $(".ui-resizable-handle").css({"pointer-events": ''});
+                    // restore events to decendants
+                    $element.find("*").css({"pointer-events": ''});
                     dragee = undefined;
                     event.stopPropagation();
                 });       
@@ -632,11 +632,11 @@ window.TOONTALK.UTILITIES =
                     !$element.is(".toontalk-top-level-resource") &&
                     !$element.is(".toontalk-being-dragged")) {
                     $element.addClass("toontalk-highlight");
-                    // moving over the resize handles triggers dragleave unless their pointer events are turned off
+                    // moving over decendants triggers dragleave unless their pointer events are turned off
                     // they are restored on dragend
-                    $element.children(".ui-resizable-handle").css({"pointer-events": 'none'});
+                    $element.find("*").css({"pointer-events": 'none'});
                 }
-//                 event.stopPropagation();
+                event.stopPropagation();
             });
             $element.on('dragleave', function (event) {
                 if (!$element.is(".toontalk-top-level-backside") && !$element.is(".toontalk-top-level-resource")) {
