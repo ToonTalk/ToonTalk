@@ -167,14 +167,14 @@ window.TOONTALK.backside =
                 }
                 event.stopPropagation();
             });
-            $backside_element.on("mouseenter", function (event) {
+            backside_element.addEventListener("mouseenter", function (event) {
                var frontside = widget.get_frontside();
                var parent_of_backside = widget.get_parent_of_backside();
                if (frontside && (!parent_of_backside || parent_of_backside.widget.get_type_name() === "top-level")) {
                    $(frontside.get_element()).addClass("toontalk-highlight");
                }
             });
-            $backside_element.on("mouseleave", function (event) {
+            backside_element.addEventListener("mouseleave", function (event) {
                var frontside = widget.get_frontside();
                if (frontside) {
                    $(frontside.get_element()).removeClass("toontalk-highlight");

@@ -15,10 +15,9 @@ window.TOONTALK.frontside =
             var frontside = Object.create(this);
             var frontside_element = document.createElement('div');
             var $frontside_element = $(frontside_element);
-//             var $frontside_container = $frontside_element.parents(".toontalk-frontside:first");
             $(frontside_element).addClass("toontalk-frontside toontalk-side");
             $frontside_element.data("owner", widget);
-//             console.log("frontside associated with " + widget.debug_id);
+//          console.log("frontside associated with " + widget.debug_id);
             TT.UTILITIES.drag_and_drop($frontside_element);
             frontside.get_element = function () {
                 return frontside_element;
@@ -26,7 +25,8 @@ window.TOONTALK.frontside =
             frontside.get_widget = function () {
                 return widget;
             };
-            $frontside_element.on('click', function (event) {
+            // prefer addEventListener over JQuery's since when I inspect listeners I get a link to this code
+            frontside_element.addEventListener('click', function (event) {
                 if ($(event.target).is('.ui-resizable-handle')) { 
                     // don't let resize events cause click response
                     // see http://stackoverflow.com/questions/5709220/how-to-cancel-click-after-resizable-events
@@ -39,13 +39,13 @@ window.TOONTALK.frontside =
                 }
                 event.stopPropagation();
             });
-            $frontside_element.on("mouseenter", function (event) {
+            frontside_element.addEventListener("mouseenter", function (event) {
                var backside = widget.get_backside();
                if (backside) {
                    $(backside.get_element()).addClass("toontalk-highlight");
                }
             });
-            $frontside_element.on("mouseleave", function (event) {
+            frontside_element.addEventListener("mouseleave", function (event) {
                var backside = widget.get_backside();
                if (backside) {
                    $(backside.get_element()).removeClass("toontalk-highlight");
