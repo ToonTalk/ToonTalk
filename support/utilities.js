@@ -972,7 +972,7 @@ window.TOONTALK.UTILITIES =
             label_element.htmlFor = text_area.id;
             container = TT.UTILITIES.create_horizontal_table(label_element, text_area);
             $(text_area).button().addClass("toontalk-text-text_area");
-            $(text_area).css({"background-color": "white"});
+            $(text_area).css({"background": "white"});
             $(label_element).addClass("ui-widget");
             return {container: container,
                     button: text_area};
