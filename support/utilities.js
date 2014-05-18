@@ -254,6 +254,9 @@ window.TOONTALK.UTILITIES =
                     $(side_element).css({width: json_view.frontside_width,
                                          height: json_view.frontside_height});
                 }
+                if (json_view && json_view.backside_geometry) {
+                    widget.backside_geometry = json_view.backside_geometry;                    
+                }
                 if (json_semantic.backside_widgets) {
                     backside_widgets = this.create_array_from_json(json_semantic.backside_widgets);
                     widget.set_backside_widget_sides(backside_widgets, json_semantic.backside_widgets.map(function (json) { return json.widget.view; }));

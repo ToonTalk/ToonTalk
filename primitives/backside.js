@@ -116,10 +116,12 @@ window.TOONTALK.backside =
                     1);
             };
             backside.get_backside_dimensions = function () {
-                 return {x_scale: x_scale, 
-                         y_scale: y_scale, 
-                         original_width: original_width, 
-                         original_height: original_height};
+                 if (x_scale) {
+                     return {x_scale: x_scale, 
+                             y_scale: y_scale, 
+                             original_width: original_width, 
+                             original_height: original_height};
+                 }
             };
             TT.backside.associate_widget_with_backside_element(widget, backside, backside_element);
             TT.UTILITIES.drag_and_drop($backside_element);

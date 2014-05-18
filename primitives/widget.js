@@ -341,6 +341,13 @@ window.TOONTALK.widget = (function (TT) {
                         json_view.backside_left = position.left;
                         json_view.backside_top = position.top;
                     }
+                    if (backside.get_backside_dimensions()) {
+                        json_view.backside_geometry = backside.get_backside_dimensions();
+                    }
+                }
+                if (!json_view.backside_geometry && this.backside_geometry) {
+                    // backside is closed but this was saved when it was hidden
+                    json_view.backside_geometry = this.backside_geometry;
                 }
                 backside_widgets = this.get_backside_widgets();
                 if (backside_widgets.length > 0) {
