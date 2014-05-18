@@ -592,7 +592,7 @@ window.TOONTALK.UTILITIES =
                             }
                         }
                     } else {
-                        if (event.originalEvent.dataTransfer.files) {
+                        if (event.originalEvent.dataTransfer.files.length > 0) {
                             // forEach doesn't work isn't really an array
                             for (i = 0; i < event.originalEvent.dataTransfer.files.length; i++) {
                                 handle_drop_from_file_contents(event.originalEvent.dataTransfer.files[i], $target, target_widget, target_position, event);
