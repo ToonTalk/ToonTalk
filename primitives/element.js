@@ -27,7 +27,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         if (value.length === 0) {
             number = 0;
         }
-        if (!number) {
+        if (typeof number === 'undefined') {
             last_character = value.substring(value.length-1);
             if ("0123456789x".indexOf(last_character) >= 0) {
                 // assumes that only CSS units ending in 'x' is 'px'
@@ -409,14 +409,14 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     element.get_json = function () {
         return this.add_to_json(
            {type: "element",
-            html: this.get_HTML(), //TT.UTILITIES.encode_url(
+            html: encodeURIComponent(this.get_HTML()), 
             attributes: this.get_style_attributes(),
             attribute_values: this.get_style_attribute_values()
             });
     };
     
     element.create_from_json = function (json) {
-        var reconstructed_element = element.create(json.html, json.attributes); // TT.UTILITIES.decode_url(
+        var reconstructed_element = element.create(decodeURIComponent(json.html), json.attributes);
         json.attribute_values.forEach(function (value, index) {
             reconstructed_element.add_to_css(json.attributes[index], value_in_pixels(value) || value);
         });

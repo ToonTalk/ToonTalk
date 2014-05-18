@@ -841,36 +841,6 @@ window.TOONTALK.UTILITIES =
             duration);
         },
         
-//         encode_url: function (string) {
-//             return string.replace(/src/g, "srcsrc");
-//         },
-        
-//         decode_url: function (string) {
-//             return string.replace(/srcsrc/g, "src");
-//         },
-        
-//         // following from https://code.google.com/p/jsool/source/browse/jsool-site/js/util/Encoder.js?r=176
-//         encode_html: function (string) {
-//                         return string.replace(/./g,function(chr, index){
-//                                 return chr.match(/[\w\d]/) ? chr : "&#"+chr.charCodeAt(0)+";" ;
-//                         });
-//                 },
-//         decode_html: function (string) {
-//                         return string.replace(/&#[0-9]+;/g,function(text,index){
-//                                 return String.fromCharCode(text.match(/[0-9]+/)[0]);
-//                         });
-//                 },
-//         encode_url: function(string){
-//                         return string.replace(/./g,function(chr, index){
-//                                 return chr.match(/[\w\d]/) ? chr : "%"+chr.charCodeAt(0).toString(16).toUpperCase() ;
-//                         });
-//                 },
-//         decode_url: function(string){
-//                         return string.replace(/%[0-9A-Fa-f]{2}/g,function(text,index){
-//                                 return String.fromCharCode(parseInt(text.substring(1),16));
-//                         });
-//                 },
-        
 //         add_frontside_element_to_container: function (widget, widget_with_container) {
 //             var widget_frontside_element = widget.get_frontside_element();
 //             var element_with_container = widget_with_container.get_frontside_element();
