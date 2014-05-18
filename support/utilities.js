@@ -628,7 +628,9 @@ window.TOONTALK.UTILITIES =
                     dragee = undefined;
                 });
             $element.on('dragenter', function (event) {
-                if (!$element.is(".toontalk-top-level-backside") && !$element.is(".toontalk-top-level-resource")) {
+                if (!$element.is(".toontalk-top-level-backside") && 
+                    !$element.is(".toontalk-top-level-resource") &&
+                    !$element.is(".toontalk-being-dragged")) {
                     $element.addClass("toontalk-highlight");
                     // moving over the resize handles triggers dragleave unless their pointer events are turned off
                     // they are restored on dragend
