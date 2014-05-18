@@ -45,6 +45,114 @@ window.TOONTALK.UTILITIES =
         }
         return div_string.substring(json_start, json_end+1);
     };
+    var handle_drop = function ($target, $source, source_widget, target_widget, event, json_object, drag_x_offset, drag_y_offset, source_is_backside) {
+            var drop_handled = true;
+            var target_position = $target.offset();
+            var new_target;
+            if ($target.is(".toontalk-backside")) {
+                // widget_dropped_on_me needed here to get geometry right
+                if (source_widget) {
+                    target_widget.get_backside().widget_dropped_on_me(source_widget, source_is_backside, event);
+                } else {
+                    console.log("No source_widget");
+                }
+                // should the following use pageX instead?
+                // for a while using target_position.top didn't work while
+                // $target.get(0).offsetTop did and then it stopped working
+                // not sure what is happening or even whey they are different
+                // consider also using layerX and layerY
+                if (!drag_x_offset) {
+                    drag_x_offset = 0;
+                }
+                if (!drag_y_offset) {
+                    drag_y_offset = 0;
+                }
+                $source.css({left: event.originalEvent.pageX - (target_position.left + drag_x_offset),
+                             top: event.originalEvent.pageY - (target_position.top + drag_y_offset)});
+                if ($source.is(".toontalk-frontside") && !$source.is('.ui-resizable')) {
+                    // without the setTimeout the following prevents dragging components (e.g. widgets in boxes)
+                    setTimeout(function ()  {
+                        $source.resizable(
+                            {resize: function(event, ui) {
+                                 TT.DISPLAY_UPDATES.pending_update(source_widget);            
+                             },
+                             // the corner handles looked bad on element widgets
+                             // and generally got in the way
+                             handles: "n,e,s,w"}); 
+                            },
+                        0);
+                    }
+                    if (json_object && json_object.semantic.running) {
+                        source_widget.set_running(true);
+                    }
+            } else if ($target.is(".toontalk-drop-area")) {
+                $source.addClass("toontalk-widget-in-drop_area");
+                $target.append($source.get(0));
+                if ($source.is(".toontalk-robot")) {
+                    $target.data("drop_area_owner").set_next_robot($source.data("owner"));
+                }
+                drop_handled = true;
+            } else if (!target_widget) {
+                console.log("target element has no 'owner'");
+                return; // let event propagate
+            } else if (source_widget.drop_on && source_widget.drop_on(target_widget, $target, event)) {
+                drop_handled = true;
+            } else if (target_widget.widget_dropped_on_me && target_widget.widget_dropped_on_me(source_widget, source_is_backside, event)) {
+                drop_handled = true;
+            } else {
+                // ignore the current target and replace with the backside it is on
+                new_target = $target.closest(".toontalk-backside");
+                if (new_target.length > 0) {
+                    target_widget = new_target.data("owner");
+                    if (target_widget) {
+                        target_widget.get_backside().widget_dropped_on_me(source_widget, source_is_backside, event);
+                        // place it directly underneath the original target
+                        $source.css({left: $target.position().left,
+                                     top:  $target.position().top + $target.height()});
+                        // following didn't work -- placed far to left of where it was expected
+//                                 $source.css({left: event.originalEvent.layerX,
+//                                              top:  event.originalEvent.layerY});
+                        drop_handled = true;
+                    }
+                }
+            }
+            if (target_widget && !drop_handled) {
+                // is the obsolete? If so is drop_handled?
+                if (target_widget.widget_dropped_on_me) {
+                    target_widget.widget_dropped_on_me(source_widget, source_is_backside, event);
+                }
+            }
+    };   
+    var handle_drop_from_file_contents = function (file, $target, target_widget, event) {
+            var reader  = new FileReader();
+            var image_file = file.type.indexOf("image") === 0;
+            var widget, json, element_HTML;
+            reader.onloadend = function () {
+                if (image_file) {
+                    widget = TT.element.create("<img src='" + reader.result + "' alt='" + file.name + "'/>");
+                } else {
+                    json = extract_json_from_div_string(reader.result);
+                    if (json) {
+                        try {
+                            widget = TT.UTILITIES.create_from_json(JSON.parse(json));
+                        } catch (e) {
+                            // no need to report this is need not contain ToonTalk JSON
+                            // console.log("Exception parsing " + json + "\n" + e.toString());
+                        }
+                    }
+                    if (!widget) {
+                        // just use the text as the HTML
+                        widget = TT.element.create(reader.result);
+                    }
+                }
+                handle_drop($target, $(widget.get_frontside_element(true)), widget, target_widget, event);
+            }
+            if (image_file) {
+                reader.readAsDataURL(file);
+            } else {
+                reader.readAsText(file);
+            }
+    };
     var initialise = function () {
         var includes_top_level_backside = false;
         TT.debugging = true; // remove this for production releases
@@ -370,7 +478,7 @@ window.TOONTALK.UTILITIES =
                 });
             $element.on('drop',
                 function (event) {
-                    var $source, source_widget, $target, target_widget, target_position, drag_x_offset, drag_y_offset, new_target, source_is_backside, $container, container, i;
+                    var $source, source_widget, $target, target_widget, drag_x_offset, drag_y_offset, new_target, source_is_backside, $container, container, i;
                     var json_object = TT.UTILITIES.data_transfer_json_object(event);
                     // should this set the dropEffect? https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer#dropEffect.28.29 
                     // prevent default first so if there is an exception the default behaviour for some drags of going to a new page is prevented
@@ -431,7 +539,6 @@ window.TOONTALK.UTILITIES =
                         }
                     }
                     target_widget = $target.data("owner");
-                    target_position = $target.offset();
                     if (json_object && json_object.view && json_object.view.drag_x_offset) {
                         drag_x_offset = json_object.view.drag_x_offset;
                         drag_y_offset = json_object.view.drag_y_offset;
@@ -483,7 +590,7 @@ window.TOONTALK.UTILITIES =
                         if (event.originalEvent.dataTransfer.files) {
                             // forEach doesn't work isn't really an array
                             for (i = 0; i < event.originalEvent.dataTransfer.files.length; i++) {
-                                TT.UTILITIES.handle_drop_from_file_contents(event.originalEvent.dataTransfer.files[i], $target, target_widget, event);
+                                handle_drop_from_file_contents(event.originalEvent.dataTransfer.files[i], $target, target_widget, event);
                             };
                             event.stopPropagation();
                             return;
@@ -513,7 +620,7 @@ window.TOONTALK.UTILITIES =
                         event.stopPropagation();
                         return;
                     }
-                    TT.UTILITIES.handle_drop($target, $source, source_widget, target_widget, event, json_object, target_position, drag_x_offset, drag_y_offset, source_is_backside);
+                    handle_drop($target, $source, source_widget, target_widget, event, json_object, drag_x_offset, drag_y_offset, source_is_backside);
                     event.stopPropagation();
                     dragee = undefined;
                 });
@@ -548,91 +655,6 @@ window.TOONTALK.UTILITIES =
 // //                 containment: false, // doesn't seem to work... -- nor does "none"
 //                 stack: ".toontalk-side",
 //             }); 
-        },
-        
-        handle_drop: function ($target, $source, source_widget, target_widget, event, json_object, target_position, drag_x_offset, drag_y_offset, source_is_backside) {
-            var drop_handled = true;
-            var new_target;
-            if ($target.is(".toontalk-backside")) {
-                // widget_dropped_on_me needed here to get geometry right
-                if (source_widget) {
-                    target_widget.get_backside().widget_dropped_on_me(source_widget, source_is_backside, event);
-                } else {
-                    console.log("No source_widget");
-                }
-                // should the following use pageX instead?
-                // for a while using target_position.top didn't work while
-                // $target.get(0).offsetTop did and then it stopped working
-                // not sure what is happening or even whey they are different
-                // consider also using layerX and layerY
-                if (target_position) {
-                    $source.css({left: event.originalEvent.pageX - (target_position.left + drag_x_offset),
-                                  top: event.originalEvent.pageY - (target_position.top + drag_y_offset)});
-                }
-                if ($source.is(".toontalk-frontside") && !$source.is('.ui-resizable')) {
-                    // without the setTimeout the following prevents dragging components (e.g. widgets in boxes)
-                    setTimeout(function ()  {
-                        $source.resizable(
-                            {resize: function(event, ui) {
-                                 TT.DISPLAY_UPDATES.pending_update(source_widget);            
-                             },
-                             // the corner handles looked bad on element widgets
-                             // and generally got in the way
-                             handles: "n,e,s,w"}); 
-                            },
-                        0);
-                    }
-                    if (json_object && json_object.semantic.running) {
-                        source_widget.set_running(true);
-                    }
-            } else if ($target.is(".toontalk-drop-area")) {
-                $source.addClass("toontalk-widget-in-drop_area");
-                $target.append($source.get(0));
-                if ($source.is(".toontalk-robot")) {
-                    $target.data("drop_area_owner").set_next_robot($source.data("owner"));
-                }
-                drop_handled = true;
-            } else if (!target_widget) {
-                console.log("target element has no 'owner'");
-                return; // let event propagate
-            } else if (source_widget.drop_on && source_widget.drop_on(target_widget, $target, event)) {
-                drop_handled = true;
-            } else if (target_widget.widget_dropped_on_me && target_widget.widget_dropped_on_me(source_widget, source_is_backside, event)) {
-                drop_handled = true;
-            } else {
-                // ignore the current target and replace with the backside it is on
-                new_target = $target.closest(".toontalk-backside");
-                if (new_target.length > 0) {
-                    target_widget = new_target.data("owner");
-                    if (target_widget) {
-                        target_widget.get_backside().widget_dropped_on_me(source_widget, source_is_backside, event);
-                        // place it directly underneath the original target
-                        $source.css({left: $target.position().left,
-                                     top:  $target.position().top + $target.height()});
-                        // following didn't work -- placed far to left of where it was expected
-//                                 $source.css({left: event.originalEvent.layerX,
-//                                              top:  event.originalEvent.layerY});
-                        drop_handled = true;
-                    }
-                }
-            }
-            if (target_widget && !drop_handled) {
-                // is the obsolete? If so is drop_handled?
-                if (target_widget.widget_dropped_on_me) {
-                    target_widget.widget_dropped_on_me(source_widget, source_is_backside, event);
-                }
-            }
-        },
-        
-        handle_drop_from_file_contents: function (file, $target, target_widget, event) {
-            // todo: handle non-image files too -- look at file.type
-            var reader  = new FileReader();
-            var element_widget;
-            reader.onloadend = function () {
-                element_widget = TT.element.create("<img src='" + reader.result + "' alt='" + file.name + "'/>");
-                TT.UTILITIES.handle_drop($target, $(element_widget.get_frontside_element(true)), element_widget, target_widget, event);
-            }
-            reader.readAsDataURL(file);
         },
         
         create_drop_area: function (instructions) {
