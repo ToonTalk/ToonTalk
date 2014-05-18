@@ -138,14 +138,14 @@ window.TOONTALK.backside =
                     }
                 },
                 resize: function (event, ui) {
-                     var percentage = 100 * Math.min($backside_element.width() / original_width, $backside_element.height() / original_height);
-                     if (percentage < 100) {
-                         $backside_element.css({"font-size": percentage + "%"});
-                     }
-                },
-                stop: function (event, ui) {
-                    x_scale *= $backside_element.width() / width_at_resize_start;
-                    y_scale *= $backside_element.height() / height_at_resize_start;
+                    var current_width = ui.size.width; 
+                    var current_height = ui.size.height;
+//                     console.log({x_scale_change: current_width / width_at_resize_start,
+//                                  y_scale_change: current_height / height_at_resize_start});
+                    x_scale *= current_width / width_at_resize_start;
+                    y_scale *= current_height / height_at_resize_start;
+                    width_at_resize_start = current_width;
+                    height_at_resize_start = current_height;
                     TT.backside.scale_backside($backside_element, x_scale, y_scale, original_width, original_height);
                 },
                 handles: "e,s,se"}); // was "n,e,s,w,se,ne,sw,nw" but interfered with buttons
@@ -457,6 +457,7 @@ window.TOONTALK.backside =
         
         scale_backside: function ($backside_element, x_scale, y_scale, original_width, original_height) {
             var scale = Math.min(1, x_scale, y_scale);
+//             console.log({scale: scale, x_scale: x_scale, y_scale: y_scale});
             $backside_element.css({transform: "scale(" + scale + ", " + scale + ")",
                                    "transform-origin": "top left", 
                                     width: original_width * x_scale / scale,
