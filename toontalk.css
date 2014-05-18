@@ -290,3 +290,6 @@
 .toontalk-being-dragged {
 	opacity: 0.6;
 }
+.toontalk-ignore-events {
+	pointer-events: none;
+}

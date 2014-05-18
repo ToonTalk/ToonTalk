@@ -464,7 +464,7 @@ window.TOONTALK.UTILITIES =
                         }
                     }
                     // restore events to decendants
-                    $element.find("*").css({"pointer-events": ''});
+                    $element.find("*").removeClass("toontalk-ignore-events");
                     dragee = undefined;
                     event.stopPropagation();
                 });       
@@ -484,6 +484,8 @@ window.TOONTALK.UTILITIES =
                     // should this set the dropEffect? https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer#dropEffect.28.29 
                     // prevent default first so if there is an exception the default behaviour for some drags of going to a new page is prevented
                     event.preventDefault();
+                    // restore events to decendants
+                    $element.find("*").removeClass("toontalk-ignore-events");
 //                     console.log("drop. dragee is " + dragee);
                     $source = dragee;
                     if (!$source && !json_object && !event.originalEvent.dataTransfer.files) {
@@ -634,7 +636,13 @@ window.TOONTALK.UTILITIES =
                     $element.addClass("toontalk-highlight");
                     // moving over decendants triggers dragleave unless their pointer events are turned off
                     // they are restored on dragend
-                    $element.find("*").css({"pointer-events": 'none'});
+                    if ($element.data("owner").get_type_name() !== 'box') {
+                        // this breaks the dropping of elements on empty holes so not supported
+                        $element.find("*").addClass("toontalk-ignore-events");
+                        // except for toontalk-sides and their ancestors since they are OK to drop on
+                        // following was intended to deal with box holes but didn't work
+//                         $element.find(".toontalk-side").parents().removeClass("toontalk-ignore-events");
+                    }
                 }
                 event.stopPropagation();
             });
