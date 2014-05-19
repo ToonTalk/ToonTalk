@@ -30,6 +30,9 @@
 	-webkit-transition: all 1s cubic-bezier(0.455, 0.03, 0.515, 0.955);
     transition:         all 1s cubic-bezier(0.455, 0.03, 0.515, 0.955);	
 }
+/* .toontalk-side:active {
+	border: solid 2px red;
+} */
 .toontalk-robot-animating {
 	opacity: .8;
 }
@@ -109,7 +112,7 @@
 	width: 100%;
 	height: 100%;
 	border-color: rgb(173, 43, 105);
-	padding:  0;
+	padding: 0;
 }
 .toontalk-box-hole-horizontal {
 	border-style: solid;
@@ -117,7 +120,7 @@
 	border-right-width: 6px;
 	border-top-width: 6px;
 	border-bottom-width: 6px;
-	min-height:  100%;
+	min-height: 100%;
 }
 .toontalk-box-hole-horizontal:nth-child(1) {
 	border-left-width: 6px;
@@ -202,10 +205,8 @@
 	min-height: 100%;
 }
 .toontalk-operator-choice {
-	/* font-weight: bold; */
 }
 .toontalk-hide-backside-button {
-/* 	position: absolute; */
 }
 .toontalk-robot-description-input {
 	width: 30em;
@@ -240,7 +241,7 @@
 	top: 75%;
 /* 	width: 50%;
 	height: 25%; */
-	z-index: 1000
+	z-index: 1000;
 }
 .toontalk-drop-area {
 	background-color: rgb(187, 246, 248);
@@ -284,5 +285,11 @@
 	border-radius: 10px;
 }
 .toontalk-highlight {
-	border: solid 4px red;
+	border: solid 3px red;
+}
+.toontalk-being-dragged {
+	opacity: 0.6;
+}
+.toontalk-ignore-events {
+	pointer-events: none;
 }

@@ -321,16 +321,6 @@ window.TOONTALK.box = (function (TT) {
             TT.UTILITIES.set_position_absolute(old_hole_element, false);
             $(old_hole_element).addClass("toontalk-frontside-in-box");
         }
-//         // the following seems to be necessary but not clear why height as percentage fails
-//         if (!this.get_horizontal()) {
-//             setTimeout(function () {
-//                     if ($(old_hole_element).is(".toontalk-empty-hole")) {
-//                         box_frontside_element = box_frontside.get_element();
-//                         $(old_hole_element).css({"min-height": $(box_frontside_element).width() / size});
-//                     }
-//                 },
-//                 1);
-//         }
         TT.DISPLAY_UPDATES.pending_update(hole_frontside);
     };
     

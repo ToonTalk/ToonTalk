@@ -7,13 +7,50 @@
 /*jslint browser: true, devel: true, plusplus: true, vars: true, white: true */
 /*global $, BigInteger, bigrat */
 
+(function () {
+    
+// this internal function is need by both element and element_backside
+var is_transformation_option = function (attribute) {
+    return (attribute === 'rotate' || attribute === 'skewX' || attribute === 'skewY' || attribute === 'transform-origin-x' || attribute === 'transform-origin-y');
+};
+
 window.TOONTALK.element = (function (TT) { // TT is for convenience and more legible code
     "use strict";
     
     var element = Object.create(TT.widget);
     
-    element.is_transformation_option = function (attribute) {
-        return (attribute === 'rotate' || attribute === 'skewX' || attribute === 'skewY' || attribute === 'transform-origin-x' || attribute === 'transform-origin-y');
+    var value_in_pixels = function (value, attribute) {
+        var last_character, number;
+        if (typeof value === 'number') {
+            number = value;
+        }
+        if (value.length === 0) {
+            number = 0;
+        }
+        if (typeof number === 'undefined') {
+            last_character = value.substring(value.length-1);
+            if ("0123456789x".indexOf(last_character) >= 0) {
+                // assumes that only CSS units ending in 'x' is 'px'
+                number = parseFloat(value);
+                if (isNaN(number)) {
+                    return; // undefined
+                }
+            }
+        }
+        return canonicalise_value(number, attribute);
+    };
+    
+    var canonicalise_value = function (value, attribute) {
+        var new_value;
+        if (["rotate", "skewX", "skewY"].indexOf(attribute) >= 0) {
+            // ensure the value is between 0 and 360
+            new_value = value % 360;
+            if (new_value < 0) {
+                new_value += 360;
+            }
+            return new_value;
+        }
+        return value;
     };
     
     element.create = function (html, style_attributes) {
@@ -44,9 +81,6 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         new_element.get_style_attributes = function () {
             return style_attributes;
         };
-        new_element.get_style_attribute_values = function () {
-            return style_attributes.map(this.get_attribute.bind(this));
-        };
         new_element.set_style_attributes = function (new_value) {
             style_attributes = new_value;
         };
@@ -57,7 +91,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             return transform_css;
         };
         new_element.add_to_css = function (attribute, value) {
-            if (element.is_transformation_option(attribute)) {
+            if (is_transformation_option(attribute)) {
                 // could remove attribute if value is 0
                 if (!transform_css) {
                     transform_css = {};
@@ -201,24 +235,6 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         return value.replace("px", "");
     };
     
-    element.value_in_pixels = function (value) {
-        var last_character, number;
-        if (typeof value === 'number') {
-            return value;
-        }
-        if (value.length === 0) {
-            return 0;
-        }
-        last_character = value.substring(value.length-1);
-        if ("0123456789x".indexOf(last_character) >= 0) {
-            // assumes that only CSS units ending in 'x' is 'px'
-            number = parseFloat(value);
-            if (!isNaN(number)) {
-                return number;
-            }
-        }
-    };
-    
     element.set_attribute = function (attribute, new_value, handle_training) {
         var frontside = this.get_frontside();
         var frontside_element = frontside.get_element();
@@ -232,7 +248,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             return false;
         }
         // need to use a number for JQuery's css otherwise treats "100" as "auto"
-        new_value_number = element.value_in_pixels(new_value);
+        new_value_number = value_in_pixels(new_value, attribute);
         if (new_value_number) {
             if (current_value === new_value_number) {
                 return;
@@ -380,7 +396,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     };
         
     element.toString = function () {
-       return "element whose HTML is '" + this.get_HTML() +"'";
+        return "element whose HTML is '" + this.get_HTML() +"'";
     };
     
     element.get_type_name = function () {
@@ -388,18 +404,26 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     };
     
     element.get_json = function () {
+        var attributes = this.get_style_attributes();
+        var json_attributes = [];
+        attributes.forEach(function (item) {
+            // don't want them to appear where they were in the source page
+            if (item !== "left" && item !== "top") {
+                json_attributes.push(item);
+            }
+        });
         return this.add_to_json(
            {type: "element",
-            html: this.get_HTML(), //TT.UTILITIES.encode_url(
-            attributes: this.get_style_attributes(),
-            attribute_values: this.get_style_attribute_values()
+            html: encodeURIComponent(this.get_HTML()), 
+            attributes: json_attributes,
+            attribute_values: json_attributes.map(this.get_attribute.bind(this))
             });
     };
     
     element.create_from_json = function (json) {
-        var reconstructed_element = element.create(json.html, json.attributes); // TT.UTILITIES.decode_url(
+        var reconstructed_element = element.create(decodeURIComponent(json.html), json.attributes);
         json.attribute_values.forEach(function (value, index) {
-            reconstructed_element.add_to_css(json.attributes[index], element.value_in_pixels(value) || value);
+            reconstructed_element.add_to_css(json.attributes[index], value_in_pixels(value) || value);
         });
         return reconstructed_element;
     };
@@ -469,7 +493,7 @@ window.TOONTALK.element_backside =
             if (attribute === 'transform-origin-x' || attribute === 'transform-origin-y') {
                 // # added so rest is ignored
                 return "https://developer.mozilla.org/en-US/docs/Web/CSS/transform-origin#"
-            } else if (TT.element.is_transformation_option(attribute)) {
+            } else if (is_transformation_option(attribute)) {
                 return "https://developer.mozilla.org/en-US/docs/Web/CSS/transform#";
             } else {
                 return "http://www.w3.org/community/webed/wiki/CSS/Properties/";
@@ -623,3 +647,5 @@ window.TOONTALK.element_backside =
             return backside;
     }};
 }(window.TOONTALK));
+
+}());

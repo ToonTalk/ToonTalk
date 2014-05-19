@@ -14,7 +14,9 @@ window.TOONTALK.backside =
             var backside = Object.create(this);
             var backside_element = document.createElement("div");
             var $backside_element = $(backside_element);
-            var original_width, original_height;
+            var x_scale = 1; // so can shrink this down
+            var y_scale = 1;
+            var original_width, original_height, width_at_resize_start, height_at_resize_start;
             var backside_widgets;
             $backside_element.addClass("toontalk-backside toontalk-side " + "toontalk-backside-of-" + widget.get_type_name());
             backside.get_element = function () {
@@ -108,31 +110,48 @@ window.TOONTALK.backside =
                                     }
                                 }
                             }
-                            $(backside_element).append(widget_side_element);
+                            $backside_element.append(widget_side_element);
                         });
                     },
                     1);
+            };
+            backside.get_backside_dimensions = function () {
+                 if (x_scale) {
+                     return {x_scale: x_scale, 
+                             y_scale: y_scale, 
+                             original_width: original_width, 
+                             original_height: original_height};
+                 }
             };
             TT.backside.associate_widget_with_backside_element(widget, backside, backside_element);
             TT.UTILITIES.drag_and_drop($backside_element);
             // the following function should apply recursively...
             $backside_element.resizable(
                 {start: function () {
+                    width_at_resize_start = $backside_element.width();
+                    height_at_resize_start = $backside_element.height();
                     if (!original_width) {
-                        original_width = $backside_element.width();
+                        original_width = width_at_resize_start;
                     }
                     if (!original_height) {
-                        original_height = $backside_element.height();
+                        original_height = height_at_resize_start;
                     }
                 },
                 resize: function (event, ui) {
-                    var percentage = 100 * Math.min(1, $backside_element.width() / original_width, $backside_element.height() / original_height);
-                    $backside_element.css({"font-size": percentage + "%"});
+                    var current_width = ui.size.width; 
+                    var current_height = ui.size.height;
+//                     console.log({x_scale_change: current_width / width_at_resize_start,
+//                                  y_scale_change: current_height / height_at_resize_start});
+                    x_scale *= current_width / width_at_resize_start;
+                    y_scale *= current_height / height_at_resize_start;
+                    width_at_resize_start = current_width;
+                    height_at_resize_start = current_height;
+                    TT.backside.scale_backside($backside_element, x_scale, y_scale, original_width, original_height);
                 },
                 handles: "e,s,se"}); // was "n,e,s,w,se,ne,sw,nw" but interfered with buttons
             // following should be done by something like GWT's onLoad...
             // but DOMNodeInserted is deprecated and MutationObserver is only in IE11.
-            $(backside_element).on('DOMNodeInserted', function (event) {
+            $backside_element.on('DOMNodeInserted', function (event) {
                 var $source = $(event.originalEvent.srcElement);
                 var owner_widget;
                 if ($source.is(".toontalk-frontside") && $source.parent().is(".toontalk-backside")) {
@@ -155,7 +174,7 @@ window.TOONTALK.backside =
 //                 }
                 event.stopPropagation();
             });
-            $(backside_element).on('DOMNodeRemoved', function (event) {
+            $backside_element.on('DOMNodeRemoved', function (event) {
                 var $source = $(event.originalEvent.srcElement);
                 if ($source.is(".toontalk-frontside")) {
                     $source.removeClass("toontalk-frontside-on-backside");
@@ -166,6 +185,19 @@ window.TOONTALK.backside =
 //                     }
                 }
                 event.stopPropagation();
+            });
+            backside_element.addEventListener("mouseenter", function (event) {
+               var frontside = widget.get_frontside();
+               var parent_of_backside = widget.get_parent_of_backside();
+               if (frontside && (!parent_of_backside || parent_of_backside.widget.get_type_name() === "top-level")) {
+                   $(frontside.get_element()).addClass("toontalk-highlight");
+               }
+            });
+            backside_element.addEventListener("mouseleave", function (event) {
+               var frontside = widget.get_frontside();
+               if (frontside) {
+                   $(frontside.get_element()).removeClass("toontalk-highlight");
+               }
             });
             if (widget.get_backside_widgets) {
                 backside_widgets = widget.get_backside_widgets();
@@ -295,17 +327,19 @@ window.TOONTALK.backside =
                                           opacity: .1});
                                         
                 }
+                $(frontside_element).removeClass("toontalk-highlight");
                 if (widget && widget.forget_backside) {
                     widget.forget_backside();
                 }
                 if (widget) {
                     record_backside_widget_positions();
+                    widget.backside_geometry = backside.get_backside_dimensions();
                 }
                 animate_disappearance($backside_element)
                 if (!$(frontside_element).is(":visible")) {
-                   $(frontside_element).css({left: backside_position.left,
-                                             top:  backside_position.top});
-                   $backside_container.append(frontside_element);
+                    $(frontside_element).css({left: backside_position.left,
+                                              top:  backside_position.top});
+                    $backside_container.append(frontside_element);
                 }
                 event.stopPropagation();
             });
@@ -419,6 +453,15 @@ window.TOONTALK.backside =
                 }
             });
             return widgets;
+        },
+        
+        scale_backside: function ($backside_element, x_scale, y_scale, original_width, original_height) {
+            var scale = Math.min(1, x_scale, y_scale);
+//             console.log({scale: scale, x_scale: x_scale, y_scale: y_scale});
+            $backside_element.css({transform: "scale(" + scale + ", " + scale + ")",
+                                   "transform-origin": "top left", 
+                                    width: original_width * x_scale / scale,
+                                    height: original_height * y_scale / scale});
         }
 
     };

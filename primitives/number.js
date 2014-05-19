@@ -441,8 +441,9 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     };
 
     number.is_integer = function () {
-        // check if denominator is 1
-        return this.get_value()[1].compare(BigInteger.ONE) === 0;
+        // check if denominator is 1 or numerator is 0
+        return this.get_value()[1].compare(BigInteger.ONE) === 0 ||
+               this.get_value()[0].compare(BigInteger.ZERO) === 0;
     };
 
     number.numerator = function () {

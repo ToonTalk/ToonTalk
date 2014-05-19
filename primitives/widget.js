@@ -251,10 +251,10 @@ window.TOONTALK.widget = (function (TT) {
             if (frontside) {
                 frontside.remove();
             }
-            if (parent_of_frontside) {
+            if (parent_of_frontside && parent_of_frontside.widget) {
                 parent_of_frontside.widget.removed_from_container(this, false, event);
             }
-            if (parent_of_backside) {
+            if (parent_of_backside && parent_of_backside) {
                 parent_of_backside.widget.removed_from_container(this, false, event);
             }
             this.set_running(false);
@@ -341,6 +341,13 @@ window.TOONTALK.widget = (function (TT) {
                         json_view.backside_left = position.left;
                         json_view.backside_top = position.top;
                     }
+                    if (backside.get_backside_dimensions()) {
+                        json_view.backside_geometry = backside.get_backside_dimensions();
+                    }
+                }
+                if (!json_view.backside_geometry && this.backside_geometry) {
+                    // backside is closed but this was saved when it was hidden
+                    json_view.backside_geometry = this.backside_geometry;
                 }
                 backside_widgets = this.get_backside_widgets();
                 if (backside_widgets.length > 0) {
@@ -561,6 +568,7 @@ window.TOONTALK.widget = (function (TT) {
         
         open_backside: function () {
             var backside = this.get_backside();
+            var backside_geometry = this.backside_geometry;
             var animate_backside_appearance = 
                 function (element, final_left, final_top, final_opacity) {
                     setTimeout(
@@ -573,6 +581,9 @@ window.TOONTALK.widget = (function (TT) {
                             $(element).css({left: final_left,
                                             top: final_top,
                                             opacity: final_opacity});
+                            if (backside_geometry) {
+                                TT.backside.scale_backside($(element), backside_geometry.x_scale, backside_geometry.y_scale, backside_geometry.original_width, backside_geometry.original_height);
+                            }
                         },
                         1);
                 };
