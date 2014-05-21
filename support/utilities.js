@@ -633,7 +633,8 @@ window.TOONTALK.UTILITIES =
                     dragee = undefined;
                 });
             $element.on('dragenter', function (event) {
-                console.log($element.get(0).className);
+//              console.log($element.get(0).className); -- not clear why this is never triggered for inputs on backside
+//              probably because backside itself has a dragenter?
                 if (!$element.is(".toontalk-top-level-backside") && 
                     !$element.is(".toontalk-top-level-resource") &&
                     !$element.is(".toontalk-being-dragged")) {
