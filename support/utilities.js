@@ -213,8 +213,11 @@ window.TOONTALK.UTILITIES =
 //             $backside_element.addClass("toontalk-top-level-backside");
 //             backside_element.draggable = false;
             TT.QUEUE.run();
-            // update display of widgets every 20ms
-//             setInterval(TT.DISPLAY_UPDATES.update_display, 20);
+            window.addEventListener('beforeunload', function (event) {
+                var message = "Have you saved your creations by dragging them to a program such as WordPad?";
+                event.returnValue = message;
+                return message;
+            });
         };
     $(document).ready(initialise);
     return {
