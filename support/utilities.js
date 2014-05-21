@@ -633,13 +633,14 @@ window.TOONTALK.UTILITIES =
                     dragee = undefined;
                 });
             $element.on('dragenter', function (event) {
+                console.log($element.get(0).className);
                 if (!$element.is(".toontalk-top-level-backside") && 
                     !$element.is(".toontalk-top-level-resource") &&
                     !$element.is(".toontalk-being-dragged")) {
                     $element.addClass("toontalk-highlight");
                     // moving over decendants triggers dragleave unless their pointer events are turned off
                     // they are restored on dragend
-                    if ($element.data("owner").get_type_name() !== 'box') {
+                    if (!$element.is(".toontalk-backside") && $element.data("owner").get_type_name() !== 'box') {
                         // this breaks the dropping of elements on empty holes so not supported
                         $element.find("*").addClass("toontalk-ignore-events");
                         // except for toontalk-sides and their ancestors since they are OK to drop on
