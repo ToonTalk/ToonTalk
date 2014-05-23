@@ -168,7 +168,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 $(frontside_element).width($image_element.width());
                 $(frontside_element).height($image_element.height());
             }
-        }
+        };
         new_element = new_element.add_standard_widget_functionality(new_element);
         if (TT.debugging) {
             new_element.debug_string = new_element.toString();
@@ -368,11 +368,12 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             $(frontside_element).css({opacity: 1});
         }
         if (frontside_element.children.length === $(frontside_element).children(".ui-resizable-handle").length) {
-            // only children are resize handles
+            // only children are resize handles so add the HTML
             rendering = document.createElement('div');
             rendering.innerHTML = this.get_HTML();
             frontside_element.appendChild(rendering);
             this.set_image_element(rendering, frontside_element);
+            $(frontside_element).addClass("toontalk-element-frontside");
         }
         this.apply_css();
         if (backside) {
@@ -476,9 +477,31 @@ window.TOONTALK.element_backside =
                         sub_menus: ["rotate", "skewX", "skewY", "transform-origin-x", "transform-origin-y"]}];
         var add_style_attribute = function (attribute) {
             var style_attributes = element_widget.get_style_attributes();
+            var frontside_element;
             if (style_attributes.indexOf(attribute) < 0) {
                style_attributes[style_attributes.length] = attribute;
-//                update_style_attribute_chooser(attributes_chooser, element_widget, attribute_table);
+               // update the backside during drag if 'left' or 'top' are attributes
+               if (attribute === 'left') {
+                   frontside_element = element_widget.get_frontside_element();
+                   $(frontside_element).on('drag', function (event) {
+                       var backside_element = element_widget.get_backside_element();
+                       var frontside_element = element_widget.get_frontside_element();
+                       if (backside_element && frontside_element) {
+                           $(backside_element).find(".toontalk-element-left-attribute-input").val(event.originalEvent.clientX);
+                       }
+
+                   });
+               } else if (attribute === 'top') {
+                   frontside_element = element_widget.get_frontside_element();
+                   $(frontside_element).on('drag', function (event) {
+                       var backside_element = element_widget.get_backside_element();
+                       var frontside_element = element_widget.get_frontside_element();
+                       if (backside_element && frontside_element) {
+                           $(backside_element).find(".toontalk-element-top-attribute-input").val(event.originalEvent.clientY);
+                       }
+
+                   });
+               }
             }
         };
         var remove_style_attribute = function (attribute) {

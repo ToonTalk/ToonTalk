@@ -77,6 +77,7 @@ window.TOONTALK.backside =
                         TT.robot.in_training.dropped_on(other, this.get_widget());
                     }
                     this.get_widget().add_backside_widget(other, other_is_backside);
+                    TT.UTILITIES.backup_all();
                     return true;
                 };
             backside.add_backside_widgets = function (backside_widgets, json_array)  {
@@ -380,6 +381,7 @@ window.TOONTALK.backside =
                 if (TT.robot.in_training) {
                     TT.robot.in_training.set_erased(widget, erased);
                 }
+                TT.UTILITIES.backup_all();
                 event.stopPropagation();
             });
             $erase_button.attr("title", "Click to hide this.");
@@ -393,6 +395,7 @@ window.TOONTALK.backside =
             $copy_button.addClass("toontalk-copy-backside-button");
             $copy_button.click(function (event) {
                 widget.add_copy_to_container();
+                TT.UTILITIES.backup_all();
                 event.stopPropagation();
             });
             $copy_button.attr("title", "Click to make a copy of this " + widget.get_type_name());
@@ -437,6 +440,7 @@ window.TOONTALK.backside =
                         TT.robot.in_training.removed(widget);
                     }
                     widget.remove(event);
+                    TT.UTILITIES.backup_all();
                 } // else warn??
                 event.stopPropagation();
             });

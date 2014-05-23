@@ -160,7 +160,7 @@ window.TOONTALK.UTILITIES =
         $(".toontalk-json").each(
             function (index, element) {
                 var json_string = element.textContent;
-                var json, widget, frontside_element, backside_element, backside;
+                var json, widget, frontside_element, backside_element, backside, stored_json_string;
                 if (!json_string) {
                     return;
                 }
@@ -168,7 +168,12 @@ window.TOONTALK.UTILITIES =
                 widget = TT.UTILITIES.create_from_json(json);
                 if (widget) {
                     element.textContent = ""; // served its purpose of being parsed as JSON
-                    if (json.view.backside) {
+                    if (widget.get_type_name() === 'top-level') {
+                        stored_json_string = window.localStorage.getItem("top_level_widget");
+                        if (stored_json_string) {
+                            json = JSON.parse(stored_json_string);
+                            widget = TT.UTILITIES.create_from_json(json);
+                        }
                         backside = widget.get_backside(true);
                         backside_element = backside.get_element();
                         $(element).replaceWith(backside_element);
@@ -213,8 +218,12 @@ window.TOONTALK.UTILITIES =
 //             $backside_element.addClass("toontalk-top-level-backside");
 //             backside_element.draggable = false;
             TT.QUEUE.run();
-            // update display of widgets every 20ms
-//             setInterval(TT.DISPLAY_UPDATES.update_display, 20);
+            // following not needed if things are backed up to localStorage
+//             window.addEventListener('beforeunload', function (event) {
+//                 var message = "Have you saved your creations by dragging them to a program such as WordPad?";
+//                 event.returnValue = message;
+//                 return message;
+//             });
         };
     $(document).ready(initialise);
     return {
@@ -633,13 +642,15 @@ window.TOONTALK.UTILITIES =
                     dragee = undefined;
                 });
             $element.on('dragenter', function (event) {
+//              console.log($element.get(0).className); -- not clear why this is never triggered for inputs on backside
+//              probably because backside itself has a dragenter?
                 if (!$element.is(".toontalk-top-level-backside") && 
                     !$element.is(".toontalk-top-level-resource") &&
                     !$element.is(".toontalk-being-dragged")) {
                     $element.addClass("toontalk-highlight");
                     // moving over decendants triggers dragleave unless their pointer events are turned off
                     // they are restored on dragend
-                    if ($element.data("owner").get_type_name() !== 'box') {
+                    if (!$element.is(".toontalk-backside") && $element.data("owner").get_type_name() !== 'box') {
                         // this breaks the dropping of elements on empty holes so not supported
                         $element.find("*").addClass("toontalk-ignore-events");
                         // except for toontalk-sides and their ancestors since they are OK to drop on
@@ -1043,6 +1054,17 @@ window.TOONTALK.UTILITIES =
                 return "An " + word;
             }
             return "an " + word;
+        },
+        
+        backup_all: function () {
+            var top_level_widget = $(".toontalk-top-level-backside").data("owner");
+            if (top_level_widget) {
+                // delay it so the geometry settles down
+                setTimeout(function () {
+                    window.localStorage.setItem("top_level_widget", JSON.stringify(top_level_widget.get_json()));
+                },
+                100);
+            }
         }
         
 //         create_menu_item: function (text) {

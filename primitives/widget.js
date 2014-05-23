@@ -253,10 +253,12 @@ window.TOONTALK.widget = (function (TT) {
             }
             if (parent_of_frontside && parent_of_frontside.widget) {
                 parent_of_frontside.widget.removed_from_container(this, false, event);
+                parent_of_frontside.widget.remove_backside_widget(this, false);
             }
             if (parent_of_backside && parent_of_backside) {
                 parent_of_backside.widget.removed_from_container(this, false, event);
-            }
+                parent_of_backside.widget.remove_backside_widget(this, true);
+            }     
             this.set_running(false);
         },
         
@@ -373,7 +375,7 @@ window.TOONTALK.widget = (function (TT) {
             }
             if (!this.backside_widgets) {
                 this.backside_widgets = [widget_side];
-            } else if (this.backside_widgets.indexOf(widget_side) < 0) {
+            } else if (this.backside_widget_side_index(widget_side) < 0) {
                 this.backside_widgets[this.backside_widgets.length] = widget_side;                            
             }
             if (is_backside) {
@@ -396,12 +398,15 @@ window.TOONTALK.widget = (function (TT) {
                 console.log("Couldn't remove a widget from backside widgets.");
                 return;
             }
-            widget_index = this.backside_widgets.indexOf(widget_side);
+            widget_index = this.backside_widget_side_index(widget_side);
             if (widget_index < 0) {
                 console.log("Couldn't find a widget to remove it from backside widgets. " + widget_side + " (" + widget_side.widget.debug_id + ")");
                 return;                        
             }
             this.backside_widgets.splice(widget_index, 1);
+            if (this.backside_widgets_json_views) {
+                this.backside_widgets_json_views.splice(widget_index, 1);
+            }
 //             console.log("Removed " + widget + " (" + widget.debug_id + ") from list of backside widgets of " + this + ". Length is now " +  this.backside_widgets.length);
             if (backside) {
                 backside.update_run_button_disabled_attribute();
@@ -419,10 +424,31 @@ window.TOONTALK.widget = (function (TT) {
                     // keep this for when backside is created
                     this.backside_widgets_json_views = json_views;
                 }
+                backside_widgets.forEach(function (backside_widget) {
+                    if (backside_widget.is_backside) {
+                        backside_widget.widget.set_parent_of_backside(this, true);
+                    } else {
+                        backside_widget.widget.set_parent_of_frontside(this, true);
+                    }
+                }.bind(this));
+                
             }
             if (backside) {
                 backside.update_run_button_disabled_attribute();
             }
+        },
+        
+        backside_widget_side_index: function (widget_side) {
+            // can't simply use indexOf since that depends upon ===
+            var widget_index = -1;
+            this.backside_widgets.some(function (backside_widget_side, index) {
+                if (backside_widget_side.widget === widget_side.widget &&
+                    backside_widget_side.is_backside === widget_side.is_backside) {
+                    widget_index = index;
+                    return true;
+                }
+            });
+            return widget_index;
         },
               
         get_backside_widgets_json_views: function () {

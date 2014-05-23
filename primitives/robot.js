@@ -366,6 +366,7 @@ window.TOONTALK.robot = (function (TT) {
         TT.DISPLAY_UPDATES.pending_update(this.get_backside());
         this.being_trained = false;
         this.get_frontside_element().title = this.get_title();
+        TT.UTILITIES.backup_all();
     };
     
     robot.update_display = function() {
