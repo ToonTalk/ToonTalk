@@ -160,7 +160,7 @@ window.TOONTALK.UTILITIES =
         $(".toontalk-json").each(
             function (index, element) {
                 var json_string = element.textContent;
-                var json, widget, frontside_element, backside_element, backside;
+                var json, widget, frontside_element, backside_element, backside, stored_json_string;
                 if (!json_string) {
                     return;
                 }
@@ -168,7 +168,12 @@ window.TOONTALK.UTILITIES =
                 widget = TT.UTILITIES.create_from_json(json);
                 if (widget) {
                     element.textContent = ""; // served its purpose of being parsed as JSON
-                    if (json.view.backside) {
+                    if (widget.get_type_name() === 'top-level') {
+                        stored_json_string = window.localStorage.getItem("top_level_widget");
+                        if (stored_json_string) {
+                            json = JSON.parse(stored_json_string);
+                            widget = TT.UTILITIES.create_from_json(json);
+                        }
                         backside = widget.get_backside(true);
                         backside_element = backside.get_element();
                         $(element).replaceWith(backside_element);
@@ -1048,6 +1053,13 @@ window.TOONTALK.UTILITIES =
                 return "An " + word;
             }
             return "an " + word;
+        },
+        
+        backup_all: function () {
+            var top_level_widget = $(".toontalk-top-level-backside").data("owner");
+            if (top_level_widget) {
+               window.localStorage.setItem("top_level_widget", JSON.stringify(top_level_widget.get_json()));
+            }
         }
         
 //         create_menu_item: function (text) {
