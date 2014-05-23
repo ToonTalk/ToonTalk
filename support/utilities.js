@@ -1059,7 +1059,11 @@ window.TOONTALK.UTILITIES =
         backup_all: function () {
             var top_level_widget = $(".toontalk-top-level-backside").data("owner");
             if (top_level_widget) {
-               window.localStorage.setItem("top_level_widget", JSON.stringify(top_level_widget.get_json()));
+                // delay it so the geometry settles down
+                setTimeout(function () {
+                    window.localStorage.setItem("top_level_widget", JSON.stringify(top_level_widget.get_json()));
+                },
+                100);
             }
         }
         
