@@ -441,11 +441,12 @@ window.TOONTALK.widget = (function (TT) {
         },
         
         backside_widget_side_index: function (widget_side) {
-            // can't simply use indexOf since that depends upon ===
+            // can't simply use indexOf since that depends upon === 
             var widget_index = -1;
             this.backside_widgets.some(function (backside_widget_side, index) {
                 if (backside_widget_side.widget === widget_side.widget &&
-                    backside_widget_side.is_backside === widget_side.is_backside) {
+                    // can be false or undefined -- treat them the same
+                    !!backside_widget_side.is_backside === !!widget_side.is_backside) {
                     widget_index = index;
                     return true;
                 }
