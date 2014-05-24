@@ -124,6 +124,12 @@ window.TOONTALK.backside =
                              original_height: original_height};
                  }
             };
+            backside.set_dimensions = function (dimensions) {
+                 x_scale = dimensions.x_scale;
+                 y_scale = dimensions.y_scale;
+                 original_width = dimensions.original_width;
+                 original_height = dimensions.original_height;
+            };
             TT.backside.associate_widget_with_backside_element(widget, backside, backside_element);
             TT.UTILITIES.drag_and_drop($backside_element);
             // the following function should apply recursively...
@@ -464,8 +470,8 @@ window.TOONTALK.backside =
 //             console.log({scale: scale, x_scale: x_scale, y_scale: y_scale});
             $backside_element.css({transform: "scale(" + scale + ", " + scale + ")",
                                    "transform-origin": "top left", 
-                                    width: original_width * x_scale / scale,
-                                    height: original_height * y_scale / scale});
+                                   width: original_width * x_scale / scale,
+                                   height: original_height * y_scale / scale});
         }
 
     };

@@ -611,6 +611,8 @@ window.TOONTALK.widget = (function (TT) {
                                             opacity: final_opacity});
                             if (backside_geometry) {
                                 TT.backside.scale_backside($(element), backside_geometry.x_scale, backside_geometry.y_scale, backside_geometry.original_width, backside_geometry.original_height);
+                                // backside needs to know its scales when shown again or when creating JSON
+                                backside.set_dimensions(backside_geometry);
                             }
                         },
                         1);
