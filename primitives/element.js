@@ -350,6 +350,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 },
                 widget_dropped_on_me: function (other) {
                     this.element_widget.dropped_on_style_attribute(other, attribute_name);
+                },
+                update_display: function () {
+                    if ($attribute_input) {
+                        $attribute_input.val(this.element_widget.get_attibute(this.attribute));
+                    }
                 }
         };                              
     };
