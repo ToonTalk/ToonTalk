@@ -214,6 +214,11 @@ window.TOONTALK.robot = (function (TT) {
     
     robot.set_stopped = function (new_value) {
         this.stopped = new_value;
+        if (this.stopped) {
+            // this is needed because a robot won't start running if it is animating
+            // and the animating flag isn't always reset
+            this.set_animating(false);
+        }
     };
     
     robot.run_actions = function(context, top_level_context, queue) {
