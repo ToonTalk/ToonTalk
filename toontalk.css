@@ -6,8 +6,6 @@
  
  .toontalk-top-level-resource {
 	 position: relative;
-/* 	 width: 100px;
-	 height: 100px; */
 	 display:  inline-block;
  }
 .toontalk-top-level-resource:hover {

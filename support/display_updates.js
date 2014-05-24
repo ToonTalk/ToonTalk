@@ -22,13 +22,14 @@ window.TOONTALK.DISPLAY_UPDATES =
         },
         
         update_display: function () {
-            if (pending_updates.length === 0) {
+            var updates = pending_updates;
+            pending_updates = [];
+            if (updates.length === 0) {
                 return;
             }
-            pending_updates.forEach(function (pending_update) {
+            updates.forEach(function (pending_update) {
                 pending_update.update_display();
             });
-            pending_updates = [];
         },
         
         run_cycle_is_over: function () {
