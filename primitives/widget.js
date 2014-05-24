@@ -391,8 +391,10 @@ window.TOONTALK.widget = (function (TT) {
         
         remove_backside_widget: function (widget, is_backside) {
             var backside = this.get_backside();
-            var widget_side = {widget: widget,
-                               is_backside: is_backside};
+            var widget_side = {widget: widget};
+            if (is_backside) {
+                widget_side.is_backside = true;
+            }
             var widget_index;
             if (!this.backside_widgets) {
                 console.log("Couldn't remove a widget from backside widgets.");
