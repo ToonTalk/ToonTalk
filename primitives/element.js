@@ -244,7 +244,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         var frontside_element = frontside.get_element();
         var css = {};
         var current_value, new_value_number;
-        console.log(attribute + " of " + this.debug_id + " is " + new_value);
+//         console.log(attribute + " of " + this.debug_id + " is " + new_value);
         if (!frontside_element) {
             return false;
         }
@@ -333,14 +333,15 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     element.create_attribute_object = function (attribute_name) {
         var selector = ".toontalk-element-" + attribute_name + "-attribute-input";
         var backside_element = this.get_backside_element();
-        var $attribute_input;
+        var $attribute_input, attribute_object;
         if (backside_element) {
             $attribute_input = $(backside_element).find(selector);
             if ($attribute_input.length > 0) {
                 $attribute_input.data("owner", this);
             }
         }
-        return {element_widget: this,
+        attribute_object =
+               {element_widget: this,
                 attribute: attribute_name,
                 get_type_name: function () {
                     return "element attribute";
@@ -364,7 +365,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                         $attribute_input.val(this.element_widget.get_attribute(this.attribute));
                     }
                 }
-        };                              
+        };
+        if (TT.debugging) {
+            attribute_object.debug_id = TT.UTILITIES.generate_unique_id();
+        }
+        return attribute_object;
     };
     
     element.update_display = function () {
