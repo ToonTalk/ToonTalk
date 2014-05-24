@@ -353,7 +353,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 },
                 update_display: function () {
                     if ($attribute_input) {
-                        $attribute_input.val(this.element_widget.get_attibute(this.attribute));
+                        $attribute_input.val(this.element_widget.get_attribute(this.attribute));
                     }
                 }
         };                              
