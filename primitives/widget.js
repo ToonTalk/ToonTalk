@@ -487,6 +487,10 @@ window.TOONTALK.widget = (function (TT) {
         add_to_copy: function (copy, just_value) {
             var backside_widgets;
             if (this.get_erased && this.get_erased()) {
+                if (!copy.set_erased) {
+                    // copy hasn't got get_erased and set_erased so give it to it now
+                    TT.widget.erasable(copy);
+                }
                 copy.set_erased(this.get_erased());
             }
             if (!just_value) {
