@@ -169,7 +169,7 @@ window.TOONTALK.UTILITIES =
                 if (widget) {
                     element.textContent = ""; // served its purpose of being parsed as JSON
                     if (widget.get_type_name() === 'top-level') {
-                        stored_json_string = window.localStorage.getItem("top_level_widget");
+                        stored_json_string = window.localStorage.getItem(window.location.href);
                         if (stored_json_string) {
                             json = JSON.parse(stored_json_string);
                             widget = TT.UTILITIES.create_from_json(json);
@@ -1061,7 +1061,7 @@ window.TOONTALK.UTILITIES =
             if (top_level_widget) {
                 // delay it so the geometry settles down
                 setTimeout(function () {
-                    window.localStorage.setItem("top_level_widget", JSON.stringify(top_level_widget.get_json()));
+                    window.localStorage.setItem(window.location.href, JSON.stringify(top_level_widget.get_json()));
                 },
                 100);
             }
