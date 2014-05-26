@@ -62,6 +62,11 @@ window.TOONTALK.widget = (function (TT) {
             if (!widget.forget_backside) {
                 widget.forget_backside = function () {
                     backside = undefined;
+                    // do this recursively so backsides are fully reconstructed
+                    // otherwise things like JQuery UI 'button' is not reapplied
+                    this.get_backside_widgets().forEach(function (backside_widget) {
+                            backside_widget.widget.forget_backside();
+                    });
                 };
             }
             if (!widget.create_backside) {
