@@ -147,8 +147,12 @@ window.TOONTALK.backside =
                 resize: function (event, ui) {
                     var current_width = ui.size.width; 
                     var current_height = ui.size.height;
-//                     console.log({x_scale_change: current_width / width_at_resize_start,
-//                                  y_scale_change: current_height / height_at_resize_start});
+                    if ($backside_element.is(".toontalk-top-level-backside")) {
+                        // top-level backside is not scaled
+                        return;
+                    }
+//                  console.log({x_scale_change: current_width / width_at_resize_start,
+//                               y_scale_change: current_height / height_at_resize_start});
                     x_scale *= current_width / width_at_resize_start;
                     y_scale *= current_height / height_at_resize_start;
                     width_at_resize_start = current_width;
