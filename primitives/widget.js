@@ -686,8 +686,11 @@ window.TOONTALK.widget = (function (TT) {
             widget.get_json = function () {
                 var backside = this.get_backside();
                 var $backside_element = $(backside.get_element());
-                var json = {type: "top_level",
-                            color: $backside_element.attr("background-color")};
+                var background_color = document.defaultView.getComputedStyle($backside_element.get(0), null).getPropertyValue("background-color");
+                // don't know why the following returns undefined
+//               $backside_element.attr("background-color")};
+                var json = {semantic: {type: "top_level"},
+                            view: {background_color: background_color}};
                 return this.add_to_json(json);
             };
             widget.get_type_name = function () {
