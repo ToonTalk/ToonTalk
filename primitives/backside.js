@@ -103,6 +103,7 @@ window.TOONTALK.backside =
                                                                      top: json_view.backside_top,
                                                                      width: json_view.backside_width,
                                                                      height: json_view.backside_height});
+                                         backside_widget_side.widget.apply_backside_geometry();
                                     } else {
                                          $(widget_side_element).css({left: json_view.frontside_left,
                                                                      top: json_view.frontside_top,

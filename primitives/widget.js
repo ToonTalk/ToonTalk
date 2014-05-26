@@ -601,7 +601,6 @@ window.TOONTALK.widget = (function (TT) {
         
         open_backside: function () {
             var backside = this.get_backside();
-            var backside_geometry = this.backside_geometry;
             var animate_backside_appearance = 
                 function (element, final_left, final_top, final_opacity) {
                     setTimeout(
@@ -614,14 +613,10 @@ window.TOONTALK.widget = (function (TT) {
                             $(element).css({left: final_left,
                                             top: final_top,
                                             opacity: final_opacity});
-                            if (backside_geometry) {
-                                TT.backside.scale_backside($(element), backside_geometry.x_scale, backside_geometry.y_scale, backside_geometry.original_width, backside_geometry.original_height);
-                                // backside needs to know its scales when shown again or when creating JSON
-                                backside.set_dimensions(backside_geometry);
-                            }
-                        },
+                            this.apply_backside_geometry();
+                        }.bind(this),
                         1);
-                };
+                }.bind(this);
             var backside_element, frontside_element, parent, $frontside_ancestor_that_is_backside_element, $frontside_ancestor_before_backside_element, frontside_ancestor_before_backside_element;
             if (backside) {
                 backside_element = backside.get_element();
@@ -663,6 +658,16 @@ window.TOONTALK.widget = (function (TT) {
                                         frontside_ancestor_before_backside_element.offsetTop,
                                         "inherit");
             TT.DISPLAY_UPDATES.pending_update(backside);
+        },
+                
+        apply_backside_geometry: function () {
+            var backside = this.get_backside();
+            var backside_element = backside.get_element();
+            if (this.backside_geometry && backside_element) {
+                TT.backside.scale_backside($(backside_element), this.backside_geometry.x_scale, this.backside_geometry.y_scale, this.backside_geometry.original_width, this.backside_geometry.original_height);
+                // backside needs to know its scales when shown again or when creating JSON
+                backside.set_dimensions(this.backside_geometry);
+            }
         },
         
         top_level_widget: function () {
