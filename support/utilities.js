@@ -83,6 +83,10 @@ window.TOONTALK.UTILITIES =
                                             top: position.top + top_offset,
                                             width: width,
                                             height: height});
+                   if (backside_widget_side.is_backside) {
+                       widget.backside_geometry = json_view.backside_geometry;
+                       widget.apply_backside_geometry();
+                   }
                }.bind(this));
                return;
             }
