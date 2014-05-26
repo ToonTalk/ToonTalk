@@ -57,17 +57,32 @@ window.TOONTALK.UTILITIES =
                    // not clear why we need to copy these widgets but without copying
                    // their elements are not added to the target (but are added to its backside_widgets)
                    var widget = backside_widget_side.widget.copy();
-                   var backside_element = backside_widget_side.is_backside 
-                                          ?  widget.get_backside_element()
-                                          : widget.get_frontside_element();
-                   var position;
+                   var backside_element, left_offset, top_offset, width, height, position;
+                   if (backside_widget_side.is_backside) {
+                       backside_element = widget.get_backside_element(true);
+//                        if (!backside_element) {
+//                            return;
+//                        }
+                       left_offset = json_view.backside_left;
+                       top_offset = json_view.backside_top;
+                       width = json_view.backside_width;
+                       height = json_view.backside_height;
+                   } else {
+                       backside_element = widget.get_frontside_element(true);
+//                        if (!backside_element) {
+//                            return;
+//                        }
+                       left_offset = json_view.frontside_left;
+                       top_offset = json_view.frontside_top;
+                       width = json_view.frontside_width;
+                       height = json_view.frontside_height;
+                   }
                    handle_drop($target, $(backside_element), widget, target_widget, target_position, event, json_object, drag_x_offset, drag_y_offset, backside_widget_side.is_backside);
-                   // make this work for backsides as well
                    position = $(backside_element).position();
-                   $(backside_element).css({left: position.left + json_view.frontside_left,
-                                            top: position.top + json_view.frontside_top,
-                                            width: json_view.frontside_width,
-                                            height: json_view.frontside_height});
+                   $(backside_element).css({left: position.left + left_offset,
+                                            top: position.top + top_offset,
+                                            width: width,
+                                            height: height});
                }.bind(this));
                return;
             }
