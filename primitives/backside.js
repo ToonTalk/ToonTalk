@@ -58,7 +58,7 @@ window.TOONTALK.backside =
                 function (other, other_is_backside, event) {
                     // event serves 2 functions: info for adjusting for scrolling and whether to update the display
                     var other_side, other_side_element, $other_side_element;
-                    if (other_is_backside) { 
+                    if (other_is_backside) {
                         other_side = other.get_backside(true);
                         other_side_element = other_side.get_element();
                     } else {

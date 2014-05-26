@@ -47,8 +47,30 @@ window.TOONTALK.UTILITIES =
     };
     var handle_drop = function ($target, $source, source_widget, target_widget, target_position, event, json_object, drag_x_offset, drag_y_offset, source_is_backside) {
         var drop_handled = true;
-        var new_target;
+        var new_target, backside_widgets_json;
         if ($target.is(".toontalk-backside")) {
+            if (source_widget.get_type_name() === 'top-level') {
+               // add all top-level backsides contents but not the backside widget itself
+               backside_widgets_json = json_object.semantic.backside_widgets;
+               source_widget.get_backside_widgets().forEach(function (backside_widget_side, index) {
+                   var json_view = backside_widgets_json[index].widget.view;
+                   // not clear why we need to copy these widgets but without copying
+                   // their elements are not added to the target (but are added to its backside_widgets)
+                   var widget = backside_widget_side.widget.copy();
+                   var backside_element = backside_widget_side.is_backside 
+                                          ?  widget.get_backside_element()
+                                          : widget.get_frontside_element();
+                   var position;
+                   handle_drop($target, $(backside_element), widget, target_widget, target_position, event, json_object, drag_x_offset, drag_y_offset, backside_widget_side.is_backside);
+                   // make this work for backsides as well
+                   position = $(backside_element).position();
+                   $(backside_element).css({left: position.left + json_view.frontside_left,
+                                            top: position.top + json_view.frontside_top,
+                                            width: json_view.frontside_width,
+                                            height: json_view.frontside_height});
+               }.bind(this));
+               return;
+            }
             // widget_dropped_on_me needed here to get geometry right
             if (source_widget) {
                 target_widget.get_backside().widget_dropped_on_me(source_widget, source_is_backside, event);
