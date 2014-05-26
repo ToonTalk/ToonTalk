@@ -662,6 +662,7 @@ window.TOONTALK.UTILITIES =
                                          height: json_object.view.backside_height,
                                          // color may be undefined
                                          "background-color": json_object.view.background_color});
+                            source_widget.apply_backside_geometry();
                         } else {
                             $source = $(source_widget.get_frontside_element());
                         }
