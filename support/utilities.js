@@ -454,14 +454,10 @@ window.TOONTALK.UTILITIES =
                         // not sure if the following is obsolete
                         json_object.view.drag_x_offset = event.originalEvent.clientX - position.left;
                         json_object.view.drag_y_offset = event.originalEvent.clientY - position.top;
-                        if (!json_object.width) {
+                        if (!json_object.view.frontside_width) {
                             if (dragee.parent().is(".toontalk-backside")) {
-                                json_object.view.original_width_fraction = dragee.outerWidth() / dragee.parent().outerWidth();
-                                json_object.view.original_height_fraction = dragee.outerHeight() / dragee.parent().outerHeight();
-                            } else {
-                                // following should be kept in synch with toontalk-frontside-on-backside CSS
-                                json_object.view.original_width_fraction = 0.2;
-                                json_object.view.original_height_fraction = 0.1;
+                                json_object.view.frontside_width = dragee.width();
+                                json_object.view.frontside_height = dragee.height();
                             }
                         }
                         if (dragee.is(".toontalk-backside")) {
@@ -491,8 +487,8 @@ window.TOONTALK.UTILITIES =
                             var json_object = dragee.data("json");
                             if (json_object) {
                                 dragee.data("json", ""); // no point wasting memory on this anymore
-                                dragee.css({width:  json_object.view.frontside_width || json_object.view.original_width_fraction * 100 + "%",
-                                            height: json_object.view.frontside_height || json_object.view.original_height_fraction * 100 + "%"});
+                                dragee.css({width:  json_object.view.frontside_width,
+                                            height: json_object.view.frontside_height});
                             }
                         } else if (!dragee.parent().is(".toontalk-top-level-resource, .toontalk-drop-area")) {
                             dragee.css({width:  "100%",
