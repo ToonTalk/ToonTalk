@@ -212,24 +212,21 @@
 	text-align: inherit;
 }
 .toontalk-robot-image {
-/*     width: 100%; */
-/* 	rest of the height is for thought bubble */	
-/*     height: 70%; */
 }
 .toontalk-image-url-input {
 	width: 30em;
 	text-align: inherit;
 }
-.toontalk-thought-bubble {
+.toontalk-frontside-conditions {
     background-image: url(images/BUBBL10.96x96.PNG);
 	background-repeat: no-repeat;
     width: 96px;
     height: 96px;
 }
-.toontalk-thought-bubble-not-matched {
+.toontalk-frontside-conditions-not-matched {
 	background-image: url(images/BUBBL10.96x96.red.PNG);
 }
-.toontalk-thought-bubble-contents {
+.toontalk-frontside-conditions-contents {
     left: 15%;
 	top: 15%;
     width: 60%;

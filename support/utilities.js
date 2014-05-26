@@ -1122,3 +1122,5 @@ window.TOONTALK.UTILITIES =
     };
     
 }(window.TOONTALK));
+
+window.TOONTALK.UTILITIES.available_types = ["number", "box", "element", "robot", "top-level"];

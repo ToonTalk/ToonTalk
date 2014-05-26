@@ -10,8 +10,10 @@ window.TOONTALK.robot = (function (TT) {
     "use strict";
     var robot = Object.create(TT.widget);
     
-    robot.create = function (image_url, frontside_conditions, body, description, width, height, thing_in_hand, run_once, next_robot) {
-        // frontside_conditions holds the conditions that need to be matched to run
+    robot.create = function (image_url, frontside_conditions, backside_conditions, body, description, width, height, thing_in_hand, run_once, next_robot) {
+        // frontside_conditions holds a widget that needs to be matched against the frontside of the widget to run
+        // backside_conditions holds an object whose keys are type_names of required widgets on the backside
+        // and whose values are widgets that need to match backside widgets of that type
         // body holds the actions the robot does when it runs
         var new_robot = Object.create(robot);
         var first_in_team; // who should do the 'repeating'
@@ -42,8 +44,23 @@ window.TOONTALK.robot = (function (TT) {
         new_robot.set_frontside_conditions = function (new_value) {
             frontside_conditions = new_value;
             if (frontside_conditions) {
-                // only makes sense to erase things in thought frontside_conditionss
+                // only makes sense to erase things in frontside_conditions
                 TT.widget.erasable(frontside_conditions);
+            }
+        };
+        new_robot.get_backside_conditions = function () {
+            return backside_conditions;
+        };
+        new_robot.set_backside_conditions = function (new_value) {
+            backside_conditions = new_value;
+            if (backside_conditions) {
+                // only makes sense to erase things in frontside_conditions
+                TT.UTILITIES.available_types.forEach(function (type) {
+                    if (backside_conditions[type]) {
+                        TT.widget.erasable(backside_conditions[type]);
+                    }
+                });
+                
             }
         };
         new_robot.get_body = function () {
@@ -160,11 +177,20 @@ window.TOONTALK.robot = (function (TT) {
     
     robot.copy = function (just_value) {
         var frontside_conditions = this.get_frontside_conditions();
+        var backside_conditions = this.get_backside_conditions();
         var frontside_conditions_copy = frontside_conditions ? frontside_conditions.copy(true) : undefined;
         var next_robot = this.get_next_robot();
         var next_robot_copy = next_robot ? next_robot.copy(just_value) : undefined;
+        var backside_conditions_copy;
+        if (backside_conditions) {
+            backside_conditions_copy = {};
+            TT.UTILITIES.available_types.forEach(function (type) {
+                backside_conditions_copy[type] = backside_conditions_copy[type].copy(true);
+            });
+        }
         var copy = this.create(this.get_image_url(), 
                                frontside_conditions_copy,
+                               backside_conditions_copy,
                                this.get_body().copy(),
                                this.get_description(),
                                this.get_width(),
@@ -383,9 +409,9 @@ window.TOONTALK.robot = (function (TT) {
         var frontside = this.get_frontside();
         var backside = this.get_backside();
         var frontside_conditions = this.get_frontside_conditions();
-        var new_first_child, robot_image, thought_frontside_conditions, frontside_element, frontside_conditions_contents_element, resource_becoming_instance;
+        var new_first_child, robot_image, frontside_conditions, frontside_element, frontside_conditions_contents_element, resource_becoming_instance;
         var thing_in_hand = this.get_thing_in_hand();
-        var thing_in_hand_frontside_element;
+        var thing_in_hand_frontside_element, frontside_conditions_div;
         if (TT.debugging) {
              // this can't be done during robot creation since robot actions references to newly_created_widgets is premature
             this.debug_string = this.toString();
@@ -398,10 +424,10 @@ window.TOONTALK.robot = (function (TT) {
         if ($(frontside_element).parent(".toontalk-top-level-resource").length > 0 || !frontside_conditions) {
             new_first_child = robot_image;
         } else {
-            thought_frontside_conditions = this.thought_frontside_conditions_div();
+            frontside_conditions_div = this.frontside_conditions_div();
             new_first_child = document.createElement("div");
             $(new_first_child).css({position: "absolute"});
-            new_first_child.appendChild(thought_frontside_conditions);
+            new_first_child.appendChild(frontside_conditions_div);
             $(robot_image).css({top: "30%"});
             if (thing_in_hand) {
                 thing_in_hand_frontside_element = thing_in_hand.get_frontside_element();
@@ -410,8 +436,8 @@ window.TOONTALK.robot = (function (TT) {
             }
             new_first_child.appendChild(robot_image);
             frontside_conditions_contents_element = frontside_conditions.get_frontside_element(true);
-            $(frontside_conditions_contents_element).addClass("toontalk-thought-frontside_conditions-contents");
-            thought_frontside_conditions.appendChild(frontside_conditions_contents_element);
+            $(frontside_conditions_contents_element).addClass("toontalk-frontside-conditions-contents");
+            frontside_conditions_div.appendChild(frontside_conditions_contents_element);
             resource_becoming_instance = frontside_element.firstChild && $(frontside_element.firstChild).is(".toontalk-robot-image");
         }
         // remove what's there first
@@ -433,15 +459,15 @@ window.TOONTALK.robot = (function (TT) {
         setTimeout( // wait for layout to settle down
             function () {
                 if (resource_becoming_instance) {
-                    // need to adjust for thought frontside_conditions
+                    // need to adjust for frontside_conditions
                     frontside_element.style.top = ($(frontside_element).position().top - $(robot_image).height()) + "px";
                 }
                 if (frontside_conditions_contents_element) {
                     // unclear why but if this outside of the timeout then it has no affect
                     TT.DISPLAY_UPDATES.pending_update(frontside_conditions);
                 }
-                if (frontside_conditions && frontside_conditions.is_in_thought_frontside_conditions) {
-                    frontside_conditions.is_in_thought_frontside_conditions();
+                if (frontside_conditions && frontside_conditions.is_in_frontside_conditions) {
+                    frontside_conditions.is_in_frontside_conditions();
                 }
                 if (thing_in_hand) {
                     $(thing_in_hand_frontside_element).addClass("toontalk-held-by-robot");
@@ -488,13 +514,13 @@ window.TOONTALK.robot = (function (TT) {
         return image;    
     };
     
-    robot.thought_frontside_conditions_div = function () {
-        var thought_frontside_conditions = document.createElement("div");
-        $(thought_frontside_conditions).addClass("toontalk-thought-frontside_conditions");
+    robot.frontside_conditions_div = function () {
+        var frontside_conditions = document.createElement("div");
+        $(frontside_conditions).addClass("toontalk-frontside-conditions");
         if (this.match_status === 'not matched') {
-            $(thought_frontside_conditions).addClass("toontalk-thought-frontside_conditions-not-matched");
+            $(frontside_conditions).addClass("toontalk-frontside-conditions-not-matched");
         }
-        return thought_frontside_conditions;
+        return frontside_conditions;
     };
     
     robot.toString = function () {
@@ -527,13 +553,24 @@ window.TOONTALK.robot = (function (TT) {
     
     robot.get_json = function () {
         var frontside_conditions = this.get_frontside_conditions();
-        var frontside_conditions_json, next_robot_json;
+        var backside_conditions = this.get_backside_conditions();
+        var frontside_conditions_json, backside_conditions_json, next_robot_json;
         if (frontside_conditions) {
             if (frontside_conditions.get_type_name() === 'top-level') {
                 frontside_conditions_json = {type: "top_level"};
             } else {
                 frontside_conditions_json = frontside_conditions.get_json();
             }
+        }
+        if (backside_conditions) {
+            TT.UTILITIES.available_types.forEach(function (type) {
+                if (backside_conditions[type]) {
+                    if (!backside_conditions_json) {
+                        backside_conditions_json = {};
+                    }
+                    backside_conditions_json[type] = backside_conditions[type].get_json();
+                }
+            });
         }
         if (this.get_next_robot()) {
             next_robot_json = this.get_next_robot().get_json();
@@ -542,27 +579,34 @@ window.TOONTALK.robot = (function (TT) {
             {semantic:
                  {type: "robot",
                   frontside_conditions: frontside_conditions_json,
+                  backside_conditions: backside_conditions_json,
                   body: this.get_body().get_json(),
                   run_once: this.get_run_once(),
                   next_robot: next_robot_json
                   },
              view:
                  {image_url: this.get_image_url(),
-//              width: this.get_width(),
-//              height: this.get_height(),
                   description: this.get_description()}});
     };
     
     robot.create_from_json = function (json_semantic, json_view) {
-        var next_robot, thing_in_hand;
+        var next_robot, thing_in_hand, backside_conditions;
         if (json_semantic.thing_in_hand) {
             thing_in_hand = TT.UTILITIES.create_from_json(json_semantic.thing_in_hand);
         }
         if (json_semantic.next_robot) {
             next_robot = TT.UTILITIES.create_from_json(json_semantic.next_robot);
         }
+        if (json_semantic.backside_conditions) {
+            backside_conditions = {};
+            TT.UTILITIES.available_types.forEach(function (type) {
+                    backside_conditions[type] = TT.UTILITIES.create_from_json(json_semantic.backside_conditions[type]);
+            });
+        }
         return TT.robot.create(json_view.image_url,
-                               TT.UTILITIES.create_from_json(json_semantic.frontside_conditions),
+                               // bubble for backwards compatibility -- should be able to remove in the future
+                               TT.UTILITIES.create_from_json(json_semantic.frontside_conditions || json_semantic.bubble),
+                               backside_conditions,
                                TT.UTILITIES.create_from_json(json_semantic.body),
                                json_view.description,
                                json_view.width,

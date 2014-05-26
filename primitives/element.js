@@ -399,20 +399,20 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         }
     };
     
-    element.is_in_thought_bubble = function () {
-        // this a workaround for the fact that toontalk-thought-bubble-contents's % values for width and height
-        // don't get applied to images
-        var $image_element = this.get_image_element();
-        var frontside_element;
-        if ($image_element) {
-            frontside_element = this.get_frontside_element();
-            if (frontside_element) {
-                // should try to tie the .6 to the 60% in toontalk-thought-bubble-contents
-                $image_element.width(0.6 * $(frontside_element).parent().width());
-                $image_element.height(0.4 * $(frontside_element).parent().height());
-            }
-        }
-    };
+//     element.is_in_thought_bubble = function () {
+//         // this a workaround for the fact that toontalk-thought-bubble-contents's % values for width and height
+//         // don't get applied to images
+//         var $image_element = this.get_image_element();
+//         var frontside_element;
+//         if ($image_element) {
+//             frontside_element = this.get_frontside_element();
+//             if (frontside_element) {
+//                 // should try to tie the .6 to the 60% in toontalk-thought-bubble-contents
+//                 $image_element.width(0.6 * $(frontside_element).parent().width());
+//                 $image_element.height(0.4 * $(frontside_element).parent().height());
+//             }
+//         }
+//     };
         
     element.toString = function () {
         return "element whose HTML is '" + this.get_HTML() +"'";
