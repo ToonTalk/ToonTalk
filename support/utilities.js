@@ -218,12 +218,14 @@ window.TOONTALK.UTILITIES =
 //             $backside_element.addClass("toontalk-top-level-backside");
 //             backside_element.draggable = false;
             TT.QUEUE.run();
-            // following not needed if things are backed up to localStorage
-//             window.addEventListener('beforeunload', function (event) {
+           
+            window.addEventListener('beforeunload', function (event) {
+                TT.UTILITIES.backup_all(true);
+//                 // following not needed if things are backed up to localStorage
 //                 var message = "Have you saved your creations by dragging them to a program such as WordPad?";
 //                 event.returnValue = message;
 //                 return message;
-//             });
+            });
         };
     $(document).ready(initialise);
     return {
@@ -1056,14 +1058,17 @@ window.TOONTALK.UTILITIES =
             return "an " + word;
         },
         
-        backup_all: function () {
+        backup_all: function (immediately) {
             var top_level_widget = $(".toontalk-top-level-backside").data("owner");
-            if (top_level_widget) {
-                // delay it so the geometry settles down
-                setTimeout(function () {
+            var backup_function = function () {
                     window.localStorage.setItem(window.location.href, JSON.stringify(top_level_widget.get_json()));
-                },
-                100);
+            };
+            if (top_level_widget) {
+                if (immediately) {
+                    backup_function();
+                }
+                // delay it so the geometry settles down
+                setTimeout(backup_function, 100);
             }
         }
         
