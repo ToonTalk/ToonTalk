@@ -671,9 +671,7 @@ window.TOONTALK.widget = (function (TT) {
                 var backside = this.get_backside();
                 var $backside_element = $(backside.get_element());
                 var json = {type: "top_level",
-                            color: $backside_element.attr("background-color"),
-                            backside_width: $backside_element.width(),
-                            backside_height: $backside_element.height()};
+                            color: $backside_element.attr("background-color")};
                 return this.add_to_json(json);
             };
             widget.get_type_name = function () {
