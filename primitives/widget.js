@@ -339,9 +339,14 @@ window.TOONTALK.widget = (function (TT) {
                     if (backside_element) {
                         json_view.backside_width = $(backside_element).width();
                         json_view.backside_height = $(backside_element).height();
-                        position = $(backside_element).position();
-                        json_view.backside_left = position.left;
-                        json_view.backside_top = position.top;
+                        if (this.position_when_hidden) {
+                            json_view.backside_left = this.position_when_hidden.left;
+                            json_view.backside_top = this.position_when_hidden.top;
+                        } else {
+                            position = $(backside_element).position();
+                            json_view.backside_left = position.left;
+                            json_view.backside_top = position.top;             
+                        }
                     }
                     if (backside.get_backside_dimensions()) {
                         json_view.backside_geometry = backside.get_backside_dimensions();
@@ -407,9 +412,10 @@ window.TOONTALK.widget = (function (TT) {
             }
             this.backside_widgets.splice(widget_index, 1);
             if (this.backside_widgets_json_views) {
+                // remove from JSON view info about backside widgets
                 this.backside_widgets_json_views.splice(widget_index, 1);
             }
-//             console.log("Removed " + widget + " (" + widget.debug_id + ") from list of backside widgets of " + this + ". Length is now " +  this.backside_widgets.length);
+//          console.log("Removed " + widget + " (" + widget.debug_id + ") from list of backside widgets of " + this + ". Length is now " +  this.backside_widgets.length);
             if (backside) {
                 backside.update_run_button_disabled_attribute();
             }
@@ -417,13 +423,13 @@ window.TOONTALK.widget = (function (TT) {
         
         set_backside_widget_sides: function (backside_widgets, json_views) {
             var backside = this.get_backside();
-//             console.log("setting backside_widgets of " + this + " were " + this.backside_widgets + " and is now " + backside_widgets);
+//          console.log("setting backside_widgets of " + this + " were " + this.backside_widgets + " and is now " + backside_widgets);
             this.backside_widgets = backside_widgets;
             if (backside_widgets.length > 0) { 
                 if (this.get_backside()) {
                     this.get_backside().add_backside_widgets(backside_widgets, json_views);
                 } else {
-                    // keep this for when backside is created
+                    // store this for when backside is created 
                     this.backside_widgets_json_views = json_views;
                 }
                 backside_widgets.forEach(function (backside_widget) {
