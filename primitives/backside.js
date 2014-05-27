@@ -35,7 +35,7 @@ window.TOONTALK.backside =
                 // TO DO: determine if this is needed -- top-level backside can't be added to something - can it?
                 widget.drop_on = function (other, $side_element_of_other, event) {
                     $backside_element.append($side_element_of_other);
-                    TT.UTILITIES.set_position_absolute($side_element_of_other.get(0), true, event); // when on the backside
+                    TT.UTILITIES.set_position_is_absolute($side_element_of_other.get(0), true, event); // when on the backside
                     if ($side_element_of_other.is(".toontalk-frontside")) {
                         // better to have a preferrred size that it goes to when on backside
                         // recorded when dropped into something that changes its size -- e.g. a box
@@ -71,7 +71,7 @@ window.TOONTALK.backside =
                         // i.e. by a robot -- then pick a random spot
                         other.animate_to_element(backside_element);
                     }
-                    TT.UTILITIES.set_position_absolute(other_side_element, true, event); // when on the backside
+                    TT.UTILITIES.set_position_is_absolute(other_side_element, true, event); // when on the backside
                     TT.DISPLAY_UPDATES.pending_update(other_side);
                     if (TT.robot.in_training) {
                         TT.robot.in_training.dropped_on(other, this.get_widget());
@@ -284,7 +284,7 @@ window.TOONTALK.backside =
         create_standard_buttons: function (backside, widget) { // extra arguments are extra buttons
             var run_or_erase_button;
             var frontside_element = widget.get_frontside_element();
-            if (!(this.get_erased && widget.get_erased()) && !$(frontside_element).is(".toontalk-frontside-conditions-contents") && $(frontside_element).parents(".toontalk-frontside-conditions-contents").length === 0) {
+            if (!(this.get_erased && widget.get_erased()) && !$(frontside_element).is(".toontalk-conditions-contents") && $(frontside_element).parents(".toontalk-frontside-conditions-contents").length === 0) {
                 run_or_erase_button = TT.backside.create_run_button(backside, widget);
             } else {
                 run_or_erase_button = TT.backside.create_erase_button(backside, widget);

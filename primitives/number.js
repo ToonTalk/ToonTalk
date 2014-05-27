@@ -230,7 +230,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         }
         var frontside_element = frontside.get_element();
         var $dimensions_holder;
-        if ($(frontside_element).is(".toontalk-frontside-conditions-contents")) {
+        if ($(frontside_element).is(".toontalk-conditions-contents")) {
             $dimensions_holder = $(frontside_element);
         } else if ($(frontside_element).parent().is(".toontalk-backside, .toontalk-json")) {
             $dimensions_holder = $(frontside_element);

@@ -217,26 +217,20 @@
 	width: 30em;
 	text-align: inherit;
 }
-.toontalk-frontside-conditions {
+/* .toontalk-frontside-conditions {
     background-image: url(images/BUBBL10.96x96.PNG);
 	background-repeat: no-repeat;
     width: 96px;
     height: 96px;
 }
-.toontalk-frontside-conditions-not-matched {
-	background-image: url(images/BUBBL10.96x96.red.PNG);
-}
-.toontalk-frontside-conditions-contents {
-    left: 15%;
-	top: 15%;
-    width: 60%;
-	height: 40%;
-	position: absolute;
-}
+*/
+.toontalk-conditions-contents {
+    width: 100px;
+	height: 36px;
+	border: 1px black solid;
+} 
 .toontalk-held-by-robot {
 	top: 75%;
-/* 	width: 50%;
-	height: 25%; */
 	z-index: 1000;
 }
 .toontalk-drop-area {
@@ -282,6 +276,14 @@
 }
 .toontalk-highlight {
 	border: solid 3px red;
+}
+.toontalk-conditions-not-matched {
+	/* could be fancier -- e.g. glowing */
+	border: solid 3px red;
+}
+.toontalk-robot-not-matched {
+	transform: rotate(180deg);
+	transform-origin: center center;
 }
 .toontalk-being-dragged {
 	opacity: 0.6;

@@ -33,7 +33,7 @@ window.TOONTALK.UTILITIES =
     var toontalk_json_div = function (json) {
         // convenience for dragging into documents (e.g. Word or WordPad -- not sure what else)
         return div_open + json + div_close;
-    };    
+    };
     var extract_json_from_div_string = function (div_string) {
         // expecting div_string to begin with div_open and end with div_close
         // but users may be dragging something different
@@ -807,7 +807,7 @@ window.TOONTALK.UTILITIES =
 //             });
 //         },
         
-        set_position_absolute: function (element, absolute, event) {
+        set_position_is_absolute: function (element, absolute, event) {
             var position, left, top, ancestor;
             if (event) {
                 // either DOM or JQuery event

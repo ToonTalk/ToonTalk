@@ -296,7 +296,7 @@ window.TOONTALK.box = (function (TT) {
             hole_frontside_element = hole_frontside.get_element();
             // use JQuery replaceWith instead?
             old_hole_element.parentNode.replaceChild(hole_frontside_element, old_hole_element);
-            TT.UTILITIES.set_position_absolute(hole_frontside_element, false);
+            TT.UTILITIES.set_position_is_absolute(hole_frontside_element, false);
             $(hole_frontside_element).addClass("toontalk-frontside-in-box");
         } else {
             old_hole_element = hole_frontside.get_element();
@@ -318,7 +318,7 @@ window.TOONTALK.box = (function (TT) {
             $element_container.append(old_hole_element);
             // since drag and drop is set up with absolute as the default
             // is this redundant now?
-            TT.UTILITIES.set_position_absolute(old_hole_element, false);
+            TT.UTILITIES.set_position_is_absolute(old_hole_element, false);
             $(old_hole_element).addClass("toontalk-frontside-in-box");
         }
         TT.DISPLAY_UPDATES.pending_update(hole_frontside);
