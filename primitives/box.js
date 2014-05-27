@@ -494,8 +494,6 @@ window.TOONTALK.box_backside =
             size_input.button.addEventListener('mouseout', update_value);
             horizontal.button.addEventListener('change', update_orientation);
             vertical.button.addEventListener('change', update_orientation);
-//             $(horizontal.label).change(update_orientation);
-//             $(vertical.label).change(update_orientation);
             backside_element.appendChild(size_input.container);
             backside_element.appendChild($(TT.UTILITIES.create_horizontal_table(horizontal.container, vertical.container)).buttonset().get(0));
             backside_element.appendChild(standard_buttons);

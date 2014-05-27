@@ -58,7 +58,7 @@ window.TOONTALK.backside =
                 function (other, other_is_backside, event) {
                     // event serves 2 functions: info for adjusting for scrolling and whether to update the display
                     var other_side, other_side_element, $other_side_element;
-                    if (other_is_backside) { 
+                    if (other_is_backside) {
                         other_side = other.get_backside(true);
                         other_side_element = other_side.get_element();
                     } else {
@@ -103,6 +103,7 @@ window.TOONTALK.backside =
                                                                      top: json_view.backside_top,
                                                                      width: json_view.backside_width,
                                                                      height: json_view.backside_height});
+                                         backside_widget_side.widget.apply_backside_geometry();
                                     } else {
                                          $(widget_side_element).css({left: json_view.frontside_left,
                                                                      top: json_view.frontside_top,
@@ -124,6 +125,12 @@ window.TOONTALK.backside =
                              original_height: original_height};
                  }
             };
+            backside.set_dimensions = function (dimensions) {
+                 x_scale = dimensions.x_scale;
+                 y_scale = dimensions.y_scale;
+                 original_width = dimensions.original_width;
+                 original_height = dimensions.original_height;
+            };
             TT.backside.associate_widget_with_backside_element(widget, backside, backside_element);
             TT.UTILITIES.drag_and_drop($backside_element);
             // the following function should apply recursively...
@@ -141,8 +148,12 @@ window.TOONTALK.backside =
                 resize: function (event, ui) {
                     var current_width = ui.size.width; 
                     var current_height = ui.size.height;
-//                     console.log({x_scale_change: current_width / width_at_resize_start,
-//                                  y_scale_change: current_height / height_at_resize_start});
+                    if ($backside_element.is(".toontalk-top-level-backside")) {
+                        // top-level backside is not scaled
+                        return;
+                    }
+//                  console.log({x_scale_change: current_width / width_at_resize_start,
+//                               y_scale_change: current_height / height_at_resize_start});
                     x_scale *= current_width / width_at_resize_start;
                     y_scale *= current_height / height_at_resize_start;
                     width_at_resize_start = current_width;
@@ -464,8 +475,8 @@ window.TOONTALK.backside =
 //             console.log({scale: scale, x_scale: x_scale, y_scale: y_scale});
             $backside_element.css({transform: "scale(" + scale + ", " + scale + ")",
                                    "transform-origin": "top left", 
-                                    width: original_width * x_scale / scale,
-                                    height: original_height * y_scale / scale});
+                                   width: original_width * x_scale / scale,
+                                   height: original_height * y_scale / scale});
         }
 
     };

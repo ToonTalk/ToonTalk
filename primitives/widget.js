@@ -62,6 +62,11 @@ window.TOONTALK.widget = (function (TT) {
             if (!widget.forget_backside) {
                 widget.forget_backside = function () {
                     backside = undefined;
+                    // do this recursively so backsides are fully reconstructed
+                    // otherwise things like JQuery UI 'button' is not reapplied
+                    this.get_backside_widgets().forEach(function (backside_widget) {
+                            backside_widget.widget.forget_backside();
+                    });
                 };
             }
             if (!widget.create_backside) {
@@ -339,9 +344,14 @@ window.TOONTALK.widget = (function (TT) {
                     if (backside_element) {
                         json_view.backside_width = $(backside_element).width();
                         json_view.backside_height = $(backside_element).height();
-                        position = $(backside_element).position();
-                        json_view.backside_left = position.left;
-                        json_view.backside_top = position.top;
+                        if (this.position_when_hidden) {
+                            json_view.backside_left = this.position_when_hidden.left;
+                            json_view.backside_top = this.position_when_hidden.top;
+                        } else {
+                            position = $(backside_element).position();
+                            json_view.backside_left = position.left;
+                            json_view.backside_top = position.top;             
+                        }
                     }
                     if (backside.get_backside_dimensions()) {
                         json_view.backside_geometry = backside.get_backside_dimensions();
@@ -391,8 +401,10 @@ window.TOONTALK.widget = (function (TT) {
         
         remove_backside_widget: function (widget, is_backside) {
             var backside = this.get_backside();
-            var widget_side = {widget: widget,
-                               is_backside: is_backside};
+            var widget_side = {widget: widget};
+            if (is_backside) {
+                widget_side.is_backside = true;
+            }
             var widget_index;
             if (!this.backside_widgets) {
                 console.log("Couldn't remove a widget from backside widgets.");
@@ -405,9 +417,10 @@ window.TOONTALK.widget = (function (TT) {
             }
             this.backside_widgets.splice(widget_index, 1);
             if (this.backside_widgets_json_views) {
+                // remove from JSON view info about backside widgets
                 this.backside_widgets_json_views.splice(widget_index, 1);
             }
-//             console.log("Removed " + widget + " (" + widget.debug_id + ") from list of backside widgets of " + this + ". Length is now " +  this.backside_widgets.length);
+//          console.log("Removed " + widget + " (" + widget.debug_id + ") from list of backside widgets of " + this + ". Length is now " +  this.backside_widgets.length);
             if (backside) {
                 backside.update_run_button_disabled_attribute();
             }
@@ -415,13 +428,13 @@ window.TOONTALK.widget = (function (TT) {
         
         set_backside_widget_sides: function (backside_widgets, json_views) {
             var backside = this.get_backside();
-//             console.log("setting backside_widgets of " + this + " were " + this.backside_widgets + " and is now " + backside_widgets);
+//          console.log("setting backside_widgets of " + this + " were " + this.backside_widgets + " and is now " + backside_widgets);
             this.backside_widgets = backside_widgets;
             if (backside_widgets.length > 0) { 
                 if (this.get_backside()) {
                     this.get_backside().add_backside_widgets(backside_widgets, json_views);
                 } else {
-                    // keep this for when backside is created
+                    // store this for when backside is created 
                     this.backside_widgets_json_views = json_views;
                 }
                 backside_widgets.forEach(function (backside_widget) {
@@ -439,11 +452,12 @@ window.TOONTALK.widget = (function (TT) {
         },
         
         backside_widget_side_index: function (widget_side) {
-            // can't simply use indexOf since that depends upon ===
+            // can't simply use indexOf since that depends upon === 
             var widget_index = -1;
             this.backside_widgets.some(function (backside_widget_side, index) {
                 if (backside_widget_side.widget === widget_side.widget &&
-                    backside_widget_side.is_backside === widget_side.is_backside) {
+                    // can be false or undefined -- treat them the same
+                    !!backside_widget_side.is_backside === !!widget_side.is_backside) {
                     widget_index = index;
                     return true;
                 }
@@ -484,6 +498,10 @@ window.TOONTALK.widget = (function (TT) {
         add_to_copy: function (copy, just_value) {
             var backside_widgets;
             if (this.get_erased && this.get_erased()) {
+                if (!copy.set_erased) {
+                    // copy hasn't got get_erased and set_erased so give it to it now
+                    TT.widget.erasable(copy);
+                }
                 copy.set_erased(this.get_erased());
             }
             if (!just_value) {
@@ -594,7 +612,6 @@ window.TOONTALK.widget = (function (TT) {
         
         open_backside: function () {
             var backside = this.get_backside();
-            var backside_geometry = this.backside_geometry;
             var animate_backside_appearance = 
                 function (element, final_left, final_top, final_opacity) {
                     setTimeout(
@@ -607,12 +624,10 @@ window.TOONTALK.widget = (function (TT) {
                             $(element).css({left: final_left,
                                             top: final_top,
                                             opacity: final_opacity});
-                            if (backside_geometry) {
-                                TT.backside.scale_backside($(element), backside_geometry.x_scale, backside_geometry.y_scale, backside_geometry.original_width, backside_geometry.original_height);
-                            }
-                        },
+                            this.apply_backside_geometry();
+                        }.bind(this),
                         1);
-                };
+                }.bind(this);
             var backside_element, frontside_element, parent, $frontside_ancestor_that_is_backside_element, $frontside_ancestor_before_backside_element, frontside_ancestor_before_backside_element;
             if (backside) {
                 backside_element = backside.get_element();
@@ -655,16 +670,27 @@ window.TOONTALK.widget = (function (TT) {
                                         "inherit");
             TT.DISPLAY_UPDATES.pending_update(backside);
         },
+                
+        apply_backside_geometry: function () {
+            var backside = this.get_backside();
+            var backside_element = backside.get_element();
+            if (this.backside_geometry && backside_element) {
+                TT.backside.scale_backside($(backside_element), this.backside_geometry.x_scale, this.backside_geometry.y_scale, this.backside_geometry.original_width, this.backside_geometry.original_height);
+                // backside needs to know its scales when shown again or when creating JSON
+                backside.set_dimensions(this.backside_geometry);
+            }
+        },
         
         top_level_widget: function () {
             var widget = Object.create(TT.widget);
             widget.get_json = function () {
                 var backside = this.get_backside();
                 var $backside_element = $(backside.get_element());
-                var json = {type: "top_level",
-                            color: $backside_element.attr("background-color"),
-                            backside_width: $backside_element.width(),
-                            backside_height: $backside_element.height()};
+                var background_color = document.defaultView.getComputedStyle($backside_element.get(0), null).getPropertyValue("background-color");
+                // don't know why the following returns undefined
+//               $backside_element.attr("background-color")};
+                var json = {semantic: {type: "top_level"},
+                            view: {background_color: background_color}};
                 return this.add_to_json(json);
             };
             widget.get_type_name = function () {

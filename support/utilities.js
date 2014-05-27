@@ -47,8 +47,49 @@ window.TOONTALK.UTILITIES =
     };
     var handle_drop = function ($target, $source, source_widget, target_widget, target_position, event, json_object, drag_x_offset, drag_y_offset, source_is_backside) {
         var drop_handled = true;
-        var new_target;
+        var new_target, backside_widgets_json;
         if ($target.is(".toontalk-backside")) {
+            if (source_widget.get_type_name() === 'top-level') {
+               // add all top-level backsides contents but not the backside widget itself
+               backside_widgets_json = json_object.semantic.backside_widgets;
+               source_widget.get_backside_widgets().forEach(function (backside_widget_side, index) {
+                   var json_view = backside_widgets_json[index].widget.view;
+                   // not clear why we need to copy these widgets but without copying
+                   // their elements are not added to the target (but are added to its backside_widgets)
+                   var widget = backside_widget_side.widget.copy();
+                   var backside_element, left_offset, top_offset, width, height, position;
+                   if (backside_widget_side.is_backside) {
+                       backside_element = widget.get_backside_element(true);
+//                        if (!backside_element) {
+//                            return;
+//                        }
+                       left_offset = json_view.backside_left;
+                       top_offset = json_view.backside_top;
+                       width = json_view.backside_width;
+                       height = json_view.backside_height;
+                   } else {
+                       backside_element = widget.get_frontside_element(true);
+//                        if (!backside_element) {
+//                            return;
+//                        }
+                       left_offset = json_view.frontside_left;
+                       top_offset = json_view.frontside_top;
+                       width = json_view.frontside_width;
+                       height = json_view.frontside_height;
+                   }
+                   handle_drop($target, $(backside_element), widget, target_widget, target_position, event, json_object, drag_x_offset, drag_y_offset, backside_widget_side.is_backside);
+                   position = $(backside_element).position();
+                   $(backside_element).css({left: position.left + left_offset,
+                                            top: position.top + top_offset,
+                                            width: width,
+                                            height: height});
+                   if (backside_widget_side.is_backside) {
+                       widget.backside_geometry = json_view.backside_geometry;
+                       widget.apply_backside_geometry();
+                   }
+               }.bind(this));
+               return;
+            }
             // widget_dropped_on_me needed here to get geometry right
             if (source_widget) {
                 target_widget.get_backside().widget_dropped_on_me(source_widget, source_is_backside, event);
@@ -169,7 +210,7 @@ window.TOONTALK.UTILITIES =
                 if (widget) {
                     element.textContent = ""; // served its purpose of being parsed as JSON
                     if (widget.get_type_name() === 'top-level') {
-                        stored_json_string = window.localStorage.getItem("top_level_widget");
+                        stored_json_string = window.localStorage.getItem(window.location.href);
                         if (stored_json_string) {
                             json = JSON.parse(stored_json_string);
                             widget = TT.UTILITIES.create_from_json(json);
@@ -218,12 +259,14 @@ window.TOONTALK.UTILITIES =
 //             $backside_element.addClass("toontalk-top-level-backside");
 //             backside_element.draggable = false;
             TT.QUEUE.run();
-            // following not needed if things are backed up to localStorage
-//             window.addEventListener('beforeunload', function (event) {
+           
+            window.addEventListener('beforeunload', function (event) {
+                TT.UTILITIES.backup_all(true);
+//                 // following not needed if things are backed up to localStorage
 //                 var message = "Have you saved your creations by dragging them to a program such as WordPad?";
 //                 event.returnValue = message;
 //                 return message;
-//             });
+            });
         };
     $(document).ready(initialise);
     return {
@@ -430,14 +473,10 @@ window.TOONTALK.UTILITIES =
                         // not sure if the following is obsolete
                         json_object.view.drag_x_offset = event.originalEvent.clientX - position.left;
                         json_object.view.drag_y_offset = event.originalEvent.clientY - position.top;
-                        if (!json_object.width) {
+                        if (!json_object.view.frontside_width) {
                             if (dragee.parent().is(".toontalk-backside")) {
-                                json_object.view.original_width_fraction = dragee.outerWidth() / dragee.parent().outerWidth();
-                                json_object.view.original_height_fraction = dragee.outerHeight() / dragee.parent().outerHeight();
-                            } else {
-                                // following should be kept in synch with toontalk-frontside-on-backside CSS
-                                json_object.view.original_width_fraction = 0.2;
-                                json_object.view.original_height_fraction = 0.1;
+                                json_object.view.frontside_width = dragee.width();
+                                json_object.view.frontside_height = dragee.height();
                             }
                         }
                         if (dragee.is(".toontalk-backside")) {
@@ -467,8 +506,8 @@ window.TOONTALK.UTILITIES =
                             var json_object = dragee.data("json");
                             if (json_object) {
                                 dragee.data("json", ""); // no point wasting memory on this anymore
-                                dragee.css({width:  json_object.view.frontside_width || json_object.view.original_width_fraction * 100 + "%",
-                                            height: json_object.view.frontside_height || json_object.view.original_height_fraction * 100 + "%"});
+                                dragee.css({width:  json_object.view.frontside_width,
+                                            height: json_object.view.frontside_height});
                             }
                         } else if (!dragee.parent().is(".toontalk-top-level-resource, .toontalk-drop-area")) {
                             dragee.css({width:  "100%",
@@ -627,6 +666,7 @@ window.TOONTALK.UTILITIES =
                                          height: json_object.view.backside_height,
                                          // color may be undefined
                                          "background-color": json_object.view.background_color});
+                            source_widget.apply_backside_geometry();
                         } else {
                             $source = $(source_widget.get_frontside_element());
                         }
@@ -1056,14 +1096,17 @@ window.TOONTALK.UTILITIES =
             return "an " + word;
         },
         
-        backup_all: function () {
+        backup_all: function (immediately) {
             var top_level_widget = $(".toontalk-top-level-backside").data("owner");
+            var backup_function = function () {
+                    window.localStorage.setItem(window.location.href, JSON.stringify(top_level_widget.get_json()));
+            };
             if (top_level_widget) {
+                if (immediately) {
+                    backup_function();
+                }
                 // delay it so the geometry settles down
-                setTimeout(function () {
-                    window.localStorage.setItem("top_level_widget", JSON.stringify(top_level_widget.get_json()));
-                },
-                100);
+                setTimeout(backup_function, 100);
             }
         }
         

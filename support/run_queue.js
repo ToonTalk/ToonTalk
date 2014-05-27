@@ -16,12 +16,13 @@ window.TOONTALK.queue =
         },
         
         enqueue: function (robot_context_queue) {
+//             console.log("enqueued robot#" + robot_context_queue.robot.debug_id);
             return this.to_run.push(robot_context_queue);
         },
         
-        dequeue: function () {
-            return this.to_run.shift();
-        },
+//         dequeue: function () {
+//             return this.to_run.shift();
+//         },
         
         maximum_run: 1, // milliseconds
         
@@ -32,9 +33,12 @@ window.TOONTALK.queue =
             var end_time = new Date().getTime() + this.maximum_run;
             var now, element;
 //          if (this.to_run.length > 0) console.log("start time: " + (end_time-this.maximum_run));
+//             if (this.to_run.length > 0) {
+//                 console.log("run queue contains " + this.to_run.map(function (x) {return x.robot.debug_id;}));
+//             }
             while (this.to_run.length > 0) {
                 if (this.paused) {
-                    return;
+                    break;
                 }
                 now = new Date().getTime();
                 if (now >= end_time) {
@@ -42,18 +46,16 @@ window.TOONTALK.queue =
                     break; 
                 }
                 // TODO: use an efficient implementation of queues (linked lists?)
-                next_robot_run = this.dequeue();
+                next_robot_run = this.to_run.shift();
                 next_robot_run.robot.run_actions(next_robot_run.context, next_robot_run.top_level_context, next_robot_run.queue);
                 if (steps_limit) {
                     // steps_limit only used for testing
                     steps_limit -= 1;
                     if (steps_limit === 0) {
-                        // clear the queue to be ready for the next test
-                        this.to_run = [];
                         if (run_after_steps_limit) {
                             run_after_steps_limit();
                         }
-                        return;
+                        break;
                     }
                 }
             }

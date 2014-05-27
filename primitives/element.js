@@ -146,6 +146,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     pending_css['transform'] = transform;
                 }
             }
+            if (!pending_css) {
+                // can be undefined if all the transforms had a zero value
+                return;
+            }
             $(frontside_element).css(pending_css);
             // if it contains an image then change it too (needed only for width and height)
             if ($image_element && (pending_css.width || pending_css.height)) {
@@ -240,6 +244,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         var frontside_element = frontside.get_element();
         var css = {};
         var current_value, new_value_number;
+//         console.log(attribute + " of " + this.debug_id + " is " + new_value);
         if (!frontside_element) {
             return false;
         }
@@ -328,17 +333,21 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     element.create_attribute_object = function (attribute_name) {
         var selector = ".toontalk-element-" + attribute_name + "-attribute-input";
         var backside_element = this.get_backside_element();
-        var $attribute_input;
+        var $attribute_input, attribute_object;
         if (backside_element) {
             $attribute_input = $(backside_element).find(selector);
             if ($attribute_input.length > 0) {
                 $attribute_input.data("owner", this);
             }
         }
-        return {element_widget: this,
+        attribute_object =
+               {element_widget: this,
                 attribute: attribute_name,
                 get_type_name: function () {
                     return "element attribute";
+                },
+                toString: function () {
+                    return "the " + this.attribute + " of " + this.element_widget;
                 },
                 get_side_element: function () {
                     if ($attribute_input.length > 0) {
@@ -350,8 +359,17 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 },
                 widget_dropped_on_me: function (other) {
                     this.element_widget.dropped_on_style_attribute(other, attribute_name);
+                },
+                update_display: function () {
+                    if ($attribute_input) {
+                        $attribute_input.val(this.element_widget.get_attribute(this.attribute));
+                    }
                 }
-        };                              
+        };
+        if (TT.debugging) {
+            attribute_object.debug_id = TT.UTILITIES.generate_unique_id();
+        }
+        return attribute_object;
     };
     
     element.update_display = function () {

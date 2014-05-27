@@ -148,6 +148,9 @@ window.TOONTALK.robot = (function (TT) {
             run_once = new_value;
         };
         new_robot = new_robot.add_standard_widget_functionality(new_robot);
+        if (TT.debugging) {
+            this.debug_id = TT.UTILITIES.generate_unique_id();
+        }
         return new_robot;
     };
     
@@ -191,6 +194,7 @@ window.TOONTALK.robot = (function (TT) {
         if (!this.match_status) {
             this.match_status = 'not matched';
         }
+//         console.log("robot#" + this.debug_id + " match_status is " + this.match_status);
         switch (this.match_status) {
         case 'matched':
             if (!queue) {
@@ -214,6 +218,11 @@ window.TOONTALK.robot = (function (TT) {
     
     robot.set_stopped = function (new_value) {
         this.stopped = new_value;
+        if (this.stopped) {
+            // this is needed because a robot won't start running if it is animating
+            // and the animating flag isn't always reset
+            this.set_animating(false);
+        }
     };
     
     robot.run_actions = function(context, top_level_context, queue) {
@@ -380,9 +389,6 @@ window.TOONTALK.robot = (function (TT) {
         if (TT.debugging) {
              // this can't be done during robot creation since robot actions references to newly_created_widgets is premature
             this.debug_string = this.toString();
-            if (!this.debug_id) {
-                this.debug_id = TT.UTILITIES.generate_unique_id();
-            }
         }
         if (!frontside) {
             return;
