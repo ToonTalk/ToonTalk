@@ -60,18 +60,12 @@ window.TOONTALK.UTILITIES =
                    var backside_element, left_offset, top_offset, width, height, position;
                    if (backside_widget_side.is_backside) {
                        backside_element = widget.get_backside_element(true);
-//                        if (!backside_element) {
-//                            return;
-//                        }
                        left_offset = json_view.backside_left;
                        top_offset = json_view.backside_top;
                        width = json_view.backside_width;
                        height = json_view.backside_height;
                    } else {
                        backside_element = widget.get_frontside_element(true);
-//                        if (!backside_element) {
-//                            return;
-//                        }
                        left_offset = json_view.frontside_left;
                        top_offset = json_view.frontside_top;
                        width = json_view.frontside_width;
@@ -787,22 +781,6 @@ window.TOONTALK.UTILITIES =
             return element_found;
         },
         
-//         recursively_change_dimensions_to_percentages: function ($element) {
-//             var parent_width = $element.width();
-//             var parent_height = $element.height();
-//             $element.children().each(function (index, child) {
-//                 if (!$(child).is(".ui-resizable-handle")) {
-//                     var child_width = $(child).width();
-//                     var child_height = $(child).height();
-//                     var width_percentage = Math.min(100, (100 * child_width / parent_width)) + "%";
-//                     var height_percentage = Math.min(100, (100 * child_height / parent_height)) + "%";
-//                     $(child).css({width: width_percentage,
-//                                   height: height_percentage});
-//                     TT.UTILITIES.recursively_change_dimensions_to_percentages($(child));
-//                 }
-//             });
-//         },
-        
         set_position_is_absolute: function (element, absolute, event) {
             var position, left, top, ancestor;
             if (event) {
@@ -812,26 +790,9 @@ window.TOONTALK.UTILITIES =
                 }
             }
             if (absolute) {
-//                 if (element.style.position === "absolute") {                    
-//                     if (!event || (event.pageX === event.clientX && event.pageY === event.clientY)) {
-//                         // is already absolute and no need to adjust for scrolling
-//                         return;
-//                     }
-//                 }
-//                 if (event) {
-//                     left = event.pageX;
-//                     top = event.pageY;
-//                     ancestor = element.parentElement;
-//                     while (ancestor) {
-//                         left -= ancestor.offsetLeft;
-//                         top -= ancestor.offsetTop;
-//                         ancestor = ancestor.parentElement;
-//                     }
-//                 } else {
-                    position = $(element).position();
-                    left = position.left;
-                    top = position.top;
-//                 }
+                position = $(element).position();
+                left = position.left;
+                top = position.top;
                 $(element).css({left: left,
                                  top: top,
                                  position: "absolute"});
@@ -886,22 +847,7 @@ window.TOONTALK.UTILITIES =
                 $(element).removeClass("toontalk-highlight");
             },
             duration);
-        },
-        
-//         add_frontside_element_to_container: function (widget, widget_with_container) {
-//             var widget_frontside_element = widget.get_frontside_element();
-//             var element_with_container = widget_with_container.get_frontside_element();
-//             var element_with_container_position = $(element_with_container).position();
-//             var element_with_container_width = $(element_with_container).width();
-//             var element_with_container_height = $(element_with_container).height();
-// //             element_with_container.appendChild(widget_frontside_element);
-//             $(element_with_container).closest(".toontalk-side").append(widget_frontside_element);
-//             $(widget_frontside_element).css({left: element_with_container_position.left + element_with_container_width * 0.25,
-//                                              top: element_with_container_position.top + element_with_container_height * 0.75,
-//                                              width: element_with_container_width/2,
-//                                              height: element_with_container_height/2});
-//             widget_frontside_element.style.zIndex = 1000;
-//         },            
+        },            
         
         cursor_of_image: function (url) {
             var extensionStart = url.lastIndexOf('.');
