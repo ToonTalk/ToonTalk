@@ -227,7 +227,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             return transform_css[attribute];
         }
         frontside_element = this.get_frontside_element();
-        value = $(frontside_element).css(attribute);
+        value = frontside_element.style[attribute];
+        // this caused integer rounding (at least of font-size) $(frontside_element).css(attribute);
         if (!value) {
             // zero is the default value -- e.g. for transformations such as rotate
             return 0;
@@ -260,14 +261,12 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             }
             new_value = new_value_number;
         }
-        if (handle_training) {
-            if (TT.robot.in_training) {
-                TT.robot.in_training.edited(this, {setter_name: "set_attribute",
-                                                   argument_1: attribute,
-                                                   argument_2: new_value,
-                                                   toString: "change the '" + attribute + "' style to " + new_value + " of",
-                                                   button_selector: ".toontalk-element-" + attribute + "-attribute-input"});
-            }
+        if (handle_training && TT.robot.in_training) {
+            TT.robot.in_training.edited(this, {setter_name: "set_attribute",
+                                               argument_1: attribute,
+                                               argument_2: new_value,
+                                               toString: "change the '" + attribute + "' style to " + new_value + " of",
+                                               button_selector: ".toontalk-element-" + attribute + "-attribute-input"});
         }
         this.add_to_css(attribute, new_value);
         if ($(frontside_element).is(":visible")) {
@@ -308,7 +307,6 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 break;
                 case '*':
                 new_value = attribute_numerical_value * widget_number;
-                console.log(new_value);
                 break;
                 case '/':
                 new_value = attribute_numerical_value / widget_number;
@@ -607,8 +605,7 @@ window.TOONTALK.element_backside =
                                                                     undefined,
                                                                     "Click here to edit the '" + attribute + "' style attribute of this element.");
             attribute_value_editor.button.name = attribute;
-            attribute_value_editor.button.addEventListener('change', update_value);
-            attribute_value_editor.button.addEventListener('mouseout', update_value);
+            attribute_value_editor.button.addEventListener('input', update_value);
             TT.UTILITIES.can_receive_drops($(attribute_value_editor));
             td.appendChild(attribute_value_editor.container);
         });
