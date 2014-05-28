@@ -435,17 +435,12 @@ window.TOONTALK.robot = (function (TT) {
         frontside_element.title = this.get_title();
         $(frontside_element).addClass("toontalk-robot");
         $(new_first_child).addClass("toontalk-widget");
-//         frontside_element.style.width = this.get_width() + "px";
-//         frontside_element.style.height = this.get_height() + "px";
-        // following interfered with resizable
-//         $(frontside_element).css({width: this.get_width(),
-//                                   height: this.get_height()});
         frontside_element.appendChild(new_first_child);
         if (backside && backside.visible()) {
             TT.DISPLAY_UPDATES.pending_update(backside);
         }
         if (this.match_status === 'not matched') {
-            $(frontside_element).addClass("toontalk-robot-not-matched");
+            $(frontside_element).addClass("toontalk-side-animating toontalk-robot-not-matched");
         } else {
             $(frontside_element).removeClass("toontalk-robot-not-matched");
         }
