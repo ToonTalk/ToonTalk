@@ -228,15 +228,15 @@ window.TOONTALK.UTILITIES =
                         frontside_element = widget.get_frontside_element();
                         $(frontside_element).addClass("toontalk-top-level-resource");
                         element.appendChild(frontside_element);
-                        // delay until geometry settles down
-                        setTimeout(function () {
+                    }
+                    // delay until geometry settles down
+                    setTimeout(function () {
                             widget.update_display();
                             if (json.semantic.running) {
-                                widget.set_running(true);
+                                 widget.set_running(true);
                             }
                         },
-                        1);
-                    }
+                    1);
                 } else {
                     console.log("Could not recreate a widget from this JSON: " + json_string);
                 }
