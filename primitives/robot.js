@@ -10,7 +10,7 @@ window.TOONTALK.robot = (function (TT) {
     "use strict";
     var robot = Object.create(TT.widget);
     
-    robot.create = function (image_url, frontside_conditions, backside_conditions, body, description, width, height, thing_in_hand, run_once, next_robot) {
+    robot.create = function (image_url, frontside_conditions, backside_conditions, body, description, thing_in_hand, run_once, next_robot) {
         // frontside_conditions holds a widget that needs to be matched against the frontside of the widget to run
         // backside_conditions holds an object whose keys are type_names of required widgets on the backside
         // and whose values are widgets that need to match backside widgets of that type
@@ -28,13 +28,13 @@ window.TOONTALK.robot = (function (TT) {
         if (!description) {
             description = "";
         }
-        if (!width) {
-            // probably should be based upon toontalk-top-level-resource's width
-            width = 100;
-        }
-        if (!height) {
-            height = 100;
-        }
+//         if (!width) {
+//             // probably should be based upon toontalk-top-level-resource's width
+//             width = 100;
+//         }
+//         if (!height) {
+//             height = 100;
+//         }
         if (!first_in_team) {
             first_in_team = new_robot;
         }
@@ -93,19 +93,6 @@ window.TOONTALK.robot = (function (TT) {
                 frontside_element.style["z-index"] = 'auto';
                 $(frontside_element).removeClass("toontalk-robot-animating");
             }
-        };
-        // should the following use 'width' from the frontside element?
-        new_robot.get_width = function () {
-            return width;
-        };
-        new_robot.set_width = function (new_value) {
-            width = new_value;
-        };
-        new_robot.get_height = function () {
-            return height;
-        };
-        new_robot.set_height = function (new_value) {
-            height = new_value;
         };
         new_robot.get_description = function () {
             return description;
@@ -193,8 +180,6 @@ window.TOONTALK.robot = (function (TT) {
                                backside_conditions_copy,
                                this.get_body().copy(),
                                this.get_description(),
-                               this.get_width(),
-                               this.get_height(),
                                this.get_thing_in_hand(),
                                this.get_run_once(),
                                next_robot_copy);
@@ -617,8 +602,6 @@ window.TOONTALK.robot = (function (TT) {
                                backside_conditions,
                                TT.UTILITIES.create_from_json(json_semantic.body),
                                json_view.description,
-                               json_view.width,
-                               json_view.height,
                                thing_in_hand,
                                json_semantic.run_once,
                                next_robot);
