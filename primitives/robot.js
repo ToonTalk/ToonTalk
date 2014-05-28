@@ -466,10 +466,10 @@ window.TOONTALK.robot = (function (TT) {
         }
         setTimeout( // wait for layout to settle down
             function () {
-                if (resource_becoming_instance) {
-                    // need to adjust for frontside_conditions
-                    frontside_element.style.top = ($(frontside_element).position().top - $(robot_image).height()) + "px";
-                }
+//                 if (resource_becoming_instance) {
+//                     // need to adjust for frontside_conditions
+//                     frontside_element.style.top = ($(frontside_element).position().top - $(robot_image).height()) + "px";
+//                 }
 //                 if (frontside_conditions_contents_element) {
 //                     // unclear why but if this outside of the timeout then it has no affect
 //                     TT.DISPLAY_UPDATES.pending_update(frontside_conditions);
