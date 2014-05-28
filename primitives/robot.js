@@ -194,18 +194,14 @@ window.TOONTALK.robot = (function (TT) {
     robot.run = function (context, top_level_context, queue) {
         var i;
         var frontside_conditions = this.get_frontside_conditions();
-        if (this.stopped || this.being_trained) {
-            return 'not matched';
-        }
-        if (!frontside_conditions) {
-            console.log("Training robots without a context not yet implemented.");
+        if (this.stopped || this.being_trained || !frontside_conditions) {
             return 'not matched';
         }
         this.match_status = frontside_conditions.match(context);
         if (!this.match_status) {
             this.match_status = 'not matched';
         }
-//         console.log("robot#" + this.debug_id + " match_status is " + this.match_status);
+//      console.log("robot#" + this.debug_id + " match_status is " + this.match_status);
         switch (this.match_status) {
         case 'matched':
             if (!queue) {
