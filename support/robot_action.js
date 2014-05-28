@@ -97,7 +97,7 @@ window.TOONTALK.robot_action =
             widget = widget.data("owner");
         } else {
             left_offset = 0;
-            top_offset = -$(robot_frontside_element).height();
+//             top_offset = -$(robot_frontside_element).height();
         }
         robot.animate_to_widget(widget, continuation, left_offset, top_offset);
         if (thing_in_hand) {
