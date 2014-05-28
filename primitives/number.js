@@ -225,11 +225,11 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         // should compute width from frontside element
         // get format from backside ancestor (via parent attribute?)
         var frontside = this.get_frontside();
+        var frontside_element, $dimensions_holder, client_width, client_height, font_height, font_width, max_decimal_places, new_HTML;
         if (!frontside) {
             return;
         }
-        var frontside_element = frontside.get_element();
-        var $dimensions_holder;
+        frontside_element = frontside.get_element();
         if ($(frontside_element).is(".toontalk-conditions-contents")) {
             $dimensions_holder = $(frontside_element);
         } else if ($(frontside_element).parent().is(".toontalk-backside, .toontalk-json")) {
@@ -237,19 +237,19 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         } else {
             $dimensions_holder = $(frontside_element).parent();
         }
-        var client_width = $dimensions_holder.width();
-        var client_height = $dimensions_holder.height();
-        var font_height = client_height * 0.8;
+        client_width = $dimensions_holder.width();
+        client_height = $dimensions_holder.height();
+        font_height = client_height * 0.8;
         if (client_height === 0) {
             return;
         }
 //      font_size = TT.UTILITIES.get_style_numeric_property(frontside, "font-size");
         // according to http://www.webspaceworks.com/resources/fonts-web-typography/43/
         // the aspect ratio of monospace fonts varies from .43 to .55 
-        var font_width = font_height * 0.64; // .55 'worst' aspect ratio -- add a little extra
+        font_width = font_height * 0.64; // .55 'worst' aspect ratio -- add a little extra
         // could find the font name and use the precise value
-        var max_decimal_places = client_width / font_width;
-        var new_HTML = this.to_HTML(max_decimal_places, font_height, this.get_format(), true, this.get_operator());
+        max_decimal_places = client_width / font_width;
+        new_HTML = this.to_HTML(max_decimal_places, font_height, this.get_format(), true, this.get_operator());
         if (!frontside_element.firstChild) {
             frontside_element.appendChild(document.createElement('div'));
         }
@@ -317,7 +317,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         if (format === 'decimal') {
             if (max_characters < 4) {
                 // better to use a smaller font than have too few digits
-                font_size *= max_characters / 4;
+                font_size *= Math.max(1, max_characters) / 4;
                 max_characters = 4;
             }
             return '<div class="toontalk-number toontalk-decimal' + extra_class + '" style="font-size: ' + font_size + 'px;">' + operator_HTML + this.decimal_string(max_characters, font_size) + '</div>';
