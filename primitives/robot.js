@@ -529,6 +529,9 @@ window.TOONTALK.robot = (function (TT) {
         }
         frontside_conditions_string = TT.UTILITIES.add_a_or_an(frontside_conditions_string);
         robot_description = prefix + "When working on something that matches " + frontside_conditions_string + " he will \n" + body.toString() + postfix;
+        if (this.match_status === 'not matched') {
+            robot_description = "He isn't running because his conditions don't match. Click to edit his conditions.\n" + robot_description;
+        }
         if (next_robot) {
             robot_description += "\nIf it doesn't match then the next robot will try to run.\n" + next_robot.toString();
         }
