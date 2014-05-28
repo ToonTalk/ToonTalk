@@ -1038,6 +1038,16 @@ window.TOONTALK.UTILITIES =
             return "an " + word;
         },
         
+        maximum_string_length: function (string, maximum_length) {
+            // replaces middle of string with ... if needed -- doesn't count the ... as part of the length
+            var first_part;
+            if (string.length <= maximum_length) {
+                return string;
+            }
+            first_part = string.substring(0, Math.round(maximum_length * .75));
+            return first_part + " ... " + string.substring(string.length-(maximum_length-first_part.length));
+        },
+        
         backup_all: function (immediately) {
             var top_level_widget = $(".toontalk-top-level-backside").data("owner");
             var backup_function = function () {

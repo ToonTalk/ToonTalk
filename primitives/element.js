@@ -413,7 +413,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
 //     };
         
     element.toString = function () {
-        return "element whose HTML is '" + this.get_HTML() +"'";
+        return "element whose HTML is '" + TT.UTILITIES.maximum_string_length(this.get_HTML(), 40) + "'";
     };
     
     element.get_type_name = function () {

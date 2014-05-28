@@ -193,7 +193,7 @@ window.TOONTALK.robot_action =
             var watched_run_function = watched_run_functions[action_name];
             if (!watched_run_function) {
                 watched_run_function = function (referenced, context, top_level_context, robot, continuation, additional_info) {
-                    setTimeout(function ()  {
+                    setTimeout(function () {
                         continuation(referenced);
                         },
                         3000);
