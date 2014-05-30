@@ -467,8 +467,8 @@ window.TOONTALK.UTILITIES =
                     is_resource = dragee.is(".toontalk-top-level-resource");
                     if (dragee.is(".toontalk-frontside")) {
                         // save the current dimension so size doesn't change while being dragged
-                        dragee.css({width:  this.offsetWidth + "px",
-                                    height: this.offsetHeight + "px"});
+                        dragee.css({width:  this.offsetWidth,
+                                    height: this.offsetHeight});
                     }
                     if (event.originalEvent.dataTransfer && widget.get_json) {
                         event.originalEvent.dataTransfer.effectAllowed = is_resource ? 'copy' : 'move';
@@ -989,7 +989,7 @@ window.TOONTALK.UTILITIES =
             var i, row, table_element;
             row = document.createElement("tr");
             table.appendChild(row);
-            for (i = 0; i < arguments.length; i += 1) {
+            for (i = 0; i < arguments.length; i++) {
                 table_element = document.createElement("td");
                 row.appendChild(table_element);
                 table_element.appendChild(arguments[i]);
@@ -1000,7 +1000,7 @@ window.TOONTALK.UTILITIES =
         create_vertical_table: function () { // takes any number of parameters
             var table = document.createElement("table");
             var i, row, table_element;
-            for (i = 0; i < arguments.length; i += 1) {
+            for (i = 0; i < arguments.length; i++) {
                 row = document.createElement("tr");
                 table.appendChild(row);
                 table_element = document.createElement("td");
@@ -1012,7 +1012,7 @@ window.TOONTALK.UTILITIES =
         
         selected_radio_button: function () {
             var i, selected;
-            for (i = 0; i < arguments.length; i += 1) {
+            for (i = 0; i < arguments.length; i++) {
                 if (arguments[i].checked) {
                     return arguments[i];
                 }

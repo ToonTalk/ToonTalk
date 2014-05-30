@@ -119,7 +119,7 @@ window.TOONTALK.box = (function (TT) {
         if (size !== other_box.get_size()) {
             return false;
         }
-        for (i = 0; i < size; i += 1) {
+        for (i = 0; i < size; i++) {
             my_hole = this.get_hole(i);
             pattern_hole = other_box.get_hole(i);
             if ((!my_hole && pattern_hole) || (my_hole && !pattern_hole)) {
@@ -156,7 +156,7 @@ window.TOONTALK.box = (function (TT) {
         if (size !== pattern_box.get_size()) {
             return 'not matched';
         }
-        for (i = 0; i < size; i += 1) {
+        for (i = 0; i < size; i++) {
             pattern_hole = pattern_box.get_hole(i);
             if (pattern_hole) {
                 my_hole = this.get_hole(i);
@@ -188,7 +188,7 @@ window.TOONTALK.box = (function (TT) {
         var size = this.get_size();
         var i, hole;
         var extra_text = "box that looks like ";
-        for (i = 0; i < size; i += 1) {
+        for (i = 0; i < size; i++) {
             hole = this.get_hole(i);
             if (hole) {
                 contents += hole.get_description();
@@ -211,7 +211,7 @@ window.TOONTALK.box = (function (TT) {
         var contents_json = [];
         var size = this.get_size();
         var i;
-        for (i = 0; i < size; i += 1) {
+        for (i = 0; i < size; i++) {
             if (this.get_hole(i)) {
                 contents_json[i] = this.get_hole(i).get_json();
             }
@@ -238,7 +238,7 @@ window.TOONTALK.box = (function (TT) {
         var vertical_style =   horizontal ? "" : " style='height:" + percentage + "%;'";
         var erased = this.get_erased && this.get_erased();
         html += "<tr" + vertical_style + ">";
-        for (i = 0; i < size; i += 1) {
+        for (i = 0; i < size; i++) {
             html += "<td class='toontalk-box-hole toontalk-box-hole-" + extra_classes + "'" + horizontal_style + ">";
             if (!erased) {
                 html += "<div class='toontalk-hole-about-to-be-replaced' />";
@@ -354,7 +354,7 @@ window.TOONTALK.box = (function (TT) {
         var size = this.get_size();
         var update_display = !!event;
         var i, part_frontside_element;
-        for (i = 0; i < size; i += 1) {
+        for (i = 0; i < size; i++) {
 //             console.log("Part is " + part.toString() + " hole " + i + " is " + this.get_hole(i).toString()); for debugging
             if (part === this.get_hole(i)) {
                 this.empty_hole(i, update_display);
@@ -382,7 +382,7 @@ window.TOONTALK.box = (function (TT) {
         var size = this.get_size();
         var i, part, path, sub_path;
         var removing_widget = robot.current_action_name === 'pick up';
-        for (i = 0; i < size; i += 1) {
+        for (i = 0; i < size; i++) {
             part = this.get_hole(i);
             if (widget === part) {
                 return TT.box.path.create(i, removing_widget);
