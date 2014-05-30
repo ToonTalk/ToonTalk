@@ -619,12 +619,17 @@ window.TOONTALK.robot_backside =
         }
         return TT.UTILITIES.create_horizontal_table(description, condition_element);
     };
+    var add_frontside_conditions_area = function (backside_element, robot) {
+        var frontside_conditions = robot.get_frontside_conditions();
+        var frontside_conditions_area = frontside_conditions && create_frontside_conditions_area(frontside_conditions, robot);
+        if (frontside_conditions_area ) {
+            backside_element.insertBefore(frontside_conditions_area, backside_element.firstChild);
+        }
+    };
     return {
         create: function (robot) {
             var backside = TT.backside.create(robot);
             var backside_element = backside.get_element();
-            var frontside_conditions = robot.get_frontside_conditions();
-            var frontside_conditions_area = frontside_conditions && create_frontside_conditions_area(frontside_conditions, robot);
             var image_url_input = TT.UTILITIES.create_text_input(robot.get_image_url(), "toontalk-image-url-input", "Image URL&nbsp;", "Type here to provide a URL for the appearance of this robot.");
             var description_text_area = TT.UTILITIES.create_text_area(robot.get_description(), 
                                                                       "toontalk-robot-description-input", 
@@ -675,9 +680,6 @@ window.TOONTALK.robot_backside =
                 }
                 event.stopPropagation();
             });
-            if (frontside_conditions_area) {
-                backside_element.appendChild(frontside_conditions_area);
-            }
             input_table = TT.UTILITIES.create_vertical_table(description_text_area.container, image_url_input.container, run_once_input.container);
             $(input_table).css({width: "90%"});
             backside_element.appendChild(input_table);
@@ -702,6 +704,7 @@ window.TOONTALK.robot_backside =
                 }
                 backside.update_run_button_disabled_attribute();
             };
+            add_frontside_conditions_area(backside_element, robot);
             return backside;
         },
         
@@ -724,6 +727,7 @@ window.TOONTALK.robot_backside =
                         $train_button.attr("title", "Click to start training this robot all over again.");
                     }
                 }
+                add_frontside_conditions_area(backside_element, robot);
             };
             change_label_and_title();
             $train_button.click(function (event) {
