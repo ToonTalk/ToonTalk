@@ -83,7 +83,6 @@ window.TOONTALK.robot_action =
                                                   top:  context_frontside_position.top});
                  top_level_element.appendChild(widget_frontside_element);
                  $(top_level_element).data("owner").add_backside_widget(widget);
-                 // pick a random spot to move to within the top-level element
                  widget.animate_to_element(top_level_element);
              }
          }
@@ -91,13 +90,14 @@ window.TOONTALK.robot_action =
     var move_robot_animation = function (widget, context, top_level_context, robot, continuation) {
         var thing_in_hand = robot.get_thing_in_hand();
         var robot_frontside_element = robot.get_frontside_element();
-        var left_offset, top_offset;
+        var widget_frontside_element, left_offset, top_offset;
         if (widget instanceof jQuery) {
             // top-level backside
             widget = widget.data("owner");
         } else {
-            left_offset = 0;
-//             top_offset = -$(robot_frontside_element).height();
+            widget_frontside_element = widget.get_frontside_element();
+            left_offset = $(widget_frontside_element).width()/2;
+            top_offset = $(widget_frontside_element).height()/-2;
         }
         robot.animate_to_widget(widget, continuation, left_offset, top_offset);
         if (thing_in_hand) {
