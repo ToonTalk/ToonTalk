@@ -620,10 +620,13 @@ window.TOONTALK.robot_backside =
         return TT.UTILITIES.create_horizontal_table(description, condition_element);
     };
     var add_frontside_conditions_area = function (backside_element, robot) {
-        var frontside_conditions = robot.get_frontside_conditions();
-        var frontside_conditions_area = frontside_conditions && create_frontside_conditions_area(frontside_conditions, robot);
-        if (frontside_conditions_area ) {
-            backside_element.insertBefore(frontside_conditions_area, backside_element.firstChild);
+        var frontside_conditions;
+        if ($(backside_element).find(".toontalk-conditions-contents").length > 0) {
+            return; // already added
+        }
+        frontside_conditions = robot.get_frontside_conditions();
+        if (frontside_conditions) {
+            backside_element.insertBefore(create_frontside_conditions_area(frontside_conditions, robot), backside_element.firstChild);
         }
     };
     return {
