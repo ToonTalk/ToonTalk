@@ -143,15 +143,27 @@ window.TOONTALK.robot_action =
     var button_use_animation = function (widget, context, top_level_context, robot, continuation, class_name_selector) {
         var button_element = find_backside_element(widget, class_name_selector);
         var robot_frontside_element = robot.get_frontside_element();
+        var button_visible = button_element && $(button_element).is(":visible");
         var new_continuation = function () {
             continuation();
             $(button_element).addClass("ui-state-active");
             setTimeout(function () {
-                $(button_element).removeClass("ui-state-active");
+                    $(button_element).removeClass("ui-state-active");
+                    if (!button_visible) {
+                        // restore things so button is hidden
+                        widget.get_backside().hide_backside();
+                    }
                 },
                 500);
         };
-        robot.animate_to_element(button_element, new_continuation, 0, -$(robot_frontside_element).height());
+        var animation_continuation = function () {
+            robot.animate_to_element(button_element, new_continuation, 0, -$(robot_frontside_element).height());
+        }
+        if (!button_visible && widget.open_backside) {
+            widget.open_backside(animation_continuation);
+        } else {
+            animation_continuation();
+        } 
     };
     var copy_animation = function (widget, context, top_level_context, robot, continuation) {
         var new_continuation = function () {

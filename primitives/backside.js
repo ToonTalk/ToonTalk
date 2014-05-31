@@ -307,6 +307,34 @@ window.TOONTALK.backside =
             var backside_element = backside.get_element();
             var $backside_element = $(backside_element);
             var $hide_button = $("<button>Hide</button>").button();
+            $hide_button.addClass("toontalk-hide-backside-button");
+            $hide_button.click(function (event) {
+                backside.hide_backside();
+                event.stopPropagation();
+            });
+            $hide_button.attr("title", "Click to hide this.");
+            return $hide_button.get(0);
+        },
+        
+        hide_backside: function () {
+            var widget = this.get_widget();
+            var frontside_element = widget.get_frontside_element();
+            var $backside_element = $(widget.get_backside_element());
+            var backside_position = $backside_element.position();
+            var $backside_container = $backside_element.parent().closest(".toontalk-backside");
+            var animate_disappearance = 
+                function ($element) {
+                    var frontside_position = $(frontside_element).position();
+                    var remove_element = 
+                        function () {
+                            $element.remove();
+                        };
+                    $element.addClass("toontalk-side-appearing");
+                    TT.UTILITIES.add_one_shot_transition_end_handler($element.get(0), remove_element);
+                    $element.css({left: frontside_position.left,
+                                  top: frontside_position.top,
+                                  opacity: .1});                   
+            };
             var record_backside_widget_positions = function () {
                 var backside_widgets = widget.get_backside_widgets();
                 var backside_widget_side_element;
@@ -322,42 +350,18 @@ window.TOONTALK.backside =
                     }
                 });
             };
-            $hide_button.addClass("toontalk-hide-backside-button");
-            $hide_button.click(function (event) {
-                var frontside_element = widget.get_frontside_element();
-                var backside_position = $backside_element.position();
-                var $backside_container = $backside_element.parent().closest(".toontalk-backside");
-                var animate_disappearance = 
-                        function ($element) {
-                            var frontside_position = $(frontside_element).position();
-                            var remove_element = function () {
-                                $element.remove();
-                            };
-                            $element.addClass("toontalk-side-appearing");
-                            TT.UTILITIES.add_one_shot_transition_end_handler($element.get(0), remove_element);
-                            $element.css({left: frontside_position.left,
-                                          top: frontside_position.top,
-                                          opacity: .1});
-                                        
-                }
-                $(frontside_element).removeClass("toontalk-highlight");
-                if (widget && widget.forget_backside) {
-                    widget.forget_backside();
-                }
-                if (widget) {
-                    record_backside_widget_positions();
-                    widget.backside_geometry = backside.get_backside_dimensions();
-                }
-                animate_disappearance($backside_element)
-                if (!$(frontside_element).is(":visible")) {
-                    $(frontside_element).css({left: backside_position.left,
-                                              top:  backside_position.top});
-                    $backside_container.append(frontside_element);
-                }
-                event.stopPropagation();
-            });
-            $hide_button.attr("title", "Click to hide this.");
-            return $hide_button.get(0);
+            $(frontside_element).removeClass("toontalk-highlight");
+            if (widget.forget_backside) {
+                widget.forget_backside();
+            }
+            record_backside_widget_positions();
+            widget.backside_geometry = this.get_backside_dimensions();
+            animate_disappearance($backside_element)
+            if (!$(frontside_element).is(":visible")) {
+                $(frontside_element).css({left: backside_position.left,
+                                           top:  backside_position.top});
+                $backside_container.append(frontside_element);
+            }
         },
         
         create_erase_button: function (backside, widget) {

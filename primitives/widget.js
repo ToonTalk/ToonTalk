@@ -169,7 +169,8 @@ window.TOONTALK.widget = (function (TT) {
                 widget.animate_to_element = function (target_element, continuation, left_offset, top_offset) {
                     var target_absolute_position = $(target_element).offset();
                     var $frontside_element = $(this.get_frontside_element());
-                    if (!target_element || ! $(target_element).is(":visible")) {
+                    if (!target_element || !$(target_element).is(":visible")) {
+                        // don't know where to go so just start doing the next thing
                         continuation();
                         return;
                     }
@@ -614,7 +615,8 @@ window.TOONTALK.widget = (function (TT) {
             return 'not matched';
         },
         
-        open_backside: function () {
+        open_backside: function (continuation) {
+            // continuation will be run after animation is completed
             var backside = this.get_backside();
             var animate_backside_appearance = 
                 function (element, final_left, final_top, final_opacity) {
@@ -622,6 +624,9 @@ window.TOONTALK.widget = (function (TT) {
                         function ()  {
                             var remove_transition_class = function () {
                                 $(element).removeClass("toontalk-side-appearing");
+                                if (continuation) {
+                                    continuation();
+                                }
                             };
                             $(element).addClass("toontalk-side-appearing");
                             TT.UTILITIES.add_one_shot_transition_end_handler(element, remove_transition_class);
@@ -661,7 +666,7 @@ window.TOONTALK.widget = (function (TT) {
             backside = this.get_backside(true);
             backside_element = backside.get_element();
             $(backside_element).data("owner", this);
-            // start on the frontside (same upper left corner)
+            // start on the frontside (same upper left corner as frontside)
             $(backside_element).css({
                 left: frontside_ancestor_before_backside_element.offsetLeft,
                 top: frontside_ancestor_before_backside_element.offsetTop,
