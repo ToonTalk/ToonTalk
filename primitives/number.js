@@ -234,7 +234,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             $dimensions_holder = $(frontside_element);
         } else if ($(frontside_element).parent().is(".toontalk-backside, .toontalk-json")) {
             $dimensions_holder = $(frontside_element);
-        } else if ($(frontside_element).find(".toontalk-robot")) {
+        } else if ($(frontside_element).closest(".toontalk-robot").length > 0) {
             $dimensions_holder = $(frontside_element);
         } else {
             $dimensions_holder = $(frontside_element).parent();
