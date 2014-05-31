@@ -218,13 +218,14 @@ window.TOONTALK.box = (function (TT) {
         }
         return this.add_to_json(
            {type: "box",
+            size: this.get_size(),
             contents: contents_json,
             horizontal: this.get_horizontal()
            });
     };
     
     box.create_from_json = function (json) {
-        return box.create(json.contents.length, json.horizontal, TT.UTILITIES.create_array_from_json(json.contents));
+        return box.create(json.size, json.horizontal, TT.UTILITIES.create_array_from_json(json.contents));
     };
     
     box.to_HTML = function () {
