@@ -235,6 +235,9 @@ window.TOONTALK.widget = (function (TT) {
                 return parent_of_backside;
             };
             widget.set_parent_of_frontside = function (new_value, parent_is_backside) {
+                if (TT.debugging && !new_value) {
+                    console.log("setting the parent to undefined of " + widget);
+                }
                 parent_of_frontside = {widget: new_value,
                                        is_backside: parent_is_backside};
             };
@@ -256,9 +259,10 @@ window.TOONTALK.widget = (function (TT) {
             if (frontside) {
                 frontside.remove();
             }
-            if (parent_of_frontside && parent_of_frontside.widget) {
+            if (parent_of_frontside && parent_of_frontside.widget && parent_of_frontside.widget.removed_from_container) {
                 parent_of_frontside.widget.removed_from_container(this, false, event);
-                parent_of_frontside.widget.remove_backside_widget(this, false);
+                // above does the following now
+//              parent_of_frontside.widget.remove_backside_widget(this, false);
             }
             if (parent_of_backside && parent_of_backside) {
                 parent_of_backside.widget.removed_from_container(this, false, event);

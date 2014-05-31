@@ -57,9 +57,9 @@ window.TOONTALK.box = (function (TT) {
             return contents[index];
         };
         new_box.set_hole = function (index, new_value, update_display) {
-            if (contents[index]) {
-                contents[index].set_parent_of_frontside(undefined);
-            }
+//             if (contents[index]) {
+//                 contents[index].set_parent_of_frontside(undefined);
+//             }
             contents[index] = new_value;
             contents[index].set_parent_of_frontside(this);
             if (update_display) {
@@ -535,6 +535,8 @@ window.TOONTALK.box_empty_hole =
             empty_hole.get_side_element = function () {
                 return this.get_element();
             };
+            // there is no backside of an empty hole
+            empty_hole.get_frontside_element = empty_hole.get_side_element;
             empty_hole.update_display = function () {
                 // should be nothing to do
                 // but height percentage not working as expected
@@ -551,10 +553,15 @@ window.TOONTALK.box_empty_hole =
             };
             empty_hole.widget_dropped_on_me = function (dropped) {
                 var box = this.get_parent_of_frontside().widget;
+                var parent_of_frontside = dropped.get_parent_of_frontside();
+                if (parent_of_frontside && parent_of_frontside.widget && parent_of_frontside.widget.removed_from_container) {
+                    parent_of_frontside.widget.removed_from_container(dropped);
+                }
                 if (TT.robot.in_training) {
                     TT.robot.in_training.dropped_on(dropped, empty_hole);
                 }
                 box.set_hole(index, dropped, true);
+                dropped.set_parent_of_frontside(this, false);
                 TT.DISPLAY_UPDATES.pending_update(box);
                 return true;
             };

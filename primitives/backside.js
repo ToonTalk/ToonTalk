@@ -51,7 +51,7 @@ window.TOONTALK.backside =
                     if (!backside_removed) {
                         $(other.get_frontside_element()).removeClass("toontalk-frontside-on-backside");
                     }
-                    // what about removing backside_widgets here?
+                    this.remove_backside_widget(other);
                 };
             }
             backside.widget_dropped_on_me = 
@@ -105,8 +105,9 @@ window.TOONTALK.backside =
                                                                      height: json_view.backside_height});
                                          backside_widget_side.widget.apply_backside_geometry();
                                     } else {
-                                         $(widget_side_element).css({left: json_view.frontside_left,
-                                                                     top: json_view.frontside_top,
+                                         // better to place it a 0, 0 than undefined since can end up 'off screen'
+                                         $(widget_side_element).css({left: json_view.frontside_left || 0,
+                                                                     top: json_view.frontside_top || 0,
                                                                      width: json_view.frontside_width,
                                                                      height: json_view.frontside_heigh});
                                     }
