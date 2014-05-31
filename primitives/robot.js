@@ -386,16 +386,13 @@ window.TOONTALK.robot = (function (TT) {
     };
     
     robot.update_display = function() {
-        // perhaps this should be moved to widget and number and box updated to differ in the to_HTML part
         var frontside = this.get_frontside();
-        var backside = this.get_backside();
-//         var frontside_conditions = this.get_frontside_conditions();
-//         var frontside_conditions_contents_element, frontside_conditions_div;
-        var new_first_child, robot_image, frontside_element, resource_becoming_instance;
+        var backside = this.get_backside(); 
+        var robot_image, frontside_element, resource_becoming_instance;
         var thing_in_hand = this.get_thing_in_hand();
         var thing_in_hand_frontside_element;
         if (TT.debugging) {
-             // this can't be done during robot creation since robot actions references to newly_created_widgets is premature
+            // this can't be done during robot creation since robot actions references to newly_created_widgets is premature
             this.debug_string = this.toString();
         }
         if (!frontside) {
@@ -403,35 +400,20 @@ window.TOONTALK.robot = (function (TT) {
         }
         frontside_element = frontside.get_element();
         robot_image = this.image();
-//         if ($(frontside_element).parent(".toontalk-top-level-resource").length > 0 || !frontside_conditions) {
-           
-//         } else {
-//             frontside_conditions_div = this.frontside_conditions_div();
-//             new_first_child.appendChild(frontside_conditions_div);
-//             $(robot_image).css({top: "30%"});
-            if (thing_in_hand) {
-                new_first_child = document.createElement("div");
-                $(new_first_child).css({position: "absolute"});
-                thing_in_hand_frontside_element = thing_in_hand.get_frontside_element();
-                $(thing_in_hand_frontside_element).css({position: "static"});  
-                new_first_child.appendChild(thing_in_hand_frontside_element);
-                new_first_child.appendChild(robot_image);
-            } else {
-                 new_first_child = robot_image;
-            }
-//             frontside_conditions_contents_element = frontside_conditions.get_frontside_element(true);
-//             $(frontside_conditions_contents_element).addClass("toontalk-conditions-contents");
-//             frontside_conditions_div.appendChild(frontside_conditions_contents_element);
-            resource_becoming_instance = frontside_element.firstChild && $(frontside_element.firstChild).is(".toontalk-robot-image");
-//         }
-        // remove what's there first
+        if (thing_in_hand) {
+            thing_in_hand_frontside_element = thing_in_hand.get_frontside_element();
+        }
+        resource_becoming_instance = frontside_element.firstChild && $(frontside_element.firstChild).is(".toontalk-robot-image");
+        // remove what's there currently before adding new elements
         while (frontside_element.firstChild) {
             frontside_element.removeChild(frontside_element.firstChild);
         }
         frontside_element.title = this.get_title();
         $(frontside_element).addClass("toontalk-robot");
-        $(new_first_child).addClass("toontalk-widget");
-        frontside_element.appendChild(new_first_child);
+        frontside_element.appendChild(robot_image); // new_first_child);
+        if (thing_in_hand_frontside_element) {
+            frontside_element.appendChild(thing_in_hand_frontside_element);
+        }
         if (backside && backside.visible()) {
             TT.DISPLAY_UPDATES.pending_update(backside);
         }
@@ -442,19 +424,15 @@ window.TOONTALK.robot = (function (TT) {
         }
         setTimeout( // wait for layout to settle down
             function () {
-//                 if (resource_becoming_instance) {
-//                     // need to adjust for frontside_conditions
-//                     frontside_element.style.top = ($(frontside_element).position().top - $(robot_image).height()) + "px";
-//                 }
-//                 if (frontside_conditions_contents_element) {
-//                     // unclear why but if this outside of the timeout then it has no affect
-//                     TT.DISPLAY_UPDATES.pending_update(frontside_conditions);
-//                 }
-//                 if (frontside_conditions && frontside_conditions.is_in_frontside_conditions) {
-//                     frontside_conditions.is_in_frontside_conditions();
-//                 }
+                var relative_left, relative_top;
                 if (thing_in_hand) {
                     $(thing_in_hand_frontside_element).addClass("toontalk-held-by-robot");
+                    // compute where the thing should be to be centred over the robot
+                    relative_left = $(robot_image).width()/2 - $(thing_in_hand_frontside_element).width()/2;
+                    relative_top = $(robot_image).height()/2 - $(thing_in_hand_frontside_element).height()/2;
+                    $(thing_in_hand_frontside_element).css({position: "absolute",
+                                                            left: relative_left,
+                                                            top: relative_top});
                     TT.DISPLAY_UPDATES.pending_update(thing_in_hand);
                 }
             },
