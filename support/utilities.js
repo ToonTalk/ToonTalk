@@ -628,10 +628,10 @@ window.TOONTALK.UTILITIES =
                                         $source.css({width:  json_object.view.frontside_width,
                                                      height: json_object.view.frontside_height});
                                     }
-                                } else if (container.removed_from_container) {
-                                    // can happen if container is a robot holding something
-                                    // but probably that should be prevented earlier
-                                    container.removed_from_container(source_widget, source_is_backside, event);
+//                                 } else if (container.removed_from_container) {
+//                                     // can be undefined if container is a robot holding something
+//                                     // but probably that should be prevented earlier
+//                                     container.removed_from_container(source_widget, source_is_backside, event);
                                 }
                             } else {
                                 TT.UTILITIES.restore_resource($source, source_widget);
