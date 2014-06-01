@@ -52,7 +52,7 @@
 	background-color: rgba(220, 255, 236, .94);
 }
 .toontalk-backside-of-box {
-	background-color: rgba(255, 213, 255, .94);
+	background-color: rgba(234, 212, 247, 0.94);
 }
 .toontalk-backside-of-robot {
 	background-color: rgba(230, 230, 255, .94);
@@ -109,7 +109,7 @@
 .toontalk-box-hole {
 	width: 100%;
 	height: 100%;
-	border-color: rgb(173, 43, 105);
+	border-color: rgb(137, 15, 239);
 	padding: 0;
 }
 .toontalk-box-hole-horizontal {
@@ -275,7 +275,7 @@
 	border-radius: 10px;
 }
 .toontalk-highlight {
-	border: solid 3px red;
+	border: solid 3px white;
 }
 .toontalk-conditions-not-matched {
 	/* could be fancier -- e.g. glowing */
