@@ -54,14 +54,21 @@ window.TOONTALK.robot = (function (TT) {
         new_robot.set_backside_conditions = function (new_value) {
             backside_conditions = new_value;
             if (backside_conditions) {
-                // only makes sense to erase things in frontside_conditions
+                // only makes sense to erase frontsides of backside_conditions
                 TT.UTILITIES.available_types.forEach(function (type) {
                     if (backside_conditions[type]) {
                         TT.widget.erasable(backside_conditions[type]);
                     }
-                });
-                
+                }); 
             }
+        };
+        new_robot.add_to_backside_conditions = function (widget) {
+            var widget_copy = widget.copy(true);
+            if (!backside_conditions) {
+                backside_conditions = {};
+            }
+            backside_conditions[widget.get_type_name()] = widget_copy;
+            TT.widget.erasable(widget_copy);
         };
         new_robot.get_body = function () {
             return body;
@@ -192,13 +199,48 @@ window.TOONTALK.robot = (function (TT) {
     };
     
     robot.run = function (context, top_level_context, queue) {
-        var i;
-        var frontside_conditions = this.get_frontside_conditions();
-        if (this.stopped || this.being_trained || !frontside_conditions) {
+        var frontside_condition_widget = this.get_frontside_conditions();
+        var backside_conditions, backside_widgets, condition_frontside_element;
+        if (this.stopped || this.being_trained || !frontside_condition_widget) {
             return 'not matched';
         }
-        this.match_status = frontside_conditions.match(context);
-        if (!this.match_status) {
+        this.match_status = frontside_condition_widget.match(context);
+        condition_frontside_element = frontside_condition_widget.get_frontside_element();
+        if (condition_frontside_element) {
+            if (this.match_status === 'matched') {
+                $(condition_frontside_element).removeClass("toontalk-conditions-not-matched");
+            } else {
+                $(condition_frontside_element).addClass("toontalk-conditions-not-matched");
+            }
+        }
+        if (this.match_status === 'matched') {
+            backside_conditions = this.get_backside_conditions();
+            if (backside_conditions) {
+                backside_widgets = context.get_backside_widgets();
+                if (backside_widgets) {
+                    backside_widgets.some(function (backside_widget_side) {
+                        var backside_condition_widget_of_type = !backside_widget_side.is_backside && backside_conditions[backside_widget_side.widget.get_type_name()];
+                        var sub_match_status;
+                        if (backside_condition_widget_of_type) {
+                            sub_match_status = backside_condition_widget_of_type.match(backside_widget_side.widget);
+                            condition_frontside_element = backside_condition_widget_of_type.get_frontside_element();
+                            if (condition_frontside_element) {
+                                if (this.match_status === 'matched') {
+                                    $(condition_frontside_element).removeClass("toontalk-conditions-not-matched");
+                                } else {
+                                    $(condition_frontside_element).addClass("toontalk-conditions-not-matched");
+                                }
+                            }
+                            if (sub_match_status !== 'matched') {
+                                this.match_status = sub_match_status;
+                                // stop going through backside_widgets
+                                return true;
+                            }
+                        }
+                    }.bind(this));
+                }
+            }
+        } else if (!this.match_status) {
             this.match_status = 'not matched';
         }
 //      console.log("robot#" + this.debug_id + " match_status is " + this.match_status);
@@ -585,11 +627,11 @@ window.TOONTALK.robot = (function (TT) {
 window.TOONTALK.robot_backside = 
 (function (TT) {
     "use strict";
-    var create_frontside_conditions_area = function (frontside_conditions, robot) {
-        var description = TT.UTILITIES.create_text_element("Runs only if the widget matches: ");
-        var condition_element = frontside_conditions.get_frontside_element(true);
+    var create_conditions_area = function (text, condition_widget, robot, class_name) {
+        var description = TT.UTILITIES.create_text_element(text);
+        var condition_element = condition_widget.get_frontside_element(true);
         TT.UTILITIES.set_position_is_absolute(condition_element, false);
-        $(condition_element).addClass("toontalk-conditions-contents");
+        $(condition_element).addClass("toontalk-conditions-contents " + class_name);
         if (robot.match_status === 'not matched') {
             $(condition_element).addClass("toontalk-conditions-not-matched");
         } else {
@@ -597,14 +639,32 @@ window.TOONTALK.robot_backside =
         }
         return TT.UTILITIES.create_horizontal_table(description, condition_element);
     };
-    var add_frontside_conditions_area = function (backside_element, robot) {
-        var frontside_conditions;
-        if ($(backside_element).find(".toontalk-conditions-contents").length > 0) {
-            return; // already added
+    var add_conditions_area = function (backside_element, robot) {
+        var frontside_condition_widget = robot.get_frontside_conditions();
+        var backside_conditions = robot.get_backside_conditions();
+        var backside_condition_widget, area_class_name;
+        if (frontside_condition_widget && $(backside_element).find(".toontalk-frontside-conditions-area").length === 0) {
+            // and not already added
+            backside_element.insertBefore(create_conditions_area("Runs only if the widget matches: ", 
+                                                                 frontside_condition_widget, 
+                                                                 robot,
+                                                                 "toontalk-frontside-conditions-area"), 
+                                          backside_element.firstChild);
         }
-        frontside_conditions = robot.get_frontside_conditions();
-        if (frontside_conditions) {
-            backside_element.insertBefore(create_frontside_conditions_area(frontside_conditions, robot), backside_element.firstChild);
+        if (backside_conditions) {
+            Object.keys(backside_conditions).forEach(function (type) {
+                backside_condition_widget = backside_conditions[type];
+                if (backside_condition_widget) {
+                    area_class_name = "toontalk-backside-" + type + "-conditions-area";
+                    if ($(backside_element).find("." + area_class_name).length === 0) {
+                        backside_element.insertBefore(create_conditions_area("Runs only if the " + type + " on the backside matches: ", 
+                                                                             backside_condition_widget, 
+                                                                             robot,
+                                                                             area_class_name), 
+                                                      backside_element.firstChild.nextSibling);
+                    }
+                }
+            });
         }
     };
     return {
@@ -685,7 +745,7 @@ window.TOONTALK.robot_backside =
                 }
                 backside.update_run_button_disabled_attribute();
             };
-            add_frontside_conditions_area(backside_element, robot);
+            add_conditions_area(backside_element, robot);
             return backside;
         },
         
@@ -708,7 +768,7 @@ window.TOONTALK.robot_backside =
                         $train_button.attr("title", "Click to start training this robot all over again.");
                     }
                 }
-                add_frontside_conditions_area(backside_element, robot);
+                add_conditions_area(backside_element, robot);
             };
             change_label_and_title();
             $train_button.click(function (event) {
