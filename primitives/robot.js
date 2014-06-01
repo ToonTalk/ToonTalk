@@ -466,15 +466,26 @@ window.TOONTALK.robot = (function (TT) {
         }
         setTimeout( // wait for layout to settle down
             function () {
-                var relative_left, relative_top;
+                var relative_left, relative_top, thing_in_hand_width, thing_in_hand_height, robot_width, robot_height, css;
                 if (thing_in_hand) {
+                    css = {position: "absolute"};
                     $(thing_in_hand_frontside_element).addClass("toontalk-held-by-robot");
                     // compute where the thing should be to be centred over the robot
-                    relative_left = $(robot_image).width()/2 - $(thing_in_hand_frontside_element).width()/2;
-                    relative_top = $(robot_image).height()/2 - $(thing_in_hand_frontside_element).height()/2;
-                    $(thing_in_hand_frontside_element).css({position: "absolute",
-                                                            left: relative_left,
-                                                            top: relative_top});
+                    thing_in_hand_width = $(thing_in_hand_frontside_element).width();
+                    thing_in_hand_height = $(thing_in_hand_frontside_element).height();
+                    robot_width = $(robot_image).width();
+                    robot_height = $(robot_image).height();
+                    if (thing_in_hand_width === 0) {
+                        thing_in_hand_width = robot_width*2;
+                        thing_in_hand_height = robot_height/2;
+                        css['width'] = thing_in_hand_width;
+                        css['height'] = thing_in_hand_height;
+                    }
+                    relative_left = (robot_width - thing_in_hand_width)/2;
+                    relative_top = (robot_height - thing_in_hand_height)/2;
+                    css['left'] = relative_left;
+                    css['top'] = relative_top;
+                    $(thing_in_hand_frontside_element).css(css);
                     TT.DISPLAY_UPDATES.pending_update(thing_in_hand);
                 }
             },
