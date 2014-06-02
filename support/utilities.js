@@ -467,8 +467,8 @@ window.TOONTALK.UTILITIES =
                     is_resource = dragee.is(".toontalk-top-level-resource");
                     if (dragee.is(".toontalk-frontside")) {
                         // save the current dimension so size doesn't change while being dragged
-                        dragee.css({width:  this.offsetWidth,
-                                    height: this.offsetHeight});
+                        dragee.css({width:  position.width,
+                                    height: position.height});
                     }
                     if (event.originalEvent.dataTransfer && widget.get_json) {
                         event.originalEvent.dataTransfer.effectAllowed = is_resource ? 'copy' : 'move';
