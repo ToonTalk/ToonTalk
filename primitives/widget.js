@@ -682,6 +682,10 @@ window.TOONTALK.widget = (function (TT) {
             // start on the frontside (same upper left corner as frontside)
             frontside_offset = $(frontside_element).offset();
             container_position = $frontside_ancestor_that_is_backside_element.position();
+            if (!container_position) {
+                container_position = {left: 0, 
+                                      top: 0};
+            }
             $(backside_element).css({
                 left: frontside_offset.left - container_position.left,
                 top: frontside_offset.top - container_position.top,

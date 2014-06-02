@@ -51,7 +51,10 @@ window.TOONTALK.backside =
                     if (!backside_removed) {
                         $(other.get_frontside_element()).removeClass("toontalk-frontside-on-backside");
                     }
-                    this.remove_backside_widget(other, backside_removed);
+                    if (event) {
+                       // if !event then robot did this and robot's remove backsides themselves
+                       this.remove_backside_widget(other, backside_removed);
+                    }
                 };
             }
             backside.widget_dropped_on_me = 
@@ -331,6 +334,10 @@ window.TOONTALK.backside =
                         };
                     $element.addClass("toontalk-side-appearing");
                     TT.UTILITIES.add_one_shot_transition_end_handler($element.get(0), remove_element);
+                    if (!container_position) {
+                        container_position = {left: 0, 
+                                              top: 0};
+                    }
                     $element.css({left: frontside_offset.left - container_position.left,
                                   top: frontside_offset.top - container_position.top,
                                   opacity: .1});                   
@@ -363,7 +370,9 @@ window.TOONTALK.backside =
             if (widget.forget_backside) {
                 widget.forget_backside();
             }
-            widget.get_parent_of_backside().widget.removed_from_container(widget, true);
+            if (widget.get_parent_of_backside()) {
+                widget.get_parent_of_backside().widget.removed_from_container(widget, true);
+            }
             record_backside_widget_positions();
             widget.backside_geometry = this.get_backside_dimensions();
             animate_disappearance($backside_element)
