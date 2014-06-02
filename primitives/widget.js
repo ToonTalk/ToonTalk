@@ -256,19 +256,16 @@ window.TOONTALK.widget = (function (TT) {
             var parent_of_backside = this.get_parent_of_backside();
             if (backside) {
                 backside.remove();
+                if (parent_of_backside && parent_of_backside.widget) {
+                    parent_of_backside.widget.removed_from_container(this, true, event);
+                }  
             }
             if (frontside) {
                 frontside.remove();
-            }
-            if (parent_of_frontside && parent_of_frontside.widget && parent_of_frontside.widget.removed_from_container) {
-                parent_of_frontside.widget.removed_from_container(this, false, event);
-                // above does the following now
-//              parent_of_frontside.widget.remove_backside_widget(this, false);
-            }
-            if (parent_of_backside && parent_of_backside.widget) {
-                parent_of_backside.widget.removed_from_container(this, true, event);
-//                 parent_of_backside.widget.remove_backside_widget(this, true);
-            }     
+                if (parent_of_frontside && parent_of_frontside.widget && parent_of_frontside.widget.removed_from_container) {
+                    parent_of_frontside.widget.removed_from_container(this, false, event);
+                }
+            }   
             this.set_running(false);
         },
         
