@@ -627,8 +627,9 @@ window.TOONTALK.widget = (function (TT) {
         open_backside: function (continuation) {
             // continuation will be run after animation is completed
             var backside = this.get_backside();
+            var backside_is_parent = true;
             var animate_backside_appearance = 
-                function (element, final_left, final_top, final_opacity) {
+                function (element, final_opacity) {
                     setTimeout(
                         function ()  {
                             var remove_transition_class = function () {
@@ -647,7 +648,8 @@ window.TOONTALK.widget = (function (TT) {
                         1);
                 }.bind(this);
             var backside_element, frontside_element, parent, $frontside_ancestor_that_is_backside_element,
-                $frontside_ancestor_before_backside_element, frontside_ancestor_before_backside_element, ancestor_that_owns_backside_element;
+                $frontside_ancestor_before_backside_element, frontside_ancestor_before_backside_element, ancestor_that_owns_backside_element,
+                final_left, final_top, frontside_offset, container_position;
             if (backside) {
                 backside_element = backside.get_element();
                 if ($(backside_element).is(":visible")) {
@@ -671,6 +673,7 @@ window.TOONTALK.widget = (function (TT) {
             while ($frontside_ancestor_that_is_backside_element.length > 0 && !$frontside_ancestor_that_is_backside_element.is(".toontalk-backside")) {
                 $frontside_ancestor_before_backside_element = $frontside_ancestor_that_is_backside_element;
                 $frontside_ancestor_that_is_backside_element = $frontside_ancestor_that_is_backside_element.parent();
+                backside_is_parent = false;
             }
             frontside_ancestor_before_backside_element = $frontside_ancestor_before_backside_element.get(0);
             backside = this.get_backside(true);
@@ -687,10 +690,17 @@ window.TOONTALK.widget = (function (TT) {
             if (ancestor_that_owns_backside_element) {
                 ancestor_that_owns_backside_element.add_backside_widget(this, true);
             }
-            animate_backside_appearance(backside_element, 
-                                        frontside_ancestor_before_backside_element.offsetLeft + frontside_ancestor_before_backside_element.offsetWidth,
-                                        frontside_ancestor_before_backside_element.offsetTop,
-                                        "inherit");
+            if (backside_is_parent) {
+                final_left = frontside_ancestor_before_backside_element.offsetLeft + frontside_ancestor_before_backside_element.offsetWidth;
+                final_top = frontside_ancestor_before_backside_element.offsetTop;
+            } else {
+                // widget is inside something so put backside under it
+                frontside_offset = $(frontside_element).offset();
+                container_position = $frontside_ancestor_that_is_backside_element.position();
+                final_left = frontside_offset.left - container_position.left;
+                final_top = (frontside_offset.top - container_position.top) + frontside_element.offsetHeight;
+            }
+            animate_backside_appearance(backside_element, "inherit");
             TT.DISPLAY_UPDATES.pending_update(backside);
         },
                 
