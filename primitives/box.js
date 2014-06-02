@@ -581,6 +581,9 @@ window.TOONTALK.box_empty_hole =
             empty_hole.visible = function () {
                 return this.get_parent_of_frontside().widget.visible(); // you can't see it but if box is visible then it is 
             };
+            if (TT.debugging) {
+                empty_hole.debug_string = "An empty hole";
+            }
             TT.widget.has_parent(empty_hole);
 //             $(hole_element).on('drop',
 //                 function (event) {
