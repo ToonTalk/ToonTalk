@@ -362,6 +362,7 @@ window.TOONTALK.backside =
             if (widget.forget_backside) {
                 widget.forget_backside();
             }
+            widget.get_parent_of_backside().widget.removed_from_container(widget, true);
             record_backside_widget_positions();
             widget.backside_geometry = this.get_backside_dimensions();
             animate_disappearance($backside_element)
