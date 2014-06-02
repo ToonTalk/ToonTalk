@@ -575,6 +575,9 @@ window.TOONTALK.element_backside =
                 });               
             }
         };
+        if ($(attributes_chooser).is(".ui-accordion")) {
+            $(attributes_chooser).accordion('destroy');
+        }
         $(attributes_chooser).empty();
         process_options(options, attributes_chooser);
         $(attributes_chooser).accordion({active: 0,
