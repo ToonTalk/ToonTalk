@@ -680,9 +680,11 @@ window.TOONTALK.widget = (function (TT) {
             backside_element = backside.get_element();
             $(backside_element).data("owner", this);
             // start on the frontside (same upper left corner as frontside)
+            frontside_offset = $(frontside_element).offset();
+            container_position = $frontside_ancestor_that_is_backside_element.position();
             $(backside_element).css({
-                left: frontside_ancestor_before_backside_element.offsetLeft,
-                top: frontside_ancestor_before_backside_element.offsetTop,
+                left: frontside_offset.left - container_position.left,
+                top: frontside_offset.top - container_position.top,
                 opacity: .01
             });
             $frontside_ancestor_that_is_backside_element.append(backside_element);
@@ -695,8 +697,6 @@ window.TOONTALK.widget = (function (TT) {
                 final_top = frontside_ancestor_before_backside_element.offsetTop;
             } else {
                 // widget is inside something so put backside under it
-                frontside_offset = $(frontside_element).offset();
-                container_position = $frontside_ancestor_that_is_backside_element.position();
                 final_left = frontside_offset.left - container_position.left;
                 final_top = (frontside_offset.top - container_position.top) + frontside_element.offsetHeight;
             }
