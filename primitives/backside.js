@@ -51,7 +51,7 @@ window.TOONTALK.backside =
                     if (!backside_removed) {
                         $(other.get_frontside_element()).removeClass("toontalk-frontside-on-backside");
                     }
-                    this.remove_backside_widget(other);
+                    this.remove_backside_widget(other, backside_removed);
                 };
             }
             backside.widget_dropped_on_me = 

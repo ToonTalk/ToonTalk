@@ -265,9 +265,9 @@ window.TOONTALK.widget = (function (TT) {
                 // above does the following now
 //              parent_of_frontside.widget.remove_backside_widget(this, false);
             }
-            if (parent_of_backside && parent_of_backside) {
-                parent_of_backside.widget.removed_from_container(this, false, event);
-                parent_of_backside.widget.remove_backside_widget(this, true);
+            if (parent_of_backside && parent_of_backside.widget) {
+                parent_of_backside.widget.removed_from_container(this, true, event);
+//                 parent_of_backside.widget.remove_backside_widget(this, true);
             }     
             this.set_running(false);
         },
@@ -429,7 +429,7 @@ window.TOONTALK.widget = (function (TT) {
             }
             widget_index = this.backside_widget_side_index(widget_side);
             if (widget_index < 0) {
-                console.log("Couldn't find a widget to remove it from backside widgets. " + widget_side + " (" + widget_side.widget.debug_id + ")");
+                console.log("Couldn't find a widget to remove it from backside widgets. " + widget_side + " (" + widget_side.widget.debug_id + ")"); 
                 return;                        
             }
             this.backside_widgets.splice(widget_index, 1);
