@@ -576,7 +576,7 @@ window.TOONTALK.UTILITIES =
                     if ($target.length === 0) {
                         return;
                     }
-                    // if this is computed when needed and  if dragging a resource it isn't the correct value
+                    // if this is computed when needed and if dragging a resource it isn't the correct value
                     target_position = $target.offset();
                     $target.removeClass("toontalk-highlight");
                     if ($source && $source.length > 0 &&
@@ -591,6 +591,7 @@ window.TOONTALK.UTILITIES =
                         $target.show();
                         if (new_target) {
                             $target = $(new_target).closest(".toontalk-side");
+                            target_position = $target.offset();
                         }
                     }
                     target_widget = $target.data("owner");
