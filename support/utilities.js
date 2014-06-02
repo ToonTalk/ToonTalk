@@ -324,7 +324,12 @@ window.TOONTALK.UTILITIES =
             var new_array = [];
             json_array.forEach(function (json_item, index) {
                 if (json_item) {
-                    new_array[index] = TT.UTILITIES.create_from_json(json_item, additional_info);
+                    if (json_item.widget && json_item.widget.semantic.index_of_previous_widget >= 0) {
+                        new_array[index] = {widget: new_array[json_item.widget.semantic.index_of_previous_widget].widget};
+                        new_array[index].is_backside = json_item.is_backside;
+                    } else {
+                        new_array[index] = TT.UTILITIES.create_from_json(json_item, additional_info);
+                    }
                 }
             });
             return new_array;
@@ -332,7 +337,9 @@ window.TOONTALK.UTILITIES =
         
         get_json_of_array: function (array) {
             var json = [];
+            var widgets_jsonified = [];
             array.forEach(function (widget_side, index) {
+                var index_of_jsonified_widget, widget_json;
                 if (widget_side) {
                     if (!widget_side.widget) {
                         if (widget_side.get_type_name) {
@@ -343,7 +350,15 @@ window.TOONTALK.UTILITIES =
                             json[index] = widget_side.get_json();
                         }
                     } else if (widget_side.widget.get_json) {
-                        json[index] = {widget: widget_side.widget.get_json(),
+                        index_of_jsonified_widget = widgets_jsonified.indexOf(widget_side.widget);
+                        widget_json = widget_side.widget.get_json();
+                        if (index_of_jsonified_widget < 0) {
+                            widgets_jsonified[widgets_jsonified.length] = widget_side.widget;
+                        } else {
+                            // just update the semantic part of the widget
+                            widget_json.semantic = {index_of_previous_widget: index_of_jsonified_widget};
+                        }
+                        json[index] = {widget: widget_json,
                                        is_backside: widget_side.is_backside};
                     } else {
                         console.log("No get_json for " + array[i].toString());
