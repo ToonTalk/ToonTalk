@@ -149,7 +149,7 @@ window.TOONTALK.robot_action =
             $(button_element).addClass("ui-state-active");
             setTimeout(function () {
                     $(button_element).removeClass("ui-state-active");
-                    if (!button_visible) {
+                    if (!button_visible && widget.get_backside()) {
                         // restore things so button is hidden
                         widget.get_backside().hide_backside();
                     }
