@@ -390,6 +390,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             frontside_element.appendChild(rendering);
             this.set_image_element(rendering, frontside_element);
             $(frontside_element).addClass("toontalk-element-frontside");
+            if (rendering.innerHTML.substring(0, 1) !== '<') {
+                // doesn't look like HTML so assume it is raw text and give it a class that will give it a better font and size
+                $(frontside_element).addClass("ui-widget");
+            }
         }
         this.apply_css();
         if (backside) {

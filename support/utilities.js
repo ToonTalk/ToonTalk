@@ -436,9 +436,9 @@ window.TOONTALK.UTILITIES =
                 // see https://bugzilla.mozilla.org/show_bug.cgi?id=900414
                 // may not have been text/html but just plain text
                 data = event.originalEvent.dataTransfer.getData("text");
-                if (data) {
-                    data = "<div class='ui-widget'>" + data + "</div>";
-                }
+//                 if (data) {
+//                     data = "<div class='ui-widget'>" + data + "</div>";
+//                 }
             }
             if (!data) {
                 console.log("No data in dataTransfer in drop.");
