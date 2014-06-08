@@ -95,7 +95,15 @@ window.TOONTALK.robot_action =
             // top-level backside
             widget = widget.data("owner");
         } else {
-            widget_frontside_element = widget.get_frontside_element();
+            if (widget.get_frontside_element) {
+                widget_frontside_element = widget.get_frontside_element();
+            } else if (widget.get_side_element) {
+                widget_frontside_element = widget.get_side_element();
+            } else {
+                console.log("Unable to find element corresponding to widget " + widget);
+                continuation();
+                return;
+            }
             left_offset = $(widget_frontside_element).width()/2;
             top_offset = $(widget_frontside_element).height()/-2;
         }
