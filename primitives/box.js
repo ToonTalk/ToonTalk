@@ -23,6 +23,11 @@ window.TOONTALK.box = (function (TT) {
         } else {
             contents = [];
         }
+        if (TT.debugging && size !== contents.length) {
+            // eventually remove this when old saved code has been updated
+            console.log("JSON size should be " + contents.length + " not " + size);
+            size = contents.length;
+        }
         if (typeof horizontal === 'undefined') {
             horizontal = true;
         }
