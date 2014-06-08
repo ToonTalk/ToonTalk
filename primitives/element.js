@@ -352,6 +352,12 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                         return $attribute_input.get(0);
                     }
                 },
+                equals: function (other) {
+                    if (attribute_name === other.attribute) {
+                        return this.equals(other.element_widget);
+                    }
+                    return false;
+                },
                 visible: function () {
                     return $attribute_input && $attribute_input.is(":visible");
                 },
