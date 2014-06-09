@@ -55,7 +55,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     
     element.create = function (html, style_attributes) {
         var new_element = Object.create(element);
-        var pending_css, transform_css, $image_element;
+        var pending_css, transform_css, on_update_display_handlers, $image_element;
         if (!style_attributes) {
             style_attributes = [];
         }
@@ -145,7 +145,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     pending_css['o-transform'] = transform;
                     pending_css['transform'] = transform;
                 }
-            }
+            };
             if (!pending_css) {
                 // can be undefined if all the transforms had a zero value
                 return;
@@ -159,6 +159,24 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 $image_element.css(image_css);
             }
             pending_css = undefined;
+        };
+        new_element.on_update_display = function (handler) {
+            if (!on_update_display_handlers) {
+                on_update_display_handlers = [handler];
+            } else {
+                on_update_display_handlers[on_update_display_handlers.length] = handler;
+            }
+        };
+        new_element.fire_on_update_display_handlers = function () {
+            if (on_update_display_handlers) {
+                setTimeout(function () {
+                        on_update_display_handlers.forEach(function (handler) {
+                            handler();
+                        });
+                        on_update_display_handlers = [];
+                    },
+                    1);   
+            }
         };
         new_element.get_image_element = function () {
             return $image_element;
@@ -405,6 +423,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         if (backside) {
             backside.update_display();
         }
+        this.fire_on_update_display_handlers();
     };
     
 //     element.is_in_thought_bubble = function () {

@@ -279,7 +279,7 @@ window.TOONTALK.UTILITIES =
     $(document).ready(initialise);
     return {
         create_from_json: function (json, additional_info) {
-            var widget, side_element, backside_widgets, json_semantic, json_view;
+            var widget, side_element, backside_widgets, json_semantic, json_view, size_css;
             if (!json) {
                 // was undefined and still is
                 return;
@@ -311,8 +311,17 @@ window.TOONTALK.UTILITIES =
                 }
                 if (json_view && json_view.frontside_width) {
                     side_element = json.view.backside ? widget.get_backside(true).get_element() : widget.get_frontside_element();
-                    $(side_element).css({width: json_view.frontside_width,
-                                         height: json_view.frontside_height});
+                    size_css = {width: json_view.frontside_width,
+                                height: json_view.frontside_height};
+                    if (json_semantic.type === 'element') {
+                        // delay until updated
+                        widget.on_update_display(function () {
+                                                     $(side_element).css(size_css);
+                                                     $(side_element).find("img").css(size_css);
+                                                 });
+                    } else {
+                        $(side_element).css(size_css);
+                    }
                 }
                 if (json_view && json_view.backside_geometry) {
                     widget.backside_geometry = json_view.backside_geometry;                    
