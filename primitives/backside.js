@@ -71,7 +71,7 @@ window.TOONTALK.backside =
                     $other_side_element = $(other_side_element);
                     $backside_element.append($other_side_element);
                     if (!event) {
-                        // i.e. by a robot -- then pick a random spot
+                        // i.e. by a robot -- then animate to backside element
                         other.animate_to_element(backside_element);
                     }
                     TT.UTILITIES.set_position_is_absolute(other_side_element, true, event); // when on the backside
@@ -85,11 +85,10 @@ window.TOONTALK.backside =
                         parent_of_backside = other.get_parent_of_backside();
                         if (parent_of_backside) {
                             // parent backside should no longer hold either front or backside
-                            parent_of_backside.widget.remove_backside_widget(other, false);
                             parent_of_backside.widget.remove_backside_widget(other, true);
                         }
                         other.forget_backside();
-                        other.remove();
+                        other.remove(event);
                     }
                     this.get_widget().add_backside_widget(other, other_is_backside);
                     TT.UTILITIES.backup_all();
