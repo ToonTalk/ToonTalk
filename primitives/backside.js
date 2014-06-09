@@ -61,7 +61,7 @@ window.TOONTALK.backside =
                 function (other, other_is_backside, event) {
                     // event serves 2 functions: info for adjusting for scrolling and whether to update the display
                     var widget = this.get_widget();
-                    var other_side, other_side_element, $other_side_element, parent_of_backside;
+                    var other_side, other_side_element, $other_side_element, backside_of_other;
                     if (other_is_backside) {
                         other_side = other.get_backside(true);
                         other_side_element = other_side.get_element();
@@ -89,11 +89,12 @@ window.TOONTALK.backside =
 //                             // parent backside should no longer hold either front or backside
 //                             parent_of_backside.widget.remove_backside_widget(other, true);
 //                         }
+                        backside_of_other = other.get_backside();
                         other.forget_backside();
                         // following does too much if the widget knows its backside
                         // so temporarily remove it
                         other.remove(event);
-                        other.set_backside(this);
+                        other.set_backside(backside_of_other);
                     }
                     widget.add_backside_widget(other, other_is_backside);
                     TT.UTILITIES.backup_all();
