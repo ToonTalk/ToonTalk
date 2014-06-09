@@ -328,14 +328,14 @@ window.TOONTALK.backside =
             var $hide_button = $("<button>Hide</button>").button();
             $hide_button.addClass("toontalk-hide-backside-button");
             $hide_button.click(function (event) {
-                backside.hide_backside();
+                backside.hide_backside(event);
                 event.stopPropagation();
             });
             $hide_button.attr("title", "Click to hide this.");
             return $hide_button.get(0);
         },
         
-        hide_backside: function () {
+        hide_backside: function (event) {
             var widget = this.get_widget();
             var frontside_element = widget.get_frontside_element();
             var $backside_element = $(widget.get_backside_element());
@@ -388,7 +388,7 @@ window.TOONTALK.backside =
                 widget.forget_backside();
             }
             if (widget.get_parent_of_backside()) {
-                widget.get_parent_of_backside().widget.removed_from_container(widget, true);
+                widget.get_parent_of_backside().widget.removed_from_container(widget, true, event);
             }
             record_backside_widget_positions();
             widget.backside_geometry = this.get_backside_dimensions();
