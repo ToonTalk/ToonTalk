@@ -28,7 +28,7 @@ window.TOONTALK.path =
             if (widget_type === "element attribute") { 
                 return TT.element.create_attribute_path(widget, robot);
             }
-            // context is undefined something is wrong much earlier
+            // if context is undefined something is wrong much earlier
             if (context.get_path_to) {
                 sub_path = context.get_path_to(widget, robot);
                 if (sub_path) {
@@ -43,6 +43,7 @@ window.TOONTALK.path =
                 var sub_path;
                 if (backside_widget === widget) {
                     path = TT.path.get_path_to_backside_widget_of_context(backside_widget.get_type_name());
+                    robot.add_to_backside_conditions(backside_widget);
                     return true; // stop searching
                 } else if (backside_widget.get_path_to) {
                     // e.g. might be in a box
@@ -50,6 +51,7 @@ window.TOONTALK.path =
                     if (sub_path) {
                         path = TT.path.get_path_to_backside_widget_of_context(backside_widget.get_type_name());
                         path.next = sub_path;
+                        robot.add_to_backside_conditions(backside_widget);
                         return true; // stop searching
                     }
                 }

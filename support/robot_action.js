@@ -83,7 +83,6 @@ window.TOONTALK.robot_action =
                                                   top:  context_frontside_position.top});
                  top_level_element.appendChild(widget_frontside_element);
                  $(top_level_element).data("owner").add_backside_widget(widget);
-                 // pick a random spot to move to within the top-level element
                  widget.animate_to_element(top_level_element);
              }
          }
@@ -91,13 +90,22 @@ window.TOONTALK.robot_action =
     var move_robot_animation = function (widget, context, top_level_context, robot, continuation) {
         var thing_in_hand = robot.get_thing_in_hand();
         var robot_frontside_element = robot.get_frontside_element();
-        var left_offset, top_offset;
+        var widget_frontside_element, left_offset, top_offset;
         if (widget instanceof jQuery) {
             // top-level backside
             widget = widget.data("owner");
         } else {
-            left_offset = 0;
-            top_offset = -$(robot_frontside_element).height();
+            if (widget.get_frontside_element) {
+                widget_frontside_element = widget.get_frontside_element();
+            } else if (widget.get_side_element) {
+                widget_frontside_element = widget.get_side_element();
+            } else {
+                console.log("Unable to find element corresponding to widget " + widget);
+                continuation();
+                return;
+            }
+            left_offset = $(widget_frontside_element).width()/2;
+            top_offset = $(widget_frontside_element).height()/-2;
         }
         robot.animate_to_widget(widget, continuation, left_offset, top_offset);
         if (thing_in_hand) {
@@ -143,15 +151,27 @@ window.TOONTALK.robot_action =
     var button_use_animation = function (widget, context, top_level_context, robot, continuation, class_name_selector) {
         var button_element = find_backside_element(widget, class_name_selector);
         var robot_frontside_element = robot.get_frontside_element();
+        var button_visible = button_element && $(button_element).is(":visible");
         var new_continuation = function () {
             continuation();
             $(button_element).addClass("ui-state-active");
             setTimeout(function () {
-                $(button_element).removeClass("ui-state-active");
+                    $(button_element).removeClass("ui-state-active");
+                    if (!button_visible && widget.get_backside()) {
+                        // restore things so button is hidden
+                        widget.get_backside().hide_backside();
+                    }
                 },
                 500);
         };
-        robot.animate_to_element(button_element, new_continuation, 0, -$(robot_frontside_element).height());
+        var animation_continuation = function () {
+            robot.animate_to_element(button_element, new_continuation, 0, -$(robot_frontside_element).height());
+        }
+        if (!button_visible && widget.open_backside) {
+            widget.open_backside(animation_continuation);
+        } else {
+            animation_continuation();
+        } 
     };
     var copy_animation = function (widget, context, top_level_context, robot, continuation) {
         var new_continuation = function () {
@@ -193,7 +213,7 @@ window.TOONTALK.robot_action =
             var watched_run_function = watched_run_functions[action_name];
             if (!watched_run_function) {
                 watched_run_function = function (referenced, context, top_level_context, robot, continuation, additional_info) {
-                    setTimeout(function ()  {
+                    setTimeout(function () {
                         continuation(referenced);
                         },
                         3000);

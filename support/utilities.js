@@ -33,7 +33,7 @@ window.TOONTALK.UTILITIES =
     var toontalk_json_div = function (json) {
         // convenience for dragging into documents (e.g. Word or WordPad -- not sure what else)
         return div_open + json + div_close;
-    };    
+    };
     var extract_json_from_div_string = function (div_string) {
         // expecting div_string to begin with div_open and end with div_close
         // but users may be dragging something different
@@ -60,18 +60,12 @@ window.TOONTALK.UTILITIES =
                    var backside_element, left_offset, top_offset, width, height, position;
                    if (backside_widget_side.is_backside) {
                        backside_element = widget.get_backside_element(true);
-//                        if (!backside_element) {
-//                            return;
-//                        }
                        left_offset = json_view.backside_left;
                        top_offset = json_view.backside_top;
                        width = json_view.backside_width;
                        height = json_view.backside_height;
                    } else {
                        backside_element = widget.get_frontside_element(true);
-//                        if (!backside_element) {
-//                            return;
-//                        }
                        left_offset = json_view.frontside_left;
                        top_offset = json_view.frontside_top;
                        width = json_view.frontside_width;
@@ -114,14 +108,7 @@ window.TOONTALK.UTILITIES =
             if ($source.is(".toontalk-frontside") && !$source.is('.ui-resizable')) {
                 // without the setTimeout the following prevents dragging components (e.g. widgets in boxes)
                 setTimeout(function () {
-                        $source.resizable({
-                            resize: function (event, ui) {
-                                TT.DISPLAY_UPDATES.pending_update(source_widget);
-                            },
-                            // the corner handles looked bad on element widgets
-                            // and generally got in the way
-                            handles: "n,e,s,w"
-                        });
+                    TT.UTILITIES.make_resizable($source, source_widget);
                     },
                     0);
             }
@@ -228,15 +215,15 @@ window.TOONTALK.UTILITIES =
                         frontside_element = widget.get_frontside_element();
                         $(frontside_element).addClass("toontalk-top-level-resource");
                         element.appendChild(frontside_element);
-                        // delay until geometry settles down
-                        setTimeout(function () {
+                    }
+                    // delay until geometry settles down
+                    setTimeout(function () {
                             widget.update_display();
                             if (json.semantic.running) {
-                                widget.set_running(true);
+                                 widget.set_running(true);
                             }
                         },
-                        1);
-                    }
+                    1);
                 } else {
                     console.log("Could not recreate a widget from this JSON: " + json_string);
                 }
@@ -268,10 +255,19 @@ window.TOONTALK.UTILITIES =
 //                 return message;
             });
         };
+    var drag_ended = function () {
+        if (!dragee) {
+            return;
+        }
+        dragee.removeClass("toontalk-being-dragged");
+        // restore events to decendants
+        dragee.find("*").removeClass("toontalk-ignore-events");
+        dragee = undefined;
+    };
     $(document).ready(initialise);
     return {
         create_from_json: function (json, additional_info) {
-            var widget, side_element, backside_widgets, json_semantic, json_view;
+            var widget, side_element, backside_widgets, json_semantic, json_view, size_css;
             if (!json) {
                 // was undefined and still is
                 return;
@@ -303,8 +299,17 @@ window.TOONTALK.UTILITIES =
                 }
                 if (json_view && json_view.frontside_width) {
                     side_element = json.view.backside ? widget.get_backside(true).get_element() : widget.get_frontside_element();
-                    $(side_element).css({width: json_view.frontside_width,
-                                         height: json_view.frontside_height});
+                    size_css = {width: json_view.frontside_width,
+                                height: json_view.frontside_height};
+                    if (json_semantic.type === 'element') {
+                        // delay until updated
+                        widget.on_update_display(function () {
+                                                     $(side_element).css(size_css);
+                                                     $(side_element).find("img").css(size_css);
+                                                 });
+                    } else {
+                        $(side_element).css(size_css);
+                    }
                 }
                 if (json_view && json_view.backside_geometry) {
                     widget.backside_geometry = json_view.backside_geometry;                    
@@ -321,7 +326,15 @@ window.TOONTALK.UTILITIES =
             var new_array = [];
             json_array.forEach(function (json_item, index) {
                 if (json_item) {
-                    new_array[index] = TT.UTILITIES.create_from_json(json_item, additional_info);
+                    if (json_item.widget && json_item.widget.semantic.index_of_previous_widget >= 0) {
+                        new_array[index] = {widget: new_array[json_item.widget.semantic.index_of_previous_widget].widget};
+                        new_array[index].is_backside = json_item.is_backside;
+                    } else {
+                        new_array[index] = TT.UTILITIES.create_from_json(json_item, additional_info);
+                    }
+                } else {
+                    // e.g. could be null representing an empty hole
+                    new_array[index] = json_item; 
                 }
             });
             return new_array;
@@ -329,7 +342,9 @@ window.TOONTALK.UTILITIES =
         
         get_json_of_array: function (array) {
             var json = [];
+            var widgets_jsonified = [];
             array.forEach(function (widget_side, index) {
+                var index_of_jsonified_widget, widget_json;
                 if (widget_side) {
                     if (!widget_side.widget) {
                         if (widget_side.get_type_name) {
@@ -340,7 +355,15 @@ window.TOONTALK.UTILITIES =
                             json[index] = widget_side.get_json();
                         }
                     } else if (widget_side.widget.get_json) {
-                        json[index] = {widget: widget_side.widget.get_json(),
+                        index_of_jsonified_widget = widgets_jsonified.indexOf(widget_side.widget);
+                        widget_json = widget_side.widget.get_json();
+                        if (index_of_jsonified_widget < 0) {
+                            widgets_jsonified[widgets_jsonified.length] = widget_side.widget;
+                        } else {
+                            // just update the semantic part of the widget
+                            widget_json.semantic = {index_of_previous_widget: index_of_jsonified_widget};
+                        }
+                        json[index] = {widget: widget_json,
                                        is_backside: widget_side.is_backside};
                     } else {
                         console.log("No get_json for " + array[i].toString());
@@ -418,9 +441,9 @@ window.TOONTALK.UTILITIES =
                 // see https://bugzilla.mozilla.org/show_bug.cgi?id=900414
                 // may not have been text/html but just plain text
                 data = event.originalEvent.dataTransfer.getData("text");
-                if (data) {
-                    data = "<div class='ui-widget'>" + data + "</div>";
-                }
+//                 if (data) {
+//                     data = "<div class='ui-widget'>" + data + "</div>";
+//                 }
             }
             if (!data) {
                 console.log("No data in dataTransfer in drop.");
@@ -464,8 +487,8 @@ window.TOONTALK.UTILITIES =
                     is_resource = dragee.is(".toontalk-top-level-resource");
                     if (dragee.is(".toontalk-frontside")) {
                         // save the current dimension so size doesn't change while being dragged
-                        dragee.css({width:  this.offsetWidth + "px",
-                                    height: this.offsetHeight + "px"});
+                        dragee.css({width:  position.width,
+                                    height: position.height});
                     }
                     if (event.originalEvent.dataTransfer && widget.get_json) {
                         event.originalEvent.dataTransfer.effectAllowed = is_resource ? 'copy' : 'move';
@@ -495,8 +518,7 @@ window.TOONTALK.UTILITIES =
                 });
             $element.on('dragend', 
                 function (event) {
-//                     console.log("drag end. dragee is " + dragee);
-                    $element.removeClass("toontalk-being-dragged");
+//                  console.log("drag end. dragee is " + dragee);
                     if (!dragee) {
                         dragee = $(event.originalEvent.srcElement).closest(".toontalk-side");
                     }
@@ -514,9 +536,7 @@ window.TOONTALK.UTILITIES =
                                         height: "100%"});
                         }
                     }
-                    // restore events to decendants
-                    $element.find("*").removeClass("toontalk-ignore-events");
-                    dragee = undefined;
+                    drag_ended();
                     event.stopPropagation();
                 });       
         },
@@ -539,13 +559,13 @@ window.TOONTALK.UTILITIES =
                     $element.find("*").removeClass("toontalk-ignore-events");
 //                     console.log("drop. dragee is " + dragee);
                     $source = dragee;
+                    drag_ended();
                     if (!$source && !json_object && !event.originalEvent.dataTransfer.files) {
                         if (!event.originalEvent.dataTransfer) {
                             console.log("Drop failed since there is no event.originalEvent.dataTransfer");
                         } else {
                             console.log("Drop failed since unable to parse as JSON."); 
                         }
-                        dragee = undefined;
                         // without the following it may load a new page
                         event.stopPropagation();
                         return;
@@ -574,10 +594,9 @@ window.TOONTALK.UTILITIES =
                         $target = $(event.target).closest(".toontalk-side");
                     }
                     if ($target.length === 0) {
-                        dragee = undefined;
                         return;
                     }
-                    // if this is computed when needed and  if dragging a resource it isn't the correct value
+                    // if this is computed when needed and if dragging a resource it isn't the correct value
                     target_position = $target.offset();
                     $target.removeClass("toontalk-highlight");
                     if ($source && $source.length > 0 &&
@@ -592,6 +611,7 @@ window.TOONTALK.UTILITIES =
                         $target.show();
                         if (new_target) {
                             $target = $(new_target).closest(".toontalk-side");
+                            target_position = $target.offset();
                         }
                     }
                     target_widget = $target.data("owner");
@@ -610,7 +630,6 @@ window.TOONTALK.UTILITIES =
                             $source.css({left: $source.get(0).offsetLeft + (event.originalEvent.layerX - drag_x_offset),
                                           top: $source.get(0).offsetTop + (event.originalEvent.layerY - drag_y_offset)});
                             event.stopPropagation();
-                            dragee = undefined;
                             return;
                         }
                         source_is_backside = $source.is(".toontalk-backside");
@@ -630,7 +649,9 @@ window.TOONTALK.UTILITIES =
                                         $source.css({width:  json_object.view.frontside_width,
                                                      height: json_object.view.frontside_height});
                                     }
-                                } else {
+                                } else if (container.removed_from_container) {
+                                    // can be undefined if container is a robot holding something
+                                    // but probably that should be prevented earlier
                                     container.removed_from_container(source_widget, source_is_backside, event);
                                 }
                             } else {
@@ -655,7 +676,6 @@ window.TOONTALK.UTILITIES =
                         }
                         if (!source_widget) {
                             console.log("Unable to construct a ToonTalk widget from the JSON.");
-                            dragee = undefined;
                             event.stopPropagation();
                             return;
                         }
@@ -673,13 +693,11 @@ window.TOONTALK.UTILITIES =
                     }    
                     if (source_widget === target_widget) {
                         // dropping front side on back side so ignore
-                        dragee = undefined;
                         event.stopPropagation();
                         return;
                     }
                     handle_drop($target, $source, source_widget, target_widget, target_position, event, json_object, drag_x_offset, drag_y_offset, source_is_backside);
                     event.stopPropagation();
-                    dragee = undefined;
                 });
             $element.on('dragenter', function (event) {
 //              console.log($element.get(0).className); -- not clear why this is never triggered for inputs on backside
@@ -706,13 +724,8 @@ window.TOONTALK.UTILITIES =
                 }
                 event.stopPropagation();
             });
-//                $element.on('mousemove', function (event) {
-//                    if (dragee && dragee !== $lement.get(0) && !$element.is(".toontalk-top-level-backside") && !$element.is(".toontalk-top-level-resource")) {
-//                        $element.addClass("toontalk-highlight");
-//                    }
-//                 });
-            // following provides mouseevents rather than dragstart and the like
-            // which doesn't have a dataTransfer attribute
+            // following attempt to use JQuery UI draggable provides mouseevents rather than dragstart and the like
+            // and they don't have a dataTransfer attribute so forced to rely upon lower-level drag and drop functionality
 //             $element.draggable({
 //                 create: function (event, ui) {
 //                     $(this).css({position: "absolute"})
@@ -791,23 +804,7 @@ window.TOONTALK.UTILITIES =
             return element_found;
         },
         
-//         recursively_change_dimensions_to_percentages: function ($element) {
-//             var parent_width = $element.width();
-//             var parent_height = $element.height();
-//             $element.children().each(function (index, child) {
-//                 if (!$(child).is(".ui-resizable-handle")) {
-//                     var child_width = $(child).width();
-//                     var child_height = $(child).height();
-//                     var width_percentage = Math.min(100, (100 * child_width / parent_width)) + "%";
-//                     var height_percentage = Math.min(100, (100 * child_height / parent_height)) + "%";
-//                     $(child).css({width: width_percentage,
-//                                   height: height_percentage});
-//                     TT.UTILITIES.recursively_change_dimensions_to_percentages($(child));
-//                 }
-//             });
-//         },
-        
-        set_position_absolute: function (element, absolute, event) {
+        set_position_is_absolute: function (element, absolute, event) {
             var position, left, top, ancestor;
             if (event) {
                 // either DOM or JQuery event
@@ -816,26 +813,9 @@ window.TOONTALK.UTILITIES =
                 }
             }
             if (absolute) {
-//                 if (element.style.position === "absolute") {                    
-//                     if (!event || (event.pageX === event.clientX && event.pageY === event.clientY)) {
-//                         // is already absolute and no need to adjust for scrolling
-//                         return;
-//                     }
-//                 }
-//                 if (event) {
-//                     left = event.pageX;
-//                     top = event.pageY;
-//                     ancestor = element.parentElement;
-//                     while (ancestor) {
-//                         left -= ancestor.offsetLeft;
-//                         top -= ancestor.offsetTop;
-//                         ancestor = ancestor.parentElement;
-//                     }
-//                 } else {
-                    position = $(element).position();
-                    left = position.left;
-                    top = position.top;
-//                 }
+                position = $(element).position();
+                left = position.left;
+                top = position.top;
                 $(element).css({left: left,
                                  top: top,
                                  position: "absolute"});
@@ -890,22 +870,7 @@ window.TOONTALK.UTILITIES =
                 $(element).removeClass("toontalk-highlight");
             },
             duration);
-        },
-        
-//         add_frontside_element_to_container: function (widget, widget_with_container) {
-//             var widget_frontside_element = widget.get_frontside_element();
-//             var element_with_container = widget_with_container.get_frontside_element();
-//             var element_with_container_position = $(element_with_container).position();
-//             var element_with_container_width = $(element_with_container).width();
-//             var element_with_container_height = $(element_with_container).height();
-// //             element_with_container.appendChild(widget_frontside_element);
-//             $(element_with_container).closest(".toontalk-side").append(widget_frontside_element);
-//             $(widget_frontside_element).css({left: element_with_container_position.left + element_with_container_width * 0.25,
-//                                              top: element_with_container_position.top + element_with_container_height * 0.75,
-//                                              width: element_with_container_width/2,
-//                                              height: element_with_container_height/2});
-//             widget_frontside_element.style.zIndex = 1000;
-//         },            
+        },            
         
         cursor_of_image: function (url) {
             var extensionStart = url.lastIndexOf('.');
@@ -1047,7 +1012,7 @@ window.TOONTALK.UTILITIES =
             var i, row, table_element;
             row = document.createElement("tr");
             table.appendChild(row);
-            for (i = 0; i < arguments.length; i += 1) {
+            for (i = 0; i < arguments.length; i++) {
                 table_element = document.createElement("td");
                 row.appendChild(table_element);
                 table_element.appendChild(arguments[i]);
@@ -1058,7 +1023,7 @@ window.TOONTALK.UTILITIES =
         create_vertical_table: function () { // takes any number of parameters
             var table = document.createElement("table");
             var i, row, table_element;
-            for (i = 0; i < arguments.length; i += 1) {
+            for (i = 0; i < arguments.length; i++) {
                 row = document.createElement("tr");
                 table.appendChild(row);
                 table_element = document.createElement("td");
@@ -1070,7 +1035,7 @@ window.TOONTALK.UTILITIES =
         
         selected_radio_button: function () {
             var i, selected;
-            for (i = 0; i < arguments.length; i += 1) {
+            for (i = 0; i < arguments.length; i++) {
                 if (arguments[i].checked) {
                     return arguments[i];
                 }
@@ -1096,6 +1061,16 @@ window.TOONTALK.UTILITIES =
             return "an " + word;
         },
         
+        maximum_string_length: function (string, maximum_length) {
+            // replaces middle of string with ... if needed -- doesn't count the ... as part of the length
+            var first_part;
+            if (string.length <= maximum_length) {
+                return string;
+            }
+            first_part = string.substring(0, Math.round(maximum_length * .75));
+            return first_part + " ... " + string.substring(string.length-(maximum_length-first_part.length));
+        },
+        
         backup_all: function (immediately) {
             var top_level_widget = $(".toontalk-top-level-backside").data("owner");
             var backup_function = function () {
@@ -1108,6 +1083,21 @@ window.TOONTALK.UTILITIES =
                 // delay it so the geometry settles down
                 setTimeout(backup_function, 100);
             }
+        },
+        
+        make_resizable: function ($element, widget) {
+            if (!$element.is('.toontalk-plain-text-element')) {
+                // don't make text resizable
+                $element.resizable({resize: function (event, ui) {
+                                        $element.find("img").css({width: ui.size.width,
+                                                                 height: ui.size.height});
+                                        TT.DISPLAY_UPDATES.pending_update(widget);
+                                    },
+                                    // the corner handles looked bad on element widgets
+                                    // and generally got in the way
+                                    handles: "n,e,s,w"
+                                });
+              }
         }
         
 //         create_menu_item: function (text) {
@@ -1122,3 +1112,5 @@ window.TOONTALK.UTILITIES =
     };
     
 }(window.TOONTALK));
+
+window.TOONTALK.UTILITIES.available_types = ["number", "box", "element", "robot", "top-level"];

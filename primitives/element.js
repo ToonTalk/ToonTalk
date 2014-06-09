@@ -55,7 +55,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     
     element.create = function (html, style_attributes) {
         var new_element = Object.create(element);
-        var pending_css, transform_css, $image_element;
+        var pending_css, transform_css, on_update_display_handlers, $image_element;
         if (!style_attributes) {
             style_attributes = [];
         }
@@ -145,7 +145,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     pending_css['o-transform'] = transform;
                     pending_css['transform'] = transform;
                 }
-            }
+            };
             if (!pending_css) {
                 // can be undefined if all the transforms had a zero value
                 return;
@@ -159,6 +159,24 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 $image_element.css(image_css);
             }
             pending_css = undefined;
+        };
+        new_element.on_update_display = function (handler) {
+            if (!on_update_display_handlers) {
+                on_update_display_handlers = [handler];
+            } else {
+                on_update_display_handlers[on_update_display_handlers.length] = handler;
+            }
+        };
+        new_element.fire_on_update_display_handlers = function () {
+            if (on_update_display_handlers) {
+                setTimeout(function () {
+                        on_update_display_handlers.forEach(function (handler) {
+                            handler();
+                        });
+                        on_update_display_handlers = [];
+                    },
+                    1);   
+            }
         };
         new_element.get_image_element = function () {
             return $image_element;
@@ -227,7 +245,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             return transform_css[attribute];
         }
         frontside_element = this.get_frontside_element();
-        value = $(frontside_element).css(attribute);
+        value = frontside_element.style[attribute];
+        // this caused integer rounding (at least of font-size) $(frontside_element).css(attribute);
         if (!value) {
             // zero is the default value -- e.g. for transformations such as rotate
             return 0;
@@ -260,14 +279,12 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             }
             new_value = new_value_number;
         }
-        if (handle_training) {
-            if (TT.robot.in_training) {
-                TT.robot.in_training.edited(this, {setter_name: "set_attribute",
-                                                   argument_1: attribute,
-                                                   argument_2: new_value,
-                                                   toString: "change the '" + attribute + "' style to " + new_value + " of",
-                                                   button_selector: ".toontalk-element-" + attribute + "-attribute-input"});
-            }
+        if (handle_training && TT.robot.in_training) {
+            TT.robot.in_training.edited(this, {setter_name: "set_attribute",
+                                               argument_1: attribute,
+                                               argument_2: new_value,
+                                               toString: "change the '" + attribute + "' style to " + new_value + " of",
+                                               button_selector: ".toontalk-element-" + attribute + "-attribute-input"});
         }
         this.add_to_css(attribute, new_value);
         if ($(frontside_element).is(":visible")) {
@@ -308,7 +325,6 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 break;
                 case '*':
                 new_value = attribute_numerical_value * widget_number;
-                console.log(new_value);
                 break;
                 case '/':
                 new_value = attribute_numerical_value / widget_number;
@@ -354,6 +370,12 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                         return $attribute_input.get(0);
                     }
                 },
+                equals: function (other) {
+                    if (attribute_name === other.attribute) {
+                        return this.equals(other.element_widget);
+                    }
+                    return false;
+                },
                 visible: function () {
                     return $attribute_input && $attribute_input.is(":visible");
                 },
@@ -392,30 +414,35 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             frontside_element.appendChild(rendering);
             this.set_image_element(rendering, frontside_element);
             $(frontside_element).addClass("toontalk-element-frontside");
+            if (rendering.innerHTML.substring(0, 1) !== '<') {
+                // doesn't look like HTML so assume it is raw text and give it a class that will give it a better font and size
+                $(frontside_element).addClass("ui-widget toontalk-plain-text-element");
+            }
         }
         this.apply_css();
         if (backside) {
             backside.update_display();
         }
+        this.fire_on_update_display_handlers();
     };
     
-    element.is_in_thought_bubble = function () {
-        // this a workaround for the fact that toontalk-thought-bubble-contents's % values for width and height
-        // don't get applied to images
-        var $image_element = this.get_image_element();
-        var frontside_element;
-        if ($image_element) {
-            frontside_element = this.get_frontside_element();
-            if (frontside_element) {
-                // should try to tie the .6 to the 60% in toontalk-thought-bubble-contents
-                $image_element.width(0.6 * $(frontside_element).parent().width());
-                $image_element.height(0.4 * $(frontside_element).parent().height());
-            }
-        }
-    };
+//     element.is_in_thought_bubble = function () {
+//         // this a workaround for the fact that toontalk-thought-bubble-contents's % values for width and height
+//         // don't get applied to images
+//         var $image_element = this.get_image_element();
+//         var frontside_element;
+//         if ($image_element) {
+//             frontside_element = this.get_frontside_element();
+//             if (frontside_element) {
+//                 // should try to tie the .6 to the 60% in toontalk-thought-bubble-contents
+//                 $image_element.width(0.6 * $(frontside_element).parent().width());
+//                 $image_element.height(0.4 * $(frontside_element).parent().height());
+//             }
+//         }
+//     };
         
     element.toString = function () {
-        return "element whose HTML is '" + this.get_HTML() +"'";
+        return "element whose HTML is '" + TT.UTILITIES.maximum_string_length(this.get_HTML(), 40) + "'";
     };
     
     element.get_type_name = function () {
@@ -577,6 +604,9 @@ window.TOONTALK.element_backside =
                 });               
             }
         };
+        if ($(attributes_chooser).is(".ui-accordion")) {
+            $(attributes_chooser).accordion('destroy');
+        }
         $(attributes_chooser).empty();
         process_options(options, attributes_chooser);
         $(attributes_chooser).accordion({active: 0,
@@ -607,8 +637,7 @@ window.TOONTALK.element_backside =
                                                                     undefined,
                                                                     "Click here to edit the '" + attribute + "' style attribute of this element.");
             attribute_value_editor.button.name = attribute;
-            attribute_value_editor.button.addEventListener('change', update_value);
-            attribute_value_editor.button.addEventListener('mouseout', update_value);
+            attribute_value_editor.button.addEventListener('input', update_value);
             TT.UTILITIES.can_receive_drops($(attribute_value_editor));
             td.appendChild(attribute_value_editor.container);
         });
