@@ -60,6 +60,7 @@ window.TOONTALK.backside =
             backside.widget_dropped_on_me = 
                 function (other, other_is_backside, event) {
                     // event serves 2 functions: info for adjusting for scrolling and whether to update the display
+                    var widget = this.get_widget();
                     var other_side, other_side_element, $other_side_element, parent_of_backside;
                     if (other_is_backside) {
                         other_side = other.get_backside(true);
@@ -82,15 +83,16 @@ window.TOONTALK.backside =
                     if (other_is_backside && this.get_widget().get_type_name() != 'top-level') {
                         // remove other since its backside is on another backside (other than top-level) 
                         // can be recreated by removing backside from this backside
-                        parent_of_backside = other.get_parent_of_backside();
-                        if (parent_of_backside) {
-                            // parent backside should no longer hold either front or backside
-                            parent_of_backside.widget.remove_backside_widget(other, true);
-                        }
+                        // drop now ensures the following
+//                         parent_of_backside = other.get_parent_of_backside();
+//                         if (parent_of_backside && parent_of_backside.widget !== widget) {
+//                             // parent backside should no longer hold either front or backside
+//                             parent_of_backside.widget.remove_backside_widget(other, true);
+//                         }
                         other.forget_backside();
                         other.remove(event);
                     }
-                    this.get_widget().add_backside_widget(other, other_is_backside);
+                    widget.add_backside_widget(other, other_is_backside);
                     TT.UTILITIES.backup_all();
                     return true;
                 };

@@ -434,6 +434,15 @@ window.TOONTALK.widget = (function (TT) {
                 // remove from JSON view info about backside widgets
                 this.backside_widgets_json_views.splice(widget_index, 1);
             }
+            if (is_backside) {
+                if (widget.get_parent_of_backside() === this) {
+                    widget.set_parent_of_backside(undefined);
+                }
+            } else {
+                if (widget.get_parent_of_frontside() === this) {
+                    widget.set_parent_of_frontside(undefined);
+                }       
+            }
 //          console.log("Removed " + widget + " (" + widget.debug_id + ") from list of backside widgets of " + this + ". Length is now " +  this.backside_widgets.length);
             if (backside) {
                 backside.update_run_button_disabled_attribute();
