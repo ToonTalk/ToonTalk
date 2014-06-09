@@ -52,7 +52,7 @@ window.TOONTALK.backside =
                         $(other.get_frontside_element()).removeClass("toontalk-frontside-on-backside");
                     }
                     if (event) {
-                       // if !event then robot did this and robot's remove backsides themselves
+                       // if !event then robot did this and robots remove backsides themselves
                        this.remove_backside_widget(other, backside_removed);
                     }
                 };
@@ -60,7 +60,7 @@ window.TOONTALK.backside =
             backside.widget_dropped_on_me = 
                 function (other, other_is_backside, event) {
                     // event serves 2 functions: info for adjusting for scrolling and whether to update the display
-                    var other_side, other_side_element, $other_side_element;
+                    var other_side, other_side_element, $other_side_element, parent_of_backside;
                     if (other_is_backside) {
                         other_side = other.get_backside(true);
                         other_side_element = other_side.get_element();
@@ -78,6 +78,18 @@ window.TOONTALK.backside =
                     TT.DISPLAY_UPDATES.pending_update(other_side);
                     if (TT.robot.in_training) {
                         TT.robot.in_training.dropped_on(other, this.get_widget());
+                    }
+                    if (other_is_backside && this.get_widget().get_type_name() != 'top-level') {
+                        // remove other since its backside is on another backside (other than top-level) 
+                        // can be recreated by removing backside from this backside
+                        parent_of_backside = other.get_parent_of_backside();
+                        if (parent_of_backside) {
+                            // parent backside should no longer hold either front or backside
+                            parent_of_backside.widget.remove_backside_widget(other, false);
+                            parent_of_backside.widget.remove_backside_widget(other, true);
+                        }
+                        other.forget_backside();
+                        other.remove();
                     }
                     this.get_widget().add_backside_widget(other, other_is_backside);
                     TT.UTILITIES.backup_all();
