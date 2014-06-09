@@ -330,6 +330,9 @@ window.TOONTALK.UTILITIES =
                     } else {
                         new_array[index] = TT.UTILITIES.create_from_json(json_item, additional_info);
                     }
+                } else {
+                    // e.g. could be null representing an empty hole
+                    new_array[index] = json_item; 
                 }
             });
             return new_array;
