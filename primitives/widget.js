@@ -332,8 +332,10 @@ window.TOONTALK.widget = (function (TT) {
                     // otherwise geometry isn't needed
                     frontside_element = this.get_frontside_element && this.get_frontside_element();
                     if (frontside_element) {
-                        json_view.frontside_width = $(frontside_element).width();
-                        json_view.frontside_height = $(frontside_element).height();
+                        if (!$(frontside_element).is(".toontalk-element-frontside")) {
+                                json_view.frontside_width = $(frontside_element).width();
+                                json_view.frontside_height = $(frontside_element).height();
+                        }
                         if ($(frontside_element).is(":visible")) {
                             position = $(frontside_element).position();
                         }
