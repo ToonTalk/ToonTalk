@@ -59,6 +59,11 @@ window.TOONTALK.widget = (function (TT) {
                     return backside;
                 };
             }
+             if (!widget.set_backside) {
+                widget.set_backside = function (new_value) {
+                    backside = new_value;
+                };
+            }
             if (!widget.forget_backside) {
                 widget.forget_backside = function () {
                     backside = undefined;

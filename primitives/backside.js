@@ -90,7 +90,10 @@ window.TOONTALK.backside =
 //                             parent_of_backside.widget.remove_backside_widget(other, true);
 //                         }
                         other.forget_backside();
+                        // following does too much if the widget knows its backside
+                        // so temporarily remove it
                         other.remove(event);
+                        other.set_backside(this);
                     }
                     widget.add_backside_widget(other, other_is_backside);
                     TT.UTILITIES.backup_all();
@@ -115,16 +118,16 @@ window.TOONTALK.backside =
                                 json_view = json_array[index];
                                 if (json_view) {
                                     if (backside_widget_side.is_backside) {
-                                         $(widget_side_element).css({left: json_view.backside_left,
-                                                                     top: json_view.backside_top,
-                                                                     width: json_view.backside_width,
-                                                                     height: json_view.backside_height});
-                                         backside_widget_side.widget.apply_backside_geometry();
+                                        $(widget_side_element).css({left: json_view.backside_left,
+                                                                    top: json_view.backside_top,
+                                                                    width: json_view.backside_width,
+                                                                    height: json_view.backside_height});
+                                        backside_widget_side.widget.apply_backside_geometry();
                                     } else {
-                                         $(widget_side_element).css({left: json_view.frontside_left,
-                                                                     top: json_view.frontside_top,
-                                                                     width: json_view.frontside_width,
-                                                                     height: json_view.frontside_heigh});
+                                        $(widget_side_element).css({left: json_view.frontside_left,
+                                                                    top: json_view.frontside_top,
+                                                                    width: json_view.frontside_width,
+                                                                    height: json_view.frontside_heigh});
                                     }
                                 }
                             }
