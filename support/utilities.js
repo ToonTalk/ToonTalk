@@ -108,14 +108,17 @@ window.TOONTALK.UTILITIES =
             if ($source.is(".toontalk-frontside") && !$source.is('.ui-resizable')) {
                 // without the setTimeout the following prevents dragging components (e.g. widgets in boxes)
                 setTimeout(function () {
-                        $source.resizable({
-                            resize: function (event, ui) {
-                                TT.DISPLAY_UPDATES.pending_update(source_widget);
-                            },
-                            // the corner handles looked bad on element widgets
-                            // and generally got in the way
-                            handles: "n,e,s,w"
-                        });
+                        if (!$source.is('.ui-widget')) {
+                            // don't make text resizable
+                            $source.resizable({
+                                resize: function (event, ui) {
+                                    TT.DISPLAY_UPDATES.pending_update(source_widget);
+                                },
+                                // the corner handles looked bad on element widgets
+                                // and generally got in the way
+                                handles: "n,e,s,w"
+                            });
+                        }
                     },
                     0);
             }
