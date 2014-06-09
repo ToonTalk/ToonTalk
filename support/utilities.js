@@ -112,6 +112,8 @@ window.TOONTALK.UTILITIES =
                             // don't make text resizable
                             $source.resizable({
                                 resize: function (event, ui) {
+                                    $source.find("img").css({width: ui.size.width,
+                                                             height: ui.size.height});
                                     TT.DISPLAY_UPDATES.pending_update(source_widget);
                                 },
                                 // the corner handles looked bad on element widgets
