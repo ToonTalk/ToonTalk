@@ -219,11 +219,16 @@ window.TOONTALK.box = (function (TT) {
         for (i = 0; i < size; i++) {
             if (this.get_hole(i)) {
                 contents_json[i] = this.get_hole(i).get_json();
+            } else {
+                contents_json[i] = null;
             }
+        }
+        if (TT.debugging && contents_json.length === 0) {
+            console.log("debug this");
         }
         return this.add_to_json(
            {type: "box",
-            size: this.get_size(),
+            size: size,
             contents: contents_json,
             horizontal: this.get_horizontal()
            });
