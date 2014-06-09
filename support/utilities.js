@@ -108,7 +108,7 @@ window.TOONTALK.UTILITIES =
             if ($source.is(".toontalk-frontside") && !$source.is('.ui-resizable')) {
                 // without the setTimeout the following prevents dragging components (e.g. widgets in boxes)
                 setTimeout(function () {
-                        if (!$source.is('.ui-widget')) {
+                        if (!$source.is('.toontalk-plain-text-element')) {
                             // don't make text resizable
                             $source.resizable({
                                 resize: function (event, ui) {
