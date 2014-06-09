@@ -665,7 +665,7 @@ window.TOONTALK.widget = (function (TT) {
                 }.bind(this);
             var backside_element, frontside_element, parent, $frontside_ancestor_that_is_backside_element,
                 $frontside_ancestor_before_backside_element, frontside_ancestor_before_backside_element, ancestor_that_owns_backside_element,
-                final_left, final_top, frontside_offset, container_position;
+                final_left, final_top, frontside_offset, container_offset;
             if (backside) {
                 backside_element = backside.get_element();
                 if ($(backside_element).is(":visible")) {
@@ -697,14 +697,14 @@ window.TOONTALK.widget = (function (TT) {
             $(backside_element).data("owner", this);
             // start on the frontside (same upper left corner as frontside)
             frontside_offset = $(frontside_element).offset();
-            container_position = $frontside_ancestor_that_is_backside_element.position();
-            if (!container_position) {
-                container_position = {left: 0, 
+            container_offset = $frontside_ancestor_that_is_backside_element.offset();
+            if (!container_offset) {
+                container_offset = {left: 0, 
                                       top: 0};
             }
             $(backside_element).css({
-                left: frontside_offset.left - container_position.left,
-                top: frontside_offset.top - container_position.top,
+                left: frontside_offset.left - container_offset.left,
+                top: frontside_offset.top - container_offset.top,
                 opacity: .01
             });
             $frontside_ancestor_that_is_backside_element.append(backside_element);
@@ -717,8 +717,8 @@ window.TOONTALK.widget = (function (TT) {
                 final_top = frontside_ancestor_before_backside_element.offsetTop;
             } else {
                 // widget is inside something so put backside under it
-                final_left = frontside_offset.left - container_position.left;
-                final_top = (frontside_offset.top - container_position.top) + frontside_element.offsetHeight;
+                final_left = frontside_offset.left - container_offset.left;
+                final_top = (frontside_offset.top - container_offset.top) + frontside_element.offsetHeight;
             }
             animate_backside_appearance(backside_element, "inherit");
             TT.DISPLAY_UPDATES.pending_update(backside);
