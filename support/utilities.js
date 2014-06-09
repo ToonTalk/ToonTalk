@@ -108,19 +108,7 @@ window.TOONTALK.UTILITIES =
             if ($source.is(".toontalk-frontside") && !$source.is('.ui-resizable')) {
                 // without the setTimeout the following prevents dragging components (e.g. widgets in boxes)
                 setTimeout(function () {
-                        if (!$source.is('.toontalk-plain-text-element')) {
-                            // don't make text resizable
-                            $source.resizable({
-                                resize: function (event, ui) {
-                                    $source.find("img").css({width: ui.size.width,
-                                                             height: ui.size.height});
-                                    TT.DISPLAY_UPDATES.pending_update(source_widget);
-                                },
-                                // the corner handles looked bad on element widgets
-                                // and generally got in the way
-                                handles: "n,e,s,w"
-                            });
-                        }
+                    TT.UTILITIES.make_resizable($source, source_widget);
                     },
                     0);
             }
@@ -1095,6 +1083,21 @@ window.TOONTALK.UTILITIES =
                 // delay it so the geometry settles down
                 setTimeout(backup_function, 100);
             }
+        },
+        
+        make_resizable: function ($element, widget) {
+            if (!$element.is('.toontalk-plain-text-element')) {
+                // don't make text resizable
+                $element.resizable({resize: function (event, ui) {
+                                        $element.find("img").css({width: ui.size.width,
+                                                                 height: ui.size.height});
+                                        TT.DISPLAY_UPDATES.pending_update(widget);
+                                    },
+                                    // the corner handles looked bad on element widgets
+                                    // and generally got in the way
+                                    handles: "n,e,s,w"
+                                });
+              }
         }
         
 //         create_menu_item: function (text) {
