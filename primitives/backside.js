@@ -128,7 +128,7 @@ window.TOONTALK.backside =
                                         $(widget_side_element).css({left: json_view.frontside_left,
                                                                     top: json_view.frontside_top,
                                                                     width: json_view.frontside_width,
-                                                                    height: json_view.frontside_heigh});
+                                                                    height: json_view.frontside_height});
                                     }
                                 }
                             }
