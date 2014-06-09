@@ -225,10 +225,14 @@
 }
 */
 .toontalk-conditions-contents {
+
+}
+.toontalk-conditions-contents-container {
+/* 	Can't add the border to toontalk-conditions-contents because erased elements have 0 opacity */
     width: 100px;
 	height: 36px;
-	border: 1px black solid;
-} 
+	border: 1px black solid;	
+}
 .toontalk-held-by-robot {
 	top: 75%;
 	z-index: 1000;

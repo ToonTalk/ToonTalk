@@ -643,6 +643,12 @@ window.TOONTALK.robot_backside =
         var condition_element = condition_widget.get_frontside_element(true);
         TT.UTILITIES.set_position_is_absolute(condition_element, false);
         $(condition_element).addClass("toontalk-conditions-contents " + class_name);
+        setTimeout(function () {
+                // this is needed since the element may be transparent and yet need to see the border
+                // should really wait until condition_element is attached to the DOM
+                $(condition_element).parent().addClass("toontalk-conditions-contents-container");
+            },
+            1);        
         if (robot.match_status === 'not matched') {
             $(condition_element).addClass("toontalk-conditions-not-matched");
         } else {
