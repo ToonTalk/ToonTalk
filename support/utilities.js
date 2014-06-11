@@ -506,7 +506,8 @@ window.TOONTALK.UTILITIES =
                             json_object.view.backside = true;
                         }
                         $element.data("json", json_object);
-                        json_div = toontalk_json_div(JSON.stringify(json_object));
+                        // use two spaces to indent each level
+                        json_div = toontalk_json_div(JSON.stringify(json_object, null, '  '));
                         event.originalEvent.dataTransfer.setData("text/html", json_div);
                         // the above causes IE9 errors when received so the following added just for IE9
                         event.originalEvent.dataTransfer.setData("text", json_div);
