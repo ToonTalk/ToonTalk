@@ -13,8 +13,7 @@ window.TOONTALK.bird = (function (TT) {
     bird.create = function (nest, image_url, description) {
         var new_bird = Object.create(bird);
         if (!image_url) {
-            // absolute path so saved JSON will work in any environment
-            image_url = "http://toontalk.appspot.com/images/GIMME3.PNG";
+            image_url = "images/GIMME3.PNG";
         }
         new_bird.get_nest = function () {
             return nest;
@@ -100,10 +99,7 @@ window.TOONTALK.bird = (function (TT) {
     };
     
     bird.image = function () {
-        var image = document.createElement("img");
-        image.src = this.get_image_url(); // causes Caja error
-        $(image).addClass("toontalk-bird-image");
-        return image;    
+        return TT.UTILITIES.create_image(this.get_image_url(), "toontalk-bird-image");   
     };
     
     bird.toString = function () {
@@ -170,7 +166,7 @@ window.TOONTALK.bird_backside =
             image_url_input.button.addEventListener('mouseout', image_url_change);
             description_text_area.button.addEventListener('change', description_change);
             description_text_area.button.addEventListener('mouseout', description_change);
-            input_table = TT.UTILITIES.create_vertical_table(description_text_area.container, image_url_input.container, run_once_input.container;
+            input_table = TT.UTILITIES.create_vertical_table(description_text_area.container, image_url_input.container);
             $(input_table).css({width: "90%"});
             backside_element.appendChild(input_table);
             backside_element.appendChild(standard_buttons);
@@ -208,8 +204,7 @@ window.TOONTALK.nest = (function (TT) {
             waiting_robots = [];
         }
         if (!image_url) {
-            // absolute path so saved JSON will work in any environment
-            image_url = "http://toontalk.appspot.com/images/HATCH01.PNG";
+            image_url = "images/HATCH01.PNG";
         }
         new_nest.get_image_url = function () {
             return image_url;
@@ -260,6 +255,18 @@ window.TOONTALK.nest = (function (TT) {
                 });
             }
         };
+        // defined here so that contents can be 'hidden'
+        nest.get_json = function () {
+            return this.add_to_json(
+                {semantic:
+                     {type: "nest",
+                      contents: TT.UTILITIES.get_json_of_array(contents)
+                      // do waiting_robots after changing from function to object
+                      },
+                 view:
+                     {image_url: image_url,
+                      description: description}});
+        };
         new_nest = new_nest.add_standard_widget_functionality(new_nest);
         if (TT.debugging) {
             new_nest.debug_id = TT.UTILITIES.generate_unique_id();
@@ -307,10 +314,7 @@ window.TOONTALK.nest = (function (TT) {
     };
     
     nest.image = function () {
-        var image = document.createElement("img");
-        image.src = this.get_image_url(); // causes Caja error
-        $(image).addClass("toontalk-nest-image");
-        return image;    
+        return TT.UTILITIES.create_image(this.get_image_url(), "toontalk-nest-image");    
     };
     
     nest.toString = function () {
@@ -321,19 +325,8 @@ window.TOONTALK.nest = (function (TT) {
         return "nest";
     };
     
-    nest.get_json = function () {
-        return this.add_to_json(
-            {semantic:
-                 {type: "nest",
-                  nest: this.get_nest().get_json()
-                  },
-             view:
-                 {image_url: this.get_image_url(),
-                  description: this.get_description()}});
-    };
-    
     nest.create_from_json = function (json_semantic, json_view) {
-        return TT.nest.create(json_view.image_url, TT.UTILITIES.create_from_json(json_semantic.nest));
+        return TT.nest.create(json_view.image_url, TT.UTILITIES.create_array_from_json(json_semantic.contents));
     };
     
     return nest;
@@ -377,7 +370,7 @@ window.TOONTALK.nest_backside =
             image_url_input.button.addEventListener('mouseout', image_url_change);
             description_text_area.button.addEventListener('change', description_change);
             description_text_area.button.addEventListener('mouseout', description_change);
-            input_table = TT.UTILITIES.create_vertical_table(description_text_area.container, image_url_input.container, run_once_input.container;
+            input_table = TT.UTILITIES.create_vertical_table(description_text_area.container, image_url_input.container, run_once_input.container);
             $(input_table).css({width: "90%"});
             backside_element.appendChild(input_table);
             backside_element.appendChild(standard_buttons);

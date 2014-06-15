@@ -19,8 +19,7 @@ window.TOONTALK.robot = (function (TT) {
         var first_in_team; // who should do the 'repeating'
         var animating = false; // true if animating due to being run while watched
         if (!image_url) {
-            // absolute path so saved JSON will work in any environment
-            image_url = "http://toontalk.appspot.com/images/RB00.PNG";
+            image_url = "images/RB00.PNG";
         }
         if (!body) {
             body = TT.actions.create();
@@ -526,10 +525,7 @@ window.TOONTALK.robot = (function (TT) {
     };
     
     robot.image = function () {
-        var image = document.createElement("img");
-        image.src = this.get_image_url(); // causes Caja error
-        $(image).addClass("toontalk-robot-image");
-        return image;    
+        return TT.UTILITIES.create_image(this.get_image_url(), "toontalk-robot-image"); 
     };
     
 //     robot.frontside_conditions_div = function () {
