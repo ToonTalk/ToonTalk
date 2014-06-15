@@ -16,6 +16,8 @@ window.TOONTALK.UTILITIES =
                          "number": TT.number.create_from_json,
                          "robot": TT.robot.create_from_json,
                          "element": TT.element.create_from_json,
+                         "bird": TT.bird.create_from_json,
+                         "nest": TT.nest.create_from_json,
                          "body": TT.actions.create_from_json,
                          "robot_action": TT.robot_action.create_from_json,
                          "box_path": TT.box.path.create_from_json,
@@ -1042,6 +1044,26 @@ window.TOONTALK.UTILITIES =
                 }
             }
             return selected;
+        },
+        
+        create_img: function (url, class_name) {
+            // 
+            var image = document.createElement("img");
+            var error_handler;
+            image.src = url; // causes Caja error
+            if (class_name) {
+                $(image).addClass(class_name);
+            }
+            if (url.indexOf('images/') < 0) {
+                // is a relative URL to images folder so add error handler
+                // that tries again with github server
+                error_handler = function (event) {
+                    image.removeEventListener('error', error_handler);
+                    img.src = "http://toontalk.github.io/ToonTalk/" + url;
+                }
+                image.addEventListener('error', error_handler);
+            }
+            return image;  
         },
         
         get_dragee: function () {
