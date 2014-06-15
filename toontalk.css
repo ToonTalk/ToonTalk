@@ -262,11 +262,11 @@
 	box-shadow: 10px 5px 5px black;
 }
 .toontalk-resource-table {
-	padding: 2px;
+	padding: 4px;
 	text-align: center;
 }
 .toontalk-resource-table td {
-	width: 200px;
+/* 	width: 200px; */
 }
 .toontalk-text {
 	background-color: white;

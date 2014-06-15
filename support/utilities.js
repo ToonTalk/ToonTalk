@@ -1046,7 +1046,7 @@ window.TOONTALK.UTILITIES =
             return selected;
         },
         
-        create_img: function (url, class_name) {
+        create_image: function (url, class_name) {
             // 
             var image = document.createElement("img");
             var error_handler;
