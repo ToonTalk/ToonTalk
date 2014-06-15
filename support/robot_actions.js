@@ -37,7 +37,7 @@ window.TOONTALK.actions =
                 newly_created_widgets = [];
             };
             new_actions.add_step = function (step, new_widget) {
-                steps[steps.length] = step;
+                steps.push(step);
                 if (new_widget) {
                     this.add_newly_created_widget(new_widget);
                 }
@@ -54,7 +54,7 @@ window.TOONTALK.actions =
                      console.log("add_newly_created_widget called with not new widget.");
                      return;
                 }
-                newly_created_widgets[newly_created_widgets.length] = new_widget;
+                newly_created_widgets.push(new_widget);
 //                 console.log("Added " + new_widget + " (" + new_widget.debug_id + ") to list of newly_created_widgets. Length is " + newly_created_widgets.length);
             };
             new_actions.get_newly_created_widgets = function () {

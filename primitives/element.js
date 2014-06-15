@@ -164,7 +164,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             if (!on_update_display_handlers) {
                 on_update_display_handlers = [handler];
             } else {
-                on_update_display_handlers[on_update_display_handlers.length] = handler;
+                on_update_display_handlers.push(handler);
             }
         };
         new_element.fire_on_update_display_handlers = function () {
@@ -524,7 +524,7 @@ window.TOONTALK.element_backside =
             var style_attributes = element_widget.get_style_attributes();
             var frontside_element;
             if (style_attributes.indexOf(attribute) < 0) {
-               style_attributes[style_attributes.length] = attribute;
+               style_attributes.push(attribute);
                // update the backside during drag if 'left' or 'top' are attributes
                if (attribute === 'left') {
                    frontside_element = element_widget.get_frontside_element();

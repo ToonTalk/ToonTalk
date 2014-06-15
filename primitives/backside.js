@@ -506,7 +506,7 @@ window.TOONTALK.backside =
             $(this.get_element()).children().each(function (index, element) {
                 var owner = $(element).data("owner");
                 if (owner && widgets.indexOf(owner) < 0) {
-                    widgets[widgets.length] = owner;
+                    widgets.push(owner);
                 }
             });
             return widgets;

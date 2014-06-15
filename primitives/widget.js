@@ -407,7 +407,7 @@ window.TOONTALK.widget = (function (TT) {
             if (!this.backside_widgets) {
                 this.backside_widgets = [widget_side];
             } else if (this.backside_widget_side_index(widget_side) < 0) {
-                this.backside_widgets[this.backside_widgets.length] = widget_side;                            
+                this.backside_widgets.push(widget_side);                         
             }
             if (is_backside) {
                 widget.set_parent_of_backside(this, true);

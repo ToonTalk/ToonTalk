@@ -174,6 +174,7 @@ window.TOONTALK.box = (function (TT) {
                     return 'not matched';
                 }
                 if (hole_match !== 'matched') {
+                    // suspended on a nest so combine the suspended nests
                     if (waiting_nests.length === 0) {
                         waiting_nests = hole_match;
                     } else {
