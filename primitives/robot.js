@@ -166,7 +166,7 @@ window.TOONTALK.robot = (function (TT) {
     };
     
     robot.create_backside = function () {
-        return TT.robot_backside.create(this).update_run_button_disabled_attribute();;
+        return TT.robot_backside.create(this).update_run_button_disabled_attribute();
     };
     
     robot.copy = function (just_value) {
@@ -258,9 +258,12 @@ window.TOONTALK.robot = (function (TT) {
             }
             return this.match_status;
         default:
+            to_run_when_non_empty = function () {
+                this.run(context, top_level_context, queue)
+            };
             this.match_status.forEach(function (sub_match_status) {
-                sub_match_status.run_when_non_empty(this);
-            }.bind(this));
+                sub_match_status.run_when_non_empty(to_run_when_non_empty);
+            });
             return this.match_status;                    
         }
     };
