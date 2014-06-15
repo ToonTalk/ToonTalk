@@ -308,7 +308,7 @@ window.TOONTALK.nest = (function (TT) {
         new_nest.update_display = function() {
             var frontside = this.get_frontside();
             var backside = this.get_backside(); 
-            var nest_image, frontside_element;
+            var nest_image, frontside_element, contents_frontside_element;
             if (!frontside) {
                 return;
             }
@@ -321,7 +321,10 @@ window.TOONTALK.nest = (function (TT) {
             if (contents.length > 0) {
                 contents[0].update_display();
                 // what is backside had been given to bird???
-                frontside_element.appendChild(contents[0].get_frontside_element());
+                contents_frontside_element = contents[0].get_frontside_element();
+                $(contents_frontside_element).addClass("toontalk-widget-on-nest");
+                contents_frontside_element.style.position = "static";
+                frontside_element.appendChild(contents_frontside_element);
             } else {
                 nest_image = this.image();
                 frontside_element.title = this.get_title();
