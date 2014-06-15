@@ -210,7 +210,7 @@
 	width: 30em;
 	text-align: inherit;
 }
-.toontalk-robot-image {
+.toontalk-robot-image, .toontalk-bird-image, .toontalk-nest-image {
     max-width: 100%; max-height:100%;
 }
 .toontalk-image-url-input {
@@ -262,7 +262,8 @@
 	box-shadow: 10px 5px 5px black;
 }
 .toontalk-resource-table {
-	padding: 8px;
+	padding: 2px;
+	text-align: center;
 }
 .toontalk-resource-table td {
 	width: 200px;
