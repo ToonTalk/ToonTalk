@@ -44,6 +44,11 @@ window.TOONTALK.bird = (function (TT) {
             }
             return true;
         };
+        new_bird.widget_dropped_on_me = function (other, other_is_backside, event) {
+            if (nest) {
+                nest.add_to_contents(other);
+            }
+        };
         new_bird = new_bird.add_standard_widget_functionality(new_bird);
         if (TT.debugging) {
             new_bird.debug_id = TT.UTILITIES.generate_unique_id();
@@ -255,6 +260,7 @@ window.TOONTALK.nest = (function (TT) {
                     robot_run();
                 });
             }
+            TT.DISPLAY_UPDATES.pending_update(this);
         };
         // defined here so that contents can be 'hidden'
         new_nest.get_json = function () {
@@ -287,6 +293,9 @@ window.TOONTALK.nest = (function (TT) {
             if (!guid) {
                 guid = TT.UTILITIES.generate_unique_id();
                 image_url = "images/MKNEST25.PNG";
+                if (TT.debugging) {
+                    new_nest.debug_string = "A nest with id " + guid;
+                }
                 TT.DISPLAY_UPDATES.pending_update(this);
                 bird = TT.bird.create(this);
                 if (other_is_backside) {
@@ -295,10 +304,38 @@ window.TOONTALK.nest = (function (TT) {
                     console.log("not yet implemented -- add to nearest ancestor backside");
                 }
             }
-        }
+        };
+        new_nest.update_display = function() {
+            var frontside = this.get_frontside();
+            var backside = this.get_backside(); 
+            var nest_image, frontside_element;
+            if (!frontside) {
+                return;
+            }
+            frontside_element = frontside.get_element();
+            // if animating should also display thing_in_hand
+            // remove what's there currently before adding new elements
+            while (frontside_element.firstChild) {
+                frontside_element.removeChild(frontside_element.firstChild);
+            }
+            if (contents.length > 0) {
+                contents[0].update_display();
+                // what is backside had been given to bird???
+                frontside_element.appendChild(contents[0].get_frontside_element());
+            } else {
+                nest_image = this.image();
+                frontside_element.title = this.get_title();
+                frontside_element.appendChild(nest_image);
+            }
+            $(frontside_element).addClass("toontalk-nest");
+            if (backside && backside.visible()) {
+                TT.DISPLAY_UPDATES.pending_update(backside);
+            }
+        };
         new_nest = new_nest.add_standard_widget_functionality(new_nest);
         if (TT.debugging) {
             new_nest.debug_id = TT.UTILITIES.generate_unique_id();
+            new_nest.debug_string = "A nest with an egg";
         }
         return new_nest;
     };
@@ -310,28 +347,6 @@ window.TOONTALK.nest = (function (TT) {
     nest.match = function (other) {
         // not allowed since is not stable -- could be covered asynchronously
         return "not matched";
-    };
-    
-    nest.update_display = function() {
-        var frontside = this.get_frontside();
-        var backside = this.get_backside(); 
-        var nest_image, frontside_element;
-        if (!frontside) {
-            return;
-        }
-        frontside_element = frontside.get_element();
-        nest_image = this.image();
-        // if animating should also display thing_in_hand
-        // remove what's there currently before adding new elements
-        while (frontside_element.firstChild) {
-            frontside_element.removeChild(frontside_element.firstChild);
-        }
-        frontside_element.title = this.get_title();
-        $(frontside_element).addClass("toontalk-nest");
-        frontside_element.appendChild(nest_image);
-        if (backside && backside.visible()) {
-            TT.DISPLAY_UPDATES.pending_update(backside);
-        }
     };
     
     nest.image = function () {
