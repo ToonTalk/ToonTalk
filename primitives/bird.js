@@ -239,7 +239,7 @@ window.TOONTALK.nest = (function (TT) {
         };
         new_nest.matched_by = function (other) {
             if (contents.length > 0) {
-                return other.match(contents[0]);
+                return TT.UTILITIES.match(other, contents[0]);
             } else {
                 // suspend on this nest
                 return [this];

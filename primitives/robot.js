@@ -204,7 +204,7 @@ window.TOONTALK.robot = (function (TT) {
         if (this.stopped || this.being_trained || !frontside_condition_widget) {
             return 'not matched';
         }
-        this.match_status = frontside_condition_widget.match(context);
+        this.match_status = TT.UTILITIES.match(frontside_condition_widget, context);
         condition_frontside_element = frontside_condition_widget.get_frontside_element();
         if (condition_frontside_element) {
             if (this.match_status === 'matched') {
@@ -222,7 +222,7 @@ window.TOONTALK.robot = (function (TT) {
                         var backside_condition_widget_of_type = !backside_widget_side.is_backside && backside_conditions[backside_widget_side.widget.get_type_name()];
                         var sub_match_status;
                         if (backside_condition_widget_of_type) {
-                            sub_match_status = backside_condition_widget_of_type.match(backside_widget_side.widget);
+                            sub_match_status = TT.UTILITIES.match(backside_condition_widget_of_type, backside_widget_side.widget);
                             condition_frontside_element = backside_condition_widget_of_type.get_frontside_element();
                             if (condition_frontside_element) {
                                 if (this.match_status === 'matched') {

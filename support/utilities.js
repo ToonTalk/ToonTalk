@@ -358,7 +358,7 @@ window.TOONTALK.UTILITIES =
                         index_of_jsonified_widget = widgets_jsonified.indexOf(widget_side.widget);
                         widget_json = widget_side.widget.get_json();
                         if (index_of_jsonified_widget < 0) {
-                            widgets_jsonified[widgets_jsonified.length] = widget_side.widget;
+                            widgets_jsonified.push(widget_side.widget);
                         } else {
                             // just update the semantic part of the widget
                             widget_json.semantic = {index_of_previous_widget: index_of_jsonified_widget};
@@ -1099,6 +1099,15 @@ window.TOONTALK.UTILITIES =
                                     handles: "n,e,s,w"
                                 });
               }
+        },
+        
+        match: function (pattern, widget) {
+            var match_status = pattern.match(widget);
+            if (match_status === 'not matched' && widget.matched_by) {
+                // e.g. widget is a nest                
+                return widget.matched_by(pattern);
+            }
+            return match_status;
         }
         
 //         create_menu_item: function (text) {

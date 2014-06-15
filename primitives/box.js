@@ -169,7 +169,7 @@ window.TOONTALK.box = (function (TT) {
                     // expected something -- not an empty hole
                     return 'not matched';
                 }
-                hole_match = pattern_hole.match(my_hole);
+                hole_match = TT.UTILITIES.match(pattern_hole, my_hole);
                 if (hole_match === 'not matched') {
                     return 'not matched';
                 }
