@@ -1047,7 +1047,8 @@ window.TOONTALK.UTILITIES =
         },
         
         create_image: function (url, class_name) {
-            // 
+            // if URL is relative and the images folder then an error handler is added
+            // that attempts to use a version on a server
             var image = document.createElement("img");
             var error_handler;
             image.src = url; // causes Caja error

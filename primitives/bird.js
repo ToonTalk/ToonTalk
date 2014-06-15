@@ -122,7 +122,7 @@ window.TOONTALK.bird = (function (TT) {
     };
     
     bird.create_from_json = function (json_semantic, json_view) {
-        return TT.bird.create(json_view.image_url, TT.UTILITIES.create_from_json(json_semantic.nest));
+        return TT.bird.create(TT.UTILITIES.create_from_json(json_semantic.nest), json_view.image_url);
     };
     
     return bird;
@@ -197,6 +197,7 @@ window.TOONTALK.nest = (function (TT) {
     
     nest.create = function (image_url, description, contents, waiting_robots) {
         var new_nest = Object.create(nest);
+        var guid;
         if (!contents) {
             contents = [];
         }
@@ -256,7 +257,7 @@ window.TOONTALK.nest = (function (TT) {
             }
         };
         // defined here so that contents can be 'hidden'
-        nest.get_json = function () {
+        new_nest.get_json = function () {
             return this.add_to_json(
                 {semantic:
                      {type: "nest",
@@ -267,6 +268,34 @@ window.TOONTALK.nest = (function (TT) {
                      {image_url: image_url,
                       description: description}});
         };
+        new_nest.copy = function (just_value) {
+            // this may become more complex if the original ToonTalk behaviour
+            // that if a bird and its nest are copied or saved as a unit they become a new pair
+            // notice that bird/nest semantics is that the nest is shared not copied
+            var copy;
+            if (guid) {
+                // has already hatched so need to create a nest_copy that points to this nest
+                console.log("not yet implemented");
+                copy = this;
+            } else {
+                copy = TT.nest.create(image_url, description, contents, waiting_robots);
+            }
+            return this.add_to_copy(copy, just_value);
+        };
+        new_nest.dropped_on_other = function (other, other_is_backside, event) {
+            var bird;
+            if (!guid) {
+                guid = TT.UTILITIES.generate_unique_id();
+                image_url = "images/MKNEST25.PNG";
+                TT.DISPLAY_UPDATES.pending_update(this);
+                bird = TT.bird.create(this);
+                if (other_is_backside) {
+                    other.get_backside().widget_dropped_on_me(bird, false, event);
+                } else {
+                    console.log("not yet implemented -- add to nearest ancestor backside");
+                }
+            }
+        }
         new_nest = new_nest.add_standard_widget_functionality(new_nest);
         if (TT.debugging) {
             new_nest.debug_id = TT.UTILITIES.generate_unique_id();
@@ -278,16 +307,8 @@ window.TOONTALK.nest = (function (TT) {
         return TT.nest_backside.create(this);
     };
     
-    nest.copy = function (just_value) {
-        // this may become more complex if the original ToonTalk behaviour
-        // that if a bird and its nest are copied or saved as a unit they become a new pair
-        // notice that bird/nest semantics is that the nest is shared not copied
-        var copy = this.create(this.get_nest(), this.get_image_url());
-        return this.add_to_copy(copy, just_value);
-    };
-    
     nest.match = function (other) {
-    // not allowed since is not stable -- could be covered asynchronously
+        // not allowed since is not stable -- could be covered asynchronously
         return "not matched";
     };
     
@@ -370,7 +391,7 @@ window.TOONTALK.nest_backside =
             image_url_input.button.addEventListener('mouseout', image_url_change);
             description_text_area.button.addEventListener('change', description_change);
             description_text_area.button.addEventListener('mouseout', description_change);
-            input_table = TT.UTILITIES.create_vertical_table(description_text_area.container, image_url_input.container, run_once_input.container);
+            input_table = TT.UTILITIES.create_vertical_table(description_text_area.container, image_url_input.container);
             $(input_table).css({width: "90%"});
             backside_element.appendChild(input_table);
             backside_element.appendChild(standard_buttons);
