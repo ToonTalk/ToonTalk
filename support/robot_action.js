@@ -36,7 +36,7 @@ window.TOONTALK.robot_action =
                              target_element.append(thing_in_hand_frontside_element);
                          } else {
                              if (target_element.visible && target_element.visible()) {
-                                 TT.DISPLAY_UPDATES.pending_update(target_element);
+                                 target_element.render();
                              }
                              thing_in_hand.drop_on(target_element);
                          }
@@ -110,7 +110,7 @@ window.TOONTALK.robot_action =
         robot.animate_to_widget(widget, continuation, left_offset, top_offset);
         if (thing_in_hand) {
             // so robot displays what he's holding
-            TT.DISPLAY_UPDATES.pending_update(robot);
+            robot.render();
         }
     };
     var pick_up_animation = function (widget, context, top_level_context, robot, continuation) {

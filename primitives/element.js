@@ -73,9 +73,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             html = new_value;
             // remove children so will be updated
             $(frontside_element).children(":not(.ui-resizable-handle)").remove(); 
-            if (this.visible()) {
-                TT.DISPLAY_UPDATES.pending_update(this);
-            }
+            this.rerender();
             return true;
         };
         new_element.get_style_attributes = function () {
@@ -287,9 +285,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                                button_selector: ".toontalk-element-" + attribute + "-attribute-input"});
         }
         this.add_to_css(attribute, new_value);
-        if ($(frontside_element).is(":visible")) {
-            TT.DISPLAY_UPDATES.pending_update(this);
-        }
+        this.rerender();
         return true;
     };
     

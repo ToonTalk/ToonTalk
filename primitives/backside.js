@@ -40,7 +40,7 @@ window.TOONTALK.backside =
                         // better to have a preferrred size that it goes to when on backside
                         // recorded when dropped into something that changes its size -- e.g. a box
                         $side_element_of_other.addClass("toontalk-frontside-on-backside");
-                        TT.DISPLAY_UPDATES.pending_update(other);
+                        other.rerender();
                     }
                     backside.update_run_button_disabled_attribute();
                     return true;
@@ -65,9 +65,11 @@ window.TOONTALK.backside =
                     if (other_is_backside) {
                         other_side = other.get_backside(true);
                         other_side_element = other_side.get_element();
+                        other_side.rerender();
                     } else {
                         other_side = other.get_frontside(true);
                         other_side_element = other_side.get_element();
+                        other.rerender();
                     }
                     $other_side_element = $(other_side_element);
                     $backside_element.append($other_side_element);
@@ -76,7 +78,6 @@ window.TOONTALK.backside =
                         other.animate_to_element(backside_element);
                     }
                     TT.UTILITIES.set_position_is_absolute(other_side_element, true, event); // when on the backside
-                    TT.DISPLAY_UPDATES.pending_update(other_side);
                     if (TT.robot.in_training) {
                         TT.robot.in_training.dropped_on(other, this.get_widget());
                     }
@@ -197,8 +198,7 @@ window.TOONTALK.backside =
                     }
                     owner_widget = $source.data("owner");
                     if (owner_widget) {
-                        TT.DISPLAY_UPDATES.pending_update(owner_widget);
-//                         owner_widget.update_display();
+                        owner_widget.render();
                     }
                 } 
 //                 else if ($source.is(".toontalk-backside")) {
@@ -353,6 +353,10 @@ window.TOONTALK.backside =
                         function () {
                             $element.remove();
                         };
+                    if (!$element.is(":visible")) {
+                        // not sure how this happens -- perhaps only caused by a bug
+                        return;
+                    }
                     $element.addClass("toontalk-side-appearing");
                     TT.UTILITIES.add_one_shot_transition_end_handler($element.get(0), remove_element);
                     if (!container_position) {
@@ -422,18 +426,18 @@ window.TOONTALK.backside =
             update_title();
             $erase_button.click(function (event) {
                 var frontside_element = widget.get_frontside_element();
-                var $robot_element = $(frontside_element).parents(".toontalk-robot");
-                var robot = $robot_element.data("owner");
-                var robot_backside;
+//                 var $robot_element = $(frontside_element).parents(".toontalk-robot");
+//                 var robot = $robot_element.data("owner");
+//                 var robot_backside;
                 var erased = !widget.get_erased();
                 widget.set_erased(erased, true);
                 update_title();
-                if (robot) {
-                    robot_backside = robot.get_backside();
-                    if (robot_backside) {
-                        TT.DISPLAY_UPDATES.pending_update(robot_backside);
-                    }
-                }
+//                 if (robot) {
+//                     robot_backside = robot.get_backside();
+//                     if (robot_backside) {
+//                         TT.DISPLAY_UPDATES.pending_update(robot_backside);
+//                     }
+//                 }
                 if (TT.robot.in_training) {
                     TT.robot.in_training.set_erased(widget, erased);
                 }
@@ -522,6 +526,18 @@ window.TOONTALK.backside =
                                    "transform-origin": "top left", 
                                    width: original_width * x_scale / scale,
                                    height: original_height * y_scale / scale});
+        },
+        
+        render: function () {
+            // typically first time it is displayed so no check if visible
+            TT.DISPLAY_UPDATES.pending_update(this);
+        },
+        
+        rerender: function () {
+            // state has changed so needs to be rendered again (if visible)
+            if (this.visible()) {
+                TT.DISPLAY_UPDATES.pending_update(this);
+            }
         }
 
     };

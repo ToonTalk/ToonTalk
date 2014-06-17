@@ -81,7 +81,7 @@ window.TOONTALK.robot = (function (TT) {
             }
             image_url = new_value;
             if (update_display) {
-                TT.DISPLAY_UPDATES.pending_update(this);
+                this.rerender();
             }
             return true;
         };
@@ -109,7 +109,7 @@ window.TOONTALK.robot = (function (TT) {
             }
             description = new_value;
             if (update_display) {
-                TT.DISPLAY_UPDATES.pending_update(this);
+                this.rerender();
             }
             return true;
         };
@@ -422,8 +422,7 @@ window.TOONTALK.robot = (function (TT) {
                 this.add_step(TT.robot_action.create(TT.newly_created_widgets_path.create(i), "add to the top-level backside"));
             }
         }
-        TT.DISPLAY_UPDATES.pending_update(this);
-        TT.DISPLAY_UPDATES.pending_update(this.get_backside());
+        this.rerender();
         this.being_trained = false;
         this.get_frontside_element().title = this.get_title();
         TT.UTILITIES.backup_all();
@@ -458,9 +457,6 @@ window.TOONTALK.robot = (function (TT) {
         if (thing_in_hand_frontside_element) {
             frontside_element.appendChild(thing_in_hand_frontside_element);
         }
-        if (backside && backside.visible()) {
-            TT.DISPLAY_UPDATES.pending_update(backside);
-        }
         if (this.match_status === 'not matched') {
             $(frontside_element).addClass("toontalk-side-animating toontalk-robot-not-matched");
         } else {
@@ -488,10 +484,13 @@ window.TOONTALK.robot = (function (TT) {
                     css['left'] = relative_left;
                     css['top'] = relative_top;
                     $(thing_in_hand_frontside_element).css(css);
-                    TT.DISPLAY_UPDATES.pending_update(thing_in_hand);
+                    thing_in_hand.render(); // or should it be rerender -- could it be invisible?
                 }
             },
             1);
+        if (backside) {
+            backside.rerender();
+        }
     };
     
     robot.add_newly_created_widget = function (new_widget) {
@@ -646,6 +645,7 @@ window.TOONTALK.robot_backside =
                 // this is needed since the element may be transparent and yet need to see the border
                 // should really wait until condition_element is attached to the DOM
                 $(condition_element).parent().addClass("toontalk-conditions-contents-container");
+                condition_widget.render();
             },
             1);        
         if (robot.match_status === 'not matched') {
@@ -678,6 +678,7 @@ window.TOONTALK.robot_backside =
                                                                              robot,
                                                                              area_class_name), 
                                                       backside_element.firstChild.nextSibling);
+                        backside_condition_widget.render();
                     }
                 }
             });

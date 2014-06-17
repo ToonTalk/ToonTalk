@@ -1115,7 +1115,7 @@ window.TOONTALK.UTILITIES =
                 $element.resizable({resize: function (event, ui) {
                                         $element.find("img").css({width: ui.size.width,
                                                                  height: ui.size.height});
-                                        TT.DISPLAY_UPDATES.pending_update(widget);
+                                        widget.render();
                                     },
                                     // the corner handles looked bad on element widgets
                                     // and generally got in the way

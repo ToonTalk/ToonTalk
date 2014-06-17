@@ -16,6 +16,7 @@ window.TOONTALK.DISPLAY_UPDATES =
                 return;
             }
             if (pending_updates.indexOf(x) >= 0) {
+                // already scheduled to be rendered
                 return;
             }
             pending_updates.push(x);
@@ -28,9 +29,7 @@ window.TOONTALK.DISPLAY_UPDATES =
                 return;
             }
             updates.forEach(function (pending_update) {
-                if (pending_update.visible()) {
-                    pending_update.update_display();
-                }
+                pending_update.update_display();
             });
         },
         

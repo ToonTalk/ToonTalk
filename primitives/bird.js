@@ -27,7 +27,7 @@ window.TOONTALK.bird = (function (TT) {
             }
             image_url = new_value;
             if (update_display) {
-                TT.DISPLAY_UPDATES.pending_update(this);
+                this.rerender();
             }
             return true;
         };
@@ -40,7 +40,7 @@ window.TOONTALK.bird = (function (TT) {
             }
             description = new_value;
             if (update_display) {
-                TT.DISPLAY_UPDATES.pending_update(this);
+                this.rerender();
             }
             return true;
         };
@@ -98,8 +98,8 @@ window.TOONTALK.bird = (function (TT) {
         frontside_element.title = this.get_title();
         $(frontside_element).addClass("toontalk-bird");
         frontside_element.appendChild(bird_image);
-        if (backside && backside.visible()) {
-            TT.DISPLAY_UPDATES.pending_update(backside);
+        if (backside) {
+            backside.rerender();
         }
     };
     
@@ -221,7 +221,7 @@ window.TOONTALK.nest = (function (TT) {
             }
             image_url = new_value;
             if (update_display) {
-                TT.DISPLAY_UPDATES.pending_update(this);
+                this.rerender();
             }
             return true;
         };
@@ -234,7 +234,7 @@ window.TOONTALK.nest = (function (TT) {
             }
             description = new_value;
             if (update_display) {
-                TT.DISPLAY_UPDATES.pending_update(this);
+                this.rerender();
             }
             return true;
         };
@@ -259,8 +259,8 @@ window.TOONTALK.nest = (function (TT) {
                 current_waiting_robots.forEach(function (robot_run) {
                     robot_run();
                 });
+                this.rerender();
             }
-            TT.DISPLAY_UPDATES.pending_update(this);
         };
         // defined here so that contents can be 'hidden'
         new_nest.get_json = function () {
@@ -296,7 +296,7 @@ window.TOONTALK.nest = (function (TT) {
                 if (TT.debugging) {
                     new_nest.debug_string = "A nest with id " + guid;
                 }
-                TT.DISPLAY_UPDATES.pending_update(this);
+                this.rerender();
                 bird = TT.bird.create(this);
                 if (other_is_backside) {
                     other.get_backside().widget_dropped_on_me(bird, false, event);
@@ -331,8 +331,8 @@ window.TOONTALK.nest = (function (TT) {
                 frontside_element.appendChild(nest_image);
             }
             $(frontside_element).addClass("toontalk-nest");
-            if (backside && backside.visible()) {
-                TT.DISPLAY_UPDATES.pending_update(backside);
+            if (backside) {
+                backside.rerender();
             }
         };
         new_nest = new_nest.add_standard_widget_functionality(new_nest);

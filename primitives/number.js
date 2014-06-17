@@ -132,21 +132,10 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             operator = '+';
         } 
         new_number.set_value =
-            function (new_value, update_now) {
-                var frontside, backside;
+            // ignores second argument (update_now) -- todo: update callers
+            function (new_value) {
                 value = new_value;
-                if (update_now) {
-                    TT.DISPLAY_UPDATES.pending_update(this);
-                } else {
-                    frontside = this.get_frontside();
-                    backside = this.get_backside();
-                    if (frontside) {
-                        TT.DISPLAY_UPDATES.pending_update(frontside);
-                    }
-                    if (backside) {
-                        TT.DISPLAY_UPDATES.pending_update(backside);
-                    }
-                }
+                this.rerender();
                 if (TT.debugging) {
                     this.debug_string = this.toString();
                 }
@@ -160,7 +149,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             function (new_value, update_now) { 
                 format = new_value;
                 if (update_now) {
-                    TT.DISPLAY_UPDATES.pending_update(this);
+                    this.rerender();
                 }
                 return this;
             };
@@ -172,7 +161,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             function (new_value, update_now) { 
                 operator = new_value;
                 if (update_now) {
-                    TT.DISPLAY_UPDATES.pending_update(this);
+                    this.rerender();
                 }
                 return this;
             };
@@ -225,7 +214,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         // should compute width from frontside element
         // get format from backside ancestor (via parent attribute?)
         var frontside = this.get_frontside();
-        var frontside_element, $dimensions_holder, client_width, client_height, font_height, font_width, max_decimal_places, new_HTML;
+        var frontside_element, $dimensions_holder, client_width, client_height, font_height, font_width, max_decimal_places, new_HTML, backside;
         if (!frontside) {
             return;
         }
@@ -258,6 +247,10 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         frontside_element.firstChild.innerHTML = new_HTML;
         $(frontside_element.firstChild).addClass("toontalk-widget");
         frontside_element.title = this.get_title();
+        backside = this.get_backside();
+        if (backside) {
+            backside.rerender();
+        }
     };
     
     number.to_HTML = function (max_characters, font_size, format, top_level, operator) {
@@ -337,7 +330,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         }
         var result = other.number_dropped_on_me(this, event);
         if (event) {
-            TT.DISPLAY_UPDATES.pending_update(other);
+            this.rerender();
         }
         this.remove();
         if (TT.robot.in_training) {

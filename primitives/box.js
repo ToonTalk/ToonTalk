@@ -41,7 +41,7 @@ window.TOONTALK.box = (function (TT) {
             size = new_size;
             contents.length = size;
             if (update_display) {
-                TT.DISPLAY_UPDATES.pending_update(this);
+                this.rerender();
             }
             if (TT.debugging) {
                 this.debug_string = this.toString();
@@ -54,7 +54,7 @@ window.TOONTALK.box = (function (TT) {
         new_box.set_horizontal = function (new_horizontal, update_display) {
             horizontal = new_horizontal;
             if (update_display) {
-                TT.DISPLAY_UPDATES.pending_update(this);
+                this.rerender();
             }
             return this;
         };
@@ -268,9 +268,6 @@ window.TOONTALK.box = (function (TT) {
     };
     
     box.update_display = function() {
-        if (!this.visible()) {
-            return;
-        }
         var frontside = this.get_frontside();
         var frontside_element = frontside.get_element();
         var new_HTML = this.to_HTML();
@@ -279,9 +276,7 @@ window.TOONTALK.box = (function (TT) {
         }
         frontside_element.firstChild.innerHTML = new_HTML;
         $(frontside_element.firstChild).addClass("toontalk-widget");
-        $(".toontalk-hole-about-to-be-replaced").each(function (index, element) {
-            this.update_hole_display(index, element);
-        }.bind(this));
+        $(".toontalk-hole-about-to-be-replaced").each(this.update_hole_display.bind(this));
         frontside_element.title = this.get_title();
         if (TT.debugging) {
             this.debug_string = this.toString();
@@ -289,13 +284,13 @@ window.TOONTALK.box = (function (TT) {
     };
     
     box.update_hole_display = function (index, old_hole_element) {
+        var hole, box_frontside, size, hole_frontside, hole_frontside_element, box_frontside_element, $element_container;
         if (!this.visible()) {
             return;
         }
-        var hole = this.get_hole(index); // maybe should rename to to hole_contents or the like
-        var box_frontside = this.get_frontside();
-        var size = this.get_size();
-        var hole_frontside, hole_frontside_element, box_frontside_element, $element_container;
+        hole = this.get_hole(index); // maybe should rename to to hole_contents or the like
+        box_frontside = this.get_frontside();
+        size = this.get_size();
         if (!hole) {
             hole = TT.box_empty_hole.create(index);
             this.set_hole(index, hole);
@@ -330,7 +325,8 @@ window.TOONTALK.box = (function (TT) {
             TT.UTILITIES.set_position_is_absolute(old_hole_element, false);
             $(old_hole_element).addClass("toontalk-frontside-in-box");
         }
-        TT.DISPLAY_UPDATES.pending_update(hole_frontside);
+//         TT.DISPLAY_UPDATES.pending_update(hole_frontside);
+        hole.rerender();
     };
     
     box.empty_hole = function (index, update_display) {
@@ -348,7 +344,7 @@ window.TOONTALK.box = (function (TT) {
         }
         var result = other.box_dropped_on_me(this, event);
         if (event) {
-            TT.DISPLAY_UPDATES.pending_update(other);
+            other.rerender();
         }
         this.remove();
         return result;
@@ -368,7 +364,7 @@ window.TOONTALK.box = (function (TT) {
             if (part === this.get_hole(i)) {
                 this.empty_hole(i, update_display);
                 if (update_display) {
-                    TT.DISPLAY_UPDATES.pending_update(this);
+                    this.rerender();
                     part_frontside_element = part.get_frontside_element();
                     $(part_frontside_element).removeClass("toontalk-frontside-in-box");
                     if (part_frontside_element.width_before_in_box) {
@@ -377,7 +373,7 @@ window.TOONTALK.box = (function (TT) {
                         setTimeout(function () {
                             $(part_frontside_element).css({width: part_frontside_element.width_before_in_box,
                                                            height: part_frontside_element.height_before_in_box});
-                            TT.DISPLAY_UPDATES.pending_update(part);
+                            part.rerender();
                         },
                         10);
                     }
@@ -515,7 +511,7 @@ window.TOONTALK.box_backside =
                     TT.UTILITIES.check_radio_button(vertical);
                 }
             };
-            TT.DISPLAY_UPDATES.pending_update(backside);
+            backside.render();
             return backside;
         }};
 }(window.TOONTALK));
@@ -570,7 +566,7 @@ window.TOONTALK.box_empty_hole =
                 }
                 box.set_hole(index, dropped, true);
                 dropped.set_parent_of_frontside(this, false);
-                TT.DISPLAY_UPDATES.pending_update(box);
+                box.rerender();
                 return true;
             };
             empty_hole.get_json = function () {
@@ -588,6 +584,12 @@ window.TOONTALK.box_empty_hole =
             };
             empty_hole.visible = function () {
                 return this.get_parent_of_frontside().widget.visible(); // you can't see it but if box is visible then it is 
+            };
+            empty_hole.render = function () {
+                // nothing to do
+            };
+            empty_hole.rerender = function () {
+                // nothing to do
             };
             if (TT.debugging) {
                 empty_hole.debug_string = "An empty hole";

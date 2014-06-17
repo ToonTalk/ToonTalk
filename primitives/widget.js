@@ -32,7 +32,7 @@ window.TOONTALK.widget = (function (TT) {
                 widget.set_erased = function (new_value, update_now) {
                     erased = new_value;
                     if (update_now) {
-                        TT.DISPLAY_UPDATES.pending_update(this);
+                        this.rerender();
                     }
                 };
             }
@@ -104,7 +104,7 @@ window.TOONTALK.widget = (function (TT) {
                             } else {
                                 backside_widget.set_stopped(true);
                             }
-                            TT.DISPLAY_UPDATES.pending_update(backside_widget);
+                            backside_widget.rerender();
                         } else if (backside_widget.set_running) {
                             if (!top_level_context && backside_widget_side.is_backside && widget.get_type_name() !== "top-level") {
                                 // a robot is on the backside of a widget that is on the backside of another
@@ -122,7 +122,7 @@ window.TOONTALK.widget = (function (TT) {
                             TT.backside.update_run_button($(element), widget);
                         });
                     }
-                    TT.DISPLAY_UPDATES.pending_update(this);
+                    this.rerender();
                 };
             }
             return widget;
@@ -280,7 +280,7 @@ window.TOONTALK.widget = (function (TT) {
                 return;
             }
             if (update) {
-                TT.DISPLAY_UPDATES.pending_update(this);
+                this.render();
             }
             return frontside.get_element();
         },
@@ -721,7 +721,7 @@ window.TOONTALK.widget = (function (TT) {
                 final_top = (frontside_offset.top - container_offset.top) + frontside_element.offsetHeight;
             }
             animate_backside_appearance(backside_element, "inherit");
-            TT.DISPLAY_UPDATES.pending_update(backside);
+            backside.render();
         },
                 
         apply_backside_geometry: function () {
@@ -792,6 +792,18 @@ window.TOONTALK.widget = (function (TT) {
                 }
             );
             return widget;
+        },
+        
+        render: function () {
+            // typically first time it is displayed so no check if visible
+            TT.DISPLAY_UPDATES.pending_update(this);
+        },
+        
+        rerender: function () {
+            // state has changed so needs to be rendered again (if visible)
+            if (this.visible()) {
+                TT.DISPLAY_UPDATES.pending_update(this);
+            }
         }
     };
 }(window.TOONTALK));

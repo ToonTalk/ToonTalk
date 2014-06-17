@@ -103,13 +103,13 @@ window.TOONTALK.actions =
                 if (!robot.get_run_once()) {
                     robot.get_first_in_team().run(context, top_level_context, queue);
                 }
-                TT.DISPLAY_UPDATES.pending_update(robot);
+                robot.render();
             };
             var run_watched_step = function (i) {
                 var continuation = function (referenced) {
                     steps[i].do_step(referenced, context, top_level_context, robot);
                     if (robot.get_thing_in_hand()) {
-                        TT.DISPLAY_UPDATES.pending_update(robot);
+                        robot.render();
                     }
                     setTimeout(function () {
                         if (robot.visible()) {
