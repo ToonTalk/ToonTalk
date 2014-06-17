@@ -112,17 +112,17 @@ window.TOONTALK.actions =
                         robot.render();
                     }
                     setTimeout(function () {
-                        if (robot.visible()) {
-                            run_watched_step(i+1);
-                        } else {
-                            // maybe user hide the robot while running
-                            for (i = i+1; i < steps.length; i++) {
-                                steps[i].do_step(referenced, context, top_level_context, robot);
+                            if (robot.visible()) {
+                                run_watched_step(i+1);
+                            } else {
+                                // maybe user hid the robot while running
+                                for (i = i+1; i < steps.length; i++) {
+                                    steps[i].run_unwatched(context, top_level_context, robot);
+                                }
+                                if (!robot.get_run_once()) {
+                                    robot.get_first_in_team().run(context, top_level_context, queue);
+                                }
                             }
-                            if (!robot.get_run_once()) {
-                                robot.get_first_in_team().run(context, top_level_context, queue);
-                            }
-                        }
                         },
                         500); // pause between steps and give the previous step a chance to update the DOM
                 };
