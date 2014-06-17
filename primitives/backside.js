@@ -47,13 +47,13 @@ window.TOONTALK.backside =
                 };
             }
             if (!widget.removed_from_container) {
-                widget.removed_from_container = function (other, backside_removed, event) {
+                widget.removed_from_container = function (other, backside_removed, event, ignore_if_not_on_backside) {
                     if (!backside_removed) {
                         $(other.get_frontside_element()).removeClass("toontalk-frontside-on-backside");
                     }
                     if (event) {
                        // if !event then robot did this and robots remove backsides themselves
-                       this.remove_backside_widget(other, backside_removed);
+                       this.remove_backside_widget(other, backside_removed, ignore_if_not_on_backside);
                     }
                 };
             }
@@ -395,9 +395,7 @@ window.TOONTALK.backside =
             if (widget.forget_backside) {
                 widget.forget_backside();
             }
-            if (widget.get_parent_of_backside()) {
-                widget.get_parent_of_backside().widget.removed_from_container(widget, true, event);
-            }
+            widget.get_parent_of_backside().widget.removed_from_container(widget, true, event, true);
             record_backside_widget_positions();
             widget.backside_geometry = this.get_backside_dimensions();
             animate_disappearance($backside_element)

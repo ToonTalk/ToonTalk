@@ -420,7 +420,7 @@ window.TOONTALK.widget = (function (TT) {
             }
         },
         
-        remove_backside_widget: function (widget, is_backside) {
+        remove_backside_widget: function (widget, is_backside, ignore_if_not_on_backside) {
             var backside = this.get_backside();
             var widget_side = {widget: widget};
             if (is_backside) {
@@ -433,7 +433,9 @@ window.TOONTALK.widget = (function (TT) {
             }
             widget_index = this.backside_widget_side_index(widget_side);
             if (widget_index < 0) {
-                console.log("Couldn't find a widget to remove it from backside widgets. " + widget_side + " (" + widget_side.widget.debug_id + ")"); 
+                if (!ignore_if_not_on_backside) {
+                    console.log("Couldn't find a widget to remove it from backside widgets. " + widget_side + " (" + widget_side.widget.debug_id + ")"); 
+                }
                 return;                        
             }
             this.backside_widgets.splice(widget_index, 1);
