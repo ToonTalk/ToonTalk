@@ -24,21 +24,21 @@ window.TOONTALK.robot_action =
              robot.set_thing_in_hand(widget_copy);
              return true;
          },
-         "drop it on": function (target_element, context, top_level_context, robot) {
+         "drop it on": function (target, context, top_level_context, robot) {
              var thing_in_hand, thing_in_hand_frontside_element, context_frontside_position;
-             if (target_element) {
+             if (target) {
                  thing_in_hand = robot.get_thing_in_hand();
                  if (thing_in_hand) {
                      if (thing_in_hand.drop_on) {
-                         if (target_element instanceof jQuery) {
+                         if (target instanceof jQuery) {
                              // e.g. dropped on top-level backside
                              thing_in_hand_frontside_element = thing_in_hand.get_frontside_element();
-                             target_element.append(thing_in_hand_frontside_element);
+                             target.append(thing_in_hand_frontside_element);
                          } else {
-                             if (target_element.visible && target_element.visible()) {
-                                 target_element.render();
+                             if (target.visible && target.visible()) {
+                                 target.render();
                              }
-                             thing_in_hand.drop_on(target_element);
+                             thing_in_hand.drop_on(target);
                          }
                          robot.set_thing_in_hand(undefined);
                      } else {
