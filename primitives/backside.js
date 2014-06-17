@@ -31,21 +31,21 @@ window.TOONTALK.backside =
                     return backside;
                 };
             }
-            if (!widget.drop_on) {
-                // TO DO: determine if this is needed -- top-level backside can't be added to something - can it?
-                widget.drop_on = function (other, $side_element_of_other, event) {
-                    $backside_element.append($side_element_of_other);
-                    TT.UTILITIES.set_position_is_absolute($side_element_of_other.get(0), true, event); // when on the backside
-                    if ($side_element_of_other.is(".toontalk-frontside")) {
-                        // better to have a preferrred size that it goes to when on backside
-                        // recorded when dropped into something that changes its size -- e.g. a box
-                        $side_element_of_other.addClass("toontalk-frontside-on-backside");
-                        other.rerender();
-                    }
-                    backside.update_run_button_disabled_attribute();
-                    return true;
-                };
-            }
+//             if (!widget.drop_on) {
+//                 // TO DO: determine if this is needed -- top-level backside can't be added to something - can it?
+//                 widget.drop_on = function (other, $side_element_of_other, event) {
+//                     $backside_element.append($side_element_of_other);
+//                     TT.UTILITIES.set_position_is_absolute($side_element_of_other.get(0), true, event); // when on the backside
+//                     if ($side_element_of_other.is(".toontalk-frontside")) {
+//                         // better to have a preferrred size that it goes to when on backside
+//                         // recorded when dropped into something that changes its size -- e.g. a box
+//                         $side_element_of_other.addClass("toontalk-frontside-on-backside");
+//                         other.rerender();
+//                     }
+//                     backside.update_run_button_disabled_attribute();
+//                     return true;
+//                 };
+//             }
             if (!widget.removed_from_container) {
                 widget.removed_from_container = function (other, backside_removed, event, ignore_if_not_on_backside) {
                     if (!backside_removed) {
@@ -156,6 +156,7 @@ window.TOONTALK.backside =
                  original_width = dimensions.original_width;
                  original_height = dimensions.original_height;
             };
+
             TT.backside.associate_widget_with_backside_element(widget, backside, backside_element);
             TT.UTILITIES.drag_and_drop($backside_element);
             // the following function should apply recursively...
@@ -235,6 +236,29 @@ window.TOONTALK.backside =
                    $(frontside.get_element()).removeClass("toontalk-highlight");
                }
             });
+            backside.display_updated = function () {
+                var $backside_element = $(this.get_element());
+                if (!original_width) {
+                    original_width = $backside_element.width();
+                }
+                if (!original_height) {
+                    original_height = $backside_element.height();
+                }
+            };         
+            backside.scale_backside_to_fit = function (this_element, other_element) {
+                var new_width = $(other_element).width();
+                var new_height = $(other_element).height();
+                if (!original_width && this.get_widget().backside_geometry) {
+                    original_width = this.get_widget().backside_geometry.original_width;
+                    original_height = this.get_widget().backside_geometry.original_height;  
+                }
+                x_scale = new_width/original_width;
+                y_scale = new_height/original_height;
+                $(this_element).css({transform: "scale(" + x_scale + ", " + y_scale + ")",
+                                     "transform-origin": "top left", 
+                                     width: original_width,
+                                     height: original_height});
+            };
             if (widget.get_backside_widgets) {
                 backside_widgets = widget.get_backside_widgets();
                 backside.add_backside_widgets(backside_widgets, widget.get_backside_widgets_json_views());

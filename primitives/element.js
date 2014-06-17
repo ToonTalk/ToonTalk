@@ -710,6 +710,7 @@ window.TOONTALK.element_backside =
             $(backside_element).find(".toontalk-hide-backside-button").click(function (event) {
                 $(attributes_chooser).hide();
             });
+            this.display_updated();
             return backside;
     }};
 }(window.TOONTALK));

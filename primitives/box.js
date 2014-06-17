@@ -334,10 +334,10 @@ window.TOONTALK.box = (function (TT) {
         this.set_hole(index, TT.box_empty_hole.create(index), update_display);
     };
     
-    box.drop_on = function (other, side_of_other, event) {
+    box.drop_on = function (other, is_backside, event) {
         if (!other.box_dropped_on_me) {
             if (other.widget_dropped_on_me) {
-                return other.widget_dropped_on_me(this, false, event);
+                return other.widget_dropped_on_me(this, is_backside, event);
             }
             console.log("No handler for drop of " + this.toString() + " on " + other.toString());
             return;
@@ -510,6 +510,7 @@ window.TOONTALK.box_backside =
                 } else {
                     TT.UTILITIES.check_radio_button(vertical);
                 }
+                this.display_updated();
             };
             backside.render();
             return backside;

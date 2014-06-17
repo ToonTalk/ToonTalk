@@ -189,6 +189,9 @@ window.TOONTALK.widget = (function (TT) {
                     if (target_absolute_position) {
                         target_absolute_position.left += left_offset;
                         target_absolute_position.top += top_offset;
+                        if (target_absolute_position.left < 0 || target_absolute_position.top < 0) {
+                            console.log("debug this");
+                        }
                     } else {
                         // can happen if a user picks up the target while this is running
                         target_absolute_position = {left: 0, top: 0};
@@ -806,6 +809,10 @@ window.TOONTALK.widget = (function (TT) {
             if (this.visible()) {
                 TT.DISPLAY_UPDATES.pending_update(this);
             }
+        },
+        
+        hide: function () {
+            $(this.get_frontside_element()).hide();
         }
     };
 }(window.TOONTALK));

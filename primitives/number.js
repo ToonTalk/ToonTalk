@@ -321,10 +321,10 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         // else warn??
     };
 
-    number.drop_on = function (other, side_of_other, event) {
+    number.drop_on = function (other, is_backside, event) {
         if (!other.number_dropped_on_me) {
             if (other.widget_dropped_on_me) {
-                return other.widget_dropped_on_me(this, false, event);
+                return other.widget_dropped_on_me(this, is_backside, event);
             }
             console.log("No handler for drop of " + this.toString() + " on " + other.toString());
             return;
@@ -649,6 +649,7 @@ window.TOONTALK.number_backside =
             backside.update_display = function () {
                 $(numerator_input.button).val(number.numerator_string());
                 $(denominator_input.button).val(number.denominator_string());
+                this.display_updated();
             };
             return backside;
         }

@@ -761,6 +761,7 @@ window.TOONTALK.robot_backside =
                     }                    
                 }
                 backside.update_run_button_disabled_attribute();
+                this.display_updated();
             };
             add_conditions_area(backside_element, robot);
             return backside;

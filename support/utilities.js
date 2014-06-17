@@ -127,7 +127,7 @@ window.TOONTALK.UTILITIES =
         } else if (!target_widget) {
             console.log("target element has no 'owner'");
             return; // let event propagate
-        } else if (source_widget.drop_on && source_widget.drop_on(target_widget, $target, event)) {
+        } else if (source_widget.drop_on && source_widget.drop_on(target_widget, source_is_backside, event)) {
             drop_handled = true;
         } else if (target_widget.widget_dropped_on_me && target_widget.widget_dropped_on_me(source_widget, source_is_backside, event)) {
             drop_handled = true;
@@ -199,7 +199,7 @@ window.TOONTALK.UTILITIES =
                 if (widget) {
                     element.textContent = ""; // served its purpose of being parsed as JSON
                     if (widget.get_type_name() === 'top-level') {
-                        stored_json_string = window.localStorage.getItem(window.location.href);
+                        stored_json_string = window.localStorage.getItem(TT.UTILITIES.current_URL());
                         if (stored_json_string && window.location.href.indexOf("reset=1") < 0) {
                             json = JSON.parse(stored_json_string);
                             widget = TT.UTILITIES.create_from_json(json);
@@ -1098,7 +1098,7 @@ window.TOONTALK.UTILITIES =
         backup_all: function (immediately) {
             var top_level_widget = $(".toontalk-top-level-backside").data("owner");
             var backup_function = function () {
-                    window.localStorage.setItem(window.location.href, JSON.stringify(top_level_widget.get_json()));
+                    window.localStorage.setItem(TT.UTILITIES.current_URL(), JSON.stringify(top_level_widget.get_json()));
             };
             if (top_level_widget) {
                 if (immediately) {
@@ -1131,6 +1131,14 @@ window.TOONTALK.UTILITIES =
                 return widget.matched_by(pattern);
             }
             return match_status;
+        },
+        
+        current_URL: function () {
+            var queryStart = window.location.href.indexOf('?');
+            if (queryStart < 0) {
+                return window.location.href;
+            }
+            return window.location.href.substring(0, queryStart);
         }
         
 //         create_menu_item: function (text) {
