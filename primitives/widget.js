@@ -588,7 +588,7 @@ window.TOONTALK.widget = (function (TT) {
             if (!frontside) {
                 return false;
             }
-            return $(frontside.get_element()).is(":visible"); 
+            return $(frontside.get_element()).is(":visible");
         },
         
         drag_started: function (json, is_resource) {

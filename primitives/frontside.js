@@ -61,6 +61,10 @@ window.TOONTALK.frontside =
             return this.get_widget().update_display();
         },
         
+        visible: function () {
+            return $(this.get_element()).is(":visible"); 
+        },
+        
         remove: function() {
             $(this.get_element()).remove();
         }

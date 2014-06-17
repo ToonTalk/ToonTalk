@@ -28,7 +28,9 @@ window.TOONTALK.DISPLAY_UPDATES =
                 return;
             }
             updates.forEach(function (pending_update) {
-                pending_update.update_display();
+                if (pending_update.visible()) {
+                    pending_update.update_display();
+                }
             });
         },
         
