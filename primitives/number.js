@@ -423,13 +423,12 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     };
     
     number.get_json = function () {
-        return this.add_to_json(
-           {type: "number",
-            operator: this.get_operator(),
-            numerator: this.numerator_string(),
-            denominator: this.denominator_string(),
-            format: this.get_format()
-            });
+        return {type: "number",
+                operator: this.get_operator(),
+                numerator: this.numerator_string(),
+                denominator: this.denominator_string(),
+                format: this.get_format()
+                };
     };
     
     number.create_from_json = function (json) {

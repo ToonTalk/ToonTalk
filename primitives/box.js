@@ -213,23 +213,22 @@ window.TOONTALK.box = (function (TT) {
         return "box";
     };
 
-    box.get_json = function () {
+    box.get_json = function (json_history) {
         var contents_json = [];
         var size = this.get_size();
         var i;
         for (i = 0; i < size; i++) {
             if (this.get_hole(i)) {
-                contents_json[i] = this.get_hole(i).get_json();
+                contents_json[i] = this.get_hole(i).get_json(json_history);
             } else {
                 contents_json[i] = null;
             }
         }
-        return this.add_to_json(
-           {type: "box",
-            size: size,
-            contents: contents_json,
-            horizontal: this.get_horizontal()
-           });
+        return {type: "box",
+                size: size,
+                contents: contents_json,
+                horizontal: this.get_horizontal()
+               };
     };
     
     box.create_from_json = function (json) {

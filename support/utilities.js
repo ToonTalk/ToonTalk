@@ -274,10 +274,27 @@ window.TOONTALK.UTILITIES =
                 // was undefined and still is
                 return;
             }
+            if (json.widgets_encountered_more_than_once) {
+                if (!additional_info) {
+                    additional_info = {};
+                }
+                additional_info.json_of_widgets_encountered_more_than_once = json.widgets_encountered_more_than_once;
+                additional_info.widgets_encountered_more_than_once = [];
+            }
             if (json.widget) {
                 // is a context where need to know which side of the widget
                 return {widget: TT.UTILITIES.create_from_json(json.widget, additional_info),
                         is_backside: json.is_backside};
+            }
+            if (json.previous_widget >= 0) {
+                if (additional_info.widgets_encountered_more_than_once[json.previous_widget]) {
+                    return additional_info.widgets_encountered_more_than_once[json.previous_widget];
+                }
+                // otherwise create it from the JSON and store it
+                json = additional_info.json_of_widgets_encountered_more_than_once[json.previous_widget];
+                additional_info.widgets_encountered_more_than_once[json.previous_widget] = 
+                    TT.UTILITIES.create_from_json(json, additional_info);
+                return additional_info.widgets_encountered_more_than_once[json.previous_widget];
             }
             json_semantic = json.semantic;
             if (!json_semantic) {
@@ -317,7 +334,7 @@ window.TOONTALK.UTILITIES =
                     widget.backside_geometry = json_view.backside_geometry;                    
                 }
                 if (json_semantic.backside_widgets) {
-                    backside_widgets = this.create_array_from_json(json_semantic.backside_widgets);
+                    backside_widgets = this.create_array_from_json(json_semantic.backside_widgets, additional_info);
                     widget.set_backside_widget_sides(backside_widgets, json_semantic.backside_widgets.map(function (json) { return json.widget.view; }));
                 }
             }
@@ -328,12 +345,7 @@ window.TOONTALK.UTILITIES =
             var new_array = [];
             json_array.forEach(function (json_item, index) {
                 if (json_item) {
-                    if (json_item.widget && json_item.widget.semantic.index_of_previous_widget >= 0) {
-                        new_array[index] = {widget: new_array[json_item.widget.semantic.index_of_previous_widget].widget};
-                        new_array[index].is_backside = json_item.is_backside;
-                    } else {
-                        new_array[index] = TT.UTILITIES.create_from_json(json_item, additional_info);
-                    }
+                    new_array[index] = TT.UTILITIES.create_from_json(json_item, additional_info);
                 } else {
                     // e.g. could be null representing an empty hole
                     new_array[index] = json_item; 
@@ -342,30 +354,21 @@ window.TOONTALK.UTILITIES =
             return new_array;
         },
         
-        get_json_of_array: function (array) {
+        get_json_of_array: function (array, json_history) {
             var json = [];
             var widgets_jsonified = [];
             array.forEach(function (widget_side, index) {
-                var index_of_jsonified_widget, widget_json;
                 if (widget_side) {
                     if (!widget_side.widget) {
                         if (widget_side.get_type_name) {
                             // older scheme where 'naked' widget is there meaning frontside
-                            json[index] = {widget: widget_side.get_json()};
+                            json[index] = {widget: TT.UTILITIES.get_json(widget_side, json_history)};
                         } else {
                             // isn't a widget -- e.g. is a path
                             json[index] = widget_side.get_json();
                         }
                     } else if (widget_side.widget.get_json) {
-                        index_of_jsonified_widget = widgets_jsonified.indexOf(widget_side.widget);
-                        widget_json = widget_side.widget.get_json();
-                        if (index_of_jsonified_widget < 0) {
-                            widgets_jsonified.push(widget_side.widget);
-                        } else {
-                            // just update the semantic part of the widget
-                            widget_json.semantic = {index_of_previous_widget: index_of_jsonified_widget};
-                        }
-                        json[index] = {widget: widget_json,
+                        json[index] = {widget: TT.UTILITIES.get_json(widget_side.widget, json_history),
                                        is_backside: widget_side.is_backside};
                     } else {
                         console.log("No get_json for " + array[i].toString());
@@ -494,7 +497,7 @@ window.TOONTALK.UTILITIES =
                     }
                     if (event.originalEvent.dataTransfer && widget.get_json) {
                         event.originalEvent.dataTransfer.effectAllowed = is_resource ? 'copy' : 'move';
-                        json_object = widget.get_json();
+                        json_object = TT.UTILITIES.get_json_top_level(widget);
                         // not sure if the following is obsolete
                         json_object.view.drag_x_offset = event.originalEvent.clientX - position.left;
                         json_object.view.drag_y_offset = event.originalEvent.clientY - position.top;
@@ -1098,7 +1101,8 @@ window.TOONTALK.UTILITIES =
         backup_all: function (immediately) {
             var top_level_widget = $(".toontalk-top-level-backside").data("owner");
             var backup_function = function () {
-                    window.localStorage.setItem(TT.UTILITIES.current_URL(), JSON.stringify(top_level_widget.get_json()));
+                    var json = TT.UTILITIES.get_json_top_level(top_level_widget);
+                    window.localStorage.setItem(TT.UTILITIES.current_URL(), JSON.stringify(json));
             };
             if (top_level_widget) {
                 if (immediately) {
@@ -1146,6 +1150,39 @@ window.TOONTALK.UTILITIES =
                 return side.widget.get_backside_element(create);
             }
             return side.widget.get_frontside_element(create);
+        },
+        
+        get_json_top_level: function (widget) {
+            var json_history = {widgets_encountered: [],
+                                widgets_encountered_more_than_once: [],
+                                json_of_widgets_encountered: []};
+            var json = widget.add_to_json(widget.get_json(json_history), json_history);
+            if (json_history.widgets_encountered_more_than_once.length > 0) {
+                json.widgets_encountered_more_than_once = json_history.widgets_encountered_more_than_once.map(function (widget) {
+                    // get the JSON of only those widgets that occurred more than once
+                    var index = json_history.widgets_encountered.indexOf(widget);
+                    return json_history.json_of_widgets_encountered[index];
+                });
+            }
+            return json;
+        },
+        
+        get_json: function (widget, json_history) {
+            var index = json_history.widgets_encountered_more_than_once.indexOf(widget);
+            var widget_json;
+            if (index >= 0) {
+                return {previous_widget: index};
+            }
+            index = json_history.widgets_encountered.indexOf(widget);
+            if (index >= 0) {
+                json_history.widgets_encountered_more_than_once.push(widget);
+                return {previous_widget: index};
+            }
+            widget_json = widget.get_json(json_history);
+            json_history.widgets_encountered.push(widget);
+            widget_json = widget.add_to_json(widget_json, json_history);
+            json_history.json_of_widgets_encountered.push(widget_json);
+            return widget_json;
         }
         
 //         create_menu_item: function (text) {

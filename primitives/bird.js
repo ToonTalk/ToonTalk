@@ -120,15 +120,14 @@ window.TOONTALK.bird = (function (TT) {
         return "bird";
     };
     
-    bird.get_json = function () {
-        return this.add_to_json(
-            {semantic:
-                 {type: "bird",
-                  nest: this.get_nest().get_json()
-                  },
-             view:
-                 {image_url: this.get_image_url(),
-                  description: this.get_description()}});
+    bird.get_json = function (json_history) {
+        return {semantic:
+                   {type: "bird",
+                    nest: this.get_nest().get_json(json_history)
+                    },
+               view:
+                   {image_url: this.get_image_url(),
+                    description: this.get_description()}};
     };
     
     bird.create_from_json = function (json_semantic, json_view) {
@@ -288,16 +287,15 @@ window.TOONTALK.nest = (function (TT) {
             }
         };
         // defined here so that contents can be 'hidden'
-        new_nest.get_json = function () {
-            return this.add_to_json(
-                {semantic:
-                     {type: "nest",
-                      contents: TT.UTILITIES.get_json_of_array(contents)
-                      // do waiting_robots after changing from function to object
-                      },
-                 view:
-                     {image_url: image_url,
-                      description: description}});
+        new_nest.get_json = function (json_history) {
+            return {semantic:
+                        {type: "nest",
+                         contents: TT.UTILITIES.get_json_of_array(contents, json_history)
+                         // do waiting_robots after changing from function to object
+                        },
+                    view:
+                        {image_url: image_url,
+                         description: description}};
         };
         new_nest.copy = function (just_value) {
             // this may become more complex if the original ToonTalk behaviour

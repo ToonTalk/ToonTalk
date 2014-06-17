@@ -567,7 +567,7 @@ window.TOONTALK.robot = (function (TT) {
         return "robot";
     };
     
-    robot.get_json = function () {
+    robot.get_json = function (json_history) {
         var frontside_conditions = this.get_frontside_conditions();
         var backside_conditions = this.get_backside_conditions();
         var frontside_conditions_json, backside_conditions_json, next_robot_json;
@@ -575,7 +575,7 @@ window.TOONTALK.robot = (function (TT) {
             if (frontside_conditions.get_type_name() === 'top-level') {
                 frontside_conditions_json = {type: "top_level"};
             } else {
-                frontside_conditions_json = frontside_conditions.get_json();
+                frontside_conditions_json = frontside_conditions.get_json(json_history);
             }
         }
         if (backside_conditions) {
@@ -584,25 +584,24 @@ window.TOONTALK.robot = (function (TT) {
                     if (!backside_conditions_json) {
                         backside_conditions_json = {};
                     }
-                    backside_conditions_json[type] = backside_conditions[type].get_json();
+                    backside_conditions_json[type] = backside_conditions[type].get_json(json_history);
                 }
             });
         }
         if (this.get_next_robot()) {
-            next_robot_json = this.get_next_robot().get_json();
+            next_robot_json = this.get_next_robot().get_json(json_history);
         }
-        return this.add_to_json(
-            {semantic:
-                 {type: "robot",
-                  frontside_conditions: frontside_conditions_json,
-                  backside_conditions: backside_conditions_json,
-                  body: this.get_body().get_json(),
-                  run_once: this.get_run_once(),
-                  next_robot: next_robot_json
-                  },
-             view:
-                 {image_url: this.get_image_url(),
-                  description: this.get_description()}});
+        return {semantic:
+                    {type: "robot",
+                     frontside_conditions: frontside_conditions_json,
+                     backside_conditions: backside_conditions_json,
+                     body: this.get_body().get_json(),
+                     run_once: this.get_run_once(),
+                     next_robot: next_robot_json
+                     },
+                view:
+                    {image_url: this.get_image_url(),
+                     description: this.get_description()}};
     };
     
     robot.create_from_json = function (json_semantic, json_view) {

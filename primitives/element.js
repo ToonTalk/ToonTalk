@@ -454,12 +454,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 json_attributes.push(item);
             }
         });
-        return this.add_to_json(
-           {type: "element",
-            html: encodeURIComponent(this.get_HTML()), 
-            attributes: json_attributes,
-            attribute_values: json_attributes.map(this.get_attribute.bind(this))
-            });
+        return {type: "element",
+                html: encodeURIComponent(this.get_HTML()), 
+                attributes: json_attributes,
+                attribute_values: json_attributes.map(this.get_attribute.bind(this))
+                };
     };
     
     element.create_from_json = function (json) {

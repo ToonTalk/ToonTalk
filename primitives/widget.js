@@ -309,7 +309,7 @@ window.TOONTALK.widget = (function (TT) {
             return this;
         },
         
-        add_to_json: function (json_semantic) {
+        add_to_json: function (json_semantic, json_history) {
             var json_view, json, position, frontside_element, backside, backside_element, backside_widgets, backside_widgets_json_views, backside_widget_side;
             if (json_semantic) {
                 if (json_semantic.view) {
@@ -370,7 +370,7 @@ window.TOONTALK.widget = (function (TT) {
                 }
                 backside_widgets = this.get_backside_widgets();
                 if (backside_widgets.length > 0) {
-                    json_semantic.backside_widgets = TT.UTILITIES.get_json_of_array(backside_widgets);
+                    json_semantic.backside_widgets = TT.UTILITIES.get_json_of_array(backside_widgets, json_history);
                     backside_widgets_json_views = this.get_backside_widgets_json_views();
                     if (backside_widgets_json_views) {
                        backside_widgets_json_views.forEach(function (backside_widget_view, index) {
@@ -741,15 +741,14 @@ window.TOONTALK.widget = (function (TT) {
         
         top_level_widget: function () {
             var widget = Object.create(TT.widget);
-            widget.get_json = function () {
+            widget.get_json = function (json_history) {
                 var backside = this.get_backside();
                 var $backside_element = $(backside.get_element());
                 var background_color = document.defaultView.getComputedStyle($backside_element.get(0), null).getPropertyValue("background-color");
                 // don't know why the following returns undefined
 //               $backside_element.attr("background-color")};
-                var json = {semantic: {type: "top_level"},
+                return {semantic: {type: "top_level"},
                             view: {background_color: background_color}};
-                return this.add_to_json(json);
             };
             widget.get_type_name = function () {
                  return "top-level";
