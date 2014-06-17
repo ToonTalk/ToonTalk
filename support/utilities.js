@@ -200,7 +200,7 @@ window.TOONTALK.UTILITIES =
                     element.textContent = ""; // served its purpose of being parsed as JSON
                     if (widget.get_type_name() === 'top-level') {
                         stored_json_string = window.localStorage.getItem(window.location.href);
-                        if (stored_json_string) {
+                        if (stored_json_string && window.location.href.indexOf("reset=1") < 0) {
                             json = JSON.parse(stored_json_string);
                             widget = TT.UTILITIES.create_from_json(json);
                         }
