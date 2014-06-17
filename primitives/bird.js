@@ -251,16 +251,21 @@ window.TOONTALK.nest = (function (TT) {
         };
         new_nest.add_to_contents = function (widget) {
             var current_waiting_robots;
-            if (contents.push(widget) === 1 && waiting_robots.length > 0) {
-                // is the first content and some robots are waiting for this nest to be filled
-                // running these robots may cause new waiting robots so set waiting_robots to [] first
-                current_waiting_robots = waiting_robots;
-                waiting_robots = [];
-                current_waiting_robots.forEach(function (robot_run) {
-                    robot_run();
-                });
-                this.rerender();
+            if (contents.push(widget) === 1) {
+                if (waiting_robots.length > 0) {
+                    // is the first content and some robots are waiting for this nest to be filled
+                    // running these robots may cause new waiting robots so set waiting_robots to [] first
+                    current_waiting_robots = waiting_robots;
+                    waiting_robots = [];
+                    current_waiting_robots.forEach(function (robot_run) {
+                        robot_run();
+                    });
+                }
+            } else {
+                // is under the top widget
+                widget.remove();
             }
+            this.rerender();
         };
         // defined here so that contents can be 'hidden'
         new_nest.get_json = function () {
