@@ -255,9 +255,9 @@ window.TOONTALK.nest = (function (TT) {
         new_nest.run_when_non_empty = function (robot_run) {
             waiting_robots.push(robot_run);
         };
-        new_nest.add_to_contents = function (widget) {
+        new_nest.add_to_contents = function (widget_side) {
             var current_waiting_robots;
-            if (contents.push(widget) === 1) {
+            if (contents.push(widget_side) === 1) {
                 if (waiting_robots.length > 0) {
                     // is the first content and some robots are waiting for this nest to be filled
                     // running these robots may cause new waiting robots so set waiting_robots to [] first
@@ -269,9 +269,23 @@ window.TOONTALK.nest = (function (TT) {
                 }
             } else {
                 // is under the top widget
-                widget.hide();
+                widget_side.widget.hide();
+            }
+            if (widget_side.is_backside) {
+                widget_side.widget.set_parent_of_backside(this);
+            } else {
+                 widget_side.widget.set_parent_of_frontside(this);
             }
             this.rerender();
+        };
+        new_nest.removed_from_container = function (part, backside_removed, event) {
+            contents.splice(0,1);
+            if (this.visible()) {
+                if (contents.length > 0) {
+                    $(TT.UTILITIES.get_side_element_from_side(contents[0])).show();
+                }
+                this.render();
+            }
         };
         // defined here so that contents can be 'hidden'
         new_nest.get_json = function () {

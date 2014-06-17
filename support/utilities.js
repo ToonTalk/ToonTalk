@@ -1139,6 +1139,13 @@ window.TOONTALK.UTILITIES =
                 return window.location.href;
             }
             return window.location.href.substring(0, queryStart);
+        },
+        
+        get_side_element_from_side: function (side, create) {
+            if (side.is_backside) {
+                return side.widget.get_backside_element(create);
+            }
+            return side.widget.get_frontside_element(create);
         }
         
 //         create_menu_item: function (text) {
