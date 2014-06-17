@@ -1055,12 +1055,12 @@ window.TOONTALK.UTILITIES =
             if (class_name) {
                 $(image).addClass(class_name);
             }
-            if (url.indexOf('images/') < 0) {
+            if (url.indexOf('images/') === 0) {
                 // is a relative URL to images folder so add error handler
                 // that tries again with github server
                 error_handler = function (event) {
                     image.removeEventListener('error', error_handler);
-                    img.src = "http://toontalk.github.io/ToonTalk/" + url;
+                    image.src = "http://toontalk.github.io/ToonTalk/" + url;
                 }
                 image.addEventListener('error', error_handler);
             }
