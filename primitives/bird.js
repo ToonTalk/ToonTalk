@@ -263,7 +263,7 @@ window.TOONTALK.nest = (function (TT) {
                 }
             } else {
                 // is under the top widget
-                widget.remove();
+                widget.hide();
             }
             this.rerender();
         };
