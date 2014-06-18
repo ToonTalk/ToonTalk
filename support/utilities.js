@@ -49,17 +49,23 @@ window.TOONTALK.UTILITIES =
     };
     var handle_drop = function ($target, $source, source_widget, target_widget, target_position, event, json_object, drag_x_offset, drag_y_offset, source_is_backside) {
         var drop_handled = true;
-        var new_target, backside_widgets_json;
+        var new_target, backside_widgets_json, widgets_encountered_more_than_once;
         if ($target.is(".toontalk-backside")) {
             if (source_widget.get_type_name() === 'top-level') {
                // add all top-level backsides contents but not the backside widget itself
                backside_widgets_json = json_object.semantic.backside_widgets;
+               widgets_encountered_more_than_once = json_object.widgets_encountered_more_than_once;
                source_widget.get_backside_widgets().forEach(function (backside_widget_side, index) {
-                   var json_view = backside_widgets_json[index].widget.view;
                    // not clear why we need to copy these widgets but without copying
                    // their elements are not added to the target (but are added to its backside_widgets)
-                   var widget = backside_widget_side.widget.copy();
-                   var backside_element, left_offset, top_offset, width, height, position;
+                   var widget = backside_widget_side.widget; //.copy();
+                   console.log("copy commented out since broken identities -- handle drop the problem???");
+                   var json_view, backside_element, left_offset, top_offset, width, height, position;
+                   if (backside_widgets_json[index].widget.previous_widget >= 0) {
+                       json_view = widgets_encountered_more_than_once[backside_widgets_json[index].widget.previous_widget].view;
+                   } else {
+                       json_view = backside_widgets_json[index].widget.view;
+                   }
                    if (backside_widget_side.is_backside) {
                        backside_element = widget.get_backside_element(true);
                        left_offset = json_view.backside_left;
@@ -73,7 +79,7 @@ window.TOONTALK.UTILITIES =
                        width = json_view.frontside_width;
                        height = json_view.frontside_height;
                    }
-                   handle_drop($target, $(backside_element), widget, target_widget, target_position, event, json_object, drag_x_offset, drag_y_offset, backside_widget_side.is_backside);
+                   handle_drop($target, $(backside_element), widget, target_widget, target_position, event, json_object, 0, 0, backside_widget_side.is_backside);
                    position = $(backside_element).position();
                    $(backside_element).css({left: position.left + left_offset,
                                             top: position.top + top_offset,
@@ -269,7 +275,7 @@ window.TOONTALK.UTILITIES =
     $(document).ready(initialise);
     return {
         create_from_json: function (json, additional_info) {
-            var widget, side_element, backside_widgets, json_semantic, json_view, size_css;
+            var widget, side_element, backside_widgets, json_semantic, json_view, size_css, previous_widget_index;
             if (!json) {
                 // was undefined and still is
                 return;
@@ -290,11 +296,12 @@ window.TOONTALK.UTILITIES =
                 if (additional_info.widgets_encountered_more_than_once[json.previous_widget]) {
                     return additional_info.widgets_encountered_more_than_once[json.previous_widget];
                 }
+                previous_widget_index = json.previous_widget; // store it before replacing the json
                 // otherwise create it from the JSON and store it
-                json = additional_info.json_of_widgets_encountered_more_than_once[json.previous_widget];
-                additional_info.widgets_encountered_more_than_once[json.previous_widget] = 
+                json = additional_info.json_of_widgets_encountered_more_than_once[previous_widget_index];
+                additional_info.widgets_encountered_more_than_once[previous_widget_index] = 
                     TT.UTILITIES.create_from_json(json, additional_info);
-                return additional_info.widgets_encountered_more_than_once[json.previous_widget];
+                return additional_info.widgets_encountered_more_than_once[previous_widget_index];
             }
             json_semantic = json.semantic;
             if (!json_semantic) {
@@ -376,6 +383,61 @@ window.TOONTALK.UTILITIES =
                 }
             });
             return json;
+        },
+        
+        get_json_top_level: function (widget) {
+            var json_history = {widgets_encountered: [],
+                                widgets_encountered_more_than_once: [],
+                                json_of_widgets_encountered: []};
+            var json = widget.add_to_json(widget.get_json(json_history), json_history);
+            if (json_history.widgets_encountered_more_than_once.length > 0) {
+                json.widgets_encountered_more_than_once = json_history.widgets_encountered_more_than_once.map(function (widget, widget_index) {
+                    // get the JSON of only those widgets that occurred more than once
+                    var index_among_all_widgets = json_history.widgets_encountered.indexOf(widget);
+                    var json_of_widget = json_history.json_of_widgets_encountered[index_among_all_widgets];
+                    TT.UTILITIES.tree_replace_once(json, json_of_widget, {previous_widget: widget_index});
+                    return json_of_widget;
+                });
+            }
+            return json;
+        },
+        
+        get_json: function (widget, json_history) {
+            var index = json_history.widgets_encountered_more_than_once.indexOf(widget);
+            var widget_json;
+            if (index >= 0) {
+                return {previous_widget: index};
+            }
+            index = json_history.widgets_encountered.indexOf(widget);
+            if (index >= 0) {
+                json_history.widgets_encountered_more_than_once.push(widget);
+                return {previous_widget: index};
+            }
+            widget_json = widget.get_json(json_history);
+            json_history.widgets_encountered.push(widget);
+            widget_json = widget.add_to_json(widget_json, json_history);
+            json_history.json_of_widgets_encountered.push(widget_json);
+            return widget_json;
+        },
+        
+        tree_replace_once: function (object, replace, replacement) {
+            // returns object with the first occurence of replace replaced with replacement
+            // whereever it occurs in object
+            var value;
+            for (var property in object) {
+                if (object.hasOwnProperty(property)) {
+                    value = object[property];
+                    if (value === replace) {
+                        object[property] = replacement;
+                        return true;
+                    } else if (["string", "number"].indexOf(typeof value) >= 0) {
+                        // skip this one
+                    } else if (this.tree_replace_once(value, replace, replacement)) {
+                        return true;
+                    }
+                }
+            }
+            return false;            
         },
         
         copy_widgets: function (widgets, just_value) {
@@ -1150,39 +1212,6 @@ window.TOONTALK.UTILITIES =
                 return side.widget.get_backside_element(create);
             }
             return side.widget.get_frontside_element(create);
-        },
-        
-        get_json_top_level: function (widget) {
-            var json_history = {widgets_encountered: [],
-                                widgets_encountered_more_than_once: [],
-                                json_of_widgets_encountered: []};
-            var json = widget.add_to_json(widget.get_json(json_history), json_history);
-            if (json_history.widgets_encountered_more_than_once.length > 0) {
-                json.widgets_encountered_more_than_once = json_history.widgets_encountered_more_than_once.map(function (widget) {
-                    // get the JSON of only those widgets that occurred more than once
-                    var index = json_history.widgets_encountered.indexOf(widget);
-                    return json_history.json_of_widgets_encountered[index];
-                });
-            }
-            return json;
-        },
-        
-        get_json: function (widget, json_history) {
-            var index = json_history.widgets_encountered_more_than_once.indexOf(widget);
-            var widget_json;
-            if (index >= 0) {
-                return {previous_widget: index};
-            }
-            index = json_history.widgets_encountered.indexOf(widget);
-            if (index >= 0) {
-                json_history.widgets_encountered_more_than_once.push(widget);
-                return {previous_widget: index};
-            }
-            widget_json = widget.get_json(json_history);
-            json_history.widgets_encountered.push(widget);
-            widget_json = widget.add_to_json(widget_json, json_history);
-            json_history.json_of_widgets_encountered.push(widget_json);
-            return widget_json;
         }
         
 //         create_menu_item: function (text) {
