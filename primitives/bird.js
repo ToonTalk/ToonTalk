@@ -335,9 +335,9 @@ window.TOONTALK.nest = (function (TT) {
                     contents_backside = contents[0].widget.get_backside(true);
                     contents_side_element = contents_backside.get_element();
                     contents_backside.update_display();
-                    contents_backside.scale_backside_to_fit(contents_side_element, frontside_element);
+                    contents_backside.scale_to_fit(contents_side_element, frontside_element);
                 } else {
-                    contents[0].widget.update_display();
+                    contents[0].widget.render();
                     contents_side_element = contents[0].widget.get_frontside_element();
                 }                
                 $(contents_side_element).addClass("toontalk-widget-on-nest");
