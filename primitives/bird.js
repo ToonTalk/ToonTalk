@@ -70,6 +70,11 @@ window.TOONTALK.bird = (function (TT) {
         new_bird = new_bird.add_standard_widget_functionality(new_bird);
         if (TT.debugging) {
             new_bird.debug_id = TT.UTILITIES.generate_unique_id();
+            if (nest) {
+                new_bird.debug_string = "a bird with " + nest.debug_string;
+            } else {
+                new_bird.debug_string = "a bird without a nest";
+            }
         }
         return new_bird;
     };
@@ -364,7 +369,11 @@ window.TOONTALK.nest = (function (TT) {
         new_nest = new_nest.add_standard_widget_functionality(new_nest);
         if (TT.debugging) {
             new_nest.debug_id = TT.UTILITIES.generate_unique_id();
-            new_nest.debug_string = "A nest with an egg";
+            if (guid) {
+                new_nest.debug_string = "A nest with id " + guid;
+            } else {
+                new_nest.debug_string = "A nest with an egg";
+            }
         }
         return new_nest;
     };
