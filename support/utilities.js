@@ -49,20 +49,20 @@ window.TOONTALK.UTILITIES =
     };
     var handle_drop = function ($target, $source, source_widget, target_widget, target_position, event, json_object, drag_x_offset, drag_y_offset, source_is_backside) {
         var drop_handled = true;
-        var new_target, backside_widgets_json, widgets_encountered_more_than_once;
+        var new_target, backside_widgets_json, shared_widgets;
         if ($target.is(".toontalk-backside")) {
             if (source_widget.get_type_name() === 'top-level') {
                // add all top-level backsides contents but not the backside widget itself
                backside_widgets_json = json_object.semantic.backside_widgets;
-               widgets_encountered_more_than_once = json_object.widgets_encountered_more_than_once;
+               shared_widgets = json_object.shared_widgets;
                source_widget.get_backside_widgets().forEach(function (backside_widget_side, index) {
                    // not clear why we need to copy these widgets but without copying
                    // their elements are not added to the target (but are added to its backside_widgets)
                    var widget = backside_widget_side.widget; //.copy();
                    console.log("copy commented out since broken identities -- handle drop the problem???");
                    var json_view, backside_element, left_offset, top_offset, width, height, position;
-                   if (backside_widgets_json[index].widget.previous_widget >= 0) {
-                       json_view = widgets_encountered_more_than_once[backside_widgets_json[index].widget.previous_widget].view;
+                   if (backside_widgets_json[index].widget.shared_widget_index >= 0) {
+                       json_view = shared_widgets[backside_widgets_json[index].widget.shared_widget_index].view;
                    } else {
                        json_view = backside_widgets_json[index].widget.view;
                    }
@@ -275,33 +275,33 @@ window.TOONTALK.UTILITIES =
     $(document).ready(initialise);
     return {
         create_from_json: function (json, additional_info) {
-            var widget, side_element, backside_widgets, json_semantic, json_view, size_css, previous_widget_index;
+            var widget, side_element, backside_widgets, json_semantic, json_view, size_css, shared_widget_index;
             if (!json) {
                 // was undefined and still is
                 return;
             }
-            if (json.widgets_encountered_more_than_once) {
+            if (json.shared_widgets) {
                 if (!additional_info) {
                     additional_info = {};
                 }
-                additional_info.json_of_widgets_encountered_more_than_once = json.widgets_encountered_more_than_once;
-                additional_info.widgets_encountered_more_than_once = [];
+                additional_info.json_of_shared_widgets = json.shared_widgets;
+                additional_info.shared_widgets = [];
             }
             if (json.widget) {
                 // is a context where need to know which side of the widget
                 return {widget: TT.UTILITIES.create_from_json(json.widget, additional_info),
                         is_backside: json.is_backside};
             }
-            if (json.previous_widget >= 0) {
-                if (additional_info.widgets_encountered_more_than_once[json.previous_widget]) {
-                    return additional_info.widgets_encountered_more_than_once[json.previous_widget];
+            if (json.shared_widget_index >= 0) {
+                if (additional_info.shared_widgets[json.shared_widget_index]) {
+                    return additional_info.shared_widgets[json.shared_widget_index];
                 }
-                previous_widget_index = json.previous_widget; // store it before replacing the json
+                shared_widget_index = json.shared_widget_index; // store it before replacing the json
                 // otherwise create it from the JSON and store it
-                json = additional_info.json_of_widgets_encountered_more_than_once[previous_widget_index];
-                additional_info.widgets_encountered_more_than_once[previous_widget_index] = 
+                json = additional_info.json_of_shared_widgets[shared_widget_index];
+                additional_info.shared_widgets[shared_widget_index] = 
                     TT.UTILITIES.create_from_json(json, additional_info);
-                return additional_info.widgets_encountered_more_than_once[previous_widget_index];
+                return additional_info.shared_widgets[shared_widget_index];
             }
             json_semantic = json.semantic;
             if (!json_semantic) {
@@ -346,7 +346,14 @@ window.TOONTALK.UTILITIES =
                 }
                 if (json_semantic.backside_widgets) {
                     backside_widgets = this.create_array_from_json(json_semantic.backside_widgets, additional_info);
-                    widget.set_backside_widget_sides(backside_widgets, json_semantic.backside_widgets.map(function (json) { return json.widget.view; }));
+                    widget.set_backside_widget_sides(backside_widgets, 
+                                                     json_semantic.backside_widgets.map(
+                                                        function (json) {
+                                                            if (json.widget.shared_widget_index >= 0) {
+                                                                return additional_info.json_of_shared_widgets[json.widget.shared_widget_index].view;
+                                                            }
+                                                            return json.widget.view; 
+                                                     }));
                 }
             }
             return widget;
@@ -391,15 +398,15 @@ window.TOONTALK.UTILITIES =
         
         get_json_top_level: function (widget) {
             var json_history = {widgets_encountered: [],
-                                widgets_encountered_more_than_once: [],
+                                shared_widgets: [],
                                 json_of_widgets_encountered: []};
             var json = widget.add_to_json(widget.get_json(json_history), json_history);
-            if (json_history.widgets_encountered_more_than_once.length > 0) {
-                json.widgets_encountered_more_than_once = json_history.widgets_encountered_more_than_once.map(function (widget, widget_index) {
+            if (json_history.shared_widgets.length > 0) {
+                json.shared_widgets = json_history.shared_widgets.map(function (widget, widget_index) {
                     // get the JSON of only those widgets that occurred more than once
                     var index_among_all_widgets = json_history.widgets_encountered.indexOf(widget);
                     var json_of_widget = json_history.json_of_widgets_encountered[index_among_all_widgets];
-                    TT.UTILITIES.tree_replace_once(json, json_of_widget, {previous_widget: widget_index});
+                    TT.UTILITIES.tree_replace_once(json, json_of_widget, {shared_widget_index: widget_index});
                     return json_of_widget;
                 });
             }
@@ -407,15 +414,15 @@ window.TOONTALK.UTILITIES =
         },
         
         get_json: function (widget, json_history) {
-            var index = json_history.widgets_encountered_more_than_once.indexOf(widget);
+            var index = json_history.shared_widgets.indexOf(widget);
             var widget_json;
             if (index >= 0) {
-                return {previous_widget: index};
+                return {shared_widget_index: index};
             }
             index = json_history.widgets_encountered.indexOf(widget);
             if (index >= 0) {
-                json_history.widgets_encountered_more_than_once.push(widget);
-                return {previous_widget: index};
+                json_history.shared_widgets.push(widget);
+                return {shared_widget_index: index};
             }
             widget_json = widget.get_json(json_history);
             json_history.widgets_encountered.push(widget);
