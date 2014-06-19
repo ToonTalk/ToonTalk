@@ -15,9 +15,6 @@ window.TOONTALK.bird = (function (TT) {
         if (!image_url) {
             image_url = "images/GIMME3.PNG";
         }
-        new_bird.get_nest = function () {
-            return nest;
-        };
         new_bird.get_image_url = function () {
             return image_url;
         };
@@ -54,6 +51,22 @@ window.TOONTALK.bird = (function (TT) {
                 console.log("to do: handle drop on a nestless bird -- just removes other?");
             }
         };
+        new_bird.get_json = function (json_history) {
+            return {semantic:
+                       {type: "bird",
+                        nest: nest && TT.UTILITIES.get_json(nest, json_history)
+                        },
+                   view:
+                       {image_url: this.get_image_url(),
+                        description: this.get_description()}};
+        };
+        new_bird.copy = function (just_value) {
+            // this may become more complex if the original ToonTalk behaviour
+            // that if a bird and its nest are copied or saved as a unit they become a new pair
+            // notice that bird/nest semantics is that the nest is shared not copied
+            var copy = this.create(nest, image_url);
+            return this.add_to_copy(copy, just_value);
+        };
         new_bird = new_bird.add_standard_widget_functionality(new_bird);
         if (TT.debugging) {
             new_bird.debug_id = TT.UTILITIES.generate_unique_id();
@@ -63,14 +76,6 @@ window.TOONTALK.bird = (function (TT) {
     
     bird.create_backside = function () {
         return TT.bird_backside.create(this);
-    };
-    
-    bird.copy = function (just_value) {
-        // this may become more complex if the original ToonTalk behaviour
-        // that if a bird and its nest are copied or saved as a unit they become a new pair
-        // notice that bird/nest semantics is that the nest is shared not copied
-        var copy = this.create(this.get_nest(), this.get_image_url());
-        return this.add_to_copy(copy, just_value);
     };
     
     bird.match = function (other) {
@@ -118,16 +123,6 @@ window.TOONTALK.bird = (function (TT) {
     
     bird.get_type_name = function () {
         return "bird";
-    };
-    
-    bird.get_json = function (json_history) {
-        return {semantic:
-                   {type: "bird",
-                    nest: TT.UTILITIES.get_json(this.get_nest(), json_history)
-                    },
-               view:
-                   {image_url: this.get_image_url(),
-                    description: this.get_description()}};
     };
     
     bird.create_from_json = function (json, additional_info) {
@@ -205,9 +200,8 @@ window.TOONTALK.nest = (function (TT) {
     "use strict";
     var nest = Object.create(TT.widget);
     
-    nest.create = function (image_url, description, contents, waiting_robots) {
+    nest.create = function (image_url, description, contents, waiting_robots, guid) {
         var new_nest = Object.create(nest);
-        var guid;
         if (!contents) {
             contents = [];
         }
@@ -290,7 +284,8 @@ window.TOONTALK.nest = (function (TT) {
         new_nest.get_json = function (json_history) {
             return {semantic:
                         {type: "nest",
-                         contents: TT.UTILITIES.get_json_of_array(contents, json_history)
+                         contents: TT.UTILITIES.get_json_of_array(contents, json_history),
+                         guid: guid
                          // do waiting_robots after changing from function to object
                         },
                     view:
@@ -329,12 +324,9 @@ window.TOONTALK.nest = (function (TT) {
             }
         };
         new_nest.update_display = function() {
-            var frontside = this.get_frontside();
+            var frontside = this.get_frontside(true);
             var backside = this.get_backside(); 
             var nest_image, frontside_element, contents_backside, contents_side_element;
-            if (!frontside) {
-                return;
-            }
             frontside_element = frontside.get_element();
             // if animating should also display thing_in_hand
             // remove what's there currently before adding new elements
@@ -394,7 +386,8 @@ window.TOONTALK.nest = (function (TT) {
     };
     
     nest.create_from_json = function (json, additional_info) {
-        return TT.nest.create(additional_info.json_view.image_url, additional_info.json_view.description, TT.UTILITIES.create_array_from_json(json.contents, additional_info));
+        var waiting_robots; // to do
+        return TT.nest.create(additional_info.json_view.image_url, additional_info.json_view.description, TT.UTILITIES.create_array_from_json(json.contents, additional_info), waiting_robots, json.guid);
     };
     
     return nest;
