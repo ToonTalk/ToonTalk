@@ -760,7 +760,11 @@ window.TOONTALK.widget = (function (TT) {
                 return 'matched';
             };
             widget.update_display = function () {
-                // no need to do anything
+                if (this.backside_widgets) {
+                    this.backside_widgets.forEach(function (widget_side) {
+                        widget_side.widget.update_display();    
+                    });
+                }
             };
             widget.copy = function () {
                 // revisit this if ever there are multiple top-level backsides

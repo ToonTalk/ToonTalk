@@ -123,15 +123,15 @@ window.TOONTALK.bird = (function (TT) {
     bird.get_json = function (json_history) {
         return {semantic:
                    {type: "bird",
-                    nest: this.get_nest().get_json(json_history)
+                    nest: TT.UTILITIES.get_json(this.get_nest(), json_history)
                     },
                view:
                    {image_url: this.get_image_url(),
                     description: this.get_description()}};
     };
     
-    bird.create_from_json = function (json_semantic, json_view) {
-        return TT.bird.create(TT.UTILITIES.create_from_json(json_semantic.nest), json_view.image_url);
+    bird.create_from_json = function (json, additional_info) {
+        return TT.bird.create(TT.UTILITIES.create_from_json(json.nest, additional_info), additional_info.json_view.image_url);
     };
     
     return bird;
@@ -393,8 +393,8 @@ window.TOONTALK.nest = (function (TT) {
         return "nest";
     };
     
-    nest.create_from_json = function (json_semantic, json_view) {
-        return TT.nest.create(json_view.image_url, json_view.description, TT.UTILITIES.create_array_from_json(json_semantic.contents));
+    nest.create_from_json = function (json, additional_info) {
+        return TT.nest.create(additional_info.json_view.image_url, additional_info.json_view.description, TT.UTILITIES.create_array_from_json(json.contents, additional_info));
     };
     
     return nest;

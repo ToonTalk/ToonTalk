@@ -228,7 +228,7 @@ window.TOONTALK.UTILITIES =
                     setTimeout(function () {
                             widget.update_display();
                             if (json.semantic.running) {
-                                 widget.set_running(true);
+                                widget.set_running(true);
                             }
                         },
                     1);
@@ -310,7 +310,11 @@ window.TOONTALK.UTILITIES =
             }
             json_view = json.view;
             if (json_creators[json_semantic.type]) {
-                widget = json_creators[json_semantic.type](json_semantic, json_view, additional_info);
+                if (!additional_info) {
+                    additional_info = {};
+                }
+                additional_info.json_view = json_view;
+                widget = json_creators[json_semantic.type](json_semantic, additional_info);
             } else {
                 console.log("json type '" + json_semantic.type + "' not yet supported.");
                 return;

@@ -219,7 +219,7 @@ window.TOONTALK.box = (function (TT) {
         var i;
         for (i = 0; i < size; i++) {
             if (this.get_hole(i)) {
-                contents_json[i] = this.get_hole(i).get_json(json_history);
+                contents_json[i] = TT.UTILITIES.get_json(this.get_hole(i), json_history);
             } else {
                 contents_json[i] = null;
             }
@@ -231,8 +231,8 @@ window.TOONTALK.box = (function (TT) {
                };
     };
     
-    box.create_from_json = function (json) {
-        return box.create(json.size, json.horizontal, TT.UTILITIES.create_array_from_json(json.contents));
+    box.create_from_json = function (json, additional_info) {
+        return box.create(json.size, json.horizontal, TT.UTILITIES.create_array_from_json(json.contents, additional_info));
     };
     
     box.to_HTML = function () {
@@ -448,10 +448,10 @@ window.TOONTALK.box = (function (TT) {
             };
         },
     
-        create_from_json: function (json) {
+        create_from_json: function (json, additional_info) {
             var path = box.path.create(json.index, json.removing_widget);
             if (json.next) {
-                path.next = TT.UTILITIES.create_from_json(json.next);
+                path.next = TT.UTILITIES.create_from_json(json.next, additional_info);
             }
             return path;
         }

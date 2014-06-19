@@ -575,7 +575,7 @@ window.TOONTALK.robot = (function (TT) {
             if (frontside_conditions.get_type_name() === 'top-level') {
                 frontside_conditions_json = {type: "top_level"};
             } else {
-                frontside_conditions_json = frontside_conditions.get_json(json_history);
+                frontside_conditions_json = TT.UTILITIES.get_json(frontside_conditions, json_history);
             }
         }
         if (backside_conditions) {
@@ -584,12 +584,12 @@ window.TOONTALK.robot = (function (TT) {
                     if (!backside_conditions_json) {
                         backside_conditions_json = {};
                     }
-                    backside_conditions_json[type] = backside_conditions[type].get_json(json_history);
+                    backside_conditions_json[type] = TT.UTILITIES.get_json(backside_conditions[type], json_history);
                 }
             });
         }
         if (this.get_next_robot()) {
-            next_robot_json = this.get_next_robot().get_json(json_history);
+            next_robot_json = TT.UTILITIES.get_json(this.get_next_robot(), json_history);
         }
         return {semantic:
                     {type: "robot",
@@ -604,28 +604,29 @@ window.TOONTALK.robot = (function (TT) {
                      description: this.get_description()}};
     };
     
-    robot.create_from_json = function (json_semantic, json_view) {
+    robot.create_from_json = function (json, additional_info) {
+        var json_view = additional_info.json_view;
         var next_robot, thing_in_hand, backside_conditions;
-        if (json_semantic.thing_in_hand) {
-            thing_in_hand = TT.UTILITIES.create_from_json(json_semantic.thing_in_hand);
+        if (json.thing_in_hand) {
+            thing_in_hand = TT.UTILITIES.create_from_json(json.thing_in_hand, additional_info);
         }
-        if (json_semantic.next_robot) {
-            next_robot = TT.UTILITIES.create_from_json(json_semantic.next_robot);
+        if (json.next_robot) {
+            next_robot = TT.UTILITIES.create_from_json(json.next_robot, additional_info);
         }
-        if (json_semantic.backside_conditions) {
+        if (json.backside_conditions) {
             backside_conditions = {};
             TT.UTILITIES.available_types.forEach(function (type) {
-                    backside_conditions[type] = TT.UTILITIES.create_from_json(json_semantic.backside_conditions[type]);
+                    backside_conditions[type] = TT.UTILITIES.create_from_json(json.backside_conditions[type], additional_info);
             });
         }
         return TT.robot.create(json_view.image_url,
                                // bubble for backwards compatibility -- should be able to remove in the future
-                               TT.UTILITIES.create_from_json(json_semantic.frontside_conditions || json_semantic.bubble),
+                               TT.UTILITIES.create_from_json(json.frontside_conditions || json.bubble, additional_info),
                                backside_conditions,
-                               TT.UTILITIES.create_from_json(json_semantic.body),
+                               TT.UTILITIES.create_from_json(json.body, additional_info),
                                json_view.description,
                                thing_in_hand,
-                               json_semantic.run_once,
+                               json.run_once,
                                next_robot);
     };
     
