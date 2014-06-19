@@ -422,7 +422,7 @@ window.TOONTALK.UTILITIES =
             index = json_history.widgets_encountered.indexOf(widget);
             if (index >= 0) {
                 json_history.shared_widgets.push(widget);
-                return {shared_widget_index: index};
+                return {shared_widget_index: json_history.shared_widgets.indexOf(widget)};
             }
             widget_json = widget.get_json(json_history);
             json_history.widgets_encountered.push(widget);
