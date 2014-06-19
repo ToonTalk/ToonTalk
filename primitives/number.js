@@ -213,11 +213,9 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     number.update_display = function() {
         // should compute width from frontside element
         // get format from backside ancestor (via parent attribute?)
-        var frontside = this.get_frontside();
-        var frontside_element, $dimensions_holder, client_width, client_height, font_height, font_width, max_decimal_places, new_HTML, backside;
-        if (!frontside) {
-            return;
-        }
+        var frontside = this.get_frontside(true);
+        var frontside_element, $dimensions_holder, client_width, client_height, 
+            font_height, font_width, max_decimal_places, new_HTML, backside;
         frontside_element = frontside.get_element();
         if ($(frontside_element).is(".toontalk-conditions-contents")) {
             $dimensions_holder = $(frontside_element);

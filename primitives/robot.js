@@ -429,7 +429,7 @@ window.TOONTALK.robot = (function (TT) {
     };
     
     robot.update_display = function() {
-        var frontside = this.get_frontside();
+        var frontside = this.get_frontside(true);
         var backside = this.get_backside(); 
         var robot_image, frontside_element, resource_becoming_instance;
         var thing_in_hand = this.get_thing_in_hand();
@@ -437,9 +437,6 @@ window.TOONTALK.robot = (function (TT) {
         if (TT.debugging) {
             // this can't be done during robot creation since robot actions references to newly_created_widgets is premature
             this.debug_string = this.toString();
-        }
-        if (!frontside) {
-            return;
         }
         frontside_element = frontside.get_element();
         robot_image = this.image();

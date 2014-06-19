@@ -92,12 +92,9 @@ window.TOONTALK.bird = (function (TT) {
     };
     
     bird.update_display = function() {
-        var frontside = this.get_frontside();
+        var frontside = this.get_frontside(true);
         var backside = this.get_backside(); 
         var bird_image, frontside_element;
-        if (!frontside) {
-            return;
-        }
         frontside_element = frontside.get_element();
         bird_image = this.image();
         // if animating should also display thing_in_hand

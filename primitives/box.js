@@ -267,7 +267,7 @@ window.TOONTALK.box = (function (TT) {
     };
     
     box.update_display = function() {
-        var frontside = this.get_frontside();
+        var frontside = this.get_frontside(true);
         var frontside_element = frontside.get_element();
         var new_HTML = this.to_HTML();
         if (!frontside_element.firstChild) {
@@ -572,6 +572,9 @@ window.TOONTALK.box_empty_hole =
             empty_hole.get_json = function () {
                 // no need to put anything into the array
                 return null;
+            };
+            empty_hole.add_to_json = function (json) {
+                return json;
             };
             empty_hole.copy = function (just_value) {
                 return TT.box_empty_hole.create(index);
