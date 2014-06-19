@@ -245,7 +245,7 @@ window.TOONTALK.backside =
                     original_height = $backside_element.height();
                 }
             };         
-            backside.scale_backside_to_fit = function (this_element, other_element) {
+            backside.scale_to_fit = function (this_element, other_element) {
                 var new_width = $(other_element).width();
                 var new_height = $(other_element).height();
                 if (!original_width && this.get_widget().backside_geometry) {
