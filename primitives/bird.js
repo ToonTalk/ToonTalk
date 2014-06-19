@@ -320,6 +320,14 @@ window.TOONTALK.nest = (function (TT) {
                 }
             }
         };
+        new_nest.widget_dropped_on_me = function (other, other_is_backside, event) {
+            if (contents.length === 0) {
+                this.add_to_contents({widget: other,
+                                      is_backside: other_is_backside});
+            } else {
+                contents[0].widget.widget_dropped_on_me(other, other_is_backside, event);
+            }
+        };
         new_nest.update_display = function() {
             var frontside = this.get_frontside(true);
             var backside = this.get_backside(); 
