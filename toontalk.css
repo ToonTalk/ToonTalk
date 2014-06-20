@@ -303,3 +303,56 @@
 	width: 100%;
 	height: 100%;
 }
+.toontalk-nest_with-egg {
+/* 	Should display just the first frame */
+    width: 116px;
+    height: 141px;
+	margin-top: -43px;
+    background-image: url("images/hatch-egg-strip.png");
+}
+.toontalk-empty-nest {
+/* 	Should display just the first frame */
+    width: 116px;
+    height: 141px;
+	margin-top: -43px;
+    background-image: url("images/hatch-egg-strip.png");
+	background-position: -1628px;
+}
+.toontalk-hatch-egg {
+    width: 116px;
+    height: 141px;
+/* 	margin-top: -43px; */
+    background-image: url("images/hatch-egg-strip.png");
+	-webkit-animation: hatch-egg 2.0s steps(15);
+       -moz-animation: hatch-egg 2.0s steps(15);
+        -ms-animation: hatch-egg 2.0s steps(15);
+         -o-animation: hatch-egg 2.0s steps(15);
+            animation: hatch-egg 2.0s steps(15);
+/*  attempted to scale the full size version:
+    transform: scale(0.625);
+    transform-origin: center; */
+}
+@-webkit-keyframes hatch-egg {
+   from { background-position:    0px; }
+     to { background-position: -1744px; }
+}
+
+@-moz-keyframes hatch-egg {
+   from { background-position:    0px; }
+     to { background-position: -1744px; }
+}
+
+@-ms-keyframes hatch-egg {
+   from { background-position:    0px; }
+     to { background-position: -1744px; }
+}
+
+@-o-keyframes hatch-egg {
+   from { background-position:    0px; }
+     to { background-position: -1744px; }
+}
+
+@keyframes hatch-egg {
+   from { background-position:    0px; }
+     to { background-position: -1744px; }
+}

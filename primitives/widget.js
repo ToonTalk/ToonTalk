@@ -211,7 +211,7 @@ window.TOONTALK.widget = (function (TT) {
                     $(mover_frontside_element).addClass("toontalk-side-animating");
                     mover_frontside_element.style.left = (mover_relative_position.left + (target_absolute_position.left - mover_absolute_position.left)) + "px";
                     mover_frontside_element.style.top = (mover_relative_position.top + (target_absolute_position.top - mover_absolute_position.top)) + "px";
-                    TT.UTILITIES.add_one_shot_transition_end_handler(mover_frontside_element, continuation);
+                    TT.UTILITIES.add_one_shot_event_handler(mover_frontside_element, "transitionend", 2500, continuation);
                 };
             }
             return widget;
@@ -660,7 +660,7 @@ window.TOONTALK.widget = (function (TT) {
                                 }
                             };
                             $(element).addClass("toontalk-side-appearing");
-                            TT.UTILITIES.add_one_shot_transition_end_handler(element, remove_transition_class);
+                            TT.UTILITIES.add_one_shot_event_handler(element, "transitionend", 2500, remove_transition_class);
                             $(element).css({left: final_left,
                                             top: final_top,
                                             opacity: final_opacity});

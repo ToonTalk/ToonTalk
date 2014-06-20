@@ -592,7 +592,7 @@ window.TOONTALK.UTILITIES =
             $element.on('dragstart', 
                 function (event) {
                     var $source_element = $(event.originalEvent.srcElement).closest(".toontalk-side");
-                    var position, json_object, json_div, widget, is_resource;
+                    var bounding_rectangle, json_object, json_div, widget, is_resource;
                     if (event.originalEvent.dataTransfer.getData("text/plain").length > 0) {
                         // e.g. dragging some text off the backside of a widget
                         return;
@@ -603,19 +603,19 @@ window.TOONTALK.UTILITIES =
                         widget = $element.data("owner");
                         dragee = $element;
                     }
-                    position = dragee.get(0).getBoundingClientRect()
+                    bounding_rectangle = dragee.get(0).getBoundingClientRect()
                     is_resource = dragee.is(".toontalk-top-level-resource");
-                    if (dragee.is(".toontalk-frontside")) {
-                        // save the current dimension so size doesn't change while being dragged
-                        dragee.css({width:  position.width,
-                                    height: position.height});
-                    }
+//                     if (dragee.is(".toontalk-frontside")) {
+//                         // save the current dimension so size doesn't change while being dragged
+//                         dragee.css({width:  bounding_rectangle.width,
+//                                     height: bounding_rectangle.height});
+//                     }
                     if (event.originalEvent.dataTransfer && widget.get_json) {
                         event.originalEvent.dataTransfer.effectAllowed = is_resource ? 'copy' : 'move';
                         json_object = TT.UTILITIES.get_json_top_level(widget);
                         // not sure if the following is obsolete
-                        json_object.view.drag_x_offset = event.originalEvent.clientX - position.left;
-                        json_object.view.drag_y_offset = event.originalEvent.clientY - position.top;
+                        json_object.view.drag_x_offset = event.originalEvent.clientX - bounding_rectangle.left;
+                        json_object.view.drag_y_offset = event.originalEvent.clientY - bounding_rectangle.top;
                         if (!json_object.view.frontside_width) {
                             if (dragee.parent().is(".toontalk-backside")) {
                                 json_object.view.frontside_width = dragee.width();
@@ -958,7 +958,7 @@ window.TOONTALK.UTILITIES =
             }
         },
         
-        add_one_shot_transition_end_handler: function (element, handler) {
+        add_one_shot_event_handler: function (element, event_name, maximum_wait, handler) {
             // could replace the first part of this by http://api.jquery.com/one/
             var handler_run = false;
             var one_shot_handler = function () {
@@ -967,9 +967,9 @@ window.TOONTALK.UTILITIES =
                 if (handler) {
                     handler();
                 }
-                element.removeEventListener("transitionend", one_shot_handler);
+                element.removeEventListener(event_name, one_shot_handler);
             }
-            element.addEventListener("transitionend", one_shot_handler);
+            element.addEventListener(event_name, one_shot_handler);
             // transitionend events might not be triggered
             // As https://developer.mozilla.org/en-US/docs/Web/Guide/CSS/Using_CSS_transitions says: 
             // The transitionend event doesn't fire if the transition is aborted because the animating property's value is changed before the transition is completed.
@@ -979,7 +979,7 @@ window.TOONTALK.UTILITIES =
                         one_shot_handler();
                     }
                 },
-                2500);
+                maximum_wait);
         },
         
         highlight_element: function (element, duration) {

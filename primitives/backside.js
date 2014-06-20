@@ -382,7 +382,7 @@ window.TOONTALK.backside =
                         return;
                     }
                     $element.addClass("toontalk-side-appearing");
-                    TT.UTILITIES.add_one_shot_transition_end_handler($element.get(0), remove_element);
+                    TT.UTILITIES.add_one_shot_event_handler($element.get(0), 'transitionend', 2500, remove_element);
                     if (!container_position) {
                         container_position = {left: 0, 
                                               top: 0};

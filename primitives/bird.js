@@ -320,7 +320,7 @@ window.TOONTALK.nest = (function (TT) {
             return this.add_to_copy(copy, just_value);
         };
         new_nest.dropped_on_other = function (other, other_is_backside, event) {
-            var bird;
+            var bird, frontside_element, hatching_finished_handler;
             if (!guid) {
                 guid = TT.UTILITIES.generate_unique_id();
                 image_url = "images/MKNEST25.PNG";
@@ -328,12 +328,23 @@ window.TOONTALK.nest = (function (TT) {
                     new_nest.debug_string = "A nest with id " + guid;
                 }
                 this.rerender();
-                bird = TT.bird.create(this);
-                if (other_is_backside) {
-                    other.get_backside().widget_dropped_on_me(bird, false, event);
-                } else {
-                    console.log("not yet implemented -- add to nearest ancestor backside");
-                }
+                frontside_element = this.get_frontside_element(true);
+                $(frontside_element).addClass("toontalk-hatch-egg");
+                // let toontalk-hatch-egg width and height apply
+//                 $(frontside_element).css({width: '',
+//                                           height: ''});
+                hatching_finished_handler = function () {
+                    bird = TT.bird.create(this);
+                    if (other_is_backside) {
+                        other.get_backside().widget_dropped_on_me(bird, false, event);
+                    } else {
+                        console.log("not yet implemented -- add to nearest ancestor backside");
+                    }
+                    $(frontside_element).removeClass("toontalk-hatch-egg");
+                    $(frontside_element).addClass("toontalk-empty-nest");
+                    this.rerender();
+                }.bind(this);
+                TT.UTILITIES.add_one_shot_event_handler(frontside_element, "animationend", 2000, hatching_finished_handler);
             }
         };
         new_nest.widget_dropped_on_me = function (other, other_is_backside, event) {
@@ -347,7 +358,7 @@ window.TOONTALK.nest = (function (TT) {
         new_nest.update_display = function() {
             var frontside = this.get_frontside(true);
             var backside = this.get_backside(); 
-            var nest_image, frontside_element, contents_backside, contents_side_element;
+            var frontside_element, contents_backside, contents_side_element;
             frontside_element = frontside.get_element();
             // if animating should also display thing_in_hand
             // remove what's there currently before adding new elements
@@ -368,9 +379,11 @@ window.TOONTALK.nest = (function (TT) {
                 contents_side_element.style.position = "static";
                 frontside_element.appendChild(contents_side_element);
             } else {
-                nest_image = this.image();
                 frontside_element.title = this.get_title();
-                frontside_element.appendChild(nest_image);
+                if (!$(frontside_element).is(".toontalk-hatch-egg, .toontalk-empty-nest")) {
+//                     frontside_element.appendChild(this.image());
+                     $(frontside_element).addClass("toontalk-nest_with-egg");
+                }
             }
             $(frontside_element).addClass("toontalk-nest");
             if (backside) {
