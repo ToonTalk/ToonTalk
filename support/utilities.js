@@ -275,7 +275,7 @@ window.TOONTALK.UTILITIES =
     $(document).ready(initialise);
     return {
         create_from_json: function (json, additional_info) {
-            var widget, side_element, backside_widgets, json_semantic, json_view, size_css, shared_widget_index;
+            var widget, side_element, backside_widgets, json_semantic, json_view, size_css, json_of_shared_widget, shared_widget;
             if (!json) {
                 // was undefined and still is
                 return;
@@ -293,15 +293,38 @@ window.TOONTALK.UTILITIES =
                         is_backside: json.is_backside};
             }
             if (json.shared_widget_index >= 0) {
-                if (additional_info.shared_widgets[json.shared_widget_index]) {
-                    return additional_info.shared_widgets[json.shared_widget_index];
+                shared_widget = additional_info.shared_widgets[json.shared_widget_index];
+                if (shared_widget) {
+//                     if (shared_widget.shared_widget_index >= 0) {
+//                         console.log("Warning cyclic JSON not fully supported")
+//                         // this isn't a widget but a promise of one -- so must be a cycle
+//                         if (!additional_info.cyclic_widgets_json) {
+//                             additional_info.cyclic_widgets_json = [];
+//                         }
+//                         if (additional_info.cyclic_widgets_json.indexOf(shared_widget) < 0) {
+//                             additional_info.cyclic_widgets_json.push(shared_widget);
+//                         }
+//                     }
+                    return shared_widget;
                 }
-                shared_widget_index = json.shared_widget_index; // store it before replacing the json
                 // otherwise create it from the JSON and store it
-                json = additional_info.json_of_shared_widgets[shared_widget_index];
-                additional_info.shared_widgets[shared_widget_index] = 
-                    TT.UTILITIES.create_from_json(json, additional_info);
-                return additional_info.shared_widgets[shared_widget_index];
+                json_of_shared_widget = additional_info.json_of_shared_widgets[json.shared_widget_index];
+                // following is to deal with reconstructing cyclic references
+                // if this is encountered again recursively will discover the JSON with shared_widget_index
+//                 additional_info.shared_widgets[json.shared_widget_index] = json;
+                widget = TT.UTILITIES.create_from_json(json_of_shared_widget, additional_info);
+//                 if (additional_info.cyclic_widgets_json && typeof json_of_shared_widget.shared_widget_index === 'undefined') {
+//                     if (additional_info.cyclic_widgets_json.indexOf(json) >= 0) {
+//                         // contains cyclic references so make json into the widget
+//                         // clobber json to have all the (deep) properties of the widget
+//                         $.extend(true, json, widget);
+//                         json.shared_widget_index = undefined;
+//                         // all references shared including the top-level one
+//                         widget = json;
+//                     }
+//                 }
+                additional_info.shared_widgets[json.shared_widget_index] = widget;              
+                return widget;
             }
             json_semantic = json.semantic;
             if (!json_semantic) {
@@ -379,8 +402,7 @@ window.TOONTALK.UTILITIES =
                 if (widget_side) {
                     if (!widget_side.widget) {
                         if (widget_side.get_type_name) {
-                            // older scheme where 'naked' widget is there meaning frontside
-                            json[index] = {widget: TT.UTILITIES.get_json(widget_side, json_history)};
+                            json[index] = TT.UTILITIES.get_json(widget_side, json_history);
                         } else {
                             // isn't a widget -- e.g. is a path
                             json[index] = widget_side.get_json();
@@ -403,6 +425,9 @@ window.TOONTALK.UTILITIES =
             var json = widget.add_to_json(widget.get_json(json_history), json_history);
             if (json_history.shared_widgets.length > 0) {
                 json.shared_widgets = json_history.shared_widgets.map(function (widget, widget_index) {
+                    if (widget.get_type_name() === 'number') {
+                        console.log("debug this");
+                    }
                     // get the JSON of only those widgets that occurred more than once
                     var index_among_all_widgets = json_history.widgets_encountered.indexOf(widget);
                     var json_of_widget = json_history.json_of_widgets_encountered[index_among_all_widgets];
@@ -421,13 +446,19 @@ window.TOONTALK.UTILITIES =
             }
             index = json_history.widgets_encountered.indexOf(widget);
             if (index >= 0) {
-                json_history.shared_widgets.push(widget);
-                return {shared_widget_index: json_history.shared_widgets.indexOf(widget)};
+                // push returns new length so widget's index is one less than that
+                index = json_history.shared_widgets.push(widget)-1;
+                if (widget.get_type_name() === 'bird') {
+                    console.log("'debug this");
+                }
+                return {shared_widget_index: index};
             }
+            // need to push the widget on the list before computing the widget's jSON in case there is a cycle
+            // need to keep track of the index rather than push json_of_widgets_encountered to keep them aligned properly
+            index = json_history.widgets_encountered.push(widget)-1;
             widget_json = widget.get_json(json_history);
-            json_history.widgets_encountered.push(widget);
             widget_json = widget.add_to_json(widget_json, json_history);
-            json_history.json_of_widgets_encountered.push(widget_json);
+            json_history.json_of_widgets_encountered[index] = widget_json;
             return widget_json;
         },
         
@@ -441,8 +472,8 @@ window.TOONTALK.UTILITIES =
                     if (value === replace) {
                         object[property] = replacement;
                         return true;
-                    } else if (["string", "number"].indexOf(typeof value) >= 0) {
-                        // skip this one
+                    } else if (["string", "number", "function"].indexOf(typeof value) >= 0) {
+                        // skip atomic objects
                     } else if (this.tree_replace_once(value, replace, replacement)) {
                         return true;
                     }
@@ -450,6 +481,23 @@ window.TOONTALK.UTILITIES =
             }
             return false;            
         },
+        
+//         tree_replace_all: function (object, replace, replacement) {
+//             // returns object with all occurences of replace replaced with replacement
+//             // whereever it occurs in object
+//             var value;
+//             for (var property in object) {
+//                 if (object.hasOwnProperty(property)) {
+//                     value = object[property];
+//                     if (value === replace) {
+//                         object[property] = replacement;
+//                     } else if (["string", "number", "function"].indexOf(typeof value) < 0) {
+//                         // recur on non-atomic objects
+//                         this.tree_replace_all(value, replace, replacement);
+//                     }
+//                 }
+//             }      
+//         },
         
         copy_widgets: function (widgets, just_value) {
             // rewrite using map

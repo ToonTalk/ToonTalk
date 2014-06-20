@@ -45,7 +45,7 @@ window.TOONTALK.bird = (function (TT) {
             var side = {widget: other,
                         is_backside: other_is_backside};
             if (nest) {
-                nest.add_to_contents(side);
+                nest.add_to_contents(side, this);
                 return true;
             } else {
                 console.log("to do: handle drop on a nestless bird -- just removes other?");
@@ -66,6 +66,10 @@ window.TOONTALK.bird = (function (TT) {
             // notice that bird/nest semantics is that the nest is shared not copied
             var copy = this.create(nest, image_url);
             return this.add_to_copy(copy, just_value);
+        };
+        new_bird.deliver_to = function (nest_copy, widget_side_copy) {
+            // if visible then will copy self and head off to nest_copy
+            nest_copy.add_to_contents(widget_side_copy);
         };
         new_bird = new_bird.add_standard_widget_functionality(new_bird);
         if (TT.debugging) {
@@ -201,9 +205,15 @@ window.TOONTALK.bird_backside =
 window.TOONTALK.nest = (function (TT) {
     "use strict";
     var nest = Object.create(TT.widget);
+    // following enables nests to invoke private methods of other nests
+    var add_copy_private_key = {}; // any unique object is fine
     
-    nest.create = function (image_url, description, contents, waiting_robots, guid) {
+    nest.create = function (image_url, description, contents, waiting_robots, guid, original_nest) {
         var new_nest = Object.create(nest);
+        var nest_copies;
+        if (original_nest && original_nest.get_type_name() === 'number') {
+            console.log("debug this");
+        }
         if (!contents) {
             contents = [];
         }
@@ -250,8 +260,8 @@ window.TOONTALK.nest = (function (TT) {
         new_nest.run_when_non_empty = function (robot_run) {
             waiting_robots.push(robot_run);
         };
-        new_nest.add_to_contents = function (widget_side) {
-            var current_waiting_robots;
+        new_nest.add_to_contents = function (widget_side, delivery_bird) {
+            var current_waiting_robots, widget_side_copy;
             if (contents.push(widget_side) === 1) {
                 if (waiting_robots.length > 0) {
                     // is the first content and some robots are waiting for this nest to be filled
@@ -271,6 +281,13 @@ window.TOONTALK.nest = (function (TT) {
             } else {
                  widget_side.widget.set_parent_of_frontside(this);
             }
+            if (delivery_bird && nest_copies) {
+                nest_copies.forEach(function (nest_copy) {
+                    widget_side_copy = {widget: widget_side.widget.copy(),
+                                        is_backside: widget_side.is_backside};
+                    delivery_bird.deliver_to(nest_copy, widget_side_copy);
+                });
+            }
             this.rerender();
         };
         new_nest.removed_from_container = function (part, backside_removed, event) {
@@ -282,12 +299,15 @@ window.TOONTALK.nest = (function (TT) {
                 this.render();
             }
         };
-        // defined here so that contents can be 'hidden'
+        // defined here so that contents and other state can be private
         new_nest.get_json = function (json_history) {
             return {semantic:
                         {type: "nest",
                          contents: TT.UTILITIES.get_json_of_array(contents, json_history),
-                         guid: guid
+                         guid: guid,
+                         original_nest: original_nest && TT.UTILITIES.get_json(original_nest, json_history)
+                         // nest_copies are generated as those nests are created
+//                          nest_copies: nest_copies && TT.UTILITIES.get_json_of_array(nest_copies, json_history)
                          // do waiting_robots after changing from function to object
                         },
                     view:
@@ -298,14 +318,8 @@ window.TOONTALK.nest = (function (TT) {
             // this may become more complex if the original ToonTalk behaviour
             // that if a bird and its nest are copied or saved as a unit they become a new pair
             // notice that bird/nest semantics is that the nest is shared not copied
-            var copy;
-            if (guid) {
-                // has already hatched so need to create a nest_copy that points to this nest
-                console.log("not yet implemented");
-                copy = this;
-            } else {
-                copy = TT.nest.create(image_url, description, contents, waiting_robots);
-            }
+            var contents_copy = TT.UTILITIES.copy_array(contents);
+            var copy = TT.nest.create(image_url, description, contents_copy, [], guid, original_nest || this);
             return this.add_to_copy(copy, just_value);
         };
         new_nest.dropped_on_other = function (other, other_is_backside, event) {
@@ -366,6 +380,12 @@ window.TOONTALK.nest = (function (TT) {
                 backside.rerender();
             }
         };
+        new_nest[add_copy_private_key] = function (nest_copy) {
+            if (!nest_copies) {
+                nest_copies = [];
+            }
+            nest_copies.push(nest_copy);
+        };
         new_nest = new_nest.add_standard_widget_functionality(new_nest);
         if (TT.debugging) {
             new_nest.debug_id = TT.UTILITIES.generate_unique_id();
@@ -374,6 +394,9 @@ window.TOONTALK.nest = (function (TT) {
             } else {
                 new_nest.debug_string = "A nest with an egg";
             }
+        }
+        if (original_nest && guid) {
+            original_nest[add_copy_private_key](new_nest);            
         }
         return new_nest;
     };
@@ -401,7 +424,12 @@ window.TOONTALK.nest = (function (TT) {
     
     nest.create_from_json = function (json, additional_info) {
         var waiting_robots; // to do
-        return TT.nest.create(additional_info.json_view.image_url, additional_info.json_view.description, TT.UTILITIES.create_array_from_json(json.contents, additional_info), waiting_robots, json.guid);
+        return TT.nest.create(additional_info.json_view.image_url, 
+                              additional_info.json_view.description, 
+                              TT.UTILITIES.create_array_from_json(json.contents, additional_info), 
+                              waiting_robots, 
+                              json.guid,
+                              json.original_nest && TT.UTILITIES.create_from_json(json.original_nest, additional_info));
     };
     
     return nest;
