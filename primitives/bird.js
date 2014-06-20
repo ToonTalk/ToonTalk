@@ -211,9 +211,6 @@ window.TOONTALK.nest = (function (TT) {
     nest.create = function (image_url, description, contents, waiting_robots, guid, original_nest) {
         var new_nest = Object.create(nest);
         var nest_copies;
-        if (original_nest && original_nest.get_type_name() === 'number') {
-            console.log("debug this");
-        }
         if (!contents) {
             contents = [];
         }

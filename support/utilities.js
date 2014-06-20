@@ -425,9 +425,6 @@ window.TOONTALK.UTILITIES =
             var json = widget.add_to_json(widget.get_json(json_history), json_history);
             if (json_history.shared_widgets.length > 0) {
                 json.shared_widgets = json_history.shared_widgets.map(function (widget, widget_index) {
-                    if (widget.get_type_name() === 'number') {
-                        console.log("debug this");
-                    }
                     // get the JSON of only those widgets that occurred more than once
                     var index_among_all_widgets = json_history.widgets_encountered.indexOf(widget);
                     var json_of_widget = json_history.json_of_widgets_encountered[index_among_all_widgets];
@@ -448,9 +445,6 @@ window.TOONTALK.UTILITIES =
             if (index >= 0) {
                 // push returns new length so widget's index is one less than that
                 index = json_history.shared_widgets.push(widget)-1;
-                if (widget.get_type_name() === 'bird') {
-                    console.log("'debug this");
-                }
                 return {shared_widget_index: index};
             }
             // need to push the widget on the list before computing the widget's jSON in case there is a cycle
