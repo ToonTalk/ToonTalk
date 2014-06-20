@@ -207,7 +207,7 @@ window.TOONTALK.widget = (function (TT) {
                     var remove_transition_class = function () {
                         $(mover_frontside_element).removeClass("toontalk-side-animating");
                     };
-                    TT.UTILITIES.add_one_shot_transition_end_handler(mover_frontside_element, remove_transition_class);
+                    TT.UTILITIES.add_one_shot_event_handler(mover_frontside_element, "transitionend", 2500, remove_transition_class);
                     $(mover_frontside_element).addClass("toontalk-side-animating");
                     mover_frontside_element.style.left = (mover_relative_position.left + (target_absolute_position.left - mover_absolute_position.left)) + "px";
                     mover_frontside_element.style.top = (mover_relative_position.top + (target_absolute_position.top - mover_absolute_position.top)) + "px";

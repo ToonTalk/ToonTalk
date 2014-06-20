@@ -133,7 +133,7 @@ window.TOONTALK.actions =
                     $(frontside_element).addClass("toontalk-side-animating");
                     frontside_element.style.left = robot_start_position.left + "px";
                     frontside_element.style.top = robot_start_position.top + "px";
-                    TT.UTILITIES.add_one_shot_transition_end_handler(frontside_element, restore_after_last_event);
+                    TT.UTILITIES.add_one_shot_event_handler(frontside_element, "transitionend", 2500, restore_after_last_event);
                 }
             }.bind(this);
             if (robot.get_animating()) {
