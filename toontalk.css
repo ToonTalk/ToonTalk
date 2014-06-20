@@ -434,3 +434,70 @@
    from { background-position:    0px; }
      to { background-position: -756px; }
 }
+
+.toontalk-bammer-away {
+    width: 204px;
+    height: 246px;
+	position: absolute;
+    background-image: url("images/bammer-away.png");
+	-webkit-animation: bammer-away 4s steps(9);
+       -moz-animation: bammer-away 4s steps(9);
+        -ms-animation: bammer-away 4s steps(9);
+         -o-animation: bammer-away 4s steps(9);
+            animation: bammer-away 4s steps(9);
+}
+@-webkit-keyframes bammer-away {
+   from { background-position:    0px; }
+     to { background-position: -1836px; }
+}
+
+@-moz-keyframes bammer-away {
+   from { background-position:    0px; }
+     to { background-position: -1836px; }
+}
+
+@-ms-keyframes bammer-away {
+   from { background-position:    0px; }
+     to { background-position: -1836px; }
+}
+
+@-o-keyframes bammer-away {
+   from { background-position:    0px; }
+     to { background-position: -1836px; }
+}
+
+.toontalk-bammer-down {
+    width: 165px;
+    height: 296px;
+    position: absolute;
+    background-image: url("images/bammer-down.png");
+	-webkit-animation: bammer-down 4s steps(12);
+       -moz-animation: bammer-down 4s steps(12);
+        -ms-animation: bammer-down 4s steps(12);
+         -o-animation: bammer-down 4s steps(12);
+            animation: bammer-down 4s steps(12);
+}
+@-webkit-keyframes bammer-down {
+   from { background-position:    0px; }
+     to { background-position: -1980px; }
+}
+
+@-moz-keyframes bammer-down {
+   from { background-position:    0px; }
+     to { background-position: -1980px; }
+}
+
+@-ms-keyframes bammer-down {
+   from { background-position:    0px; }
+     to { background-position: -1980px; }
+}
+
+@-o-keyframes bammer-down {
+   from { background-position:    0px; }
+     to { background-position: -1980px; }
+}
+
+@keyframes bammer-down {
+   from { background-position:    0px; }
+     to { background-position: -1980px; }
+}

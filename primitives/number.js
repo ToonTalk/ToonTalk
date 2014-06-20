@@ -337,8 +337,38 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         }
         return true;
     };
+    
+    number.number_dropped_on_me = function (other_number, event) {
+         var bammer_element, $top_level_backside_element, target_absolute_position, hit_number_continuation, bammer_gone_continuation;
+         if (this.visible()) {
+             bammer_element = document.createElement("div");
+             $(bammer_element).addClass("toontalk-bammer-down");
+             $top_level_backside_element = $(".toontalk-top-level-backside");
+             // start lower left off screen
+             bammer_element.style.left = "-100px";
+             bammer_element.style.top = ($top_level_backside_element.height()+100)+"px";
+             $top_level_backside_element.append(bammer_element);
+             target_absolute_position = $(this.get_frontside_element()).offset();
+             target_absolute_position.top -= $top_level_backside_element.position().top;
+             hit_number_continuation = function () {
+                 this.number_dropped_on_me_semantics(other_number, event);
+                 $(bammer_element).removeClass("toontalk-bammer-down");
+                 $(bammer_element).addClass("toontalk-bammer-away");
+                 target_absolute_position.left = $top_level_backside_element.width()+100;
+                 target_absolute_position.top = $top_level_backside_element.height()+100;
+                 bammer_gone_continuation = function () {
+                     $(bammer_element).remove();
+                 };
+                 TT.UTILITIES.animate_to_absolute_position(bammer_element, target_absolute_position, 2000, bammer_gone_continuation);
+             }.bind(this);
+             TT.UTILITIES.animate_to_absolute_position(bammer_element, target_absolute_position, 2000, hit_number_continuation);
+             return this;             
+         } else {
+             return this.number_dropped_on_me_semantics(other_number,event);
+         }
+     };
 
-    number.number_dropped_on_me = function (other_number, clientX, clientY, event) { 
+    number.number_dropped_on_me_semantics = function (other_number, event) { 
         switch (other_number.get_operator()) {
         case '+':
             return this.add(other_number);

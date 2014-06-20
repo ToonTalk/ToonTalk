@@ -202,16 +202,7 @@ window.TOONTALK.widget = (function (TT) {
             if (!widget.animate_to_absolute_position) {
                 widget.animate_to_absolute_position = function (target_absolute_position, continuation) {
                     var mover_frontside_element = this.get_frontside_element();
-                    var mover_absolute_position = $(mover_frontside_element).offset();
-                    var mover_relative_position = $(mover_frontside_element).position();
-                    var remove_transition_class = function () {
-                        $(mover_frontside_element).removeClass("toontalk-side-animating");
-                    };
-                    TT.UTILITIES.add_one_shot_event_handler(mover_frontside_element, "transitionend", 2500, remove_transition_class);
-                    $(mover_frontside_element).addClass("toontalk-side-animating");
-                    mover_frontside_element.style.left = (mover_relative_position.left + (target_absolute_position.left - mover_absolute_position.left)) + "px";
-                    mover_frontside_element.style.top = (mover_relative_position.top + (target_absolute_position.top - mover_absolute_position.top)) + "px";
-                    TT.UTILITIES.add_one_shot_event_handler(mover_frontside_element, "transitionend", 2500, continuation);
+                    TT.UTILITIES.animate_to_absolute_position(mover_frontside_element, target_absolute_position, 2500, continuation);
                 };
             }
             return widget;

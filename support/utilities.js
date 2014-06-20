@@ -982,6 +982,19 @@ window.TOONTALK.UTILITIES =
                 maximum_wait);
         },
         
+        animate_to_absolute_position: function (source_element, target_absolute_position, maximum_wait, continuation) {
+            var source_absolute_position = $(source_element).offset();
+            var source_relative_position = $(source_element).position();
+            var remove_transition_class = function () {
+                $(source_element).removeClass("toontalk-side-animating");
+            };
+            TT.UTILITIES.add_one_shot_event_handler(source_element, "transitionend", maximum_wait, remove_transition_class);
+            $(source_element).addClass("toontalk-side-animating");
+            source_element.style.left = (source_relative_position.left + (target_absolute_position.left - source_absolute_position.left)) + "px";
+            source_element.style.top = (source_relative_position.top + (target_absolute_position.top - source_absolute_position.top)) + "px";
+            TT.UTILITIES.add_one_shot_event_handler(source_element, "transitionend", maximum_wait, continuation);
+        },
+        
         highlight_element: function (element, duration) {
             if (!duration) {
                 duration = 1000;
