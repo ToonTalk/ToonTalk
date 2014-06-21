@@ -961,10 +961,11 @@ window.TOONTALK.UTILITIES =
         add_one_shot_event_handler: function (element, event_name, maximum_wait, handler) {
             // could replace the first part of this by http://api.jquery.com/one/
             var handler_run = false;
-            var one_shot_handler = function () {
+            var one_shot_handler = function (event) {
                 // could support any number of parameters but not needed
                 handler_run = true;
                 if (handler) {
+//                     console.log("event " + event + " at " + new Date());
                     handler();
                 }
                 element.removeEventListener(event_name, one_shot_handler);
@@ -976,23 +977,36 @@ window.TOONTALK.UTILITIES =
             setTimeout(
                 function () {
                     if (!handler_run) {
+                        if (TT.debugging) {
+                            console.log("Timed out after " + maximum_wait +"ms while waiting for " + event_name);
+                        }
                         one_shot_handler();
                     }
                 },
                 maximum_wait);
         },
         
-        animate_to_absolute_position: function (source_element, target_absolute_position, maximum_wait, continuation) {
+        animate_to_absolute_position: function (source_element, target_absolute_position, maximum_wait, continuation, more_animation_follows) {
             var source_absolute_position = $(source_element).offset();
             var source_relative_position = $(source_element).position();
-            var remove_transition_class = function () {
-                $(source_element).removeClass("toontalk-side-animating");
-            };
-            TT.UTILITIES.add_one_shot_event_handler(source_element, "transitionend", maximum_wait, remove_transition_class);
+            var remove_transition_class;
             $(source_element).addClass("toontalk-side-animating");
+            source_element.style.transitionDuration = maximum_wait+"ms";
+//             source_element.style.webkitTransitionDuration = maximum_wait+"ms";
+//             $(source_element).css({"transition-duration": maximum_wait-1});
+//          console.log("adding   toontalk-side-animating " + new Date());
+//          console.log("Coming from " + source_element.style.left + ", " + source_element.style.top);
             source_element.style.left = (source_relative_position.left + (target_absolute_position.left - source_absolute_position.left)) + "px";
             source_element.style.top = (source_relative_position.top + (target_absolute_position.top - source_absolute_position.top)) + "px";
-            TT.UTILITIES.add_one_shot_event_handler(source_element, "transitionend", maximum_wait, continuation);
+//          console.log("Going to    " + source_element.style.left + ", " + source_element.style.top);
+            if (!more_animation_follows) {
+                remove_transition_class = function () {
+    //              console.log("removing toontalk-side-animating " + new Date());
+                    $(source_element).removeClass("toontalk-side-animating");
+                };
+                TT.UTILITIES.add_one_shot_event_handler(source_element, "transitionend", maximum_wait+500, remove_transition_class);
+            }
+            TT.UTILITIES.add_one_shot_event_handler(source_element, "transitionend", maximum_wait+500, continuation);
         },
         
         highlight_element: function (element, duration) {

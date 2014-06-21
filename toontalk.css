@@ -18,8 +18,6 @@
 	-ms-transition: all 2s;  
 	-o-transition: all 2s;  */
 /* 	following from http://easings.net/#easeInOutQuint */
-/* add_one_shot_event_handler waits 2.5 seconds in case the following transitions didn't fire */
-/* If the duration is changed also change it there */
 	-webkit-transition: all 2s cubic-bezier(0.86, 0, 0.07, 1);
     transition:         all 2s cubic-bezier(0.86, 0, 0.07, 1);
 }
@@ -441,29 +439,29 @@
     height: 246px;
 	position: absolute;
     background-image: url("images/bammer-away.png");
-	-webkit-animation: bammer-away 4s steps(9) forwards;
-       -moz-animation: bammer-away 4s steps(9) forwards;
-        -ms-animation: bammer-away 4s steps(9) forwards;
-         -o-animation: bammer-away 4s steps(9) forwards;
-            animation: bammer-away 4s steps(9) forwards;
+	-webkit-animation: bammer-away 1s steps(9) infinite;
+       -moz-animation: bammer-away 1s steps(9) infinite;
+        -ms-animation: bammer-away 1s steps(9) infinite;
+         -o-animation: bammer-away 1s steps(9) infinite;
+            animation: bammer-away 1s steps(9) infinite;
 }
 @-webkit-keyframes bammer-away {
-   from { background-position:    0px; }
+   from { background-position:     0px; }
      to { background-position: -1836px; }
 }
 
 @-moz-keyframes bammer-away {
-   from { background-position:    0px; }
+   from { background-position:     0px; }
      to { background-position: -1836px; }
 }
 
 @-ms-keyframes bammer-away {
-   from { background-position:    0px; }
+   from { background-position:     0px; }
      to { background-position: -1836px; }
 }
 
 @-o-keyframes bammer-away {
-   from { background-position:    0px; }
+   from { background-position:     0px; }
      to { background-position: -1836px; }
 }
 
@@ -472,11 +470,11 @@
     height: 296px;
     position: absolute;
     background-image: url("images/bammer-down.png");
-	-webkit-animation: bammer-down 4s steps(12) forwards;
-       -moz-animation: bammer-down 4s steps(12) forwards;
-        -ms-animation: bammer-down 4s steps(12) forwards;
-         -o-animation: bammer-down 4s steps(12) forwards;
-            animation: bammer-down 4s steps(12) forwards;
+	-webkit-animation: bammer-down 2s steps(12) forwards;
+       -moz-animation: bammer-down 2s steps(12) forwards;
+        -ms-animation: bammer-down 2s steps(12) forwards;
+         -o-animation: bammer-down 2s steps(12) forwards;
+            animation: bammer-down 2s steps(12) forwards;
 }
 @-webkit-keyframes bammer-down {
    from { background-position:    0px; }
