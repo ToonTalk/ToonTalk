@@ -359,9 +359,9 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
                  bammer_gone_continuation = function () {
                      $(bammer_element).remove();
                  };
-                 TT.UTILITIES.animate_to_absolute_position(bammer_element, target_absolute_position, 2000, bammer_gone_continuation);
+                 TT.UTILITIES.animate_to_absolute_position(bammer_element, target_absolute_position, 4000, bammer_gone_continuation);
              }.bind(this);
-             TT.UTILITIES.animate_to_absolute_position(bammer_element, target_absolute_position, 2000, hit_number_continuation);
+             TT.UTILITIES.animate_to_absolute_position(bammer_element, target_absolute_position, 4000, hit_number_continuation);
              return this;             
          } else {
              return this.number_dropped_on_me_semantics(other_number,event);

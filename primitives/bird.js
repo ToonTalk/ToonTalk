@@ -335,17 +335,21 @@ window.TOONTALK.nest = (function (TT) {
 //                 $(frontside_element).css({width: '',
 //                                           height: ''});
                 hatching_finished_handler = function () {
+                    var backside_where_bird_goes;
+                    if (other_is_backside) {
+                        backside_where_bird_goes = other.get_backside();
+                    } else {
+                        // really should find closest ancestor that is a backside 
+                        // but that requires Issue 76
+                        backside_where_bird_goes = $(".toontalk-top-level-backside").data("owner").get_backside();
+                    }
                     bird = TT.bird.create(this);
                     bird_fronside_element = bird.get_frontside_element(true);
                     $(bird_fronside_element).addClass("toontalk-fly-southwest");
-                    nest_position = $(frontside_element).position();
+                    nest_position = TT.UTILITIES.relative_position(frontside_element, backside_where_bird_goes.get_element());
                     $(bird_fronside_element).css({left: nest_position.left,
                                                   top: nest_position.top});
-                    if (other_is_backside) {
-                        other.get_backside().widget_dropped_on_me(bird, false, event);
-                    } else {
-                        console.log("not yet implemented -- add to nearest ancestor backside");
-                    }
+                    backside_where_bird_goes.widget_dropped_on_me(bird, false, event);
                     $(frontside_element).removeClass("toontalk-hatch-egg");
                     $(frontside_element).addClass("toontalk-empty-nest");
                     bird_fly_continuation = function () {

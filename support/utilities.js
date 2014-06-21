@@ -1278,6 +1278,13 @@ window.TOONTALK.UTILITIES =
                 return side.widget.get_backside_element(create);
             }
             return side.widget.get_frontside_element(create);
+        },
+        
+        relative_position: function (target_element, reference_element) {
+             var target_offset = $(target_element).offset();
+             var reference_offset = $(reference_element).offset();
+             return {left: target_offset.left-reference_offset.left,
+                     top: target_offset.top-reference_offset.top};
         }
         
 //         create_menu_item: function (text) {

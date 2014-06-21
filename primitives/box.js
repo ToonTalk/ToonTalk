@@ -334,6 +334,7 @@ window.TOONTALK.box = (function (TT) {
     };
     
     box.drop_on = function (other, is_backside, event) {
+        var result;
         if (!other.box_dropped_on_me) {
             if (other.widget_dropped_on_me) {
                 return other.widget_dropped_on_me(this, is_backside, event);
@@ -341,7 +342,7 @@ window.TOONTALK.box = (function (TT) {
             console.log("No handler for drop of " + this.toString() + " on " + other.toString());
             return;
         }
-        var result = other.box_dropped_on_me(this, event);
+        result = other.box_dropped_on_me(this, event);
         if (event) {
             other.rerender();
         }
@@ -567,6 +568,10 @@ window.TOONTALK.box_empty_hole =
                 box.set_hole(index, dropped, true);
                 dropped.set_parent_of_frontside(this, false);
                 box.rerender();
+                if (dropped.dropped_on_other) {
+                    // e.g. so egg can hatch from nest drop
+                    dropped.dropped_on_other(this, false, event);
+                }
                 return true;
             };
             empty_hole.get_json = function () {
