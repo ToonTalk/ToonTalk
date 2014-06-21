@@ -348,7 +348,7 @@ window.TOONTALK.nest = (function (TT) {
 //                 $(frontside_element).css({width: '',
 //                                           height: ''});
                 hatching_finished_handler = function () {
-                    var backside_where_bird_goes;
+                    var backside_where_bird_goes, resting_left, resting_top;
                     if (other_is_backside) {
                         backside_where_bird_goes = other.get_backside();
                     } else {
@@ -361,22 +361,33 @@ window.TOONTALK.nest = (function (TT) {
                     $(bird_fronside_element).addClass("toontalk-fly-southwest");
                     nest_position = TT.UTILITIES.relative_position(frontside_element, backside_where_bird_goes.get_element());
                     $(bird_fronside_element).css({left: nest_position.left,
-                                                  top: nest_position.top});
+                                                  top:  nest_position.top});
                     backside_where_bird_goes.widget_dropped_on_me(bird, false, event);
                     $(frontside_element).removeClass("toontalk-hatch-egg");
                     $(frontside_element).addClass("toontalk-empty-nest");
                     bird_fly_continuation = function () {
                         $(bird_fronside_element).removeClass("toontalk-fly-southwest");
-                        $(bird_fronside_element).addClass("toontalk-fly-down");
-                        fly_down_finished_handler = function () {
-                            $(bird_fronside_element).removeClass("toontalk-fly-down");
-                            // could morph to bricks
-                            $(bird_fronside_element).addClass("toontalk-bird-waiting");
-                        }
-                        TT.UTILITIES.add_one_shot_event_handler(frontside_element, "animationend", 1000, fly_down_finished_handler);
-                    }
-                    bird.animate_to_absolute_position({left: nest_position.left-200,
-                                                       top: nest_position.top+200},
+                        setTimeout(function () {
+                                $(bird_fronside_element).addClass("toontalk-fly-down");
+                                fly_down_finished_handler = function () {
+//                                     $(bird_fronside_element).css({width:  $(bird_fronside_element).width(),
+//                                                                   height: $(bird_fronside_element).height()});
+                                    $(bird_fronside_element).removeClass("toontalk-fly-down");
+                                    $(bird_fronside_element).removeClass("toontalk-side-animating");
+                                    // could morph to bricks
+                                    bird_fronside_element.style.transitionDuration = "0s";
+                                    $(bird_fronside_element).addClass("toontalk-bird-waiting");
+                                }
+                                TT.UTILITIES.add_one_shot_event_handler(frontside_element, "animationend", 2000, fly_down_finished_handler);
+                            },
+                            1);
+                    };
+                    resting_left = Math.max(10, nest_position.left-100);
+                    // because of the animation the top of the nest is higer than it appears so add more to top target
+                    resting_top = Math.max(10, nest_position.top+300); 
+                    bird.animate_to_absolute_position({left: resting_left,
+                                                       top: resting_top},
+                                                      1500,
                                                       bird_fly_continuation);
                     this.rerender();
                 }.bind(this);

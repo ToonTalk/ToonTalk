@@ -990,6 +990,9 @@ window.TOONTALK.UTILITIES =
             var source_absolute_position = $(source_element).offset();
             var source_relative_position = $(source_element).position();
             var remove_transition_class;
+            if (!maximum_wait) {
+                maximum_wait = 2000;
+            }
             $(source_element).addClass("toontalk-side-animating");
             source_element.style.transitionDuration = maximum_wait+"ms";
 //             source_element.style.webkitTransitionDuration = maximum_wait+"ms";
