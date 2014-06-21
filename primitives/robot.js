@@ -199,7 +199,7 @@ window.TOONTALK.robot = (function (TT) {
     
     robot.run = function (context, top_level_context, queue) {
         var frontside_condition_widget = this.get_frontside_conditions();
-        var backside_conditions, backside_widgets, condition_frontside_element;
+        var backside_conditions, backside_widgets, condition_frontside_element, to_run_when_non_empty;
         if (this.stopped || this.being_trained || !frontside_condition_widget) {
             return 'not matched';
         }
@@ -257,9 +257,10 @@ window.TOONTALK.robot = (function (TT) {
             }
             return this.match_status;
         default:
-            to_run_when_non_empty = function () {
-                this.run(context, top_level_context, queue)
-            };
+            to_run_when_non_empty = {robot: this,
+                                     context: context,
+                                     top_level_context: top_level_context,
+                                     queue: queue};
             this.match_status.forEach(function (sub_match_status) {
                 sub_match_status.run_when_non_empty(to_run_when_non_empty);
             });

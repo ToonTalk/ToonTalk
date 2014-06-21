@@ -254,7 +254,7 @@ window.TOONTALK.nest = (function (TT) {
         };
         new_nest.matched_by = function (other) {
             if (contents.length > 0) {
-                return TT.UTILITIES.match(other, contents[0]);
+                return TT.UTILITIES.match(other, contents[0].widget);
             } else {
                 // suspend on this nest
                 return [this];
@@ -272,7 +272,7 @@ window.TOONTALK.nest = (function (TT) {
                     current_waiting_robots = waiting_robots;
                     waiting_robots = [];
                     current_waiting_robots.forEach(function (robot_run) {
-                        robot_run();
+                        robot_run.robot.run(robot_run.context, robot_run.top_level_context, robot_run.queue);
                     });
                 }
             } else {
@@ -304,14 +304,21 @@ window.TOONTALK.nest = (function (TT) {
         };
         // defined here so that contents and other state can be private
         new_nest.get_json = function (json_history) {
+            var waiting_robots_json = 
+                waiting_robots && waiting_robots.map(function (robot_run) {
+                    // no point jsonifying the queue since for the seeable future this only one queue
+                    return {robot: TT.UTILITIES.get_json(robot_run.robot, json_history),
+                            context: context && TT.UTILITIES.get_json(robot_run.context, json_history),
+                            top_level_context: top_level_context && TT.UTILITIES.get_json(robot_run.top_level_context, json_history)};
+            });
             return {semantic:
                         {type: "nest",
                          contents: TT.UTILITIES.get_json_of_array(contents, json_history),
                          guid: guid,
-                         original_nest: original_nest && TT.UTILITIES.get_json(original_nest, json_history)
+                         original_nest: original_nest && TT.UTILITIES.get_json(original_nest, json_history),
+                         waiting_robots: waiting_robots_json
                          // nest_copies are generated as those nests are created
 //                          nest_copies: nest_copies && TT.UTILITIES.get_json_of_array(nest_copies, json_history)
-                         // do waiting_robots after changing from function to object
                         },
                     view:
                         {image_url: image_url,
