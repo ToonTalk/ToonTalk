@@ -46,10 +46,13 @@ window.TOONTALK.bird = (function (TT) {
                         is_backside: other_is_backside};
             if (nest) {
                 nest.add_to_contents(side, this);
-                return true;
             } else {
                 console.log("to do: handle drop on a nestless bird -- just removes other?");
             }
+            if (TT.robot.in_training) {
+                TT.robot.in_training.dropped_on(other, this);
+            }
+            return true;
         };
         new_bird.get_json = function (json_history) {
             return {semantic:
