@@ -44,13 +44,21 @@ window.TOONTALK.bird = (function (TT) {
         new_bird.widget_dropped_on_me = function (other, other_is_backside, event, robot) {
             var side = {widget: other,
                         is_backside: other_is_backside};
-            var nest_offset, continuation;
+            var nest_offset, bird_offset, continuation;
             if (nest) {
                 if (nest.visible && (event || (robot && robot.visible()))) {
                     nest_offset = $(nest.get_frontside_element()).offset();
+                    bird_offset = $(this.get_frontside_element()).offset();
                     continuation = function () {
+                        var final_continuation = function () {
+                            // might need to go back into a box or the like
+                        };
                         nest.add_to_contents(side, this);
-                        // return too 
+                        setTimeout(function () {
+                                this.fly_to(bird_offset, final_continuation); 
+                            }.bind(this),
+                            1);
+                       
                     }.bind(this);
                     this.fly_to(nest_offset, continuation);
                 } else {
