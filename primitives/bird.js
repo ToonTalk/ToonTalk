@@ -113,6 +113,9 @@ window.TOONTALK.bird = (function (TT) {
         }
         frontside_element.title = this.get_title();
         $(frontside_element).addClass("toontalk-bird");
+        if (!($(frontside_element).is(".toontalk-side-animating"))) {
+            $(frontside_element).addClass("toontalk-bird-waiting");
+        }
 //         frontside_element.appendChild(bird_image);
         if (backside) {
             backside.rerender();
