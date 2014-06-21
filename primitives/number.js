@@ -319,15 +319,15 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         // else warn??
     };
 
-    number.drop_on = function (other, is_backside, event) {
+    number.drop_on = function (other, is_backside, event, robot) {
         if (!other.number_dropped_on_me) {
             if (other.widget_dropped_on_me) {
-                return other.widget_dropped_on_me(this, is_backside, event);
+                return other.widget_dropped_on_me(this, is_backside, event, robot);
             }
             console.log("No handler for drop of " + this.toString() + " on " + other.toString());
             return;
         }
-        var result = other.number_dropped_on_me(this, event);
+        var result = other.number_dropped_on_me(this, event, robot);
         if (event) {
             this.rerender();
         }
@@ -338,9 +338,11 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         return true;
     };
     
-    number.number_dropped_on_me = function (other_number, event) {
+    number.number_dropped_on_me = function (other_number, event, robot) {
          var bammer_element, $top_level_backside_element, target_absolute_position, hit_number_continuation, bammer_gone_continuation;
-         if (this.visible()) {
+         if (this.visible() && 
+              (event || (robot && robot.visible()))) {
+             // do this if number is visible and user did the drop or a visible robot did it
              bammer_element = document.createElement("div");
              $(bammer_element).addClass("toontalk-bammer-down");
              $top_level_backside_element = $(".toontalk-top-level-backside");
