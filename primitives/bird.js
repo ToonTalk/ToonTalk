@@ -383,12 +383,12 @@ window.TOONTALK.nest = (function (TT) {
                 TT.UTILITIES.add_one_shot_event_handler(frontside_element, "animationend", 2000, hatching_finished_handler);
             }
         };
-        new_nest.widget_dropped_on_me = function (other, other_is_backside, event) {
+        new_nest.widget_dropped_on_me = function (other, other_is_backside, event, robot) {
             if (contents.length === 0) {
                 this.add_to_contents({widget: other,
                                       is_backside: other_is_backside});
             } else {
-                contents[0].widget.widget_dropped_on_me(other, other_is_backside, event);
+                contents[0].widget.widget_dropped_on_me(other, other_is_backside, event, robot);
             }
         };
         new_nest.update_display = function() {

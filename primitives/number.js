@@ -388,7 +388,11 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         }
     };
     
-    number.widget_dropped_on_me = function (widget) {
+    number.widget_dropped_on_me = function (other, other_is_backside, event, robot) {
+        if (other.number_dropped_on_me) {
+            // this can happen if this number is on a nest
+            return this.number_dropped_on_me(other, other_is_backside, event, robot);
+        }
         // only numbers can be dropped on numbers (for now at least)
         return false;
     };

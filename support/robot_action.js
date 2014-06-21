@@ -34,14 +34,18 @@ window.TOONTALK.robot_action =
                              // e.g. dropped on top-level backside
                              thing_in_hand_frontside_element = thing_in_hand.get_frontside_element();
                              target.append(thing_in_hand_frontside_element);
+                             robot.set_thing_in_hand(undefined);
                          } else {
                              if (target.visible && target.visible()) {
                                  target.render();
                              }
+                             // remove it from the robot's hand since the drop can take a few seconds
+                             // and we don't want to see it in the robot's hand
+                             robot.set_thing_in_hand(undefined);
                              // update this when robots can drop backsides as well
                              thing_in_hand.drop_on(target, false, undefined, robot);
+                             robot.rerender();
                          }
-                         robot.set_thing_in_hand(undefined);
                      } else {
                          console.log("Thing in robot's hand doesn't handle 'drop_on': "  + thing_in_hand.toString() + ". Robot that " + robot.toString());
                          return false;
