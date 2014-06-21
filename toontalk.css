@@ -303,13 +303,13 @@
 	width:  100%;
 	height: 100%;
 }
-.toontalk-nest_with-egg {
+.toontalk-nest-with-egg {
 /* 	display just the first frame */
     width:  116px;
     height: 141px;
     background-image: url("images/hatch-egg-strip.png");
 }
-.toontalk-nest_with-egg.toontalk-top-level-resource {
+.toontalk-nest-with-egg.toontalk-top-level-resource {
 /* 	otherwise extra white space appears in the resource area */
     margin-top: -43px;
 }

@@ -405,7 +405,7 @@ window.TOONTALK.nest = (function (TT) {
                 frontside_element.title = this.get_title();
                 if (!$(frontside_element).is(".toontalk-hatch-egg, .toontalk-empty-nest")) {
 //                     frontside_element.appendChild(this.image());
-                     $(frontside_element).addClass("toontalk-nest_with-egg");
+                     $(frontside_element).addClass("toontalk-nest-with-egg");
                 }
             }
             $(frontside_element).addClass("toontalk-nest");

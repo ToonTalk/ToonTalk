@@ -143,20 +143,29 @@ window.TOONTALK.backside =
                     1);
             };
             backside.get_backside_dimensions = function () {
-                 if (x_scale) {
-                     return {x_scale: x_scale, 
-                             y_scale: y_scale, 
-                             original_width: original_width, 
-                             original_height: original_height};
-                 }
+                if (x_scale) {
+                    return {x_scale: x_scale, 
+                            y_scale: y_scale, 
+                            original_width: original_width, 
+                            original_height: original_height};
+                }
             };
             backside.set_dimensions = function (dimensions) {
-                 x_scale = dimensions.x_scale;
-                 y_scale = dimensions.y_scale;
-                 original_width = dimensions.original_width;
-                 original_height = dimensions.original_height;
+                x_scale = dimensions.x_scale;
+                y_scale = dimensions.y_scale;
+                original_width = dimensions.original_width;
+                original_height = dimensions.original_height;
             };
-
+            backside.scale_to_fit = function (this_element, other_element) {
+                var scales;
+                if (!original_width && this.get_widget().backside_geometry) {
+                    original_width = this.get_widget().backside_geometry.original_width;
+                    original_height = this.get_widget().backside_geometry.original_height;  
+                }
+                scales = TT.UTILITIES.scale_to_fit(this_element, other_element, original_width, original_height);
+                x_scale = scales.x_scale;
+                y_scale = scales.y_scale;
+            };
             TT.backside.associate_widget_with_backside_element(widget, backside, backside_element);
             TT.UTILITIES.drag_and_drop($backside_element);
             // the following function should apply recursively...
@@ -244,20 +253,6 @@ window.TOONTALK.backside =
                 if (!original_height) {
                     original_height = $backside_element.height();
                 }
-            };         
-            backside.scale_to_fit = function (this_element, other_element) {
-                var new_width = $(other_element).width();
-                var new_height = $(other_element).height();
-                if (!original_width && this.get_widget().backside_geometry) {
-                    original_width = this.get_widget().backside_geometry.original_width;
-                    original_height = this.get_widget().backside_geometry.original_height;  
-                }
-                x_scale = new_width/original_width;
-                y_scale = new_height/original_height;
-                $(this_element).css({transform: "scale(" + x_scale + ", " + y_scale + ")",
-                                     "transform-origin": "top left", 
-                                     width: original_width,
-                                     height: original_height});
             };
             if (widget.get_backside_widgets) {
                 backside_widgets = widget.get_backside_widgets();

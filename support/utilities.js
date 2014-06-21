@@ -1280,6 +1280,26 @@ window.TOONTALK.UTILITIES =
             return side.widget.get_frontside_element(create);
         },
         
+        scale_to_fit: function (this_element, other_element, original_width, original_height) {
+            var new_width = $(other_element).width();
+            var new_height = $(other_element).height();
+            var x_scale, y_scale;
+            if (!original_width) {
+                original_width = $(this_element).width();
+            }
+            if (!original_height) {
+                original_height = $(this_element).height();
+            }
+            x_scale = new_width/original_width;
+            y_scale = new_height/original_height;
+            $(this_element).css({transform: "scale(" + x_scale + ", " + y_scale + ")",
+                                 "transform-origin": "top left", 
+                                 width:  original_width,
+                                 height: original_height});
+            return {x_scale: x_scale,
+                    y_scale: y_scale};
+        },
+        
         relative_position: function (target_element, reference_element) {
              var target_offset = $(target_element).offset();
              var reference_offset = $(reference_element).offset();
