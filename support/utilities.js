@@ -1006,6 +1006,7 @@ window.TOONTALK.UTILITIES =
                 remove_transition_class = function () {
     //              console.log("removing toontalk-side-animating " + new Date());
                     $(source_element).removeClass("toontalk-side-animating");
+                    source_element.style.transitionDuration = '';
                 };
                 TT.UTILITIES.add_one_shot_event_handler(source_element, "transitionend", maximum_wait+500, remove_transition_class);
             }

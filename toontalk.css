@@ -312,21 +312,30 @@
     margin-top: -43px;
 }
 .toontalk-empty-nest {
+	background-image: url("images/empty-nest.png");
+	background-repeat: no-repeat;
+	margin-top: 43px;
+	width: 116px;
+	height: 98px;
 /* 	display just the last frame */
-    width:  116px;
+/*     width:  116px;
     height: 141px;
     background-image: url("images/hatch-egg-strip.png");
-	background-position: -1628px;
+	background-position: -1628px; */
+}
+.toontalk-empty-nest.toontalk-frontside-in-box {
+	margin-top: 0px;
 }
 .toontalk-hatch-egg {
     width:  116px;
     height: 141px;
+	margin-top: -8px;
     background-image: url("images/hatch-egg-strip.png");
-	-webkit-animation: hatch-egg 2.0s steps(15) forwards;
-       -moz-animation: hatch-egg 2.0s steps(15) forwards;
-        -ms-animation: hatch-egg 2.0s steps(15) forwards;
-         -o-animation: hatch-egg 2.0s steps(15) forwards;
-            animation: hatch-egg 2.0s steps(15) forwards;
+	-webkit-animation: hatch-egg 2s steps(15) forwards;
+       -moz-animation: hatch-egg 2s steps(15) forwards;
+        -ms-animation: hatch-egg 2s steps(15) forwards;
+         -o-animation: hatch-egg 2s steps(15) forwards;
+            animation: hatch-egg 2s steps(15) forwards;
 /*  attempted to scale the full size version:
     transform: scale(0.625);
     transform-origin: center; */
@@ -403,41 +412,6 @@
      to { background-position: -747px; }
 }
 
-.toontalk-fly-southwest {
-    width:  126px;
-    height: 127px;
-    background-image: url("images/fly-southwest.png");
-	-webkit-animation: fly-southwest 1.0s steps(6) infinite;
-       -moz-animation: fly-southwest 1.0s steps(6) infinite;
-        -ms-animation: fly-southwest 1.0s steps(6) infinite;
-         -o-animation: fly-southwest 1.0s steps(6) infinite;
-            animation: fly-southwest 1.0s steps(6) infinite;
-}
-@-webkit-keyframes fly-southwest {
-   from { background-position:    0px; }
-     to { background-position: -756px; }
-}
-
-@-moz-keyframes fly-southwest {
-   from { background-position:    0px; }
-     to { background-position: -756px; }
-}
-
-@-ms-keyframes fly-southwest {
-   from { background-position:    0px; }
-     to { background-position: -756px; }
-}
-
-@-o-keyframes fly-southwest {
-   from { background-position:    0px; }
-     to { background-position: -756px; }
-}
-
-@keyframes fly-southwest {
-   from { background-position:    0px; }
-     to { background-position: -756px; }
-}
-
 .toontalk-bammer-away {
     width:  204px;
     height: 246px;
@@ -503,4 +477,274 @@
 @keyframes bammer-down {
    from { background-position:    0px; }
      to { background-position: -1980px; }
+}
+
+.toontalk-fly-southwest {
+    width:  126px;
+    height: 127px;
+    background-image: url("images/fly-southwest.png");
+	-webkit-animation: fly-southwest 1.0s steps(6) infinite;
+       -moz-animation: fly-southwest 1.0s steps(6) infinite;
+        -ms-animation: fly-southwest 1.0s steps(6) infinite;
+         -o-animation: fly-southwest 1.0s steps(6) infinite;
+            animation: fly-southwest 1.0s steps(6) infinite;
+}
+@-webkit-keyframes fly-southwest {
+   from { background-position:    0px; }
+     to { background-position: -756px; }
+}
+
+@-moz-keyframes fly-southwest {
+   from { background-position:    0px; }
+     to { background-position: -756px; }
+}
+
+@-ms-keyframes fly-southwest {
+   from { background-position:    0px; }
+     to { background-position: -756px; }
+}
+
+@-o-keyframes fly-southwest {
+   from { background-position:    0px; }
+     to { background-position: -756px; }
+}
+
+@keyframes fly-southwest {
+   from { background-position:    0px; }
+     to { background-position: -756px; }
+}
+
+.toontalk-fly-south {
+    width:  173px;
+    height: 140px;
+    background-image: url("images/fly-south.png");
+	-webkit-animation: fly-south 1.0s steps(6) infinite;
+       -moz-animation: fly-south 1.0s steps(6) infinite;
+        -ms-animation: fly-south 1.0s steps(6) infinite;
+         -o-animation: fly-south 1.0s steps(6) infinite;
+            animation: fly-south 1.0s steps(6) infinite;
+}
+@-webkit-keyframes fly-south {
+   from { background-position:    0px; }
+     to { background-position: -1038px; }
+}
+
+@-moz-keyframes fly-south {
+   from { background-position:    0px; }
+     to { background-position: -1038px; }
+}
+
+@-ms-keyframes fly-south {
+   from { background-position:    0px; }
+     to { background-position: -1038px; }
+}
+
+@-o-keyframes fly-south {
+   from { background-position:    0px; }
+     to { background-position: -1038px; }
+}
+
+@keyframes fly-south {
+   from { background-position:    0px; }
+     to { background-position: -1038px; }
+}
+
+.toontalk-fly-southeast {
+    width:  141px;
+    height: 164px;
+    background-image: url("images/fly-southeast.png");
+	-webkit-animation: fly-southeast 1.0s steps(6) infinite;
+       -moz-animation: fly-southeast 1.0s steps(6) infinite;
+        -ms-animation: fly-southeast 1.0s steps(6) infinite;
+         -o-animation: fly-southeast 1.0s steps(6) infinite;
+            animation: fly-southeast 1.0s steps(6) infinite;
+}
+@-webkit-keyframes fly-southeast {
+   from { background-position:    0px; }
+     to { background-position: -847px; }
+}
+
+@-moz-keyframes fly-southeast {
+   from { background-position:    0px; }
+     to { background-position: -847px; }
+}
+
+@-ms-keyframes fly-southeast {
+   from { background-position:    0px; }
+     to { background-position: -847px; }
+}
+
+@-o-keyframes fly-southeast {
+   from { background-position:    0px; }
+     to { background-position: -847px; }
+}
+
+@keyframes fly-southeast {
+   from { background-position:    0px; }
+     to { background-position: -847px; }
+}
+
+.toontalk-fly-west {
+    width:  161px;
+    height: 132px;
+    background-image: url("images/fly-west.png");
+	-webkit-animation: fly-west 1.0s steps(6) infinite;
+       -moz-animation: fly-west 1.0s steps(6) infinite;
+        -ms-animation: fly-west 1.0s steps(6) infinite;
+         -o-animation: fly-west 1.0s steps(6) infinite;
+            animation: fly-west 1.0s steps(6) infinite;
+}
+@-webkit-keyframes fly-west {
+   from { background-position:    0px; }
+     to { background-position: -970px; }
+}
+
+@-moz-keyframes fly-west {
+   from { background-position:    0px; }
+     to { background-position: -970px; }
+}
+
+@-ms-keyframes fly-west {
+   from { background-position:    0px; }
+     to { background-position: -970px; }
+}
+
+.toontalk-fly-northwest {
+    width:  150px;
+    height: 133px;
+    background-image: url("images/fly-northwest.png");
+	-webkit-animation: fly-northwest 1.0s steps(6) infinite;
+       -moz-animation: fly-northwest 1.0s steps(6) infinite;
+        -ms-animation: fly-northwest 1.0s steps(6) infinite;
+         -o-animation: fly-northwest 1.0s steps(6) infinite;
+            animation: fly-northwest 1.0s steps(6) infinite;
+}
+@-webkit-keyframes fly-northwest {
+   from { background-position:    0px; }
+     to { background-position: -899px; }
+}
+
+@-moz-keyframes fly-northwest {
+   from { background-position:    0px; }
+     to { background-position: -899px; }
+}
+
+@-ms-keyframes fly-northwest {
+   from { background-position:    0px; }
+     to { background-position: -899px; }
+}
+
+@-o-keyframes fly-northwest {
+   from { background-position:    0px; }
+     to { background-position: -899px; }
+}
+
+@keyframes fly-northwest {
+   from { background-position:    0px; }
+     to { background-position: -899px; }
+}
+
+.toontalk-fly-north {
+    width:  161px;
+    height: 164px;
+    background-image: url("images/fly-north.png");
+	-webkit-animation: fly-north 1.0s steps(6) infinite;
+       -moz-animation: fly-north 1.0s steps(6) infinite;
+        -ms-animation: fly-north 1.0s steps(6) infinite;
+         -o-animation: fly-north 1.0s steps(6) infinite;
+            animation: fly-north 1.0s steps(6) infinite;
+}
+@-webkit-keyframes fly-north {
+   from { background-position:    0px; }
+     to { background-position: -966px; }
+}
+
+@-moz-keyframes fly-north {
+   from { background-position:    0px; }
+     to { background-position: -966px; }
+}
+
+@-ms-keyframes fly-north {
+   from { background-position:    0px; }
+     to { background-position: -966px; }
+}
+
+@-o-keyframes fly-north {
+   from { background-position:    0px; }
+     to { background-position: -966px; }
+}
+
+@keyframes fly-north {
+   from { background-position:    0px; }
+     to { background-position: -966px; }
+}
+
+.toontalk-fly-northeast {
+    width:  163px;
+    height: 147px;
+    background-image: url("images/fly-northeast.png");
+	-webkit-animation: fly-northeast 1.0s steps(6) infinite;
+       -moz-animation: fly-northeast 1.0s steps(6) infinite;
+        -ms-animation: fly-northeast 1.0s steps(6) infinite;
+         -o-animation: fly-northeast 1.0s steps(6) infinite;
+            animation: fly-northeast 1.0s steps(6) infinite;
+}
+@-webkit-keyframes fly-northeast {
+   from { background-position:    0px; }
+     to { background-position: -978px; }
+}
+
+@-moz-keyframes fly-northeast {
+   from { background-position:    0px; }
+     to { background-position: -978px; }
+}
+
+@-ms-keyframes fly-northeast {
+   from { background-position:    0px; }
+     to { background-position: -978px; }
+}
+
+@-o-keyframes fly-northeast {
+   from { background-position:    0px; }
+     to { background-position: -978px; }
+}
+
+@keyframes fly-northeast {
+   from { background-position:    0px; }
+     to { background-position: -978px; }
+}
+
+.toontalk-fly-east {
+    width:  168px;
+    height: 139px;
+    background-image: url("images/fly-east.png");
+	-webkit-animation: fly-east 1.0s steps(6) infinite;
+       -moz-animation: fly-east 1.0s steps(6) infinite;
+        -ms-animation: fly-east 1.0s steps(6) infinite;
+         -o-animation: fly-east 1.0s steps(6) infinite;
+            animation: fly-east 1.0s steps(6) infinite;
+}
+@-webkit-keyframes fly-east {
+   from { background-position:    0px; }
+     to { background-position: -1010px; }
+}
+
+@-moz-keyframes fly-east {
+   from { background-position:    0px; }
+     to { background-position: -1010px; }
+}
+
+@-ms-keyframes fly-east {
+   from { background-position:    0px; }
+     to { background-position: -1010px; }
+}
+
+@-o-keyframes fly-east {
+   from { background-position:    0px; }
+     to { background-position: -1010px; }
+}
+
+@keyframes fly-east {
+   from { background-position:    0px; }
+     to { background-position: -1010px; }
 }

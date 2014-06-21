@@ -306,15 +306,15 @@ window.TOONTALK.box = (function (TT) {
             $element_container = $(box_frontside.get_element()).find(".toontalk-box-hole").eq(index);
             old_hole_element.width_before_in_box = $(old_hole_element).width();
             old_hole_element.height_before_in_box = $(old_hole_element).height();
-            if ($(old_hole_element).is(".toontalk-nest")) {
-                // don't change the size of nests -- at least until it is clear how to scale them
-                // a hack until a solution is found -- this changes the box size so nest fits
-                setTimeout(function () {
-                    $(old_hole_element).css({width:  old_hole_element.width_before_in_box,
-                                             height: old_hole_element.height_before_in_box});              
-                },
-                100);
-            } else {
+//             if ($(old_hole_element).is(".toontalk-nest")) {
+//                 // don't change the size of nests -- at least until it is clear how to scale them
+//                 // a hack until a solution is found -- this changes the box size so nest fits
+//                 setTimeout(function () {
+//                     $(old_hole_element).css({width:  old_hole_element.width_before_in_box,
+//                                              height: old_hole_element.height_before_in_box});              
+//                 },
+//                 100);
+//             } else {
                 if (this.get_horizontal()) {
                     $(old_hole_element).css({width: 'auto',
                                              height: $element_container.height()});
@@ -322,7 +322,7 @@ window.TOONTALK.box = (function (TT) {
                     $(old_hole_element).css({width: $element_container.width(),
                                              height: 'auto'});
                 }
-            }
+//             }
             // following should be more general but couldn't get it to work well
 //             TT.UTILITIES.scale_to_fit(old_hole_element, $element_container.get(0));
             hole.update_display();
