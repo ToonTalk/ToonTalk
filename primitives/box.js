@@ -609,7 +609,10 @@ window.TOONTALK.box_empty_hole =
                 // nothing to do
             };
             empty_hole.rerender = function () {
-                // nothing to do
+                var box = this.get_parent_of_frontside().widget;
+                if (box.get_hole(index) !== this) {
+                    box.rerender();
+                }
             };
             if (TT.debugging) {
                 empty_hole.debug_string = "An empty hole";
