@@ -403,9 +403,10 @@ window.TOONTALK.nest = (function (TT) {
                 frontside_element.appendChild(contents_side_element);
             } else {
                 frontside_element.title = this.get_title();
-                if (!$(frontside_element).is(".toontalk-hatch-egg, .toontalk-empty-nest")) {
-//                     frontside_element.appendChild(this.image());
-                     $(frontside_element).addClass("toontalk-nest-with-egg");
+                if (guid) {
+                    $(frontside_element).addClass("toontalk-empty-nest");
+                } else {
+                    $(frontside_element).addClass("toontalk-nest-with-egg");
                 }
             }
             $(frontside_element).addClass("toontalk-nest");
