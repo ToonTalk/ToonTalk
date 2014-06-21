@@ -324,11 +324,11 @@
     width:  116px;
     height: 141px;
     background-image: url("images/hatch-egg-strip.png");
-	-webkit-animation: hatch-egg 2.0s steps(15);
-       -moz-animation: hatch-egg 2.0s steps(15);
-        -ms-animation: hatch-egg 2.0s steps(15);
-         -o-animation: hatch-egg 2.0s steps(15);
-            animation: hatch-egg 2.0s steps(15);
+	-webkit-animation: hatch-egg 2.0s steps(15) forwards;
+       -moz-animation: hatch-egg 2.0s steps(15) forwards;
+        -ms-animation: hatch-egg 2.0s steps(15) forwards;
+         -o-animation: hatch-egg 2.0s steps(15) forwards;
+            animation: hatch-egg 2.0s steps(15) forwards;
 /*  attempted to scale the full size version:
     transform: scale(0.625);
     transform-origin: center; */
@@ -370,11 +370,11 @@
     width:  150px;
     height: 127px;
     background-image: url("images/fly-down.png");
-	-webkit-animation: fly-down 1.0s steps(5);
-       -moz-animation: fly-down 1.0s steps(5);
-        -ms-animation: fly-down 1.0s steps(5);
-         -o-animation: fly-down 1.0s steps(5);
-            animation: fly-down 1.0s steps(5);
+	-webkit-animation: fly-down 1.0s steps(5) forwards;
+       -moz-animation: fly-down 1.0s steps(5) forwards;
+        -ms-animation: fly-down 1.0s steps(5) forwards;
+         -o-animation: fly-down 1.0s steps(5) forwards;
+            animation: fly-down 1.0s steps(5) forwards;
 }
 @-webkit-keyframes fly-down {
    from { background-position:    0px; }
@@ -441,11 +441,11 @@
     height: 246px;
 	position: absolute;
     background-image: url("images/bammer-away.png");
-	-webkit-animation: bammer-away 4s steps(9);
-       -moz-animation: bammer-away 4s steps(9);
-        -ms-animation: bammer-away 4s steps(9);
-         -o-animation: bammer-away 4s steps(9);
-            animation: bammer-away 4s steps(9);
+	-webkit-animation: bammer-away 4s steps(9) forwards;
+       -moz-animation: bammer-away 4s steps(9) forwards;
+        -ms-animation: bammer-away 4s steps(9) forwards;
+         -o-animation: bammer-away 4s steps(9) forwards;
+            animation: bammer-away 4s steps(9) forwards;
 }
 @-webkit-keyframes bammer-away {
    from { background-position:    0px; }
@@ -472,11 +472,11 @@
     height: 296px;
     position: absolute;
     background-image: url("images/bammer-down.png");
-	-webkit-animation: bammer-down 4s steps(12);
-       -moz-animation: bammer-down 4s steps(12);
-        -ms-animation: bammer-down 4s steps(12);
-         -o-animation: bammer-down 4s steps(12);
-            animation: bammer-down 4s steps(12);
+	-webkit-animation: bammer-down 4s steps(12) forwards;
+       -moz-animation: bammer-down 4s steps(12) forwards;
+        -ms-animation: bammer-down 4s steps(12) forwards;
+         -o-animation: bammer-down 4s steps(12) forwards;
+            animation: bammer-down 4s steps(12) forwards;
 }
 @-webkit-keyframes bammer-down {
    from { background-position:    0px; }
