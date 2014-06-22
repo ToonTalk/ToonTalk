@@ -570,8 +570,8 @@ window.TOONTALK.UTILITIES =
                 return;
             }
             json = extract_json_from_div_string(data);
-            if (!json) {
-                return TT.element.create(data).get_json();
+            if (!json) {               
+                return TT.UTILITIES.get_json_top_level(TT.element.create(data));
             }
             try {
                 return JSON.parse(json);
