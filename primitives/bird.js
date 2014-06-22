@@ -183,7 +183,7 @@ window.TOONTALK.bird = (function (TT) {
             continuation();
         };
         // duration is proportional to distance
-        this.animate_to_absolute_position(target_offset, distance*6, full_continuation);
+        this.animate_to_absolute_position(target_offset, full_continuation);
     };
     
 //     bird.image = function () {
@@ -275,7 +275,7 @@ window.TOONTALK.nest = (function (TT) {
     // following enables nests to invoke private methods of other nests
     var add_copy_private_key = {}; // any unique object is fine
     
-    nest.create = function (image_url, description, contents, waiting_robots, guid, original_nest) {
+    nest.create = function (description, contents, waiting_robots, guid, original_nest) { // removed image_url
         var new_nest = Object.create(nest);
         var nest_copies;
         if (!contents) {
@@ -445,7 +445,6 @@ window.TOONTALK.nest = (function (TT) {
                     resting_top = Math.max(10, nest_position.top+300); 
                     bird.animate_to_absolute_position({left: resting_left,
                                                        top: resting_top},
-                                                      1500,
                                                       bird_fly_continuation);
                     this.rerender();
                 }.bind(this);
