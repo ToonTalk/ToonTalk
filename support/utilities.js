@@ -113,13 +113,13 @@ window.TOONTALK.UTILITIES =
                 left: event.originalEvent.pageX - (target_position.left + drag_x_offset),
                 top: event.originalEvent.pageY - (target_position.top + drag_y_offset)
             });
-            if ($source.is(".toontalk-frontside") && !$source.is('.ui-resizable')) {
-                // without the setTimeout the following prevents dragging components (e.g. widgets in boxes)
-                setTimeout(function () {
-                    TT.UTILITIES.make_resizable($source, source_widget);
-                    },
-                    0);
-            }
+//             if ($source.is(".toontalk-frontside") && !$source.is('.ui-resizable')) {
+//                 // without the setTimeout the following prevents dragging components (e.g. widgets in boxes)
+//                 setTimeout(function () {
+//                     TT.UTILITIES.make_resizable($source, source_widget);
+//                     },
+//                     0);
+//             }
             if (json_object && json_object.semantic.running) {
                 source_widget.set_running(true);
             }
@@ -1277,6 +1277,7 @@ window.TOONTALK.UTILITIES =
             if (!$element.is('.toontalk-plain-text-element')) {
                 // don't make text resizable
                 $element.resizable({resize: function (event, ui) {
+                                        // following needed for element widget's that are images
                                         $element.find("img").css({width: ui.size.width,
                                                                  height: ui.size.height});
                                         widget.render();

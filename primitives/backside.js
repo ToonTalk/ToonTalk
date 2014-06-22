@@ -137,7 +137,7 @@ window.TOONTALK.backside =
                                 }
                             }
                             $backside_element.append(widget_side_element);
-                            TT.UTILITIES.make_resizable($(widget_side_element), backside_widget_side.widget);
+//                             TT.UTILITIES.make_resizable($(widget_side_element), backside_widget_side.widget);
                         });
                     },
                     1);
