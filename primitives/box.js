@@ -618,32 +618,6 @@ window.TOONTALK.box_empty_hole =
                 empty_hole.debug_string = "An empty hole";
             }
             TT.widget.has_parent(empty_hole);
-//             $(hole_element).on('drop',
-//                 function (event) {
-//                     var json_object = TT.UTILITIES.data_transfer_json_object(event);
-//                     var $dropped = TT.UTILITIES.get_dragee();
-//                     var dropped_widget;
-//                     if ($dropped.length > 0) {
-//                         event.stopPropagation();
-//                         // needs updating??
-// //                         if ($(hole_element).parents("#" + json_object.id_of_original_dragree).length > 0) {
-// //                             // dropped on itself
-// //                             return;
-// //                         }
-//                         dropped_widget = $dropped.data("owner");
-//                         TT.UTILITIES.restore_resource($dropped, dropped_widget);
-//                         if ($dropped.is(".ui-resizable")) {
-//                             $dropped.resizable("disable");
-//                             // don't want it to look disabled just because you can't resize it
-//                             $dropped.removeClass('ui-state-disabled');
-//                         }
-//                         if (TT.robot.in_training) {
-//                             TT.robot.in_training.dropped_on(empty_hole);
-//                         }
-//                         box.set_hole(index, dropped_widget);
-//                         box.update_display();
-//                     }
-//                 });
             return empty_hole;
         },
         toString: function () {
