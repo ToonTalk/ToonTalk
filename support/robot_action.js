@@ -112,7 +112,8 @@ window.TOONTALK.robot_action =
             left_offset = $(widget_frontside_element).width()/2;
             top_offset = $(widget_frontside_element).height()/-2;
         }
-        robot.animate_to_widget(widget, continuation, left_offset, top_offset);
+        // robots move at 1/4 pixel per millisecond for clarity
+        robot.animate_to_widget(widget, continuation, .25, left_offset, top_offset);
         if (thing_in_hand) {
             // so robot displays what he's holding
             robot.render();
@@ -170,7 +171,8 @@ window.TOONTALK.robot_action =
                 500);
         };
         var animation_continuation = function () {
-            robot.animate_to_element(button_element, new_continuation, 0, -$(robot_frontside_element).height());
+            // robots move at 1/4 pixel per millisecond for clarity
+            robot.animate_to_element(button_element, new_continuation, .25, 0, -$(robot_frontside_element).height());
         }
         if (!button_visible && widget.open_backside) {
             widget.open_backside(animation_continuation);

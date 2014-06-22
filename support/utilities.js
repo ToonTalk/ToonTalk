@@ -986,17 +986,19 @@ window.TOONTALK.UTILITIES =
                 maximum_wait);
         },
         
-        animate_to_absolute_position: function (source_element, target_absolute_position, maximum_wait, continuation, more_animation_follows) {
+        animate_to_absolute_position: function (source_element, target_absolute_position, continuation, speed, more_animation_follows) {
             var source_absolute_position = $(source_element).offset();
             var source_relative_position = $(source_element).position();
-            var remove_transition_class;
-            if (!maximum_wait) {
-                maximum_wait = 2000;
+            var distance = TT.UTILITIES.distance(target_absolute_position, source_absolute_position);
+            var remove_transition_class, duration;
+            if (!speed) {
+                speed = .5; // a half a pixel per millisecond -- so roughly two seconds to cross a screen
             }
+            duration = Math.round(distance/speed);
             $(source_element).addClass("toontalk-side-animating");
-            source_element.style.transitionDuration = maximum_wait+"ms";
-//             source_element.style.webkitTransitionDuration = maximum_wait+"ms";
-//             $(source_element).css({"transition-duration": maximum_wait-1});
+            source_element.style.transitionDuration = duration+"ms";
+//          source_element.style.webkitTransitionDuration = duration+"ms";
+//          $(source_element).css({"transition-duration": duration});
 //          console.log("adding   toontalk-side-animating " + new Date());
 //          console.log("Coming from " + source_element.style.left + ", " + source_element.style.top);
             source_element.style.left = (source_relative_position.left + (target_absolute_position.left - source_absolute_position.left)) + "px";
@@ -1008,9 +1010,16 @@ window.TOONTALK.UTILITIES =
                     $(source_element).removeClass("toontalk-side-animating");
                     source_element.style.transitionDuration = '';
                 };
-                TT.UTILITIES.add_one_shot_event_handler(source_element, "transitionend", maximum_wait+500, remove_transition_class);
+                // if transitionend is over 500ms late then run handler anyway
+                TT.UTILITIES.add_one_shot_event_handler(source_element, "transitionend", duration+500, remove_transition_class);
             }
-            TT.UTILITIES.add_one_shot_event_handler(source_element, "transitionend", maximum_wait+500, continuation);
+            TT.UTILITIES.add_one_shot_event_handler(source_element, "transitionend", duration+500, continuation);
+        },
+        
+        distance: function (position_1, position_2) {
+            var delta_x = position_1.left-position_2.left;
+            var delta_y = position_1.top-position_2.top;
+            return Math.sqrt(delta_x*delta_x+delta_y*delta_y);
         },
         
         highlight_element: function (element, duration) {

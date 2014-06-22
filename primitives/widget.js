@@ -158,7 +158,7 @@ window.TOONTALK.widget = (function (TT) {
         animatable: function (widget) {
             var find_widget_element;
             if (!widget.animate_to_widget) {
-                find_widget_element = function (widget, maximum_wait) {
+                find_widget_element = function (widget) {
                     var widget_element = widget.get_side_element();
                     if (!widget_element) {        
                         // widget is assumed to be a fresh copy of a resource that has yet to be added to anything
@@ -166,12 +166,12 @@ window.TOONTALK.widget = (function (TT) {
                     }
                     return widget_element;
                 };
-                widget.animate_to_widget = function (target_widget, maximum_wait, continuation, left_offset, top_offset) {
-                    this.animate_to_element(find_widget_element(target_widget), continuation, left_offset, top_offset);
+                widget.animate_to_widget = function (target_widget, continuation, speed, left_offset, top_offset) {
+                    this.animate_to_element(find_widget_element(target_widget), continuation, speed, left_offset, top_offset);
                 };
             }
             if (!widget.animate_to_element) {
-                widget.animate_to_element = function (target_element, maximum_wait, continuation, left_offset, top_offset) {
+                widget.animate_to_element = function (target_element, continuation, speed, left_offset, top_offset) {
                     var target_absolute_position = $(target_element).offset();
                     var $frontside_element = $(this.get_frontside_element());
                     if (!target_element || !$(target_element).is(":visible")) {
@@ -196,13 +196,13 @@ window.TOONTALK.widget = (function (TT) {
                         // can happen if a user picks up the target while this is running
                         target_absolute_position = {left: 0, top: 0};
                     }
-                    this.animate_to_absolute_position(target_absolute_position, maximum_wait, continuation);
+                    this.animate_to_absolute_position(target_absolute_position, continuation, speed);
                 };
             }
             if (!widget.animate_to_absolute_position) {
-                widget.animate_to_absolute_position = function (target_absolute_position, maximum_wait, continuation) {
+                widget.animate_to_absolute_position = function (target_absolute_position, continuation, speed) {
                     var mover_frontside_element = this.get_frontside_element();
-                    TT.UTILITIES.animate_to_absolute_position(mover_frontside_element, target_absolute_position, maximum_wait, continuation);
+                    TT.UTILITIES.animate_to_absolute_position(mover_frontside_element, target_absolute_position, continuation, speed);
                 };
             }
             return widget;
