@@ -671,7 +671,8 @@ window.TOONTALK.UTILITIES =
                 });
             $element.on('drop',
                 function (event) {
-                    var $source, source_widget, $target, target_widget, drag_x_offset, drag_y_offset, target_position, new_target, source_is_backside, $container, container, i;
+                    var $source, source_widget, $target, target_widget, drag_x_offset, drag_y_offset, target_position, 
+                        new_target, source_is_backside, $container, container, width, height;
                     var json_object = TT.UTILITIES.data_transfer_json_object(event);
                     // should this set the dropEffect? https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer#dropEffect.28.29 
                     // prevent default first so if there is an exception the default behaviour for some drags of going to a new page is prevented
@@ -765,10 +766,14 @@ window.TOONTALK.UTILITIES =
                                 if (!source_is_backside && source_widget.get_infinite_stack()) {
                                     // leave the source there but create a copy
                                     source_widget = source_widget.copy();
+                                    width = $source.width();
+                                    height = $source.height();
                                     $source = $(source_widget.get_frontside_element(true));
                                     if ($target.is(".toontalk-backside")) {
-                                        $source.css({width:  json_object.view.frontside_width,
-                                                     height: json_object.view.frontside_height});
+                                        // if original dimensions available via json_object.view use it
+                                        // otherwise copy size of infinite_stack
+                                        $source.css({width:  json_object.view.frontside_width || width,
+                                                     height: json_object.view.frontside_height || height});
                                     }
                                 } else if (container.removed_from_container) {
                                     // can be undefined if container is a robot holding something
