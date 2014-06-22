@@ -1338,6 +1338,13 @@ window.TOONTALK.UTILITIES =
              var reference_offset = $(reference_element).offset();
              return {left: target_offset.left-reference_offset.left,
                      top: target_offset.top-reference_offset.top};
+        },
+        
+        add_animation_class: function (element, class_name) {
+            // if any code set the size explicitly then the animation won't display correctly
+            $(element).css({width: '',
+                            height: ''});
+            $(element).addClass(class_name);
         }
         
 //         create_menu_item: function (text) {
