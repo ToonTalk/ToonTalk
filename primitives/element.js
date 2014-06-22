@@ -244,7 +244,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         }
         frontside_element = this.get_frontside_element();
         value = frontside_element.style[attribute];
-        // this caused integer rounding (at least of font-size) $(frontside_element).css(attribute);
+        if (value === "") {
+            // this caused integer rounding (at least of font-size)
+            // but if the above doesn't find a value seems sometimes this does
+            value = $(frontside_element).css(attribute);
+        }
         if (!value) {
             // zero is the default value -- e.g. for transformations such as rotate
             return 0;
