@@ -704,12 +704,12 @@ window.TOONTALK.element_backside =
                 if ($(attributes_chooser).is(":visible")) {
                     update_style_attribute_chooser(attributes_chooser, element_widget, attribute_table);
                 }
+                this.display_updated();
             };
             // if the backside is hidden then so should the attributes chooser
             $(backside_element).find(".toontalk-hide-backside-button").click(function (event) {
                 $(attributes_chooser).hide();
             });
-            this.display_updated();
             return backside;
     }};
 }(window.TOONTALK));
