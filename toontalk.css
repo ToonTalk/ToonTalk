@@ -30,6 +30,13 @@
 /* .toontalk-side:active {
 	border: solid 2px red;
 } */
+.toontalk-robot {
+/* 	will be animated later */
+	background-image: url("images/robot.png");
+	background-repeat: no-repeat;
+	width:  100px;
+	height: 167px;
+}
 .toontalk-robot-animating {
 	opacity: .8;
 }
@@ -209,13 +216,13 @@
 	width: 30em;
 	text-align: inherit;
 }
-.toontalk-robot-image, .toontalk-bird-image, .toontalk-nest-image {
+/* .toontalk-robot-image, .toontalk-bird-image, .toontalk-nest-image {
     max-width: 100%; max-height:100%;
-}
-.toontalk-image-url-input {
+} */
+/* .toontalk-image-url-input {
 	width: 30em;
 	text-align: inherit;
-}
+} */
 /* .toontalk-frontside-conditions {
     background-image: url(images/BUBBL10.96x96.PNG);
 	background-repeat: no-repeat;

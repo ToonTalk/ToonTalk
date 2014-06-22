@@ -10,7 +10,7 @@ window.TOONTALK.robot = (function (TT) {
     "use strict";
     var robot = Object.create(TT.widget);
     
-    robot.create = function (image_url, frontside_conditions, backside_conditions, body, description, thing_in_hand, run_once, next_robot) {
+    robot.create = function (frontside_conditions, backside_conditions, body, description, thing_in_hand, run_once, next_robot) { // image_url removed
         // frontside_conditions holds a widget that needs to be matched against the frontside of the widget to run
         // backside_conditions holds an object whose keys are type_names of required widgets on the backside
         // and whose values are widgets that need to match backside widgets of that type
@@ -18,22 +18,15 @@ window.TOONTALK.robot = (function (TT) {
         var new_robot = Object.create(robot);
         var first_in_team; // who should do the 'repeating'
         var animating = false; // true if animating due to being run while watched
-        if (!image_url) {
-            image_url = "images/RB00.PNG";
-        }
+//         if (!image_url) {
+//             image_url = "images/RB00.PNG";
+//         }
         if (!body) {
             body = TT.actions.create();
         }
         if (!description) {
             description = "";
         }
-//         if (!width) {
-//             // probably should be based upon toontalk-top-level-resource's width
-//             width = 100;
-//         }
-//         if (!height) {
-//             height = 100;
-//         }
         if (!first_in_team) {
             first_in_team = new_robot;
         }
@@ -72,19 +65,19 @@ window.TOONTALK.robot = (function (TT) {
         new_robot.get_body = function () {
             return body;
         };
-        new_robot.get_image_url = function () {
-            return image_url;
-        };
-        new_robot.set_image_url = function (new_value, update_display) {
-            if (image_url === new_value) {
-                return false;
-            }
-            image_url = new_value;
-            if (update_display) {
-                this.rerender();
-            }
-            return true;
-        };
+//         new_robot.get_image_url = function () {
+//             return image_url;
+//         };
+//         new_robot.set_image_url = function (new_value, update_display) {
+//             if (image_url === new_value) {
+//                 return false;
+//             }
+//             image_url = new_value;
+//             if (update_display) {
+//                 this.rerender();
+//             }
+//             return true;
+//         };
         new_robot.get_animating = function () {
             return animating;
         };
@@ -181,7 +174,7 @@ window.TOONTALK.robot = (function (TT) {
                 backside_conditions_copy[type] = backside_conditions_copy[type].copy(true);
             });
         }
-        var copy = this.create(this.get_image_url(), 
+        var copy = this.create(// this.get_image_url(), 
                                frontside_conditions_copy,
                                backside_conditions_copy,
                                this.get_body().copy(),
@@ -408,8 +401,9 @@ window.TOONTALK.robot = (function (TT) {
         }
         this.being_trained = true;
         this.set_frontside_conditions(context.copy(true));
-        // use minature image as cursor (if there is one)
-        $("div").css({cursor: 'url(' + TT.UTILITIES.cursor_of_image(this.get_image_url()) + '), default'});
+//   //    use minature image as cursor (if there is one)
+//         $("div").css({cursor: 'url(' + TT.UTILITIES.cursor_of_image(this.get_image_url()) + '), default'});
+        $("div").css({cursor: 'url("images/RB19.32x32.PNG"), default'});
         this.get_frontside_element().title = this.get_title();
     };
     
@@ -432,7 +426,7 @@ window.TOONTALK.robot = (function (TT) {
     robot.update_display = function() {
         var frontside = this.get_frontside(true);
         var backside = this.get_backside(); 
-        var robot_image, frontside_element, resource_becoming_instance;
+        var frontside_element, resource_becoming_instance;
         var thing_in_hand = this.get_thing_in_hand();
         var thing_in_hand_frontside_element;
         if (TT.debugging) {
@@ -440,7 +434,7 @@ window.TOONTALK.robot = (function (TT) {
             this.debug_string = this.toString();
         }
         frontside_element = frontside.get_element();
-        robot_image = this.image();
+//         robot_image = this.image();
         if (thing_in_hand) {
             thing_in_hand_frontside_element = thing_in_hand.get_frontside_element();
         }
@@ -451,7 +445,7 @@ window.TOONTALK.robot = (function (TT) {
         }
         frontside_element.title = this.get_title();
         $(frontside_element).addClass("toontalk-robot");
-        frontside_element.appendChild(robot_image);
+//         frontside_element.appendChild(robot_image);
         if (thing_in_hand_frontside_element) {
             frontside_element.appendChild(thing_in_hand_frontside_element);
         }
@@ -469,8 +463,10 @@ window.TOONTALK.robot = (function (TT) {
                     // compute where the thing should be to be centred over the robot
                     thing_in_hand_width = $(thing_in_hand_frontside_element).width();
                     thing_in_hand_height = $(thing_in_hand_frontside_element).height();
-                    robot_width = $(robot_image).width();
-                    robot_height = $(robot_image).height();
+                    robot_width = $(frontside_element).width();
+                    robot_height = $(frontside_element).height();
+//                     robot_width = $(robot_image).width();
+//                     robot_height = $(robot_image).height();
                     if (thing_in_hand_width === 0) {
                         thing_in_hand_width = robot_width*2;
                         thing_in_hand_height = robot_height/2;
@@ -521,9 +517,9 @@ window.TOONTALK.robot = (function (TT) {
         return this.toString();
     };
     
-    robot.image = function () {
-        return TT.UTILITIES.create_image(this.get_image_url(), "toontalk-robot-image"); 
-    };
+//     robot.image = function () {
+//         return TT.UTILITIES.create_image(this.get_image_url(), "toontalk-robot-image"); 
+//     };
     
 //     robot.frontside_conditions_div = function () {
 //         var frontside_conditions = document.createElement("div");
@@ -598,7 +594,7 @@ window.TOONTALK.robot = (function (TT) {
                      next_robot: next_robot_json
                      },
                 view:
-                    {image_url: this.get_image_url(),
+                    {//image_url: this.get_image_url(),
                      description: this.get_description()}};
     };
     
@@ -617,7 +613,7 @@ window.TOONTALK.robot = (function (TT) {
                     backside_conditions[type] = TT.UTILITIES.create_from_json(json.backside_conditions[type], additional_info);
             });
         }
-        return TT.robot.create(json_view.image_url,
+        return TT.robot.create(// json_view.image_url,
                                // bubble for backwards compatibility -- should be able to remove in the future
                                TT.UTILITIES.create_from_json(json.frontside_conditions || json.bubble, additional_info),
                                backside_conditions,
@@ -686,7 +682,7 @@ window.TOONTALK.robot_backside =
         create: function (robot) {
             var backside = TT.backside.create(robot);
             var backside_element = backside.get_element();
-            var image_url_input = TT.UTILITIES.create_text_input(robot.get_image_url(), "toontalk-image-url-input", "Image URL&nbsp;", "Type here to provide a URL for the appearance of this robot.");
+//             var image_url_input = TT.UTILITIES.create_text_input(robot.get_image_url(), "toontalk-image-url-input", "Image URL&nbsp;", "Type here to provide a URL for the appearance of this robot.");
             var description_text_area = TT.UTILITIES.create_text_area(robot.get_description(), 
                                                                       "toontalk-robot-description-input", 
                                                                       "This&nbsp;robot&nbsp;",
@@ -699,15 +695,15 @@ window.TOONTALK.robot_backside =
             var next_robot = robot.get_next_robot();
             var standard_buttons = TT.backside.create_standard_buttons(backside, robot);
             var infinite_stack_check_box = TT.backside.create_infinite_stack_check_box(backside, robot);
-            var image_url_change = function () {
-                var image_url = image_url_input.button.value.trim();
-                if (robot.set_image_url(image_url, true) && TT.robot.in_training) {
-                    TT.robot.in_training.edited(robot, {setter_name: "set_image_url",
-                                                        argument_1: image_url,
-                                                        toString: "change the image URL to " + image_url + " of the robot",
-                                                        button_selector: ".toontalk-run-once-check-box"});
-                }
-            };
+//             var image_url_change = function () {
+//                 var image_url = image_url_input.button.value.trim();
+//                 if (robot.set_image_url(image_url, true) && TT.robot.in_training) {
+//                     TT.robot.in_training.edited(robot, {setter_name: "set_image_url",
+//                                                         argument_1: image_url,
+//                                                         toString: "change the image URL to " + image_url + " of the robot",
+//                                                         button_selector: ".toontalk-run-once-check-box"});
+//                 }
+//             };
             var description_change = function () {
                 var description = description_text_area.button.value.trim();
                 if (robot.set_description(description, true) && TT.robot.in_training) {
@@ -721,8 +717,8 @@ window.TOONTALK.robot_backside =
             $next_robot_area.data("drop_area_owner", robot);
             // don't do the following if already trained -- or offer to retrain?
             standard_buttons.insertBefore(this.create_train_button(backside, robot), standard_buttons.firstChild);
-            image_url_input.button.addEventListener('change', image_url_change);
-            image_url_input.button.addEventListener('mouseout', image_url_change);
+//             image_url_input.button.addEventListener('change', image_url_change);
+//             image_url_input.button.addEventListener('mouseout', image_url_change);
             description_text_area.button.addEventListener('change', description_change);
             description_text_area.button.addEventListener('mouseout', description_change);
             $(run_once_input.button).click(function (event) {
@@ -736,7 +732,7 @@ window.TOONTALK.robot_backside =
                 }
                 event.stopPropagation();
             });
-            input_table = TT.UTILITIES.create_vertical_table(description_text_area.container, image_url_input.container, run_once_input.container);
+            input_table = TT.UTILITIES.create_vertical_table(description_text_area.container, run_once_input.container); // image_url_input.container, 
             $(input_table).css({width: "90%"});
             backside_element.appendChild(input_table);
             backside_element.appendChild(standard_buttons);
@@ -749,7 +745,7 @@ window.TOONTALK.robot_backside =
                 var frontside_element = robot.get_frontside_element();
                 var $containing_backside_element;
                 $(description_text_area.button).val(robot.get_description());
-                $(image_url_input.button).val(robot.get_image_url());
+//                 $(image_url_input.button).val(robot.get_image_url());
                 $(run_once_input.button).prop("checked", !robot.get_run_once());
                 if (frontside_element) {
                     frontside_element.title = robot.get_title();
