@@ -10,24 +10,24 @@ window.TOONTALK.bird = (function (TT) {
     "use strict";
     var bird = Object.create(TT.widget);
     
-    bird.create = function (nest, image_url, description) {
+    bird.create = function (nest, description) { // image_url removed
         var new_bird = Object.create(bird);
-        if (!image_url) {
-            image_url = "images/GIMME3.PNG";
-        }
-        new_bird.get_image_url = function () {
-            return image_url;
-        };
-        new_bird.set_image_url = function (new_value, update_display) {
-            if (image_url === new_value) {
-                return false;
-            }
-            image_url = new_value;
-            if (update_display) {
-                this.rerender();
-            }
-            return true;
-        };
+//         if (!image_url) {
+//             image_url = "images/GIMME3.PNG";
+//         }
+//         new_bird.get_image_url = function () {
+//             return image_url;
+//         };
+//         new_bird.set_image_url = function (new_value, update_display) {
+//             if (image_url === new_value) {
+//                 return false;
+//             }
+//             image_url = new_value;
+//             if (update_display) {
+//                 this.rerender();
+//             }
+//             return true;
+//         };
         new_bird.get_description = function () {
             return description;
         };
@@ -100,14 +100,14 @@ window.TOONTALK.bird = (function (TT) {
                         nest: nest && TT.UTILITIES.get_json(nest, json_history)
                         },
                    view:
-                       {image_url: this.get_image_url(),
+                       {//image_url: this.get_image_url(),
                         description: this.get_description()}};
         };
         new_bird.copy = function (just_value) {
             // this may become more complex if the original ToonTalk behaviour
             // that if a bird and its nest are copied or saved as a unit they become a new pair
             // notice that bird/nest semantics is that the nest is shared not copied
-            var copy = this.create(nest, image_url);
+            var copy = this.create(nest); // image_url);
             return this.add_to_copy(copy, just_value);
         };
         new_bird.deliver_to = function (nest_copy, widget_side_copy) {
@@ -199,7 +199,7 @@ window.TOONTALK.bird = (function (TT) {
     };
     
     bird.create_from_json = function (json, additional_info) {
-        return TT.bird.create(TT.UTILITIES.create_from_json(json.nest, additional_info), additional_info.json_view.image_url);
+        return TT.bird.create(TT.UTILITIES.create_from_json(json.nest, additional_info)); // additional_info.json_view.image_url);
     };
     
     return bird;
@@ -212,23 +212,23 @@ window.TOONTALK.bird_backside =
         create: function (bird) {
             var backside = TT.backside.create(bird);
             var backside_element = backside.get_element();
-            var image_url_input = TT.UTILITIES.create_text_input(bird.get_image_url(), "toontalk-image-url-input", "Image URL&nbsp;", "Type here to provide a URL for the appearance of this bird.");
+//          var image_url_input = TT.UTILITIES.create_text_input(bird.get_image_url(), "toontalk-image-url-input", "Image URL&nbsp;", "Type here to provide a URL for the appearance of this bird.");
             var description_text_area = TT.UTILITIES.create_text_area(bird.get_description(), 
                                                                       "toontalk-bird-description-input", 
                                                                       "This&nbsp;bird&nbsp;",
                                                                       "Type here to provide additional information about this bird.");
             var standard_buttons = TT.backside.create_standard_buttons(backside, bird);
             var infinite_stack_check_box = TT.backside.create_infinite_stack_check_box(backside, bird);
-            var image_url_change = function () {
-                var image_url = image_url_input.button.value.trim();
-                if (bird.set_image_url(image_url, true) && TT.robot.in_training) {
-                    // if changed and by a robot then record it
-                    TT.robot.in_training.edited(bird, {setter_name: "set_image_url",
-                                                       argument_1: image_url,
-                                                       toString: "change the image URL to " + image_url + " of the bird",
-                                                       button_selector: ".toontalk-run-once-check-box"});
-                }
-            };
+//             var image_url_change = function () {
+//                 var image_url = image_url_input.button.value.trim();
+//                 if (bird.set_image_url(image_url, true) && TT.robot.in_training) {
+//                     // if changed and by a robot then record it
+//                     TT.robot.in_training.edited(bird, {setter_name: "set_image_url",
+//                                                        argument_1: image_url,
+//                                                        toString: "change the image URL to " + image_url + " of the bird",
+//                                                        button_selector: ".toontalk-run-once-check-box"});
+//                 }
+//             };
             var description_change = function () {
                 var description = description_text_area.button.value.trim();
                 if (bird.set_description(description, true) && TT.robot.in_training) {
@@ -239,11 +239,11 @@ window.TOONTALK.bird_backside =
                 }
             };
             var input_table;
-            image_url_input.button.addEventListener('change', image_url_change);
-            image_url_input.button.addEventListener('mouseout', image_url_change);
+//             image_url_input.button.addEventListener('change', image_url_change);
+//             image_url_input.button.addEventListener('mouseout', image_url_change);
             description_text_area.button.addEventListener('change', description_change);
             description_text_area.button.addEventListener('mouseout', description_change);
-            input_table = TT.UTILITIES.create_vertical_table(description_text_area.container, image_url_input.container);
+            input_table = TT.UTILITIES.create_vertical_table(description_text_area.container); // image_url_input.container
             $(input_table).css({width: "90%"});
             backside_element.appendChild(input_table);
             backside_element.appendChild(standard_buttons);
@@ -252,7 +252,7 @@ window.TOONTALK.bird_backside =
                 var frontside_element = bird.get_frontside_element();
                 var $containing_backside_element;
                 $(description_text_area.button).val(bird.get_description());
-                $(image_url_input.button).val(bird.get_image_url());
+//                 $(image_url_input.button).val(bird.get_image_url());
                 if (frontside_element) {
                     frontside_element.title = bird.get_title();
                     $containing_backside_element = $(frontside_element).closest(".toontalk-backside");
@@ -284,22 +284,22 @@ window.TOONTALK.nest = (function (TT) {
         if (!waiting_robots) {
             waiting_robots = [];
         }
-        if (!image_url) {
-            image_url = "images/HATCH01.PNG";
-        }
-        new_nest.get_image_url = function () {
-            return image_url;
-        };
-        new_nest.set_image_url = function (new_value, update_display) {
-            if (image_url === new_value) {
-                return false;
-            }
-            image_url = new_value;
-            if (update_display) {
-                this.rerender();
-            }
-            return true;
-        };
+//         if (!image_url) {
+//             image_url = "images/HATCH01.PNG";
+//         }
+//         new_nest.get_image_url = function () {
+//             return image_url;
+//         };
+//         new_nest.set_image_url = function (new_value, update_display) {
+//             if (image_url === new_value) {
+//                 return false;
+//             }
+//             image_url = new_value;
+//             if (update_display) {
+//                 this.rerender();
+//             }
+//             return true;
+//         };
         new_nest.get_description = function () {
             return description;
         };
@@ -382,7 +382,7 @@ window.TOONTALK.nest = (function (TT) {
 //                          nest_copies: nest_copies && TT.UTILITIES.get_json_of_array(nest_copies, json_history)
                         },
                     view:
-                        {image_url: image_url,
+                        {// image_url: image_url,
                          description: description}};
         };
         new_nest.copy = function (just_value) {
@@ -390,7 +390,7 @@ window.TOONTALK.nest = (function (TT) {
             // that if a bird and its nest are copied or saved as a unit they become a new pair
             // notice that bird/nest semantics is that the nest is shared not copied
             var contents_copy = TT.UTILITIES.copy_array(contents);
-            var copy = TT.nest.create(image_url, description, contents_copy, [], guid, original_nest || this);
+            var copy = TT.nest.create(description, contents_copy, [], guid, original_nest || this); // image_url removed
             return this.add_to_copy(copy, just_value);
         };
         new_nest.dropped_on_other = function (other, other_is_backside, event) {
@@ -540,7 +540,7 @@ window.TOONTALK.nest = (function (TT) {
     
     nest.create_from_json = function (json, additional_info) {
         var waiting_robots; // to do
-        return TT.nest.create(additional_info.json_view.image_url, 
+        return TT.nest.create(// additional_info.json_view.image_url, 
                               additional_info.json_view.description, 
                               TT.UTILITIES.create_array_from_json(json.contents, additional_info), 
                               waiting_robots, 
@@ -558,23 +558,23 @@ window.TOONTALK.nest_backside =
         create: function (nest) {
             var backside = TT.backside.create(nest);
             var backside_element = backside.get_element();
-            var image_url_input = TT.UTILITIES.create_text_input(nest.get_image_url(), "toontalk-image-url-input", "Image URL&nbsp;", "Type here to provide a URL for the appearance of this nest.");
+//             var image_url_input = TT.UTILITIES.create_text_input(nest.get_image_url(), "toontalk-image-url-input", "Image URL&nbsp;", "Type here to provide a URL for the appearance of this nest.");
             var description_text_area = TT.UTILITIES.create_text_area(nest.get_description(), 
                                                                       "toontalk-nest-description-input", 
                                                                       "This&nbsp;nest&nbsp;",
                                                                       "Type here to provide additional information about this nest.");
             var standard_buttons = TT.backside.create_standard_buttons(backside, nest);
             var infinite_stack_check_box = TT.backside.create_infinite_stack_check_box(backside, nest);
-            var image_url_change = function () {
-                var image_url = image_url_input.button.value.trim();
-                if (nest.set_image_url(image_url, true) && TT.robot.in_training) {
-                    // if changed and by a robot then record it
-                    TT.robot.in_training.edited(nest, {setter_name: "set_image_url",
-                                                       argument_1: image_url,
-                                                       toString: "change the image URL to " + image_url + " of the nest",
-                                                       button_selector: ".toontalk-run-once-check-box"});
-                }
-            };
+//             var image_url_change = function () {
+//                 var image_url = image_url_input.button.value.trim();
+//                 if (nest.set_image_url(image_url, true) && TT.robot.in_training) {
+//                     // if changed and by a robot then record it
+//                     TT.robot.in_training.edited(nest, {setter_name: "set_image_url",
+//                                                        argument_1: image_url,
+//                                                        toString: "change the image URL to " + image_url + " of the nest",
+//                                                        button_selector: ".toontalk-run-once-check-box"});
+//                 }
+//             };
             var description_change = function () {
                 var description = description_text_area.button.value.trim();
                 if (nest.set_description(description, true) && TT.robot.in_training) {
@@ -585,11 +585,11 @@ window.TOONTALK.nest_backside =
                 }
             };
             var input_table;
-            image_url_input.button.addEventListener('change', image_url_change);
-            image_url_input.button.addEventListener('mouseout', image_url_change);
+//             image_url_input.button.addEventListener('change', image_url_change);
+//             image_url_input.button.addEventListener('mouseout', image_url_change);
             description_text_area.button.addEventListener('change', description_change);
             description_text_area.button.addEventListener('mouseout', description_change);
-            input_table = TT.UTILITIES.create_vertical_table(description_text_area.container, image_url_input.container);
+            input_table = TT.UTILITIES.create_vertical_table(description_text_area.container) // image_url_input.container
             $(input_table).css({width: "90%"});
             backside_element.appendChild(input_table);
             backside_element.appendChild(standard_buttons);
@@ -598,7 +598,7 @@ window.TOONTALK.nest_backside =
                 var frontside_element = nest.get_frontside_element();
                 var $containing_backside_element;
                 $(description_text_area.button).val(nest.get_description());
-                $(image_url_input.button).val(nest.get_image_url());
+//                 $(image_url_input.button).val(nest.get_image_url());
                 if (frontside_element) {
                     frontside_element.title = nest.get_title();
                     $containing_backside_element = $(frontside_element).closest(".toontalk-backside");
