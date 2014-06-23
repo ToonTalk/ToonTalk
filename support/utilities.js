@@ -58,8 +58,8 @@ window.TOONTALK.UTILITIES =
                source_widget.get_backside_widgets().forEach(function (backside_widget_side, index) {
                    // not clear why we need to copy these widgets but without copying
                    // their elements are not added to the target (but are added to its backside_widgets)
-                   var widget = backside_widget_side.widget; //.copy();
-                   console.log("copy commented out since broken identities -- handle drop the problem???");
+                   var widget = backside_widget_side.widget.copy();
+//                    console.log("copy commented out since broken identities -- handle drop the problem???");
                    var json_view, backside_element, left_offset, top_offset, width, height, position;
                    if (backside_widgets_json[index].widget.shared_widget_index >= 0) {
                        json_view = shared_widgets[backside_widgets_json[index].widget.shared_widget_index].view;
@@ -216,7 +216,10 @@ window.TOONTALK.UTILITIES =
                         $(backside_element).css({width: json.view.backside_width,
                                                  height: json.view.backside_height,
                                                  // color may be undefined
-                                                 "background-color": json.view.background_color});
+                                                 // do the following in a more general manner
+                                                 // perhaps using additional classes?
+                                                 "background-color": json.view.background_color,
+                                                 "border-width": json.view.border_width});
                         includes_top_level_backside = true;
                     } else {
                         $(element).addClass("toontalk-top-level-resource");
@@ -811,7 +814,8 @@ window.TOONTALK.UTILITIES =
                             $source.css({width: json_object.view.backside_width,
                                          height: json_object.view.backside_height,
                                          // color may be undefined
-                                         "background-color": json_object.view.background_color});
+                                         "background-color": json_object.view.background_color,
+                                         "border-width": json.view.border_width});
                             source_widget.apply_backside_geometry();
                         } else {
                             $source = $(source_widget.get_frontside_element());
