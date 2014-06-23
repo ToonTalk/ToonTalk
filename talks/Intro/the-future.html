@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head>
+<link rel="stylesheet" media="all" href="../../libraries/jquery-ui-1.10.4.custom/css/sunny/jquery-ui-1.10.4.custom.css">
+<link rel="stylesheet" media="all" href="../../toontalk.css">
+<script src="../../libraries/jquery-2.1.0.js"></script>
+<script src="../../libraries/jquery-ui-1.10.4.custom/js/jquery-ui-1.10.4.custom.js"></script>
+<!--  not really using this
+<script src="../../libraries/jquery.ui.touch-punch.min.js"></script>
+--->
+<script src="../../libraries/rationaljs.js"></script>
+<script src="../../support/initial.js"></script>
+<script src="../../primitives/widget.js"></script>
+<script src="../../primitives/number.js"></script>
+<script src="../../primitives/robot.js"></script>
+<script src="../../primitives/box.js"></script>
+<script src="../../primitives/element.js"></script>
+<script src="../../primitives/bird.js"></script>
+<script src="../../primitives/backside.js"></script>
+<script src="../../primitives/frontside.js"></script>
+<script src="../../support/robot_actions.js"></script>
+<script src="../../support/robot_action.js"></script>
+<script src="../../support/path.js"></script>
+<script src="../../support/run_queue.js"></script>
+<script src="../../support/display_updates.js"></script>
+<!-- following should be after all the primitive widgets are defined --->
+<script src="../../support/utilities.js"></script>
+<!-- following only including during development/testing --->
+<script src="../../tests/tests.js"></script>
+<title>ToonTalk Reborn Who For Slide</title>
+<link rel="shortcut icon" href="favicon.ico" />
+</head>
+<body class='ui-widget'>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "top_level",
+    "running": false,
+    "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "element",
+            "html": "%3Cdiv%20class%3D'ui-widget%20toontalk-side-animating'%3E%0A%3Ch1%3EThe%20Future%3C%2Fh1%3E%0A%3Cul%3E%0A%3Cli%3E%0AComplete%20widget%20set%20(sensors%2C%20text%2C%20long-distance%20birds%2C%20...)%0A%3C%2Fli%3E%0A%3Cli%3E%0ASupport%20touch%0A%3C%2Fli%3E%0A%3Cli%3E%0AAlternative%20game-like%20interface%0A%3C%2Fli%3E%0A%3Cli%3E%0ADocumentation%2C%20tutorials%2C%20videos%2C%20...%0A%3C%2Fli%3E%0A%3Cli%3E%0ASupport%20%3Ca%20href%3D'http%3A%2F%2Fmodelling4all.org'%20target%3D'_blank'%3Eagent-based%20modelling%3C%2Fa%3E%0A%3C%2Fli%3E%0A%3Cli%3E%0AEnable%20others%20to%20add%20new%20widgets%20(camera%2C%20audio%2C%20...)%0A%3C%2Fli%3E%0A%3C%2Ful%3E%0A%3C%2Fdiv%3E",
+            "attributes": [
+              "width",
+              "font-size",
+              "color"
+            ],
+            "attribute_values": [
+              "1000",
+              "32",
+              "rgb(255, 255, 0)"
+            ],
+            "running": true,
+            "backside_widgets": [
+              {
+                "widget": {
+                  "semantic": {
+                    "type": "robot",
+                    "frontside_conditions": {
+                      "semantic": {
+                        "type": "element",
+                        "html": "%3Cdiv%20class%3D'ui-widget%20toontalk-side-animating'%3E%0A%3Ch1%3EThe%20Future%3C%2Fh1%3E%0A%3Cul%3E%0A%3Cli%3E%0AComplete%20widget%20set%20(sensors%2C%20text%2C%20long-distance%20birds%2C%20...)%0A%3C%2Fli%3E%0A%3Cli%3E%0ASupport%20touch%0A%3C%2Fli%3E%0A%3Cli%3E%0AAlternative%20game-like%20interface%0A%3C%2Fli%3E%0A%3Cli%3E%0ADocumentation%2C%20tutorials%2C%20videos%2C%20...%0A%3C%2Fli%3E%0A%3Cli%3E%0ASupport%20%3Ca%20href%3D'http%3A%2F%2Fmodelling4all.org'%20target%3D'_blank'%3Eagent-based%20modelling%3C%2Fa%3E%0A%3C%2Fli%3E%0A%3Cli%3E%0AEnable%20others%20to%20add%20new%20widgets%20(camera%2C%20audio%2C%20...)%0A%3C%2Fli%3E%0A%3C%2Ful%3E%0A%3C%2Fdiv%3E",
+                        "attributes": [
+                          "width",
+                          "font-size",
+                          "color"
+                        ],
+                        "attribute_values": [
+                          "0",
+                          0,
+                          0
+                        ],
+                        "erased": true
+                      },
+                      "view": {
+                        "frontside_width": 0,
+                        "frontside_height": 0,
+                        "backside_geometry": {
+                          "x_scale": 1,
+                          "y_scale": 1,
+                          "original_width": 325.8125,
+                          "original_height": 289
+                        }
+                      },
+                      "version": 1
+                    },
+                    "body": {
+                      "type": "body",
+                      "steps": [
+                        {
+                          "type": "robot_action",
+                          "action_name": "edit",
+                          "path": {
+                            "type": "path.to_entire_context"
+                          },
+                          "additional_info": {
+                            "setter_name": "set_attribute",
+                            "argument_1": "color",
+                            "argument_2": "rgb(0,0, 255)",
+                            "toString": "change the 'color' style to rgb(0,0, 255) of",
+                            "button_selector": ".toontalk-element-color-attribute-input"
+                          }
+                        }
+                      ]
+                    },
+                    "run_once": true
+                  },
+                  "view": {
+                    "description": "",
+                    "frontside_width": 66,
+                    "frontside_height": 110,
+                    "backside_geometry": {
+                      "x_scale": 1,
+                      "y_scale": 1,
+                      "original_width": 632,
+                      "original_height": 194
+                    }
+                  },
+                  "version": 1
+                },
+                "is_backside": false
+              }
+            ]
+          },
+          "view": {
+            "frontside_width": 1000,
+            "frontside_height": 0,
+            "frontside_left": 55,
+            "frontside_top": -61,
+            "backside_geometry": {
+              "x_scale": 2.8261199028846637,
+              "y_scale": 2.7602739726027403,
+              "original_width": 315.5,
+              "original_height": 146
+            }
+          },
+          "version": 1
+        },
+        "is_backside": false
+      }
+    ]
+  },
+  "view": {
+    "background_color": "white",
+    "border_width": "0px",
+    "frontside_width": 0,
+    "frontside_height": 0,
+    "backside_width": 1196,
+    "backside_height": 511,
+    "backside_left": 8,
+    "backside_top": 178,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1
+    },
+    "drag_x_offset": 590,
+    "drag_y_offset": 66,
+    "backside": true
+  },
+  "version": 1
+}</div>
+
+
+<a href="questions.html?reset=1">NEXT</a>
+</body>
+</html>
