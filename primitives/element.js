@@ -366,7 +366,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     return "the " + this.attribute + " of " + this.element_widget;
                 },
                 get_side_element: function () {
-                    if ($attribute_input.length > 0) {
+                    if ($attribute_input && $attribute_input.length > 0) {
                         return $attribute_input.get(0);
                     }
                 },

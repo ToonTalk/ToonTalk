@@ -171,7 +171,9 @@ window.TOONTALK.robot = (function (TT) {
         if (backside_conditions) {
             backside_conditions_copy = {};
             TT.UTILITIES.available_types.forEach(function (type) {
-                backside_conditions_copy[type] = backside_conditions_copy[type].copy(true);
+                if (backside_conditions_copy[type]) {
+                    backside_conditions_copy[type] = backside_conditions_copy[type].copy(true);
+                }
             });
         }
         var copy = this.create(// this.get_image_url(), 
