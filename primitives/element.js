@@ -386,6 +386,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     if ($attribute_input) {
                         $attribute_input.val(this.element_widget.get_attribute(this.attribute));
                     }
+                },
+                render: function () {
+                    TT.DISPLAY_UPDATES.pending_update(this);
                 }
         };
         if (TT.debugging) {
