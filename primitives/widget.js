@@ -581,10 +581,20 @@ window.TOONTALK.widget = (function (TT) {
         
         visible: function () {
             var frontside = this.get_frontside();
+            var ancestor;
             if (!frontside) {
                 return false;
             }
-            return $(frontside.get_element()).is(":visible");
+            ancestor = frontside.get_element().parentElement;
+            while (ancestor) {
+                if (ancestor.tagName === 'BODY') {
+                    return true;
+                }
+                ancestor = ancestor.parentElement;
+            }
+            return false;
+            // following reported false when size is 0 even though it might be code that is about to change that (if visible)
+//             return $(frontside.get_element()).is(":visible");
         },
         
         drag_started: function (json, is_resource) {
