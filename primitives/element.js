@@ -454,9 +454,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         var json_attributes = [];
         attributes.forEach(function (item) {
             // don't want them to appear where they were in the source page
-            if (item !== "left" && item !== "top") {
+            // need to revisit this since sometimes we want left and top
+            // maybe when loading don't obey their values
+//             if (item !== "left" && item !== "top") {
                 json_attributes.push(item);
-            }
+//             }
         });
         return {type: "element",
                 html: encodeURIComponent(this.get_HTML()), 
