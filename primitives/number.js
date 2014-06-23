@@ -228,10 +228,10 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         }
         client_width = $dimensions_holder.width();
         client_height = $dimensions_holder.height();
-        font_height = client_height * 0.8;
-        if (client_height === 0) {
+        if (client_width === 0 || client_height === 0) {
             return;
         }
+        font_height = client_height * 0.8;
 //      font_size = TT.UTILITIES.get_style_numeric_property(frontside, "font-size");
         // according to http://www.webspaceworks.com/resources/fonts-web-typography/43/
         // the aspect ratio of monospace fonts varies from .43 to .55 
