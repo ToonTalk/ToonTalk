@@ -672,7 +672,7 @@ window.TOONTALK.UTILITIES =
             $element.on('drop',
                 function (event) {
                     var $source, source_widget, $target, target_widget, drag_x_offset, drag_y_offset, target_position, 
-                        new_target, source_is_backside, $container, container, width, height;
+                        new_target, source_is_backside, $container, container, width, height, i;
                     var json_object = TT.UTILITIES.data_transfer_json_object(event);
                     // should this set the dropEffect? https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer#dropEffect.28.29 
                     // prevent default first so if there is an exception the default behaviour for some drags of going to a new page is prevented
