@@ -338,7 +338,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         return true;
     };
     
-    number.number_dropped_on_me = function (other_number, event, robot) {
+    number.number_dropped_on_me = function (other_number, other_is_backside, event, robot) {
          var bammer_element, $top_level_backside_element, target_absolute_position, this_frontside_element,
              hit_number_continuation, bammer_gone_continuation;
          if (this.visible() && 
