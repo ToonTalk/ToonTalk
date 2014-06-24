@@ -327,7 +327,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             console.log("No handler for drop of " + this.toString() + " on " + other.toString());
             return;
         }
-        var result = other.number_dropped_on_me(this, event, robot);
+        var result = other.number_dropped_on_me(this, is_backside, event, robot);
         if (event) {
             this.rerender();
         }
