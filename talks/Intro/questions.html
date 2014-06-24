@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head>
+<link rel="stylesheet" media="all" href="../../libraries/jquery-ui-1.10.4.custom/css/sunny/jquery-ui-1.10.4.custom.css">
+<link rel="stylesheet" media="all" href="../../toontalk.css">
+<script src="../../libraries/jquery-2.1.0.js"></script>
+<script src="../../libraries/jquery-ui-1.10.4.custom/js/jquery-ui-1.10.4.custom.js"></script>
+<!--  not really using this
+<script src="../../libraries/jquery.ui.touch-punch.min.js"></script>
+--->
+<script src="../../libraries/rationaljs.js"></script>
+<script src="../../support/initial.js"></script>
+<script src="../../primitives/widget.js"></script>
+<script src="../../primitives/number.js"></script>
+<script src="../../primitives/robot.js"></script>
+<script src="../../primitives/box.js"></script>
+<script src="../../primitives/element.js"></script>
+<script src="../../primitives/bird.js"></script>
+<script src="../../primitives/backside.js"></script>
+<script src="../../primitives/frontside.js"></script>
+<script src="../../support/robot_actions.js"></script>
+<script src="../../support/robot_action.js"></script>
+<script src="../../support/path.js"></script>
+<script src="../../support/run_queue.js"></script>
+<script src="../../support/display_updates.js"></script>
+<!-- following should be after all the primitive widgets are defined --->
+<script src="../../support/utilities.js"></script>
+<!-- following only including during development/testing --->
+<script src="../../tests/tests.js"></script>
+<title>Questions - ToonTalk Reborn</title>
+<link rel="shortcut icon" href="favicon.ico" />
+</head>
+<body class='ui-widget'>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "element",
+            "html": "%3Cdiv%20class%3D'ui-widget%20toontalk-side-animating'%3E%0A%3Ch1%3EThese%20slides%3F%20%3Ca%20href%3D'http%3Atinyurl.com%2Ftt-reborn'%3Ehttp%3Atinyurl.com%2Ftt-reborn%3C%2Fa%3E%3C%2Fh1%3E%0A%3Ch1%3EMore%20information%3F%20%3Ca%20href%3D'https%3A%2F%2Fgithub.com%2FToonTalk%2FToonTalk'%3Ehttps%3A%2F%2Fgithub.com%2FToonTalk%2FToonTalk%3C%2Fa%3E%3C%2Fh1%3E%0A%3Ch1%3EWant%20to%20help%3F%20%3Ca%20href%3D'mailto%3Atoontalk%40gmail.com'%3Etoontalk%40gmail.com%3C%2Fa%3E%3C%2Fh1%3E%0A%3Ch1%3EMore%20questions%3F%3C%2Fh1%3E%0A%3C%2Fdiv%3E",
+            "attributes": [
+              "font-size",
+              "width",
+              "skewX"
+            ],
+            "attribute_values": [
+              "21",
+              "900",
+              0.1
+            ],
+            "backside_widgets": [
+              {
+                "widget": {
+                  "semantic": {
+                    "type": "robot",
+                    "frontside_conditions": {
+                      "semantic": {
+                        "type": "element",
+                        "html": "%3Cdiv%20class%3D'ui-widget%20toontalk-side-animating'%3E%0A%3Ch1%3EThese%20slides%3F%20%3Ca%20href%3D'http%3Atinyurl.com%2Ftt-reborn'%3Ehttp%3Atinyurl.com%2Ftt-reborn%3C%2Fa%3E%3C%2Fh1%3E%0A%3Ch1%3EMore%20information%3F%20%3Ca%20href%3D'https%3A%2F%2Fgithub.com%2FToonTalk%2FToonTalk'%3Ehttps%3A%2F%2Fgithub.com%2FToonTalk%2FToonTalk%3C%2Fa%3E%3C%2Fh1%3E%0A%3Ch1%3EWant%20to%20help%3F%20%3Ca%20href%3D'mailto%3Atoontalk%40gmail.com'%3Etoontalk%40gmail.com%3C%2Fa%3E%3C%2Fh1%3E%0A%3Ch1%3EMore%20questions%3F%3C%2Fh1%3E%0A%3C%2Fdiv%3E",
+                        "attributes": [
+                          "font-size",
+                          "width",
+                          "skewX"
+                        ],
+                        "attribute_values": [
+                          0,
+                          "0",
+                          0
+                        ]
+                      },
+                      "view": {
+                        "frontside_width": 0,
+                        "frontside_height": 0
+                      },
+                      "version": 1
+                    },
+                    "backside_conditions": {
+                      "number": {
+                        "semantic": {
+                          "type": "number",
+                          "operator": "+",
+                          "numerator": "1",
+                          "denominator": "10",
+                          "format": "improper_fraction",
+                          "erased": true
+                        },
+                        "view": {
+                          "frontside_width": 0,
+                          "frontside_height": 0,
+                          "backside_geometry": {
+                            "x_scale": 1,
+                            "y_scale": 1,
+                            "original_width": 487,
+                            "original_height": 220
+                          }
+                        },
+                        "version": 1
+                      }
+                    },
+                    "body": {
+                      "type": "body",
+                      "steps": [
+                        {
+                          "type": "robot_action",
+                          "action_name": "pick up a copy of",
+                          "path": {
+                            "type": "path.to_backside_widget_of_context",
+                            "type_name": "number"
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "drop it on",
+                          "path": {
+                            "type": "path_to_style_attribute",
+                            "attribute": "skewX",
+                            "element_widget_path": {
+                              "type": "path.to_entire_context"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "view": {
+                    "description": "",
+                    "frontside_width": 66,
+                    "frontside_height": 110,
+                    "backside_geometry": {
+                      "x_scale": 1,
+                      "y_scale": 0.7553191489361696,
+                      "original_width": 632,
+                      "original_height": 194
+                    }
+                  },
+                  "version": 1
+                },
+                "is_backside": false
+              },
+              {
+                "widget": {
+                  "semantic": {
+                    "type": "number",
+                    "operator": "+",
+                    "numerator": "1",
+                    "denominator": "10",
+                    "format": "improper_fraction",
+                    "infinite_stack": true
+                  },
+                  "view": {
+                    "frontside_width": 172,
+                    "frontside_height": 66,
+                    "backside_geometry": {
+                      "x_scale": 1,
+                      "y_scale": 1,
+                      "original_width": 487,
+                      "original_height": 220
+                    }
+                  },
+                  "version": 1
+                },
+                "is_backside": false
+              }
+            ]
+          },
+          "view": {
+            "frontside_width": 900,
+            "frontside_height": 0,
+            "frontside_left": 17,
+            "frontside_top": -27,
+            "backside_geometry": {
+              "x_scale": 1.3930269413629162,
+              "y_scale": 2.4109589041095876,
+              "original_width": 315.5,
+              "original_height": 146
+            }
+          },
+          "version": 1
+        },
+        "is_backside": false
+      }
+    ]
+  },
+  "view": {
+    "background_color": "white",
+    "border_width": "0px",
+    "frontside_width": 0,
+    "frontside_height": 0,
+    "backside_width": 1230,
+    "backside_height": 511,
+    "backside_left": 8,
+    "backside_top": 178,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1,
+      "original_width": 1196,
+      "original_height": 511
+    },
+    "drag_x_offset": 861,
+    "drag_y_offset": 487,
+    "backside": true
+  },
+  "version": 1
+}</div>
+
+
+<a href="index.html?reset=1">START AGAIN</a>
+</body>
+</html>

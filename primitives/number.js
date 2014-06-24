@@ -132,21 +132,10 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             operator = '+';
         } 
         new_number.set_value =
-            function (new_value, update_now) {
-                var frontside, backside;
+            // ignores second argument (update_now) -- todo: update callers
+            function (new_value) {
                 value = new_value;
-                if (update_now) {
-                    TT.DISPLAY_UPDATES.pending_update(this);
-                } else {
-                    frontside = this.get_frontside();
-                    backside = this.get_backside();
-                    if (frontside) {
-                        TT.DISPLAY_UPDATES.pending_update(frontside);
-                    }
-                    if (backside) {
-                        TT.DISPLAY_UPDATES.pending_update(backside);
-                    }
-                }
+                this.rerender();
                 if (TT.debugging) {
                     this.debug_string = this.toString();
                 }
@@ -160,7 +149,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             function (new_value, update_now) { 
                 format = new_value;
                 if (update_now) {
-                    TT.DISPLAY_UPDATES.pending_update(this);
+                    this.rerender();
                 }
                 return this;
             };
@@ -172,7 +161,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             function (new_value, update_now) { 
                 operator = new_value;
                 if (update_now) {
-                    TT.DISPLAY_UPDATES.pending_update(this);
+                    this.rerender();
                 }
                 return this;
             };
@@ -224,11 +213,9 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     number.update_display = function() {
         // should compute width from frontside element
         // get format from backside ancestor (via parent attribute?)
-        var frontside = this.get_frontside();
-        var frontside_element, $dimensions_holder, client_width, client_height, font_height, font_width, max_decimal_places, new_HTML;
-        if (!frontside) {
-            return;
-        }
+        var frontside = this.get_frontside(true);
+        var frontside_element, $dimensions_holder, client_width, client_height, 
+            font_height, font_width, max_decimal_places, new_HTML, backside;
         frontside_element = frontside.get_element();
         if ($(frontside_element).is(".toontalk-conditions-contents")) {
             $dimensions_holder = $(frontside_element);
@@ -241,10 +228,10 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         }
         client_width = $dimensions_holder.width();
         client_height = $dimensions_holder.height();
-        font_height = client_height * 0.8;
-        if (client_height === 0) {
+        if (client_width === 0 || client_height === 0) {
             return;
         }
+        font_height = client_height * 0.8;
 //      font_size = TT.UTILITIES.get_style_numeric_property(frontside, "font-size");
         // according to http://www.webspaceworks.com/resources/fonts-web-typography/43/
         // the aspect ratio of monospace fonts varies from .43 to .55 
@@ -258,10 +245,14 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         frontside_element.firstChild.innerHTML = new_HTML;
         $(frontside_element.firstChild).addClass("toontalk-widget");
         frontside_element.title = this.get_title();
+        backside = this.get_backside();
+        if (backside) {
+            backside.rerender();
+        }
     };
     
     number.to_HTML = function (max_characters, font_size, format, top_level, operator) {
-        var integer_as_string, integer_part, fractional_part, improper_fraction_HTML, digits_needed, shrinkage;
+        var integer_as_string, integer_part, fractional_part, improper_fraction_HTML, digits_needed, shrinkage, table_style;
         var extra_class = (top_level !== false) ? ' toontalk-top-level-number' : '';
         var operator_HTML = operator ? html_for_operator(operator) : "";
         if (!max_characters) {
@@ -289,17 +280,18 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             }
             return '<div class="toontalk-number toontalk-integer' + extra_class + '" style="font-size: ' + font_size + 'px;">' + operator_HTML + fit_string_to_length(integer_as_string, max_characters) + '</div>';
         }
+        table_style = ' style="font-size:' + (font_size * 0.5) + 'px;"';
         if (format === 'improper_fraction' || !format) { // default format
             // double the max_characters since the font size is halved
             improper_fraction_HTML = 
-                '<table class="toontalk-number toontalk-improper-fraction' + extra_class + '" style="font-size: ' + (font_size * 0.5) + 'px;">' +
+                '<table class="toontalk-number toontalk-improper-fraction' + extra_class + '"' + table_style + '>' +
                 '<tr class="toontalk-numerator"><td align="center" class="toontalk-number">' + fit_string_to_length(this.numerator_string(), max_characters * 2) + '</td></tr>' +
                 '<tr class="toontalk-fraction-line-as-row"><td  class="toontalk-fraction-line-as-table-entry"><hr class="toontalk-fraction-line"></td></tr>' +
                 '<tr class="toontalk-denominator"><td align="center" class="toontalk-number">' + fit_string_to_length(this.denominator_string(), max_characters * 2) + '</td></tr></table>';
             if (operator_HTML === '') {
                 return improper_fraction_HTML;
             } else {
-                return "<table class='toontalk-operator-and-fraction'><tr><td>" + operator_HTML + "</td><td>" + improper_fraction_HTML + "</td></tr></table>";
+                return "<table class='toontalk-operator-and-fraction'" + table_style + "><tr><td>" + operator_HTML + "</td><td>" + improper_fraction_HTML + "</td></tr></table>";
             }
         }
         if (format === 'proper_fraction') {
@@ -309,7 +301,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             }
             fractional_part = this.copy().subtract(integer_part).absolute_value();
             // split max_characters between the two parts and recur for each them
-            return '<table class="toontalk-number toontalk-proper_fraction' + extra_class + '" style="font-size: ' + (font_size * 0.5) + 'px;">' +
+            return '<table class="toontalk-number toontalk-proper_fraction' + extra_class + '"' + table_style + '>' +
                    '<tr><td class="toontalk-number toontalk-integer-part-of-proper-fraction">' +
                     integer_part.to_HTML(max_characters, font_size, '', false, this.get_operator()) + // integers don't have formats but should display operator
                     '</td><td class="toontalk-number toontalk-fraction-part-of-proper_fraction">' +
@@ -327,17 +319,17 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         // else warn??
     };
 
-    number.drop_on = function (other, side_of_other, event) {
+    number.drop_on = function (other, is_backside, event, robot) {
         if (!other.number_dropped_on_me) {
             if (other.widget_dropped_on_me) {
-                return other.widget_dropped_on_me(this, false, event);
+                return other.widget_dropped_on_me(this, is_backside, event, robot);
             }
             console.log("No handler for drop of " + this.toString() + " on " + other.toString());
             return;
         }
-        var result = other.number_dropped_on_me(this, event);
+        var result = other.number_dropped_on_me(this, is_backside, event, robot);
         if (event) {
-            TT.DISPLAY_UPDATES.pending_update(other);
+            this.rerender();
         }
         this.remove();
         if (TT.robot.in_training) {
@@ -345,8 +337,46 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         }
         return true;
     };
+    
+    number.number_dropped_on_me = function (other_number, other_is_backside, event, robot) {
+         var bammer_element, $top_level_backside_element, target_absolute_position, this_frontside_element,
+             hit_number_continuation, bammer_gone_continuation;
+         if (this.visible() && 
+              (event || (robot && robot.visible()))) {
+             // do this if number is visible and user did the drop or a visible robot did it
+             bammer_element = document.createElement("div");
+             $(bammer_element).addClass("toontalk-bammer-down");
+             $top_level_backside_element = $(".toontalk-top-level-backside");
+             // start lower left off screen
+             bammer_element.style.left = "-10px";
+             bammer_element.style.top = ($top_level_backside_element.height())+"px";
+             $top_level_backside_element.append(bammer_element);
+             this_frontside_element = this.get_frontside_element();
+             target_absolute_position = $(this_frontside_element).offset();
+             target_absolute_position.top -= $top_level_backside_element.position().top;
+             target_absolute_position.top -= $(this_frontside_element).height();
+             hit_number_continuation = function () {
+                 this.number_dropped_on_me_semantics(other_number, event);
+                 $(bammer_element).removeClass("toontalk-bammer-down");
+                 setTimeout(function () {
+                         $(bammer_element).addClass("toontalk-bammer-away");
+                         target_absolute_position.left = $top_level_backside_element.width()-100;
+                         target_absolute_position.top = $top_level_backside_element.height()+100;
+                         bammer_gone_continuation = function () {
+                             $(bammer_element).remove();
+                         };
+                         TT.UTILITIES.animate_to_absolute_position(bammer_element, target_absolute_position, bammer_gone_continuation);    
+                     },
+                     1);
+             }.bind(this);
+             TT.UTILITIES.animate_to_absolute_position(bammer_element, target_absolute_position, hit_number_continuation);
+             return this;             
+         } else {
+             return this.number_dropped_on_me_semantics(other_number,event);
+         }
+     };
 
-    number.number_dropped_on_me = function (other_number, clientX, clientY, event) { 
+    number.number_dropped_on_me_semantics = function (other_number, event) { 
         switch (other_number.get_operator()) {
         case '+':
             return this.add(other_number);
@@ -364,7 +394,11 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         }
     };
     
-    number.widget_dropped_on_me = function (widget) {
+    number.widget_dropped_on_me = function (other, other_is_backside, event, robot) {
+        if (other.number_dropped_on_me) {
+            // this can happen if this number is on a nest
+            return this.number_dropped_on_me(other, other_is_backside, event, robot);
+        }
         // only numbers can be dropped on numbers (for now at least)
         return false;
     };
@@ -429,13 +463,12 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     };
     
     number.get_json = function () {
-        return this.add_to_json(
-           {type: "number",
-            operator: this.get_operator(),
-            numerator: this.numerator_string(),
-            denominator: this.denominator_string(),
-            format: this.get_format()
-            });
+        return {type: "number",
+                operator: this.get_operator(),
+                numerator: this.numerator_string(),
+                denominator: this.denominator_string(),
+                format: this.get_format()
+                };
     };
     
     number.create_from_json = function (json) {
@@ -655,6 +688,7 @@ window.TOONTALK.number_backside =
             backside.update_display = function () {
                 $(numerator_input.button).val(number.numerator_string());
                 $(denominator_input.button).val(number.denominator_string());
+                this.display_updated();
             };
             return backside;
         }

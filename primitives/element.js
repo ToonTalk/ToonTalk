@@ -73,9 +73,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             html = new_value;
             // remove children so will be updated
             $(frontside_element).children(":not(.ui-resizable-handle)").remove(); 
-            if (this.visible()) {
-                TT.DISPLAY_UPDATES.pending_update(this);
-            }
+            this.rerender();
             return true;
         };
         new_element.get_style_attributes = function () {
@@ -164,7 +162,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             if (!on_update_display_handlers) {
                 on_update_display_handlers = [handler];
             } else {
-                on_update_display_handlers[on_update_display_handlers.length] = handler;
+                on_update_display_handlers.push(handler);
             }
         };
         new_element.fire_on_update_display_handlers = function () {
@@ -246,7 +244,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         }
         frontside_element = this.get_frontside_element();
         value = frontside_element.style[attribute];
-        // this caused integer rounding (at least of font-size) $(frontside_element).css(attribute);
+        if (value === "") {
+            // this caused integer rounding (at least of font-size)
+            // but if the above doesn't find a value seems sometimes this does
+            value = $(frontside_element).css(attribute);
+        }
         if (!value) {
             // zero is the default value -- e.g. for transformations such as rotate
             return 0;
@@ -287,9 +289,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                                button_selector: ".toontalk-element-" + attribute + "-attribute-input"});
         }
         this.add_to_css(attribute, new_value);
-        if ($(frontside_element).is(":visible")) {
-            TT.DISPLAY_UPDATES.pending_update(this);
-        }
+        this.rerender();
         return true;
     };
     
@@ -366,7 +366,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     return "the " + this.attribute + " of " + this.element_widget;
                 },
                 get_side_element: function () {
-                    if ($attribute_input.length > 0) {
+                    if ($attribute_input && $attribute_input.length > 0) {
                         return $attribute_input.get(0);
                     }
                 },
@@ -386,6 +386,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     if ($attribute_input) {
                         $attribute_input.val(this.element_widget.get_attribute(this.attribute));
                     }
+                },
+                render: function () {
+                    TT.DISPLAY_UPDATES.pending_update(this);
                 }
         };
         if (TT.debugging) {
@@ -454,16 +457,17 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         var json_attributes = [];
         attributes.forEach(function (item) {
             // don't want them to appear where they were in the source page
-            if (item !== "left" && item !== "top") {
+            // need to revisit this since sometimes we want left and top
+            // maybe when loading don't obey their values
+//             if (item !== "left" && item !== "top") {
                 json_attributes.push(item);
-            }
+//             }
         });
-        return this.add_to_json(
-           {type: "element",
-            html: encodeURIComponent(this.get_HTML()), 
-            attributes: json_attributes,
-            attribute_values: json_attributes.map(this.get_attribute.bind(this))
-            });
+        return {type: "element",
+                html: encodeURIComponent(this.get_HTML()), 
+                attributes: json_attributes,
+                attribute_values: json_attributes.map(this.get_attribute.bind(this))
+                };
     };
     
     element.create_from_json = function (json) {
@@ -524,7 +528,7 @@ window.TOONTALK.element_backside =
             var style_attributes = element_widget.get_style_attributes();
             var frontside_element;
             if (style_attributes.indexOf(attribute) < 0) {
-               style_attributes[style_attributes.length] = attribute;
+               style_attributes.push(attribute);
                // update the backside during drag if 'left' or 'top' are attributes
                if (attribute === 'left') {
                    frontside_element = element_widget.get_frontside_element();
@@ -709,6 +713,7 @@ window.TOONTALK.element_backside =
                 if ($(attributes_chooser).is(":visible")) {
                     update_style_attribute_chooser(attributes_chooser, element_widget, attribute_table);
                 }
+                this.display_updated();
             };
             // if the backside is hidden then so should the attributes chooser
             $(backside_element).find(".toontalk-hide-backside-button").click(function (event) {

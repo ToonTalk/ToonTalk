@@ -154,8 +154,8 @@ window.TOONTALK.path =
                     }
             };
         },
-        path_to_resource_create_from_json: function (json) {
-            return TT.path.get_path_to_resource(TT.UTILITIES.create_from_json(json.resource));
+        path_to_resource_create_from_json: function (json, additional_info) {
+            return TT.path.get_path_to_resource(TT.UTILITIES.create_from_json(json.resource, additional_info));
         },
         get_path_to_backside_widget_of_context: function (type_name) {
              return {dereference: function (context, top_level_context, robot) {

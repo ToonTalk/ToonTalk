@@ -40,16 +40,16 @@ window.TOONTALK.frontside =
                 event.stopPropagation();
             });
             frontside_element.addEventListener("mouseenter", function (event) {
-               var backside = widget.get_backside();
-               if (backside) {
-                   $(backside.get_element()).addClass("toontalk-highlight");
-               }
+                var backside = widget.get_backside();
+                if (backside) {
+                    $(backside.get_element()).addClass("toontalk-highlight");
+                }
             });
             frontside_element.addEventListener("mouseleave", function (event) {
-               var backside = widget.get_backside();
-               if (backside) {
-                   $(backside.get_element()).removeClass("toontalk-highlight");
-               }
+                var backside = widget.get_backside();
+                if (backside) {
+                    $(backside.get_element()).removeClass("toontalk-highlight");
+                }
             });
             if (TT.debugging) {
                 frontside_element.id = widget.debug_id;
@@ -59,6 +59,10 @@ window.TOONTALK.frontside =
         
         update_display: function () {
             return this.get_widget().update_display();
+        },
+        
+        visible: function () {
+            return $(this.get_element()).is(":visible"); 
         },
         
         remove: function() {

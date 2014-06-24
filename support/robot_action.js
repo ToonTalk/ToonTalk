@@ -24,23 +24,28 @@ window.TOONTALK.robot_action =
              robot.set_thing_in_hand(widget_copy);
              return true;
          },
-         "drop it on": function (target_element, context, top_level_context, robot) {
+         "drop it on": function (target, context, top_level_context, robot) {
              var thing_in_hand, thing_in_hand_frontside_element, context_frontside_position;
-             if (target_element) {
+             if (target) {
                  thing_in_hand = robot.get_thing_in_hand();
                  if (thing_in_hand) {
                      if (thing_in_hand.drop_on) {
-                         if (target_element instanceof jQuery) {
+                         if (target instanceof jQuery) {
                              // e.g. dropped on top-level backside
                              thing_in_hand_frontside_element = thing_in_hand.get_frontside_element();
-                             target_element.append(thing_in_hand_frontside_element);
+                             target.append(thing_in_hand_frontside_element);
+                             robot.set_thing_in_hand(undefined);
                          } else {
-                             if (target_element.visible && target_element.visible()) {
-                                 TT.DISPLAY_UPDATES.pending_update(target_element);
+                             if (target.visible && target.visible()) {
+                                 target.render();
                              }
-                             thing_in_hand.drop_on(target_element);
+                             // remove it from the robot's hand since the drop can take a few seconds
+                             // and we don't want to see it in the robot's hand
+                             robot.set_thing_in_hand(undefined);
+                             // update this when robots can drop backsides as well
+                             thing_in_hand.drop_on(target, false, undefined, robot);
+                             robot.rerender();
                          }
-                         robot.set_thing_in_hand(undefined);
                      } else {
                          console.log("Thing in robot's hand doesn't handle 'drop_on': "  + thing_in_hand.toString() + ". Robot that " + robot.toString());
                          return false;
@@ -107,10 +112,11 @@ window.TOONTALK.robot_action =
             left_offset = $(widget_frontside_element).width()/2;
             top_offset = $(widget_frontside_element).height()/-2;
         }
-        robot.animate_to_widget(widget, continuation, left_offset, top_offset);
+        // robots move at 1/4 pixel per millisecond for clarity
+        robot.animate_to_widget(widget, continuation, .25, left_offset, top_offset);
         if (thing_in_hand) {
             // so robot displays what he's holding
-            TT.DISPLAY_UPDATES.pending_update(robot);
+            robot.render();
         }
     };
     var pick_up_animation = function (widget, context, top_level_context, robot, continuation) {
@@ -165,7 +171,8 @@ window.TOONTALK.robot_action =
                 500);
         };
         var animation_continuation = function () {
-            robot.animate_to_element(button_element, new_continuation, 0, -$(robot_frontside_element).height());
+            // robots move at 1/4 pixel per millisecond for clarity
+            robot.animate_to_element(button_element, new_continuation, .25, 0, -$(robot_frontside_element).height());
         }
         if (!button_visible && widget.open_backside) {
             widget.open_backside(animation_continuation);

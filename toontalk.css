@@ -18,8 +18,7 @@
 	-ms-transition: all 2s;  
 	-o-transition: all 2s;  */
 /* 	following from http://easings.net/#easeInOutQuint */
-/* add_one_shot_transition_end_handler waits 2.5 seconds in case the following transitions didn't fire */
-/* If the duration is changed also change it there */
+    position: absolute; 
 	-webkit-transition: all 2s cubic-bezier(0.86, 0, 0.07, 1);
     transition:         all 2s cubic-bezier(0.86, 0, 0.07, 1);
 }
@@ -31,6 +30,13 @@
 /* .toontalk-side:active {
 	border: solid 2px red;
 } */
+.toontalk-robot {
+/* 	will be animated later */
+	background-image: url("images/robot.png");
+	background-repeat: no-repeat;
+	width:  100px;
+	height: 167px;
+}
 .toontalk-robot-animating {
 	opacity: .8;
 }
@@ -44,8 +50,8 @@
 	border-radius: 10px;
 	/* leave room at the bottom for hide buttons, etc. */
 	padding-bottom: 6px;
-	padding-top:  6px;
-	padding-left:  6px;
+	padding-top:    6px;
+	padding-left:   6px;
 	padding-right:  6px;
 }
 .toontalk-backside-of-number {
@@ -69,7 +75,7 @@
 	border: none;
 	padding: 4px;
 	/* while testing: */
-	width: 20%;
+	width:  20%;
 	height: 10%;
 }
 .toontalk-json {
@@ -84,13 +90,13 @@
 	/* resize:  both; */
 }
 .toontalk-frontside-in-box {
-	width: 100%;
+	width:  100%;
 	height: 100%;
 }
 .toontalk-widget {
 	width:  100%;
-	height:  100%;
-	min-width: 100%;
+	height: 100%;
+	min-width:  100%;
 	min-height: 100%;
 	display: inline-block;
 }
@@ -100,23 +106,23 @@
     width:  100%;	
 	height: 100%;
 	min-height: 100%;
-	min-width: 100%;
+	min-width:  100%;
 	padding: 0px;
 	border-collapse: collapse;
 }
 .toontalk-box-horizontal {
 }
 .toontalk-box-hole {
-	width: 100%;
+	width:  100%;
 	height: 100%;
 	border-color: rgb(137, 15, 239);
 	padding: 0;
 }
 .toontalk-box-hole-horizontal {
 	border-style: solid;
-	border-left-width: 0px;
-	border-right-width: 6px;
-	border-top-width: 6px;
+	border-left-width:   0px;
+	border-right-width:  6px;
+	border-top-width:    6px;
 	border-bottom-width: 6px;
 	min-height: 100%;
 }
@@ -125,7 +131,7 @@
 }
 .toontalk-box-hole-vertical {
 	border-style: solid;
-	border-left-width: 6px;
+	border-left-width:  6px;
 	border-right-width: 6px;
 	border-top-width: 0px;
 	border-bottom-width: 6px;
@@ -136,19 +142,19 @@
 	border-top-width: 6px;
 }
 .toontalk-empty-hole {
-	width: 100%;
+	width:  100%;
 	height: 100%;
+	min-width:  100%;
 	min-height: 100%;
-	min-width: 100%;
 	background-color: rgb(231, 215, 241);
 }
 .toontalk-top-level-number {
 	/* numbers look better with fixed widths -- easier to compare visually */
 	font-family: monospace;
 	background-color: rgb(190, 244, 206);
-	width: 100%;
+	width:  100%;
 	height: 100%;
-	min-width: 100%;
+	min-width:  100%;
 	min-height: 100%;
 	/* border-width: 2px; */
 	/* border-color: rgb(96, 173, 43); */
@@ -179,7 +185,7 @@
 }
 .toontalk-fraction-line {
 	width: 40%;
-	font-size:  1px;
+	font-size: 1px;
 }
 .toontalk-denominator {
 }
@@ -197,9 +203,9 @@
 	font-family: serif; /* really want to ignore the monospace */
 }
 .toontalk-hole-about-to-be-replaced {
-	width: 100%;
+	width:  100%;
 	height: 100%;
-	min-width: 100%;
+	min-width:  100%;
 	min-height: 100%;
 }
 .toontalk-operator-choice {
@@ -210,13 +216,13 @@
 	width: 30em;
 	text-align: inherit;
 }
-.toontalk-robot-image {
+/* .toontalk-robot-image, .toontalk-bird-image, .toontalk-nest-image {
     max-width: 100%; max-height:100%;
-}
-.toontalk-image-url-input {
+} */
+/* .toontalk-image-url-input {
 	width: 30em;
 	text-align: inherit;
-}
+} */
 /* .toontalk-frontside-conditions {
     background-image: url(images/BUBBL10.96x96.PNG);
 	background-repeat: no-repeat;
@@ -225,7 +231,8 @@
 }
 */
 .toontalk-conditions-contents {
-
+	width:  100%;
+	height: 100%;
 }
 .toontalk-conditions-contents-container {
 /* 	Can't add the border to toontalk-conditions-contents because erased elements have 0 opacity */
@@ -252,7 +259,7 @@
 	vertical-align: middle;
 }
 .toontalk-widget-in-drop_area {
-	width: 32px;
+	width:  32px;
 	height: 32px;
 	display:  inline-block;
 	vertical-align: middle;
@@ -262,10 +269,11 @@
 	box-shadow: 10px 5px 5px black;
 }
 .toontalk-resource-table {
-	padding: 8px;
+	padding: 4px;
+	text-align: center;
 }
 .toontalk-resource-table td {
-	width: 200px;
+/* 	width: 200px; */
 }
 .toontalk-text {
 	background-color: white;
@@ -294,4 +302,464 @@
 }
 .toontalk-ignore-events {
 	pointer-events: none;
+}
+.toontalk-widget-on-nest {
+	left: 0;
+	top: 0;
+	width:  100%;
+	height: 100%;
+}
+.toontalk-carried-by-bird {
+    position: absolute;
+	left: 0;
+	top: 70px;
+/* 	width: 25%;
+	height: 25%; */
+}
+.toontalk-nest-with-egg {
+/* 	display just the first frame */
+    width:  116px;
+    height: 141px;
+    background-image: url("images/hatch-egg-strip.png");
+}
+.toontalk-nest-with-egg.toontalk-top-level-resource {
+/* 	otherwise extra white space appears in the resource area */
+    margin-top: -43px;
+}
+.toontalk-empty-nest {
+	background-image: url("images/empty-nest.png");
+	background-repeat: no-repeat;
+	margin-top: 43px;
+	width: 116px;
+	height: 98px;
+/* 	display just the last frame */
+/*     width:  116px;
+    height: 141px;
+    background-image: url("images/hatch-egg-strip.png");
+	background-position: -1628px; */
+}
+.toontalk-empty-nest.toontalk-frontside-in-box {
+	margin-top: 0px;
+}
+.toontalk-hatch-egg {
+    width:  116px;
+    height: 141px;
+	margin-top: -8px;
+    background-image: url("images/hatch-egg-strip.png");
+	-webkit-animation: hatch-egg 2s steps(15) forwards;
+       -moz-animation: hatch-egg 2s steps(15) forwards;
+        -ms-animation: hatch-egg 2s steps(15) forwards;
+         -o-animation: hatch-egg 2s steps(15) forwards;
+            animation: hatch-egg 2s steps(15) forwards;
+/*  attempted to scale the full size version:
+    transform: scale(0.625);
+    transform-origin: center; */
+}
+@-webkit-keyframes hatch-egg {
+   from { background-position:     0px; }
+     to { background-position: -1744px; }
+}
+
+@-moz-keyframes hatch-egg {
+   from { background-position:     0px; }
+     to { background-position: -1744px; }
+}
+
+@-ms-keyframes hatch-egg {
+   from { background-position:     0px; }
+     to { background-position: -1744px; }
+}
+
+@-o-keyframes hatch-egg {
+   from { background-position:     0px; }
+     to { background-position: -1744px; }
+}
+
+@keyframes hatch-egg {
+   from { background-position:     0px; }
+     to { background-position: -1744px; }
+}
+
+.toontalk-bird-waiting {
+	background-image: url("images/gimme.png");
+	background-repeat: no-repeat;
+	width: 88px;
+	height: 118px;
+/* 	display just the last frame */
+/*     width:  150px;
+    height: 127px;
+    background-image: url("images/fly-down.png");
+	background-position: -598px; */
+}
+
+.toontalk-fly-down {
+    width:  150px;
+    height: 127px;
+    background-image: url("images/fly-down.png");
+	-webkit-animation: fly-down 1s steps(5) forwards;
+       -moz-animation: fly-down 1s steps(5) forwards;
+        -ms-animation: fly-down 1s steps(5) forwards;
+         -o-animation: fly-down 1s steps(5) forwards;
+            animation: fly-down 1s steps(5) forwards;
+}
+@-webkit-keyframes fly-down {
+   from { background-position:    0px; }
+     to { background-position: -747px; }
+}
+
+@-moz-keyframes fly-down {
+   from { background-position:    0px; }
+     to { background-position: -747px; }
+}
+
+@-ms-keyframes fly-down {
+   from { background-position:    0px; }
+     to { background-position: -747px; }
+}
+
+@-o-keyframes fly-down {
+   from { background-position:    0px; }
+     to { background-position: -747px; }
+}
+
+@keyframes fly-down {
+   from { background-position:    0px; }
+     to { background-position: -747px; }
+}
+
+.toontalk-bammer-away {
+    width:  204px;
+    height: 246px;
+	position: absolute;
+    background-image: url("images/bammer-away.png");
+	-webkit-animation: bammer-away 1s steps(9) infinite;
+       -moz-animation: bammer-away 1s steps(9) infinite;
+        -ms-animation: bammer-away 1s steps(9) infinite;
+         -o-animation: bammer-away 1s steps(9) infinite;
+            animation: bammer-away 1s steps(9) infinite;
+}
+@-webkit-keyframes bammer-away {
+   from { background-position:     0px; }
+     to { background-position: -1836px; }
+}
+
+@-moz-keyframes bammer-away {
+   from { background-position:     0px; }
+     to { background-position: -1836px; }
+}
+
+@-ms-keyframes bammer-away {
+   from { background-position:     0px; }
+     to { background-position: -1836px; }
+}
+
+@-o-keyframes bammer-away {
+   from { background-position:     0px; }
+     to { background-position: -1836px; }
+}
+
+.toontalk-bammer-down {
+    width:  165px;
+    height: 296px;
+    position: absolute;
+    background-image: url("images/bammer-down.png");
+	-webkit-animation: bammer-down 2s steps(12) forwards;
+       -moz-animation: bammer-down 2s steps(12) forwards;
+        -ms-animation: bammer-down 2s steps(12) forwards;
+         -o-animation: bammer-down 2s steps(12) forwards;
+            animation: bammer-down 2s steps(12) forwards;
+}
+@-webkit-keyframes bammer-down {
+   from { background-position:    0px; }
+     to { background-position: -1980px; }
+}
+
+@-moz-keyframes bammer-down {
+   from { background-position:    0px; }
+     to { background-position: -1980px; }
+}
+
+@-ms-keyframes bammer-down {
+   from { background-position:    0px; }
+     to { background-position: -1980px; }
+}
+
+@-o-keyframes bammer-down {
+   from { background-position:    0px; }
+     to { background-position: -1980px; }
+}
+
+@keyframes bammer-down {
+   from { background-position:    0px; }
+     to { background-position: -1980px; }
+}
+
+.toontalk-fly-southwest {
+    width:  126px;
+    height: 127px;
+    background-image: url("images/fly-southwest.png");
+	-webkit-animation: fly-southwest 1.0s steps(6) infinite;
+       -moz-animation: fly-southwest 1.0s steps(6) infinite;
+        -ms-animation: fly-southwest 1.0s steps(6) infinite;
+         -o-animation: fly-southwest 1.0s steps(6) infinite;
+            animation: fly-southwest 1.0s steps(6) infinite;
+}
+@-webkit-keyframes fly-southwest {
+   from { background-position:    0px; }
+     to { background-position: -756px; }
+}
+
+@-moz-keyframes fly-southwest {
+   from { background-position:    0px; }
+     to { background-position: -756px; }
+}
+
+@-ms-keyframes fly-southwest {
+   from { background-position:    0px; }
+     to { background-position: -756px; }
+}
+
+@-o-keyframes fly-southwest {
+   from { background-position:    0px; }
+     to { background-position: -756px; }
+}
+
+@keyframes fly-southwest {
+   from { background-position:    0px; }
+     to { background-position: -756px; }
+}
+
+.toontalk-fly-south {
+    width:  173px;
+    height: 140px;
+    background-image: url("images/fly-south.png");
+	-webkit-animation: fly-south 1.0s steps(6) infinite;
+       -moz-animation: fly-south 1.0s steps(6) infinite;
+        -ms-animation: fly-south 1.0s steps(6) infinite;
+         -o-animation: fly-south 1.0s steps(6) infinite;
+            animation: fly-south 1.0s steps(6) infinite;
+}
+@-webkit-keyframes fly-south {
+   from { background-position:    0px; }
+     to { background-position: -1038px; }
+}
+
+@-moz-keyframes fly-south {
+   from { background-position:    0px; }
+     to { background-position: -1038px; }
+}
+
+@-ms-keyframes fly-south {
+   from { background-position:    0px; }
+     to { background-position: -1038px; }
+}
+
+@-o-keyframes fly-south {
+   from { background-position:    0px; }
+     to { background-position: -1038px; }
+}
+
+@keyframes fly-south {
+   from { background-position:    0px; }
+     to { background-position: -1038px; }
+}
+
+.toontalk-fly-southeast {
+    width:  141px;
+    height: 164px;
+    background-image: url("images/fly-southeast.png");
+	-webkit-animation: fly-southeast 1.0s steps(6) infinite;
+       -moz-animation: fly-southeast 1.0s steps(6) infinite;
+        -ms-animation: fly-southeast 1.0s steps(6) infinite;
+         -o-animation: fly-southeast 1.0s steps(6) infinite;
+            animation: fly-southeast 1.0s steps(6) infinite;
+}
+@-webkit-keyframes fly-southeast {
+   from { background-position:    0px; }
+     to { background-position: -847px; }
+}
+
+@-moz-keyframes fly-southeast {
+   from { background-position:    0px; }
+     to { background-position: -847px; }
+}
+
+@-ms-keyframes fly-southeast {
+   from { background-position:    0px; }
+     to { background-position: -847px; }
+}
+
+@-o-keyframes fly-southeast {
+   from { background-position:    0px; }
+     to { background-position: -847px; }
+}
+
+@keyframes fly-southeast {
+   from { background-position:    0px; }
+     to { background-position: -847px; }
+}
+
+.toontalk-fly-west {
+    width:  161px;
+    height: 132px;
+    background-image: url("images/fly-west.png");
+	-webkit-animation: fly-west 1.0s steps(6) infinite;
+       -moz-animation: fly-west 1.0s steps(6) infinite;
+        -ms-animation: fly-west 1.0s steps(6) infinite;
+         -o-animation: fly-west 1.0s steps(6) infinite;
+            animation: fly-west 1.0s steps(6) infinite;
+}
+@-webkit-keyframes fly-west {
+   from { background-position:    0px; }
+     to { background-position: -970px; }
+}
+
+@-moz-keyframes fly-west {
+   from { background-position:    0px; }
+     to { background-position: -970px; }
+}
+
+@-ms-keyframes fly-west {
+   from { background-position:    0px; }
+     to { background-position: -970px; }
+}
+
+.toontalk-fly-northwest {
+    width:  150px;
+    height: 133px;
+    background-image: url("images/fly-northwest.png");
+	-webkit-animation: fly-northwest 1.0s steps(6) infinite;
+       -moz-animation: fly-northwest 1.0s steps(6) infinite;
+        -ms-animation: fly-northwest 1.0s steps(6) infinite;
+         -o-animation: fly-northwest 1.0s steps(6) infinite;
+            animation: fly-northwest 1.0s steps(6) infinite;
+}
+@-webkit-keyframes fly-northwest {
+   from { background-position:    0px; }
+     to { background-position: -899px; }
+}
+
+@-moz-keyframes fly-northwest {
+   from { background-position:    0px; }
+     to { background-position: -899px; }
+}
+
+@-ms-keyframes fly-northwest {
+   from { background-position:    0px; }
+     to { background-position: -899px; }
+}
+
+@-o-keyframes fly-northwest {
+   from { background-position:    0px; }
+     to { background-position: -899px; }
+}
+
+@keyframes fly-northwest {
+   from { background-position:    0px; }
+     to { background-position: -899px; }
+}
+
+.toontalk-fly-north {
+    width:  161px;
+    height: 164px;
+    background-image: url("images/fly-north.png");
+	-webkit-animation: fly-north 1.0s steps(6) infinite;
+       -moz-animation: fly-north 1.0s steps(6) infinite;
+        -ms-animation: fly-north 1.0s steps(6) infinite;
+         -o-animation: fly-north 1.0s steps(6) infinite;
+            animation: fly-north 1.0s steps(6) infinite;
+}
+@-webkit-keyframes fly-north {
+   from { background-position:    0px; }
+     to { background-position: -966px; }
+}
+
+@-moz-keyframes fly-north {
+   from { background-position:    0px; }
+     to { background-position: -966px; }
+}
+
+@-ms-keyframes fly-north {
+   from { background-position:    0px; }
+     to { background-position: -966px; }
+}
+
+@-o-keyframes fly-north {
+   from { background-position:    0px; }
+     to { background-position: -966px; }
+}
+
+@keyframes fly-north {
+   from { background-position:    0px; }
+     to { background-position: -966px; }
+}
+
+.toontalk-fly-northeast {
+    width:  163px;
+    height: 147px;
+    background-image: url("images/fly-northeast.png");
+	-webkit-animation: fly-northeast 1.0s steps(6) infinite;
+       -moz-animation: fly-northeast 1.0s steps(6) infinite;
+        -ms-animation: fly-northeast 1.0s steps(6) infinite;
+         -o-animation: fly-northeast 1.0s steps(6) infinite;
+            animation: fly-northeast 1.0s steps(6) infinite;
+}
+@-webkit-keyframes fly-northeast {
+   from { background-position:    0px; }
+     to { background-position: -978px; }
+}
+
+@-moz-keyframes fly-northeast {
+   from { background-position:    0px; }
+     to { background-position: -978px; }
+}
+
+@-ms-keyframes fly-northeast {
+   from { background-position:    0px; }
+     to { background-position: -978px; }
+}
+
+@-o-keyframes fly-northeast {
+   from { background-position:    0px; }
+     to { background-position: -978px; }
+}
+
+@keyframes fly-northeast {
+   from { background-position:    0px; }
+     to { background-position: -978px; }
+}
+
+.toontalk-fly-east {
+    width:  168px;
+    height: 139px;
+    background-image: url("images/fly-east.png");
+	-webkit-animation: fly-east 1.0s steps(6) infinite;
+       -moz-animation: fly-east 1.0s steps(6) infinite;
+        -ms-animation: fly-east 1.0s steps(6) infinite;
+         -o-animation: fly-east 1.0s steps(6) infinite;
+            animation: fly-east 1.0s steps(6) infinite;
+}
+@-webkit-keyframes fly-east {
+   from { background-position:    0px; }
+     to { background-position: -1010px; }
+}
+
+@-moz-keyframes fly-east {
+   from { background-position:    0px; }
+     to { background-position: -1010px; }
+}
+
+@-ms-keyframes fly-east {
+   from { background-position:    0px; }
+     to { background-position: -1010px; }
+}
+
+@-o-keyframes fly-east {
+   from { background-position:    0px; }
+     to { background-position: -1010px; }
+}
+
+@keyframes fly-east {
+   from { background-position:    0px; }
+     to { background-position: -1010px; }
 }

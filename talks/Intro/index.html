@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head>
+<link rel="stylesheet" media="all" href="../../libraries/jquery-ui-1.10.4.custom/css/sunny/jquery-ui-1.10.4.custom.css">
+<link rel="stylesheet" media="all" href="../../toontalk.css">
+<script src="../../libraries/jquery-2.1.0.js"></script>
+<script src="../../libraries/jquery-ui-1.10.4.custom/js/jquery-ui-1.10.4.custom.js"></script>
+<!--  not really using this
+<script src="../../libraries/jquery.ui.touch-punch.min.js"></script>
+--->
+<script src="../../libraries/rationaljs.js"></script>
+<script src="../../support/initial.js"></script>
+<script src="../../primitives/widget.js"></script>
+<script src="../../primitives/number.js"></script>
+<script src="../../primitives/robot.js"></script>
+<script src="../../primitives/box.js"></script>
+<script src="../../primitives/element.js"></script>
+<script src="../../primitives/bird.js"></script>
+<script src="../../primitives/backside.js"></script>
+<script src="../../primitives/frontside.js"></script>
+<script src="../../support/robot_actions.js"></script>
+<script src="../../support/robot_action.js"></script>
+<script src="../../support/path.js"></script>
+<script src="../../support/run_queue.js"></script>
+<script src="../../support/display_updates.js"></script>
+<!-- following should be after all the primitive widgets are defined --->
+<script src="../../support/utilities.js"></script>
+<!-- following only including during development/testing --->
+<script src="../../tests/tests.js"></script>
+<title>Title Slide - ToonTalk Reborn</title>
+<link rel="shortcut icon" href="favicon.ico" />
+</head>
+<body class='ui-widget'>
+
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "element",
+            "html": "%3Ch1%20class%3D%22ui-widget%20toontalk-side-animating%22%20style%3D%22font-family%3A%20'Segoe%20UI'%2C%20Arial%2C%20sans-serif%3B%20font-size%3A%201em%3B%20color%3A%20rgb(0%2C%200%2C%200)%3B%20font-style%3A%20normal%3B%20font-variant%3A%20normal%3B%20letter-spacing%3A%20normal%3B%20line-height%3A%20normal%3B%20orphans%3A%20auto%3B%20text-align%3A%20start%3B%20text-indent%3A%200px%3B%20text-transform%3A%20none%3B%20white-space%3A%20normal%3B%20widows%3A%20auto%3B%20word-spacing%3A%200px%3B%20-webkit-text-stroke-width%3A%200px%3B%22%3ETOONTALK%20REBORN%3Cbr%3ERe-implementing%20and%20re-conceptualising%20ToonTalk%3Cbr%3Efor%20the%20Web%3Cbr%3E%3Cbr%3EKen%20Kahn%20%26lt%3Btoontalk%40gmail.com%26gt%3B%3Cbr%3EUniversity%20of%20Oxford%3C%2Fh1%3E",
+            "attributes": [
+              "font-size",
+              "left",
+              "top"
+            ],
+            "attribute_values": [
+              "3",
+              "18",
+              "19"
+            ],
+            "backside_widgets": [
+              {
+                "widget": {
+                  "semantic": {
+                    "type": "robot",
+                    "frontside_conditions": {
+                      "semantic": {
+                        "type": "element",
+                        "html": "%3Ch1%20class%3D%22ui-widget%20toontalk-side-animating%22%20style%3D%22font-family%3A%20'Segoe%20UI'%2C%20Arial%2C%20sans-serif%3B%20font-size%3A%201em%3B%20color%3A%20rgb(0%2C%200%2C%200)%3B%20font-style%3A%20normal%3B%20font-variant%3A%20normal%3B%20letter-spacing%3A%20normal%3B%20line-height%3A%20normal%3B%20orphans%3A%20auto%3B%20text-align%3A%20start%3B%20text-indent%3A%200px%3B%20text-transform%3A%20none%3B%20white-space%3A%20normal%3B%20widows%3A%20auto%3B%20word-spacing%3A%200px%3B%20-webkit-text-stroke-width%3A%200px%3B%22%3ETOONTALK%20REBORN%3Cbr%3ERe-implementing%20and%20re-conceptualising%20ToonTalk%3Cbr%3Efor%20the%20Web%3Cbr%3E%3Cbr%3EKen%20Kahn%20%26lt%3Btoontalk%40gmail.com%26gt%3B%3Cbr%3EUniversity%20of%20Oxford%3C%2Fh1%3E",
+                        "attributes": [
+                          "font-size"
+                        ],
+                        "attribute_values": [
+                          0
+                        ],
+                        "erased": true
+                      },
+                      "view": {
+                        "frontside_width": 0,
+                        "frontside_height": 0,
+                        "backside_geometry": {
+                          "x_scale": 1,
+                          "y_scale": 1,
+                          "original_width": 325.8125,
+                          "original_height": 289
+                        }
+                      },
+                      "version": 1
+                    },
+                    "body": {
+                      "type": "body",
+                      "steps": [
+                        {
+                          "type": "robot_action",
+                          "action_name": "edit",
+                          "path": {
+                            "type": "path.to_entire_context"
+                          },
+                          "additional_info": {
+                            "setter_name": "set_attribute",
+                            "argument_1": "font-size",
+                            "argument_2": 36,
+                            "toString": "change the 'font-size' style to 36 of",
+                            "button_selector": ".toontalk-element-font-size-attribute-input"
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "edit",
+                          "path": {
+                            "type": "path.to_entire_context"
+                          },
+                          "additional_info": {
+                            "setter_name": "set_attribute",
+                            "argument_1": "left",
+                            "argument_2": 30,
+                            "toString": "change the 'left' style to 30 of",
+                            "button_selector": ".toontalk-element-left-attribute-input"
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "edit",
+                          "path": {
+                            "type": "path.to_entire_context"
+                          },
+                          "additional_info": {
+                            "setter_name": "set_attribute",
+                            "argument_1": "left",
+                            "argument_2": 350,
+                            "toString": "change the 'left' style to 350 of",
+                            "button_selector": ".toontalk-element-left-attribute-input"
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "edit",
+                          "path": {
+                            "type": "path.to_entire_context"
+                          },
+                          "additional_info": {
+                            "setter_name": "set_attribute",
+                            "argument_1": "top",
+                            "argument_2": 3,
+                            "toString": "change the 'top' style to 3 of",
+                            "button_selector": ".toontalk-element-top-attribute-input"
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "edit",
+                          "path": {
+                            "type": "path.to_entire_context"
+                          },
+                          "additional_info": {
+                            "setter_name": "set_attribute",
+                            "argument_1": "top",
+                            "argument_2": 30,
+                            "toString": "change the 'top' style to 30 of",
+                            "button_selector": ".toontalk-element-top-attribute-input"
+                          }
+                        }
+                      ]
+                    },
+                    "run_once": true
+                  },
+                  "view": {
+                    "description": "",
+                    "frontside_width": 66,
+                    "frontside_height": 110,
+                    "backside_geometry": {
+                      "x_scale": 1,
+                      "y_scale": 1,
+                      "original_width": 632,
+                      "original_height": 194
+                    },
+                    "frontside_left": 402,
+                    "frontside_top": 112
+                  },
+                  "version": 1
+                },
+                "is_backside": false
+              }
+            ]
+          },
+          "view": {
+            "frontside_width": 0,
+            "frontside_height": 0,
+            "backside_geometry": {
+              "x_scale": 1.7733755942947722,
+              "y_scale": 2.0958904109589063,
+              "original_width": 315.5,
+              "original_height": 146
+            }
+          },
+          "version": 1
+        },
+        "is_backside": false
+      }
+    ]
+  },
+  "view": {
+    "background_color": "white",
+    "border_width": "0px",
+    "frontside_width": 0,
+    "frontside_height": 0,
+    "backside_width": 1196,
+    "backside_height": 511,
+    "backside_left": 8,
+    "backside_top": 178,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1
+    },
+    "drag_x_offset": 957,
+    "drag_y_offset": 407,
+    "backside": true
+  },
+  "version": 1
+}</div>
+<a href="history.html?reset=1">NEXT</a>
+</body>
+</html>

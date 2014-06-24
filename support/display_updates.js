@@ -16,6 +16,7 @@ window.TOONTALK.DISPLAY_UPDATES =
                 return;
             }
             if (pending_updates.indexOf(x) >= 0) {
+                // already scheduled to be rendered
                 return;
             }
             pending_updates.push(x);
@@ -25,10 +26,19 @@ window.TOONTALK.DISPLAY_UPDATES =
             var updates = pending_updates;
             pending_updates = [];
             if (updates.length === 0) {
+                // does this save the work of creating the closure in the forEach?
                 return;
             }
             updates.forEach(function (pending_update) {
+                var frontside_element = pending_update.get_frontside_element && pending_update.get_frontside_element();
                 pending_update.update_display();
+                if (!$(frontside_element).is(".toontalk-top-level-resource, .ui-resizable, .toontalk-bird, .toontalk-nest, .toontalk-robot, .toontalk-widget, .toontalk-held-by-robot")) {
+                    // need to delay in order for the DOM to settle down with the changes caused by update_display
+                    setTimeout(function () {
+                            TT.UTILITIES.make_resizable($(frontside_element), pending_update);
+                        },
+                        1);   
+                }                  
             });
         },
         

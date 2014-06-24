@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head>
+<link rel="stylesheet" media="all" href="../../libraries/jquery-ui-1.10.4.custom/css/sunny/jquery-ui-1.10.4.custom.css">
+<link rel="stylesheet" media="all" href="../../toontalk.css">
+<script src="../../libraries/jquery-2.1.0.js"></script>
+<script src="../../libraries/jquery-ui-1.10.4.custom/js/jquery-ui-1.10.4.custom.js"></script>
+<!--  not really using this
+<script src="../../libraries/jquery.ui.touch-punch.min.js"></script>
+--->
+<script src="../../libraries/rationaljs.js"></script>
+<script src="../../support/initial.js"></script>
+<script src="../../primitives/widget.js"></script>
+<script src="../../primitives/number.js"></script>
+<script src="../../primitives/robot.js"></script>
+<script src="../../primitives/box.js"></script>
+<script src="../../primitives/element.js"></script>
+<script src="../../primitives/bird.js"></script>
+<script src="../../primitives/backside.js"></script>
+<script src="../../primitives/frontside.js"></script>
+<script src="../../support/robot_actions.js"></script>
+<script src="../../support/robot_action.js"></script>
+<script src="../../support/path.js"></script>
+<script src="../../support/run_queue.js"></script>
+<script src="../../support/display_updates.js"></script>
+<!-- following should be after all the primitive widgets are defined --->
+<script src="../../support/utilities.js"></script>
+<!-- following only including during development/testing --->
+<script src="../../tests/tests.js"></script>
+<title>Who for - ToonTalk Reborn</title>
+<link rel="shortcut icon" href="favicon.ico" />
+</head>
+<body class='ui-widget'>
+
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "top_level",
+    "running": true,
+    "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "element",
+            "html": "%3Cdiv%20class%3D'ui-widget%20toontalk-side-animating'%3E%0A%3Ch1%3EWho%20is%20ToonTalk%20Reborn%20for%3F%3C%2Fh1%3E%0A%3Col%3E%0A%3Cli%3E%0ALearners%20of%20computational%20thinking%20and%20computer%20science%0A%3C%2Fli%3E%0A%3Cli%3E%0AWeb%20page%20authors%20who%20want%20to%20create%20and%20incorporate%20interactive%20widgets%0A%3C%2Fli%3E%0A%3Cli%3E%0AMakers%20of%20computer%20games%0A%3C%2Fli%3E%0A%3Cli%3E%0AIlliterate%20users%0A%3C%2Fli%3E%0A%3Cli%3E%0AOff-line%20users%0A%3C%2Fli%3E%0A%3Cli%3E%0AOpen%20source%20community%0A%3C%2Fli%3E%0A%3Cli%3E%0ABeginning%20agent-based%20modellers%0A%3C%2Fli%3E%0A%3C%2Fol%3E%0A%3C%2Fdiv%3E",
+            "attributes": [
+              "width",
+              "font-size"
+            ],
+            "attribute_values": [
+              "30.01",
+              "30"
+            ],
+            "backside_widgets": [
+              {
+                "widget": {
+                  "semantic": {
+                    "type": "number",
+                    "operator": "+",
+                    "numerator": "1",
+                    "denominator": "10",
+                    "format": "improper_fraction",
+                    "infinite_stack": true
+                  },
+                  "view": {
+                    "frontside_width": 172,
+                    "frontside_height": 66,
+                    "backside_geometry": {
+                      "x_scale": 1,
+                      "y_scale": 1,
+                      "original_width": 487,
+                      "original_height": 220
+                    }
+                  },
+                  "version": 1
+                },
+                "is_backside": false
+              },
+              {
+                "widget": {
+                  "semantic": {
+                    "type": "robot",
+                    "frontside_conditions": {
+                      "semantic": {
+                        "type": "element",
+                        "html": "%3Cdiv%20class%3D'ui-widget%20toontalk-side-animating'%3E%0A%3Ch1%3EWho%20is%20ToonTalk%20Reborn%20for%3F%3C%2Fh1%3E%0A%3Col%3E%0A%3Cli%3E%0ALearners%20of%20computational%20thinking%20and%20computer%20science%0A%3C%2Fli%3E%0A%3Cli%3E%0AWeb%20page%20authors%20who%20want%20to%20create%20and%20incorporate%20interactive%20widgets%0A%3C%2Fli%3E%0A%3Cli%3E%0AMakers%20of%20computer%20games%0A%3C%2Fli%3E%0A%3Cli%3E%0AIlliterate%20users%0A%3C%2Fli%3E%0A%3Cli%3E%0AOff-line%20users%0A%3C%2Fli%3E%0A%3Cli%3E%0AOpen%20source%20community%0A%3C%2Fli%3E%0A%3Cli%3E%0ABeginning%20agent-based%20modellers%0A%3C%2Fli%3E%0A%3C%2Fol%3E%0A%3C%2Fdiv%3E",
+                        "attributes": [
+                          "width",
+                          "font-size"
+                        ],
+                        "attribute_values": [
+                          "0",
+                          0
+                        ]
+                      },
+                      "view": {
+                        "frontside_width": 0,
+                        "frontside_height": 0
+                      },
+                      "version": 1
+                    },
+                    "backside_conditions": {
+                      "number": {
+                        "semantic": {
+                          "type": "number",
+                          "operator": "+",
+                          "numerator": "1",
+                          "denominator": "100",
+                          "format": "improper_fraction",
+                          "erased": true
+                        },
+                        "view": {
+                          "frontside_width": 0,
+                          "frontside_height": 0,
+                          "backside_geometry": {
+                            "x_scale": 1,
+                            "y_scale": 1,
+                            "original_width": 487,
+                            "original_height": 220
+                          }
+                        },
+                        "version": 1
+                      }
+                    },
+                    "body": {
+                      "type": "body",
+                      "steps": [
+                        {
+                          "type": "robot_action",
+                          "action_name": "pick up a copy of",
+                          "path": {
+                            "type": "path.to_backside_widget_of_context",
+                            "type_name": "number"
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "drop it on",
+                          "path": {
+                            "type": "path_to_style_attribute",
+                            "attribute": "width",
+                            "element_widget_path": {
+                              "type": "path.to_entire_context"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "view": {
+                    "description": "",
+                    "frontside_width": 66,
+                    "frontside_height": 110,
+                    "backside_geometry": {
+                      "x_scale": 1,
+                      "y_scale": 0.7269503546099294,
+                      "original_width": 632,
+                      "original_height": 194
+                    }
+                  },
+                  "version": 1
+                },
+                "is_backside": false
+              }
+            ]
+          },
+          "view": {
+            "frontside_width": 10,
+            "frontside_height": 0,
+            "frontside_left": 136,
+            "frontside_top": -47,
+            "backside_geometry": {
+              "x_scale": 2.1912225705329167,
+              "y_scale": 1.10617070620644,
+              "original_width": 319,
+              "original_height": 242
+            }
+          },
+          "version": 1
+        },
+        "is_backside": false
+      }
+    ]
+  },
+  "view": {
+    "background_color": "white",
+    "border_width": "0px",
+    "frontside_width": 0,
+    "frontside_height": 0,
+    "backside_width": 1196,
+    "backside_height": 511,
+    "backside_left": 8,
+    "backside_top": 178,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1
+    },
+    "drag_x_offset": 978,
+    "drag_y_offset": 160,
+    "backside": true
+  },
+  "version": 1
+}</div>
+
+<a href="the-future.html?reset=1">NEXT</a>
+</body>
+</html>
