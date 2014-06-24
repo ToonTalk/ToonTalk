@@ -365,16 +365,23 @@ window.TOONTALK.widget = (function (TT) {
                     backside_widgets_json_views = this.get_backside_widgets_json_views();
                     if (backside_widgets_json_views) {
                        backside_widgets_json_views.forEach(function (backside_widget_view, index) {
+                           var json_view, widget_index;
                            backside_widget_side = json_semantic.backside_widgets[index];
+                           if (backside_widget_side.widget.shared_widget_index >= 0) {
+                               widget_index = json_history.widgets_encountered.indexOf(backside_widget_side.widget);
+                               json_view = json_history.json_of_widgets_encountered[widget_index].view;
+                           } else {
+                               json_view = backside_widget_side.widget.view;
+                           }
                            if (backside_widget_side.is_backside) {
                                if (backside_widget_view.backside_left) {
-                                   backside_widget_side.widget.view.backside_left = backside_widget_view.backside_left;
-                                   backside_widget_side.widget.view.backside_top = backside_widget_view.backside_top;
+                                   json_view.backside_left = backside_widget_view.backside_left;
+                                   json_view.backside_top = backside_widget_view.backside_top;
                                }
                            } else {
                                if (backside_widget_view.frontside_left) {
-                                   backside_widget_side.widget.view.frontside_left = backside_widget_view.frontside_left;
-                                   backside_widget_side.widget.view.frontside_top = backside_widget_view.frontside_top;
+                                   json_view.frontside_left = backside_widget_view.frontside_left;
+                                   json_view.frontside_top = backside_widget_view.frontside_top;
                                }
                            }
                        });
