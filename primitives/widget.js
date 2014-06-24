@@ -368,7 +368,7 @@ window.TOONTALK.widget = (function (TT) {
                            var json_view, widget_index;
                            backside_widget_side = json_semantic.backside_widgets[index];
                            if (backside_widget_side.widget.shared_widget_index >= 0) {
-                               widget_index = json_history.widgets_encountered.indexOf(backside_widget_side.widget);
+                               widget_index = json_history.widgets_encountered.indexOf(json_history.shared_widgets[backside_widget_side.widget.shared_widget_index]);
                                json_view = json_history.json_of_widgets_encountered[widget_index].view;
                            } else {
                                json_view = backside_widget_side.widget.view;
@@ -601,7 +601,7 @@ window.TOONTALK.widget = (function (TT) {
             }
             return false;
             // following reported false when size is 0 even though it might be code that is about to change that (if visible)
-//             return $(frontside.get_element()).is(":visible");
+            // return $(frontside.get_element()).is(":visible"); 
         },
         
         drag_started: function (json, is_resource) {
