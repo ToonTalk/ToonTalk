@@ -515,6 +515,21 @@ window.TOONTALK.nest = (function (TT) {
             }
             nest_copies.push(nest_copy);
         };
+        new_nest.get_path_to = function (widget, robot) {
+            var sub_path;
+            if (contents.length > 0) {
+                if (contents[0].widget === widget) {
+                    return true; // if in box will treat this properly -- what is the general case?
+                }
+                // assuming frontside -- following not fully supported yet so leave for later
+//                 sub_path = contents[0].widget.get_path_to(widget, robot);
+//                 if (sub_path) {
+//                     // for now assume that contents[0] isn't itself a container (e.g. box)
+//                     // and something inside was referenced
+//                     return sub_path;
+//                 }
+            }
+        };
         new_nest = new_nest.add_standard_widget_functionality(new_nest);
         if (TT.debugging) {
             new_nest.debug_id = TT.UTILITIES.generate_unique_id();

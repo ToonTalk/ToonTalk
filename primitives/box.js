@@ -407,7 +407,10 @@ window.TOONTALK.box = (function (TT) {
                 sub_path = part.get_path_to(widget, robot);
                 if (sub_path) {
                     path = TT.box.path.create(i);
-                    path.next = sub_path;
+                    if (part.get_type_name() !== 'nest') {
+                        // if nest then widget must have been on the nest (or inside something that was -- not yet handled!)
+                        path.next = sub_path;
+                    }
                     return path;
                 }
             }
