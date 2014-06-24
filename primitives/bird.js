@@ -403,8 +403,12 @@ window.TOONTALK.nest = (function (TT) {
             // this may become more complex if the original ToonTalk behaviour
             // that if a bird and its nest are copied or saved as a unit they become a new pair
             // notice that bird/nest semantics is that the nest is shared not copied
-            var contents_copy = TT.UTILITIES.copy_array(contents);
-            var copy = TT.nest.create(description, contents_copy, [], guid, original_nest || this); // image_url removed
+            var contents_copy, copy;
+            if (just_value && contents.length > 0) {
+                return contents[0].widget.copy(just_value);
+            }
+            contents_copy = TT.UTILITIES.copy_array(contents);
+            copy = TT.nest.create(description, contents_copy, [], guid, original_nest || this); // image_url removed
             return this.add_to_copy(copy, just_value);
         };
         new_nest.dropped_on_other = function (other, other_is_backside, event) {
