@@ -461,6 +461,7 @@
 .toontalk-bammer-down {
     width:  165px;
     height: 296px;
+	opacity: 0.01;
     position: absolute;
     background-image: url("images/bammer-down.png");
 	-webkit-animation: bammer-down 2s steps(12) forwards;

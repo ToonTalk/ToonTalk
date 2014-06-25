@@ -353,8 +353,10 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
              $top_level_backside_element.append(bammer_element);
              this_frontside_element = this.get_frontside_element();
              target_absolute_position = $(this_frontside_element).offset();
+             target_absolute_position.left -= $(bammer_element).width()*0.75; // hammer is on bammer's right
+             target_absolute_position.left += $(this_frontside_element).width()*0.5; // middle of number
              target_absolute_position.top -= $top_level_backside_element.position().top;
-             target_absolute_position.top -= $(this_frontside_element).height();
+             target_absolute_position.top += $(this_frontside_element).height();
              hit_number_continuation = function () {
                  this.number_dropped_on_me_semantics(other_number, event);
                  $(bammer_element).removeClass("toontalk-bammer-down");
@@ -365,11 +367,13 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
                          bammer_gone_continuation = function () {
                              $(bammer_element).remove();
                          };
-                         TT.UTILITIES.animate_to_absolute_position(bammer_element, target_absolute_position, bammer_gone_continuation);    
+                         TT.UTILITIES.animate_to_absolute_position(bammer_element, target_absolute_position, bammer_gone_continuation); 
+                         $(bammer_element).css({opacity: 0.01});
                      },
                      1);
              }.bind(this);
              TT.UTILITIES.animate_to_absolute_position(bammer_element, target_absolute_position, hit_number_continuation);
+             $(bammer_element).css({opacity: 1.0});
              return this;             
          } else {
              return this.number_dropped_on_me_semantics(other_number,event);
