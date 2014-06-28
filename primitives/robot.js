@@ -804,4 +804,4 @@ window.TOONTALK.robot_backside =
     };
 }(window.TOONTALK));
 
-window.TOONTALK.robot.empty_drop_area_instructions = "Drop a robot here to run when this robot can't."
+window.TOONTALK.robot.empty_drop_area_instructions = "Drop a robot here who will try to run when this robot can't run."
