@@ -397,6 +397,7 @@ window.TOONTALK.robot = (function (TT) {
     
     robot.training_started = function () {
         var context = this.get_context();
+        var backside_element;
         if (!context) {
             console.log("Robot started training but can't find its 'context'.");
             return;
@@ -407,6 +408,8 @@ window.TOONTALK.robot = (function (TT) {
 //         $("div").css({cursor: 'url(' + TT.UTILITIES.cursor_of_image(this.get_image_url()) + '), default'});
         $("div").css({cursor: 'url("images/RB19.32x32.PNG"), default'});
         this.get_frontside_element().title = this.get_title();
+        backside_element = this.get_backside_element();
+        $(backside_element).find(".toontalk-conditions-panel").remove();
     };
     
     robot.training_finished = function () {
@@ -635,6 +638,7 @@ window.TOONTALK.robot_backside =
     var create_conditions_area = function (text, condition_widget, robot, class_name) {
         var description = TT.UTILITIES.create_text_element(text);
         var condition_element = condition_widget.get_frontside_element(true);
+        var conditions_panel;
         TT.UTILITIES.set_position_is_absolute(condition_element, false);
         $(condition_element).addClass("toontalk-conditions-contents " + class_name);
         setTimeout(function () {
@@ -649,7 +653,9 @@ window.TOONTALK.robot_backside =
         } else {
             $(condition_element).removeClass("toontalk-conditions-not-matched");
         }
-        return TT.UTILITIES.create_horizontal_table(description, condition_element);
+        conditions_panel = TT.UTILITIES.create_horizontal_table(description, condition_element);
+        $(conditions_panel).addClass("toontalk-conditions-panel");
+        return conditions_panel;
     };
     var add_conditions_area = function (backside_element, robot) {
         var frontside_condition_widget = robot.get_frontside_conditions();
