@@ -359,6 +359,9 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
              target_absolute_position.top += $(this_frontside_element).height();
              hit_number_continuation = function () {
                  this.number_dropped_on_me_semantics(other_number, event);
+                 if (robot) {
+                    robot.wait_before_next_step = false;
+                 }
                  $(bammer_element).removeClass("toontalk-bammer-down");
                  setTimeout(function () {
                          $(bammer_element).addClass("toontalk-bammer-away");
@@ -374,6 +377,10 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
              }.bind(this);
              TT.UTILITIES.animate_to_absolute_position(bammer_element, target_absolute_position, hit_number_continuation);
              $(bammer_element).css({opacity: 1.0});
+             // e.g. next step is to copy this number and bammer hasn't hit it yet
+             if (robot) {
+                 robot.wait_before_next_step = true;
+             }
              return this;             
          } else {
              return this.number_dropped_on_me_semantics(other_number,event);

@@ -107,12 +107,12 @@ window.TOONTALK.actions =
             };
             var run_watched_step = function (i) {
                 var continuation = function (referenced) {
-                    steps[i].do_step(referenced, context, top_level_context, robot);
-                    if (robot.get_thing_in_hand()) {
-                        robot.render();
-                    }
-                    setTimeout(function () {
-                            if (robot.visible()) {
+                    var do_next_step = 
+                        function () {
+                            if (robot.wait_before_next_step) {
+                                // wait a bit until OK to run
+                                setTimeout(do_next_step, 500);
+                            } else if (robot.visible()) {
                                 run_watched_step(i+1);
                             } else {
                                 // maybe user hid the robot while running
@@ -123,8 +123,13 @@ window.TOONTALK.actions =
                                     robot.get_first_in_team().run(context, top_level_context, queue);
                                 }
                             }
-                        },
-                        500); // pause between steps and give the previous step a chance to update the DOM
+                    };
+                    steps[i].do_step(referenced, context, top_level_context, robot);
+                    if (robot.get_thing_in_hand()) {
+                        robot.render();
+                    }
+                    // pause between steps and give the previous step a chance to update the DOM
+                    setTimeout(do_next_step, 500);
                 };
                 if (i < steps.length) {
                     steps[i].run_watched(context, top_level_context, robot, continuation);
