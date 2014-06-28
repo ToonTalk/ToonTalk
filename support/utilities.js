@@ -1278,7 +1278,7 @@ window.TOONTALK.UTILITIES =
         },
         
         make_resizable: function ($element, widget) {
-            if (!$element.is('.toontalk-plain-text-element')) {
+            if (!$element.is('.toontalk-plain-text-element, .toontalk-conditions-contents')) {
                 // don't make text resizable
                 $element.resizable({resize: function (event, ui) {
                                         // following needed for element widget's that are images
