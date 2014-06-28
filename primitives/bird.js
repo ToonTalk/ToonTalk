@@ -63,6 +63,8 @@ window.TOONTALK.bird = (function (TT) {
                 $top_level_backside_element, top_level_backside_element_offset, continuation;
             this.element_to_display_when_flying = TT.UTILITIES.get_side_element_from_side(package_side);
             $(this.element_to_display_when_flying).addClass("toontalk-carried-by-bird");
+            $(this.element_to_display_when_flying).css({left: '',
+                                                        top:  ''});
             target_offset = $(target_side.widget.get_frontside_element()).offset();
             bird_frontside_element = this.get_frontside_element(true);
             bird_offset = $(bird_frontside_element).offset();
@@ -537,7 +539,9 @@ window.TOONTALK.nest = (function (TT) {
                 contents[0].saved_width =  $(contents_side_element).width();
                 contents[0].saved_height = $(contents_side_element).height();
                 $(contents_side_element).css({width:  '',
-                                              height: ''});
+                                              height: '',
+                                              left: '',
+                                              top: ''});
                 $(contents_side_element).addClass("toontalk-widget-on-nest");
 //                 contents_side_element.style.position = "static";
                 frontside_element.appendChild(contents_side_element);
