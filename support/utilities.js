@@ -838,7 +838,7 @@ window.TOONTALK.UTILITIES =
                     $element.addClass("toontalk-highlight");
                     // moving over decendants triggers dragleave unless their pointer events are turned off
                     // they are restored on dragend
-                    if (!$element.is(".toontalk-backside") && $element.data("owner").get_type_name() !== 'box') {
+                    if (!$element.is(".toontalk-backside, .toontalk-drop-area") && $element.data("owner").get_type_name() !== 'box') {
                         // this breaks the dropping of elements on empty holes so not supported
                         $element.find("*").addClass("toontalk-ignore-events");
                         // except for toontalk-sides and their ancestors since they are OK to drop on
@@ -1312,6 +1312,11 @@ window.TOONTALK.UTILITIES =
                 return side.widget.get_backside_element(create);
             }
             return side.widget.get_frontside_element(create);
+        },
+        
+        copy_side: function (side, just_value) {
+            return {widget: side.widget.copy(just_value),
+                    is_backside: side.is_backside};
         },
         
         scale_to_fit: function (this_element, other_element, original_width, original_height) {

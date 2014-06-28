@@ -42,60 +42,13 @@ window.TOONTALK.bird = (function (TT) {
             return true;
         };
         new_bird.widget_dropped_on_me = function (other, other_is_backside, event, robot) {
-            var side = {widget: other,
-                        is_backside: other_is_backside};
-            var nest_offset, bird_offset, bird_frontside_element, parent_element, bird_style_position, width, height,
-                $top_level_backside_element, top_level_backside_element_offset, continuation;
+            var package_side = {widget: other,
+                                is_backside: other_is_backside};
             if (nest) {
                 if (nest.visible && (event || (robot && robot.visible()))) {
-                    this.element_to_display_when_flying = other.get_frontside_element();
-                    $(this.element_to_display_when_flying).addClass("toontalk-carried-by-bird");
-                    nest_offset = $(nest.get_frontside_element()).offset();
-                    bird_frontside_element = this.get_frontside_element();
-                    bird_offset = $(bird_frontside_element).offset();
-                    // save some state before clobbering it
-                    parent_element = bird_frontside_element.parentElement;
-                    width = $(bird_frontside_element).width();
-                    height = $(bird_frontside_element).height();
-                    $top_level_backside_element = $(".toontalk-top-level-backside");
-                    top_level_backside_element_offset = $top_level_backside_element.offset();
-                    bird_style_position = bird_frontside_element.style.position;
-                    bird_frontside_element.style.position = 'absolute';
-                    $top_level_backside_element.append(bird_frontside_element); // while flying                    
-                    $(bird_frontside_element).css({left: bird_offset.left-top_level_backside_element_offset.left,
-                                                   top: bird_offset.top-top_level_backside_element_offset.top,
-                                                   width: width,
-                                                   height: height});
-                    setTimeout(function () {
-                                $(this.element_to_display_when_flying).css({width: width,
-                                                                height: height/3});            
-                        }.bind(this),
-                        100);
-                    continuation = function () {
-                        var final_continuation = function () {
-                            var parent = this.get_parent_of_frontside();
-                            bird_frontside_element.style.position = bird_style_position;
-                            parent_element.appendChild(bird_frontside_element);
-                            if (parent.widget.get_type_name() === 'top-level') {
-                                this.rerender();
-                            } else {
-                                parent.widget.rerender();
-                            }
-                        }.bind(this);
-                        $(this.element_to_display_when_flying).removeClass("toontalk-carried-by-bird");
-                        bird_frontside_element.removeChild(this.element_to_display_when_flying);
-                        this.element_to_display_when_flying = undefined;
-                        nest.add_to_contents(side, this);
-                        // return to original location
-                        setTimeout(function () {
-                                this.fly_to(bird_offset, final_continuation); 
-                            }.bind(this),
-                            1);
-                       
-                    }.bind(this);
-                    this.fly_to(nest_offset, continuation);
+                    nest.animate_bird_delivery(package_side, this);
                 } else {
-                    nest.add_to_contents(side, this);
+                    nest.add_to_contents(package_side, this);
                 }
             } else {
                 console.log("to do: handle drop on a nestless bird -- just removes other?");
@@ -105,14 +58,80 @@ window.TOONTALK.bird = (function (TT) {
             }
             return true;
         };
+        new_bird.animate_delivery_to = function (package_side, target_side, temporary_copy) {
+            var target_offset, bird_offset, bird_frontside_element, parent_element, bird_style_position, width, height,
+                $top_level_backside_element, top_level_backside_element_offset, continuation;
+            this.element_to_display_when_flying = TT.UTILITIES.get_side_element_from_side(package_side);
+            $(this.element_to_display_when_flying).addClass("toontalk-carried-by-bird");
+            target_offset = $(target_side.widget.get_frontside_element()).offset();
+            bird_frontside_element = this.get_frontside_element(true);
+            bird_offset = $(bird_frontside_element).offset();
+            // save some state before clobbering it
+            parent_element = bird_frontside_element.parentElement;
+            width = $(bird_frontside_element).width();
+            height = $(bird_frontside_element).height();
+            $top_level_backside_element = $(".toontalk-top-level-backside");
+            top_level_backside_element_offset = $top_level_backside_element.offset();
+            bird_style_position = bird_frontside_element.style.position;
+            bird_frontside_element.style.position = 'absolute';
+            $top_level_backside_element.append(bird_frontside_element); // while flying            
+            $(bird_frontside_element).css({left: bird_offset.left-top_level_backside_element_offset.left,
+                                           top: bird_offset.top-top_level_backside_element_offset.top,
+                                           width: width,
+                                           height: height});
+            setTimeout(function () {
+                           $(this.element_to_display_when_flying).css({width: width,
+                                                                       height: height/3});            
+                        }.bind(this),
+                        100);
+            if (temporary_copy) {
+                continuation = function () {
+                    nest.add_to_contents(package_side, this);
+                    // fade awaym -- not working (at least in Chrome)
+                    $(bird_frontside_element).css({opacity: 1});
+                    $(bird_frontside_element).addClass("toontalk-side-animating");
+//                     this.fly_to(bird_offset, function () {
+//                                    this.remove();
+//                                }.bind(this));
+                    $(bird_frontside_element).css({opacity: 0.1});
+                    setTimeout(function () {
+                                   this.remove();
+                               }.bind(this),
+                               2000);
+                }.bind(this);
+            } else {
+                continuation = function () {
+                    var final_continuation = function () {
+                        var parent = this.get_parent_of_frontside();
+                        bird_frontside_element.style.position = bird_style_position;
+                        parent_element.appendChild(bird_frontside_element);
+                        if (parent.widget.get_type_name() === 'top-level') {
+                            this.rerender();
+                        } else {
+                            parent.widget.rerender();
+                        }
+                    }.bind(this);
+                    $(this.element_to_display_when_flying).removeClass("toontalk-carried-by-bird");
+                    bird_frontside_element.removeChild(this.element_to_display_when_flying);
+                    this.element_to_display_when_flying = undefined;
+                    nest.add_to_contents(package_side, this);
+                    // return to original location
+                    setTimeout(function () {
+                            this.fly_to(bird_offset, final_continuation); 
+                        }.bind(this),
+                        1);
+                }.bind(this);
+            }
+            this.fly_to(target_offset, continuation);
+        };
         new_bird.get_json = function (json_history) {
             return {semantic:
-                       {type: "bird",
-                        nest: nest && TT.UTILITIES.get_json(nest, json_history)
-                        },
+               {type: "bird",
+                nest: nest && TT.UTILITIES.get_json(nest, json_history)
+                },
                    view:
-                       {//image_url: this.get_image_url(),
-                        description: this.get_description()}};
+               {//image_url: this.get_image_url(),
+                description: this.get_description()}};
         };
         new_bird.copy = function (just_value) {
             // this may become more complex if the original ToonTalk behaviour
@@ -122,7 +141,6 @@ window.TOONTALK.bird = (function (TT) {
             return this.add_to_copy(copy, just_value);
         };
         new_bird.deliver_to = function (nest_copy, widget_side_copy) {
-            // if visible then will copy self and head off to nest_copy
             nest_copy.add_to_contents(widget_side_copy);
         };
         new_bird = new_bird.add_standard_widget_functionality(new_bird);
@@ -173,7 +191,7 @@ window.TOONTALK.bird = (function (TT) {
         if (this.element_to_display_when_flying) {
             frontside_element.appendChild(this.element_to_display_when_flying);
         }
-//         frontside_element.appendChild(bird_image);
+//      frontside_element.appendChild(bird_image);
         if (backside) {
             backside.rerender();
         }
@@ -357,7 +375,7 @@ window.TOONTALK.nest = (function (TT) {
             if (widget_side.is_backside) {
                 widget_side.widget.set_parent_of_backside(this);
             } else {
-                 widget_side.widget.set_parent_of_frontside(this);
+                widget_side.widget.set_parent_of_frontside(this);
             }
             if (delivery_bird && nest_copies) {
                 nest_copies.forEach(function (nest_copy) {
@@ -367,6 +385,22 @@ window.TOONTALK.nest = (function (TT) {
                 });
             }
             this.rerender();
+        };
+        new_nest.animate_bird_delivery = function (package_side, bird) {
+            var start_position, bird_parent_element;
+            bird.animate_delivery_to(package_side, {widget: this});
+            if (nest_copies) {
+                start_position = $(bird.get_frontside_element()).position();
+                bird_parent_element = TT.UTILITIES.get_side_element_from_side(bird.get_parent_of_frontside());
+                nest_copies.forEach(function (nest_copy) {
+                    var bird_copy = bird.copy(true);
+                    var bird_frontside_element = bird_copy.get_frontside_element(true); 
+                    $(bird_parent_element).append(bird_frontside_element);
+                    $(bird_frontside_element).css({left: start_position.left,
+                                                   top:  start_position.top});
+                    bird_copy.animate_delivery_to(TT.UTILITIES.copy_side(package_side), {widget: nest_copy}, true);
+                });
+            }
         };
         new_nest.removed_from_container = function (part, backside_removed, event) {
             contents.splice(0,1);
@@ -437,7 +471,7 @@ window.TOONTALK.nest = (function (TT) {
                     TT.UTILITIES.add_animation_class(bird_frontside_element, "toontalk-fly-southwest");
                     nest_position = TT.UTILITIES.relative_position(frontside_element, backside_where_bird_goes.get_element());
                     $(bird_frontside_element).css({left: nest_position.left,
-                                                  top:  nest_position.top});
+                                                   top:  nest_position.top});
                     backside_where_bird_goes.widget_dropped_on_me(bird, false, event);
                     $(frontside_element).removeClass("toontalk-hatch-egg");
                     TT.UTILITIES.add_animation_class(frontside_element, "toontalk-empty-nest");
