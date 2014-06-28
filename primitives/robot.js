@@ -195,7 +195,7 @@ window.TOONTALK.robot = (function (TT) {
     robot.run = function (context, top_level_context, queue) {
         var frontside_condition_widget = this.get_frontside_conditions();
         var backside_conditions, backside_widgets, condition_frontside_element, to_run_when_non_empty;
-        if (this.stopped || this.being_trained || !frontside_condition_widget) {
+        if (this.being_trained || !frontside_condition_widget) {
             return 'not matched';
         }
         this.match_status = TT.UTILITIES.match(frontside_condition_widget, context);
