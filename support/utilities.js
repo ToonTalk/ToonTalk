@@ -1278,8 +1278,6 @@ window.TOONTALK.UTILITIES =
         },
         
         make_resizable: function ($element, widget) {
-            if (!$element.is('.toontalk-plain-text-element, .toontalk-conditions-contents')) {
-                // don't make text resizable
                 $element.resizable({resize: function (event, ui) {
                                         // following needed for element widget's that are images
                                         $element.find("img").css({width: ui.size.width,
@@ -1290,7 +1288,6 @@ window.TOONTALK.UTILITIES =
                                     // and generally got in the way
                                     handles: "n,e,s,w"
                                 });
-              }
         },
         
         match: function (pattern, widget) {
