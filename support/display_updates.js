@@ -32,7 +32,7 @@ window.TOONTALK.DISPLAY_UPDATES =
             updates.forEach(function (pending_update) {
                 var frontside_element = pending_update.get_frontside_element && pending_update.get_frontside_element();
                 pending_update.update_display();
-                if (frontside_element && !$(frontside_element).is(".toontalk-top-level-resource, .ui-resizable, .toontalk-bird, .toontalk-nest, .toontalk-plain-text-element, .toontalk-conditions-contents, .toontalk-robot, .toontalk-widget, .toontalk-held-by-robot")) {
+                if (frontside_element && !$(frontside_element).is(".toontalk-top-level-resource, .ui-resizable, .toontalk-bird, .toontalk-widget-on-nest, .toontalk-nest, .toontalk-plain-text-element, .toontalk-conditions-contents, .toontalk-robot, .toontalk-widget, .toontalk-held-by-robot")) {
                     // need to delay in order for the DOM to settle down with the changes caused by update_display
                     setTimeout(function () {
                             TT.UTILITIES.make_resizable($(frontside_element), pending_update);

@@ -655,7 +655,8 @@ window.TOONTALK.UTILITIES =
                                 dragee.css({width:  json_object.view.frontside_width,
                                             height: json_object.view.frontside_height});
                             }
-                        } else if (!dragee.parent().is(".toontalk-top-level-resource, .toontalk-drop-area")) {
+                        } else if (!dragee.parent().is(".toontalk-top-level-resource, .toontalk-drop-area") &&
+                                   !dragee.is(".toontalk-carried-by-bird")) {
                             dragee.css({width:  "100%",
                                         height: "100%"});
                         }
@@ -779,6 +780,7 @@ window.TOONTALK.UTILITIES =
                                                      height: json_object.view.frontside_height || height});
                                     }
                                 } else if (container.removed_from_container) {
+                                    $source.removeClass("toontalk-widget-on-nest");
                                     // can be undefined if container is a robot holding something
                                     // but probably that should be prevented earlier
                                     container.removed_from_container(source_widget, source_is_backside, event);
@@ -1278,16 +1280,16 @@ window.TOONTALK.UTILITIES =
         },
         
         make_resizable: function ($element, widget) {
-                $element.resizable({resize: function (event, ui) {
-                                        // following needed for element widget's that are images
-                                        $element.find("img").css({width: ui.size.width,
-                                                                 height: ui.size.height});
-                                        widget.render();
-                                    },
-                                    // the corner handles looked bad on element widgets
-                                    // and generally got in the way
-                                    handles: "n,e,s,w"
-                                });
+            $element.resizable({resize: function (event, ui) {
+                                    // following needed for element widget's that are images
+                                    $element.find("img").css({width: ui.size.width,
+                                                         height: ui.size.height});
+                                    widget.render();
+                                },
+                               // the corner handles looked bad on element widgets
+                               // and generally got in the way
+                               handles: "n,e,s,w"
+                               });
         },
         
         match: function (pattern, widget) {
@@ -1343,7 +1345,7 @@ window.TOONTALK.UTILITIES =
              var target_offset = $(target_element).offset();
              var reference_offset = $(reference_element).offset();
              return {left: target_offset.left-reference_offset.left,
-                     top: target_offset.top-reference_offset.top};
+                     top:  target_offset.top-reference_offset.top};
         },
         
         add_animation_class: function (element, class_name) {

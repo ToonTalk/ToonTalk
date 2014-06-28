@@ -78,16 +78,17 @@ window.TOONTALK.bird = (function (TT) {
             $(bird_frontside_element).css({left: bird_offset.left-top_level_backside_element_offset.left,
                                            top: bird_offset.top-top_level_backside_element_offset.top,
                                            width: width,
-                                           height: height});
-            setTimeout(function () {
-                           $(this.element_to_display_when_flying).css({width: width,
-                                                                       height: height/3});            
-                        }.bind(this),
-                        100);
+                                           height: height
+                                           });
+//             setTimeout(function () {
+//                            $(this.element_to_display_when_flying).css({width: width,
+//                                                                        height: height});            
+//                         }.bind(this),
+//                         100);
             if (temporary_copy) {
                 continuation = function () {
                     nest.add_to_contents(package_side, this);
-                    // fade awaym -- not working (at least in Chrome)
+                    // fade away -- not working (at least in Chrome)
                     $(bird_frontside_element).css({opacity: 1});
                     $(bird_frontside_element).addClass("toontalk-side-animating");
 //                     this.fly_to(bird_offset, function () {
@@ -403,8 +404,10 @@ window.TOONTALK.nest = (function (TT) {
             }
         };
         new_nest.removed_from_container = function (part, backside_removed, event) {
-            contents.splice(0,1);
+            var removed = contents.splice(0,1);
             if (this.visible()) {
+                $(TT.UTILITIES.get_side_element_from_side(removed[0])).css({width:  removed[0].saved_width,
+                                                                            height: removed[0].saved_height});
                 if (contents.length > 0) {
                     $(TT.UTILITIES.get_side_element_from_side(contents[0])).show();
                 }
@@ -530,9 +533,13 @@ window.TOONTALK.nest = (function (TT) {
                 } else {
                     contents[0].widget.render();
                     contents_side_element = contents[0].widget.get_frontside_element();
-                }                
+                }
+                contents[0].saved_width =  $(contents_side_element).width();
+                contents[0].saved_height = $(contents_side_element).height();
+                $(contents_side_element).css({width:  '',
+                                              height: ''});
                 $(contents_side_element).addClass("toontalk-widget-on-nest");
-                contents_side_element.style.position = "static";
+//                 contents_side_element.style.position = "static";
                 frontside_element.appendChild(contents_side_element);
             } else {
                 frontside_element.title = this.get_title();
