@@ -801,7 +801,7 @@ window.TOONTALK.UTILITIES =
                             event.stopPropagation();
                             return;
                         } else {
-                            source_widget = TT.UTILITIES.create_from_json(json_object);
+                            source_widget = TT.UTILITIES.create_from_json(json_object, {event: event});
                         }
                         if (!source_widget) {
                             console.log("Unable to construct a ToonTalk widget from the JSON.");

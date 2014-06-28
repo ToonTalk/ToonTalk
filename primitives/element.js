@@ -470,10 +470,21 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 };
     };
     
-    element.create_from_json = function (json) {
+    element.create_from_json = function (json, additional_info) {
         var reconstructed_element = element.create(decodeURIComponent(json.html), json.attributes);
+        var ignore_attributes;
+        if (additional_info && additional_info.event) {
+            // perhaps should check that event is a drop event
+            // drop event location has priority over these settings
+            ignore_attributes = ["left", "top"];
+        } else {
+            ignore_attributes = [];
+        }
         json.attribute_values.forEach(function (value, index) {
-            reconstructed_element.add_to_css(json.attributes[index], value_in_pixels(value) || value);
+            var attribute_name = json.attributes[index];
+            if (ignore_attributes.indexOf(attribute_name) < 0) {
+                reconstructed_element.add_to_css(attribute_name, value_in_pixels(value) || value);
+            }
         });
         return reconstructed_element;
     };
