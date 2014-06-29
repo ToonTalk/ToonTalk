@@ -709,7 +709,7 @@ window.TOONTALK.UTILITIES =
                                 source_widget = TT.UTILITIES.create_from_json(json_object);
                             }
                             TT.UTILITIES.restore_resource($source, source_widget);
-                            target_widget.dropped_on_style_attribute(source_widget, event.target.name);
+                            target_widget.dropped_on_style_attribute(source_widget, event.target.name, event);
                             event.stopPropagation();
                             return;
                         }

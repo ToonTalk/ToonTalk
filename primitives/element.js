@@ -293,7 +293,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         return true;
     };
     
-    element.dropped_on_style_attribute = function (dropped, attribute_name) {
+    element.dropped_on_style_attribute = function (dropped, attribute_name, event, robot) {
         var widget_string, widget_number, attribute_name, attribute_value, attribute_numerical_value, new_value;
         if (!dropped) {
             return;
@@ -337,6 +337,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             }
             // following doesn't handle training since is handled below
             this.set_attribute(attribute_name, new_value, false);
+            if (event || (robot && robot.visible())) {
+                this.get_backside().render();
+            }
         }
         if (!dropped.get_infinite_stack()) {
             dropped.remove();
@@ -379,8 +382,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 visible: function () {
                     return $attribute_input && $attribute_input.is(":visible");
                 },
-                widget_dropped_on_me: function (other) {
-                    this.element_widget.dropped_on_style_attribute(other, attribute_name);
+                widget_dropped_on_me: function (other, event, robot) {
+                    this.element_widget.dropped_on_style_attribute(other, attribute_name, event, robot);
                 },
                 update_display: function () {
                     if ($attribute_input) {
