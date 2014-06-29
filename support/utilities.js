@@ -1194,15 +1194,20 @@ window.TOONTALK.UTILITIES =
         
         create_vertical_table: function () { // takes any number of parameters
             var table = document.createElement("table");
-            var i, row, table_element;
+            var i, row;
             for (i = 0; i < arguments.length; i++) {
-                row = document.createElement("tr");
+                row = TT.UTILITIES.create_row(arguments[i]);
                 table.appendChild(row);
-                table_element = document.createElement("td");
-                row.appendChild(table_element);
-                table_element.appendChild(arguments[i]);
             }
             return table;
+        },
+        
+        create_row: function (element) {
+            var row = document.createElement("tr");
+            var table_element = document.createElement("td");
+            row.appendChild(table_element);
+            table_element.appendChild(element);
+            return row;
         },
         
         selected_radio_button: function () {

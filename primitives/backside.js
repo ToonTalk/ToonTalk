@@ -324,9 +324,10 @@ window.TOONTALK.backside =
             return check_box;
         },
         
-        create_standard_buttons: function (backside, widget) { // extra arguments are extra buttons
-            var run_or_erase_button;
+        create_standard_buttons: function (backside, widget, extra_settings_generator) {
             var frontside_element = widget.get_frontside_element();
+            var description = widget.get_description();
+            var run_or_erase_button, button_set;
             if (!(this.get_erased && widget.get_erased()) && !$(frontside_element).is(".toontalk-conditions-contents") && $(frontside_element).parents(".toontalk-conditions-contents").length === 0) {
                 run_or_erase_button = TT.backside.create_run_button(backside, widget);
             } else {
@@ -335,15 +336,29 @@ window.TOONTALK.backside =
             var copy_button = TT.backside.create_copy_button(backside, widget);
             var hide_button = TT.backside.create_hide_button(backside, widget);
             var remove_button = TT.backside.create_remove_button(backside, widget);
-            // consider moving this to UTILITIES...
-            // or eliminating it entirely since can appendChild after set is created
+            var settings_button = TT.backside.create_settings_button(backside, widget, extra_settings_generator);
             var extra_arguments = [];
             var i;
-            for (i = 2; i < arguments.length; i++) {
-                extra_arguments[i-2] = arguments[i];
+            for (i = 3; i < arguments.length; i++) {
+                extra_arguments[i-3] = arguments[i];
             }
-            return TT.UTILITIES.create_button_set(run_or_erase_button, copy_button, remove_button, hide_button, extra_arguments);
-        },            
+            button_set = TT.UTILITIES.create_button_set(run_or_erase_button, copy_button, remove_button, hide_button, settings_button, extra_arguments);
+            if (description) {
+               return TT.UTILITIES.create_vertical_table(TT.UTILITIES.create_text_element("This " + widget.get_type_name() + " " + description), button_set);
+            }
+            return button_set;
+        },
+        
+        create_done_button: function (element) {
+            var $done_button = $("<button>Done</button>").button();
+            $done_button.addClass("toontalk-done-backside-button");
+            $done_button.click(function (event) {
+                $(element).remove();
+                event.stopPropagation();
+            });
+            $done_button.attr("title", "Click when finished with settings.");
+            return $done_button.get(0); 
+        },
         
         create_hide_button: function (backside, widget) {
             var backside_element = backside.get_element();
@@ -525,6 +540,43 @@ window.TOONTALK.backside =
             return $remove_button.get(0);
         },
         
+        create_settings_button: function (backside, widget, extra_settings_generator) {
+            var $settings_button = $("<button>Settings</button>").button();
+            $settings_button.addClass("toontalk-settings-backside-button");
+            $settings_button.click(function (event) {
+                var settings = document.createElement("table");
+                var check_box = this.create_infinite_stack_check_box(backside, widget);
+                var type_name = widget.get_type_name();
+                var description_text_area = TT.UTILITIES.create_text_area(widget.get_description(), 
+                                                                          "toontalk-description-input", 
+                                                                          "This&nbsp;" + type_name + "&nbsp;",
+                                                                          "Type here to provide additional information about this " + type_name + ".");
+                var description_change = function () {
+                        var description = description_text_area.button.value.trim();
+                        if (widget.set_description(description, true) && TT.robot.in_training) {
+                            TT.robot.in_training.edited(widget, {setter_name: "set_description",
+                                                                 argument_1: description,
+                                                                 toString: "change the description to '" + description + "'' of the " + type_name,
+                                                                 button_selector: ",toontalk-description-input"});
+                        }
+                    };
+                $(description_text_area.button).val(widget.get_description());
+                description_text_area.button.addEventListener('change', description_change);
+                description_text_area.button.addEventListener('mouseout', description_change);
+                if (extra_settings_generator) {
+                    extra_settings_generator(settings);
+                }
+                settings.appendChild(TT.UTILITIES.create_row(description_text_area.container));
+                settings.appendChild(TT.UTILITIES.create_row(check_box.container));
+                settings.appendChild(TT.UTILITIES.create_row(this.create_done_button(settings)));
+                backside.get_element().appendChild(settings);
+                $(settings).addClass("toontalk-settings");
+                event.stopPropagation();
+            }.bind(this));
+            $settings_button.attr("title", "Click to change properties of this " + widget.get_type_name());
+            return $settings_button.get(0);
+        },
+        
         get_widgets: function () {
             var widgets = [];
             $(this.get_element()).children().each(function (index, element) {
@@ -538,11 +590,17 @@ window.TOONTALK.backside =
         
         scale_backside: function ($backside_element, x_scale, y_scale, original_width, original_height) {
             var scale = Math.min(1, x_scale, y_scale);
-//             console.log({scale: scale, x_scale: x_scale, y_scale: y_scale});
-            $backside_element.css({transform: "scale(" + scale + ", " + scale + ")",
-                                   "transform-origin": "top left", 
-                                   width: original_width * x_scale / scale,
-                                   height: original_height * y_scale / scale});
+            if (scale === 1) {
+               // if not scaling let the browser decide the dimensions
+               $backside_element.css({width: '',
+                                      height: ''});
+            } else {
+               $backside_element.css({transform: "scale(" + scale + ", " + scale + ")",
+                                      "transform-origin": "top left", 
+                                       width: original_width * x_scale / scale,
+                                       height: original_height * y_scale / scale});
+            }
+ //         console.log({scale: scale, x_scale: x_scale, y_scale: y_scale});
         },
         
         render: function () {

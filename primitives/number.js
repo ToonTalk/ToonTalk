@@ -643,15 +643,19 @@ window.TOONTALK.number_backside =
             var number_set = TT.UTILITIES.create_horizontal_table(numerator_input.container, slash, denominator_input.container);
             var format_set = $(TT.UTILITIES.create_horizontal_table(decimal_format.container, proper_format.container, improper_format.container)).buttonset().get(0);
             var operator_set = $(TT.UTILITIES.create_horizontal_table(plus.container, minus.container, multiply.container, divide.container, power.container)).buttonset().get(0);
-            var standard_buttons = TT.backside.create_standard_buttons(backside, number);
-            var infinite_stack_check_box = TT.backside.create_infinite_stack_check_box(backside, number);
+            var extra_settings = function (settings) {
+                settings.appendChild(format_set);
+                settings.appendChild(operator_set);
+            }
+            var standard_buttons = TT.backside.create_standard_buttons(backside, number, extra_settings);
+//             var infinite_stack_check_box = TT.backside.create_infinite_stack_check_box(backside, number);
             slash.innerHTML = "/";
             $(slash).addClass("ui-widget"); // to look nice
             backside_element.appendChild(number_set);
-            backside_element.appendChild(format_set);
-            backside_element.appendChild(operator_set);
+//             backside_element.appendChild(format_set);
+//             backside_element.appendChild(operator_set);
             backside_element.appendChild(standard_buttons);
-            backside_element.appendChild(infinite_stack_check_box.container);
+//             backside_element.appendChild(infinite_stack_check_box.container);
             numerator_input.button.addEventListener('change', update_value);
             numerator_input.button.addEventListener('mouseout', update_value);
             numerator_input.button.addEventListener('mouseenter', function () {

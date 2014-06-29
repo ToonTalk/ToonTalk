@@ -11,13 +11,14 @@ window.TOONTALK.widget = (function (TT) {
     return {
         
         add_standard_widget_functionality: function (widget) {
-//             this.erasable(widget);
+//          this.erasable(widget);
             this.add_sides_functionality(widget);
             this.runnable(widget);
             this.stackable(widget);
             this.animatable(widget);
             this.has_title(widget);
             this.has_parent(widget);
+            this.has_description(widget);
             return widget;
         },
         
@@ -248,6 +249,34 @@ window.TOONTALK.widget = (function (TT) {
             return widget;
         },
         
+        has_description: function (widget) {
+            var description;
+            if (!widget.get_description) {
+                widget.get_description = function () {
+                    return description;
+                };
+            }
+            if (!widget.set_description) {
+                widget.set_description = function (new_value, update_display) {
+                    if (description === new_value) {
+                        return false;
+                    }
+                    description = new_value;
+                    if (update_display) {
+                        this.rerender();
+                    }
+                    return true;
+                };
+            }
+        },
+        
+//         get_description: function () {
+//             if (this.get_erased && this.get_erased()) {
+//                 return "erased " + this.get_type_name();
+//             }
+//             return this.toString();
+//         },
+        
         remove: function (event) {
             var backside = this.get_backside();
             var frontside = this.get_frontside();
@@ -387,6 +416,7 @@ window.TOONTALK.widget = (function (TT) {
                        });
                     }
                 }
+                json_view.description = this.get_description && this.get_description();
                 return json;
             }
             console.log("get_json not defined");
@@ -549,13 +579,6 @@ window.TOONTALK.widget = (function (TT) {
         get_type_name: function () {
             // only used for informative purposes so ignore if not overridden 
             return "";
-        },
-        
-        get_description: function () {
-            if (this.get_erased && this.get_erased()) {
-                return "erased " + this.get_type_name();
-            }
-            return this.toString();
         },
         
         copy: function () {

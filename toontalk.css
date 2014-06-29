@@ -54,6 +54,17 @@
 	padding-left:   6px;
 	padding-right:  6px;
 }
+.toontalk-settings {
+	position: absolute;
+	background-color: rgba(230, 230, 230, 0.94);
+	border-style: solid;
+	border-width: 2px;
+	border-color: rgb(185, 113, 141);
+	border-radius: 10px;
+}
+.toontalk-done-backside-button {
+
+}
 .toontalk-backside-of-number {
 	background-color: rgba(220, 255, 236, .94);
 }
@@ -212,7 +223,7 @@
 }
 .toontalk-hide-backside-button {
 }
-.toontalk-robot-description-input {
+.toontalk-description-input {
 	width: 30em;
 	text-align: inherit;
 }
