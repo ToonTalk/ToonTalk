@@ -549,6 +549,7 @@ window.TOONTALK.nest = (function (TT) {
                 frontside_element.title = this.get_title();
                 if (guid) {
                     TT.UTILITIES.add_animation_class(frontside_element, "toontalk-empty-nest");
+                    $(frontside_element).removeClass("toontalk-nest-with-egg");
                 } else {
                     TT.UTILITIES.add_animation_class(frontside_element, "toontalk-nest-with-egg");
                 }
