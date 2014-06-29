@@ -493,7 +493,7 @@ window.TOONTALK.nest = (function (TT) {
                                     bird_frontside_element.style.transitionDuration = "0s";
                                     TT.UTILITIES.add_animation_class(bird_frontside_element, "toontalk-bird-waiting");
                                 }
-                                TT.UTILITIES.add_one_shot_event_handler(frontside_element, "animationend", 2000, fly_down_finished_handler);
+                                TT.UTILITIES.add_one_shot_event_handler(frontside_element, "animationend", 1000, fly_down_finished_handler);
                             },
                             1);
                     };
