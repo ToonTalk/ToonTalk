@@ -284,6 +284,10 @@ window.TOONTALK.robot = (function (TT) {
     
     robot.picked_up = function (widget, json, is_resource) {
         var path, action_name, widget_copy, new_widget;
+        if (this === widget) {
+            // robot picked up its backside -- so ignore this
+            return;
+        }
         // current_action_name is used to distinguish between removing something from its container versus referring to it
         if (widget.get_infinite_stack && widget.get_infinite_stack()) {
             // does this cause an addition to newly created backside widgets?
@@ -309,7 +313,11 @@ window.TOONTALK.robot = (function (TT) {
     
     robot.dropped_on = function (source_widget, target_widget) {
         // need to support dropping on backside of a widget as well as which side of a box 
-        var path; 
+        var path;
+        if (this === source_widget) {
+            // robot dropped its backside -- so ignore this
+            return;
+        }
         this.current_action_name = "drop it on";
         path = TT.path.get_path_to(target_widget, this);
         if (path) {
