@@ -285,7 +285,7 @@ window.TOONTALK.robot = (function (TT) {
     robot.picked_up = function (widget, json, is_resource) {
         var path, action_name, widget_copy, new_widget;
         if (this === widget) {
-            // robot picked up its backside -- so ignore this
+            // robot picked up its frontside or backside -- so ignore this
             return;
         }
         // current_action_name is used to distinguish between removing something from its container versus referring to it
@@ -294,7 +294,7 @@ window.TOONTALK.robot = (function (TT) {
             this.current_action_name = "pick up a copy of";
         } else {
             this.current_action_name = "pick up";
-        }        
+        }
         if (is_resource) {
             new_widget = widget; // this widget was just created
             // robot needs a copy of the resource to avoid sharing it with training widget
@@ -315,7 +315,7 @@ window.TOONTALK.robot = (function (TT) {
         // need to support dropping on backside of a widget as well as which side of a box 
         var path;
         if (this === source_widget) {
-            // robot dropped its backside -- so ignore this
+            // robot dropped its frontside or backside -- so ignore this
             return;
         }
         this.current_action_name = "drop it on";

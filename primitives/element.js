@@ -528,7 +528,7 @@ window.TOONTALK.element_backside =
         // the following could be made the default
         // but if TT.attribute_options is set use it instead
         var options = [{label: "Geometry attributes",
-                        sub_menus: ["left", "top", "width", "height", "z-index"]},
+                        sub_menus: ["left", "top", "width", "height", "z-index", "background-position"]},
                        {label: "Color attributes",
                         sub_menus: ["background-color", "color", "opacity"]},
                        {label: "Font attributes",
