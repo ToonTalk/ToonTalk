@@ -423,9 +423,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             }
         }
         this.apply_css();
-        if (backside) {
-            backside.update_display();
-        }
+//         if (backside) {
+//             backside.update_display();
+//         }
         this.fire_on_update_display_handlers();
     };
     
