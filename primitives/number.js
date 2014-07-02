@@ -215,13 +215,15 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         // get format from backside ancestor (via parent attribute?)
         var frontside = this.get_frontside(true);
         var frontside_element, $dimensions_holder, client_width, client_height, 
-            font_height, font_width, max_decimal_places, new_HTML, backside;
+            font_height, font_width, max_decimal_places, new_HTML, backside, size_unconstrained_by_container;
         frontside_element = frontside.get_element();
         if ($(frontside_element).is(".toontalk-conditions-contents")) {
             $dimensions_holder = $(frontside_element);
         } else if ($(frontside_element).parent().is(".toontalk-backside, .toontalk-json")) {
             $dimensions_holder = $(frontside_element);
+            size_unconstrained_by_container = true;
         } else if ($(frontside_element).closest(".toontalk-robot").length > 0) {
+            // obsolete??
             $dimensions_holder = $(frontside_element);
         } else {
             $dimensions_holder = $(frontside_element).parent();
@@ -234,11 +236,11 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         font_height = client_height * 0.8;
 //      font_size = TT.UTILITIES.get_style_numeric_property(frontside, "font-size");
         // according to http://www.webspaceworks.com/resources/fonts-web-typography/43/
-        // the aspect ratio of monospace fonts varies from .43 to .55 
+        // the aspect ratio of monospace fonts varies from .43 to .55
         font_width = font_height * 0.64; // .55 'worst' aspect ratio -- add a little extra
         // could find the font name and use the precise value
         max_decimal_places = client_width / font_width;
-        new_HTML = this.to_HTML(max_decimal_places, font_height, this.get_format(), true, this.get_operator());
+        new_HTML = this.to_HTML(max_decimal_places, font_height, this.get_format(), true, this.get_operator(), size_unconstrained_by_container);
         if (!frontside_element.firstChild) {
             frontside_element.appendChild(document.createElement('div'));
         }
@@ -251,9 +253,12 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         }
     };
     
-    number.to_HTML = function (max_characters, font_size, format, top_level, operator) {
+    number.to_HTML = function (max_characters, font_size, format, top_level, operator, size_unconstrained_by_container) {
         var integer_as_string, integer_part, fractional_part, improper_fraction_HTML, digits_needed, shrinkage, table_style;
         var extra_class = (top_level !== false) ? ' toontalk-top-level-number' : '';
+        if (size_unconstrained_by_container) {
+            extra_class += ' toontalk-number-size-unconstrained-by-container';
+        }
         var operator_HTML = operator ? html_for_operator(operator) : "";
         if (!max_characters) {
             max_characters = 4;

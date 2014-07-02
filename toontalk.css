@@ -173,6 +173,9 @@
 	text-align: center;
 	vertical-align: middle;
 	display: inline-block;
+}
+.toontalk-number-size-unconstrained-by-container {
+/* 	digits in numbers appear too high but this fix causes the numbers to become too big for their container */
 	padding-top: .3em;
 }
 .toontalk-improper-fraction {
