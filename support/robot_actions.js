@@ -60,14 +60,14 @@ window.TOONTALK.actions =
             new_actions.get_newly_created_widgets = function () {
                 return newly_created_widgets;
             };
-            new_actions.get_path_to = function (widget) {
+            new_actions.get_path_to = function (widget, robot) {
                 var path, sub_path, children;
                 newly_created_widgets.some(function (newly_created_widget, index) {
                     if (newly_created_widget === widget) {
                         path = TT.newly_created_widgets_path.create(index);
                         return true;
                     } else if (newly_created_widget.get_path_to) {
-                        sub_path = newly_created_widget.get_path_to(widget);
+                        sub_path = newly_created_widget.get_path_to(widget, robot);
                         if (sub_path) {
                             path = TT.newly_created_widgets_path.create(index);
                             path.next = sub_path;
