@@ -218,7 +218,7 @@ window.TOONTALK.bird = (function (TT) {
     };
     
     bird.create_from_json = function (json, additional_info) {
-        return TT.bird.create(TT.UTILITIES.create_from_json(json.nest, additional_info), additional_info.json_view.description);
+        return TT.bird.create(TT.UTILITIES.create_from_json(json.nest, additional_info), json.description);
     };
     
     return bird;
@@ -571,8 +571,7 @@ window.TOONTALK.nest = (function (TT) {
     
     nest.create_from_json = function (json, additional_info) {
         var waiting_robots; // to do
-        return TT.nest.create(// additional_info.json_view.image_url, 
-                              additional_info.json_view.description, 
+        return TT.nest.create(json.description, 
                               TT.UTILITIES.create_array_from_json(json.contents, additional_info), 
                               waiting_robots, 
                               json.guid,

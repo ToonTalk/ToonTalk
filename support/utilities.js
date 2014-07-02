@@ -339,9 +339,7 @@ window.TOONTALK.UTILITIES =
                 if (!additional_info) {
                     additional_info = {};
                 }
-                if (!additional_info.json_view) {
-                    additional_info.json_view = json_view;
-                }
+                additional_info.json_view = json_view;
                 widget = json_creators[json_semantic.type](json_semantic, additional_info);
             } else {
                 console.log("json type '" + json_semantic.type + "' not yet supported.");

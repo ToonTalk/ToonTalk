@@ -416,7 +416,7 @@ window.TOONTALK.widget = (function (TT) {
                        });
                     }
                 }
-                json_view.description = this.get_description && this.get_description();
+                json_semantic.description = this.get_description && this.get_description();
                 return json;
             }
             console.log("get_json not defined");
