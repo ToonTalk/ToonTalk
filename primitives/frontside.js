@@ -55,18 +55,20 @@ window.TOONTALK.frontside =
                 if (backside) {
                     $(backside.get_element()).addClass("toontalk-highlight");
                 }
-                if (!close_button && !$(frontside_element).is(".toontalk-top-level-resource")) {
-                    close_button = TT.UTILITIES.create_close_button(close_handler, "Click to remove this " + widget.get_type_name() + ".");
-                    frontside_element.appendChild(close_button);
+                if (widget.close_button_ok()) {
+                    if (!close_button) {
+                        close_button = TT.UTILITIES.create_close_button(close_handler, "Click to remove this " + widget.get_type_name() + ".");
+                        frontside_element.appendChild(close_button);
+                    }
+                    $(close_button).show();
                 }
-                $(close_button).show();
             });
             frontside_element.addEventListener("mouseout", function (event) {
                 var backside = widget.get_backside();
                 if (backside) {
                     $(backside.get_element()).removeClass("toontalk-highlight");
                 }
-                $(close_button).hide();
+//                 $(close_button).hide();
             });
             if (TT.debugging) {
                 frontside_element.id = widget.debug_id;

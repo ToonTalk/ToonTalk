@@ -862,6 +862,13 @@ window.TOONTALK.widget = (function (TT) {
         
         hide: function () {
             $(this.get_frontside_element()).hide();
+        },
+        
+        close_button_ok: function () {
+            var frontside_element = this.get_frontside_element();
+            return this.get_type_name() !== "top-level" &&
+                   !$(frontside_element).is(".toontalk-top-level-resource") &&
+                   !$(frontside_element).closest(".toontalk-conditions-panel").is("*");
         }
     };
 }(window.TOONTALK));
