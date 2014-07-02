@@ -490,7 +490,9 @@ window.TOONTALK.robot = (function (TT) {
     };
     
     robot.add_newly_created_widget_if_new = function (new_widget) {
-        return this.get_body().add_newly_created_widget_if_new(new_widget);
+        if (new_widget !== this.get_context()) {
+            return this.get_body().add_newly_created_widget_if_new(new_widget);
+        }
     };
     
     robot.get_recently_created_widget = function () {
