@@ -53,7 +53,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         return value;
     };
     
-    element.create = function (html, style_attributes) {
+    element.create = function (html, style_attributes, description) {
         var new_element = Object.create(element);
         var pending_css, transform_css, on_update_display_handlers, $image_element;
         if (!style_attributes) {
@@ -190,6 +190,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             }
         };
         new_element = new_element.add_standard_widget_functionality(new_element);
+        new_element.set_description(description);
         if (TT.debugging) {
             new_element.debug_string = new_element.toString();
             new_element.debug_id = TT.UTILITIES.generate_unique_id();
@@ -199,7 +200,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     
     element.copy = function (just_value) {
         // copy has a copy of the attributes array as well
-        var copy = element.create(this.get_HTML(), this.get_style_attributes().slice());
+        var copy = element.create(this.get_HTML(), this.get_style_attributes().slice(), this.get_description());
         return this.add_to_copy(copy, just_value);
     };
     
@@ -474,7 +475,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     };
     
     element.create_from_json = function (json, additional_info) {
-        var reconstructed_element = element.create(decodeURIComponent(json.html), json.attributes);
+        var reconstructed_element = element.create(decodeURIComponent(json.html), json.attributes, json.description);
         var ignore_attributes;
         if (additional_info && additional_info.event) {
             // perhaps should check that event is a drop event
