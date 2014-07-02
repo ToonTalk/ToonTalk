@@ -215,13 +215,24 @@ window.TOONTALK.widget = (function (TT) {
                     var type_name = this.get_type_name();
                     var backside = this.get_backside();
                     var frontside_element = this.get_frontside_element();
+                    var description = this.get_description();
+                    var title;
                     if ($(frontside_element).is(".toontalk-top-level-resource")) {
-                        return "Drag this " + type_name + " to a work area.";   
+                        title = "Drag this " + type_name + " to a work area.";   
+                    } else if (!backside || !backside.get_element()) {
+                        title = "Click to see the back side of this " + type_name;
+                    } else if (!description) {
+                       return TT.UTILITIES.add_a_or_an(type_name, true);
                     }
-                    if (!backside || !backside.get_element()) {
-                        return "Click to see the back side of this " + type_name;
+                    if (description) {
+                        description = "This " + type_name + " " + description;
+                        if (title) {
+                            title = description + "\n" + title;
+                        } else {
+                            title = description;   
+                        }
                     }
-                    return TT.UTILITIES.add_a_or_an(type_name, true);
+                    return title;
                 };
             }
             return widget;
