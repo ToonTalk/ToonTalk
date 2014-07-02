@@ -123,7 +123,7 @@ window.TOONTALK.bird = (function (TT) {
             // this may become more complex if the original ToonTalk behaviour
             // that if a bird and its nest are copied or saved as a unit they become a new pair
             // notice that bird/nest semantics is that the nest is shared not copied
-            var copy = this.create(nest); // image_url);
+            var copy = this.create(nest, this.get_description()); // image_url);
             return this.add_to_copy(copy, just_value);
         };
         new_bird.deliver_to = function (nest_copy, widget_side_copy) {
@@ -399,7 +399,7 @@ window.TOONTALK.nest = (function (TT) {
                 return contents[0].widget.copy(just_value);
             }
             contents_copy = TT.UTILITIES.copy_array(contents);
-            copy = TT.nest.create(description, contents_copy, [], guid, original_nest || this); // image_url removed
+            copy = TT.nest.create(this.get_description(), contents_copy, [], guid, original_nest || this); // image_url removed
             return this.add_to_copy(copy, just_value);
         };
         new_nest.dropped_on_other = function (other, other_is_backside, event) {
