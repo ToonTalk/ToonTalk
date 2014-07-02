@@ -121,7 +121,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     };
 
     // public methods
-    number.create = function (numerator, denominator, operator, format) {
+    number.create = function (numerator, denominator, operator, format, description) {
         var new_number = Object.create(number);
         // value is a private variable closed over below
         var value = bigrat_from_values(numerator, denominator);
@@ -170,6 +170,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
                 return format; 
             };
         new_number = number.add_standard_widget_functionality(new_number);
+        new_number.set_description(description);
         if (TT.debugging) {
             new_number.debug_string = new_number.toString();
             new_number.debug_id = TT.UTILITIES.generate_unique_id();
@@ -194,7 +195,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     };
 
     number.copy = function (just_value) {
-        return this.add_to_copy(number.create(this.get_value()[0], this.get_value()[1], this.get_operator(), this.get_format()), just_value);
+        return this.add_to_copy(number.create(this.get_value()[0], this.get_value()[1], this.get_operator(), this.get_format(), this.get_description()), just_value);
     };
     
     number.is_number = function () {
@@ -488,7 +489,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     };
     
     number.create_from_json = function (json) {
-        return number.create(json.numerator, json.denominator, json.operator, json.format);
+        return number.create(json.numerator, json.denominator, json.operator, json.format, json.description);
     };
 
     number.is_integer = function () {
