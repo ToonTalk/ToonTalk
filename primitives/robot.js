@@ -83,10 +83,10 @@ window.TOONTALK.robot = (function (TT) {
             animating = new_value;
             if (animating) {
                 // the following didn't work when added to the CSS of toontalk-side-animating
-                frontside_element.style["z-index"] = 1000;
+                frontside_element.style["z-index"] = TT.UTILITIES.next_z_index(); // 1000;
                 $(frontside_element).addClass("toontalk-robot-animating");
             } else {
-                frontside_element.style["z-index"] = 'auto';
+                frontside_element.style["z-index"] = TT.UTILITIES.next_z_index(); // 'auto';
                 $(frontside_element).removeClass("toontalk-robot-animating");
             }
         };
