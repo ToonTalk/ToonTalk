@@ -51,7 +51,7 @@ window.TOONTALK.backside =
                     if (!backside_removed) {
                         $(other.get_frontside_element()).removeClass("toontalk-frontside-on-backside");
                     }
-                    if (!TT.robot_in_training) {
+                    if (!TT.robot.in_training) {
                        // robots in training take care of this (and need to to record things properly)
                        this.remove_backside_widget(other, backside_removed, ignore_if_not_on_backside);
                     }
