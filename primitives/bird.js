@@ -115,13 +115,9 @@ window.TOONTALK.bird = (function (TT) {
             this.fly_to(target_offset, continuation);
         };
         new_bird.get_json = function (json_history) {
-            return {semantic:
-               {type: "bird",
-                nest: nest && TT.UTILITIES.get_json(nest, json_history)
-                },
-                   view:
-               {//image_url: this.get_image_url(),
-                description: this.get_description()}};
+            return {type: "bird",
+                    nest: nest && TT.UTILITIES.get_json(nest, json_history)
+                   };
         };
         new_bird.copy = function (just_value) {
             // this may become more complex if the original ToonTalk behaviour
@@ -385,15 +381,14 @@ window.TOONTALK.nest = (function (TT) {
                             context: context && TT.UTILITIES.get_json(robot_run.context, json_history),
                             top_level_context: top_level_context && TT.UTILITIES.get_json(robot_run.top_level_context, json_history)};
             });
-            return {semantic:
-                        {type: "nest",
-                         contents: TT.UTILITIES.get_json_of_array(contents, json_history),
-                         guid: guid,
-                         original_nest: original_nest && TT.UTILITIES.get_json(original_nest, json_history),
-                         waiting_robots: waiting_robots_json
-                         // nest_copies are generated as those nests are created
-//                          nest_copies: nest_copies && TT.UTILITIES.get_json_of_array(nest_copies, json_history)
-                        }};
+            return {type: "nest",
+                    contents: TT.UTILITIES.get_json_of_array(contents, json_history),
+                    guid: guid,
+                    original_nest: original_nest && TT.UTILITIES.get_json(original_nest, json_history),
+                    waiting_robots: waiting_robots_json
+                    // nest_copies are generated as those nests are created
+//                  nest_copies: nest_copies && TT.UTILITIES.get_json_of_array(nest_copies, json_history)
+                   };
         };
         new_nest.copy = function (just_value) {
             // this may become more complex if the original ToonTalk behaviour
