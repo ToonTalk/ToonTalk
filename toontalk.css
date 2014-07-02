@@ -161,7 +161,7 @@
 }
 .toontalk-top-level-number {
 	/* numbers look better with fixed widths -- easier to compare visually */
-	font-family: monospace;
+	font-family: 'Lucida console', monospace;
 	background-color: rgb(190, 244, 206);
 	width:  100%;
 	height: 100%;
@@ -190,7 +190,7 @@
 }
 .toontalk-decimal-point {
 	/* decimal point as monospace looked bad -- not sure if serif is the best rememdy */
-	font-family: serif;
+	font-family: 'Lucida serif';
 }
 .toontalk-numerator {
 }
@@ -211,7 +211,7 @@
 }
 .toontalk-three-dots-in-number {
 	font-size: 30%;
-	font-family: serif; /* really want to ignore the monospace */
+	font-family: 'Lucida serif'; /* really want to ignore the monospace */
 }
 .toontalk-hole-about-to-be-replaced {
 	width:  100%;

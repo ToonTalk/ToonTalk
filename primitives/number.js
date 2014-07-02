@@ -542,7 +542,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         // generate twice as many decimal places are there is room for so they shrink
         // split space between integer part and decimal part
         return fit_string_to_length(integer_string, integer_max_digits, font_size) +
-               "<span class='toontalk-decimal-point' style='font-family: serif'>.</span>" + // decimal point looks better if not monospace
+               "<span class='toontalk-decimal-point'>.</span>" + // decimal point looks better if not monospace
                shrink_to_fit(decimal_places, decimal_max_digits, true);
     };
 

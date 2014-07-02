@@ -736,11 +736,11 @@ window.TOONTALK.widget = (function (TT) {
             container_offset = $frontside_ancestor_that_is_backside_element.offset();
             if (!container_offset) {
                 container_offset = {left: 0, 
-                                      top: 0};
+                                    top:  0};
             }
             $(backside_element).css({
                 left: frontside_offset.left - container_offset.left,
-                top: frontside_offset.top - container_offset.top,
+                top:  frontside_offset.top -  container_offset.top,
                 opacity: .01
             });
             $frontside_ancestor_that_is_backside_element.append(backside_element);
