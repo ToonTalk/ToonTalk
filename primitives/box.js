@@ -11,7 +11,7 @@ window.TOONTALK.box = (function (TT) {
 
     var box = Object.create(TT.widget);
 
-    box.create = function (size, horizontal, contents) {
+    box.create = function (size, horizontal, contents, description) {
         var new_box = Object.create(box);
         if (contents) {
             contents.forEach(function (widget) {
@@ -97,6 +97,7 @@ window.TOONTALK.box = (function (TT) {
             }
         };
         new_box = new_box.add_standard_widget_functionality(new_box);
+        new_box.set_description(description);
         if (TT.debugging) {
             new_box.debug_string = new_box.toString();
             new_box.debug_id = TT.UTILITIES.generate_unique_id();
@@ -105,7 +106,7 @@ window.TOONTALK.box = (function (TT) {
     };
     
     box.copy = function (just_value) {
-        var copy = box.create(this.get_size(), this.get_horizontal(), TT.UTILITIES.copy_widgets(this.get_contents(), just_value, copy));
+        var copy = box.create(this.get_size(), this.get_horizontal(), TT.UTILITIES.copy_widgets(this.get_contents(), just_value, copy), this.get_description());
         return this.add_to_copy(copy, just_value);
     };
     
@@ -232,7 +233,7 @@ window.TOONTALK.box = (function (TT) {
     };
     
     box.create_from_json = function (json, additional_info) {
-        return box.create(json.size, json.horizontal, TT.UTILITIES.create_array_from_json(json.contents, additional_info));
+        return box.create(json.size, json.horizontal, TT.UTILITIES.create_array_from_json(json.contents, additional_info), json.description);
     };
     
     box.to_HTML = function () {
