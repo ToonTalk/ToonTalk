@@ -128,7 +128,7 @@ window.TOONTALK.actions =
                     if (robot.get_thing_in_hand()) {
                         robot.render();
                     }
-                    $(frontside_element).css({"z-index": TT.UTILITIES.next_z_index()}};
+                    $(frontside_element).css({"z-index": TT.UTILITIES.next_z_index()});
                     // pause between steps and give the previous step a chance to update the DOM
                     setTimeout(do_next_step, 500);
                 };

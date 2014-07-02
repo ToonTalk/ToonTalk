@@ -193,6 +193,7 @@ window.TOONTALK.backside =
                     y_scale *= current_height / height_at_resize_start;
                     width_at_resize_start = current_width;
                     height_at_resize_start = current_height;
+//                     console.log(current_width + "x" + current_height + " and scale is " + x_scale + "x" + y_scale);
                     TT.backside.scale_backside($backside_element, x_scale, y_scale, original_width, original_height);
                 },
                 handles: "e,s,se"}); // was "n,e,s,w,se,ne,sw,nw" but interfered with buttons
@@ -619,7 +620,7 @@ window.TOONTALK.backside =
         
         scale_backside: function ($backside_element, x_scale, y_scale, original_width, original_height) {
             var scale = Math.min(1, x_scale, y_scale);
-            if (scale === 1) {
+            if (x_scale === 1 && y_scale === 1) {
                // if not scaling let the browser decide the dimensions
                $backside_element.css({width: '',
                                       height: ''});
