@@ -583,14 +583,13 @@ window.TOONTALK.robot = (function (TT) {
         if (this.get_next_robot()) {
             next_robot_json = TT.UTILITIES.get_json(this.get_next_robot(), json_history);
         }
-        return {semantic:
-                    {type: "robot",
-                     frontside_conditions: frontside_conditions_json,
-                     backside_conditions: backside_conditions_json,
-                     body: this.get_body().get_json(),
-                     run_once: this.get_run_once(),
-                     next_robot: next_robot_json
-                     }};
+        return {type: "robot",
+                frontside_conditions: frontside_conditions_json,
+                backside_conditions: backside_conditions_json,
+                body: this.get_body().get_json(),
+                run_once: this.get_run_once(),
+                next_robot: next_robot_json
+               };
     };
     
     robot.create_from_json = function (json, additional_info) {
