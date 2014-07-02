@@ -798,6 +798,10 @@ window.TOONTALK.widget = (function (TT) {
             widget.toString = function () {
                 return "top level widget";
             };
+            widget.get_description = function () {
+                 // doesn't have one (at least for now)
+                 return;
+            };
             widget.match = function () {
                 return 'matched';
             };
