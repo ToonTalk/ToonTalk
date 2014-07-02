@@ -218,7 +218,7 @@ window.TOONTALK.bird = (function (TT) {
     };
     
     bird.create_from_json = function (json, additional_info) {
-        return TT.bird.create(TT.UTILITIES.create_from_json(json.nest, additional_info)); // additional_info.json_view.image_url);
+        return TT.bird.create(TT.UTILITIES.create_from_json(json.nest), additional_info && additional_info.json_view.description);
     };
     
     return bird;
