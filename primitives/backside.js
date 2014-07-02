@@ -17,10 +17,21 @@ window.TOONTALK.backside =
             var x_scale = 1; // so can shrink this down
             var y_scale = 1;
             var original_width, original_height, width_at_resize_start, height_at_resize_start;
-            var backside_widgets;
+            var backside_widgets, close_handler, close_title;
             $backside_element.addClass("toontalk-backside toontalk-side " + "toontalk-backside-of-" + widget.get_type_name());
             if (widget.get_type_name() !== "top-level") {
-                backside_element.appendChild(this.create_close_button(backside, widget));
+                close_handler = function (event) {
+                        backside.hide_backside(event);
+                        event.stopPropagation();
+                };
+                close_title = widget.get_description();
+                if (close_title) {
+                    close_title = "the " + widget.get_type_name() + " who " + close_title;
+                } else {
+                    close_title = "the " + widget.get_type_name();
+                }
+                close_title = "Click to hide this back side of " + close_title + ".";
+                backside_element.appendChild(this.create_close_button(close_handler, close_title));                
             }
             backside.get_element = function () {
                 return backside_element;
@@ -352,16 +363,16 @@ window.TOONTALK.backside =
             return button_set;
         },
         
-        create_done_button: function (element) {
-            var $done_button = $("<button>Done</button>").button();
-            $done_button.addClass("toontalk-done-backside-button");
-            $done_button.click(function (event) {
-                $(element).remove();
-                event.stopPropagation();
-            });
-            $done_button.attr("title", "Click when finished with settings.");
-            return $done_button.get(0); 
-        },
+//         create_done_button: function (element) {
+//             var $done_button = $("<button>Done</button>").button();
+//             $done_button.addClass("toontalk-done-backside-button");
+//             $done_button.click(function (event) {
+//                 $(element).remove();
+//                 event.stopPropagation();
+//             });
+//             $done_button.attr("title", "Click when finished with settings.");
+//             return $done_button.get(0); 
+//         },
         
 //         create_hide_button: function (backside, widget) {
 //             var backside_element = backside.get_element();
@@ -563,6 +574,10 @@ window.TOONTALK.backside =
                                                                  button_selector: ",toontalk-description-input"});
                         }
                     };
+                var close_handler = function (event) {
+                    $(settings).remove();
+                    event.stopPropagation();
+                }
                 $(description_text_area.button).val(widget.get_description());
                 description_text_area.button.addEventListener('change', description_change);
                 description_text_area.button.addEventListener('mouseout', description_change);
@@ -571,7 +586,8 @@ window.TOONTALK.backside =
                 }
                 settings.appendChild(TT.UTILITIES.create_row(description_text_area.container));
                 settings.appendChild(TT.UTILITIES.create_row(check_box.container));
-                settings.appendChild(TT.UTILITIES.create_row(this.create_done_button(settings)));
+                settings.appendChild(this.create_close_button(close_handler, "Click when finished with the settings of this " + widget.get_type_name() + "."));
+//                 settings.appendChild(TT.UTILITIES.create_row(this.create_done_button(settings)));
                 backside.get_element().appendChild(settings);
                 $(settings).addClass("toontalk-settings");
                 event.stopPropagation();
@@ -580,14 +596,11 @@ window.TOONTALK.backside =
             return $settings_button.get(0);
         },
         
-        create_close_button: function (backside, widget) {
+        create_close_button: function (handler, title) {
             var close_button = document.createElement("div");
             $(close_button).addClass("toontalk-close-button");
-            $(close_button).click(function (event) {
-                backside.hide_backside(event);
-                event.stopPropagation();
-            });
-            $(close_button).attr("title", "Click to hide this backside of " + (widget.get_description() || widget.toString()));
+            $(close_button).click(handler);
+            $(close_button).attr("title", title);
             return close_button;
         },
         
