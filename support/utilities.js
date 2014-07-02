@@ -1057,6 +1057,15 @@ window.TOONTALK.UTILITIES =
             z_index++;
             return z_index;
         },
+                
+        create_close_button: function (handler, title) {
+            var close_button = document.createElement("div");
+            $(close_button).addClass("toontalk-close-button");
+            $(close_button).css({"z-index": TT.UTILITIES.next_z_index()});
+            $(close_button).click(handler);
+            $(close_button).attr("title", title);
+            return close_button;
+        },
         
         check_radio_button: function (button_elements) {
             $(button_elements.button).prop("checked", true);

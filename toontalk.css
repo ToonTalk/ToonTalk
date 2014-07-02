@@ -373,8 +373,12 @@
 }
 .toontalk-close-button {
 /* 	based upon http://jsfiddle.net/adzFe/14/ */
-	left: 98%;
-	top:  -10%;
+	
+
+	right: 0px;
+	
+
+	top: 0px;
 	position: absolute;
 	cursor: pointer;
 	color: white;
