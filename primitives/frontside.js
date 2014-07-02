@@ -39,13 +39,13 @@ window.TOONTALK.frontside =
                 }
                 event.stopPropagation();
             });
-            frontside_element.addEventListener("mouseenter", function (event) {
+            frontside_element.addEventListener("mouseover", function (event) {
                 var backside = widget.get_backside();
                 if (backside) {
                     $(backside.get_element()).addClass("toontalk-highlight");
                 }
             });
-            frontside_element.addEventListener("mouseleave", function (event) {
+            frontside_element.addEventListener("mouseout", function (event) {
                 var backside = widget.get_backside();
                 if (backside) {
                     $(backside.get_element()).removeClass("toontalk-highlight");
