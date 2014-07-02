@@ -19,6 +19,9 @@ window.TOONTALK.backside =
             var original_width, original_height, width_at_resize_start, height_at_resize_start;
             var backside_widgets;
             $backside_element.addClass("toontalk-backside toontalk-side " + "toontalk-backside-of-" + widget.get_type_name());
+            if (widget.get_type_name() !== "top-level") {
+                backside_element.appendChild(this.create_close_button(backside, widget));
+            }
             backside.get_element = function () {
                 return backside_element;
             };
@@ -334,7 +337,7 @@ window.TOONTALK.backside =
                 run_or_erase_button = TT.backside.create_erase_button(backside, widget);
             }
             var copy_button = TT.backside.create_copy_button(backside, widget);
-            var hide_button = TT.backside.create_hide_button(backside, widget);
+//             var hide_button = TT.backside.create_hide_button(backside, widget);
             var remove_button = TT.backside.create_remove_button(backside, widget);
             var settings_button = TT.backside.create_settings_button(backside, widget, extra_settings_generator);
             var extra_arguments = [];
@@ -342,7 +345,7 @@ window.TOONTALK.backside =
             for (i = 3; i < arguments.length; i++) {
                 extra_arguments[i-3] = arguments[i];
             }
-            button_set = TT.UTILITIES.create_button_set(run_or_erase_button, copy_button, remove_button, hide_button, settings_button, extra_arguments);
+            button_set = TT.UTILITIES.create_button_set(run_or_erase_button, copy_button, remove_button, settings_button, extra_arguments);
             if (description) {
                return TT.UTILITIES.create_vertical_table(TT.UTILITIES.create_text_element("This " + widget.get_type_name() + " " + description), button_set);
             }
@@ -360,18 +363,18 @@ window.TOONTALK.backside =
             return $done_button.get(0); 
         },
         
-        create_hide_button: function (backside, widget) {
-            var backside_element = backside.get_element();
-            var $backside_element = $(backside_element);
-            var $hide_button = $("<button>Hide</button>").button();
-            $hide_button.addClass("toontalk-hide-backside-button");
-            $hide_button.click(function (event) {
-                backside.hide_backside(event);
-                event.stopPropagation();
-            });
-            $hide_button.attr("title", "Click to hide this.");
-            return $hide_button.get(0);
-        },
+//         create_hide_button: function (backside, widget) {
+//             var backside_element = backside.get_element();
+//             var $backside_element = $(backside_element);
+//             var $hide_button = $("<button>Hide</button>").button();
+//             $hide_button.addClass("toontalk-hide-backside-button");
+//             $hide_button.click(function (event) {
+//                 backside.hide_backside(event);
+//                 event.stopPropagation();
+//             });
+//             $hide_button.attr("title", "Click to hide this.");
+//             return $hide_button.get(0);
+//         },
         
         hide_backside: function (event) {
             var widget = this.get_widget();
@@ -575,6 +578,17 @@ window.TOONTALK.backside =
             }.bind(this));
             $settings_button.attr("title", "Click to change properties of this " + widget.get_type_name());
             return $settings_button.get(0);
+        },
+        
+        create_close_button: function (backside, widget) {
+            var close_button = document.createElement("div");
+            $(close_button).addClass("toontalk-close-button");
+            $(close_button).click(function (event) {
+                backside.hide_backside(event);
+                event.stopPropagation();
+            });
+            $(close_button).attr("title", "Click to hide this backside of " + (widget.get_description() || widget.toString()));
+            return close_button;
         },
         
         get_widgets: function () {

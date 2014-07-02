@@ -371,6 +371,32 @@
     transform: scale(0.625);
     transform-origin: center; */
 }
+.toontalk-close-button {
+/* 	based upon http://jsfiddle.net/adzFe/14/ */
+	left: 98%;
+	top:  -10%;
+	position: absolute;
+	cursor: pointer;
+	color: white;
+	border: 1px solid #AEAEAE;
+	border-radius: 20px;
+	background: #605F61;
+	font-size: 26px;
+	font-weight: bold;
+	display: inline-block;
+	line-height: 0px;
+	padding: 11px 3px;
+	
+
+	z-index: 100;
+
+}
+.toontalk-close-button:hover {
+	background: red;
+}
+.toontalk-close-button:before{
+    content: "×";
+}
 @-webkit-keyframes hatch-egg {
    from { background-position:     0px; }
      to { background-position: -1744px; }
