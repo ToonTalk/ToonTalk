@@ -68,7 +68,7 @@ window.TOONTALK.frontside =
                 if (backside) {
                     $(backside.get_element()).removeClass("toontalk-highlight");
                 }
-//                 $(close_button).hide();
+                $(close_button).hide();
             });
             if (TT.debugging) {
                 frontside_element.id = widget.debug_id;
