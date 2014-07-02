@@ -19,6 +19,7 @@ window.TOONTALK.backside =
             var original_width, original_height, width_at_resize_start, height_at_resize_start;
             var backside_widgets, close_handler, close_title;
             $backside_element.addClass("toontalk-backside toontalk-side " + "toontalk-backside-of-" + widget.get_type_name());
+            $backside_element.css({"z-index": TT.UTILITIES.next_z_index()});
             if (widget.get_type_name() !== "top-level") {
                 close_handler = function (event) {
                         backside.hide_backside(event);
@@ -246,14 +247,14 @@ window.TOONTALK.backside =
                 }
                 event.stopPropagation();
             });
-            backside_element.addEventListener("mouseenter", function (event) {
+            backside_element.addEventListener("mouseover", function (event) {
                var frontside = widget.get_frontside();
                var parent_of_backside = widget.get_parent_of_backside();
                if (frontside && (!parent_of_backside || parent_of_backside.widget.get_type_name() === "top-level")) {
                    $(frontside.get_element()).addClass("toontalk-highlight");
                }
             });
-            backside_element.addEventListener("mouseleave", function (event) {
+            backside_element.addEventListener("mouseout", function (event) {
                var frontside = widget.get_frontside();
                if (frontside) {
                    $(frontside.get_element()).removeClass("toontalk-highlight");
@@ -557,6 +558,7 @@ window.TOONTALK.backside =
         create_settings_button: function (backside, widget, extra_settings_generator) {
             var $settings_button = $("<button>Settings</button>").button();
             $settings_button.addClass("toontalk-settings-backside-button");
+            $settings_button.css({"z-index": TT.UTILITIES.next_z_index()});
             $settings_button.click(function (event) {
                 var settings = document.createElement("table");
                 var check_box = this.create_infinite_stack_check_box(backside, widget);

@@ -12,6 +12,7 @@ window.TOONTALK.UTILITIES =
 (function (TT) {
     "use strict";
     var dragee;
+    var z_index = 100;
     var json_creators = {"box": TT.box.create_from_json,
                          "number": TT.number.create_from_json,
                          "robot": TT.robot.create_from_json,
@@ -1050,6 +1051,11 @@ window.TOONTALK.UTILITIES =
                 return url.substring(0, extensionStart) + ".32x32" + url.substring(extensionStart);
             }
             return url;
+        },
+        
+        next_z_index: function () {
+            z_index++;
+            return z_index;
         },
         
         check_radio_button: function (button_elements) {
