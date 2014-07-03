@@ -575,9 +575,10 @@ window.TOONTALK.box_empty_hole =
             empty_hole.widget_dropped_on_me = function (dropped) {
                 var box = this.get_parent_of_frontside().widget;
                 var parent_of_frontside = dropped.get_parent_of_frontside();
-                if (parent_of_frontside && parent_of_frontside.widget && parent_of_frontside.widget.removed_from_container) {
-                    parent_of_frontside.widget.removed_from_container(dropped);
-                }
+                // other code should take care of this (e.g. drop)
+//              if (parent_of_frontside && parent_of_frontside.widget && parent_of_frontside.widget.removed_from_container) {
+//                  parent_of_frontside.widget.removed_from_container(dropped);
+//              }
                 if (TT.robot.in_training) {
                     TT.robot.in_training.dropped_on(dropped, empty_hole);
                 }
