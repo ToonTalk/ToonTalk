@@ -380,7 +380,12 @@ window.TOONTALK.nest = (function (TT) {
         new_nest.dereference = function () {
             // e.g. when a robot takes something off the nest
             // the .widget is needed until widget_sides are first-class objects
-            return this.removed_from_container().widget;
+            var widget = this.removed_from_container().widget;
+            // isn't attached to the DOM because was removed from nest
+            if (this.visible()) {
+                this.get_frontside_element().appendChild(widget.get_frontside_element());
+            }
+            return widget;
         };
         // defined here so that contents and other state can be private
         new_nest.get_json = function (json_history) {
