@@ -367,6 +367,11 @@ window.TOONTALK.nest = (function (TT) {
                 if (removed[0]) {
                     $(TT.UTILITIES.get_side_element_from_side(removed[0])).css({width:  removed[0].saved_width,
                                                                                 height: removed[0].saved_height});
+                    if (removed[0].is_backside) {
+                        removed[0].widget.set_parent_of_backside(undefined);
+                    } else {
+                        removed[0].widget.set_parent_of_frontside(undefined);
+                    }
                 } else {
                     console.log("Nothing removed from nest!");
                 }
