@@ -247,9 +247,6 @@ window.TOONTALK.widget = (function (TT) {
                 return parent_of_backside;
             };
             widget.set_parent_of_frontside = function (new_value, parent_is_backside) {
-                if (TT.debugging && !new_value) {
-                    console.log("setting the parent to undefined of " + widget);
-                }
                 parent_of_frontside = {widget: new_value,
                                        is_backside: parent_is_backside};
             };
