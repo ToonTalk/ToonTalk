@@ -467,6 +467,7 @@ window.TOONTALK.nest = (function (TT) {
             } else {
                 contents[0].widget.widget_dropped_on_me(other, other_is_backside, event, robot);
             }
+            return true;
         };
         new_nest.update_display = function() {
             var frontside = this.get_frontside(true);
