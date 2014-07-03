@@ -394,6 +394,7 @@ window.TOONTALK.box = (function (TT) {
                 return this;
             }
         }
+        console.log("Attempted to remove " + part + " from " + this + " but not found.");
     };
     
     box.get_path_to = function (widget, robot) {

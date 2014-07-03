@@ -298,8 +298,9 @@ window.TOONTALK.backside =
             $(this.get_element()).remove();
         },
         
-//         removed_from_container: function (part, event) {
-//             this.get_widget().remove_backside_widget(part);
+        // commented out since callers directly call remove_backside_widget
+//         removed_from_container: function (part, is_backside) {
+//             this.get_widget().remove_backside_widget(part, is_backside, true);
 //         },
         
         visible: function () {
@@ -449,11 +450,16 @@ window.TOONTALK.backside =
                     }
                 });
             };
+            var parent_of_backside = widget.get_parent_of_backside();
             $(frontside_element).removeClass("toontalk-highlight");
             if (widget.forget_backside) {
                 widget.forget_backside();
             }
-            widget.get_parent_of_backside().widget.removed_from_container(widget, true, event, true);
+            if (parent_of_backside.is_backside) {
+                parent_of_backside.widget.remove_backside_widget(widget, true);
+            } else {
+                parent_of_backside.widget.removed_from_container(widget, true, event, true);
+            }
             record_backside_widget_positions();
             widget.backside_geometry = this.get_backside_dimensions();
             animate_disappearance($backside_element)

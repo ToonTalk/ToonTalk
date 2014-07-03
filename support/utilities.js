@@ -784,7 +784,11 @@ window.TOONTALK.UTILITIES =
                                     $source.removeClass("toontalk-widget-on-nest");
                                     // can be undefined if container is a robot holding something
                                     // but probably that should be prevented earlier
-                                    container.removed_from_container(source_widget, source_is_backside, event);
+                                    if ($container.is(".toontalk-backside")) {
+                                        container.remove_backside_widget(source_widget, source_is_backside);
+                                    } else {
+                                        container.removed_from_container(source_widget, source_is_backside, event);
+                                    }
                                 }
                             } else {
                                 TT.UTILITIES.restore_resource($source, source_widget);
