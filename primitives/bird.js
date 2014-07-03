@@ -364,8 +364,10 @@ window.TOONTALK.nest = (function (TT) {
         new_nest.removed_from_container = function (part, backside_removed, event) {
             var removed = contents.splice(0,1);
             if (this.visible()) {
-                $(TT.UTILITIES.get_side_element_from_side(removed[0])).css({width:  removed[0].saved_width,
-                                                                            height: removed[0].saved_height});
+                if (removed[0]) {
+                    $(TT.UTILITIES.get_side_element_from_side(removed[0])).css({width:  removed[0].saved_width,
+                                                                                height: removed[0].saved_height});
+                }
                 if (contents.length > 0) {
                     $(TT.UTILITIES.get_side_element_from_side(contents[0])).show();
                 }
