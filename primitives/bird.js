@@ -497,6 +497,7 @@ window.TOONTALK.nest = (function (TT) {
                 $(contents_side_element).addClass("toontalk-widget-on-nest");
 //                 contents_side_element.style.position = "static";
                 frontside_element.appendChild(contents_side_element);
+                $(frontside_element).addClass("toontalk-empty-nest");
             } else {
                 frontside_element.title = this.get_title();
                 if (guid) {
