@@ -367,12 +367,20 @@ window.TOONTALK.nest = (function (TT) {
                 if (removed[0]) {
                     $(TT.UTILITIES.get_side_element_from_side(removed[0])).css({width:  removed[0].saved_width,
                                                                                 height: removed[0].saved_height});
+                } else {
+                    console.log("Nothing removed from nest!");
                 }
                 if (contents.length > 0) {
                     $(TT.UTILITIES.get_side_element_from_side(contents[0])).show();
                 }
                 this.render();
             }
+            return removed[0];
+        };
+        new_nest.dereference = function () {
+            // e.g. when a robot takes something off the nest
+            // the .widget is needed until widget_sides are first-class objects
+            return this.removed_from_container().widget;
         };
         // defined here so that contents and other state can be private
         new_nest.get_json = function (json_history) {

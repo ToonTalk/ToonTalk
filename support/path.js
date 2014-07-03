@@ -63,14 +63,22 @@ window.TOONTALK.path =
 //             console.log("TT.path.get_path_to not fully implemented.");
         },
         dereference_path: function (path, context, top_level_context, robot) {
+            var dereferenced;
             if (path) {
                 if (path.dereference) {
-                    return path.dereference(context, top_level_context, robot);
+                    dereferenced = path.dereference(context, top_level_context, robot);
+                } else {
+                   dereferenced = context.dereference(path, top_level_context, robot);
                 }
-                return context.dereference(path, top_level_context, robot);
+            } else {
+                // no path means entire context -- I don't think this is still true
+                dereferenced = context;
             }
-            // no path means entire context -- I don't think this is still true
-            return context;
+            if (dereferenced.dereference) {
+                // e.g. covered nests dereference to their top item
+                return dereferenced.dereference();
+            }
+            return dereferenced;
         },
         toString: function (a_path) {
             if (a_path.next) {
