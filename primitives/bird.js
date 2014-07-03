@@ -386,9 +386,22 @@ window.TOONTALK.nest = (function (TT) {
             // e.g. when a robot takes something off the nest
             // the .widget is needed until widget_sides are first-class objects
             var widget = this.removed_from_container().widget;
+            var nest_offset, $top_level_backside_element, top_level_backside_element_offset, widget_element, nest_element, nest_width, nest_height;
             // isn't attached to the DOM because was removed from nest
             if (this.visible()) {
-                this.get_frontside_element().appendChild(widget.get_frontside_element());
+                nest_element = this.get_frontside_element();
+                nest_offset = $(nest_element).offset();
+                $top_level_backside_element = $(".toontalk-backside-of-top-level");
+                top_level_backside_element_offset = $top_level_backside_element.offset();
+                widget_element = widget.get_frontside_element();
+                nest_width =  $(nest_element).width();
+                nest_height = $(nest_element).height();
+                // left and top are 10%
+                $(widget_element).css({left: nest_width  * .1 + nest_offset.left - top_level_backside_element_offset.left,
+                                       top:  nest_height * .1 + nest_offset.top -  top_level_backside_element_offset.top,
+                                       width: nest_width * .8, // 80% width and height
+                                       height: nest_height * .8});
+                $top_level_backside_element.append(widget_element);
             }
             return widget;
         };
