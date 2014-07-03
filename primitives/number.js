@@ -216,7 +216,14 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         // get format from backside ancestor (via parent attribute?)
         var frontside = this.get_frontside(true);
         var frontside_element, $dimensions_holder, client_width, client_height, 
-            font_height, font_width, max_decimal_places, new_HTML, backside, size_unconstrained_by_container;
+            font_height, font_width, max_decimal_places, new_HTML, backside, size_unconstrained_by_container, on_a_nest_in_a_box;
+        var add_to_style = function (html, additional_style) {
+            var style_index = html.indexOf('style="');
+            if (style_index >= 0) {
+                return html.substring(0, style_index+7) + additional_style + html.substring(style_index+7);
+            }
+            return html;
+        };
         frontside_element = frontside.get_element();
         if ($(frontside_element).is(".toontalk-conditions-contents")) {
             $dimensions_holder = $(frontside_element);
@@ -229,6 +236,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         } else {
             $dimensions_holder = $(frontside_element).parent();
         }
+        on_a_nest_in_a_box = $(frontside_element).closest(".toontalk-nest").is("*") && $(frontside_element).closest(".toontalk-box").is("*");
         client_width = $dimensions_holder.width();
         client_height = $dimensions_holder.height();
         if (client_width === 0 || client_height === 0) {
@@ -242,6 +250,10 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         // could find the font name and use the precise value
         max_decimal_places = client_width / font_width;
         new_HTML = this.to_HTML(max_decimal_places, font_height, this.get_format(), true, this.get_operator(), size_unconstrained_by_container);
+        if (on_a_nest_in_a_box) {
+            // need to work around a CSS problem where nested percentage widths don't behave as expected
+            new_HTML = add_to_style(new_HTML, "width:" + client_width + "px;");
+        }
         if (!frontside_element.firstChild) {
             frontside_element.appendChild(document.createElement('div'));
         }
