@@ -240,7 +240,7 @@ window.TOONTALK.backside =
                if (frontside && (!parent_of_backside || parent_of_backside.widget.get_type_name() === "top-level")) {
                    $(frontside.get_element()).addClass("toontalk-highlight");
                }
-               if (widget.close_button_ok()) {
+               if (widget.close_button_ok(backside_element)) {
                    if (close_button) {
                        $(close_button).show();
                    } else {

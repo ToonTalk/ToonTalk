@@ -45,7 +45,7 @@ window.TOONTALK.bird = (function (TT) {
             }
             return true;
         };
-        new_bird.animate_delivery_to = function (package_side, target_side, temporary_copy) {
+        new_bird.animate_delivery_to = function (package_side, target_side, nest_recieving_package, starting_left, starting_top) {
             var target_offset, bird_offset, bird_frontside_element, parent_element, bird_style_position, width, height,
                 $top_level_backside_element, top_level_backside_element_offset, continuation;
             this.element_to_display_when_flying = TT.UTILITIES.get_side_element_from_side(package_side);
@@ -64,8 +64,8 @@ window.TOONTALK.bird = (function (TT) {
             bird_style_position = bird_frontside_element.style.position;
             bird_frontside_element.style.position = 'absolute';
             $top_level_backside_element.append(bird_frontside_element); // while flying            
-            $(bird_frontside_element).css({left: bird_offset.left-top_level_backside_element_offset.left,
-                                           top: bird_offset.top-top_level_backside_element_offset.top,
+            $(bird_frontside_element).css({left: starting_left || bird_offset.left-top_level_backside_element_offset.left,
+                                           top: starting_top || bird_offset.top-top_level_backside_element_offset.top,
                                            width: width,
                                            height: height
                                            });
@@ -74,9 +74,9 @@ window.TOONTALK.bird = (function (TT) {
 //                                                                        height: height});            
 //                         }.bind(this),
 //                         100);
-            if (temporary_copy) {
+            if (nest_recieving_package) {
                 continuation = function () {
-                    nest.add_to_contents(package_side, this);
+                    nest_recieving_package.add_to_contents(package_side, this);
                     // fade away -- not working (at least in Chrome)
                     $(bird_frontside_element).css({opacity: 1});
                     $(bird_frontside_element).addClass("toontalk-side-animating");
@@ -366,7 +366,7 @@ window.TOONTALK.nest = (function (TT) {
                     $(bird_parent_element).append(bird_frontside_element);
                     $(bird_frontside_element).css({left: start_position.left,
                                                    top:  start_position.top});
-                    bird_copy.animate_delivery_to(TT.UTILITIES.copy_side(package_side), {widget: nest_copy}, true);
+                    bird_copy.animate_delivery_to(TT.UTILITIES.copy_side(package_side), {widget: nest_copy}, nest_copy);
                 });
             }
         };

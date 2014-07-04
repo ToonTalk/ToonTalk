@@ -31,6 +31,15 @@ window.TOONTALK.frontside =
 //          console.log("frontside associated with " + widget.debug_id);
             TT.UTILITIES.drag_and_drop($frontside_element);
             frontside.get_element = function () {
+                if (frontside_element && !close_button && $(frontside_element).is(":visible") && widget.close_button_ok(frontside_element)) {
+                    // wait for DOM to settle down
+                    setTimeout(function () {
+                            close_button = TT.UTILITIES.create_close_button(close_handler, "Click to remove this " + widget.get_type_name() + ".");
+                            frontside_element.appendChild(close_button);
+                            $(close_button).hide(); // until hover over widget
+                        },
+                        1);        
+                }
                 return frontside_element;
             };
             frontside.get_widget = function () {
@@ -55,13 +64,7 @@ window.TOONTALK.frontside =
                 if (backside) {
                     $(backside.get_element()).addClass("toontalk-highlight");
                 }
-                if (widget.close_button_ok()) {
-                    if (!close_button) {
-                        close_button = TT.UTILITIES.create_close_button(close_handler, "Click to remove this " + widget.get_type_name() + ".");
-                        frontside_element.appendChild(close_button);
-                    }
-                    $(close_button).show();
-                }
+                $(close_button).show();
             });
             frontside_element.addEventListener("mouseout", function (event) {
                 var backside = widget.get_backside();

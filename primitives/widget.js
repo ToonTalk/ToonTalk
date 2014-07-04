@@ -854,11 +854,10 @@ window.TOONTALK.widget = (function (TT) {
             $(this.get_frontside_element()).hide();
         },
         
-        close_button_ok: function () {
-            var frontside_element = this.get_frontside_element();
+        close_button_ok: function (element) {
             return this.get_type_name() !== "top-level" &&
-                   !$(frontside_element).is(".toontalk-top-level-resource") &&
-                   !$(frontside_element).closest(".toontalk-conditions-panel").is("*");
+                   !$(element).is(".toontalk-top-level-resource") &&
+                   !$(element).closest(".toontalk-conditions-panel").is("*");
         }
     };
 }(window.TOONTALK));

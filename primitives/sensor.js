@@ -30,6 +30,7 @@ window.TOONTALK.sensor = (function (TT) {
         var nest_copy = new_sensor.copy;
         var event_listener = function (event) {
             var value = event[attribute];
+            var delivery_bird;
             if (attribute === 'keyCode') {
                 if (value === 16) {
                     return;
@@ -57,7 +58,12 @@ window.TOONTALK.sensor = (function (TT) {
                 console.log("No " + attribute + " in sensor " + sensor);
                 return;
             }
-            new_sensor.add_to_contents({widget: value_widget});
+            if (visible) {
+                delivery_bird = TT.bird.create();
+                delivery_bird.animate_delivery_to({widget: value_widget}, {widget: new_sensor}, new_sensor, window.outerWidth/2, window.outerHeight);
+            } else {
+                new_sensor.add_to_contents({widget: value_widget});
+            }
         };
         window.addEventListener(sensor_name, event_listener);
         new_sensor.copy = function (just_value) {
