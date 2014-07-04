@@ -132,8 +132,8 @@ window.TOONTALK.UTILITIES =
         } else if (!target_widget) {
             console.log("target element has no 'owner'");
             return; // let event propagate
-        } else if (target_widget.widget_dropped_on_me && target_widget.widget_dropped_on_me(source_widget, source_is_backside, event)) {
         } else if (source_widget.drop_on && source_widget.drop_on(target_widget, source_is_backside, event)) {
+        } else if (target_widget.widget_dropped_on_me && target_widget.widget_dropped_on_me(source_widget, source_is_backside, event)) {
         } else {
             // ignore the current target and replace with the backside it is on
             new_target = $target.closest(".toontalk-backside");
