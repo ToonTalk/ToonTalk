@@ -224,6 +224,10 @@ window.TOONTALK.UTILITIES =
                         $(frontside_element).addClass("toontalk-top-level-resource");
                         element.appendChild(frontside_element);
                     }
+                    if (widget.set_active) {
+                        // resource shouldn't run -- at least not sensor nests
+                        widget.set_active(false);
+                    }
                     // delay until geometry settles down
                     setTimeout(function () {
                             widget.update_display();
@@ -926,6 +930,10 @@ window.TOONTALK.UTILITIES =
                 $dropped.get(0).parentElement.appendChild(dropped_element_copy);
 //                 $dropped.parent().append(dropped_element_copy);
                 TT.DISPLAY_UPDATES.pending_update(dropped_copy);
+                if (dropped_widget.set_active) {
+                    dropped_widget.set_active(true);
+                    dropped_copy.set_active(false);
+                }
             }
         },
         

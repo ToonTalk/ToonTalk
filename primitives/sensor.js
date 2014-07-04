@@ -27,7 +27,7 @@ window.TOONTALK.sensor = (function (TT) {
         var new_sensor = TT.nest.create(description, previous_contents, undefined, "sensor sensor");
         var nest_get_json = new_sensor.get_json;
         var nest_update_display = new_sensor.update_display;
-        window.addEventListener(sensor_name, function (event) {
+        var event_listener = function (event) {
             var value = event[attribute];
             if (attribute === 'keyCode') {
                 if (value === 16) {
@@ -57,7 +57,12 @@ window.TOONTALK.sensor = (function (TT) {
                 return;
             }
             new_sensor.add_to_contents({widget: value_widget});
-        });
+        };
+        window.addEventListener(sensor_name, event_listener);
+        new_sensor.copy = function (just_value) {
+            var copy = TT.sensor.create(sensor_name, attribute, description);
+            return new_sensor.add_to_copy(copy, just_value);
+        };
         new_sensor.get_json = function (json_history) {
             var nest_json = nest_get_json.call(this, json_history);
             nest_json.type = 'sensor';
@@ -67,14 +72,21 @@ window.TOONTALK.sensor = (function (TT) {
         };
         new_sensor.update_display = function () {
             nest_update_display.call(this);
-            $(this.get_frontside_element(true)).addClass("toontalk-sensor-nest");
-            $(this.get_frontside_element(true)).removeClass("toontalk-empty-nest");
+            $(this.get_frontside_element()).addClass("toontalk-sensor-nest");
+            $(this.get_frontside_element()).removeClass("toontalk-empty-nest");
         }
         new_sensor.get_type_name = function () {
             return 'sensor';
         };
         new_sensor.toString = function () {
             return "a sensor of " + attribute + " for " + sensor_name + " sensors";
+        };
+        new_sensor.set_active = function (new_value) {
+            if (new_value) {
+                window.addEventListener(sensor_name, event_listener);
+            } else {
+                window.removeEventListener(sensor_name, event_listener);
+            }
         };
         return new_sensor;
     };
