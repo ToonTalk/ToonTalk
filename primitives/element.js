@@ -192,6 +192,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         new_element.get_additional_classes = function () {
             return additional_classes;
         };
+        new_element.set_additional_classes = function (new_value) {
+            additional_classes = new_value;
+        };
         new_element = new_element.add_standard_widget_functionality(new_element);
         new_element.set_description(description);
         if (TT.debugging) {

@@ -19,6 +19,7 @@ window.TOONTALK.UTILITIES =
                          "element": TT.element.create_from_json,
                          "bird": TT.bird.create_from_json,
                          "nest": TT.nest.create_from_json,
+                         "sensor": TT.sensor.create_from_json,
                          "body": TT.actions.create_from_json,
                          "robot_action": TT.robot_action.create_from_json,
                          "box_path": TT.box.path.create_from_json,
@@ -253,7 +254,6 @@ window.TOONTALK.UTILITIES =
 //             $backside_element.addClass("toontalk-top-level-backside");
 //             backside_element.draggable = false;
             TT.QUEUE.run();
-           
             window.addEventListener('beforeunload', function (event) {
                 TT.UTILITIES.backup_all(true);
 //                 // following not needed if things are backed up to localStorage
@@ -261,6 +261,9 @@ window.TOONTALK.UTILITIES =
 //                 event.returnValue = message;
 //                 return message;
             });
+            // while developing
+//             var sensor = TT.sensor.create("keydown", "keyCode");
+//             $(".toontalk-top-level-backside").append(sensor.get_frontside_element(true));
         };
     var drag_ended = function () {
         if (!dragee) {

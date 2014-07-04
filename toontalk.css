@@ -342,6 +342,12 @@
 /* 	otherwise extra white space appears in the resource area */
     margin-top: -43px;
 }
+.toontalk-sensor-nest {
+    background-image: url("images/sensor-nest.png");
+	background-repeat: no-repeat;
+	width: 116px;
+	height: 98px;
+}
 .toontalk-empty-nest {
 	background-image: url("images/empty-nest.png");
 	background-repeat: no-repeat;
@@ -386,16 +392,17 @@
 	display: inline-block;
 	line-height: 0px;
 	padding: 11px 3px;
-	
-
 	z-index: 100;
-
 }
 .toontalk-close-button:hover {
 	background: red;
 }
 .toontalk-close-button:before{
     content: "×";
+}
+.toontalk-string-value-from-sensor {
+	background-color: rgb(252, 240, 240);
+	text-align: center;
 }
 @-webkit-keyframes hatch-egg {
    from { background-position:     0px; }
