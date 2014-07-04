@@ -647,17 +647,6 @@ window.TOONTALK.widget = (function (TT) {
             }
         },
         
-//         widget_dropped_on_me: function (widget) {
-//             if (TT.robot.in_training) {
-//                 TT.robot.in_training.dropped_on(widget, this);
-//             }
-//             return true;
-//         },
-        
-        equals: function (other) {
-            console.assert(false, "equals not implemented");
-        },
-        
         match: function (context) {
             // should return 'matched', 'not-matched', or an array of nests waiting for objects to arrive
             console.assert(false, "match not implemented for " + context.toString());

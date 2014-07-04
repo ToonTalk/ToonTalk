@@ -78,6 +78,9 @@ window.TOONTALK.actions =
                 return path;
             };
             new_actions.dereference = function (index) {
+                if (TT.debugging && !newly_created_widgets[index]) {
+                    console.log("Expected to find the " + (index+1) + "th newly created widget.");
+                }
                 return newly_created_widgets[index];
             }
             return new_actions;

@@ -49,7 +49,6 @@ window.TOONTALK.UTILITIES =
         return div_string.substring(json_start, json_end+1);
     };
     var handle_drop = function ($target, $source, source_widget, target_widget, target_position, event, json_object, drag_x_offset, drag_y_offset, source_is_backside) {
-        var drop_handled = true;
         var new_target, backside_widgets_json, shared_widgets;
         if ($target.is(".toontalk-backside")) {
             if (source_widget.get_type_name() === 'top-level') {
@@ -130,14 +129,11 @@ window.TOONTALK.UTILITIES =
             if ($source.is(".toontalk-robot")) {
                 $target.data("drop_area_owner").set_next_robot($source.data("owner"));
             }
-            drop_handled = true;
         } else if (!target_widget) {
             console.log("target element has no 'owner'");
             return; // let event propagate
-        } else if (source_widget.drop_on && source_widget.drop_on(target_widget, source_is_backside, event)) {
-            drop_handled = true;
         } else if (target_widget.widget_dropped_on_me && target_widget.widget_dropped_on_me(source_widget, source_is_backside, event)) {
-            drop_handled = true;
+        } else if (source_widget.drop_on && source_widget.drop_on(target_widget, source_is_backside, event)) {
         } else {
             // ignore the current target and replace with the backside it is on
             new_target = $target.closest(".toontalk-backside");
@@ -150,16 +146,15 @@ window.TOONTALK.UTILITIES =
                         left: $target.position().left,
                         top: $target.position().top + $target.height()
                     });
-                    drop_handled = true;
                 }
             }
         }
-        if (target_widget && !drop_handled) {
-            // is the obsolete? If so is drop_handled?
-            if (target_widget.widget_dropped_on_me) {
-                target_widget.widget_dropped_on_me(source_widget, source_is_backside, event);
-            }
-        }
+//         if (target_widget && !drop_handled) {
+//             // is the obsolete? If so is drop_handled?
+//             if (target_widget.widget_dropped_on_me) {
+//                 target_widget.widget_dropped_on_me(source_widget, source_is_backside, event);
+//             }
+//         }
     };
     var handle_drop_from_file_contents = function (file, $target, target_widget, target_position, event) {
         var reader = new FileReader();
@@ -441,8 +436,8 @@ window.TOONTALK.UTILITIES =
         
         get_json: function (widget, json_history) {
             var index, widget_json;
-            if (!json_history) {
-                return this.get_json_top_level(widget);
+            if (TT.debugging && !json_history) {
+                console.log("no json_history");
             }
             index = json_history.shared_widgets.indexOf(widget);
             if (index >= 0) {
@@ -936,7 +931,8 @@ window.TOONTALK.UTILITIES =
             $(".toontalk-top-level-resource").each(function (index, element) {
                 var $resource_element = $(element).children(":first");
                 var owner = $resource_element.data("owner");
-                if (owner && widget.equals(owner)) {
+                if (owner && ((widget.equals && widget.equals(owner)) ||
+                              ((widget.matching_resource && widget.matching_resource(owner))))) {
                     element_found = $resource_element.get(0);
                     return false; // stop the 'each'
                 }
@@ -984,7 +980,7 @@ window.TOONTALK.UTILITIES =
                 // could support any number of parameters but not needed
                 handler_run = true;
                 if (handler) {
-//                     console.log("event " + event + " at " + new Date());
+//                  console.log("event " + event + " at " + new Date());
                     handler();
                 }
                 element.removeEventListener(event_name, one_shot_handler);
@@ -996,9 +992,9 @@ window.TOONTALK.UTILITIES =
             setTimeout(
                 function () {
                     if (!handler_run) {
-                        if (TT.debugging) {
-                            console.log("Timed out after " + maximum_wait +"ms while waiting for " + event_name);
-                        }
+//                         if (TT.debugging) {
+//                             console.log("Timed out after " + maximum_wait +"ms while waiting for " + event_name);
+//                         }
                         one_shot_handler();
                     }
                 },

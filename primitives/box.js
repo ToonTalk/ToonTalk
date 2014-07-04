@@ -573,7 +573,7 @@ window.TOONTALK.box_empty_hole =
                 // doubles as its own frontside
                 return this;
             };
-            empty_hole.widget_dropped_on_me = function (dropped) {
+            empty_hole.widget_dropped_on_me = function (dropped, is_backside, event, robot) {
                 var box = this.get_parent_of_frontside().widget;
                 var parent_of_frontside = dropped.get_parent_of_frontside();
                 // other code should take care of this (e.g. drop)
@@ -588,7 +588,7 @@ window.TOONTALK.box_empty_hole =
                 box.rerender();
                 if (dropped.dropped_on_other) {
                     // e.g. so egg can hatch from nest drop
-                    dropped.dropped_on_other(this, false, event);
+                    dropped.dropped_on_other(this, false, event, robot);
                 }
                 return true;
             };

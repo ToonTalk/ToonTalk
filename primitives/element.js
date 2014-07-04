@@ -383,7 +383,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 visible: function () {
                     return $attribute_input && $attribute_input.is(":visible");
                 },
-                widget_dropped_on_me: function (other, event, robot) {
+                widget_dropped_on_me: function (other, is_backside, event, robot) {
                     this.element_widget.dropped_on_style_attribute(other, attribute_name, event, robot);
                 },
                 update_display: function () {

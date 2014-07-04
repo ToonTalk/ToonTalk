@@ -588,7 +588,7 @@ window.TOONTALK.robot = (function (TT) {
         return {type: "robot",
                 frontside_conditions: frontside_conditions_json,
                 backside_conditions: backside_conditions_json,
-                body: this.get_body().get_json(),
+                body: this.get_body().get_json(json_history),
                 run_once: this.get_run_once(),
                 next_robot: next_robot_json
                };

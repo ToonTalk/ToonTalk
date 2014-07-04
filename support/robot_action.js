@@ -41,13 +41,18 @@ window.TOONTALK.robot_action =
                              }
                              // remove it from the robot's hand since the drop can take a few seconds
                              // and we don't want to see it in the robot's hand
-                             robot.set_thing_in_hand(undefined);
+                             if (thing_in_hand.get_type_name() !== 'nest') {
+                                 // a nest may take some time because the egg hatches
+                                 // but the robot is still holding it
+                                 robot.set_thing_in_hand(undefined);
+                             }
                              // update this when robots can drop backsides as well
                              thing_in_hand.drop_on(target, false, undefined, robot);
+//                              target.widget_dropped_on_me(thing_in_hand, false, undefined, robot);
                              robot.rerender();
                          }
                      } else {
-                         console.log("Thing in robot's hand doesn't handle 'drop_on': "  + thing_in_hand.toString() + ". Robot that " + robot.toString());
+                         console.log("Thing in robot's hand (" + thing_in_hand.toString() + ") doesn't handle 'drop_on'. Robot that " + robot.toString());
                          return false;
                      }
                      return true;

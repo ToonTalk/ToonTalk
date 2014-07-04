@@ -58,7 +58,7 @@ window.TOONTALK.backside =
                 };
             }
             backside.widget_dropped_on_me = 
-                function (other, other_is_backside, event) {
+                function (other, other_is_backside, event, robot, ignore_training) {
                     // event serves 2 functions: info for adjusting for scrolling and whether to update the display
                     var widget = this.get_widget();
                     var other_side, other_side_element, $other_side_element, backside_of_other;
@@ -78,7 +78,7 @@ window.TOONTALK.backside =
                         other.animate_to_element(backside_element);
                     }
                     TT.UTILITIES.set_position_is_absolute(other_side_element, true, event); // when on the backside
-                    if (TT.robot.in_training) {
+                    if (TT.robot.in_training && !ignore_training) {
                         TT.robot.in_training.dropped_on(other, this.get_widget());
                     }
                     if (other_is_backside && this.get_widget().get_type_name() != 'top-level') {
