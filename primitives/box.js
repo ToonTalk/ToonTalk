@@ -198,7 +198,7 @@ window.TOONTALK.box = (function (TT) {
         for (i = 0; i < size; i++) {
             hole = this.get_hole(i);
             if (hole) {
-                contents += hole.get_description();
+                contents += hole.get_full_description();
             } else {
                 contents += "_";
             }
@@ -620,6 +620,7 @@ window.TOONTALK.box_empty_hole =
                     box.rerender();
                 }
             };
+            
             if (TT.debugging) {
                 empty_hole.debug_string = "An empty hole";
             }
@@ -630,6 +631,9 @@ window.TOONTALK.box_empty_hole =
             return "_";
         },
         get_description: function () {
+            return "_";
+        },
+        get_full_description: function () {
             return "_";
         }
     };

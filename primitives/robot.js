@@ -541,7 +541,7 @@ window.TOONTALK.robot = (function (TT) {
         if (!frontside_conditions) {
             return "has yet to be trained.";
         }
-        frontside_conditions_string = frontside_conditions.get_description() || frontside_conditions.toString();
+        frontside_conditions_string = frontside_conditions.get_full_description();
         if (this.being_trained) {
             prefix = "is being trained.\n";
             postfix = "\n..."; // to indicates still being constructed
