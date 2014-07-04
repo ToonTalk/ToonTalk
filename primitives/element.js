@@ -53,7 +53,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         return value;
     };
     
-    element.create = function (html, style_attributes, description) {
+    element.create = function (html, style_attributes, description, additional_classes) {
         var new_element = Object.create(element);
         var pending_css, transform_css, on_update_display_handlers, $image_element;
         if (!style_attributes) {
@@ -188,6 +188,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 $(frontside_element).width($image_element.width());
                 $(frontside_element).height($image_element.height());
             }
+        };
+        new_element.get_additional_classes = function () {
+            return additional_classes;
         };
         new_element = new_element.add_standard_widget_functionality(new_element);
         new_element.set_description(description);
@@ -403,8 +406,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     
     element.update_display = function () {
         var frontside_element = this.get_frontside_element();
-        var rendering;
         var backside = this.get_backside();
+        var rendering, additional_classes;
         if (this.get_erased && this.get_erased()) {
             // could save the current opacity and restore it below
             $(frontside_element).css({opacity: 0});
@@ -423,6 +426,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             $(frontside_element).addClass("toontalk-element-frontside");
             if (rendering.innerHTML.substring(0, 1) !== '<') {
                 // doesn't look like HTML so assume it is raw text and give it a class that will give it a better font and size
+                additional_classes = this.get_additional_classes();
+                if (additional_classes) {
+                    $(rendering).addClass(additional_classes);
+                }
                 $(frontside_element).addClass("ui-widget toontalk-plain-text-element");
             }
         }
