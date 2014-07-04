@@ -259,10 +259,10 @@ window.TOONTALK.robot_action =
                 var action = additional_info && additional_info.toString ? additional_info.toString : action_name;
                 return action + " " + TT.path.toString(path);
             };
-            new_action.get_json = function () {
+            new_action.get_json = function (json_history) {
                 return {type: "robot_action",
                         action_name: action_name,
-                        path: TT.path.get_json(path),
+                        path: TT.path.get_json(path, json_history),
                         additional_info: additional_info};        
             };
             return new_action;  

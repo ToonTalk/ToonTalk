@@ -409,7 +409,7 @@ window.TOONTALK.UTILITIES =
                             json[index] = TT.UTILITIES.get_json(widget_side, json_history);
                         } else {
                             // isn't a widget -- e.g. is a path
-                            json[index] = widget_side.get_json();
+                            json[index] = widget_side.get_json(json_history);
                         }
                     } else if (widget_side.widget.get_json) {
                         json[index] = {widget: TT.UTILITIES.get_json(widget_side.widget, json_history),
@@ -440,8 +440,11 @@ window.TOONTALK.UTILITIES =
         },
         
         get_json: function (widget, json_history) {
-            var index = json_history.shared_widgets.indexOf(widget);
-            var widget_json;
+            var index, widget_json;
+            if (!json_history) {
+                return this.get_json_top_level(widget);
+            }
+            index = json_history.shared_widgets.indexOf(widget);
             if (index >= 0) {
                 return {shared_widget_index: index};
             }

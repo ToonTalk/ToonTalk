@@ -167,9 +167,9 @@ window.TOONTALK.actions =
             return description;
         },
         
-        get_json: function () {
+        get_json: function (json_history) {
             return {type: "body",
-                    steps: TT.UTILITIES.get_json_of_array(this.get_steps())};
+                    steps: TT.UTILITIES.get_json_of_array(this.get_steps(), json_history)};
         },
         
         create_from_json: function (json) {
