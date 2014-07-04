@@ -447,6 +447,9 @@ window.TOONTALK.nest = (function (TT) {
             copy = TT.nest.create(this.get_description(), contents_copy, [], guid, original_nest || this); // image_url removed
             return this.add_to_copy(copy, just_value);
         };
+        new_nest.has_contents = function () {
+            return contents.length > 0;
+        };
         new_nest.dropped_on_other = function (other, other_is_backside, event, robot) {
             var bird, frontside_element, bird_frontside_element, nest_position, 
                 hatching_finished_handler, fly_down_finished_handler, bird_fly_continuation;

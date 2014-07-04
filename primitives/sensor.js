@@ -27,6 +27,7 @@ window.TOONTALK.sensor = (function (TT) {
         var new_sensor = TT.nest.create(description, previous_contents, undefined, "sensor sensor");
         var nest_get_json = new_sensor.get_json;
         var nest_update_display = new_sensor.update_display;
+        var nest_copy = new_sensor.copy;
         var event_listener = function (event) {
             var value = event[attribute];
             if (attribute === 'keyCode') {
@@ -60,7 +61,11 @@ window.TOONTALK.sensor = (function (TT) {
         };
         window.addEventListener(sensor_name, event_listener);
         new_sensor.copy = function (just_value) {
-            var copy = TT.sensor.create(sensor_name, attribute, description);
+            var copy;
+            if (just_value && this.has_contents()) {
+                return nest_copy.call(this, true);
+            }
+            copy = TT.sensor.create(sensor_name, attribute, description);
             return new_sensor.add_to_copy(copy, just_value);
         };
         new_sensor.get_json = function (json_history) {

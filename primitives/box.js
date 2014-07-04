@@ -409,7 +409,7 @@ window.TOONTALK.box = (function (TT) {
                 sub_path = part.get_path_to(widget, robot);
                 if (sub_path) {
                     path = TT.box.path.create(i);
-                    if (part.get_type_name() !== 'nest') {
+                    if (part.get_type_name() !== 'nest' && part.get_type_name() !== 'sensor') {
                         // if nest then widget must have been on the nest (or inside something that was -- not yet handled!)
                         path.next = sub_path;
                     }
@@ -457,11 +457,11 @@ window.TOONTALK.box = (function (TT) {
                 toString: function () {
                     return "the " + TT.UTILITIES.cardinal(index) + " hole "; // + (this.next ? "; " + TT.path.toString(this.next) : "");
                 },
-                get_json: function () {
+                get_json: function (json_history) {
                     return {type: "box_path",
                             index: index,
                             removing_widget: removing_widget,
-                            next: this.next && this.next.get_json()};
+                            next: this.next && this.next.get_json(json_history)};
                 }
             };
         },
