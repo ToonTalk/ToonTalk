@@ -371,9 +371,7 @@ window.TOONTALK.nest = (function (TT) {
                     var bird_copy = bird.copy(true);
                     var bird_frontside_element = bird_copy.get_frontside_element(true); 
                     $(bird_parent_element).append(bird_frontside_element);
-                    $(bird_frontside_element).css({left: start_position.left,
-                                                   top:  start_position.top});
-                    bird_copy.animate_delivery_to(TT.UTILITIES.copy_side(package_side, false, visible), {widget: nest_copy}, nest_copy);
+                    bird_copy.animate_delivery_to(TT.UTILITIES.copy_side(package_side, false, visible), {widget: nest_copy}, nest_copy, start_position.left, start_position.top);
                 });
             }
         };
