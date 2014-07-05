@@ -49,6 +49,9 @@ window.TOONTALK.DISPLAY_UPDATES =
                         z_index = parent_z_index+1;
                         $(frontside_element).css({'z-index': z_index});
                     }
+                    $(frontside_element).children(".toontalk-side").each(function (index, child_element) {
+                        $(child_element).css({"z-index": z_index+1});
+                    });
                 }
                 // ensure that it is resizable if appropriate
                 if (frontside_element && !$(frontside_element).is(".toontalk-top-level-resource, .ui-resizable, .toontalk-bird, .toontalk-widget-on-nest, .toontalk-nest, .toontalk-plain-text-element, .toontalk-conditions-contents, .toontalk-robot, .toontalk-widget, .toontalk-held-by-robot")) {
