@@ -159,9 +159,11 @@ window.TOONTALK.bird = (function (TT) {
 //         bird_image = this.image();
         // if animating will display the element_to_display_when_flying
         // remove what's there currently before adding new elements
-        while (frontside_element.firstChild) {
-            frontside_element.removeChild(frontside_element.firstChild);
-        }
+//         while (frontside_element.firstChild) {
+//             if (!$(frontside_element.firstChild).is(".toontalk-close-button")) {
+//                 frontside_element.removeChild(frontside_element.firstChild);
+//             }
+//         }
         frontside_element.title = this.get_title();
         $(frontside_element).addClass("toontalk-bird");
         if (!($(frontside_element).is(".toontalk-side-animating"))) {
@@ -555,9 +557,11 @@ window.TOONTALK.nest = (function (TT) {
             frontside_element = frontside.get_element();
             // if animating should also display thing_in_hand
             // remove what's there currently before adding new elements
-            while (frontside_element.firstChild) {
-                frontside_element.removeChild(frontside_element.firstChild);
-            }
+//             while (frontside_element.firstChild) {
+//                 if (!$(frontside_element.firstChild).is(".toontalk-close-button")) {
+//                     frontside_element.removeChild(frontside_element.firstChild);
+//                 }
+//             }
             if (contents.length > 0) {
                 if (contents[0].is_backside) {
                     contents_backside = contents[0].widget.get_backside(true);

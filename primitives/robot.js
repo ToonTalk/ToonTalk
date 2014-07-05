@@ -438,9 +438,11 @@ window.TOONTALK.robot = (function (TT) {
         }
         resource_becoming_instance = frontside_element.firstChild && $(frontside_element.firstChild).is(".toontalk-robot-image");
         // remove what's there currently before adding new elements
-        while (frontside_element.firstChild) {
-            frontside_element.removeChild(frontside_element.firstChild);
-        }
+//         while (frontside_element.firstChild) {
+//             if (!$(frontside_element.firstChild).is(".toontalk-close-button")) {
+//                 frontside_element.removeChild(frontside_element.firstChild);
+//             }
+//         }
         frontside_element.title = this.get_title();
         $(frontside_element).addClass("toontalk-robot");
 //         frontside_element.appendChild(robot_image);
