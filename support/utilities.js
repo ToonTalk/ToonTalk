@@ -987,6 +987,10 @@ window.TOONTALK.UTILITIES =
                 return n + "th";
             }
         },
+            
+        on_a_nest_in_a_box: function (frontside_element) {
+            return $(frontside_element).closest(".toontalk-nest").is("*") && $(frontside_element).closest(".toontalk-box").is("*");
+        },
         
         add_one_shot_event_handler: function (element, event_name, maximum_wait, handler) {
             // could replace the first part of this by http://api.jquery.com/one/

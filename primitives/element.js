@@ -436,6 +436,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 $(frontside_element).addClass("ui-widget toontalk-plain-text-element");
             }
         }
+        if (TT.UTILITIES.on_a_nest_in_a_box(frontside_element)) {
+            // need to work around a CSS problem where nested percentage widths don't behave as expected
+            this.set_attribute("width", $(frontside_element).closest(".toontalk-box-hole").width(), false);
+            this.set_attribute("height", $(frontside_element).closest(".toontalk-box-hole").height(), false);
+        }
         this.apply_css();
 //         if (backside) {
 //             backside.update_display();
