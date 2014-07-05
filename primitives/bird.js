@@ -32,10 +32,10 @@ window.TOONTALK.bird = (function (TT) {
             var package_side = {widget: other,
                                 is_backside: other_is_backside};
             if (nest) {
-                if (nest.visible && (event || (robot && robot.visible()))) {
+                if (this.visible() && (event || (robot && robot.visible()))) {
                     nest.animate_bird_delivery(package_side, this);
                 } else {
-                    nest.add_to_contents(package_side, this);
+                    nest.add_to_contents(package_side);
                 }
             } else {
                 console.log("to do: handle drop on a nestless bird -- just removes other?");
@@ -88,16 +88,16 @@ window.TOONTALK.bird = (function (TT) {
                         bird_frontside_element.style.position = bird_style_position;
                         parent_element.appendChild(bird_frontside_element);
                         if (parent.widget.get_type_name() === 'top-level') {
-                        this.rerender();
+                            this.rerender();
                         } else {
-                        parent.widget.rerender();
+                            parent.widget.rerender();
                         }
                     }
                 }.bind(this);
                 $(this.element_to_display_when_flying).removeClass("toontalk-carried-by-bird");
                 bird_frontside_element.removeChild(this.element_to_display_when_flying);
                 this.element_to_display_when_flying = undefined;
-                nest_recieving_package.add_to_contents(package_side, this);
+                nest_recieving_package.add_to_contents(package_side, this, true);
                 // return to original location
                 setTimeout(function () {
                         this.fly_to(bird_offset, final_continuation); 
@@ -323,7 +323,7 @@ window.TOONTALK.nest = (function (TT) {
         new_nest.run_when_non_empty = function (robot_run) {
             waiting_robots.push(robot_run);
         };
-        new_nest.add_to_contents = function (widget_side, delivery_bird) {
+        new_nest.add_to_contents = function (widget_side, delivery_bird, ignore_copies) {
             var current_waiting_robots, widget_side_copy;
             if (contents.push(widget_side) === 1) {
                 if (waiting_robots.length > 0) {
@@ -344,12 +344,17 @@ window.TOONTALK.nest = (function (TT) {
             } else {
                 widget_side.widget.set_parent_of_frontside(this);
             }
-            if (delivery_bird && nest_copies) {
-                nest_copies.forEach(function (nest_copy) {
-                    widget_side_copy = {widget: widget_side.widget.copy(),
-                                        is_backside: widget_side.is_backside};
-                    delivery_bird.deliver_to(nest_copy, widget_side_copy);
-                });
+            if (nest_copies && !ignore_copies) {
+                if (delivery_bird) {
+                    nest_copies.forEach(function (nest_copy) {
+                        delivery_bird.deliver_to(nest_copy, TT.UTILITIES.copy_side(widget_side, false, true));
+                    });
+                } else {
+                    nest_copies.forEach(function (nest_copy) {
+                        // no need to copy the geometry if running unwatch -- but should generate geometry on-demand
+                        nest_copy.add_to_contents(TT.UTILITIES.copy_side(widget_side));
+                   });
+                }
             }
             this.rerender();
         };
