@@ -247,12 +247,12 @@ window.TOONTALK.widget = (function (TT) {
                 return parent_of_backside;
             };
             widget.set_parent_of_frontside = function (new_value, parent_is_backside) {
-                parent_of_frontside = {widget: new_value,
-                                       is_backside: parent_is_backside};
+                parent_of_frontside = new_value && {widget: new_value,
+                                                     is_backside: parent_is_backside};
             };
             widget.set_parent_of_backside = function (new_value, parent_is_backside) {
-                parent_of_backside = {widget: new_value,
-                                      is_backside: parent_is_backside};
+                parent_of_backside = new_value && {widget: new_value,
+                                                   is_backside: parent_is_backside};
             };
             return widget;
         },
