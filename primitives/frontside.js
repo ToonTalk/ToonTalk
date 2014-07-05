@@ -33,7 +33,11 @@ window.TOONTALK.frontside =
             frontside.get_element = function () {
                 if (frontside_element && !close_button && $(frontside_element).is(":visible") && widget.close_button_ok(frontside_element)) {
                     // wait for DOM to settle down
-                    setTimeout(function () {
+                        setTimeout(function () {
+                            if (close_button) {
+                                // was triggered multiple times
+                                return;
+                            }
                             close_button = TT.UTILITIES.create_close_button(close_handler, "Click to remove this " + widget.get_type_name() + ".");
                             frontside_element.appendChild(close_button);
                             $(close_button).hide(); // until hover over widget
