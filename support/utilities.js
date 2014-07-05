@@ -1357,8 +1357,18 @@ window.TOONTALK.UTILITIES =
             return side.widget.get_frontside_element(create);
         },
         
-        copy_side: function (side, just_value) {
-            return {widget: side.widget.copy(just_value),
+        copy_side: function (side, just_value, dimensions_too) {
+            var widget_copy = side.widget.copy(just_value);
+            var frontside_element, copy_frontside_element;
+            if (dimensions_too) {
+                frontside_element = side.widget.get_frontside_element();
+                if (frontside_element) {
+                    copy_frontside_element = widget_copy.get_frontside_element(true);
+                    $(copy_frontside_element).css({width:  $(frontside_element).width(),
+                                                   height: $(frontside_element).height()});
+                }
+            }
+            return {widget: widget_copy,
                     is_backside: side.is_backside};
         },
         

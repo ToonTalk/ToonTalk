@@ -354,18 +354,19 @@ window.TOONTALK.nest = (function (TT) {
             this.rerender();
         };
         new_nest.animate_bird_delivery = function (package_side, bird) {
-            var start_position, bird_parent_element;
+            var start_position, bird_parent_element, visible;
             bird.animate_delivery_to(package_side, {widget: this});
             if (nest_copies) {
                 start_position = $(bird.get_frontside_element()).position();
                 bird_parent_element = TT.UTILITIES.get_side_element_from_side(bird.get_parent_of_frontside());
+                visible = this.visible();
                 nest_copies.forEach(function (nest_copy) {
                     var bird_copy = bird.copy(true);
                     var bird_frontside_element = bird_copy.get_frontside_element(true); 
                     $(bird_parent_element).append(bird_frontside_element);
                     $(bird_frontside_element).css({left: start_position.left,
                                                    top:  start_position.top});
-                    bird_copy.animate_delivery_to(TT.UTILITIES.copy_side(package_side), {widget: nest_copy}, nest_copy);
+                    bird_copy.animate_delivery_to(TT.UTILITIES.copy_side(package_side, false, visible), {widget: nest_copy}, nest_copy);
                 });
             }
         };
