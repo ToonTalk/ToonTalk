@@ -63,14 +63,19 @@ window.TOONTALK.bird = (function (TT) {
             $(this.element_to_display_when_flying).css({left: '',
                                                         top:  ''});
             target_offset = $(target_side.widget.get_frontside_element()).offset();
+            $top_level_backside_element = $(".toontalk-top-level-backside");
+            top_level_backside_element_offset = $top_level_backside_element.offset();
             bird_frontside_element = this.get_frontside_element(true);
-            bird_offset = $(bird_frontside_element).offset();
+            if (starting_left) {
+                bird_offset = {left: starting_left+top_level_backside_element_offset.left,
+                               top:  starting_top+top_level_backside_element_offset.top};
+            } else {
+                bird_offset = $(bird_frontside_element).offset();
+            }
             // save some state before clobbering it
             parent_element = bird_frontside_element.parentElement;
             width = $(bird_frontside_element).width();
             height = $(bird_frontside_element).height();
-            $top_level_backside_element = $(".toontalk-top-level-backside");
-            top_level_backside_element_offset = $top_level_backside_element.offset();
             bird_style_position = bird_frontside_element.style.position;
             bird_frontside_element.style.position = 'absolute';
             $top_level_backside_element.append(bird_frontside_element); // while flying            
