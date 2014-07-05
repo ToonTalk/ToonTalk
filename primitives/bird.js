@@ -300,6 +300,13 @@ window.TOONTALK.nest = (function (TT) {
     var nest = Object.create(TT.widget);
     // following enables nests to invoke private methods of other nests
     var add_copy_private_key = {}; // any unique object is fine
+    // following should be updated if CSS is
+    var contents_width = function (width) {
+        return width * 0.8;
+    };
+    var contents_height = function (height) {
+        return height * 0.8;
+    };
     
     nest.create = function (description, contents, waiting_robots, guid, original_nest) { // removed image_url
         var new_nest = Object.create(nest);
@@ -424,8 +431,8 @@ window.TOONTALK.nest = (function (TT) {
                 // left and top are 10%
                 $(widget_element).css({left: nest_width  * .1 + nest_offset.left - top_level_backside_element_offset.left,
                                        top:  nest_height * .1 + nest_offset.top -  top_level_backside_element_offset.top,
-                                       width: nest_width * .8, // 80% width and height
-                                       height: nest_height * .8});
+                                       width:  contents_width(nest_width),
+                                       height: contents_height(nest_height)});
                 $top_level_backside_element.append(widget_element);
             }
             return widget;
@@ -576,8 +583,8 @@ window.TOONTALK.nest = (function (TT) {
                     contents[0].widget.render();
                     contents_side_element = contents[0].widget.get_frontside_element();
                 }
-                contents[0].saved_width =  $(contents_side_element).width();
-                contents[0].saved_height = $(contents_side_element).height();
+                contents[0].saved_width =  $(contents_side_element).width() || contents_width($(frontside_element).width());
+                contents[0].saved_height = $(contents_side_element).height() || contents_height($(frontside_element).height());
                 $(contents_side_element).css({width:  '',
                                               height: '',
                                               left: '',
