@@ -32,7 +32,7 @@ window.TOONTALK.bird = (function (TT) {
             var package_side = {widget: other,
                                 is_backside: other_is_backside};
             if (nest) {
-                if (this.visible() && (event || (robot && robot.visible()))) {
+                if ((this.visible() || nest.visible()) && (event || (robot && robot.visible()))) {
                     nest.animate_bird_delivery(package_side, this);
                 } else {
                     nest.add_to_contents(package_side);
