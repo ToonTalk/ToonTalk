@@ -30,7 +30,9 @@ window.TOONTALK.sensor = (function (TT) {
         var nest_copy = new_sensor.copy;
         var event_listener = function (event) {
             var value = event[attribute];
-            var delivery_bird;
+            var visible = new_sensor.visible();
+            var $top_level_backside = $(".toontalk-top-level-backside");
+            var value_widget, frontside_element, delivery_bird;
             if (attribute === 'keyCode') {
                 if (value === 16) {
                     return;
@@ -40,8 +42,6 @@ window.TOONTALK.sensor = (function (TT) {
                     value = value.toLowerCase();
                 }
             }
-            var value_widget, frontside_element;
-            var visible = new_sensor.visible();
             switch (typeof value) {
                 case 'number':
                 value_widget = TT.number.create(Math.round(value), 1); // integers for now
@@ -60,7 +60,8 @@ window.TOONTALK.sensor = (function (TT) {
             }
             if (visible) {
                 delivery_bird = TT.bird.create();
-                delivery_bird.animate_delivery_to({widget: value_widget}, {widget: new_sensor}, new_sensor, window.outerWidth/2, window.outerHeight);
+                // comes from the bottom center
+                delivery_bird.animate_delivery_to({widget: value_widget}, {widget: new_sensor}, new_sensor, $top_level_backside.width()/2, $top_level_backside.height());
             } else {
                 new_sensor.add_to_contents({widget: value_widget});
             }
