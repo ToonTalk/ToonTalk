@@ -46,6 +46,11 @@ window.TOONTALK.bird = (function (TT) {
             return true;
         };
         new_bird.animate_delivery_to = function (package_side, target_side, nest_recieving_package, starting_left, starting_top) {
+            var after_delivery = function () {
+                    $(this.element_to_display_when_flying).removeClass("toontalk-carried-by-bird");
+                    bird_frontside_element.removeChild(this.element_to_display_when_flying);
+                    this.element_to_display_when_flying = undefined;
+            }.bind(this);
             var target_offset, bird_offset, bird_frontside_element, parent_element, bird_style_position, width, height,
                 $top_level_backside_element, top_level_backside_element_offset, continuation;
             this.element_to_display_when_flying = TT.UTILITIES.get_side_element_from_side(package_side);
@@ -77,6 +82,7 @@ window.TOONTALK.bird = (function (TT) {
             if (nest_recieving_package) {
                 continuation = function () {
                     nest_recieving_package.add_to_contents(package_side, this);
+                    after_delivery();
                     // fade away -- not working (at least in Chrome)
                     $(bird_frontside_element).css({opacity: 1});
                     $(bird_frontside_element).addClass("toontalk-side-animating");
@@ -101,9 +107,7 @@ window.TOONTALK.bird = (function (TT) {
                             parent.widget.rerender();
                         }
                     }.bind(this);
-                    $(this.element_to_display_when_flying).removeClass("toontalk-carried-by-bird");
-                    bird_frontside_element.removeChild(this.element_to_display_when_flying);
-                    this.element_to_display_when_flying = undefined;
+                    after_delivery();
                     nest.add_to_contents(package_side, this);
                     // return to original location
                     setTimeout(function () {
