@@ -728,6 +728,10 @@ window.TOONTALK.UTILITIES =
                     if ($target.length === 0) {
                         return;
                     }
+                    if ($target.is(".toontalk-top-level-resource")) {
+                        // maybe should ensure they are not drop targets
+                        return;
+                    }
                     // if this is computed when needed and if dragging a resource it isn't the correct value
                     target_position = $target.offset();
                     $target.removeClass("toontalk-highlight");
