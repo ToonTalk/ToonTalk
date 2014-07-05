@@ -448,7 +448,7 @@ window.TOONTALK.nest = (function (TT) {
             if (just_value && contents.length > 0) {
                 return contents[0].widget.copy(just_value);
             }
-            contents_copy = TT.UTILITIES.copy_array(contents);
+            contents_copy = TT.UTILITIES.copy_widget_sides(contents);
             copy = TT.nest.create(this.get_description(), contents_copy, [], guid, original_nest || this); // image_url removed
             return this.add_to_copy(copy, just_value);
         };
