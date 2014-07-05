@@ -35,18 +35,20 @@ window.TOONTALK.DISPLAY_UPDATES =
                 pending_update.update_display();
                 // ensure that children have higher z-index than parent
                 $parent_side_element = $(frontside_element).parent().closest(".toontalk-side");
-                z_index = $(frontside_element).css('z_index');
-                parent_z_index = $parent_side_element.css('z_index');
-                if (!parent_z_index) {
-                    parent_z_index = TT.UTILITIES.next_z_index();
-                    $parent_side_element.css({'z_index': parent_z_index});
-                }
-                if (!z_index) {
-                    z_index = TT.UTILITIES.next_z_index();
-                    $(frontside_element).css({'z_index': z_index});
-                } else if (z_index >= parent_z_index) {
-                    z_index = parent_z_index+1;
-                    $(frontside_element).css({'z_index': z_index});
+                if ($parent_side_element.is('*')) {
+                    z_index = TT.UTILITIES.get_style_numeric_property(frontside_element, 'z-index');
+                    parent_z_index = TT.UTILITIES.get_style_numeric_property($parent_side_element.get(0), "z-index");
+                    if (!parent_z_index) {
+                        parent_z_index = TT.UTILITIES.next_z_index();
+                        $parent_side_element.css({'z-index': parent_z_index});
+                    }
+                    if (!z_index || $parent_side_element.is(".toontalk-top-level-backside")) {
+                        z_index = TT.UTILITIES.next_z_index();
+                        $(frontside_element).css({'z-index': z_index});
+                    } else if (z_index >= parent_z_index) {
+                        z_index = parent_z_index+1;
+                        $(frontside_element).css({'z-index': z_index});
+                    }
                 }
                 // ensure that it is resizable if appropriate
                 if (frontside_element && !$(frontside_element).is(".toontalk-top-level-resource, .ui-resizable, .toontalk-bird, .toontalk-widget-on-nest, .toontalk-nest, .toontalk-plain-text-element, .toontalk-conditions-contents, .toontalk-robot, .toontalk-widget, .toontalk-held-by-robot")) {

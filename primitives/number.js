@@ -393,7 +393,9 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
                      1);
              }.bind(this);
              TT.UTILITIES.animate_to_absolute_position(bammer_element, target_absolute_position, hit_number_continuation);
-             $(bammer_element).css({opacity: 1.0});
+             $(bammer_element).css({opacity: 1.0,
+                                    // ensure that Bammer is on top of everything
+                                    "z-index": TT.UTILITIES.next_z_index()+100});
              // e.g. next step is to copy this number and bammer hasn't hit it yet
              if (robot) {
                  robot.wait_before_next_step = true;
