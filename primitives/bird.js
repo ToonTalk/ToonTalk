@@ -32,7 +32,8 @@ window.TOONTALK.bird = (function (TT) {
             var package_side = {widget: other,
                                 is_backside: other_is_backside};
             if (nest) {
-                if ((this.visible() || nest.visible()) && (event || (robot && robot.visible()))) {
+                if (this.visible() || nest.visible() || nest.any_nest_copies_visible()) {
+                    // doesn't matter if robot is visible or there is a user event -- if either end visible show the delivery
                     nest.animate_bird_delivery(package_side, this);
                 } else {
                     nest.add_to_contents(package_side);
@@ -95,7 +96,8 @@ window.TOONTALK.bird = (function (TT) {
                     }
                 }.bind(this);
                 $(this.element_to_display_when_flying).removeClass("toontalk-carried-by-bird");
-                bird_frontside_element.removeChild(this.element_to_display_when_flying);
+//                 bird_frontside_element.removeChild(this.element_to_display_when_flying);
+                $(this.element_to_display_when_flying).remove();
                 this.element_to_display_when_flying = undefined;
                 nest_recieving_package.add_to_contents(package_side, this, true);
                 // return to original location
@@ -117,9 +119,6 @@ window.TOONTALK.bird = (function (TT) {
             // notice that bird/nest semantics is that the nest is shared not copied
             var copy = this.create(nest, this.get_description()); // image_url);
             return this.add_to_copy(copy, just_value);
-        };
-        new_bird.deliver_to = function (nest_copy, widget_side_copy) {
-            nest_copy.add_to_contents(widget_side_copy);
         };
         new_bird = new_bird.add_standard_widget_functionality(new_bird);
         new_bird.set_description(description);
@@ -221,7 +220,9 @@ window.TOONTALK.bird = (function (TT) {
     };
     
     bird.drop_on = function (other, is_backside, event, robot) {
-        return other.widget_dropped_on_me(this, false, event, robot);
+        if (other.widget_dropped_on_me) {
+            return other.widget_dropped_on_me(this, false, event, robot);
+        }
     };
     
     return bird;
@@ -349,13 +350,12 @@ window.TOONTALK.nest = (function (TT) {
             if (nest_copies && !ignore_copies) {
                 if (delivery_bird) {
                     nest_copies.forEach(function (nest_copy) {
-                        delivery_bird.deliver_to(nest_copy, TT.UTILITIES.copy_side(widget_side, false, true));
-                    });
+                        nest_copy.animate_bird_delivery(TT.UTILITIES.copy_side(widget_side), delivery_bird);
+                    });                    
                 } else {
                     nest_copies.forEach(function (nest_copy) {
-                        // no need to copy the geometry if running unwatch -- but should generate geometry on-demand
-                        nest_copy.add_to_contents(TT.UTILITIES.copy_side(widget_side));
-                   });
+                        nest_copy.add_to_contents(TT.UTILITIES.copy_side(widget_side, false, true));
+                    });
                 }
             }
             this.rerender();
@@ -368,11 +368,17 @@ window.TOONTALK.nest = (function (TT) {
                 bird_parent_element = TT.UTILITIES.get_side_element_from_side(bird.get_parent_of_frontside());
                 visible = this.visible();
                 nest_copies.forEach(function (nest_copy) {
-                    var bird_copy = bird.copy(true);
-                    var bird_frontside_element = bird_copy.get_frontside_element(true); 
-                    $(bird_parent_element).append(bird_frontside_element);
-                    bird_copy.animate_delivery_to(TT.UTILITIES.copy_side(package_side, false, visible), {widget: nest_copy}, nest_copy, start_position.left, start_position.top);
-                });
+                    var package_copy = TT.UTILITIES.copy_side(package_side, false, visible);
+                    var bird_copy, bird_frontside_element;
+                    if (!nest_copy.visible()) {
+                        nest_copy.add_to_contents(package_copy);
+                    } else {
+                        bird_copy = bird.copy(true);
+                        bird_frontside_element = bird_copy.get_frontside_element(true); 
+                        $(bird_parent_element).append(bird_frontside_element);
+                        bird_copy.animate_delivery_to(package_copy, {widget: nest_copy}, nest_copy, start_position.left, start_position.top);
+                    }
+                    });
             }
         };
         new_nest.removed_from_container = function (part, backside_removed, event) {
@@ -569,6 +575,11 @@ window.TOONTALK.nest = (function (TT) {
                 } else {
                     contents[0].widget.render();
                     contents_side_element = contents[0].widget.get_frontside_element();
+                    if (!$(contents_side_element).data("owner")) {
+                        // mysterious bug -- temporary workaround
+                        console.log("element should have known its owner: " +  contents[0].widget);
+                        $(contents_side_element).data("owner", contents[0].widget);
+                    }
                 }
                 contents[0].saved_width =  $(contents_side_element).width() || contents_width($(frontside_element).width());
                 contents[0].saved_height = $(contents_side_element).height() || contents_height($(frontside_element).height());
@@ -614,6 +625,16 @@ window.TOONTALK.nest = (function (TT) {
 //                     return sub_path;
 //                 }
             }
+        };
+        new_nest.any_nest_copies_visible = function () {
+            var found_one = false;
+            nest_copies.some(function (nest) {
+                if (nest.visible()) {
+                    found_one = true;
+                    return;
+                }
+            });
+            return found_one;
         };
         new_nest = new_nest.add_standard_widget_functionality(new_nest);
         new_nest.set_description(description);
