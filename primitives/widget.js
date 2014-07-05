@@ -494,11 +494,11 @@ window.TOONTALK.widget = (function (TT) {
                 this.backside_widgets_json_views.splice(widget_index, 1);
             }
             if (is_backside) {
-                if (widget.get_parent_of_backside() === this) {
+                if (widget.get_parent_of_backside().widget === this) {
                     widget.set_parent_of_backside(undefined);
                 }
             } else {
-                if (widget.get_parent_of_frontside() === this) {
+                if (widget.get_parent_of_frontside().widget === this) {
                     widget.set_parent_of_frontside(undefined);
                 }       
             }
