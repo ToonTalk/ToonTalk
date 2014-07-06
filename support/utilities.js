@@ -1131,9 +1131,9 @@ window.TOONTALK.UTILITIES =
         // and because of a comment about disability software
         // see http://stackoverflow.com/questions/774054/should-i-put-input-tag-inside-label-tag
         
-        create_text_input: function (value, class_name, label, title) {
+        create_text_input: function (value, class_name, label, title, documentation_url) {
             var input = document.createElement("input");
-            var label_element, container;
+            var label_element, container, documentation_anchor;
             input.type = "text";
             input.className = class_name;
             input.value = value;
@@ -1143,7 +1143,11 @@ window.TOONTALK.UTILITIES =
                 label_element.innerHTML = label;
                 input.id = TT.UTILITIES.generate_unique_id();
                 label_element.htmlFor = input.id;
-                container = TT.UTILITIES.create_horizontal_table(label_element, input);
+                if (documentation_url) {
+                    documentation_anchor = TT.UTILITIES.create_anchor_element("?", documentation_url);
+                    $(documentation_anchor).button();
+                }
+                container = TT.UTILITIES.create_horizontal_table(label_element, input, documentation_anchor);
                 $(label_element).addClass("ui-widget");
             } else {
                 container = input;

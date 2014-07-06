@@ -721,11 +721,9 @@ window.TOONTALK.robot_backside =
                 event.stopPropagation();
             });
             backside_element.appendChild(standard_buttons);
-//             backside_element.appendChild(infinite_stack_check_box.container);
             if (next_robot) {
                 $next_robot_area.append(next_robot.get_frontside_element());
             }
-//             backside_element.appendChild($next_robot_area.get(0));
             backside.update_display = function () {
                 var frontside_element = robot.get_frontside_element();
                 var $containing_backside_element;

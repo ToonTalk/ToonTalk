@@ -348,6 +348,12 @@
 	width: 116px;
 	height: 98px;
 }
+.toontalk-sensor-inactive-nest {
+    background-image: url("images/sensor-nest-inactive.png");
+	background-repeat: no-repeat;
+	width: 116px;
+	height: 98px;
+}
 .toontalk-empty-nest {
 	background-image: url("images/empty-nest.png");
 	background-repeat: no-repeat;
