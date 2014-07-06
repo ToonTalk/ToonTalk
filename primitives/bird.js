@@ -49,19 +49,25 @@ window.TOONTALK.bird = (function (TT) {
         new_bird.animate_delivery_to = function (package_side, target_side, nest_recieving_package, starting_left, starting_top) {
             // starting_left and starting_top are optional and if given are in the coordinate system of the top-level backside
             var temporary_bird = !!nest_recieving_package;
+            var target_offset, bird_offset, bird_frontside_element, target_frontside_element, parent_element, bird_style_position, width, height,
+                $top_level_backside_element, top_level_backside_element_offset, continuation;
             if (!nest_recieving_package) {
                 nest_recieving_package = nest;
             }
-            var target_offset, bird_offset, bird_frontside_element, parent_element, bird_style_position, width, height,
-                $top_level_backside_element, top_level_backside_element_offset, continuation;
             this.element_to_display_when_flying = TT.UTILITIES.get_side_element_from_side(package_side);
             $(this.element_to_display_when_flying).addClass("toontalk-carried-by-bird");
             $(this.element_to_display_when_flying).css({left: '',
                                                         top:  ''});
-            target_offset = $(target_side.widget.get_frontside_element()).offset();
+            target_frontside_element = target_side.widget.get_frontside_element();
+            bird_frontside_element = this.get_frontside_element();
+            if (!($(target_frontside_element).is(":visible")) && !$(bird_frontside_element).is(":visible")) {
+                // neither are visible so just add contents to nest
+                nest_recieving_package.add_to_contents(package_side, this, true);
+                return;
+            }
+            target_offset = $(target_frontside_element).offset();
             $top_level_backside_element = $(".toontalk-top-level-backside");
             top_level_backside_element_offset = $top_level_backside_element.offset();
-            bird_frontside_element = this.get_frontside_element(true);
             if (starting_left) {
                 bird_offset = {left: starting_left+top_level_backside_element_offset.left,
                                top:  starting_top+top_level_backside_element_offset.top};
@@ -364,7 +370,7 @@ window.TOONTALK.nest = (function (TT) {
             var start_position, bird_parent_element, visible;
             bird.animate_delivery_to(package_side, {widget: this});
             if (nest_copies) {
-                start_position = $(bird.get_frontside_element()).position();
+                start_position = $(bird.closest_visible_ancestor().widget.get_frontside_element()).closest(":visible").position();
                 bird_parent_element = TT.UTILITIES.get_side_element_from_side(bird.get_parent_of_frontside());
                 visible = this.visible();
                 nest_copies.forEach(function (nest_copy) {

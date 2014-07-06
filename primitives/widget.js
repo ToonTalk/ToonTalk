@@ -254,6 +254,19 @@ window.TOONTALK.widget = (function (TT) {
                 parent_of_backside = new_value && {widget: new_value,
                                                    is_backside: parent_is_backside};
             };
+            widget.closest_visible_ancestor = function () {
+                // this if visible
+                // otherwise via parent_of_frontside first that is visible
+                var ancestor = {widget: this};
+                while (ancestor && !ancestor.widget.visible()) {
+                    if (ancestor.is_backside) {
+                        ancestor = ancestor.widget.get_parent_of_backside();    
+                    } else {
+                        ancestor = ancestor.widget.get_parent_of_frontside();
+                    }
+                }
+                return ancestor;
+            };
             return widget;
         },
         
@@ -822,6 +835,9 @@ window.TOONTALK.widget = (function (TT) {
             };
             widget.get_parent_of_backside = function () {
                 return undefined;
+            };
+            widget.closest_visible_ancestor = function () {
+                return this;
             };
             widget = widget.add_sides_functionality(widget);
             widget = widget.runnable(widget);
