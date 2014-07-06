@@ -1242,11 +1242,14 @@ window.TOONTALK.UTILITIES =
             return table;
         },
         
-        create_row: function (element) {
+        create_row: function () { // any number of elements
             var row = document.createElement("tr");
             var table_element = document.createElement("td");
-            row.appendChild(table_element);
-            table_element.appendChild(element);
+            var i;
+            for (i = 0; i < arguments.length; i++) {
+                row.appendChild(arguments[i]);
+            }
+            table_element.appendChild(row);
             return row;
         },
         

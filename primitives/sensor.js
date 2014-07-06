@@ -23,7 +23,8 @@ window.TOONTALK.sensor = (function (TT) {
         }
     };
     
-    sensor.create = function (event_name, attribute, description, previous_contents, active) {
+    sensor.create = function (event_name, attribute, description, previous_contents, active, widget) {
+        // widget is undefined when the event_name is appropriate to associate with window
         var new_sensor = TT.nest.create(description, previous_contents, undefined, "sensor sensor");
         var nest_get_json = new_sensor.get_json;
         var nest_update_display = new_sensor.update_display;
@@ -67,13 +68,16 @@ window.TOONTALK.sensor = (function (TT) {
                 new_sensor.add_to_contents({widget: value_widget});
             }
         };
-        window.addEventListener(event_name, event_listener);
         new_sensor.copy = function (just_value) {
             var copy;
             if (just_value && this.has_contents()) {
                 return nest_copy.call(this, true);
             }
-            copy = TT.sensor.create(event_name, attribute, description, undefined, active);
+            // not that widget is not copied since there can be multiple sensors of the same widget
+            // there is an issue about sensor having access to nest's contents
+            // so TT.UTILITIES.copy_widget_sides(contents) not appropriate
+            // so perhaps this should be in the same expression as nest to share privately...
+            copy = TT.sensor.create(event_name, attribute, description, undefined, active, widget);
             return new_sensor.add_to_copy(copy, just_value);
         };
         new_sensor.get_json = function (json_history) {
@@ -82,6 +86,7 @@ window.TOONTALK.sensor = (function (TT) {
             nest_json.event_name = event_name;
             nest_json.attribute = attribute;
             nest_json.active = active;
+            nest_json.sensor_of = widget && TT.UTILITIES.get_json(widget, json_history);
             return nest_json;
         };
         new_sensor.update_display = function () {
@@ -108,12 +113,21 @@ window.TOONTALK.sensor = (function (TT) {
         };
         new_sensor.set_active = function (new_value) {
             if (new_value) {
-                window.addEventListener(event_name, event_listener);
+               if (widget) {
+                    widget.get_frontside_element().addEventListener(event_name, event_listener);
+                } else {
+                    window.addEventListener(event_name, event_listener);
+                }
             } else {
-                window.removeEventListener(event_name, event_listener);
+                if (widget) {
+                    widget.get_frontside_element().removeEventListener(event_name, event_listener);
+                } else {
+                    window.removeEventListener(event_name, event_listener);
+                }
             }
             active = new_value;
         };
+        new_sensor.set_active(active);
         new_sensor.create_backside = function () {
             return TT.sensor_backside.create(this);
         };
@@ -121,12 +135,16 @@ window.TOONTALK.sensor = (function (TT) {
             return event_name;
         };
         new_sensor.set_event_name = function (new_value) {
+            var was_active = active;
             if (event_name) {
-                window.removeEventListener(event_name, event_listener);
+                if (active) {
+                    // this will remove the listeners to the old event_name
+                    this.set_active(false);
+                }
             }
             event_name = new_value;
-            if (event_name) {
-                window.addEventListener(event_name, event_listener);
+            if (was_active) {
+                this.set_active(true);
             }
         };
         new_sensor.get_attribute = function () {
@@ -148,7 +166,8 @@ window.TOONTALK.sensor = (function (TT) {
                                       json.attribute,
                                       json.description, 
                                       previous_contents,
-                                      json.active);
+                                      json.active,
+                                      json.sensor_of && TT.UTILITIES.create_from_json(json.sensor_of, additional_info));
         if (previous_contents.length > 0) {
             setTimeout(function () {
                 // delay to give it a chance to be added to the DOM

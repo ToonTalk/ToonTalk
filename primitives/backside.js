@@ -582,6 +582,7 @@ window.TOONTALK.backside =
                                                                           "toontalk-description-input", 
                                                                           "This&nbsp;" + type_name + "&nbsp;",
                                                                           "Type here to provide additional information about this " + type_name + ".");
+                var $create_sensor_button = $("<button>Make a sensor</button>").button();
                 var description_change = function () {
                         var description = description_text_area.button.value.trim();
                         if (widget.set_description(description, true) && TT.robot.in_training) {
@@ -598,11 +599,15 @@ window.TOONTALK.backside =
                 $(description_text_area.button).val(widget.get_description());
                 description_text_area.button.addEventListener('change', description_change);
                 description_text_area.button.addEventListener('mouseout', description_change);
+                $create_sensor_button.click(function (event) {
+                        var sensor = TT.sensor.create('click', 'which', undefined, undefined, true, widget);
+                        settings.appendChild(sensor.get_frontside_element(true));
+                });
                 if (extra_settings_generator) {
                     extra_settings_generator(settings);
                 }
                 settings.appendChild(TT.UTILITIES.create_row(description_text_area.container));
-                settings.appendChild(TT.UTILITIES.create_row(check_box.container));
+                settings.appendChild(TT.UTILITIES.create_row($create_sensor_button.get(0), check_box.container));
                 settings.appendChild(TT.UTILITIES.create_close_button(close_handler, "Click when finished with the settings of this " + widget.get_type_name() + "."));
 //                 settings.appendChild(TT.UTILITIES.create_row(this.create_done_button(settings)));
                 backside.get_element().appendChild(settings);
