@@ -58,7 +58,7 @@ window.TOONTALK.bird = (function (TT) {
             $(this.element_to_display_when_flying).addClass("toontalk-carried-by-bird");
             $(this.element_to_display_when_flying).css({left: '',
                                                         top:  ''});
-            target_frontside_element = target_side.widget.get_frontside_element();
+            target_frontside_element = target_side.widget.closest_visible_ancestor().widget.get_frontside_element();
             bird_frontside_element = this.get_frontside_element();
             if (!($(target_frontside_element).is(":visible")) && !$(bird_frontside_element).is(":visible")) {
                 // neither are visible so just add contents to nest
@@ -376,7 +376,8 @@ window.TOONTALK.nest = (function (TT) {
                 nest_copies.forEach(function (nest_copy) {
                     var package_copy = TT.UTILITIES.copy_side(package_side, false, visible);
                     var bird_copy, bird_frontside_element;
-                    if (!nest_copy.visible()) {
+                    if (!nest_copy.visible() && !visible) {
+                        // neither are visible so just add contents to nest
                         nest_copy.add_to_contents(package_copy);
                     } else {
                         bird_copy = bird.copy(true);
