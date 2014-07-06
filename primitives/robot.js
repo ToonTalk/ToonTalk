@@ -82,7 +82,7 @@ window.TOONTALK.robot = (function (TT) {
             var frontside_element = this.get_frontside_element();
             animating = new_value;
             if (animating) {
-//                 frontside_element.style["z-index"] = TT.UTILITIES.next_z_index();
+                frontside_element.style["z-index"] = TT.UTILITIES.next_z_index();
                 $(frontside_element).addClass("toontalk-robot-animating");
             } else {
 //                 frontside_element.style["z-index"] = TT.UTILITIES.next_z_index();
