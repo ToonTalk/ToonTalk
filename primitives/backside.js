@@ -603,18 +603,18 @@ window.TOONTALK.backside =
                         var sensor = TT.sensor.create('click', 'which', undefined, undefined, true, widget);
                         settings.appendChild(sensor.get_frontside_element(true));
                 });
+                $create_sensor_button.attr('title', "Click to create a nest which receives messages when events happen to this " + widget.get_type_name() + ".");
                 if (extra_settings_generator) {
                     extra_settings_generator(settings);
                 }
                 settings.appendChild(TT.UTILITIES.create_row(description_text_area.container));
                 settings.appendChild(TT.UTILITIES.create_row($create_sensor_button.get(0), check_box.container));
                 settings.appendChild(TT.UTILITIES.create_close_button(close_handler, "Click when finished with the settings of this " + widget.get_type_name() + "."));
-//                 settings.appendChild(TT.UTILITIES.create_row(this.create_done_button(settings)));
                 backside.get_element().appendChild(settings);
                 $(settings).addClass("toontalk-settings");
                 event.stopPropagation();
             }.bind(this));
-            $settings_button.attr("title", "Click to change properties of this " + widget.get_type_name());
+            $settings_button.attr("title", "Click to change properties of this " + widget.get_type_name() + ".");
             return $settings_button.get(0);
         },
         
