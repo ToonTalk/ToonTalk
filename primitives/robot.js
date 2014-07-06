@@ -24,9 +24,6 @@ window.TOONTALK.robot = (function (TT) {
         if (!body) {
             body = TT.actions.create();
         }
-        if (!description) {
-            description = "";
-        }
         if (!first_in_team) {
             first_in_team = new_robot;
         }
@@ -85,26 +82,12 @@ window.TOONTALK.robot = (function (TT) {
             var frontside_element = this.get_frontside_element();
             animating = new_value;
             if (animating) {
-                // the following didn't work when added to the CSS of toontalk-side-animating
-                frontside_element.style["z-index"] = 1000;
+                frontside_element.style["z-index"] = TT.UTILITIES.next_z_index();
                 $(frontside_element).addClass("toontalk-robot-animating");
             } else {
-                frontside_element.style["z-index"] = 'auto';
+//                 frontside_element.style["z-index"] = TT.UTILITIES.next_z_index();
                 $(frontside_element).removeClass("toontalk-robot-animating");
             }
-        };
-        new_robot.get_description = function () {
-            return description;
-        };
-        new_robot.set_description = function (new_value, update_display) {
-            if (description === new_value) {
-                return false;
-            }
-            description = new_value;
-            if (update_display) {
-                this.rerender();
-            }
-            return true;
         };
         new_robot.get_thing_in_hand = function () {
             return thing_in_hand;
@@ -151,6 +134,7 @@ window.TOONTALK.robot = (function (TT) {
             run_once = new_value;
         };
         new_robot = new_robot.add_standard_widget_functionality(new_robot);
+        new_robot.set_description(description);
         if (TT.debugging) {
             this.debug_id = TT.UTILITIES.generate_unique_id();
         }
@@ -195,7 +179,7 @@ window.TOONTALK.robot = (function (TT) {
     robot.run = function (context, top_level_context, queue) {
         var frontside_condition_widget = this.get_frontside_conditions();
         var backside_conditions, backside_widgets, condition_frontside_element, to_run_when_non_empty;
-        if (this.stopped || this.being_trained || !frontside_condition_widget) {
+        if (this.being_trained || !frontside_condition_widget) {
             return 'not matched';
         }
         this.match_status = TT.UTILITIES.match(frontside_condition_widget, context);
@@ -284,13 +268,17 @@ window.TOONTALK.robot = (function (TT) {
     
     robot.picked_up = function (widget, json, is_resource) {
         var path, action_name, widget_copy, new_widget;
+        if (this === widget) {
+            // robot picked up its frontside or backside -- so ignore this
+            return;
+        }
         // current_action_name is used to distinguish between removing something from its container versus referring to it
         if (widget.get_infinite_stack && widget.get_infinite_stack()) {
             // does this cause an addition to newly created backside widgets?
             this.current_action_name = "pick up a copy of";
         } else {
             this.current_action_name = "pick up";
-        }        
+        }
         if (is_resource) {
             new_widget = widget; // this widget was just created
             // robot needs a copy of the resource to avoid sharing it with training widget
@@ -309,7 +297,11 @@ window.TOONTALK.robot = (function (TT) {
     
     robot.dropped_on = function (source_widget, target_widget) {
         // need to support dropping on backside of a widget as well as which side of a box 
-        var path; 
+        var path;
+        if (this === source_widget) {
+            // robot dropped its frontside or backside -- so ignore this
+            return;
+        }
         this.current_action_name = "drop it on";
         path = TT.path.get_path_to(target_widget, this);
         if (path) {
@@ -397,6 +389,7 @@ window.TOONTALK.robot = (function (TT) {
     
     robot.training_started = function () {
         var context = this.get_context();
+        var backside_element;
         if (!context) {
             console.log("Robot started training but can't find its 'context'.");
             return;
@@ -407,6 +400,8 @@ window.TOONTALK.robot = (function (TT) {
 //         $("div").css({cursor: 'url(' + TT.UTILITIES.cursor_of_image(this.get_image_url()) + '), default'});
         $("div").css({cursor: 'url("images/RB19.32x32.PNG"), default'});
         this.get_frontside_element().title = this.get_title();
+        backside_element = this.get_backside_element();
+        $(backside_element).find(".toontalk-conditions-panel").remove();
     };
     
     robot.training_finished = function () {
@@ -442,9 +437,11 @@ window.TOONTALK.robot = (function (TT) {
         }
         resource_becoming_instance = frontside_element.firstChild && $(frontside_element.firstChild).is(".toontalk-robot-image");
         // remove what's there currently before adding new elements
-        while (frontside_element.firstChild) {
-            frontside_element.removeChild(frontside_element.firstChild);
-        }
+//         while (frontside_element.firstChild) {
+//             if (!$(frontside_element.firstChild).is(".toontalk-close-button")) {
+//                 frontside_element.removeChild(frontside_element.firstChild);
+//             }
+//         }
         frontside_element.title = this.get_title();
         $(frontside_element).addClass("toontalk-robot");
 //         frontside_element.appendChild(robot_image);
@@ -494,7 +491,9 @@ window.TOONTALK.robot = (function (TT) {
     };
     
     robot.add_newly_created_widget_if_new = function (new_widget) {
-        return this.get_body().add_newly_created_widget_if_new(new_widget);
+        if (new_widget !== this.get_context()) {
+            return this.get_body().add_newly_created_widget_if_new(new_widget);
+        }
     };
     
     robot.get_recently_created_widget = function () {
@@ -543,7 +542,7 @@ window.TOONTALK.robot = (function (TT) {
         if (!frontside_conditions) {
             return "has yet to be trained.";
         }
-        frontside_conditions_string = frontside_conditions.get_description();
+        frontside_conditions_string = frontside_conditions.get_full_description();
         if (this.being_trained) {
             prefix = "is being trained.\n";
             postfix = "\n..."; // to indicates still being constructed
@@ -587,21 +586,16 @@ window.TOONTALK.robot = (function (TT) {
         if (this.get_next_robot()) {
             next_robot_json = TT.UTILITIES.get_json(this.get_next_robot(), json_history);
         }
-        return {semantic:
-                    {type: "robot",
-                     frontside_conditions: frontside_conditions_json,
-                     backside_conditions: backside_conditions_json,
-                     body: this.get_body().get_json(),
-                     run_once: this.get_run_once(),
-                     next_robot: next_robot_json
-                     },
-                view:
-                    {//image_url: this.get_image_url(),
-                     description: this.get_description()}};
+        return {type: "robot",
+                frontside_conditions: frontside_conditions_json,
+                backside_conditions: backside_conditions_json,
+                body: this.get_body().get_json(json_history),
+                run_once: this.get_run_once(),
+                next_robot: next_robot_json
+               };
     };
     
     robot.create_from_json = function (json, additional_info) {
-        var json_view = additional_info.json_view;
         var next_robot, thing_in_hand, backside_conditions;
         if (json.thing_in_hand) {
             thing_in_hand = TT.UTILITIES.create_from_json(json.thing_in_hand, additional_info);
@@ -620,7 +614,7 @@ window.TOONTALK.robot = (function (TT) {
                                TT.UTILITIES.create_from_json(json.frontside_conditions || json.bubble, additional_info),
                                backside_conditions,
                                TT.UTILITIES.create_from_json(json.body, additional_info),
-                               json_view.description,
+                               json.description,
                                thing_in_hand,
                                json.run_once,
                                next_robot);
@@ -635,6 +629,7 @@ window.TOONTALK.robot_backside =
     var create_conditions_area = function (text, condition_widget, robot, class_name) {
         var description = TT.UTILITIES.create_text_element(text);
         var condition_element = condition_widget.get_frontside_element(true);
+        var conditions_panel;
         TT.UTILITIES.set_position_is_absolute(condition_element, false);
         $(condition_element).addClass("toontalk-conditions-contents " + class_name);
         setTimeout(function () {
@@ -649,7 +644,9 @@ window.TOONTALK.robot_backside =
         } else {
             $(condition_element).removeClass("toontalk-conditions-not-matched");
         }
-        return TT.UTILITIES.create_horizontal_table(description, condition_element);
+        conditions_panel = TT.UTILITIES.create_horizontal_table(description, condition_element);
+        $(conditions_panel).addClass("toontalk-conditions-panel");
+        return conditions_panel;
     };
     var add_conditions_area = function (backside_element, robot) {
         var frontside_condition_widget = robot.get_frontside_conditions();
@@ -685,18 +682,18 @@ window.TOONTALK.robot_backside =
             var backside = TT.backside.create(robot);
             var backside_element = backside.get_element();
 //             var image_url_input = TT.UTILITIES.create_text_input(robot.get_image_url(), "toontalk-image-url-input", "Image URL&nbsp;", "Type here to provide a URL for the appearance of this robot.");
-            var description_text_area = TT.UTILITIES.create_text_area(robot.get_description(), 
-                                                                      "toontalk-robot-description-input", 
-                                                                      "This&nbsp;robot&nbsp;",
-                                                                      "Type here to provide additional information about this robot.");
             var run_once_input = TT.UTILITIES.create_check_box(!robot.get_run_once(),
                                                                "toontalk-run-once-check-box",
                                                                "When finished start again",
                                                                "Check this if you want the robot to start over again after finishing what he was trained to do.");
             var $next_robot_area = TT.UTILITIES.create_drop_area(window.TOONTALK.robot.empty_drop_area_instructions);
             var next_robot = robot.get_next_robot();
-            var standard_buttons = TT.backside.create_standard_buttons(backside, robot);
-            var infinite_stack_check_box = TT.backside.create_infinite_stack_check_box(backside, robot);
+            var extra_settings = function (settings) {
+                settings.appendChild(run_once_input.container);
+                settings.appendChild($next_robot_area.get(0));
+            }
+            var standard_buttons = TT.backside.create_standard_buttons(backside, robot, extra_settings, this.create_train_button(backside, robot));
+//             var infinite_stack_check_box = TT.backside.create_infinite_stack_check_box(backside, robot);
 //             var image_url_change = function () {
 //                 var image_url = image_url_input.button.value.trim();
 //                 if (robot.set_image_url(image_url, true) && TT.robot.in_training) {
@@ -706,23 +703,12 @@ window.TOONTALK.robot_backside =
 //                                                         button_selector: ".toontalk-run-once-check-box"});
 //                 }
 //             };
-            var description_change = function () {
-                var description = description_text_area.button.value.trim();
-                if (robot.set_description(description, true) && TT.robot.in_training) {
-                    TT.robot.in_training.edited(robot, {setter_name: "set_description",
-                                                        argument_1: description,
-                                                        toString: "change the description to '" + description + "'' of the robot",
-                                                        button_selector: ",toontalk-robot-description-input"});
-                }
-            };
-            var input_table;
+//             var input_table;
             $next_robot_area.data("drop_area_owner", robot);
             // don't do the following if already trained -- or offer to retrain?
-            standard_buttons.insertBefore(this.create_train_button(backside, robot), standard_buttons.firstChild);
+//             standard_buttons.insertBefore(this.create_train_button(backside, robot), standard_buttons.firstChild);
 //             image_url_input.button.addEventListener('change', image_url_change);
 //             image_url_input.button.addEventListener('mouseout', image_url_change);
-            description_text_area.button.addEventListener('change', description_change);
-            description_text_area.button.addEventListener('mouseout', description_change);
             $(run_once_input.button).click(function (event) {
                 var keep_running = run_once_input.button.checked;
                 robot.set_run_once(!keep_running);
@@ -734,21 +720,15 @@ window.TOONTALK.robot_backside =
                 }
                 event.stopPropagation();
             });
-            input_table = TT.UTILITIES.create_vertical_table(description_text_area.container, run_once_input.container); // image_url_input.container, 
-            $(input_table).css({width: "90%"});
-            backside_element.appendChild(input_table);
             backside_element.appendChild(standard_buttons);
-            backside_element.appendChild(infinite_stack_check_box.container);
             if (next_robot) {
                 $next_robot_area.append(next_robot.get_frontside_element());
             }
-            backside_element.appendChild($next_robot_area.get(0));
             backside.update_display = function () {
                 var frontside_element = robot.get_frontside_element();
                 var $containing_backside_element;
-                $(description_text_area.button).val(robot.get_description());
 //                 $(image_url_input.button).val(robot.get_image_url());
-                $(run_once_input.button).prop("checked", !robot.get_run_once());
+//                 $(run_once_input.button).prop("checked", !robot.get_run_once());
                 if (frontside_element) {
                     frontside_element.title = robot.get_title();
                     $containing_backside_element = $(frontside_element).closest(".toontalk-backside");
@@ -804,4 +784,4 @@ window.TOONTALK.robot_backside =
     };
 }(window.TOONTALK));
 
-window.TOONTALK.robot.empty_drop_area_instructions = "Drop a robot here to run when this robot can't."
+window.TOONTALK.robot.empty_drop_area_instructions = "Drop a robot here who will try to run when this robot can't run."

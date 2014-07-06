@@ -121,7 +121,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     };
 
     // public methods
-    number.create = function (numerator, denominator, operator, format) {
+    number.create = function (numerator, denominator, operator, format, description) {
         var new_number = Object.create(number);
         // value is a private variable closed over below
         var value = bigrat_from_values(numerator, denominator);
@@ -170,6 +170,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
                 return format; 
             };
         new_number = number.add_standard_widget_functionality(new_number);
+        new_number.set_description(description);
         if (TT.debugging) {
             new_number.debug_string = new_number.toString();
             new_number.debug_id = TT.UTILITIES.generate_unique_id();
@@ -194,7 +195,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     };
 
     number.copy = function (just_value) {
-        return this.add_to_copy(number.create(this.get_value()[0], this.get_value()[1], this.get_operator(), this.get_format()), just_value);
+        return this.add_to_copy(number.create(this.get_value()[0], this.get_value()[1], this.get_operator(), this.get_format(), this.get_description()), just_value);
     };
     
     number.is_number = function () {
@@ -215,13 +216,22 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         // get format from backside ancestor (via parent attribute?)
         var frontside = this.get_frontside(true);
         var frontside_element, $dimensions_holder, client_width, client_height, 
-            font_height, font_width, max_decimal_places, new_HTML, backside;
+            font_height, font_width, max_decimal_places, new_HTML, backside, size_unconstrained_by_container;
+        var add_to_style = function (html, additional_style) {
+            var style_index = html.indexOf('style="');
+            if (style_index >= 0) {
+                return html.substring(0, style_index+7) + additional_style + html.substring(style_index+7);
+            }
+            return html;
+        };
         frontside_element = frontside.get_element();
         if ($(frontside_element).is(".toontalk-conditions-contents")) {
             $dimensions_holder = $(frontside_element);
         } else if ($(frontside_element).parent().is(".toontalk-backside, .toontalk-json")) {
             $dimensions_holder = $(frontside_element);
+            size_unconstrained_by_container = true;
         } else if ($(frontside_element).closest(".toontalk-robot").length > 0) {
+            // obsolete??
             $dimensions_holder = $(frontside_element);
         } else {
             $dimensions_holder = $(frontside_element).parent();
@@ -234,11 +244,15 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         font_height = client_height * 0.8;
 //      font_size = TT.UTILITIES.get_style_numeric_property(frontside, "font-size");
         // according to http://www.webspaceworks.com/resources/fonts-web-typography/43/
-        // the aspect ratio of monospace fonts varies from .43 to .55 
+        // the aspect ratio of monospace fonts varies from .43 to .55
         font_width = font_height * 0.64; // .55 'worst' aspect ratio -- add a little extra
         // could find the font name and use the precise value
         max_decimal_places = client_width / font_width;
-        new_HTML = this.to_HTML(max_decimal_places, font_height, this.get_format(), true, this.get_operator());
+        new_HTML = this.to_HTML(max_decimal_places, font_height, this.get_format(), true, this.get_operator(), size_unconstrained_by_container);
+        if (TT.UTILITIES.on_a_nest_in_a_box(frontside_element)) {
+            // need to work around a CSS problem where nested percentage widths don't behave as expected
+            new_HTML = add_to_style(new_HTML, "width:" + client_width + "px;");
+        }
         if (!frontside_element.firstChild) {
             frontside_element.appendChild(document.createElement('div'));
         }
@@ -251,9 +265,12 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         }
     };
     
-    number.to_HTML = function (max_characters, font_size, format, top_level, operator) {
+    number.to_HTML = function (max_characters, font_size, format, top_level, operator, size_unconstrained_by_container) {
         var integer_as_string, integer_part, fractional_part, improper_fraction_HTML, digits_needed, shrinkage, table_style;
         var extra_class = (top_level !== false) ? ' toontalk-top-level-number' : '';
+        if (size_unconstrained_by_container) {
+            extra_class += ' toontalk-number-size-unconstrained-by-container';
+        }
         var operator_HTML = operator ? html_for_operator(operator) : "";
         if (!max_characters) {
             max_characters = 4;
@@ -353,10 +370,15 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
              $top_level_backside_element.append(bammer_element);
              this_frontside_element = this.get_frontside_element();
              target_absolute_position = $(this_frontside_element).offset();
+             target_absolute_position.left -= $(bammer_element).width()*0.75; // hammer is on bammer's right
+             target_absolute_position.left += $(this_frontside_element).width()*0.5; // middle of number
              target_absolute_position.top -= $top_level_backside_element.position().top;
-             target_absolute_position.top -= $(this_frontside_element).height();
+             target_absolute_position.top += $(this_frontside_element).height();
              hit_number_continuation = function () {
                  this.number_dropped_on_me_semantics(other_number, event);
+                 if (robot) {
+                    robot.wait_before_next_step = false;
+                 }
                  $(bammer_element).removeClass("toontalk-bammer-down");
                  setTimeout(function () {
                          $(bammer_element).addClass("toontalk-bammer-away");
@@ -365,11 +387,19 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
                          bammer_gone_continuation = function () {
                              $(bammer_element).remove();
                          };
-                         TT.UTILITIES.animate_to_absolute_position(bammer_element, target_absolute_position, bammer_gone_continuation);    
+                         TT.UTILITIES.animate_to_absolute_position(bammer_element, target_absolute_position, bammer_gone_continuation); 
+                         $(bammer_element).css({opacity: 0.01});
                      },
                      1);
              }.bind(this);
              TT.UTILITIES.animate_to_absolute_position(bammer_element, target_absolute_position, hit_number_continuation);
+             $(bammer_element).css({opacity: 1.0,
+                                    // ensure that Bammer is on top of everything
+                                    "z-index": TT.UTILITIES.next_z_index()+100});
+             // e.g. next step is to copy this number and bammer hasn't hit it yet
+             if (robot) {
+                 robot.wait_before_next_step = true;
+             }
              return this;             
          } else {
              return this.number_dropped_on_me_semantics(other_number,event);
@@ -472,7 +502,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     };
     
     number.create_from_json = function (json) {
-        return number.create(json.numerator, json.denominator, json.operator, json.format);
+        return number.create(json.numerator, json.denominator, json.operator, json.format, json.description);
     };
 
     number.is_integer = function () {
@@ -531,7 +561,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         // generate twice as many decimal places are there is room for so they shrink
         // split space between integer part and decimal part
         return fit_string_to_length(integer_string, integer_max_digits, font_size) +
-               "<span class='toontalk-decimal-point' style='font-family: serif'>.</span>" + // decimal point looks better if not monospace
+               "<span class='toontalk-decimal-point'>.</span>" + // decimal point looks better if not monospace
                shrink_to_fit(decimal_places, decimal_max_digits, true);
     };
 
@@ -632,18 +662,22 @@ window.TOONTALK.number_backside =
             var number_set = TT.UTILITIES.create_horizontal_table(numerator_input.container, slash, denominator_input.container);
             var format_set = $(TT.UTILITIES.create_horizontal_table(decimal_format.container, proper_format.container, improper_format.container)).buttonset().get(0);
             var operator_set = $(TT.UTILITIES.create_horizontal_table(plus.container, minus.container, multiply.container, divide.container, power.container)).buttonset().get(0);
-            var standard_buttons = TT.backside.create_standard_buttons(backside, number);
-            var infinite_stack_check_box = TT.backside.create_infinite_stack_check_box(backside, number);
+            var extra_settings = function (settings) {
+                settings.appendChild(format_set);
+                settings.appendChild(operator_set);
+            }
+            var standard_buttons = TT.backside.create_standard_buttons(backside, number, extra_settings);
+//             var infinite_stack_check_box = TT.backside.create_infinite_stack_check_box(backside, number);
             slash.innerHTML = "/";
             $(slash).addClass("ui-widget"); // to look nice
             backside_element.appendChild(number_set);
-            backside_element.appendChild(format_set);
-            backside_element.appendChild(operator_set);
+//             backside_element.appendChild(format_set);
+//             backside_element.appendChild(operator_set);
             backside_element.appendChild(standard_buttons);
-            backside_element.appendChild(infinite_stack_check_box.container);
+//             backside_element.appendChild(infinite_stack_check_box.container);
             numerator_input.button.addEventListener('change', update_value);
             numerator_input.button.addEventListener('mouseout', update_value);
-            numerator_input.button.addEventListener('mouseenter', function () {
+            numerator_input.button.addEventListener('mouseover', function () {
                 current_numerator = numerator_input.button.value.trim();
                 current_denominator = denominator_input.button.value.trim();
             });

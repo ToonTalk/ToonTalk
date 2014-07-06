@@ -60,14 +60,14 @@ window.TOONTALK.actions =
             new_actions.get_newly_created_widgets = function () {
                 return newly_created_widgets;
             };
-            new_actions.get_path_to = function (widget) {
+            new_actions.get_path_to = function (widget, robot) {
                 var path, sub_path, children;
                 newly_created_widgets.some(function (newly_created_widget, index) {
                     if (newly_created_widget === widget) {
                         path = TT.newly_created_widgets_path.create(index);
                         return true;
                     } else if (newly_created_widget.get_path_to) {
-                        sub_path = newly_created_widget.get_path_to(widget);
+                        sub_path = newly_created_widget.get_path_to(widget, robot);
                         if (sub_path) {
                             path = TT.newly_created_widgets_path.create(index);
                             path.next = sub_path;
@@ -78,6 +78,9 @@ window.TOONTALK.actions =
                 return path;
             };
             new_actions.dereference = function (index) {
+                if (TT.debugging && !newly_created_widgets[index]) {
+                    console.log("Expected to find the " + (index+1) + "th newly created widget.");
+                }
                 return newly_created_widgets[index];
             }
             return new_actions;
@@ -107,12 +110,12 @@ window.TOONTALK.actions =
             };
             var run_watched_step = function (i) {
                 var continuation = function (referenced) {
-                    steps[i].do_step(referenced, context, top_level_context, robot);
-                    if (robot.get_thing_in_hand()) {
-                        robot.render();
-                    }
-                    setTimeout(function () {
-                            if (robot.visible()) {
+                    var do_next_step = 
+                        function () {
+                            if (robot.wait_before_next_step) {
+                                // wait a bit until OK to run
+                                setTimeout(do_next_step, 500);
+                            } else if (robot.visible()) {
                                 run_watched_step(i+1);
                             } else {
                                 // maybe user hid the robot while running
@@ -123,8 +126,16 @@ window.TOONTALK.actions =
                                     robot.get_first_in_team().run(context, top_level_context, queue);
                                 }
                             }
-                        },
-                        500); // pause between steps and give the previous step a chance to update the DOM
+                    };
+                    steps[i].do_step(referenced, context, top_level_context, robot);
+                    if (robot.get_thing_in_hand()) {
+                        robot.render();
+                    }
+                    // I inspected the elements and this ensures that the robot is on top of everything
+                    // but at least in Chrome it isn't displayed that way in all situations            
+                    $(frontside_element).css({"z-index": TT.UTILITIES.next_z_index()});
+                    // pause between steps and give the previous step a chance to update the DOM
+                    setTimeout(do_next_step, 500);
                 };
                 if (i < steps.length) {
                     steps[i].run_watched(context, top_level_context, robot, continuation);
@@ -161,9 +172,9 @@ window.TOONTALK.actions =
             return description;
         },
         
-        get_json: function () {
+        get_json: function (json_history) {
             return {type: "body",
-                    steps: TT.UTILITIES.get_json_of_array(this.get_steps())};
+                    steps: TT.UTILITIES.get_json_of_array(this.get_steps(), json_history)};
         },
         
         create_from_json: function (json) {

@@ -63,14 +63,22 @@ window.TOONTALK.path =
 //             console.log("TT.path.get_path_to not fully implemented.");
         },
         dereference_path: function (path, context, top_level_context, robot) {
+            var dereferenced;
             if (path) {
                 if (path.dereference) {
-                    return path.dereference(context, top_level_context, robot);
+                    dereferenced = path.dereference(context, top_level_context, robot);
+                } else {
+                   dereferenced = context.dereference(path, top_level_context, robot);
                 }
-                return context.dereference(path, top_level_context, robot);
+            } else {
+                // no path means entire context -- I don't think this is still true
+                dereferenced = context;
             }
-            // no path means entire context -- I don't think this is still true
-            return context;
+            if (dereferenced.dereference) {
+                // e.g. covered nests dereference to their top item
+                return dereferenced.dereference();
+            }
+            return dereferenced;
         },
         toString: function (a_path) {
             if (a_path.next) {
@@ -80,10 +88,10 @@ window.TOONTALK.path =
                 return a_path.toString();
             }
         },
-        get_json: function (a_path) {
-            var json = a_path.get_json();
+        get_json: function (a_path, json_history) {
+            var json = a_path.get_json(json_history);
             if (a_path.next) {
-                json.next_path = TT.path.get_json(a_path.next);
+                json.next_path = TT.path.get_json(a_path.next, json_history);
             }
             return json;
         },
@@ -120,7 +128,7 @@ window.TOONTALK.path =
         entire_context_create_from_json: function () {
             return TT.path.to_entire_context();
         },
-        get_path_to_resource: function (widget) {
+        get_path_to_resource: function (widget, json_history) {
             if (widget.widget) {
                 // ignore the side information and just use the widget
                 // revisit this if resources are ever backside resources
@@ -148,9 +156,9 @@ window.TOONTALK.path =
                     toString: function () {
                         return TT.UTILITIES.add_a_or_an(widget.toString());
                     },
-                    get_json: function () {
+                    get_json: function (json_history) {
                         return {type: "path.to_resource",
-                                resource: TT.path.get_json(widget)};
+                                resource: TT.path.get_json(widget, json_history)};
                     }
             };
         },

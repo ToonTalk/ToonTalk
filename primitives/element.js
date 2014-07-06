@@ -53,7 +53,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         return value;
     };
     
-    element.create = function (html, style_attributes) {
+    element.create = function (html, style_attributes, description, additional_classes) {
         var new_element = Object.create(element);
         var pending_css, transform_css, on_update_display_handlers, $image_element;
         if (!style_attributes) {
@@ -189,7 +189,14 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 $(frontside_element).height($image_element.height());
             }
         };
+        new_element.get_additional_classes = function () {
+            return additional_classes;
+        };
+        new_element.set_additional_classes = function (new_value) {
+            additional_classes = new_value;
+        };
         new_element = new_element.add_standard_widget_functionality(new_element);
+        new_element.set_description(description);
         if (TT.debugging) {
             new_element.debug_string = new_element.toString();
             new_element.debug_id = TT.UTILITIES.generate_unique_id();
@@ -199,7 +206,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     
     element.copy = function (just_value) {
         // copy has a copy of the attributes array as well
-        var copy = element.create(this.get_HTML(), this.get_style_attributes().slice());
+        var copy = element.create(this.get_HTML(), this.get_style_attributes().slice(), this.get_description());
         return this.add_to_copy(copy, just_value);
     };
     
@@ -293,7 +300,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         return true;
     };
     
-    element.dropped_on_style_attribute = function (dropped, attribute_name) {
+    element.dropped_on_style_attribute = function (dropped, attribute_name, event, robot) {
         var widget_string, widget_number, attribute_name, attribute_value, attribute_numerical_value, new_value;
         if (!dropped) {
             return;
@@ -337,6 +344,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             }
             // following doesn't handle training since is handled below
             this.set_attribute(attribute_name, new_value, false);
+            if (event || (robot && robot.visible())) {
+                this.get_backside().render();
+            }
         }
         if (!dropped.get_infinite_stack()) {
             dropped.remove();
@@ -379,8 +389,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 visible: function () {
                     return $attribute_input && $attribute_input.is(":visible");
                 },
-                widget_dropped_on_me: function (other) {
-                    this.element_widget.dropped_on_style_attribute(other, attribute_name);
+                widget_dropped_on_me: function (other, is_backside, event, robot) {
+                    this.element_widget.dropped_on_style_attribute(other, attribute_name, event, robot);
                 },
                 update_display: function () {
                     if ($attribute_input) {
@@ -399,8 +409,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     
     element.update_display = function () {
         var frontside_element = this.get_frontside_element();
-        var rendering;
         var backside = this.get_backside();
+        var rendering, additional_classes;
         if (this.get_erased && this.get_erased()) {
             // could save the current opacity and restore it below
             $(frontside_element).css({opacity: 0});
@@ -419,13 +429,22 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             $(frontside_element).addClass("toontalk-element-frontside");
             if (rendering.innerHTML.substring(0, 1) !== '<') {
                 // doesn't look like HTML so assume it is raw text and give it a class that will give it a better font and size
+                additional_classes = this.get_additional_classes();
+                if (additional_classes) {
+                    $(rendering).addClass(additional_classes);
+                }
                 $(frontside_element).addClass("ui-widget toontalk-plain-text-element");
             }
         }
-        this.apply_css();
-        if (backside) {
-            backside.update_display();
+        if (TT.UTILITIES.on_a_nest_in_a_box(frontside_element)) {
+            // need to work around a CSS problem where nested percentage widths don't behave as expected
+            this.set_attribute("width", $(frontside_element).closest(".toontalk-box-hole").width(), false);
+            this.set_attribute("height", $(frontside_element).closest(".toontalk-box-hole").height(), false);
         }
+        this.apply_css();
+//         if (backside) {
+//             backside.update_display();
+//         }
         this.fire_on_update_display_handlers();
     };
     
@@ -470,10 +489,21 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 };
     };
     
-    element.create_from_json = function (json) {
-        var reconstructed_element = element.create(decodeURIComponent(json.html), json.attributes);
+    element.create_from_json = function (json, additional_info) {
+        var reconstructed_element = element.create(decodeURIComponent(json.html), json.attributes, json.description);
+        var ignore_attributes;
+        if (additional_info && additional_info.event) {
+            // perhaps should check that event is a drop event
+            // drop event location has priority over these settings
+            ignore_attributes = ["left", "top"];
+        } else {
+            ignore_attributes = [];
+        }
         json.attribute_values.forEach(function (value, index) {
-            reconstructed_element.add_to_css(json.attributes[index], value_in_pixels(value) || value);
+            var attribute_name = json.attributes[index];
+            if (ignore_attributes.indexOf(attribute_name) < 0) {
+                reconstructed_element.add_to_css(attribute_name, value_in_pixels(value) || value);
+            }
         });
         return reconstructed_element;
     };
@@ -517,7 +547,7 @@ window.TOONTALK.element_backside =
         // the following could be made the default
         // but if TT.attribute_options is set use it instead
         var options = [{label: "Geometry attributes",
-                        sub_menus: ["left", "top", "width", "height", "z-index"]},
+                        sub_menus: ["left", "top", "width", "height", "z-index", "background-position"]},
                        {label: "Color attributes",
                         sub_menus: ["background-color", "color", "opacity"]},
                        {label: "Font attributes",
@@ -575,8 +605,8 @@ window.TOONTALK.element_backside =
             var style_attributes = element_widget.get_style_attributes();
             var already_added = style_attributes.indexOf(option) >= 0;
             var title = "Click to add or remove the '" + option + "' style attribute from the backside of this element.";
-            var check_box = TT.UTILITIES.create_check_box(already_added, "toontalk-style-attribute-check-box", option, title);
-            var documentation_link = TT.UTILITIES.create_anchor_element(" (?)", documentation_source(option) + option);
+            var check_box = TT.UTILITIES.create_check_box(already_added, "toontalk-style-attribute-check-box", option+"&nbsp;", title);
+            var documentation_link = TT.UTILITIES.create_anchor_element("(?)", documentation_source(option) + option);
             var list_item = document.createElement("li");
             check_box.container.appendChild(documentation_link);
             check_box.button.addEventListener('click', function (event) {

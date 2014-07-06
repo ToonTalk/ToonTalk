@@ -24,6 +24,12 @@ window.TOONTALK.DISPLAY_UPDATES =
         
         update_display: function () {
             var updates = pending_updates;
+            var ensure_childen_have_higer_z_index = function (element , z_index) {
+                $(element).children(".toontalk-side").each(function (index, child_element) {
+                        $(child_element).css({"z-index": z_index+1});
+                        ensure_childen_have_higer_z_index(child_element, z_index+1);
+                });
+            }
             pending_updates = [];
             if (updates.length === 0) {
                 // does this save the work of creating the closure in the forEach?
@@ -31,8 +37,28 @@ window.TOONTALK.DISPLAY_UPDATES =
             }
             updates.forEach(function (pending_update) {
                 var frontside_element = pending_update.get_frontside_element && pending_update.get_frontside_element();
+                var $parent_side_element, z_index, parent_z_index;
                 pending_update.update_display();
-                if (!$(frontside_element).is(".toontalk-top-level-resource, .ui-resizable, .toontalk-bird, .toontalk-nest, .toontalk-robot, .toontalk-widget, .toontalk-held-by-robot")) {
+                // ensure that children have higher z-index than parent
+                $parent_side_element = $(frontside_element).parent().closest(".toontalk-side");
+                if ($parent_side_element.is('*')) {
+                    z_index = TT.UTILITIES.get_style_numeric_property(frontside_element, 'z-index');
+                    parent_z_index = TT.UTILITIES.get_style_numeric_property($parent_side_element.get(0), "z-index");
+                    if (!parent_z_index) {
+                        parent_z_index = TT.UTILITIES.next_z_index();
+                        $parent_side_element.css({'z-index': parent_z_index});
+                    }
+                    if (!z_index || $parent_side_element.is(".toontalk-top-level-backside")) {
+                        z_index = TT.UTILITIES.next_z_index();
+                        $(frontside_element).css({'z-index': z_index});
+                    } else if (z_index >= parent_z_index) {
+                        z_index = parent_z_index+1;
+                        $(frontside_element).css({'z-index': z_index});
+                    }
+                    ensure_childen_have_higer_z_index(frontside_element, z_index);
+                }
+                // ensure that it is resizable if appropriate
+                if (frontside_element && !$(frontside_element).is(".toontalk-top-level-resource, .ui-resizable, .toontalk-bird, .toontalk-widget-on-nest, .toontalk-nest, .toontalk-plain-text-element, .toontalk-conditions-contents, .toontalk-robot, .toontalk-widget, .toontalk-held-by-robot")) {
                     // need to delay in order for the DOM to settle down with the changes caused by update_display
                     setTimeout(function () {
                             TT.UTILITIES.make_resizable($(frontside_element), pending_update);
