@@ -701,11 +701,11 @@ window.TOONTALK.nest_backside =
 (function (TT) {
     "use strict";
     return {
-        create: function (nest) {
+        create: function (nest, extra_settings) {
             var backside = TT.backside.create(nest);
             var backside_element = backside.get_element();
 //             var image_url_input = TT.UTILITIES.create_text_input(nest.get_image_url(), "toontalk-image-url-input", "Image URL&nbsp;", "Type here to provide a URL for the appearance of this nest.");
-            var standard_buttons = TT.backside.create_standard_buttons(backside, nest);
+            var standard_buttons = TT.backside.create_standard_buttons(backside, nest, extra_settings);
 //             var infinite_stack_check_box = TT.backside.create_infinite_stack_check_box(backside, nest);
 //             var image_url_change = function () {
 //                 var image_url = image_url_input.button.value.trim();

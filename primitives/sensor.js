@@ -23,7 +23,7 @@ window.TOONTALK.sensor = (function (TT) {
         }
     };
     
-    sensor.create = function (sensor_name, attribute, description, previous_contents) {
+    sensor.create = function (event_name, attribute, description, previous_contents) {
         var new_sensor = TT.nest.create(description, previous_contents, undefined, "sensor sensor");
         var nest_get_json = new_sensor.get_json;
         var nest_update_display = new_sensor.update_display;
@@ -52,7 +52,8 @@ window.TOONTALK.sensor = (function (TT) {
                 break;
                 case 'boolean':
                 // for now
-                value_widget = TT.element.create(value.toString());
+                value_widget = TT.element.create(value.toString(), undefined, undefined, "toontalk-string-value-from-sensor");
+                style_contents(value_widget, new_sensor);
                 break;
                 case 'undefined':
                 console.log("No " + attribute + " in sensor " + sensor);
@@ -66,19 +67,19 @@ window.TOONTALK.sensor = (function (TT) {
                 new_sensor.add_to_contents({widget: value_widget});
             }
         };
-        window.addEventListener(sensor_name, event_listener);
+        window.addEventListener(event_name, event_listener);
         new_sensor.copy = function (just_value) {
             var copy;
             if (just_value && this.has_contents()) {
                 return nest_copy.call(this, true);
             }
-            copy = TT.sensor.create(sensor_name, attribute, description);
+            copy = TT.sensor.create(event_name, attribute, description);
             return new_sensor.add_to_copy(copy, just_value);
         };
         new_sensor.get_json = function (json_history) {
             var nest_json = nest_get_json.call(this, json_history);
             nest_json.type = 'sensor';
-            nest_json.sensor_name = sensor_name;
+            nest_json.event_name = event_name;
             nest_json.attribute = attribute;
             return nest_json;
         };
@@ -91,21 +92,46 @@ window.TOONTALK.sensor = (function (TT) {
             return 'sensor';
         };
         new_sensor.toString = function () {
-            return "a sensor of " + attribute + " for " + sensor_name + " sensors";
+            return "a sensor of " + attribute + " for " + event_name + " sensors";
         };
         new_sensor.set_active = function (new_value) {
             if (new_value) {
-                window.addEventListener(sensor_name, event_listener);
+                window.addEventListener(event_name, event_listener);
             } else {
-                window.removeEventListener(sensor_name, event_listener);
+                window.removeEventListener(event_name, event_listener);
             }
+        };
+        new_sensor.create_backside = function () {
+            return TT.sensor_backside.create(this);
+        };
+        new_sensor.get_event_name = function () {
+            return event_name;
+        };
+        new_sensor.set_event_name = function (new_value) {
+            if (event_name) {
+                window.removeEventListener(event_name, event_listener);
+            }
+            event_name = new_value;
+            if (event_name) {
+                window.addEventListener(event_name, event_listener);
+            }
+        };
+        new_sensor.get_attribute = function () {
+            return attribute;
+        };
+        new_sensor.set_attribute = function (new_value) {
+            attribute = new_value;
+        };
+        new_sensor.match = function (other) {
+            // to do
+            return "not matched";
         };
         return new_sensor;
     };
     
     sensor.create_from_json = function (json, additional_info) {
         var previous_contents = TT.UTILITIES.create_array_from_json(json.contents, additional_info);
-        var sensor = TT.sensor.create(json.sensor_name,
+        var sensor = TT.sensor.create(json.event_name,
                                       json.attribute,
                                       json.description, 
                                       previous_contents);
@@ -124,3 +150,29 @@ window.TOONTALK.sensor = (function (TT) {
     return sensor;
     
 }(window.TOONTALK));
+
+window.TOONTALK.sensor_backside = 
+(function (TT) {
+    "use strict";
+    
+    return {
+        create: function (sensor) {
+            var event_name_input =      TT.UTILITIES.create_text_input(sensor.get_event_name(), 'toontalk-sensor-event-name-input',      "Event name&nbsp;&nbsp;&nbsp;&nbspB;&nbsp;",      "Type here the event name.",           "https://developer.mozilla.org/en-US/docs/Web/Events");
+            var event_attribute_input = TT.UTILITIES.create_text_input(sensor.get_attribute(),  'toontalk-sensor-event-attribute-input', "Event attribute", "Type here the event attribute name.", "https://developer.mozilla.org/en/docs/Web/API/Event");
+            var extra_settings = function (settings) {
+                settings.appendChild(event_name_input.container);
+                settings.appendChild(event_attribute_input.container);
+            }
+            var backside = TT.nest_backside.create(sensor, extra_settings);
+            var update_event_name = function () {
+                sensor.set_event_name(event_name_input.button.value.trim());
+            };
+            var update_attribute = function () {
+                sensor.set_attribute(event_attribute_input.button.value.trim());
+            };
+            event_name_input.button.addEventListener(     'change', update_event_name);
+            event_attribute_input.button.addEventListener('change', update_attribute);
+            return backside;
+    }};
+}(window.TOONTALK));
+
