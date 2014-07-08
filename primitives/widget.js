@@ -265,9 +265,9 @@ window.TOONTALK.widget = (function (TT) {
                         ancestor = ancestor.widget.get_parent_of_frontside();
                     }
                 }
-                return ancestor;
+                return ancestor || {widget: this};
             };
-            return widget || {widget: this};
+            return widget;
         },
         
         has_description: function (widget) {
