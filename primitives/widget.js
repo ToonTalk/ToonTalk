@@ -267,7 +267,7 @@ window.TOONTALK.widget = (function (TT) {
                 }
                 return ancestor;
             };
-            return widget;
+            return widget || {widget: this};
         },
         
         has_description: function (widget) {
