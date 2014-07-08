@@ -1225,9 +1225,11 @@ window.TOONTALK.UTILITIES =
             row = document.createElement("tr");
             table.appendChild(row);
             for (i = 0; i < arguments.length; i++) {
-                table_element = document.createElement("td");
-                row.appendChild(table_element);
-                table_element.appendChild(arguments[i]);
+                if (arguments[i]) {
+                    table_element = document.createElement("td");
+                    row.appendChild(table_element);
+                    table_element.appendChild(arguments[i]);
+                }
             }
             return table;
         },
@@ -1236,8 +1238,10 @@ window.TOONTALK.UTILITIES =
             var table = document.createElement("table");
             var i, row;
             for (i = 0; i < arguments.length; i++) {
-                row = TT.UTILITIES.create_row(arguments[i]);
-                table.appendChild(row);
+                if (arguments[i]) {
+                    row = TT.UTILITIES.create_row(arguments[i]);
+                    table.appendChild(row);
+                }
             }
             return table;
         },
