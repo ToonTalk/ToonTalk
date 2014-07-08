@@ -178,7 +178,7 @@ window.TOONTALK.robot = (function (TT) {
     
     robot.run = function (context, top_level_context, queue) {
         var frontside_condition_widget = this.get_frontside_conditions();
-        var backside_conditions, backside_widgets, condition_frontside_element, to_run_when_non_empty;
+        var backside_conditions, backside_widgets, condition_frontside_element, to_run_when_non_empty, next_robot_match_status;
         if (this.being_trained || !frontside_condition_widget) {
             return 'not matched';
         }
@@ -236,13 +236,28 @@ window.TOONTALK.robot = (function (TT) {
             }
             return this.match_status;
         default:
-            to_run_when_non_empty = {robot: this,
-                                     context: context,
-                                     top_level_context: top_level_context,
-                                     queue: queue};
-            this.match_status.forEach(function (sub_match_status) {
-                sub_match_status.run_when_non_empty(to_run_when_non_empty);
-            });
+            if (this.get_next_robot()) {
+                next_robot_match_status = this.get_next_robot().run(context, top_level_context, queue);
+                if (next_robot_match_status === 'matched') {
+                    return next_robot_match_status;
+                } else if (next_robot_match_status != 'not matched') {
+                    // subsequent robot suspended too -- perhaps on different things
+                    next_robot_match_status.forEach(function (sub_match_status) {
+                        if (this.match_status.indexOf(sub_match_status) < 0) {
+                            this.match_status.push(sub_match_status);
+                        }
+                    });
+                }
+            }
+            if (first_in_team) {
+                to_run_when_non_empty = {robot: this,
+                                         context: context,
+                                         top_level_context: top_level_context,
+                                         queue: queue};
+                this.match_status.forEach(function (sub_match_status) {
+                    sub_match_status.run_when_non_empty(to_run_when_non_empty);
+                });
+            }
             return this.match_status;                    
         }
     };
