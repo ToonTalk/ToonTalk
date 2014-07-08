@@ -251,7 +251,7 @@
 }
 .toontalk-conditions-contents-container {
 /* 	Can't add the border to toontalk-conditions-contents because erased elements have 0 opacity */
-    width: 100px;
+    width: 200px;
 	height: 36px;
 	border: 1px black solid;	
 }
