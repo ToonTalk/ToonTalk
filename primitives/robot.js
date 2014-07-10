@@ -399,7 +399,7 @@ window.TOONTALK.robot = (function (TT) {
     robot.get_context = function () {
         var frontside_element = this.get_frontside_element();
         var $parent_element = $(frontside_element).parent();
-        var widget = TT.UTILITIES.get_toontalk_widget_from_jquery(toontalk_widget);
+        var widget = TT.UTILITIES.get_toontalk_widget_from_jquery($parent_element);
         if (!widget) {
             // check if robot is in the 'next robot' area
             $parent_element = $parent_element.closest(".toontalk-drop-area").closest(".toontalk-side");
