@@ -13,21 +13,6 @@ window.TOONTALK.box = (function (TT) {
 
     box.create = function (size, horizontal, contents, description) {
         var new_box = Object.create(box);
-        if (contents) {
-            contents.forEach(function (widget) {
-                if (widget) {
-                    // assumes only frontsides end up in boxes -- relax this someday
-                    widget.set_parent_of_frontside(new_box);
-                }
-            });
-        } else {
-            contents = [];
-        }
-        if (TT.debugging && size !== contents.length) {
-            // eventually remove this when old saved code has been updated
-            console.log("JSON size should be " + contents.length + " not " + size);
-            size = contents.length;
-        }
         if (typeof horizontal === 'undefined') {
             horizontal = true;
         }
@@ -99,6 +84,23 @@ window.TOONTALK.box = (function (TT) {
         };
         new_box = new_box.add_standard_widget_functionality(new_box);
         new_box.set_description(description);
+        if (contents) {
+            contents.forEach(function (widget, index) {
+                if (widget) {
+                    new_box.set_hole(index, widget);
+                    // assumes only frontsides end up in boxes -- relax this someday
+//                     widget.set_parent_of_frontside(new_box);
+
+                }
+            });
+        } else {
+            contents = [];
+        }
+        if (TT.debugging && size !== contents.length) {
+            // eventually remove this when old saved code has been updated
+            console.log("JSON size should be " + contents.length + " not " + size);
+            size = contents.length;
+        }
         if (TT.debugging) {
             new_box.debug_string = new_box.toString();
             new_box.debug_id = TT.UTILITIES.generate_unique_id();
@@ -285,6 +287,11 @@ window.TOONTALK.box = (function (TT) {
                                  top:    top,
                                  width:  hole_width,
                                  height: hole_height});
+                                                 setTimeout(function () {
+            $(hole.get_frontside_element()).css({width:  '100%',
+                                                height: '100%'});                   
+                    },
+                    1);
             hole.update_display();
         };
         var horizontal = this.get_horizontal();
@@ -318,8 +325,11 @@ window.TOONTALK.box = (function (TT) {
                 update_hole(hole_element, hole, i);
                 content_frontside_element = hole.get_frontside_element();
                 $(content_frontside_element).addClass("toontalk-frontside-in-box");
-                $(content_frontside_element).css({width:  '100%',
-                                                  height: '100%'});
+                setTimeout(function () {
+                        $(content_frontside_element).css({width:  '100%',
+                                                          height: '100%'});                   
+                    },
+                    1);
                 hole_element.appendChild(content_frontside_element);
                 frontside_element.appendChild(hole_element);
             };
