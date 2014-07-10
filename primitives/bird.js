@@ -271,7 +271,7 @@ window.TOONTALK.bird_backside =
                     frontside_element.title = bird.get_title();
                     $containing_backside_element = $(frontside_element).closest(".toontalk-backside");
                     if ($containing_backside_element.length > 0) {
-                        $containing_backside_element.data("owner").get_backside().update_run_button_disabled_attribute();
+                        TT.UTILITIES.get_toontalk_widget_from_jquery($containing_backside_element).get_backside().update_run_button_disabled_attribute();
                     }                    
                 }
                 backside.update_run_button_disabled_attribute();
@@ -496,7 +496,7 @@ window.TOONTALK.nest = (function (TT) {
                     } else {
                         // really should find closest ancestor that is a backside 
                         // but that requires Issue 76
-                        backside_where_bird_goes = $(".toontalk-top-level-backside").data("owner").get_backside();
+                        backside_where_bird_goes = TT.UTILITIES.get_toontalk_widget_from_jquery($(".toontalk-top-level-backside")).get_backside();
                     }
                     bird_frontside_element = bird.get_frontside_element(true);
                     TT.UTILITIES.add_animation_class(bird_frontside_element, "toontalk-fly-southwest");
@@ -738,7 +738,7 @@ window.TOONTALK.nest_backside =
                     frontside_element.title = nest.get_title();
                     $containing_backside_element = $(frontside_element).closest(".toontalk-backside");
                     if ($containing_backside_element.length > 0) {
-                        $containing_backside_element.data("owner").get_backside().update_run_button_disabled_attribute();
+                        TT.UTILITIES.get_toontalk_widget_from_jquery($containing_backside_element).get_backside().update_run_button_disabled_attribute();
                     }                    
                 }
                 backside.update_run_button_disabled_attribute();

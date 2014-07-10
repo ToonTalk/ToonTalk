@@ -363,7 +363,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         if (backside_element) {
             $attribute_input = $(backside_element).find(selector);
             if ($attribute_input.length > 0) {
-                $attribute_input.data("owner", this);
+                $attribute_input.get(0).toontalk_widget = this;
             }
         }
         attribute_object =

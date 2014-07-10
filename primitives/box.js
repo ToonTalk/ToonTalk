@@ -627,7 +627,7 @@ window.TOONTALK.box_empty_hole =
                 if (!hole_element) {
                     hole_element = document.createElement("div");
                     hole_element.className = "toontalk-empty-hole toontalk-frontside toontalk-side";
-                    $(hole_element).data("owner", empty_hole);
+                    hole_element.toontalk_widget = empty_hole;
                 }
                 return hole_element;
             };

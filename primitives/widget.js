@@ -628,7 +628,7 @@ window.TOONTALK.widget = (function (TT) {
             var frontside_element_copy = widget_copy.get_frontside_element();
             var position = $(frontside_element).position();
             var $container_element = $(frontside_element).closest(".toontalk-backside");
-            var container_widget = $container_element.data("owner");
+            var container_widget = TT.UTILITIES.get_toontalk_widget_from_jquery($container_element);
             $(frontside_element_copy).css({width: $(frontside_element).width(),
                                            height: $(frontside_element).height(),
                                            left: position.left+30,
@@ -754,7 +754,7 @@ window.TOONTALK.widget = (function (TT) {
             frontside_ancestor_before_backside_element = $frontside_ancestor_before_backside_element.get(0);
             backside = this.get_backside(true);
             backside_element = backside.get_element();
-            $(backside_element).data("owner", this);
+            backside_element.toontalk_widget = this;
             // start on the frontside (same upper left corner as frontside)
             frontside_offset = $(frontside_element).offset();
             container_offset = $frontside_ancestor_that_is_backside_element.offset();
@@ -768,7 +768,7 @@ window.TOONTALK.widget = (function (TT) {
                 opacity: .01
             });
             $frontside_ancestor_that_is_backside_element.append(backside_element);
-            ancestor_that_owns_backside_element = $frontside_ancestor_that_is_backside_element.data("owner");
+            ancestor_that_owns_backside_element = TT.UTILITIES.get_toontalk_widget_from_jquery($frontside_ancestor_that_is_backside_element);
             if (ancestor_that_owns_backside_element) {
                 ancestor_that_owns_backside_element.add_backside_widget(this, true);
             }
@@ -798,8 +798,8 @@ window.TOONTALK.widget = (function (TT) {
             var widget = Object.create(TT.widget);
             widget.get_json = function (json_history) {
                 var backside = this.get_backside();
-                var $backside_element = $(backside.get_element());
-                var background_color = document.defaultView.getComputedStyle($backside_element.get(0), null).getPropertyValue("background-color");
+                var backside_element = backside.get_element();
+                var background_color = document.defaultView.getComputedStyle(backside_element, null).getPropertyValue("background-color");
                 // don't know why the following returns undefined
 //               $backside_element.attr("background-color")};
                 return {semantic: {type: "top_level"},
@@ -845,6 +845,10 @@ window.TOONTALK.widget = (function (TT) {
             widget = widget.add_sides_functionality(widget);
             widget = widget.runnable(widget);
             widget = widget.has_parent(widget);
+            if (TT.debugging) {
+                widget.debug_id = TT.UTILITIES.generate_unique_id();
+                widget.debug_string = "Top-level widget"; 
+            }
             return widget;
         },
         
