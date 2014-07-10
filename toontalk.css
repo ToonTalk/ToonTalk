@@ -353,6 +353,7 @@
 	height: 98px;
 }
 .toontalk-empty-nest {
+/* 	tried 	content: url("images/empty-nest.png");  but couldn't drag it */
 	background-image: url("images/empty-nest.png");
 	background-repeat: no-repeat;
 	margin-top: 43px;

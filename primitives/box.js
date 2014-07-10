@@ -343,6 +343,7 @@ window.TOONTALK.box = (function (TT) {
         $hole_element.append(content_frontside_element);
         $(content_frontside_element).css({left: 0,
                                           top:  0});
+        $(content_frontside_element).addClass("toontalk-frontside-in-box");
         new_content.rerender();
     };
     
