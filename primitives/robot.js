@@ -399,7 +399,13 @@ window.TOONTALK.robot = (function (TT) {
     robot.get_context = function () {
         var frontside_element = this.get_frontside_element();
         var $parent_element = $(frontside_element).parent();
-        return $parent_element.data("owner");
+        var widget = TT.UTILITIES.get_toontalk_widget_from_jquery(toontalk_widget);
+        if (!widget) {
+            // check if robot is in the 'next robot' area
+            $parent_element = $parent_element.closest(".toontalk-drop-area").closest(".toontalk-side");
+            return TT.UTILITIES.get_toontalk_widget_from_jquery($parent);
+        }
+        return widget;
     };
     
     robot.training_started = function () {
@@ -748,7 +754,7 @@ window.TOONTALK.robot_backside =
                     frontside_element.title = robot.get_title();
                     $containing_backside_element = $(frontside_element).closest(".toontalk-backside");
                     if ($containing_backside_element.length > 0) {
-                        $containing_backside_element.data("owner").get_backside().update_run_button_disabled_attribute();
+                        TT.UTILITIES.get_toontalk_widget_from_jquery($containing_backside_element).get_backside().update_run_button_disabled_attribute();
                     }                    
                 }
                 backside.update_run_button_disabled_attribute();
