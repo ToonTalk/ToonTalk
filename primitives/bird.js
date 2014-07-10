@@ -559,7 +559,7 @@ window.TOONTALK.nest = (function (TT) {
             return true;
         };
         new_nest.drop_on = function (other, is_backside, event, robot) {
-//             this.dropped_on_other(other, is_backside, event, robot);
+//          this.dropped_on_other(other, is_backside, event, robot);
             if (other.widget_dropped_on_me) {
                 other.widget_dropped_on_me(this, false, event, robot);
                 return true;

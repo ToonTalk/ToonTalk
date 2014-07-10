@@ -349,9 +349,6 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             this.rerender();
         }
         this.remove();
-        if (TT.robot.in_training) {
-            TT.robot.in_training.dropped_on(this, other);
-        }
         return true;
     };
     
@@ -407,6 +404,9 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
      };
 
     number.number_dropped_on_me_semantics = function (other_number, event) { 
+        if (TT.robot.in_training) {
+            TT.robot.in_training.dropped_on(other_number, this);
+        }
         switch (other_number.get_operator()) {
         case '+':
             return this.add(other_number);
