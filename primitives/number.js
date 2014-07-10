@@ -341,7 +341,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             if (other.widget_dropped_on_me) {
                 return other.widget_dropped_on_me(this, is_backside, event, robot);
             }
-            console.log("No handler for drop of " + this.toString() + " on " + other.toString());
+            console.log("No handler for drop of '" + this.toString() + "' on '" + other.toString() + "'");
             return;
         }
         var result = other.number_dropped_on_me(this, is_backside, event, robot);
@@ -349,9 +349,6 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             this.rerender();
         }
         this.remove();
-        if (TT.robot.in_training) {
-            TT.robot.in_training.dropped_on(this, other);
-        }
         return true;
     };
     
@@ -407,6 +404,9 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
      };
 
     number.number_dropped_on_me_semantics = function (other_number, event) { 
+        if (TT.robot.in_training) {
+            TT.robot.in_training.dropped_on(other_number, this);
+        }
         switch (other_number.get_operator()) {
         case '+':
             return this.add(other_number);

@@ -92,7 +92,7 @@ window.TOONTALK.robot_action =
                  $(widget_frontside_element).css({left: context_frontside_position.left,
                                                   top:  context_frontside_position.top});
                  top_level_element.appendChild(widget_frontside_element);
-                 $(top_level_element).data("owner").add_backside_widget(widget);
+                 top_level_element.toontalk_widget.add_backside_widget(widget);
                  widget.animate_to_element(top_level_element);
              }
          }
@@ -103,7 +103,7 @@ window.TOONTALK.robot_action =
         var widget_frontside_element, left_offset, top_offset;
         if (widget instanceof jQuery) {
             // top-level backside
-            widget = widget.data("owner");
+            widget = TT.UTILITIES.get_toontalk_widget_from_jquery(widget);
         } else {
             if (widget.get_frontside_element) {
                 widget_frontside_element = widget.get_frontside_element();

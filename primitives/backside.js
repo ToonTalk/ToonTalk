@@ -118,7 +118,7 @@ window.TOONTALK.backside =
                             } else {
                                 widget_side_element = backside_widget_side.widget.get_frontside_element(true);
                             }
-                            $(widget_side_element).data("owner", backside_widget_side.widget);
+                            widget_side_element.toontalk_widget = backside_widget_side.widget;
                             if (json_array) {
                                 json_view = json_array[index];
                                 if (json_view) {
@@ -166,7 +166,8 @@ window.TOONTALK.backside =
                 x_scale = scales.x_scale;
                 y_scale = scales.y_scale;
             };
-            TT.backside.associate_widget_with_backside_element(widget, backside, backside_element);
+//             TT.backside.associate_widget_with_backside_element(widget, backside, backside_element);
+            backside_element.toontalk_widget = widget;
             TT.UTILITIES.drag_and_drop($backside_element);
             // the following function should apply recursively...
             $backside_element.resizable(
@@ -207,29 +208,17 @@ window.TOONTALK.backside =
                     if ($source.is(".ui-resizable")) {
                         $source.resizable("enable");
                     }
-                    owner_widget = $source.data("owner");
+                    owner_widget = TT.UTILITIES.get_toontalk_widget_from_jquery($source);
                     if (owner_widget) {
                         owner_widget.render();
                     }
-                } 
-//                 else if ($source.is(".toontalk-backside")) {
-//                     owner_widget = $source.data("owner");
-//                     if (owner_widget) {
-//                         // let it respond to being attached
-//                         owner_widget.get_backside().attached();
-//                     }
-//                 }
+                }
                 event.stopPropagation();
             });
             $backside_element.on('DOMNodeRemoved', function (event) {
                 var $source = $(event.originalEvent.srcElement);
                 if ($source.is(".toontalk-frontside")) {
                     $source.removeClass("toontalk-frontside-on-backside");
-//                     $source.resizable("disable");
-//                     owner_widget = $source.data("owner");
-//                     if (owner_widget) {
-//                         owner_widget.update_display();
-//                     }
                 }
                 event.stopPropagation();
             });
@@ -286,12 +275,6 @@ window.TOONTALK.backside =
                 backside_element.id = widget.debug_id;
             }
             return backside;
-        },
-        
-        associate_widget_with_backside_element: function (widget, backside, backside_element) {
-            var $backside_element = $(backside_element);
-            $backside_element.data("owner", widget);
-            return widget;
         },
                 
         remove: function() {
@@ -488,18 +471,9 @@ window.TOONTALK.backside =
             update_title();
             $erase_button.click(function (event) {
                 var frontside_element = widget.get_frontside_element();
-//                 var $robot_element = $(frontside_element).parents(".toontalk-robot");
-//                 var robot = $robot_element.data("owner");
-//                 var robot_backside;
                 var erased = !widget.get_erased();
                 widget.set_erased(erased, true);
                 update_title();
-//                 if (robot) {
-//                     robot_backside = robot.get_backside();
-//                     if (robot_backside) {
-//                         TT.DISPLAY_UPDATES.pending_update(robot_backside);
-//                     }
-//                 }
                 if (TT.robot.in_training) {
                     TT.robot.in_training.set_erased(widget, erased);
                 }
@@ -621,7 +595,7 @@ window.TOONTALK.backside =
         get_widgets: function () {
             var widgets = [];
             $(this.get_element()).children().each(function (index, element) {
-                var owner = $(element).data("owner");
+                var owner = element.toontalk_widget;
                 if (owner && widgets.indexOf(owner) < 0) {
                     widgets.push(owner);
                 }

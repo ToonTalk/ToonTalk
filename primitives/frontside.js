@@ -27,8 +27,8 @@ window.TOONTALK.frontside =
             };
             var close_button;
             $(frontside_element).addClass("toontalk-frontside toontalk-side");
-            $frontside_element.data("owner", widget);
-//          console.log("frontside associated with " + widget.debug_id);
+            frontside_element.toontalk_widget = widget;
+//          console.log(widget + " with " + widget.debug_id + " associated with " + frontside_element.className);
             TT.UTILITIES.drag_and_drop($frontside_element);
             frontside.get_element = function () {
                 if (frontside_element && !close_button && $(frontside_element).is(":visible") && widget.close_button_ok(frontside_element)) {
@@ -44,6 +44,10 @@ window.TOONTALK.frontside =
                         },
                         1);        
                 }
+                // following didn't work since could only find elements that are already part of the DOM
+//                 if (TT.debugging && $("#" + widget.debug_id).get(0) !== frontside_element) {
+//                     console.log("ids not good enough");
+//                 }
                 return frontside_element;
             };
             frontside.get_widget = function () {

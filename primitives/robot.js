@@ -249,7 +249,7 @@ window.TOONTALK.robot = (function (TT) {
                     });
                 }
             }
-            if (first_in_team) {
+            if (this.first_in_team) {
                 to_run_when_non_empty = {robot: this,
                                          context: context,
                                          top_level_context: top_level_context,
@@ -268,6 +268,9 @@ window.TOONTALK.robot = (function (TT) {
             // this is needed because a robot won't start running if it is animating
             // and the animating flag isn't always reset
             this.set_animating(false);
+        }
+        if (this.get_next_robot()) {
+            this.get_next_robot().set_stopped(new_value);
         }
     };
     
@@ -399,7 +402,14 @@ window.TOONTALK.robot = (function (TT) {
     robot.get_context = function () {
         var frontside_element = this.get_frontside_element();
         var $parent_element = $(frontside_element).parent();
-        return $parent_element.data("owner");
+        var widget = TT.UTILITIES.get_toontalk_widget_from_jquery($parent_element);
+        var previous_robot;
+        if (!widget) {
+            // check if robot is in the 'next robot' area
+            previous_robot = $parent_element.closest(".toontalk-backside-of-robot").get(0).toontalk_widget
+            return previous_robot.get_context();
+        }
+        return widget;
     };
     
     robot.training_started = function () {
@@ -748,7 +758,7 @@ window.TOONTALK.robot_backside =
                     frontside_element.title = robot.get_title();
                     $containing_backside_element = $(frontside_element).closest(".toontalk-backside");
                     if ($containing_backside_element.length > 0) {
-                        $containing_backside_element.data("owner").get_backside().update_run_button_disabled_attribute();
+                        TT.UTILITIES.get_toontalk_widget_from_jquery($containing_backside_element).get_backside().update_run_button_disabled_attribute();
                     }                    
                 }
                 backside.update_run_button_disabled_attribute();
