@@ -464,6 +464,8 @@ window.TOONTALK.box = (function (TT) {
                         setTimeout(function () {
                             $(part_frontside_element).css({width: part.saved_width,
                                                            height: part.saved_height});
+                            part.saved_width =  undefined;
+                            part.saved_height = undefined;
                             part.rerender();
                         },
                         10);

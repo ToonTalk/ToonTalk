@@ -370,6 +370,10 @@ window.TOONTALK.UTILITIES =
                         $(side_element).css(size_css);
                     }
                 }
+                if (json_view && json_view.saved_width) {
+                    widget.saved_width =  json_view.saved_width;
+                    widget.saved_height = json_view.saved_height;
+                }
                 if (json_view && json_view.backside_geometry) {
                     widget.backside_geometry = json_view.backside_geometry;                    
                 }

@@ -394,6 +394,8 @@ window.TOONTALK.nest = (function (TT) {
                 if (removed[0]) {
                     $(TT.UTILITIES.get_side_element_from_side(removed[0])).css({width:  removed[0].saved_width,
                                                                                 height: removed[0].saved_height});
+                    removed[0].saved_width =  undefined;
+                    removed[0].saved_height = undefined;
                     if (removed[0].is_backside) {
                         removed[0].widget.set_parent_of_backside(undefined);
                     } else {
@@ -585,11 +587,11 @@ window.TOONTALK.nest = (function (TT) {
                 } else {
                     contents[0].widget.render();
                     contents_side_element = contents[0].widget.get_frontside_element();
-                    if (!$(contents_side_element).data("owner")) {
-                        // mysterious bug -- temporary workaround
-                        console.log("element should have known its owner: " +  contents[0].widget);
-                        $(contents_side_element).data("owner", contents[0].widget);
-                    }
+//                     if (!$(contents_side_element).data("owner")) {
+//                         // mysterious bug -- temporary workaround
+//                         console.log("element should have known its owner: " +  contents[0].widget);
+//                         $(contents_side_element).data("owner", contents[0].widget);
+//                     }
                 }
                 nest_width = $(frontside_element).width();
                 nest_height = $(frontside_element).height();

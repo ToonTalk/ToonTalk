@@ -448,6 +448,9 @@ window.TOONTALK.widget = (function (TT) {
                        });
                     }
                 }
+                // following are typically undefined unless in a container
+                json_view.saved_width = this.saved_width;
+                json_view.saved_height = this.saved_height;
                 json_semantic.description = this.get_description && this.get_description();
                 return json;
             }
