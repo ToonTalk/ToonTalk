@@ -336,6 +336,7 @@
     width:  116px;
     height: 141px;
     background-image: url("images/hatch-egg-strip.png");
+/* 	following causes resource to be tiny and repeated: background-size: contain; */
 }
 .toontalk-nest-with-egg.toontalk-top-level-resource {
 /* 	otherwise extra white space appears in the resource area */
@@ -359,6 +360,7 @@
 /* 	tried 	content: url("images/empty-nest.png");  but couldn't drag it */
 	background-image: url("images/empty-nest.png");
 	background-repeat: no-repeat;
+	background-size: contain;
 	margin-top: 43px;
 	width: 116px;
 	height: 98px;
@@ -370,12 +372,12 @@
 }
 .toontalk-empty-nest.toontalk-frontside-in-box {
 	margin-top: 0px;
-    background-size: contain;
 }
 .toontalk-hatch-egg {
     width:  116px;
     height: 141px;
 	margin-top: -8px;
+	background-size: auto;
     background-image: url("images/hatch-egg-strip.png");
 	-webkit-animation: hatch-egg 2s steps(15) forwards;
        -moz-animation: hatch-egg 2s steps(15) forwards;
