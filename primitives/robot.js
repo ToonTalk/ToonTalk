@@ -400,10 +400,11 @@ window.TOONTALK.robot = (function (TT) {
         var frontside_element = this.get_frontside_element();
         var $parent_element = $(frontside_element).parent();
         var widget = TT.UTILITIES.get_toontalk_widget_from_jquery($parent_element);
+        var previous_robot;
         if (!widget) {
             // check if robot is in the 'next robot' area
-            $parent_element = $parent_element.closest(".toontalk-drop-area").closest(".toontalk-side");
-            return TT.UTILITIES.get_toontalk_widget_from_jquery($parent);
+            previous_robot = $parent_element.closest(".toontalk-backside-of-robot").get(0).toontalk_widget
+            return previous_robot.get_context();
         }
         return widget;
     };
