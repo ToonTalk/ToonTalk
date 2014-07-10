@@ -510,7 +510,7 @@ window.TOONTALK.nest = (function (TT) {
                         backside_where_bird_goes.widget_dropped_on_me(bird, false, event);
                     }
                     $(frontside_element).removeClass("toontalk-hatch-egg");
-                    TT.UTILITIES.add_animation_class(frontside_element, "toontalk-empty-nest");
+                    $(frontside_element).addClass("toontalk-empty-nest");
                     bird_fly_continuation = function () {
                         $(bird_frontside_element).removeClass("toontalk-fly-southwest");
                         setTimeout(function () {
@@ -607,8 +607,8 @@ window.TOONTALK.nest = (function (TT) {
             } else {
                 frontside_element.title = this.get_title();
                 if (guid) {
-                    TT.UTILITIES.add_animation_class(frontside_element, "toontalk-empty-nest");
                     $(frontside_element).removeClass("toontalk-nest-with-egg");
+                    $(frontside_element).addClass("toontalk-empty-nest");
                 } else {
                     TT.UTILITIES.add_animation_class(frontside_element, "toontalk-nest-with-egg");
                 }

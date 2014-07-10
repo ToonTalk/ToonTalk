@@ -289,7 +289,7 @@ window.TOONTALK.box = (function (TT) {
         };
         var horizontal = this.get_horizontal();
         var additional_class = horizontal ? "toontalk-box-hole-horizontal" : "toontalk-box-hole-vertical";
-        var i, hole, hole_element, box_left, box_width, hole_width, box_height, hole_height, $box_hole_elements;
+        var i, hole, hole_element, box_left, box_width, hole_width, box_height, hole_height, $box_hole_elements, content_frontside_element;
         $(frontside_element).addClass("toontalk-box");
         $box_hole_elements = $(frontside_element).children("." + additional_class);
         box_width = $(frontside_element).width();
@@ -316,7 +316,11 @@ window.TOONTALK.box = (function (TT) {
                     this.set_hole(i, hole);
                 }
                 update_hole(hole_element, hole, i);
-                hole_element.appendChild(hole.get_frontside_element());
+                content_frontside_element = hole.get_frontside_element();
+                $(content_frontside_element).addClass("toontalk-frontside-in-box");
+                $(content_frontside_element).css({width:  '100%',
+                                                  height: '100%'});
+                hole_element.appendChild(content_frontside_element);
                 frontside_element.appendChild(hole_element);
             };
         }

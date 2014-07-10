@@ -34,6 +34,7 @@
 /* 	will be animated later */
 	background-image: url("images/robot.png");
 	background-repeat: no-repeat;
+	background-size: contain;
 	width:  100px;
 	height: 167px;
 }
@@ -343,12 +344,14 @@
 .toontalk-sensor-nest {
     background-image: url("images/sensor-nest.png");
 	background-repeat: no-repeat;
+	background-size: contain;
 	width: 116px;
 	height: 98px;
 }
 .toontalk-sensor-inactive-nest {
     background-image: url("images/sensor-nest-inactive.png");
 	background-repeat: no-repeat;
+	background-size: contain;
 	width: 116px;
 	height: 98px;
 }
@@ -367,6 +370,7 @@
 }
 .toontalk-empty-nest.toontalk-frontside-in-box {
 	margin-top: 0px;
+    background-size: contain;
 }
 .toontalk-hatch-egg {
     width:  116px;
@@ -437,6 +441,7 @@
 .toontalk-bird-waiting {
 	background-image: url("images/gimme.png");
 	background-repeat: no-repeat;
+	background-size: contain;
 	width: 88px;
 	height: 118px;
 /* 	display just the last frame */
