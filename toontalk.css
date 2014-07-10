@@ -385,6 +385,7 @@
          -o-animation: hatch-egg 2s steps(15) forwards;
             animation: hatch-egg 2s steps(15) forwards;
 /*  attempted to scale the full size version:
+    background-size probably would have worked
     transform: scale(0.625);
     transform-origin: center; */
 }
@@ -403,7 +404,8 @@
 	display: inline-block;
 	line-height: 0px;
 	padding: 11px 3px;
-	z-index: 100;
+/* 	close buttons need to be above the widget view or clicking close button will open backside instead */
+	z-index: 10000000;
 }
 .toontalk-close-button:hover {
 	background: red;
