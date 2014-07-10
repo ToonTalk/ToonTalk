@@ -475,7 +475,7 @@ window.TOONTALK.nest = (function (TT) {
 //                 image_url = "images/MKNEST25.PNG";
                 guid = TT.UTILITIES.generate_unique_id();
                 if (TT.debugging) {
-                    new_nest.debug_string = "A nest with id " + guid;
+                    new_nest.debug_string = "A nest with " + guid;
                 }                
                 // create bird now so robot knows about it
                 bird = TT.bird.create(this);
@@ -558,13 +558,16 @@ window.TOONTALK.nest = (function (TT) {
         };
         new_nest.drop_on = function (other, is_backside, event, robot) {
 //             this.dropped_on_other(other, is_backside, event, robot);
-            other.widget_dropped_on_me(this, false, event, robot);
-            return true;
+            if (other.widget_dropped_on_me) {
+                other.widget_dropped_on_me(this, false, event, robot);
+                return true;
+            }
+            return false;
         };
         new_nest.update_display = function() {
             var frontside = this.get_frontside(true);
             var backside = this.get_backside(); 
-            var frontside_element, contents_backside, contents_side_element;
+            var frontside_element, nest_width, nest_height, contents_backside, contents_side_element;
             frontside_element = frontside.get_element();
             // if animating should also display thing_in_hand
             // remove what's there currently before adding new elements
@@ -588,12 +591,15 @@ window.TOONTALK.nest = (function (TT) {
                         $(contents_side_element).data("owner", contents[0].widget);
                     }
                 }
-                contents[0].saved_width =  $(contents_side_element).width() || contents_width($(frontside_element).width());
-                contents[0].saved_height = $(contents_side_element).height() || contents_height($(frontside_element).height());
+                nest_width = $(frontside_element).width();
+                nest_height = $(frontside_element).height();
+                contents[0].saved_width =  $(contents_side_element).width() || contents_width(nest_width);
+                contents[0].saved_height = $(contents_side_element).height() || contents_height(nest_height);
                 $(contents_side_element).css({width:  '',
                                               height: '',
-                                              left: '',
-                                              top: ''});
+                                              // offset by 10% -- tried left: 10% but that only worked in first box hole
+                                              left: nest_width*0.1,
+                                              top: nest_height*0.1});
                 $(contents_side_element).addClass("toontalk-widget-on-nest");
 //                 contents_side_element.style.position = "static";
                 frontside_element.appendChild(contents_side_element);
