@@ -255,7 +255,7 @@ window.TOONTALK.widget = (function (TT) {
                                                    is_backside: parent_is_backside};
             };
             widget.closest_visible_ancestor = function () {
-                // this if visible
+                // returns this if visible
                 // otherwise via parent_of_frontside first that is visible
                 var ancestor = {widget: this};
                 while (ancestor && !ancestor.widget.visible()) {

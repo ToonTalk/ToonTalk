@@ -610,6 +610,7 @@ window.TOONTALK.UTILITIES =
                     widget = dragee.data("owner");
                     if (!widget) {
                         widget = $element.data("owner");
+                        console.log("Possible bug that " + dragee + " doesn't have a known owner.");
                         dragee = $element;
                     }
                     bounding_rectangle = dragee.get(0).getBoundingClientRect()
