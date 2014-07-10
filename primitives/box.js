@@ -640,14 +640,15 @@ window.TOONTALK.box_empty_hole =
             // there is no backside of an empty hole
             empty_hole.get_frontside_element = empty_hole.get_side_element;
             empty_hole.update_display = function () {
+                // following no longer needed
                 // should be nothing to do
                 // but height percentage not working as expected
-                var box_frontside_element;
-                var box = this.get_parent_of_frontside().widget;
-                if (box && !box.get_horizontal()) {
-                    box_frontside_element = box.get_frontside_element();
-                    $(this.get_element()).css({"min-height": $(box_frontside_element).height() / box.get_size()});
-                }
+//                 var box_frontside_element;
+//                 var box = this.get_parent_of_frontside().widget;
+//                 if (box && !box.get_horizontal()) {
+//                     box_frontside_element = box.get_frontside_element();
+//                     $(this.get_element()).css({"min-height": $(box_frontside_element).height() / box.get_size()});
+//                 }
             };
             empty_hole.get_frontside = function () {
                 // doubles as its own frontside
