@@ -269,6 +269,9 @@ window.TOONTALK.robot = (function (TT) {
             // and the animating flag isn't always reset
             this.set_animating(false);
         }
+        if (this.get_next_robot()) {
+            this.get_next_robot().set_stopped(new_value);
+        }
     };
     
     robot.run_actions = function(context, top_level_context, queue) {
