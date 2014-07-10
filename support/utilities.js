@@ -778,7 +778,7 @@ window.TOONTALK.UTILITIES =
                             $container = $source.parents(".toontalk-side:first");
                             container = $container.data("owner");
                             if (container) {
-                                if (!source_is_backside && source_widget.get_infinite_stack()) {
+                                if (!source_is_backside && source_widget.get_infinite_stack && source_widget.get_infinite_stack()) {
                                     // leave the source there but create a copy
                                     source_widget = source_widget.copy();
                                     width = $source.width();
