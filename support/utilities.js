@@ -930,7 +930,7 @@ window.TOONTALK.UTILITIES =
             var dropped_copy, dropped_element_copy;
             if ($dropped.is(".toontalk-top-level-resource")) {
                 // restore original
-                dropped_copy = dropped_widget.copy();
+                dropped_copy = dropped_widget.copy(false, true);
                 dropped_element_copy = dropped_copy.get_frontside_element();
                 $(dropped_element_copy).css({width:  $dropped.width(),
                                              height: $dropped.height()});

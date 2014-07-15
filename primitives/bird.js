@@ -418,6 +418,9 @@ window.TOONTALK.nest = (function (TT) {
             }
             // e.g. when a robot takes something off the nest
             // the .widget is needed until widget_sides are first-class objects
+            // following isn't correct when robot might be dropping something on the top of stack
+            // and if removing should generate an appropriate event
+            // see Issue 
             widget = this.removed_from_container().widget;
             // isn't attached to the DOM because was removed from nest
             if (this.visible()) {
@@ -455,16 +458,19 @@ window.TOONTALK.nest = (function (TT) {
 //                  nest_copies: nest_copies && TT.UTILITIES.get_json_of_array(nest_copies, json_history)
                    };
         };
-        new_nest.copy = function (just_value) {
+        new_nest.copy = function (just_value, not_linked) {
             // this may become more complex if the original ToonTalk behaviour
             // that if a bird and its nest are copied or saved as a unit they become a new pair
             // notice that bird/nest semantics is that the nest is shared not copied
-            var contents_copy, copy;
+            var contents_copy, copy, new_original_nest;
             if (just_value && contents.length > 0) {
                 return contents[0].widget.copy(just_value);
             }
             contents_copy = TT.UTILITIES.copy_widget_sides(contents);
-            copy = TT.nest.create(this.get_description(), contents_copy, [], guid, original_nest || this); // image_url removed
+            if (!not_linked) {
+                new_original_nest = (original_nest || this);
+            }
+            copy = TT.nest.create(this.get_description(), contents_copy, [], guid, new_original_nest);
             return this.add_to_copy(copy, just_value);
         };
         new_nest.has_contents = function () {
