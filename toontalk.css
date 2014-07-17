@@ -35,8 +35,8 @@
 	background-image: url("images/robot.png");
 	background-repeat: no-repeat;
 	background-size: contain;
-	width:  100px;
-	height: 167px;
+	width:  66px;
+	height: 110px;
 }
 .toontalk-robot-animating {
 	opacity: .8;
@@ -832,4 +832,40 @@
 @keyframes fly-east {
    from { background-position:    0px; }
      to { background-position: -1010px; }
+}
+
+.toontalk-robot-waiting {
+    width:  103px;
+    height: 139px;
+    background-image: url("images/robot-waiting.png");
+	background-size: auto;
+	-webkit-animation: robot-waiting 1.5s steps(12) infinite;
+       -moz-animation: robot-waiting 1.5s steps(12) infinite;
+        -ms-animation: robot-waiting 1.5s steps(12) infinite;
+         -o-animation: robot-waiting 1.5s steps(12) infinite;
+            animation: robot-waiting 1.5s steps(12) infinite;
+}
+@-webkit-keyframes robot-waiting {
+   from { background-position:    0px; }
+     to { background-position: -1238px; }
+}
+
+@-moz-keyframes robot-waiting {
+   from { background-position:    0px; }
+     to { background-position: -1238px; }
+}
+
+@-ms-keyframes robot-waiting {
+   from { background-position:    0px; }
+     to { background-position: -1238px; }
+}
+
+@-o-keyframes robot-waiting {
+   from { background-position:    0px; }
+     to { background-position: -1238px; }
+}
+
+@keyframes robot-waiting {
+   from { background-position:    0px; }
+     to { background-position: -1238px; }
 }

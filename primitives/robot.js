@@ -257,6 +257,9 @@ window.TOONTALK.robot = (function (TT) {
                 this.match_status.forEach(function (sub_match_status) {
                     sub_match_status.run_when_non_empty(to_run_when_non_empty);
                 });
+                $(this.get_frontside_element()).addClass("toontalk-robot-waiting");
+                $(this.get_frontside_element()).css({width: '',
+                                                     height: ''});
             }
             return this.match_status;                    
         }

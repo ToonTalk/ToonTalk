@@ -341,6 +341,7 @@ window.TOONTALK.nest = (function (TT) {
                     current_waiting_robots = waiting_robots;
                     waiting_robots = [];
                     current_waiting_robots.forEach(function (robot_run) {
+                        $(robot_run.robot.get_frontside_element()).removeClass("toontalk-robot-waiting");
                         robot_run.robot.run(robot_run.context, robot_run.top_level_context, robot_run.queue);
                     });
                 }
