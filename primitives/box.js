@@ -287,11 +287,11 @@ window.TOONTALK.box = (function (TT) {
                                  top:    top,
                                  width:  hole_width,
                                  height: hole_height});
-                                                 setTimeout(function () {
-            $(hole.get_frontside_element()).css({width:  '100%',
-                                                height: '100%'});                   
-                    },
-                    1);
+            setTimeout(function () {
+                    $(hole.get_frontside_element()).css({width:  '100%',
+                                                         height: '100%'});                   
+                },
+                1);
             hole.update_display();
         };
         var horizontal = this.get_horizontal();

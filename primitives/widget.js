@@ -821,7 +821,9 @@ window.TOONTALK.widget = (function (TT) {
             widget.update_display = function () {
                 if (this.backside_widgets) {
                     this.backside_widgets.forEach(function (widget_side) {
-                        widget_side.widget.update_display();    
+                        if (widget_side.widget.visible()) {
+                            widget_side.widget.update_display();
+                        }    
                     });
                 }
             };
