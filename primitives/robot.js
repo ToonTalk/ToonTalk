@@ -249,7 +249,7 @@ window.TOONTALK.robot = (function (TT) {
                     });
                 }
             }
-            if (this.first_in_team) {
+            if (this.get_first_in_team() === this) {
                 to_run_when_non_empty = {robot: this,
                                          context: context,
                                          top_level_context: top_level_context,
