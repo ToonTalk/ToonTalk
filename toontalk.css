@@ -243,6 +243,7 @@
 .toontalk-conditions-contents {
 	width:  100%;
 	height: 100%;
+	position: absolute;
 }
 .toontalk-conditions-contents-container {
 /* 	Can't add the border to toontalk-conditions-contents because erased elements have 0 opacity */

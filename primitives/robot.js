@@ -655,12 +655,16 @@ window.TOONTALK.robot_backside =
         var description = TT.UTILITIES.create_text_element(text);
         var condition_element = condition_widget.get_frontside_element(true);
         var conditions_panel;
-        TT.UTILITIES.set_position_is_absolute(condition_element, false);
+//         TT.UTILITIES.set_position_is_absolute(condition_element, false);
         $(condition_element).addClass("toontalk-conditions-contents " + class_name);
         setTimeout(function () {
                 // this is needed since the element may be transparent and yet need to see the border
                 // should really wait until condition_element is attached to the DOM
                 $(condition_element).parent().addClass("toontalk-conditions-contents-container");
+                $(condition_element).css({left:   'inherit',
+                                          top:    '4%', // unclear why this works but 0 or inherit leaves element too high
+                                          width:  'inherit',
+                                          height: 'inherit'});
                 condition_widget.render();
             },
             1);        
@@ -787,7 +791,9 @@ window.TOONTALK.robot_backside =
                         $train_button.attr("title", "Click to start training this robot all over again.");
                     }
                 }
-                add_conditions_area(backside_element, robot);
+                if ($(backside_element).is(":visible")) {
+                    add_conditions_area(backside_element, robot);
+                }
             };
             change_label_and_title();
             $train_button.click(function (event) {
