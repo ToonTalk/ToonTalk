@@ -236,6 +236,9 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         } else {
             $dimensions_holder = $(frontside_element).parent();
         }
+        if (!$dimensions_holder.is(":visible")) {
+            return;
+        }
         client_width = $dimensions_holder.width();
         client_height = $dimensions_holder.height();
         if (client_width === 0 || client_height === 0) {
@@ -283,6 +286,11 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         }
         if (operator_HTML.length > 0) {
             max_characters -= 1; // leave room for operator
+            if (max_characters < 2) {
+                // better to use a smaller font than have too few digits
+                font_size *= Math.max(1, max_characters) / 2;
+                max_characters = 2;
+            }
         }
         if (this.is_integer()) {
             integer_as_string = bigrat.toBigInteger(this.get_value()).toString();
