@@ -1421,7 +1421,7 @@ window.TOONTALK.UTILITIES =
         add_animation_class: function (element, class_name) {
             // if any code set the size explicitly then the animation won't display correctly
             $(element)
-                .css({width: '',
+                .css({width:  '',
                       height: ''})
                 .addClass(class_name);
         },
