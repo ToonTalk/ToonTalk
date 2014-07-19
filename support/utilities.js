@@ -130,6 +130,9 @@ window.TOONTALK.UTILITIES =
             if ($source.is(".toontalk-robot")) {
                 $target.data("drop_area_owner").set_next_robot(TT.UTILITIES.get_toontalk_widget_from_jquery($source));
             }
+        } else if ($source.is(".toontalk-backside-of-top-level")) {
+            // dragging top-level backside to itself or one of its children is ignored
+            return;
         } else if (!target_widget) {
             console.log("target element has no 'owner'");
             return; // let event propagate
@@ -649,7 +652,7 @@ window.TOONTALK.UTILITIES =
                     }
                     $element.addClass("toontalk-being-dragged");
                     event.stopPropagation();
-//                     console.log("drag start. dragee is " + dragee);
+//                  console.log("drag start. dragee is " + dragee);
                 });
             $element.on('dragend', 
                 function (event) {
