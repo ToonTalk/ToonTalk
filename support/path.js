@@ -68,13 +68,13 @@ window.TOONTALK.path =
                 if (path.dereference) {
                     dereferenced = path.dereference(context, top_level_context, robot);
                 } else {
-                   dereferenced = context.dereference(path, top_level_context, robot);
+                    dereferenced = context.dereference(path, top_level_context, robot);
                 }
             } else {
                 // no path means entire context -- I don't think this is still true
                 dereferenced = context;
             }
-            if (dereferenced.dereference) {
+            if (dereferenced && dereferenced.dereference) {
                 // e.g. covered nests dereference to their top item
                 return dereferenced.dereference();
             }
@@ -89,7 +89,11 @@ window.TOONTALK.path =
             }
         },
         get_json: function (a_path, json_history) {
-            var json = a_path.get_json(json_history);
+            var json;
+            if (!a_path.get_json) {
+                return a_path; // is a constant
+            }
+            json = a_path.get_json(json_history);
             if (a_path.next) {
                 json.next_path = TT.path.get_json(a_path.next, json_history);
             }
