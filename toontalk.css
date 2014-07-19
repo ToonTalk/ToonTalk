@@ -435,19 +435,6 @@
      to { background-position: -1744px; }
 }
 
-/* .toontalk-bird-waiting {
-	background-image: url("images/gimme.png");
-	background-repeat: no-repeat;
-	background-size: contain;
-	width: 88px;
-	height: 118px;
-/* 	display just the last frame */
-/*     width:  150px;
-    height: 127px;
-    background-image: url("images/fly-down.png");
-	background-position: -598px; */
-} */
-
 .toontalk-bird-static {
     width:  88px;
     height: 119px;
