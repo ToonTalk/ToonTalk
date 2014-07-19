@@ -1420,9 +1420,10 @@ window.TOONTALK.UTILITIES =
         
         add_animation_class: function (element, class_name) {
             // if any code set the size explicitly then the animation won't display correctly
-            $(element).css({width: '',
-                            height: ''});
-            $(element).addClass(class_name);
+            $(element)
+                .css({width: '',
+                      height: ''})
+                .addClass(class_name);
         },
         
         get_toontalk_widget_from_jquery: function ($element) {
