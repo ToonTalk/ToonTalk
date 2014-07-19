@@ -450,6 +450,101 @@
 	background-position: -598px; */
 }
 
+.toontalk-bird-static {
+    width:  88px;
+    height: 119px;
+    background-image: url("images/bird-morph.png");
+	background-size: auto;
+    background-position: 88px;
+}
+
+/* Couldn't get the following to work so made two animations: to-static and from-static */
+.toontalk-bird-morph-from-static {
+    width:  88px;
+    height: 119px;
+    background-image: url("images/bird-morph.png");
+	background-size: auto;
+    -webkit-animation: bird-morph 1s steps(13) normal forwards;
+       -moz-animation: bird-morph 1s steps(13) normal forwards;
+        -ms-animation: bird-morph 1s steps(13) normal forwards;
+         -o-animation: bird-morph 1s steps(13) normal forwards;
+            animation: bird-morph 1s steps(13) normal forwards;
+}
+
+/* .toontalk-bird-morph-from-static {
+    width:  88px;
+    height: 119px;
+    background-image: url("images/bird-morph.png");
+	background-size: auto;
+	-webkit-animation: bird-morph-from-static 1s steps(13) reverse backwards;
+       -moz-animation: bird-morph-from-static 1s steps(13) reverse backwards;
+        -ms-animation: bird-morph-from-static 1s steps(13) reverse backwards;
+         -o-animation: bird-morph-from-static 1s steps(13) reverse backwards;
+            animation: bird-morph-from-static 1s steps(13) reverse backwards;
+}
+
+@-webkit-keyframes bird-morph-from-static {
+   from { background-position: 1141px; }
+     to { background-position:    0px; }
+}
+
+@-moz-keyframes bird-morph-from-static {
+   from { background-position: 1141px; }
+     to { background-position:    0px; }
+}
+
+@-ms-keyframes bird-morph-from-static {
+   from { background-position: 1141px; }
+     to { background-position:    0px; }
+}
+
+@-o-keyframes bird-morph-from-static {
+   from { background-position: 1141px; }
+     to { background-position:    0px; }
+}
+
+@keyframes bird-morph-from-static {
+   from { background-position: 1141px; }
+     to { background-position:    0px; }
+} */
+
+.toontalk-bird-morph-to-static {
+    width:  88px;
+    height: 119px;
+    background-image: url("images/bird-morph.png");
+	background-size: auto;
+	-webkit-animation: bird-morph-to-static 1s steps(13) reverse backwards;
+       -moz-animation: bird-morph-to-static 1s steps(13) reverse backwards;
+        -ms-animation: bird-morph-to-static 1s steps(13) reverse backwards;
+         -o-animation: bird-morph-to-static 1s steps(13) reverse backwards;
+            animation: bird-morph-to-static 1s steps(13) reverse backwards;
+}
+
+@-webkit-keyframes bird-morph-to-static {
+   from { background-position:    0px; }
+     to { background-position: -1141px; }
+}
+
+@-moz-keyframes bird-morph-to-static {
+   from { background-position:    0px; }
+     to { background-position: 1141px; }
+}
+
+@-ms-keyframes bird-morph-to-static {
+   from { background-position:    0px; }
+     to { background-position: 1141px; }
+}
+
+@-o-keyframes bird-morph-to-static {
+   from { background-position:    0px; }
+     to { background-position: 1141px; }
+}
+
+@keyframes bird-morph-to-static {
+   from { background-position:    0px; }
+     to { background-position: 1141px; }
+}
+
 .toontalk-fly-down {
     width:  150px;
     height: 127px;
