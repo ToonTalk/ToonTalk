@@ -200,6 +200,7 @@ window.TOONTALK.backside =
                 handles: "e,s,se"}); // was "n,e,s,w,se,ne,sw,nw" but interfered with buttons
             // following should be done by something like GWT's onLoad...
             // but DOMNodeInserted is deprecated and MutationObserver is only in IE11.
+            // giving up on pre IE11 so use https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver
             $backside_element.on('DOMNodeInserted', function (event) {
                 var $source = $(event.originalEvent.srcElement);
                 var owner_widget;

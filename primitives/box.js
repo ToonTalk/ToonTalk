@@ -292,11 +292,13 @@ window.TOONTALK.box = (function (TT) {
                                                          height: '100%'});                   
                 },
                 1);
+            // following ensures that there is frontside_element of the hole
             hole.update_display();
         };
         var horizontal = this.get_horizontal();
         var additional_class = horizontal ? "toontalk-box-hole-horizontal" : "toontalk-box-hole-vertical";
-        var i, hole, hole_element, box_left, box_width, hole_width, box_height, hole_height, $box_hole_elements, content_frontside_element;
+        var first_time = !$(frontside_element).is(".toontalk-box");
+        var i, hole, hole_element, box_left, box_width, hole_width, box_height, hole_height, $box_hole_elements, content_frontside_element, renderer;
         $(frontside_element).addClass("toontalk-box");
         $box_hole_elements = $(frontside_element).children("." + additional_class);
         box_width = $(frontside_element).width();
@@ -308,39 +310,40 @@ window.TOONTALK.box = (function (TT) {
             hole_width = box_width;
             hole_height = box_height/size;            
         }
-        if ($box_hole_elements.length === size) {
-            $box_hole_elements.each(function (index, hole_element) {
-                update_hole(hole_element, this.get_hole(index), index);
-            }.bind(this));  
-        } else {
-            $(frontside_element).empty();
-            for (i = 0; i < size; i++) {
-                hole_element = document.createElement("div");
-                $(hole_element).addClass("toontalk-box-hole toontalk-hole-number-" + i + " " + additional_class);
-                hole = this.get_hole(i);
-                if (!hole) {
-                    hole = TT.box_empty_hole.create(i);
-                    this.set_hole(i, hole);
+        renderer = function () {
+                if ($box_hole_elements.length === size) {
+                    $box_hole_elements.each(function (index, hole_element) {
+                        update_hole(hole_element, this.get_hole(index), index);
+                    }.bind(this));  
+                } else {
+                    $(frontside_element).empty();
+                    for (i = 0; i < size; i++) {
+                        hole_element = document.createElement("div");
+                        $(hole_element).addClass("toontalk-box-hole toontalk-hole-number-" + i + " " + additional_class);
+                        hole = this.get_hole(i);
+                        if (!hole) {
+                            hole = TT.box_empty_hole.create(i);
+                            this.set_hole(i, hole);
+                        }
+                        update_hole(hole_element, hole, i);
+                        content_frontside_element = hole.get_frontside_element();
+                        $(content_frontside_element).addClass("toontalk-frontside-in-box");
+                        setTimeout(function () {
+                                $(content_frontside_element).css({width:  '100%',
+                                                                  height: '100%'});                   
+                            },
+                            1);
+                        hole_element.appendChild(content_frontside_element);
+                        frontside_element.appendChild(hole_element);
+                    };
                 }
-                update_hole(hole_element, hole, i);
-                content_frontside_element = hole.get_frontside_element();
-                $(content_frontside_element).addClass("toontalk-frontside-in-box");
-                setTimeout(function () {
-                        $(content_frontside_element).css({width:  '100%',
-                                                          height: '100%'});                   
-                    },
-                    1);
-                hole_element.appendChild(content_frontside_element);
-                frontside_element.appendChild(hole_element);
-            };
+            }.bind(this);
+        if (first_time) {
+            // do it now to create the element
+            renderer();
         }
-//         var new_HTML = this.to_HTML();
-//         if (!frontside_element.firstChild) {
-//             frontside_element.appendChild(document.createElement('div'));
-//         }
-//         frontside_element.firstChild.innerHTML = new_HTML;
-//         $(frontside_element.firstChild).addClass("toontalk-widget");
-//         $(".toontalk-hole-about-to-be-replaced").each(this.update_hole_display.bind(this));
+        // delay it until browser has rendered current elements
+        setTimeout(renderer, 1);
         frontside_element.title = this.get_title();
         if (TT.debugging) {
             this.debug_string = this.toString();
