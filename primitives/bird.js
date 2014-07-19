@@ -12,22 +12,6 @@ window.TOONTALK.bird = (function (TT) {
     
     bird.create = function (nest, description) { // image_url removed
         var new_bird = Object.create(bird);
-//         if (!image_url) {
-//             image_url = "images/GIMME3.PNG";
-//         }
-//         new_bird.get_image_url = function () {
-//             return image_url;
-//         };
-//         new_bird.set_image_url = function (new_value, update_display) {
-//             if (image_url === new_value) {
-//                 return false;
-//             }
-//             image_url = new_value;
-//             if (update_display) {
-//                 this.rerender();
-//             }
-//             return true;
-//         };
         new_bird.widget_dropped_on_me = function (other, other_is_backside, event, robot) {
             var package_side = {widget: other,
                                 is_backside: other_is_backside};
@@ -35,14 +19,9 @@ window.TOONTALK.bird = (function (TT) {
             if (nest) {
                 if (this.visible() || nest.visible() || nest.any_nest_copies_visible()) {
                     // doesn't matter if robot is visible or there is a user event -- if either end visible show the delivery
-                    fly_continuation = function () {
-                        $(frontside_element).removeClass("toontalk-bird-morph-from-static");
-                        nest.animate_bird_delivery(package_side, this);
-                    }.bind(this);
                     frontside_element = this.get_frontside_element();
-                    $(frontside_element).removeClass("toontalk-bird-static");
-                    TT.UTILITIES.add_animation_class(frontside_element, "toontalk-bird-morph-from-static");
-                    TT.UTILITIES.add_one_shot_event_handler(frontside_element, "animationend", 1000, fly_continuation);
+                    $(frontside_element).removeClass("toontalk-bird-gimme");
+                    nest.animate_bird_delivery(package_side, this);
                 } else {
                     nest.add_to_contents(package_side);
                 }
@@ -117,7 +96,6 @@ window.TOONTALK.bird = (function (TT) {
                     }
                 }.bind(this);
                 $(this.element_to_display_when_flying).removeClass("toontalk-carried-by-bird");
-//                 bird_frontside_element.removeChild(this.element_to_display_when_flying);
                 $(this.element_to_display_when_flying).remove();
                 this.element_to_display_when_flying = undefined;
                 nest_recieving_package.add_to_contents(package_side, this, true);
@@ -179,6 +157,19 @@ window.TOONTALK.bird = (function (TT) {
         frontside_element.title = this.get_title();
         if (!$(frontside_element).is(".toontalk-bird")) {
             $(frontside_element).addClass("toontalk-bird toontalk-bird-static");
+            frontside_element.addEventListener("dragover", function (event) {
+                if ($(frontside_element).is(".toontalk-bird-static")) {
+                    $(frontside_element).removeClass("toontalk-bird-static");
+                    TT.UTILITIES.add_animation_class(frontside_element, "toontalk-bird-gimme");
+                }
+            });
+            frontside_element.addEventListener("dragleave", function (event) {
+                if ($(frontside_element).is(".toontalk-bird-gimme")) {
+                    $(frontside_element)
+                        .addClass("toontalk-bird-static")
+                        .removeClass("toontalk-bird-gimme");
+                }
+            });
         }
         if (this.element_to_display_when_flying) {
             frontside_element.appendChild(this.element_to_display_when_flying);
@@ -511,6 +502,7 @@ window.TOONTALK.nest = (function (TT) {
                         backside_where_bird_goes = TT.UTILITIES.get_toontalk_widget_from_jquery($(".toontalk-top-level-backside")).get_backside();
                     }
                     bird_frontside_element = bird.get_frontside_element(true);
+                    $(bird_frontside_element).removeClass("toontalk-bird-static");
                     TT.UTILITIES.add_animation_class(bird_frontside_element, "toontalk-fly-southwest");
                     nest_position = TT.UTILITIES.relative_position(frontside_element, backside_where_bird_goes.get_element());
                     $(bird_frontside_element).css({left: nest_position.left,
@@ -536,7 +528,6 @@ window.TOONTALK.nest = (function (TT) {
                                     }
                                     $(bird_frontside_element).removeClass("toontalk-fly-down");
                                     $(bird_frontside_element).removeClass("toontalk-side-animating");
-                                    $(bird_frontside_element).removeClass("toontalk-bird-morph-from-static");
                                     TT.UTILITIES.add_animation_class(bird_frontside_element, "toontalk-bird-morph-to-static");
                                     TT.UTILITIES.add_one_shot_event_handler(bird_frontside_element, "animationend", 1000, become_static);
                                      if (robot) {
@@ -551,7 +542,7 @@ window.TOONTALK.nest = (function (TT) {
                     // because of the animation the top of the nest is higer than it appears so add more to top target
                     resting_top = Math.max(10, nest_position.top+300); 
                     bird.animate_to_absolute_position({left: resting_left,
-                                                       top: resting_top},
+                                                       top:  resting_top},
                                                       bird_fly_continuation);
                     this.rerender();
                 }.bind(this);
@@ -609,13 +600,13 @@ window.TOONTALK.nest = (function (TT) {
                 }
                 nest_width = $(frontside_element).width();
                 nest_height = $(frontside_element).height();
-                contents[0].saved_width =  $(contents_side_element).width() || contents_width(nest_width);
+                contents[0].saved_width  = $(contents_side_element).width() || contents_width(nest_width);
                 contents[0].saved_height = $(contents_side_element).height() || contents_height(nest_height);
                 $(contents_side_element).css({width:  '',
                                               height: '',
                                               // offset by 10% -- tried left: 10% but that only worked in first box hole
                                               left: nest_width*0.1,
-                                              top: nest_height*0.1});
+                                              top:  nest_height*0.1});
                 $(contents_side_element).addClass("toontalk-widget-on-nest");
 //                 contents_side_element.style.position = "static";
                 frontside_element.appendChild(contents_side_element);

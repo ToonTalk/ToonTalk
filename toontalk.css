@@ -435,7 +435,7 @@
      to { background-position: -1744px; }
 }
 
-.toontalk-bird-waiting {
+/* .toontalk-bird-waiting {
 	background-image: url("images/gimme.png");
 	background-repeat: no-repeat;
 	background-size: contain;
@@ -446,7 +446,7 @@
     height: 127px;
     background-image: url("images/fly-down.png");
 	background-position: -598px; */
-}
+} */
 
 .toontalk-bird-static {
     width:  88px;
@@ -456,8 +456,8 @@
     background-position: 88px;
 }
 
-/* Couldn't get the following to work so made two animations: to-static and from-static */
-.toontalk-bird-morph-from-static {
+/* Couldn't get the following to work -- tried to define new bird-morph-from-static keyframes but didn't help */
+/* .toontalk-bird-morph-from-static {
     width:  88px;
     height: 119px;
     background-image: url("images/bird-morph.png");
@@ -467,44 +467,44 @@
         -ms-animation: bird-morph 1s steps(13) normal forwards;
          -o-animation: bird-morph 1s steps(13) normal forwards;
             animation: bird-morph 1s steps(13) normal forwards;
-}
-
-/* .toontalk-bird-morph-from-static {
-    width:  88px;
-    height: 119px;
-    background-image: url("images/bird-morph.png");
-	background-size: auto;
-	-webkit-animation: bird-morph-from-static 1s steps(13) reverse backwards;
-       -moz-animation: bird-morph-from-static 1s steps(13) reverse backwards;
-        -ms-animation: bird-morph-from-static 1s steps(13) reverse backwards;
-         -o-animation: bird-morph-from-static 1s steps(13) reverse backwards;
-            animation: bird-morph-from-static 1s steps(13) reverse backwards;
-}
-
-@-webkit-keyframes bird-morph-from-static {
-   from { background-position: 1141px; }
-     to { background-position:    0px; }
-}
-
-@-moz-keyframes bird-morph-from-static {
-   from { background-position: 1141px; }
-     to { background-position:    0px; }
-}
-
-@-ms-keyframes bird-morph-from-static {
-   from { background-position: 1141px; }
-     to { background-position:    0px; }
-}
-
-@-o-keyframes bird-morph-from-static {
-   from { background-position: 1141px; }
-     to { background-position:    0px; }
-}
-
-@keyframes bird-morph-from-static {
-   from { background-position: 1141px; }
-     to { background-position:    0px; }
 } */
+
+.toontalk-bird-gimme {
+    width:  103px;
+    height: 117px;
+    background-image: url("images/bird-gimme.png");
+	background-size: auto;
+	-webkit-animation: bird-gimme 1s steps(6) infinite;
+       -moz-animation: bird-gimme 1s steps(6) infinite;
+        -ms-animation: bird-gimme 1s steps(6) infinite;
+         -o-animation: bird-gimme 1s steps(6) infinite;
+            animation: bird-gimme 1s steps(6) infinite;
+}
+
+@-webkit-keyframes bird-gimme {
+   from { background-position:    0px; }
+     to { background-position: -615px; }
+}
+
+@-moz-keyframes bird-gimme {
+   from { background-position:    0px; }
+     to { background-position: -615px; }
+}
+
+@-ms-keyframes bird-gimme {
+   from { background-position:    0px; }
+     to { background-position: -615px; }
+}
+
+@-o-keyframes bird-gimme {
+   from { background-position:    0px; }
+     to { background-position: -615px; }
+}
+
+@keyframes bird-gimme {
+   from { background-position:    0px; }
+     to { background-position: -615px; }
+}
 
 .toontalk-bird-morph-to-static {
     width:  88px;
