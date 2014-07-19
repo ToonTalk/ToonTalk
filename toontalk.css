@@ -521,28 +521,28 @@
 }
 
 @-webkit-keyframes bird-morph-to-static {
-   from { background-position:    0px; }
+   from { background-position:     0px; }
      to { background-position: -1141px; }
 }
 
 @-moz-keyframes bird-morph-to-static {
-   from { background-position:    0px; }
-     to { background-position: 1141px; }
+   from { background-position:     0px; }
+     to { background-position: -1141px; }
 }
 
 @-ms-keyframes bird-morph-to-static {
-   from { background-position:    0px; }
-     to { background-position: 1141px; }
+   from { background-position:     0px; }
+     to { background-position: -1141px; }
 }
 
 @-o-keyframes bird-morph-to-static {
-   from { background-position:    0px; }
-     to { background-position: 1141px; }
+   from { background-position:     0px; }
+     to { background-position: -1141px; }
 }
 
 @keyframes bird-morph-to-static {
-   from { background-position:    0px; }
-     to { background-position: 1141px; }
+   from { background-position:     0px; }
+     to { background-position: -1141px; }
 }
 
 .toontalk-fly-down {

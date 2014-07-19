@@ -41,7 +41,6 @@ window.TOONTALK.bird = (function (TT) {
                     }.bind(this);
                     frontside_element = this.get_frontside_element();
                     $(frontside_element).removeClass("toontalk-bird-static");
-                    $(frontside_element).removeClass("toontalk-bird-morph-to-static");
                     TT.UTILITIES.add_animation_class(frontside_element, "toontalk-bird-morph-from-static");
                     TT.UTILITIES.add_one_shot_event_handler(frontside_element, "animationend", 1000, fly_continuation);
                 } else {
@@ -98,9 +97,14 @@ window.TOONTALK.bird = (function (TT) {
             continuation = function () {
                 var final_continuation = function () {
                     var parent = this.get_parent_of_frontside();
+                    var become_static;
                     if (temporary_bird) {
                         this.remove();
                     } else {
+                        become_static = function () {
+                            $(bird_frontside_element).removeClass("toontalk-bird-morph-to-static");
+                            $(bird_frontside_element).addClass("toontalk-bird-static");
+                        };
                         bird_frontside_element.style.position = bird_style_position;
                         parent_element.appendChild(bird_frontside_element);
                         if (parent.widget.get_type_name() === 'top-level') {
@@ -108,7 +112,8 @@ window.TOONTALK.bird = (function (TT) {
                         } else {
                             parent.widget.rerender();
                         }
-                        $(bird_frontside_element).addClass("toontalk-bird-morph-to-static");
+                        TT.UTILITIES.add_animation_class(bird_frontside_element, "toontalk-bird-morph-to-static");
+                        TT.UTILITIES.add_one_shot_event_handler(bird_frontside_element, "animationend", 1000, become_static);                                                    
                     }
                 }.bind(this);
                 $(this.element_to_display_when_flying).removeClass("toontalk-carried-by-bird");
@@ -171,23 +176,13 @@ window.TOONTALK.bird = (function (TT) {
         var backside = this.get_backside(); 
         var bird_image, frontside_element;
         frontside_element = frontside.get_element();
-//         bird_image = this.image();
-        // if animating will display the element_to_display_when_flying
-        // remove what's there currently before adding new elements
-//         while (frontside_element.firstChild) {
-//             if (!$(frontside_element.firstChild).is(".toontalk-close-button")) {
-//                 frontside_element.removeChild(frontside_element.firstChild);
-//             }
-//         }
         frontside_element.title = this.get_title();
-        $(frontside_element).addClass("toontalk-bird toontalk-bird-static");
-//         if (!($(frontside_element).is(".toontalk-side-animating"))) {
-//             TT.UTILITIES.add_animation_class(frontside_element, "toontalk-bird-waiting");
-//         }
+        if (!$(frontside_element).is(".toontalk-bird")) {
+            $(frontside_element).addClass("toontalk-bird toontalk-bird-static");
+        }
         if (this.element_to_display_when_flying) {
             frontside_element.appendChild(this.element_to_display_when_flying);
         }
-//      frontside_element.appendChild(bird_image);
         if (backside) {
             backside.rerender();
         }
@@ -535,10 +530,15 @@ window.TOONTALK.nest = (function (TT) {
                         setTimeout(function () {
                                 TT.UTILITIES.add_animation_class(bird_frontside_element, "toontalk-fly-down");
                                 fly_down_finished_handler = function () {
+                                    var become_static = function () {
+                                        $(bird_frontside_element).removeClass("toontalk-bird-morph-to-static");
+                                        $(bird_frontside_element).addClass("toontalk-bird-static");
+                                    }
                                     $(bird_frontside_element).removeClass("toontalk-fly-down");
                                     $(bird_frontside_element).removeClass("toontalk-side-animating");
                                     $(bird_frontside_element).removeClass("toontalk-bird-morph-from-static");
                                     TT.UTILITIES.add_animation_class(bird_frontside_element, "toontalk-bird-morph-to-static");
+                                    TT.UTILITIES.add_one_shot_event_handler(bird_frontside_element, "animationend", 1000, become_static);
                                      if (robot) {
                                         robot.wait_before_next_step = false;
                                     }                                    
