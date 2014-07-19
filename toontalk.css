@@ -399,8 +399,6 @@
 	display: inline-block;
 	line-height: 0px;
 	padding: 11px 3px;
-/* 	close buttons need to be above the widget view or clicking close button will open backside instead */
-	z-index: 10000000;
 }
 .toontalk-close-button:hover {
 	background: red;
