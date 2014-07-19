@@ -642,7 +642,7 @@ window.TOONTALK.UTILITIES =
                         if (dragee.is(".toontalk-backside")) {
                             json_object.view.backside = true;
                         }
-                        $element.data("json", json_object);
+                        dragee.data("json", json_object);
                         // use two spaces to indent each level
                         json_div = toontalk_json_div(JSON.stringify(json_object, null, '  '));
                         event.originalEvent.dataTransfer.setData("text/html", json_div);
@@ -650,7 +650,7 @@ window.TOONTALK.UTILITIES =
                         event.originalEvent.dataTransfer.setData("text", json_div);
                         widget.drag_started(json_object, is_resource);
                     }
-                    $element.addClass("toontalk-being-dragged");
+                    dragee.addClass("toontalk-being-dragged");
                     event.stopPropagation();
 //                  console.log("drag start. dragee is " + dragee);
                 });
