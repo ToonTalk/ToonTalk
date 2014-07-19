@@ -292,10 +292,16 @@ window.TOONTALK.widget = (function (TT) {
         },
         
         get_full_description: function () {
+            var description, string;
             if (this.get_erased && this.get_erased()) {
                 return "erased " + this.get_type_name();
             }
-            return this.get_description() || this.toString();
+            description = this.get_description();
+            string = this.toString();
+            if (description) {
+                return string + " (" + description + ")";
+            }
+            return string;
         },
         
 //         get_description: function () {
