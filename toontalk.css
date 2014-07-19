@@ -74,6 +74,7 @@
 }
 .toontalk-backside-of-robot {
 	background-color: rgba(230, 230, 255, .94);
+	width: 480px;
 }
 .toontalk-top-level-backside {
     width: 1000px;
