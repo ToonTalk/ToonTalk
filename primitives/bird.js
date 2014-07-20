@@ -614,9 +614,6 @@ window.TOONTALK.nest = (function (TT) {
         new_nest.get_path_to = function (widget, robot) {
 //             var sub_path;
             if (contents.length > 0) {
-                if (contents[0].widget === widget) {
-                    return widget;
-                }
                 if (contents[0].widget.get_path_to) {
                     // assuming frontside
                     return contents[0].widget.get_path_to(widget, robot);
@@ -624,7 +621,7 @@ window.TOONTALK.nest = (function (TT) {
             }
         };
         new_nest.top_contents_is = function (other) {
-            return contents.length > 0 && contents[0] === other;
+            return contents.length > 0 && contents[0].widget === other;
         };
         new_nest.any_nest_copies_visible = function () {
             var found_one = false;
