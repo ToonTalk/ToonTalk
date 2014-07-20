@@ -545,7 +545,8 @@ window.TOONTALK.nest = (function (TT) {
                     other.dropped_on_other(this, other_is_backside, event, robot);
                 }
             } else {
-                contents[0].widget.widget_dropped_on_me(other, other_is_backside, event, robot);
+                other.drop_on(contents[0].widget, other_is_backside, event, robot)
+//                 contents[0].widget.widget_dropped_on_me(other, other_is_backside, event, robot);
             }
             return true;
         };
@@ -562,13 +563,6 @@ window.TOONTALK.nest = (function (TT) {
             var backside = this.get_backside(); 
             var frontside_element, nest_width, nest_height, contents_backside, contents_side_element;
             frontside_element = frontside.get_element();
-            // if animating should also display thing_in_hand
-            // remove what's there currently before adding new elements
-//             while (frontside_element.firstChild) {
-//                 if (!$(frontside_element.firstChild).is(".toontalk-close-button")) {
-//                     frontside_element.removeChild(frontside_element.firstChild);
-//                 }
-//             }
             if (contents.length > 0) {
                 if (contents[0].is_backside) {
                     contents_backside = contents[0].widget.get_backside(true);
@@ -620,17 +614,17 @@ window.TOONTALK.nest = (function (TT) {
         new_nest.get_path_to = function (widget, robot) {
 //             var sub_path;
             if (contents.length > 0) {
-//                 if (contents[0].widget === widget) {
-//                     return true; // if in box will treat this properly -- what is the general case?
-//                 }
-                // assuming frontside
-                return contents[0].widget.get_path_to(widget, robot);
-//                 if (sub_path) {
-//                     // for now assume that contents[0] isn't itself a container (e.g. box)
-//                     // and something inside was referenced
-//                     return sub_path;
-//                 }
+                if (contents[0].widget === widget) {
+                    return widget;
+                }
+                if (contents[0].widget.get_path_to) {
+                    // assuming frontside
+                    return contents[0].widget.get_path_to(widget, robot);
+                }
             }
+        };
+        new_nest.top_contents_is = function (other) {
+            return contents.length > 0 && contents[0] === other;
         };
         new_nest.any_nest_copies_visible = function () {
             var found_one = false;
