@@ -81,8 +81,12 @@ window.TOONTALK.path =
             return dereferenced;
         },
         toString: function (a_path) {
+            var sub_path_string;
             if (a_path.next) {
-                // will the first part always end in a space?
+                sub_path_string = TT.path.toString(a_path.next);
+                if (sub_path_string[sub_path_string.length-1] !== ' ') {
+                    sub_path_string += ' ';
+                }
                 return TT.path.toString(a_path.next) + "of " + a_path.toString();
             } else {
                 return a_path.toString();
