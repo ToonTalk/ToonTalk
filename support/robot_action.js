@@ -196,7 +196,6 @@ window.TOONTALK.robot_action =
         var $close_button = $(widget.get_frontside_element()).find(".toontalk-close-button");
         $close_button.show();
         robot.animate_to_element($close_button.get(0), continuation, .25);
-//         button_use_animation(widget, context, top_level_context, robot, continuation, ".toontalk-remove-backside-button");
     };
     var edit_animation = function (widget, context, top_level_context, robot, continuation, additional_info) {
         var new_continuation = function () {
