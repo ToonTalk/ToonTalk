@@ -298,9 +298,9 @@ window.TOONTALK.box = (function (TT) {
         var horizontal = this.get_horizontal();
         var additional_class = horizontal ? "toontalk-box-hole-horizontal" : "toontalk-box-hole-vertical";
         var first_time = !$(frontside_element).is(".toontalk-box");
-        var i, hole, hole_element, box_left, box_width, hole_width, box_height, hole_height, $box_hole_elements, content_frontside_element, renderer;
+        var i, hole, hole_element, box_left, box_width, hole_width, box_height, hole_height, content_frontside_element, renderer;
         $(frontside_element).addClass("toontalk-box");
-        $box_hole_elements = $(frontside_element).children("." + additional_class);
+        
         box_width = $(frontside_element).width();
         box_height = $(frontside_element).height();
         if (horizontal) {
@@ -310,13 +310,15 @@ window.TOONTALK.box = (function (TT) {
             hole_width = box_width;
             hole_height = box_height/size;            
         }
-        renderer = function () {
+        renderer = 
+            function () {
+                var $box_hole_elements = $(frontside_element).children("." + additional_class);
                 if ($box_hole_elements.length === size) {
                     $box_hole_elements.each(function (index, hole_element) {
                         update_hole(hole_element, this.get_hole(index), index);
                     }.bind(this));  
                 } else {
-                    $(frontside_element).empty();
+                    $box_hole_elements.remove();
                     for (i = 0; i < size; i++) {
                         hole_element = document.createElement("div");
                         $(hole_element).addClass("toontalk-box-hole toontalk-hole-number-" + i + " " + additional_class);
@@ -339,7 +341,7 @@ window.TOONTALK.box = (function (TT) {
                 }
             }.bind(this);
         if (first_time) {
-            // do it now to create the element
+            // do it now to create the elements
             renderer();
         }
         // delay it until browser has rendered current elements
@@ -486,7 +488,7 @@ window.TOONTALK.box = (function (TT) {
         var removing_widget = robot.current_action_name === 'pick up';
         for (i = 0; i < size; i++) {
             part = this.get_hole(i);
-            if (widget === part) {
+            if (widget === part || (part.top_contents_is && part.top_contents_is(widget))) {
                 return TT.box.path.create(i, removing_widget);
             } else if (part.get_path_to) {
                 sub_path = part.get_path_to(widget, robot);

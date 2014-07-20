@@ -100,9 +100,15 @@ window.TOONTALK.frontside =
             return $(this.get_element()).is(":visible"); 
         },
         
-        remove: function() {
+        remove: function () {
             $(this.get_element()).remove();
         }
+        
+//         remove_children: function () {
+//             // removes all but close button and resize handles
+//             var frontside_element = this.get_element();
+//             $(frontside_element).children("toontalk-side").remove();
+//         }
 
     };
 }(window.TOONTALK));
