@@ -382,14 +382,15 @@ window.TOONTALK.robot = (function (TT) {
     
     robot.remove_from_container = function (part, container) {
         // this is used when running a robot -- not training
+        var do_removal = function () {
+                container.removed_from_container(part, false, true); 
+        }
         if (this.get_animating()) {
             // if animating then delay removing it
             // otherwise hole empties before the robot gets there
-            TT.UTILITIES.add_one_shot_event_handler(this.get_frontside_element(), "transitionend", 2500, function () {
-                container.removed_from_container(part, false, true);
-                });
+            TT.UTILITIES.add_one_shot_event_handler(this.get_frontside_element(), "transitionend", 2500, do_removal);
         } else {
-            container.removed_from_container(part);
+            do_removal();
         }
         // might be new -- following does nothing if already known
         this.add_newly_created_widget(part);

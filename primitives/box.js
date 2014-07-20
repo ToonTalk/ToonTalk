@@ -513,7 +513,7 @@ window.TOONTALK.box = (function (TT) {
     };
     
     box.dereference = function (path, robot) {
-        var index, hole;
+        var index, hole, removing_from_container;
         if (path) {
             index = path.get_index && path.get_index();
             if (typeof index === 'number') {
@@ -522,7 +522,11 @@ window.TOONTALK.box = (function (TT) {
                     if (path.next) {
                         return hole.dereference(path.next, robot, path.removing_widget());
                     }
-                    if (path.removing_widget()) {
+                    removing_from_container = path.removing_widget();
+                    if (hole.dereference) {
+                        hole = hole.dereference(path, robot, removing_from_container);
+                    }
+                    if (removing_from_container) {
                         if (hole.get_type_name() === 'empty hole') {
                             console.log("Robot is trying to remove something from an empty hole. ");
                         } else if (!hole.get_infinite_stack()) {
