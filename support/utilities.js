@@ -865,7 +865,7 @@ window.TOONTALK.UTILITIES =
                     // they are restored on dragend
                     if (!$element.is(".toontalk-backside, .toontalk-drop-area") && TT.UTILITIES.get_toontalk_widget_from_jquery($element).get_type_name() !== 'box') {
                         // this breaks the dropping of elements on empty holes so not supported
-                        $element.find("*").addClass("toontalk-ignore-events");
+                        $element.find(".toontalk-side").addClass("toontalk-ignore-events");
                         // except for toontalk-sides and their ancestors since they are OK to drop on
                         // following was intended to deal with box holes but didn't work
 //                         $element.find(".toontalk-side").parents().removeClass("toontalk-ignore-events");
