@@ -157,7 +157,6 @@ window.TOONTALK.bird = (function (TT) {
         frontside_element.title = this.get_title();
         if (!$(frontside_element).is(".toontalk-bird, .toontalk-side-animating")) {
             $(frontside_element).addClass("toontalk-bird toontalk-bird-static");
-            console.log("added toontalk-bird-static in update_display");
             frontside_element.addEventListener("dragover", function (event) {
                 if ($(frontside_element).is(".toontalk-bird-static")) {
                     $(frontside_element).removeClass("toontalk-bird-static");
@@ -178,7 +177,6 @@ window.TOONTALK.bird = (function (TT) {
         if (backside) {
             backside.rerender();
         }
-        console.log(frontside_element.className + " in update_display");
     };
         
     bird.fly_to = function (target_offset, continuation) {
@@ -394,34 +392,35 @@ window.TOONTALK.nest = (function (TT) {
             }
             return removed[0];
         };
-        new_nest.dereference = function () {
+        new_nest.dereference = function (path, robot, removing_from_container) {
             var widget, nest_offset, $top_level_backside_element, top_level_backside_element_offset, widget_element, nest_element, nest_width, nest_height;
             if (contents.length === 0) {
                 return this;
             }
             // e.g. when a robot takes something off the nest
-            // the .widget is needed until widget_sides are first-class objects
-            // following isn't correct when robot might be dropping something on the top of stack
-            // and if removing should generate an appropriate event
-            // see Issue 
-            widget = this.removed_from_container().widget;
-            // isn't attached to the DOM because was removed from nest
-            if (this.visible()) {
-                nest_element = this.get_frontside_element();
-                nest_offset = $(nest_element).offset();
-                $top_level_backside_element = $(".toontalk-backside-of-top-level");
-                top_level_backside_element_offset = $top_level_backside_element.offset();
-                widget_element = widget.get_frontside_element();
-                nest_width =  $(nest_element).width();
-                nest_height = $(nest_element).height();
-                // left and top are 10%
-                $(widget_element).css({left: nest_width  * .1 + nest_offset.left - top_level_backside_element_offset.left,
-                                       top:  nest_height * .1 + nest_offset.top -  top_level_backside_element_offset.top,
-                                       width:  contents_width(nest_width),
-                                       height: contents_height(nest_height)});
-                $top_level_backside_element.append(widget_element);
+            if (removing_from_container) {
+                // the .widget is needed until widget_sides are first-class objects
+                widget = this.removed_from_container().widget;
+                // isn't attached to the DOM because was removed from nest
+                if (this.visible()) {
+                    nest_element = this.get_frontside_element();
+                    nest_offset = $(nest_element).offset();
+                    $top_level_backside_element = $(".toontalk-backside-of-top-level");
+                    top_level_backside_element_offset = $top_level_backside_element.offset();
+                    widget_element = widget.get_frontside_element();
+                    nest_width =  $(nest_element).width();
+                    nest_height = $(nest_element).height();
+                    // left and top are 10%
+                    $(widget_element).css({left: nest_width  * .1 + nest_offset.left - top_level_backside_element_offset.left,
+                                           top:  nest_height * .1 + nest_offset.top -  top_level_backside_element_offset.top,
+                                           width:  contents_width(nest_width),
+                                           height: contents_height(nest_height)});
+                    $top_level_backside_element.append(widget_element);
+                }
+                return widget;
             }
-            return widget;
+            // act as if the top contents was being dereferenced
+            return contents[0].widget.dereference(path, robot, removing_from_container);            
         };
         // defined here so that contents and other state can be private
         new_nest.get_json = function (json_history) {
@@ -619,13 +618,13 @@ window.TOONTALK.nest = (function (TT) {
             nest_copies.push(nest_copy);
         };
         new_nest.get_path_to = function (widget, robot) {
-            var sub_path;
+//             var sub_path;
             if (contents.length > 0) {
-                if (contents[0].widget === widget) {
-                    return true; // if in box will treat this properly -- what is the general case?
-                }
-                // assuming frontside -- following not fully supported yet so leave for later
-//                 sub_path = contents[0].widget.get_path_to(widget, robot);
+//                 if (contents[0].widget === widget) {
+//                     return true; // if in box will treat this properly -- what is the general case?
+//                 }
+                // assuming frontside
+                return contents[0].widget.get_path_to(widget, robot);
 //                 if (sub_path) {
 //                     // for now assume that contents[0] isn't itself a container (e.g. box)
 //                     // and something inside was referenced

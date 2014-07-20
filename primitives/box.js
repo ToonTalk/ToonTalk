@@ -492,10 +492,10 @@ window.TOONTALK.box = (function (TT) {
                 sub_path = part.get_path_to(widget, robot);
                 if (sub_path) {
                     path = TT.box.path.create(i);
-                    if (part.get_type_name() !== 'nest' && part.get_type_name() !== 'sensor') {
+//                     if (part.get_type_name() !== 'nest' && part.get_type_name() !== 'sensor') {
                         // if nest then widget must have been on the nest (or inside something that was -- not yet handled!)
                         path.next = sub_path;
-                    }
+//                     }
                     return path;
                 }
             }
@@ -510,7 +510,7 @@ window.TOONTALK.box = (function (TT) {
                 hole = this.get_hole(index);
                 if (hole) {
                     if (path.next) {
-                        return hole.dereference(path.next, robot);
+                        return hole.dereference(path.next, robot, path.removing_widget());
                     }
                     if (path.removing_widget()) {
                         if (hole.get_type_name() === 'empty hole') {
