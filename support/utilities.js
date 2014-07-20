@@ -514,7 +514,7 @@ window.TOONTALK.UTILITIES =
             var widgets_copy = [];
             var i;
             for (i = 0; i < widgets.length; i++) {
-                widgets_copy[i] = widgets[i].copy(just_value);
+                widgets_copy[i] = widgets[i] && widgets[i].copy(just_value);
             }
             return widgets_copy;
         },
@@ -670,7 +670,8 @@ window.TOONTALK.UTILITIES =
                                             height: json_object.view.frontside_height});
                             }
                         } else if (!dragee.parent().is(".toontalk-top-level-resource, .toontalk-drop-area") &&
-                                   !dragee.is(".toontalk-carried-by-bird")) {
+                                   !dragee.is(".toontalk-carried-by-bird") &&
+                                   !TT.UTILITIES.has_animating_image(dragee.get(0))) {
                             dragee.css({width:  "100%",
                                         height: "100%"});
                         }
@@ -1430,6 +1431,12 @@ window.TOONTALK.UTILITIES =
             if ($element.length > 0) {
                 return $element.get(0).toontalk_widget;
             }
+        },
+        
+        has_animating_image: function (element) {
+            var background_image = $(element).css("background-image");
+            var size_adjustable = $(element).css("background-size") === 'contain';
+            return !size_adjustable && background_image !== 'none' && background_image  !== '';
         }
         
 //         create_menu_item: function (text) {

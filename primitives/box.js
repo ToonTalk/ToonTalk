@@ -134,7 +134,7 @@ window.TOONTALK.box = (function (TT) {
             if ((!my_hole && pattern_hole) || (my_hole && !pattern_hole)) {
                 return false;
             }
-            if (my_hole && pattern_hole && !my_hole.equals(pattern_hole)) {
+            if (my_hole && pattern_hole && !(my_hole.equals && my_hole.equals(pattern_hole))) {
                 return false;
             }
         }
@@ -275,6 +275,7 @@ window.TOONTALK.box = (function (TT) {
         var frontside_element = frontside.get_element();
         var size = this.get_size();
         var update_hole = function (hole_element, hole, index) {
+            var hole_frontside_element = hole.get_frontside_element();
             var left, top;
             if (horizontal) {
                 left = hole_width*index;
@@ -287,11 +288,16 @@ window.TOONTALK.box = (function (TT) {
                                  top:    top,
                                  width:  hole_width,
                                  height: hole_height});
-            setTimeout(function () {
-                    $(hole.get_frontside_element()).css({width:  '100%',
-                                                         height: '100%'});                   
-                },
-                1);
+                                                     
+            if (!TT.UTILITIES.has_animating_image(hole_frontside_element)) {
+                // explicit size interferes with animation
+                setTimeout(function () {
+                        // explicit size interferes with animation
+                        $(hole_frontside_element).css({width:  '100%',
+                                                       height: '100%'});             
+                    },
+                    1);
+            }
             // following ensures that there is frontside_element of the hole
             hole.update_display();
         };
@@ -330,11 +336,13 @@ window.TOONTALK.box = (function (TT) {
                         update_hole(hole_element, hole, i);
                         content_frontside_element = hole.get_frontside_element();
                         $(content_frontside_element).addClass("toontalk-frontside-in-box");
-                        setTimeout(function () {
-                                $(content_frontside_element).css({width:  '100%',
-                                                                  height: '100%'});                   
-                            },
-                            1);
+                        if (!TT.UTILITIES.has_animating_image(content_frontside_element)) {
+                            setTimeout(function () {
+                                    $(content_frontside_element).css({width:  '100%',
+                                                                      height: '100%'});                   
+                                },
+                                1);
+                        }
                         hole_element.appendChild(content_frontside_element);
                         frontside_element.appendChild(hole_element);
                     };

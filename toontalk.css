@@ -358,8 +358,12 @@
 	background-repeat: no-repeat;
 	background-size: contain;
 	margin-top: 43px;
-	width: 116px;
-	height: 98px;
+	
+
+	/* width: 116px; */
+	
+
+	/* height: 98px; */
 /* 	display just the last frame */
 /*     width:  116px;
     height: 141px;
