@@ -120,7 +120,7 @@ window.TOONTALK.widget = (function (TT) {
                     backside_element = this.get_backside_element();
                     if (backside_element) {
                         $(backside_element).find(".toontalk-run-backside-button").each(function (index, element) {
-                            TT.backside.update_run_button($(element), widget);
+                            TT.backside.update_run_button($(element));
                         });
                     }
                     this.rerender();

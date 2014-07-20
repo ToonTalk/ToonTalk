@@ -504,19 +504,25 @@ window.TOONTALK.backside =
             var $backside_element = $(backside_element);
             var $run_button = $("<button>Run</button>").button();
             $run_button.addClass("toontalk-run-backside-button");
+            $run_button.get(0).toontalk_widget = widget;
             $run_button.click(function (event) {
                 var will_run = !widget.get_running();
-                TT.backside.update_run_button($run_button, widget);
+                TT.backside.update_run_button($run_button);
                 widget.set_running(will_run);
                 event.stopPropagation();
             });
-            $run_button.attr("title", "Click to run the robots on this " + widget.get_type_name());
+            this.update_run_button($run_button);
             return $run_button.get(0);
         },
         
-        update_run_button: function ($run_button, widget) {
+        update_run_button: function ($run_button) {
+            var widget = $run_button.get(0).toontalk_widget;
             var running = widget.get_running();
-            if (!$run_button.is(":visible") || !$run_button.is(":enabled")) {
+            if (!$run_button.is(":enabled")) {
+                $run_button.attr("title", "Add robots here to to run on this " + widget.get_type_name());
+                return;
+            }
+            if (!$run_button.is(":visible")) {
                 return;
             }
             if (!running) {
