@@ -215,8 +215,6 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         // should compute width from frontside element
         // get format from backside ancestor (via parent attribute?)
         var frontside = this.get_frontside(true);
-        var frontside_element, $dimensions_holder, client_width, client_height, 
-            font_height, font_width, max_decimal_places, new_HTML, backside, size_unconstrained_by_container;
         var add_to_style = function (html, additional_style) {
             var style_index = html.indexOf('style="');
             if (style_index >= 0) {
@@ -224,6 +222,8 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             }
             return html;
         };
+        var frontside_element, $dimensions_holder, client_width, client_height, 
+            font_height, font_width, max_decimal_places, new_HTML, backside, size_unconstrained_by_container, child_element;
         frontside_element = frontside.get_element();
         if ($(frontside_element).is(".toontalk-conditions-contents")) {
             $dimensions_holder = $(frontside_element);
@@ -256,11 +256,15 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             // need to work around a CSS problem where nested percentage widths don't behave as expected
             new_HTML = add_to_style(new_HTML, "width:" + client_width + "px;");
         }
-        if (!frontside_element.firstChild) {
-            frontside_element.appendChild(document.createElement('div'));
+        child_element = $(frontside_element).children(".toontalk-widget");
+        if (child_element.is("*")) {
+            child_element = child_element.get(0);
+        } else {
+            child_element = document.createElement('div');
+            frontside_element.appendChild(child_element);
         }
-        frontside_element.firstChild.innerHTML = new_HTML;
-        $(frontside_element.firstChild).addClass("toontalk-widget");
+        child_element.innerHTML = new_HTML;
+        $(child_element).addClass("toontalk-widget");
         frontside_element.title = this.get_title();
         backside = this.get_backside();
         if (backside) {
