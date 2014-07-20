@@ -258,8 +258,6 @@ window.TOONTALK.robot = (function (TT) {
                     sub_match_status.run_when_non_empty(to_run_when_non_empty);
                 });
                 TT.UTILITIES.add_animation_class(this.get_frontside_element(), "toontalk-robot-waiting");
-                $(this.get_frontside_element()).css({width: '',
-                                                     height: ''});
             }
             return this.match_status;                    
         }
