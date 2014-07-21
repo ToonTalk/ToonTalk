@@ -438,11 +438,11 @@
 }
 
 .toontalk-bird-static {
-    width:  88px;
-    height: 119px;
-    background-image: url("images/bird-morph.png");
-	background-size: auto;
-    background-position: 88px;
+    width:  70px;
+    height: 102px;
+    background-image: url("images/bird-static.png");
+    background-repeat: no-repeat;
+	background-size: contain;
 }
 
 /* Couldn't get the following to work -- tried to define new bird-morph-from-static keyframes but didn't help */
