@@ -682,7 +682,7 @@ window.TOONTALK.box_empty_hole =
                     TT.robot.in_training.dropped_on(dropped, empty_hole);
                 }
                 box.set_hole(index, dropped, true);
-                dropped.set_parent_of_frontside(this, false);
+                dropped.set_parent_of_frontside(box, false);
                 if (dropped.dropped_on_other) {
                     // e.g. so egg can hatch from nest drop
                     dropped.dropped_on_other(this, false, event, robot);
