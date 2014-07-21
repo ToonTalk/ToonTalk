@@ -83,6 +83,7 @@ window.TOONTALK.bird = (function (TT) {
                         become_static = function () {
                             $(bird_frontside_element).removeClass("toontalk-bird-morph-to-static");
                             $(bird_frontside_element).addClass("toontalk-bird-static");
+                            parent.widget.rerender();
                         };
                         bird_frontside_element.style.position = bird_style_position;
                         parent_element.appendChild(bird_frontside_element);
