@@ -353,7 +353,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             if (other.widget_dropped_on_me) {
                 return other.widget_dropped_on_me(this, is_backside, event, robot);
             }
-            console.log("No handler for drop of '" + this.toString() + "' on '" + other.toString() + "'");
+            console.log("No handler for drop of '" + this + "' on '" + other + "'");
             return;
         }
         var result = other.number_dropped_on_me(this, is_backside, event, robot);

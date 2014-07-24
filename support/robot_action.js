@@ -48,11 +48,10 @@ window.TOONTALK.robot_action =
                              }
                              // update this when robots can drop backsides as well
                              thing_in_hand.drop_on(target, false, undefined, robot);
-//                              target.widget_dropped_on_me(thing_in_hand, false, undefined, robot);
                              robot.rerender();
                          }
                      } else {
-                         console.log("Thing in robot's hand (" + thing_in_hand.toString() + ") doesn't handle 'drop_on'. Robot that " + robot.toString());
+                         console.log("Thing in robot's hand (" + thing_in_hand + ") doesn't handle 'drop_on'. Robot that " + robot);
                          return false;
                      }
                      return true;
