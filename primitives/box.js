@@ -462,10 +462,12 @@ window.TOONTALK.box = (function (TT) {
     box.removed_from_container = function (part, backside_removed, event) {
         var size = this.get_size();
         var update_display = !!event;
+        var hole;
         var i, part_frontside_element;
         for (i = 0; i < size; i++) {
-//             console.log("Part is " + part.toString() + " hole " + i + " is " + this.get_hole(i).toString()); for debugging
-            if (part === this.get_hole(i)) {
+            hole = this.get_hole(i);
+//          console.log("Part is " + part.toString() + " hole " + i + " is " + hole); for debugging
+            if (part === hole) {
                 this.empty_hole(i, update_display);
                 if (update_display) {
                     this.rerender();
@@ -485,6 +487,9 @@ window.TOONTALK.box = (function (TT) {
                     }
                 }
                 return this;
+               // following thought to be needed when part was on a nest in a box but no longer
+//             } else if (hole.top_contents_is && hole.top_contents_is(part)) {
+//                 hole.removed_from_container(part);
             }
         }
         console.log("Attempted to remove " + part + " from " + this + " but not found.");
@@ -523,8 +528,8 @@ window.TOONTALK.box = (function (TT) {
                         return hole.dereference(path.next, robot, path.removing_widget());
                     }
                     removing_from_container = path.removing_widget();
-                    if (hole.dereference) {
-                        hole = hole.dereference(path, robot, removing_from_container);
+                    if (hole.dereference_contents) {
+                        hole = hole.dereference_contents(path, robot, removing_from_container);
                     }
                     if (removing_from_container) {
                         if (hole.get_type_name() === 'empty hole') {

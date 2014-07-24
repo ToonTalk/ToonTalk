@@ -383,7 +383,10 @@ window.TOONTALK.robot = (function (TT) {
     robot.remove_from_container = function (part, container) {
         // this is used when running a robot -- not training
         var do_removal = function () {
-                container.removed_from_container(part, false, true); 
+                if (part.get_parent_of_frontside()) {
+                    container.removed_from_container(part, false, true);
+                }
+                // otherwise do nothing since part may have already been removed from a nest in another container
         }
         if (this.get_animating()) {
             // if animating then delay removing it
