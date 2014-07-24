@@ -75,7 +75,7 @@ window.TOONTALK.path =
                 dereferenced = context;
             }
             if (dereferenced && dereferenced.dereference) {
-                // e.g. covered nests dereference to their top item
+                // e.g. covered nests dereference to their top item 
                 return dereferenced.dereference();
             }
             return dereferenced;
@@ -118,7 +118,7 @@ window.TOONTALK.path =
             return {dereference: function (context, top_level_context, robot) {
                         if (this.next) {
                             if (context.dereference) {
-                                return context.dereference(this.next, robot);
+                                return context.dereference(this.next, top_level_context, robot);
                             } else {
                                 console.log("Expected context to support dereference.");
                             }                

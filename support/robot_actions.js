@@ -198,7 +198,12 @@ window.TOONTALK.newly_created_widgets_path =
         create: function (index) {
             return {
                 dereference: function (context, top_level_context, robot) {
-                    return robot.get_body().dereference(index);
+                    var widget = robot.get_body().dereference(index);
+                    if (this.next) {
+                        // there is more to the path so compute the part of the widget referenced
+                        return TT.path.dereference_path(this.next, widget, top_level_context, robot);
+                    }
+                    return widget;
                 },
                 toString: function () {
                     var ordinal;

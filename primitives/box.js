@@ -517,7 +517,7 @@ window.TOONTALK.box = (function (TT) {
         }
     };
     
-    box.dereference = function (path, robot) {
+    box.dereference = function (path, top_level_context, robot) {
         var index, hole, removing_from_container;
         if (path) {
             index = path.get_index && path.get_index();
