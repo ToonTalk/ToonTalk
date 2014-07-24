@@ -47,9 +47,9 @@ window.TOONTALK.box = (function (TT) {
             return contents[index];
         };
         new_box.set_hole = function (index, new_value, update_display) {
-//             if (contents[index]) {
-//                 contents[index].set_parent_of_frontside(undefined);
-//             }
+            if (contents[index]) {
+                contents[index].set_parent_of_frontside(undefined);
+            }
             contents[index] = new_value;
             contents[index].set_parent_of_frontside(this);
             if (update_display) {
