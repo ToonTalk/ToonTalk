@@ -52,9 +52,9 @@ window.TOONTALK.box = (function (TT) {
             }
             contents[index] = new_value;
             contents[index].set_parent_of_frontside(this);
-            if (update_display) {
-                this.update_hole_display(index, new_value);
-            }
+//             if (update_display) {
+//                 this.update_hole_display(index, new_value);
+//             }
             this.rerender();
             if (TT.debugging) {
                 this.debug_string = this.toString();
@@ -466,7 +466,6 @@ window.TOONTALK.box = (function (TT) {
         var i, part_frontside_element;
         for (i = 0; i < size; i++) {
             hole = this.get_hole(i);
-//          console.log("Part is " + part.toString() + " hole " + i + " is " + hole); for debugging
             if (part === hole) {
                 this.empty_hole(i, update_display);
                 if (update_display) {
@@ -477,7 +476,7 @@ window.TOONTALK.box = (function (TT) {
                         // without this timeout the resizing doesn't apply
                         // not sure why
                         setTimeout(function () {
-                            $(part_frontside_element).css({width: part.saved_width,
+                            $(part_frontside_element).css({width:  part.saved_width,
                                                            height: part.saved_height});
                             part.saved_width =  undefined;
                             part.saved_height = undefined;
