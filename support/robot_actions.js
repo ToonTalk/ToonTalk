@@ -116,6 +116,9 @@ window.TOONTALK.actions =
                                 // wait a bit until OK to run
                                 setTimeout(do_next_step, 500);
                             } else if (robot.visible()) {
+                                // I inspected the elements and this ensures that the robot is on top of everything
+                                // but at least in Chrome it isn't displayed that way in all situations            
+                                $(frontside_element).css({"z-index": TT.UTILITIES.next_z_index()});
                                 run_watched_step(i+1);
                             } else {
                                 // maybe user hid the robot while running
@@ -134,9 +137,6 @@ window.TOONTALK.actions =
                     if (robot.get_thing_in_hand()) {
                         robot.render();
                     }
-                    // I inspected the elements and this ensures that the robot is on top of everything
-                    // but at least in Chrome it isn't displayed that way in all situations            
-                    $(frontside_element).css({"z-index": TT.UTILITIES.next_z_index()});
                     // pause between steps and give the previous step a chance to update the DOM
                     setTimeout(do_next_step, 500);
                 };
