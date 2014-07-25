@@ -517,20 +517,24 @@ window.TOONTALK.box = (function (TT) {
     };
     
     box.dereference = function (path, top_level_context, robot) {
-        var index, hole, removing_from_container;
+        var index, hole;
         if (path) {
             index = path.get_index && path.get_index();
             if (typeof index === 'number') {
                 hole = this.get_hole(index);
                 if (hole) {
-                    if (path.next) {
-                        return hole.dereference(path.next, robot, path.removing_widget());
-                    }
-                    removing_from_container = path.removing_widget();
                     if (hole.dereference_contents) {
-                        hole = hole.dereference_contents(path, robot, removing_from_container);
+                        // this will dereference the top of a nest instead of the nest itself
+                        return hole.dereference_contents(path, top_level_context, robot);
                     }
-                    if (removing_from_container) {
+                    if (path.next) {
+                        if (hole.dereference) {
+                            return hole.dereference(path.next, top_level_context, robot);
+                        } else {
+                            console.log("Expected to refer to a part of " + hole + " but it lacks a method to obtain " + TT.path.toString(path.next));
+                        }
+                    }
+                    if (path.removing_widget()) {
                         if (hole.get_type_name() === 'empty hole') {
                             console.log("Robot is trying to remove something from an empty hole. ");
                         } else if (!hole.get_infinite_stack()) {

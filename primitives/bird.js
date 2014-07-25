@@ -393,13 +393,14 @@ window.TOONTALK.nest = (function (TT) {
             }
             return removed[0];
         };
-        new_nest.dereference_contents = function (path, robot, removing_from_container) {
-            var widget, nest_offset, $top_level_backside_element, top_level_backside_element_offset, widget_element, nest_element, nest_width, nest_height;
+        new_nest.dereference_contents = function (path_to_nest, top_level_context, robot) {
+            var widget, nest_offset, $top_level_backside_element, top_level_backside_element_offset, 
+                widget_element, nest_element, nest_width, nest_height;
             if (contents.length === 0) {
                 return this;
             }
             // e.g. when a robot takes something off the nest
-            if (removing_from_container) {
+            if (path_to_nest.removing_widget()) {
                 // the .widget is needed until widget_sides are first-class objects
                 widget = this.removed_from_container().widget;
                 // isn't attached to the DOM because was removed from nest
@@ -421,7 +422,10 @@ window.TOONTALK.nest = (function (TT) {
                 return widget;
             }
             // act as if the top contents was being dereferenced
-            return contents[0].widget.dereference(path, robot, removing_from_container);            
+            if (path_to_nest.next) {
+                return contents[0].widget.dereference(path_to_nest.next, top_level_context, robot);
+            }
+            return contents[0];         
         };
         // defined here so that contents and other state can be private
         new_nest.get_json = function (json_history) {
