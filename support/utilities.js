@@ -459,8 +459,8 @@ window.TOONTALK.UTILITIES =
             }
             index = json_history.widgets_encountered.indexOf(widget);
             if (index >= 0) {
-                // push returns new length so widget's index is one less than that
-                index = json_history.shared_widgets.push(widget)-1;
+                // need to process children before ancestors when generating the final JSON
+                index = TT.UTILITIES.insert_ancestors_last(widget, json_history.shared_widgets);
                 return {shared_widget_index: index};
             }
             // need to push the widget on the list before computing the widget's jSON in case there is a cycle
@@ -490,6 +490,23 @@ window.TOONTALK.UTILITIES =
                 }
             }
             return false;            
+        },
+
+        insert_ancestors_last: function (widget, array_of_widgets) {
+            // inserts widget before any of its ancestors into the array
+            // returns the index of the widget
+            var insertion_index = -1;
+            array_of_widgets.some(function (other, index) {
+                if (widget.has_ancestor(other)) {
+                    insertion_index = index;
+                    return true;
+                }
+            });
+            if (insertion_index < 0) {
+                insertion_index = array_of_widgets.length;
+            }
+            array_of_widgets.splice(insertion_index, 0, widget);
+            return insertion_index;
         },
         
 //         tree_replace_all: function (object, replace, replacement) {

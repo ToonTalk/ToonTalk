@@ -267,6 +267,20 @@ window.TOONTALK.widget = (function (TT) {
                 }
                 return ancestor || {widget: this};
             };
+            widget.has_ancestor = function (other) {
+                var ancestor = {widget: this};
+                while (ancestor) {
+                    if (other === ancestor.widget) {
+                        return true;
+                    }
+                    if (ancestor.is_backside) {
+                        ancestor = ancestor.widget.get_parent_of_backside();    
+                    } else {
+                        ancestor = ancestor.widget.get_parent_of_frontside();
+                    }
+                }
+                return false;
+            };
             return widget;
         },
         
