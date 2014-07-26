@@ -363,7 +363,7 @@ window.TOONTALK.box = (function (TT) {
     box.update_hole_display = function (index, new_content) {
         var frontside_element = this.get_frontside_element();
         var $hole_element = $(frontside_element).children(".toontalk-hole-number-" + index);
-        var content_frontside_element = new_content.get_frontside_element();
+        var content_frontside_element = new_content.get_frontside_element(true);
         new_content.saved_width =  $(content_frontside_element).width();
         new_content.saved_height = $(content_frontside_element).height();
         $hole_element.empty();
