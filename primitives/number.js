@@ -236,13 +236,19 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         } else {
             $dimensions_holder = $(frontside_element).parent();
         }
-        if (!$dimensions_holder.is(":visible")) {
-            return;
-        }
-        client_width = $dimensions_holder.width();
-        client_height = $dimensions_holder.height();
-        if (client_width === 0 || client_height === 0) {
-            return;
+        if ($(frontside_element).is(".toontalk-carried-by-bird")) {
+            // good enough values when carried by a bird
+            client_width  = 100;
+            client_height =  40;
+        } else {
+            if (!$dimensions_holder.is(":visible")) {
+                return;
+            }
+            client_width =  $dimensions_holder.width();
+            client_height = $dimensions_holder.height();
+            if (client_width === 0 || client_height === 0) {
+                return;
+            }
         }
         font_height = client_height * 0.8;
 //      font_size = TT.UTILITIES.get_style_numeric_property(frontside, "font-size");

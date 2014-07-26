@@ -617,12 +617,12 @@ window.TOONTALK.backside =
             var scale = Math.min(1, x_scale, y_scale);
             if (x_scale === 1 && y_scale === 1) {
                // if not scaling let the browser decide the dimensions
-               $backside_element.css({width: '',
+               $backside_element.css({width:  '',
                                       height: ''});
             } else {
                $backside_element.css({transform: "scale(" + scale + ", " + scale + ")",
                                       "transform-origin": "top left", 
-                                       width: original_width * x_scale / scale,
+                                       width:  original_width *  x_scale / scale,
                                        height: original_height * y_scale / scale});
             }
  //         console.log({scale: scale, x_scale: x_scale, y_scale: y_scale});

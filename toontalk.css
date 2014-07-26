@@ -320,10 +320,9 @@
 }
 .toontalk-carried-by-bird {
     position: static;
-/* 	left: 0;
-	top: 70px; */
-	width: 25%;
-	height: 25%;
+    transform: scale(0.8, 0.4);
+	width: 100%;
+	height: 100%;
 }
 .toontalk-nest-with-egg {
 /* 	display just the first frame */
