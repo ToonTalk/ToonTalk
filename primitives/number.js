@@ -338,9 +338,9 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             // split max_characters between the two parts and recur for each them
             return '<table class="toontalk-number toontalk-proper_fraction' + extra_class + '"' + table_style + '>' +
                    '<tr><td class="toontalk-number toontalk-integer-part-of-proper-fraction">' +
-                    integer_part.to_HTML(max_characters, font_size, '', false, this.get_operator()) + // integers don't have formats but should display operator
+                    integer_part.to_HTML(max_characters/2, font_size, '', false, this.get_operator()) + // integers don't have formats but should display operator
                     '</td><td class="toontalk-number toontalk-fraction-part-of-proper_fraction">' +
-                    fractional_part.to_HTML(max_characters, font_size, 'improper_fraction', false) +
+                    fractional_part.to_HTML(max_characters/2, font_size, 'improper_fraction', false) +
                    '</td></tr></table>';
         }
         if (format === 'decimal') {
