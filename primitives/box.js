@@ -52,9 +52,9 @@ window.TOONTALK.box = (function (TT) {
             }
             contents[index] = new_value;
             contents[index].set_parent_of_frontside(this);
-//             if (update_display) {
-//                 this.update_hole_display(index, new_value);
-//             }
+            if (update_display) {
+                this.update_hole_display(index, new_value);
+            }
             this.rerender();
             if (TT.debugging) {
                 this.debug_string = this.toString();

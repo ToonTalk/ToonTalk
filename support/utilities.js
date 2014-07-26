@@ -1057,16 +1057,10 @@ window.TOONTALK.UTILITIES =
             duration = Math.round(distance/speed);
             $(source_element).addClass("toontalk-side-animating");
             source_element.style.transitionDuration = duration+"ms";
-//          source_element.style.webkitTransitionDuration = duration+"ms";
-//          $(source_element).css({"transition-duration": duration});
-//          console.log("adding   toontalk-side-animating " + new Date());
-//          console.log("Coming from " + source_element.style.left + ", " + source_element.style.top);
             source_element.style.left = (source_relative_position.left + (target_absolute_position.left - source_absolute_position.left)) + "px";
             source_element.style.top = (source_relative_position.top + (target_absolute_position.top - source_absolute_position.top)) + "px";
-//          console.log("Going to    " + source_element.style.left + ", " + source_element.style.top);
             if (!more_animation_follows) {
                 remove_transition_class = function () {
-    //              console.log("removing toontalk-side-animating " + new Date());
                     $(source_element).removeClass("toontalk-side-animating");
                     source_element.style.transitionDuration = '';
                 };
