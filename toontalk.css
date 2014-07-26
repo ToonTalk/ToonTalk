@@ -126,37 +126,55 @@
 	box-sizing:border-box;
     -moz-box-sizing:border-box;
     -webkit-box-sizing:border-box;
-	border-color: rgb(137, 15, 239);
-	padding: 0;
+/* 	border-color: rgb(137, 15, 239); */
+/* 	padding: 0; */
 }
 .toontalk-box-hole-horizontal {
-	border-style: solid;
+    background-color: rgb(137, 15, 239);
+/*  set padding to simulate border */
+/*  see http://stackoverflow.com/questions/13474754/how-to-set-borders-thickness-in-percentages */
+    padding-left: 0%;
+    padding-right: 4%; 
+    padding-top: 4%; 
+    padding-bottom: 4%; 
+/* 	border-style: solid;
 	border-left-width:   0px;
-	border-right-width:  8px;
-	border-top-width:    8px;
-	border-bottom-width: 8px;
+	border-right-width:  8%;
+	border-top-width:    8%;
+	border-bottom-width: 8%; */
 	min-height: 100%;
 }
-.toontalk-box-hole-horizontal:nth-child(1) {
-	border-left-width: 8px;
+.toontalk-hole-number-0,toontalk-box-hole-horizontal {
+	padding-left: 4%;
 }
+/* following stopped working - not sure why so above used instead */
+/* .toontalk-box-hole-horizontal:nth-child(1) {
+	padding-left: 4%;
+} */
 .toontalk-box-hole-vertical {
-	border-style: solid;
-	border-left-width:  8px;
-	border-right-width: 8px;
+	background-color: rgb(137, 15, 239);
+	padding-left: 4%;
+    padding-right: 4%; 
+    padding-top: 0%; 
+    padding-bottom: 4%;
+/* 	border-style: solid;
+	border-left-width:  8%;
+	border-right-width: 8%;
 	border-top-width: 0px;
-	border-bottom-width: 8px;
+	border-bottom-width: 8%; */
 	/* min-width:  100%; */
 	/* min-height: 100%; */
 }
-.toontalk-box-hole-vertical:nth-child(1) {
-	border-top-width: 8px;
+.toontalk-hole-number-0,toontalk-box-hole-vertical {
+	padding-top: 4%;
 }
+/* following stopped working - not sure why so above used instead */
+/* .toontalk-box-hole-vertical:nth-child(1) {
+	padding-top: 4%; 
+} */
 .toontalk-empty-hole {
 	width:  100%;
 	height: 100%;
-	/* min-width:  100%; */
-/* 	min-height: 100%; */
 	background-color: rgb(231, 215, 241);
 }
 .toontalk-top-level-number {

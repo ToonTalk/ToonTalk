@@ -287,8 +287,7 @@ window.TOONTALK.box = (function (TT) {
             $(hole_element).css({left:   left,
                                  top:    top,
                                  width:  hole_width,
-                                 height: hole_height});
-                                                     
+                                 height: hole_height});                                               
             if (!TT.UTILITIES.has_animating_image(hole_frontside_element)) {
                 // explicit size interferes with animation
                 setTimeout(function () {
@@ -299,14 +298,14 @@ window.TOONTALK.box = (function (TT) {
                     1);
             }
             // following ensures that there is frontside_element of the hole
-            hole.update_display();
+            hole.render();
         };
         var horizontal = this.get_horizontal();
         var additional_class = horizontal ? "toontalk-box-hole-horizontal" : "toontalk-box-hole-vertical";
+        var wrong_class = horizontal ? "toontalk-box-hole-vertical" : "toontalk-box-hole-horizontal";
         var first_time = !$(frontside_element).is(".toontalk-box");
         var i, hole, hole_element, box_left, box_width, hole_width, box_height, hole_height, content_frontside_element, renderer;
         $(frontside_element).addClass("toontalk-box");
-        
         box_width = $(frontside_element).width();
         box_height = $(frontside_element).height();
         if (horizontal) {
@@ -319,6 +318,8 @@ window.TOONTALK.box = (function (TT) {
         renderer = 
             function () {
                 var $box_hole_elements = $(frontside_element).children("." + additional_class);
+                // if switching between horizontal and vertical need to remove the old elements
+                $(frontside_element).children("." + wrong_class).remove();
                 if ($box_hole_elements.length === size) {
                     $box_hole_elements.each(function (index, hole_element) {
                         update_hole(hole_element, this.get_hole(index), index);
