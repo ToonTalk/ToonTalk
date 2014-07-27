@@ -596,6 +596,11 @@ window.TOONTALK.nest = (function (TT) {
 //                 contents_side_element.style.position = "static";
                 frontside_element.appendChild(contents_side_element);
                 $(frontside_element).addClass("toontalk-empty-nest");
+                if (contents[0].is_backside) {
+                    contents[0].widget.set_parent_of_bacside(this);
+                } else {
+                    contents[0].widget.set_parent_of_frontside(this);
+                }
             } else {
                 frontside_element.title = this.get_title();
                 if (guid) {
