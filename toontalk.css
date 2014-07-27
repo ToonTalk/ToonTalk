@@ -105,6 +105,8 @@
 .toontalk-frontside-in-box {
 	width:  100%;
 	height: 100%;
+/* 	default color same as empty hole */
+	background-color: rgb(231, 215, 241);
 }
 .toontalk-widget {
 	width:  100%;
