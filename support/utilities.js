@@ -345,8 +345,19 @@ window.TOONTALK.UTILITIES =
                 if (!additional_info) {
                     additional_info = {};
                 }
-                additional_info.json_view = json_view;
+                if (json_view) {
+                    additional_info.json_view = json_view;
+                } else {
+                    json_view = additional_info.json_view;
+                }
                 widget = json_creators[json_semantic.type](json_semantic, additional_info);
+               // following was needed when get_json_top_level wasn't working properly
+//             } else if (json_semantic.shared_widget_index >= 0) {
+//                 widget = additional_info.shared_widgets[json_semantic.shared_widget_index];
+//                 if (!widget) {
+//                     // try again with the JSON of the shared widget
+//                     widget = TT.UTILITIES.create_from_json(additional_info.json_of_shared_widgets[json_semantic.shared_widget_index], additional_info);
+//                 }
             } else {
                 console.log("json type '" + json_semantic.type + "' not yet supported.");
                 return;
@@ -360,7 +371,7 @@ window.TOONTALK.UTILITIES =
                     widget.set_infinite_stack(json_semantic.infinite_stack);
                 }
                 if (json_view && json_view.frontside_width) {
-                    side_element = json.view.backside ? widget.get_backside(true).get_element() : widget.get_frontside_element();
+                    side_element = json_view.backside ? widget.get_backside(true).get_element() : widget.get_frontside_element();
                     size_css = {width: json_view.frontside_width,
                                 height: json_view.frontside_height};
                     if (json_semantic.type === 'element') {
@@ -434,14 +445,14 @@ window.TOONTALK.UTILITIES =
         get_json_top_level: function (widget) {
             var json_history = {widgets_encountered: [],
                                 shared_widgets: [],
-                                json_of_widgets_encountered: []};
-            var json = widget.add_to_json(widget.get_json(json_history), json_history);
+                                json_of_widgets_encountered: []};                      
+            var json = TT.UTILITIES.get_json(widget, json_history);
             if (json_history.shared_widgets.length > 0) {
                 json.shared_widgets = json_history.shared_widgets.map(function (widget, widget_index) {
                     // get the JSON of only those widgets that occurred more than once
                     var index_among_all_widgets = json_history.widgets_encountered.indexOf(widget);
                     var json_of_widget = json_history.json_of_widgets_encountered[index_among_all_widgets];
-                    TT.UTILITIES.tree_replace_once(json, json_of_widget, {shared_widget_index: widget_index});
+                    TT.UTILITIES.tree_replace_once(json.semantic, json_of_widget, {shared_widget_index: widget_index});
                     return json_of_widget;
                 });
             }
@@ -463,12 +474,13 @@ window.TOONTALK.UTILITIES =
                 index = TT.UTILITIES.insert_ancestors_last(widget, json_history.shared_widgets);
                 return {shared_widget_index: index};
             }
-            // need to push the widget on the list before computing the widget's jSON in case there is a cycle
             // need to keep track of the index rather than push json_of_widgets_encountered to keep them aligned properly
             index = json_history.widgets_encountered.push(widget)-1;
             widget_json = widget.get_json(json_history);
             widget_json = widget.add_to_json(widget_json, json_history);
+            // need to push the widget on the list before computing the backside widget's jSON in case there is a cycle
             json_history.json_of_widgets_encountered[index] = widget_json;
+            widget.add_backside_widgets_to_json(widget_json, json_history);
             return widget_json;
         },
         

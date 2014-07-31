@@ -382,7 +382,7 @@ window.TOONTALK.widget = (function (TT) {
         },
         
         add_to_json: function (json_semantic, json_history) {
-            var json_view, json, position, frontside_element, backside, backside_element, backside_widgets, backside_widgets_json_views, backside_widget_side;
+            var json_view, json, position, frontside_element, backside, backside_element;
             if (json_semantic) {
                 if (json_semantic.view) {
                     // already contains both semantic and view
@@ -440,34 +440,7 @@ window.TOONTALK.widget = (function (TT) {
                     // backside is closed but this was saved when it was hidden
                     json_view.backside_geometry = this.backside_geometry;
                 }
-                backside_widgets = this.get_backside_widgets();
-                if (backside_widgets.length > 0) {
-                    json_semantic.backside_widgets = TT.UTILITIES.get_json_of_array(backside_widgets, json_history);
-                    backside_widgets_json_views = this.get_backside_widgets_json_views();
-                    if (backside_widgets_json_views) {
-                       backside_widgets_json_views.forEach(function (backside_widget_view, index) {
-                           var json_view, widget_index;
-                           backside_widget_side = json_semantic.backside_widgets[index];
-                           if (backside_widget_side.widget.shared_widget_index >= 0) {
-                               widget_index = json_history.widgets_encountered.indexOf(json_history.shared_widgets[backside_widget_side.widget.shared_widget_index]);
-                               json_view = json_history.json_of_widgets_encountered[widget_index].view;
-                           } else {
-                               json_view = backside_widget_side.widget.view;
-                           }
-                           if (backside_widget_side.is_backside) {
-                               if (backside_widget_view.backside_left) {
-                                   json_view.backside_left = backside_widget_view.backside_left;
-                                   json_view.backside_top = backside_widget_view.backside_top;
-                               }
-                           } else {
-                               if (backside_widget_view.frontside_left) {
-                                   json_view.frontside_left = backside_widget_view.frontside_left;
-                                   json_view.frontside_top = backside_widget_view.frontside_top;
-                               }
-                           }
-                       });
-                    }
-                }
+                
                 // following are typically undefined unless in a container
                 json_view.saved_width = this.saved_width;
                 json_view.saved_height = this.saved_height;
@@ -478,6 +451,38 @@ window.TOONTALK.widget = (function (TT) {
             return {};
         },
         
+        add_backside_widgets_to_json: function (json, json_history) {
+            var backside_widgets = this.get_backside_widgets();
+            var backside_widgets_json_views, backside_widget_side;
+            if (backside_widgets.length > 0) {
+                json.semantic.backside_widgets = TT.UTILITIES.get_json_of_array(backside_widgets, json_history);
+                backside_widgets_json_views = this.get_backside_widgets_json_views();
+                if (backside_widgets_json_views) {
+                    backside_widgets_json_views.forEach(function (backside_widget_view, index) {
+                        var json_view, widget_index;
+                        backside_widget_side = json.semantic.backside_widgets[index];
+                        if (backside_widget_side.widget.shared_widget_index >= 0) {
+                            widget_index = json_history.widgets_encountered.indexOf(json_history.shared_widgets[backside_widget_side.widget.shared_widget_index]);
+                            json_view = json_history.json_of_widgets_encountered[widget_index].view;
+                        } else {
+                            json_view = backside_widget_side.widget.view;
+                        }
+                        if (backside_widget_side.is_backside) {
+                            if (backside_widget_view.backside_left) {
+                                json_view.backside_left = backside_widget_view.backside_left;
+                                json_view.backside_top = backside_widget_view.backside_top;
+                            }
+                        } else {
+                            if (backside_widget_view.frontside_left) {
+                                json_view.frontside_left = backside_widget_view.frontside_left;
+                                json_view.frontside_top = backside_widget_view.frontside_top;
+                            }
+                        }
+                    });
+                }
+            }
+        },
+
         get_backside_widgets: function () {
             return this.backside_widgets || [];
         },
