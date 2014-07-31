@@ -452,6 +452,8 @@ window.TOONTALK.UTILITIES =
                     // get the JSON of only those widgets that occurred more than once
                     var index_among_all_widgets = json_history.widgets_encountered.indexOf(widget);
                     var json_of_widget = json_history.json_of_widgets_encountered[index_among_all_widgets];
+                    // start searching tree for json_of_widget with the semantic component
+                    // because json might === json_of_widget
                     TT.UTILITIES.tree_replace_once(json.semantic, json_of_widget, {shared_widget_index: widget_index});
                     return json_of_widget;
                 });
@@ -480,7 +482,9 @@ window.TOONTALK.UTILITIES =
             widget_json = widget.add_to_json(widget_json, json_history);
             // need to push the widget on the list before computing the backside widget's jSON in case there is a cycle
             json_history.json_of_widgets_encountered[index] = widget_json;
-            widget.add_backside_widgets_to_json(widget_json, json_history);
+            if (widget.add_backside_widgets_to_json) {
+                widget.add_backside_widgets_to_json(widget_json, json_history);
+            }
             return widget_json;
         },
         
