@@ -159,6 +159,8 @@ window.TOONTALK.sensor = (function (TT) {
         };
         new_sensor.set_sensor_of = function (new_value) {
             widget = new_value;
+            // make sure listeners are updated
+            new_sensor.set_active(active);
         }
         return new_sensor;
     };
