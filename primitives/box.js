@@ -318,12 +318,14 @@ window.TOONTALK.box = (function (TT) {
         renderer = 
             function () {
                 var $box_hole_elements = $(frontside_element).children("." + additional_class);
+                var random_blue_color = "rgb(" + Math.round(Math.random()*128) + "," + Math.round(Math.random()*128) + ", 255)";
+
                 // if switching between horizontal and vertical need to remove the old elements
                 $(frontside_element).children("." + wrong_class).remove();
                 if ($box_hole_elements.length === size) {
                     $box_hole_elements.each(function (index, hole_element) {
                         update_hole(hole_element, this.get_hole(index), index);
-                    }.bind(this));  
+                    }.bind(this));
                 } else {
                     $box_hole_elements.remove();
                     for (i = 0; i < size; i++) {
@@ -347,7 +349,10 @@ window.TOONTALK.box = (function (TT) {
                         hole_element.appendChild(content_frontside_element);
                         frontside_element.appendChild(hole_element);
                     };
+                    $box_hole_elements = $(frontside_element).children("." + additional_class);
                 }
+                // random shade of blue
+                $box_hole_elements.css({"background-color": random_blue_color});
             }.bind(this);
         if (first_time) {
             // do it now to create the elements
