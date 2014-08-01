@@ -198,7 +198,12 @@ window.TOONTALK.robot_action =
         button_use_animation(widget, context, top_level_context, robot, new_continuation, ".toontalk-copy-backside-button");
     };
     var remove_animation = function (widget_side, context, top_level_context, robot, continuation) {
-        var $close_button = $(widget_side.widget.get_frontside_element()).find(".toontalk-close-button");
+        var $close_button;
+        if (!widget_side.widget) {
+            // is a widget so asumme it is a frontside
+            widget_side = {widget: widget_side};
+        }
+        $close_button = $(widget_side.widget.get_frontside_element()).find(".toontalk-close-button");
         $close_button.show();
         robot.animate_to_element($close_button.get(0), continuation, .25);
     };
