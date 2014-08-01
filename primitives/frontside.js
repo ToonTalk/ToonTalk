@@ -53,11 +53,16 @@ window.TOONTALK.frontside =
             frontside.get_widget = function () {
                 return widget;
             };
-            // prefer addEventListener over JQuery's since when I inspect listeners I get a link to this code
+            // prefer addEventListener over JQuery's equivalent since when I inspect listeners I get a link to this code
             frontside_element.addEventListener('click', function (event) {
                 if ($(event.target).is('.ui-resizable-handle')) { 
                     // don't let resize events cause click response
                     // see http://stackoverflow.com/questions/5709220/how-to-cancel-click-after-resizable-events
+                    return;
+                }
+                if ($(event.target).is(".toontalk-close-button")) {
+                    // not sure why this happens sometimes
+                    close_handler(event);
                     return;
                 }
                 if ($frontside_element.is(".toontalk-top-level-resource")) {
@@ -95,9 +100,15 @@ window.TOONTALK.frontside =
             return $(this.get_element()).is(":visible"); 
         },
         
-        remove: function() {
+        remove: function () {
             $(this.get_element()).remove();
         }
+        
+//         remove_children: function () {
+//             // removes all but close button and resize handles
+//             var frontside_element = this.get_element();
+//             $(frontside_element).children("toontalk-side").remove();
+//         }
 
     };
 }(window.TOONTALK));

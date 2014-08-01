@@ -68,28 +68,36 @@ window.TOONTALK.path =
                 if (path.dereference) {
                     dereferenced = path.dereference(context, top_level_context, robot);
                 } else {
-                   dereferenced = context.dereference(path, top_level_context, robot);
+                    dereferenced = context.dereference(path, top_level_context, robot);
                 }
             } else {
                 // no path means entire context -- I don't think this is still true
                 dereferenced = context;
             }
-            if (dereferenced.dereference) {
-                // e.g. covered nests dereference to their top item
+            if (dereferenced && dereferenced.dereference) {
+                // e.g. covered nests dereference to their top item 
                 return dereferenced.dereference();
             }
             return dereferenced;
         },
         toString: function (a_path) {
+            var sub_path_string;
             if (a_path.next) {
-                // will the first part always end in a space?
+                sub_path_string = TT.path.toString(a_path.next);
+                if (sub_path_string[sub_path_string.length-1] !== ' ') {
+                    sub_path_string += ' ';
+                }
                 return TT.path.toString(a_path.next) + "of " + a_path.toString();
             } else {
                 return a_path.toString();
             }
         },
         get_json: function (a_path, json_history) {
-            var json = a_path.get_json(json_history);
+            var json;
+            if (!a_path.get_json) {
+                return a_path; // is a constant
+            }
+            json = a_path.get_json(json_history);
             if (a_path.next) {
                 json.next_path = TT.path.get_json(a_path.next, json_history);
             }
@@ -110,7 +118,7 @@ window.TOONTALK.path =
             return {dereference: function (context, top_level_context, robot) {
                         if (this.next) {
                             if (context.dereference) {
-                                return context.dereference(this.next, robot);
+                                return context.dereference(this.next, top_level_context, robot);
                             } else {
                                 console.log("Expected context to support dereference.");
                             }                

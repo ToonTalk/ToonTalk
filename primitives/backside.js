@@ -200,6 +200,7 @@ window.TOONTALK.backside =
                 handles: "e,s,se"}); // was "n,e,s,w,se,ne,sw,nw" but interfered with buttons
             // following should be done by something like GWT's onLoad...
             // but DOMNodeInserted is deprecated and MutationObserver is only in IE11.
+            // giving up on pre IE11 so use https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver
             $backside_element.on('DOMNodeInserted', function (event) {
                 var $source = $(event.originalEvent.srcElement);
                 var owner_widget;
@@ -352,7 +353,7 @@ window.TOONTALK.backside =
             }
             button_set = TT.UTILITIES.create_button_set(run_or_erase_button, copy_button, settings_button, extra_arguments);
             if (description) {
-               return TT.UTILITIES.create_vertical_table(TT.UTILITIES.create_text_element("This " + widget.get_type_name() + " " + description), button_set);
+               return TT.UTILITIES.create_vertical_table(TT.UTILITIES.create_text_element("Back side of a " + widget.get_type_name() + " that " + description), button_set);
             }
             return button_set;
         },
@@ -503,19 +504,28 @@ window.TOONTALK.backside =
             var $backside_element = $(backside_element);
             var $run_button = $("<button>Run</button>").button();
             $run_button.addClass("toontalk-run-backside-button");
+            $run_button.get(0).toontalk_widget = widget;
             $run_button.click(function (event) {
                 var will_run = !widget.get_running();
-                TT.backside.update_run_button($run_button, widget);
+                TT.backside.update_run_button($run_button);
                 widget.set_running(will_run);
                 event.stopPropagation();
             });
-            $run_button.attr("title", "Click to run the robots on this " + widget.get_type_name());
+            setTimeout(function () {
+                    this.update_run_button($run_button);
+                }.bind(this),
+                1);            
             return $run_button.get(0);
         },
         
-        update_run_button: function ($run_button, widget) {
+        update_run_button: function ($run_button) {
+            var widget = $run_button.get(0).toontalk_widget;
             var running = widget.get_running();
-            if (!$run_button.is(":visible") || !$run_button.is(":enabled")) {
+            if (!$run_button.is(":enabled")) {
+                $run_button.attr("title", "Add robots here to to run on this " + widget.get_type_name());
+                return;
+            }
+            if (!$run_button.is(":visible")) {
                 return;
             }
             if (!running) {
@@ -607,12 +617,12 @@ window.TOONTALK.backside =
             var scale = Math.min(1, x_scale, y_scale);
             if (x_scale === 1 && y_scale === 1) {
                // if not scaling let the browser decide the dimensions
-               $backside_element.css({width: '',
+               $backside_element.css({width:  '',
                                       height: ''});
             } else {
                $backside_element.css({transform: "scale(" + scale + ", " + scale + ")",
                                       "transform-origin": "top left", 
-                                       width: original_width * x_scale / scale,
+                                       width:  original_width *  x_scale / scale,
                                        height: original_height * y_scale / scale});
             }
  //         console.log({scale: scale, x_scale: x_scale, y_scale: y_scale});

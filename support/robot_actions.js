@@ -116,9 +116,15 @@ window.TOONTALK.actions =
                                 // wait a bit until OK to run
                                 setTimeout(do_next_step, 500);
                             } else if (robot.visible()) {
+                                // I inspected the elements and this ensures that the robot is on top of everything
+                                // but at least in Chrome it isn't displayed that way in all situations            
+                                $(frontside_element).css({"z-index": TT.UTILITIES.next_z_index()});
                                 run_watched_step(i+1);
                             } else {
                                 // maybe user hid the robot while running
+                                // first restore robot to its 'home'
+                                frontside_element.style.left = robot_start_position.left + "px";
+                                frontside_element.style.top = robot_start_position.top + "px";
                                 for (i = i+1; i < steps.length; i++) {
                                     steps[i].run_unwatched(context, top_level_context, robot);
                                 }
@@ -131,9 +137,6 @@ window.TOONTALK.actions =
                     if (robot.get_thing_in_hand()) {
                         robot.render();
                     }
-                    // I inspected the elements and this ensures that the robot is on top of everything
-                    // but at least in Chrome it isn't displayed that way in all situations            
-                    $(frontside_element).css({"z-index": TT.UTILITIES.next_z_index()});
                     // pause between steps and give the previous step a chance to update the DOM
                     setTimeout(do_next_step, 500);
                 };
@@ -148,7 +151,7 @@ window.TOONTALK.actions =
                 }
             }.bind(this);
             if (robot.get_animating()) {
-                // is animating to run a step while watched
+                // is animating so is running a step while watched
                 return true;
             }
             robot.set_animating(true);
@@ -195,7 +198,12 @@ window.TOONTALK.newly_created_widgets_path =
         create: function (index) {
             return {
                 dereference: function (context, top_level_context, robot) {
-                    return robot.get_body().dereference(index);
+                    var widget = robot.get_body().dereference(index);
+                    if (this.next) {
+                        // there is more to the path so compute the part of the widget referenced
+                        return TT.path.dereference_path(this.next, widget, top_level_context, robot);
+                    }
+                    return widget;
                 },
                 toString: function () {
                     var ordinal;

@@ -48,11 +48,10 @@ window.TOONTALK.robot_action =
                              }
                              // update this when robots can drop backsides as well
                              thing_in_hand.drop_on(target, false, undefined, robot);
-//                              target.widget_dropped_on_me(thing_in_hand, false, undefined, robot);
                              robot.rerender();
                          }
                      } else {
-                         console.log("Thing in robot's hand (" + thing_in_hand.toString() + ") doesn't handle 'drop_on'. Robot that " + robot.toString());
+                         console.log("Thing in robot's hand (" + thing_in_hand + ") doesn't handle 'drop_on'. Robot that " + robot);
                          return false;
                      }
                      return true;
@@ -62,7 +61,13 @@ window.TOONTALK.robot_action =
             return false;
          },
          "remove": function (widget, context, top_level_context, robot) {
-             widget.remove(); 
+             if (widget.widget) {
+                 // is really a side of a widget
+                 widget = widget.widget;
+             }
+             if (widget.remove) {
+                 widget.remove();
+             }
              return true;
          },
          "edit": function (widget, context, top_level_context, robot, additional_info) {
@@ -192,11 +197,10 @@ window.TOONTALK.robot_action =
         };
         button_use_animation(widget, context, top_level_context, robot, new_continuation, ".toontalk-copy-backside-button");
     };
-    var remove_animation = function (widget, context, top_level_context, robot, continuation) {
-        var $close_button = $(widget.get_frontside_element()).find(".toontalk-close-button");
+    var remove_animation = function (widget_side, context, top_level_context, robot, continuation) {
+        var $close_button = $(widget_side.widget.get_frontside_element()).find(".toontalk-close-button");
         $close_button.show();
         robot.animate_to_element($close_button.get(0), continuation, .25);
-//         button_use_animation(widget, context, top_level_context, robot, continuation, ".toontalk-remove-backside-button");
     };
     var edit_animation = function (widget, context, top_level_context, robot, continuation, additional_info) {
         var new_continuation = function () {

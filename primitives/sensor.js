@@ -157,6 +157,9 @@ window.TOONTALK.sensor = (function (TT) {
             // to do
             return "not matched";
         };
+        new_sensor.set_sensor_of = function (new_value) {
+            widget = new_value;
+        }
         return new_sensor;
     };
     
@@ -166,14 +169,21 @@ window.TOONTALK.sensor = (function (TT) {
                                       json.attribute,
                                       json.description, 
                                       previous_contents,
-                                      json.active,
-                                      json.sensor_of && TT.UTILITIES.create_from_json(json.sensor_of, additional_info));
+                                      json.active);
+                                      // following postponed because of circularity of sensors and their widgets
+        if (json.sensor_of) {
+            // delay this due to the circularity of sensors and their widgets
+            setTimeout(function () {
+                    sensor.set_sensor_of(TT.UTILITIES.create_from_json(json.sensor_of, additional_info));
+                },
+                1);
+        } 
         if (previous_contents.length > 0) {
             setTimeout(function () {
                 // delay to give it a chance to be added to the DOM
                 previous_contents.forEach(function (widget) {
                     style_contents(widget.widget, sensor);
-                })
+                });
             },
             500);
         }

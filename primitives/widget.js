@@ -120,7 +120,7 @@ window.TOONTALK.widget = (function (TT) {
                     backside_element = this.get_backside_element();
                     if (backside_element) {
                         $(backside_element).find(".toontalk-run-backside-button").each(function (index, element) {
-                            TT.backside.update_run_button($(element), widget);
+                            TT.backside.update_run_button($(element));
                         });
                     }
                     this.rerender();
@@ -248,7 +248,7 @@ window.TOONTALK.widget = (function (TT) {
             };
             widget.set_parent_of_frontside = function (new_value, parent_is_backside) {
                 parent_of_frontside = new_value && {widget: new_value,
-                                                     is_backside: parent_is_backside};
+                                                    is_backside: parent_is_backside};
             };
             widget.set_parent_of_backside = function (new_value, parent_is_backside) {
                 parent_of_backside = new_value && {widget: new_value,
@@ -266,6 +266,20 @@ window.TOONTALK.widget = (function (TT) {
                     }
                 }
                 return ancestor || {widget: this};
+            };
+            widget.has_ancestor = function (other) {
+                var ancestor = {widget: this};
+                while (ancestor) {
+                    if (other === ancestor.widget) {
+                        return true;
+                    }
+                    if (ancestor.is_backside) {
+                        ancestor = ancestor.widget.get_parent_of_backside();    
+                    } else {
+                        ancestor = ancestor.widget.get_parent_of_frontside();
+                    }
+                }
+                return false;
             };
             return widget;
         },
@@ -292,10 +306,16 @@ window.TOONTALK.widget = (function (TT) {
         },
         
         get_full_description: function () {
+            var description, string;
             if (this.get_erased && this.get_erased()) {
                 return "erased " + this.get_type_name();
             }
-            return this.get_description() || this.toString();
+            description = this.get_description();
+            string = this.toString();
+            if (description) {
+                return string + " (" + description + ")";
+            }
+            return string;
         },
         
 //         get_description: function () {
@@ -362,7 +382,7 @@ window.TOONTALK.widget = (function (TT) {
         },
         
         add_to_json: function (json_semantic, json_history) {
-            var json_view, json, position, frontside_element, backside, backside_element, backside_widgets, backside_widgets_json_views, backside_widget_side;
+            var json_view, json, position, frontside_element, backside, backside_element;
             if (json_semantic) {
                 if (json_semantic.view) {
                     // already contains both semantic and view
@@ -420,34 +440,7 @@ window.TOONTALK.widget = (function (TT) {
                     // backside is closed but this was saved when it was hidden
                     json_view.backside_geometry = this.backside_geometry;
                 }
-                backside_widgets = this.get_backside_widgets();
-                if (backside_widgets.length > 0) {
-                    json_semantic.backside_widgets = TT.UTILITIES.get_json_of_array(backside_widgets, json_history);
-                    backside_widgets_json_views = this.get_backside_widgets_json_views();
-                    if (backside_widgets_json_views) {
-                       backside_widgets_json_views.forEach(function (backside_widget_view, index) {
-                           var json_view, widget_index;
-                           backside_widget_side = json_semantic.backside_widgets[index];
-                           if (backside_widget_side.widget.shared_widget_index >= 0) {
-                               widget_index = json_history.widgets_encountered.indexOf(json_history.shared_widgets[backside_widget_side.widget.shared_widget_index]);
-                               json_view = json_history.json_of_widgets_encountered[widget_index].view;
-                           } else {
-                               json_view = backside_widget_side.widget.view;
-                           }
-                           if (backside_widget_side.is_backside) {
-                               if (backside_widget_view.backside_left) {
-                                   json_view.backside_left = backside_widget_view.backside_left;
-                                   json_view.backside_top = backside_widget_view.backside_top;
-                               }
-                           } else {
-                               if (backside_widget_view.frontside_left) {
-                                   json_view.frontside_left = backside_widget_view.frontside_left;
-                                   json_view.frontside_top = backside_widget_view.frontside_top;
-                               }
-                           }
-                       });
-                    }
-                }
+                
                 // following are typically undefined unless in a container
                 json_view.saved_width = this.saved_width;
                 json_view.saved_height = this.saved_height;
@@ -458,6 +451,38 @@ window.TOONTALK.widget = (function (TT) {
             return {};
         },
         
+        add_backside_widgets_to_json: function (json, json_history) {
+            var backside_widgets = this.get_backside_widgets();
+            var backside_widgets_json_views, backside_widget_side;
+            if (backside_widgets.length > 0) {
+                json.semantic.backside_widgets = TT.UTILITIES.get_json_of_array(backside_widgets, json_history);
+                backside_widgets_json_views = this.get_backside_widgets_json_views();
+                if (backside_widgets_json_views) {
+                    backside_widgets_json_views.forEach(function (backside_widget_view, index) {
+                        var json_view, widget_index;
+                        backside_widget_side = json.semantic.backside_widgets[index];
+                        if (backside_widget_side.widget.shared_widget_index >= 0) {
+                            widget_index = json_history.widgets_encountered.indexOf(json_history.shared_widgets[backside_widget_side.widget.shared_widget_index]);
+                            json_view = json_history.json_of_widgets_encountered[widget_index].view;
+                        } else {
+                            json_view = backside_widget_side.widget.view;
+                        }
+                        if (backside_widget_side.is_backside) {
+                            if (backside_widget_view.backside_left) {
+                                json_view.backside_left = backside_widget_view.backside_left;
+                                json_view.backside_top = backside_widget_view.backside_top;
+                            }
+                        } else {
+                            if (backside_widget_view.frontside_left) {
+                                json_view.frontside_left = backside_widget_view.frontside_left;
+                                json_view.frontside_top = backside_widget_view.frontside_top;
+                            }
+                        }
+                    });
+                }
+            }
+        },
+
         get_backside_widgets: function () {
             return this.backside_widgets || [];
         },
@@ -821,7 +846,9 @@ window.TOONTALK.widget = (function (TT) {
             widget.update_display = function () {
                 if (this.backside_widgets) {
                     this.backside_widgets.forEach(function (widget_side) {
-                        widget_side.widget.update_display();    
+                        if (widget_side.widget.visible()) {
+                            widget_side.widget.update_display();
+                        }    
                     });
                 }
             };

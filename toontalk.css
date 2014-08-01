@@ -35,8 +35,8 @@
 	background-image: url("images/robot.png");
 	background-repeat: no-repeat;
 	background-size: contain;
-	width:  100px;
-	height: 167px;
+	width:  66px;
+	height: 110px;
 }
 .toontalk-robot-animating {
 	opacity: .8;
@@ -74,6 +74,7 @@
 }
 .toontalk-backside-of-robot {
 	background-color: rgba(230, 230, 255, .94);
+	width: 480px;
 }
 .toontalk-top-level-backside {
     width: 1000px;
@@ -104,12 +105,12 @@
 .toontalk-frontside-in-box {
 	width:  100%;
 	height: 100%;
+/* 	default color same as empty hole */
+	background-color: rgb(231, 215, 241);
 }
 .toontalk-widget {
 	width:  100%;
 	height: 100%;
-/* 	min-width:  100%;
-	min-height: 100%; */
 	display: inline-block;
 }
 .toontalk-box {
@@ -127,37 +128,55 @@
 	box-sizing:border-box;
     -moz-box-sizing:border-box;
     -webkit-box-sizing:border-box;
-	border-color: rgb(137, 15, 239);
-	padding: 0;
+/* 	border-color: rgb(137, 15, 239); */
+/* 	padding: 0; */
 }
 .toontalk-box-hole-horizontal {
-	border-style: solid;
+    background-color: rgb(137, 15, 239);
+/*  set padding to simulate border */
+/*  see http://stackoverflow.com/questions/13474754/how-to-set-borders-thickness-in-percentages */
+    padding-left: 0%;
+    padding-right: 4%; 
+    padding-top: 4%; 
+    padding-bottom: 4%; 
+/* 	border-style: solid;
 	border-left-width:   0px;
-	border-right-width:  8px;
-	border-top-width:    8px;
-	border-bottom-width: 8px;
+	border-right-width:  8%;
+	border-top-width:    8%;
+	border-bottom-width: 8%; */
 	min-height: 100%;
 }
-.toontalk-box-hole-horizontal:nth-child(1) {
-	border-left-width: 8px;
+.toontalk-hole-number-0,toontalk-box-hole-horizontal {
+	padding-left: 4%;
 }
+/* following stopped working - not sure why so above used instead */
+/* .toontalk-box-hole-horizontal:nth-child(1) {
+	padding-left: 4%;
+} */
 .toontalk-box-hole-vertical {
-	border-style: solid;
-	border-left-width:  8px;
-	border-right-width: 8px;
+	background-color: rgb(137, 15, 239);
+	padding-left: 4%;
+    padding-right: 4%; 
+    padding-top: 0%; 
+    padding-bottom: 4%;
+/* 	border-style: solid;
+	border-left-width:  8%;
+	border-right-width: 8%;
 	border-top-width: 0px;
-	border-bottom-width: 8px;
+	border-bottom-width: 8%; */
 	/* min-width:  100%; */
 	/* min-height: 100%; */
 }
-.toontalk-box-hole-vertical:nth-child(1) {
-	border-top-width: 8px;
+.toontalk-hole-number-0,toontalk-box-hole-vertical {
+	padding-top: 4%;
 }
+/* following stopped working - not sure why so above used instead */
+/* .toontalk-box-hole-vertical:nth-child(1) {
+	padding-top: 4%; 
+} */
 .toontalk-empty-hole {
 	width:  100%;
 	height: 100%;
-	/* min-width:  100%; */
-/* 	min-height: 100%; */
 	background-color: rgb(231, 215, 241);
 }
 .toontalk-top-level-number {
@@ -243,6 +262,7 @@
 .toontalk-conditions-contents {
 	width:  100%;
 	height: 100%;
+	position: absolute;
 }
 .toontalk-conditions-contents-container {
 /* 	Can't add the border to toontalk-conditions-contents because erased elements have 0 opacity */
@@ -320,10 +340,9 @@
 }
 .toontalk-carried-by-bird {
     position: static;
-/* 	left: 0;
-	top: 70px; */
-	width: 25%;
-	height: 25%;
+    transform: scale(0.8, 0.4);
+	width: 100%;
+	height: 100%;
 }
 .toontalk-nest-with-egg {
 /* 	display just the first frame */
@@ -356,16 +375,19 @@
 	background-repeat: no-repeat;
 	background-size: contain;
 	margin-top: 43px;
-	width: 116px;
-	height: 98px;
+	/* width: 116px; */
+	/* height: 98px; */
 /* 	display just the last frame */
-/*     width:  116px;
+/*  width:  116px;
     height: 141px;
     background-image: url("images/hatch-egg-strip.png");
 	background-position: -1628px; */
 }
 .toontalk-empty-nest.toontalk-frontside-in-box {
 	margin-top: 0px;
+}
+.toontalk-hatch-egg.toontalk-frontside-in-box {
+	margin-top: -43px;
 }
 .toontalk-hatch-egg {
     width:  116px;
@@ -398,8 +420,6 @@
 	display: inline-block;
 	line-height: 0px;
 	padding: 11px 3px;
-/* 	close buttons need to be above the widget view or clicking close button will open backside instead */
-	z-index: 10000000;
 }
 .toontalk-close-button:hover {
 	background: red;
@@ -436,17 +456,99 @@
      to { background-position: -1744px; }
 }
 
-.toontalk-bird-waiting {
-	background-image: url("images/gimme.png");
-	background-repeat: no-repeat;
+.toontalk-bird-static {
+    width:  70px;
+    height: 102px;
+    background-image: url("images/bird-static.png");
+    background-repeat: no-repeat;
 	background-size: contain;
-	width: 88px;
-	height: 118px;
-/* 	display just the last frame */
-/*     width:  150px;
-    height: 127px;
-    background-image: url("images/fly-down.png");
-	background-position: -598px; */
+}
+
+/* Couldn't get the following to work -- tried to define new bird-morph-from-static keyframes but didn't help */
+/* .toontalk-bird-morph-from-static {
+    width:  88px;
+    height: 119px;
+    background-image: url("images/bird-morph.png");
+	background-size: auto;
+    -webkit-animation: bird-morph 1s steps(13) normal forwards;
+       -moz-animation: bird-morph 1s steps(13) normal forwards;
+        -ms-animation: bird-morph 1s steps(13) normal forwards;
+         -o-animation: bird-morph 1s steps(13) normal forwards;
+            animation: bird-morph 1s steps(13) normal forwards;
+} */
+
+.toontalk-bird-gimme {
+    width:  103px;
+    height: 117px;
+    background-image: url("images/bird-gimme.png");
+	background-size: auto;
+	-webkit-animation: bird-gimme 1s steps(6) infinite;
+       -moz-animation: bird-gimme 1s steps(6) infinite;
+        -ms-animation: bird-gimme 1s steps(6) infinite;
+         -o-animation: bird-gimme 1s steps(6) infinite;
+            animation: bird-gimme 1s steps(6) infinite;
+}
+
+@-webkit-keyframes bird-gimme {
+   from { background-position:    0px; }
+     to { background-position: -615px; }
+}
+
+@-moz-keyframes bird-gimme {
+   from { background-position:    0px; }
+     to { background-position: -615px; }
+}
+
+@-ms-keyframes bird-gimme {
+   from { background-position:    0px; }
+     to { background-position: -615px; }
+}
+
+@-o-keyframes bird-gimme {
+   from { background-position:    0px; }
+     to { background-position: -615px; }
+}
+
+@keyframes bird-gimme {
+   from { background-position:    0px; }
+     to { background-position: -615px; }
+}
+
+.toontalk-bird-morph-to-static {
+    width:  88px;
+    height: 119px;
+    background-image: url("images/bird-morph.png");
+	background-size: auto;
+	-webkit-animation: bird-morph-to-static 1s steps(13) reverse backwards;
+       -moz-animation: bird-morph-to-static 1s steps(13) reverse backwards;
+        -ms-animation: bird-morph-to-static 1s steps(13) reverse backwards;
+         -o-animation: bird-morph-to-static 1s steps(13) reverse backwards;
+            animation: bird-morph-to-static 1s steps(13) reverse backwards;
+}
+
+@-webkit-keyframes bird-morph-to-static {
+   from { background-position:     0px; }
+     to { background-position: -1141px; }
+}
+
+@-moz-keyframes bird-morph-to-static {
+   from { background-position:     0px; }
+     to { background-position: -1141px; }
+}
+
+@-ms-keyframes bird-morph-to-static {
+   from { background-position:     0px; }
+     to { background-position: -1141px; }
+}
+
+@-o-keyframes bird-morph-to-static {
+   from { background-position:     0px; }
+     to { background-position: -1141px; }
+}
+
+@keyframes bird-morph-to-static {
+   from { background-position:     0px; }
+     to { background-position: -1141px; }
 }
 
 .toontalk-fly-down {
@@ -831,4 +933,40 @@
 @keyframes fly-east {
    from { background-position:    0px; }
      to { background-position: -1010px; }
+}
+
+.toontalk-robot-waiting {
+    width:  103px;
+    height: 139px;
+    background-image: url("images/robot-waiting.png");
+	background-size: auto;
+	-webkit-animation: robot-waiting 1.5s steps(12) infinite;
+       -moz-animation: robot-waiting 1.5s steps(12) infinite;
+        -ms-animation: robot-waiting 1.5s steps(12) infinite;
+         -o-animation: robot-waiting 1.5s steps(12) infinite;
+            animation: robot-waiting 1.5s steps(12) infinite;
+}
+@-webkit-keyframes robot-waiting {
+   from { background-position:    0px; }
+     to { background-position: -1238px; }
+}
+
+@-moz-keyframes robot-waiting {
+   from { background-position:    0px; }
+     to { background-position: -1238px; }
+}
+
+@-ms-keyframes robot-waiting {
+   from { background-position:    0px; }
+     to { background-position: -1238px; }
+}
+
+@-o-keyframes robot-waiting {
+   from { background-position:    0px; }
+     to { background-position: -1238px; }
+}
+
+@keyframes robot-waiting {
+   from { background-position:    0px; }
+     to { background-position: -1238px; }
 }
