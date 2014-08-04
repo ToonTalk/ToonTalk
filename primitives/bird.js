@@ -664,13 +664,17 @@ window.TOONTALK.nest = (function (TT) {
     };
     
     nest.match = function (other) {
-        // not allowed since is not stable -- could be covered asynchronously
+        // the semantics of matching an uncovered nest is that the other must be a nest (covered or not)
+        // paths should be to the entire nest so that a robot can pick up a nest and manipulate it
+        if (other.match_nest_with_nest) {
+            return other.match_nest_with_nest(this);
+        }
         return "not matched";
     };
-    
-//     nest.image = function () {
-//         return TT.UTILITIES.create_image(this.get_image_url(), "toontalk-nest-image");    
-//     };
+
+    nest.match_nest_with_nest = function (other_nest) {
+        return "matched";
+    };
     
     nest.toString = function () {
         return "a nest"; // good enough for now
