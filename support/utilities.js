@@ -362,7 +362,8 @@ window.TOONTALK.UTILITIES =
                 console.log("json type '" + json_semantic.type + "' not yet supported.");
                 return;
             }
-            if (widget) {
+            if (widget && widget.get_backside) {
+                // widget may be a robot body or some other part of a widget
                 if (json_semantic.erased) {
                     TT.widget.erasable(widget);
                     widget.set_erased(json_semantic.erased);
