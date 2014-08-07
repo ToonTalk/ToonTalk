@@ -56,6 +56,7 @@ window.TOONTALK.robot = (function (TT) {
             if (!backside_conditions) {
                 backside_conditions = {};
             }
+            // note that if widget is a covered nest then the type below is nest but the copy is of the nest contents
             backside_conditions[widget.get_type_name()] = widget_copy;
             TT.widget.erasable(widget_copy);
         };

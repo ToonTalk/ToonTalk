@@ -45,7 +45,7 @@ window.TOONTALK.path =
                     if (backside_widget === widget ||
                         (backside_widget.top_contents_is && backside_widget.top_contents_is(widget)) ) {
                         path = TT.path.get_path_to_backside_widget_of_context(backside_widget.get_type_name());
-                        robot.add_to_backside_conditions(backside_widget);
+                        robot.add_to_backside_conditions(backside_widget); // does nothing if already added
                         return true; // stop searching
                     } else if (backside_widget.get_path_to) {
                         // e.g. might be in a box
