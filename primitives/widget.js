@@ -98,14 +98,17 @@ window.TOONTALK.widget = (function (TT) {
                     backside_widgets.forEach(function (backside_widget_side) {
                         backside_widget = backside_widget_side.widget;
                         if (backside_widget.get_type_name() === "robot") {
-                            // could this set_stopped stuff be combined with set_running?
-                            if (running) {
-                                backside_widget.set_stopped(false);
-                                backside_widget.run(widget, top_level_context);
-                            } else {
-                                backside_widget.set_stopped(true);
+                            // only frontsides of robots run
+                            if (!backside_widget_side.is_backside) {
+                                // could this set_stopped stuff be combined with set_running?
+                                if (running) {
+                                    backside_widget.set_stopped(false);
+                                    backside_widget.run(widget, top_level_context);
+                                } else {
+                                    backside_widget.set_stopped(true);
+                                }
+                                backside_widget.rerender();
                             }
-                            backside_widget.rerender();
                         } else if (backside_widget.set_running) {
                             if (!top_level_context && backside_widget_side.is_backside && widget.get_type_name() !== "top-level") {
                                 // a robot is on the backside of a widget that is on the backside of another
@@ -500,7 +503,7 @@ window.TOONTALK.widget = (function (TT) {
             } else {
                 widget.set_parent_of_frontside(this, true);
             }
-//             console.log("Added " + widget + " (" + widget.debug_id + ") to list of backside widgets of " + this + ". Now has " + this.backside_widgets.length + " widgets.");
+//          console.log("Added " + widget + " (" + widget.debug_id + ") to list of backside widgets of " + this + ". Now has " + this.backside_widgets.length + " widgets.");
             if (backside) {
                 backside.update_run_button_disabled_attribute();
             }
