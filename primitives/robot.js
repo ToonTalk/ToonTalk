@@ -461,7 +461,6 @@ window.TOONTALK.robot = (function (TT) {
             this.debug_string = this.toString();
         }
         frontside_element = frontside.get_element();
-//         robot_image = this.image();
         if (thing_in_hand) {
             thing_in_hand_frontside_element = thing_in_hand.get_frontside_element();
         }
@@ -474,7 +473,6 @@ window.TOONTALK.robot = (function (TT) {
 //         }
         frontside_element.title = this.get_title();
         $(frontside_element).addClass("toontalk-robot");
-//         frontside_element.appendChild(robot_image);
         if (thing_in_hand_frontside_element) {
             frontside_element.appendChild(thing_in_hand_frontside_element);
         }

@@ -319,7 +319,6 @@ window.TOONTALK.box = (function (TT) {
             function () {
                 var $box_hole_elements = $(frontside_element).children("." + additional_class);
                 var random_blue_color = "rgb(" + Math.round(Math.random()*128) + "," + Math.round(Math.random()*128) + ", 255)";
-
                 // if switching between horizontal and vertical need to remove the old elements
                 $(frontside_element).children("." + wrong_class).remove();
                 if ($box_hole_elements.length === size) {
@@ -470,6 +469,7 @@ window.TOONTALK.box = (function (TT) {
         var update_display = !!event;
         var hole;
         var i, part_frontside_element;
+        // if this becomes a performance problem could use a map between parts and indices...
         for (i = 0; i < size; i++) {
             hole = this.get_hole(i);
             if (part === hole) {
