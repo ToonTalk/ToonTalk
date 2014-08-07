@@ -97,6 +97,12 @@ window.TOONTALK.widget = (function (TT) {
                     running = new_value;
                     backside_widgets.forEach(function (backside_widget_side) {
                         backside_widget = backside_widget_side.widget;
+                        if (backside_widget_side.is_backside) {
+                           // make sure that the frontside isn't also running
+                           if (this.backside_widget_side_index({widget: backside_widget}) >= 0) {
+                               return;
+                           }
+                        }
                         if (backside_widget.get_type_name() === "robot") {
                             // only frontsides of robots run
                             if (!backside_widget_side.is_backside) {
@@ -119,7 +125,7 @@ window.TOONTALK.widget = (function (TT) {
                                 backside_widget.set_running(new_value);
                             }
                         }
-                    });
+                    }.bind(this));
                     backside_element = this.get_backside_element();
                     if (backside_element) {
                         $(backside_element).find(".toontalk-run-backside-button").each(function (index, element) {
