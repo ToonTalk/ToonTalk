@@ -34,6 +34,7 @@ window.TOONTALK.robot_action =
                              // e.g. dropped on top-level backside
                              thing_in_hand_frontside_element = thing_in_hand.get_frontside_element();
                              target.append(thing_in_hand_frontside_element);
+                             $(thing_in_hand_frontside_element).css({position: ""}); // no longer absolute
                              robot.set_thing_in_hand(undefined);
                          } else {
                              if (target.visible && target.visible()) {
@@ -44,6 +45,7 @@ window.TOONTALK.robot_action =
                              if (!thing_in_hand.caused_robot_to_wait_before_next_step) {
                                  // e.g., a nest may take some time because the egg hatches
                                  // but the robot is still holding it
+                                 $(thing_in_hand.get_frontside_element()).css({position: ""}); // no longer absolute
                                  robot.set_thing_in_hand(undefined);
                              }
                              // update this when robots can drop backsides as well
@@ -148,7 +150,8 @@ window.TOONTALK.robot_action =
             var thing_in_hand_position = $thing_in_hand_frontside_element.offset();
             $thing_in_hand_frontside_element.removeClass("toontalk-held-by-robot");
             continuation();
-            if ($thing_in_hand_frontside_element.is(":visible")) {
+            // revisit use of get_parent_of_frontside once robots can manipulate backsides...
+            if ($thing_in_hand_frontside_element.is(":visible") && thing_in_hand.get_parent_of_frontside().is_backside) {
                 TT.UTILITIES.set_absolute_position($thing_in_hand_frontside_element, thing_in_hand_position);
             }
         };

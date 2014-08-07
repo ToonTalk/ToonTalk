@@ -484,6 +484,7 @@ window.TOONTALK.robot = (function (TT) {
                 var relative_left, relative_top, thing_in_hand_width, thing_in_hand_height, robot_width, robot_height, css;
                 if (thing_in_hand) {
                     css = {position: "absolute"};
+                    // tried to add position: absolute to toontalk-held-by-robot CSS but didn't work
                     $(thing_in_hand_frontside_element).addClass("toontalk-held-by-robot");
                     // compute where the thing should be to be centred over the robot
                     thing_in_hand_width = $(thing_in_hand_frontside_element).width();
