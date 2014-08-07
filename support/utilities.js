@@ -1399,6 +1399,9 @@ window.TOONTALK.UTILITIES =
         },
         
         get_side_element_from_side: function (side, create) {
+            if (!side) {
+                return side;
+            }
             if (side.is_backside) {
                 return side.widget.get_backside_element(create);
             }
