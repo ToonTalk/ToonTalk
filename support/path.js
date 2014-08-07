@@ -11,56 +11,70 @@ window.TOONTALK.path =
     "use strict";
     return { 
         get_path_to: function (widget, robot) {
-            var context = robot.get_context();
-            var body = robot.get_body();
-            var path, sub_path, widget_type;
-            if (context === widget) {
-                return TT.path.to_entire_context();
-            }
-            widget_type = widget.get_type_name();
-            if (widget_type === "top-level") {
-                return TT.path.top_level_backside;
-            }
-            path = body.get_path_to(widget, robot);
-            if (path) {
-                return path;
-            }
-            if (widget_type === "element attribute") { 
-                return TT.element.create_attribute_path(widget, robot);
-            }
-            // if context is undefined something is wrong much earlier
-            if (context.get_path_to) {
-                sub_path = context.get_path_to(widget, robot);
-                if (sub_path) {
-                    path = TT.path.to_entire_context();
-                    path.next = sub_path;
+            var compute_path = function (widget, robot) {
+                var context = robot.get_context();
+                var body = robot.get_body();
+                var path, sub_path, widget_type;
+                if (context === widget) {
+                    return TT.path.to_entire_context();
+                }
+                widget_type = widget.get_type_name();
+                if (widget_type === "top-level") {
+                    return TT.path.top_level_backside;
+                }
+                path = body.get_path_to(widget, robot);
+                if (path) {
                     return path;
                 }
-            }
-            context.backside_widgets.some(function (backside_widget_side) {
-                // widget might be on the backside of the context
-                var backside_widget = backside_widget_side.widget;
-                var sub_path;
-                if (backside_widget === widget) {
-                    path = TT.path.get_path_to_backside_widget_of_context(backside_widget.get_type_name());
-                    robot.add_to_backside_conditions(backside_widget);
-                    return true; // stop searching
-                } else if (backside_widget.get_path_to) {
-                    // e.g. might be in a box
-                    sub_path = backside_widget.get_path_to(widget, robot);
+                if (widget_type === "element attribute") { 
+                    return TT.element.create_attribute_path(widget, robot);
+                }
+                // if context is undefined something is wrong much earlier
+                if (context.get_path_to) {
+                    sub_path = context.get_path_to(widget, robot);
                     if (sub_path) {
-                        path = TT.path.get_path_to_backside_widget_of_context(backside_widget.get_type_name());
+                        path = TT.path.to_entire_context();
                         path.next = sub_path;
-                        robot.add_to_backside_conditions(backside_widget);
-                        return true; // stop searching
+                        return path;
                     }
                 }
-            });
-            if (path) {
-                return path;
+                context.backside_widgets.some(function (backside_widget_side) {
+                    // widget might be on the backside of the context
+                    var backside_widget = backside_widget_side.widget;
+                    var sub_path;
+                    if (backside_widget === widget ||
+                        (backside_widget.top_contents_is && backside_widget.top_contents_is(widget)) ) {
+                        path = TT.path.get_path_to_backside_widget_of_context(backside_widget.get_type_name());
+                        robot.add_to_backside_conditions(backside_widget);
+                        return true; // stop searching
+                    } else if (backside_widget.get_path_to) {
+                        // e.g. might be in a box
+                        sub_path = backside_widget.get_path_to(widget, robot);
+                        if (sub_path) {
+                            path = TT.path.get_path_to_backside_widget_of_context(backside_widget.get_type_name());
+                            path.next = sub_path;
+                            robot.add_to_backside_conditions(backside_widget);
+                            return true; // stop searching
+                        }
+                    }
+                });
+                if (path) {
+                    return path;
+                }
+                return TT.path.get_path_to_resource(widget.copy());
             }
-            return TT.path.get_path_to_resource(widget.copy());
-//             console.log("TT.path.get_path_to not fully implemented.");
+            var path = compute_path(widget, robot);
+            var path_end;
+            if (path && widget.dereference_contents) {
+                // widget is normally transparently dereferenced but here the widget (e.g. a nest)
+                // is being manipulated itself rather than its contents
+                path_end = path;
+                while (path_end.next) {
+                    path_end = path_end.next;
+                }
+                path_end.not_to_be_dereferenced = true;
+            }
+            return path;
         },
         dereference_path: function (path, context, top_level_context, robot) {
             var dereferenced;
@@ -73,10 +87,6 @@ window.TOONTALK.path =
             } else {
                 // no path means entire context -- I don't think this is still true
                 dereferenced = context;
-            }
-            if (dereferenced && dereferenced.dereference) {
-                // e.g. covered nests dereference to their top item 
-                return dereferenced.dereference();
             }
             return dereferenced;
         },

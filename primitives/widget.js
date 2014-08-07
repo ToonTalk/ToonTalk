@@ -376,11 +376,6 @@ window.TOONTALK.widget = (function (TT) {
             }
         },
         
-        dereference: function () {
-            // is already dereferenced when used as part of a path
-            return this;
-        },
-        
         add_to_json: function (json_semantic, json_history) {
             var json_view, json, position, frontside_element, backside, backside_element;
             if (json_semantic) {

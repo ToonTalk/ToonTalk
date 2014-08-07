@@ -396,7 +396,7 @@ window.TOONTALK.nest = (function (TT) {
         new_nest.dereference_contents = function (path_to_nest, top_level_context, robot) {
             var widget, nest_offset, $top_level_backside_element, top_level_backside_element_offset, 
                 widget_element, nest_element, nest_width, nest_height;
-            if (contents.length === 0) {
+            if (contents.length === 0 || path_to_nest.not_to_be_dereferenced) {
                 return this;
             }
             // e.g. when a robot takes something off the nest
