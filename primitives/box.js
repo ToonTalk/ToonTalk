@@ -529,7 +529,7 @@ window.TOONTALK.box = (function (TT) {
             if (typeof index === 'number') {
                 hole = this.get_hole(index);
                 if (hole) {
-                    if (hole.dereference_contents) {
+                    if (hole.dereference_contents && !path.not_to_be_dereferenced) {
                         // this will dereference the top of a nest instead of the nest itself
                         return hole.dereference_contents(path, top_level_context, robot);
                     }
