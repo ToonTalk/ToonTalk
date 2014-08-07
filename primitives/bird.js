@@ -450,8 +450,11 @@ window.TOONTALK.nest = (function (TT) {
             // that if a bird and its nest are copied or saved as a unit they become a new pair
             // notice that bird/nest semantics is that the nest is shared not copied
             var contents_copy, copy, new_original_nest;
-            if (just_value && contents.length > 0) {
-                return contents[0].widget.copy(just_value);
+            if (just_value) {
+                if (contents.length > 0) {
+                    return contents[0].widget.copy(just_value);
+                }
+                return TT.nest.create(this.get_description(), [], [], "in a robot's condition");
             }
             contents_copy = TT.UTILITIES.copy_widget_sides(contents);
             if (!not_linked) {
