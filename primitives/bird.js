@@ -470,7 +470,6 @@ window.TOONTALK.nest = (function (TT) {
             var bird, frontside_element, bird_frontside_element, nest_position, 
                 hatching_finished_handler, fly_down_finished_handler, bird_fly_continuation;
             if (!guid) {
-//                 image_url = "images/MKNEST25.PNG";
                 guid = TT.UTILITIES.generate_unique_id();
                 if (TT.debugging) {
                     new_nest.debug_string = "A nest with " + guid;
@@ -481,6 +480,7 @@ window.TOONTALK.nest = (function (TT) {
                     robot.add_newly_created_widget(bird);
                     // since robot dropped the nest it needs to wait (if watched)
                     robot.wait_before_next_step = true;
+                    this.caused_robot_to_wait_before_next_step = true;
                 }
                 this.rerender();
                 frontside_element = this.get_frontside_element(true);
@@ -525,12 +525,13 @@ window.TOONTALK.nest = (function (TT) {
                                     TT.UTILITIES.add_one_shot_event_handler(bird_frontside_element, "animationend", 1000, become_static);
                                     if (robot) {
                                         robot.wait_before_next_step = false;
+                                        this.caused_robot_to_wait_before_next_step = false;
                                     }
                                 }
                                 TT.UTILITIES.add_one_shot_event_handler(frontside_element, "animationend", 1000, fly_down_finished_handler);
-                            },
+                            }.bind(this),
                             1);
-                    };
+                    }.bind(this);
                     $(bird_frontside_element).removeClass("toontalk-bird-static");
                     resting_left = Math.max(10, nest_position.left-100);
                     // because of the animation the top of the nest is higer than it appears so add more to top target

@@ -41,8 +41,8 @@ window.TOONTALK.robot_action =
                              }
                              // remove it from the robot's hand since the drop can take a few seconds
                              // and we don't want to see it in the robot's hand
-                             if (thing_in_hand.get_type_name() !== 'nest') {
-                                 // a nest may take some time because the egg hatches
+                             if (!thing_in_hand.caused_robot_to_wait_before_next_step) {
+                                 // e.g., a nest may take some time because the egg hatches
                                  // but the robot is still holding it
                                  robot.set_thing_in_hand(undefined);
                              }
