@@ -1357,7 +1357,11 @@ window.TOONTALK.UTILITIES =
             var top_level_widget = TT.UTILITIES.get_toontalk_widget_from_jquery($(".toontalk-top-level-backside"));
             var backup_function = function () {
                     var json = TT.UTILITIES.get_json_top_level(top_level_widget);
-                    window.localStorage.setItem(TT.UTILITIES.current_URL(), JSON.stringify(json));
+                    try {
+                        window.localStorage.setItem(TT.UTILITIES.current_URL(), JSON.stringify(json));
+                    } catch (error) {
+                        alert("Failed to save state to local storage since it requires " + JSON.stringify(json).length + " bytes. Error message is " + error);
+                    }
             };
             if (top_level_widget) {
                 if (immediately) {
