@@ -76,6 +76,8 @@ window.TOONTALK.bird = (function (TT) {
             continuation = function () {
                 var final_continuation = function () {
                     var parent = this.get_parent_of_frontside();
+                    var bird_offset = $(bird_frontside_element).offset();
+                    var parent_offset = $(parent_element).offset();
                     var become_static;
                     if (temporary_bird) {
                         this.remove();
@@ -86,6 +88,9 @@ window.TOONTALK.bird = (function (TT) {
                             parent.widget.rerender();
                         };
                         bird_frontside_element.style.position = bird_style_position;
+                        bird_offset.left -= parent_offset.left;
+                        bird_offset.top  -= parent_offset.top;
+                        $(bird_frontside_element).css(bird_offset);
                         parent_element.appendChild(bird_frontside_element);
                         if (parent.widget.get_type_name() === 'top-level') {
                             this.rerender();
