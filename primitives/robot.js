@@ -453,9 +453,8 @@ window.TOONTALK.robot = (function (TT) {
     robot.update_display = function() {
         var frontside = this.get_frontside(true);
         var backside = this.get_backside(); 
-        var frontside_element, resource_becoming_instance;
         var thing_in_hand = this.get_thing_in_hand();
-        var thing_in_hand_frontside_element;
+        var frontside_element, thing_in_hand_frontside_element;
         if (TT.debugging) {
             // this can't be done during robot creation since robot actions references to newly_created_widgets is premature
             this.debug_string = this.toString();
@@ -464,7 +463,6 @@ window.TOONTALK.robot = (function (TT) {
         if (thing_in_hand) {
             thing_in_hand_frontside_element = thing_in_hand.get_frontside_element();
         }
-        resource_becoming_instance = frontside_element.firstChild && $(frontside_element.firstChild).is(".toontalk-robot-image");
         // remove what's there currently before adding new elements
 //         while (frontside_element.firstChild) {
 //             if (!$(frontside_element.firstChild).is(".toontalk-close-button")) {
