@@ -205,10 +205,16 @@ window.TOONTALK.UTILITIES =
                 if (widget) {
                     element.textContent = ""; // served its purpose of being parsed as JSON
                     if (widget.get_type_name() === 'top-level') {
-                        stored_json_string = window.localStorage.getItem(TT.UTILITIES.current_URL());
-                        if (stored_json_string && window.location.href.indexOf("reset=1") < 0) {
-                            json = JSON.parse(stored_json_string);
-                            widget = TT.UTILITIES.create_from_json(json);
+                        if (window.location.href.indexOf("reset=1") < 0) {
+                            try {
+                                stored_json_string = window.localStorage.getItem(TT.UTILITIES.current_URL());
+                            } catch (error) {
+                                alert("Error reading previous state. Error message is " + error);
+                            }
+                            if (stored_json_string) {
+                                json = JSON.parse(stored_json_string);
+                                widget = TT.UTILITIES.create_from_json(json);
+                            }
                         }
                         backside = widget.get_backside(true);
                         backside_element = backside.get_element();
