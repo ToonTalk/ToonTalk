@@ -387,14 +387,15 @@
 	margin-top: 0px;
 }
 .toontalk-hatch-egg.toontalk-frontside-in-box {
-	margin-top: -43px;
+	/* margin-top: -43px; */
 }
 .toontalk-hatch-egg {
-    width:  116px;
-    height: 141px;
+    /* width:  116px; */
+    /* height: 141px; */
 	margin-top: -8px;
 	background-size: auto;
     background-image: url("images/hatch-egg-strip.png");
+    background-repeat: no-repeat;
 	-webkit-animation: hatch-egg 2s steps(15) forwards;
        -moz-animation: hatch-egg 2s steps(15) forwards;
         -ms-animation: hatch-egg 2s steps(15) forwards;
