@@ -649,7 +649,9 @@ window.TOONTALK.UTILITIES =
                 function (event) {
                     var $source_element = $(event.originalEvent.srcElement).closest(".toontalk-side");
                     var bounding_rectangle, json_object, json_div, widget, is_resource;
-                    if (event.originalEvent.dataTransfer.getData("text/plain").length > 0) {
+                    // was using text/plain but IE complained
+                    // see http://stackoverflow.com/questions/18065840/html5-drag-and-drop-not-working-on-ie11
+                    if (event.originalEvent.dataTransfer.getData("text").length > 0) {
                         // e.g. dragging some text off the backside of a widget
                         return;
                     }
