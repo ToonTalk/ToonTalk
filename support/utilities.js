@@ -209,7 +209,7 @@ window.TOONTALK.UTILITIES =
                             try {
                                 stored_json_string = window.localStorage.getItem(TT.UTILITIES.current_URL());
                             } catch (error) {
-                                alert("Error reading previous state. Error message is " + error);
+                                TT.UTILITIES.display_message("Error reading previous state. Error message is " + error);
                             }
                             if (stored_json_string) {
                                 json = JSON.parse(stored_json_string);
@@ -1368,7 +1368,7 @@ window.TOONTALK.UTILITIES =
                     try {
                         window.localStorage.setItem(TT.UTILITIES.current_URL(), JSON.stringify(json));
                     } catch (error) {
-                        alert("Failed to save state to local storage since it requires " + JSON.stringify(json).length + " bytes. Error message is " + error);
+                        TT.UTILITIES.display_message("Failed to save state to local storage since it requires " + JSON.stringify(json).length + " bytes. Error message is " + error);
                     }
             };
             if (top_level_widget) {
@@ -1480,6 +1480,10 @@ window.TOONTALK.UTILITIES =
             var background_image = $(element).css("background-image");
             var size_adjustable = $(element).css("background-size") === 'contain';
             return !size_adjustable && background_image !== 'none' && background_image  !== '';
+        },
+
+        display_message: function (message) {
+            alert(message); // for now
         }
         
 //         create_menu_item: function (text) {

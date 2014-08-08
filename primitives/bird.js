@@ -17,6 +17,10 @@ window.TOONTALK.bird = (function (TT) {
                                 is_backside: other_is_backside};
             var frontside_element, fly_continuation;
             if (nest) {
+                if (nest.has_ancestor(other)) {
+                    TT.UTILITIES.display_message("Bird can't take its nest to its nest!");
+                    return false;
+                }
                 if (this.visible() || nest.visible() || nest.any_nest_copies_visible()) {
                     // doesn't matter if robot is visible or there is a user event -- if either end visible show the delivery
                     frontside_element = this.get_frontside_element();
@@ -343,11 +347,17 @@ window.TOONTALK.nest = (function (TT) {
             if (nest_copies && !ignore_copies) {
                 if (delivery_bird) {
                     nest_copies.forEach(function (nest_copy) {
-                        nest_copy.animate_bird_delivery(TT.UTILITIES.copy_side(widget_side), delivery_bird);
+                        if (!nest_copy.has_ancestor(widget_side.widget)) {
+                            // ignore if nest_copy is inside message
+                            nest_copy.animate_bird_delivery(TT.UTILITIES.copy_side(widget_side), delivery_bird);
+                        }
                     });                    
                 } else {
                     nest_copies.forEach(function (nest_copy) {
-                        nest_copy.add_to_contents(TT.UTILITIES.copy_side(widget_side, false, true));
+                        if (!nest_copy.has_ancestor(widget_side.widget)) {
+                            // ignore if nest_copy is inside message
+                            nest_copy.add_to_contents(TT.UTILITIES.copy_side(widget_side, false, true));
+                        }
                     });
                 }
             }
@@ -363,16 +373,19 @@ window.TOONTALK.nest = (function (TT) {
                 nest_copies.forEach(function (nest_copy) {
                     var package_copy = TT.UTILITIES.copy_side(package_side, false, visible);
                     var bird_copy, bird_frontside_element;
-                    if (!nest_copy.visible() && !visible) {
-                        // neither are visible so just add contents to nest
-                        nest_copy.add_to_contents(package_copy);
-                    } else {
-                        bird_copy = bird.copy(true);
-                        bird_frontside_element = bird_copy.get_frontside_element(true); 
-                        $(bird_parent_element).append(bird_frontside_element);
-                        bird_copy.animate_delivery_to(package_copy, {widget: nest_copy}, nest_copy, start_position.left, start_position.top);
-                    }
-                    });
+                    if (!nest_copy.has_ancestor(package_side.widget)) {
+                        // ignore if nest_copy is inside message
+                        if (!nest_copy.visible() && !visible) {
+                            // neither are visible so just add contents to nest
+                            nest_copy.add_to_contents(package_copy);
+                        } else {
+                            bird_copy = bird.copy(true);
+                            bird_frontside_element = bird_copy.get_frontside_element(true); 
+                            $(bird_parent_element).append(bird_frontside_element);
+                            bird_copy.animate_delivery_to(package_copy, {widget: nest_copy}, nest_copy, start_position.left, start_position.top);
+                        }
+                   }
+               });
             }
         };
         new_nest.removed_from_container = function (part, backside_removed, event) {
