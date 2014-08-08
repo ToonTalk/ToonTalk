@@ -405,7 +405,7 @@ window.TOONTALK.nest = (function (TT) {
                 return this;
             }
             // e.g. when a robot takes something off the nest
-            if (path_to_nest.removing_widget()) {
+            if (path_to_nest.removing_widget) {
                 // the .widget is needed until widget_sides are first-class objects
                 widget = this.removed_from_container().widget;
                 // isn't attached to the DOM because was removed from nest
@@ -430,7 +430,7 @@ window.TOONTALK.nest = (function (TT) {
             if (path_to_nest.next) {
                 return contents[0].widget.dereference(path_to_nest.next, top_level_context, robot);
             }
-            return contents[0];         
+            return contents[0].widget;         
         };
         // defined here so that contents and other state can be private
         new_nest.get_json = function (json_history) {
@@ -631,7 +631,6 @@ window.TOONTALK.nest = (function (TT) {
             nest_copies.push(nest_copy);
         };
         new_nest.get_path_to = function (widget, robot) {
-//             var sub_path;
             if (contents.length > 0) {
                 if (contents[0].widget.get_path_to) {
                     // assuming frontside
@@ -644,6 +643,9 @@ window.TOONTALK.nest = (function (TT) {
         };
         new_nest.any_nest_copies_visible = function () {
             var found_one = false;
+            if (!nest_copies) {
+                return false;
+            }
             nest_copies.some(function (nest) {
                 if (nest.visible()) {
                     found_one = true;

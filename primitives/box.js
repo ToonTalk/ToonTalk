@@ -492,9 +492,6 @@ window.TOONTALK.box = (function (TT) {
                     }
                 }
                 return this;
-               // following thought to be needed when part was on a nest in a box but no longer
-//             } else if (hole.top_contents_is && hole.top_contents_is(part)) {
-//                 hole.removed_from_container(part);
             }
         }
         console.log("Attempted to remove " + part + " from " + this + " but not found.");
@@ -503,11 +500,10 @@ window.TOONTALK.box = (function (TT) {
     box.get_path_to = function (widget, robot) {
         var size = this.get_size();
         var i, part, path, sub_path;
-        var removing_widget = robot.current_action_name === 'pick up';
         for (i = 0; i < size; i++) {
             part = this.get_hole(i);
             if (widget === part || (part.top_contents_is && part.top_contents_is(widget))) {
-                return TT.box.path.create(i, removing_widget);
+                return TT.box.path.create(i);
             } else if (part.get_path_to) {
                 sub_path = part.get_path_to(widget, robot);
                 if (sub_path) {
@@ -540,7 +536,7 @@ window.TOONTALK.box = (function (TT) {
                             console.log("Expected to refer to a part of " + hole + " but it lacks a method to obtain " + TT.path.toString(path.next));
                         }
                     }
-                    if (path.removing_widget()) {
+                    if (path.removing_widget) {
                         if (hole.get_type_name() === 'empty hole') {
                             console.log("Robot is trying to remove something from an empty hole. ");
                         } else if (!hole.get_infinite_stack()) {
@@ -557,13 +553,10 @@ window.TOONTALK.box = (function (TT) {
     };
     
     box.path = {
-        create: function (index, removing_widget) {
+        create: function (index) {
             return {
                 get_index: function () {
                     return index;
-                },
-                removing_widget: function () {
-                    return removing_widget;
                 },
                 toString: function () {
                     return "the " + TT.UTILITIES.cardinal(index) + " hole "; // + (this.next ? "; " + TT.path.toString(this.next) : "");
@@ -571,14 +564,13 @@ window.TOONTALK.box = (function (TT) {
                 get_json: function (json_history) {
                     return {type: "box_path",
                             index: index,
-                            removing_widget: removing_widget,
                             next: this.next && this.next.get_json(json_history)};
                 }
             };
         },
     
         create_from_json: function (json, additional_info) {
-            var path = box.path.create(json.index, json.removing_widget);
+            var path = box.path.create(json.index);
             if (json.next) {
                 path.next = TT.UTILITIES.create_from_json(json.next, additional_info);
             }

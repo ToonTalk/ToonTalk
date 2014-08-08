@@ -64,17 +64,23 @@ window.TOONTALK.path =
                 return TT.path.get_path_to_resource(widget.copy());
             }
             var path = compute_path(widget, robot);
-            var path_end;
             if (path && widget.dereference_contents) {
                 // widget is normally transparently dereferenced but here the widget (e.g. a nest)
+                // only widgets that respond to dereference_contents need to conditionally be dereferenced
                 // is being manipulated itself rather than its contents
-                path_end = path;
-                while (path_end.next) {
-                    path_end = path_end.next;
-                }
-                path_end.not_to_be_dereferenced = true;
+                TT.path.path_end(path).not_to_be_dereferenced = true;
+            }
+            if (path && robot.current_action_name === 'pick up') {
+                TT.path.path_end(path).removing_widget = true;
             }
             return path;
+        },
+        path_end: function (path) {
+            var path_end = path;
+            while (path_end.next) {
+                path_end = path_end.next;
+            }
+            return path_end;
         },
         dereference_path: function (path, context, top_level_context, robot) {
             var dereferenced;
@@ -90,6 +96,20 @@ window.TOONTALK.path =
             }
             return dereferenced;
         },
+        continue_dereferencing_path: function (path, referenced, top_level_context, robot) {
+            // called when (partial) path has produced referenced
+            if (path.next) {
+                if (referenced.dereference_contents && !path.next.not_to_be_dereferenced) {
+                    return referenced.dereference_contents(path.next, top_level_context, robot);
+                } else {
+                    return referenced.dereference(path.next, top_level_context, robot);
+                }                
+            }
+            if (referenced.dereference_contents && !path.not_to_be_dereferenced) {
+                return referenced.dereference_contents(path, top_level_context, robot);
+            }
+            return referenced;
+        },
         toString: function (a_path) {
             var sub_path_string;
             if (a_path.next) {
@@ -102,14 +122,20 @@ window.TOONTALK.path =
                 return a_path.toString();
             }
         },
-        get_json: function (a_path, json_history) {
+        get_json: function (path, json_history) {
             var json;
-            if (!a_path.get_json) {
-                return a_path; // is a constant
+            if (!path.get_json) {
+                return path; // is a constant
             }
-            json = a_path.get_json(json_history);
-            if (a_path.next) {
-                json.next_path = TT.path.get_json(a_path.next, json_history);
+            json = path.get_json(json_history);
+            if (path.next) {
+                json.next_path = TT.path.get_json(path.next, json_history);
+            }
+            if (path.removing_widget) {
+                json.removing_widget = true;
+            }
+            if (path.not_to_be_dereferenced) {
+                json.not_to_be_dereferenced = true;
             }
             return json;
         },
@@ -118,7 +144,19 @@ window.TOONTALK.path =
             var next_path;
             if (json.next_path) {
                 next_path = TT.UTILITIES.create_from_json(json.next_path, additional_info);
+                if (json.next_path.removing_widget) {
+                    next_path.removing_widget = true;
+                }
+                if (json.next_path.not_to_be_dereferenced) {
+                    next_path.not_to_be_dereferenced = true;
+                }
                 path.next = next_path;
+            }
+            if (json.removing_widget) {
+                path.removing_widget = true;
+            }
+            if (json.not_to_be_dereferenced) {
+                path.not_to_be_dereferenced = true;
             }
             return path;
         },
@@ -126,14 +164,7 @@ window.TOONTALK.path =
             // an action that applies to the entire context (i.e. what the robot is working on)
             // need to create fresh ones since if there is a sub-path they shouldn't be sharing
             return {dereference: function (context, top_level_context, robot) {
-                        if (this.next) {
-                            if (context.dereference) {
-                                return context.dereference(this.next, top_level_context, robot);
-                            } else {
-                                console.log("Expected context to support dereference.");
-                            }                
-                        }
-                        return context;
+                        return TT.path.continue_dereferencing_path(this, context, top_level_context, robot);
                     },
                     toString: function () {
                         return "what he's working on";
@@ -193,14 +224,7 @@ window.TOONTALK.path =
                             }
                         });
                         if (referenced) {
-                            if (this.next) {
-                                if (referenced.dereference) {
-                                    return referenced.dereference(this.next, robot);
-                                } else {
-                                    console.log("Expected " + referenced + " to support dereference.");
-                                }                
-                            }
-                            return referenced;
+                            return TT.path.continue_dereferencing_path(this, referenced, top_level_context, robot);
                         }
                     },
                     toString: function () {

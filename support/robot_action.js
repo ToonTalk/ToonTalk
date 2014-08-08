@@ -151,7 +151,7 @@ window.TOONTALK.robot_action =
             $thing_in_hand_frontside_element.removeClass("toontalk-held-by-robot");
             continuation();
             // revisit use of get_parent_of_frontside once robots can manipulate backsides...
-            if ($thing_in_hand_frontside_element.is(":visible") && thing_in_hand.get_parent_of_frontside().is_backside) {
+            if ($thing_in_hand_frontside_element.is(":visible") && thing_in_hand.get_parent_of_frontside() && thing_in_hand.get_parent_of_frontside().is_backside) {
                 TT.UTILITIES.set_absolute_position($thing_in_hand_frontside_element, thing_in_hand_position);
             }
         };
