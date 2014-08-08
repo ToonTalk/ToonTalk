@@ -270,6 +270,9 @@ window.TOONTALK.robot = (function (TT) {
             // this is needed because a robot won't start running if it is animating
             // and the animating flag isn't always reset
             this.set_animating(false);
+            if (this.visible()) {
+                $(this.get_frontside_element()).removeClass("toontalk-robot-waiting");
+            }
         }
         if (this.get_next_robot()) {
             this.get_next_robot().set_stopped(new_value);
