@@ -62,6 +62,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         new_element.get_HTML = function () {
             return html;
         };
+        new_element.get_text = function () {
+            return this.get_frontside_element().innerText;
+        };
         new_element.set_HTML = function (new_value) {
             var frontside_element = this.get_frontside_element();
             if (!frontside_element) {
@@ -75,6 +78,30 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             $(frontside_element).children(":not(.ui-resizable-handle)").remove(); 
             this.rerender();
             return true;
+        };
+        new_element.set_text = function (new_value) {
+            var frontside_element = this.get_frontside_element();
+            var set_first_text_node = function (element) {
+                $(element).contents().each(function () {
+                    if (this.nodeType == Node.TEXT_NODE) {
+                        this.textContent = new_value;
+                        new_value = ""; // empty the other ones
+                    } else {
+                        set_first_text_node(this, new_value);
+                    }
+                });
+            }
+            if (!frontside_element) {
+                return false;
+            }
+            if (new_value === frontside_element.textContent) {
+                return false;
+            }
+            set_first_text_node(frontside_element);
+            return this.set_HTML(frontside_element.innerHTML);
+//             $(frontside_element).text(new_value);
+//             text = this.get_text().trim();
+//             return this.set_HTML(html.replace(text, new_value));
         };
         new_element.get_style_attributes = function () {
             return style_attributes;
@@ -705,31 +732,39 @@ window.TOONTALK.element_backside =
             var backside = TT.backside.create(element_widget);
             var backside_element = backside.get_element();
             var html = element_widget.get_HTML();
-            var html_input = TT.UTILITIES.create_text_area(html, "toontalk-html-input", "", "Type here to edit the html.");
             var attribute_table = document.createElement("table");
             var attributes_chooser = document.createElement("div");
             var show_attributes_chooser = create_show_attributes_chooser(attributes_chooser);
             var standard_buttons = TT.backside.create_standard_buttons(backside, element_widget);
-            var update_html = function (event) {
-                var new_html = html_input.button.value.trim();
-                var frontside_element = element_widget.get_frontside_element();
-                if (element_widget.set_HTML(new_html) && TT.robot.in_training) {
-                    TT.robot.in_training.edited(element_widget, {setter_name: "set_HTML",
-                                                                 argument_1: new_html,
-                                                                 toString: "change the HTML to " + new_html + " of",
-                                                                 button_selector: ".toontalk-html-input"});
-                }
-            };
+            var plainText, html_input, update_html;
+            // need to ensure that it 'knows' its innerText, etc.
+            element_widget.update_display();
+            plainText = element_widget.get_text().trim();
+            if (plainText.length > 0) {
+                // only plain text is displayed and edited (if there is any -- could be an image or something else)
+                // used to support full HTML editing but that is both insecure and confusing to non-experts
+                html_input = TT.UTILITIES.create_text_area(plainText, "toontalk-html-input", "", "Type here to edit the text.");
+                update_html = function (event) {
+                    var new_text = html_input.button.value.trim();
+                    var frontside_element = element_widget.get_frontside_element();
+                    if (element_widget.set_text(new_text) && TT.robot.in_training) {
+                        TT.robot.in_training.edited(element_widget, {setter_name: "set_text",
+                                                                     argument_1: new_text,
+                                                                     toString: "change the text to " + new_text + " of",
+                                                                     button_selector: ".toontalk-html-input"});
+                    }
+                };
+                $(html_input.container).resizable();
+                $(html_input.container).css({width: "100%"});
+                $(html_input.button).css({width: "100%"});
+                html_input.button.addEventListener('change', update_html);
+                html_input.button.addEventListener('mouseout', update_html);
+                backside_element.appendChild(html_input.container);
+            }
             backside.get_attributes_chooser = function () {
                 return attributes_chooser;
             };
             update_style_attribute_chooser(attributes_chooser, element_widget, attribute_table);
-            $(html_input.container).resizable();
-            $(html_input.container).css({width: "100%"});
-            $(html_input.button).css({width: "100%"});
-            html_input.button.addEventListener('change', update_html);
-            html_input.button.addEventListener('mouseout', update_html);
-            backside_element.appendChild(html_input.container);
             update_style_attributes_table(attribute_table, element_widget);
             backside_element.appendChild(attributes_chooser);
             backside_element.appendChild(show_attributes_chooser);
@@ -738,7 +773,9 @@ window.TOONTALK.element_backside =
             $(attributes_chooser).hide();
             $(attributes_chooser).addClass("toontalk-attributes-chooser");
             backside.update_display = function () {
-                $(html_input.button).val(element_widget.get_HTML());
+                if (html_input) {
+                    $(html_input.button).val(element_widget.get_text());
+                }
                 update_style_attributes_table(attribute_table, element_widget);
                 if ($(attributes_chooser).is(":visible")) {
                     update_style_attribute_chooser(attributes_chooser, element_widget, attribute_table);
