@@ -13,7 +13,7 @@ window.TOONTALK.bird = (function (TT) {
     bird.create = function (nest, description) { // image_url removed
         var new_bird = Object.create(bird);
         new_bird.widget_dropped_on_me = function (other, other_is_backside, event, robot) {
-            var package_side = {widget: other,
+            var message_side = {widget: other,
                                 is_backside: other_is_backside};
             var frontside_element, fly_continuation;
             if (nest) {
@@ -25,9 +25,9 @@ window.TOONTALK.bird = (function (TT) {
                     // doesn't matter if robot is visible or there is a user event -- if either end visible show the delivery
                     frontside_element = this.get_frontside_element();
                     $(frontside_element).removeClass("toontalk-bird-gimme");
-                    nest.animate_bird_delivery(package_side, this);
+                    nest.animate_bird_delivery(message_side, this);
                 } else {
-                    nest.add_to_contents(package_side);
+                    nest.add_to_contents(message_side);
                 }
             } else {
                 console.log("to do: handle drop on a nestless bird -- just removes other?");
@@ -37,15 +37,15 @@ window.TOONTALK.bird = (function (TT) {
             }
             return true;
         };
-        new_bird.animate_delivery_to = function (package_side, target_side, nest_recieving_package, starting_left, starting_top) {
+        new_bird.animate_delivery_to = function (message_side, target_side, nest_recieving_message, starting_left, starting_top) {
             // starting_left and starting_top are optional and if given are in the coordinate system of the top-level backside
-            var temporary_bird = !!nest_recieving_package;
+            var temporary_bird = !!nest_recieving_message;
             var target_offset, bird_offset, bird_frontside_element, target_frontside_element, parent_element, bird_style_position, width, height,
                 $top_level_backside_element, top_level_backside_element_offset, continuation;
-            if (!nest_recieving_package) {
-                nest_recieving_package = nest;
+            if (!nest_recieving_message) {
+                nest_recieving_message = nest;
             }
-            this.element_to_display_when_flying = TT.UTILITIES.get_side_element_from_side(package_side);
+            this.element_to_display_when_flying = TT.UTILITIES.get_side_element_from_side(message_side);
             $(this.element_to_display_when_flying).addClass("toontalk-carried-by-bird");
             $(this.element_to_display_when_flying).css({left: '',
                                                         top:  ''});
@@ -53,7 +53,7 @@ window.TOONTALK.bird = (function (TT) {
             bird_frontside_element = this.get_frontside_element();
             if (!($(target_frontside_element).is(":visible")) && !$(bird_frontside_element).is(":visible")) {
                 // neither are visible so just add contents to nest
-                nest_recieving_package.add_to_contents(package_side, this, true);
+                nest_recieving_message.add_to_contents(message_side, this, true);
                 return;
             }
             target_offset = $(target_frontside_element).offset();
@@ -108,7 +108,7 @@ window.TOONTALK.bird = (function (TT) {
                 $(this.element_to_display_when_flying).removeClass("toontalk-carried-by-bird");
                 $(this.element_to_display_when_flying).remove();
                 this.element_to_display_when_flying = undefined;
-                nest_recieving_package.add_to_contents(package_side, this, true);
+                nest_recieving_message.add_to_contents(message_side, this, true);
                 // return to original location
                 setTimeout(function () {
                         this.fly_to(bird_offset, final_continuation); 
@@ -363,26 +363,26 @@ window.TOONTALK.nest = (function (TT) {
             }
             this.rerender();
         };
-        new_nest.animate_bird_delivery = function (package_side, bird) {
+        new_nest.animate_bird_delivery = function (message_side, bird) {
             var start_position, bird_parent_element, visible;
-            bird.animate_delivery_to(package_side, {widget: this});
+            bird.animate_delivery_to(message_side, {widget: this});
             if (nest_copies) {
                 start_position = $(bird.closest_visible_ancestor().widget.get_frontside_element()).closest(":visible").position();
                 bird_parent_element = TT.UTILITIES.get_side_element_from_side(bird.get_parent_of_frontside());
                 visible = this.visible();
                 nest_copies.forEach(function (nest_copy) {
-                    var package_copy = TT.UTILITIES.copy_side(package_side, false, visible);
+                    var message_copy = TT.UTILITIES.copy_side(message_side, false, visible);
                     var bird_copy, bird_frontside_element;
-                    if (!nest_copy.has_ancestor(package_side.widget)) {
+                    if (!nest_copy.has_ancestor(message_side.widget)) {
                         // ignore if nest_copy is inside message
                         if (!nest_copy.visible() && !visible) {
                             // neither are visible so just add contents to nest
-                            nest_copy.add_to_contents(package_copy);
+                            nest_copy.add_to_contents(message_copy);
                         } else {
                             bird_copy = bird.copy(true);
                             bird_frontside_element = bird_copy.get_frontside_element(true); 
                             $(bird_parent_element).append(bird_frontside_element);
-                            bird_copy.animate_delivery_to(package_copy, {widget: nest_copy}, nest_copy, start_position.left, start_position.top);
+                            bird_copy.animate_delivery_to(message_copy, {widget: nest_copy}, nest_copy, start_position.left, start_position.top);
                         }
                    }
                });
