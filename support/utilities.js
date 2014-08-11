@@ -29,7 +29,8 @@ window.TOONTALK.UTILITIES =
                          "newly_created_widgets_path": TT.newly_created_widgets_path.create_from_json,
                          "path.to_backside_widget_of_context": TT.path.path_to_backside_widget_of_context_create_from_json,
                          "path_to_style_attribute": TT.element.create_path_from_json,
-                         "top_level": TT.widget.top_level_create_from_json};
+                         "top_level": TT.widget.top_level_create_from_json,
+                         "wand": TT.wand.create_from_json};
     // id needs to be unique across ToonTalks due to drag and drop
     var id_counter = new Date().getTime();
     var div_open = "<div class='toontalk-json'>";
@@ -204,7 +205,10 @@ window.TOONTALK.UTILITIES =
                 widget = TT.UTILITIES.create_from_json(json);
                 if (widget) {
                     element.textContent = ""; // served its purpose of being parsed as JSON
-                    if (widget.get_type_name() === 'top-level') {
+                    if (!widget.get_type_name) {
+                        // isn't a widget. e.g. a tool
+                        element.appendChild(widget.get_element());
+                    } else if (widget.get_type_name() === 'top-level') {
                         if (window.location.href.indexOf("reset=1") < 0) {
                             try {
                                 stored_json_string = window.localStorage.getItem(TT.UTILITIES.current_URL());
@@ -239,7 +243,9 @@ window.TOONTALK.UTILITIES =
                     }
                     // delay until geometry settles down
                     setTimeout(function () {
-                            widget.update_display();
+                            if (widget.update_display) {
+                                widget.update_display();
+                            } // otherwise might be a tool
                             if (json.semantic.running) {
                                 widget.set_running(true);
                             }
@@ -1083,7 +1089,7 @@ window.TOONTALK.UTILITIES =
             $(source_element).addClass("toontalk-side-animating");
             source_element.style.transitionDuration = duration+"ms";
             source_element.style.left = (source_relative_position.left + (target_absolute_position.left - source_absolute_position.left)) + "px";
-            source_element.style.top = (source_relative_position.top + (target_absolute_position.top - source_absolute_position.top)) + "px";
+            source_element.style.top =  (source_relative_position.top  + (target_absolute_position.top -  source_absolute_position.top )) + "px";
             if (!more_animation_follows) {
                 remove_transition_class = function () {
                     $(source_element).removeClass("toontalk-side-animating");
@@ -1383,8 +1389,8 @@ window.TOONTALK.UTILITIES =
         make_resizable: function ($element, widget) {
             $element.resizable({resize: function (event, ui) {
                                     // following needed for element widget's that are images
-                                    $element.find("img").css({width: ui.size.width,
-                                                         height: ui.size.height});
+                                    $element.find("img").css({width:  ui.size.width,
+                                                              height: ui.size.height});
                                     widget.render();
                                 },
                                // the corner handles looked bad on element widgets
