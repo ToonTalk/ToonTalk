@@ -661,7 +661,7 @@ window.TOONTALK.robot_backside =
         var description = TT.UTILITIES.create_text_element(text);
         var condition_element = condition_widget.get_frontside_element(true);
         var conditions_panel;
-//         TT.UTILITIES.set_position_is_absolute(condition_element, false);
+//      TT.UTILITIES.set_position_is_absolute(condition_element, false);
         $(condition_element).addClass("toontalk-conditions-contents " + class_name);
         setTimeout(function () {
                 // this is needed since the element may be transparent and yet need to see the border
@@ -697,15 +697,20 @@ window.TOONTALK.robot_backside =
         }
         if (backside_conditions) {
             Object.keys(backside_conditions).forEach(function (type) {
+                var condition_element;
                 backside_condition_widget = backside_conditions[type];
                 if (backside_condition_widget) {
                     area_class_name = "toontalk-backside-" + type + "-conditions-area";
                     if ($(backside_element).find("." + area_class_name).length === 0) {
-                        backside_element.insertBefore(create_conditions_area("Runs only if the " + type + " on the backside matches: ", 
-                                                                             backside_condition_widget, 
-                                                                             robot,
-                                                                             area_class_name), 
-                                                      backside_element.firstChild.nextSibling);
+                        if (type === 'bird') {
+                            condition_element = TT.UTILITIES.create_text_element("And there is a bird on the back.");
+                        } else {
+                            condition_element = create_conditions_area("Runs only if the " + type + " on the backside matches: ", 
+                                                                       backside_condition_widget, 
+                                                                       robot,
+                                                                       area_class_name);
+                        }
+                        backside_element.insertBefore(condition_element, backside_element.firstChild.nextSibling);
                         backside_condition_widget.render();
                     }
                 }
