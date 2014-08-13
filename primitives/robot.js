@@ -480,8 +480,8 @@ window.TOONTALK.robot = (function (TT) {
         }
         frontside_element.title = this.get_title();
         $(frontside_element).addClass("toontalk-robot");
+        $(frontside_element).empty();
         if (thing_in_hand_frontside_element) {
-            $(frontside_element).empty();
             frontside_element.appendChild(thing_in_hand_frontside_element);
         }
         if (this.match_status === 'not matched') {
