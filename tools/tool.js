@@ -20,6 +20,7 @@ window.TOONTALK.tool = (function (TT) {
                 drag_y_offset = event.clientY - bounding_rect.top;
                 event.preventDefault();
                 $(element).removeClass("toontalk-tool-returning");
+                $(element).addClass("toontalk-tool-held");
                 home_position = $(element).offset();
                 document.addEventListener('mousemove',    mouse_move);
                 document.addEventListener('mouseup',      mouse_up);
@@ -42,6 +43,25 @@ window.TOONTALK.tool = (function (TT) {
                 }
                 highlighted_element = new_highlighted_element;
                 TT.UTILITIES.highlight_element(highlighted_element);
+            };
+
+            var mouse_up = function (event) {
+                var widget_under_tool = find_widget_under_tool();
+                event.preventDefault();
+                if (highlighted_element) { // remove old highlighting
+                    TT.UTILITIES.remove_highlight_from_element(highlighted_element);
+                }
+                $(element).addClass("toontalk-tool-returning");
+                $(element).removeClass("toontalk-tool-held");              
+                if (widget_under_tool && widget_under_tool.add_copy_to_container) {
+                    tool.apply_tool(widget_under_tool);
+                    TT.UTILITIES.backup_all();
+                }
+                // using style.left and style.top to faciliate CSS animation
+                element.style.left = home_position.left + "px";
+                element.style.top  = home_position.top  + "px";
+                document.removeEventListener('mousemove',    mouse_move);
+                document.removeEventListener('mouseup',      mouse_up);
             };
 
             var find_widget_under_tool = function () {
@@ -69,24 +89,6 @@ window.TOONTALK.tool = (function (TT) {
                     return widget_under_tool.get_parent_of_frontside().widget;
                 }
                 return widget_under_tool;
-            };
-
-            var mouse_up = function (event) {
-                var widget_under_tool = find_widget_under_tool();
-                event.preventDefault();
-                if (highlighted_element) { // remove old highlighting
-                    TT.UTILITIES.remove_highlight_from_element(highlighted_element);
-                }
-                $(element).addClass("toontalk-tool-returning");    
-                if (widget_under_tool && widget_under_tool.add_copy_to_container) {
-                    tool.apply_tool(widget_under_tool);
-                    TT.UTILITIES.backup_all();
-                }
-                // using style.left and style.top to faciliate CSS animation
-                element.style.left = home_position.left + "px";
-                element.style.top  = home_position.top  + "px";
-                document.removeEventListener('mousemove',    mouse_move);
-                document.removeEventListener('mouseup',      mouse_up);
             };
                         
             element.addEventListener('mousedown', mouse_down);

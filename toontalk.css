@@ -324,7 +324,6 @@
 	border: solid 3px red;
 }
 .toontalk-wand {
-	position: absolute;
 	background-image: url("images/wand-static.png");
 	background-repeat: no-repeat;
 	cursor: pointer;
@@ -340,7 +339,19 @@
 	width: 95px;
 	height: 15px;
 }
+.toontalk-vacuum {
+	background-image: url("images/dusty-static.png");
+	background-repeat: no-repeat;
+	cursor: pointer;
+	z-index: 99999999;
+	width: 123px;
+	height: 45px;
+}
+.toontalk-tool-held {
+	position: absolute; 
+}
 .toontalk-tool-returning {
+	position: absolute;
 	-webkit-transition: all 1s cubic-bezier(0.86, 0, 0.07, 1);
     transition:         all 1s cubic-bezier(0.86, 0, 0.07, 1);
 }

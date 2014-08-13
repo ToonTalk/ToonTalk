@@ -30,7 +30,8 @@ window.TOONTALK.UTILITIES =
                          "path.to_backside_widget_of_context": TT.path.path_to_backside_widget_of_context_create_from_json,
                          "path_to_style_attribute": TT.element.create_path_from_json,
                          "top_level": TT.widget.top_level_create_from_json,
-                         "wand": TT.wand.create_from_json};
+                         "wand": TT.wand.create_from_json,
+                         "vacuum": TT.vacuum.create_from_json};
     // id needs to be unique across ToonTalks due to drag and drop
     var id_counter = new Date().getTime();
     var div_open = "<div class='toontalk-json'>";
