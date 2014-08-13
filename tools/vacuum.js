@@ -11,6 +11,8 @@ window.TOONTALK.vacuum = (function (TT) {
 
     var element;
 
+    var removed_items = [];
+
     var instance = {
         apply_tool: function (widget) {
             if (widget.remove) {
@@ -18,6 +20,7 @@ window.TOONTALK.vacuum = (function (TT) {
                     TT.robot.in_training.removed(widget);
                 }
                 widget.remove(event);
+                removed_items.push(widget);
                 TT.UTILITIES.backup_all();
              } // else warn??
         },
