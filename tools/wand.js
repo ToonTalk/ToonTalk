@@ -11,19 +11,31 @@ window.TOONTALK.wand = (function (TT) {
 
     var wand_instance = Object.create(TT.tool);
 
-    var element, home_position, drag_x_offset, drag_y_offset;
+    var element, home_position, drag_x_offset, drag_y_offset, highlighted_element;
 
     var mouse_move = function (event) {
+        var widget_under_wand_tip = find_widget_under_wand();
+        var new_highlighted_element;
         event.preventDefault();
         element.style.left = (event.clientX - drag_x_offset) + "px";
         element.style.top  = (event.clientY - drag_y_offset) + "px";
+        if (widget_under_wand_tip) {
+            new_highlighted_element = widget_under_wand_tip.get_frontside_element();
+            if (new_highlighted_element === highlighted_element) {
+                return; // no change
+            }
+        }
+        if (highlighted_element) { // remove old highlighting
+            TT.UTILITIES.remove_highlight_from_element(highlighted_element);
+        }
+        highlighted_element = new_highlighted_element;
+        TT.UTILITIES.highlight_element(highlighted_element);
     };
 
-    var mouse_up = function (event) {
-        var element_under_wand_tip, widget_under_wand_tip;
-        event.preventDefault();
-        $(element).addClass("toontalk-wand-returning");
-        // what is under the wand/mouse (not counting the wand itself)
+    var find_widget_under_wand = function () {
+        // what is under the wand top (not counting the wand itself)
+        var element_under_wand_tip, widget_under_wand_tip, widget_type;
+        // hide the wand so it is under itself
         $(element).hide();
         element_under_wand_tip = document.elementFromPoint(event.pageX - drag_x_offset, event.pageY - drag_y_offset);
         $(element).show();
@@ -34,9 +46,26 @@ window.TOONTALK.wand = (function (TT) {
         if (element_under_wand_tip) {
             widget_under_wand_tip = element_under_wand_tip.toontalk_widget;
         }
-        if (widget_under_wand_tip && widget_under_wand_tip.get_type_name() === "empty hole") {
-            widget_under_wand_tip = widget_under_wand_tip.get_parent_of_frontside().widget;
+        if (!widget_under_wand_tip) {
+            return;
         }
+        widget_type = widget_under_wand_tip.get_type_name();
+        if (widget_type === 'top-level') {
+            return;
+        }
+        if (widget_under_wand_tip && widget_type === "empty hole") {
+            return widget_under_wand_tip.get_parent_of_frontside().widget;
+        }
+        return widget_under_wand_tip;
+    };
+
+    var mouse_up = function (event) {
+        var widget_under_wand_tip = find_widget_under_wand();
+        event.preventDefault();
+        if (highlighted_element) { // remove old highlighting
+            TT.UTILITIES.remove_highlight_from_element(highlighted_element);
+        }
+        $(element).addClass("toontalk-wand-returning");    
         if (widget_under_wand_tip && widget_under_wand_tip.add_copy_to_container) {
             widget_under_wand_tip.add_copy_to_container();
             TT.UTILITIES.backup_all();

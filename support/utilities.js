@@ -1108,15 +1108,18 @@ window.TOONTALK.UTILITIES =
         },
         
         highlight_element: function (element, duration) {
-            if (!duration) {
-                duration = 1000;
-            }
             $(element).addClass("toontalk-highlight");
-            setTimeout(function () {
-                $(element).removeClass("toontalk-highlight");
-            },
-            duration);
-        },            
+            if (duration) {
+                setTimeout(function () {
+                        TT.UTILITIES.remove_highlight_from_element(element);
+                    },
+                    duration);
+            }
+        },
+
+        remove_highlight_from_element: function (element) {
+            $(element).removeClass("toontalk-highlight");
+        },          
         
         cursor_of_image: function (url) {
             var extensionStart = url.lastIndexOf('.');
