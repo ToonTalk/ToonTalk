@@ -32,10 +32,10 @@ window.TOONTALK.robot = (function (TT) {
         };
         new_robot.set_frontside_conditions = function (new_value) {
             frontside_conditions = new_value;
-            if (frontside_conditions) {
-                // only makes sense to erase things in frontside_conditions
-                TT.widget.erasable(frontside_conditions);
-            }
+//             if (frontside_conditions) {
+//                 // only makes sense to erase things in frontside_conditions
+//                 TT.widget.erasable(frontside_conditions);
+//             }
         };
         new_robot.get_backside_conditions = function () {
             return backside_conditions;

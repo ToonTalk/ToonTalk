@@ -31,6 +31,12 @@ window.TOONTALK.tool = (function (TT) {
                 event.preventDefault();
                 element.style.left = (event.clientX - drag_x_offset) + "px";
                 element.style.top  = (event.clientY - drag_y_offset) + "px";
+                if (widget_under_tool && widget_under_tool.get_type_name() === 'top-level') {
+                    if (highlighted_element) { // remove old highlighting
+                        TT.UTILITIES.remove_highlight_from_element(highlighted_element);
+                    }
+                    return;
+                }
                 if (widget_under_tool) {
                     new_highlighted_element = widget_under_tool.get_frontside_element();
                     if (new_highlighted_element === highlighted_element) {
@@ -51,7 +57,7 @@ window.TOONTALK.tool = (function (TT) {
                     TT.UTILITIES.remove_highlight_from_element(highlighted_element);
                 }
                 if (widget_under_tool && widget_under_tool.add_copy_to_container) {
-                    tool.apply_tool(widget_under_tool);
+                    tool.apply_tool(widget_under_tool, event);
                     TT.UTILITIES.backup_all();
                 }
                 $(element).removeClass("toontalk-tool-held"); 
@@ -90,9 +96,6 @@ window.TOONTALK.tool = (function (TT) {
                     return;
                 }
                 widget_type = widget_under_tool.get_type_name();
-                if (widget_type === 'top-level') {
-                    return;
-                }
                 if (widget_under_tool && widget_type === "empty hole") {
                     return widget_under_tool.get_parent_of_frontside().widget;
                 }

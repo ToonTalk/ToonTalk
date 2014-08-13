@@ -19,6 +19,9 @@ window.TOONTALK.widget = (function (TT) {
             this.has_title(widget);
             this.has_parent(widget);
             this.has_description(widget);
+            // erasability will eventually will be used for type conversions
+            // currently only for conditions
+            this.erasable(widget); 
             return widget;
         },
         
@@ -824,7 +827,11 @@ window.TOONTALK.widget = (function (TT) {
         },
         
         top_level_widget: function () {
-            var widget = Object.create(TT.widget);
+            var widget = TT.UTILITIES.get_toontalk_widget_from_jquery($(".toontalk-top-level-backside"));
+            if (widget) {
+                return widget;
+            }
+            widget = Object.create(TT.widget);
             widget.get_json = function (json_history) {
                 var backside = this.get_backside();
                 var backside_element = backside.get_element();

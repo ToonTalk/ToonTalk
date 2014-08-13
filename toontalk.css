@@ -146,7 +146,7 @@
 	border-bottom-width: 8%; */
 	min-height: 100%;
 }
-.toontalk-hole-number-0,toontalk-box-hole-horizontal {
+.toontalk-hole-number-0.toontalk-box-hole-horizontal {
 	padding-left: 4%;
 }
 /* following stopped working - not sure why so above used instead */
@@ -167,7 +167,7 @@
 	/* min-width:  100%; */
 	/* min-height: 100%; */
 }
-.toontalk-hole-number-0,toontalk-box-hole-vertical {
+.toontalk-hole-number-.,toontalk-box-hole-vertical {
 	padding-top: 4%;
 }
 /* following stopped working - not sure why so above used instead */
@@ -381,7 +381,7 @@ background-image: url("images/dusty-morph.png");
    from { background-position:    0px; }
      to { background-position: -2128px; }
 }
-.toontalk-tool-held,toontalk-vacuum {
+.toontalk-tool-held.toontalk-vacuum {
 	background-image: url("images/dusty-ready.png");
 	background-repeat: no-repeat;
 	width: 132px;
