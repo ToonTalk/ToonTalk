@@ -113,7 +113,7 @@ window.TOONTALK.UTILITIES =
             }
             $source.css({
                 left: event.originalEvent.pageX - (target_position.left + drag_x_offset),
-                top: event.originalEvent.pageY - (target_position.top + drag_y_offset)
+                top:  event.originalEvent.pageY - (target_position.top +  drag_y_offset)
             });
 //             if ($source.is(".toontalk-frontside") && !$source.is('.ui-resizable')) {
 //                 // without the setTimeout the following prevents dragging components (e.g. widgets in boxes)

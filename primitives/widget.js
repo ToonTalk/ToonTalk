@@ -665,7 +665,7 @@ window.TOONTALK.widget = (function (TT) {
             $container_element.append(frontside_element_copy);
             if (container_widget) {
                 container_widget.add_backside_widget(widget_copy);
-//                 console.log("Added the copy " + widget_copy + " (" + widget_copy.debug_id + ") to " + container_widget + " (" + container_widget.debug_id + ")");
+//              console.log("Added the copy " + widget_copy + " (" + widget_copy.debug_id + ") to " + container_widget + " (" + container_widget.debug_id + ")");
             }
             if (TT.robot.in_training) {
                 TT.robot.in_training.copied(this, widget_copy, false);

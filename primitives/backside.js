@@ -485,19 +485,19 @@ window.TOONTALK.backside =
             return $erase_button.get(0);
         },
         
-        create_copy_button: function (backside, widget) {
-            var backside_element = backside.get_element();
-            var $backside_element = $(backside_element);
-            var $copy_button = $("<button>Copy</button>").button();
-            $copy_button.addClass("toontalk-copy-backside-button");
-            $copy_button.click(function (event) {
-                widget.add_copy_to_container();
-                TT.UTILITIES.backup_all();
-                event.stopPropagation();
-            });
-            $copy_button.attr("title", "Click to make a copy of this " + widget.get_type_name());
-            return $copy_button.get(0);
-        },
+//         create_copy_button: function (backside, widget) {
+//             var backside_element = backside.get_element();
+//             var $backside_element = $(backside_element);
+//             var $copy_button = $("<button>Copy</button>").button();
+//             $copy_button.addClass("toontalk-copy-backside-button");
+//             $copy_button.click(function (event) {
+//                 widget.add_copy_to_container();
+//                 TT.UTILITIES.backup_all();
+//                 event.stopPropagation();
+//             });
+//             $copy_button.attr("title", "Click to make a copy of this " + widget.get_type_name());
+//             return $copy_button.get(0);
+//         },
         
         create_run_button: function (backside, widget) {
             var backside_element = backside.get_element();
