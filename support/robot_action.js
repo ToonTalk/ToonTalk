@@ -191,14 +191,29 @@ window.TOONTALK.robot_action =
             widget.open_backside(animation_continuation);
         } else {
             animation_continuation();
-        } 
+        }
+    };
+    var tool_use_animation = function (widget, context, top_level_context, robot, continuation, tool_css_class) {
+        var robot_frontside_element = robot.get_frontside_element();
+//      var robots_tool = document.createElement("div");
+        var new_continuation = function () {
+            continuation();
+            robot.carrying_tool = undefined;
+            robot.update_display(); // to stop displaying tool
+        };
+        robot.carrying_tool = tool_css_class;
+//      $(robots_tool).addClass(tool_css_class);
+//      robot_frontside_element.appendChild(robots_tool);
+        robot.update_display(); // to display tool
+        // robots move at 1/4 pixel per millisecond for clarity
+        robot.animate_to_element(widget.get_frontside_element(), new_continuation, .25, 0, 0); // -$(robot_frontside_element).height());
     };
     var copy_animation = function (widget, context, top_level_context, robot, continuation) {
         var new_continuation = function () {
             continuation();
             widget.add_copy_to_container(robot.get_recently_created_widget());
         };
-        button_use_animation(widget, context, top_level_context, robot, new_continuation, ".toontalk-copy-backside-button");
+        tool_use_animation(widget, context, top_level_context, robot, new_continuation, "toontalk-wand-small");
     };
     var remove_animation = function (widget_side, context, top_level_context, robot, continuation) {
         var $close_button;

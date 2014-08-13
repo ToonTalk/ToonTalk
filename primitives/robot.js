@@ -467,15 +467,14 @@ window.TOONTALK.robot = (function (TT) {
         if (thing_in_hand) {
             thing_in_hand_frontside_element = thing_in_hand.get_frontside_element();
         }
-        // remove what's there currently before adding new elements
-//         while (frontside_element.firstChild) {
-//             if (!$(frontside_element.firstChild).is(".toontalk-close-button")) {
-//                 frontside_element.removeChild(frontside_element.firstChild);
-//             }
-//         }
+        if (!thing_in_hand_frontside_element && this.carrying_tool) {
+            thing_in_hand_frontside_element = document.createElement("div");
+            $(thing_in_hand_frontside_element).addClass(this.carrying_tool);
+        }
         frontside_element.title = this.get_title();
         $(frontside_element).addClass("toontalk-robot");
         if (thing_in_hand_frontside_element) {
+            $(frontside_element).empty();
             frontside_element.appendChild(thing_in_hand_frontside_element);
         }
         if (this.match_status === 'not matched') {
@@ -486,7 +485,7 @@ window.TOONTALK.robot = (function (TT) {
         setTimeout( // wait for layout to settle down
             function () {
                 var relative_left, relative_top, thing_in_hand_width, thing_in_hand_height, robot_width, robot_height, css;
-                if (thing_in_hand) {
+                if (thing_in_hand_frontside_element) {
                     css = {position: "absolute"};
                     // tried to add position: absolute to toontalk-held-by-robot CSS but didn't work
                     $(thing_in_hand_frontside_element).addClass("toontalk-held-by-robot");
@@ -495,8 +494,6 @@ window.TOONTALK.robot = (function (TT) {
                     thing_in_hand_height = $(thing_in_hand_frontside_element).height();
                     robot_width = $(frontside_element).width();
                     robot_height = $(frontside_element).height();
-//                     robot_width = $(robot_image).width();
-//                     robot_height = $(robot_image).height();
                     if (thing_in_hand_width === 0) {
                         thing_in_hand_width = robot_width*2;
                         thing_in_hand_height = robot_height/2;
@@ -508,7 +505,9 @@ window.TOONTALK.robot = (function (TT) {
                     css['left'] = relative_left;
                     css['top'] = relative_top;
                     $(thing_in_hand_frontside_element).css(css);
-                    thing_in_hand.render(); // or should it be rerender -- could it be invisible?
+                    if (thing_in_hand) {
+                        thing_in_hand.render(); // or should it be rerender -- could it be invisible?
+                    }
                 }
             },
             1);

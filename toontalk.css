@@ -332,6 +332,14 @@
 	width: 191px;
 	height: 31px;
 }
+.toontalk-wand-small {
+	position: absolute;
+	background-image: url("images/wand-static-small.png");
+	background-repeat: no-repeat;
+	z-index: 99999999;
+	width: 95px;
+	height: 15px;
+}
 .toontalk-wand-returning {
 	-webkit-transition: all 1s cubic-bezier(0.86, 0, 0.07, 1);
     transition:         all 1s cubic-bezier(0.86, 0, 0.07, 1);
