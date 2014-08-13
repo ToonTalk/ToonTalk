@@ -340,7 +340,7 @@
 	width: 95px;
 	height: 15px;
 }
-.toontalk-wand-returning {
+.toontalk-tool-returning {
 	-webkit-transition: all 1s cubic-bezier(0.86, 0, 0.07, 1);
     transition:         all 1s cubic-bezier(0.86, 0, 0.07, 1);
 }
