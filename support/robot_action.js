@@ -25,7 +25,7 @@ window.TOONTALK.robot_action =
              return true;
          },
          "drop it on": function (target, context, top_level_context, robot) {
-             var thing_in_hand, thing_in_hand_frontside_element, context_frontside_position;
+             var thing_in_hand, thing_in_hand_frontside_element, context_frontside_position, thing_in_hand_position;
              if (target) {
                  thing_in_hand = robot.get_thing_in_hand();
                  if (thing_in_hand) {
@@ -33,9 +33,12 @@ window.TOONTALK.robot_action =
                          if (target instanceof jQuery) {
                              // e.g. dropped on top-level backside
                              thing_in_hand_frontside_element = thing_in_hand.get_frontside_element();
+                             thing_in_hand_position = $(thing_in_hand_frontside_element).offset();
                              target.append(thing_in_hand_frontside_element);
                              $(thing_in_hand_frontside_element).css({position: ""}); // no longer absolute
+                             TT.UTILITIES.set_absolute_position($(thing_in_hand_frontside_element), thing_in_hand_position);
                              robot.set_thing_in_hand(undefined);
+                             thing_in_hand.set_parent_of_frontside(TT.widget.top_level_widget());
                          } else {
                              if (target.visible && target.visible()) {
                                  target.render();
