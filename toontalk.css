@@ -80,7 +80,8 @@
     width: 1000px;
 	height: 300px;	
     background-color: rgb(245, 245, 57);
-	position: relative;
+	
+    position: relative;
 }
 .toontalk-top-level-frontside {
 	position: absolute;
@@ -347,6 +348,15 @@
 	width: 123px;
 	height: 45px;
 }
+.toontalk-vacuum-s {
+	background-image: url("images/dusty-static-S.png");
+}
+.toontalk-vacuum-r {
+	background-image: url("images/dusty-static-R.png");
+}
+.toontalk-vacuum-e {
+	background-image: url("images/dusty-static-E.png");
+}
 /* .toontalk-vacuum:hover {
 background-image: url("images/dusty-morph.png");
 	background-repeat: no-repeat;
@@ -451,6 +461,15 @@ background-image: url("images/dusty-morph.png");
 @keyframes vacuum-ready-small {
    from { background-position:    0px; }
      to { background-position: -663px; }
+}
+.toontalk-vacuum-button {
+	position: absolute;
+	background-repeat: no-repeat;
+	z-index: 99999999;
+	width: 21px;
+	height: 11px;
+	left: 5px;
+	top: 18px;
 }
 .toontalk-tool-held {
 	position: absolute; 

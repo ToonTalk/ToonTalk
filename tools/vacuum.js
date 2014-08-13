@@ -11,17 +11,25 @@ window.TOONTALK.vacuum = (function (TT) {
 
     var element;
 
-    var mode = 'suck'; // either 'suck', 'erase', or 'restore'
+    var mode, mode_class; // either 'suck', 'erase', or 'restore'
   
     var titles = {suck:    "Drag this vacuum over the thing you want to remove. Type 'e' to switch to erasing. Type 'r' to restore previously removed or erased things.",
                   erase:   "Drag this vacuum over the thing you want to erase. Type 's' to switch to sucking. Type 'r' to restore contents.",
                   restore: "Drag this over the work area. Each time you release it a widget is restored. Type 's' to switch to sucking. Type 'e' to switch to erasing."};
+
+    var mode_classes = {suck:    "toontalk-vacuum-s",
+                        erase:   "toontalk-vacuum-e",
+                        restore: "toontalk-vacuum-r"};
+
 
     var removed_items = [];
 
     var set_mode = function (new_value) {
         if (mode !== new_value) {
             mode = new_value;
+            $(element).removeClass(mode_class);
+            mode_class = mode_classes[mode];
+            $(element).addClass(mode_class);
             update_title();
         }
     };
@@ -79,10 +87,12 @@ window.TOONTALK.vacuum = (function (TT) {
             }
         },
         get_element: function () {
+            var vacuum_without_button_element;
             if (!element) {
                 element = document.createElement("div");
                 $(element).addClass("toontalk-vacuum");
                 TT.tool.add_listeners(element, instance);
+                set_mode('suck');
                 document.addEventListener('keyup', function (event) {
                     var character = String.fromCharCode(event.keyCode);
                     if (character === 's' || character === 's') {
