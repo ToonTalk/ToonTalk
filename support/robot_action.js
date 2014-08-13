@@ -195,18 +195,15 @@ window.TOONTALK.robot_action =
     };
     var tool_use_animation = function (widget, context, top_level_context, robot, continuation, tool_css_class) {
         var robot_frontside_element = robot.get_frontside_element();
-//      var robots_tool = document.createElement("div");
         var new_continuation = function () {
             continuation();
             robot.carrying_tool = undefined;
             robot.update_display(); // to stop displaying tool
         };
         robot.carrying_tool = tool_css_class;
-//      $(robots_tool).addClass(tool_css_class);
-//      robot_frontside_element.appendChild(robots_tool);
         robot.update_display(); // to display tool
         // robots move at 1/4 pixel per millisecond for clarity
-        robot.animate_to_element(widget.get_frontside_element(), new_continuation, .25, 0, 0); // -$(robot_frontside_element).height());
+        robot.animate_to_element(widget.get_frontside_element(), new_continuation, .25, 0, 0);
     };
     var copy_animation = function (widget, context, top_level_context, robot, continuation) {
         var new_continuation = function () {

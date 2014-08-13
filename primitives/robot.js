@@ -81,12 +81,19 @@ window.TOONTALK.robot = (function (TT) {
         };
         new_robot.set_animating = function (new_value) {
             var frontside_element = this.get_frontside_element();
+            var robot_position, parent_position;
             animating = new_value;
             if (animating) {
-                frontside_element.style["z-index"] = TT.UTILITIES.next_z_index();
+                robot_position = $(frontside_element).position();
+                parent_position = $(frontside_element.parentElement).position();
+                $(frontside_element).css({"z-index": TT.UTILITIES.next_z_index()});
                 $(frontside_element).addClass("toontalk-robot-animating");
+                // z ordering (z-index) doesn't work unless the robot is a child of the top-level backside while animating
+                // need to change its relative coordinates so it doesn't move
+                $(frontside_element).css({left: robot_position.left+parent_position.left,
+                                          top:  robot_position.top +parent_position.top});
+                $(".toontalk-top-level-backside").append(frontside_element);
             } else {
-//                 frontside_element.style["z-index"] = TT.UTILITIES.next_z_index();
                 $(frontside_element).removeClass("toontalk-robot-animating");
             }
         };
@@ -267,10 +274,10 @@ window.TOONTALK.robot = (function (TT) {
     robot.set_stopped = function (new_value) {
         this.stopped = new_value;
         if (this.stopped) {
-            // this is needed because a robot won't start running if it is animating
-            // and the animating flag isn't always reset
-            this.set_animating(false);
             if (this.visible()) {
+                // this is needed because a robot won't start running if it is animating
+                // and the animating flag isn't always reset
+                this.set_animating(false);
                 $(this.get_frontside_element()).removeClass("toontalk-robot-waiting");
             }
         }
