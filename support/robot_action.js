@@ -212,15 +212,15 @@ window.TOONTALK.robot_action =
         };
         tool_use_animation(widget, context, top_level_context, robot, new_continuation, "toontalk-wand-small");
     };
-    var remove_animation = function (widget_side, context, top_level_context, robot, continuation) {
-        var $close_button;
-        if (!widget_side.widget) {
-            // is a widget so asumme it is a frontside
-            widget_side = {widget: widget_side};
-        }
-        $close_button = $(widget_side.widget.get_frontside_element()).find(".toontalk-close-button");
-        $close_button.show();
-        robot.animate_to_element($close_button.get(0), continuation, .25);
+    var remove_animation = function (widget, context, top_level_context, robot, continuation) {
+        var parent = widget.get_parent_of_frontside() && widget.get_parent_of_frontside().widget;
+        var new_continuation = function () {
+            continuation();
+            if (parent && parent.get_type_name() !== 'top-level') {
+                parent.update_display();
+            }
+        };
+        tool_use_animation(widget, context, top_level_context, robot, new_continuation, "toontalk-vacuum-ready-small");
     };
     var edit_animation = function (widget, context, top_level_context, robot, continuation, additional_info) {
         var new_continuation = function () {

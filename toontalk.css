@@ -347,6 +347,43 @@
 	width: 123px;
 	height: 45px;
 }
+.toontalk-vacuum-ready-small {
+	position: absolute;
+	background-image: url("images/dusty-ready-small.png");
+	background-repeat: no-repeat;
+	z-index: 99999999;
+	width: 63px;
+	height: 30px;
+	-webkit-animation: vacuum-ready-small 1s steps(10) infinite;
+       -moz-animation: vacuum-ready-small 1s steps(10) infinite;
+        -ms-animation: vacuum-ready-small 1s steps(10) infinite;
+         -o-animation: vacuum-ready-small 1s steps(10) infinite;
+            animation: vacuum-ready-small 1s steps(10) infinite;
+}
+@-webkit-keyframes vacuum-ready-small {
+   from { background-position:    0px; }
+     to { background-position: -663px; }
+}
+
+@-moz-keyframes vacuum-ready-small {
+   from { background-position:    0px; }
+     to { background-position: -663px; }
+}
+
+@-ms-keyframes vacuum-ready-small {
+   from { background-position:    0px; }
+     to { background-position: -663px; }
+}
+
+@-o-keyframes vacuum-ready-small {
+   from { background-position:    0px; }
+     to { background-position: -663px; }
+}
+
+@keyframes vacuum-ready-small {
+   from { background-position:    0px; }
+     to { background-position: -663px; }
+}
 .toontalk-tool-held {
 	position: absolute; 
 }
