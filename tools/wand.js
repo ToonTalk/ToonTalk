@@ -30,10 +30,13 @@ window.TOONTALK.wand = (function (TT) {
         $(element).show();
         while (element_under_wand_tip && !element_under_wand_tip.toontalk_widget) {
             // element might be a 'sub-element' so go up parent links to find ToonTalk widget
-             element_under_wand_tip = element_under_wand_tip.parentElement;
+            element_under_wand_tip = element_under_wand_tip.parentElement;
         }
         if (element_under_wand_tip) {
             widget_under_wand_tip = element_under_wand_tip.toontalk_widget;
+        }
+        if (widget_under_wand_tip && widget_under_wand_tip.get_type_name() === "empty hole") {
+            widget_under_wand_tip = widget_under_wand_tip.get_parent_of_frontside().widget;
         }
         if (widget_under_wand_tip && widget_under_wand_tip.add_copy_to_container) {
             widget_under_wand_tip.add_copy_to_container();
