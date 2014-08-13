@@ -21,7 +21,6 @@ window.TOONTALK.vacuum = (function (TT) {
                 }
                 widget.remove(event);
                 removed_items.push(widget);
-                TT.UTILITIES.backup_all();
              } // else warn??
         },
         get_element: function () {
