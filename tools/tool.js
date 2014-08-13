@@ -19,7 +19,6 @@ window.TOONTALK.tool = (function (TT) {
                 drag_x_offset = event.clientX - bounding_rect.left;
                 drag_y_offset = event.clientY - bounding_rect.top;
                 event.preventDefault();
-                $(element).removeClass("toontalk-tool-returning");
                 $(element).addClass("toontalk-tool-held");
                 home_position = $(element).offset();
                 document.addEventListener('mousemove',    mouse_move);
@@ -51,15 +50,24 @@ window.TOONTALK.tool = (function (TT) {
                 if (highlighted_element) { // remove old highlighting
                     TT.UTILITIES.remove_highlight_from_element(highlighted_element);
                 }
-                $(element).addClass("toontalk-tool-returning");
-                $(element).removeClass("toontalk-tool-held");              
                 if (widget_under_tool && widget_under_tool.add_copy_to_container) {
                     tool.apply_tool(widget_under_tool);
                     TT.UTILITIES.backup_all();
                 }
-                // using style.left and style.top to faciliate CSS animation
-                element.style.left = home_position.left + "px";
-                element.style.top  = home_position.top  + "px";
+                $(element).removeClass("toontalk-tool-held"); 
+                $(element).addClass("toontalk-tool-returning");
+                // returning for one second
+                TT.UTILITIES.add_one_shot_event_handler(element, "transitionend", 1000, 
+                                                        function () {
+                                                            $(element).removeClass("toontalk-tool-returning");                      
+                                                        });
+                // return animation depends upon this delay
+                setTimeout(function () {
+                        // using style.left and style.top to faciliate CSS animation
+                        element.style.left = home_position.left + "px";
+                        element.style.top  = home_position.top  + "px";
+                    },
+                    1);
                 document.removeEventListener('mousemove',    mouse_move);
                 document.removeEventListener('mouseup',      mouse_up);
             };
