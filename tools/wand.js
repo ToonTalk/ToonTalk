@@ -17,7 +17,6 @@ window.TOONTALK.wand = (function (TT) {
         event.preventDefault();
         element.style.left = (event.clientX - drag_x_offset) + "px";
         element.style.top  = (event.clientY - drag_y_offset) + "px";
-//      console.log("Moved to " + event.clientX + "," + event.clientY);
     };
 
     var mouse_up = function (event) {
@@ -54,9 +53,9 @@ window.TOONTALK.wand = (function (TT) {
             element = document.createElement("div");
             $(element).addClass("toontalk-wand");
         }
+        element.title = "Drag this magic wand over the thing you want to copy.";
         element.addEventListener('mousedown', function (event) {
             // should I check which mouse button? (event.button)
-//             console.log("mouse down");
             var bounding_rect = element.getBoundingClientRect();
             drag_x_offset = event.clientX - bounding_rect.left;
             drag_y_offset = event.clientY - bounding_rect.top;
