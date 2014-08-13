@@ -14,13 +14,13 @@ window.TOONTALK.wand = (function (TT) {
     var element, home_position, drag_x_offset, drag_y_offset, highlighted_element;
 
     var mouse_move = function (event) {
-        var widget_under_wand_tip = find_widget_under_wand();
+        var widget_under_tool = find_widget_under_tool();
         var new_highlighted_element;
         event.preventDefault();
         element.style.left = (event.clientX - drag_x_offset) + "px";
         element.style.top  = (event.clientY - drag_y_offset) + "px";
-        if (widget_under_wand_tip) {
-            new_highlighted_element = widget_under_wand_tip.get_frontside_element();
+        if (widget_under_tool) {
+            new_highlighted_element = widget_under_tool.get_frontside_element();
             if (new_highlighted_element === highlighted_element) {
                 return; // no change
             }
@@ -32,42 +32,42 @@ window.TOONTALK.wand = (function (TT) {
         TT.UTILITIES.highlight_element(highlighted_element);
     };
 
-    var find_widget_under_wand = function () {
-        // what is under the wand top (not counting the wand itself)
-        var element_under_wand_tip, widget_under_wand_tip, widget_type;
-        // hide the wand so it is under itself
+    var find_widget_under_tool = function () {
+        // return what is under the tool not counting the tool itself)
+        var element_under_tool, widget_under_tool, widget_type;
+        // hide the tool so it is not under itself
         $(element).hide();
-        element_under_wand_tip = document.elementFromPoint(event.pageX - drag_x_offset, event.pageY - drag_y_offset);
+        element_under_tool = document.elementFromPoint(event.pageX - drag_x_offset, event.pageY - drag_y_offset);
         $(element).show();
-        while (element_under_wand_tip && !element_under_wand_tip.toontalk_widget) {
+        while (element_under_tool && !element_under_tool.toontalk_widget) {
             // element might be a 'sub-element' so go up parent links to find ToonTalk widget
-            element_under_wand_tip = element_under_wand_tip.parentElement;
+            element_under_tool = element_under_tool.parentElement;
         }
-        if (element_under_wand_tip) {
-            widget_under_wand_tip = element_under_wand_tip.toontalk_widget;
+        if (element_under_tool) {
+            widget_under_tool = element_under_tool.toontalk_widget;
         }
-        if (!widget_under_wand_tip) {
+        if (!widget_under_tool) {
             return;
         }
-        widget_type = widget_under_wand_tip.get_type_name();
+        widget_type = widget_under_tool.get_type_name();
         if (widget_type === 'top-level') {
             return;
         }
-        if (widget_under_wand_tip && widget_type === "empty hole") {
-            return widget_under_wand_tip.get_parent_of_frontside().widget;
+        if (widget_under_tool && widget_type === "empty hole") {
+            return widget_under_tool.get_parent_of_frontside().widget;
         }
-        return widget_under_wand_tip;
+        return widget_under_tool;
     };
 
     var mouse_up = function (event) {
-        var widget_under_wand_tip = find_widget_under_wand();
+        var widget_under_tool = find_widget_under_tool();
         event.preventDefault();
         if (highlighted_element) { // remove old highlighting
             TT.UTILITIES.remove_highlight_from_element(highlighted_element);
         }
-        $(element).addClass("toontalk-wand-returning");    
-        if (widget_under_wand_tip && widget_under_wand_tip.add_copy_to_container) {
-            widget_under_wand_tip.add_copy_to_container();
+        $(element).addClass("toontalk-tool-returning");    
+        if (widget_under_tool && widget_under_tool.add_copy_to_container) {
+            wand_instance.apply_tool(widget_under_tool);
             TT.UTILITIES.backup_all();
         }
         // using style.left and style.top to faciliate CSS animation
@@ -75,6 +75,10 @@ window.TOONTALK.wand = (function (TT) {
         element.style.top  = home_position.top  + "px";
         document.removeEventListener('mousemove',    mouse_move);
         document.removeEventListener('mouseup',      mouse_up);
+    };
+
+    wand_instance.apply_tool = function (widget) {
+        widget.add_copy_to_container();
     };
 
     wand_instance.get_element = function () {
@@ -89,7 +93,7 @@ window.TOONTALK.wand = (function (TT) {
             drag_x_offset = event.clientX - bounding_rect.left;
             drag_y_offset = event.clientY - bounding_rect.top;
             event.preventDefault();
-            $(element).removeClass("toontalk-wand-returning");
+            $(element).removeClass("toontalk-tool-returning");
             home_position = $(element).offset();
             document.addEventListener('mousemove',    mouse_move);
             document.addEventListener('mouseup',      mouse_up);
