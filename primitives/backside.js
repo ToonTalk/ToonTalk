@@ -342,7 +342,7 @@ window.TOONTALK.backside =
             } else {
                 run_or_erase_button = TT.backside.create_erase_button(backside, widget);
             }
-            var copy_button = TT.backside.create_copy_button(backside, widget);
+//             var copy_button = TT.backside.create_copy_button(backside, widget);
 //             var hide_button = TT.backside.create_hide_button(backside, widget);
 //             var remove_button = TT.backside.create_remove_button(backside, widget);
             var settings_button = TT.backside.create_settings_button(backside, widget, extra_settings_generator);
@@ -351,7 +351,7 @@ window.TOONTALK.backside =
             for (i = 3; i < arguments.length; i++) {
                 extra_arguments[i-3] = arguments[i];
             }
-            button_set = TT.UTILITIES.create_button_set(run_or_erase_button, copy_button, settings_button, extra_arguments);
+            button_set = TT.UTILITIES.create_button_set(run_or_erase_button, settings_button, extra_arguments);
             if (description) {
                return TT.UTILITIES.create_vertical_table(TT.UTILITIES.create_text_element("Back side of a " + widget.get_type_name() + " that " + description), button_set);
             }
