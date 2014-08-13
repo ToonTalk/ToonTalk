@@ -286,7 +286,7 @@ window.TOONTALK.robot = (function (TT) {
         }
     };
     
-    robot.run_actions = function(context, top_level_context, queue) {
+    robot.run_actions = function (context, top_level_context, queue) {
         if (this.stopped) { // replace with a method?
             return false;
         }
@@ -461,7 +461,7 @@ window.TOONTALK.robot = (function (TT) {
         TT.UTILITIES.backup_all();
     };
     
-    robot.update_display = function() {
+    robot.update_display = function () {
         var frontside = this.get_frontside(true);
         var backside = this.get_backside(); 
         var thing_in_hand = this.get_thing_in_hand();
@@ -538,7 +538,7 @@ window.TOONTALK.robot = (function (TT) {
         return newly_created_widgets[newly_created_widgets.length-1];
     };
     
-    robot.get_title = function() {
+    robot.get_title = function () {
         var description = this.get_description();
         var frontside_element;
         if (description) {

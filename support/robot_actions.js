@@ -86,7 +86,7 @@ window.TOONTALK.actions =
             return new_actions;
         },
         
-        run_unwatched: function(context, top_level_context, queue, robot) {
+        run_unwatched: function (context, top_level_context, queue, robot) {
             var steps = this.get_steps();
             steps.forEach(function (step) {
                 step.run_unwatched(context, top_level_context, robot);
@@ -96,7 +96,7 @@ window.TOONTALK.actions =
             }
         },
         
-        run_watched: function(context, top_level_context, queue, robot) {
+        run_watched: function (context, top_level_context, queue, robot) {
             var steps = this.get_steps();
             var frontside_element = robot.get_frontside_element();
             var robot_start_position = $(frontside_element).position();

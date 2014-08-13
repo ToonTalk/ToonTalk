@@ -159,7 +159,7 @@ window.TOONTALK.bird = (function (TT) {
         return "matched";
     };
     
-    bird.update_display = function() {
+    bird.update_display = function () {
         var frontside = this.get_frontside(true);
         var backside = this.get_backside(); 
         var bird_image, frontside_element;
@@ -585,7 +585,7 @@ window.TOONTALK.nest = (function (TT) {
             }
             return false;
         };
-        new_nest.update_display = function() {
+        new_nest.update_display = function () {
             var frontside = this.get_frontside(true);
             var backside = this.get_backside(); 
             var frontside_element, nest_width, nest_height, contents_backside, contents_side_element;

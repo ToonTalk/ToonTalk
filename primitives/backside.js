@@ -278,7 +278,7 @@ window.TOONTALK.backside =
             return backside;
         },
                 
-        remove: function() {
+        remove: function () {
             $(this.get_element()).remove();
         },
         

@@ -129,7 +129,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             }
             pending_css[attribute] = value;
         };
-        new_element.apply_css = function() {
+        new_element.apply_css = function () {
             var frontside_element, image_css, transform;
             if (!pending_css && !transform_css) {
                 return;

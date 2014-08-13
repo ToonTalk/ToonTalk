@@ -211,7 +211,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         return bigrat.equals(this.get_value(), other_number.get_value());
     };
     
-    number.update_display = function() {
+    number.update_display = function () {
         // should compute width from frontside element
         // get format from backside ancestor (via parent attribute?)
         var frontside = this.get_frontside(true);

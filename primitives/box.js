@@ -270,7 +270,7 @@ window.TOONTALK.box = (function (TT) {
 //         return html;
 //     };
     
-    box.update_display = function() {
+    box.update_display = function () {
         var frontside = this.get_frontside(true);
         var frontside_element = frontside.get_element();
         var size = this.get_size();
