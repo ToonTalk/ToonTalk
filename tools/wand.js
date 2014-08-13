@@ -11,12 +11,12 @@ window.TOONTALK.wand = (function (TT) {
 
     var wand_instance = Object.create(TT.tool);
 
-    var element, home_position;
+    var element, home_position, drag_x_offset, drag_y_offset;
 
     var mouse_move = function (event) {
         event.preventDefault();
-        element.style.left = event.clientX + "px";
-        element.style.top  = event.clientY + "px";
+        element.style.left = (event.clientX - drag_x_offset) + "px";
+        element.style.top  = (event.clientY - drag_y_offset) + "px";
 //      console.log("Moved to " + event.clientX + "," + event.clientY);
     };
 
@@ -26,7 +26,7 @@ window.TOONTALK.wand = (function (TT) {
         $(element).addClass("toontalk-wand-returning");
         // what is under the wand/mouse (not counting the wand itself)
         $(element).hide();
-        element_under_wand_tip = document.elementFromPoint(event.pageX, event.pageY);
+        element_under_wand_tip = document.elementFromPoint(event.pageX - drag_x_offset, event.pageY - drag_y_offset);
         $(element).show();
         while (element_under_wand_tip && !element_under_wand_tip.toontalk_widget) {
             // element might be a 'sub-element' so go up parent links to find ToonTalk widget
@@ -57,6 +57,9 @@ window.TOONTALK.wand = (function (TT) {
         element.addEventListener('mousedown', function (event) {
             // should I check which mouse button? (event.button)
 //             console.log("mouse down");
+            var bounding_rect = element.getBoundingClientRect();
+            drag_x_offset = event.clientX - bounding_rect.left;
+            drag_y_offset = event.clientY - bounding_rect.top;
             event.preventDefault();
             $(element).removeClass("toontalk-wand-returning");
             home_position = $(element).offset();
