@@ -43,20 +43,22 @@ window.TOONTALK.robot_action =
                              if (target.visible && target.visible()) {
                                  target.render();
                              }
-                             // need to see it before actions such as Bammer take place
-                             $(".toontalk-top-level-backside").append(thing_in_hand_frontside_element);
-                             TT.UTILITIES.set_absolute_position($(thing_in_hand_frontside_element), thing_in_hand_position);
-                             // remove it from the robot's hand since the drop can take a few seconds
-                             // and we don't want to see it in the robot's hand
-                             if (!thing_in_hand.caused_robot_to_wait_before_next_step) {
-                                 // e.g., a nest may take some time because the egg hatches
-                                 // but the robot is still holding it
-                                 $(thing_in_hand.get_frontside_element()).css({position: ""}); // no longer absolute
-                                 robot.set_thing_in_hand(undefined);
+                             if (robot.visible()) {
+                                 // need to see it before actions such as Bammer take place
+                                 $(".toontalk-top-level-backside").append(thing_in_hand_frontside_element);
+                                 TT.UTILITIES.set_absolute_position($(thing_in_hand_frontside_element), thing_in_hand_position);
+                                 // remove it from the robot's hand since the drop can take a few seconds
+                                 // and we don't want to see it in the robot's hand
+                                 if (!thing_in_hand.caused_robot_to_wait_before_next_step) {
+                                     // e.g., a nest may take some time because the egg hatches
+                                     // but the robot is still holding it
+                                     $(thing_in_hand.get_frontside_element()).css({position: ""}); // no longer absolute
+                                     robot.set_thing_in_hand(undefined);
+                                 }
+                                 robot.rerender();
                              }
                              // update this when robots can drop backsides as well
                              thing_in_hand.drop_on(target, false, undefined, robot);
-                             robot.rerender();
                          }
                      } else {
                          console.log("Thing in robot's hand (" + thing_in_hand + ") doesn't handle 'drop_on'. Robot that " + robot);
