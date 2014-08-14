@@ -101,6 +101,11 @@ window.TOONTALK.backside =
                     if (other.dropped_on_other) {
                         other.dropped_on_other(this.get_widget(), true, event);
                     }
+                    if (other.get_body && other.get_body().is_empty()) {
+                        // automate the start of training
+                        other.open_backside();
+                        $(".toontalk-train-backside-button").click();
+                    }
                     TT.UTILITIES.backup_all();
                     return true;
                 };
