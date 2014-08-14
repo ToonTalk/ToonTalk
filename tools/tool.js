@@ -11,13 +11,14 @@ window.TOONTALK.tool = (function (TT) {
 
     return {
         add_listeners: function (element, tool) {
-            var home_position, drag_x_offset, drag_y_offset, highlighted_element;
+            var home_position, drag_x_offset, drag_y_offset, tool_height, highlighted_element;
 
             var mouse_down = function (event) {
                 // should this check which mouse button? (event.button)
                 var bounding_rect = element.getBoundingClientRect();
                 drag_x_offset = event.clientX - bounding_rect.left;
                 drag_y_offset = event.clientY - bounding_rect.top;
+                tool_height = bounding_rect.height;
                 event.preventDefault();
                 $(element).addClass("toontalk-tool-held");
                 home_position = $(element).offset();
@@ -84,9 +85,11 @@ window.TOONTALK.tool = (function (TT) {
                 var element_under_tool, widget_under_tool, widget_type;
                 // hide the tool so it is not under itself
                 $(element).hide();
-                element_under_tool = document.elementFromPoint(event.pageX - drag_x_offset, event.pageY - drag_y_offset);
+                // select using the leftmost part of tool and vertical center
+                element_under_tool = document.elementFromPoint(event.pageX - drag_x_offset, (event.pageY - drag_y_offset) + tool_height/2);
                 $(element).show();
-                while (element_under_tool && !element_under_tool.toontalk_widget) {
+                while (element_under_tool && !element_under_tool.toontalk_widget && 
+                       (!$(element_under_tool).is(".toontalk-backside") || $(element_under_tool).is(".toontalk-top-level-backside"))) {
                     // element might be a 'sub-element' so go up parent links to find ToonTalk widget
                     element_under_tool = element_under_tool.parentElement;
                 }
