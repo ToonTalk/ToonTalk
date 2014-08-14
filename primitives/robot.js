@@ -86,12 +86,14 @@ window.TOONTALK.robot = (function (TT) {
             if (animating) {
                 robot_position = $(frontside_element).position();
                 parent_position = $(frontside_element.parentElement).position();
-                $(frontside_element).css({"z-index": TT.UTILITIES.next_z_index()});
                 $(frontside_element).addClass("toontalk-robot-animating");
                 // z ordering (z-index) doesn't work unless the robot is a child of the top-level backside while animating
                 // need to change its relative coordinates so it doesn't move
                 $(frontside_element).css({left: robot_position.left+parent_position.left,
-                                          top:  robot_position.top +parent_position.top});
+                                          top:  robot_position.top +parent_position.top,
+                                          width:  '', // rely upon toontalk-robot-animating for dimensions
+                                          height: '', // otherwise doesn't animate well
+                                          "z-index": TT.UTILITIES.next_z_index()});
                 $(".toontalk-top-level-backside").append(frontside_element);
             } else {
                 $(frontside_element).removeClass("toontalk-robot-animating");

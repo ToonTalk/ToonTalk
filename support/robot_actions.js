@@ -138,7 +138,7 @@ window.TOONTALK.actions =
                                 // maybe user hid the robot while running
                                 // first restore robot to its 'home'
                                 frontside_element.style.left = robot_start_position.left + "px";
-                                frontside_element.style.top = robot_start_position.top + "px";
+                                frontside_element.style.top =  robot_start_position.top  + "px";
                                 for (i = i+1; i < steps.length; i++) {
                                     steps[i].run_unwatched(context, top_level_context, robot);
                                 }
