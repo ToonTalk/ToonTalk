@@ -52,7 +52,7 @@ window.TOONTALK.UTILITIES =
         return div_string.substring(json_start, json_end+1);
     };
     var handle_drop = function ($target, $source, source_widget, target_widget, target_position, event, json_object, drag_x_offset, drag_y_offset, source_is_backside) {
-        var new_target, backside_widgets_json, shared_widgets;
+        var new_target, backside_widgets_json, shared_widgets, top_level_backside_position;
         if ($target.is(".toontalk-backside")) {
             if (source_widget.get_type_name() === 'top-level') {
                // add all top-level backsides contents but not the backside widget itself
@@ -114,7 +114,7 @@ window.TOONTALK.UTILITIES =
             }
             $source.css({
                 left: event.originalEvent.pageX - (target_position.left + drag_x_offset),
-                top:  event.originalEvent.pageY - (target_position.top +  drag_y_offset)
+                top:  event.originalEvent.pageY - (target_position.top  + drag_y_offset)
             });
 //             if ($source.is(".toontalk-frontside") && !$source.is('.ui-resizable')) {
 //                 // without the setTimeout the following prevents dragging components (e.g. widgets in boxes)
@@ -138,20 +138,29 @@ window.TOONTALK.UTILITIES =
         } else if (!target_widget) {
             console.log("target element has no 'owner'");
             return; // let event propagate
-        } else if (source_widget.drop_on && source_widget.drop_on(target_widget, source_is_backside, event)) {
-        } else if (target_widget.widget_dropped_on_me && target_widget.widget_dropped_on_me(source_widget, source_is_backside, event)) {
         } else {
-            // ignore the current target and replace with the backside it is on
-            new_target = $target.closest(".toontalk-backside");
-            if (new_target.length > 0) {
-                target_widget = TT.UTILITIES.get_toontalk_widget_from_jquery(new_target);
-                if (target_widget) {
-                    target_widget.get_backside().widget_dropped_on_me(source_widget, source_is_backside, event);
-                    // place it directly underneath the original target
-                    $source.css({
-                        left: $target.position().left,
-                        top: $target.position().top + $target.height()
-                    });
+            // before processing drop ensure that dropped item (source_widget) is visible and where dropped
+            $(".toontalk-top-level-backside").append($source.get(0));
+            top_level_backside_position = $(".toontalk-top-level-backside").offset();
+            $source.css({
+                left: event.originalEvent.pageX - (top_level_backside_position.left + drag_x_offset),
+                top:  event.originalEvent.pageY - (top_level_backside_position.top  + drag_y_offset)}
+            );
+            if (source_widget.drop_on && source_widget.drop_on(target_widget, source_is_backside, event)) {
+            } else if (target_widget.widget_dropped_on_me && target_widget.widget_dropped_on_me(source_widget, source_is_backside, event)) {
+            } else {
+                // ignore the current target and replace with the backside it is on
+                new_target = $target.closest(".toontalk-backside");
+                if (new_target.length > 0) {
+                    target_widget = TT.UTILITIES.get_toontalk_widget_from_jquery(new_target);
+                    if (target_widget) {
+                        target_widget.get_backside().widget_dropped_on_me(source_widget, source_is_backside, event);
+                        // place it directly underneath the original target
+                        $source.css({
+                            left: $target.position().left,
+                            top:  $target.position().top + $target.height()
+                        });
+                    }
                 }
             }
         }
