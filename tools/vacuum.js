@@ -14,7 +14,7 @@ window.TOONTALK.vacuum = (function (TT) {
     var mode, mode_class; // either 'suck', 'erase', or 'restore'
   
     var titles = {suck:    "Drag this vacuum over the thing you want to remove. Type 'e' to switch to erasing. Type 'r' to restore previously removed or erased things.",
-                  erase:   "Drag this vacuum over the thing you want to erase. Type 's' to switch to sucking. Type 'r' to restore contents.",
+                  erase:   "Drag this vacuum over the thing you want to erase (or un-erase). Type 's' to switch to sucking. Type 'r' to restore contents.",
                   restore: "Drag this over the work area. Each time you release it a widget is restored. Type 's' to switch to sucking. Type 'e' to switch to erasing."};
 
     var mode_classes = {suck:    "toontalk-vacuum-s",
