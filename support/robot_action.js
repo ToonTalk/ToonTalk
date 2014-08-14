@@ -30,10 +30,10 @@ window.TOONTALK.robot_action =
                  thing_in_hand = robot.get_thing_in_hand();
                  if (thing_in_hand) {
                      if (thing_in_hand.drop_on) {
-                         thing_in_hand_frontside_element = thing_in_hand.get_frontside_element();
-                         thing_in_hand_position = $(thing_in_hand_frontside_element).offset();
                          if (target instanceof jQuery) {
                              // e.g. dropped on top-level backside
+                             thing_in_hand_frontside_element = thing_in_hand.get_frontside_element();
+                             thing_in_hand_position = $(thing_in_hand_frontside_element).offset();
                              target.append(thing_in_hand_frontside_element);
                              $(thing_in_hand_frontside_element).css({position: ""}); // no longer absolute
                              TT.UTILITIES.set_absolute_position($(thing_in_hand_frontside_element), thing_in_hand_position);
@@ -44,6 +44,8 @@ window.TOONTALK.robot_action =
                                  target.render();
                              }
                              if (robot.visible()) {
+                                 thing_in_hand_frontside_element = thing_in_hand.get_frontside_element();
+                                 thing_in_hand_position = $(thing_in_hand_frontside_element).offset();
                                  // need to see it before actions such as Bammer take place
                                  $(".toontalk-top-level-backside").append(thing_in_hand_frontside_element);
                                  TT.UTILITIES.set_absolute_position($(thing_in_hand_frontside_element), thing_in_hand_position);
