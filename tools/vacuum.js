@@ -95,7 +95,7 @@ window.TOONTALK.vacuum = (function (TT) {
                 set_mode('suck');
                 document.addEventListener('keyup', function (event) {
                     var character = String.fromCharCode(event.keyCode);
-                    if (character === 's' || character === 'S') {
+                           if (character === 's' || character === 'S') {
                         set_mode('suck');
                     } else if (character === 'e' || character === 'E') {
                         set_mode('erase');
