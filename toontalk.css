@@ -357,39 +357,39 @@
 .toontalk-vacuum-e {
 	background-image: url("images/dusty-static-E.png");
 }
-/* .toontalk-vacuum:hover {
+.toontalk-vacuum:hover {
 background-image: url("images/dusty-morph.png");
 	background-repeat: no-repeat;
 	width: 133px;
 	height: 55px;
-	-webkit-animation: vacuum-morph 3s steps(16) forwards;
-       -moz-animation: vacuum-morph 3s steps(16) forwards;
-        -ms-animation: vacuum-morph 3s steps(16) forwards;
-         -o-animation: vacuum-morph 3s steps(16) forwards;
-            animation: vacuum-morph 3s steps(16) forwards;
-}	 */
+	-webkit-animation: vacuum-morph 3s steps(15) forwards;
+       -moz-animation: vacuum-morph 3s steps(15) forwards;
+        -ms-animation: vacuum-morph 3s steps(15) forwards;
+         -o-animation: vacuum-morph 3s steps(15) forwards;
+            animation: vacuum-morph 3s steps(15) forwards;
+}
 @-webkit-keyframes vacuum-morph {
    from { background-position:    0px; }
-     to { background-position: -2128px; }
+     to { background-position: -1995px; }
 }
 
 @-moz-keyframes vacuum-morph {
    from { background-position:    0px; }
-     to { background-position: -2128px; }
+     to { background-position: -1995px; }
 }
 
 @-ms-keyframes vacuum-morph {
    from { background-position:    0px; }
-     to { background-position: -2128px; }
+     to { background-position: -1995px; }
 }
 
 @-o-keyframes vacuum-morph {
    from { background-position:    0px; }
-     to { background-position: -2128px; }
+     to { background-position: -1995px; }
 }
 @keyframes vacuum-morph {
    from { background-position:    0px; }
-     to { background-position: -2128px; }
+     to { background-position: -1995px; }
 }
 .toontalk-tool-held.toontalk-vacuum {
 	background-image: url("images/dusty-ready.png");
