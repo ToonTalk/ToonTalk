@@ -476,7 +476,7 @@ window.TOONTALK.backside =
                 widget.set_erased(erased, true);
                 update_title();
                 if (TT.robot.in_training) {
-                    TT.robot.in_training.set_erased(widget, erased);
+                    TT.robot.in_training.erased_widget(widget, erased);
                 }
                 TT.UTILITIES.backup_all();
                 event.stopPropagation();

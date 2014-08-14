@@ -381,9 +381,9 @@ window.TOONTALK.robot = (function (TT) {
         this.current_action_name = undefined;
     };
     
-    robot.set_erased = function (widget, erased) {
+    robot.erased_widget = function (widget, erased) {
         var path;
-        this.current_action_name = "set_erased";
+        this.current_action_name = "erased_widget";
         path = TT.path.get_path_to(widget, this);
         if (path) {
             this.add_step(TT.robot_action.create(path, this.current_action_name, {erased: erased,

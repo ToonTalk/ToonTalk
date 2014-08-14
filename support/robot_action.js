@@ -78,7 +78,7 @@ window.TOONTALK.robot_action =
              }
              return true;
          },
-         "set_erased": function (widget, context, top_level_context, robot, additional_info) {
+         "erased_widget": function (widget, context, top_level_context, robot, additional_info) {
              widget.set_erased(additional_info.erased);
              return true;
          },
@@ -245,8 +245,9 @@ window.TOONTALK.robot_action =
          "pick up": pick_up_animation,
          "pick up a copy of": move_robot_animation,
          "drop it on": drop_it_on_animation,
-         "remove": remove_or_erase_animation,
-         "set_erased": remove_or_erase_animation, // identical animation but different unwatched semantics
+         // remove and erase have identical animation but different unwatched semantics
+         "remove":        remove_or_erase_animation,
+         "erased_widget": remove_or_erase_animation, 
          "edit": edit_animation,
          "add to the top-level backside": function (widget, context, top_level_context, robot, continuation) {
              // do nothing -- this action is only needed if unwatched
