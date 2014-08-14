@@ -34,6 +34,7 @@ window.TOONTALK.tool = (function (TT) {
                 if (widget_under_tool && widget_under_tool.get_type_name() === 'top-level') {
                     if (highlighted_element) { // remove old highlighting
                         TT.UTILITIES.remove_highlight_from_element(highlighted_element);
+                        highlighted_element = undefined;
                     }
                     return;
                 }
