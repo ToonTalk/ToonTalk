@@ -362,11 +362,11 @@ background-image: url("images/dusty-morph.png");
 	background-repeat: no-repeat;
 	width: 133px;
 	height: 55px;
-	-webkit-animation: vacuum-morph 3s steps(15) forwards;
-       -moz-animation: vacuum-morph 3s steps(15) forwards;
-        -ms-animation: vacuum-morph 3s steps(15) forwards;
-         -o-animation: vacuum-morph 3s steps(15) forwards;
-            animation: vacuum-morph 3s steps(15) forwards;
+	-webkit-animation: vacuum-morph 1s steps(15) forwards;
+       -moz-animation: vacuum-morph 1s steps(15) forwards;
+        -ms-animation: vacuum-morph 1s steps(15) forwards;
+         -o-animation: vacuum-morph 1s steps(15) forwards;
+            animation: vacuum-morph 1s steps(15) forwards;
 }
 @-webkit-keyframes vacuum-morph {
    from { background-position:    0px; }
@@ -545,6 +545,7 @@ background-image: url("images/dusty-morph.png");
 .toontalk-hatch-egg.toontalk-frontside-in-box {
 	/* margin-top: -43px; */
 }
+/* could make this 14 steps and change -1744 to 1628 */
 .toontalk-hatch-egg {
     /* width:  116px; */
     /* height: 141px; */
@@ -561,6 +562,30 @@ background-image: url("images/dusty-morph.png");
     background-size probably would have worked
     transform: scale(0.625);
     transform-origin: center; */
+}
+@-webkit-keyframes hatch-egg {
+   from { background-position:     0px; }
+     to { background-position: -1744px; }
+}
+
+@-moz-keyframes hatch-egg {
+   from { background-position:     0px; }
+     to { background-position: -1744px; }
+}
+
+@-ms-keyframes hatch-egg {
+   from { background-position:     0px; }
+     to { background-position: -1744px; }
+}
+
+@-o-keyframes hatch-egg {
+   from { background-position:     0px; }
+     to { background-position: -1744px; }
+}
+
+@keyframes hatch-egg {
+   from { background-position:     0px; }
+     to { background-position: -1744px; }
 }
 .toontalk-close-button {
 /* 	based upon http://jsfiddle.net/adzFe/14/ */
@@ -588,52 +613,6 @@ background-image: url("images/dusty-morph.png");
 	background-color: rgb(252, 240, 240);
 	text-align: center;
 }
-@-webkit-keyframes hatch-egg {
-   from { background-position:     0px; }
-     to { background-position: -1744px; }
-}
-
-@-moz-keyframes hatch-egg {
-   from { background-position:     0px; }
-     to { background-position: -1744px; }
-}
-
-@-ms-keyframes hatch-egg {
-   from { background-position:     0px; }
-     to { background-position: -1744px; }
-}
-
-@-o-keyframes hatch-egg {
-   from { background-position:     0px; }
-     to { background-position: -1744px; }
-}
-
-@keyframes hatch-egg {
-   from { background-position:     0px; }
-     to { background-position: -1744px; }
-}
-
-.toontalk-bird-static {
-    width:  70px;
-    height: 102px;
-    background-image: url("images/bird-static.png");
-    background-repeat: no-repeat;
-	background-size: contain;
-}
-
-/* Couldn't get the following to work -- tried to define new bird-morph-from-static keyframes but didn't help */
-/* .toontalk-bird-morph-from-static {
-    width:  88px;
-    height: 119px;
-    background-image: url("images/bird-morph.png");
-	background-size: auto;
-    -webkit-animation: bird-morph 1s steps(13) normal forwards;
-       -moz-animation: bird-morph 1s steps(13) normal forwards;
-        -ms-animation: bird-morph 1s steps(13) normal forwards;
-         -o-animation: bird-morph 1s steps(13) normal forwards;
-            animation: bird-morph 1s steps(13) normal forwards;
-} */
-
 .toontalk-bird-gimme {
     width:  103px;
     height: 117px;
@@ -671,43 +650,65 @@ background-image: url("images/dusty-morph.png");
      to { background-position: -615px; }
 }
 
+.toontalk-bird-static {
+    width:  70px;
+    height: 102px;
+    background-image: url("images/bird-static.png");
+    background-repeat: no-repeat;
+	background-size: contain;
+}
+
+/* Couldn't get the following to work -- tried to define new bird-morph-from-static keyframes but didn't help */
+/* .toontalk-bird-morph-from-static {
+    width:  88px;
+    height: 119px;
+    background-image: url("images/bird-morph.png");
+	background-size: auto;
+    -webkit-animation: bird-morph 1s steps(12) normal forwards;
+       -moz-animation: bird-morph 1s steps(12) normal forwards;
+        -ms-animation: bird-morph 1s steps(12) normal forwards;
+         -o-animation: bird-morph 1s steps(12) normal forwards;
+            animation: bird-morph 1s steps(12) normal forwards;
+} */
+
 .toontalk-bird-morph-to-static {
     width:  88px;
     height: 119px;
     background-image: url("images/bird-morph.png");
 	background-size: auto;
-	-webkit-animation: bird-morph-to-static 1s steps(13) reverse backwards;
-       -moz-animation: bird-morph-to-static 1s steps(13) reverse backwards;
-        -ms-animation: bird-morph-to-static 1s steps(13) reverse backwards;
-         -o-animation: bird-morph-to-static 1s steps(13) reverse backwards;
-            animation: bird-morph-to-static 1s steps(13) reverse backwards;
+	-webkit-animation: bird-morph-to-static 1s steps(12) reverse backwards;
+       -moz-animation: bird-morph-to-static 1s steps(12) reverse backwards;
+        -ms-animation: bird-morph-to-static 1s steps(12) reverse backwards;
+         -o-animation: bird-morph-to-static 1s steps(12) reverse backwards;
+            animation: bird-morph-to-static 1s steps(12) reverse backwards;
 }
 
 @-webkit-keyframes bird-morph-to-static {
    from { background-position:     0px; }
-     to { background-position: -1141px; }
+     to { background-position: -1053px; }
 }
 
 @-moz-keyframes bird-morph-to-static {
    from { background-position:     0px; }
-     to { background-position: -1141px; }
+     to { background-position: -1053px; }
 }
 
 @-ms-keyframes bird-morph-to-static {
    from { background-position:     0px; }
-     to { background-position: -1141px; }
+     to { background-position: -1053px; }
 }
 
 @-o-keyframes bird-morph-to-static {
    from { background-position:     0px; }
-     to { background-position: -1141px; }
+     to { background-position: -1053px; }
 }
 
 @keyframes bird-morph-to-static {
    from { background-position:     0px; }
-     to { background-position: -1141px; }
+     to { background-position: -1053px; }
 }
 
+/* could make this 4 steps and change -747 to 597 */
 .toontalk-fly-down {
     width:  150px;
     height: 127px;
@@ -776,6 +777,7 @@ background-image: url("images/dusty-morph.png");
      to { background-position: -1836px; }
 }
 
+/* could make this 11 steps and change -1980 to 1815 */
 .toontalk-bammer-down {
     width:  165px;
     height: 296px;
