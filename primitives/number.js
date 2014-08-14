@@ -366,13 +366,13 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         if (event) {
             this.rerender();
         }
-        this.remove();
+//         this.remove();
         return true;
     };
     
     number.number_dropped_on_me = function (other_number, other_is_backside, event, robot) {
-         var bammer_element, $top_level_backside_element, target_absolute_position, this_frontside_element,
-             hit_number_continuation, bammer_gone_continuation;
+         var bammer_element, $top_level_backside_element, target_absolute_position, 
+             this_frontside_element, hit_number_continuation, bammer_gone_continuation;
          if (this.visible() && 
               (event || (robot && robot.visible()))) {
              // do this if number is visible and user did the drop or a visible robot did it
@@ -387,8 +387,8 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
              target_absolute_position = $(this_frontside_element).offset();
              target_absolute_position.left -= $(bammer_element).width()*0.75; // hammer is on bammer's right
              target_absolute_position.left += $(this_frontside_element).width()*0.5; // middle of number
-             target_absolute_position.top -= $top_level_backside_element.position().top;
-             target_absolute_position.top += $(this_frontside_element).height();
+             target_absolute_position.top  -= $top_level_backside_element.position().top;
+             target_absolute_position.top  += $(this_frontside_element).height();
              hit_number_continuation = function () {
                  this.number_dropped_on_me_semantics(other_number, event);
                  if (robot) {
@@ -425,6 +425,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         if (TT.robot.in_training) {
             TT.robot.in_training.dropped_on(other_number, this);
         }
+        other_number.remove();
         switch (other_number.get_operator()) {
         case '+':
             return this.add(other_number);
