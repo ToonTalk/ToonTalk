@@ -78,6 +78,10 @@ window.TOONTALK.robot_action =
              }
              return true;
          },
+         "set_erased": function (widget, context, top_level_context, robot, additional_info) {
+             widget.set_erased(additional_info.erased);
+             return true;
+         },
          "edit": function (widget, context, top_level_context, robot, additional_info) {
              // uses setter_name instead of the function itself so can be JSONified
              // could replace with function on first use if this is a performance issue
@@ -90,10 +94,6 @@ window.TOONTALK.robot_action =
              } else {
                  widget[additional_info.setter_name].call(widget, additional_info.argument_1, widget.visible());
              }
-             return true;
-         },
-         "set_erased": function (widget, context, top_level_context, robot, additional_info) {
-             widget.set_erased(additional_info.erased);
              return true;
          },
          "add to the top-level backside": function (widget, context, top_level_context, robot, additional_info) {
@@ -218,13 +218,14 @@ window.TOONTALK.robot_action =
         };
         tool_use_animation(widget, context, top_level_context, robot, new_continuation, "toontalk-wand-small");
     };
-    var remove_animation = function (widget, context, top_level_context, robot, continuation) {
+    var remove_or_erase_animation = function (widget, context, top_level_context, robot, continuation) {
         var parent = widget.get_parent_of_frontside() && widget.get_parent_of_frontside().widget;
         var new_continuation = function () {
             continuation();
             if (parent && parent.get_type_name() !== 'top-level') {
                 parent.update_display();
             }
+            widget.render(); // if wasn't removed
         };
         tool_use_animation(widget, context, top_level_context, robot, new_continuation, "toontalk-vacuum-ready-small");
     };
@@ -244,7 +245,8 @@ window.TOONTALK.robot_action =
          "pick up": pick_up_animation,
          "pick up a copy of": move_robot_animation,
          "drop it on": drop_it_on_animation,
-         "remove": remove_animation,
+         "remove": remove_or_erase_animation,
+         "set_erased": remove_or_erase_animation, // identical animation but different unwatched semantics
          "edit": edit_animation,
          "add to the top-level backside": function (widget, context, top_level_context, robot, continuation) {
              // do nothing -- this action is only needed if unwatched
