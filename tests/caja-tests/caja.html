@@ -16,7 +16,7 @@
         maxAcceptableSeverity: 'NO_KNOWN_EXPLOIT_SPEC_VIOLATION',
         debug: true
       });
-      caja.load(document.getElementById('guest'), undefined, function(frame) {
+      caja.load(document.getElementById('guest'), undefined, function (frame) {
         frame.code('http://toontalk.appspot.com/index.html',
                    'text/html')
              .run();

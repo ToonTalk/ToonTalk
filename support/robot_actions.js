@@ -86,7 +86,7 @@ window.TOONTALK.actions =
             return new_actions;
         },
         
-        run_unwatched: function(context, top_level_context, queue, robot) {
+        run_unwatched: function (context, top_level_context, queue, robot) {
             var steps = this.get_steps();
             steps.forEach(function (step) {
                 step.run_unwatched(context, top_level_context, robot);
@@ -96,17 +96,31 @@ window.TOONTALK.actions =
             }
         },
         
-        run_watched: function(context, top_level_context, queue, robot) {
+        run_watched: function (context, top_level_context, queue, robot) {
             var steps = this.get_steps();
             var frontside_element = robot.get_frontside_element();
             var robot_start_position = $(frontside_element).position();
+            var robot_parent_position = $(frontside_element.parentElement).position();
+            var saved_parent_element = frontside_element.parentElement;
             var restore_after_last_event = function () {
-                $(frontside_element).removeClass("toontalk-side-animating");
-                robot.set_animating(false);
-                if (!robot.get_run_once()) {
-                    robot.get_first_in_team().run(context, top_level_context, queue);
-                }
-                robot.render();
+                $(frontside_element).addClass("toontalk-side-animating");
+                frontside_element.style.left = (robot_start_position.left + robot_parent_position.left) + "px";
+                frontside_element.style.top  = (robot_start_position.top  + robot_parent_position.top)  + "px";
+                // delay so there is some animation of returning 'home'
+                setTimeout(function () {
+                        // robot was added to top-level backside so z-index will work properly
+                        // the following restores it
+                        frontside_element.style.left = robot_start_position.left + "px";
+                        frontside_element.style.top  = robot_start_position.top  + "px";
+                        saved_parent_element.appendChild(frontside_element);
+                        $(frontside_element).removeClass("toontalk-side-animating");
+                        robot.set_animating(false);
+                        if (!robot.get_run_once()) {
+                            robot.get_first_in_team().run(context, top_level_context, queue);
+                        }
+                        robot.render();
+                    },
+                    1000);
             };
             var run_watched_step = function (i) {
                 var continuation = function (referenced) {
@@ -116,15 +130,15 @@ window.TOONTALK.actions =
                                 // wait a bit until OK to run
                                 setTimeout(do_next_step, 500);
                             } else if (robot.visible()) {
-                                // I inspected the elements and this ensures that the robot is on top of everything
-                                // but at least in Chrome it isn't displayed that way in all situations            
-                                $(frontside_element).css({"z-index": TT.UTILITIES.next_z_index()});
+//                                 // I inspected the elements and this ensures that the robot is on top of everything
+//                                 // but at least in Chrome it isn't displayed that way in all situations            
+//                                 $(frontside_element).css({"z-index": TT.UTILITIES.next_z_index()});
                                 run_watched_step(i+1);
                             } else {
                                 // maybe user hid the robot while running
                                 // first restore robot to its 'home'
                                 frontside_element.style.left = robot_start_position.left + "px";
-                                frontside_element.style.top = robot_start_position.top + "px";
+                                frontside_element.style.top =  robot_start_position.top  + "px";
                                 for (i = i+1; i < steps.length; i++) {
                                     steps[i].run_unwatched(context, top_level_context, robot);
                                 }
@@ -144,10 +158,11 @@ window.TOONTALK.actions =
                     steps[i].run_watched(context, top_level_context, robot, continuation);
                 } else {
                     // restore position
-                    $(frontside_element).addClass("toontalk-side-animating");
-                    frontside_element.style.left = robot_start_position.left + "px";
-                    frontside_element.style.top = robot_start_position.top + "px";
-                    TT.UTILITIES.add_one_shot_event_handler(frontside_element, "transitionend", 2500, restore_after_last_event);
+                    restore_after_last_event();
+//                     $(frontside_element).addClass("toontalk-side-animating");
+//                     frontside_element.style.left = robot_start_position.left + "px";
+//                     frontside_element.style.top = robot_start_position.top + "px";
+//                     TT.UTILITIES.add_one_shot_event_handler(frontside_element, "transitionend", 2500, restore_after_last_event);
                 }
             }.bind(this);
             if (robot.get_animating()) {

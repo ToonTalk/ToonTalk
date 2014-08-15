@@ -32,10 +32,10 @@ window.TOONTALK.robot = (function (TT) {
         };
         new_robot.set_frontside_conditions = function (new_value) {
             frontside_conditions = new_value;
-            if (frontside_conditions) {
-                // only makes sense to erase things in frontside_conditions
-                TT.widget.erasable(frontside_conditions);
-            }
+//             if (frontside_conditions) {
+//                 // only makes sense to erase things in frontside_conditions
+//                 TT.widget.erasable(frontside_conditions);
+//             }
         };
         new_robot.get_backside_conditions = function () {
             return backside_conditions;
@@ -56,6 +56,7 @@ window.TOONTALK.robot = (function (TT) {
             if (!backside_conditions) {
                 backside_conditions = {};
             }
+            // note that if widget is a covered nest then the type below is nest but the copy is of the nest contents
             backside_conditions[widget.get_type_name()] = widget_copy;
             TT.widget.erasable(widget_copy);
         };
@@ -80,12 +81,21 @@ window.TOONTALK.robot = (function (TT) {
         };
         new_robot.set_animating = function (new_value) {
             var frontside_element = this.get_frontside_element();
+            var robot_position, parent_position;
             animating = new_value;
             if (animating) {
-                frontside_element.style["z-index"] = TT.UTILITIES.next_z_index();
+                robot_position = $(frontside_element).position();
+                parent_position = $(frontside_element.parentElement).position();
                 $(frontside_element).addClass("toontalk-robot-animating");
+                // z ordering (z-index) doesn't work unless the robot is a child of the top-level backside while animating
+                // need to change its relative coordinates so it doesn't move
+                $(frontside_element).css({left: robot_position.left+parent_position.left,
+                                          top:  robot_position.top +parent_position.top,
+                                          width:  '', // rely upon toontalk-robot-animating for dimensions
+                                          height: '', // otherwise doesn't animate well
+                                          "z-index": TT.UTILITIES.next_z_index()});
+                $(".toontalk-top-level-backside").append(frontside_element);
             } else {
-//                 frontside_element.style["z-index"] = TT.UTILITIES.next_z_index();
                 $(frontside_element).removeClass("toontalk-robot-animating");
             }
         };
@@ -266,16 +276,19 @@ window.TOONTALK.robot = (function (TT) {
     robot.set_stopped = function (new_value) {
         this.stopped = new_value;
         if (this.stopped) {
-            // this is needed because a robot won't start running if it is animating
-            // and the animating flag isn't always reset
-            this.set_animating(false);
+            if (this.visible()) {
+                // this is needed because a robot won't start running if it is animating
+                // and the animating flag isn't always reset
+                this.set_animating(false);
+                $(this.get_frontside_element()).removeClass("toontalk-robot-waiting");
+            }
         }
         if (this.get_next_robot()) {
             this.get_next_robot().set_stopped(new_value);
         }
     };
     
-    robot.run_actions = function(context, top_level_context, queue) {
+    robot.run_actions = function (context, top_level_context, queue) {
         if (this.stopped) { // replace with a method?
             return false;
         }
@@ -368,9 +381,9 @@ window.TOONTALK.robot = (function (TT) {
         this.current_action_name = undefined;
     };
     
-    robot.set_erased = function (widget, erased) {
+    robot.erased_widget = function (widget, erased) {
         var path;
-        this.current_action_name = "set_erased";
+        this.current_action_name = "erased_widget";
         path = TT.path.get_path_to(widget, this);
         if (path) {
             this.add_step(TT.robot_action.create(path, this.current_action_name, {erased: erased,
@@ -450,31 +463,26 @@ window.TOONTALK.robot = (function (TT) {
         TT.UTILITIES.backup_all();
     };
     
-    robot.update_display = function() {
+    robot.update_display = function () {
         var frontside = this.get_frontside(true);
         var backside = this.get_backside(); 
-        var frontside_element, resource_becoming_instance;
         var thing_in_hand = this.get_thing_in_hand();
-        var thing_in_hand_frontside_element;
+        var frontside_element, thing_in_hand_frontside_element;
         if (TT.debugging) {
             // this can't be done during robot creation since robot actions references to newly_created_widgets is premature
             this.debug_string = this.toString();
         }
         frontside_element = frontside.get_element();
-//         robot_image = this.image();
         if (thing_in_hand) {
             thing_in_hand_frontside_element = thing_in_hand.get_frontside_element();
         }
-        resource_becoming_instance = frontside_element.firstChild && $(frontside_element.firstChild).is(".toontalk-robot-image");
-        // remove what's there currently before adding new elements
-//         while (frontside_element.firstChild) {
-//             if (!$(frontside_element.firstChild).is(".toontalk-close-button")) {
-//                 frontside_element.removeChild(frontside_element.firstChild);
-//             }
-//         }
+        if (!thing_in_hand_frontside_element && this.carrying_tool) {
+            thing_in_hand_frontside_element = document.createElement("div");
+            $(thing_in_hand_frontside_element).addClass(this.carrying_tool);
+        }
         frontside_element.title = this.get_title();
         $(frontside_element).addClass("toontalk-robot");
-//         frontside_element.appendChild(robot_image);
+        $(frontside_element).empty();
         if (thing_in_hand_frontside_element) {
             frontside_element.appendChild(thing_in_hand_frontside_element);
         }
@@ -486,16 +494,15 @@ window.TOONTALK.robot = (function (TT) {
         setTimeout( // wait for layout to settle down
             function () {
                 var relative_left, relative_top, thing_in_hand_width, thing_in_hand_height, robot_width, robot_height, css;
-                if (thing_in_hand) {
+                if (thing_in_hand_frontside_element) {
                     css = {position: "absolute"};
+                    // tried to add position: absolute to toontalk-held-by-robot CSS but didn't work
                     $(thing_in_hand_frontside_element).addClass("toontalk-held-by-robot");
                     // compute where the thing should be to be centred over the robot
                     thing_in_hand_width = $(thing_in_hand_frontside_element).width();
                     thing_in_hand_height = $(thing_in_hand_frontside_element).height();
                     robot_width = $(frontside_element).width();
                     robot_height = $(frontside_element).height();
-//                     robot_width = $(robot_image).width();
-//                     robot_height = $(robot_image).height();
                     if (thing_in_hand_width === 0) {
                         thing_in_hand_width = robot_width*2;
                         thing_in_hand_height = robot_height/2;
@@ -507,7 +514,9 @@ window.TOONTALK.robot = (function (TT) {
                     css['left'] = relative_left;
                     css['top'] = relative_top;
                     $(thing_in_hand_frontside_element).css(css);
-                    thing_in_hand.render(); // or should it be rerender -- could it be invisible?
+                    if (thing_in_hand) {
+                        thing_in_hand.render(); // or should it be rerender -- could it be invisible?
+                    }
                 }
             },
             1);
@@ -531,7 +540,7 @@ window.TOONTALK.robot = (function (TT) {
         return newly_created_widgets[newly_created_widgets.length-1];
     };
     
-    robot.get_title = function() {
+    robot.get_title = function () {
         var description = this.get_description();
         var frontside_element;
         if (description) {
@@ -660,7 +669,7 @@ window.TOONTALK.robot_backside =
         var description = TT.UTILITIES.create_text_element(text);
         var condition_element = condition_widget.get_frontside_element(true);
         var conditions_panel;
-//         TT.UTILITIES.set_position_is_absolute(condition_element, false);
+//      TT.UTILITIES.set_position_is_absolute(condition_element, false);
         $(condition_element).addClass("toontalk-conditions-contents " + class_name);
         setTimeout(function () {
                 // this is needed since the element may be transparent and yet need to see the border
@@ -696,15 +705,20 @@ window.TOONTALK.robot_backside =
         }
         if (backside_conditions) {
             Object.keys(backside_conditions).forEach(function (type) {
+                var condition_element;
                 backside_condition_widget = backside_conditions[type];
                 if (backside_condition_widget) {
                     area_class_name = "toontalk-backside-" + type + "-conditions-area";
                     if ($(backside_element).find("." + area_class_name).length === 0) {
-                        backside_element.insertBefore(create_conditions_area("Runs only if the " + type + " on the backside matches: ", 
-                                                                             backside_condition_widget, 
-                                                                             robot,
-                                                                             area_class_name), 
-                                                      backside_element.firstChild.nextSibling);
+                        if (type === 'bird') {
+                            condition_element = TT.UTILITIES.create_text_element("And there is a bird on the back.");
+                        } else {
+                            condition_element = create_conditions_area("Runs only if the " + type + " on the backside matches: ", 
+                                                                       backside_condition_widget, 
+                                                                       robot,
+                                                                       area_class_name);
+                        }
+                        backside_element.insertBefore(condition_element, backside_element.firstChild.nextSibling);
                         backside_condition_widget.render();
                     }
                 }

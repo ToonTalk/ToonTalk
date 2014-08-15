@@ -25,7 +25,7 @@ window.TOONTALK.robot_action =
              return true;
          },
          "drop it on": function (target, context, top_level_context, robot) {
-             var thing_in_hand, thing_in_hand_frontside_element, context_frontside_position;
+             var thing_in_hand, thing_in_hand_frontside_element, context_frontside_position, thing_in_hand_position;
              if (target) {
                  thing_in_hand = robot.get_thing_in_hand();
                  if (thing_in_hand) {
@@ -33,22 +33,34 @@ window.TOONTALK.robot_action =
                          if (target instanceof jQuery) {
                              // e.g. dropped on top-level backside
                              thing_in_hand_frontside_element = thing_in_hand.get_frontside_element();
+                             thing_in_hand_position = $(thing_in_hand_frontside_element).offset();
                              target.append(thing_in_hand_frontside_element);
+                             $(thing_in_hand_frontside_element).css({position: ""}); // no longer absolute
+                             TT.UTILITIES.set_absolute_position($(thing_in_hand_frontside_element), thing_in_hand_position);
                              robot.set_thing_in_hand(undefined);
+                             thing_in_hand.set_parent_of_frontside(TT.widget.top_level_widget());
                          } else {
                              if (target.visible && target.visible()) {
                                  target.render();
                              }
-                             // remove it from the robot's hand since the drop can take a few seconds
-                             // and we don't want to see it in the robot's hand
-                             if (thing_in_hand.get_type_name() !== 'nest') {
-                                 // a nest may take some time because the egg hatches
-                                 // but the robot is still holding it
-                                 robot.set_thing_in_hand(undefined);
+                             if (robot.visible()) {
+                                 thing_in_hand_frontside_element = thing_in_hand.get_frontside_element();
+                                 thing_in_hand_position = $(thing_in_hand_frontside_element).offset();
+                                 // need to see it before actions such as Bammer take place
+                                 $(".toontalk-top-level-backside").append(thing_in_hand_frontside_element);
+                                 TT.UTILITIES.set_absolute_position($(thing_in_hand_frontside_element), thing_in_hand_position);
+                                 // remove it from the robot's hand since the drop can take a few seconds
+                                 // and we don't want to see it in the robot's hand
+                                 if (!thing_in_hand.caused_robot_to_wait_before_next_step) {
+                                     // e.g., a nest may take some time because the egg hatches
+                                     // but the robot is still holding it
+                                     $(thing_in_hand.get_frontside_element()).css({position: ""}); // no longer absolute
+                                     robot.set_thing_in_hand(undefined);
+                                 }
+                                 robot.rerender();
                              }
                              // update this when robots can drop backsides as well
                              thing_in_hand.drop_on(target, false, undefined, robot);
-                             robot.rerender();
                          }
                      } else {
                          console.log("Thing in robot's hand (" + thing_in_hand + ") doesn't handle 'drop_on'. Robot that " + robot);
@@ -70,6 +82,10 @@ window.TOONTALK.robot_action =
              }
              return true;
          },
+         "erased_widget": function (widget, context, top_level_context, robot, additional_info) {
+             widget.set_erased(additional_info.erased);
+             return true;
+         },
          "edit": function (widget, context, top_level_context, robot, additional_info) {
              // uses setter_name instead of the function itself so can be JSONified
              // could replace with function on first use if this is a performance issue
@@ -82,10 +98,6 @@ window.TOONTALK.robot_action =
              } else {
                  widget[additional_info.setter_name].call(widget, additional_info.argument_1, widget.visible());
              }
-             return true;
-         },
-         "set_erased": function (widget, context, top_level_context, robot, additional_info) {
-             widget.set_erased(additional_info.erased);
              return true;
          },
          "add to the top-level backside": function (widget, context, top_level_context, robot, additional_info) {
@@ -148,7 +160,8 @@ window.TOONTALK.robot_action =
             var thing_in_hand_position = $thing_in_hand_frontside_element.offset();
             $thing_in_hand_frontside_element.removeClass("toontalk-held-by-robot");
             continuation();
-            if ($thing_in_hand_frontside_element.is(":visible")) {
+            // revisit use of get_parent_of_frontside once robots can manipulate backsides...
+            if ($thing_in_hand_frontside_element.is(":visible") && thing_in_hand.get_parent_of_frontside() && thing_in_hand.get_parent_of_frontside().is_backside) {
                 TT.UTILITIES.set_absolute_position($thing_in_hand_frontside_element, thing_in_hand_position);
             }
         };
@@ -188,24 +201,37 @@ window.TOONTALK.robot_action =
             widget.open_backside(animation_continuation);
         } else {
             animation_continuation();
-        } 
+        }
+    };
+    var tool_use_animation = function (widget, context, top_level_context, robot, continuation, tool_css_class) {
+        var robot_frontside_element = robot.get_frontside_element();
+        var new_continuation = function () {
+            continuation();
+            robot.carrying_tool = undefined;
+            robot.update_display(); // to stop displaying tool
+        };
+        robot.carrying_tool = tool_css_class;
+        robot.update_display(); // to display tool
+        // robots move at 1/4 pixel per millisecond for clarity
+        robot.animate_to_element(widget.get_frontside_element(), new_continuation, .25, 0, 0);
     };
     var copy_animation = function (widget, context, top_level_context, robot, continuation) {
         var new_continuation = function () {
             continuation();
             widget.add_copy_to_container(robot.get_recently_created_widget());
         };
-        button_use_animation(widget, context, top_level_context, robot, new_continuation, ".toontalk-copy-backside-button");
+        tool_use_animation(widget, context, top_level_context, robot, new_continuation, "toontalk-wand-small");
     };
-    var remove_animation = function (widget_side, context, top_level_context, robot, continuation) {
-        var $close_button;
-        if (!widget_side.widget) {
-            // is a widget so asumme it is a frontside
-            widget_side = {widget: widget_side};
-        }
-        $close_button = $(widget_side.widget.get_frontside_element()).find(".toontalk-close-button");
-        $close_button.show();
-        robot.animate_to_element($close_button.get(0), continuation, .25);
+    var remove_or_erase_animation = function (widget, context, top_level_context, robot, continuation) {
+        var parent = widget.get_parent_of_frontside() && widget.get_parent_of_frontside().widget;
+        var new_continuation = function () {
+            continuation();
+            if (parent && parent.get_type_name() !== 'top-level') {
+                parent.update_display();
+            }
+            widget.render(); // if wasn't removed
+        };
+        tool_use_animation(widget, context, top_level_context, robot, new_continuation, "toontalk-vacuum-ready-small");
     };
     var edit_animation = function (widget, context, top_level_context, robot, continuation, additional_info) {
         var new_continuation = function () {
@@ -223,7 +249,9 @@ window.TOONTALK.robot_action =
          "pick up": pick_up_animation,
          "pick up a copy of": move_robot_animation,
          "drop it on": drop_it_on_animation,
-         "remove": remove_animation,
+         // remove and erase have identical animation but different unwatched semantics
+         "remove":        remove_or_erase_animation,
+         "erased_widget": remove_or_erase_animation, 
          "edit": edit_animation,
          "add to the top-level backside": function (widget, context, top_level_context, robot, continuation) {
              // do nothing -- this action is only needed if unwatched

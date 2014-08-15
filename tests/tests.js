@@ -80,14 +80,14 @@ window.TOONTALK.tests =
                     }.bind(this));                             
      },
      
-     accept_number_robot: function() {
+     accept_number_robot: function () {
          var body = TT.actions.create();
          var bubble = TT.number.create(1);
          bubble.set_erased(true);
          return TT.robot.create("images/robot.png", bubble, body);         
      },
      
-     accept_box_robot: function(n) {
+     accept_box_robot: function (n) {
          var body = TT.actions.create();
          var bubble = TT.box.create(n);
          bubble.set_erased(true);

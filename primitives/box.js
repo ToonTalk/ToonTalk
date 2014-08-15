@@ -270,7 +270,7 @@ window.TOONTALK.box = (function (TT) {
 //         return html;
 //     };
     
-    box.update_display = function() {
+    box.update_display = function () {
         var frontside = this.get_frontside(true);
         var frontside_element = frontside.get_element();
         var size = this.get_size();
@@ -319,7 +319,6 @@ window.TOONTALK.box = (function (TT) {
             function () {
                 var $box_hole_elements = $(frontside_element).children("." + additional_class);
                 var random_blue_color = "rgb(" + Math.round(Math.random()*128) + "," + Math.round(Math.random()*128) + ", 255)";
-
                 // if switching between horizontal and vertical need to remove the old elements
                 $(frontside_element).children("." + wrong_class).remove();
                 if ($box_hole_elements.length === size) {
@@ -470,6 +469,7 @@ window.TOONTALK.box = (function (TT) {
         var update_display = !!event;
         var hole;
         var i, part_frontside_element;
+        // if this becomes a performance problem could use a map between parts and indices...
         for (i = 0; i < size; i++) {
             hole = this.get_hole(i);
             if (part === hole) {
@@ -492,9 +492,6 @@ window.TOONTALK.box = (function (TT) {
                     }
                 }
                 return this;
-               // following thought to be needed when part was on a nest in a box but no longer
-//             } else if (hole.top_contents_is && hole.top_contents_is(part)) {
-//                 hole.removed_from_container(part);
             }
         }
         console.log("Attempted to remove " + part + " from " + this + " but not found.");
@@ -503,11 +500,10 @@ window.TOONTALK.box = (function (TT) {
     box.get_path_to = function (widget, robot) {
         var size = this.get_size();
         var i, part, path, sub_path;
-        var removing_widget = robot.current_action_name === 'pick up';
         for (i = 0; i < size; i++) {
             part = this.get_hole(i);
             if (widget === part || (part.top_contents_is && part.top_contents_is(widget))) {
-                return TT.box.path.create(i, removing_widget);
+                return TT.box.path.create(i);
             } else if (part.get_path_to) {
                 sub_path = part.get_path_to(widget, robot);
                 if (sub_path) {
@@ -529,7 +525,7 @@ window.TOONTALK.box = (function (TT) {
             if (typeof index === 'number') {
                 hole = this.get_hole(index);
                 if (hole) {
-                    if (hole.dereference_contents) {
+                    if (hole.dereference_contents && !path.not_to_be_dereferenced) {
                         // this will dereference the top of a nest instead of the nest itself
                         return hole.dereference_contents(path, top_level_context, robot);
                     }
@@ -540,7 +536,7 @@ window.TOONTALK.box = (function (TT) {
                             console.log("Expected to refer to a part of " + hole + " but it lacks a method to obtain " + TT.path.toString(path.next));
                         }
                     }
-                    if (path.removing_widget()) {
+                    if (path.removing_widget) {
                         if (hole.get_type_name() === 'empty hole') {
                             console.log("Robot is trying to remove something from an empty hole. ");
                         } else if (!hole.get_infinite_stack()) {
@@ -557,13 +553,10 @@ window.TOONTALK.box = (function (TT) {
     };
     
     box.path = {
-        create: function (index, removing_widget) {
+        create: function (index) {
             return {
                 get_index: function () {
                     return index;
-                },
-                removing_widget: function () {
-                    return removing_widget;
                 },
                 toString: function () {
                     return "the " + TT.UTILITIES.cardinal(index) + " hole "; // + (this.next ? "; " + TT.path.toString(this.next) : "");
@@ -571,14 +564,13 @@ window.TOONTALK.box = (function (TT) {
                 get_json: function (json_history) {
                     return {type: "box_path",
                             index: index,
-                            removing_widget: removing_widget,
                             next: this.next && this.next.get_json(json_history)};
                 }
             };
         },
     
         create_from_json: function (json, additional_info) {
-            var path = box.path.create(json.index, json.removing_widget);
+            var path = box.path.create(json.index);
             if (json.next) {
                 path.next = TT.UTILITIES.create_from_json(json.next, additional_info);
             }

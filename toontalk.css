@@ -31,7 +31,7 @@
 	border: solid 2px red;
 } */
 .toontalk-robot {
-/* 	will be animated later */
+/* 	this is the static version */
 	background-image: url("images/robot.png");
 	background-repeat: no-repeat;
 	background-size: contain;
@@ -40,6 +40,36 @@
 }
 .toontalk-robot-animating {
 	opacity: .8;
+	background-image: url("images/robot-working.png");
+	background-repeat: no-repeat;
+	background-size:  auto;
+	width: 73px;
+	height: 101px;
+	-webkit-animation: robot-working 1s steps(9) infinite;
+       -moz-animation: robot-working 1s steps(9) infinite;
+        -ms-animation: robot-working 1s steps(9) infinite;
+         -o-animation: robot-working 1s steps(9) infinite;
+            animation: robot-working 1s steps(9) infinite;
+}	
+@-webkit-keyframes robot-working {
+   from { background-position:    0px; }
+     to { background-position: -662px; }
+}
+@-moz-keyframes robot-working {
+   from { background-position:    0px; }
+     to { background-position: -662px; }
+}
+@-ms-keyframes robot-working {
+   from { background-position:    0px; }
+     to { background-position: -662px; }
+}
+@-o-keyframes robot-working {
+   from { background-position:    0px; }
+     to { background-position: -662px; }
+}
+@keyframes robot-working {
+   from { background-position:    0px; }
+     to { background-position: -662px; }
 }
 .toontalk-backside {
 	position: absolute;
@@ -80,7 +110,8 @@
     width: 1000px;
 	height: 300px;	
     background-color: rgb(245, 245, 57);
-	position: relative;
+	
+    position: relative;
 }
 .toontalk-top-level-frontside {
 	position: absolute;
@@ -146,7 +177,7 @@
 	border-bottom-width: 8%; */
 	min-height: 100%;
 }
-.toontalk-hole-number-0,toontalk-box-hole-horizontal {
+.toontalk-hole-number-0.toontalk-box-hole-horizontal {
 	padding-left: 4%;
 }
 /* following stopped working - not sure why so above used instead */
@@ -167,7 +198,7 @@
 	/* min-width:  100%; */
 	/* min-height: 100%; */
 }
-.toontalk-hole-number-0,toontalk-box-hole-vertical {
+.toontalk-hole-number-.,toontalk-box-hole-vertical {
 	padding-top: 4%;
 }
 /* following stopped working - not sure why so above used instead */
@@ -245,20 +276,6 @@
 	width: 30em;
 	text-align: inherit;
 }
-/* .toontalk-robot-image, .toontalk-bird-image, .toontalk-nest-image {
-    max-width: 100%; max-height:100%;
-} */
-/* .toontalk-image-url-input {
-	width: 30em;
-	text-align: inherit;
-} */
-/* .toontalk-frontside-conditions {
-    background-image: url(images/BUBBL10.96x96.PNG);
-	background-repeat: no-repeat;
-    width: 96px;
-    height: 96px;
-}
-*/
 .toontalk-conditions-contents {
 	width:  100%;
 	height: 100%;
@@ -322,6 +339,158 @@
 .toontalk-conditions-not-matched {
 	/* could be fancier -- e.g. glowing */
 	border: solid 3px red;
+}
+.toontalk-wand {
+	background-image: url("images/wand-static.png");
+	background-repeat: no-repeat;
+	cursor: pointer;
+	z-index: 99999999;
+	width: 191px;
+	height: 31px;
+}
+.toontalk-wand-small {
+	position: absolute;
+	background-image: url("images/wand-static-small.png");
+	background-repeat: no-repeat;
+	z-index: 99999999;
+	width: 95px;
+	height: 15px;
+}
+.toontalk-vacuum {
+	background-image: url("images/dusty-static.png");
+	background-repeat: no-repeat;
+	cursor: pointer;
+	z-index: 99999999;
+	width: 123px;
+	height: 45px;
+}
+.toontalk-vacuum-s {
+	background-image: url("images/dusty-static-S.png");
+}
+.toontalk-vacuum-r {
+	background-image: url("images/dusty-static-R.png");
+}
+.toontalk-vacuum-e {
+	background-image: url("images/dusty-static-E.png");
+}
+.toontalk-vacuum:hover {
+background-image: url("images/dusty-morph.png");
+	background-repeat: no-repeat;
+	width: 133px;
+	height: 55px;
+	-webkit-animation: vacuum-morph 1s steps(15) forwards;
+       -moz-animation: vacuum-morph 1s steps(15) forwards;
+        -ms-animation: vacuum-morph 1s steps(15) forwards;
+         -o-animation: vacuum-morph 1s steps(15) forwards;
+            animation: vacuum-morph 1s steps(15) forwards;
+}
+@-webkit-keyframes vacuum-morph {
+   from { background-position:    0px; }
+     to { background-position: -1995px; }
+}
+
+@-moz-keyframes vacuum-morph {
+   from { background-position:    0px; }
+     to { background-position: -1995px; }
+}
+
+@-ms-keyframes vacuum-morph {
+   from { background-position:    0px; }
+     to { background-position: -1995px; }
+}
+
+@-o-keyframes vacuum-morph {
+   from { background-position:    0px; }
+     to { background-position: -1995px; }
+}
+@keyframes vacuum-morph {
+   from { background-position:    0px; }
+     to { background-position: -1995px; }
+}
+.toontalk-tool-held.toontalk-vacuum {
+	background-image: url("images/dusty-ready.png");
+	background-repeat: no-repeat;
+	width: 132px;
+	height: 59px;
+	-webkit-animation: vacuum-ready 1s steps(10) infinite;
+       -moz-animation: vacuum-ready 1s steps(10) infinite;
+        -ms-animation: vacuum-ready 1s steps(10) infinite;
+         -o-animation: vacuum-ready 1s steps(10) infinite;
+            animation: vacuum-ready 1s steps(10) infinite;
+}	
+@-webkit-keyframes vacuum-ready {
+   from { background-position:    0px; }
+     to { background-position: -1325px; }
+}
+@-moz-keyframes vacuum-ready {
+   from { background-position:    0px; }
+     to { background-position: -1325px; }
+}
+@-ms-keyframes vacuum-ready {
+   from { background-position:    0px; }
+     to { background-position: -1325px; }
+}
+@-o-keyframes vacuum-ready {
+   from { background-position:    0px; }
+     to { background-position: -1325px; }
+}
+@keyframes vacuum-ready {
+   from { background-position:    0px; }
+     to { background-position: -1325px; }
+}
+.toontalk-vacuum-ready-small {
+	position: absolute;
+	background-image: url("images/dusty-ready-small.png");
+	background-repeat: no-repeat;
+	z-index: 99999999;
+	width: 63px;
+	height: 30px;
+	-webkit-animation: vacuum-ready-small 1s steps(10) infinite;
+       -moz-animation: vacuum-ready-small 1s steps(10) infinite;
+        -ms-animation: vacuum-ready-small 1s steps(10) infinite;
+         -o-animation: vacuum-ready-small 1s steps(10) infinite;
+            animation: vacuum-ready-small 1s steps(10) infinite;
+}
+@-webkit-keyframes vacuum-ready-small {
+   from { background-position:    0px; }
+     to { background-position: -663px; }
+}
+
+@-moz-keyframes vacuum-ready-small {
+   from { background-position:    0px; }
+     to { background-position: -663px; }
+}
+
+@-ms-keyframes vacuum-ready-small {
+   from { background-position:    0px; }
+     to { background-position: -663px; }
+}
+
+@-o-keyframes vacuum-ready-small {
+   from { background-position:    0px; }
+     to { background-position: -663px; }
+}
+
+@keyframes vacuum-ready-small {
+   from { background-position:    0px; }
+     to { background-position: -663px; }
+}
+.toontalk-vacuum-button {
+	position: absolute;
+	background-repeat: no-repeat;
+	z-index: 99999999;
+	width: 21px;
+	height: 11px;
+	left: 5px;
+	top: 18px;
+}
+.toontalk-tool-held {
+	position: absolute; 
+}
+.toontalk-tool-returning {
+	position: absolute;
+	-webkit-transition: all 1s cubic-bezier(0.86, 0, 0.07, 1);
+    transition:         all 1s cubic-bezier(0.86, 0, 0.07, 1);
 }
 .toontalk-robot-not-matched {
 	transform: rotate(180deg);
@@ -387,14 +556,16 @@
 	margin-top: 0px;
 }
 .toontalk-hatch-egg.toontalk-frontside-in-box {
-	margin-top: -43px;
+	/* margin-top: -43px; */
 }
+/* could make this 14 steps and change -1744 to 1628 */
 .toontalk-hatch-egg {
-    width:  116px;
-    height: 141px;
+    /* width:  116px; */
+    /* height: 141px; */
 	margin-top: -8px;
 	background-size: auto;
     background-image: url("images/hatch-egg-strip.png");
+    background-repeat: no-repeat;
 	-webkit-animation: hatch-egg 2s steps(15) forwards;
        -moz-animation: hatch-egg 2s steps(15) forwards;
         -ms-animation: hatch-egg 2s steps(15) forwards;
@@ -404,6 +575,30 @@
     background-size probably would have worked
     transform: scale(0.625);
     transform-origin: center; */
+}
+@-webkit-keyframes hatch-egg {
+   from { background-position:     0px; }
+     to { background-position: -1744px; }
+}
+
+@-moz-keyframes hatch-egg {
+   from { background-position:     0px; }
+     to { background-position: -1744px; }
+}
+
+@-ms-keyframes hatch-egg {
+   from { background-position:     0px; }
+     to { background-position: -1744px; }
+}
+
+@-o-keyframes hatch-egg {
+   from { background-position:     0px; }
+     to { background-position: -1744px; }
+}
+
+@keyframes hatch-egg {
+   from { background-position:     0px; }
+     to { background-position: -1744px; }
 }
 .toontalk-close-button {
 /* 	based upon http://jsfiddle.net/adzFe/14/ */
@@ -431,31 +626,38 @@
 	background-color: rgb(252, 240, 240);
 	text-align: center;
 }
-@-webkit-keyframes hatch-egg {
-   from { background-position:     0px; }
-     to { background-position: -1744px; }
+.toontalk-bird-gimme {
+    width:  103px;
+    height: 117px;
+    background-image: url("images/bird-gimme.png");
+	background-size: auto;
+	-webkit-animation: bird-gimme 1s steps(6) infinite;
+       -moz-animation: bird-gimme 1s steps(6) infinite;
+        -ms-animation: bird-gimme 1s steps(6) infinite;
+         -o-animation: bird-gimme 1s steps(6) infinite;
+            animation: bird-gimme 1s steps(6) infinite;
+}
+@-webkit-keyframes bird-gimme {
+   from { background-position:    0px; }
+     to { background-position: -615px; }
+}
+@-moz-keyframes bird-gimme {
+   from { background-position:    0px; }
+     to { background-position: -615px; }
+}
+@-ms-keyframes bird-gimme {
+   from { background-position:    0px; }
+     to { background-position: -615px; }
 }
 
-@-moz-keyframes hatch-egg {
-   from { background-position:     0px; }
-     to { background-position: -1744px; }
+@-o-keyframes bird-gimme {
+   from { background-position:    0px; }
+     to { background-position: -615px; }
 }
-
-@-ms-keyframes hatch-egg {
-   from { background-position:     0px; }
-     to { background-position: -1744px; }
+@keyframes bird-gimme {
+   from { background-position:    0px; }
+     to { background-position: -615px; }
 }
-
-@-o-keyframes hatch-egg {
-   from { background-position:     0px; }
-     to { background-position: -1744px; }
-}
-
-@keyframes hatch-egg {
-   from { background-position:     0px; }
-     to { background-position: -1744px; }
-}
-
 .toontalk-bird-static {
     width:  70px;
     height: 102px;
@@ -470,87 +672,51 @@
     height: 119px;
     background-image: url("images/bird-morph.png");
 	background-size: auto;
-    -webkit-animation: bird-morph 1s steps(13) normal forwards;
-       -moz-animation: bird-morph 1s steps(13) normal forwards;
-        -ms-animation: bird-morph 1s steps(13) normal forwards;
-         -o-animation: bird-morph 1s steps(13) normal forwards;
-            animation: bird-morph 1s steps(13) normal forwards;
+    -webkit-animation: bird-morph 1s steps(12) normal forwards;
+       -moz-animation: bird-morph 1s steps(12) normal forwards;
+        -ms-animation: bird-morph 1s steps(12) normal forwards;
+         -o-animation: bird-morph 1s steps(12) normal forwards;
+            animation: bird-morph 1s steps(12) normal forwards;
 } */
-
-.toontalk-bird-gimme {
-    width:  103px;
-    height: 117px;
-    background-image: url("images/bird-gimme.png");
-	background-size: auto;
-	-webkit-animation: bird-gimme 1s steps(6) infinite;
-       -moz-animation: bird-gimme 1s steps(6) infinite;
-        -ms-animation: bird-gimme 1s steps(6) infinite;
-         -o-animation: bird-gimme 1s steps(6) infinite;
-            animation: bird-gimme 1s steps(6) infinite;
-}
-
-@-webkit-keyframes bird-gimme {
-   from { background-position:    0px; }
-     to { background-position: -615px; }
-}
-
-@-moz-keyframes bird-gimme {
-   from { background-position:    0px; }
-     to { background-position: -615px; }
-}
-
-@-ms-keyframes bird-gimme {
-   from { background-position:    0px; }
-     to { background-position: -615px; }
-}
-
-@-o-keyframes bird-gimme {
-   from { background-position:    0px; }
-     to { background-position: -615px; }
-}
-
-@keyframes bird-gimme {
-   from { background-position:    0px; }
-     to { background-position: -615px; }
-}
 
 .toontalk-bird-morph-to-static {
     width:  88px;
     height: 119px;
     background-image: url("images/bird-morph.png");
 	background-size: auto;
-	-webkit-animation: bird-morph-to-static 1s steps(13) reverse backwards;
-       -moz-animation: bird-morph-to-static 1s steps(13) reverse backwards;
-        -ms-animation: bird-morph-to-static 1s steps(13) reverse backwards;
-         -o-animation: bird-morph-to-static 1s steps(13) reverse backwards;
-            animation: bird-morph-to-static 1s steps(13) reverse backwards;
+	-webkit-animation: bird-morph-to-static 1s steps(12) reverse backwards;
+       -moz-animation: bird-morph-to-static 1s steps(12) reverse backwards;
+        -ms-animation: bird-morph-to-static 1s steps(12) reverse backwards;
+         -o-animation: bird-morph-to-static 1s steps(12) reverse backwards;
+            animation: bird-morph-to-static 1s steps(12) reverse backwards;
 }
 
 @-webkit-keyframes bird-morph-to-static {
    from { background-position:     0px; }
-     to { background-position: -1141px; }
+     to { background-position: -1053px; }
 }
 
 @-moz-keyframes bird-morph-to-static {
    from { background-position:     0px; }
-     to { background-position: -1141px; }
+     to { background-position: -1053px; }
 }
 
 @-ms-keyframes bird-morph-to-static {
    from { background-position:     0px; }
-     to { background-position: -1141px; }
+     to { background-position: -1053px; }
 }
 
 @-o-keyframes bird-morph-to-static {
    from { background-position:     0px; }
-     to { background-position: -1141px; }
+     to { background-position: -1053px; }
 }
 
 @keyframes bird-morph-to-static {
    from { background-position:     0px; }
-     to { background-position: -1141px; }
+     to { background-position: -1053px; }
 }
 
+/* could make this 4 steps and change -747 to 597 */
 .toontalk-fly-down {
     width:  150px;
     height: 127px;
@@ -619,6 +785,7 @@
      to { background-position: -1836px; }
 }
 
+/* could make this 11 steps and change -1980 to 1815 */
 .toontalk-bammer-down {
     width:  165px;
     height: 296px;
