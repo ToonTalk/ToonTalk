@@ -736,19 +736,23 @@ window.TOONTALK.element_backside =
             var attributes_chooser = document.createElement("div");
             var show_attributes_chooser = create_show_attributes_chooser(attributes_chooser);
             var standard_buttons = TT.backside.create_standard_buttons(backside, element_widget);
-            var plainText, html_input, update_html;
+            // conditional on URL parameter whether HTML or plain text
+            // default is plain text (displayed and edited) (if there is any -- could be an image or something else)
+            // full HTML editing but that is both insecure (should cleanse the HTML) and confusing to non-experts
+            var edit_HTML = window.location.href.indexOf("elementHTML=1") >= 0;
+            var getter = edit_HTML ? "get_HTML" : "get_text";
+            var text, html_input, update_html;
             // need to ensure that it 'knows' its innerText, etc.
             element_widget.update_display();
-            plainText = element_widget.get_text().trim();
-            if (plainText.length > 0) {
-                // only plain text is displayed and edited (if there is any -- could be an image or something else)
-                // used to support full HTML editing but that is both insecure and confusing to non-experts
-                html_input = TT.UTILITIES.create_text_area(plainText, "toontalk-html-input", "", "Type here to edit the text.");
+            text = element_widget[getter]().trim();
+            if (text.length > 0) {
+                html_input = TT.UTILITIES.create_text_area(text, "toontalk-html-input", "", "Type here to edit the text.");
                 update_html = function (event) {
                     var new_text = html_input.button.value.trim();
                     var frontside_element = element_widget.get_frontside_element();
-                    if (element_widget.set_text(new_text) && TT.robot.in_training) {
-                        TT.robot.in_training.edited(element_widget, {setter_name: "set_text",
+                    var setter = edit_HTML ? "set_HTML" : "set_text";
+                    if (element_widget[setter](new_text) && TT.robot.in_training) {
+                        TT.robot.in_training.edited(element_widget, {setter_name: setter,
                                                                      argument_1: new_text,
                                                                      toString: "change the text to " + new_text + " of",
                                                                      button_selector: ".toontalk-html-input"});
@@ -757,7 +761,7 @@ window.TOONTALK.element_backside =
                 $(html_input.container).resizable();
                 $(html_input.container).css({width: "100%"});
                 $(html_input.button).css({width: "100%"});
-                html_input.button.addEventListener('change', update_html);
+                html_input.button.addEventListener('change',   update_html);
                 html_input.button.addEventListener('mouseout', update_html);
                 backside_element.appendChild(html_input.container);
             }
@@ -774,7 +778,7 @@ window.TOONTALK.element_backside =
             $(attributes_chooser).addClass("toontalk-attributes-chooser");
             backside.update_display = function () {
                 if (html_input) {
-                    $(html_input.button).val(element_widget.get_text());
+                    $(html_input.button).val(element_widget[getter]());
                 }
                 update_style_attributes_table(attribute_table, element_widget);
                 if ($(attributes_chooser).is(":visible")) {
