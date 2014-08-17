@@ -2,7 +2,7 @@ This is a project to create an improved ToonTalk in JavaScript to run in web bro
 
 A paper about ToonTalk Reborn will be presented at Constructionism 2014 in August and can be found here: https://github.com/ToonTalk/ToonTalk/blob/master/docs/TT-Reborn-Constructionism2014_v2.doc
 
-The latest 'release' can be explored at http://toontalk.github.io/ToonTalk/index.html
+The latest 'release' can be explored at http://toontalk.github.io/ToonTalk/index.html. There are known problems with FireFox and Internet Explorer. We recommend you use Chrome until they are resolved.
 
 The slides for a talk about this can be found at: http://toontalk.github.io/ToonTalk/talks/Intro/index.html?reset=1
 
