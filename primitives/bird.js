@@ -71,6 +71,7 @@ window.TOONTALK.bird = (function (TT) {
             height = $(bird_frontside_element).height();
             bird_style_position = bird_frontside_element.style.position;
             bird_frontside_element.style.position = 'absolute';
+            $(bird_frontside_element).removeClass("toontalk-frontside-in-box");
             $top_level_backside_element.append(bird_frontside_element); // while flying            
             $(bird_frontside_element).css({left: starting_left || bird_offset.left-top_level_backside_element_offset.left,
                                            top:  starting_top  || bird_offset.top-top_level_backside_element_offset.top,
@@ -100,6 +101,9 @@ window.TOONTALK.bird = (function (TT) {
                             this.rerender();
                         } else {
                             parent.widget.rerender();
+                        }
+                        if (parent.widget.get_type_name() === 'box') {
+                            $(bird_frontside_element).addClass("toontalk-frontside-in-box");
                         }
                         TT.UTILITIES.add_animation_class(bird_frontside_element, "toontalk-bird-morph-to-static");
                         TT.UTILITIES.add_one_shot_event_handler(bird_frontside_element, "animationend", 1000, become_static);                                                    
