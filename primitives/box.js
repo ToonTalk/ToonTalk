@@ -60,6 +60,19 @@ window.TOONTALK.box = (function (TT) {
                 this.debug_string = this.toString();
             }
         };
+        new_box.temporarily_remove_contents = function (widget, update_display) {
+            // e.g. when a bird flies off to deliver something and will return
+            var index = this.get_index_of(widget);
+            if (index < 0) {
+                console.log("Unable to find " + widget + " in " + this);
+                return;
+            }
+            this.empty_hole(index, update_display);
+            // returns a function to restore the contents
+            return function () {
+                this.set_hole(index, widget, update_display); 
+            }.bind(this);
+        }
         new_box.get_contents = function () {
             // would be nice to make this private - needed by copy
             return contents;
@@ -464,37 +477,46 @@ window.TOONTALK.box = (function (TT) {
         return false;
     };
     
-    box.removed_from_container = function (part, backside_removed, event) {
+    box.get_index_of = function (part) {
         var size = this.get_size();
-        var update_display = !!event;
-        var hole;
-        var i, part_frontside_element;
+        var hole, i;
         // if this becomes a performance problem could use a map between parts and indices...
         for (i = 0; i < size; i++) {
             hole = this.get_hole(i);
             if (part === hole) {
-                this.empty_hole(i, update_display);
-                if (update_display) {
-                    this.rerender();
-                    part_frontside_element = part.get_frontside_element();
-                    $(part_frontside_element).removeClass("toontalk-frontside-in-box");
-                    if (part.saved_width) {
-                        // without this timeout the resizing doesn't apply
-                        // not sure why
-                        setTimeout(function () {
-                            $(part_frontside_element).css({width:  part.saved_width,
-                                                           height: part.saved_height});
-                            part.saved_width =  undefined;
-                            part.saved_height = undefined;
-                            part.rerender();
-                        },
-                        10);
-                    }
-                }
-                return this;
+                return i;
             }
         }
-        console.log("Attempted to remove " + part + " from " + this + " but not found.");
+        return -1;
+    };
+    
+    box.removed_from_container = function (part, backside_removed, event) {
+        var update_display = !!event;
+        var index = this.get_index_of(part);
+        var hole;
+        var part_frontside_element;
+        if (index >= 0) {
+            this.empty_hole(index, update_display);
+            if (update_display) {
+                this.rerender();
+                part_frontside_element = part.get_frontside_element();
+                $(part_frontside_element).removeClass("toontalk-frontside-in-box");
+                if (part.saved_width) {
+                    // without this timeout the resizing doesn't apply
+                    // not sure why
+                    setTimeout(function () {
+                        $(part_frontside_element).css({width:  part.saved_width,
+                                                       height: part.saved_height});
+                        part.saved_width =  undefined;
+                        part.saved_height = undefined;
+                        part.rerender();
+                    },
+                    10);
+                }
+            }
+        } else {
+            console.log("Attempted to remove " + part + " from " + this + " but not found.");
+        }
     };
     
     box.get_path_to = function (widget, robot) {

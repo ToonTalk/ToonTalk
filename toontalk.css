@@ -539,6 +539,7 @@ background-image: url("images/dusty-morph.png");
 	height: 98px;
 }
 .toontalk-empty-nest {
+/* 	Perhaps should be renamed since it really for eggless nest but might have stuff on top */
 /* 	tried 	content: url("images/empty-nest.png");  but couldn't drag it */
 	background-image: url("images/empty-nest.png");
 	background-repeat: no-repeat;
