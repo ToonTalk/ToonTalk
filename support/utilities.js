@@ -468,16 +468,22 @@ window.TOONTALK.UTILITIES =
         get_json_top_level: function (widget) {
             var json_history = {widgets_encountered: [],
                                 shared_widgets: [],
-                                json_of_widgets_encountered: []};                      
+                                json_of_widgets_encountered: []};
             var json = TT.UTILITIES.get_json(widget, json_history);
             if (json_history.shared_widgets.length > 0) {
                 json.shared_widgets = json_history.shared_widgets.map(function (widget, widget_index) {
                     // get the JSON of only those widgets that occurred more than once
-                    var index_among_all_widgets = json_history.widgets_encountered.indexOf(widget);
-                    var json_of_widget = json_history.json_of_widgets_encountered[index_among_all_widgets];
+                    var get_json_of_widget_from_history = function (widget) {
+                        var index_among_all_widgets = json_history.widgets_encountered.indexOf(widget);
+                         return json_history.json_of_widgets_encountered[index_among_all_widgets];
+                    };
+                    var get_json_of_widget_from_shared_widget_index = function (index) {
+                        return get_json_of_widget_from_history(json_history.shared_widgets[index]);
+                    }
+                    var json_of_widget = get_json_of_widget_from_history(widget);
                     // start searching tree for json_of_widget with the semantic component
                     // because json might === json_of_widget
-                    TT.UTILITIES.tree_replace_once(json.semantic, json_of_widget, {shared_widget_index: widget_index});
+                    TT.UTILITIES.tree_replace_once(json.semantic, json_of_widget, {shared_widget_index: widget_index}, get_json_of_widget_from_shared_widget_index);
                     return json_of_widget;
                 });
             }
@@ -511,7 +517,7 @@ window.TOONTALK.UTILITIES =
             return widget_json;
         },
         
-        tree_replace_once: function (object, replace, replacement) {
+        tree_replace_once: function (object, replace, replacement, get_json_of_widget_from_shared_widget_index) {
             // returns object with the first occurence of replace replaced with replacement
             // whereever it occurs in object
             var value;
@@ -521,9 +527,13 @@ window.TOONTALK.UTILITIES =
                     if (value === replace) {
                         object[property] = replacement;
                         return true;
+                    } else if (property === 'shared_widget_index') {
+                        if (this.tree_replace_once(get_json_of_widget_from_shared_widget_index(value), replace, replacement, get_json_of_widget_from_shared_widget_index)) {
+                            return true;
+                        }
                     } else if (["string", "number", "function"].indexOf(typeof value) >= 0) {
                         // skip atomic objects
-                    } else if (this.tree_replace_once(value, replace, replacement)) {
+                    } else if (this.tree_replace_once(value, replace, replacement, get_json_of_widget_from_shared_widget_index)) {
                         return true;
                     }
                 }

@@ -165,10 +165,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                         pending_css = {};
                     }
                     pending_css['-webkit-transform'] = transform;
-                    pending_css['-moz-transform'] = transform;
-                    pending_css['-ms-transform'] = transform;
-                    pending_css['o-transform'] = transform;
-                    pending_css['transform'] = transform;
+                    pending_css['-moz-transform'] =    transform;
+                    pending_css['-ms-transform'] =     transform;
+                    pending_css['o-transform'] =       transform;
+                    pending_css['transform'] =         transform;
                 }
             };
             if (!pending_css) {
