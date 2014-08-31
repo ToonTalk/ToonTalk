@@ -62,6 +62,9 @@ window.TOONTALK.tool = (function (TT) {
                     tool.apply_tool(widget_under_tool, event);
                     TT.UTILITIES.backup_all();
                 }
+                if (!widget_under_tool && tool.nothing_under_tool) {
+                    tool.nothing_under_tool();
+                }
                 $(element).removeClass("toontalk-tool-held"); 
                 $(element).addClass("toontalk-tool-returning");
                 // returning for one second
@@ -71,9 +74,9 @@ window.TOONTALK.tool = (function (TT) {
                                                         });
                 // return animation depends upon this delay
                 setTimeout(function () {
-                        // using style.left and style.top to faciliate CSS animation
-                        element.style.left = home_position.left + "px";
-                        element.style.top  = home_position.top  + "px";
+                               // using style.left and style.top to faciliate CSS animation
+                               element.style.left = home_position.left + "px";
+                               element.style.top  = home_position.top  + "px";
                     },
                     1);
                 document.removeEventListener('mousemove',    mouse_move);

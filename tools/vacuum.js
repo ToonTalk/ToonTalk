@@ -21,6 +21,10 @@ window.TOONTALK.vacuum = (function (TT) {
                         erase:   "toontalk-vacuum-e",
                         restore: "toontalk-vacuum-r"};
 
+    var next_mode =    {suck:    'erase',
+                        erase:   'restore',
+                        restore: 'suck'};
+
 
     var removed_items = [];
 
@@ -32,6 +36,10 @@ window.TOONTALK.vacuum = (function (TT) {
             $(element).addClass(mode_class);
             update_title();
         }
+    };
+
+    var get_next_mode = function () {
+        return next_mode[mode];
     };
 
     var update_title = function () {
@@ -85,6 +93,9 @@ window.TOONTALK.vacuum = (function (TT) {
                     }
                 }
             }
+        },
+        nothing_under_tool: function () {
+            set_mode(get_next_mode());
         },
         get_element: function () {
             var vacuum_without_button_element;
