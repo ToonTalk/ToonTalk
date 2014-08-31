@@ -985,16 +985,18 @@ window.TOONTALK.UTILITIES =
 //         },
         
         set_absolute_position: function ($element, absolute_position) {
-            var ancestor_position;
             var $ancestor = $element.parent();
+            var left = absolute_position.left;
+            var top =  absolute_position.top;
+            var ancestor_position;
             while (!$ancestor.is("html")) {
                 ancestor_position = $ancestor.position();
-                absolute_position.left -= ancestor_position.left;
-                absolute_position.top -= ancestor_position.top;
+                left -= ancestor_position.left;
+                top  -= ancestor_position.top;
                 $ancestor = $ancestor.parent();
             }
-            $element.css({left: absolute_position.left,
-                          top:  absolute_position.top,
+            $element.css({left: left,
+                          top:  top,
                           position: "absolute"});
         },
         
