@@ -731,12 +731,7 @@ window.TOONTALK.nest = (function (TT) {
                     contents_backside.scale_to_fit(contents_side_element, frontside_element);
                 } else {
                     contents[0].widget.render();
-                    contents_side_element = contents[0].widget.get_frontside_element();
-//                     if (!$(contents_side_element).data("owner")) {
-//                         // mysterious bug -- temporary workaround
-//                         console.log("element should have known its owner: " +  contents[0].widget);
-//                         $(contents_side_element).data("owner", contents[0].widget);
-//                     }
+                    contents_side_element = TT.UTILITIES.get_side_element_from_side(contents[0]);
                 }
                 nest_width = $(frontside_element).width();
                 nest_height = $(frontside_element).height();
