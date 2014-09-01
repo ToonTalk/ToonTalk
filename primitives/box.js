@@ -300,13 +300,27 @@ window.TOONTALK.box = (function (TT) {
             $(hole_element).css({left:   left,
                                  top:    top,
                                  width:  hole_width,
-                                 height: hole_height});                                               
+                                 height: hole_height});                                           
             if (!TT.UTILITIES.has_animating_image(hole_frontside_element)) {
                 // explicit size interferes with animation
+                if (index > 0) {
+                    // first hole doesn't need a divider
+                    $(hole_frontside_element).removeClass("toontalk-box-eighth-size-border-left toontalk-box-quarter-size-border-left toontalk-box-half-size-border-left toontalk-box-full-size-border-left");
+                    $(hole_frontside_element).addClass(border_class + "-left");
+                }
+                hole_frontside_element.toontalk_border_size = border_size;
                 setTimeout(function () {
                         // explicit size interferes with animation
-                        $(hole_frontside_element).css({width:  '100%',
-                                                       height: '100%'});             
+                        var border;
+                        if (hole_frontside_element.childElementCount > 0) {
+                            border = hole_frontside_element.toontalk_border_size+hole_frontside_element.toontalk_border_size;
+                            $(hole_frontside_element).css({width:  hole_width-border,
+                                                                   height: hole_height-border});
+                        } else {
+                            // empty hole -- fill with darker pegs
+                            $(hole_frontside_element).css({width:  '100%',
+                                                           height: '100%'});                          
+                        }         
                     },
                     1);
             }
@@ -317,7 +331,7 @@ window.TOONTALK.box = (function (TT) {
         var additional_class = horizontal ? "toontalk-box-hole-horizontal" : "toontalk-box-hole-vertical";
         var wrong_class = horizontal ? "toontalk-box-hole-vertical" : "toontalk-box-hole-horizontal";
         var first_time = !$(frontside_element).is(".toontalk-box");
-        var i, hole, hole_element, box_left, box_width, hole_width, box_height, hole_height, content_frontside_element, renderer;
+        var i, hole, hole_element, box_left, box_width, hole_width, box_height, hole_height, content_frontside_element, renderer, border_class, border_size;
         $(frontside_element).addClass("toontalk-box");
         box_width = $(frontside_element).width();
         box_height = $(frontside_element).height();
@@ -328,6 +342,23 @@ window.TOONTALK.box = (function (TT) {
             hole_width = box_width;
             hole_height = box_height/size;            
         }
+        if (hole_width <= 32 || hole_height <= 32) {
+            border_class = "toontalk-box-eighth-size-border";
+            border_size = 4;
+        } else if (hole_width <= 64 || hole_height <= 64) {
+            border_class = "toontalk-box-quarter-size-border";
+            border_size = 8;
+        } else if (hole_width <= 128 || hole_height <= 128) {
+            border_class = "toontalk-box-half-size-border";
+            border_size = 16;
+        } else {
+            border_class = "toontalk-box-full-size-border";
+            border_size = 32;
+        }
+        $(frontside_element).removeClass("toontalk-box-eighth-size-border toontalk-box-quarter-size-border toontalk-box-half-size-border toontalk-box-full-size-border");
+        $(frontside_element).addClass(border_class);
+        frontside_element.toontalk_border_size = border_size;
+        hole_width -= border_size/size;
         renderer = 
             function () {
                 var $box_hole_elements = $(frontside_element).children("." + additional_class);
@@ -351,13 +382,6 @@ window.TOONTALK.box = (function (TT) {
                         update_hole(hole_element, hole, i);
                         content_frontside_element = hole.get_frontside_element();
                         $(content_frontside_element).addClass("toontalk-frontside-in-box");
-                        if (!TT.UTILITIES.has_animating_image(content_frontside_element)) {
-                            setTimeout(function () {
-                                    $(content_frontside_element).css({width:  '100%',
-                                                                      height: '100%'});                   
-                                },
-                                1);
-                        }
                         hole_element.appendChild(content_frontside_element);
                         frontside_element.appendChild(hole_element);
                     };

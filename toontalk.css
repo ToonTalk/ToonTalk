@@ -109,10 +109,9 @@
 .toontalk-top-level-backside {
     width: 1000px;
 	height: 300px;
-	background-image: url("images/floor-yellow.png");
-	background-size: cover;
+    background-image: url("images/floor-tile.png");
+    background-repeat: round;
 /*     background-color: rgb(245, 245, 57); */
-	
     position: relative;
 }
 .toontalk-top-level-frontside {
@@ -158,20 +157,20 @@
 .toontalk-box-hole {
 	position: absolute;
 /* 	following makes the border internal to the box */
-	box-sizing:border-box;
+/* 	box-sizing:border-box;
     -moz-box-sizing:border-box;
-    -webkit-box-sizing:border-box;
+    -webkit-box-sizing:border-box; */
 /* 	border-color: rgb(137, 15, 239); */
 /* 	padding: 0; */
 }
 .toontalk-box-hole-horizontal {
-    background-color: rgb(137, 15, 239);
+/*     background-color: rgb(137, 15, 239); */
 /*  set padding to simulate border */
 /*  see http://stackoverflow.com/questions/13474754/how-to-set-borders-thickness-in-percentages */
-    padding-left: 0%;
+/*     padding-left: 0%;
     padding-right: 4%; 
     padding-top: 4%; 
-    padding-bottom: 4%; 
+    padding-bottom: 4%;  */
 /* 	border-style: solid;
 	border-left-width:   0px;
 	border-right-width:  8%;
@@ -179,8 +178,64 @@
 	border-bottom-width: 8%; */
 	min-height: 100%;
 }
+.toontalk-box-full-size-border {
+    border: 32px solid transparent;
+    -moz-border-image: url("images/box-border.png") 32 32 round repeat;
+	-webkit-border-image: url("images/box-border.png") 32 32 round repeat;
+    -o-border-image: url("images/box-border.png") 32 32 round repeat;
+    border-image: url("images/box-border.png") 32 32 round repeat;
+}
+.toontalk-box-half-size-border {
+	border: 16px solid transparent;
+    -moz-border-image: url("images/box-border-half-size.png") 16 16 round repeat;
+	-webkit-border-image: url("images/box-border-half-size.png") 16 16 round repeat;
+    -o-border-image: url("images/box-border-half-size.png") 16 16 round repeat;
+    border-image: url("images/box-border-half-size.png") 16 16 round repeat;
+}
+.toontalk-box-quarter-size-border {
+	border: 8px solid transparent;
+    -moz-border-image: url("images/box-border-quarter-size.png") 8 8 round repeat;
+	-webkit-border-image: url("images/box-border-quarter-size.png") 8 8 round repeat;
+    -o-border-image: url("images/box-border-quarter-size.png") 8 8 round repeat;
+    border-image: url("images/box-border-quarter-size.png") 8 8 round repeat;
+}
+.toontalk-box-eighth-size-border {
+	border: 4px solid transparent;
+    -moz-border-image: url("images/box-border-eighth-size.png") 4 4 round repeat;
+	-webkit-border-image: url("images/box-border-eighth-size.png") 4 4 round repeat;
+    -o-border-image: url("images/box-border-eighth-size.png") 4 4 round repeat;
+    border-image: url("images/box-border-eighth-size.png") 4 4 round repeat;
+}
+.toontalk-box-full-size-border-left {
+    border-left: 32px solid transparent;
+    -moz-border-image: url("images/box-border.png") 32 32 round repeat;
+	-webkit-border-image: url("images/box-border.png") 32 32 round repeat;
+    -o-border-image: url("images/box-border.png") 32 32 round repeat;
+    border-image: url("images/box-border.png") 32 32 round repeat;
+}
+.toontalk-box-half-size-border-left {
+	border-left: 16px solid transparent;
+    -moz-border-image: url("images/box-border-half-size.png") 16 16 round repeat;
+	-webkit-border-image: url("images/box-border-half-size.png") 16 16 round repeat;
+    -o-border-image: url("images/box-border-half-size.png") 16 16 round repeat;
+    border-image: url("images/box-border-half-size.png") 16 16 round repeat;
+}
+.toontalk-box-quarter-size-border-left {
+	border-left: 8px solid transparent;
+    -moz-border-image: url("images/box-border-quarter-size.png") 8 8 round repeat;
+	-webkit-border-image: url("images/box-border-quarter-size.png") 8 8 round repeat;
+    -o-border-image: url("images/box-border-quarter-size.png") 8 8 round repeat;
+    border-image: url("images/box-border-quarter-size.png") 8 8 round repeat;
+}
+.toontalk-box-eighth-size-border-left {
+	border-left: 4px solid transparent;
+    -moz-border-image: url("images/box-border-eighth-size.png") 4 4 round repeat;
+	-webkit-border-image: url("images/box-border-eighth-size.png") 4 4 round repeat;
+    -o-border-image: url("images/box-border-eighth-size.png") 4 4 round repeat;
+    border-image: url("images/box-border-eighth-size.png") 4 4 round repeat;
+}
 .toontalk-hole-number-0.toontalk-box-hole-horizontal {
-	padding-left: 4%;
+/* 	padding-left: 4%; */
 }
 /* following stopped working - not sure why so above used instead */
 /* .toontalk-box-hole-horizontal:nth-child(1) {
@@ -210,26 +265,57 @@
 .toontalk-empty-hole {
 	width:  100%;
 	height: 100%;
-	background-color: rgb(231, 215, 241);
+/* 	background-color: rgb(231, 215, 241); */
+    background-image: url("images/hole-tile-half-size.png");
+    background-repeat: round;
 }
 .toontalk-top-level-number {
 	/* numbers look better with fixed widths -- easier to compare visually */
 	font-family: 'Lucida console', monospace;
-	background-color: rgb(190, 244, 206);
-	width:  100%;
+	background-color: rgb(183, 248, 196);  
+	width: 100%;
 	height: 100%;
 	/* min-width:  100%; */
 /* 	min-height: 100%; */
 	/* border-width: 2px; */
 	/* border-color: rgb(96, 173, 43); */
-	border-radius: 6px;
-	text-align: center;
+/* 	border-radius: 6px; */
+	/* text-align: center; */
 	vertical-align: middle;
 	display: inline-block;
 }
+.toontalk-number-full-size-border {
+    border: 32px solid transparent;
+    -moz-border-image: url("images/number-border.png") 32 32 round repeat;
+	-webkit-border-image: url("images/number-border.png") 32 32 round repeat;
+    -o-border-image: url("images/number-border.png") 32 32 round repeat;
+    border-image: url("images/number-border.png") 32 32 round repeat;
+}
+.toontalk-number-half-size-border {
+	border: 16px solid transparent;
+    -moz-border-image: url("images/number-border-half-size.png") 16 16 round repeat;
+	-webkit-border-image: url("images/number-border-half-size.png") 16 16 round repeat;
+    -o-border-image: url("images/number-border-half-size.png") 16 16 round repeat;
+    border-image: url("images/number-border-half-size.png") 16 16 round repeat;
+}
+.toontalk-number-quarter-size-border {
+	border: 8px solid transparent;
+    -moz-border-image: url("images/number-border-quarter-size.png") 8 8 round repeat;
+	-webkit-border-image: url("images/number-border-quarter-size.png") 8 8 round repeat;
+    -o-border-image: url("images/number-border-quarter-size.png") 8 8 round repeat;
+    border-image: url("images/number-border-quarter-size.png") 8 8 round repeat;
+}
+.toontalk-number-eighth-size-border {
+	border: 4px solid transparent;
+    -moz-border-image: url("images/number-border-eighth-size.png") 4 4 round repeat;
+	-webkit-border-image: url("images/number-border-eighth-size.png") 4 4 round repeat;
+    -o-border-image: url("images/number-border-eighth-size.png") 4 4 round repeat;
+    border-image: url("images/number-border-eighth-size.png") 4 4 round repeat;
+}
 .toontalk-number-size-unconstrained-by-container {
 /* 	digits in numbers appear too high but this fix causes the numbers to become too big for their container */
-	padding-top: .3em;
+	
+/* padding-top: .3em; */
 }
 .toontalk-improper-fraction {
 	table-layout: fixed;
@@ -337,6 +423,62 @@
 }
 .toontalk-highlight {
 	border: solid 3px white;
+}
+.toontalk-highlight.toontalk-number-full-size-border {
+	border: 32px solid transparent;
+    -moz-border-image:    url("images/border-highlighted.png") 32 32 round repeat;
+	-webkit-border-image: url("images/border-highlighted.png") 32 32 round repeat;
+    -o-border-image:      url("images/border-highlighted.png") 32 32 round repeat;
+    border-image:         url("images/border-highlighted.png") 32 32 round repeat;
+}
+.toontalk-highlight.toontalk-number-half-size-border {
+	border: 16px solid transparent;
+    -moz-border-image:    url("images/border-half-size-highlighted.png") 16 16 round repeat;
+	-webkit-border-image: url("images/border-half-size-highlighted.png") 16 16 round repeat;
+    -o-border-image:      url("images/border-half-size-highlighted.png") 16 16 round repeat;
+    border-image:         url("images/border-half-size-highlighted.png") 16 16 round repeat;
+}
+.toontalk-highlight.toontalk-number-quarter-size-border {
+	border: 8px solid transparent;
+    -moz-border-image: url("images/border-half-size-highlighted.png") 8 8 round repeat;
+	-webkit-border-image: url("images/border-half-size-highlighted.png") 8 8 round repeat;
+    -o-border-image: url("images/border-half-size-highlighted.png") 8 8 round repeat;
+    border-image: url("images/border-half-size-highlighted.png") 8 8 round repeat;
+}
+.toontalk-highlight.toontalk-number-eighth-size-border {
+	border: 4px solid transparent;
+    -moz-border-image: url("images/border-half-size-highlighted.png") 4 4 round repeat;
+	-webkit-border-image: url("images/border-half-size-highlighted.png") 4 4 round repeat;
+    -o-border-image: url("images/border-half-size-highlighted.png") 4 4 round repeat;
+    border-image: url("images/border-half-size-highlighted.png") 4 4 round repeat;
+}
+.toontalk-highlight.toontalk-box-full-size-border {
+	border: 32px solid transparent;
+    -moz-border-image: url("images/border-highlighted.png") 32 32 round repeat;
+	-webkit-border-image: url("images/border-highlighted.png") 32 32 round repeat;
+    -o-border-image: url("images/border-highlighted.png") 32 32 round repeat;
+    border-image: url("images/border-highlighted.png") 32 32 round repeat;
+}
+.toontalk-highlight.toontalk-box-half-size-border {
+	border: 16px solid transparent;
+    -moz-border-image: url("images/border-half-size-highlighted.png") 16 16 round repeat;
+	-webkit-border-image: url("images/border-half-size-highlighted.png") 16 16 round repeat;
+    -o-border-image: url("images/border-half-size-highlighted.png") 16 16 round repeat;
+    border-image: url("images/border-half-size-highlighted.png") 16 16 round repeat;
+}
+.toontalk-highlight.toontalk-box-quarter-size-border {
+	border: 8px solid transparent;
+    -moz-border-image: url("images/border-half-size-highlighted.png") 8 8 round repeat;
+	-webkit-border-image: url("images/border-half-size-highlighted.png") 8 8 round repeat;
+    -o-border-image: url("images/border-half-size-highlighted.png") 8 8 round repeat;
+    border-image: url("images/border-half-size-highlighted.png") 8 8 round repeat;
+}
+.toontalk-highlight.toontalk-box-eighth-size-border {
+	border: 4px solid transparent;
+    -moz-border-image: url("images/border-half-size-highlighted.png") 4 4 round repeat;
+	-webkit-border-image: url("images/border-half-size-highlighted.png") 4 4 round repeat;
+    -o-border-image: url("images/border-half-size-highlighted.png") 4 4 round repeat;
+    border-image: url("images/border-half-size-highlighted.png") 4 4 round repeat;
 }
 .toontalk-conditions-not-matched {
 	/* could be fancier -- e.g. glowing */

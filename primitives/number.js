@@ -222,6 +222,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             }
             return html;
         };
+        var border_size = 28;
         var frontside_element, $dimensions_holder, client_width, client_height, 
             font_height, font_width, max_decimal_places, new_HTML, backside, size_unconstrained_by_container, child_element;
         frontside_element = frontside.get_element();
@@ -249,6 +250,20 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             if (client_width === 0 || client_height === 0) {
                 return;
             }
+        }
+        $(frontside_element).removeClass("toontalk-number-eighth-size-border toontalk-number-quarter-size-border toontalk-number-half-size-border toontalk-number-full-size-border");
+        if (client_width <= 32 || client_height <= 32) {
+            $(frontside_element).addClass("toontalk-number-eighth-size-border");
+            frontside_element.toontalk_border_size = 4;
+        } else if (client_width <= 64 || client_height <= 64) {
+            $(frontside_element).addClass("toontalk-number-quarter-size-border");
+            frontside_element.toontalk_border_size = 8;
+        } else if (client_width <= 128 || client_height <= 128) {
+            $(frontside_element).addClass("toontalk-number-half-size-border");
+            frontside_element.toontalk_border_size = 16;
+        } else {
+            $(frontside_element).addClass("toontalk-number-full-size-border");
+            frontside_element.toontalk_border_size = 32;
         }
         font_height = client_height * 0.8;
 //      font_size = TT.UTILITIES.get_style_numeric_property(frontside, "font-size");
