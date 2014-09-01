@@ -1508,9 +1508,14 @@ window.TOONTALK.UTILITIES =
         },
         
         has_animating_image: function (element) {
-            var background_image = $(element).css("background-image");
-            var size_adjustable = $(element).css("background-size") === 'contain';
-            return !size_adjustable && background_image !== 'none' && background_image  !== '';
+            var $element = $(element);
+            var animation = $element.css("animation") ||
+                            $element.css("webkit-animation") ||
+                            $element.css("moz-animation") ||
+                            $element.css("ms-animation") ||
+                            $element.css("o-animation");
+            // rewrite using startsWith in Ecma 6
+            return animation && animation.indexOf("none") !== 0;
         },
 
         display_message: function (message) {
