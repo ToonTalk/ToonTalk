@@ -34,7 +34,7 @@ window.TOONTALK.tool = (function (TT) {
                 element.style.top  = (event.clientY - drag_y_offset) + "px";
                 if (widget_under_tool && widget_under_tool.get_type_name() === 'top-level') {
                     if (highlighted_element) { // remove old highlighting
-                        TT.UTILITIES.remove_highlight_from_element(highlighted_element);
+                        TT.UTILITIES.remove_highlight();
                         highlighted_element = undefined;
                     }
                     return;
@@ -45,9 +45,6 @@ window.TOONTALK.tool = (function (TT) {
                         return; // no change
                     }
                 }
-                if (highlighted_element) { // remove old highlighting
-                    TT.UTILITIES.remove_highlight_from_element(highlighted_element);
-                }
                 highlighted_element = new_highlighted_element;
                 TT.UTILITIES.highlight_element(highlighted_element);
             };
@@ -56,7 +53,7 @@ window.TOONTALK.tool = (function (TT) {
                 var widget_under_tool = find_widget_under_tool();
                 event.preventDefault();
                 if (highlighted_element) { // remove old highlighting
-                    TT.UTILITIES.remove_highlight_from_element(highlighted_element);
+                    TT.UTILITIES.remove_highlight();
                 }
                 if (widget_under_tool && widget_under_tool.add_copy_to_container) {
                     tool.apply_tool(widget_under_tool, event);

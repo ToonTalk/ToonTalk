@@ -164,6 +164,7 @@ window.TOONTALK.UTILITIES =
                 }
             }
         }
+        TT.UTILITIES.remove_highlight();
 //         if (target_widget && !drop_handled) {
 //             // is the obsolete? If so is drop_handled?
 //             if (target_widget.widget_dropped_on_me) {
@@ -811,7 +812,7 @@ window.TOONTALK.UTILITIES =
                     }
                     // if this is computed when needed and if dragging a resource it isn't the correct value
                     target_position = $target.offset();
-                    $target.removeClass("toontalk-highlight");
+                    TT.UTILITIES.remove_highlight();
                     if ($source && $source.length > 0 &&
                         ($source.get(0) === $target.get(0) || jQuery.contains($source.get(0), $target.get(0)))) {
                         if ($source.is(".toontalk-top-level-backside")) {
@@ -928,7 +929,7 @@ window.TOONTALK.UTILITIES =
                 if (!$element.is(".toontalk-top-level-backside") && 
                     !$element.is(".toontalk-top-level-resource") &&
                     !$element.is(".toontalk-being-dragged")) {
-                    $element.addClass("toontalk-highlight");
+                    TT.UTILITIES.highlight_element($element);
                     // moving over decendants triggers dragleave unless their pointer events are turned off
                     // they are restored on dragend
                     if (!$element.is(".toontalk-backside, .toontalk-drop-area") && TT.UTILITIES.get_toontalk_widget_from_jquery($element).get_type_name() !== 'box') {
@@ -943,7 +944,7 @@ window.TOONTALK.UTILITIES =
             });
             $element.on('dragleave', function (event) {
                 if (!$element.is(".toontalk-top-level-backside") && !$element.is(".toontalk-top-level-resource")) {
-                    $element.removeClass("toontalk-highlight");
+                    TT.UTILITIES.remove_highlight();
                 }
                 event.stopPropagation();
             });
@@ -1130,18 +1131,20 @@ window.TOONTALK.UTILITIES =
         },
         
         highlight_element: function (element, duration) {
+            // only one element can be highlighted
+            TT.UTILITIES.remove_highlight(); // any old highlighting
             $(element).addClass("toontalk-highlight");
             if (duration) {
                 setTimeout(function () {
-                        TT.UTILITIES.remove_highlight_from_element(element);
+                        TT.UTILITIES.remove_highlight();
                     },
                     duration);
             }
         },
 
-        remove_highlight_from_element: function (element) {
-            $(element).removeClass("toontalk-highlight");
-        },          
+        remove_highlight: function () {
+            $(".toontalk-highlight").removeClass("toontalk-highlight");
+        },  
         
         cursor_of_image: function (url) {
             var extensionStart = url.lastIndexOf('.');

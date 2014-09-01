@@ -233,7 +233,7 @@ window.TOONTALK.backside =
                var parent_of_backside = widget.get_parent_of_backside();
                var close_title, close_handler;
                if (frontside && (!parent_of_backside || parent_of_backside.widget.get_type_name() === "top-level")) {
-                   $(frontside.get_element()).addClass("toontalk-highlight");
+                   TT.UTILITIES.highlight_element(frontside.get_element());
                }
                if (widget.close_button_ok(backside_element)) {
                    if (close_button) {
@@ -258,7 +258,7 @@ window.TOONTALK.backside =
             backside_element.addEventListener("mouseout", function (event) {
                var frontside = widget.get_frontside();
                if (frontside) {
-                   $(frontside.get_element()).removeClass("toontalk-highlight");
+                   TT.UTILITIES.remove_highlight();
                }
                if (close_button) {
                    $(close_button).hide();
@@ -440,7 +440,7 @@ window.TOONTALK.backside =
                 });
             };
             var parent_of_backside = widget.get_parent_of_backside();
-            $(frontside_element).removeClass("toontalk-highlight");
+            TT.UTILITIES.remove_highlight();
             if (widget.forget_backside) {
                 widget.forget_backside();
             }

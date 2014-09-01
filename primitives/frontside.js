@@ -75,14 +75,14 @@ window.TOONTALK.frontside =
             frontside_element.addEventListener("mouseover", function (event) {
                 var backside = widget.get_backside();
                 if (backside) {
-                    $(backside.get_element()).addClass("toontalk-highlight");
+                    TT.UTILITIES.highlight_element(backside.get_element());
                 }
 //                 $(close_button).show();
             });
             frontside_element.addEventListener("mouseout", function (event) {
                 var backside = widget.get_backside();
                 if (backside) {
-                    $(backside.get_element()).removeClass("toontalk-highlight");
+                    TT.UTILITIES.remove_highlight();
                 }
 //                 $(close_button).hide();
             });
