@@ -286,8 +286,7 @@
 	/* border-width: 2px; */
 	/* border-color: rgb(96, 173, 43); */
 /* 	border-radius: 6px; */
-	/* text-align: center; */
-	vertical-align: middle;
+	text-align: center;
 	display: inline-block;
 }
 .toontalk-number-full-size-border {
@@ -335,7 +334,8 @@
 	border-spacing:  0px;
 	border-collapse: collapse;
 }
-.toontalk-digit {
+.toontalk-digit {  
+    line-height: 1.4;
 }
 .toontalk-decimal-point {
 	/* decimal point as monospace looked bad -- not sure if serif is the best rememdy */
