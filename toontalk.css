@@ -619,7 +619,7 @@ background-image: url("images/dusty-morph.png");
    from { background-position:    0px; }
      to { background-position: -663px; }
 }
-.toontalk-vacuum-button {
+/* .toontalk-vacuum-button {
 	position: absolute;
 	background-repeat: no-repeat;
 	z-index: 99999999;
@@ -627,9 +627,9 @@ background-image: url("images/dusty-morph.png");
 	height: 11px;
 	left: 5px;
 	top: 18px;
-}
+} */
 .toontalk-tool-held {
-	position: absolute; 
+	position: absolute;
 }
 .toontalk-tool-returning {
 	position: absolute;
