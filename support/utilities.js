@@ -943,9 +943,9 @@ window.TOONTALK.UTILITIES =
                 event.stopPropagation();
             });
             $element.on('dragleave', function (event) {
-                if (!$element.is(".toontalk-top-level-backside") && !$element.is(".toontalk-top-level-resource")) {
-                    TT.UTILITIES.remove_highlight();
-                }
+//                 if (!$element.is(".toontalk-top-level-backside") && !$element.is(".toontalk-top-level-resource")) {
+//                     TT.UTILITIES.remove_highlight();
+//                 }
                 event.stopPropagation();
             });
             // following attempt to use JQuery UI draggable provides mouseevents rather than dragstart and the like
@@ -1131,6 +1131,9 @@ window.TOONTALK.UTILITIES =
         },
         
         highlight_element: function (element, duration) {
+            if ($(element).is(".toontalk-highlight")) {
+                return; // already highlighted
+            }
             // only one element can be highlighted
             TT.UTILITIES.remove_highlight(); // any old highlighting
             $(element).addClass("toontalk-highlight");
@@ -1144,7 +1147,7 @@ window.TOONTALK.UTILITIES =
 
         remove_highlight: function () {
             $(".toontalk-highlight").removeClass("toontalk-highlight");
-        },  
+        },
         
         cursor_of_image: function (url) {
             var extensionStart = url.lastIndexOf('.');

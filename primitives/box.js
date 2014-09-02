@@ -260,9 +260,8 @@ window.TOONTALK.box = (function (TT) {
             if (hole_element !== content_frontside_element) {
                 // not an empty hole
                 // save dimensions first?
-                $(content_frontside_element)//.addClass("toontalk-frontside-in-box")
-                                            .css({left: 0, // index === 0 ? 0 : border_size,
-                                                  top:  0,
+                $(content_frontside_element).css({left:  0,
+                                                  top:   0,
                                                   width: '',
                                                   height: ''});
                 hole_element.appendChild(content_frontside_element);
