@@ -164,6 +164,7 @@ window.TOONTALK.UTILITIES =
                 }
             }
         }
+        TT.UTILITIES.remove_highlight();
 //         if (target_widget && !drop_handled) {
 //             // is the obsolete? If so is drop_handled?
 //             if (target_widget.widget_dropped_on_me) {
@@ -468,16 +469,22 @@ window.TOONTALK.UTILITIES =
         get_json_top_level: function (widget) {
             var json_history = {widgets_encountered: [],
                                 shared_widgets: [],
-                                json_of_widgets_encountered: []};                      
+                                json_of_widgets_encountered: []};
             var json = TT.UTILITIES.get_json(widget, json_history);
             if (json_history.shared_widgets.length > 0) {
                 json.shared_widgets = json_history.shared_widgets.map(function (widget, widget_index) {
                     // get the JSON of only those widgets that occurred more than once
-                    var index_among_all_widgets = json_history.widgets_encountered.indexOf(widget);
-                    var json_of_widget = json_history.json_of_widgets_encountered[index_among_all_widgets];
+                    var get_json_of_widget_from_history = function (widget) {
+                        var index_among_all_widgets = json_history.widgets_encountered.indexOf(widget);
+                         return json_history.json_of_widgets_encountered[index_among_all_widgets];
+                    };
+                    var get_json_of_widget_from_shared_widget_index = function (index) {
+                        return get_json_of_widget_from_history(json_history.shared_widgets[index]);
+                    }
+                    var json_of_widget = get_json_of_widget_from_history(widget);
                     // start searching tree for json_of_widget with the semantic component
                     // because json might === json_of_widget
-                    TT.UTILITIES.tree_replace_once(json.semantic, json_of_widget, {shared_widget_index: widget_index});
+                    TT.UTILITIES.tree_replace_once(json.semantic, json_of_widget, {shared_widget_index: widget_index}, get_json_of_widget_from_shared_widget_index);
                     return json_of_widget;
                 });
             }
@@ -511,7 +518,7 @@ window.TOONTALK.UTILITIES =
             return widget_json;
         },
         
-        tree_replace_once: function (object, replace, replacement) {
+        tree_replace_once: function (object, replace, replacement, get_json_of_widget_from_shared_widget_index) {
             // returns object with the first occurence of replace replaced with replacement
             // whereever it occurs in object
             var value;
@@ -521,9 +528,13 @@ window.TOONTALK.UTILITIES =
                     if (value === replace) {
                         object[property] = replacement;
                         return true;
+                    } else if (property === 'shared_widget_index') {
+                        if (this.tree_replace_once(get_json_of_widget_from_shared_widget_index(value), replace, replacement, get_json_of_widget_from_shared_widget_index)) {
+                            return true;
+                        }
                     } else if (["string", "number", "function"].indexOf(typeof value) >= 0) {
                         // skip atomic objects
-                    } else if (this.tree_replace_once(value, replace, replacement)) {
+                    } else if (this.tree_replace_once(value, replace, replacement, get_json_of_widget_from_shared_widget_index)) {
                         return true;
                     }
                 }
@@ -801,7 +812,7 @@ window.TOONTALK.UTILITIES =
                     }
                     // if this is computed when needed and if dragging a resource it isn't the correct value
                     target_position = $target.offset();
-                    $target.removeClass("toontalk-highlight");
+                    TT.UTILITIES.remove_highlight();
                     if ($source && $source.length > 0 &&
                         ($source.get(0) === $target.get(0) || jQuery.contains($source.get(0), $target.get(0)))) {
                         if ($source.is(".toontalk-top-level-backside")) {
@@ -918,7 +929,7 @@ window.TOONTALK.UTILITIES =
                 if (!$element.is(".toontalk-top-level-backside") && 
                     !$element.is(".toontalk-top-level-resource") &&
                     !$element.is(".toontalk-being-dragged")) {
-                    $element.addClass("toontalk-highlight");
+                    TT.UTILITIES.highlight_element($element);
                     // moving over decendants triggers dragleave unless their pointer events are turned off
                     // they are restored on dragend
                     if (!$element.is(".toontalk-backside, .toontalk-drop-area") && TT.UTILITIES.get_toontalk_widget_from_jquery($element).get_type_name() !== 'box') {
@@ -932,9 +943,9 @@ window.TOONTALK.UTILITIES =
                 event.stopPropagation();
             });
             $element.on('dragleave', function (event) {
-                if (!$element.is(".toontalk-top-level-backside") && !$element.is(".toontalk-top-level-resource")) {
-                    $element.removeClass("toontalk-highlight");
-                }
+//                 if (!$element.is(".toontalk-top-level-backside") && !$element.is(".toontalk-top-level-resource")) {
+//                     TT.UTILITIES.remove_highlight();
+//                 }
                 event.stopPropagation();
             });
             // following attempt to use JQuery UI draggable provides mouseevents rather than dragstart and the like
@@ -975,16 +986,18 @@ window.TOONTALK.UTILITIES =
 //         },
         
         set_absolute_position: function ($element, absolute_position) {
-            var ancestor_position;
             var $ancestor = $element.parent();
+            var left = absolute_position.left;
+            var top =  absolute_position.top;
+            var ancestor_position;
             while (!$ancestor.is("html")) {
                 ancestor_position = $ancestor.position();
-                absolute_position.left -= ancestor_position.left;
-                absolute_position.top -= ancestor_position.top;
+                left -= ancestor_position.left;
+                top  -= ancestor_position.top;
                 $ancestor = $ancestor.parent();
             }
-            $element.css({left: absolute_position.left,
-                          top:  absolute_position.top,
+            $element.css({left: left,
+                          top:  top,
                           position: "absolute"});
         },
         
@@ -1118,18 +1131,23 @@ window.TOONTALK.UTILITIES =
         },
         
         highlight_element: function (element, duration) {
+            if ($(element).is(".toontalk-highlight")) {
+                return; // already highlighted
+            }
+            // only one element can be highlighted
+            TT.UTILITIES.remove_highlight(); // any old highlighting
             $(element).addClass("toontalk-highlight");
             if (duration) {
                 setTimeout(function () {
-                        TT.UTILITIES.remove_highlight_from_element(element);
+                        TT.UTILITIES.remove_highlight();
                     },
                     duration);
             }
         },
 
-        remove_highlight_from_element: function (element) {
-            $(element).removeClass("toontalk-highlight");
-        },          
+        remove_highlight: function () {
+            $(".toontalk-highlight").removeClass("toontalk-highlight");
+        },
         
         cursor_of_image: function (url) {
             var extensionStart = url.lastIndexOf('.');
@@ -1496,9 +1514,14 @@ window.TOONTALK.UTILITIES =
         },
         
         has_animating_image: function (element) {
-            var background_image = $(element).css("background-image");
-            var size_adjustable = $(element).css("background-size") === 'contain';
-            return !size_adjustable && background_image !== 'none' && background_image  !== '';
+            var $element = $(element);
+            var animation = $element.css("animation") ||
+                            $element.css("webkit-animation") ||
+                            $element.css("moz-animation") ||
+                            $element.css("ms-animation") ||
+                            $element.css("o-animation");
+            // rewrite using startsWith in Ecma 6
+            return animation && animation.indexOf("none") !== 0;
         },
 
         display_message: function (message) {

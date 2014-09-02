@@ -13,13 +13,17 @@ window.TOONTALK.vacuum = (function (TT) {
 
     var mode, mode_class; // either 'suck', 'erase', or 'restore'
   
-    var titles = {suck:    "Drag this vacuum over the thing you want to remove. Type 'e' to switch to erasing. Type 'r' to restore previously removed or erased things.",
-                  erase:   "Drag this vacuum over the thing you want to erase (or un-erase). Type 's' to switch to sucking. Type 'r' to restore contents.",
-                  restore: "Drag this over the work area. Each time you release it a widget is restored. Type 's' to switch to sucking. Type 'e' to switch to erasing."};
+    var titles = {suck:    "Drag this vacuum over the thing you want to remove. Click or type 'e' to switch to erasing. Type 'r' to restore previously removed or erased things.",
+                  erase:   "Drag this vacuum over the thing you want to erase (or un-erase). Type 's' to switch to sucking. Click or type 'r' to restore contents.",
+                  restore: "Drag this over the work area. Each time you release it a widget is restored. Click or type 's' to switch to sucking. Type 'e' to switch to erasing."};
 
     var mode_classes = {suck:    "toontalk-vacuum-s",
                         erase:   "toontalk-vacuum-e",
                         restore: "toontalk-vacuum-r"};
+
+    var next_mode =    {suck:    'erase',
+                        erase:   'restore',
+                        restore: 'suck'};
 
 
     var removed_items = [];
@@ -32,6 +36,10 @@ window.TOONTALK.vacuum = (function (TT) {
             $(element).addClass(mode_class);
             update_title();
         }
+    };
+
+    var get_next_mode = function () {
+        return next_mode[mode];
     };
 
     var update_title = function () {
@@ -85,6 +93,9 @@ window.TOONTALK.vacuum = (function (TT) {
                     }
                 }
             }
+        },
+        nothing_under_tool: function () {
+            set_mode(get_next_mode());
         },
         get_element: function () {
             var vacuum_without_button_element;

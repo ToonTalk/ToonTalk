@@ -34,7 +34,7 @@ window.TOONTALK.tool = (function (TT) {
                 element.style.top  = (event.clientY - drag_y_offset) + "px";
                 if (widget_under_tool && widget_under_tool.get_type_name() === 'top-level') {
                     if (highlighted_element) { // remove old highlighting
-                        TT.UTILITIES.remove_highlight_from_element(highlighted_element);
+                        TT.UTILITIES.remove_highlight();
                         highlighted_element = undefined;
                     }
                     return;
@@ -45,9 +45,6 @@ window.TOONTALK.tool = (function (TT) {
                         return; // no change
                     }
                 }
-                if (highlighted_element) { // remove old highlighting
-                    TT.UTILITIES.remove_highlight_from_element(highlighted_element);
-                }
                 highlighted_element = new_highlighted_element;
                 TT.UTILITIES.highlight_element(highlighted_element);
             };
@@ -56,11 +53,14 @@ window.TOONTALK.tool = (function (TT) {
                 var widget_under_tool = find_widget_under_tool();
                 event.preventDefault();
                 if (highlighted_element) { // remove old highlighting
-                    TT.UTILITIES.remove_highlight_from_element(highlighted_element);
+                    TT.UTILITIES.remove_highlight();
                 }
                 if (widget_under_tool && widget_under_tool.add_copy_to_container) {
                     tool.apply_tool(widget_under_tool, event);
                     TT.UTILITIES.backup_all();
+                }
+                if (!widget_under_tool && tool.nothing_under_tool) {
+                    tool.nothing_under_tool();
                 }
                 $(element).removeClass("toontalk-tool-held"); 
                 $(element).addClass("toontalk-tool-returning");
@@ -71,9 +71,9 @@ window.TOONTALK.tool = (function (TT) {
                                                         });
                 // return animation depends upon this delay
                 setTimeout(function () {
-                        // using style.left and style.top to faciliate CSS animation
-                        element.style.left = home_position.left + "px";
-                        element.style.top  = home_position.top  + "px";
+                               // using style.left and style.top to faciliate CSS animation
+                               element.style.left = home_position.left + "px";
+                               element.style.top  = home_position.top  + "px";
                     },
                     1);
                 document.removeEventListener('mousemove',    mouse_move);

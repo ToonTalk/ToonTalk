@@ -11,28 +11,14 @@ window.TOONTALK.box = (function (TT) {
 
     var box = Object.create(TT.widget);
 
-    box.create = function (size, horizontal, contents, description) {
+    box.create = function (size, horizontal, initial_contents, description) {
         var new_box = Object.create(box);
+        var holes = [];
+        var i;
         if (typeof horizontal === 'undefined') {
+            // default is horizontal
             horizontal = true;
         }
-        new_box.get_size = function () {
-            return size;
-        };
-        new_box.set_size = function (new_size, update_display) {
-            if (size === new_size) {
-                return false;
-            }
-            size = new_size;
-            contents.length = size;
-            if (update_display) {
-                this.rerender();
-            }
-            if (TT.debugging) {
-                this.debug_string = this.toString();
-            }
-            return true;
-        };
         new_box.get_horizontal = function () {
             return horizontal;
         };
@@ -44,14 +30,13 @@ window.TOONTALK.box = (function (TT) {
             return this;
         };
         new_box.get_hole = function (index) {
-            return contents[index];
+            return holes[index];
+        };
+        new_box.get_hole_contents = function (index) {
+            return holes[index].get_contents();
         };
         new_box.set_hole = function (index, new_value, update_display) {
-            if (contents[index]) {
-                contents[index].set_parent_of_frontside(undefined);
-            }
-            contents[index] = new_value;
-            contents[index].set_parent_of_frontside(this);
+            holes[index].set_contents(new_value);
             if (update_display) {
                 this.update_hole_display(index, new_value);
             }
@@ -60,57 +45,73 @@ window.TOONTALK.box = (function (TT) {
                 this.debug_string = this.toString();
             }
         };
-        new_box.get_contents = function () {
-            // would be nice to make this private - needed by copy
-            return contents;
+        new_box.get_holes = function () {
+            return holes;
         };
-        new_box.set_contents = function (new_value) {
-            var i, widget;
-            if (contents) {
-                for (i = 0; i < contents.length; i++) {
-                    widget = contents[i];
-                    if (widget) {
-                        widget.set_parent_of_frontside(undefined);
-                    }
+        new_box.temporarily_remove_contents = function (widget, update_display) {
+            // e.g. when a bird flies off to deliver something and will return
+            var index = this.get_index_of(widget);
+            if (index < 0) {
+                console.log("Unable to find " + widget + " in " + this);
+                return;
+            }
+            this.empty_hole(index, update_display);
+            // returns a function to restore the contents
+            return function () {
+                this.set_hole(index, widget, update_display); 
+            }.bind(this);
+        }
+        new_box.set_contents = function (new_contents) {
+            new_contents.forEach(function (value, index) {
+                holes[index].set_contents(value);
+            });
+        };
+        new_box.get_size = function () {
+            return size;
+        };
+        new_box.set_size = function (new_size, update_display) {
+            var i;
+            if (size === new_size) {
+                return false;
+            }
+            holes.length = new_size;
+            if (new_size > size) {
+                for (i = size; i < new_size; i++) {
+                    holes[i] = TT.box_empty_hole.create(i);
+                    holes[i].set_parent_of_frontside(new_box);
                 }
             }
-            contents = new_value;
-            for (i = 0; i < contents.length; i++) {
-                widget = contents[i];
-                if (widget) {
-                    widget.set_parent_of_frontside(this);
-                }
+            size = new_size;
+            if (update_display) {
+                this.rerender();
             }
+            if (TT.debugging) {
+                this.debug_string = this.toString();
+            }
+            return true;
+        };
+        new_box.copy = function (just_value) {
+            var holes_copied = holes.map(function (hole) {
+                var content = hole.get_contents();
+                if (content)
+                    return content.copy(just_value);
+                }
+            );
+            var copy = box.create(size, horizontal, holes_copied, this.get_description());
+            return this.add_to_copy(copy, just_value);
         };
         new_box = new_box.add_standard_widget_functionality(new_box);
+        for (i = 0; i < size; i++) {
+            holes[i] = TT.box_empty_hole.create(i);
+            holes[i].set_parent_of_frontside(new_box);
+        }
         new_box.set_description(description);
-        if (contents) {
-            contents.forEach(function (widget, index) {
-                if (widget) {
-                    new_box.set_hole(index, widget);
-                    // assumes only frontsides end up in boxes -- relax this someday
-//                     widget.set_parent_of_frontside(new_box);
-
-                }
-            });
-        } else {
-            contents = [];
-        }
-        if (TT.debugging && size !== contents.length) {
-            // eventually remove this when old saved code has been updated
-            console.log("JSON size should be " + contents.length + " not " + size);
-            size = contents.length;
-        }
+        new_box.set_contents(initial_contents);
         if (TT.debugging) {
             new_box.debug_string = new_box.toString();
             new_box.debug_id = TT.UTILITIES.generate_unique_id();
         }
         return new_box;
-    };
-    
-    box.copy = function (just_value) {
-        var copy = box.create(this.get_size(), this.get_horizontal(), TT.UTILITIES.copy_widgets(this.get_contents(), just_value, copy), this.get_description());
-        return this.add_to_copy(copy, just_value);
     };
     
     box.create_backside = function () {
@@ -129,8 +130,8 @@ window.TOONTALK.box = (function (TT) {
             return false;
         }
         for (i = 0; i < size; i++) {
-            my_hole = this.get_hole(i);
-            pattern_hole = other_box.get_hole(i);
+            my_hole = this.get_hole_contents(i);
+            pattern_hole = other_box.get_hole_contents(i);
             if ((!my_hole && pattern_hole) || (my_hole && !pattern_hole)) {
                 return false;
             }
@@ -166,9 +167,9 @@ window.TOONTALK.box = (function (TT) {
             return 'not matched';
         }
         for (i = 0; i < size; i++) {
-            pattern_hole = pattern_box.get_hole(i);
+            pattern_hole = pattern_box.get_hole_contents(i);
             if (pattern_hole) {
-                my_hole = this.get_hole(i);
+                my_hole = this.get_hole_contents(i);
                 if (!my_hole) {
                     // expected something -- not an empty hole
                     return 'not matched';
@@ -200,11 +201,7 @@ window.TOONTALK.box = (function (TT) {
         var extra_text = "box that looks like ";
         for (i = 0; i < size; i++) {
             hole = this.get_hole(i);
-            if (hole) {
-                contents += hole.get_full_description();
-            } else {
-                contents += "_";
-            }
+            contents += hole.get_full_description();
             if (i < size - 1) {
                 contents += " | ";
             }
@@ -222,8 +219,8 @@ window.TOONTALK.box = (function (TT) {
         var size = this.get_size();
         var i;
         for (i = 0; i < size; i++) {
-            if (this.get_hole(i)) {
-                contents_json[i] = TT.UTILITIES.get_json(this.get_hole(i), json_history);
+            if (this.get_hole_contents(i)) {
+                contents_json[i] = TT.UTILITIES.get_json(this.get_hole_contents(i), json_history);
             } else {
                 contents_json[i] = null;
             }
@@ -239,46 +236,18 @@ window.TOONTALK.box = (function (TT) {
         return box.create(json.size, json.horizontal, TT.UTILITIES.create_array_from_json(json.contents, additional_info), json.description);
     };
     
-//     box.to_HTML = function () {
-//         var horizontal = this.get_horizontal();
-//         var extra_classes = (horizontal ? 'horizontal' : 'vertical');
-//         var html = "<table class='toontalk-box toontalk-box-" + extra_classes + "'>";
-//         var size = this.get_size();
-//         var i;
-//         var percentage = size === 0 ? 1 : 100 / size;
-//         var horizontal_style = horizontal ? " style='width:" + percentage + "%;'" : "";
-//         var vertical_style =   horizontal ? "" : " style='height:" + percentage + "%;'";
-//         var erased = this.get_erased && this.get_erased();
-//         html += "<tr" + vertical_style + ">";
-//         for (i = 0; i < size; i++) {
-//             html += "<td class='toontalk-box-hole toontalk-box-hole-" + extra_classes + "'" + horizontal_style + ">";
-//             if (!erased) {
-//                 html += "<div class='toontalk-hole-about-to-be-replaced' />";
-//             }
-//             html += "</td>";
-//             if (!horizontal) {
-//                 html += "</tr>";
-//                 if (i+1 < size) {
-//                     html += "<tr" + vertical_style + ">";
-//                 }
-//             }
-//         }
-//         if (horizontal) {
-//             html += "</tr>";
-//         }
-//         html += "</table>";
-//         return html;
-//     };
-    
     box.update_display = function () {
         var frontside = this.get_frontside(true);
         var frontside_element = frontside.get_element();
         var size = this.get_size();
         var update_hole = function (hole_element, hole, index) {
-            var hole_frontside_element = hole.get_frontside_element();
-            var left, top;
+            var content_frontside_element = hole.get_frontside_element(true);
+            var left, top, content_frontside_element;
             if (horizontal) {
                 left = hole_width*index;
+                if (index > 1) {
+                    left += border_size*(index-1);
+                }
                 top = 0;
             } else {
                 left = 0;
@@ -287,24 +256,46 @@ window.TOONTALK.box = (function (TT) {
             $(hole_element).css({left:   left,
                                  top:    top,
                                  width:  hole_width,
-                                 height: hole_height});                                               
-            if (!TT.UTILITIES.has_animating_image(hole_frontside_element)) {
+                                 height: hole_height});
+            if (hole_element !== content_frontside_element) {
+                // not an empty hole
+                // save dimensions first?
+                $(content_frontside_element).css({left:  0,
+                                                  top:   0,
+                                                  width: '',
+                                                  height: ''});
+                hole_element.appendChild(content_frontside_element);
+            }                                          
+            if (!TT.UTILITIES.has_animating_image(content_frontside_element)) {
                 // explicit size interferes with animation
-                setTimeout(function () {
-                        // explicit size interferes with animation
-                        $(hole_frontside_element).css({width:  '100%',
-                                                       height: '100%'});             
-                    },
-                    1);
+                if (index > 0) {
+                    // first hole doesn't need a divider
+                    $(hole_element).removeClass("toontalk-box-eighth-size-border-left toontalk-box-quarter-size-border-left toontalk-box-half-size-border-left toontalk-box-full-size-border-left");
+                    $(hole_element).addClass(border_class + "-left");
+                }
+                hole_element.toontalk_border_size = border_size;
+//                 setTimeout(function () {
+//                         var border;
+//                         if (hole_element.childElementCount > 0) {
+//                             border = hole_element.toontalk_border_size+hole_element.toontalk_border_size;
+//                             $(hole_element).css({width:  hole_width-border,
+//                                                  height: hole_height-border});
+// //                         } else {
+// //                             // empty hole -- fill with darker pegs
+// //                             $(hole_frontside_element).css({width:  '100%',
+// //                                                            height: '100%'});                          
+//                         }         
+//                     },
+//                     1);
             }
             // following ensures that there is frontside_element of the hole
-            hole.render();
+//             hole.render();
         };
         var horizontal = this.get_horizontal();
         var additional_class = horizontal ? "toontalk-box-hole-horizontal" : "toontalk-box-hole-vertical";
         var wrong_class = horizontal ? "toontalk-box-hole-vertical" : "toontalk-box-hole-horizontal";
         var first_time = !$(frontside_element).is(".toontalk-box");
-        var i, hole, hole_element, box_left, box_width, hole_width, box_height, hole_height, content_frontside_element, renderer;
+        var i, hole, hole_element, box_left, box_width, hole_width, first_hole_width, box_height, hole_height, content_frontside_element, renderer, border_class, border_size;
         $(frontside_element).addClass("toontalk-box");
         box_width = $(frontside_element).width();
         box_height = $(frontside_element).height();
@@ -315,10 +306,31 @@ window.TOONTALK.box = (function (TT) {
             hole_width = box_width;
             hole_height = box_height/size;            
         }
+        if (hole_width <= 32 || hole_height <= 32) {
+            border_class = "toontalk-box-eighth-size-border";
+            border_size = 4;
+        } else if (hole_width <= 64 || hole_height <= 64) {
+            border_class = "toontalk-box-quarter-size-border";
+            border_size = 8;
+        } else if (hole_width <= 128 || hole_height <= 128) {
+            border_class = "toontalk-box-half-size-border";
+            border_size = 16;
+        } else {
+            border_class = "toontalk-box-full-size-border";
+            border_size = 32;
+        }
+        // recompute hole dimensions taking into account border width
+        if (horizontal) {
+            hole_width = (box_width-(size-1)*border_size)/size;
+        } else {
+            // TODO:             
+        }
+        $(frontside_element).removeClass("toontalk-box-eighth-size-border toontalk-box-quarter-size-border toontalk-box-half-size-border toontalk-box-full-size-border");
+        $(frontside_element).addClass(border_class);
+        frontside_element.toontalk_border_size = border_size;
         renderer = 
             function () {
                 var $box_hole_elements = $(frontside_element).children("." + additional_class);
-                var random_blue_color = "rgb(" + Math.round(Math.random()*128) + "," + Math.round(Math.random()*128) + ", 255)";
                 // if switching between horizontal and vertical need to remove the old elements
                 $(frontside_element).children("." + wrong_class).remove();
                 if ($box_hole_elements.length === size) {
@@ -326,32 +338,16 @@ window.TOONTALK.box = (function (TT) {
                         update_hole(hole_element, this.get_hole(index), index);
                     }.bind(this));
                 } else {
+                    // has wrong number of holes so rebuild it
                     $box_hole_elements.remove();
-                    for (i = 0; i < size; i++) {
-                        hole_element = document.createElement("div");
-                        $(hole_element).addClass("toontalk-box-hole toontalk-hole-number-" + i + " " + additional_class);
-                        hole = this.get_hole(i);
-                        if (!hole) {
-                            hole = TT.box_empty_hole.create(i);
-                            this.set_hole(i, hole);
-                        }
-                        update_hole(hole_element, hole, i);
-                        content_frontside_element = hole.get_frontside_element();
-                        $(content_frontside_element).addClass("toontalk-frontside-in-box");
-                        if (!TT.UTILITIES.has_animating_image(content_frontside_element)) {
-                            setTimeout(function () {
-                                    $(content_frontside_element).css({width:  '100%',
-                                                                      height: '100%'});                   
-                                },
-                                1);
-                        }
-                        hole_element.appendChild(content_frontside_element);
-                        frontside_element.appendChild(hole_element);
-                    };
-                    $box_hole_elements = $(frontside_element).children("." + additional_class);
-                }
-                // random shade of blue
-                $box_hole_elements.css({"background-color": random_blue_color});
+                    this.get_holes().forEach(function (hole, index) {
+                        hole_element = hole.get_element();
+                        $(hole_element).addClass("toontalk-box-hole toontalk-hole-number-" + index + " " + additional_class);
+                        update_hole(hole_element, hole, index);
+                        frontside_element.appendChild(hole_element);                       
+                    });
+                };
+                $box_hole_elements = $(frontside_element).children("." + additional_class);
             }.bind(this);
         if (first_time) {
             // do it now to create the elements
@@ -375,71 +371,15 @@ window.TOONTALK.box = (function (TT) {
         $hole_element.append(content_frontside_element);
         $(content_frontside_element).css({left: 0,
                                           top:  0});
-        $(content_frontside_element).addClass("toontalk-frontside-in-box");
+//         $(content_frontside_element).addClass("toontalk-frontside-in-box");
         new_content.rerender();
     };
     
-//     box.update_hole_display = function (index, old_hole_element) {
-//         var hole, box_frontside, size, hole_frontside, hole_frontside_element, box_frontside_element, $element_container;
-//         if (!this.visible()) {
-//             return;
-//         }
-//         hole = this.get_hole(index); // maybe should rename to to hole_contents or the like
-//         box_frontside = this.get_frontside();
-//         size = this.get_size();
-//         if (!hole) {
-//             hole = TT.box_empty_hole.create(index);
-//             this.set_hole(index, hole);
-//         }
-//         hole_frontside = hole.get_frontside(true);
-//         if (old_hole_element && old_hole_element.parentNode) {
-//             hole_frontside_element = hole_frontside.get_element();
-//             // use JQuery replaceWith instead?
-//             old_hole_element.parentNode.replaceChild(hole_frontside_element, old_hole_element);
-//             TT.UTILITIES.set_position_is_absolute(hole_frontside_element, false);
-//             $(hole_frontside_element).addClass("toontalk-frontside-in-box");
-//         } else {
-//             old_hole_element = hole_frontside.get_element();
-//             $element_container = $(box_frontside.get_element()).find(".toontalk-box-hole").eq(index);
-//             old_hole_element.width_before_in_box = $(old_hole_element).width();
-//             old_hole_element.height_before_in_box = $(old_hole_element).height();
-// //             if ($(old_hole_element).is(".toontalk-nest")) {
-// //                 // don't change the size of nests -- at least until it is clear how to scale them
-// //                 // a hack until a solution is found -- this changes the box size so nest fits
-// //                 setTimeout(function () {
-// //                     $(old_hole_element).css({width:  old_hole_element.width_before_in_box,
-// //                                              height: old_hole_element.height_before_in_box});              
-// //                 },
-// //                 100);
-// //             } else {
-//                 if (this.get_horizontal()) {
-//                     $(old_hole_element).css({width: 'auto',
-//                                              height: $element_container.height()});
-//                 } else {
-//                     $(old_hole_element).css({width: $element_container.width(),
-//                                              height: 'auto'});
-//                 }
-// //             }
-//             // following should be more general but couldn't get it to work well
-// //             TT.UTILITIES.scale_to_fit(old_hole_element, $element_container.get(0));
-//             hole.update_display();
-//             if ($element_container.children(".toontalk-empty-hole").length > 0) {
-//                 // if an empty hole was there then remove it (though could make it invisible instead so easier to restore)
-//                 $element_container.empty();
-//             }
-//             $element_container.append(old_hole_element);
-//             // since drag and drop is set up with absolute as the default
-//             // is this redundant now?
-//             TT.UTILITIES.set_position_is_absolute(old_hole_element, false);
-//             $(old_hole_element).addClass("toontalk-frontside-in-box");
-//         }
-// //         TT.DISPLAY_UPDATES.pending_update(hole_frontside);
-//         hole.rerender();
-//     };
-    
     box.empty_hole = function (index, update_display) {
-        // could restore the 'original' empty_hole rather than create a new one here
-        this.set_hole(index, TT.box_empty_hole.create(index), update_display);
+        holes[index].set_contents(undefined);
+        if (update_display) {
+            this.render();
+        }
     };
     
     box.drop_on = function (other, is_backside, event) {
@@ -464,44 +404,53 @@ window.TOONTALK.box = (function (TT) {
         return false;
     };
     
+    box.get_index_of = function (part) {
+        part.get_parent_of_frontside().widget.get_index();
+//         var size = this.get_size();
+//         var hole, i;
+//         // if this becomes a performance problem could use a map between parts and indices...
+//         for (i = 0; i < size; i++) {
+//             hole = this.get_hole(i);
+//             if (part === hole) {
+//                 return i;
+//             }
+//         }
+//         return -1;
+    };
+    
     box.removed_from_container = function (part, backside_removed, event) {
-        var size = this.get_size();
         var update_display = !!event;
+        var index = this.get_index_of(part);
         var hole;
-        var i, part_frontside_element;
-        // if this becomes a performance problem could use a map between parts and indices...
-        for (i = 0; i < size; i++) {
-            hole = this.get_hole(i);
-            if (part === hole) {
-                this.empty_hole(i, update_display);
-                if (update_display) {
-                    this.rerender();
-                    part_frontside_element = part.get_frontside_element();
-                    $(part_frontside_element).removeClass("toontalk-frontside-in-box");
-                    if (part.saved_width) {
-                        // without this timeout the resizing doesn't apply
-                        // not sure why
-                        setTimeout(function () {
-                            $(part_frontside_element).css({width:  part.saved_width,
-                                                           height: part.saved_height});
-                            part.saved_width =  undefined;
-                            part.saved_height = undefined;
-                            part.rerender();
-                        },
-                        10);
-                    }
+        var part_frontside_element;
+        if (index >= 0) {
+            this.empty_hole(index, update_display);
+            if (update_display) {
+                this.rerender();
+                part_frontside_element = part.get_frontside_element();
+                if (part.saved_width) {
+                    // without this timeout the resizing doesn't apply
+                    // not sure why
+                    setTimeout(function () {
+                        $(part_frontside_element).css({width:  part.saved_width,
+                                                       height: part.saved_height});
+                        part.saved_width =  undefined;
+                        part.saved_height = undefined;
+                        part.rerender();
+                    },
+                    10);
                 }
-                return this;
             }
+        } else {
+            console.log("Attempted to remove " + part + " from " + this + " but not found.");
         }
-        console.log("Attempted to remove " + part + " from " + this + " but not found.");
     };
     
     box.get_path_to = function (widget, robot) {
         var size = this.get_size();
         var i, part, path, sub_path;
         for (i = 0; i < size; i++) {
-            part = this.get_hole(i);
+            part = this.get_hole_contents(i);
             if (widget === part || (part.top_contents_is && part.top_contents_is(widget))) {
                 return TT.box.path.create(i);
             } else if (part.get_path_to) {
@@ -523,7 +472,7 @@ window.TOONTALK.box = (function (TT) {
         if (path) {
             index = path.get_index && path.get_index();
             if (typeof index === 'number') {
-                hole = this.get_hole(index);
+                hole = this.get_hole_contents(index);
                 if (hole) {
                     if (hole.dereference_contents && !path.not_to_be_dereferenced) {
                         // this will dereference the top of a nest instead of the nest itself
@@ -637,15 +586,15 @@ window.TOONTALK.box_backside =
         }};
 }(window.TOONTALK));
 
+// a hole is either empty or contains a widget
 window.TOONTALK.box_empty_hole = 
 (function (TT) {
     "use strict";
     return {
         create: function (index) {
-            // this should share more code with widget (e.g. done below with widget.has_parent)
-            // box and parent should be same now -- simplify
+            // perhaps this should share more code with widget (e.g. done below with widget.has_parent)
             var empty_hole = Object.create(this);
-            var hole_element;
+            var contents, hole_element;
             empty_hole.get_element = function () {
                 if (!hole_element) {
                     hole_element = document.createElement("div");
@@ -654,14 +603,22 @@ window.TOONTALK.box_empty_hole =
                 }
                 return hole_element;
             };
-            empty_hole.get_frontside = function () {
+            empty_hole.get_frontside = function (create) {
+                if (contents) {
+                    return contents.get_frontside(create);
+                }
                 return this.get_element();
             };
             empty_hole.get_side_element = function () {
                 return this.get_element();
             };
             // there is no backside of an empty hole
-            empty_hole.get_frontside_element = empty_hole.get_side_element;
+            empty_hole.get_frontside_element = function (update) {
+                if (contents) {
+                    return contents.get_frontside_element(update);
+                }
+                return this.get_element();
+            };
             empty_hole.update_display = function () {
                 // following no longer needed
                 // should be nothing to do
@@ -685,14 +642,14 @@ window.TOONTALK.box_empty_hole =
 //                  parent_of_frontside.widget.removed_from_container(dropped);
 //              }
                 if (TT.robot.in_training) {
-                    TT.robot.in_training.dropped_on(dropped, empty_hole);
+                    TT.robot.in_training.dropped_on(dropped, this);
                 }
-                box.set_hole(index, dropped, true);
-                dropped.set_parent_of_frontside(box, false);
+                this.set_contents(dropped);
                 if (dropped.dropped_on_other) {
                     // e.g. so egg can hatch from nest drop
                     dropped.dropped_on_other(this, false, event, robot);
                 }
+                box.render();
                 return true;
             };
             empty_hole.get_json = function () {
@@ -703,6 +660,7 @@ window.TOONTALK.box_empty_hole =
                 return json;
             };
             empty_hole.copy = function (just_value) {
+                // is this obsolete???
                 return TT.box_empty_hole.create(index);
             };
             empty_hole.match = function () {
@@ -711,33 +669,71 @@ window.TOONTALK.box_empty_hole =
             empty_hole.get_type_name = function () {
                 return "empty hole";
             };
-            empty_hole.visible = function () {
-                return this.get_parent_of_frontside().widget.visible(); // you can't see it but if box is visible then it is 
+            empty_hole.get_index = function () {
+                return index;
             };
-            empty_hole.render = function () {
-                // nothing to do
+            empty_hole.get_contents = function () {
+                return contents;
             };
-            empty_hole.rerender = function () {
-                var box = this.get_parent_of_frontside().widget;
-                if (box.get_hole(index) !== this) {
-                    box.rerender();
+            empty_hole.set_contents = function (new_value) {
+                if (contents) {
+                    contents.set_parent_of_frontside(undefined);
+                }
+                contents = new_value;
+                if (contents) {
+                    contents.set_parent_of_frontside(this);
                 }
             };
-            
+            empty_hole.visible = function () {
+                // why isn't this just is frontside_element visible?
+                // you can't see it but if box is visible then it is
+                return this.get_parent_of_frontside().widget.visible(); 
+            };
+            empty_hole.render = function () {
+                if (contents) {
+                    return contents.render();
+                }
+                // otherwise nothing to do
+            };
+            empty_hole.rerender = function () {
+                if (contents) {
+                    return contents.rerender();
+                }
+                // otherwise nothing to do
+            };
+            empty_hole.removed_from_container = function (part, backside_removed, event) {
+                if (contents) {
+                    contents = undefined;
+                    if (event) {
+                        this.get_parent_of_frontside().widget.render();
+                    }
+                } else {
+                    console.log("Holes can't be removed from containers.");
+                }
+            };
+            empty_hole.toString = function () {
+                if (contents) {
+                    return contents.toString();
+                }
+                return "_";
+            };
+            empty_hole.get_description = function () {
+                if (contents) {
+                    return contents.get_description();
+                }
+                return "_";
+            };
+            empty_hole.get_full_description = function () {
+                if (contents) {
+                    return contents.get_full_description();
+                }
+                return "_";
+            };
             if (TT.debugging) {
                 empty_hole.debug_string = "An empty hole";
             }
             TT.widget.has_parent(empty_hole);
             return empty_hole;
-        },
-        toString: function () {
-            return "_";
-        },
-        get_description: function () {
-            return "_";
-        },
-        get_full_description: function () {
-            return "_";
         }
     };
     
