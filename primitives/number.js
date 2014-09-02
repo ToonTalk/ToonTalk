@@ -265,7 +265,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             $(frontside_element).addClass("toontalk-number-full-size-border");
             frontside_element.toontalk_border_size = 32;
         }
-        font_height = client_height * 0.8;
+        font_height = (client_height-frontside_element.toontalk_border_size*2); // * 0.8;
 //      font_size = TT.UTILITIES.get_style_numeric_property(frontside, "font-size");
         // according to http://www.webspaceworks.com/resources/fonts-web-typography/43/
         // the aspect ratio of monospace fonts varies from .43 to .55
@@ -330,7 +330,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             }
             return '<div class="toontalk-number toontalk-integer' + extra_class + '" style="font-size: ' + font_size + 'px;">' + operator_HTML + fit_string_to_length(integer_as_string, max_characters) + '</div>';
         }
-        table_style = ' style="font-size:' + (font_size * 0.5) + 'px;"';
+        table_style = ' style="font-size:' + (font_size * 0.33) + 'px;"';
         if (format === 'improper_fraction' || !format) { // default format
             // double the max_characters since the font size is halved
             improper_fraction_HTML = 

@@ -154,7 +154,7 @@ window.TOONTALK.bird = (function (TT) {
                 $(".toontalk-top-level-backside").append(bird_frontside_element);
                 this.update_display();
             }
-            $(bird_frontside_element).removeClass("toontalk-frontside-in-box");
+//             $(bird_frontside_element).removeClass("toontalk-frontside-in-box");
             $top_level_backside_element.append(bird_frontside_element); // while flying            
             $(bird_frontside_element).css({left: starting_left || bird_offset.left-top_level_backside_element_offset.left,
                                            top:  starting_top  || bird_offset.top-top_level_backside_element_offset.top,
