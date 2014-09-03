@@ -50,13 +50,13 @@ window.TOONTALK.box = (function (TT) {
             return holes;
         };
         new_box.temporarily_remove_contents = function (widget, update_display) {
-            // e.g. when a bird flies off to deliver something and will return
+            // e.g. when a bird flies off to deliver something and will return 
             var index = this.get_index_of(widget);
             if (index < 0) {
                 console.log("Unable to find " + widget + " in " + this);
                 return;
             }
-            this.empty_hole(index, update_display);
+            this.set_hole(index, undefined, update_display);
             // returns a function to restore the contents
             return function () {
                 this.set_hole(index, widget, update_display); 
@@ -355,22 +355,18 @@ window.TOONTALK.box = (function (TT) {
     box.update_hole_display = function (index, new_content) {
         var frontside_element = this.get_frontside_element();
         var $hole_element = $(frontside_element).children(".toontalk-hole-number-" + index);
-        var content_frontside_element = new_content.get_frontside_element(true);
+        var content_frontside_element;
+        $hole_element.empty();
+        if (!new_content) {
+            return;
+        }
+        content_frontside_element = new_content.get_frontside_element(true);
         new_content.saved_width =  $(content_frontside_element).width();
         new_content.saved_height = $(content_frontside_element).height();
-        $hole_element.empty();
         $hole_element.append(content_frontside_element);
         $(content_frontside_element).css({left: 0,
                                           top:  0});
-//         $(content_frontside_element).addClass("toontalk-frontside-in-box");
         new_content.rerender();
-    };
-    
-    box.empty_hole = function (index, update_display) {
-        holes[index].set_contents(undefined);
-        if (update_display) {
-            this.render();
-        }
     };
     
     box.drop_on = function (other, is_backside, event) {
@@ -396,17 +392,7 @@ window.TOONTALK.box = (function (TT) {
     };
     
     box.get_index_of = function (part) {
-        part.get_parent_of_frontside().widget.get_index();
-//         var size = this.get_size();
-//         var hole, i;
-//         // if this becomes a performance problem could use a map between parts and indices...
-//         for (i = 0; i < size; i++) {
-//             hole = this.get_hole(i);
-//             if (part === hole) {
-//                 return i;
-//             }
-//         }
-//         return -1;
+        return part.get_parent_of_frontside().widget.get_index();
     };
     
     box.removed_from_container = function (part, backside_removed, event) {
@@ -415,7 +401,7 @@ window.TOONTALK.box = (function (TT) {
         var hole;
         var part_frontside_element;
         if (index >= 0) {
-            this.empty_hole(index, update_display);
+            this.set_hole(index, undefined, update_display);
             if (update_display) {
                 this.rerender();
                 part_frontside_element = part.get_frontside_element();
@@ -700,6 +686,12 @@ window.TOONTALK.box_empty_hole =
                     }
                 } else {
                     console.log("Holes can't be removed from containers.");
+                }
+            };
+            empty_hole.temporarily_remove_contents = function (widget, update_display) {
+                if (contents) {
+                    // box should handle this
+                    return this.get_parent_of_frontside().widget.temporarily_remove_contents(widget, update_display);
                 }
             };
             empty_hole.toString = function () {
