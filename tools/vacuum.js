@@ -66,9 +66,10 @@ window.TOONTALK.vacuum = (function (TT) {
                     var frontside_element = widget.get_frontside_element();
                     var erased = !widget.get_erased();
                     widget.set_erased(erased, true);
-                    if (erased) {
-                        removed_items.push({erased_widget: widget});
-                    }
+                    // since 'erase' mode toggles whether it is erased no need for 'restore' to deal with unerasing
+//                     if (erased) {
+//                         removed_items.push({erased_widget: widget});
+//                     }
                     if (TT.robot.in_training) {
                         TT.robot.in_training.set_erased(widget, erased);
                     }
@@ -77,12 +78,12 @@ window.TOONTALK.vacuum = (function (TT) {
                 // doesn't matter what the widget it
                 if (removed_items.length > 0) {
                     restoring = removed_items.pop();
-                    if (restoring.erased_widget) {
-                        restoring.erased_widget.set_erased(false, true);
-                        if (TT.robot.in_training) {
-                            TT.robot.in_training.set_erased(restoring.erased_widget, false);
-                        }
-                    } else {
+//                     if (restoring.erased_widget) {
+//                         restoring.erased_widget.set_erased(false, true);
+//                         if (TT.robot.in_training) {
+//                             TT.robot.in_training.set_erased(restoring.erased_widget, false);
+//                         }
+//                     } else {
                         top_level_widget = TT.widget.top_level_widget();
                         top_level_widget.add_backside_widget(restoring);
                         $(".toontalk-top-level-backside").append(restoring.get_frontside_element());
@@ -90,7 +91,7 @@ window.TOONTALK.vacuum = (function (TT) {
                         if (TT.robot.in_training) {
                             TT.robot.in_training.dropped_on(restoring, top_level_widget);
                         }
-                    }
+//                     }
                 }
             }
         },
