@@ -361,8 +361,8 @@ window.TOONTALK.box = (function (TT) {
             return;
         }
         content_frontside_element = new_content.get_frontside_element(true);
-        new_content.saved_width =  $(content_frontside_element).width();
-        new_content.saved_height = $(content_frontside_element).height();
+//         new_content.saved_width =  $(content_frontside_element).width();
+//         new_content.saved_height = $(content_frontside_element).height();
         $hole_element.append(content_frontside_element);
         $(content_frontside_element).css({left: 0,
                                           top:  0});
@@ -404,19 +404,20 @@ window.TOONTALK.box = (function (TT) {
             this.set_hole(index, undefined, update_display);
             if (update_display) {
                 this.rerender();
-                part_frontside_element = part.get_frontside_element();
-                if (part.saved_width) {
-                    // without this timeout the resizing doesn't apply
-                    // not sure why
-                    setTimeout(function () {
-                        $(part_frontside_element).css({width:  part.saved_width,
-                                                       height: part.saved_height});
-                        part.saved_width =  undefined;
-                        part.saved_height = undefined;
-                        part.rerender();
-                    },
-                    10);
-                }
+                part.restore_dimensions();
+//                 part_frontside_element = part.get_frontside_element();
+//                 if (part.saved_width) {
+//                     // without this timeout the resizing doesn't apply
+//                     // not sure why
+//                     setTimeout(function () {
+//                         $(part_frontside_element).css({width:  part.saved_width,
+//                                                        height: part.saved_height});
+//                         part.saved_width =  undefined;
+//                         part.saved_height = undefined;
+//                         part.rerender();
+//                     },
+//                     10);
+//                 }
             }
         } else {
             console.log("Attempted to remove " + part + " from " + this + " but not found.");
@@ -620,6 +621,9 @@ window.TOONTALK.box_empty_hole =
 //              }
                 if (TT.robot.in_training) {
                     TT.robot.in_training.dropped_on(dropped, this);
+                }
+                if (event && dropped.save_dimensions) { // and maybe watched robot too?
+                    dropped.save_dimensions();
                 }
                 this.set_contents(dropped);
                 if (dropped.dropped_on_other) {

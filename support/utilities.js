@@ -875,6 +875,9 @@ window.TOONTALK.UTILITIES =
                                         container.remove_backside_widget(source_widget, source_is_backside);
                                     } else {
                                         container.removed_from_container(source_widget, source_is_backside, event);
+                                        if (source_widget.restore_dimensions) {
+                                            source_widget.restore_dimensions();
+                                        }
                                     }
                                 }
                             } else {

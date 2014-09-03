@@ -48,10 +48,24 @@ window.TOONTALK.widget = (function (TT) {
             if (!widget.get_frontside) {
                 widget.get_frontside = function (create) {
                     if (create && !frontside) {
-                        // all frontsides are the same
                         frontside = TT.frontside.create(widget);
                     }
                     return frontside;
+               };
+               widget.save_dimensions = function () {
+                       var frontside_element = this.get_frontside_element();
+                       this.saved_width =  $(frontside_element).width();
+                       this.saved_height = $(frontside_element).height();
+               };
+               widget.restore_dimensions = function () {
+                      var frontside_element;
+                      if (this.saved_width > 0) {
+                          frontside_element = this.get_frontside_element();
+                          $(frontside_element).css({width:  this.saved_width,
+                                                    height: this.saved_height});
+                          this.saved_width =  undefined;
+                          this.saved_height = undefined;
+                      }
                };
             }
             if (!widget.get_backside) {
@@ -446,8 +460,7 @@ window.TOONTALK.widget = (function (TT) {
                 if (!json_view.backside_geometry && this.backside_geometry) {
                     // backside is closed but this was saved when it was hidden
                     json_view.backside_geometry = this.backside_geometry;
-                }
-                
+                } 
                 // following are typically undefined unless in a container
                 json_view.saved_width = this.saved_width;
                 json_view.saved_height = this.saved_height;
