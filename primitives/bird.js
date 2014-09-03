@@ -756,7 +756,7 @@ window.TOONTALK.nest = (function (TT) {
                 frontside_element.appendChild(contents_side_element);
                 $(frontside_element).addClass("toontalk-empty-nest");
                 if (contents[0].is_backside) {
-                    contents[0].widget.set_parent_of_bacside(this);
+                    contents[0].widget.set_parent_of_backside(this);
                 } else {
                     contents[0].widget.set_parent_of_frontside(this);
                 }
