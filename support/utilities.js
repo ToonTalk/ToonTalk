@@ -1533,13 +1533,15 @@ window.TOONTALK.UTILITIES =
 
         add_to_top_level_backside: function (widget, train) {
             var top_level_widget = TT.widget.top_level_widget();
+            var widget_frontside_element = widget.get_frontside_element(true);
             top_level_widget.add_backside_widget(widget);
-            $(".toontalk-top-level-backside").append(widget.get_frontside_element());
+            $(".toontalk-top-level-backside").append(widget_frontside_element);
             widget.render();
 //          widget.update_display();
             if (train && TT.robot.in_training) {
                 TT.robot.in_training.dropped_on(widget, top_level_widget);
             }
+            return widget_frontside_element;
         }
         
 //         create_menu_item: function (text) {

@@ -52,7 +52,7 @@ window.TOONTALK.vacuum = (function (TT) {
 
     var instance = {
         apply_tool: function (widget, event) {
-            var restoring, top_level_widget;
+            var restoring, initial_location, restored_front_side_element;
             if (mode === 'suck') {
                 if (widget.remove && widget.get_type_name() !== 'top-level') {
                     if (TT.robot.in_training) {
@@ -74,7 +74,10 @@ window.TOONTALK.vacuum = (function (TT) {
                 // doesn't matter what the widget it
                 if (removed_items.length > 0) {
                     restoring = removed_items.pop();
-                    TT.UTILITIES.add_to_top_level_backside(restoring, true);
+                    restored_front_side_element = TT.UTILITIES.add_to_top_level_backside(restoring, true);
+                    initial_location = $(element).offset();
+                    initial_location.left -= $(restored_front_side_element).width(); // left of vacuum
+                    TT.UTILITIES.set_absolute_position($(restored_front_side_element), initial_location);
                 }
             }
         },
