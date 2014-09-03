@@ -682,7 +682,10 @@ window.TOONTALK.nest = (function (TT) {
                                         robot.wait_before_next_step = false;
                                         this.caused_robot_to_wait_before_next_step = false;
                                     }
-                                }
+                                    // following ensures it listens to drag over events to change CSS class
+                                    // perhaps there is a better way
+                                    bird.update_display();
+                                };
                                 TT.UTILITIES.add_one_shot_event_handler(frontside_element, "animationend", 1000, fly_down_finished_handler);
                             }.bind(this),
                             1);
