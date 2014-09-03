@@ -522,17 +522,17 @@ window.TOONTALK.nest = (function (TT) {
             }
         };
         new_nest.removed_from_container = function (part, backside_removed, event) {
-            var removed = contents.splice(0,1);
+            var removed = contents.shift();
             if (this.visible()) {
-                if (removed[0]) {
-                    $(TT.UTILITIES.get_side_element_from_side(removed[0])).css({width:  removed[0].saved_width,
-                                                                                height: removed[0].saved_height});
-                    removed[0].saved_width =  undefined;
-                    removed[0].saved_height = undefined;
-                    if (removed[0].is_backside) {
-                        removed[0].widget.set_parent_of_backside(undefined);
+                if (removed) {
+                    $(TT.UTILITIES.get_side_element_from_side(removed)).css({width:  removed.saved_width,
+                                                                             height: removed.saved_height});
+                    removed.saved_width =  undefined;
+                    removed.saved_height = undefined;
+                    if (removed.is_backside) {
+                        removed.widget.set_parent_of_backside(undefined);
                     } else {
-                        removed[0].widget.set_parent_of_frontside(undefined);
+                        removed.widget.set_parent_of_frontside(undefined);
                     }
                 } else {
                     console.log("Nothing removed from nest!");
@@ -542,7 +542,7 @@ window.TOONTALK.nest = (function (TT) {
                 }
                 this.render();
             }
-            return removed[0];
+            return removed;
         };
         new_nest.dereference_contents = function (path_to_nest, top_level_context, robot) {
             var widget, nest_offset, $top_level_backside_element, top_level_backside_element_offset, 
