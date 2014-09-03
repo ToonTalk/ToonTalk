@@ -159,9 +159,6 @@
 .toontalk-box-hole {
 	position: absolute;
 }
-.toontalk-box-hole-horizontal {
-	min-height: 100%;
-}
 .toontalk-box-full-size-border {
     border: 32px solid transparent;
     -moz-border-image: url("images/box-border.png") 32 32 round repeat;
@@ -218,12 +215,33 @@
     -o-border-image: url("images/box-border-eighth-size.png") 4 4 round repeat;
     border-image: url("images/box-border-eighth-size.png") 4 4 round repeat;
 }
-.toontalk-box-hole-vertical {
-	background-color: rgb(137, 15, 239);
-	padding-left: 4%;
-    padding-right: 4%; 
-    padding-top: 0%; 
-    padding-bottom: 4%;
+.toontalk-box-full-size-border-top {
+    border-top: 32px solid transparent;
+    -moz-border-image: url("images/box-border.png") 32 32 round repeat;
+	-webkit-border-image: url("images/box-border.png") 32 32 round repeat;
+    -o-border-image: url("images/box-border.png") 32 32 round repeat;
+    border-image: url("images/box-border.png") 32 32 round repeat;
+}
+.toontalk-box-half-size-border-top {
+	border-top: 16px solid transparent;
+    -moz-border-image: url("images/box-border-half-size.png") 16 16 round repeat;
+	-webkit-border-image: url("images/box-border-half-size.png") 16 16 round repeat;
+    -o-border-image: url("images/box-border-half-size.png") 16 16 round repeat;
+    border-image: url("images/box-border-half-size.png") 16 16 round repeat;
+}
+.toontalk-box-quarter-size-border-top {
+	border-top: 8px solid transparent;
+    -moz-border-image: url("images/box-border-quarter-size.png") 8 8 round repeat;
+	-webkit-border-image: url("images/box-border-quarter-size.png") 8 8 round repeat;
+    -o-border-image: url("images/box-border-quarter-size.png") 8 8 round repeat;
+    border-image: url("images/box-border-quarter-size.png") 8 8 round repeat;
+}
+.toontalk-box-eighth-size-border-top {
+	border-top: 4px solid transparent;
+    -moz-border-image: url("images/box-border-eighth-size.png") 4 4 round repeat;
+	-webkit-border-image: url("images/box-border-eighth-size.png") 4 4 round repeat;
+    -o-border-image: url("images/box-border-eighth-size.png") 4 4 round repeat;
+    border-image: url("images/box-border-eighth-size.png") 4 4 round repeat;
 }
 .toontalk-empty-hole {
 	width:  100%;
