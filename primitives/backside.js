@@ -591,6 +591,7 @@ window.TOONTALK.backside =
                 $create_sensor_button.click(function (event) {
                         var sensor = TT.sensor.create('click', 'which', undefined, undefined, true, widget);
                         settings.appendChild(sensor.get_frontside_element(true));
+                        widget.add_backside_widget(sensor);
                 });
                 $create_sensor_button.attr('title', "Click to create a nest which receives messages when events happen to this " + widget.get_type_name() + ".");
                 if (extra_settings_generator) {

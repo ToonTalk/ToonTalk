@@ -762,12 +762,12 @@ window.TOONTALK.UTILITIES =
                     var $source, source_widget, $target, target_widget, drag_x_offset, drag_y_offset, target_position, 
                         new_target, source_is_backside, $container, container, width, height, i;
                     var json_object = TT.UTILITIES.data_transfer_json_object(event);
-                    // should this set the dropEffect? https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer#dropEffect.28.29 
+                    // should this set the dropEffect? 
+                    // https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer#dropEffect.28.29 
                     // prevent default first so if there is an exception the default behaviour for some drags of going to a new page is prevented
                     event.preventDefault();
                     // restore events to decendants
                     $element.find("*").removeClass("toontalk-ignore-events");
-//                     console.log("drop. dragee is " + dragee);
                     $source = dragee;
                     drag_ended();
                     if (!$source && !json_object && !event.originalEvent.dataTransfer.files) {
@@ -842,7 +842,7 @@ window.TOONTALK.UTILITIES =
                             // just moved it a little bit
                             // only called now that elementFromPoint is used to find another target when dropped on part of itself
                             $source.css({left: $source.get(0).offsetLeft + (event.originalEvent.layerX - drag_x_offset),
-                                          top: $source.get(0).offsetTop + (event.originalEvent.layerY - drag_y_offset)});
+                                          top: $source.get(0).offsetTop  + (event.originalEvent.layerY - drag_y_offset)});
                             event.stopPropagation();
                             return;
                         }
