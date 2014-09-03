@@ -274,29 +274,46 @@ window.TOONTALK.box = (function (TT) {
                     $(hole_element).addClass(border_class + "-left");
                 }
                 hole_element.toontalk_border_size = border_size;
-//                 setTimeout(function () {
-//                         var border;
-//                         if (hole_element.childElementCount > 0) {
-//                             border = hole_element.toontalk_border_size+hole_element.toontalk_border_size;
-//                             $(hole_element).css({width:  hole_width-border,
-//                                                  height: hole_height-border});
-// //                         } else {
-// //                             // empty hole -- fill with darker pegs
-// //                             $(hole_frontside_element).css({width:  '100%',
-// //                                                            height: '100%'});                          
-//                         }         
-//                     },
-//                     1);
             }
-            // following ensures that there is frontside_element of the hole
-//             hole.render();
         };
         var horizontal = this.get_horizontal();
         var additional_class = horizontal ? "toontalk-box-hole-horizontal" : "toontalk-box-hole-vertical";
         var wrong_class = horizontal ? "toontalk-box-hole-vertical" : "toontalk-box-hole-horizontal";
         var first_time = !$(frontside_element).is(".toontalk-box");
-        var i, hole, hole_element, box_left, box_width, hole_width, first_hole_width, box_height, hole_height, content_frontside_element, renderer, border_class, border_size;
+        var renderer = 
+            function () {
+                var $box_hole_elements = $(frontside_element).children("." + additional_class);
+                // if switching between horizontal and vertical need to remove the old elements
+                $(frontside_element).children("." + wrong_class).remove();
+                if ($box_hole_elements.length === size) {
+                    $box_hole_elements.each(function (index, hole_element) {
+                        update_hole(hole_element, this.get_hole(index), index);
+                    }.bind(this));
+                } else {
+                    // has wrong number of holes so rebuild it
+                    $box_hole_elements.remove();
+                    this.get_holes().forEach(function (hole, index) {
+                        hole_element = hole.get_element();
+                        $(hole_element).addClass("toontalk-box-hole toontalk-hole-number-" + index + " " + additional_class);
+                        update_hole(hole_element, hole, index);
+                        frontside_element.appendChild(hole_element);                       
+                    });
+                };
+                $box_hole_elements = $(frontside_element).children("." + additional_class);
+            }.bind(this);
+        var i, hole, hole_element, box_left, box_width, hole_width, first_hole_width, box_height, hole_height, content_frontside_element, border_class, border_size;
         $(frontside_element).addClass("toontalk-box");
+        $(frontside_element).removeClass("toontalk-box-eighth-size-border toontalk-box-quarter-size-border toontalk-box-half-size-border toontalk-box-full-size-border");
+        frontside_element.title = this.get_title();
+        if (TT.debugging) {
+            this.debug_string = this.toString();
+        }
+        if (this.get_erased()) {
+            $(frontside_element).addClass("toontalk-box-erased")
+                                .empty();
+            return;
+        }
+        $(frontside_element).removeClass("toontalk-box-erased");
         box_width = $(frontside_element).width();
         box_height = $(frontside_element).height();
         if (horizontal) {
@@ -325,40 +342,10 @@ window.TOONTALK.box = (function (TT) {
         } else {
             // TODO:             
         }
-        $(frontside_element).removeClass("toontalk-box-eighth-size-border toontalk-box-quarter-size-border toontalk-box-half-size-border toontalk-box-full-size-border");
         $(frontside_element).addClass(border_class);
         frontside_element.toontalk_border_size = border_size;
-        renderer = 
-            function () {
-                var $box_hole_elements = $(frontside_element).children("." + additional_class);
-                // if switching between horizontal and vertical need to remove the old elements
-                $(frontside_element).children("." + wrong_class).remove();
-                if ($box_hole_elements.length === size) {
-                    $box_hole_elements.each(function (index, hole_element) {
-                        update_hole(hole_element, this.get_hole(index), index);
-                    }.bind(this));
-                } else {
-                    // has wrong number of holes so rebuild it
-                    $box_hole_elements.remove();
-                    this.get_holes().forEach(function (hole, index) {
-                        hole_element = hole.get_element();
-                        $(hole_element).addClass("toontalk-box-hole toontalk-hole-number-" + index + " " + additional_class);
-                        update_hole(hole_element, hole, index);
-                        frontside_element.appendChild(hole_element);                       
-                    });
-                };
-                $box_hole_elements = $(frontside_element).children("." + additional_class);
-            }.bind(this);
-        if (first_time) {
-            // do it now to create the elements
-            renderer();
-        }
         // delay it until browser has rendered current elements
         setTimeout(renderer, 1);
-        frontside_element.title = this.get_title();
-        if (TT.debugging) {
-            this.debug_string = this.toString();
-        }
     };
     
     box.update_hole_display = function (index, new_content) {
