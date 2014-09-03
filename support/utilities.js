@@ -476,7 +476,7 @@ window.TOONTALK.UTILITIES =
                     // get the JSON of only those widgets that occurred more than once
                     var get_json_of_widget_from_history = function (widget) {
                         var index_among_all_widgets = json_history.widgets_encountered.indexOf(widget);
-                         return json_history.json_of_widgets_encountered[index_among_all_widgets];
+                        return json_history.json_of_widgets_encountered[index_among_all_widgets];
                     };
                     var get_json_of_widget_from_shared_widget_index = function (index) {
                         return get_json_of_widget_from_history(json_history.shared_widgets[index]);
@@ -519,7 +519,7 @@ window.TOONTALK.UTILITIES =
         },
         
         tree_replace_once: function (object, replace, replacement, get_json_of_widget_from_shared_widget_index) {
-            // returns object with the first occurence of replace replaced with replacement
+            // replaces object's first occurence of replace with replacement
             // whereever it occurs in object
             var value;
             for (var property in object) {
@@ -532,7 +532,7 @@ window.TOONTALK.UTILITIES =
                         if (this.tree_replace_once(get_json_of_widget_from_shared_widget_index(value), replace, replacement, get_json_of_widget_from_shared_widget_index)) {
                             return true;
                         }
-                    } else if (["string", "number", "function"].indexOf(typeof value) >= 0) {
+                    } else if (["string", "number", "function", "undefined"].indexOf(typeof value) >= 0) {
                         // skip atomic objects
                     } else if (this.tree_replace_once(value, replace, replacement, get_json_of_widget_from_shared_widget_index)) {
                         return true;
@@ -1529,6 +1529,17 @@ window.TOONTALK.UTILITIES =
 
         display_message: function (message) {
             alert(message); // for now
+        },
+
+        add_to_top_level_backside: function (widget, train) {
+            var top_level_widget = TT.widget.top_level_widget();
+            top_level_widget.add_backside_widget(widget);
+            $(".toontalk-top-level-backside").append(widget.get_frontside_element());
+            widget.render();
+//          widget.update_display();
+            if (train && TT.robot.in_training) {
+                TT.robot.in_training.dropped_on(widget, top_level_widget);
+            }
         }
         
 //         create_menu_item: function (text) {

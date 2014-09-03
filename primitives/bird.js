@@ -153,9 +153,7 @@ window.TOONTALK.bird = (function (TT) {
                 restore_contents = parent.widget.temporarily_remove_contents(this, true);
                 if (restore_contents) {
                     // if it really did remove the contents
-                    TT.widget.top_level_widget().add_backside_widget(this);
-                    $(".toontalk-top-level-backside").append(bird_frontside_element);
-                    this.update_display();
+                    TT.UTILITIES.add_to_top_level_backside(this);
                 }
             }
             $top_level_backside_element.append(bird_frontside_element); // while flying            
