@@ -590,7 +590,11 @@ window.TOONTALK.backside =
                 description_text_area.button.addEventListener('mouseout', description_change);
                 $create_sensor_button.click(function (event) {
                         var sensor = TT.sensor.create('click', 'which', undefined, undefined, true, widget);
-                        settings.appendChild(sensor.get_frontside_element(true));
+                        var sensor_frontside_element = sensor.get_frontside_element(true);
+                        var initial_location = $create_sensor_button.offset();
+                        TT.UTILITIES.add_to_top_level_backside(sensor, true);
+                        initial_location.left -= 120; // to the left of the button
+                        TT.UTILITIES.set_absolute_position($(sensor_frontside_element), initial_location);
                 });
                 $create_sensor_button.attr('title', "Click to create a nest which receives messages when events happen to this " + widget.get_type_name() + ".");
                 if (extra_settings_generator) {

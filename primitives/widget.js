@@ -48,10 +48,24 @@ window.TOONTALK.widget = (function (TT) {
             if (!widget.get_frontside) {
                 widget.get_frontside = function (create) {
                     if (create && !frontside) {
-                        // all frontsides are the same
                         frontside = TT.frontside.create(widget);
                     }
                     return frontside;
+               };
+               widget.save_dimensions = function () {
+                       var frontside_element = this.get_frontside_element();
+                       this.saved_width =  $(frontside_element).width();
+                       this.saved_height = $(frontside_element).height();
+               };
+               widget.restore_dimensions = function () {
+                      var frontside_element;
+                      if (this.saved_width > 0) {
+                          frontside_element = this.get_frontside_element();
+                          $(frontside_element).css({width:  this.saved_width,
+                                                    height: this.saved_height});
+                          this.saved_width =  undefined;
+                          this.saved_height = undefined;
+                      }
                };
             }
             if (!widget.get_backside) {
@@ -293,6 +307,15 @@ window.TOONTALK.widget = (function (TT) {
                 }
                 return false;
             };
+            widget.remove_from_parent_of_frontside = function (event) {
+                 if (parent_of_frontside) {
+                     if (parent_of_frontside.is_backside) {
+                         parent_of_frontside.widget.remove_backside_widget(this, false);
+                     } else if (parent_of_frontside.widget.removed_from_container) {
+                         parent_of_frontside.widget.removed_from_container(this, false, event);
+                     }
+                 }
+            }
             return widget;
         },
         
@@ -345,17 +368,13 @@ window.TOONTALK.widget = (function (TT) {
             if (backside) {
                 backside.remove();
                 if (parent_of_backside && parent_of_backside.widget) {
-                    parent_of_backside.widget.removed_from_container(this, true, event);
+                    parent_of_backside.widget.get_backside().removed_from_container(this, true, event);
                 }  
             }
             if (frontside) {
                 frontside.remove();
                 if (parent_of_frontside && parent_of_frontside.widget) {
-                    if (parent_of_frontside.is_backside) {
-                        parent_of_frontside.widget.remove_backside_widget(this, false);
-                    } else if (parent_of_frontside.widget.removed_from_container) {
-                        parent_of_frontside.widget.removed_from_container(this, false, event);
-                    }
+                    this.remove_from_parent_of_frontside(event);
                 }
             }   
             this.set_running(false);
@@ -446,8 +465,7 @@ window.TOONTALK.widget = (function (TT) {
                 if (!json_view.backside_geometry && this.backside_geometry) {
                     // backside is closed but this was saved when it was hidden
                     json_view.backside_geometry = this.backside_geometry;
-                }
-                
+                } 
                 // following are typically undefined unless in a container
                 json_view.saved_width = this.saved_width;
                 json_view.saved_height = this.saved_height;
@@ -512,7 +530,6 @@ window.TOONTALK.widget = (function (TT) {
             } else {
                 widget.set_parent_of_frontside(this, true);
             }
-//          console.log("Added " + widget + " (" + widget.debug_id + ") to list of backside widgets of " + this + ". Now has " + this.backside_widgets.length + " widgets.");
             if (backside) {
                 backside.update_run_button_disabled_attribute();
             }
@@ -532,7 +549,7 @@ window.TOONTALK.widget = (function (TT) {
             widget_index = this.backside_widget_side_index(widget_side);
             if (widget_index < 0) {
                 if (!ignore_if_not_on_backside) {
-                    console.log("Couldn't find a widget to remove it from backside widgets. " + widget_side + " (" + widget_side.widget.debug_id + ")"); 
+                    console.log("Couldn't find a widget to remove it from backside widgets. " + widget_side.widget + " (" + widget_side.widget.debug_id + ")"); 
                 }
                 return;                        
             }

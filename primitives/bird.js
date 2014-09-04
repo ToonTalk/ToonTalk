@@ -22,6 +22,7 @@ window.TOONTALK.bird = (function (TT) {
                     return false;
                 }
                 if (this.visible() || nest.visible() || nest.any_nest_copies_visible()) {
+                    other.save_dimensions();
                     // doesn't matter if robot is visible or there is a user event -- if either end visible show the delivery
                     frontside_element = this.get_frontside_element();
                     $(frontside_element).removeClass("toontalk-bird-gimme");
@@ -31,6 +32,8 @@ window.TOONTALK.bird = (function (TT) {
                         robot_continuation = function () {
                             robot.wait_before_next_step = false;
                         }
+                        // generalise this with backside support too
+                        other.remove_from_parent_of_frontside();
                     }
                     nest.animate_bird_delivery(message_side, this, robot_continuation);
                 } else {
@@ -73,6 +76,7 @@ window.TOONTALK.bird = (function (TT) {
                         }
                         if (restore_contents) {
                             // if bird was inside something go back where it was
+                            TT.widget.top_level_widget().remove_backside_widget(this, false, true);
                             restore_contents();
                         }
                         TT.UTILITIES.add_animation_class(bird_frontside_element, "toontalk-bird-morph-to-static");
@@ -150,11 +154,11 @@ window.TOONTALK.bird = (function (TT) {
             bird_frontside_element.style.position = 'absolute';
             if (parent && parent.widget.temporarily_remove_contents) {
                 restore_contents = parent.widget.temporarily_remove_contents(this, true);
-                TT.widget.top_level_widget().add_backside_widget(this);
-                $(".toontalk-top-level-backside").append(bird_frontside_element);
-                this.update_display();
+                if (restore_contents) {
+                    // if it really did remove the contents
+                    TT.UTILITIES.add_to_top_level_backside(this);
+                }
             }
-//             $(bird_frontside_element).removeClass("toontalk-frontside-in-box");
             $top_level_backside_element.append(bird_frontside_element); // while flying            
             $(bird_frontside_element).css({left: starting_left || bird_offset.left-top_level_backside_element_offset.left,
                                            top:  starting_top  || bird_offset.top-top_level_backside_element_offset.top,
@@ -231,7 +235,12 @@ window.TOONTALK.bird = (function (TT) {
             // this may become more complex if the original ToonTalk behaviour
             // that if a bird and its nest are copied or saved as a unit they become a new pair
             // notice that bird/nest semantics is that the nest is shared not copied
-            var copy = this.create(nest, this.get_description()); // image_url);
+            var copy;
+            if (just_value) {
+                copy = this.create(undefined, this.get_description());
+            } else {
+               copy = this.create(nest, this.get_description());
+            }
             return this.add_to_copy(copy, just_value);
         };
         new_bird = new_bird.add_standard_widget_functionality(new_bird);
@@ -522,17 +531,18 @@ window.TOONTALK.nest = (function (TT) {
             }
         };
         new_nest.removed_from_container = function (part, backside_removed, event) {
-            var removed = contents.splice(0,1);
+            var removed = contents.shift();
             if (this.visible()) {
-                if (removed[0]) {
-                    $(TT.UTILITIES.get_side_element_from_side(removed[0])).css({width:  removed[0].saved_width,
-                                                                                height: removed[0].saved_height});
-                    removed[0].saved_width =  undefined;
-                    removed[0].saved_height = undefined;
-                    if (removed[0].is_backside) {
-                        removed[0].widget.set_parent_of_backside(undefined);
+                if (removed) {
+//                     $(TT.UTILITIES.get_side_element_from_side(removed)).css({width:  removed.saved_width,
+//                                                                              height: removed.saved_height});
+//                     removed.saved_width =  undefined;
+//                     removed.saved_height = undefined;
+                    removed.widget.restore_dimensions();
+                    if (removed.is_backside) {
+                        removed.widget.set_parent_of_backside(undefined);
                     } else {
-                        removed[0].widget.set_parent_of_frontside(undefined);
+                        removed.widget.set_parent_of_frontside(undefined);
                     }
                 } else {
                     console.log("Nothing removed from nest!");
@@ -542,7 +552,7 @@ window.TOONTALK.nest = (function (TT) {
                 }
                 this.render();
             }
-            return removed[0];
+            return removed;
         };
         new_nest.dereference_contents = function (path_to_nest, top_level_context, robot) {
             var widget, nest_offset, $top_level_backside_element, top_level_backside_element_offset, 
@@ -678,7 +688,10 @@ window.TOONTALK.nest = (function (TT) {
                                         robot.wait_before_next_step = false;
                                         this.caused_robot_to_wait_before_next_step = false;
                                     }
-                                }
+                                    // following ensures it listens to drag over events to change CSS class
+                                    // perhaps there is a better way
+                                    bird.update_display();
+                                };
                                 TT.UTILITIES.add_one_shot_event_handler(frontside_element, "animationend", 1000, fly_down_finished_handler);
                             }.bind(this),
                             1);
@@ -697,6 +710,9 @@ window.TOONTALK.nest = (function (TT) {
             return true;
         };
         new_nest.widget_dropped_on_me = function (other, other_is_backside, event, robot) {
+            if (event && other.save_dimensions) {
+                other.save_dimensions();
+            }
             if (contents.length === 0) {
                 this.add_to_contents({widget: other,
                                       is_backside: other_is_backside});
@@ -735,19 +751,21 @@ window.TOONTALK.nest = (function (TT) {
                 }
                 nest_width = $(frontside_element).width();
                 nest_height = $(frontside_element).height();
-                contents[0].saved_width  = $(contents_side_element).width() || contents_width(nest_width);
-                contents[0].saved_height = $(contents_side_element).height() || contents_height(nest_height);
-                $(contents_side_element).css({width:  '',
-                                              height: '',
-                                              // offset by 10% -- tried left: 10% but that only worked in first box hole
-                                              left: nest_width*0.1,
-                                              top:  nest_height*0.1});
-                $(contents_side_element).addClass("toontalk-widget-on-nest");
-//                 contents_side_element.style.position = "static";
+                // tried to have a CSS class toontalk-widget-on-nest that specified width and height as 80%
+                // but it didn't work well - especially in FireFox
+                // timeout needed when loading otherwise something resets the width and height
+                setTimeout(function () {
+                    $(contents_side_element).css({width:  .8*nest_width-2*contents_side_element.toontalk_border_size,
+                                                  height: .8*nest_height-2*contents_side_element.toontalk_border_size,
+                                                  // offset by 10% -- tried left: 10% but that only worked in first box hole
+                                                  left: nest_width*0.1,
+                                                  top:  nest_height*0.1});
+                    },
+                    2);
                 frontside_element.appendChild(contents_side_element);
                 $(frontside_element).addClass("toontalk-empty-nest");
                 if (contents[0].is_backside) {
-                    contents[0].widget.set_parent_of_bacside(this);
+                    contents[0].widget.set_parent_of_backside(this);
                 } else {
                     contents[0].widget.set_parent_of_frontside(this);
                 }
