@@ -307,6 +307,15 @@ window.TOONTALK.widget = (function (TT) {
                 }
                 return false;
             };
+            widget.remove_from_parent_of_frontside = function (event) {
+                 if (parent_of_frontside) {
+                     if (parent_of_frontside.is_backside) {
+                         parent_of_frontside.widget.remove_backside_widget(this, false);
+                     } else if (parent_of_frontside.widget.removed_from_container) {
+                         parent_of_frontside.widget.removed_from_container(this, false, event);
+                     }
+                 }
+            }
             return widget;
         },
         
@@ -365,11 +374,7 @@ window.TOONTALK.widget = (function (TT) {
             if (frontside) {
                 frontside.remove();
                 if (parent_of_frontside && parent_of_frontside.widget) {
-                    if (parent_of_frontside.is_backside) {
-                        parent_of_frontside.widget.remove_backside_widget(this, false);
-                    } else if (parent_of_frontside.widget.removed_from_container) {
-                        parent_of_frontside.widget.removed_from_container(this, false, event);
-                    }
+                    this.remove_from_parent_of_frontside(event);
                 }
             }   
             this.set_running(false);

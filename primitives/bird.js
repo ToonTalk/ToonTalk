@@ -32,6 +32,8 @@ window.TOONTALK.bird = (function (TT) {
                         robot_continuation = function () {
                             robot.wait_before_next_step = false;
                         }
+                        // generalise this with backside support too
+                        other.remove_from_parent_of_frontside();
                     }
                     nest.animate_bird_delivery(message_side, this, robot_continuation);
                 } else {
