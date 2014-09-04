@@ -52,16 +52,22 @@ window.TOONTALK.box = (function (TT) {
         new_box.temporarily_remove_contents = function (widget, update_display) {
             // e.g. when a bird flies off to deliver something and will return 
             var index = this.get_index_of(widget);
-            if (index < 0) {
-                console.log("Unable to find " + widget + " in " + this);
-                return;
+            if (!this.temporarily_removed_contents) {
+                this.temporarily_removed_contents = [];
             }
+            this.temporarily_removed_contents[index] = widget;
             this.set_hole(index, undefined, update_display);
             // returns a function to restore the contents
             return function () {
-                this.set_hole(index, widget, update_display); 
+                this.set_hole(index, widget, update_display);
+                this.temporarily_removed_contents[index] = undefined;
             }.bind(this);
-        }
+        };
+        new_box.get_contents_temporarily_removed = function (index) {
+            if (this.temporarily_removed_contents) {
+                return this.temporarily_removed_contents[index];
+            }
+        };
         new_box.set_contents = function (new_contents) {
             new_contents.forEach(function (value, index) {
                 holes[index].set_contents(value);
@@ -428,18 +434,17 @@ window.TOONTALK.box = (function (TT) {
         var size = this.get_size();
         var i, part, path, sub_path;
         for (i = 0; i < size; i++) {
-            part = this.get_hole_contents(i);
-            if (widget === part || (part.top_contents_is && part.top_contents_is(widget))) {
-                return TT.box.path.create(i);
-            } else if (part.get_path_to) {
-                sub_path = part.get_path_to(widget, robot);
-                if (sub_path) {
-                    path = TT.box.path.create(i);
-//                     if (part.get_type_name() !== 'nest' && part.get_type_name() !== 'sensor') {
-                        // if nest then widget must have been on the nest (or inside something that was -- not yet handled!)
+            part = this.get_hole_contents(i) || this.get_contents_temporarily_removed(i);
+            if (part) {
+                if (widget === part || (part.top_contents_is && part.top_contents_is(widget))) {
+                    return TT.box.path.create(i);
+                } else if (part.get_path_to) {
+                    sub_path = part.get_path_to(widget, robot);
+                    if (sub_path) {
+                        path = TT.box.path.create(i);
                         path.next = sub_path;
-//                     }
-                    return path;
+                        return path;
+                    }
                 }
             }
         }
