@@ -368,7 +368,7 @@ window.TOONTALK.widget = (function (TT) {
             if (backside) {
                 backside.remove();
                 if (parent_of_backside && parent_of_backside.widget) {
-                    parent_of_backside.widget.removed_from_container(this, true, event);
+                    parent_of_backside.widget.get_backside().removed_from_container(this, true, event);
                 }  
             }
             if (frontside) {
@@ -530,7 +530,6 @@ window.TOONTALK.widget = (function (TT) {
             } else {
                 widget.set_parent_of_frontside(this, true);
             }
-//          console.log("Added " + widget + " (" + widget.debug_id + ") to list of backside widgets of " + this + ". Now has " + this.backside_widgets.length + " widgets.");
             if (backside) {
                 backside.update_run_button_disabled_attribute();
             }
@@ -550,7 +549,7 @@ window.TOONTALK.widget = (function (TT) {
             widget_index = this.backside_widget_side_index(widget_side);
             if (widget_index < 0) {
                 if (!ignore_if_not_on_backside) {
-                    console.log("Couldn't find a widget to remove it from backside widgets. " + widget_side + " (" + widget_side.widget.debug_id + ")"); 
+                    console.log("Couldn't find a widget to remove it from backside widgets. " + widget_side.widget + " (" + widget_side.widget.debug_id + ")"); 
                 }
                 return;                        
             }
