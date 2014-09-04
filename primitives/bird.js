@@ -76,6 +76,7 @@ window.TOONTALK.bird = (function (TT) {
                         }
                         if (restore_contents) {
                             // if bird was inside something go back where it was
+                            TT.widget.top_level_widget().remove_backside_widget(this, false, true);
                             restore_contents();
                         }
                         TT.UTILITIES.add_animation_class(bird_frontside_element, "toontalk-bird-morph-to-static");
