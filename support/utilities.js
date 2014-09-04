@@ -402,7 +402,7 @@ window.TOONTALK.UTILITIES =
                         // delay until updated
                         widget.on_update_display(function () {
                                                      $(side_element).css(size_css);
-                                                     $(side_element).find("img").css(size_css);
+//                                                      $(side_element).find("img").css(size_css);
                                                  });
                     } else {
                         $(side_element).css(size_css);
@@ -868,7 +868,7 @@ window.TOONTALK.UTILITIES =
                                                      height: json_object.view.frontside_height || height});
                                     }
                                 } else if (container.removed_from_container) {
-                                    $source.removeClass("toontalk-widget-on-nest");
+//                                     $source.removeClass("toontalk-widget-on-nest");
                                     // can be undefined if container is a robot holding something
                                     // but probably that should be prevented earlier
                                     if ($container.is(".toontalk-backside")) {

@@ -231,9 +231,9 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         } else if ($(frontside_element).parent().is(".toontalk-backside, .toontalk-json")) {
             $dimensions_holder = $(frontside_element);
             size_unconstrained_by_container = true;
-        } else if ($(frontside_element).closest(".toontalk-robot").length > 0) {
-            // obsolete??
-            $dimensions_holder = $(frontside_element);
+//         } else if ($(frontside_element).closest(".toontalk-robot").length > 0) {
+//             // obsolete??
+//             $dimensions_holder = $(frontside_element);
         } else {
             $dimensions_holder = $(frontside_element).parent();
         }
@@ -249,6 +249,11 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             client_height = $dimensions_holder.height();
             if (client_width === 0 || client_height === 0) {
                 return;
+            }
+            if ($dimensions_holder.is(".toontalk-nest")) {
+                // doesn't cover the nest completely -- should put .8 into some parameter
+                client_width  *= .8;
+                client_height *= .8;
             }
         }
         $(frontside_element).removeClass("toontalk-number-eighth-size-border toontalk-number-quarter-size-border toontalk-number-half-size-border toontalk-number-full-size-border");
