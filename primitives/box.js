@@ -669,6 +669,11 @@ window.TOONTALK.box_hole =
                 contents = new_value;
                 if (contents) {
                     contents.set_parent_of_frontside(this);
+                    if (TT.debugging) {
+                        hole.debug_string = "A hole containing " + contents;
+                    }
+                } else if (TT.debugging) {
+                    hole.debug_string = "An empty hole";
                 }
             };
             hole.visible = function () {
