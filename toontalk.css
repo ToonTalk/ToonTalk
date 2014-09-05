@@ -317,8 +317,10 @@
 .toontalk-numerator {
 }
 .toontalk-fraction-line {
-	width: 40%;
-	font-size: 1px;
+	width: 90%;
+	border-width: 2pt;
+	border-top: solid;
+	font-size: 9px;
 }
 .toontalk-denominator {
 }
