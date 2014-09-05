@@ -1,0 +1,269 @@
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "element",
+            "html": "%3Cimg%20src%3D%22http%3A%2F%2Fnews.bbcimg.co.uk%2Fmedia%2Fimages%2F76941000%2Fjpg%2F_76941294_flybe.jpg%22%20alt%3D%22Flybe%20Dash%208%20aircraft%22%3E",
+            "attributes": [],
+            "attribute_values": [],
+            "backside_widgets": [
+              {
+                "widget": {
+                  "semantic": {
+                    "type": "element",
+                    "html": "ROTATE",
+                    "attributes": [
+                      "rotate"
+                    ],
+                    "attribute_values": [
+                      318
+                    ],
+                    "backside_widgets": [
+                      {
+                        "widget": {
+                          "semantic": {
+                            "type": "robot",
+                            "frontside_conditions": {
+                              "semantic": {
+                                "type": "element",
+                                "html": "ROTATE",
+                                "attributes": [
+                                  "rotate"
+                                ],
+                                "attribute_values": [
+                                  0
+                                ]
+                              },
+                              "view": {
+                                "frontside_width": 0,
+                                "frontside_height": 0
+                              },
+                              "version": 1
+                            },
+                            "body": {
+                              "type": "body",
+                              "steps": [
+                                {
+                                  "type": "robot_action",
+                                  "action_name": "pick up",
+                                  "path": {
+                                    "type": "path.to_resource",
+                                    "resource": {
+                                      "type": "number",
+                                      "operator": "+",
+                                      "numerator": "1",
+                                      "denominator": "1",
+                                      "format": "improper_fraction"
+                                    }
+                                  }
+                                },
+                                {
+                                  "type": "robot_action",
+                                  "action_name": "drop it on",
+                                  "path": {
+                                    "type": "path_to_style_attribute",
+                                    "attribute": "rotate",
+                                    "element_widget_path": {
+                                      "type": "path.to_entire_context"
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          "view": {
+                            "frontside_width": 73,
+                            "frontside_height": 101,
+                            "backside_geometry": {
+                              "x_scale": 1,
+                              "y_scale": 1,
+                              "original_width": 480.36363649368286,
+                              "original_height": 39.36363649368286
+                            },
+                            "frontside_left": 61.8323872089386,
+                            "frontside_top": -103.69318175315857
+                          },
+                          "version": 1
+                        },
+                        "is_backside": false
+                      }
+                    ]
+                  },
+                  "view": {
+                    "backside_geometry": {
+                      "x_scale": 1.7985417089066844,
+                      "y_scale": 1.9228687406494083,
+                      "original_width": 292.36363649368286,
+                      "original_height": 134.36363649368286
+                    }
+                  },
+                  "version": 1
+                },
+                "is_backside": true
+              },
+              {
+                "widget": {
+                  "semantic": {
+                    "type": "element",
+                    "html": "Go%20right",
+                    "attributes": [
+                      "left"
+                    ],
+                    "attribute_values": [
+                      "183.302840995789"
+                    ],
+                    "backside_widgets": [
+                      {
+                        "widget": {
+                          "semantic": {
+                            "type": "number",
+                            "operator": "+",
+                            "numerator": "1",
+                            "denominator": "10",
+                            "format": "improper_fraction",
+                            "infinite_stack": true,
+                            "description": ""
+                          },
+                          "view": {
+                            "frontside_width": 172,
+                            "frontside_height": 65,
+                            "backside_geometry": {
+                              "x_scale": 1,
+                              "y_scale": 1,
+                              "original_width": 476.36363649368286,
+                              "original_height": 99.36363649368286
+                            }
+                          },
+                          "version": 1
+                        },
+                        "is_backside": false
+                      },
+                      {
+                        "widget": {
+                          "semantic": {
+                            "type": "robot",
+                            "frontside_conditions": {
+                              "semantic": {
+                                "type": "element",
+                                "html": "Go%20right",
+                                "attributes": [
+                                  "left"
+                                ],
+                                "attribute_values": [
+                                  "inherit"
+                                ]
+                              },
+                              "view": {},
+                              "version": 1
+                            },
+                            "backside_conditions": {
+                              "number": {
+                                "semantic": {
+                                  "type": "number",
+                                  "operator": "+",
+                                  "numerator": "1",
+                                  "denominator": "10",
+                                  "format": "improper_fraction",
+                                  "description": ""
+                                },
+                                "view": {
+                                  "frontside_width": 0,
+                                  "frontside_height": 0
+                                },
+                                "version": 1
+                              }
+                            },
+                            "body": {
+                              "type": "body",
+                              "steps": [
+                                {
+                                  "type": "robot_action",
+                                  "action_name": "pick up a copy of",
+                                  "path": {
+                                    "type": "path.to_backside_widget_of_context",
+                                    "type_name": "number"
+                                  }
+                                },
+                                {
+                                  "type": "robot_action",
+                                  "action_name": "drop it on",
+                                  "path": {
+                                    "type": "path_to_style_attribute",
+                                    "attribute": "left",
+                                    "element_widget_path": {
+                                      "type": "path.to_entire_context"
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          "view": {
+                            "frontside_width": 0,
+                            "frontside_height": 0,
+                            "backside_geometry": {
+                              "x_scale": 1,
+                              "y_scale": 1,
+                              "original_width": 479.36363649368286,
+                              "original_height": 39.36363649368286
+                            }
+                          },
+                          "version": 1
+                        },
+                        "is_backside": false
+                      }
+                    ]
+                  },
+                  "view": {
+                    "backside_geometry": {
+                      "x_scale": 1.8669463586334507,
+                      "y_scale": 1.992397363700132,
+                      "original_width": 292.36363649368286,
+                      "original_height": 134.36363649368286
+                    }
+                  },
+                  "version": 1
+                },
+                "is_backside": true
+              }
+            ]
+          },
+          "view": {
+            "frontside_width": 140,
+            "frontside_height": 22,
+            "frontside_left": 454.15514874458313,
+            "frontside_top": 51.006250619888306,
+            "backside_geometry": {
+              "x_scale": 1.844305771854045,
+              "y_scale": 3.6287702972616187,
+              "original_width": 291.36363649368286,
+              "original_height": 78.36363649368286
+            }
+          },
+          "version": 1
+        },
+        "is_backside": false
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgb(245, 245, 57)",
+    "frontside_width": 0,
+    "frontside_height": 0,
+    "backside_width": 1199.3636364936829,
+    "backside_height": 393.36363649368286,
+    "backside_left": 7.997159004211426,
+    "backside_top": 179.0625,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1
+    },
+    "drag_x_offset": 729.0028409957886,
+    "drag_y_offset": 254.9375,
+    "backside": true
+  },
+  "version": 1
+}</div>
