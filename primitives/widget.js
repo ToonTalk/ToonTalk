@@ -681,7 +681,7 @@ window.TOONTALK.widget = (function (TT) {
             var frontside_element_copy = widget_copy.get_frontside_element();
             var position = $(frontside_element).position();
             var $container_element = $(frontside_element).closest(".toontalk-backside");
-            var container_widget = TT.UTILITIES.get_toontalk_widget_from_jquery($container_element);
+            var container_widget = TT.UTILITIES.widget_from_jquery($container_element);
             $(frontside_element_copy).css({width: $(frontside_element).width(),
                                            height: $(frontside_element).height(),
                                            left: position.left+30,
@@ -821,7 +821,7 @@ window.TOONTALK.widget = (function (TT) {
                 opacity: .01
             });
             $frontside_ancestor_that_is_backside_element.append(backside_element);
-            ancestor_that_owns_backside_element = TT.UTILITIES.get_toontalk_widget_from_jquery($frontside_ancestor_that_is_backside_element);
+            ancestor_that_owns_backside_element = TT.UTILITIES.widget_from_jquery($frontside_ancestor_that_is_backside_element);
             if (ancestor_that_owns_backside_element) {
                 ancestor_that_owns_backside_element.add_backside_widget(this, true);
             }
@@ -849,7 +849,7 @@ window.TOONTALK.widget = (function (TT) {
         },
         
         top_level_widget: function () {
-            var widget = TT.UTILITIES.get_toontalk_widget_from_jquery($(".toontalk-top-level-backside"));
+            var widget = TT.UTILITIES.widget_from_jquery($(".toontalk-top-level-backside"));
             if (widget) {
                 return widget;
             }

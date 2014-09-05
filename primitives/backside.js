@@ -214,7 +214,7 @@ window.TOONTALK.backside =
                     if ($source.is(".ui-resizable")) {
                         $source.resizable("enable");
                     }
-                    owner_widget = TT.UTILITIES.get_toontalk_widget_from_jquery($source);
+                    owner_widget = TT.UTILITIES.widget_from_jquery($source);
                     if (owner_widget) {
                         owner_widget.render();
                     }

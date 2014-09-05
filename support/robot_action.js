@@ -104,7 +104,7 @@ window.TOONTALK.robot_action =
         var widget_frontside_element, left_offset, top_offset;
         if (widget instanceof jQuery) {
             // top-level backside
-            widget = TT.UTILITIES.get_toontalk_widget_from_jquery(widget);
+            widget = TT.UTILITIES.widget_from_jquery(widget);
         } else {
             if (widget.get_frontside_element) {
                 widget_frontside_element = widget.get_frontside_element();

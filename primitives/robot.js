@@ -420,11 +420,11 @@ window.TOONTALK.robot = (function (TT) {
     robot.get_context = function () {
         var frontside_element = this.get_frontside_element();
         var $parent_element = $(frontside_element).parent();
-        var widget = TT.UTILITIES.get_toontalk_widget_from_jquery($parent_element);
+        var widget = TT.UTILITIES.widget_from_jquery($parent_element);
         var previous_robot;
         if (!widget) {
             // check if robot is in the 'next robot' area
-            previous_robot = TT.UTILITIES.get_toontalk_widget_from_jquery($parent_element.closest(".toontalk-backside-of-robot"));
+            previous_robot = TT.UTILITIES.widget_from_jquery($parent_element.closest(".toontalk-backside-of-robot"));
             if (previous_robot) {
                 return previous_robot.get_context();
             }
@@ -777,7 +777,7 @@ window.TOONTALK.robot_backside =
             $next_robot_area.get(0).addEventListener('drop', function (event) {
                 // start training when robot is dropped here
                 var dragee = TT.UTILITIES.get_dragee();
-                var widget = TT.UTILITIES.get_toontalk_widget_from_jquery(dragee);
+                var widget = TT.UTILITIES.widget_from_jquery(dragee);
                 var backside;
                 if (widget && widget.get_type_name() === 'robot') {
                     backside = widget.open_backside();
@@ -793,7 +793,7 @@ window.TOONTALK.robot_backside =
                     frontside_element.title = robot.get_title();
                     $containing_backside_element = $(frontside_element).closest(".toontalk-backside");
                     if ($containing_backside_element.length > 0) {
-                        TT.UTILITIES.get_toontalk_widget_from_jquery($containing_backside_element).get_backside().update_run_button_disabled_attribute();
+                        TT.UTILITIES.widget_from_jquery($containing_backside_element).get_backside().update_run_button_disabled_attribute();
                     }                    
                 }
                 backside.update_run_button_disabled_attribute();
