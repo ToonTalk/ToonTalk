@@ -621,6 +621,7 @@ window.TOONTALK.box_hole =
             hole.widget_dropped_on_me = function (dropped, is_backside, event, robot) {
                 var box = this.get_parent_of_frontside().widget;
                 var parent_of_frontside = dropped.get_parent_of_frontside();
+                var $hole_element;
                 // other code should take care of this (e.g. drop)
 //              if (parent_of_frontside && parent_of_frontside.widget && parent_of_frontside.widget.removed_from_container) {
 //                  parent_of_frontside.widget.removed_from_container(dropped);
@@ -630,6 +631,10 @@ window.TOONTALK.box_hole =
                 }
                 if (event && dropped.save_dimensions) { // and maybe watched robot too?
                     dropped.save_dimensions();
+                    if (dropped.set_size_attributes) {
+                        $hole_element = $(this.get_element());
+                        dropped.set_size_attributes($hole_element.width(), $hole_element.height());
+                    }
                 }
                 this.set_contents(dropped);
                 if (dropped.dropped_on_other) {
