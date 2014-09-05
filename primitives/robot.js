@@ -424,7 +424,7 @@ window.TOONTALK.robot = (function (TT) {
         var previous_robot;
         if (!widget) {
             // check if robot is in the 'next robot' area
-            previous_robot = $parent_element.closest(".toontalk-backside-of-robot").get(0).toontalk_widget
+            previous_robot = TT.UTILITIES.get_toontalk_widget_from_jquery($parent_element.closest(".toontalk-backside-of-robot"));
             return previous_robot.get_context();
         }
         return widget;
