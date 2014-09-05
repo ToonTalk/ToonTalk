@@ -624,11 +624,11 @@ background-image: url("images/dusty-morph.png");
 .toontalk-ignore-events {
 	pointer-events: none;
 }
-.toontalk-widget-on-nest {
+/* .toontalk-widget-on-nest {
 	width: 80%;
 	height: 80%;
 	position: absolute;
-}
+} */
 .toontalk-carried-by-bird {
     position: static;
     transform: scale(0.8, 0.4);

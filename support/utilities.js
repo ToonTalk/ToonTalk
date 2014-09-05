@@ -1402,8 +1402,12 @@ window.TOONTALK.UTILITIES =
         },
         
         backup_all: function (immediately) {
-            var top_level_widget = TT.UTILITIES.get_toontalk_widget_from_jquery($(".toontalk-top-level-backside"));
-            var backup_function = function () {
+            var top_level_widget, backup_function;
+            if (window.location.href.indexOf("autosave=0") >= 0) {
+                return;
+            }
+            top_level_widget = TT.widget.top_level_widget();
+            backup_function = function () {
                     var json = TT.UTILITIES.get_json_top_level(top_level_widget);
                     try {
                         window.localStorage.setItem(TT.UTILITIES.current_URL(), JSON.stringify(json));
