@@ -422,9 +422,6 @@ window.TOONTALK.nest = (function (TT) {
         };
         new_nest.add_to_contents = function (widget_side, delivery_bird, ignore_copies) {
             var current_waiting_robots, widget_side_copy;
-            if (widget_side.widget) {
-                console.log("debug this");
-            }
             if (contents.push(widget_side) === 1) {
                 if (waiting_robots.length > 0) {
                     // is the first content and some robots are waiting for this nest to be filled

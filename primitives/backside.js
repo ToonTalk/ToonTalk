@@ -84,12 +84,6 @@ window.TOONTALK.backside =
                     if (other_is_backside && this.get_widget().get_type_name() != 'top-level') {
                         // remove other since its backside is on another backside (other than top-level) 
                         // can be recreated by removing backside from this backside
-                        // drop now ensures the following
-//                         parent_of_backside = other.get_parent_of_backside();
-//                         if (parent_of_backside && parent_of_backside.widget !== widget) {
-//                             // parent backside should no longer hold either front or backside
-//                             parent_of_backside.widget.remove_backside_widget(other, true);
-//                         }
                         backside_of_other = other.get_backside();
                         other.forget_backside();
                         // following does too much if the widget knows its backside
@@ -118,21 +112,17 @@ window.TOONTALK.backside =
                     function () {
                         var widget_side_element, json_view;
                         backside_widgets.forEach(function (backside_widget_side, index) {
-                            if (backside_widget_side.is_backside) {
-                                widget_side_element = backside_widget_side.widget.get_backside_element(true);
-                            } else {
-                                widget_side_element = backside_widget_side.widget.get_frontside_element(true);
-                            }
-                            widget_side_element.toontalk_widget = backside_widget_side.widget;
+                            widget_side_element = backside_widget_side.get_element(true);
+                            widget_side_element.toontalk_widget = backside_widget_side.get_widget();
                             if (json_array) {
                                 json_view = json_array[index];
                                 if (json_view) {
-                                    if (backside_widget_side.is_backside) {
+                                    if (backside_widget_side.is_backside()) {
                                         $(widget_side_element).css({left: json_view.backside_left,
                                                                     top: json_view.backside_top,
                                                                     width: json_view.backside_width,
                                                                     height: json_view.backside_height});
-                                        backside_widget_side.widget.apply_backside_geometry();
+                                        backside_widget_side.get_widget().apply_backside_geometry();
                                     } else {
                                         $(widget_side_element).css({left: json_view.frontside_left,
                                                                     top: json_view.frontside_top,
@@ -142,7 +132,7 @@ window.TOONTALK.backside =
                                 }
                             }
                             $backside_element.append(widget_side_element);
-                            backside_widget_side.widget.render();
+                            backside_widget_side.get_widget().render();
                         });
                     },
                     1);
@@ -287,11 +277,6 @@ window.TOONTALK.backside =
             $(this.get_element()).remove();
         },
         
-        // commented out since callers directly call remove_backside_widget
-//         removed_from_container: function (part, is_backside) {
-//             this.get_widget().remove_backside_widget(part, is_backside, true);
-//         },
-        
         visible: function () {
             var backside_element = this.get_element();
             return (backside_element && $(backside_element).is(":visible"));
@@ -421,16 +406,12 @@ window.TOONTALK.backside =
                 var backside_widgets_json_views = widget.get_backside_widgets_json_views();
                 var backside_widget_side_element;
                 backside_widgets.forEach(function (backside_widget_side, index) {
-                    var backside_widget = backside_widget_side.widget;
+                    var backside_widget = backside_widget_side.get_widget();
                     var position;
-                    if (backside_widget_side.is_backside) {
-                        backside_widget_side_element = backside_widget.get_backside_element();
-                    } else {
-                        backside_widget_side_element = backside_widget.get_frontside_element();   
-                    }
+                    backside_widget_side_element = backside_widget.get_element();
                     if (backside_widget_side_element && backside_widgets_json_views && backside_widgets_json_views[index]) {
                         position = $(backside_widget_side_element).position();
-                        if (backside_widget_side.is_backside) {
+                        if (backside_widget_side.is_backside()) {
                             backside_widgets_json_views[index].backside_left = position.left;
                             backside_widgets_json_views[index].backside_top = position.top;
                         } else {

@@ -326,8 +326,11 @@ window.TOONTALK.UTILITIES =
             }
             if (json.widget) {
                 // is a context where need to know which side of the widget
-                return {widget: TT.UTILITIES.create_from_json(json.widget, additional_info),
-                        is_backside: json.is_backside};
+                widget = TT.UTILITIES.create_from_json(json.widget, additional_info);
+                if (json.is_backside) {
+                    return widget.get_backside(true);
+                }
+                return widget;
             }
             if (json.shared_widget_index >= 0) {
                 shared_widget = additional_info.shared_widgets[json.shared_widget_index];
@@ -407,7 +410,6 @@ window.TOONTALK.UTILITIES =
                         // delay until updated
                         widget.on_update_display(function () {
                                                      $(side_element).css(size_css);
-//                                                      $(side_element).find("img").css(size_css);
                                                  });
                     } else {
                         $(side_element).css(size_css);
@@ -452,20 +454,14 @@ window.TOONTALK.UTILITIES =
             var json = [];
             var widgets_jsonified = [];
             array.forEach(function (widget_side, index) {
-                if (widget_side) {
-                    if (!widget_side.widget) {
-                        if (widget_side.get_type_name) {
-                            json[index] = TT.UTILITIES.get_json(widget_side, json_history);
-                        } else {
-                            // isn't a widget -- e.g. is a path
-                            json[index] = widget_side.get_json(json_history);
-                        }
-                    } else if (widget_side.widget.get_json) {
-                        json[index] = {widget: TT.UTILITIES.get_json(widget_side.widget, json_history),
-                                       is_backside: widget_side.is_backside};
-                    } else {
-                        console.log("No get_json for " + array[i].toString());
-                    }
+                if (widget_side.is_backside && widget_side.is_backside()) {
+                    json[index] = {widget: TT.UTILITIES.get_json(widget_side.get_widget(), json_history),
+                                   is_backside: true};
+                } else if (widget_side.get_type_name) {
+                    json[index] = {widget: TT.UTILITIES.get_json(widget_side, json_history)};
+                } else {
+                    // isn't a widget -- e.g. is a path
+                    json[index] = widget_side.get_json(json_history);
                 }
             });
             return json;
