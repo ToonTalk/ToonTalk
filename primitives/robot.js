@@ -425,7 +425,9 @@ window.TOONTALK.robot = (function (TT) {
         if (!widget) {
             // check if robot is in the 'next robot' area
             previous_robot = TT.UTILITIES.get_toontalk_widget_from_jquery($parent_element.closest(".toontalk-backside-of-robot"));
-            return previous_robot.get_context();
+            if (previous_robot) {
+                return previous_robot.get_context();
+            }
         }
         return widget;
     };
@@ -772,6 +774,16 @@ window.TOONTALK.robot_backside =
             if (next_robot) {
                 $next_robot_area.append(next_robot.get_frontside_element());
             }
+            $next_robot_area.get(0).addEventListener('drop', function (event) {
+                // start training when robot is dropped here
+                var dragee = TT.UTILITIES.get_dragee();
+                var widget = TT.UTILITIES.get_toontalk_widget_from_jquery(dragee);
+                var backside;
+                if (widget && widget.get_type_name() === 'robot') {
+                    backside = widget.open_backside();
+                    $(backside.get_element()).find(".toontalk-train-backside-button").click();
+                }
+            });
             backside.update_display = function () {
                 var frontside_element = robot.get_frontside_element();
                 var $containing_backside_element;

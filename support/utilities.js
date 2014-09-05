@@ -302,7 +302,12 @@ window.TOONTALK.UTILITIES =
         dragee.removeClass("toontalk-being-dragged");
         // restore events to decendants
         dragee.find("*").removeClass("toontalk-ignore-events");
-        dragee = undefined;
+        // need time out since there may be other listeners to drop events that need to know this
+        // e.g. drop area for next robot
+        setTimeout(function () {
+            dragee = undefined;
+            },
+            1); 
     };
     $(document).ready(initialise);
     return {
