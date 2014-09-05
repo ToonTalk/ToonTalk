@@ -309,6 +309,7 @@ window.TOONTALK.backside =
             }
             $run_button = $(backside_element).find(".toontalk-run-backside-button");
             $run_button.button("option", "disabled", !this.get_widget().can_run());
+            TT.backside.update_run_button($run_button);
             return this;
         },
         
@@ -527,7 +528,7 @@ window.TOONTALK.backside =
             var widget = $run_button.get(0).toontalk_widget;
             var running = widget.get_running();
             if (!$run_button.is(":enabled")) {
-                $run_button.attr("title", "Add robots here to to run on this " + widget.get_type_name());
+                $run_button.attr("title", "Add robots here to give behaviours to this " + widget.get_type_name());
                 return;
             }
             if (!$run_button.is(":visible")) {
@@ -541,23 +542,6 @@ window.TOONTALK.backside =
                 $run_button.attr("title", "Click to stop running the robots on this " + widget.get_type_name());
             }
         },
-        
-//         create_remove_button: function (backside, widget) {
-//             var $remove_button = $("<button>Remove</button>").button();
-//             $remove_button.addClass("toontalk-remove-backside-button");
-//             $remove_button.click(function (event) {
-//                 if (widget.remove) {
-//                     if (TT.robot.in_training) {
-//                         TT.robot.in_training.removed(widget);
-//                     }
-//                     widget.remove(event);
-//                     TT.UTILITIES.backup_all();
-//                 } // else warn??
-//                 event.stopPropagation();
-//             });
-//             $remove_button.attr("title", "Click to remove this " + widget.get_type_name());
-//             return $remove_button.get(0);
-//         },
         
         create_settings_button: function (backside, widget, extra_settings_generator) {
             var $settings_button = $("<button>Settings</button>").button();
