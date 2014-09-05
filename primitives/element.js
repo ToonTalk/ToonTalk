@@ -699,7 +699,7 @@ window.TOONTALK.element_backside =
                                                                     "Click here to edit the '" + attribute + "' style attribute of this element.");
             attribute_value_editor.button.name = attribute;
             attribute_value_editor.button.addEventListener('input', update_value);
-            TT.UTILITIES.can_receive_drops($(attribute_value_editor));
+            TT.UTILITIES.can_receive_drops(attribute_value_editor);
             td.appendChild(attribute_value_editor.container);
         });
         return table;

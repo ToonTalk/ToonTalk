@@ -113,8 +113,8 @@ window.TOONTALK.UTILITIES =
                 drag_y_offset = 0;
             }
             $source.css({
-                left: event.originalEvent.pageX - (target_position.left + drag_x_offset),
-                top:  event.originalEvent.pageY - (target_position.top  + drag_y_offset)
+                left: event.pageX - (target_position.left + drag_x_offset),
+                top:  event.pageY - (target_position.top  + drag_y_offset)
             });
 //             if ($source.is(".toontalk-frontside") && !$source.is('.ui-resizable')) {
 //                 // without the setTimeout the following prevents dragging components (e.g. widgets in boxes)
@@ -143,8 +143,8 @@ window.TOONTALK.UTILITIES =
             $(".toontalk-top-level-backside").append($source.get(0));
             top_level_backside_position = $(".toontalk-top-level-backside").offset();
             $source.css({
-                left: event.originalEvent.pageX - (top_level_backside_position.left + drag_x_offset),
-                top:  event.originalEvent.pageY - (top_level_backside_position.top  + drag_y_offset)}
+                left: event.pageX - (top_level_backside_position.left + drag_x_offset),
+                top:  event.pageY - (top_level_backside_position.top  + drag_y_offset)}
             );
             if (source_widget.drop_on && source_widget.drop_on(target_widget, source_is_backside, event)) {
             } else if (target_widget.widget_dropped_on_me && target_widget.widget_dropped_on_me(source_widget, source_is_backside, event)) {
@@ -626,24 +626,24 @@ window.TOONTALK.UTILITIES =
         
         data_transfer_json_object: function (event) {
             var data, json;
-            if (!event.originalEvent.dataTransfer) {
+            if (!event.dataTransfer) {
                 console.log("no dataTransfer in drop event");
                 return;
             }
-            // following code could be simplified by using event.originalEvent.dataTransfer.types
+            // following code could be simplified by using event.dataTransfer.types
             // unless in IE9 should use text/html to enable dragging of HTML elements
             try {
                 // the following causes errors in IE9
-                data = event.originalEvent.dataTransfer.getData("text/html");
+                data = event.dataTransfer.getData("text/html");
             } catch (e) {
                 // should only occur in IE9
-                data = event.originalEvent.dataTransfer.getData("text");
+                data = event.dataTransfer.getData("text");
             }
             if (!data || data.match(/[\u3400-\u9FBF]/)) {
                 // match(/[\u3400-\u9FBF]/) tests for Chinese which FireFox does
                 // see https://bugzilla.mozilla.org/show_bug.cgi?id=900414
                 // may not have been text/html but just plain text
-                data = event.originalEvent.dataTransfer.getData("text");
+                data = event.dataTransfer.getData("text");
 //                 if (data) {
 //                     data = "<div class='ui-widget'>" + data + "</div>";
 //                 }
@@ -663,31 +663,31 @@ window.TOONTALK.UTILITIES =
             }
         },
         
-        drag_and_drop: function ($element) {
-            TT.UTILITIES.draggable($element);
-            TT.UTILITIES.can_receive_drops($element);
+        drag_and_drop: function (element) {
+            TT.UTILITIES.draggable(element);
+            TT.UTILITIES.can_receive_drops(element);
         },
         
-        draggable: function ($element) {
-            $element.attr("draggable", true);
+        draggable: function (element) {
+            $(element).attr("draggable", true);
             // JQuery UI's draggable causes dataTransfer to be null
             // rewrote after noticing that this works fine: http://jsfiddle.net/KWut6/
-            $element.on('dragstart', 
+            element.addEventListener('dragstart', 
                 function (event) {
-                    var $source_element = $(event.originalEvent.srcElement).closest(".toontalk-side");
+                    var $source_element = $(event.srcElement).closest(".toontalk-side");
                     var bounding_rectangle, json_object, json_div, widget, is_resource;
                     // was using text/plain but IE complained
                     // see http://stackoverflow.com/questions/18065840/html5-drag-and-drop-not-working-on-ie11
-                    if (event.originalEvent.dataTransfer.getData("text").length > 0) {
+                    if (event.dataTransfer.getData("text").length > 0) {
                         // e.g. dragging some text off the backside of a widget
                         return;
                     }
-                    dragee = ($source_element || $element);
+                    dragee = ($source_element || $(element));
                     widget = TT.UTILITIES.get_toontalk_widget_from_jquery(dragee);
                     if (!widget) {
                         widget = TT.UTILITIES.get_toontalk_widget_from_jquery($element);
                         console.log("Possible bug that " + dragee + " doesn't have a known owner.");
-                        dragee = $element;
+                        dragee = $(element);
                     }
                     bounding_rectangle = dragee.get(0).getBoundingClientRect()
                     is_resource = dragee.is(".toontalk-top-level-resource");
@@ -696,12 +696,12 @@ window.TOONTALK.UTILITIES =
 //                         dragee.css({width:  bounding_rectangle.width,
 //                                     height: bounding_rectangle.height});
 //                     }
-                    if (event.originalEvent.dataTransfer && widget.get_json) {
-                        event.originalEvent.dataTransfer.effectAllowed = is_resource ? 'copy' : 'move';
+                    if (event.dataTransfer && widget.get_json) {
+                        event.dataTransfer.effectAllowed = is_resource ? 'copy' : 'move';
                         json_object = TT.UTILITIES.get_json_top_level(widget);
                         // not sure if the following is obsolete
-                        json_object.view.drag_x_offset = event.originalEvent.clientX - bounding_rectangle.left;
-                        json_object.view.drag_y_offset = event.originalEvent.clientY - bounding_rectangle.top;
+                        json_object.view.drag_x_offset = event.clientX - bounding_rectangle.left;
+                        json_object.view.drag_y_offset = event.clientY - bounding_rectangle.top;
                         if (!json_object.view.frontside_width) {
                             if (dragee.parent().is(".toontalk-backside")) {
                                 json_object.view.frontside_width = dragee.width();
@@ -714,20 +714,20 @@ window.TOONTALK.UTILITIES =
                         dragee.data("json", json_object);
                         // use two spaces to indent each level
                         json_div = toontalk_json_div(JSON.stringify(json_object, null, '  '));
-                        event.originalEvent.dataTransfer.setData("text/html", json_div);
+                        event.dataTransfer.setData("text/html", json_div);
                         // the above causes IE9 errors when received so the following added just for IE9
-                        event.originalEvent.dataTransfer.setData("text", json_div);
+                        event.dataTransfer.setData("text", json_div);
                         widget.drag_started(json_object, is_resource);
                     }
                     dragee.addClass("toontalk-being-dragged");
                     event.stopPropagation();
 //                  console.log("drag start. dragee is " + dragee);
                 });
-            $element.on('dragend', 
+            element.addEventListener('dragend', 
                 function (event) {
 //                  console.log("drag end. dragee is " + dragee);
                     if (!dragee) {
-                        dragee = $(event.originalEvent.srcElement).closest(".toontalk-side");
+                        dragee = $(event.srcElement).closest(".toontalk-side");
                     }
                     if (dragee.is(".toontalk-frontside")) {
                         if (dragee.parent().is(".toontalk-backside")) {
@@ -750,14 +750,15 @@ window.TOONTALK.UTILITIES =
                 });       
         },
         
-        can_receive_drops: function ($element) {
-            $element.on('dragover',
+        can_receive_drops: function (element) {
+            // was using JQuery's 'on' but that didn't support additional listeners
+            element.addEventListener('dragover',
                 function (event) {
                     // think about drop feedback
                     event.preventDefault();
                     return false;
                 });
-            $element.on('drop',
+            element.addEventListener('drop',
                 function (event) {
                     var $source, source_widget, $target, target_widget, drag_x_offset, drag_y_offset, target_position, 
                         new_target, source_is_backside, $container, container, width, height, i;
@@ -767,12 +768,12 @@ window.TOONTALK.UTILITIES =
                     // prevent default first so if there is an exception the default behaviour for some drags of going to a new page is prevented
                     event.preventDefault();
                     // restore events to decendants
-                    $element.find("*").removeClass("toontalk-ignore-events");
+                    $(element).find("*").removeClass("toontalk-ignore-events");
                     $source = dragee;
                     drag_ended();
-                    if (!$source && !json_object && !event.originalEvent.dataTransfer.files) {
-                        if (!event.originalEvent.dataTransfer) {
-                            console.log("Drop failed since there is no event.originalEvent.dataTransfer");
+                    if (!$source && !json_object && !event.dataTransfer.files) {
+                        if (!event.dataTransfer) {
+                            console.log("Drop failed since there is no event.dataTransfer");
                         } else {
                             console.log("Drop failed since unable to parse as JSON."); 
                         }
@@ -821,7 +822,7 @@ window.TOONTALK.UTILITIES =
                         // not dropping on itself but on the widget underneath
                         // to not find $target again temporarily hide it
                         $target.hide();
-                        new_target = document.elementFromPoint(event.originalEvent.pageX, event.originalEvent.pageY);
+                        new_target = document.elementFromPoint(event.pageX, event.pageY);
                         $target.show();
                         if (new_target) {
                             $target = $(new_target).closest(".toontalk-side");
@@ -841,8 +842,8 @@ window.TOONTALK.UTILITIES =
                             // dropped of itself or dropped on a part of itself
                             // just moved it a little bit
                             // only called now that elementFromPoint is used to find another target when dropped on part of itself
-                            $source.css({left: $source.get(0).offsetLeft + (event.originalEvent.layerX - drag_x_offset),
-                                          top: $source.get(0).offsetTop  + (event.originalEvent.layerY - drag_y_offset)});
+                            $source.css({left: $source.get(0).offsetLeft + (event.layerX - drag_x_offset),
+                                          top: $source.get(0).offsetTop  + (event.layerY - drag_y_offset)});
                             event.stopPropagation();
                             return;
                         }
@@ -868,7 +869,6 @@ window.TOONTALK.UTILITIES =
                                                      height: json_object.view.frontside_height || height});
                                     }
                                 } else if (container.removed_from_container) {
-//                                     $source.removeClass("toontalk-widget-on-nest");
                                     // can be undefined if container is a robot holding something
                                     // but probably that should be prevented earlier
                                     if ($container.is(".toontalk-backside")) {
@@ -890,10 +890,10 @@ window.TOONTALK.UTILITIES =
                             }
                         }
                     } else {
-                        if (event.originalEvent.dataTransfer.files.length > 0) {
+                        if (event.dataTransfer.files.length > 0) {
                             // forEach doesn't work isn't really an array
-                            for (i = 0; i < event.originalEvent.dataTransfer.files.length; i++) {
-                                handle_drop_from_file_contents(event.originalEvent.dataTransfer.files[i], $target, target_widget, target_position, event);
+                            for (i = 0; i < event.dataTransfer.files.length; i++) {
+                                handle_drop_from_file_contents(event.dataTransfer.files[i], $target, target_widget, target_position, event);
                             };
                             event.stopPropagation();
                             return;
@@ -926,9 +926,8 @@ window.TOONTALK.UTILITIES =
                     handle_drop($target, $source, source_widget, target_widget, target_position, event, json_object, drag_x_offset, drag_y_offset, source_is_backside);
                     event.stopPropagation();
                 });
-            $element.on('dragenter', function (event) {
-//              console.log(event.target.className); // -- not clear why this is never triggered for inputs on backside
-//              probably because backside itself has a dragenter? -- use addEventListener if I need both
+            element.addEventListener('dragenter', function (event) {
+//              console.log(event.target.className);
                 var $target = $(event.target).closest(".toontalk-side");
                 if (!$target.is(".toontalk-top-level-backside") && 
                     !$target.is(".toontalk-top-level-resource") &&
@@ -937,20 +936,15 @@ window.TOONTALK.UTILITIES =
                     TT.UTILITIES.highlight_element($target);
                     // moving over decendants triggers dragleave unless their pointer events are turned off
                     // they are restored on dragend
-                    if (!$target.is(".toontalk-backside, .toontalk-drop-area") && TT.UTILITIES.get_toontalk_widget_from_jquery($element).get_type_name() !== 'box') {
+                    if (!$target.is(".toontalk-backside, .toontalk-drop-area") && TT.UTILITIES.get_toontalk_widget_from_jquery($(element)).get_type_name() !== 'box') {
                         // this breaks the dropping of elements on empty holes so not supported
                         $target.find(".toontalk-side").addClass("toontalk-ignore-events");
                         // except for toontalk-sides and their ancestors since they are OK to drop on
-                        // following was intended to deal with box holes but didn't work
-//                         $element.find(".toontalk-side").parents().removeClass("toontalk-ignore-events");
                     }
                 }
                 event.stopPropagation();
             });
-            $element.on('dragleave', function (event) {
-//                 if (!$element.is(".toontalk-top-level-backside") && !$element.is(".toontalk-top-level-resource")) {
-//                     TT.UTILITIES.remove_highlight();
-//                 }
+            element.addEventListener('dragleave', function (event) {
                 event.stopPropagation();
             });
             // following attempt to use JQuery UI draggable provides mouseevents rather than dragstart and the like
@@ -968,13 +962,14 @@ window.TOONTALK.UTILITIES =
         
         create_drop_area: function (instructions) {
             // instructions can be HTML or plain text
-            var $drop_area = $(document.createElement("div"));
+            var drop_area = document.createElement("div");
+            var $drop_area = $(drop_area);
             var drop_area_instructions = document.createElement("div");
             drop_area_instructions.innerHTML = instructions;
             $(drop_area_instructions).addClass("toontalk-drop-area-instructions ui-widget");
             $drop_area.addClass("toontalk-drop-area");
             $drop_area.append(drop_area_instructions);
-            TT.UTILITIES.can_receive_drops($drop_area);
+            TT.UTILITIES.can_receive_drops(drop_area);
             return $drop_area;
         },
         
@@ -1044,8 +1039,8 @@ window.TOONTALK.UTILITIES =
             var position, left, top, ancestor;
             if (event) {
                 // either DOM or JQuery event
-                if (event.originalEvent) {
-                    event = event.originalEvent;
+                if (event) {
+                    event = event;
                 }
             }
             if (absolute) {

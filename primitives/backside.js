@@ -103,8 +103,8 @@ window.TOONTALK.backside =
                     }
                     if (other.get_body && other.get_body().is_empty()) {
                         // automate the start of training
-                        other.open_backside();
-                        $(".toontalk-train-backside-button").click();
+                        backside_of_other = other.open_backside();
+                        $(backside_of_other.get_element()).find(".toontalk-train-backside-button").click();
                     }
                     TT.UTILITIES.backup_all();
                     return true;
@@ -173,7 +173,7 @@ window.TOONTALK.backside =
             };
 //             TT.backside.associate_widget_with_backside_element(widget, backside, backside_element);
             backside_element.toontalk_widget = widget;
-            TT.UTILITIES.drag_and_drop($backside_element);
+            TT.UTILITIES.drag_and_drop(backside_element);
             // the following function should apply recursively...
             $backside_element.resizable(
                 {start: function () {

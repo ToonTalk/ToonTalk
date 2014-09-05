@@ -28,7 +28,7 @@ window.TOONTALK.frontside =
             $(frontside_element).addClass("toontalk-frontside toontalk-side");
             frontside_element.toontalk_widget = widget;
 //          console.log(widget + " with " + widget.debug_id + " associated with " + frontside_element.className);
-            TT.UTILITIES.drag_and_drop($frontside_element);
+            TT.UTILITIES.drag_and_drop(frontside_element);
             frontside.get_element = function () {
                 return frontside_element;
             };

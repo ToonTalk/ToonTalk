@@ -835,6 +835,7 @@ window.TOONTALK.widget = (function (TT) {
             }
             animate_backside_appearance(backside_element, "inherit");
             backside.render();
+            return backside;
         },
                 
         apply_backside_geometry: function () {
