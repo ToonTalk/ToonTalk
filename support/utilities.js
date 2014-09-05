@@ -935,7 +935,7 @@ window.TOONTALK.UTILITIES =
 //              console.log(event.target.className);
                 var $target = $(event.target).closest(".toontalk-side");
                 if (!$target.is(".toontalk-top-level-backside") && 
-                    !$target.is(".toontalk-top-level-resource") &&
+                    !$target.closest(".toontalk-top-level-resource").is("*") &&
                     !$target.is(".toontalk-being-dragged")) {
                     // could support a can_drop protocol and use it here
                     TT.UTILITIES.highlight_element($target);
