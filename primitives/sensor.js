@@ -12,12 +12,13 @@ window.TOONTALK.sensor = (function (TT) {
     var sensor = Object.create(TT.widget);
     
     var style_contents = function (widget, sensor) {
-        var frontside_element;
+//         var frontside_element;
         if (widget.get_type_name() === 'element') {
-            frontside_element = widget.get_frontside_element(true);
+//             frontside_element = widget.get_frontside_element(true);
+//             $(frontside_element).css({"font-size": $(sensor.get_frontside_element(true)).height()*0.5});
+            widget.set_attribute('font-size', $(sensor.get_frontside_element(true)).height()*0.5, false, true);
+            widget.set_additional_classes("toontalk-string-value-from-sensor");
             if (sensor.visible()) {
-                 $(frontside_element).css({"font-size": $(sensor.get_frontside_element(true)).height()*0.5});
-                 widget.set_additional_classes("toontalk-string-value-from-sensor");
                  widget.rerender();
             }
         }

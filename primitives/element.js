@@ -294,11 +294,12 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         return value.replace("px", "");
     };
     
-    element.set_attribute = function (attribute, new_value, handle_training) {
-        var frontside = this.get_frontside();
+    element.set_attribute = function (attribute, new_value, handle_training, add_to_style_attributes) {
+        var frontside = this.get_frontside(true);
         var frontside_element = frontside.get_element();
         var css = {};
         var current_value, new_value_number;
+        var style_attributes;
 //         console.log(attribute + " of " + this.debug_id + " is " + new_value);
         if (!frontside_element) {
             return false;
@@ -323,6 +324,12 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                                button_selector: ".toontalk-element-" + attribute + "-attribute-input"});
         }
         this.add_to_css(attribute, new_value);
+        if (add_to_style_attributes) {
+            style_attributes = this.get_style_attributes();
+            if (style_attributes.indexOf(attribute) < 0) {
+                style_attributes.push(attribute);
+            }
+        }
         this.rerender();
         return true;
     };
@@ -512,7 +519,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         return {type: "element",
                 html: encodeURIComponent(this.get_HTML()), 
                 attributes: json_attributes,
-                attribute_values: json_attributes.map(this.get_attribute.bind(this))
+                attribute_values: json_attributes.map(this.get_attribute.bind(this)),
+                additional_classes: this.get_additional_classes()
                 };
     };
     
@@ -532,6 +540,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 reconstructed_element.add_to_css(attribute_name, value_in_pixels(value) || value);
             }
         });
+        if (json.additional_classes) {
+            reconstructed_element.set_additional_classes(json.additional_classes);
+        }
         return reconstructed_element;
     };
     
@@ -709,7 +720,7 @@ window.TOONTALK.element_backside =
                                                                     "Click here to edit the '" + attribute + "' style attribute of this element.");
             attribute_value_editor.button.name = attribute;
             attribute_value_editor.button.addEventListener('input', update_value);
-            TT.UTILITIES.can_receive_drops(attribute_value_editor);
+            TT.UTILITIES.can_receive_drops(attribute_value_editor.container);
             td.appendChild(attribute_value_editor.container);
         });
         return table;
