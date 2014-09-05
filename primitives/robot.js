@@ -207,10 +207,10 @@ window.TOONTALK.robot = (function (TT) {
                 backside_widgets = context.get_backside_widgets();
                 if (backside_widgets) {
                     backside_widgets.some(function (backside_widget_side) {
-                        var backside_condition_widget_of_type = !backside_widget_side.is_backside && backside_conditions[backside_widget_side.widget.get_type_name()];
+                        var backside_condition_widget_of_type = !backside_widget_side.is_backside() && backside_conditions[backside_widget_side.get_widget().get_type_name()];
                         var sub_match_status;
                         if (backside_condition_widget_of_type) {
-                            sub_match_status = TT.UTILITIES.match(backside_condition_widget_of_type, backside_widget_side.widget);
+                            sub_match_status = TT.UTILITIES.match(backside_condition_widget_of_type, backside_widget_side.get_widget());
                             condition_frontside_element = backside_condition_widget_of_type.get_frontside_element();
                             if (condition_frontside_element) {
                                 if (this.match_status === 'matched') {

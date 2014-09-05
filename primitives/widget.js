@@ -111,7 +111,7 @@ window.TOONTALK.widget = (function (TT) {
                     // do this recursively so backsides are fully reconstructed
                     // otherwise things like JQuery UI 'button' is not reapplied
                     this.get_backside_widgets().forEach(function (backside_widget) {
-                            backside_widget.widget.forget_backside();
+                            backside_widget.get_widget().forget_backside();
                     });
                 };
             }
@@ -568,7 +568,7 @@ window.TOONTALK.widget = (function (TT) {
         
         remove_backside_widget: function (widget, is_backside, ignore_if_not_on_backside) {
             var backside = this.get_backside();
-            var widget_side = is_backside ? widget.get_backside() : widget;
+            var widget_side = is_backside ? widget.get_backside(true) : widget;
             var widget_index;
             if (!this.backside_widgets) {
                 console.log("Couldn't remove a widget from backside widgets.");

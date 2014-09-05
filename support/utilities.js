@@ -589,8 +589,11 @@ window.TOONTALK.UTILITIES =
         
         copy_widget_sides: function (widget_sides, just_value) {
             return widget_sides.map(function (widget_side) {
-                return {widget: widget_side.widget.copy(just_value),
-                        is_backside: widget_side.is_backside};
+                var widget_copy = widget_side.get_widget().copy(just_value);
+                if (widget_side.is_backside()) {
+                    widget_copy.get_backside();
+                }
+                return widget_copy;
             });
         },
         
@@ -1453,7 +1456,7 @@ window.TOONTALK.UTILITIES =
         },
         
         copy_side: function (side, just_value, dimensions_too) {
-            var widget_copy = side.widget.copy(just_value);
+            var widget_copy = side.get_widget().copy(just_value);
             var frontside_element, copy_frontside_element;
             if (dimensions_too) {
                 frontside_element = side.widget.get_frontside_element();
@@ -1463,8 +1466,10 @@ window.TOONTALK.UTILITIES =
                                                    height: $(frontside_element).height()});
                 }
             }
-            return {widget: widget_copy,
-                    is_backside: side.is_backside};
+            if (side.is_backside()) {
+                return widget_copy.get_backside();
+            }
+            return widget_copy;
         },
         
         scale_to_fit: function (this_element, other_element, original_width, original_height) {
