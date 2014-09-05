@@ -232,7 +232,7 @@ window.TOONTALK.backside =
                var frontside = widget.get_frontside();
                var parent_of_backside = widget.get_parent_of_backside();
                var close_title, close_handler;
-               if (frontside && (!parent_of_backside || parent_of_backside.widget.get_type_name() === "top-level")) {
+               if (frontside && (!parent_of_backside || parent_of_backside.get_widget().get_type_name() === "top-level")) {
                    TT.UTILITIES.highlight_element(frontside.get_element());
                }
                if (widget.close_button_ok(backside_element)) {
@@ -442,13 +442,15 @@ window.TOONTALK.backside =
             };
             var parent_of_backside = widget.get_parent_of_backside();
             TT.UTILITIES.remove_highlight();
-            if (widget.forget_backside) {
-                widget.forget_backside();
-            }
-            if (parent_of_backside.is_backside) {
-                parent_of_backside.widget.remove_backside_widget(widget, true);
-            } else {
-                parent_of_backside.widget.removed_from_container(widget, true, event, true);
+            if (parent_of_backside) {
+                if (widget.forget_backside) {
+                    widget.forget_backside();
+                }
+                if (parent_of_backside.is_backside()) {
+                    parent_of_backside.remove_backside_widget(widget, true);
+                } else {
+                    parent_of_backside.removed_from_container(widget, true, event, true);
+                }
             }
             record_backside_widget_positions();
             widget.backside_geometry = this.get_backside_dimensions();
@@ -631,6 +633,14 @@ window.TOONTALK.backside =
             if (this.visible()) {
                 TT.DISPLAY_UPDATES.pending_update(this);
             }
+        },
+
+        remove_backside_widget: function (widget, is_backside, ignore_if_not_on_backside) {
+            return this.get_widget().remove_backside_widget(widget, is_backside, ignore_if_not_on_backside);
+        },
+
+        is_backside: function () {
+            return true;
         }
 
     };

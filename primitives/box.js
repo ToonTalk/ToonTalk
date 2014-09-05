@@ -396,7 +396,8 @@ window.TOONTALK.box = (function (TT) {
     };
     
     box.get_index_of = function (part) {
-        return part.get_parent_of_frontside().widget.get_index();
+        // parent should be a hole
+        return part.get_parent_of_frontside().get_index();
     };
     
     box.removed_from_container = function (part, backside_removed, event) {
@@ -619,13 +620,8 @@ window.TOONTALK.box_hole =
                 return this;
             };
             hole.widget_dropped_on_me = function (dropped, is_backside, event, robot) {
-                var box = this.get_parent_of_frontside().widget;
-                var parent_of_frontside = dropped.get_parent_of_frontside();
+                var box = this.get_parent_of_frontside();
                 var $hole_element;
-                // other code should take care of this (e.g. drop)
-//              if (parent_of_frontside && parent_of_frontside.widget && parent_of_frontside.widget.removed_from_container) {
-//                  parent_of_frontside.widget.removed_from_container(dropped);
-//              }
                 if (TT.robot.in_training) {
                     TT.robot.in_training.dropped_on(dropped, this);
                 }
@@ -684,7 +680,8 @@ window.TOONTALK.box_hole =
             hole.visible = function () {
                 // why isn't this just is frontside_element visible?
                 // you can't see it but if box is visible then it is
-                return this.get_parent_of_frontside().widget.visible(); 
+                // revisit this
+                return this.get_parent_of_frontside().visible(); 
             };
             hole.render = function () {
                 if (contents) {
@@ -702,7 +699,7 @@ window.TOONTALK.box_hole =
                 if (contents) {
                     contents = undefined;
                     if (event) {
-                        this.get_parent_of_frontside().widget.render();
+                        this.get_parent_of_frontside().render();
                     }
                 } else {
                     console.log("Holes can't be removed from containers.");
@@ -711,7 +708,7 @@ window.TOONTALK.box_hole =
             hole.temporarily_remove_contents = function (widget, update_display) {
                 if (contents) {
                     // box should handle this
-                    return this.get_parent_of_frontside().widget.temporarily_remove_contents(widget, update_display);
+                    return this.get_parent_of_frontside().temporarily_remove_contents(widget, update_display);
                 }
             };
             hole.toString = function () {
@@ -731,6 +728,14 @@ window.TOONTALK.box_hole =
                     return contents.get_full_description();
                 }
                 return "_";
+            };
+            hole.is_backside = function () {
+                // holes are not quite first-class in that they don't have a backside
+                return false;
+            };
+            hole.get_widget = function () {
+                // isn't a backside so returns itself
+                return this;
             };
             if (TT.debugging) {
                 hole.debug_string = "An empty hole";

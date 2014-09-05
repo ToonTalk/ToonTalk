@@ -63,9 +63,9 @@ window.TOONTALK.sensor = (function (TT) {
             if (visible) {
                 delivery_bird = TT.bird.create();
                 // comes from the bottom center
-                delivery_bird.animate_delivery_to({widget: value_widget}, {widget: new_sensor}, new_sensor, $top_level_backside.width()/2, $top_level_backside.height());
+                delivery_bird.animate_delivery_to(value_widget, new_sensor, new_sensor, $top_level_backside.width()/2, $top_level_backside.height());
             } else {
-                new_sensor.add_to_contents({widget: value_widget});
+                new_sensor.add_to_contents(value_widget);
             }
         };
         new_sensor.copy = function (just_value) {
@@ -183,8 +183,8 @@ window.TOONTALK.sensor = (function (TT) {
         if (previous_contents.length > 0) {
             setTimeout(function () {
                 // delay to give it a chance to be added to the DOM
-                previous_contents.forEach(function (widget) {
-                    style_contents(widget.widget, sensor);
+                previous_contents.forEach(function (side) {
+                    style_contents(side.get_widget(), sensor);
                 });
             },
             500);

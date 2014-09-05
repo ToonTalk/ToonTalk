@@ -101,7 +101,7 @@ window.TOONTALK.tool = (function (TT) {
                 }
                 widget_type = widget_under_tool.get_type_name();
                 if (widget_under_tool && widget_type === "empty hole") {
-                    return widget_under_tool.get_parent_of_frontside().widget;
+                    return widget_under_tool.get_parent_of_frontside();
                 }
                 return widget_under_tool;
             };            

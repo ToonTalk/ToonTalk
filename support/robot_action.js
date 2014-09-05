@@ -160,7 +160,7 @@ window.TOONTALK.robot_action =
                 robot.rerender();
             }
             // revisit use of get_parent_of_frontside once robots can manipulate backsides...
-            if ($thing_in_hand_frontside_element.is(":visible") && thing_in_hand.get_parent_of_frontside() && thing_in_hand.get_parent_of_frontside().is_backside) {
+            if ($thing_in_hand_frontside_element.is(":visible") && thing_in_hand.get_parent_of_frontside() && thing_in_hand.get_parent_of_frontside().is_backside()) {
                 TT.UTILITIES.set_absolute_position($thing_in_hand_frontside_element, thing_in_hand_position);
             }
         };
@@ -222,7 +222,7 @@ window.TOONTALK.robot_action =
         tool_use_animation(widget, context, top_level_context, robot, new_continuation, "toontalk-wand-small");
     };
     var remove_or_erase_animation = function (widget, context, top_level_context, robot, continuation) {
-        var parent = widget.get_parent_of_frontside() && widget.get_parent_of_frontside().widget;
+        var parent = widget.get_parent_of_frontside();
         var new_continuation = function () {
             continuation();
             if (parent && parent.get_type_name() !== 'top-level') {
