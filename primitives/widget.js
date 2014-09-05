@@ -365,10 +365,14 @@ window.TOONTALK.widget = (function (TT) {
             var frontside = this.get_frontside();
             var parent_of_frontside = this.get_parent_of_frontside();
             var parent_of_backside = this.get_parent_of_backside();
+            var backside_of_parent;
             if (backside) {
                 backside.remove();
                 if (parent_of_backside && parent_of_backside.widget) {
-                    parent_of_backside.widget.get_backside().removed_from_container(this, true, event);
+                    backside_of_parent = parent_of_backside.widget.get_backside();
+                    if (backside_of_parent.removed_from_container) {
+                        backside_of_parent.removed_from_container(this, true, event);
+                    }
                 }  
             }
             if (frontside) {
