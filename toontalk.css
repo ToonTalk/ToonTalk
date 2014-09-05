@@ -246,6 +246,10 @@
     -moz-box-sizing: border-box; 
 	-webkit-box-sizing: border-box;
 }
+.toontalk-highlight.toontalk-box-hole {
+	background-image: url("images/border-quarter-size-highlighted.png");
+	background-repeat: round;
+}
 .toontalk-top-level-number {
 	/* numbers look better with fixed widths -- easier to compare visually */
 	font-family: 'Lucida console', monospace;
@@ -415,17 +419,17 @@
 }
 .toontalk-highlight.toontalk-number-quarter-size-border {
 	border: 8px solid transparent;
-    -moz-border-image: url("images/border-half-size-highlighted.png") 8 8 round repeat;
-	-webkit-border-image: url("images/border-half-size-highlighted.png") 8 8 round repeat;
-    -o-border-image: url("images/border-half-size-highlighted.png") 8 8 round repeat;
-    border-image: url("images/border-half-size-highlighted.png") 8 8 round repeat;
+    -moz-border-image: url("images/border-quarter-size-highlighted.png") 8 8 round repeat;
+	-webkit-border-image: url("images/border-quarter-size-highlighted.png") 8 8 round repeat;
+    -o-border-image: url("images/border-quarter-size-highlighted.png") 8 8 round repeat;
+    border-image: url("images/border-quarter-size-highlighted.png") 8 8 round repeat;
 }
 .toontalk-highlight.toontalk-number-eighth-size-border {
 	border: 4px solid transparent;
-    -moz-border-image: url("images/border-half-size-highlighted.png") 4 4 round repeat;
-	-webkit-border-image: url("images/border-half-size-highlighted.png") 4 4 round repeat;
-    -o-border-image: url("images/border-half-size-highlighted.png") 4 4 round repeat;
-    border-image: url("images/border-half-size-highlighted.png") 4 4 round repeat;
+    -moz-border-image: url("images/border-eighth-size-highlighted.png") 4 4 round repeat;
+	-webkit-border-image: url("images/border-eighth-size-highlighted.png") 4 4 round repeat;
+    -o-border-image: url("images/border-eighth-size-highlighted.png") 4 4 round repeat;
+    border-image: url("images/border-eighth-size-highlighted.png") 4 4 round repeat;
 }
 .toontalk-highlight.toontalk-box-full-size-border {
 	border: 32px solid transparent;
@@ -443,17 +447,17 @@
 }
 .toontalk-highlight.toontalk-box-quarter-size-border {
 	border: 8px solid transparent;
-    -moz-border-image: url("images/border-half-size-highlighted.png") 8 8 round repeat;
-	-webkit-border-image: url("images/border-half-size-highlighted.png") 8 8 round repeat;
-    -o-border-image: url("images/border-half-size-highlighted.png") 8 8 round repeat;
-    border-image: url("images/border-half-size-highlighted.png") 8 8 round repeat;
+    -moz-border-image: url("images/border-quarter-size-highlighted.png") 8 8 round repeat;
+	-webkit-border-image: url("images/border-quarter-size-highlighted.png") 8 8 round repeat;
+    -o-border-image: url("images/border-quarter-size-highlighted.png") 8 8 round repeat;
+    border-image: url("images/border-quarter-size-highlighted.png") 8 8 round repeat;
 }
 .toontalk-highlight.toontalk-box-eighth-size-border {
 	border: 4px solid transparent;
-    -moz-border-image: url("images/border-half-size-highlighted.png") 4 4 round repeat;
-	-webkit-border-image: url("images/border-half-size-highlighted.png") 4 4 round repeat;
-    -o-border-image: url("images/border-half-size-highlighted.png") 4 4 round repeat;
-    border-image: url("images/border-half-size-highlighted.png") 4 4 round repeat;
+    -moz-border-image: url("images/border-eighth-size-highlighted.png") 4 4 round repeat;
+	-webkit-border-image: url("images/border-eighth-size-highlighted.png") 4 4 round repeat;
+    -o-border-image: url("images/border-eighth-size-highlighted.png") 4 4 round repeat;
+    border-image: url("images/border-eighth-size-highlighted.png") 4 4 round repeat;
 }
 .toontalk-conditions-not-matched {
 	/* could be fancier -- e.g. glowing */

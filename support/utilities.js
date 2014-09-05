@@ -927,17 +927,19 @@ window.TOONTALK.UTILITIES =
                     event.stopPropagation();
                 });
             $element.on('dragenter', function (event) {
-//              console.log($element.get(0).className); -- not clear why this is never triggered for inputs on backside
-//              probably because backside itself has a dragenter?
-                if (!$element.is(".toontalk-top-level-backside") && 
-                    !$element.is(".toontalk-top-level-resource") &&
-                    !$element.is(".toontalk-being-dragged")) {
-                    TT.UTILITIES.highlight_element($element);
+//              console.log(event.target.className); // -- not clear why this is never triggered for inputs on backside
+//              probably because backside itself has a dragenter? -- use addEventListener if I need both
+                var $target = $(event.target).closest(".toontalk-side");
+                if (!$target.is(".toontalk-top-level-backside") && 
+                    !$target.is(".toontalk-top-level-resource") &&
+                    !$target.is(".toontalk-being-dragged")) {
+                    // could support a can_drop protocol and use it here
+                    TT.UTILITIES.highlight_element($target);
                     // moving over decendants triggers dragleave unless their pointer events are turned off
                     // they are restored on dragend
-                    if (!$element.is(".toontalk-backside, .toontalk-drop-area") && TT.UTILITIES.get_toontalk_widget_from_jquery($element).get_type_name() !== 'box') {
+                    if (!$target.is(".toontalk-backside, .toontalk-drop-area") && TT.UTILITIES.get_toontalk_widget_from_jquery($element).get_type_name() !== 'box') {
                         // this breaks the dropping of elements on empty holes so not supported
-                        $element.find(".toontalk-side").addClass("toontalk-ignore-events");
+                        $target.find(".toontalk-side").addClass("toontalk-ignore-events");
                         // except for toontalk-sides and their ancestors since they are OK to drop on
                         // following was intended to deal with box holes but didn't work
 //                         $element.find(".toontalk-side").parents().removeClass("toontalk-ignore-events");
