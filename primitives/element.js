@@ -562,6 +562,16 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         var element_widget_path = TT.UTILITIES.create_from_json(json.element_widget_path);
         return element.extend_attribute_path(element_widget_path, json.attribute);
     };
+
+    element.get_size_attributes = function () {
+        return {width:  this.get_attribute('width'),
+                height: this.get_attribute('height')};
+    };
+
+    element.set_size_attributes = function (width, height) {
+        this.set_attribute('width',  width);
+        this.set_attribute('height', height);
+    };
     
     return element;
 }(window.TOONTALK));

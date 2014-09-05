@@ -51,22 +51,34 @@ window.TOONTALK.widget = (function (TT) {
                         frontside = TT.frontside.create(widget);
                     }
                     return frontside;
-               };
-               widget.save_dimensions = function () {
-                       var frontside_element = this.get_frontside_element();
-                       this.saved_width =  $(frontside_element).width();
-                       this.saved_height = $(frontside_element).height();
-               };
-               widget.restore_dimensions = function () {
-                      var frontside_element;
-                      if (this.saved_width > 0) {
-                          frontside_element = this.get_frontside_element();
-                          $(frontside_element).css({width:  this.saved_width,
-                                                    height: this.saved_height});
-                          this.saved_width =  undefined;
-                          this.saved_height = undefined;
-                      }
-               };
+                };
+                widget.save_dimensions = function () {
+                    var frontside_element, dimensions;
+                    if (this.get_size_attributes) {
+                        dimensions = this.get_size_attributes();
+                        this.saved_width =  dimensions.width;
+                        this.saved_height = dimensions.height;
+                    } else {
+                        frontside_element = this.get_frontside_element();
+                        this.saved_width =  $(frontside_element).width();
+                        this.saved_height = $(frontside_element).height();
+                    }
+                };
+                widget.restore_dimensions = function () {
+                    var frontside_element;
+                    if (this.saved_width > 0) {
+                        if (this.set_size_attributes) {
+                            // e.g. element widgets need to update their attributes
+                            this.set_size_attributes(this.saved_width, this.saved_height);
+                        } else {
+                            frontside_element = this.get_frontside_element();
+                            $(frontside_element).css({width:  this.saved_width,
+                                                      height: this.saved_height});
+                            this.saved_width =  undefined;
+                            this.saved_height = undefined;
+                        }
+                    }
+                };
             }
             if (!widget.get_backside) {
                 widget.get_backside = function (create) {

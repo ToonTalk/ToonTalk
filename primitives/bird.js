@@ -367,32 +367,11 @@ window.TOONTALK.bird_backside =
         create: function (bird) {
             var backside = TT.backside.create(bird);
             var backside_element = backside.get_element();
-//          var image_url_input = TT.UTILITIES.create_text_input(bird.get_image_url(), "toontalk-image-url-input", "Image URL&nbsp;", "Type here to provide a URL for the appearance of this bird.");
             var standard_buttons = TT.backside.create_standard_buttons(backside, bird);
-//             var infinite_stack_check_box = TT.backside.create_infinite_stack_check_box(backside, bird);
-//             var image_url_change = function () {
-//                 var image_url = image_url_input.button.value.trim();
-//                 if (bird.set_image_url(image_url, true) && TT.robot.in_training) {
-//                     // if changed and by a robot then record it
-//                     TT.robot.in_training.edited(bird, {setter_name: "set_image_url",
-//                                                        argument_1: image_url,
-//                                                        toString: "change the image URL to " + image_url + " of the bird",
-//                                                        button_selector: ".toontalk-run-once-check-box"});
-//                 }
-//             };
-//             var input_table;
-//             image_url_input.button.addEventListener('change', image_url_change);
-//             image_url_input.button.addEventListener('mouseout', image_url_change);
-//             input_table = TT.UTILITIES.create_vertical_table(description_text_area.container); // image_url_input.container
-//             $(input_table).css({width: "90%"});
-//             backside_element.appendChild(input_table);
             backside_element.appendChild(standard_buttons);
-//             backside_element.appendChild(infinite_stack_check_box.container);
             backside.update_display = function () {
                 var frontside_element = bird.get_frontside_element();
                 var $containing_backside_element;
-//                 $(description_text_area.button).val(bird.get_description());
-//                 $(image_url_input.button).val(bird.get_image_url());
                 if (frontside_element) {
                     frontside_element.title = bird.get_title();
                     $containing_backside_element = $(frontside_element).closest(".toontalk-backside");
@@ -534,10 +513,6 @@ window.TOONTALK.nest = (function (TT) {
             var removed = contents.shift();
             if (this.visible()) {
                 if (removed) {
-//                     $(TT.UTILITIES.get_side_element_from_side(removed)).css({width:  removed.saved_width,
-//                                                                              height: removed.saved_height});
-//                     removed.saved_width =  undefined;
-//                     removed.saved_height = undefined;
                     removed.widget.restore_dimensions();
                     if (removed.is_backside) {
                         removed.widget.set_parent_of_backside(undefined);
@@ -737,16 +712,17 @@ window.TOONTALK.nest = (function (TT) {
         new_nest.update_display = function () {
             var frontside = this.get_frontside(true);
             var backside = this.get_backside(); 
-            var frontside_element, nest_width, nest_height, contents_backside, contents_side_element;
+            var frontside_element, top_widget, nest_width, nest_height, contents_backside, contents_side_element;
             frontside_element = frontside.get_element();
             if (contents.length > 0) {
-                if (contents[0].is_backside) {
-                    contents_backside = contents[0].widget.get_backside(true);
+                top_widget = contents[0].widget;
+                if (top_widget.is_backside) {
+                    contents_backside = top_widget.get_backside(true);
                     contents_side_element = contents_backside.get_element();
                     contents_backside.update_display();
                     contents_backside.scale_to_fit(contents_side_element, frontside_element);
                 } else {
-                    contents[0].widget.render();
+                    top_widget.render();
                     contents_side_element = TT.UTILITIES.get_side_element_from_side(contents[0]);
                 }
                 nest_width = $(frontside_element).width();
@@ -755,19 +731,26 @@ window.TOONTALK.nest = (function (TT) {
                 // but it didn't work well - especially in FireFox
                 // timeout needed when loading otherwise something resets the width and height
                 setTimeout(function () {
-                    $(contents_side_element).css({width:  .8*nest_width-2*contents_side_element.toontalk_border_size,
-                                                  height: .8*nest_height-2*contents_side_element.toontalk_border_size,
-                                                  // offset by 10% -- tried left: 10% but that only worked in first box hole
-                                                  left: nest_width*0.1,
-                                                  top:  nest_height*0.1});
+                        var border_adjustment = 2*contents_side_element.toontalk_border_size || 0;
+                        var width =  .8*nest_width -border_adjustment;
+                        var height = .8*nest_height-border_adjustment;
+                        $(contents_side_element).css({width:  width,
+                                                      height: height,
+                                                      // offset by 10% -- tried left: 10% but that only worked in first box hole
+                                                      left: nest_width*0.1,
+                                                      top:  nest_height*0.1});
+                        if (top_widget.set_size_attributes) {
+                            // e.g. element widgets need to update their attributes
+                            top_widget.set_size_attributes(width, height);
+                        }
                     },
                     2);
                 frontside_element.appendChild(contents_side_element);
                 $(frontside_element).addClass("toontalk-empty-nest");
                 if (contents[0].is_backside) {
-                    contents[0].widget.set_parent_of_backside(this);
+                    top_widget.set_parent_of_backside(this);
                 } else {
-                    contents[0].widget.set_parent_of_frontside(this);
+                    top_widget.set_parent_of_frontside(this);
                 }
             } else {
                 frontside_element.title = this.get_title();
