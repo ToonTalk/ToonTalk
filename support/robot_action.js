@@ -37,7 +37,6 @@ window.TOONTALK.robot_action =
                              target.append(thing_in_hand_frontside_element);
                              $(thing_in_hand_frontside_element).css({position: ""}); // no longer absolute
                              TT.UTILITIES.set_absolute_position($(thing_in_hand_frontside_element), thing_in_hand_position);
-                             robot.set_thing_in_hand(undefined);
                              thing_in_hand.set_parent_of_frontside(TT.widget.top_level_widget());
                          } else {
                              if (target.visible && target.visible()) {
@@ -46,6 +45,7 @@ window.TOONTALK.robot_action =
                              // update this when robots can drop backsides as well
                              thing_in_hand.drop_on(target, false, undefined, robot);
                          }
+                         robot.set_thing_in_hand(undefined);
                          return true;
                      } else {
                          console.log("Thing in robot's hand (" + thing_in_hand + ") doesn't handle 'drop_on'. Robot that " + robot);

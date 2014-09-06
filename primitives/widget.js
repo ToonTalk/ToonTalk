@@ -569,7 +569,7 @@ window.TOONTALK.widget = (function (TT) {
         remove_backside_widget: function (widget, is_backside, ignore_if_not_on_backside) {
             var backside = this.get_backside();
             var widget_side = is_backside ? widget.get_backside() : widget;
-            var widget_index;
+            var widget_index, parent_of_backside, parent_of_frontside;
             if (TT.debugging && !this.backside_widgets) {
                 console.log("Couldn't remove a widget from backside widgets.");
                 return;
@@ -587,11 +587,13 @@ window.TOONTALK.widget = (function (TT) {
                 this.backside_widgets_json_views.splice(widget_index, 1);
             }
             if (is_backside) {
-                if (widget.get_parent_of_backside().get_widget() === this) {
+                parent_of_backside = widget.get_parent_of_backside();
+                if (parent_of_backside && parent_of_backside.get_widget() === this) {
                     widget.set_parent_of_backside(undefined);
                 }
             } else {
-                if (widget.get_parent_of_frontside().get_widget() === this) {
+                parent_of_frontside = widget.get_parent_of_frontside();
+                if (parent_of_frontside && parent_of_frontside.get_widget() === this) {
                     widget.set_parent_of_frontside(undefined);
                 }       
             }

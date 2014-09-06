@@ -398,7 +398,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
              // do this if number is visible and user did the drop or a visible robot did it
              if (robot) {
                  // robot should wait for this
-                this.caused_robot_to_wait_before_next_step = true;
+                other_number.caused_robot_to_wait_before_next_step = true;
              }
              bammer_element = document.createElement("div");
              $(bammer_element).addClass("toontalk-bammer-down");
@@ -425,9 +425,6 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
                          };
                          TT.UTILITIES.animate_to_absolute_position(bammer_element, target_absolute_position, bammer_gone_continuation); 
                          $(bammer_element).css({opacity: 0.01});
-                         if (robot) {
-                             robot.run_next_step();
-                         }
                      },
                      1);
              }.bind(this);
