@@ -127,6 +127,7 @@ window.TOONTALK.robot_action =
     };
     var pick_up_animation = function (widget, context, top_level_context, robot, continuation) {
         var frontside_element = widget.get_frontside_element();
+        widget.save_dimensions();
         $(frontside_element).css({width:  frontside_element.offsetWidth + "px",
                                   height: frontside_element.offsetHeight + "px"});
         move_robot_animation(widget, context, top_level_context, robot, continuation);
@@ -149,6 +150,7 @@ window.TOONTALK.robot_action =
                 // need to see it before actions such as Bammer take place
                 $(".toontalk-top-level-backside").append($thing_in_hand_frontside_element.get(0));
                 TT.UTILITIES.set_absolute_position($thing_in_hand_frontside_element, thing_in_hand_position);
+                thing_in_hand.restore_dimensions();
                 // remove it from the robot's hand since the drop can take a few seconds
                 // and we don't want to see it in the robot's hand
                 if (!thing_in_hand.caused_robot_to_wait_before_next_step) {

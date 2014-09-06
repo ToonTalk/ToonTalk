@@ -149,6 +149,7 @@ window.TOONTALK.actions =
                     };
                     steps[i].do_step(referenced, context, top_level_context, robot);
                     if (robot.get_thing_in_hand()) {
+                        robot.get_thing_in_hand().save_dimensions();
                         robot.render();
                     }
                     // pause between steps and give the previous step a chance to update the DOM
