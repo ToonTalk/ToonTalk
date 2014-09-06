@@ -133,6 +133,7 @@ window.TOONTALK.actions =
                     1000);
             };
             var step_number = 0;
+            // not sure what the following accomplished
 //             if (robot.get_animating()) {
 //                 // is animating so is running a step while watched
 //                 return true;

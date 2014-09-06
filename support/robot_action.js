@@ -241,7 +241,6 @@ window.TOONTALK.robot_action =
         var new_continuation = function () {
             continuation();
             widget.add_copy_to_container(robot.get_recently_created_widget());
-            robot.run_next_step();
         };
         tool_use_animation(widget, context, top_level_context, robot, new_continuation, "toontalk-wand-small");
     };
