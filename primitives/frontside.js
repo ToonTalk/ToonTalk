@@ -21,7 +21,7 @@ window.TOONTALK.frontside =
                         TT.robot.in_training.removed(widget);
                     }
                     widget.remove(event);
-                    TT.UTILITIES.backup_all();
+                    widget.backup_all();
                 } // else warn??
                 event.stopPropagation();
             };

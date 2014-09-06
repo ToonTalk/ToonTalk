@@ -462,7 +462,7 @@ window.TOONTALK.robot = (function (TT) {
         this.rerender();
         this.being_trained = false;
         this.get_frontside_element().title = this.get_title();
-        TT.UTILITIES.backup_all();
+        this.backup_all();
     };
     
     robot.update_display = function () {

@@ -75,7 +75,7 @@ window.TOONTALK.bird = (function (TT) {
                         }
                         if (restore_contents) {
                             // if bird was inside something go back where it was
-                            TT.widget.top_level_widget().remove_backside_widget(this, false, true);
+                            this.top_level_widget().remove_backside_widget(this, false, true);
                             restore_contents();
                         }
                         TT.UTILITIES.add_animation_class(bird_frontside_element, "toontalk-bird-morph-to-static");
@@ -155,7 +155,7 @@ window.TOONTALK.bird = (function (TT) {
                 restore_contents = parent.get_widget().temporarily_remove_contents(this, true);
                 if (restore_contents) {
                     // if it really did remove the contents
-                    TT.UTILITIES.add_to_top_level_backside(this);
+                    parent.get_widget().add_to_top_level_backside(this);
                 }
             }
             $top_level_backside_element.append(bird_frontside_element); // while flying            

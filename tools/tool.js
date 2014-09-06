@@ -57,7 +57,7 @@ window.TOONTALK.tool = (function (TT) {
                 }
                 if (widget_under_tool && widget_under_tool.add_copy_to_container) {
                     tool.apply_tool(widget_under_tool, event);
-                    TT.UTILITIES.backup_all();
+                    widget_under_tool.backup_all();
                 }
                 if (!widget_under_tool && tool.nothing_under_tool) {
                     tool.nothing_under_tool();

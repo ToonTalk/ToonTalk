@@ -862,13 +862,17 @@ window.TOONTALK.widget = (function (TT) {
         },
         
         top_level_widget: function () {
-            var widget = TT.UTILITIES.widget_from_jquery($(".toontalk-top-level-backside"));
+            var widget = TT.UTILITIES.widget_from_jquery($(this.get_frontside_element()).closest(".toontalk-top-level-backside"));
             if (widget) {
                 return widget;
             }
-            widget = Object.create(TT.widget);
+            return this.create_top_level_widget();
+         },
+
+         create_top_level_widget: function () {
+            var widget = Object.create(TT.widget);
             widget.get_json = function (json_history) {
-                var backside = this.get_backside();
+                var backside = this.get_backside(true);
                 var backside_element = backside.get_element();
                 var background_color = document.defaultView.getComputedStyle(backside_element, null).getPropertyValue("background-color");
                 // don't know why the following returns undefined
@@ -926,7 +930,7 @@ window.TOONTALK.widget = (function (TT) {
         },
         
         top_level_create_from_json: function (json) {
-            var widget = TT.widget.top_level_widget();
+            var widget = TT.widget.create_top_level_widget();
             var $backside_element = $(widget.get_backside(true).get_element());
             $backside_element.addClass("toontalk-top-level-backside");
             $backside_element.click(
@@ -939,6 +943,38 @@ window.TOONTALK.widget = (function (TT) {
                 }
             );
             return widget;
+        },
+
+        add_to_top_level_backside: function (widget, train) {
+            var top_level_widget = this.top_level_widget();
+            var widget_frontside_element = widget.get_frontside_element(true);
+            top_level_widget.add_backside_widget(widget);
+            top_level_widget.get_backside_element().appendChild(widget_frontside_element);
+            widget.render();
+            if (train && TT.robot.in_training) {
+                TT.robot.in_training.dropped_on(widget, top_level_widget);
+            }
+            return widget_frontside_element;
+        },
+
+        backup_all: function (immediately) {
+            var top_level_widget = this.top_level_widget();
+            var backup_function;
+            if (top_level_widget) {
+                backup_function = function () {
+                    var json = TT.UTILITIES.get_json_top_level(top_level_widget);
+                    try {
+                        window.localStorage.setItem(top_level_widget.local_storage_key, JSON.stringify(json));
+                    } catch (error) {
+                        TT.UTILITIES.display_message("Failed to save state to local storage since it requires " + JSON.stringify(json).length + " bytes. Error message is " + error);
+                    }
+                };
+                if (immediately) {
+                    backup_function();
+                }
+                // delay it so the geometry settles down
+                setTimeout(backup_function, 100);
+            }            
         },
         
         render: function () {

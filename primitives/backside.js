@@ -100,7 +100,7 @@ window.TOONTALK.backside =
                         backside_of_other = other.open_backside();
                         $(backside_of_other.get_element()).find(".toontalk-train-backside-button").click();
                     }
-                    TT.UTILITIES.backup_all();
+                    other.get_widget().backup_all();
                     return true;
                 };
             backside.add_backside_widgets = function (backside_widgets, json_array)  {
@@ -564,7 +564,7 @@ window.TOONTALK.backside =
                         var sensor = TT.sensor.create('click', 'which', undefined, undefined, true, widget);
                         var sensor_frontside_element = sensor.get_frontside_element(true);
                         var initial_location = $create_sensor_button.offset();
-                        TT.UTILITIES.add_to_top_level_backside(sensor, true);
+                        widget.add_to_top_level_backside(sensor, true);
                         initial_location.left -= 120; // to the left of the button
                         TT.UTILITIES.set_absolute_position($(sensor_frontside_element), initial_location);
                 });

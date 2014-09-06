@@ -37,7 +37,7 @@ window.TOONTALK.robot_action =
                              target.append(thing_in_hand_frontside_element);
                              $(thing_in_hand_frontside_element).css({position: ""}); // no longer absolute
                              TT.UTILITIES.set_absolute_position($(thing_in_hand_frontside_element), thing_in_hand_position);
-                             thing_in_hand.set_parent_of_frontside(TT.widget.top_level_widget());
+                             thing_in_hand.set_parent_of_frontside(robot.top_level_widget());
                          } else {
                              if (target.visible && target.visible()) {
                                  target.render();
