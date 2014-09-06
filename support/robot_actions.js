@@ -133,10 +133,10 @@ window.TOONTALK.actions =
                     1000);
             };
             var step_number = 0;
-            if (robot.get_animating()) {
-                // is animating so is running a step while watched
-                return true;
-            }
+//             if (robot.get_animating()) {
+//                 // is animating so is running a step while watched
+//                 return true;
+//             }
             robot.run_next_step = function () {
                 if (robot.visible()) {
                     // pause between steps and give the previous step a chance to update the DOM     

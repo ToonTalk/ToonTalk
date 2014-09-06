@@ -468,7 +468,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             return this;
         }
         if (robot && result) {
-            robot.robot.run_next_step();
+            robot.run_next_step();
         } // don't continue if an error
         return result;
     };

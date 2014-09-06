@@ -102,6 +102,13 @@ window.TOONTALK.robot_action =
              return true;
          }
     };
+    var pick_up_a_copy_animation = function (widget, context, top_level_context, robot, continuation) {
+        var new_continuation = function () {
+            continuation();
+            robot.run_next_step();
+        };
+        this.move_robot_animation(widget, context, top_level_context, robot, new_continuation);
+    };
     var move_robot_animation = function (widget, context, top_level_context, robot, continuation) {
         var thing_in_hand = robot.get_thing_in_hand();
         var robot_frontside_element = robot.get_frontside_element();
@@ -131,10 +138,14 @@ window.TOONTALK.robot_action =
     };
     var pick_up_animation = function (widget, context, top_level_context, robot, continuation) {
         var frontside_element = widget.get_frontside_element();
+        var new_continuation = function () {
+            continuation();
+            robot.run_next_step();
+        };
         widget.save_dimensions();
         $(frontside_element).css({width:  frontside_element.offsetWidth + "px",
                                   height: frontside_element.offsetHeight + "px"});
-        move_robot_animation(widget, context, top_level_context, robot, continuation);
+        move_robot_animation(widget, context, top_level_context, robot, new_continuation);
     };
     var drop_it_on_animation = function (widget, context, top_level_context, robot, continuation) {
         var thing_in_hand = robot.get_thing_in_hand();
@@ -259,17 +270,18 @@ window.TOONTALK.robot_action =
         button_use_animation(widget, context, top_level_context, robot, new_continuation, additional_info.button_selector);
     };
     var watched_run_functions = 
-        {"copy": copy_animation,
-         "pick up": pick_up_animation,
-         "pick up a copy of": move_robot_animation,
-         "drop it on": drop_it_on_animation,
+        {"copy":                 copy_animation,
+         "pick up":              pick_up_animation,
+         "pick up a copy of":    pick_up_a_copy_animation,
+         "drop it on":           drop_it_on_animation,
          // remove and erase have identical animation but different unwatched semantics
-         "remove":        remove_or_erase_animation,
-         "erased_widget": remove_or_erase_animation, 
-         "edit": edit_animation,
+         "remove":               remove_or_erase_animation,
+         "erased_widget":        remove_or_erase_animation, 
+         "edit":                 edit_animation,
          "add to the top-level backside": function (widget, context, top_level_context, robot, continuation) {
-             // do nothing -- this action is only needed if unwatched
-             continuation();
+              // do nothing -- this action is only needed if unwatched
+              continuation();
+              robot.run_next_step();
          } 
     };
     return {
