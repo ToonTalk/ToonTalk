@@ -428,13 +428,14 @@ window.TOONTALK.backside =
             var parent_of_backside = widget.get_parent_of_backside();
             TT.UTILITIES.remove_highlight();
             if (parent_of_backside) {
-                if (widget.forget_backside) {
-                    widget.forget_backside();
-                }
                 if (parent_of_backside.is_backside()) {
                     parent_of_backside.remove_backside_widget(widget, true);
                 } else {
                     parent_of_backside.removed_from_container(widget, true, event, true);
+                }
+                // important to run the above before the following since otherwise backsides won't be there to remove
+                if (widget.forget_backside) {
+                    widget.forget_backside();
                 }
             }
             record_backside_widget_positions();
