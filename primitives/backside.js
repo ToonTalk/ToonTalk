@@ -272,6 +272,10 @@ window.TOONTALK.backside =
             }
             return backside;
         },
+
+        toString: function () {
+            return "backside of " + this.get_widget();
+        },
                 
         remove: function () {
             $(this.get_element()).remove();
