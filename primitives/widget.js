@@ -850,7 +850,7 @@ window.TOONTALK.widget = (function (TT) {
         },
                 
         apply_backside_geometry: function () {
-            var backside = this.get_backside();
+            var backside = this.get_backside(true);
             var backside_element = backside.get_element();
             if (this.backside_geometry && backside_element) {
                 TT.backside.scale_backside($(backside_element), this.backside_geometry.x_scale, this.backside_geometry.y_scale, this.backside_geometry.original_width, this.backside_geometry.original_height);

@@ -335,7 +335,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             }
             return '<div class="toontalk-number toontalk-integer' + extra_class + '" style="font-size: ' + font_size + 'px;">' + operator_HTML + fit_string_to_length(integer_as_string, max_characters) + '</div>';
         }
-        table_style = ' style="font-size:' + (font_size * 0.5) + 'px;"';
+        table_style = ' style="font-size:' + (font_size * 0.4) + 'px;"';
         if (format === 'improper_fraction' || !format) { // default format
             // double the max_characters since the font size is halved
             improper_fraction_HTML = 
@@ -396,6 +396,10 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
          if (this.visible() && 
               (event || (robot && robot.visible()))) {
              // do this if number is visible and user did the drop or a visible robot did it
+             if (robot) {
+                 // robot should wait for this
+                this.caused_robot_to_wait_before_next_step = true;
+             }
              bammer_element = document.createElement("div");
              $(bammer_element).addClass("toontalk-bammer-down");
              $top_level_backside_element = $(".toontalk-top-level-backside");
@@ -410,10 +414,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
              target_absolute_position.top  -= $top_level_backside_element.position().top;
              target_absolute_position.top  += $(this_frontside_element).height();
              hit_number_continuation = function () {
-                 this.number_dropped_on_me_semantics(other_number, event);
-                 if (robot) {
-                    robot.wait_before_next_step = false;
-                 }
+                 this.number_dropped_on_me_semantics(other_number, event, robot);
                  $(bammer_element).removeClass("toontalk-bammer-down");
                  setTimeout(function () {
                          $(bammer_element).addClass("toontalk-bammer-away");
@@ -424,6 +425,9 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
                          };
                          TT.UTILITIES.animate_to_absolute_position(bammer_element, target_absolute_position, bammer_gone_continuation); 
                          $(bammer_element).css({opacity: 0.01});
+                         if (robot) {
+                             robot.run_next_step();
+                         }
                      },
                      1);
              }.bind(this);
@@ -431,36 +435,42 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
              $(bammer_element).css({opacity: 1.0,
                                     // ensure that Bammer is on top of everything
                                     "z-index": TT.UTILITIES.next_z_index()+100});
-             // e.g. next step is to copy this number and bammer hasn't hit it yet
-             if (robot) {
-                 robot.wait_before_next_step = true;
-             }
              return this;             
          } else {
-             return this.number_dropped_on_me_semantics(other_number,event);
+             return this.number_dropped_on_me_semantics(other_number, event, robot);
          }
      };
 
-    number.number_dropped_on_me_semantics = function (other_number, event) { 
+    number.number_dropped_on_me_semantics = function (other_number, event, robot) { 
+        var result;
         if (TT.robot.in_training) {
             TT.robot.in_training.dropped_on(other_number, this);
         }
         other_number.remove();
         switch (other_number.get_operator()) {
         case '+':
-            return this.add(other_number);
+            result = this.add(other_number);
+            break;
         case '-':
-            return this.subtract(other_number);
+            result = this.subtract(other_number);
+            break;
         case '*':
-            return this.multiply(other_number);
+            result = this.multiply(other_number);
+            break;
         case '/':
-            return this.divide(other_number);
+            result = this.divide(other_number);
+            break;
         case '^':
-            return this.power(other_number);
+            result = this.power(other_number);
+            break;
         default:
             console.log("Number received a number with unsupported operator: " + other_number.get_operator());
             return this;
         }
+        if (robot && result) {
+            robot.robot.run_next_step();
+        } // don't continue if an error
+        return result;
     };
     
     number.widget_dropped_on_me = function (other, other_is_backside, event, robot) {

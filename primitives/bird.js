@@ -14,7 +14,7 @@ window.TOONTALK.bird = (function (TT) {
         var new_bird = Object.create(bird);
         new_bird.widget_dropped_on_me = function (other, other_is_backside, event, robot) {
             var message_side = other_is_backside ? other.get_backside() : other;
-            var frontside_element, fly_continuation, robot_continuation;
+            var frontside_element, fly_continuation;
             if (nest) {
                 if (nest.has_ancestor(other)) {
                     TT.UTILITIES.display_message("Bird can't take its nest to its nest!");
@@ -27,16 +27,16 @@ window.TOONTALK.bird = (function (TT) {
                     $(frontside_element).removeClass("toontalk-bird-gimme");
                     if (robot) {
                         // robot needs to wait until delivery is finished
-                        robot.wait_before_next_step = true;
-                        robot_continuation = function () {
-                            robot.wait_before_next_step = false;
-                        }
+                        this.caused_robot_to_wait_before_next_step = true;
                         // generalise this with backside support too
                         other.remove_from_parent_of_frontside();
                     }
-                    nest.animate_bird_delivery(message_side, this, robot_continuation);
+                    nest.animate_bird_delivery(message_side, this, robot && robot.run_next_step);
                 } else {
                     nest.add_to_contents(message_side);
+                    if (robot) {
+                        robot.run_next_step();
+                    }
                 }
             } else {
                 console.log("to do: handle drop on a nestless bird -- just removes other?");
@@ -613,7 +613,6 @@ window.TOONTALK.nest = (function (TT) {
                 if (robot) {
                     robot.add_newly_created_widget(bird);
                     // since robot dropped the nest it needs to wait (if watched)
-                    robot.wait_before_next_step = true;
                     this.caused_robot_to_wait_before_next_step = true;
                 }
                 this.rerender();
@@ -658,8 +657,7 @@ window.TOONTALK.nest = (function (TT) {
                                     TT.UTILITIES.add_animation_class(bird_frontside_element, "toontalk-bird-morph-to-static");
                                     TT.UTILITIES.add_one_shot_event_handler(bird_frontside_element, "animationend", 1000, become_static);
                                     if (robot) {
-                                        robot.wait_before_next_step = false;
-                                        this.caused_robot_to_wait_before_next_step = false;
+                                        robot.run_next_step();
                                     }
                                     // following ensures it listens to drag over events to change CSS class
                                     // perhaps there is a better way
