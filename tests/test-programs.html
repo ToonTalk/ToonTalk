@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" media="all" href="../libraries/jquery-ui-1.10.4.custom/css/sunny/jquery-ui-1.10.4.custom.css">
+<link rel="stylesheet" media="all" href="../toontalk.css">
+<script src="../libraries/jquery-2.1.0.js"></script>
+<script src="../libraries/jquery-ui-1.10.4.custom/js/jquery-ui-1.10.4.custom.js"></script>
+<script src="../libraries/rationaljs.js"></script>
+<script src="../support/initial.js"></script>
+<script src="../primitives/widget.js"></script>
+<script src="../primitives/number.js"></script>
+<script src="../primitives/robot.js"></script>
+<script src="../primitives/box.js"></script>
+<script src="../primitives/element.js"></script>
+<script src="../primitives/bird.js"></script>
+<script src="../primitives/sensor.js"></script>
+<script src="../primitives/backside.js"></script>
+<script src="../primitives/frontside.js"></script>
+<script src="../tools/tool.js"></script>
+<script src="../tools/wand.js"></script>
+<script src="../tools/vacuum.js"></script>
+<script src="../support/robot_actions.js"></script>
+<script src="../support/robot_action.js"></script>
+<script src="../support/path.js"></script>
+<script src="../support/run_queue.js"></script>
+<script src="../support/display_updates.js"></script>
+<!-- following should be after all the primitive widgets are defined --->
+<script src="../support/utilities.js"></script>
+<title>ToonTalk Reborn Programs Test</title>
+<link rel="shortcut icon" href="favicon.ico" />
+</head>
+<body>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "number",
+            "operator": "+",
+            "numerator": "1",
+            "denominator": "1",
+            "format": "improper_fraction",
+            "backside_widgets": [
+              {
+                "widget": {
+                  "semantic": {
+                    "type": "robot",
+                    "frontside_conditions": {
+                      "semantic": {
+                        "type": "number",
+                        "operator": "+",
+                        "numerator": "1",
+                        "denominator": "1",
+                        "format": "improper_fraction",
+                        "erased": true
+                      },
+                      "view": {
+                        "frontside_width": 200,
+                        "frontside_height": 36
+                      },
+                      "version": 1
+                    },
+                    "body": {
+                      "type": "body",
+                      "steps": [
+                        {
+                          "type": "robot_action",
+                          "action_name": "pick up",
+                          "path": {
+                            "type": "path.to_resource",
+                            "resource": {
+                              "type": "number",
+                              "operator": "+",
+                              "numerator": "1",
+                              "denominator": "1",
+                              "format": "improper_fraction"
+                            }
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "drop it on",
+                          "path": {
+                            "type": "path.to_entire_context"
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "view": {
+                    "frontside_width": 73,
+                    "frontside_height": 101,
+                    "backside_geometry": {
+                      "x_scale": 1,
+                      "y_scale": 1,
+                      "original_width": 480,
+                      "original_height": 83
+                    }
+                  },
+                  "version": 1
+                }
+              }
+            ]
+          },
+          "view": {
+            "frontside_width": 76,
+            "frontside_height": 55,
+            "frontside_left": 33,
+            "frontside_top": 26,
+            "backside_geometry": {
+              "x_scale": 1,
+              "y_scale": 1,
+              "original_width": 483,
+              "original_height": 99
+            }
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "element",
+            "html": "add%201",
+            "attributes": [],
+            "attribute_values": []
+          },
+          "view": {
+            "frontside_left": 77,
+            "frontside_top": 132
+          },
+          "version": 1
+        }
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgba(245, 240, 240, 0.941176)",
+    "frontside_width": 0,
+    "frontside_height": 0,
+    "backside_width": 355,
+    "backside_height": 202,
+    "backside_left": 8,
+    "backside_top": 178,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1,
+      "original_width": 978,
+      "original_height": 461
+    },
+    "drag_x_offset": 186,
+    "drag_y_offset": 85,
+    "backside": true
+  },
+  "version": 1
+}</div>
+<br>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "top_level",
+    "running": true,
+    "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "number",
+            "operator": "+",
+            "numerator": "8",
+            "denominator": "1",
+            "format": "improper_fraction",
+            "backside_widgets": [
+              {
+                "widget": {
+                  "semantic": {
+                    "type": "robot",
+                    "frontside_conditions": {
+                      "semantic": {
+                        "type": "number",
+                        "operator": "+",
+                        "numerator": "1",
+                        "denominator": "1",
+                        "format": "improper_fraction",
+                        "erased": true
+                      },
+                      "view": {
+                        "frontside_width": 0,
+                        "frontside_height": 0
+                      },
+                      "version": 1
+                    },
+                    "body": {
+                      "type": "body",
+                      "steps": [
+                        {
+                          "type": "robot_action",
+                          "action_name": "copy",
+                          "path": {
+                            "type": "path.to_entire_context"
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "pick up",
+                          "path": {
+                            "type": "newly_created_widgets_path",
+                            "index": 0,
+                            "removing_widget": true
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "drop it on",
+                          "path": {
+                            "type": "path.to_entire_context"
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "view": {
+                    "frontside_width": 0,
+                    "frontside_height": 0,
+                    "backside_geometry": {
+                      "x_scale": 1,
+                      "y_scale": 1,
+                      "original_width": 480,
+                      "original_height": 39
+                    },
+                    "frontside_left": 6,
+                    "frontside_top": 105
+                  },
+                  "version": 1
+                }
+              }
+            ]
+          },
+          "view": {
+            "frontside_width": 519,
+            "frontside_height": 55,
+            "frontside_left": 15,
+            "frontside_top": 28,
+            "backside_geometry": {
+              "x_scale": 1,
+              "y_scale": 1,
+              "original_width": 483,
+              "original_height": 99
+            }
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "element",
+            "html": "doubler",
+            "attributes": [],
+            "attribute_values": []
+          },
+          "view": {
+            "frontside_left": 262,
+            "frontside_top": 124
+          },
+          "version": 1
+        }
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgba(245, 240, 240, 0.941176)",
+    "frontside_width": 0,
+    "frontside_height": 0,
+    "backside_width": 663,
+    "backside_height": 181,
+    "backside_left": 8,
+    "backside_top": 178,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1,
+      "original_width": 1200,
+      "original_height": 475
+    },
+    "drag_x_offset": 610,
+    "drag_y_offset": 174,
+    "backside": true
+  },
+  "version": 1
+}</div>
+<br>
+</body>
+</html>
