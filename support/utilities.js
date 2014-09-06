@@ -1408,7 +1408,7 @@ window.TOONTALK.UTILITIES =
             }
             $(".toontalk-top-level-backside").each(function (index, element) {
                 var top_level_widget = TT.UTILITIES.widget_from_jquery($(element));
-                top_level_widget.backup_all();
+                top_level_widget.backup_all(immediately);
             });
         },
         

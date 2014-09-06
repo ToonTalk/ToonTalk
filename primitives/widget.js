@@ -862,7 +862,11 @@ window.TOONTALK.widget = (function (TT) {
         },
         
         top_level_widget: function () {
-            var widget = TT.UTILITIES.widget_from_jquery($(this.get_frontside_element()).closest(".toontalk-top-level-backside"));
+            var widget;
+            if (this.get_type_name() === 'top-level') {
+                return this;
+            }
+            widget = TT.UTILITIES.widget_from_jquery($(this.get_frontside_element()).closest(".toontalk-top-level-backside"));
             if (widget) {
                 return widget;
             }
@@ -960,7 +964,7 @@ window.TOONTALK.widget = (function (TT) {
         backup_all: function (immediately) {
             var top_level_widget = this.top_level_widget();
             var backup_function;
-            if (top_level_widget) {
+            if (top_level_widget && top_level_widget.local_storage_key) {
                 backup_function = function () {
                     var json = TT.UTILITIES.get_json_top_level(top_level_widget);
                     try {
