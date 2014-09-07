@@ -124,7 +124,7 @@ window.TOONTALK.bird = (function (TT) {
             var delay_between_steps = 300; // milliseconds
             var target_offset, bird_offset, target_frontside_element, parent_element, bird_style_position, width, height,
                 $top_level_backside_element, top_level_backside_element_offset, continuation, delivery_continuation, restore_contents,
-                nest_contents_frontside_element, nest_width, nest_height, nest_offset, message_element;
+                nest_contents_frontside_element, nest_width, nest_height, nest_offset, message_element, top_level_widget;
             if (!nest_recieving_message) {
                 nest_recieving_message = nest;
             }
@@ -152,10 +152,11 @@ window.TOONTALK.bird = (function (TT) {
             bird_style_position = bird_frontside_element.style.position;
             bird_frontside_element.style.position = 'absolute';
             if (parent && parent.get_widget().temporarily_remove_contents) {
+                top_level_widget = this.top_level_widget();
                 restore_contents = parent.get_widget().temporarily_remove_contents(this, true);
                 if (restore_contents) {
                     // if it really did remove the contents
-                    parent.get_widget().add_to_top_level_backside(this);
+                    top_level_widget.add_to_top_level_backside(this);
                 }
             }
             $top_level_backside_element.append(bird_frontside_element); // while flying            
