@@ -203,7 +203,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     };
     
     number.equals = function (other) {
-        return other.equals_number(this);
+        return other.equals_number && other.equals_number(this);
     };
 
     number.equals_number = function (other_number) {
@@ -393,12 +393,12 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     number.number_dropped_on_me = function (other_number, other_is_backside, event, robot) {
          var bammer_element, $top_level_backside_element, target_absolute_position, 
              this_frontside_element, hit_number_continuation, bammer_gone_continuation;
-         if (this.visible() && 
+         if (other_number.visible() && 
               (event || (robot && robot.visible()))) {
              // do this if number is visible and user did the drop or a visible robot did it
              if (robot) {
                  // robot should wait for this
-                other_number.caused_robot_to_wait_before_next_step = true;
+                 other_number.caused_robot_to_wait_before_next_step = true;
              }
              bammer_element = document.createElement("div");
              $(bammer_element).addClass("toontalk-bammer-down");
