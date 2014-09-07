@@ -520,7 +520,7 @@ window.TOONTALK.nest = (function (TT) {
                         removed.get_widget().set_parent_of_frontside(undefined);
                     }
                 } else {
-                    console.log("Nothing removed from nest!");
+                    TT.UTILITIES.report_internal_error("Nothing removed from nest!");
                 }
                 if (contents.length > 0) {
                     $(contents[0].get_element()).show();

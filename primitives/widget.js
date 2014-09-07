@@ -548,7 +548,7 @@ window.TOONTALK.widget = (function (TT) {
             var backside = this.get_backside();
             var widget_side = is_backside ? widget.get_backside() : widget;
             if (TT.debugging && widget === this) {
-                console.log("Adding a widget to a list of its backside widgets!");
+                TT.UTILITIES.report_internal_error("Adding a widget to a list of its backside widgets!");
                 return;
             }
             if (!this.backside_widgets) {
@@ -571,13 +571,13 @@ window.TOONTALK.widget = (function (TT) {
             var widget_side = is_backside ? widget.get_backside() : widget;
             var widget_index, parent_of_backside, parent_of_frontside;
             if (TT.debugging && !this.backside_widgets) {
-                console.log("Couldn't remove a widget from backside widgets.");
+                TT.UTILITIES.report_internal_error("Couldn't remove a widget from backside widgets.");
                 return;
             }
             widget_index = this.backside_widgets.indexOf(widget_side);
             if (widget_index < 0) {
                 if (!ignore_if_not_on_backside) {
-                    console.log("Couldn't find a widget to remove it from backside widgets. " + widget_side.get_widget() + " (" + widget_side.get_widget().debug_id + ")"); 
+                    TT.UTILITIES.report_internal_error("Couldn't find a widget to remove it from backside widgets. " + widget_side.get_widget() + " (" + widget_side.get_widget().debug_id + ")"); 
                 }
                 return;                        
             }
@@ -743,7 +743,7 @@ window.TOONTALK.widget = (function (TT) {
                    
         removed: function (part) {
             // part should be a ToonTalk widget that is part of this
-            console.log("removed not implemented");
+            TT.UTILITIES.report_internal_error("removed not implemented");
         },
         
         equals_box: function () {

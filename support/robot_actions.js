@@ -51,7 +51,7 @@ window.TOONTALK.actions =
             };                
             new_actions.add_newly_created_widget = function (new_widget) {
                  if (TT.debugging && newly_created_widgets.indexOf(new_widget) >= 0) {
-                     console.log("add_newly_created_widget called with not new widget.");
+                     TT.UTILITIES.report_internal_error("add_newly_created_widget called with not new widget.");
                      return;
                 }
                 newly_created_widgets.push(new_widget);
@@ -79,7 +79,7 @@ window.TOONTALK.actions =
             };
             new_actions.dereference = function (index) {
                 if (TT.debugging && !newly_created_widgets[index]) {
-                    console.log("Expected to find the " + (index+1) + "th newly created widget.");
+                    TT.UTILITIES.report_internal_error("Expected to find the " + (index+1) + "th newly created widget.");
                 }
                 return newly_created_widgets[index];
             }

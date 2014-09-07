@@ -425,7 +425,7 @@ window.TOONTALK.box = (function (TT) {
 //                 }
             }
         } else {
-            console.log("Attempted to remove " + part + " from " + this + " but not found.");
+            TT.UTILITIES.report_internal_error("Attempted to remove " + part + " from " + this + " but not found.");
         }
     };
     
@@ -467,17 +467,20 @@ window.TOONTALK.box = (function (TT) {
                         if (hole.dereference) {
                             return hole.dereference(path.next, top_level_context, robot);
                         } else {
-                            console.log("Expected to refer to a part of " + hole + " but it lacks a method to obtain " + TT.path.toString(path.next));
+                            TT.UTILITIES.report_internal_error("Expected to refer to a part of " + hole + " but it lacks a method to obtain " + TT.path.toString(path.next));
                         }
                     }
                     if (path.removing_widget) {
                         if (hole.get_type_name() === 'empty hole') {
-                            console.log("Robot is trying to remove something from an empty hole. ");
+                            TT.UTILITIES.report_internal_error("Robot is trying to remove something from an empty hole. ");
                         } else if (!hole.get_infinite_stack()) {
                             robot.remove_from_container(hole, this);
                         }
                     }
                     return hole;
+                } else {
+                    // referencing an empty hole
+                    return this.get_hole(index);
                 }
             }
             TT.UTILITIES.report_internal_error(this + " unable to dereference the path: " + TT.path.toString(path));
@@ -702,7 +705,7 @@ window.TOONTALK.box_hole =
                         this.get_parent_of_frontside().render();
                     }
                 } else {
-                    console.log("Holes can't be removed from containers.");
+                    TT.UTILITIES.report_internal_error("Holes can't be removed from containers.");
                 }
             };
             hole.temporarily_remove_contents = function (widget, update_display) {

@@ -58,7 +58,7 @@ window.TOONTALK.sensor = (function (TT) {
                 style_contents(value_widget, new_sensor);
                 break;
                 case 'undefined':
-                console.log("No " + attribute + " in sensor " + sensor);
+                TT.UTILITIES.report_internal_error("No " + attribute + " in sensor " + sensor);
                 return;
             }
             if (visible) {

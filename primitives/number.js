@@ -115,7 +115,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         case '^':
             return '^';
         default:
-            console.log("Number has an unsupported operator: " + operator);
+            TT.UTILITIES.report_internal_error("Number has an unsupported operator: " + operator);
             return "";
         }
     };
@@ -461,7 +461,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             result = this.power(other_number);
             break;
         default:
-            console.log("Number received a number with unsupported operator: " + other_number.get_operator());
+            TT.UTILITIES.report_internal_error("Number received a number with unsupported operator: " + other_number.get_operator());
             return this;
         }
         if (robot && result) {

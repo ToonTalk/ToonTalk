@@ -436,7 +436,7 @@ window.TOONTALK.robot = (function (TT) {
         var context = this.get_context();
         var backside_element;
         if (!context) {
-            console.log("Robot started training but can't find its 'context'.");
+            TT.UTILITIES.report_internal_error("Robot started training but can't find its 'context'.");
             return;
         }
         this.being_trained = true;

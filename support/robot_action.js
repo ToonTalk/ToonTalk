@@ -48,13 +48,13 @@ window.TOONTALK.robot_action =
                          robot.set_thing_in_hand(undefined);
                          return true;
                      } else {
-                         console.log("Thing in robot's hand (" + thing_in_hand + ") doesn't handle 'drop_on'. Robot that " + robot);
+                         TT.UTILITIES.report_internal_error("Thing in robot's hand (" + thing_in_hand + ") doesn't handle 'drop_on'. Robot that " + robot);
                      }
                  } else {
-                    console.log("The robot that '" + robot.toString() + "' is executing drop_on but has nothing in its hand.");
+                    TT.UTILITIES.report_internal_error("The robot that '" + robot.toString() + "' is executing drop_on but has nothing in its hand.");
                  }
              } else {
-                console.log("The robot that '" + robot.toString() + "' is executing drop_on but doesn't know where to drop what its holding");
+                TT.UTILITIES.report_internal_error("The robot that '" + robot.toString() + "' is executing drop_on but doesn't know where to drop what its holding");
              }   
          },
          "remove": function (widget, context, top_level_context, robot) {
@@ -75,7 +75,7 @@ window.TOONTALK.robot_action =
              // uses setter_name instead of the function itself so can be JSONified
              // could replace with function on first use if this is a performance issue
              if (!widget[additional_info.setter_name]) {
-                 console.log(widget + " cannot be edited.");
+                 TT.UTILITIES.report_internal_error(widget + " cannot be edited.");
                  return;
              }
              if (additional_info.argument_2) {
@@ -122,7 +122,7 @@ window.TOONTALK.robot_action =
             } else if (widget.get_side_element) {
                 widget_frontside_element = widget.get_side_element();
             } else {
-                console.log("Unable to find element corresponding to widget " + widget);
+                TT.UTILITIES.report_internal_error("Unable to find element corresponding to widget " + widget);
                 continuation();
                 return;
             }
@@ -151,7 +151,7 @@ window.TOONTALK.robot_action =
         var thing_in_hand = robot.get_thing_in_hand();
         var $thing_in_hand_frontside_element, adjust_dropped_location_continuation;
         if (!thing_in_hand) {
-            console.log("Expected " + robot + " to have thing_in_hand.");
+            TT.UTILITIES.report_internal_error("Expected " + robot + " to have thing_in_hand.");
             move_robot_animation(widget, context, top_level_context, robot, continuation);
             return;
         }
@@ -297,15 +297,15 @@ window.TOONTALK.robot_action =
                 };
             }
             if (!path) {
-                console.log("path undefined in " + action_name + " action");
+                TT.UTILITIES.report_internal_error("path undefined in " + action_name + " action");
             }
             if (!unwatched_run_function) {
-                console.log("no run_function for " + action_name);
+                TT.UTILITIES.report_internal_error("no run_function for " + action_name);
             }
             new_action.run_unwatched = function (context, top_level_context, robot) {
                 var referenced = TT.path.dereference_path(path, context, top_level_context, robot);
                 if (!referenced) {
-                    console.log("Unable to dereference path: " + TT.path.toString(path) + " in context: " + context.toString());
+                    TT.UTILITIES.report_internal_error("Unable to dereference path: " + TT.path.toString(path) + " in context: " + context.toString());
                     return false;
                 }
 //              console.log("running " + this + " of robot#" + robot.debug_id + " on " + referenced.debug_id);

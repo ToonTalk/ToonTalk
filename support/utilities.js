@@ -99,7 +99,7 @@ window.TOONTALK.UTILITIES =
             if (source_widget) {
                 target_widget.get_backside().widget_dropped_on_me(source_widget, source_is_backside, event);
             } else {
-                console.log("No source_widget");
+                TT.UTILITIES.report_internal_error("No source_widget");
             }
             // should the following use pageX instead?
             // for a while using target_position.top didn't work while
@@ -136,7 +136,7 @@ window.TOONTALK.UTILITIES =
             // dragging top-level backside to itself or one of its children is ignored
             return;
         } else if (!target_widget) {
-            console.log("target element has no 'owner'");
+            TT.UTILITIES.report_internal_error("target element has no 'owner'");
             return; // let event propagate
         } else {
             // before processing drop ensure that dropped item (source_widget) is visible and where dropped
@@ -271,7 +271,7 @@ window.TOONTALK.UTILITIES =
                         },
                     1);
                 } else {
-                    console.log("Could not recreate a widget from this JSON: " + json_string);
+                    TT.UTILITIES.report_internal_error("Could not recreate a widget from this JSON: " + json_string);
                 }
             });
             if (!includes_top_level_backside) {
@@ -389,7 +389,7 @@ window.TOONTALK.UTILITIES =
 //                     widget = TT.UTILITIES.create_from_json(additional_info.json_of_shared_widgets[json_semantic.shared_widget_index], additional_info);
 //                 }
             } else {
-                console.log("json type '" + json_semantic.type + "' not yet supported.");
+                TT.UTILITIES.report_internal_error("json type '" + json_semantic.type + "' not yet supported.");
                 return;
             }
             if (widget && widget.get_backside) {
@@ -494,7 +494,7 @@ window.TOONTALK.UTILITIES =
         get_json: function (widget, json_history) {
             var index, widget_json;
             if (TT.debugging && !json_history) {
-                console.log("no json_history");
+                TT.UTILITIES.report_internal_error("no json_history");
             }
             index = json_history.shared_widgets.indexOf(widget);
             if (index >= 0) {
@@ -630,7 +630,7 @@ window.TOONTALK.UTILITIES =
         data_transfer_json_object: function (event) {
             var data, json;
             if (!event.dataTransfer) {
-                console.log("no dataTransfer in drop event");
+                TT.UTILITIES.report_internal_error("no dataTransfer in drop event");
                 return;
             }
             // following code could be simplified by using event.dataTransfer.types
@@ -652,7 +652,7 @@ window.TOONTALK.UTILITIES =
 //                 }
             }
             if (!data) {
-                console.log("No data in dataTransfer in drop.");
+                TT.UTILITIES.report_internal_error("No data in dataTransfer in drop.");
                 return;
             }
             json = extract_json_from_div_string(data);
@@ -662,7 +662,7 @@ window.TOONTALK.UTILITIES =
             try {
                 return JSON.parse(json);
             } catch (e) {
-                console.log("Exception parsing " + json + "\n" + e.toString());
+                TT.UTILITIES.report_internal_error("Exception parsing " + json + "\n" + e.toString());
             }
         },
         
@@ -689,7 +689,7 @@ window.TOONTALK.UTILITIES =
                     widget = TT.UTILITIES.widget_from_jquery(dragee);
                     if (!widget) {
                         widget = TT.UTILITIES.widget_from_jquery($element);
-                        console.log("Possible bug that " + dragee + " doesn't have a known owner.");
+                        TT.UTILITIES.report_internal_error("Possible bug that " + dragee + " doesn't have a known owner.");
                         dragee = $(element);
                     }
                     bounding_rectangle = dragee.get(0).getBoundingClientRect()
@@ -776,9 +776,9 @@ window.TOONTALK.UTILITIES =
                     drag_ended();
                     if (!$source && !json_object && !event.dataTransfer.files) {
                         if (!event.dataTransfer) {
-                            console.log("Drop failed since there is no event.dataTransfer");
+                            TT.UTILITIES.report_internal_error("Drop failed since there is no event.dataTransfer");
                         } else {
-                            console.log("Drop failed since unable to parse as JSON."); 
+                            TT.UTILITIES.report_internal_error("Drop failed since unable to parse as JSON."); 
                         }
                         // without the following it may load a new page
                         event.stopPropagation();
@@ -904,7 +904,7 @@ window.TOONTALK.UTILITIES =
                             source_widget = TT.UTILITIES.create_from_json(json_object, {event: event});
                         }
                         if (!source_widget) {
-                            console.log("Unable to construct a ToonTalk widget from the JSON.");
+                            TT.UTILITIES.report_internal_error("Unable to construct a ToonTalk widget from the JSON.");
                             event.stopPropagation();
                             return;
                         }
