@@ -760,7 +760,7 @@ window.TOONTALK.element_backside =
             // conditional on URL parameter whether HTML or plain text
             // default is plain text (displayed and edited) (if there is any -- could be an image or something else)
             // full HTML editing but that is both insecure (should cleanse the HTML) and confusing to non-experts
-            var edit_HTML = window.location.href.indexOf("elementHTML=1") >= 0;
+            var edit_HTML = TT.UTILITIES.get_current_url_boolean_parameter("elementHTML", false);
             var getter = edit_HTML ? "get_HTML" : "get_text";
             var text, html_input, update_html;
             // need to ensure that it 'knows' its innerText, etc.

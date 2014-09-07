@@ -61,8 +61,8 @@ window.TOONTALK.UTILITIES =
                source_widget.get_backside_widgets().forEach(function (backside_widget_side, index) {
                    // not clear why we need to copy these widgets but without copying
                    // their elements are not added to the target (but are added to its backside_widgets)
-                   var widget = backside_widget_side.get_widget().copy();
-//                    console.log("copy commented out since broken identities -- handle drop the problem???");
+                   var widget = backside_widget_side.get_widget();
+//                 console.log("copy commented out since broken identities -- handle drop the problem???");
                    var json_view, backside_element, left_offset, top_offset, width, height, position;
                    if (backside_widgets_json[index].widget.shared_widget_index >= 0) {
                        json_view = shared_widgets[backside_widgets_json[index].widget.shared_widget_index].view;
@@ -72,21 +72,21 @@ window.TOONTALK.UTILITIES =
                    if (backside_widget_side.is_backside()) {
                        backside_element = widget.get_backside_element(true);
                        left_offset = json_view.backside_left;
-                       top_offset = json_view.backside_top;
-                       width = json_view.backside_width;
+                       top_offset =  json_view.backside_top;
+                       width =  json_view.backside_width;
                        height = json_view.backside_height;
                    } else {
                        backside_element = widget.get_frontside_element(true);
                        left_offset = json_view.frontside_left;
-                       top_offset = json_view.frontside_top;
-                       width = json_view.frontside_width;
+                       top_offset =  json_view.frontside_top;
+                       width =  json_view.frontside_width;
                        height = json_view.frontside_height;
                    }
                    handle_drop($target, $(backside_element), widget, target_widget, target_position, event, json_object, 0, 0, backside_widget_side.is_backside());
                    position = $(backside_element).position();
                    $(backside_element).css({left: position.left + left_offset,
-                                            top: position.top + top_offset,
-                                            width: width,
+                                            top:  position.top + top_offset,
+                                            width:  width,
                                             height: height});
                    if (backside_widget_side.is_backside()) {
                        widget.backside_geometry = json_view.backside_geometry;
@@ -205,7 +205,7 @@ window.TOONTALK.UTILITIES =
     var initialise = function () {
         var includes_top_level_backside = false;
         var top_level_widget_count = 0;
-        TT.debugging = true; // remove this for production releases
+        TT.debugging = TT.UTILITIES.get_current_url_boolean_parameter('debugging', false);
         $(".toontalk-json").each(
             function (index, element) {
                 var json_string = element.textContent;
@@ -227,7 +227,7 @@ window.TOONTALK.UTILITIES =
                             // for backwards compatibility don't add suffix to single top-level-widget pages
                             local_storage_key += "#" + top_level_widget_count;
                         }
-                        if (window.location.href.indexOf("reset=1") < 0) {
+                        if (!TT.UTILITIES.get_current_url_boolean_parameter("reset", false)) {
                             try {
                                 stored_json_string = window.localStorage.getItem(local_storage_key);
                             } catch (error) {
@@ -1403,7 +1403,7 @@ window.TOONTALK.UTILITIES =
 
         backup_all_top_level_widgets: function (immediately) {
             var top_level_widget, backup_function;
-            if (window.location.href.indexOf("autosave=0") >= 0) {
+            if (TT.UTILITIES.get_current_url_boolean_parameter("autosave", true)) {
                 return;
             }
             $(".toontalk-top-level-backside").each(function (index, element) {
@@ -1513,6 +1513,25 @@ window.TOONTALK.UTILITIES =
 
         display_message: function (message) {
             alert(message); // for now
+        },
+
+        report_internal_error: function (message) {
+            // these are ToonTalk errors not user errors
+            console.log(message);
+            if (TT.debugging) {
+                TT.UTILITIES.display_message(message);
+            }
+        },
+
+        get_current_url_boolean_parameter: function (parameter, default_value) {
+            if (window.location.href.indexOf(parameter + "=") < 0) {
+                return default_value;
+            }
+            if (window.location.href.indexOf(parameter + "=1") >= 0) {
+                return true;
+            }
+            // any value other than 1 is false
+            return false;
         }
         
 //         create_menu_item: function (text) {

@@ -323,7 +323,7 @@ window.TOONTALK.robot_action =
                     unwatched_run_function(referenced, context, top_level_context, robot, additional_info);
                 }
                 if (!referenced) {
-                    console.log("Unable to dereference the path: " + TT.path.toString(path) + " in context: " + context.toString());
+                    TT.UTILITIES.report_internal_error("Unable to dereference the path: " + TT.path.toString(path) + " in context: " + context.toString());
                     return false;
                 }
                 return watched_run_function(referenced, context, top_level_context, robot, continuation, additional_info);
