@@ -456,7 +456,7 @@ window.TOONTALK.box = (function (TT) {
         var index, hole;
         if (path) {
             index = path.get_index && path.get_index();
-            if (typeof index === 'number') {
+            if (!TT.debugging || typeof index === 'number') {
                 hole = this.get_hole_contents(index);
                 if (hole) {
                     if (hole.dereference_contents && !path.not_to_be_dereferenced) {
@@ -480,7 +480,7 @@ window.TOONTALK.box = (function (TT) {
                     return hole;
                 }
             }
-            console.log("box " + this.toString() + " unable to dereference path " + TT.path.toString(path));
+            TT.UTILITIES.report_internal_error(this + " unable to dereference the path: " + TT.path.toString(path));
         } else {
             return this;
         }
