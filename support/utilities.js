@@ -61,7 +61,7 @@ window.TOONTALK.UTILITIES =
                source_widget.get_backside_widgets().forEach(function (backside_widget_side, index) {
                    // not clear why we need to copy these widgets but without copying
                    // their elements are not added to the target (but are added to its backside_widgets)
-                   var widget = backside_widget_side.widget.copy();
+                   var widget = backside_widget_side.get_widget().copy();
 //                    console.log("copy commented out since broken identities -- handle drop the problem???");
                    var json_view, backside_element, left_offset, top_offset, width, height, position;
                    if (backside_widgets_json[index].widget.shared_widget_index >= 0) {
@@ -69,7 +69,7 @@ window.TOONTALK.UTILITIES =
                    } else {
                        json_view = backside_widgets_json[index].widget.view;
                    }
-                   if (backside_widget_side.is_backside) {
+                   if (backside_widget_side.is_backside()) {
                        backside_element = widget.get_backside_element(true);
                        left_offset = json_view.backside_left;
                        top_offset = json_view.backside_top;
@@ -82,13 +82,13 @@ window.TOONTALK.UTILITIES =
                        width = json_view.frontside_width;
                        height = json_view.frontside_height;
                    }
-                   handle_drop($target, $(backside_element), widget, target_widget, target_position, event, json_object, 0, 0, backside_widget_side.is_backside);
+                   handle_drop($target, $(backside_element), widget, target_widget, target_position, event, json_object, 0, 0, backside_widget_side.is_backside());
                    position = $(backside_element).position();
                    $(backside_element).css({left: position.left + left_offset,
                                             top: position.top + top_offset,
                                             width: width,
                                             height: height});
-                   if (backside_widget_side.is_backside) {
+                   if (backside_widget_side.is_backside()) {
                        widget.backside_geometry = json_view.backside_geometry;
                        widget.apply_backside_geometry();
                    }
