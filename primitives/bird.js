@@ -27,7 +27,7 @@ window.TOONTALK.bird = (function (TT) {
                     $(frontside_element).removeClass("toontalk-bird-gimme");
                     if (robot) {
                         // robot needs to wait until delivery is finished
-                        this.caused_robot_to_wait_before_next_step = true;
+                        other.caused_robot_to_wait_before_next_step = true;
                         // generalise this with backside support too
                         other.remove_from_parent_of_frontside();
                     }
