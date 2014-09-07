@@ -227,7 +227,13 @@ window.TOONTALK.UTILITIES =
                             // for backwards compatibility don't add suffix to single top-level-widget pages
                             local_storage_key += "#" + top_level_widget_count;
                         }
-                        if (!TT.UTILITIES.get_current_url_boolean_parameter("reset", false)) {
+                        if (TT.UTILITIES.get_current_url_boolean_parameter("reset", false)) {
+                            try {
+                                window.localStorage.removeItem(local_storage_key);
+                            } catch (error) {
+                                TT.UTILITIES.display_message("Error removing previous state. Error message is " + error);
+                            }
+                        } else {
                             try {
                                 stored_json_string = window.localStorage.getItem(local_storage_key);
                             } catch (error) {
