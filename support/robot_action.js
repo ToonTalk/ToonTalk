@@ -107,7 +107,7 @@ window.TOONTALK.robot_action =
             continuation();
             robot.run_next_step();
         };
-        this.move_robot_animation(widget, context, top_level_context, robot, new_continuation);
+        move_robot_animation(widget, context, top_level_context, robot, new_continuation);
     };
     var move_robot_animation = function (widget, context, top_level_context, robot, continuation) {
         var thing_in_hand = robot.get_thing_in_hand();
