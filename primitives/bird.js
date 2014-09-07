@@ -614,7 +614,7 @@ window.TOONTALK.nest = (function (TT) {
                 if (robot) {
                     robot.add_newly_created_widget(bird);
                     // since robot dropped the nest it needs to wait (if watched)
-                    this.caused_robot_to_wait_before_next_step = true;
+                    other.caused_robot_to_wait_before_next_step = true;
                 }
                 this.rerender();
                 frontside_element = this.get_frontside_element(true);
