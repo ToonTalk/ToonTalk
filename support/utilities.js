@@ -52,42 +52,44 @@ window.TOONTALK.UTILITIES =
         return div_string.substring(json_start, json_end+1);
     };
     var handle_drop = function ($target, $source, source_widget, target_widget, target_position, event, json_object, drag_x_offset, drag_y_offset, source_is_backside) {
-        var new_target, backside_widgets_json, shared_widgets, top_level_backside_position;
+        var new_target, backside_widgets_json, shared_widgets, top_level_element, top_level_backside_position, backside_widgets;
         if ($target.is(".toontalk-backside")) {
             if (source_widget.get_type_name() === 'top-level') {
                // add all top-level backsides contents but not the backside widget itself
                backside_widgets_json = json_object.semantic.backside_widgets;
                shared_widgets = json_object.shared_widgets;
-               source_widget.get_backside_widgets().forEach(function (backside_widget_side, index) {
-                   // not clear why we need to copy these widgets but without copying
-                   // their elements are not added to the target (but are added to its backside_widgets)
+               top_level_element = $target.get(0);
+               // need to copy the array because the function in the forEach updates the list
+               backside_widgets = source_widget.get_backside_widgets().slice();
+               backside_widgets.forEach(function (backside_widget_side, index) {
                    var widget = backside_widget_side.get_widget();
-//                 console.log("copy commented out since broken identities -- handle drop the problem???");
-                   var json_view, backside_element, left_offset, top_offset, width, height, position;
+                   var json_view, element_of_backside_widget, left_offset, top_offset, width, height, position;
+                   source_widget.remove_backside_widget(widget, backside_widget_side.is_backside());
                    if (backside_widgets_json[index].widget.shared_widget_index >= 0) {
                        json_view = shared_widgets[backside_widgets_json[index].widget.shared_widget_index].view;
                    } else {
                        json_view = backside_widgets_json[index].widget.view;
                    }
                    if (backside_widget_side.is_backside()) {
-                       backside_element = widget.get_backside_element(true);
+                       element_of_backside_widget = widget.get_backside_element(true);
                        left_offset = json_view.backside_left;
                        top_offset =  json_view.backside_top;
                        width =  json_view.backside_width;
                        height = json_view.backside_height;
                    } else {
-                       backside_element = widget.get_frontside_element(true);
+                       element_of_backside_widget = widget.get_frontside_element(true);
                        left_offset = json_view.frontside_left;
                        top_offset =  json_view.frontside_top;
                        width =  json_view.frontside_width;
                        height = json_view.frontside_height;
                    }
-                   handle_drop($target, $(backside_element), widget, target_widget, target_position, event, json_object, 0, 0, backside_widget_side.is_backside());
-                   position = $(backside_element).position();
-                   $(backside_element).css({left: position.left + left_offset,
-                                            top:  position.top + top_offset,
-                                            width:  width,
-                                            height: height});
+                   target_widget.add_backside_widget(widget, backside_widget_side.is_backside());
+                   top_level_element.appendChild(element_of_backside_widget);
+                   position = $(element_of_backside_widget).position();
+                   $(element_of_backside_widget).css({left: position.left + left_offset,
+                                                      top:  position.top + top_offset,
+                                                      width:  width,
+                                                      height: height});
                    if (backside_widget_side.is_backside()) {
                        widget.backside_geometry = json_view.backside_geometry;
                        widget.apply_backside_geometry();
@@ -337,7 +339,7 @@ window.TOONTALK.UTILITIES =
                 }
                 return widget;
             }
-            if (json.shared_widget_index >= 0) {
+            if (additional_info && additional_info.shared_widgets && json.shared_widget_index >= 0) {
                 shared_widget = additional_info.shared_widgets[json.shared_widget_index];
                 if (shared_widget) {
 //                     if (shared_widget.shared_widget_index >= 0) {
