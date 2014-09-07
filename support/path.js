@@ -243,7 +243,8 @@ window.TOONTALK.path =
             // this can be shared by all since only used to drop on -- not to pick up
             // if pick up then needs to be a fresh copy like get_path_to_resource
             dereference: function () {
-                return $(".toontalk-top-level-backside");
+                // need to test whether this works if robot is not being watched
+                return $(robot.get_frontside_element()).closest(".toontalk-top-level-backside");
             },
             toString: function () {
                 return "the top-level backside";

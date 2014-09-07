@@ -92,7 +92,8 @@ window.TOONTALK.robot_action =
                  // could add an extra argument that indicates that it is call from the watched version
                  widget_frontside_element = widget.get_frontside_element(true);
                  context_frontside_position = $(context.get_frontside_element()).position();
-                 top_level_element = $(".toontalk-top-level-backside").get(0);
+                 // need to test the following rewrite:
+                 top_level_element = $(context.get_frontside_element()).closest(".toontalk-top-level-backside").get(0);
                  $(widget_frontside_element).css({left: context_frontside_position.left,
                                                   top:  context_frontside_position.top});
                  top_level_element.appendChild(widget_frontside_element);
@@ -163,7 +164,7 @@ window.TOONTALK.robot_action =
             if (thing_in_hand.drop_on && !(widget instanceof jQuery)) {
                 thing_in_hand_position = $thing_in_hand_frontside_element.offset();
                 // need to see it before actions such as Bammer take place
-                $(".toontalk-top-level-backside").append($thing_in_hand_frontside_element.get(0));
+                $(robot.get_frontside_element()).closest(".toontalk-top-level-backside").append($thing_in_hand_frontside_element.get(0));
                 TT.UTILITIES.set_absolute_position($thing_in_hand_frontside_element, thing_in_hand_position);
                 thing_in_hand.restore_dimensions();
                 // remove it from the robot's hand since the drop can take a few seconds

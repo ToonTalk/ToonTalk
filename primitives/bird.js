@@ -113,7 +113,7 @@ window.TOONTALK.bird = (function (TT) {
                     if (where_to_leave_it) { 
                         $(this.element_to_display_when_flying).css({width:  width,
                                                                     height: height});
-                        $(".toontalk-top-level-backside").append(this.element_to_display_when_flying);
+                        $(this).closest(".toontalk-top-level-backside").append(this.element_to_display_when_flying);
                         TT.UTILITIES.set_absolute_position($(this.element_to_display_when_flying), where_to_leave_it);
                     } else {
                         $(this.element_to_display_when_flying).remove();
@@ -137,7 +137,7 @@ window.TOONTALK.bird = (function (TT) {
                 return;
             }
             target_offset = $(target_frontside_element).offset();
-            $top_level_backside_element = $(".toontalk-top-level-backside");
+            $top_level_backside_element = $(bird_frontside_element).closest(".toontalk-top-level-backside");
             top_level_backside_element_offset = $top_level_backside_element.offset();
             if (starting_left) {
                 bird_offset = {left: starting_left+top_level_backside_element_offset.left,
@@ -220,7 +220,6 @@ window.TOONTALK.bird = (function (TT) {
                         nest_recieving_message.update_display();
                         bird_return_continuation();
                     }.bind(this);
-//                 $(".toontalk-top-level-backside").append(this.element_to_display_when_flying);
                 this.fly_to(message_offset, set_down_message_continuation, delay_between_steps);
             } else {
                 this.fly_to(target_offset, bird_return_continuation, delay_between_steps);
@@ -626,7 +625,7 @@ window.TOONTALK.nest = (function (TT) {
                     } else {
                         // really should find closest ancestor that is a backside 
                         // but that requires Issue 76
-                        backside_where_bird_goes = TT.UTILITIES.widget_from_jquery($(".toontalk-top-level-backside")).get_backside();
+                        backside_where_bird_goes = TT.UTILITIES.widget_from_jquery($(frontside_element).closest(".toontalk-top-level-backside")).get_backside();
                     }
                     bird_frontside_element = bird.get_frontside_element(true);
                     $(bird_frontside_element).removeClass("toontalk-bird-static");

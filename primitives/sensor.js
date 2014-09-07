@@ -33,7 +33,7 @@ window.TOONTALK.sensor = (function (TT) {
         var event_listener = function (event) {
             var value = event[attribute];
             var visible = new_sensor.visible();
-            var $top_level_backside = $(".toontalk-top-level-backside");
+            var $top_level_backside = $(widget.get_frontside_element()).closest(".toontalk-top-level-backside");
             var value_widget, frontside_element, delivery_bird;
             if (attribute === 'keyCode') {
                 if (value === 16) {

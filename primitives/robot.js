@@ -94,7 +94,7 @@ window.TOONTALK.robot = (function (TT) {
                                           width:  '', // rely upon toontalk-robot-animating for dimensions
                                           height: '', // otherwise doesn't animate well
                                           "z-index": TT.UTILITIES.next_z_index()});
-                $(".toontalk-top-level-backside").append(frontside_element);
+                $(frontside_element).closest(".toontalk-top-level-backside").append(frontside_element);
             } else {
                 $(frontside_element).removeClass("toontalk-robot-animating");
             }

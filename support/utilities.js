@@ -142,8 +142,9 @@ window.TOONTALK.UTILITIES =
             return; // let event propagate
         } else {
             // before processing drop ensure that dropped item (source_widget) is visible and where dropped
-            $(".toontalk-top-level-backside").append($source.get(0));
-            top_level_backside_position = $(".toontalk-top-level-backside").offset();
+            top_level_element = $target.closest(".toontalk-top-level-backside").get(0);
+            top_level_element.appendChild($source.get(0));
+            top_level_backside_position = $(top_level_element).offset();
             $source.css({
                 left: event.pageX - (top_level_backside_position.left + drag_x_offset),
                 top:  event.pageY - (top_level_backside_position.top  + drag_y_offset)}
