@@ -30,6 +30,7 @@
 <link rel="shortcut icon" href="favicon.ico" />
 </head>
 <body>
+<p>Add 1:</p>
 <div class='toontalk-json'>{
   "semantic": {
     "type": "top_level",
@@ -156,7 +157,7 @@
   },
   "version": 1
 }</div>
-<br>
+<p>Double:</p>
 <div class='toontalk-json'>{
   "semantic": {
     "type": "top_level",
@@ -287,19 +288,19 @@
   },
   "version": 1
 }</div>
-<br>
+<p>Bird hatch test 1:</p>
 <div class='toontalk-json'>{
   "semantic": {
     "type": "top_level",
     "backside_widgets": [
       {
         "widget": {
-          "shared_widget_index": 0
+          "shared_widget_index": 1
         }
       },
       {
         "widget": {
-          "shared_widget_index": 0
+          "shared_widget_index": 1
         },
         "is_backside": true
       }
@@ -309,20 +310,129 @@
     "background_color": "rgba(245, 240, 240, 0.941176)",
     "frontside_width": 0,
     "frontside_height": 0,
-    "backside_width": 1200,
-    "backside_height": 475,
+    "backside_width": 537,
+    "backside_height": 240,
     "backside_left": 8,
-    "backside_top": 178,
+    "backside_top": 459,
     "backside_geometry": {
       "x_scale": 1,
       "y_scale": 1
     },
-    "drag_x_offset": 318,
-    "drag_y_offset": 285,
+    "drag_x_offset": 515,
+    "drag_y_offset": 98,
     "backside": true
   },
   "version": 1,
   "shared_widgets": [
+    {
+      "semantic": {
+        "type": "robot",
+        "frontside_conditions": {
+          "semantic": {
+            "type": "box",
+            "size": 2,
+            "contents": [
+              null,
+              null
+            ],
+            "horizontal": true
+          },
+          "view": {
+            "frontside_width": 0,
+            "frontside_height": 0
+          },
+          "version": 1
+        },
+        "body": {
+          "type": "body",
+          "steps": [
+            {
+              "type": "robot_action",
+              "action_name": "pick up",
+              "path": {
+                "type": "path.to_resource",
+                "resource": {
+                  "type": "number",
+                  "operator": "+",
+                  "numerator": "1",
+                  "denominator": "1",
+                  "format": "improper_fraction"
+                }
+              }
+            },
+            {
+              "type": "robot_action",
+              "action_name": "drop it on",
+              "path": {
+                "type": "path.to_entire_context",
+                "next_path": {
+                  "type": "box_path",
+                  "index": 0
+                }
+              }
+            },
+            {
+              "type": "robot_action",
+              "action_name": "pick up",
+              "path": {
+                "type": "path.to_resource",
+                "resource": {
+                  "type": "number",
+                  "operator": "+",
+                  "numerator": "1",
+                  "denominator": "1",
+                  "format": "improper_fraction"
+                }
+              }
+            },
+            {
+              "type": "robot_action",
+              "action_name": "drop it on",
+              "path": {
+                "type": "path.to_entire_context",
+                "next_path": {
+                  "type": "box_path",
+                  "index": 1
+                }
+              }
+            },
+            {
+              "type": "robot_action",
+              "action_name": "remove",
+              "path": {
+                "type": "newly_created_widgets_path",
+                "index": 0
+              }
+            },
+            {
+              "type": "robot_action",
+              "action_name": "remove",
+              "path": {
+                "type": "newly_created_widgets_path",
+                "index": 1
+              }
+            }
+          ]
+        }
+      },
+      "view": {
+        "frontside_width": 66,
+        "frontside_height": 110,
+        "frontside_left": 521,
+        "frontside_top": 99,
+        "backside_width": 0,
+        "backside_height": 0,
+        "backside_left": 72,
+        "backside_top": 45,
+        "backside_geometry": {
+          "x_scale": 1,
+          "y_scale": 1,
+          "original_width": 480,
+          "original_height": 39
+        }
+      },
+      "version": 1
+    },
     {
       "semantic": {
         "type": "box",
@@ -335,15 +445,217 @@
         "backside_widgets": [
           {
             "widget": {
+              "shared_widget_index": 0
+            }
+          },
+          {
+            "widget": {
+              "shared_widget_index": 0
+            },
+            "is_backside": true
+          }
+        ]
+      },
+      "view": {
+        "frontside_width": 164,
+        "frontside_height": 68,
+        "frontside_left": 58,
+        "frontside_top": 42,
+        "backside_width": 171,
+        "backside_height": 149,
+        "backside_left": 283,
+        "backside_top": 33,
+        "backside_geometry": {
+          "x_scale": 1,
+          "y_scale": 1,
+          "original_width": 171,
+          "original_height": 39
+        }
+      },
+      "version": 1
+    }
+  ]
+}</div>
+<p>Stream of halving:</p>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "shared_widget_index": 0
+        }
+      },
+      {
+        "widget": {
+          "shared_widget_index": 1
+        }
+      },
+      {
+        "widget": {
+          "shared_widget_index": 1
+        },
+        "is_backside": true
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgb(245, 245, 57)",
+    "frontside_width": 0,
+    "frontside_height": 0,
+    "backside_width": 658,
+    "backside_height": 361,
+    "backside_left": 8,
+    "backside_top": 178,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1,
+      "original_width": 1271,
+      "original_height": 494
+    },
+    "drag_x_offset": 474,
+    "drag_y_offset": 303,
+    "backside": true
+  },
+  "version": 1,
+  "shared_widgets": [
+    {
+      "semantic": {
+        "type": "nest",
+        "contents": [],
+        "guid": "toontalk_id_1410252598361",
+        "waiting_robots": []
+      },
+      "view": {
+        "frontside_width": 116,
+        "frontside_height": 141,
+        "frontside_left": 53,
+        "frontside_top": 18
+      },
+      "version": 1
+    },
+    {
+      "semantic": {
+        "type": "box",
+        "size": 3,
+        "contents": [
+          {
+            "semantic": {
+              "type": "number",
+              "operator": "+",
+              "numerator": "1",
+              "denominator": "1",
+              "format": "improper_fraction",
+              "infinite_stack": true,
+              "description": ""
+            },
+            "view": {
+              "backside_geometry": {
+                "x_scale": 1.6092436974789919,
+                "y_scale": 1.8080808080808082,
+                "original_width": 476.36363649368286,
+                "original_height": 99.36363649368286
+              },
+              "saved_width": 77,
+              "saved_height": 68
+            },
+            "version": 1
+          },
+          {
+            "semantic": {
+              "type": "number",
+              "operator": "*",
+              "numerator": "1",
+              "denominator": "2",
+              "format": "improper_fraction",
+              "infinite_stack": true,
+              "description": ""
+            },
+            "view": {
+              "backside_geometry": {
+                "x_scale": 1,
+                "y_scale": 1,
+                "original_width": 477.36363649368286,
+                "original_height": 99.36363649368286
+              },
+              "saved_width": 77,
+              "saved_height": 68
+            },
+            "version": 1
+          },
+          {
+            "semantic": {
+              "type": "bird",
+              "nest": {
+                "shared_widget_index": 0
+              }
+            },
+            "view": {
+              "saved_width": 70,
+              "saved_height": 102
+            },
+            "version": 1
+          }
+        ],
+        "horizontal": true,
+        "backside_widgets": [
+          {
+            "widget": {
               "semantic": {
                 "type": "robot",
                 "frontside_conditions": {
                   "semantic": {
                     "type": "box",
-                    "size": 2,
+                    "size": 3,
                     "contents": [
-                      null,
-                      null
+                      {
+                        "semantic": {
+                          "type": "number",
+                          "operator": "+",
+                          "numerator": "1",
+                          "denominator": "1",
+                          "format": "improper_fraction",
+                          "erased": true,
+                          "description": ""
+                        },
+                        "view": {},
+                        "version": 1
+                      },
+                      {
+                        "semantic": {
+                          "type": "number",
+                          "operator": "*",
+                          "numerator": "1",
+                          "denominator": "2",
+                          "format": "improper_fraction",
+                          "description": ""
+                        },
+                        "view": {},
+                        "version": 1
+                      },
+                      {
+                        "semantic": {
+                          "type": "bird",
+                          "nest": {
+                            "semantic": {
+                              "type": "nest",
+                              "contents": [
+                              ],
+                              "guid": "toontalk_id_1408040376781",
+                              "waiting_robots": []
+                            },
+                            "view": {
+                              "frontside_width": 0,
+                              "frontside_height": 0,
+                              "saved_width": 116,
+                              "saved_height": 141
+                            },
+                            "version": 1
+                          }
+                        },
+                        "view": {},
+                        "version": 1
+                      }
                     ],
                     "horizontal": true
                   },
@@ -358,13 +670,12 @@
                   "steps": [
                     {
                       "type": "robot_action",
-                      "action_name": "pick up",
+                      "action_name": "pick up a copy of",
                       "path": {
-                        "type": "path.to_resource",
-                        "resource": {
-                          "type": "nest",
-                          "contents": [],
-                          "waiting_robots": []
+                        "type": "path.to_entire_context",
+                        "next_path": {
+                          "type": "box_path",
+                          "index": 1
                         }
                       }
                     },
@@ -381,11 +692,13 @@
                     },
                     {
                       "type": "robot_action",
-                      "action_name": "pick up",
+                      "action_name": "pick up a copy of",
                       "path": {
-                        "type": "newly_created_widgets_path",
-                        "index": 1,
-                        "removing_widget": true
+                        "type": "path.to_entire_context",
+                        "next_path": {
+                          "type": "box_path",
+                          "index": 0
+                        }
                       }
                     },
                     {
@@ -395,46 +708,23 @@
                         "type": "path.to_entire_context",
                         "next_path": {
                           "type": "box_path",
-                          "index": 1
+                          "index": 2
                         }
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "pick up",
-                      "path": {
-                        "type": "path.to_resource",
-                        "resource": {
-                          "type": "number",
-                          "operator": "+",
-                          "numerator": "1",
-                          "denominator": "1",
-                          "format": "improper_fraction"
-                        }
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "drop it on",
-                      "path": {
-                        "type": "newly_created_widgets_path",
-                        "index": 1
                       }
                     }
                   ]
-                },
-                "run_once": true
+                }
               },
               "view": {
-                "frontside_width": 73,
-                "frontside_height": 101,
-                "frontside_left": 295.78125,
-                "frontside_top": 54.875,
+                "frontside_width": 66,
+                "frontside_height": 110,
+                "frontside_left": 263.515625,
+                "frontside_top": 173.265625,
                 "backside_geometry": {
                   "x_scale": 1,
                   "y_scale": 1,
-                  "original_width": 480,
-                  "original_height": 39
+                  "original_width": 479.36363649368286,
+                  "original_height": 39.36363649368286
                 }
               },
               "version": 1
@@ -443,17 +733,17 @@
         ]
       },
       "view": {
-        "frontside_width": 164,
-        "frontside_height": 68,
-        "frontside_left": 181,
-        "frontside_top": 83,
+        "frontside_width": 360,
+        "frontside_height": 100,
+        "frontside_left": 235.015625,
+        "frontside_top": 46.265625,
         "backside_width": 171,
-        "backside_height": 39,
-        "backside_left": 377,
-        "backside_top": 83,
+        "backside_height": 159,
+        "backside_left": 29,
+        "backside_top": 173,
         "backside_geometry": {
           "x_scale": 1,
-          "y_scale": 1,
+          "y_scale": 4.0769230769230775,
           "original_width": 171,
           "original_height": 39
         }
