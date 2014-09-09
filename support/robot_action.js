@@ -249,7 +249,7 @@ window.TOONTALK.robot_action =
         var parent = widget.get_parent_of_frontside();
         var new_continuation = function () {
             continuation();
-            if (parent && parent.get_type_name() !== 'top-level') {
+            if (parent && parent.get_widget().get_type_name() !== 'top-level') {
                 parent.update_display();
             }
             widget.render(); // if wasn't removed
