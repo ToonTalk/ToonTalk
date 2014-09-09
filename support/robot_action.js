@@ -254,7 +254,6 @@ window.TOONTALK.robot_action =
                 parent.update_display();
             }
             widget.render(); // if wasn't removed
-            robot.run_next_step();
         };
         tool_use_animation(widget, context, top_level_context, robot, new_continuation, "toontalk-vacuum-ready-small");
     };
