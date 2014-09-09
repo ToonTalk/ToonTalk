@@ -251,7 +251,9 @@ window.TOONTALK.widget = (function (TT) {
             }
             if (!widget.animate_to_absolute_position) {
                 widget.animate_to_absolute_position = function (target_absolute_position, continuation, speed) {
-                    var mover_frontside_element = this.get_frontside_element();
+                    var mover_frontside_element;
+//                  this.update_display();
+                    mover_frontside_element = this.get_frontside_element();
                     TT.UTILITIES.animate_to_absolute_position(mover_frontside_element, target_absolute_position, continuation, speed);
                 };
             }

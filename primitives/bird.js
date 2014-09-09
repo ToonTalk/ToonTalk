@@ -104,7 +104,8 @@ window.TOONTALK.bird = (function (TT) {
                     $(this.element_to_display_when_flying).css({left: '',
                                                                 top:  '',
                                                                 width: '',
-                                                                height: ''});
+                                                                height: '',
+                                                                position: ''});
                     this.update_display();
                 }.bind(this);
             var stop_carrying_element = function (where_to_leave_it) {
@@ -117,7 +118,7 @@ window.TOONTALK.bird = (function (TT) {
                     if (where_to_leave_it) { 
                         $(this.element_to_display_when_flying).css({width:  width,
                                                                     height: height});
-                        $(this).closest(".toontalk-top-level-backside").append(this.element_to_display_when_flying);
+                        $(bird_frontside_element).closest(".toontalk-top-level-backside").append(this.element_to_display_when_flying);
                         TT.UTILITIES.set_absolute_position($(this.element_to_display_when_flying), where_to_leave_it);
                     } else {
                         $(this.element_to_display_when_flying).remove();
@@ -301,6 +302,8 @@ window.TOONTALK.bird = (function (TT) {
         }
         if (this.element_to_display_when_flying) {
             frontside_element.appendChild(this.element_to_display_when_flying);
+        } else {
+            $(frontside_element).children(".toontalk-side").remove();
         }
         if (backside) {
             backside.rerender();
@@ -330,6 +333,7 @@ window.TOONTALK.bird = (function (TT) {
             }
         };
         // duration is proportional to distance
+//      console.log("Flying to " + target_offset.left + ", " + target_offset.top + " holding " + (this.element_to_display_when_flying && this.element_to_display_when_flying.className));
         this.animate_to_absolute_position(target_offset, full_continuation);
     };
     
