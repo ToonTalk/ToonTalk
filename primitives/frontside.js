@@ -15,16 +15,6 @@ window.TOONTALK.frontside =
             var frontside = Object.create(this);
             var frontside_element = document.createElement('div');
             var $frontside_element = $(frontside_element);
-            var close_handler = function (event) {
-                if (widget.remove) {
-                    if (TT.robot.in_training) {
-                        TT.robot.in_training.removed(widget);
-                    }
-                    widget.remove(event);
-                    widget.backup_all();
-                } // else warn??
-                event.stopPropagation();
-            };
             $(frontside_element).addClass("toontalk-frontside toontalk-side");
             frontside_element.toontalk_widget = widget;
 //          console.log(widget + " with " + widget.debug_id + " associated with " + frontside_element.className);
@@ -40,11 +30,6 @@ window.TOONTALK.frontside =
                 if ($(event.target).is('.ui-resizable-handle')) { 
                     // don't let resize events cause click response
                     // see http://stackoverflow.com/questions/5709220/how-to-cancel-click-after-resizable-events
-                    return;
-                }
-                if ($(event.target).is(".toontalk-close-button")) {
-                    // not sure why this happens sometimes
-                    close_handler(event);
                     return;
                 }
                 if ($frontside_element.is(".toontalk-top-level-resource")) {
