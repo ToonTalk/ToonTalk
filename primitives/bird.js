@@ -61,17 +61,21 @@ window.TOONTALK.bird = (function (TT) {
                         become_static = function () {
                             $(bird_frontside_element).removeClass("toontalk-bird-morph-to-static");
                             $(bird_frontside_element).addClass("toontalk-bird-static");
-                            parent.get_widget().rerender();
+                            if (parent) {
+                                parent.get_widget().rerender();
+                            }
                         };
                         bird_frontside_element.style.position = bird_style_position;
                         bird_offset.left -= parent_offset.left;
                         bird_offset.top  -= parent_offset.top;
                         $(bird_frontside_element).css(bird_offset);
                         parent_element.appendChild(bird_frontside_element);
-                        if (parent.get_widget().get_type_name() === 'top-level') {
-                            this.rerender();
-                        } else {
-                            parent.get_widget().rerender();
+                        if (parent) {
+                            if (parent.get_widget().get_type_name() === 'top-level') {
+                                this.rerender();
+                            } else {
+                                parent.get_widget().rerender();
+                            }
                         }
                         if (restore_contents) {
                             // if bird was inside something go back where it was
