@@ -100,7 +100,9 @@ window.TOONTALK.backside =
                         backside_of_other = other.open_backside();
                         $(backside_of_other.get_element()).find(".toontalk-train-backside-button").click();
                     }
-                    other.get_widget().backup_all();
+                    if (event) {
+                        other.get_widget().backup_all();
+                    }
                     return true;
                 };
             backside.add_backside_widgets = function (backside_widgets, json_array)  {
