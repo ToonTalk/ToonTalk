@@ -152,7 +152,8 @@ window.TOONTALK.robot_action =
         var thing_in_hand = robot.get_thing_in_hand();
         var $thing_in_hand_frontside_element, adjust_dropped_location_continuation;
         if (!thing_in_hand) {
-            TT.UTILITIES.report_internal_error("Expected " + robot + " to have thing_in_hand.");
+            TT.UTILITIES.report_internal_error("Expected the robot to be holding something.");
+            console.log("The robot is " + robot);
             move_robot_animation(widget, context, top_level_context, robot, continuation);
             return;
         }
