@@ -58,13 +58,7 @@ window.TOONTALK.robot_action =
              }   
          },
          "remove": function (widget, context, top_level_context, robot) {
-             if (widget.widget) {
-                 // is really a side of a widget
-                 widget = widget.widget;
-             }
-             if (widget.remove) {
-                 widget.remove();
-             }
+             widget.remove();
              return true;
          },
          "erased_widget": function (widget, context, top_level_context, robot, additional_info) {

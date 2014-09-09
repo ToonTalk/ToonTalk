@@ -279,7 +279,7 @@ window.TOONTALK.backside =
             return "backside of " + this.get_widget();
         },
                 
-        remove: function () {
+        remove_element(): function () {
             $(this.get_element()).remove();
         },
         
@@ -625,6 +625,10 @@ window.TOONTALK.backside =
 
         remove_backside_widget: function (widget, is_backside, ignore_if_not_on_backside) {
             return this.get_widget().remove_backside_widget(widget, is_backside, ignore_if_not_on_backside);
+        },
+
+        remove: function () {
+                this.get_widget().remove();
         },
 
         is_backside: function () {

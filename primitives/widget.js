@@ -397,7 +397,7 @@ window.TOONTALK.widget = (function (TT) {
             var parent_of_backside = this.get_parent_of_backside();
             var backside_of_parent;
             if (backside) {
-                backside.remove();
+                backside.remove_element();
                 if (parent_of_backside) {
                     if (parent_of_backside.is_backside()) {
                         backside_of_parent = parent_of_backside;
