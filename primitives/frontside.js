@@ -66,6 +66,12 @@ window.TOONTALK.frontside =
         },
         
         remove: function () {
+            if (TT.debugging) {
+                if ($(this.get_element()).parent().length === 0) {
+                    console.log("Removing something that has already been removed.");
+                    console.log("Widget is " + this.get_widget());
+                }
+            }
             $(this.get_element()).remove();
         }
 
