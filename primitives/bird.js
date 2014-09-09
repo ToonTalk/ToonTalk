@@ -437,7 +437,7 @@ window.TOONTALK.nest = (function (TT) {
                 // is under the top widget
                 widget_side.get_widget().hide();
             }
-            if (widget_side.is_backside) {
+            if (widget_side.is_backside()) {
                 widget_side.get_widget().set_parent_of_backside(this);
             } else {
                 widget_side.get_widget().set_parent_of_frontside(this);
@@ -513,7 +513,7 @@ window.TOONTALK.nest = (function (TT) {
             if (this.visible()) {
                 if (removed) {
                     removed.get_widget().restore_dimensions();
-                    if (removed.is_backside) {
+                    if (removed.is_backside()) {
                         removed.get_widget().set_parent_of_backside(undefined);
                     } else {
                         removed.get_widget().set_parent_of_frontside(undefined);
@@ -747,7 +747,7 @@ window.TOONTALK.nest = (function (TT) {
                     2);
                 frontside_element.appendChild(contents_side_element);
                 $(frontside_element).addClass("toontalk-empty-nest");
-                if (contents[0].is_backside) {
+                if (contents[0].is_backside()) {
                     top_widget.set_parent_of_backside(this);
                 } else {
                     top_widget.set_parent_of_frontside(this);
