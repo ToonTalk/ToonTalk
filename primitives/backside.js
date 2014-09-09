@@ -279,7 +279,7 @@ window.TOONTALK.backside =
             return "backside of " + this.get_widget();
         },
                 
-        remove_element(): function () {
+        remove_element: function () {
             $(this.get_element()).remove();
         },
         
