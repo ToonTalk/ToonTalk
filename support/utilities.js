@@ -1002,7 +1002,7 @@ window.TOONTALK.UTILITIES =
             var left = absolute_position.left;
             var top =  absolute_position.top;
             var ancestor_position;
-            while (!$ancestor.is("html")) {
+            while ($ancestor.is("*") && !$ancestor.is("html")) {
                 ancestor_position = $ancestor.position();
                 left -= ancestor_position.left;
                 top  -= ancestor_position.top;
