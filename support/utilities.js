@@ -670,8 +670,8 @@ window.TOONTALK.UTILITIES =
             }
             try {
                 return JSON.parse(json);
-            } catch (e) {
-                TT.UTILITIES.report_internal_error("Exception parsing " + json + "\n" + e.toString());
+            } catch (exception) {
+                TT.UTILITIES.report_internal_error("Exception parsing " + json + "\n" + exception.toString());
             }
         },
         
@@ -1412,7 +1412,7 @@ window.TOONTALK.UTILITIES =
 
         backup_all_top_level_widgets: function (immediately) {
             var top_level_widget, backup_function;
-            if (TT.UTILITIES.get_current_url_boolean_parameter("autosave", true)) {
+            if (!TT.UTILITIES.get_current_url_boolean_parameter("autosave", true)) {
                 return;
             }
             $(".toontalk-top-level-backside").each(function (index, element) {
