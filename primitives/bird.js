@@ -619,13 +619,20 @@ window.TOONTALK.nest = (function (TT) {
                 frontside_element = this.get_frontside_element(true);
                 TT.UTILITIES.add_animation_class(frontside_element, "toontalk-hatch-egg");
                 hatching_finished_handler = function () {
-                    var backside_where_bird_goes, resting_left, resting_top;
+                    var backside_where_bird_goes, resting_left, resting_top, top_level_widget;
                     if (other_is_backside) {
                         backside_where_bird_goes = other.get_backside();
                     } else {
-                        // really should find closest ancestor that is a backside 
-                        // but that requires Issue 76
-                        backside_where_bird_goes = TT.UTILITIES.widget_from_jquery($(frontside_element).closest(".toontalk-top-level-backside")).get_backside();
+                        top_level_widget = TT.UTILITIES.widget_from_jquery($(frontside_element).closest(".toontalk-top-level-backside"));
+                        if (!top_level_widget) {
+                            top_level_widget = TT.UTILITIES.widget_from_jquery($(other.get_widget().get_frontside_element(true)).closest(".toontalk-top-level-backside"));     
+                        }
+                        if (top_level_widget) {
+                            backside_where_bird_goes = top_level_widget.get_backside();
+                        } else {
+                            TT.UTILITIES.report_internal_error("Unable to find the top-level backside for bird to go to.");
+                            return;
+                        }
                     }
                     bird_frontside_element = bird.get_frontside_element(true);
                     $(bird_frontside_element).removeClass("toontalk-bird-static");
