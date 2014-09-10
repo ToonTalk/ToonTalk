@@ -100,20 +100,27 @@ window.TOONTALK.bird = (function (TT) {
                 }.bind(this);
             var carry_element = function (element) {
                     this.element_to_display_when_flying = element;
-                    $(this.element_to_display_when_flying).addClass("toontalk-carried-by-bird");
-                    $(this.element_to_display_when_flying).css({left: '',
-                                                                top:  '',
-                                                                width: '',
-                                                                height: '',
-                                                                position: ''});
-                    this.update_display();
+                    element.width_before_carry  = element.clientWidth;
+                    element.height_before_carry = element.clientHeight;
+                    // the timeout fixes a problem when a watched robot gives a bird something that
+                    // thing carried is displayed displaced to the southeast from where it should be
+                    setTimeout(function () {
+                           $(this.element_to_display_when_flying).addClass("toontalk-carried-by-bird");
+                            $(this.element_to_display_when_flying).css({left: '',
+                                                                        top:  '',
+                                                                        width: '',
+                                                                        height: '',
+                                                                        position: ''});
+                            this.update_display();
+                        }.bind(this),
+                        1);
                 }.bind(this);
             var stop_carrying_element = function (where_to_leave_it) {
                     if (!this.element_to_display_when_flying) {
                         return;
                     }
-                    var width =  this.element_to_display_when_flying.clientWidth;
-                    var height = this.element_to_display_when_flying.clientHeight;
+                    var width  = this.element_to_display_when_flying.width_before_carry;
+                    var height = this.element_to_display_when_flying.height_before_carry;
                     $(this.element_to_display_when_flying).removeClass("toontalk-carried-by-bird");
                     if (where_to_leave_it) { 
                         $(this.element_to_display_when_flying).css({width:  width,
