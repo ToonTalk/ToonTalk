@@ -140,7 +140,8 @@ window.TOONTALK.bird = (function (TT) {
             var delay_between_steps = 300; // milliseconds
             var target_offset, bird_offset, target_frontside_element, parent_element, bird_style_position, width, height,
                 $top_level_backside_element, top_level_backside_element_offset, continuation, delivery_continuation, restore_contents,
-                nest_contents_frontside_element, nest_width, nest_height, nest_offset, message_element, top_level_widget;
+                nest_contents_frontside_element, nest_width, nest_height, nest_offset, message_element, 
+                top_level_widget, top_level_backside_element_offset;
             if (!nest_recieving_message) {
                 nest_recieving_message = nest;
             }
@@ -187,14 +188,15 @@ window.TOONTALK.bird = (function (TT) {
                 nest_width =  $(target_frontside_element).width();
                 nest_height = $(target_frontside_element).height();
                 nest_offset = $(target_frontside_element).offset();
+                top_level_backside_element_offset = $top_level_backside_element.offset();
                 target_offset.left += nest_width
                 target_offset.top  += nest_height;
                 // set message down near nest (southeast) 
-                var message_offset =  {left: nest_offset.left+nest_width,
-                                       top:  nest_offset.top +nest_height};
+                var message_offset =  {left: Math.min(nest_offset.left+nest_width,  $top_level_backside_element.width() -nest_width),
+                                       top:  Math.min(nest_offset.top +nest_height, $top_level_backside_element.height()-nest_height)};
                 // set contents down near nest (northwest)
-                var contents_offset = {left: nest_offset.left-nest_width,
-                                       top:  nest_offset.top -nest_height};
+                var contents_offset = {left: Math.max(nest_offset.left-nest_width , top_level_backside_element_offset.left),
+                                       top:  Math.max(nest_offset.top -nest_height, top_level_backside_element_offset.top)};
                 var set_down_message_continuation = function () {
                         var fly_to_nest_continuation = function () {
                             // no other bird should do this once this one begins to fly to the nest to move its contents
