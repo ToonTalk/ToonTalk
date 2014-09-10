@@ -154,7 +154,7 @@ window.TOONTALK.bird = (function (TT) {
                 return;
             }
             target_offset = $(target_frontside_element).offset();
-            $top_level_backside_element = $(bird_frontside_element).closest(".toontalk-top-level-backside");
+            $top_level_backside_element = $(nest_recieving_message.get_frontside_element()).closest(".toontalk-top-level-backside");
             top_level_backside_element_bounding_box = $top_level_backside_element.offset();
             if (starting_left) {
                 bird_offset = {left: starting_left+top_level_backside_element_bounding_box.left,
