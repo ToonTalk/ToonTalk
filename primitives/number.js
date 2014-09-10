@@ -411,14 +411,14 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
              target_absolute_position = $(this_frontside_element).offset();
              target_absolute_position.left -= $(bammer_element).width()*0.75; // hammer is on bammer's right
              target_absolute_position.left += $(this_frontside_element).width()*0.5; // middle of number
-             target_absolute_position.top  += $(this_frontside_element).height();
+             target_absolute_position.top  -= $(this_frontside_element).height();
              hit_number_continuation = function () {
                  this.number_dropped_on_me_semantics(other_number, event, robot);
                  $(bammer_element).removeClass("toontalk-bammer-down");
                  setTimeout(function () {
                          $(bammer_element).addClass("toontalk-bammer-away");
-                         target_absolute_position.left = $top_level_backside_element.width()-100;
-                         target_absolute_position.top = $top_level_backside_element.height()+100;
+                         target_absolute_position.left = $top_level_backside_element.width() -100;
+                         target_absolute_position.top  = $top_level_backside_element.height()+100;
                          bammer_gone_continuation = function () {
                              $(bammer_element).remove();
                          };
