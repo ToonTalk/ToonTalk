@@ -100,6 +100,7 @@ window.TOONTALK.robot_action =
     var pick_up_a_copy_animation = function (widget, context, top_level_context, robot, continuation) {
         var new_continuation = function () {
             continuation();
+            robot.update_display();
             robot.run_next_step();
         };
         move_robot_animation(widget, context, top_level_context, robot, new_continuation);
