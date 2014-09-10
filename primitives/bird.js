@@ -98,15 +98,19 @@ window.TOONTALK.bird = (function (TT) {
                         }.bind(this),
                         1);
                 }.bind(this);
-            var carry_element = function (element) {
+            var carry_element = function (element, widget_side) {
                     this.element_to_display_when_flying = element;
+                    if (widget_side) {
+                        this.update_display();
+                        widget_side.update_display();
+                    }
                     element.width_before_carry  = element.clientWidth;
                     element.height_before_carry = element.clientHeight;
                     // the timeout fixes a problem when a watched robot gives a bird something that
                     // thing carried is displayed displaced to the southeast from where it should be
                     setTimeout(function () {
-                           $(this.element_to_display_when_flying).addClass("toontalk-carried-by-bird");
-                            $(this.element_to_display_when_flying).css({left: '',
+                            $(this.element_to_display_when_flying).addClass("toontalk-carried-by-bird")
+                                                                  .css({left: '',
                                                                         top:  '',
                                                                         width: '',
                                                                         height: '',
@@ -141,7 +145,7 @@ window.TOONTALK.bird = (function (TT) {
                 nest_recieving_message = nest;
             }
             message_element = message_side.get_element();
-            carry_element(message_element);
+            carry_element(message_element, message_side);
             target_frontside_element = target_side.get_widget().closest_visible_ancestor().get_widget().get_frontside_element();
             if (!($(target_frontside_element).is(":visible")) && !$(bird_frontside_element).is(":visible")) {
                 // neither are visible so just add contents to nest
@@ -215,7 +219,7 @@ window.TOONTALK.bird = (function (TT) {
                         this.fly_to(message_offset, pickup_message_continuation, delay_between_steps);
                     }.bind(this);
                 var pickup_message_continuation = function () {
-                        carry_element(message_element);
+                        carry_element(message_element, message_side);
                         this.fly_to(nest_offset, deliver_message_continuation, delay_between_steps);
                     }.bind(this);
                 var deliver_message_continuation = function () {
