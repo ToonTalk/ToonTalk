@@ -19,7 +19,7 @@ window.TOONTALK.sensor = (function (TT) {
             widget.set_attribute('font-size', $(sensor.get_frontside_element(true)).height()*0.5, false, true);
             widget.set_additional_classes("toontalk-string-value-from-sensor");
             if (sensor.visible()) {
-                 widget.rerender();
+                widget.rerender();
             }
         }
     };
@@ -33,7 +33,7 @@ window.TOONTALK.sensor = (function (TT) {
         var event_listener = function (event) {
             var value = event[attribute];
             var visible = new_sensor.visible();
-            var $top_level_backside = $(this.get_frontside_element()).closest(".toontalk-top-level-backside");
+            var $top_level_backside = $(new_sensor.get_frontside_element()).closest(".toontalk-top-level-backside");
             var value_widget, frontside_element, delivery_bird;
             if (attribute === 'keyCode') {
                 if (value === 16) {
@@ -63,6 +63,7 @@ window.TOONTALK.sensor = (function (TT) {
             }
             if (visible) {
                 delivery_bird = TT.bird.create();
+                new_sensor.add_to_top_level_backside(delivery_bird);
                 // comes from the bottom center
                 delivery_bird.animate_delivery_to(value_widget, new_sensor, new_sensor, $top_level_backside.width()/2, $top_level_backside.height());
             } else {

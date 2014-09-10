@@ -231,9 +231,6 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         } else if ($(frontside_element).parent().is(".toontalk-backside, .toontalk-json")) {
             $dimensions_holder = $(frontside_element);
             size_unconstrained_by_container = true;
-//         } else if ($(frontside_element).closest(".toontalk-robot").length > 0) {
-//             // obsolete??
-//             $dimensions_holder = $(frontside_element);
         } else {
             $dimensions_holder = $(frontside_element).parent();
         }

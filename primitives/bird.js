@@ -158,7 +158,7 @@ window.TOONTALK.bird = (function (TT) {
             top_level_backside_element_bounding_box = $top_level_backside_element.offset();
             if (starting_left) {
                 bird_offset = {left: starting_left+top_level_backside_element_bounding_box.left,
-                               top:  starting_top+top_level_backside_element_bounding_box.top};
+                               top:  starting_top +top_level_backside_element_bounding_box.top};
             } else {
                 bird_offset = $(bird_frontside_element).offset();
             }
@@ -177,8 +177,8 @@ window.TOONTALK.bird = (function (TT) {
                 }
             }
             $top_level_backside_element.append(bird_frontside_element); // while flying            
-            $(bird_frontside_element).css({left: starting_left || bird_offset.left-top_level_backside_element_bounding_box.left,
-                                           top:  starting_top  || bird_offset.top -top_level_backside_element_bounding_box.top,
+            $(bird_frontside_element).css({left:   starting_left || bird_offset.left-top_level_backside_element_bounding_box.left,
+                                           top:    starting_top  || bird_offset.top -top_level_backside_element_bounding_box.top,
                                            width:  width,
                                            height: height
                                            });
@@ -761,8 +761,8 @@ window.TOONTALK.nest = (function (TT) {
                         var border_adjustment = 2*contents_side_element.toontalk_border_size || 0;
                         var width  = .8*nest_width;
                         var height = .8*nest_height
-                        if (border_adjustment*2 >= width ||
-                            border_adjustment*2 >= height) {
+                        while (border_adjustment*2 >= width ||
+                               border_adjustment*2 >= height) {
                             border_adjustment /= 2;
                         }
                         width  -= border_adjustment;
