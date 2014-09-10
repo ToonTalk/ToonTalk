@@ -738,17 +738,17 @@ window.TOONTALK.nest = (function (TT) {
         new_nest.update_display = function () {
             var frontside = this.get_frontside(true);
             var backside = this.get_backside(); 
-            var frontside_element, top_widget, nest_width, nest_height, contents_backside, contents_side_element;
+            var frontside_element, top_contents_widget, nest_width, nest_height, contents_backside, contents_side_element;
             frontside_element = frontside.get_element();
             if (contents.length > 0) {
-                top_widget = contents[0].get_widget();
+                top_contents_widget = contents[0].get_widget();
                 if (contents[0].is_backside()) {
-                    contents_backside = top_widget.get_backside(true);
+                    contents_backside = top_contents_widget.get_backside(true);
                     contents_side_element = contents_backside.get_element();
                     contents_backside.update_display();
                     contents_backside.scale_to_fit(contents_side_element, frontside_element);
                 } else {
-                    top_widget.render();
+                    top_contents_widget.render();
                     contents_side_element = contents[0].get_element();
                 }
                 nest_width = $(frontside_element).width();
@@ -758,25 +758,31 @@ window.TOONTALK.nest = (function (TT) {
                 // timeout needed when loading otherwise something resets the width and height
                 setTimeout(function () {
                         var border_adjustment = 2*contents_side_element.toontalk_border_size || 0;
-                        var width =  .8*nest_width -border_adjustment;
-                        var height = .8*nest_height-border_adjustment;
+                        var width  = .8*nest_width;
+                        var height = .8*nest_height
+                        if (border_adjustment*2 >= width ||
+                            border_adjustment*2 >= height) {
+                            border_adjustment /= 2;
+                        }
+                        width  -= border_adjustment;
+                        height -= border_adjustment;
                         $(contents_side_element).css({width:  width,
                                                       height: height,
                                                       // offset by 10% -- tried left: 10% but that only worked in first box hole
                                                       left: nest_width*0.1,
                                                       top:  nest_height*0.1});
-                        if (top_widget.set_size_attributes) {
+                        if (top_contents_widget.set_size_attributes) {
                             // e.g. element widgets need to update their attributes
-                            top_widget.set_size_attributes(width, height);
+                            top_contents_widget.set_size_attributes(width, height);
                         }
                     },
                     2);
                 frontside_element.appendChild(contents_side_element);
                 $(frontside_element).addClass("toontalk-empty-nest");
                 if (contents[0].is_backside()) {
-                    top_widget.set_parent_of_backside(this);
+                    top_contents_widget.set_parent_of_backside(this);
                 } else {
-                    top_widget.set_parent_of_frontside(this);
+                    top_contents_widget.set_parent_of_frontside(this);
                 }
             } else {
                 frontside_element.title = this.get_title();
