@@ -317,6 +317,14 @@ window.TOONTALK.UTILITIES =
             },
             1); 
     };
+    var has_ancestor_element = function (element, possible_ancestor) {
+        if (element === possible_ancestor) {
+            return true;
+        }
+        if (element.parentElement) {
+            return has_ancestor_element(element.parentElement, possible_ancestor);
+        }
+    };
     $(document).ready(initialise);
     return {
         create_from_json: function (json, additional_info) {
@@ -943,7 +951,8 @@ window.TOONTALK.UTILITIES =
                 var $target = $(event.target).closest(".toontalk-side");
                 if (!$target.is(".toontalk-top-level-backside") && 
                     !$target.closest(".toontalk-top-level-resource").is("*") &&
-                    !$target.is(".toontalk-being-dragged")) {
+                    !$target.is(".toontalk-being-dragged") &&
+                    !has_ancestor_element($target.get(0), TT.UTILITIES.get_dragee().get(0))) {
                     // could support a can_drop protocol and use it here
                     TT.UTILITIES.highlight_element($target);
                     // moving over decendants triggers dragleave unless their pointer events are turned off
