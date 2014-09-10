@@ -568,8 +568,8 @@ window.TOONTALK.nest = (function (TT) {
                     nest_width =  $(nest_element).width();
                     nest_height = $(nest_element).height();
                     // left and top are 10%
-                    $(widget_element).css({left: nest_width  * .1 + nest_offset.left - top_level_backside_element_offset.left,
-                                           top:  nest_height * .1 + nest_offset.top -  top_level_backside_element_offset.top,
+                    $(widget_element).css({left:   nest_width  * .1 + nest_offset.left - top_level_backside_element_offset.left,
+                                           top:    nest_height * .1 + nest_offset.top -  top_level_backside_element_offset.top,
                                            width:  contents_width(nest_width),
                                            height: contents_height(nest_height)});
                     $top_level_backside_element.append(widget_element);
@@ -669,8 +669,13 @@ window.TOONTALK.nest = (function (TT) {
                     } else {
                         backside_where_bird_goes.widget_dropped_on_me(bird, false, event);
                     }
-                    $(frontside_element).removeClass("toontalk-hatch-egg");
-                    $(frontside_element).addClass("toontalk-empty-nest");
+                    $(frontside_element).removeClass("toontalk-hatch-egg")
+                                        .addClass("toontalk-empty-nest")
+                                        // rely upon toontalk-empty-nest for dimensions (or other classes)
+                                        // problem this addresses is nest otherwise is too tall since it needed that
+                                        // height while bird was hatching
+                                        .css({width:  '',
+                                              height: ''});
                     bird_fly_continuation = function () {
                         $(bird_frontside_element).removeClass("toontalk-fly-southwest");
                         setTimeout(function () {
