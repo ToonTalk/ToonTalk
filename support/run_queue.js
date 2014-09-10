@@ -20,7 +20,7 @@ window.TOONTALK.queue =
             if (TT.debugging) {
                 this.to_run.forEach(function (old) {
                     if (old.robot === robot_context_queue.robot) {
-                        // until bugs are fixed TT.UTILITIES.report_internal_error is too annoying
+                        // until these kinds of bugs are fixed TT.UTILITIES.report_internal_error is too annoying
                         console.log("The same robot is being queued twice.");
                         console.log("Robot is " + old.robot);
                         return;

@@ -413,7 +413,10 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
              target_absolute_position.left += $(this_frontside_element).width()*0.5; // middle of number
              target_absolute_position.top  -= $(this_frontside_element).height();
              hit_number_continuation = function () {
-                 this.number_dropped_on_me_semantics(other_number, event, robot);
+                 if (this.number_dropped_on_me_semantics(other_number, event, robot) && robot) {
+                     // will stop if drop signaled an error
+                    robot.run_next_step();
+                 } 
                  $(bammer_element).removeClass("toontalk-bammer-down");
                  setTimeout(function () {
                          $(bammer_element).addClass("toontalk-bammer-away");
@@ -438,35 +441,26 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
      };
 
     number.number_dropped_on_me_semantics = function (other_number, event, robot) { 
-        var result;
         if (TT.robot.in_training) {
             TT.robot.in_training.dropped_on(other_number, this);
         }
         other_number.remove();
         switch (other_number.get_operator()) {
         case '+':
-            result = this.add(other_number);
-            break;
+            return this.add(other_number);
         case '-':
-            result = this.subtract(other_number);
-            break;
+            return this.subtract(other_number);
         case '*':
-            result = this.multiply(other_number);
-            break;
+            return this.multiply(other_number);
         case '/':
-            result = this.divide(other_number);
-            break;
+            return this.divide(other_number);
         case '^':
-            result = this.power(other_number);
-            break;
+            return this.power(other_number);
         default:
             TT.UTILITIES.report_internal_error("Number received a number with unsupported operator: " + other_number.get_operator());
-            return this;
+            // don't continue if an error
+            return;
         }
-        if (robot && result) {
-            robot.run_next_step();
-        } // don't continue if an error
-        return result;
     };
     
     number.widget_dropped_on_me = function (other, other_is_backside, event, robot) {
