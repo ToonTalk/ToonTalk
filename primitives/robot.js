@@ -94,7 +94,7 @@ window.TOONTALK.robot = (function (TT) {
                                           width:  '', // rely upon toontalk-robot-animating for dimensions
                                           height: '', // otherwise doesn't animate well
                                           "z-index": TT.UTILITIES.next_z_index()});
-                $(".toontalk-top-level-backside").append(frontside_element);
+                $(frontside_element).closest(".toontalk-top-level-backside").append(frontside_element);
             } else {
                 $(frontside_element).removeClass("toontalk-robot-animating");
             }
@@ -207,10 +207,10 @@ window.TOONTALK.robot = (function (TT) {
                 backside_widgets = context.get_backside_widgets();
                 if (backside_widgets) {
                     backside_widgets.some(function (backside_widget_side) {
-                        var backside_condition_widget_of_type = !backside_widget_side.is_backside && backside_conditions[backside_widget_side.widget.get_type_name()];
+                        var backside_condition_widget_of_type = !backside_widget_side.is_backside() && backside_conditions[backside_widget_side.get_widget().get_type_name()];
                         var sub_match_status;
                         if (backside_condition_widget_of_type) {
-                            sub_match_status = TT.UTILITIES.match(backside_condition_widget_of_type, backside_widget_side.widget);
+                            sub_match_status = TT.UTILITIES.match(backside_condition_widget_of_type, backside_widget_side.get_widget());
                             condition_frontside_element = backside_condition_widget_of_type.get_frontside_element();
                             if (condition_frontside_element) {
                                 if (this.match_status === 'matched') {
@@ -277,9 +277,6 @@ window.TOONTALK.robot = (function (TT) {
         this.stopped = new_value;
         if (this.stopped) {
             if (this.visible()) {
-                // this is needed because a robot won't start running if it is animating
-                // and the animating flag isn't always reset
-                this.set_animating(false);
                 $(this.get_frontside_element()).removeClass("toontalk-robot-waiting");
             }
         }
@@ -420,12 +417,14 @@ window.TOONTALK.robot = (function (TT) {
     robot.get_context = function () {
         var frontside_element = this.get_frontside_element();
         var $parent_element = $(frontside_element).parent();
-        var widget = TT.UTILITIES.get_toontalk_widget_from_jquery($parent_element);
+        var widget = TT.UTILITIES.widget_from_jquery($parent_element);
         var previous_robot;
         if (!widget) {
             // check if robot is in the 'next robot' area
-            previous_robot = $parent_element.closest(".toontalk-backside-of-robot").get(0).toontalk_widget
-            return previous_robot.get_context();
+            previous_robot = TT.UTILITIES.widget_from_jquery($parent_element.closest(".toontalk-backside-of-robot"));
+            if (previous_robot) {
+                return previous_robot.get_context();
+            }
         }
         return widget;
     };
@@ -434,7 +433,7 @@ window.TOONTALK.robot = (function (TT) {
         var context = this.get_context();
         var backside_element;
         if (!context) {
-            console.log("Robot started training but can't find its 'context'.");
+            TT.UTILITIES.report_internal_error("Robot started training but can't find its 'context'.");
             return;
         }
         this.being_trained = true;
@@ -460,7 +459,7 @@ window.TOONTALK.robot = (function (TT) {
         this.rerender();
         this.being_trained = false;
         this.get_frontside_element().title = this.get_title();
-        TT.UTILITIES.backup_all();
+        this.backup_all();
     };
     
     robot.update_display = function () {
@@ -772,6 +771,16 @@ window.TOONTALK.robot_backside =
             if (next_robot) {
                 $next_robot_area.append(next_robot.get_frontside_element());
             }
+            $next_robot_area.get(0).addEventListener('drop', function (event) {
+                // start training when robot is dropped here
+                var dragee = TT.UTILITIES.get_dragee();
+                var widget = TT.UTILITIES.widget_from_jquery(dragee);
+                var backside;
+                if (widget && widget.get_type_name() === 'robot') {
+                    backside = widget.open_backside();
+                    $(backside.get_element()).find(".toontalk-train-backside-button").click();
+                }
+            });
             backside.update_display = function () {
                 var frontside_element = robot.get_frontside_element();
                 var $containing_backside_element;
@@ -781,7 +790,7 @@ window.TOONTALK.robot_backside =
                     frontside_element.title = robot.get_title();
                     $containing_backside_element = $(frontside_element).closest(".toontalk-backside");
                     if ($containing_backside_element.length > 0) {
-                        TT.UTILITIES.get_toontalk_widget_from_jquery($containing_backside_element).get_backside().update_run_button_disabled_attribute();
+                        TT.UTILITIES.widget_from_jquery($containing_backside_element).get_backside().update_run_button_disabled_attribute();
                     }                    
                 }
                 backside.update_run_button_disabled_attribute();

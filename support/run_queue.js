@@ -17,6 +17,16 @@ window.TOONTALK.queue =
         
         enqueue: function (robot_context_queue) {
 //             console.log("enqueued robot#" + robot_context_queue.robot.debug_id);
+            if (TT.debugging) {
+                this.to_run.forEach(function (old) {
+                    if (old.robot === robot_context_queue.robot) {
+                        // until these kinds of bugs are fixed TT.UTILITIES.report_internal_error is too annoying
+                        console.log("The same robot is being queued twice.");
+                        console.log("Robot is " + old.robot);
+                        return;
+                    }
+                })
+            }
             return this.to_run.push(robot_context_queue);
         },
         

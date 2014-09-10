@@ -109,7 +109,7 @@ window.TOONTALK.box = (function (TT) {
         };
         new_box = new_box.add_standard_widget_functionality(new_box);
         for (i = 0; i < size; i++) {
-            holes[i] = TT.box_empty_hole.create(i);
+            holes[i] = TT.box_hole.create(i);
             holes[i].set_parent_of_frontside(new_box);
         }
         new_box.set_description(description);
@@ -305,7 +305,7 @@ window.TOONTALK.box = (function (TT) {
                     $box_hole_elements.remove();
                     this.get_holes().forEach(function (hole, index) {
                         hole_element = hole.get_element();
-                        $(hole_element).addClass("toontalk-box-hole toontalk-hole-number-" + index);
+                        $(hole_element).addClass("toontalk-hole-number-" + index);
                         update_hole(hole_element, hole, index);
                         frontside_element.appendChild(hole_element);                       
                     });
@@ -367,8 +367,6 @@ window.TOONTALK.box = (function (TT) {
             return;
         }
         content_frontside_element = new_content.get_frontside_element(true);
-//         new_content.saved_width =  $(content_frontside_element).width();
-//         new_content.saved_height = $(content_frontside_element).height();
         $hole_element.append(content_frontside_element);
         $(content_frontside_element).css({left: 0,
                                           top:  0});
@@ -398,7 +396,8 @@ window.TOONTALK.box = (function (TT) {
     };
     
     box.get_index_of = function (part) {
-        return part.get_parent_of_frontside().widget.get_index();
+        // parent should be a hole
+        return part.get_parent_of_frontside().get_index();
     };
     
     box.removed_from_container = function (part, backside_removed, event) {
@@ -426,7 +425,7 @@ window.TOONTALK.box = (function (TT) {
 //                 }
             }
         } else {
-            console.log("Attempted to remove " + part + " from " + this + " but not found.");
+            TT.UTILITIES.report_internal_error("Attempted to remove " + part + " from " + this + " but not found.");
         }
     };
     
@@ -457,7 +456,7 @@ window.TOONTALK.box = (function (TT) {
         var index, hole;
         if (path) {
             index = path.get_index && path.get_index();
-            if (typeof index === 'number') {
+            if (!TT.debugging || typeof index === 'number') {
                 hole = this.get_hole_contents(index);
                 if (hole) {
                     if (hole.dereference_contents && !path.not_to_be_dereferenced) {
@@ -468,20 +467,23 @@ window.TOONTALK.box = (function (TT) {
                         if (hole.dereference) {
                             return hole.dereference(path.next, top_level_context, robot);
                         } else {
-                            console.log("Expected to refer to a part of " + hole + " but it lacks a method to obtain " + TT.path.toString(path.next));
+                            TT.UTILITIES.report_internal_error("Expected to refer to a part of " + hole + " but it lacks a method to obtain " + TT.path.toString(path.next));
                         }
                     }
                     if (path.removing_widget) {
                         if (hole.get_type_name() === 'empty hole') {
-                            console.log("Robot is trying to remove something from an empty hole. ");
+                            TT.UTILITIES.report_internal_error("Robot is trying to remove something from an empty hole. ");
                         } else if (!hole.get_infinite_stack()) {
                             robot.remove_from_container(hole, this);
                         }
                     }
                     return hole;
+                } else {
+                    // referencing an empty hole
+                    return this.get_hole(index);
                 }
             }
-            console.log("box " + this.toString() + " unable to dereference path " + TT.path.toString(path));
+            TT.UTILITIES.report_internal_error(this + " unable to dereference the path: " + TT.path.toString(path));
         } else {
             return this;
         }
@@ -573,39 +575,39 @@ window.TOONTALK.box_backside =
 }(window.TOONTALK));
 
 // a hole is either empty or contains a widget
-window.TOONTALK.box_empty_hole = 
+window.TOONTALK.box_hole = 
 (function (TT) {
     "use strict";
     return {
         create: function (index) {
             // perhaps this should share more code with widget (e.g. done below with widget.has_parent)
-            var empty_hole = Object.create(this);
+            var hole = Object.create(this);
             var contents, hole_element;
-            empty_hole.get_element = function () {
+            hole.get_element = function () {
                 if (!hole_element) {
                     hole_element = document.createElement("div");
-                    hole_element.className = "toontalk-empty-hole toontalk-frontside toontalk-side";
-                    hole_element.toontalk_widget = empty_hole;
+                    hole_element.className = "toontalk-box-hole toontalk-frontside toontalk-side";
+                    hole_element.toontalk_widget = hole;
                 }
                 return hole_element;
             };
-            empty_hole.get_frontside = function (create) {
+            hole.get_frontside = function (create) {
                 if (contents) {
                     return contents.get_frontside(create);
                 }
                 return this.get_element();
             };
-            empty_hole.get_side_element = function () {
+            hole.get_side_element = function () {
                 return this.get_element();
             };
             // there is no backside of an empty hole
-            empty_hole.get_frontside_element = function (update) {
+            hole.get_frontside_element = function (update) {
                 if (contents) {
                     return contents.get_frontside_element(update);
                 }
                 return this.get_element();
             };
-            empty_hole.update_display = function () {
+            hole.update_display = function () {
                 // following no longer needed
                 // should be nothing to do
                 // but height percentage not working as expected
@@ -616,22 +618,22 @@ window.TOONTALK.box_empty_hole =
 //                     $(this.get_element()).css({"min-height": $(box_frontside_element).height() / box.get_size()});
 //                 }
             };
-            empty_hole.get_frontside = function () {
+            hole.get_frontside = function () {
                 // doubles as its own frontside
                 return this;
             };
-            empty_hole.widget_dropped_on_me = function (dropped, is_backside, event, robot) {
-                var box = this.get_parent_of_frontside().widget;
-                var parent_of_frontside = dropped.get_parent_of_frontside();
-                // other code should take care of this (e.g. drop)
-//              if (parent_of_frontside && parent_of_frontside.widget && parent_of_frontside.widget.removed_from_container) {
-//                  parent_of_frontside.widget.removed_from_container(dropped);
-//              }
+            hole.widget_dropped_on_me = function (dropped, is_backside, event, robot) {
+                var box = this.get_parent_of_frontside();
+                var $hole_element;
                 if (TT.robot.in_training) {
                     TT.robot.in_training.dropped_on(dropped, this);
                 }
                 if (event && dropped.save_dimensions) { // and maybe watched robot too?
                     dropped.save_dimensions();
+                    if (dropped.set_size_attributes) {
+                        $hole_element = $(this.get_element());
+                        dropped.set_size_attributes($hole_element.width(), $hole_element.height());
+                    }
                 }
                 this.set_contents(dropped);
                 if (dropped.dropped_on_other) {
@@ -641,94 +643,108 @@ window.TOONTALK.box_empty_hole =
                 box.render();
                 return true;
             };
-            empty_hole.get_json = function () {
+            hole.get_json = function () {
                 // no need to put anything into the array
                 return null;
             };
-            empty_hole.add_to_json = function (json) {
+            hole.add_to_json = function (json) {
                 return json;
             };
-            empty_hole.copy = function (just_value) {
+            hole.copy = function (just_value) {
                 // is this obsolete???
-                return TT.box_empty_hole.create(index);
+                return TT.box_hole.create(index);
             };
-            empty_hole.match = function () {
+            hole.match = function () {
                 return "matched";
             };
-            empty_hole.get_type_name = function () {
+            hole.get_type_name = function () {
                 return "empty hole";
             };
-            empty_hole.get_index = function () {
+            hole.get_index = function () {
                 return index;
             };
-            empty_hole.get_contents = function () {
+            hole.get_contents = function () {
                 return contents;
             };
-            empty_hole.set_contents = function (new_value) {
+            hole.set_contents = function (new_value) {
                 if (contents) {
                     contents.set_parent_of_frontside(undefined);
                 }
                 contents = new_value;
                 if (contents) {
                     contents.set_parent_of_frontside(this);
+                    if (TT.debugging) {
+                        hole.debug_string = "A hole containing " + contents;
+                    }
+                } else if (TT.debugging) {
+                    hole.debug_string = "An empty hole";
                 }
             };
-            empty_hole.visible = function () {
+            hole.visible = function () {
                 // why isn't this just is frontside_element visible?
                 // you can't see it but if box is visible then it is
-                return this.get_parent_of_frontside().widget.visible(); 
+                // revisit this
+                return this.get_parent_of_frontside().visible(); 
             };
-            empty_hole.render = function () {
+            hole.render = function () {
                 if (contents) {
                     return contents.render();
                 }
                 // otherwise nothing to do
             };
-            empty_hole.rerender = function () {
+            hole.rerender = function () {
                 if (contents) {
                     return contents.rerender();
                 }
                 // otherwise nothing to do
             };
-            empty_hole.removed_from_container = function (part, backside_removed, event) {
+            hole.removed_from_container = function (part, backside_removed, event) {
                 if (contents) {
                     contents = undefined;
                     if (event) {
-                        this.get_parent_of_frontside().widget.render();
+                        this.get_parent_of_frontside().render();
                     }
                 } else {
-                    console.log("Holes can't be removed from containers.");
+                    TT.UTILITIES.report_internal_error("Holes can't be removed from containers.");
                 }
             };
-            empty_hole.temporarily_remove_contents = function (widget, update_display) {
+            hole.temporarily_remove_contents = function (widget, update_display) {
                 if (contents) {
                     // box should handle this
-                    return this.get_parent_of_frontside().widget.temporarily_remove_contents(widget, update_display);
+                    return this.get_parent_of_frontside().temporarily_remove_contents(widget, update_display);
                 }
             };
-            empty_hole.toString = function () {
+            hole.toString = function () {
                 if (contents) {
                     return contents.toString();
                 }
                 return "_";
             };
-            empty_hole.get_description = function () {
+            hole.get_description = function () {
                 if (contents) {
                     return contents.get_description();
                 }
                 return "_";
             };
-            empty_hole.get_full_description = function () {
+            hole.get_full_description = function () {
                 if (contents) {
                     return contents.get_full_description();
                 }
                 return "_";
             };
+            hole.is_backside = function () {
+                // holes are not quite first-class in that they don't have a backside
+                return false;
+            };
+            hole.get_widget = function () {
+                // isn't a backside so returns itself
+                return this;
+            };
             if (TT.debugging) {
-                empty_hole.debug_string = "An empty hole";
+                hole.debug_string = "An empty hole";
             }
-            TT.widget.has_parent(empty_hole);
-            return empty_hole;
+            TT.widget.has_parent(hole);
+            return hole;
         }
     };
     

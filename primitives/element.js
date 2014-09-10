@@ -294,11 +294,12 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         return value.replace("px", "");
     };
     
-    element.set_attribute = function (attribute, new_value, handle_training) {
-        var frontside = this.get_frontside();
+    element.set_attribute = function (attribute, new_value, handle_training, add_to_style_attributes) {
+        var frontside = this.get_frontside(true);
         var frontside_element = frontside.get_element();
         var css = {};
         var current_value, new_value_number;
+        var style_attributes;
 //         console.log(attribute + " of " + this.debug_id + " is " + new_value);
         if (!frontside_element) {
             return false;
@@ -323,6 +324,12 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                                button_selector: ".toontalk-element-" + attribute + "-attribute-input"});
         }
         this.add_to_css(attribute, new_value);
+        if (add_to_style_attributes) {
+            style_attributes = this.get_style_attributes();
+            if (style_attributes.indexOf(attribute) < 0) {
+                style_attributes.push(attribute);
+            }
+        }
         this.rerender();
         return true;
     };
@@ -512,7 +519,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         return {type: "element",
                 html: encodeURIComponent(this.get_HTML()), 
                 attributes: json_attributes,
-                attribute_values: json_attributes.map(this.get_attribute.bind(this))
+                attribute_values: json_attributes.map(this.get_attribute.bind(this)),
+                additional_classes: this.get_additional_classes()
                 };
     };
     
@@ -532,6 +540,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 reconstructed_element.add_to_css(attribute_name, value_in_pixels(value) || value);
             }
         });
+        if (json.additional_classes) {
+            reconstructed_element.set_additional_classes(json.additional_classes);
+        }
         return reconstructed_element;
     };
     
@@ -561,6 +572,16 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     element.create_path_from_json = function (json) {
         var element_widget_path = TT.UTILITIES.create_from_json(json.element_widget_path);
         return element.extend_attribute_path(element_widget_path, json.attribute);
+    };
+
+    element.get_size_attributes = function () {
+        return {width:  this.get_attribute('width'),
+                height: this.get_attribute('height')};
+    };
+
+    element.set_size_attributes = function (width, height) {
+        this.set_attribute('width',  width);
+        this.set_attribute('height', height);
     };
     
     return element;
@@ -699,7 +720,7 @@ window.TOONTALK.element_backside =
                                                                     "Click here to edit the '" + attribute + "' style attribute of this element.");
             attribute_value_editor.button.name = attribute;
             attribute_value_editor.button.addEventListener('input', update_value);
-            TT.UTILITIES.can_receive_drops($(attribute_value_editor));
+            TT.UTILITIES.can_receive_drops(attribute_value_editor.container);
             td.appendChild(attribute_value_editor.container);
         });
         return table;
@@ -739,7 +760,7 @@ window.TOONTALK.element_backside =
             // conditional on URL parameter whether HTML or plain text
             // default is plain text (displayed and edited) (if there is any -- could be an image or something else)
             // full HTML editing but that is both insecure (should cleanse the HTML) and confusing to non-experts
-            var edit_HTML = window.location.href.indexOf("elementHTML=1") >= 0;
+            var edit_HTML = TT.UTILITIES.get_current_url_boolean_parameter("elementHTML", false);
             var getter = edit_HTML ? "get_HTML" : "get_text";
             var text, html_input, update_html;
             // need to ensure that it 'knows' its innerText, etc.

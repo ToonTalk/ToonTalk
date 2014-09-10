@@ -115,7 +115,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         case '^':
             return '^';
         default:
-            console.log("Number has an unsupported operator: " + operator);
+            TT.UTILITIES.report_internal_error("Number has an unsupported operator: " + operator);
             return "";
         }
     };
@@ -203,7 +203,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     };
     
     number.equals = function (other) {
-        return other.equals_number(this);
+        return other.equals_number && other.equals_number(this);
     };
 
     number.equals_number = function (other_number) {
@@ -231,9 +231,6 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         } else if ($(frontside_element).parent().is(".toontalk-backside, .toontalk-json")) {
             $dimensions_holder = $(frontside_element);
             size_unconstrained_by_container = true;
-//         } else if ($(frontside_element).closest(".toontalk-robot").length > 0) {
-//             // obsolete??
-//             $dimensions_holder = $(frontside_element);
         } else {
             $dimensions_holder = $(frontside_element).parent();
         }
@@ -270,7 +267,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             $(frontside_element).addClass("toontalk-number-full-size-border");
             frontside_element.toontalk_border_size = 32;
         }
-        font_height = (client_height-frontside_element.toontalk_border_size*2); // * 0.8;
+        font_height = (client_height-frontside_element.toontalk_border_size*2);
 //      font_size = TT.UTILITIES.get_style_numeric_property(frontside, "font-size");
         // according to http://www.webspaceworks.com/resources/fonts-web-typography/43/
         // the aspect ratio of monospace fonts varies from .43 to .55
@@ -335,13 +332,13 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             }
             return '<div class="toontalk-number toontalk-integer' + extra_class + '" style="font-size: ' + font_size + 'px;">' + operator_HTML + fit_string_to_length(integer_as_string, max_characters) + '</div>';
         }
-        table_style = ' style="font-size:' + (font_size * 0.33) + 'px;"';
+        table_style = ' style="font-size:' + (font_size * 0.4) + 'px;"';
         if (format === 'improper_fraction' || !format) { // default format
             // double the max_characters since the font size is halved
             improper_fraction_HTML = 
                 '<table class="toontalk-number toontalk-improper-fraction' + extra_class + '"' + table_style + '>' +
                 '<tr class="toontalk-numerator"><td align="center" class="toontalk-number">' + fit_string_to_length(this.numerator_string(), max_characters * 2) + '</td></tr>' +
-                '<tr class="toontalk-fraction-line-as-row"><td  class="toontalk-fraction-line-as-table-entry"><hr class="toontalk-fraction-line"></td></tr>' +
+                '<tr class="toontalk-fraction-line-as-row"><td  class="toontalk-fraction-line-as-table-entry"><div class="toontalk-fraction-line"></div></tr>' +
                 '<tr class="toontalk-denominator"><td align="center" class="toontalk-number">' + fit_string_to_length(this.denominator_string(), max_characters * 2) + '</td></tr></table>';
             if (operator_HTML === '') {
                 return improper_fraction_HTML;
@@ -393,12 +390,16 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     number.number_dropped_on_me = function (other_number, other_is_backside, event, robot) {
          var bammer_element, $top_level_backside_element, target_absolute_position, 
              this_frontside_element, hit_number_continuation, bammer_gone_continuation;
-         if (this.visible() && 
+         if (other_number.visible() && 
               (event || (robot && robot.visible()))) {
              // do this if number is visible and user did the drop or a visible robot did it
+             if (robot) {
+                 // robot should wait for this
+                 other_number.caused_robot_to_wait_before_next_step = true;
+             }
              bammer_element = document.createElement("div");
              $(bammer_element).addClass("toontalk-bammer-down");
-             $top_level_backside_element = $(".toontalk-top-level-backside");
+             $top_level_backside_element = $(this.get_frontside_element()).closest(".toontalk-top-level-backside");
              // start lower left off screen
              bammer_element.style.left = "-10px";
              bammer_element.style.top = ($top_level_backside_element.height())+"px";
@@ -407,18 +408,17 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
              target_absolute_position = $(this_frontside_element).offset();
              target_absolute_position.left -= $(bammer_element).width()*0.75; // hammer is on bammer's right
              target_absolute_position.left += $(this_frontside_element).width()*0.5; // middle of number
-             target_absolute_position.top  -= $top_level_backside_element.position().top;
-             target_absolute_position.top  += $(this_frontside_element).height();
+             target_absolute_position.top  -= $(this_frontside_element).height();
              hit_number_continuation = function () {
-                 this.number_dropped_on_me_semantics(other_number, event);
-                 if (robot) {
-                    robot.wait_before_next_step = false;
-                 }
+                 if (this.number_dropped_on_me_semantics(other_number, event, robot) && robot) {
+                     // will stop if drop signaled an error
+                    robot.run_next_step();
+                 } 
                  $(bammer_element).removeClass("toontalk-bammer-down");
                  setTimeout(function () {
                          $(bammer_element).addClass("toontalk-bammer-away");
-                         target_absolute_position.left = $top_level_backside_element.width()-100;
-                         target_absolute_position.top = $top_level_backside_element.height()+100;
+                         target_absolute_position.left = $top_level_backside_element.width() -100;
+                         target_absolute_position.top  = $top_level_backside_element.height()+100;
                          bammer_gone_continuation = function () {
                              $(bammer_element).remove();
                          };
@@ -431,17 +431,13 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
              $(bammer_element).css({opacity: 1.0,
                                     // ensure that Bammer is on top of everything
                                     "z-index": TT.UTILITIES.next_z_index()+100});
-             // e.g. next step is to copy this number and bammer hasn't hit it yet
-             if (robot) {
-                 robot.wait_before_next_step = true;
-             }
              return this;             
          } else {
-             return this.number_dropped_on_me_semantics(other_number,event);
+             return this.number_dropped_on_me_semantics(other_number, event, robot);
          }
      };
 
-    number.number_dropped_on_me_semantics = function (other_number, event) { 
+    number.number_dropped_on_me_semantics = function (other_number, event, robot) { 
         if (TT.robot.in_training) {
             TT.robot.in_training.dropped_on(other_number, this);
         }
@@ -458,8 +454,9 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         case '^':
             return this.power(other_number);
         default:
-            console.log("Number received a number with unsupported operator: " + other_number.get_operator());
-            return this;
+            TT.UTILITIES.report_internal_error("Number received a number with unsupported operator: " + other_number.get_operator());
+            // don't continue if an error
+            return;
         }
     };
     

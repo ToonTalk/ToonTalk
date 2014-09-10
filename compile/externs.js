@@ -1,2 +1,2 @@
 function BigInteger(text){};
-function source(text){};
+function $(text){};

@@ -22,16 +22,16 @@ window.TOONTALK.tool = (function (TT) {
                 event.preventDefault();
                 $(element).addClass("toontalk-tool-held");
                 home_position = $(element).offset();
-                document.addEventListener('mousemove',    mouse_move);
-                document.addEventListener('mouseup',      mouse_up);
+                document.addEventListener('mousemove', mouse_move);
+                document.addEventListener('mouseup',   mouse_up);
             };
 
             var mouse_move = function (event) {
-                var widget_under_tool = find_widget_under_tool();
+                var widget_under_tool = find_widget_under_tool(event);
                 var new_highlighted_element;
                 event.preventDefault();
-                element.style.left = (event.clientX - drag_x_offset) + "px";
-                element.style.top  = (event.clientY - drag_y_offset) + "px";
+                element.style.left = (event.pageX - drag_x_offset) + "px";
+                element.style.top  = (event.pageY - drag_y_offset) + "px";
                 if (widget_under_tool && widget_under_tool.get_type_name() === 'top-level') {
                     if (highlighted_element) { // remove old highlighting
                         TT.UTILITIES.remove_highlight();
@@ -50,14 +50,14 @@ window.TOONTALK.tool = (function (TT) {
             };
 
             var mouse_up = function (event) {
-                var widget_under_tool = find_widget_under_tool();
+                var widget_under_tool = find_widget_under_tool(event);
                 event.preventDefault();
                 if (highlighted_element) { // remove old highlighting
                     TT.UTILITIES.remove_highlight();
                 }
                 if (widget_under_tool && widget_under_tool.add_copy_to_container) {
                     tool.apply_tool(widget_under_tool, event);
-                    TT.UTILITIES.backup_all();
+                    widget_under_tool.backup_all();
                 }
                 if (!widget_under_tool && tool.nothing_under_tool) {
                     tool.nothing_under_tool();
@@ -80,7 +80,7 @@ window.TOONTALK.tool = (function (TT) {
                 document.removeEventListener('mouseup',      mouse_up);
             };
 
-            var find_widget_under_tool = function () {
+            var find_widget_under_tool = function (event) {
                 // return what is under the tool not counting the tool itself)
                 var element_under_tool, widget_under_tool, widget_type;
                 // hide the tool so it is not under itself
@@ -101,11 +101,10 @@ window.TOONTALK.tool = (function (TT) {
                 }
                 widget_type = widget_under_tool.get_type_name();
                 if (widget_under_tool && widget_type === "empty hole") {
-                    return widget_under_tool.get_parent_of_frontside().widget;
+                    return widget_under_tool.get_parent_of_frontside();
                 }
                 return widget_under_tool;
-            };
-                        
+            };            
             element.addEventListener('mousedown', mouse_down);
        }
     };

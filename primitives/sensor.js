@@ -12,13 +12,14 @@ window.TOONTALK.sensor = (function (TT) {
     var sensor = Object.create(TT.widget);
     
     var style_contents = function (widget, sensor) {
-        var frontside_element;
+//         var frontside_element;
         if (widget.get_type_name() === 'element') {
-            frontside_element = widget.get_frontside_element(true);
+//             frontside_element = widget.get_frontside_element(true);
+//             $(frontside_element).css({"font-size": $(sensor.get_frontside_element(true)).height()*0.5});
+            widget.set_attribute('font-size', $(sensor.get_frontside_element(true)).height()*0.5, false, true);
+            widget.set_additional_classes("toontalk-string-value-from-sensor");
             if (sensor.visible()) {
-                 $(frontside_element).css({"font-size": $(sensor.get_frontside_element(true)).height()*0.5});
-                 widget.set_additional_classes("toontalk-string-value-from-sensor");
-                 widget.rerender();
+                widget.rerender();
             }
         }
     };
@@ -32,7 +33,7 @@ window.TOONTALK.sensor = (function (TT) {
         var event_listener = function (event) {
             var value = event[attribute];
             var visible = new_sensor.visible();
-            var $top_level_backside = $(".toontalk-top-level-backside");
+            var $top_level_backside = $(new_sensor.get_frontside_element()).closest(".toontalk-top-level-backside");
             var value_widget, frontside_element, delivery_bird;
             if (attribute === 'keyCode') {
                 if (value === 16) {
@@ -57,17 +58,18 @@ window.TOONTALK.sensor = (function (TT) {
                 style_contents(value_widget, new_sensor);
                 break;
                 case 'undefined':
-                console.log("No " + attribute + " in sensor " + sensor);
+                TT.UTILITIES.report_internal_error("No " + attribute + " in sensor " + sensor);
                 return;
             }
             if (visible) {
                 delivery_bird = TT.bird.create();
+                new_sensor.add_to_top_level_backside(delivery_bird);
                 // comes from the bottom center
-                delivery_bird.animate_delivery_to({widget: value_widget}, {widget: new_sensor}, new_sensor, $top_level_backside.width()/2, $top_level_backside.height());
+                delivery_bird.animate_delivery_to(value_widget, new_sensor, new_sensor, $top_level_backside.width()/2, $top_level_backside.height());
             } else {
-                new_sensor.add_to_contents({widget: value_widget});
+                new_sensor.add_to_contents(value_widget);
             }
-        };
+        }.bind(this);
         new_sensor.copy = function (just_value) {
             var copy;
             if (just_value && this.has_contents()) {
@@ -183,8 +185,8 @@ window.TOONTALK.sensor = (function (TT) {
         if (previous_contents.length > 0) {
             setTimeout(function () {
                 // delay to give it a chance to be added to the DOM
-                previous_contents.forEach(function (widget) {
-                    style_contents(widget.widget, sensor);
+                previous_contents.forEach(function (side) {
+                    style_contents(side.get_widget(), sensor);
                 });
             },
             500);

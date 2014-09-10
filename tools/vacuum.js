@@ -74,7 +74,7 @@ window.TOONTALK.vacuum = (function (TT) {
                 // doesn't matter what the widget it
                 if (removed_items.length > 0) {
                     restoring = removed_items.pop();
-                    restored_front_side_element = TT.UTILITIES.add_to_top_level_backside(restoring, true);
+                    restored_front_side_element = widget.add_to_top_level_backside(restoring, true);
                     initial_location = $(element).offset();
                     initial_location.left -= $(restored_front_side_element).width(); // left of vacuum
                     TT.UTILITIES.set_absolute_position($(restored_front_side_element), initial_location);
