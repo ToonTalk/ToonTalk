@@ -26,7 +26,7 @@ window.TOONTALK.sensor = (function (TT) {
     
     sensor.create = function (event_name, attribute, description, previous_contents, active, widget) {
         // widget is undefined when the event_name is appropriate to associate with window
-        var new_sensor = TT.nest.create(description, previous_contents, undefined, "sensor sensor");
+        var new_sensor = TT.nest.create(description, previous_contents, undefined, "sensor");
         var nest_get_json = new_sensor.get_json;
         var nest_update_display = new_sensor.update_display;
         var nest_copy = new_sensor.copy;
@@ -75,11 +75,11 @@ window.TOONTALK.sensor = (function (TT) {
             if (just_value && this.has_contents()) {
                 return nest_copy.call(this, true);
             }
-            // not that widget is not copied since there can be multiple sensors of the same widget
+            // note that widget is not copied since there can be multiple sensors of the same widget
             // there is an issue about sensor having access to nest's contents
             // so TT.UTILITIES.copy_widget_sides(contents) not appropriate
             // so perhaps this should be in the same expression as nest to share privately...
-            copy = TT.sensor.create(event_name, attribute, description, undefined, active, widget);
+            copy = TT.sensor.create(event_name, attribute, description, undefined, active, just_value ? undefined : widget);
             return new_sensor.add_to_copy(copy, just_value);
         };
         new_sensor.get_json = function (json_history) {
@@ -113,8 +113,8 @@ window.TOONTALK.sensor = (function (TT) {
         new_sensor.get_active = function () {
             return active;
         };
-        new_sensor.set_active = function (new_value) {
-            if (active === new_value) {
+        new_sensor.set_active = function (new_value, initialising) {
+            if (active === new_value && !initialising) {
                 return;
             }
             if (new_value) {
@@ -132,7 +132,7 @@ window.TOONTALK.sensor = (function (TT) {
             }
             active = new_value;
         };
-        new_sensor.set_active(active);
+        new_sensor.set_active(active, true);
         new_sensor.create_backside = function () {
             return TT.sensor_backside.create(this);
         };
