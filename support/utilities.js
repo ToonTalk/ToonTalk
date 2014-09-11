@@ -542,7 +542,9 @@ window.TOONTALK.UTILITIES =
             for (var property in object) {
                 if (object.hasOwnProperty(property)) {
                     value = object[property];
-                    if (value === replace) {
+                    if (!value) {
+                        return true;
+                    } else if (value === replace) {
                         object[property] = replacement;
                         return true;
                     } else if (property === 'shared_widget_index') {
