@@ -139,7 +139,7 @@ window.TOONTALK.robot_action =
             robot.run_next_step();
         };
         widget.save_dimensions();
-        $(frontside_element).css({width:  frontside_element.offsetWidth + "px",
+        $(frontside_element).css({width:  frontside_element.offsetWidth  + "px",
                                   height: frontside_element.offsetHeight + "px"});
         move_robot_animation(widget, context, top_level_context, robot, new_continuation);
     };

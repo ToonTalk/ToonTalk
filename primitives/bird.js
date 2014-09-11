@@ -587,7 +587,7 @@ window.TOONTALK.nest = (function (TT) {
         new_nest.get_json = function (json_history) {
             var waiting_robots_json = 
                 waiting_robots && waiting_robots.map(function (robot_run) {
-                    // no point jsonifying the queue since for the seeable future this only one queue
+                    // no point jsonifying the queue since for the seeable future there is only one queue
                     return {robot: TT.UTILITIES.get_json(robot_run.robot, json_history),
                             context: robot_run.context && TT.UTILITIES.get_json(robot_run.context, json_history),
                             top_level_context: robot_run.top_level_context && TT.UTILITIES.get_json(robot_run.top_level_context, json_history)};
