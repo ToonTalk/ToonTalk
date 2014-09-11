@@ -539,13 +539,21 @@ window.TOONTALK.UTILITIES =
             // replaces object's first occurence of replace with replacement
             // whereever it occurs in object
             var value;
+//             var messages = [];
             for (var property in object) {
                 if (object.hasOwnProperty(property)) {
                     value = object[property];
+//                     messages[0] = "Replaced " + JSON.stringify(replace);
+//                     messages[1] = "with " + JSON.stringify(replacement);
+//                     messages[2] = "in " + JSON.stringify(object);
                     if (!value) {
-                        return true;
+                        // ignore it
                     } else if (value === replace) {
                         object[property] = replacement;
+//                         messages.forEach(function (message) {
+//                             console.log(message);
+//                         });
+//                         console.log("Object is now " + JSON.stringify(object));
                         return true;
                     } else if (property === 'shared_widget_index') {
                         if (this.tree_replace_once(get_json_of_widget_from_shared_widget_index(value), replace, replacement, get_json_of_widget_from_shared_widget_index)) {
@@ -554,6 +562,10 @@ window.TOONTALK.UTILITIES =
                     } else if (["string", "number", "function", "undefined"].indexOf(typeof value) >= 0) {
                         // skip atomic objects
                     } else if (this.tree_replace_once(value, replace, replacement, get_json_of_widget_from_shared_widget_index)) {
+//                         messages.forEach(function (message) {
+//                             console.log(message);
+//                         });
+//                         console.log("Object is now " + JSON.stringify(object));
                         return true;
                     }
                 }
