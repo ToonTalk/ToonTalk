@@ -114,6 +114,9 @@ window.TOONTALK.sensor = (function (TT) {
             return active;
         };
         new_sensor.set_active = function (new_value) {
+            if (active === new_value) {
+                return;
+            }
             if (new_value) {
                if (widget) {
                     widget.get_frontside_element().addEventListener(event_name, event_listener);
