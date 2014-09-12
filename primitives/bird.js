@@ -164,7 +164,7 @@ window.TOONTALK.bird = (function (TT) {
             }
             // save some state before clobbering it
             parent_element = bird_frontside_element.parentElement;
-            width = $(bird_frontside_element).width();
+            width =  $(bird_frontside_element).width();
             height = $(bird_frontside_element).height();
             bird_style_position = bird_frontside_element.style.position;
             bird_frontside_element.style.position = 'absolute';
@@ -563,7 +563,7 @@ window.TOONTALK.nest = (function (TT) {
                 if (this.visible()) {
                     nest_element = this.get_frontside_element();
                     nest_offset = $(nest_element).offset();
-                    $top_level_backside_element = $(".toontalk-backside-of-top-level");
+                    $top_level_backside_element = $(nest_element).closest(".toontalk-backside-of-top-level");
                     top_level_backside_element_offset = $top_level_backside_element.offset();
                     widget_element = widget.get_frontside_element();
                     nest_width =  $(nest_element).width();
