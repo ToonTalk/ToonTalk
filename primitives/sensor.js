@@ -36,7 +36,9 @@ window.TOONTALK.sensor = (function (TT) {
             var $top_level_backside = $(new_sensor.get_frontside_element()).closest(".toontalk-top-level-backside");
             var value_widget, frontside_element, delivery_bird;
             if (attribute === 'keyCode') {
+                // is this a good idea? shouldn't the DOM events be left alone?
                 if (value === 16) {
+                    // is only the shift key
                     return;
                 }
                 value = String.fromCharCode(value);
@@ -164,8 +166,6 @@ window.TOONTALK.sensor = (function (TT) {
         };
         new_sensor.set_sensor_of = function (new_value) {
             widget = new_value;
-            // make sure listeners are updated
-            new_sensor.set_active(active);
         }
         return new_sensor;
     };
@@ -176,15 +176,19 @@ window.TOONTALK.sensor = (function (TT) {
                                       json.attribute,
                                       json.description, 
                                       previous_contents,
-                                      json.active);
+                                      false); // will be (re)set below
                                       // following postponed because of circularity of sensors and their widgets
         if (json.sensor_of) {
             // delay this due to the circularity of sensors and their widgets
             setTimeout(function () {
                     sensor.set_sensor_of(TT.UTILITIES.create_from_json(json.sensor_of, additional_info));
+                    // make sure listeners are updated
+                    sensor.set_active(json.active);
                 },
                 1);
-        } 
+        } else {
+            sensor.set_active(json.active);
+        }
         if (previous_contents.length > 0) {
             setTimeout(function () {
                 // delay to give it a chance to be added to the DOM
