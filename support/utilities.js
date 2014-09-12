@@ -262,7 +262,8 @@ window.TOONTALK.UTILITIES =
                     } else {
                         $(element).addClass("toontalk-top-level-resource");
                         frontside_element = widget.get_frontside_element();
-                        $(frontside_element).addClass("toontalk-top-level-resource");
+                        $(frontside_element).addClass("toontalk-top-level-resource")
+                                            .css({position: 'relative'});
                         element.appendChild(frontside_element);
                     }
                     if (widget.set_active) {
@@ -975,10 +976,11 @@ window.TOONTALK.UTILITIES =
             element.addEventListener('dragenter', function (event) {
 //              console.log(event.target.className);
                 var $target = $(event.target).closest(".toontalk-side");
+                var dragee = TT.UTILITIES.get_dragee();
                 if (!$target.is(".toontalk-top-level-backside") && 
                     !$target.closest(".toontalk-top-level-resource").is("*") &&
                     !$target.is(".toontalk-being-dragged") &&
-                    !has_ancestor_element($target.get(0), TT.UTILITIES.get_dragee().get(0))) {
+                    !(dragee && has_ancestor_element($target.get(0), dragee.get(0)))) {
                     // could support a can_drop protocol and use it here
                     TT.UTILITIES.highlight_element($target);
                     // moving over decendants triggers dragleave unless their pointer events are turned off
@@ -1057,7 +1059,8 @@ window.TOONTALK.UTILITIES =
                 $(dropped_element_copy).css({width:  $dropped.width(),
                                              height: $dropped.height()});
                 $dropped.removeClass("toontalk-top-level-resource");
-                $(dropped_element_copy).addClass("toontalk-top-level-resource");
+                $(dropped_element_copy).addClass("toontalk-top-level-resource")
+                                       .css({position: 'relative'});
                 $dropped.get(0).parentElement.appendChild(dropped_element_copy);
 //                 $dropped.parent().append(dropped_element_copy);
                 TT.DISPLAY_UPDATES.pending_update(dropped_copy);
@@ -1591,4 +1594,4 @@ window.TOONTALK.UTILITIES =
     
 }(window.TOONTALK));
 
-window.TOONTALK.UTILITIES.available_types = ["number", "box", "element", "robot", "top-level"];
+window.TOONTALK.UTILITIES.available_types = ["number", "box", "element", "robot", "nest", "sensor", "top-level"];
