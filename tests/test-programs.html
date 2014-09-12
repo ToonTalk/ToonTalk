@@ -1964,6 +1964,301 @@
     }
   ]
 }</div>
-<br>
+<p>Adds mouse button number: </p>
+<iframe src=test-programs-iframe.html width=600 height=400>
+</iframe>
+<p>Adds mouse button number (watched):</p>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "top_level",
+    "running": true,
+    "backside_widgets": [
+      {
+        "widget": {
+          "shared_widget_index": 0
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "element",
+            "html": "Adds%20mouse%20button%20number",
+            "attributes": [],
+            "attribute_values": [],
+            "running": true
+          },
+          "view": {
+            "frontside_left": 66,
+            "frontside_top": 172
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "shared_widget_index": 0
+        },
+        "is_backside": true
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgba(245, 240, 240, 0.941176)",
+    "frontside_width": 0,
+    "frontside_height": 0,
+    "backside_width": 768,
+    "backside_height": 261,
+    "backside_left": 8,
+    "backside_top": 3888,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1,
+      "original_width": 426,
+      "original_height": 220
+    },
+    "drag_x_offset": 306,
+    "drag_y_offset": 102,
+    "backside": true
+  },
+  "version": 1,
+  "shared_widgets": [
+    {
+      "semantic": {
+        "type": "box",
+        "size": 1,
+        "contents": [
+          {
+            "semantic": {
+              "type": "number",
+              "operator": "+",
+              "numerator": "2",
+              "denominator": "1",
+              "format": "improper_fraction"
+            },
+            "view": {},
+            "version": 1
+          }
+        ],
+        "horizontal": true,
+        "running": true,
+        "description": "",
+        "backside_widgets": [
+          {
+            "widget": {
+              "semantic": {
+                "type": "sensor",
+                "contents": [],
+                "guid": "sensor",
+                "waiting_robots": [
+                  {
+                    "robot": {
+                      "semantic": {
+                        "type": "robot",
+                        "frontside_conditions": {
+                          "semantic": {
+                            "type": "box",
+                            "size": 1,
+                            "contents": [
+                              null
+                            ],
+                            "horizontal": true,
+                            "description": ""
+                          },
+                          "view": {
+                            "frontside_width": 0,
+                            "frontside_height": 0
+                          },
+                          "version": 1
+                        },
+                        "backside_conditions": {
+                          "sensor": {
+                            "semantic": {
+                              "type": "number",
+                              "operator": "+",
+                              "numerator": "2",
+                              "denominator": "1",
+                              "format": "improper_fraction",
+                              "erased": true
+                            },
+                            "view": {
+                              "frontside_width": 0,
+                              "frontside_height": 0
+                            },
+                            "version": 1
+                          }
+                        },
+                        "body": {
+                          "type": "body",
+                          "steps": [
+                            {
+                              "type": "robot_action",
+                              "action_name": "pick up",
+                              "path": {
+                                "type": "path.to_backside_widget_of_context",
+                                "type_name": "sensor",
+                                "removing_widget": true
+                              }
+                            },
+                            {
+                              "type": "robot_action",
+                              "action_name": "drop it on",
+                              "path": {
+                                "type": "path.to_entire_context",
+                                "next_path": {
+                                  "type": "box_path",
+                                  "index": 0
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      "view": {
+                        "frontside_width": 103,
+                        "frontside_height": 139,
+                        "frontside_left": 217,
+                        "frontside_top": 47,
+                        "backside_geometry": {
+                          "x_scale": 1,
+                          "y_scale": 1,
+                          "original_width": 480,
+                          "original_height": 39
+                        }
+                      },
+                      "version": 1
+                    },
+                    "context": {
+                      "shared_widget_index": 0
+                    }
+                  },
+                  {
+                    "robot": {
+                      "shared_widget_index": 1
+                    },
+                    "context": {
+                      "shared_widget_index": 0
+                    }
+                  }
+                ],
+                "event_name": "click",
+                "attribute": "which",
+                "active": true,
+                "sensor_of": {
+                  "shared_widget_index": 0
+                },
+                "running": true
+              },
+              "view": {
+                "frontside_width": 116,
+                "frontside_height": 98,
+                "frontside_left": 6,
+                "frontside_top": 45
+              },
+              "version": 1
+            }
+          },
+          {
+            "widget": {
+              "shared_widget_index": 1
+            }
+          }
+        ]
+      },
+      "view": {
+        "frontside_width": 164,
+        "frontside_height": 68,
+        "frontside_left": 67,
+        "frontside_top": 38,
+        "backside_width": 376,
+        "backside_height": 191,
+        "backside_left": 354,
+        "backside_top": 41,
+        "backside_geometry": {
+          "x_scale": 2.198830409356724,
+          "y_scale": 4.897435897435907,
+          "original_width": 171,
+          "original_height": 39
+        }
+      },
+      "version": 1
+    },
+    {
+      "semantic": {
+        "type": "robot",
+        "frontside_conditions": {
+          "semantic": {
+            "type": "box",
+            "size": 1,
+            "contents": [
+              null
+            ],
+            "horizontal": true,
+            "description": ""
+          },
+          "view": {
+            "frontside_width": 0,
+            "frontside_height": 0
+          },
+          "version": 1
+        },
+        "backside_conditions": {
+          "sensor": {
+            "semantic": {
+              "type": "number",
+              "operator": "+",
+              "numerator": "2",
+              "denominator": "1",
+              "format": "improper_fraction",
+              "erased": true
+            },
+            "view": {
+              "frontside_width": 0,
+              "frontside_height": 0
+            },
+            "version": 1
+          }
+        },
+        "body": {
+          "type": "body",
+          "steps": [
+            {
+              "type": "robot_action",
+              "action_name": "pick up",
+              "path": {
+                "type": "path.to_backside_widget_of_context",
+                "type_name": "sensor",
+                "removing_widget": true
+              }
+            },
+            {
+              "type": "robot_action",
+              "action_name": "drop it on",
+              "path": {
+                "type": "path.to_entire_context",
+                "next_path": {
+                  "type": "box_path",
+                  "index": 0
+                }
+              }
+            }
+          ]
+        }
+      },
+      "view": {
+        "frontside_width": 103,
+        "frontside_height": 139,
+        "frontside_left": 217,
+        "frontside_top": 47,
+        "backside_geometry": {
+          "x_scale": 1,
+          "y_scale": 1,
+          "original_width": 480,
+          "original_height": 39
+        }
+      },
+      "version": 1
+    }
+  ]
+}</div>
 </body>
 </html>
