@@ -179,7 +179,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     };
     
     number.create_backside = function () {
-        return TT.number_backside.create(this).update_run_button_disabled_attribute();
+        return TT.number_backside.create(this); //.update_run_button_disabled_attribute();
     };
         
     number.set_from_values = function (numerator, denominator, update_now) {

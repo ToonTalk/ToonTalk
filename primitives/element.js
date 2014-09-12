@@ -263,7 +263,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     };
     
     element.create_backside = function () {
-        return TT.element_backside.create(this).update_run_button_disabled_attribute();
+        return TT.element_backside.create(this); //.update_run_button_disabled_attribute();
     };
     
     element.get_attribute = function (attribute) {

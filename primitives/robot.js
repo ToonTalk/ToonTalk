@@ -152,7 +152,7 @@ window.TOONTALK.robot = (function (TT) {
     };
     
     robot.create_backside = function () {
-        return TT.robot_backside.create(this).update_run_button_disabled_attribute();
+        return TT.robot_backside.create(this); //.update_run_button_disabled_attribute();
     };
     
     robot.copy = function (just_value) {
@@ -783,17 +783,17 @@ window.TOONTALK.robot_backside =
             });
             backside.update_display = function () {
                 var frontside_element = robot.get_frontside_element();
-                var $containing_backside_element;
+//                 var $containing_backside_element;
 //                 $(image_url_input.button).val(robot.get_image_url());
 //                 $(run_once_input.button).prop("checked", !robot.get_run_once());
                 if (frontside_element) {
                     frontside_element.title = robot.get_title();
-                    $containing_backside_element = $(frontside_element).closest(".toontalk-backside");
-                    if ($containing_backside_element.length > 0) {
-                        TT.UTILITIES.widget_from_jquery($containing_backside_element).get_backside().update_run_button_disabled_attribute();
-                    }                    
+//                     $containing_backside_element = $(frontside_element).closest(".toontalk-backside");
+//                     if ($containing_backside_element.length > 0) {
+//                         TT.UTILITIES.widget_from_jquery($containing_backside_element).get_backside().update_run_button_disabled_attribute();
+//                     }                    
                 }
-                backside.update_run_button_disabled_attribute();
+//                 backside.update_run_button_disabled_attribute();
                 this.display_updated();
             };
             add_conditions_area(backside_element, robot);

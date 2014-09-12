@@ -392,15 +392,15 @@ window.TOONTALK.bird_backside =
             backside_element.appendChild(standard_buttons);
             backside.update_display = function () {
                 var frontside_element = bird.get_frontside_element();
-                var $containing_backside_element;
+//                 var $containing_backside_element;
                 if (frontside_element) {
                     frontside_element.title = bird.get_title();
-                    $containing_backside_element = $(frontside_element).closest(".toontalk-backside");
-                    if ($containing_backside_element.length > 0) {
-                        TT.UTILITIES.widget_from_jquery($containing_backside_element).get_backside().update_run_button_disabled_attribute();
-                    }                    
+//                     $containing_backside_element = $(frontside_element).closest(".toontalk-backside");
+//                     if ($containing_backside_element.length > 0) {
+//                         TT.UTILITIES.widget_from_jquery($containing_backside_element).get_backside().update_run_button_disabled_attribute();
+//                     }                    
                 }
-                backside.update_run_button_disabled_attribute();
+//                 backside.update_run_button_disabled_attribute();
                 this.display_updated();
             };
             return backside;
@@ -914,16 +914,16 @@ window.TOONTALK.nest_backside =
 //             backside_element.appendChild(infinite_stack_check_box.container);
             backside.update_display = function () {
                 var frontside_element = nest.get_frontside_element();
-                var $containing_backside_element;
+//                 var $containing_backside_element;
 //                 $(image_url_input.button).val(nest.get_image_url());
                 if (frontside_element) {
                     frontside_element.title = nest.get_title();
-                    $containing_backside_element = $(frontside_element).closest(".toontalk-backside");
-                    if ($containing_backside_element.length > 0) {
-                        TT.UTILITIES.widget_from_jquery($containing_backside_element).get_backside().update_run_button_disabled_attribute();
-                    }                    
+//                     $containing_backside_element = $(frontside_element).closest(".toontalk-backside");
+//                     if ($containing_backside_element.length > 0) {
+//                         TT.UTILITIES.widget_from_jquery($containing_backside_element).get_backside().update_run_button_disabled_attribute();
+//                     }                    
                 }
-                backside.update_run_button_disabled_attribute();
+//                 backside.update_run_button_disabled_attribute();
                 this.display_updated();
             };
             return backside;

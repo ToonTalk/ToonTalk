@@ -465,6 +465,42 @@
 	/* could be fancier -- e.g. glowing */
 	border: solid 3px red;
 }
+.toontalk-green-flag-inactive, .toontalk-green-flag-active:hover {
+	background-image: url("images/green-flag-inactive.png");
+	background-repeat: no-repeat;
+	cursor: pointer;
+	width:  20px;
+	height: 18px;
+	position: absolute;
+	top:   -25px;
+}
+.toontalk-green-flag-active, .toontalk-green-flag-inactive:hover {
+	background-image: url("images/green-flag-active.png");
+	background-repeat: no-repeat;
+	cursor: pointer;
+	width:  20px;
+	height: 18px;
+	position: absolute;
+	top:   -25px;
+}
+.toontalk-stop-sign-inactive, .toontalk-stop-sign-active:hover {
+	background-image: url("images/stop-sign-inactive.png");
+	background-repeat: no-repeat;
+	cursor: pointer;
+    width:  21px;
+	height: 21px;
+	position: absolute;
+	top:   -25px;
+}
+.toontalk-stop-sign-active, .toontalk-stop-sign-inactive:hover {
+	background-image: url("images/stop-sign-active.png");
+	background-repeat: no-repeat;
+	cursor: pointer;
+	width:  21px;
+	height: 19px;
+	position: absolute;
+	top:   -25px;
+}
 .toontalk-wand {
 	background-image: url("images/wand-static.png");
 	background-repeat: no-repeat;
