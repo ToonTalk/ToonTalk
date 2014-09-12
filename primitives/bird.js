@@ -164,7 +164,7 @@ window.TOONTALK.bird = (function (TT) {
             }
             // save some state before clobbering it
             parent_element = bird_frontside_element.parentElement;
-            width = $(bird_frontside_element).width();
+            width =  $(bird_frontside_element).width();
             height = $(bird_frontside_element).height();
             bird_style_position = bird_frontside_element.style.position;
             bird_frontside_element.style.position = 'absolute';
@@ -563,7 +563,7 @@ window.TOONTALK.nest = (function (TT) {
                 if (this.visible()) {
                     nest_element = this.get_frontside_element();
                     nest_offset = $(nest_element).offset();
-                    $top_level_backside_element = $(".toontalk-backside-of-top-level");
+                    $top_level_backside_element = $(nest_element).closest(".toontalk-backside-of-top-level");
                     top_level_backside_element_offset = $top_level_backside_element.offset();
                     widget_element = widget.get_frontside_element();
                     nest_width =  $(nest_element).width();
@@ -587,7 +587,7 @@ window.TOONTALK.nest = (function (TT) {
         new_nest.get_json = function (json_history) {
             var waiting_robots_json = 
                 waiting_robots && waiting_robots.map(function (robot_run) {
-                    // no point jsonifying the queue since for the seeable future this only one queue
+                    // no point jsonifying the queue since for the seeable future there is only one queue
                     return {robot: TT.UTILITIES.get_json(robot_run.robot, json_history),
                             context: robot_run.context && TT.UTILITIES.get_json(robot_run.context, json_history),
                             top_level_context: robot_run.top_level_context && TT.UTILITIES.get_json(robot_run.top_level_context, json_history)};

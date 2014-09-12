@@ -40,7 +40,7 @@ window.TOONTALK.path =
                 }
                 context.backside_widgets.some(function (backside_widget_side) {
                     // widget might be on the backside of the context
-                    var backside_widget = backside_widget_side.widget;
+                    var backside_widget = backside_widget_side.get_widget();
                     var sub_path;
                     if (backside_widget === widget ||
                         (backside_widget.top_contents_is && backside_widget.top_contents_is(widget)) ) {
@@ -70,7 +70,7 @@ window.TOONTALK.path =
                 // is being manipulated itself rather than its contents
                 TT.path.path_end(path).not_to_be_dereferenced = true;
             }
-            if (path && robot.current_action_name === 'pick up') {
+            if (path && (robot.current_action_name === 'pick up' || robot.current_action_name === 'remove')) {
                 TT.path.path_end(path).removing_widget = true;
             }
             return path;

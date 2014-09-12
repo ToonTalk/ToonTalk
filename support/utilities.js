@@ -262,7 +262,8 @@ window.TOONTALK.UTILITIES =
                     } else {
                         $(element).addClass("toontalk-top-level-resource");
                         frontside_element = widget.get_frontside_element();
-                        $(frontside_element).addClass("toontalk-top-level-resource");
+                        $(frontside_element).addClass("toontalk-top-level-resource")
+                                            .css({position: 'relative'});
                         element.appendChild(frontside_element);
                     }
                     if (widget.set_active) {
@@ -388,7 +389,9 @@ window.TOONTALK.UTILITIES =
                 json_semantic = json;
             }
             json_view = json.view;
-            if (json_creators[json_semantic.type]) {
+            if (json_semantic.shared_widget_index >= 0) {
+                return TT.UTILITIES.create_from_json(additional_info.json_of_shared_widgets[json_semantic.shared_widget_index], additional_info);
+            } else if (json_creators[json_semantic.type]) {
                 if (!additional_info) {
                     additional_info = {};
                 }
@@ -489,7 +492,7 @@ window.TOONTALK.UTILITIES =
                                 json_of_widgets_encountered: []};
             var json = TT.UTILITIES.get_json(widget, json_history);
             if (json_history.shared_widgets.length > 0) {
-                json.shared_widgets = json_history.shared_widgets.map(function (widget, widget_index) {
+                json.shared_widgets = json_history.shared_widgets.map(function (shared_widget, widget_index) {
                     // get the JSON of only those widgets that occurred more than once
                     var get_json_of_widget_from_history = function (widget) {
                         var index_among_all_widgets = json_history.widgets_encountered.indexOf(widget);
@@ -498,11 +501,21 @@ window.TOONTALK.UTILITIES =
                     var get_json_of_widget_from_shared_widget_index = function (index) {
                         return get_json_of_widget_from_history(json_history.shared_widgets[index]);
                     }
-                    var json_of_widget = get_json_of_widget_from_history(widget);
-                    // start searching tree for json_of_widget with the semantic component
-                    // because json might === json_of_widget
-                    TT.UTILITIES.tree_replace_once(json.semantic, json_of_widget, {shared_widget_index: widget_index}, get_json_of_widget_from_shared_widget_index);
-                    return json_of_widget;
+                    var json_of_widget = get_json_of_widget_from_history(shared_widget);
+                    if (widget === shared_widget) {
+                        // top-level widget itself is shared_widget_index
+                        // return shallow clone of json_of_widget since don't want to create circularity via shared_widgets
+                        json_of_widget = {semantic: json_of_widget.semantic,
+                                          view: json_of_widget.view,
+                                          version: json_of_widget.version};
+                        json.semantic = {shared_widget_index: widget_index}; 
+                        return json_of_widget;
+                    } else {
+                        // start searching tree for json_of_widget with the semantic component
+                        // because json might === json_of_widget
+                        TT.UTILITIES.tree_replace_once(json.semantic, json_of_widget, {shared_widget_index: widget_index}, get_json_of_widget_from_shared_widget_index);
+                        return json_of_widget;
+                    }
                 });
             }
             return json;
@@ -539,11 +552,21 @@ window.TOONTALK.UTILITIES =
             // replaces object's first occurence of replace with replacement
             // whereever it occurs in object
             var value;
+//             var messages = [];
             for (var property in object) {
                 if (object.hasOwnProperty(property)) {
                     value = object[property];
-                    if (value === replace) {
+//                     messages[0] = "Replaced " + JSON.stringify(replace);
+//                     messages[1] = "with " + JSON.stringify(replacement);
+//                     messages[2] = "in " + JSON.stringify(object);
+                    if (!value) {
+                        // ignore it
+                    } else if (value === replace) {
                         object[property] = replacement;
+//                         messages.forEach(function (message) {
+//                             console.log(message);
+//                         });
+//                         console.log("Object is now " + JSON.stringify(object));
                         return true;
                     } else if (property === 'shared_widget_index') {
                         if (this.tree_replace_once(get_json_of_widget_from_shared_widget_index(value), replace, replacement, get_json_of_widget_from_shared_widget_index)) {
@@ -552,6 +575,10 @@ window.TOONTALK.UTILITIES =
                     } else if (["string", "number", "function", "undefined"].indexOf(typeof value) >= 0) {
                         // skip atomic objects
                     } else if (this.tree_replace_once(value, replace, replacement, get_json_of_widget_from_shared_widget_index)) {
+//                         messages.forEach(function (message) {
+//                             console.log(message);
+//                         });
+//                         console.log("Object is now " + JSON.stringify(object));
                         return true;
                     }
                 }
@@ -724,7 +751,7 @@ window.TOONTALK.UTILITIES =
                         json_object.view.drag_y_offset = event.clientY - bounding_rectangle.top;
                         if (!json_object.view.frontside_width) {
                             if (dragee.parent().is(".toontalk-backside")) {
-                                json_object.view.frontside_width = dragee.width();
+                                json_object.view.frontside_width  = dragee.width();
                                 json_object.view.frontside_height = dragee.height();
                             }
                         }
@@ -949,10 +976,11 @@ window.TOONTALK.UTILITIES =
             element.addEventListener('dragenter', function (event) {
 //              console.log(event.target.className);
                 var $target = $(event.target).closest(".toontalk-side");
+                var dragee = TT.UTILITIES.get_dragee();
                 if (!$target.is(".toontalk-top-level-backside") && 
                     !$target.closest(".toontalk-top-level-resource").is("*") &&
                     !$target.is(".toontalk-being-dragged") &&
-                    !has_ancestor_element($target.get(0), TT.UTILITIES.get_dragee().get(0))) {
+                    !(dragee && has_ancestor_element($target.get(0), dragee.get(0)))) {
                     // could support a can_drop protocol and use it here
                     TT.UTILITIES.highlight_element($target);
                     // moving over decendants triggers dragleave unless their pointer events are turned off
@@ -1031,7 +1059,8 @@ window.TOONTALK.UTILITIES =
                 $(dropped_element_copy).css({width:  $dropped.width(),
                                              height: $dropped.height()});
                 $dropped.removeClass("toontalk-top-level-resource");
-                $(dropped_element_copy).addClass("toontalk-top-level-resource");
+                $(dropped_element_copy).addClass("toontalk-top-level-resource")
+                                       .css({position: 'relative'});
                 $dropped.get(0).parentElement.appendChild(dropped_element_copy);
 //                 $dropped.parent().append(dropped_element_copy);
                 TT.DISPLAY_UPDATES.pending_update(dropped_copy);
@@ -1565,4 +1594,4 @@ window.TOONTALK.UTILITIES =
     
 }(window.TOONTALK));
 
-window.TOONTALK.UTILITIES.available_types = ["number", "box", "element", "robot", "top-level"];
+window.TOONTALK.UTILITIES.available_types = ["number", "box", "element", "robot", "nest", "sensor", "top-level"];

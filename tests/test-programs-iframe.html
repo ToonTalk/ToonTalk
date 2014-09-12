@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" media="all" href="../libraries/jquery-ui-1.10.4.custom/css/sunny/jquery-ui-1.10.4.custom.css">
+<link rel="stylesheet" media="all" href="../toontalk.css">
+<script src="../libraries/jquery-2.1.0.js"></script>
+<script src="../libraries/jquery-ui-1.10.4.custom/js/jquery-ui-1.10.4.custom.js"></script>
+<script src="../libraries/rationaljs.js"></script>
+<script src="../support/initial.js"></script>
+<script src="../primitives/widget.js"></script>
+<script src="../primitives/number.js"></script>
+<script src="../primitives/robot.js"></script>
+<script src="../primitives/box.js"></script>
+<script src="../primitives/element.js"></script>
+<script src="../primitives/bird.js"></script>
+<script src="../primitives/sensor.js"></script>
+<script src="../primitives/backside.js"></script>
+<script src="../primitives/frontside.js"></script>
+<script src="../tools/tool.js"></script>
+<script src="../tools/wand.js"></script>
+<script src="../tools/vacuum.js"></script>
+<script src="../support/robot_actions.js"></script>
+<script src="../support/robot_action.js"></script>
+<script src="../support/path.js"></script>
+<script src="../support/run_queue.js"></script>
+<script src="../support/display_updates.js"></script>
+<!-- following should be after all the primitive widgets are defined --->
+<script src="../support/utilities.js"></script>
+<title>ToonTalk Reborn Programs Test</title>
+<link rel="shortcut icon" href="favicon.ico" />
+</head>
+<body>
+
+<p>Adds mouse button number: (scroll button works only if not scrolling)</p>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "shared_widget_index": 0
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "element",
+            "html": "Adds%20mouse%20button%20number",
+            "attributes": [],
+            "attribute_values": []
+          },
+          "view": {
+            "frontside_left": 66,
+            "frontside_top": 172
+          },
+          "version": 1
+        }
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgba(245, 240, 240, 0.941176)",
+    "frontside_width": 0,
+    "frontside_height": 0,
+    "backside_width": 426,
+    "backside_height": 220,
+    "backside_left": 8,
+    "backside_top": 50,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1
+    },
+    "drag_x_offset": 363,
+    "drag_y_offset": 171,
+    "backside": true
+  },
+  "version": 1,
+  "shared_widgets": [
+    {
+      "semantic": {
+        "type": "box",
+        "size": 1,
+        "contents": [
+          {
+            "semantic": {
+              "type": "number",
+              "operator": "+",
+              "numerator": "5",
+              "denominator": "1",
+              "format": "improper_fraction"
+            },
+            "view": {},
+            "version": 1
+          }
+        ],
+        "horizontal": true,
+        "running": true,
+        "description": "",
+        "backside_widgets": [
+          {
+            "widget": {
+              "semantic": {
+                "type": "sensor",
+                "contents": [],
+                "guid": "sensor",
+                "waiting_robots": [
+                  {
+                    "robot": {
+                      "semantic": {
+                        "type": "robot",
+                        "frontside_conditions": {
+                          "semantic": {
+                            "type": "box",
+                            "size": 1,
+                            "contents": [
+                              null
+                            ],
+                            "horizontal": true,
+                            "description": ""
+                          },
+                          "view": {
+                            "frontside_width": 0,
+                            "frontside_height": 0
+                          },
+                          "version": 1
+                        },
+                        "backside_conditions": {
+                          "sensor": {
+                            "semantic": {
+                              "type": "number",
+                              "operator": "+",
+                              "numerator": "2",
+                              "denominator": "1",
+                              "format": "improper_fraction",
+                              "erased": true
+                            },
+                            "view": {
+                              "frontside_width": 0,
+                              "frontside_height": 0
+                            },
+                            "version": 1
+                          }
+                        },
+                        "body": {
+                          "type": "body",
+                          "steps": [
+                            {
+                              "type": "robot_action",
+                              "action_name": "pick up",
+                              "path": {
+                                "type": "path.to_backside_widget_of_context",
+                                "type_name": "sensor",
+                                "removing_widget": true
+                              }
+                            },
+                            {
+                              "type": "robot_action",
+                              "action_name": "drop it on",
+                              "path": {
+                                "type": "path.to_entire_context",
+                                "next_path": {
+                                  "type": "box_path",
+                                  "index": 0
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      "view": {
+                        "frontside_width": 0,
+                        "frontside_height": 0,
+                        "backside_geometry": {
+                          "x_scale": 1,
+                          "y_scale": 1,
+                          "original_width": 480,
+                          "original_height": 39
+                        },
+                        "frontside_left": 304.96875,
+                        "frontside_top": 63.890625
+                      },
+                      "version": 1
+                    },
+                    "context": {
+                      "shared_widget_index": 0
+                    }
+                  }
+                ],
+                "event_name": "click",
+                "attribute": "which",
+                "active": true,
+                "sensor_of": {
+                  "shared_widget_index": 0
+                },
+                "running": true
+              },
+              "view": {
+                "frontside_width": 116,
+                "frontside_height": 98,
+                "frontside_left": 6,
+                "frontside_top": 45
+              },
+              "version": 1
+            }
+          },
+          {
+            "widget": {
+              "shared_widget_index": 1
+            }
+          }
+        ]
+      },
+      "view": {
+        "frontside_width": 164,
+        "frontside_height": 68,
+        "frontside_left": 67,
+        "frontside_top": 38,
+        "backside_geometry": {
+          "x_scale": 2.198830409356724,
+          "y_scale": 5.615384615384623,
+          "original_width": 171,
+          "original_height": 39
+        }
+      },
+      "version": 1
+    },
+    {
+      "semantic": {
+        "type": "robot",
+        "frontside_conditions": {
+          "semantic": {
+            "type": "box",
+            "size": 1,
+            "contents": [
+              null
+            ],
+            "horizontal": true,
+            "description": ""
+          },
+          "view": {
+            "frontside_width": 0,
+            "frontside_height": 0
+          },
+          "version": 1
+        },
+        "backside_conditions": {
+          "sensor": {
+            "semantic": {
+              "type": "number",
+              "operator": "+",
+              "numerator": "2",
+              "denominator": "1",
+              "format": "improper_fraction",
+              "erased": true
+            },
+            "view": {
+              "frontside_width": 0,
+              "frontside_height": 0
+            },
+            "version": 1
+          }
+        },
+        "body": {
+          "type": "body",
+          "steps": [
+            {
+              "type": "robot_action",
+              "action_name": "pick up",
+              "path": {
+                "type": "path.to_backside_widget_of_context",
+                "type_name": "sensor",
+                "removing_widget": true
+              }
+            },
+            {
+              "type": "robot_action",
+              "action_name": "drop it on",
+              "path": {
+                "type": "path.to_entire_context",
+                "next_path": {
+                  "type": "box_path",
+                  "index": 0
+                }
+              }
+            }
+          ]
+        }
+      },
+      "view": {
+        "frontside_width": 0,
+        "frontside_height": 0,
+        "backside_geometry": {
+          "x_scale": 1,
+          "y_scale": 1,
+          "original_width": 480,
+          "original_height": 39
+        },
+        "frontside_left": 304.96875,
+        "frontside_top": 63.890625
+      },
+      "version": 1
+    }
+  ]
+}</div>
+</body>
+</html>

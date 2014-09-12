@@ -26,7 +26,7 @@ window.TOONTALK.sensor = (function (TT) {
     
     sensor.create = function (event_name, attribute, description, previous_contents, active, widget) {
         // widget is undefined when the event_name is appropriate to associate with window
-        var new_sensor = TT.nest.create(description, previous_contents, undefined, "sensor sensor");
+        var new_sensor = TT.nest.create(description, previous_contents, undefined, "sensor");
         var nest_get_json = new_sensor.get_json;
         var nest_update_display = new_sensor.update_display;
         var nest_copy = new_sensor.copy;
@@ -36,7 +36,9 @@ window.TOONTALK.sensor = (function (TT) {
             var $top_level_backside = $(new_sensor.get_frontside_element()).closest(".toontalk-top-level-backside");
             var value_widget, frontside_element, delivery_bird;
             if (attribute === 'keyCode') {
+                // is this a good idea? shouldn't the DOM events be left alone?
                 if (value === 16) {
+                    // is only the shift key
                     return;
                 }
                 value = String.fromCharCode(value);
@@ -75,11 +77,11 @@ window.TOONTALK.sensor = (function (TT) {
             if (just_value && this.has_contents()) {
                 return nest_copy.call(this, true);
             }
-            // not that widget is not copied since there can be multiple sensors of the same widget
+            // note that widget is not copied since there can be multiple sensors of the same widget
             // there is an issue about sensor having access to nest's contents
             // so TT.UTILITIES.copy_widget_sides(contents) not appropriate
             // so perhaps this should be in the same expression as nest to share privately...
-            copy = TT.sensor.create(event_name, attribute, description, undefined, active, widget);
+            copy = TT.sensor.create(event_name, attribute, description, undefined, active, just_value ? undefined : widget);
             return new_sensor.add_to_copy(copy, just_value);
         };
         new_sensor.get_json = function (json_history) {
@@ -113,7 +115,10 @@ window.TOONTALK.sensor = (function (TT) {
         new_sensor.get_active = function () {
             return active;
         };
-        new_sensor.set_active = function (new_value) {
+        new_sensor.set_active = function (new_value, initialising) {
+            if (active === new_value && !initialising) {
+                return;
+            }
             if (new_value) {
                if (widget) {
                     widget.get_frontside_element().addEventListener(event_name, event_listener);
@@ -129,7 +134,7 @@ window.TOONTALK.sensor = (function (TT) {
             }
             active = new_value;
         };
-        new_sensor.set_active(active);
+        new_sensor.set_active(active, true);
         new_sensor.create_backside = function () {
             return TT.sensor_backside.create(this);
         };
@@ -161,8 +166,6 @@ window.TOONTALK.sensor = (function (TT) {
         };
         new_sensor.set_sensor_of = function (new_value) {
             widget = new_value;
-            // make sure listeners are updated
-            new_sensor.set_active(active);
         }
         return new_sensor;
     };
@@ -173,15 +176,19 @@ window.TOONTALK.sensor = (function (TT) {
                                       json.attribute,
                                       json.description, 
                                       previous_contents,
-                                      json.active);
+                                      false); // will be (re)set below
                                       // following postponed because of circularity of sensors and their widgets
         if (json.sensor_of) {
             // delay this due to the circularity of sensors and their widgets
             setTimeout(function () {
                     sensor.set_sensor_of(TT.UTILITIES.create_from_json(json.sensor_of, additional_info));
+                    // make sure listeners are updated
+                    sensor.set_active(json.active);
                 },
                 1);
-        } 
+        } else {
+            sensor.set_active(json.active);
+        }
         if (previous_contents.length > 0) {
             setTimeout(function () {
                 // delay to give it a chance to be added to the DOM

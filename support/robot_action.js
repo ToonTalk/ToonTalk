@@ -123,7 +123,7 @@ window.TOONTALK.robot_action =
                 return;
             }
             left_offset = $(widget_frontside_element).width()/2;
-            top_offset = $(widget_frontside_element).height()/-2;
+            top_offset  = $(widget_frontside_element).height()/-2;
         }
         // robots move at 1/4 pixel per millisecond for clarity
         robot.animate_to_widget(widget, continuation, .25, left_offset, top_offset);
@@ -139,7 +139,7 @@ window.TOONTALK.robot_action =
             robot.run_next_step();
         };
         widget.save_dimensions();
-        $(frontside_element).css({width:  frontside_element.offsetWidth + "px",
+        $(frontside_element).css({width:  frontside_element.offsetWidth  + "px",
                                   height: frontside_element.offsetHeight + "px"});
         move_robot_animation(widget, context, top_level_context, robot, new_continuation);
     };
