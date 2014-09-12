@@ -388,7 +388,9 @@ window.TOONTALK.UTILITIES =
                 json_semantic = json;
             }
             json_view = json.view;
-            if (json_creators[json_semantic.type]) {
+            if (json_semantic.shared_widget_index >= 0) {
+                return TT.UTILITIES.create_from_json(additional_info.json_of_shared_widgets[json_semantic.shared_widget_index], additional_info);
+            } else if (json_creators[json_semantic.type]) {
                 if (!additional_info) {
                     additional_info = {};
                 }
@@ -489,7 +491,7 @@ window.TOONTALK.UTILITIES =
                                 json_of_widgets_encountered: []};
             var json = TT.UTILITIES.get_json(widget, json_history);
             if (json_history.shared_widgets.length > 0) {
-                json.shared_widgets = json_history.shared_widgets.map(function (widget, widget_index) {
+                json.shared_widgets = json_history.shared_widgets.map(function (shared_widget, widget_index) {
                     // get the JSON of only those widgets that occurred more than once
                     var get_json_of_widget_from_history = function (widget) {
                         var index_among_all_widgets = json_history.widgets_encountered.indexOf(widget);
@@ -498,11 +500,21 @@ window.TOONTALK.UTILITIES =
                     var get_json_of_widget_from_shared_widget_index = function (index) {
                         return get_json_of_widget_from_history(json_history.shared_widgets[index]);
                     }
-                    var json_of_widget = get_json_of_widget_from_history(widget);
-                    // start searching tree for json_of_widget with the semantic component
-                    // because json might === json_of_widget
-                    TT.UTILITIES.tree_replace_once(json.semantic, json_of_widget, {shared_widget_index: widget_index}, get_json_of_widget_from_shared_widget_index);
-                    return json_of_widget;
+                    var json_of_widget = get_json_of_widget_from_history(shared_widget);
+                    if (widget === shared_widget) {
+                        // top-level widget itself is shared_widget_index
+                        // return shallow clone of json_of_widget since don't want to create circularity via shared_widgets
+                        json_of_widget = {semantic: json_of_widget.semantic,
+                                          view: json_of_widget.view,
+                                          version: json_of_widget.version};
+                        json.semantic = {shared_widget_index: widget_index}; 
+                        return json_of_widget;
+                    } else {
+                        // start searching tree for json_of_widget with the semantic component
+                        // because json might === json_of_widget
+                        TT.UTILITIES.tree_replace_once(json.semantic, json_of_widget, {shared_widget_index: widget_index}, get_json_of_widget_from_shared_widget_index);
+                        return json_of_widget;
+                    }
                 });
             }
             return json;
@@ -738,7 +750,7 @@ window.TOONTALK.UTILITIES =
                         json_object.view.drag_y_offset = event.clientY - bounding_rectangle.top;
                         if (!json_object.view.frontside_width) {
                             if (dragee.parent().is(".toontalk-backside")) {
-                                json_object.view.frontside_width = dragee.width();
+                                json_object.view.frontside_width  = dragee.width();
                                 json_object.view.frontside_height = dragee.height();
                             }
                         }
