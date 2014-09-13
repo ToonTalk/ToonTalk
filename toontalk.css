@@ -784,9 +784,10 @@ background-image: url("images/dusty-morph.png");
 .toontalk-close-button:hover {
 	background: red;
 }
-.toontalk-close-button:before{
-    content: "×";
-}
+/* following commented out since looked good with an multiplication sign but they kept turning into A- where the A had a tilde over it */
+/* .toontalk-close-button:before{
+    content: "x";
+} */
 .toontalk-string-value-from-sensor {
 	background-color: rgb(252, 240, 240);
 	text-align: center;
