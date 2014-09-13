@@ -3,8 +3,12 @@
  * Authors: Ken Kahn
  * License: New BSD
  */
+
+ div#preload-images { 
+ display: none; 
+ }
  
- .toontalk-top-level-resource {
+.toontalk-top-level-resource {
 	 /* position: relative; */
 	 /* display:  inline-block; */
  }
