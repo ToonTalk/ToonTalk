@@ -740,34 +740,27 @@ background-image: url("images/dusty-morph.png");
    from { background-position:     0px; }
      to { background-position: -1744px; }
 }
-
 @-moz-keyframes hatch-egg {
    from { background-position:     0px; }
      to { background-position: -1744px; }
 }
-
 @-ms-keyframes hatch-egg {
    from { background-position:     0px; }
      to { background-position: -1744px; }
 }
-
 @-o-keyframes hatch-egg {
    from { background-position:     0px; }
      to { background-position: -1744px; }
 }
-
 @keyframes hatch-egg {
    from { background-position:     0px; }
      to { background-position: -1744px; }
 }
+
 .toontalk-close-button {
 /* 	based upon http://jsfiddle.net/adzFe/14/ */
-	
-
-	right: -18px;
-	
-
-	top: -27px;
+	right: 0px;
+	top:   -27px;
 	position: absolute;
 	cursor: pointer;
 	color: white;
@@ -784,7 +777,7 @@ background-image: url("images/dusty-morph.png");
 	background: red;
 }
 .toontalk-close-button:before{
-    content: "Ã—";
+    content: "×";
 }
 .toontalk-string-value-from-sensor {
 	background-color: rgb(252, 240, 240);

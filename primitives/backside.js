@@ -35,16 +35,21 @@ window.TOONTALK.backside =
             var update_flag_and_sign_position = function () {
                     var backside_width  = $backside_element.width();
                     var backside_height = $backside_element.height();
-                    var flag_width, sign_width;
+                    var sign_width, close_button_width;
                     if (backside_width === 0) {
                         // backside_element not yet added to the DOM
                         // should really listen to an event that it has been
                         setTimeout(update_flag_and_sign_position, 100);
                     } else {
-                        flag_width = $(green_flag_element).width();
                         sign_width = $(stop_sign_element) .width();
-                        $(green_flag_element).css({left: backside_width-(flag_width+sign_width*1.5)});
-                        $(stop_sign_element) .css({left: backside_width-sign_width});  
+                        close_button_width = $(close_button).width();
+                        if (close_button_width) {
+                            close_button_width += 14; // needs a gap
+                        } else {
+                            close_button_width = 0; // width() may have returned null
+                        }
+                        $(stop_sign_element) .css({right: close_button_width});
+                        $(green_flag_element).css({right: close_button_width+sign_width+6}); // smaller gap needed
                     }
             };
             var close_title, close_handler;
