@@ -152,7 +152,7 @@ window.TOONTALK.robot = (function (TT) {
     };
     
     robot.create_backside = function () {
-        return TT.robot_backside.create(this).update_run_button_disabled_attribute();
+        return TT.robot_backside.create(this); //.update_run_button_disabled_attribute();
     };
     
     robot.copy = function (just_value) {
@@ -735,27 +735,8 @@ window.TOONTALK.robot_backside =
                                                                "Check this if you want the robot to start over again after finishing what he was trained to do.");
             var $next_robot_area = TT.UTILITIES.create_drop_area(window.TOONTALK.robot.empty_drop_area_instructions);
             var next_robot = robot.get_next_robot();
-            var extra_settings = function (settings) {
-                settings.appendChild(run_once_input.container);
-                settings.appendChild($next_robot_area.get(0));
-            }
-            var standard_buttons = TT.backside.create_standard_buttons(backside, robot, extra_settings, this.create_train_button(backside, robot));
-//             var infinite_stack_check_box = TT.backside.create_infinite_stack_check_box(backside, robot);
-//             var image_url_change = function () {
-//                 var image_url = image_url_input.button.value.trim();
-//                 if (robot.set_image_url(image_url, true) && TT.robot.in_training) {
-//                     TT.robot.in_training.edited(robot, {setter_name: "set_image_url",
-//                                                         argument_1: image_url,
-//                                                         toString: "change the image URL to " + image_url + " of the robot",
-//                                                         button_selector: ".toontalk-run-once-check-box"});
-//                 }
-//             };
-//             var input_table;
+            var settings_button = TT.backside.create_settings_button(backside, robot);
             $next_robot_area.data("drop_area_owner", robot);
-            // don't do the following if already trained -- or offer to retrain?
-//             standard_buttons.insertBefore(this.create_train_button(backside, robot), standard_buttons.firstChild);
-//             image_url_input.button.addEventListener('change', image_url_change);
-//             image_url_input.button.addEventListener('mouseout', image_url_change);
             $(run_once_input.button).click(function (event) {
                 var keep_running = run_once_input.button.checked;
                 robot.set_run_once(!keep_running);
@@ -767,7 +748,6 @@ window.TOONTALK.robot_backside =
                 }
                 event.stopPropagation();
             });
-            backside_element.appendChild(standard_buttons);
             if (next_robot) {
                 $next_robot_area.append(next_robot.get_frontside_element());
             }
@@ -783,20 +763,27 @@ window.TOONTALK.robot_backside =
             });
             backside.update_display = function () {
                 var frontside_element = robot.get_frontside_element();
-                var $containing_backside_element;
+//                 var $containing_backside_element;
 //                 $(image_url_input.button).val(robot.get_image_url());
 //                 $(run_once_input.button).prop("checked", !robot.get_run_once());
                 if (frontside_element) {
                     frontside_element.title = robot.get_title();
-                    $containing_backside_element = $(frontside_element).closest(".toontalk-backside");
-                    if ($containing_backside_element.length > 0) {
-                        TT.UTILITIES.widget_from_jquery($containing_backside_element).get_backside().update_run_button_disabled_attribute();
-                    }                    
+//                     $containing_backside_element = $(frontside_element).closest(".toontalk-backside");
+//                     if ($containing_backside_element.length > 0) {
+//                         TT.UTILITIES.widget_from_jquery($containing_backside_element).get_backside().update_run_button_disabled_attribute();
+//                     }                    
                 }
-                backside.update_run_button_disabled_attribute();
+//                 backside.update_run_button_disabled_attribute();
                 this.display_updated();
             };
+            backside_element.appendChild(this.create_train_button(backside, robot));
+            backside_element.appendChild(settings_button);
+            $(run_once_input.container).addClass("toontalk-advanced-setting");
+            $next_robot_area           .addClass("toontalk-advanced-setting");
+            backside_element.appendChild(run_once_input.container);
+            backside_element.appendChild($next_robot_area.get(0));
             add_conditions_area(backside_element, robot);
+            backside.add_advanced_settings();
             return backside;
         },
         

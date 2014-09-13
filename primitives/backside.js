@@ -17,6 +17,106 @@ window.TOONTALK.backside =
             var x_scale = 1; // so can shrink this down
             var y_scale = 1;
             var original_width, original_height, width_at_resize_start, height_at_resize_start, close_button, backside_widgets;
+            var green_flag_element = document.createElement("div");
+            var stop_sign_element  = document.createElement("div");
+            var update_flag_and_stop_sign_classes = function (running) {
+                    if (running) {
+                        $(green_flag_element).addClass   ("toontalk-green-flag-active")
+                                             .removeClass("toontalk-green-flag-inactive");
+                        $(stop_sign_element) .addClass   ("toontalk-stop-sign-inactive")
+                                             .removeClass("toontalk-stop-sign-active");
+                    } else {
+                        $(green_flag_element).addClass   ("toontalk-green-flag-inactive")
+                                             .removeClass("toontalk-green-flag-active");
+                        $(stop_sign_element) .addClass   ("toontalk-stop-sign-active")
+                                             .removeClass("toontalk-stop-sign-inactive");
+                    }
+            };
+            var update_flag_and_sign_position = function () {
+                    var backside_width  = $backside_element.width();
+                    var backside_height = $backside_element.height();
+                    var sign_width, close_button_width;
+                    if (backside_width === 0) {
+                        // backside_element not yet added to the DOM
+                        // should really listen to an event that it has been
+                        setTimeout(update_flag_and_sign_position, 100);
+                    } else {
+                        sign_width = $(stop_sign_element) .width();
+                        close_button_width = $(close_button).width();
+                        if (close_button_width) {
+                            close_button_width += 14; // needs a gap
+                        } else {
+                            close_button_width = 0; // width() may have returned null
+                        }
+                        $(stop_sign_element) .css({right: close_button_width});
+                        $(green_flag_element).css({right: close_button_width+sign_width+6}); // smaller gap needed
+                    }
+            };
+            var description_label = this.create_description_label(backside, widget);
+            var close_title, close_handler;
+            if (widget.close_button_ok(backside_element)) {
+                close_handler = function (event) {
+                                        backside.hide_backside(event);
+                                        event.stopPropagation();
+                };
+                // title should be re-computed on mouseenter
+                close_title = widget.get_description();
+                if (close_title) {
+                    close_title = "the " + widget.get_type_name() + " who " + close_title;
+                } else {
+                    close_title = "the " + widget.get_type_name();
+                }
+                close_title = "Click to hide this back side of " + close_title + ".";
+                close_button = TT.UTILITIES.create_close_button(close_handler, close_title);
+                backside_element.appendChild(close_button);                
+            }
+            $(green_flag_element).addClass("toontalk-green-flag-inactive")
+                                 .click(function (event) {
+                                            if (widget.can_run()) {
+                                                update_flag_and_stop_sign_classes(true);
+                                                widget.set_running(true);
+                                            } else {
+                                                if (widget.get_type_name() === 'top-level') {
+                                                    UTILITIES.display_message("There is nothing to run.");
+                                                } else {
+                                                    UTILITIES.display_message("This " + widget + " has nothing to run. Add some robots on the back.");
+                                                }
+                                            }                                                                       
+                                        })
+                                 .on('mouseenter', function (event) {
+                                                          var title;
+                                                          if (widget.get_running()) {
+                                                              title = "Click to stop this from running.";
+                                                          } else if (widget.can_run()) {
+                                                              title = "This has stopped. Click on the flag to start running it."; 
+                                                          } else {
+                                                              title = "There is nothing to run here.";
+                                                          }
+                                                          stop_sign_element.title = title;
+                                                  });
+            $(stop_sign_element) .addClass("toontalk-stop-sign-active")
+                                 .click(function (event) {
+                                            update_flag_and_stop_sign_classes(false);
+                                            widget.set_running(false);                                                                          
+                                        })
+                                 .on('mouseenter', function (event) {
+                                                          var title;
+                                                          if (widget.get_running()) {
+                                                              title = "To stop this click on the stop sign.";
+                                                          } else if (widget.can_run()) {
+                                                              title = "Click this to start this running."; 
+                                                          } else {
+                                                              title = "There is nothing to run on this.";
+                                                          }
+                                                          green_flag_element.title = title;
+                                                  });
+            backside_element.appendChild(green_flag_element);
+            backside_element.appendChild(stop_sign_element);
+            if (description_label) {
+                backside_element.appendChild(description_label); 
+            }
+            // wait for DOM to settle down
+            setTimeout(update_flag_and_sign_position, 1);
             $backside_element.addClass("toontalk-backside toontalk-side " + "toontalk-backside-of-" + widget.get_type_name());
             $backside_element.css({"z-index": TT.UTILITIES.next_z_index()});
             backside.get_element = function () {
@@ -143,43 +243,45 @@ window.TOONTALK.backside =
                 if (x_scale) {
                     return {x_scale: x_scale, 
                             y_scale: y_scale, 
-                            original_width: original_width, 
+                            original_width:  original_width, 
                             original_height: original_height};
                 }
             };
             backside.set_dimensions = function (dimensions) {
                 x_scale = dimensions.x_scale;
                 y_scale = dimensions.y_scale;
-                original_width = dimensions.original_width;
+                original_width  = dimensions.original_width;
                 original_height = dimensions.original_height;
             };
             backside.scale_to_fit = function (this_element, other_element) {
                 var scales;
                 if (!original_width && this.get_widget().backside_geometry) {
-                    original_width = this.get_widget().backside_geometry.original_width;
+                    original_width  = this.get_widget().backside_geometry.original_width;
                     original_height = this.get_widget().backside_geometry.original_height;  
                 }
                 scales = TT.UTILITIES.scale_to_fit(this_element, other_element, original_width, original_height);
                 x_scale = scales.x_scale;
                 y_scale = scales.y_scale;
             };
-//             TT.backside.associate_widget_with_backside_element(widget, backside, backside_element);
+            backside.run_status_changed = function (running) {
+                update_flag_and_stop_sign_classes(running);
+            };
             backside_element.toontalk_widget = widget;
             TT.UTILITIES.drag_and_drop(backside_element);
             // the following function should apply recursively...
             $backside_element.resizable(
                 {start: function () {
-                    width_at_resize_start = $backside_element.width();
+                    width_at_resize_start  = $backside_element.width();
                     height_at_resize_start = $backside_element.height();
                     if (!original_width) {
-                        original_width = width_at_resize_start;
+                        original_width  = width_at_resize_start;
                     }
                     if (!original_height) {
                         original_height = height_at_resize_start;
                     }
                 },
                 resize: function (event, ui) {
-                    var current_width = ui.size.width; 
+                    var current_width  = ui.size.width; 
                     var current_height = ui.size.height;
                     if ($backside_element.is(".toontalk-top-level-backside")) {
                         // top-level backside is not scaled
@@ -187,9 +289,9 @@ window.TOONTALK.backside =
                     }
 //                  console.log({x_scale_change: current_width / width_at_resize_start,
 //                               y_scale_change: current_height / height_at_resize_start});
-                    x_scale *= current_width / width_at_resize_start;
+                    x_scale *= current_width  / width_at_resize_start;
                     y_scale *= current_height / height_at_resize_start;
-                    width_at_resize_start = current_width;
+                    width_at_resize_start  = current_width;
                     height_at_resize_start = current_height;
 //                     console.log(current_width + "x" + current_height + " and scale is " + x_scale + "x" + y_scale);
                     TT.backside.scale_backside($backside_element, x_scale, y_scale, original_width, original_height);
@@ -220,40 +322,17 @@ window.TOONTALK.backside =
                 }
                 event.stopPropagation();
             });
-            backside_element.addEventListener("mouseover", function (event) {
+            backside_element.addEventListener("mouseenter", function (event) {
                var frontside = widget.get_frontside();
                var parent_of_backside = widget.get_parent_of_backside();
-               var close_title, close_handler;
                if (frontside && (!parent_of_backside || parent_of_backside.get_widget().get_type_name() === "top-level")) {
                    TT.UTILITIES.highlight_element(frontside.get_element());
-               }
-               if (widget.close_button_ok(backside_element)) {
-                   if (close_button) {
-                       $(close_button).show();
-                   } else {
-                       close_handler = function (event) {
-                               backside.hide_backside(event);
-                               event.stopPropagation();
-                       };
-                       close_title = widget.get_description();
-                       if (close_title) {
-                           close_title = "the " + widget.get_type_name() + " who " + close_title;
-                       } else {
-                           close_title = "the " + widget.get_type_name();
-                       }
-                       close_title = "Click to hide this back side of " + close_title + ".";
-                       close_button = TT.UTILITIES.create_close_button(close_handler, close_title);
-                       backside_element.appendChild(close_button);                
-                   }
                }
             });
             backside_element.addEventListener("mouseout", function (event) {
                var frontside = widget.get_frontside();
                if (frontside) {
                    TT.UTILITIES.remove_highlight();
-               }
-               if (close_button) {
-                   $(close_button).hide();
                }
             });
             backside.display_updated = function () {
@@ -288,21 +367,21 @@ window.TOONTALK.backside =
             return (backside_element && $(backside_element).is(":visible"));
         },
         
-        update_run_button_disabled_attribute: function () {
-            var backside_element = this.get_element();
-            var $run_button;
-            if (!backside_element) {
-                return;
-            }
-            if ($(backside_element).is(".toontalk-top-level-backside")) {
-                // has no buttons
-                return;
-            }
-            $run_button = $(backside_element).find(".toontalk-run-backside-button");
-            $run_button.button("option", "disabled", !this.get_widget().can_run());
-            TT.backside.update_run_button($run_button);
-            return this;
-        },
+//         update_run_button_disabled_attribute: function () {
+//             var backside_element = this.get_element();
+//             var $run_button;
+//             if (!backside_element) {
+//                 return;
+//             }
+//             if ($(backside_element).is(".toontalk-top-level-backside")) {
+//                 // has no buttons
+//                 return;
+//             }
+//             $run_button = $(backside_element).find(".toontalk-run-backside-button");
+//             $run_button.button("option", "disabled", !this.get_widget().can_run());
+//             TT.backside.update_run_button($run_button);
+//             return this;
+//         },
         
         create_infinite_stack_check_box: function (backside, widget) {
             var check_box = TT.UTILITIES.create_check_box(widget.get_infinite_stack(), 
@@ -330,54 +409,55 @@ window.TOONTALK.backside =
             return check_box;
         },
         
-        create_standard_buttons: function (backside, widget, extra_settings_generator) {
-            var frontside_element = widget.get_frontside_element();
+        create_description_label: function (backside, widget) {
             var description = widget.get_description();
-            var run_or_erase_button, button_set;
-//             if (!(this.get_erased && widget.get_erased()) && !$(frontside_element).is(".toontalk-conditions-contents") && $(frontside_element).parents(".toontalk-conditions-contents").length === 0) {
-                run_or_erase_button = TT.backside.create_run_button(backside, widget);
-//             } else {
-//                 run_or_erase_button = TT.backside.create_erase_button(backside, widget);
-//             }
-//             var copy_button = TT.backside.create_copy_button(backside, widget);
-//             var hide_button = TT.backside.create_hide_button(backside, widget);
-//             var remove_button = TT.backside.create_remove_button(backside, widget);
-            var settings_button = TT.backside.create_settings_button(backside, widget, extra_settings_generator);
-            var extra_arguments = [];
-            var i;
-            for (i = 3; i < arguments.length; i++) {
-                extra_arguments[i-3] = arguments[i];
-            }
-            button_set = TT.UTILITIES.create_button_set(run_or_erase_button, settings_button, extra_arguments);
             if (description) {
-               return TT.UTILITIES.create_vertical_table(TT.UTILITIES.create_text_element("Back side of a " + widget.get_type_name() + " that " + description), button_set);
+               return TT.UTILITIES.create_text_element("Back side of a " + widget.get_type_name() + " that " + description);
             }
-            return button_set;
         },
-        
-//         create_done_button: function (element) {
-//             var $done_button = $("<button>Done</button>").button();
-//             $done_button.addClass("toontalk-done-backside-button");
-//             $done_button.click(function (event) {
-//                 $(element).remove();
-//                 event.stopPropagation();
-//             });
-//             $done_button.attr("title", "Click when finished with settings.");
-//             return $done_button.get(0); 
-//         },
-        
-//         create_hide_button: function (backside, widget) {
-//             var backside_element = backside.get_element();
-//             var $backside_element = $(backside_element);
-//             var $hide_button = $("<button>Hide</button>").button();
-//             $hide_button.addClass("toontalk-hide-backside-button");
-//             $hide_button.click(function (event) {
-//                 backside.hide_backside(event);
-//                 event.stopPropagation();
-//             });
-//             $hide_button.attr("title", "Click to hide this.");
-//             return $hide_button.get(0);
-//         },
+
+        add_advanced_settings: function (always_show_advanced_settings) {
+            var widget = this.get_widget();
+            var check_box = this.create_infinite_stack_check_box(this, widget);
+            var type_name = widget.get_type_name();
+            var description_text_area = TT.UTILITIES.create_text_area(widget.get_description(), 
+                                                                      "toontalk-description-input", 
+                                                                      "This&nbsp;" + type_name + "&nbsp;",
+                                                                      "Type here to provide additional information about this " + type_name + ".");
+            var $create_sensor_button = $("<button>Make a sensor</button>").button();
+            var description_change = function () {
+                    var description = description_text_area.button.value.trim();
+                    if (widget.set_description(description, true) && TT.robot.in_training) {
+                        TT.robot.in_training.edited(widget, {setter_name: "set_description",
+                                                             argument_1: description,
+                                                             toString: "change the description to '" + description + "'' of the " + type_name,
+                                                             button_selector: ",toontalk-description-input"});
+                    }
+            };
+            var settings = document.createElement("table");
+            var backside_element = this.get_element();
+            $(settings).addClass("toontalk-advanced-setting");
+            $(description_text_area.button).val(widget.get_description());
+            description_text_area.button.addEventListener('change', description_change);
+            description_text_area.button.addEventListener('mouseout', description_change);
+            $create_sensor_button.click(function (event) {
+                    var sensor = TT.sensor.create('click', 'which', undefined, undefined, true, widget);
+                    var sensor_frontside_element = sensor.get_frontside_element(true);
+                    var initial_location = $create_sensor_button.offset();
+                    widget.add_to_top_level_backside(sensor, true);
+                    initial_location.left -= 120; // to the left of the button
+                    TT.UTILITIES.set_absolute_position($(sensor_frontside_element), initial_location);
+            });
+            $create_sensor_button.attr('title', "Click to create a nest which receives messages when events happen to this " + widget.get_type_name() + ".");
+            settings.appendChild(TT.UTILITIES.create_row(description_text_area.container));
+            settings.appendChild(TT.UTILITIES.create_row($create_sensor_button.get(0), check_box.container));
+            backside_element.appendChild(settings);
+            if (always_show_advanced_settings) {
+                $(backside_element).find(".toontalk-settings-backside-button").remove();
+            } else {            
+                $(backside_element).find(".toontalk-advanced-setting").hide();
+            }
+        },
         
         hide_backside: function (event) {
             var widget = this.get_widget();
@@ -495,93 +575,64 @@ window.TOONTALK.backside =
 //             return $copy_button.get(0);
 //         },
         
-        create_run_button: function (backside, widget) {
-            var backside_element = backside.get_element();
-            var $backside_element = $(backside_element);
-            var $run_button = $("<button>Run</button>").button();
-            $run_button.addClass("toontalk-run-backside-button");
-            $run_button.get(0).toontalk_widget = widget;
-            $run_button.click(function (event) {
-                var will_run = !widget.get_running();
-                TT.backside.update_run_button($run_button);
-                widget.set_running(will_run);
-                event.stopPropagation();
-            });
-            setTimeout(function () {
-                    this.update_run_button($run_button);
-                }.bind(this),
-                1);            
-            return $run_button.get(0);
-        },
+//         create_run_button: function (backside, widget) {
+//             var backside_element = backside.get_element();
+//             var $backside_element = $(backside_element);
+//             var $run_button = $("<button>Run</button>").button();
+//             $run_button.addClass("toontalk-run-backside-button");
+//             $run_button.get(0).toontalk_widget = widget;
+//             $run_button.click(function (event) {
+//                 var will_run = !widget.get_running();
+//                 TT.backside.update_run_button($run_button);
+//                 widget.set_running(will_run);
+//                 event.stopPropagation();
+//             });
+//             setTimeout(function () {
+//                     this.update_run_button($run_button);
+//                 }.bind(this),
+//                 1);            
+//             return $run_button.get(0);
+//         },
         
-        update_run_button: function ($run_button) {
-            var widget = $run_button.get(0).toontalk_widget;
-            var running = widget.get_running();
-            if (!$run_button.is(":enabled")) {
-                $run_button.attr("title", "Add robots here to give behaviours to this " + widget.get_type_name());
-                return;
-            }
-            if (!$run_button.is(":visible")) {
-                return;
-            }
-            if (!running) {
-                $run_button.button("option", "label", "Run");
-                $run_button.attr("title", "Click to run the robots on this " + widget.get_type_name());
-            } else {
-                $run_button.button("option", "label", "Stop");
-                $run_button.attr("title", "Click to stop running the robots on this " + widget.get_type_name());
-            }
-        },
-        
-        create_settings_button: function (backside, widget, extra_settings_generator) {
-            var $settings_button = $("<button>Settings</button>").button();
+//         update_run_button: function ($run_button) {
+//             var widget = $run_button.get(0).toontalk_widget;
+//             var running = widget.get_running();
+//             if (!$run_button.is(":enabled")) {
+//                 $run_button.attr("title", "Add robots here to give behaviours to this " + widget.get_type_name());
+//                 return;
+//             }
+//             if (!$run_button.is(":visible")) {
+//                 return;
+//             }
+//             if (!running) {
+//                 $run_button.button("option", "label", "Run");
+//                 $run_button.attr("title", "Click to run the robots on this " + widget.get_type_name());
+//             } else {
+//                 $run_button.button("option", "label", "Stop");
+//                 $run_button.attr("title", "Click to stop running the robots on this " + widget.get_type_name());
+//             }
+//         },
+
+        create_settings_button: function (backside, widget) {
+            var $settings_button = $("<div>></div>");
+            var settings_showing = false;
             $settings_button.addClass("toontalk-settings-backside-button");
             $settings_button.css({"z-index": TT.UTILITIES.next_z_index()});
             $settings_button.click(function (event) {
-                var settings = document.createElement("table");
-                var check_box = this.create_infinite_stack_check_box(backside, widget);
-                var type_name = widget.get_type_name();
-                var description_text_area = TT.UTILITIES.create_text_area(widget.get_description(), 
-                                                                          "toontalk-description-input", 
-                                                                          "This&nbsp;" + type_name + "&nbsp;",
-                                                                          "Type here to provide additional information about this " + type_name + ".");
-                var $create_sensor_button = $("<button>Make a sensor</button>").button();
-                var description_change = function () {
-                        var description = description_text_area.button.value.trim();
-                        if (widget.set_description(description, true) && TT.robot.in_training) {
-                            TT.robot.in_training.edited(widget, {setter_name: "set_description",
-                                                                 argument_1: description,
-                                                                 toString: "change the description to '" + description + "'' of the " + type_name,
-                                                                 button_selector: ",toontalk-description-input"});
-                        }
-                    };
-                var close_handler = function (event) {
-                    $(settings).remove();
+                    var backside_element = backside.get_element();
+                    if (settings_showing) {
+                        $(backside_element).find(".toontalk-advanced-setting").hide();
+                        $settings_button.html(">");
+                        $settings_button.attr("title", "Click to see the advanced settings.");
+                    } else {
+                        $(backside_element).find(".toontalk-advanced-setting").show();
+                        $settings_button.html("<");
+                        $settings_button.attr("title", "Click to hide the advanced settings.");  
+                    }
+                    settings_showing = !settings_showing;
                     event.stopPropagation();
-                }
-                $(description_text_area.button).val(widget.get_description());
-                description_text_area.button.addEventListener('change', description_change);
-                description_text_area.button.addEventListener('mouseout', description_change);
-                $create_sensor_button.click(function (event) {
-                        var sensor = TT.sensor.create('click', 'which', undefined, undefined, true, widget);
-                        var sensor_frontside_element = sensor.get_frontside_element(true);
-                        var initial_location = $create_sensor_button.offset();
-                        widget.add_to_top_level_backside(sensor, true);
-                        initial_location.left -= 120; // to the left of the button
-                        TT.UTILITIES.set_absolute_position($(sensor_frontside_element), initial_location);
-                });
-                $create_sensor_button.attr('title', "Click to create a nest which receives messages when events happen to this " + widget.get_type_name() + ".");
-                if (extra_settings_generator) {
-                    extra_settings_generator(settings);
-                }
-                settings.appendChild(TT.UTILITIES.create_row(description_text_area.container));
-                settings.appendChild(TT.UTILITIES.create_row($create_sensor_button.get(0), check_box.container));
-                settings.appendChild(TT.UTILITIES.create_close_button(close_handler, "Click when finished with the settings of this " + widget.get_type_name() + "."));
-                backside.get_element().appendChild(settings);
-                $(settings).addClass("toontalk-settings");
-                event.stopPropagation();
             }.bind(this));
-            $settings_button.attr("title", "Click to change properties of this " + widget.get_type_name() + ".");
+            $settings_button.attr("title", "Click to see the advanced settings of this " + widget.get_type_name() + ".");
             return $settings_button.get(0);
         },
         

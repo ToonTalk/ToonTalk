@@ -1214,9 +1214,12 @@ window.TOONTALK.UTILITIES =
                 
         create_close_button: function (handler, title) {
             var close_button = document.createElement("div");
+            var x = document.createElement("div");
             $(close_button).addClass("toontalk-close-button");
             $(close_button).click(handler);
             $(close_button).attr("title", title);
+            x.innerHTML = "&times;";
+            close_button.appendChild(x);
             return close_button;
         },
         
