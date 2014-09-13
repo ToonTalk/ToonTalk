@@ -60,7 +60,7 @@ window.TOONTALK.backside =
                                                 }
                                             }                                                                       
                                         })
-                                 .on('mouseover', function (event) {
+                                 .on('mouseenter', function (event) {
                                                           var title;
                                                           if (widget.get_running()) {
                                                               title = "Click to stop this from running.";
@@ -76,7 +76,7 @@ window.TOONTALK.backside =
                                             update_flag_and_stop_sign_classes(false);
                                             widget.set_running(false);                                                                          
                                         })
-                                 .on('mouseover', function (event) {
+                                 .on('mouseenter', function (event) {
                                                           var title;
                                                           if (widget.get_running()) {
                                                               title = "To stop this click on the stop sign.";
@@ -297,7 +297,7 @@ window.TOONTALK.backside =
                 }
                 event.stopPropagation();
             });
-            backside_element.addEventListener("mouseover", function (event) {
+            backside_element.addEventListener("mouseenter", function (event) {
                var frontside = widget.get_frontside();
                var parent_of_backside = widget.get_parent_of_backside();
                var close_title, close_handler;

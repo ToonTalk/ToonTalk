@@ -43,7 +43,7 @@ window.TOONTALK.frontside =
                 }
                 event.stopPropagation();
             });
-            frontside_element.addEventListener("mouseover", function (event) {
+            frontside_element.addEventListener("mouseenter", function (event) {
                 var backside = widget.get_backside();
                 if (backside) {
                     TT.UTILITIES.highlight_element(backside.get_element());
