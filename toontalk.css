@@ -762,8 +762,12 @@ background-image: url("images/dusty-morph.png");
 }
 .toontalk-close-button {
 /* 	based upon http://jsfiddle.net/adzFe/14/ */
-	right: -10px;
-	top: -10px;
+	
+
+	right: -18px;
+	
+
+	top: -27px;
 	position: absolute;
 	cursor: pointer;
 	color: white;
@@ -780,7 +784,7 @@ background-image: url("images/dusty-morph.png");
 	background: red;
 }
 .toontalk-close-button:before{
-    content: "×";
+    content: "Ã—";
 }
 .toontalk-string-value-from-sensor {
 	background-color: rgb(252, 240, 240);

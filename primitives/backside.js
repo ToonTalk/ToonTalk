@@ -47,6 +47,23 @@ window.TOONTALK.backside =
                         $(stop_sign_element) .css({left: backside_width-sign_width});  
                     }
             };
+            var close_title, close_handler;
+            if (widget.close_button_ok(backside_element)) {
+                close_handler = function (event) {
+                                        backside.hide_backside(event);
+                                        event.stopPropagation();
+                };
+                // title should be re-computed on mouseenter
+                close_title = widget.get_description();
+                if (close_title) {
+                    close_title = "the " + widget.get_type_name() + " who " + close_title;
+                } else {
+                    close_title = "the " + widget.get_type_name();
+                }
+                close_title = "Click to hide this back side of " + close_title + ".";
+                close_button = TT.UTILITIES.create_close_button(close_handler, close_title);
+                backside_element.appendChild(close_button);                
+            }
             $(green_flag_element).addClass("toontalk-green-flag-inactive")
                                  .click(function (event) {
                                             if (widget.can_run()) {
@@ -300,37 +317,14 @@ window.TOONTALK.backside =
             backside_element.addEventListener("mouseenter", function (event) {
                var frontside = widget.get_frontside();
                var parent_of_backside = widget.get_parent_of_backside();
-               var close_title, close_handler;
                if (frontside && (!parent_of_backside || parent_of_backside.get_widget().get_type_name() === "top-level")) {
                    TT.UTILITIES.highlight_element(frontside.get_element());
-               }
-               if (widget.close_button_ok(backside_element)) {
-                   if (close_button) {
-                       $(close_button).show();
-                   } else {
-                       close_handler = function (event) {
-                               backside.hide_backside(event);
-                               event.stopPropagation();
-                       };
-                       close_title = widget.get_description();
-                       if (close_title) {
-                           close_title = "the " + widget.get_type_name() + " who " + close_title;
-                       } else {
-                           close_title = "the " + widget.get_type_name();
-                       }
-                       close_title = "Click to hide this back side of " + close_title + ".";
-                       close_button = TT.UTILITIES.create_close_button(close_handler, close_title);
-                       backside_element.appendChild(close_button);                
-                   }
                }
             });
             backside_element.addEventListener("mouseout", function (event) {
                var frontside = widget.get_frontside();
                if (frontside) {
                    TT.UTILITIES.remove_highlight();
-               }
-               if (close_button) {
-                   $(close_button).hide();
                }
             });
             backside.display_updated = function () {
