@@ -217,19 +217,15 @@ window.TOONTALK.sensor_backside =
                                                                       "toontalk-sensor-active-check-box",
                                                                       "Listening to events",
                                                                       "Check the box if you want to make this sensor active.");
-
-            var extra_settings = function (settings) {
-                settings.appendChild(event_name_input.container);
-                settings.appendChild(event_attribute_input.container);
-                settings.appendChild(activate_switch.container);
-            }
-            var backside = TT.nest_backside.create(sensor, extra_settings);
+            var backside = TT.nest_backside.create(sensor);
+            var backside_element = backside.get_element();
             var update_event_name = function () {
                 sensor.set_event_name(event_name_input.button.value.trim());
             };
             var update_attribute = function () {
                 sensor.set_attribute(event_attribute_input.button.value.trim());
             };
+            var settings_button = $(backside_element).find(".toontalk-settings-backside-button").get(0);
             event_name_input.button.addEventListener(     'change', update_event_name);
             event_attribute_input.button.addEventListener('change', update_attribute);
             $(activate_switch.button).click(function (event) {
@@ -244,6 +240,9 @@ window.TOONTALK.sensor_backside =
                 sensor.render();
                 event.stopPropagation();
             });
+            backside_element.insertBefore(event_name_input.container, settings_button);
+            backside_element.insertBefore(event_attribute_input.container, settings_button);
+            backside_element.insertBefore(activate_switch.container, settings_button);
             return backside;
     }};
 }(window.TOONTALK));

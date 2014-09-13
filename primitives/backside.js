@@ -52,6 +52,7 @@ window.TOONTALK.backside =
                         $(green_flag_element).css({right: close_button_width+sign_width+6}); // smaller gap needed
                     }
             };
+            var description_label = this.create_description_label(backside, widget);
             var close_title, close_handler;
             if (widget.close_button_ok(backside_element)) {
                 close_handler = function (event) {
@@ -111,6 +112,9 @@ window.TOONTALK.backside =
                                                   });
             backside_element.appendChild(green_flag_element);
             backside_element.appendChild(stop_sign_element);
+            if (description_label) {
+                backside_element.appendChild(description_label); 
+            }
             // wait for DOM to settle down
             setTimeout(update_flag_and_sign_position, 1);
             $backside_element.addClass("toontalk-backside toontalk-side " + "toontalk-backside-of-" + widget.get_type_name());
@@ -262,7 +266,6 @@ window.TOONTALK.backside =
             backside.run_status_changed = function (running) {
                 update_flag_and_stop_sign_classes(running);
             };
-//             TT.backside.associate_widget_with_backside_element(widget, backside, backside_element);
             backside_element.toontalk_widget = widget;
             TT.UTILITIES.drag_and_drop(backside_element);
             // the following function should apply recursively...
@@ -406,54 +409,55 @@ window.TOONTALK.backside =
             return check_box;
         },
         
-        create_standard_buttons: function (backside, widget, extra_settings_generator) {
-            var frontside_element = widget.get_frontside_element();
+        create_description_label: function (backside, widget) {
             var description = widget.get_description();
-            var button_set;
-//             if (!(this.get_erased && widget.get_erased()) && !$(frontside_element).is(".toontalk-conditions-contents") && $(frontside_element).parents(".toontalk-conditions-contents").length === 0) {
-//                 run_or_erase_button = TT.backside.create_run_button(backside, widget);
-//             } else {
-//                 run_or_erase_button = TT.backside.create_erase_button(backside, widget);
-//             }
-//             var copy_button = TT.backside.create_copy_button(backside, widget);
-//             var hide_button = TT.backside.create_hide_button(backside, widget);
-//             var remove_button = TT.backside.create_remove_button(backside, widget);
-            var settings_button = TT.backside.create_settings_button(backside, widget, extra_settings_generator);
-            var extra_arguments = [];
-            var i;
-            for (i = 3; i < arguments.length; i++) {
-                extra_arguments[i-3] = arguments[i];
-            }
-            button_set = TT.UTILITIES.create_button_set(settings_button, extra_arguments);
             if (description) {
-               return TT.UTILITIES.create_vertical_table(TT.UTILITIES.create_text_element("Back side of a " + widget.get_type_name() + " that " + description), button_set);
+               return TT.UTILITIES.create_text_element("Back side of a " + widget.get_type_name() + " that " + description);
             }
-            return button_set;
         },
-        
-//         create_done_button: function (element) {
-//             var $done_button = $("<button>Done</button>").button();
-//             $done_button.addClass("toontalk-done-backside-button");
-//             $done_button.click(function (event) {
-//                 $(element).remove();
-//                 event.stopPropagation();
-//             });
-//             $done_button.attr("title", "Click when finished with settings.");
-//             return $done_button.get(0); 
-//         },
-        
-//         create_hide_button: function (backside, widget) {
-//             var backside_element = backside.get_element();
-//             var $backside_element = $(backside_element);
-//             var $hide_button = $("<button>Hide</button>").button();
-//             $hide_button.addClass("toontalk-hide-backside-button");
-//             $hide_button.click(function (event) {
-//                 backside.hide_backside(event);
-//                 event.stopPropagation();
-//             });
-//             $hide_button.attr("title", "Click to hide this.");
-//             return $hide_button.get(0);
-//         },
+
+        add_advanced_settings: function (always_show_advanced_settings) {
+            var widget = this.get_widget();
+            var check_box = this.create_infinite_stack_check_box(this, widget);
+            var type_name = widget.get_type_name();
+            var description_text_area = TT.UTILITIES.create_text_area(widget.get_description(), 
+                                                                      "toontalk-description-input", 
+                                                                      "This&nbsp;" + type_name + "&nbsp;",
+                                                                      "Type here to provide additional information about this " + type_name + ".");
+            var $create_sensor_button = $("<button>Make a sensor</button>").button();
+            var description_change = function () {
+                    var description = description_text_area.button.value.trim();
+                    if (widget.set_description(description, true) && TT.robot.in_training) {
+                        TT.robot.in_training.edited(widget, {setter_name: "set_description",
+                                                             argument_1: description,
+                                                             toString: "change the description to '" + description + "'' of the " + type_name,
+                                                             button_selector: ",toontalk-description-input"});
+                    }
+            };
+            var settings = document.createElement("table");
+            var backside_element = this.get_element();
+            $(settings).addClass("toontalk-advanced-setting");
+            $(description_text_area.button).val(widget.get_description());
+            description_text_area.button.addEventListener('change', description_change);
+            description_text_area.button.addEventListener('mouseout', description_change);
+            $create_sensor_button.click(function (event) {
+                    var sensor = TT.sensor.create('click', 'which', undefined, undefined, true, widget);
+                    var sensor_frontside_element = sensor.get_frontside_element(true);
+                    var initial_location = $create_sensor_button.offset();
+                    widget.add_to_top_level_backside(sensor, true);
+                    initial_location.left -= 120; // to the left of the button
+                    TT.UTILITIES.set_absolute_position($(sensor_frontside_element), initial_location);
+            });
+            $create_sensor_button.attr('title', "Click to create a nest which receives messages when events happen to this " + widget.get_type_name() + ".");
+            settings.appendChild(TT.UTILITIES.create_row(description_text_area.container));
+            settings.appendChild(TT.UTILITIES.create_row($create_sensor_button.get(0), check_box.container));
+            backside_element.appendChild(settings);
+            if (always_show_advanced_settings) {
+                $(backside_element).find(".toontalk-settings-backside-button").remove();
+            } else {            
+                $(backside_element).find(".toontalk-advanced-setting").hide();
+            }
+        },
         
         hide_backside: function (event) {
             var widget = this.get_widget();
@@ -609,55 +613,26 @@ window.TOONTALK.backside =
 //             }
 //         },
 
-        create_settings_button: function (backside, widget, extra_settings_generator) {
-            var $settings_button = $("<button>Settings</button>").button();
+        create_settings_button: function (backside, widget) {
+            var $settings_button = $("<div>></div>");
+            var settings_showing = false;
             $settings_button.addClass("toontalk-settings-backside-button");
             $settings_button.css({"z-index": TT.UTILITIES.next_z_index()});
             $settings_button.click(function (event) {
-                var settings = document.createElement("table");
-                var check_box = this.create_infinite_stack_check_box(backside, widget);
-                var type_name = widget.get_type_name();
-                var description_text_area = TT.UTILITIES.create_text_area(widget.get_description(), 
-                                                                          "toontalk-description-input", 
-                                                                          "This&nbsp;" + type_name + "&nbsp;",
-                                                                          "Type here to provide additional information about this " + type_name + ".");
-                var $create_sensor_button = $("<button>Make a sensor</button>").button();
-                var description_change = function () {
-                        var description = description_text_area.button.value.trim();
-                        if (widget.set_description(description, true) && TT.robot.in_training) {
-                            TT.robot.in_training.edited(widget, {setter_name: "set_description",
-                                                                 argument_1: description,
-                                                                 toString: "change the description to '" + description + "'' of the " + type_name,
-                                                                 button_selector: ",toontalk-description-input"});
-                        }
-                    };
-                var close_handler = function (event) {
-                    $(settings).remove();
+                    var backside_element = backside.get_element();
+                    if (settings_showing) {
+                        $(backside_element).find(".toontalk-advanced-setting").hide();
+                        $settings_button.html(">");
+                        $settings_button.attr("title", "Click to see the advanced settings.");
+                    } else {
+                        $(backside_element).find(".toontalk-advanced-setting").show();
+                        $settings_button.html("<");
+                        $settings_button.attr("title", "Click to hide the advanced settings.");  
+                    }
+                    settings_showing = !settings_showing;
                     event.stopPropagation();
-                }
-                $(description_text_area.button).val(widget.get_description());
-                description_text_area.button.addEventListener('change', description_change);
-                description_text_area.button.addEventListener('mouseout', description_change);
-                $create_sensor_button.click(function (event) {
-                        var sensor = TT.sensor.create('click', 'which', undefined, undefined, true, widget);
-                        var sensor_frontside_element = sensor.get_frontside_element(true);
-                        var initial_location = $create_sensor_button.offset();
-                        widget.add_to_top_level_backside(sensor, true);
-                        initial_location.left -= 120; // to the left of the button
-                        TT.UTILITIES.set_absolute_position($(sensor_frontside_element), initial_location);
-                });
-                $create_sensor_button.attr('title', "Click to create a nest which receives messages when events happen to this " + widget.get_type_name() + ".");
-                if (extra_settings_generator) {
-                    extra_settings_generator(settings);
-                }
-                settings.appendChild(TT.UTILITIES.create_row(description_text_area.container));
-                settings.appendChild(TT.UTILITIES.create_row($create_sensor_button.get(0), check_box.container));
-                settings.appendChild(TT.UTILITIES.create_close_button(close_handler, "Click when finished with the settings of this " + widget.get_type_name() + "."));
-                backside.get_element().appendChild(settings);
-                $(settings).addClass("toontalk-settings");
-                event.stopPropagation();
             }.bind(this));
-            $settings_button.attr("title", "Click to change properties of this " + widget.get_type_name() + ".");
+            $settings_button.attr("title", "Click to see the advanced settings of this " + widget.get_type_name() + ".");
             return $settings_button.get(0);
         },
         

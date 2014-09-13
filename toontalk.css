@@ -88,7 +88,7 @@
 	padding-top:    6px;
 	padding-left:   6px;
 	padding-right:  6px;
-	min-width:  300px;
+	min-width: 550px;
 	min-height: 200px;
 }
 .toontalk-settings {
@@ -348,7 +348,7 @@
 .toontalk-hide-backside-button {
 }
 .toontalk-description-input {
-	width: 30em;
+	width: 24em;
 	text-align: inherit;
 }
 .toontalk-conditions-contents {
@@ -506,6 +506,12 @@
 	height: 19px;
 	position: absolute;
 	top:   -25px;
+}
+.toontalk-settings-backside-button {
+	cursor: pointer;
+	font-family: 'Lucida serif';
+    font-weight: bold;
+    font-size: 14pt;
 }
 .toontalk-wand {
 	background-image: url("images/wand-static.png");
