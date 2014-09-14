@@ -721,7 +721,7 @@ window.TOONTALK.UTILITIES =
             // rewrote after noticing that this works fine: http://jsfiddle.net/KWut6/
             element.addEventListener('dragstart', 
                 function (event) {
-                    var $source_element = $(event.srcElement).closest(".toontalk-side");
+                    var $source_element = $(event.target).closest(".toontalk-side");
                     var bounding_rectangle, json_object, json_div, widget, is_resource;
                     // was using text/plain but IE complained
                     // see http://stackoverflow.com/questions/18065840/html5-drag-and-drop-not-working-on-ie11
@@ -774,7 +774,7 @@ window.TOONTALK.UTILITIES =
                 function (event) {
 //                  console.log("drag end. dragee is " + dragee);
                     if (!dragee) {
-                        dragee = $(event.srcElement).closest(".toontalk-side");
+                        dragee = $(event.target).closest(".toontalk-side");
                     }
                     if (dragee.is(".toontalk-frontside")) {
                         if (dragee.parent().is(".toontalk-backside")) {
