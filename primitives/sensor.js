@@ -12,10 +12,7 @@ window.TOONTALK.sensor = (function (TT) {
     var sensor = Object.create(TT.widget);
     
     var style_contents = function (widget, sensor) {
-//         var frontside_element;
         if (widget.get_type_name() === 'element') {
-//             frontside_element = widget.get_frontside_element(true);
-//             $(frontside_element).css({"font-size": $(sensor.get_frontside_element(true)).height()*0.5});
             widget.set_attribute('font-size', $(sensor.get_frontside_element(true)).height()*0.5, false, true);
             widget.set_additional_classes("toontalk-string-value-from-sensor");
             if (sensor.visible()) {
@@ -161,7 +158,7 @@ window.TOONTALK.sensor = (function (TT) {
             attribute = new_value;
         };
         new_sensor.match = function (other) {
-            // to do
+            // TODO:
             return "not matched";
         };
         new_sensor.set_sensor_of = function (new_value) {

@@ -131,21 +131,6 @@ window.TOONTALK.backside =
                     return backside;
                 };
             }
-//             if (!widget.drop_on) {
-//                 // TO DO: determine if this is needed -- top-level backside can't be added to something - can it?
-//                 widget.drop_on = function (other, $side_element_of_other, event) {
-//                     $backside_element.append($side_element_of_other);
-//                     TT.UTILITIES.set_position_is_absolute($side_element_of_other.get(0), true, event); // when on the backside
-//                     if ($side_element_of_other.is(".toontalk-frontside")) {
-//                         // better to have a preferrred size that it goes to when on backside
-//                         // recorded when dropped into something that changes its size -- e.g. a box
-//                         $side_element_of_other.addClass("toontalk-frontside-on-backside");
-//                         other.rerender();
-//                     }
-//                     backside.update_run_button_disabled_attribute();
-//                     return true;
-//                 };
-//             }
             if (!widget.removed_from_container) {
                 widget.removed_from_container = function (other, backside_removed, event, ignore_if_not_on_backside) {
                     if (!backside_removed) {

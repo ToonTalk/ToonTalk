@@ -877,7 +877,7 @@ window.TOONTALK.nest = (function (TT) {
     };
     
     nest.create_from_json = function (json, additional_info) {
-        var waiting_robots; // to do
+        var waiting_robots; // TODO:
         return TT.nest.create(json.description, 
                               TT.UTILITIES.create_array_from_json(json.contents, additional_info), 
                               waiting_robots, 
