@@ -725,7 +725,7 @@ window.TOONTALK.UTILITIES =
                     var bounding_rectangle, json_object, json_div, widget, is_resource;
                     // was using text/plain but IE complained
                     // see http://stackoverflow.com/questions/18065840/html5-drag-and-drop-not-working-on-ie11
-                    if (event.dataTransfer.getData("text").length > 0) {
+                    if (event.dataTransfer.getData("text") && event.dataTransfer.getData("text").length > 0) {
                         // e.g. dragging some text off the backside of a widget
                         return;
                     }
@@ -761,9 +761,12 @@ window.TOONTALK.UTILITIES =
                         dragee.data("json", json_object);
                         // use two spaces to indent each level
                         json_div = toontalk_json_div(JSON.stringify(json_object, null, '  '));
-                        event.dataTransfer.setData("text/html", json_div);
-                        // the above causes IE9 errors when received so the following added just for IE9
-                        event.dataTransfer.setData("text", json_div);
+                        if (TT.UTILITIES.is_internet_explorer()) {
+                            // text/html causes an error in IE
+                            event.dataTransfer.setData("text", json_div);
+                        } else {
+                            event.dataTransfer.setData("text/html", json_div);
+                        }                      
                         widget.drag_started(json_object, is_resource);
                     }
                     dragee.addClass("toontalk-being-dragged");
@@ -1582,6 +1585,16 @@ window.TOONTALK.UTILITIES =
             }
             // any value other than 1 is false
             return false;
+        },
+
+        is_browser_of_type: function (type) {
+            // type can be "MSIE", "Firefox", "Safari", "Chrome", "Opera"
+            return window.navigator.userAgent.indexOf(type) >= 0;
+        },
+
+        is_internet_explorer: function () {
+            return TT.UTILITIES.is_browser_of_type("MSIE") || // before version 11
+                   TT.UTILITIES.is_browser_of_type("Trident");
         }
         
 //         create_menu_item: function (text) {
