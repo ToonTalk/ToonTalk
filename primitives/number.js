@@ -210,6 +210,22 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         // note that we are not considering the operator
         return bigrat.equals(this.get_value(), other_number.get_value());
     };
+
+    number.compare_with = function (other) {
+        if (other.compare_with_number) {
+            return -1*other.compare_with_number(this);
+        }
+    };
+
+    number.compare_with_number = function (other_number) {
+        if (bigrat.equals(this.get_value(), other_number.get_value())) {
+            return 0;
+        }
+        if (bigrat.isGreaterThan(this.get_value(), other_number.get_value())) {
+            return 1;
+        }
+        return -1;
+    };
     
     number.update_display = function () {
         // should compute width from frontside element
@@ -231,6 +247,9 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         } else if ($(frontside_element).parent().is(".toontalk-backside, .toontalk-json")) {
             $dimensions_holder = $(frontside_element);
             size_unconstrained_by_container = true;
+        } else if ($(frontside_element).parent().is(".toontalk-scale-half")) {
+            // scales set the size of contents explicitly 
+            $dimensions_holder = $(frontside_element);
         } else {
             $dimensions_holder = $(frontside_element).parent();
         }
@@ -383,7 +402,6 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         if (event) {
             this.rerender();
         }
-//         this.remove();
         return true;
     };
     

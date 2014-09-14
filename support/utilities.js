@@ -19,6 +19,7 @@ window.TOONTALK.UTILITIES =
                          "element": TT.element.create_from_json,
                          "bird": TT.bird.create_from_json,
                          "nest": TT.nest.create_from_json,
+                         "scale": TT.scale.create_from_json,
                          "sensor": TT.sensor.create_from_json,
                          "body": TT.actions.create_from_json,
                          "robot_action": TT.robot_action.create_from_json,
@@ -679,16 +680,18 @@ window.TOONTALK.UTILITIES =
         data_transfer_json_object: function (event) {
             var data, json;
             if (!event.dataTransfer) {
-                TT.UTILITIES.report_internal_error("no dataTransfer in drop event");
+                // not really an error -- could be a drag of an image into ToonTalk
+//              console.log("no dataTransfer in drop event");
                 return;
             }
             // following code could be simplified by using event.dataTransfer.types
-            // unless in IE9 should use text/html to enable dragging of HTML elements
+            // unless in IE should use text/html to enable dragging of HTML elements
+            // perhaps better than catching error to use is_internet_explorer()
             try {
-                // the following causes errors in IE9
+                // the following causes errors in IE
                 data = event.dataTransfer.getData("text/html");
             } catch (e) {
-                // should only occur in IE9
+                // should only occur in IE
                 data = event.dataTransfer.getData("text");
             }
             if (!data || data.match(/[\u3400-\u9FBF]/)) {
@@ -701,7 +704,8 @@ window.TOONTALK.UTILITIES =
 //                 }
             }
             if (!data) {
-                TT.UTILITIES.report_internal_error("No data in dataTransfer in drop.");
+                // not really an error -- could be a drag of an image into ToonTalk
+//              console.log("No data in dataTransfer in drop.");
                 return;
             }
             json = extract_json_from_div_string(data);

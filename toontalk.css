@@ -1303,3 +1303,57 @@ background-image: url("images/dusty-morph.png");
    from { background-position:    0px; }
      to { background-position: -1238px; }
 }
+
+.toontalk-scale-half {
+/* 	is invisible but receives drops */
+    background-color: rgba(0,0,0,0);
+    background-image: none;
+}
+
+.toontalk-scale {
+	background-image: url("images/scales-full-size.png");
+	position: absolute;
+	background-repeat: no-repeat;
+	width: 123px;
+	height: 91px;
+}
+.toontalk-scale-balanced {
+	background-position:    0px;	
+}
+.toontalk-scale-left_heavier {
+	background-position: -246px;
+}
+.toontalk-scale-right_heavier {
+	background-position: -492px;
+}
+.toontalk-scale-unbalanced {
+	-webkit-animation: scale-unbalanced 3s steps(5) infinite;
+       -moz-animation: scale-unbalanced 3s steps(5) infinite;
+        -ms-animation: scale-unbalanced 3s steps(5) infinite;
+         -o-animation: scale-unbalanced 3s steps(5) infinite;
+            animation: scale-unbalanced 3s steps(5) infinite;
+}
+@-webkit-keyframes scale-unbalanced {
+   from { background-position:    0px; }
+     to { background-position: -615px; }
+}
+
+@-moz-keyframes scale-unbalanced {
+   from { background-position:    0px; }
+     to { background-position: -615px; }
+}
+
+@-ms-keyframes scale-unbalanced {
+   from { background-position:    0px; }
+     to { background-position: -615px; }
+}
+
+@-o-keyframes scale-unbalanced {
+   from { background-position:    0px; }
+     to { background-position: -615px; }
+}
+
+@keyframes scale-unbalanced {
+   from { background-position:    0px; }
+     to { background-position: -615px; }
+}
