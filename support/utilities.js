@@ -212,7 +212,7 @@ window.TOONTALK.UTILITIES =
         $(".toontalk-json").each(
             function (index, element) {
                 var json_string = element.textContent;
-                var json, widget, frontside_element, backside_element, backside, stored_json_string, local_storage_key;
+                var json, widget, frontside_element, backside_element, backside, stored_json_string, local_storage_key, message;
                 if (!json_string) {
                     return;
                 }
@@ -240,7 +240,12 @@ window.TOONTALK.UTILITIES =
                             try {
                                 stored_json_string = window.localStorage.getItem(local_storage_key);
                             } catch (error) {
-                                TT.UTILITIES.display_message("Error reading previous state. Error message is " + error);
+                                message = "Error reading previous state. Error message is " + error;
+                                if (TT.UTILITIES.is_internet_explorer()) {
+                                    console.error(message);
+                                } else {
+                                    TT.UTILITIES.display_message();
+                                }
                             }
                             if (stored_json_string) {
                                 json = JSON.parse(stored_json_string);

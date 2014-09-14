@@ -972,10 +972,16 @@ window.TOONTALK.widget = (function (TT) {
             if (top_level_widget && top_level_widget.local_storage_key) {
                 backup_function = function () {
                     var json = TT.UTILITIES.get_json_top_level(top_level_widget);
+                    var message;
                     try {
                         window.localStorage.setItem(top_level_widget.local_storage_key, JSON.stringify(json));
                     } catch (error) {
-                        TT.UTILITIES.display_message("Failed to save state to local storage since it requires " + JSON.stringify(json).length + " bytes. Error message is " + error);
+                        message = "Failed to save state to local storage since it requires " + JSON.stringify(json).length + " bytes. Error message is " + error;
+                        if (TT.UTILITIES.is_internet_explorer()) {
+                            console.error(message);
+                        } else {
+                            TT.UTILITIES.display_message(message);
+                        }
                     }
                 };
                 if (immediately) {
