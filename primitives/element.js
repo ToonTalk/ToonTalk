@@ -493,9 +493,6 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             this.set_attribute("height", $(frontside_element).closest(".toontalk-box-hole").height(), false);
         }
         this.apply_css();
-//         if (backside) {
-//             backside.update_display();
-//         }
         this.fire_on_update_display_handlers();
     };
     
@@ -784,6 +781,7 @@ window.TOONTALK.element_backside =
             // full HTML editing but that is both insecure (should cleanse the HTML) and confusing to non-experts
             var edit_HTML = TT.UTILITIES.get_current_url_boolean_parameter("elementHTML", false);
             var getter = edit_HTML ? "get_HTML" : "get_text";
+            var generic_backside_update = backside.update_display;
             var text, html_input, update_html;
             // need to ensure that it 'knows' its innerText, etc.
             element_widget.update_display();
@@ -827,7 +825,7 @@ window.TOONTALK.element_backside =
                 if ($(attributes_chooser).is(":visible")) {
                     update_style_attribute_chooser(attributes_chooser, element_widget, attribute_table);
                 }
-                this.display_updated();
+                generic_backside_update();
             };
             // if the backside is hidden then so should the attributes chooser
             $(backside_element).find(".toontalk-hide-backside-button").click(function (event) {

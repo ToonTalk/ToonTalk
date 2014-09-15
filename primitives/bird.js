@@ -387,13 +387,6 @@ window.TOONTALK.bird_backside =
     return {
         create: function (bird) {
             var backside = TT.backside.create(bird);
-            backside.update_display = function () {
-                var frontside_element = bird.get_frontside_element();
-                if (frontside_element) {
-                    frontside_element.title = bird.get_title();                 
-                }
-                this.display_updated();
-            };
             backside.add_advanced_settings(true);
             return backside;
         }
@@ -885,13 +878,6 @@ window.TOONTALK.nest_backside =
     return {
         create: function (nest) {
             var backside = TT.backside.create(nest);
-            backside.update_display = function () {
-                var frontside_element = nest.get_frontside_element();
-                if (frontside_element) {
-                    frontside_element.title = nest.get_title();                   
-                }
-                this.display_updated();
-            };
             backside.add_advanced_settings(true);
             return backside;
         }

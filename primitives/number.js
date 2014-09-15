@@ -718,12 +718,11 @@ window.TOONTALK.number_backside =
             var format_set = $(TT.UTILITIES.create_horizontal_table(decimal_format.container, proper_format.container, improper_format.container)).buttonset().get(0);
             var operator_set = $(TT.UTILITIES.create_horizontal_table(plus.container, minus.container, multiply.container, divide.container, power.container)).buttonset().get(0);
             var settings_button = TT.backside.create_settings_button(backside, number);
-//             var infinite_stack_check_box = TT.backside.create_infinite_stack_check_box(backside, number);
+            var generic_backside_update = backside.update_display;
             slash.innerHTML = "/";
             $(slash).addClass("ui-widget"); // to look nice
             backside_element.appendChild(number_set);
             backside_element.appendChild(settings_button);
-//             backside_element.appendChild(infinite_stack_check_box.container);
             numerator_input.button.addEventListener('change', update_value);
             numerator_input.button.addEventListener('mouseout', update_value);
             numerator_input.button.addEventListener('mouseenter', function () {
@@ -771,7 +770,7 @@ window.TOONTALK.number_backside =
             backside.update_display = function () {
                 $(numerator_input.button).val(number.numerator_string());
                 $(denominator_input.button).val(number.denominator_string());
-                this.display_updated();
+                generic_backside_update();
             };
             $(format_set)  .addClass("toontalk-advanced-setting");
             $(operator_set).addClass("toontalk-advanced-setting");

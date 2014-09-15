@@ -736,6 +736,7 @@ window.TOONTALK.robot_backside =
             var $next_robot_area = TT.UTILITIES.create_drop_area(window.TOONTALK.robot.empty_drop_area_instructions);
             var next_robot = robot.get_next_robot();
             var settings_button = TT.backside.create_settings_button(backside, robot);
+            var generic_backside_update = backside.update_display;
             $next_robot_area.data("drop_area_owner", robot);
             $(run_once_input.button).click(function (event) {
                 var keep_running = run_once_input.button.checked;
@@ -763,18 +764,10 @@ window.TOONTALK.robot_backside =
             });
             backside.update_display = function () {
                 var frontside_element = robot.get_frontside_element();
-//                 var $containing_backside_element;
-//                 $(image_url_input.button).val(robot.get_image_url());
-//                 $(run_once_input.button).prop("checked", !robot.get_run_once());
                 if (frontside_element) {
-                    frontside_element.title = robot.get_title();
-//                     $containing_backside_element = $(frontside_element).closest(".toontalk-backside");
-//                     if ($containing_backside_element.length > 0) {
-//                         TT.UTILITIES.widget_from_jquery($containing_backside_element).get_backside().update_run_button_disabled_attribute();
-//                     }                    
+                    frontside_element.title = robot.get_title();                    
                 }
-//                 backside.update_run_button_disabled_attribute();
-                this.display_updated();
+                generic_backside_update();
             };
             backside_element.appendChild(this.create_train_button(backside, robot));
             backside_element.appendChild(settings_button);

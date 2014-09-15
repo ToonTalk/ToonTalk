@@ -320,6 +320,10 @@ window.TOONTALK.backside =
                    TT.UTILITIES.remove_highlight();
                }
             });
+            backside.update_display = function () {
+                // default -- some backsides do more and call this
+                backside.display_updated();
+            };
             backside.display_updated = function () {
                 var $backside_element = $(this.get_element());
                 if (!original_width) {

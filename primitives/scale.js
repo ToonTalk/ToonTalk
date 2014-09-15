@@ -76,7 +76,6 @@ window.TOONTALK.scale = (function (TT) {
             return true;
         };
         new_scale.update_display = function () {
-            // TODO: 'state' should be updated independent of this
             var frontside_element = this.get_frontside_element();
             var $frontside_element = $(frontside_element);
             var $scale_parts = $(frontside_element).children(".toontalk-scale-half");
@@ -259,13 +258,6 @@ window.TOONTALK.scale_backside =
     return {
         create: function (scale) {
             var backside = TT.backside.create(scale);
-            backside.update_display = function () {
-                var frontside_element = scale.get_frontside_element();
-                if (frontside_element) {
-                    frontside_element.title = scale.get_title();                 
-                }
-                this.display_updated();
-            };
             backside.add_advanced_settings(true);
             return backside;
         }
