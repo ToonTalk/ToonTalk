@@ -15,7 +15,7 @@ window.TOONTALK.scale = (function (TT) {
     var scale = Object.create(TT.widget);
 
     scale.create = function (initial_contents, description, new_scale) {
-        var box_get_json, box_copy, previous_state;
+        var box_get_json, box_copy, box_get_path_to, previous_state;
         var contents_listener = function () {
                                     new_scale.rerender();
         };
@@ -25,6 +25,7 @@ window.TOONTALK.scale = (function (TT) {
         } 
         box_get_json = new_scale.get_json;
         box_copy = new_scale.copy;
+        box_get_path_to = new_scale.get_path_to;
         new_scale.copy = function (just_value) {
             var copy_as_box = box_copy.call(this, just_value);
             var copy = TT.scale.create(undefined, undefined, copy_as_box);
@@ -34,6 +35,11 @@ window.TOONTALK.scale = (function (TT) {
             var scale_json = box_get_json.call(this, json_history);
             scale_json.type = 'scale';
             return scale_json;
+        };
+        new_scale.get_path_to = function (widget, robot) {
+            var path = box_get_path_to.call(this, widget, robot);
+            path.true_type = 'scale';
+            return path;
         };
         new_scale.widget_dropped_on_me = function (dropped, is_backside, event, robot) {
             var left_contents  = this.get_hole_contents(0);

@@ -420,7 +420,7 @@ window.TOONTALK.box = (function (TT) {
         var size = this.get_size();
         var index, part, path, sub_path;
         if (widget.get_type_name() === 'empty hole') {
-           return TT.box.path.create(widget.get_index());
+            return TT.box.path.create(widget.get_index());
         }
         for (index = 0; index < size; index++) {
             part = this.get_hole_contents(index) || this.get_contents_temporarily_removed(index);
@@ -483,11 +483,19 @@ window.TOONTALK.box = (function (TT) {
                     return index;
                 },
                 toString: function () {
-                    return "the " + TT.UTILITIES.cardinal(index) + " hole "; // + (this.next ? "; " + TT.path.toString(this.next) : "");
+                    if (this.true_type === 'scale') {
+                        if (index === 0) {
+                            return "the left side of the scale ";
+                        } else {
+                            return "the right side of the scale ";
+                        }
+                    }
+                    return "the " + TT.UTILITIES.cardinal(index) + " hole ";
                 },
                 get_json: function (json_history) {
                     return {type: "box_path",
                             index: index,
+                            true_type: this.true_type,
                             next: this.next && this.next.get_json(json_history)};
                 }
             };
@@ -498,6 +506,9 @@ window.TOONTALK.box = (function (TT) {
         var path = box.path.create(json.index);
         if (json.next) {
             path.next = TT.UTILITIES.create_from_json(json.next, additional_info);
+        }
+        if (json.true_type) {
+            path.true_type = json.true_type;
         }
         return path;
     };
