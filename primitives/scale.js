@@ -15,8 +15,7 @@ window.TOONTALK.scale = (function (TT) {
     var scale = Object.create(TT.widget);
 
     scale.create = function (initial_contents, description, new_scale) {
-        var box_get_json, box_copy,
-            state; // can be -1, 0, 1 or undefined
+        var box_get_json, box_copy, previous_state;
         // new_scale is bound when copying a scale
         if (!new_scale) {
             new_scale = TT.box.create(2, undefined, initial_contents, description);
@@ -55,8 +54,7 @@ window.TOONTALK.scale = (function (TT) {
                     }
                     return; // not much can be done
                 }
-                this.set_hole(0, dropped);
-                return true;
+                this.set_hole(0, dropped);      
             } else {
                 if (right_contents) {
                     if (right_contents.widget_dropped_on_me) {
@@ -65,8 +63,8 @@ window.TOONTALK.scale = (function (TT) {
                     return; // not much can be done
                 }
                 this.set_hole(1, dropped);
-                return true;
             }
+            return true;
         };
         new_scale.update_display = function () {
             // TODO: 'state' should be updated independent of this
@@ -109,45 +107,15 @@ window.TOONTALK.scale = (function (TT) {
                     hole_element.appendChild(content_frontside_element); // no-op if already there
                 }                                          
             };
-            var left_contents  = this.get_hole_contents(0);
-            var right_contents = this.get_hole_contents(1);
-            var class_name;
+            var state, class_name;
             if ($frontside_element.is(".toontalk-top-level-resource")) {
                 class_name = "toontalk-scale-balanced";
-                state = 0;
             } else {
-                if (!left_contents && !right_contents) {
+                state = this.get_state();
+                if (typeof state === 'undefined') {
                     class_name = "toontalk-scale-unbalanced";
-                    state = 0;
-                } else if (!left_contents) {
-                    class_name = "toontalk-scale-right_heavier";
-                    state = -1;
-                } else if (!right_contents) {
-                    class_name = "toontalk-scale-left_heavier";
-                    state = 1;
                 } else {
-                    if (left_contents.compare_with) {
-                        switch (left_contents.compare_with(right_contents)) {
-                            case 0:
-                            class_name = "toontalk-scale-balanced";
-                            state = 0;
-                            break;
-                            case 1:
-                            class_name = "toontalk-scale-left_heavier";
-                            state = 1;
-                            break;
-                            case -1:
-                            class_name = "toontalk-scale-right_heavier";
-                            state = -1;
-                            break;
-                            default:
-                            class_name = "toontalk-scale-unbalanced";
-                            state = 0;
-                        }
-                    } else {
-                        class_name = "toontalk-scale-unbalanced";
-                        state = 0;
-                    }
+                    class_name = ["toontalk-scale-right_heavier", "toontalk-scale-balanced", "toontalk-scale-left_heavier"][state+1];
                 }
             }
             $frontside_element.removeClass("toontalk-scale-balanced toontalk-scale-left_heavier toontalk-scale-right_heavier toontalk-scale-unbalanced");
@@ -190,7 +158,21 @@ window.TOONTALK.scale = (function (TT) {
             return TT.box_backside.create(this);
         };
         new_scale.get_state = function () {
-            return state;
+            // can be -1, 0, 1 or undefined
+            // 1 means left is heavier while -1 means right is
+            var left_contents  = this.get_hole_contents(0);
+            var right_contents = this.get_hole_contents(1);
+            if (!left_contents && !right_contents) {
+                return; // undefined
+            } else if (!left_contents) {
+                return -1;
+            } else if (!right_contents) {
+               return 1;
+            } else {
+               if (left_contents.compare_with) {
+                   return left_contents.compare_with(right_contents);
+               }
+            }
         };
         new_scale.match = function (other) {
             if (other.match_with_scale) {
