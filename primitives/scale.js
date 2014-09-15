@@ -87,11 +87,14 @@ window.TOONTALK.scale = (function (TT) {
                 var content_frontside_element;
                 var left = index*scale_width*0.5;
                 var top = 0;
-                var contents_left, contents_top;
+                var width = scale_width*0.5;
+                var height = scale_height;
+                var hole_widget = hole.get_contents();
+                var contents_left, contents_top, contents_width, contents_height;
                 $(hole_element).css({left:   left,
                                      top:    top,
-                                     width:  scale_width*0.5,
-                                     height: scale_height});
+                                     width:  width,
+                                     height: height});
                 if (hole_element !== content_frontside_element) {
                     if (index === 0) {
                         contents_left = scale_width*-0.05;
@@ -109,10 +112,20 @@ window.TOONTALK.scale = (function (TT) {
                     } else {
                         contents_top = scale_height*0.2;
                     }
+                    contents_width  = scale_width *0.4;
+                    contents_height = scale_height*0.4;
                     $(content_frontside_element).css({left:   contents_left,
                                                       top:    contents_top,
-                                                      width:  scale_width *0.4,
-                                                      height: scale_height*0.4});
+                                                      width:  contents_width,
+                                                      height: contents_height});
+                    if (hole_widget) {
+                        if (hole_widget.set_location_attributes) {
+                            hole_widget.set_location_attributes(contents_left, contents_top);
+                        }
+                        if (hole_widget.set_size_attributes) {
+                            hole_widget.set_size_attributes(contents_width, contents_height);
+                        }           
+                    }
                     hole_element.appendChild(content_frontside_element); // no-op if already there
                 }                                          
             };

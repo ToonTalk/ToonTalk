@@ -261,6 +261,23 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             return 'not matched';
         }
     };
+
+    element.compare_with = function (other) {
+        if (other.compare_with_other_element) {
+            return other.compare_with_other_element(this);
+        }
+    };
+
+    element.compare_with_other_element = function (other_element) {
+        var comparison = other_element.get_HTML().localeCompare(this.get_HTML());
+        if (comparison < 0) {
+            return -1;
+        }
+        if (comparison > 0) {
+            return 1;
+        }
+        return comparison;
+    }
     
     element.create_backside = function () {
         return TT.element_backside.create(this); //.update_run_button_disabled_attribute();
@@ -582,6 +599,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     element.set_size_attributes = function (width, height) {
         this.set_attribute('width',  width);
         this.set_attribute('height', height);
+    };
+
+    element.set_location_attributes = function (left, top) {
+        this.set_attribute('left', left);
+        this.set_attribute('top',  top);
     };
     
     return element;
