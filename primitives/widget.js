@@ -24,15 +24,15 @@ window.TOONTALK.widget = (function (TT) {
         var widget = TT.widget.create_top_level_widget();
         var $backside_element = $(widget.get_backside(true).get_element());
         $backside_element.addClass("toontalk-top-level-backside");
-        $backside_element.click(
-            function (event) {
-                if (event.target === $backside_element.get(0)) {
-                    // only if directly clicked upon
-                    widget.set_running(!widget.get_running());
-                    event.stopPropagation();
-                }
-            }
-        );
+//         $backside_element.click(
+//             function (event) {
+//                 if (event.target === $backside_element.get(0)) {
+//                     // only if directly clicked upon
+//                     widget.set_running(!widget.get_running());
+//                     event.stopPropagation();
+//                 }
+//             }
+//         );
         return widget;
     };
     
