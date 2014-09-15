@@ -524,7 +524,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 };
     };
     
-    element.create_from_json = function (json, additional_info) {
+    TT.creators_from_json["element"] = function (json, additional_info) {
         var reconstructed_element = element.create(decodeURIComponent(json.html), json.attributes, json.description);
         var ignore_attributes;
         if (additional_info && additional_info.event) {
@@ -569,7 +569,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             }};
     }
     
-    element.create_path_from_json = function (json) {
+    TT.creators_from_json["path_to_style_attribute"] = function (json) {
         var element_widget_path = TT.UTILITIES.create_from_json(json.element_widget_path);
         return element.extend_attribute_path(element_widget_path, json.attribute);
     };

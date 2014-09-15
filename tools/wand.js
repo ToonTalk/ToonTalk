@@ -28,9 +28,10 @@ window.TOONTALK.wand = (function (TT) {
         }
     };
 
-    return {create_from_json: function () {
-                                  return instance;
-                              },
-            instance: instance};
+    TT.creators_from_json["wand"] = function () {
+        return instance;
+    };
+
+    return {instance: instance};
 
 }(window.TOONTALK));

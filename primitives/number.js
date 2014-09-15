@@ -556,7 +556,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
                 };
     };
     
-    number.create_from_json = function (json) {
+    TT.creators_from_json["number"] = function (json) {
         return number.create(json.numerator, json.denominator, json.operator, json.format, json.description);
     };
 

@@ -6,33 +6,11 @@
  
 /*jslint browser: true, devel: true, plusplus: true, vars: true, white: true */
 
-// jQuery.event.props.push('dataTransfer'); // some posts claim this needed -- unsure...
-
 window.TOONTALK.UTILITIES = 
 (function (TT) {
     "use strict";
     var dragee;
     var z_index = 100;
-    var json_creators = {"box": TT.box.create_from_json,
-                         "number": TT.number.create_from_json,
-                         "robot": TT.robot.create_from_json,
-                         "element": TT.element.create_from_json,
-                         "bird": TT.bird.create_from_json,
-                         "nest": TT.nest.create_from_json,
-                         "scale": TT.scale.create_from_json,
-                         "sensor": TT.sensor.create_from_json,
-                         "body": TT.actions.create_from_json,
-                         "robot_action": TT.robot_action.create_from_json,
-                         "box_path": TT.box.path.create_from_json,
-                         "path.to_entire_context": TT.path.entire_context_create_from_json,
-                         "path.top_level_backside": TT.path.top_level_backside.create_from_json,
-                         "path.to_resource": TT.path.path_to_resource_create_from_json,
-                         "newly_created_widgets_path": TT.newly_created_widgets_path.create_from_json,
-                         "path.to_backside_widget_of_context": TT.path.path_to_backside_widget_of_context_create_from_json,
-                         "path_to_style_attribute": TT.element.create_path_from_json,
-                         "top_level": TT.widget.top_level_create_from_json,
-                         "wand": TT.wand.create_from_json,
-                         "vacuum": TT.vacuum.create_from_json};
     // id needs to be unique across ToonTalks due to drag and drop
     var id_counter = new Date().getTime();
     var div_open = "<div class='toontalk-json'>";
@@ -397,7 +375,7 @@ window.TOONTALK.UTILITIES =
             json_view = json.view;
             if (json_semantic.shared_widget_index >= 0) {
                 return TT.UTILITIES.create_from_json(additional_info.json_of_shared_widgets[json_semantic.shared_widget_index], additional_info);
-            } else if (json_creators[json_semantic.type]) {
+            } else if (TT.creators_from_json[json_semantic.type]) {
                 if (!additional_info) {
                     additional_info = {};
                 }
@@ -406,7 +384,7 @@ window.TOONTALK.UTILITIES =
                 } else {
                     json_view = additional_info.json_view;
                 }
-                widget = json_creators[json_semantic.type](json_semantic, additional_info);
+                widget = TT.creators_from_json[json_semantic.type](json_semantic, additional_info);
                // following was needed when get_json_top_level wasn't working properly
 //             } else if (json_semantic.shared_widget_index >= 0) {
 //                 widget = additional_info.shared_widgets[json_semantic.shared_widget_index];

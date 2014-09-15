@@ -9,6 +9,14 @@
 window.TOONTALK.actions = 
 (function (TT) {
     "use strict";
+
+    TT.creators_from_json["body"] = function (json) {
+        var actions = TT.actions.create();
+        // some steps need to refer back to this (i.e. the body)
+        actions.initialise_steps(TT.UTILITIES.create_array_from_json(json.steps, {body: actions}));
+        return actions;
+    };
+    
     return {
         create: function (steps) {
             var new_actions = Object.create(this);
@@ -188,22 +196,21 @@ window.TOONTALK.actions =
         get_json: function (json_history) {
             return {type: "body",
                     steps: TT.UTILITIES.get_json_of_array(this.get_steps(), json_history)};
-        },
-        
-        create_from_json: function (json) {
-            var actions = TT.actions.create();
-            // some steps need to refer back to this (i.e. the body)
-            actions.initialise_steps(TT.UTILITIES.create_array_from_json(json.steps, {body: actions}));
-            return actions;
         }
         
     };
+
 }(window.TOONTALK));
 
 window.TOONTALK.newly_created_widgets_path =
 // paths to widgets created by previous steps
 (function (TT) {
     "use strict";
+
+    TT.creators_from_json["newly_created_widgets_path"] =  function (json) {
+        return TT.newly_created_widgets_path.create(json.index);
+    };
+    
     return {
         create: function (index) {
             return {
@@ -237,9 +244,8 @@ window.TOONTALK.newly_created_widgets_path =
                             index: index};
                 }
             };
-        },
-        create_from_json: function (json) {
-            return TT.newly_created_widgets_path.create(json.index);
         }
+        
     };
+
 }(window.TOONTALK));

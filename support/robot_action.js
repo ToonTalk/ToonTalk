@@ -279,6 +279,15 @@ window.TOONTALK.robot_action =
               robot.run_next_step();
          } 
     };
+
+    TT.creators_from_json["robot_action"] = function (json, ignore_view, additional_info) {
+        if (json.additional_info) {
+            return TT.robot_action.create(TT.path.create_from_json(json.path, additional_info), json.action_name, json.additional_info);
+        } else {
+            return TT.robot_action.create(TT.path.create_from_json(json.path, additional_info), json.action_name);
+        }
+    };
+    
     return {
         create: function (path, action_name, additional_info) {
             var new_action = Object.create(this);
@@ -335,12 +344,7 @@ window.TOONTALK.robot_action =
                         additional_info: additional_info};        
             };
             return new_action;  
-        },
-        create_from_json: function (json, ignore_view, additional_info) {
-            if (json.additional_info) {
-                return TT.robot_action.create(TT.path.create_from_json(json.path, additional_info), json.action_name, json.additional_info);
-            } else {
-                return TT.robot_action.create(TT.path.create_from_json(json.path, additional_info), json.action_name);
-            }
-        }};
+        }
+    };
+
 }(window.TOONTALK));

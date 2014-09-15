@@ -204,7 +204,7 @@ window.TOONTALK.scale = (function (TT) {
         return new_scale;
     };
 
-    scale.create_from_json = function (json, additional_info) {
+    TT.creators_from_json["scale"] = function (json, additional_info) {
         return scale.create(TT.UTILITIES.create_array_from_json(json.contents, additional_info), json.description);
     };
 

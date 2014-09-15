@@ -19,6 +19,23 @@ window.TOONTALK.widget = (function (TT) {
         }
         return frontside.get_element();
     };
+                
+    TT.creators_from_json["top_level"] = function (json) {
+        var widget = TT.widget.create_top_level_widget();
+        var $backside_element = $(widget.get_backside(true).get_element());
+        $backside_element.addClass("toontalk-top-level-backside");
+        $backside_element.click(
+            function (event) {
+                if (event.target === $backside_element.get(0)) {
+                    // only if directly clicked upon
+                    widget.set_running(!widget.get_running());
+                    event.stopPropagation();
+                }
+            }
+        );
+        return widget;
+    };
+    
     return {
         
         add_standard_widget_functionality: function (widget) {
@@ -937,22 +954,6 @@ window.TOONTALK.widget = (function (TT) {
             }
             return widget;
         },
-        
-        top_level_create_from_json: function (json) {
-            var widget = TT.widget.create_top_level_widget();
-            var $backside_element = $(widget.get_backside(true).get_element());
-            $backside_element.addClass("toontalk-top-level-backside");
-            $backside_element.click(
-                function (event) {
-                    if (event.target === $backside_element.get(0)) {
-                        // only if directly clicked upon
-                        widget.set_running(!widget.get_running());
-                        event.stopPropagation();
-                    }
-                }
-            );
-            return widget;
-        },
 
         add_to_top_level_backside: function (widget, train) {
             var top_level_widget = this.top_level_widget();
@@ -1019,4 +1020,5 @@ window.TOONTALK.widget = (function (TT) {
             return this;
         }
     };
+
 }(window.TOONTALK));

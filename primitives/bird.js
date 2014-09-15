@@ -368,7 +368,7 @@ window.TOONTALK.bird = (function (TT) {
         return other.get_type_name && other.get_type_name() === this.get_type_name();
     };
     
-    bird.create_from_json = function (json, additional_info) {
+    TT.creators_from_json["bird"] = function (json, additional_info) {
         return TT.bird.create(TT.UTILITIES.create_from_json(json.nest, additional_info), json.description);
     };
     
@@ -876,7 +876,7 @@ window.TOONTALK.nest = (function (TT) {
         return other.get_type_name && other.get_type_name() === this.get_type_name();
     };
     
-    nest.create_from_json = function (json, additional_info) {
+    TT.creators_from_json["nest"] = function (json, additional_info) {
         var waiting_robots; // TODO:
         return TT.nest.create(json.description, 
                               TT.UTILITIES.create_array_from_json(json.contents, additional_info), 

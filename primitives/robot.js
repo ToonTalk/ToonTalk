@@ -633,7 +633,7 @@ window.TOONTALK.robot = (function (TT) {
                };
     };
     
-    robot.create_from_json = function (json, additional_info) {
+    TT.creators_from_json["robot"] = function (json, additional_info) {
         var next_robot, thing_in_hand, backside_conditions;
         if (json.thing_in_hand) {
             thing_in_hand = TT.UTILITIES.create_from_json(json.thing_in_hand, additional_info);

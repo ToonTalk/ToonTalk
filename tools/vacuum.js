@@ -107,9 +107,10 @@ window.TOONTALK.vacuum = (function (TT) {
         }
     };
 
-    return {create_from_json: function () {
-                                  return instance;
-                              },
-            instance: instance};
+    TT.creators_from_json["vacuum"] = function () {
+        return instance;
+    };
+
+    return {instance: instance};
 
 }(window.TOONTALK));

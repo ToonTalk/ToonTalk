@@ -239,7 +239,7 @@ window.TOONTALK.box = (function (TT) {
                };
     };
     
-    box.create_from_json = function (json, additional_info) {
+    TT.creators_from_json['box'] = function (json, additional_info) {
         return box.create(json.size, json.horizontal, TT.UTILITIES.create_array_from_json(json.contents, additional_info), json.description);
     };
     
@@ -504,16 +504,17 @@ window.TOONTALK.box = (function (TT) {
                             next: this.next && this.next.get_json(json_history)};
                 }
             };
-        },
-    
-        create_from_json: function (json, additional_info) {
-            var path = box.path.create(json.index);
-            if (json.next) {
-                path.next = TT.UTILITIES.create_from_json(json.next, additional_info);
-            }
-            return path;
         }
     };
+
+    TT.creators_from_json["box_path"] = function (json, additional_info) {
+        var path = box.path.create(json.index);
+        if (json.next) {
+            path.next = TT.UTILITIES.create_from_json(json.next, additional_info);
+        }
+        return path;
+    };
+    
     return box;
 }(window.TOONTALK));
 
