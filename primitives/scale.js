@@ -106,8 +106,7 @@ window.TOONTALK.scale = (function (TT) {
                                                       top:    contents_top,
                                                       width:  scale_width *0.4,
                                                       height: scale_height*0.4});
-                    hole_element.appendChild(content_frontside_element);
-                    new_scale.rerender();
+                    hole_element.appendChild(content_frontside_element); // no-op if already there
                 }                                          
             };
             var left_contents  = this.get_hole_contents(0);
@@ -156,7 +155,11 @@ window.TOONTALK.scale = (function (TT) {
             $frontside_element.addClass("toontalk-scale");
             if ($scale_parts.length === 2) {
                 $scale_parts.each(function (index, hole_element) {
-                        update_hole(hole_element, this.get_hole(index), index);
+                        // delaying ensures they contents of the holes have the right size
+                        setTimeout(function () {
+                            update_hole(hole_element, this.get_hole(index), index);
+                        }.bind(this),
+                        1);
                     }.bind(this));
             } else {
                 this.get_holes().forEach(function (hole, index) {
@@ -166,7 +169,7 @@ window.TOONTALK.scale = (function (TT) {
                         } else {
                             $(hole_element).addClass("toontalk-right_scale toontalk-scale-half");
                         }
-//                         $(hole_element).removeClass("toontalk-box-hole");
+//                      $(hole_element).removeClass("toontalk-box-hole");
                         update_hole(hole_element, hole, index);
                         frontside_element.appendChild(hole_element);                       
                     });
