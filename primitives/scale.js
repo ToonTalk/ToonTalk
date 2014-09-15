@@ -16,6 +16,9 @@ window.TOONTALK.scale = (function (TT) {
 
     scale.create = function (initial_contents, description, new_scale) {
         var box_get_json, box_copy, previous_state;
+        var contents_listener = function () {
+                                    new_scale.rerender();
+        };
         // new_scale is bound when copying a scale
         if (!new_scale) {
             new_scale = TT.box.create(2, undefined, initial_contents, description);
@@ -125,9 +128,9 @@ window.TOONTALK.scale = (function (TT) {
                 $scale_parts.each(function (index, hole_element) {
                         // delaying ensures they contents of the holes have the right size
                         setTimeout(function () {
-                            update_hole(hole_element, this.get_hole(index), index);
-                        }.bind(this),
-                        1);
+                                update_hole(hole_element, this.get_hole(index), index);
+                            }.bind(this),
+                            1);
                     }.bind(this));
             } else {
                 this.get_holes().forEach(function (hole, index) {
@@ -186,6 +189,15 @@ window.TOONTALK.scale = (function (TT) {
             }
             return "not matched";
         };
+        // following should only be done when first becoming visible (and removed when becoming hidden)
+        new_scale.get_hole(0).add_listener('value_changed', contents_listener);
+        new_scale.get_hole(1).add_listener('value_changed', contents_listener);
+        if (new_scale.get_hole_contents(0)) {
+            new_scale.get_hole_contents(0).add_listener('value_changed', contents_listener);
+        }
+        if (new_scale.get_hole_contents(1)) {
+            new_scale.get_hole_contents(1).add_listener('value_changed', contents_listener);
+        }
         return new_scale;
     };
 

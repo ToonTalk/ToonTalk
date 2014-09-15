@@ -39,7 +39,6 @@ window.TOONTALK.widget = (function (TT) {
     return {
         
         add_standard_widget_functionality: function (widget) {
-//          this.erasable(widget);
             this.add_sides_functionality(widget);
             this.runnable(widget);
             this.stackable(widget);
@@ -47,6 +46,7 @@ window.TOONTALK.widget = (function (TT) {
             this.has_title(widget);
             this.has_parent(widget);
             this.has_description(widget);
+            this.has_listeners(widget);
             // erasability will eventually will be used for type conversions
             // currently only for conditions
             this.erasable(widget); 
@@ -389,6 +389,43 @@ window.TOONTALK.widget = (function (TT) {
                     }
                     return true;
                 };
+            }
+        },
+
+        has_listeners: function (widget) {
+            var listeners = {};
+            if (!widget.add_listener) {
+                 widget.add_listener = function (type, listener) {
+                    var listeners_for_type = listeners[type];
+                    if (listeners_for_type) {
+                        if (listeners_for_type.indexOf(listener) < 0) {
+                             listeners_for_type.push(listener);   
+                        } 
+                    } else {
+                        listeners[type] = [listener];
+                    }        
+                 };
+            }
+            if (!widget.remove_listener) {
+                widget.remove_listener = function (type, listener, ok_if_not_there) {
+                    var listeners_for_type = listeners[type];
+                    var index;
+                    if (listeners_for_type) {
+                        index = listeners_for_type.indexOf(listener);
+                        if (index >= 0) {
+                            listeners_for_type.splice(index, 1); 
+                            return;  
+                        }
+                    }
+                    if (!ok_if_not_there && TT.debugging) {
+                        console.log("Listener of type " + type_name + " could not be removed.");
+                    }        
+                };
+            }
+            if (!widget.get_listeners) {
+                widget.get_listeners = function (type) {
+                    return listeners[type];
+                }
             }
         },
         

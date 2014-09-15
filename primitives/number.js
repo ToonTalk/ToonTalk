@@ -132,10 +132,17 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             operator = '+';
         } 
         new_number.set_value =
-            // ignores second argument (update_now) -- todo: update callers
             function (new_value) {
+                var listeners = this.get_listeners('value_changed');
+                if (listeners) {
+                    listeners.forEach(function (listener) {
+                        listener({type: 'value_changed',
+                                  old_value: value,
+                                  new_value: new_value});
+                    });
+                }
                 value = new_value;
-                this.rerender();
+                this.rerender(); // will update if visible
                 if (TT.debugging) {
                     this.debug_string = this.toString();
                 }
@@ -182,8 +189,8 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         return TT.number_backside.create(this); //.update_run_button_disabled_attribute();
     };
         
-    number.set_from_values = function (numerator, denominator, update_now) {
-        return this.set_value(bigrat_from_values(numerator, denominator), update_now);
+    number.set_from_values = function (numerator, denominator) {
+        return this.set_value(bigrat_from_values(numerator, denominator));
     };
 
     number.ONE = function () {
@@ -399,9 +406,6 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             return;
         }
         var result = other.number_dropped_on_me(this, is_backside, event, robot);
-        if (event) {
-            this.rerender();
-        }
         return true;
     };
     
@@ -585,10 +589,6 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     };
 
     number.integer_part = function () {
-    //        var result = Object.create(this);
-    //        var integer_part = bigrat.toBigInteger(this.get_value());
-    //        result.set_value(bigrat.set(bigrat.create(), integer_part, BigInteger.ONE));
-    //        return result;
         return this.create(this);
     };
 
@@ -675,7 +675,7 @@ window.TOONTALK.number_backside =
                 if (numerator === current_numerator && denominator === current_denominator) {
                     return;
                 }
-                number.set_from_values(numerator, denominator, true);
+                number.set_from_values(numerator, denominator);
                 if (TT.robot.in_training) {
                     first_class_name = event.srcElement.className.split(" ", 1)[0];
                     if (first_class_name === "toontalk-denominator-input") {
