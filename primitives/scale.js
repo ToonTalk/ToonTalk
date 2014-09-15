@@ -154,7 +154,33 @@ window.TOONTALK.scale = (function (TT) {
             return 'scale';
         };
         new_scale.toString = function () {
-            return "a scale comparing " + this.get_hole(0) + " with " + this.get_hole(1);
+            var left_contents  = this.get_hole(0); 
+            var right_contents = this.get_hole(1);
+            var description, left_pan, right_pan;
+            switch (this.get_state()) {
+                case -1:
+                description = "scale leaning to the left";
+                break;
+                case 1:
+                description = "scale leaning to the right";
+                break;
+                case 0:
+                description = "balanced scale";
+                break;
+                default:
+                description = "unbalanced scale";
+            }
+            if (left_contents) {
+                left_pan = "contains " + TT.UTILITIES.add_a_or_an(left_contents.get_full_description());
+            } else {
+                left_pan = "is empty";
+            }
+            if (right_contents) {
+                right_pan = "contains " + TT.UTILITIES.add_a_or_an(right_contents.get_full_description());
+            } else {
+                right_pan = "is empty";
+            }
+            return description + " and the left pan " + left_pan + " and the right pan " + right_pan;
         };
         new_scale.create_backside = function () {
             // for now
