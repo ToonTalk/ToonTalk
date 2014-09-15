@@ -659,6 +659,9 @@ window.TOONTALK.box_hole =
             hole.get_type_name = function () {
                 return "empty hole";
             };
+            hole.is_of_type = function (type_name) {
+                return type_name === "empty hole";
+            };
             hole.get_index = function () {
                 return index;
             };

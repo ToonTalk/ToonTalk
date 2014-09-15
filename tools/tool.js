@@ -32,7 +32,7 @@ window.TOONTALK.tool = (function (TT) {
                 event.preventDefault();
                 element.style.left = (event.pageX - drag_x_offset) + "px";
                 element.style.top  = (event.pageY - drag_y_offset) + "px";
-                if (widget_under_tool && widget_under_tool.get_type_name() === 'top-level') {
+                if (widget_under_tool && widget_under_tool.is_of_type('top-level')) {
                     if (highlighted_element) { // remove old highlighting
                         TT.UTILITIES.remove_highlight();
                         highlighted_element = undefined;

@@ -357,7 +357,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             return;
         }
         widget_string = dropped.toString();
-        if (dropped.get_type_name() === 'number') {
+        if (dropped.is_of_type('number')) {
             attribute_value = this.get_attribute(attribute_name);
             if (typeof attribute_value === 'number') {
                 attribute_numerical_value = attribute_value;

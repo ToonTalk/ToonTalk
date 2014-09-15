@@ -71,7 +71,7 @@ window.TOONTALK.bird = (function (TT) {
                         $(bird_frontside_element).css(bird_offset);
                         parent_element.appendChild(bird_frontside_element);
                         if (parent) {
-                            if (parent.get_widget().get_type_name() === 'top-level') {
+                            if (parent.get_widget().is_of_type('top-level')) {
                                 this.rerender();
                             } else {
                                 parent.get_widget().rerender();

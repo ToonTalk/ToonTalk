@@ -76,7 +76,7 @@ window.TOONTALK.backside =
                                                 update_flag_and_stop_sign_classes(true);
                                                 widget.set_running(true);
                                             } else {
-                                                if (widget.get_type_name() === 'top-level') {
+                                                if (widget.is_of_type('top-level')) {
                                                     UTILITIES.display_message("There is nothing to run.");
                                                 } else {
                                                     UTILITIES.display_message("This " + widget + " has nothing to run. Add some robots on the back.");
@@ -310,7 +310,7 @@ window.TOONTALK.backside =
             backside_element.addEventListener("mouseenter", function (event) {
                var frontside = widget.get_frontside();
                var parent_of_backside = widget.get_parent_of_backside();
-               if (frontside && (!parent_of_backside || parent_of_backside.get_widget().get_type_name() === "top-level")) {
+               if (frontside && (!parent_of_backside || parent_of_backside.get_widget().is_of_type('top-level'))) {
                    TT.UTILITIES.highlight_element(frontside.get_element());
                }
             });

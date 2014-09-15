@@ -208,7 +208,7 @@ window.TOONTALK.path =
              return {dereference: function (context, top_level_context, robot) {
                         var referenced;
                         context.backside_widgets.some(function (backside_widget_side) {
-                            if (backside_widget_side.get_widget().get_type_name() === type_name) {
+                            if (backside_widget_side.get_widget().is_of_type(type_name)) {
                                 referenced = backside_widget_side.get_widget();
                                 return true; // stop searching
                             }

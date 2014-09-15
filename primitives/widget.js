@@ -49,7 +49,13 @@ window.TOONTALK.widget = (function (TT) {
             this.has_listeners(widget);
             // erasability will eventually will be used for type conversions
             // currently only for conditions
-            this.erasable(widget); 
+            this.erasable(widget);
+            if (!widget.is_of_type) {
+                // may be overridden by a sub-class
+                widget.is_of_type = function (type_name) {
+                    return this.get_type_name() === type_name;
+                };
+            }
             return widget;
         },
         
@@ -163,7 +169,7 @@ window.TOONTALK.widget = (function (TT) {
                                return;
                            }
                         }
-                        if (backside_widget.get_type_name() === "robot") {
+                        if (backside_widget.is_of_type("robot")) {
                             // only frontsides of robots run
                             if (!backside_widget_side.is_backside()) {
                                 // could this set_stopped stuff be combined with set_running?
@@ -922,7 +928,7 @@ window.TOONTALK.widget = (function (TT) {
         
         top_level_widget: function () {
             var widget;
-            if (this.get_type_name() === 'top-level') {
+            if (this.is_of_type('top-level')) {
                 return this;
             }
             widget = TT.UTILITIES.widget_from_jquery($(this.get_frontside_element()).closest(".toontalk-top-level-backside"));
@@ -945,6 +951,9 @@ window.TOONTALK.widget = (function (TT) {
             };
             widget.get_type_name = function () {
                  return "top-level";
+            };
+            widget.is_of_type = function(type_name) {
+                    return type_name === "top-level";
             };
             widget.toString = function () {
                 return "top level widget";

@@ -33,7 +33,7 @@ window.TOONTALK.UTILITIES =
     var handle_drop = function ($target, $source, source_widget, target_widget, target_position, event, json_object, drag_x_offset, drag_y_offset, source_is_backside) {
         var new_target, backside_widgets_json, shared_widgets, top_level_element, top_level_backside_position, backside_widgets;
         if ($target.is(".toontalk-backside")) {
-            if (source_widget.get_type_name() === 'top-level') {
+            if (source_widget.is_of_type('top-level')) {
                // add all top-level backsides contents but not the backside widget itself
                backside_widgets_json = json_object.semantic.backside_widgets;
                shared_widgets = json_object.shared_widgets;
@@ -202,7 +202,7 @@ window.TOONTALK.UTILITIES =
                     if (!widget.get_type_name) {
                         // isn't a widget. e.g. a tool
                         element.appendChild(widget.get_element());
-                    } else if (widget.get_type_name() === 'top-level') {
+                    } else if (widget.is_of_type('top-level')) {
                         top_level_widget_count++;
                         local_storage_key = TT.UTILITIES.current_URL();
                         if (top_level_widget_count > 1) {

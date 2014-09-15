@@ -605,7 +605,7 @@ window.TOONTALK.robot = (function (TT) {
         var backside_conditions = this.get_backside_conditions();
         var frontside_conditions_json, backside_conditions_json, next_robot_json;
         if (frontside_conditions) {
-            if (frontside_conditions.get_type_name() === 'top-level') {
+            if (frontside_conditions.is_of_type('top-level')) {
                 frontside_conditions_json = {type: "top_level"};
             } else {
                 frontside_conditions_json = TT.UTILITIES.get_json(frontside_conditions, json_history);
@@ -757,7 +757,7 @@ window.TOONTALK.robot_backside =
                 var dragee = TT.UTILITIES.get_dragee();
                 var widget = TT.UTILITIES.widget_from_jquery(dragee);
                 var backside;
-                if (widget && widget.get_type_name() === 'robot') {
+                if (widget && widget.is_of_type('robot')) {
                     backside = widget.open_backside();
                     $(backside.get_element()).find(".toontalk-train-backside-button").click();
                 }
