@@ -358,9 +358,9 @@
 }
 .toontalk-conditions-contents-container {
 /* 	Can't add the border to toontalk-conditions-contents because erased elements have 0 opacity */
-    width: 200px;
-	height: 36px;
-	border: 1px black solid;	
+	width: 240px;
+	height: 60px;
+	border: 1px black solid;
 }
 .toontalk-held-by-robot {
 	top: 75%;
