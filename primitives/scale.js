@@ -202,8 +202,7 @@ window.TOONTALK.scale = (function (TT) {
             return description + " and the left pan " + left_pan + " and the right pan " + right_pan;
         };
         new_scale.create_backside = function () {
-            // for now
-            return TT.box_backside.create(this);
+            return TT.scale_backside.create(this);
         };
         new_scale.get_state = function () {
             // can be -1, 0, 1 or undefined
@@ -252,4 +251,24 @@ window.TOONTALK.scale = (function (TT) {
 
     return scale;
 
+}(window.TOONTALK));
+
+window.TOONTALK.scale_backside = 
+(function (TT) {
+    "use strict";
+    return {
+        create: function (scale) {
+            var backside = TT.backside.create(scale);
+            backside.update_display = function () {
+                var frontside_element = scale.get_frontside_element();
+                if (frontside_element) {
+                    frontside_element.title = scale.get_title();                 
+                }
+                this.display_updated();
+            };
+            backside.add_advanced_settings(true);
+            return backside;
+        }
+        
+    };
 }(window.TOONTALK));
