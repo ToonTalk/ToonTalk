@@ -1317,14 +1317,21 @@ background-image: url("images/dusty-morph.png");
 	width: 123px;
 	height: 91px;
 }
+/* Following 3 classes initially used the sprite strip but that didn't scale properly (showed all 5 images) */
 .toontalk-scale-balanced {
-	background-position:    0px;	
+	background-image: url("images/scales-equal-full-size.png");
+	background-size: contain;
+/* 	background-position:    0px;	 */
 }
 .toontalk-scale-left_heavier {
-	background-position: -246px;
+	background-image: url("images/scales-left-full-size.png");
+	background-size: contain;
+/* 	background-position: -246px; */
 }
 .toontalk-scale-right_heavier {
-	background-position: -492px;
+	background-image: url("images/scales-right-full-size.png");
+	background-size: contain;
+/* 	background-position: -492px; */
 }
 .toontalk-scale-unbalanced {
 	-webkit-animation: scale-unbalanced 3s steps(5) infinite;
