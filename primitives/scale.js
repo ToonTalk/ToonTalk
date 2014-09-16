@@ -78,15 +78,15 @@ window.TOONTALK.scale = (function (TT) {
             hole_index = which_hole(event);
             if (hole_index === 0) {
                 if (left_contents) {
-                    if (left_contents.widget_dropped_on_me) {
-                        return left_contents.widget_dropped_on_me(dropped, is_backside, event, robot);
+                    if (left_contents.drop_on) {
+                        return dropped.drop_on(left_contents, is_backside, event, robot);
                     }
                     return; // not much can be done
                 }
             } else {
                 if (right_contents) {
-                    if (right_contents.widget_dropped_on_me) {
-                        return right_contents.widget_dropped_on_me(dropped, is_backside, event, robot);
+                    if (right_contents.drop_on) {
+                        return dropped.drop_on(right_contents, is_backside, event, robot);
                     }
                     return; // not much can be done
                 }
