@@ -159,7 +159,11 @@ window.TOONTALK.backside =
                     }
                     $other_side_element = $(other_side_element);
                     $backside_element.append($other_side_element);
-                    if (!event && !this.is_of_type('top-level')) {
+                    if (this.is_of_type('top-level')) {
+                        if (robot && !robot.visible()) {
+                           $other_side_element.addClass("toontalk-widget-added-to-backside-by-unwatched-robot");
+                        }   
+                    } else if (!event) {
                         // i.e. by a robot -- then animate to backside element
                         other.animate_to_element(backside_element);
                     }
