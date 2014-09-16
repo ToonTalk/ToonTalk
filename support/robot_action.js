@@ -140,10 +140,9 @@ window.TOONTALK.robot_action =
         $thing_in_hand_frontside_element = $(thing_in_hand.get_frontside_element());
         adjust_dropped_location_continuation = function () {
             var thing_in_hand_position = $thing_in_hand_frontside_element.offset();
-            $thing_in_hand_frontside_element.removeClass("toontalk-held-by-robot toontalk-side-animating");
+            $thing_in_hand_frontside_element.removeClass("toontalk-held-by-robot");
             continuation();
             if (thing_in_hand.drop_on) {
-//                 thing_in_hand_position = $thing_in_hand_frontside_element.offset();
                 // need to see it before actions such as Bammer take place
                 $(robot.get_frontside_element()).closest(".toontalk-top-level-backside").append($thing_in_hand_frontside_element.get(0));
                 TT.UTILITIES.set_absolute_position($thing_in_hand_frontside_element, thing_in_hand_position);

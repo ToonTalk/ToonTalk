@@ -145,6 +145,7 @@ window.TOONTALK.backside =
             backside.widget_dropped_on_me = 
                 function (other, other_is_backside, event, robot, ignore_training) {
                     // event serves 2 functions: info for adjusting for scrolling and whether to update the display
+                    // TODO: avoid all this work when not watched
                     var widget = this.get_widget();
                     var other_side, other_side_element, $other_side_element, backside_of_other;
                     if (other_is_backside) {
@@ -158,7 +159,7 @@ window.TOONTALK.backside =
                     }
                     $other_side_element = $(other_side_element);
                     $backside_element.append($other_side_element);
-                    if (!event) {
+                    if (!event && !this.is_of_type('top-level')) {
                         // i.e. by a robot -- then animate to backside element
                         other.animate_to_element(backside_element);
                     }
