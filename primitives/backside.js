@@ -77,9 +77,9 @@ window.TOONTALK.backside =
                                                 widget.set_running(true);
                                             } else {
                                                 if (widget.is_of_type('top-level')) {
-                                                    UTILITIES.display_message("There is nothing to run.");
+                                                    TT.UTILITIES.display_message("There is nothing to run.");
                                                 } else {
-                                                    UTILITIES.display_message("This " + widget + " has nothing to run. Add some robots on the back.");
+                                                    TT.UTILITIES.display_message("This " + widget + " has nothing to run. Add some robots on the back.");
                                                 }
                                             }                                                                       
                                         })
@@ -518,8 +518,10 @@ window.TOONTALK.backside =
             widget.backside_geometry = this.get_backside_dimensions();
             animate_disappearance($backside_element)
             if (!$(frontside_element).is(":visible")) {
-                $(frontside_element).css({left: backside_position.left,
-                                           top:  backside_position.top});
+                if (backside_position) {
+                    $(frontside_element).css({left:  backside_position.left,
+                                               top:  backside_position.top});
+                }
                 $backside_container.append(frontside_element);
             }
         },
