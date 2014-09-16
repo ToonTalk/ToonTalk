@@ -675,7 +675,7 @@ window.TOONTALK.robot_backside =
                 // should really wait until condition_element is attached to the DOM
                 $(condition_element).parent().addClass("toontalk-conditions-contents-container");
                 $(condition_element).css({left:   'inherit',
-                                          top:    '10%', // unclear why this works but 0 or inherit leaves element too high
+                                          top:    '4%', // unclear why this works but 0 or inherit leaves element too high
                                           width:  'inherit',
                                           height: 'inherit'});
                 condition_widget.render();
