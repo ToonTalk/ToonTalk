@@ -188,7 +188,9 @@ window.TOONTALK.backside =
                     if (other.get_body && other.get_body().is_empty()) {
                         // automate the start of training
                         backside_of_other = other.open_backside();
-                        $(backside_of_other.get_element()).find(".toontalk-train-backside-button").click();
+                        if (backside_of_other) {
+                            $(backside_of_other.get_element()).find(".toontalk-train-backside-button").click();
+                        }
                     }
                     if (event) {
                         other.get_widget().backup_all();
