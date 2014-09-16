@@ -244,7 +244,6 @@ window.TOONTALK.robot_action =
                 widget.get_backside().update_display();
             }
             continuation();
-            robot.run_next_step();
         };
         button_use_animation(widget, context, top_level_context, robot, new_continuation, additional_info.button_selector);
     };
