@@ -393,7 +393,7 @@ window.TOONTALK.UTILITIES =
 //                     widget = TT.UTILITIES.create_from_json(additional_info.json_of_shared_widgets[json_semantic.shared_widget_index], additional_info);
 //                 }
             } else {
-                TT.UTILITIES.report_internal_error("json type '" + json_semantic.type + "' not yet supported.");
+                TT.UTILITIES.report_internal_error("JSON type '" + json_semantic.type + "' not supported. Perhaps a JavaScript file implementing it is missing.");
                 return;
             }
             if (widget && widget.get_backside) {
