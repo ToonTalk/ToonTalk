@@ -398,7 +398,7 @@ window.TOONTALK.widget = (function (TT) {
             }
             if (!widget.set_description) {
                 widget.set_description = function (new_value, update_display) {
-                    if (description === new_value) {
+                    if (description === new_value || (!description && new_value === "")) {
                         return false;
                     }
                     description = new_value;
