@@ -118,6 +118,8 @@
     background-image: url("images/floor-tile.png");
     background-repeat: round;
     position: relative;
+    min-width:  initial;
+    min-height: initial;
 }
 .toontalk-top-level-frontside {
 	position: absolute;
