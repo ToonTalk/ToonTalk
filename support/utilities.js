@@ -132,7 +132,7 @@ window.TOONTALK.UTILITIES =
             } else if (target_widget.widget_dropped_on_me && target_widget.widget_dropped_on_me(source_widget, source_is_backside, event)) {
             } else {
                 // ignore the current target and replace with the backside it is on
-                new_target = $target.closest(".toontalk-backside");
+                new_target = $target.closest(".toontalk-top-level-backside");
                 if (new_target.length > 0) {
                     target_widget = TT.UTILITIES.widget_from_jquery(new_target);
                     if (target_widget) {
@@ -723,7 +723,7 @@ window.TOONTALK.UTILITIES =
                         TT.UTILITIES.report_internal_error("Possible bug that " + dragee + " doesn't have a known owner.");
                         dragee = $(element);
                     }
-                    bounding_rectangle = dragee.get(0).getBoundingClientRect()
+                    bounding_rectangle = dragee.get(0).getBoundingClientRect();
                     is_resource = dragee.is(".toontalk-top-level-resource");
 //                     if (dragee.is(".toontalk-frontside")) {
 //                         // save the current dimension so size doesn't change while being dragged
