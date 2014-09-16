@@ -433,6 +433,26 @@ window.TOONTALK.box = (function (TT) {
         console.log("box on box not yet implemented");
         return false;
     };
+
+    box.widget_dropped_on_me = function (other, other_is_backside, event, robot) {
+        var i, hole, hole_contents, rectangle, horizontal;
+        if (event) {
+            horizontal = this.get_horizontal();
+            for (i = 0; i < this.get_size(); i++) {
+                hole = this.get_hole(i);
+                rectangle = hole.get_element().getBoundingClientRect();
+                if (horizontal ? (rectangle.left <= event.pageX && event.pageX <= rectangle.right) :
+                                 (rectangle.top  <= event.pageY && event.pageY <= rectangle.bottom)) {
+                    hole_contents = hole.get_contents();
+                    if (hole_contents) {
+                        return other.drop_on(hole_contents, other_is_backside, event, robot);
+                    }
+                    return hole.widget_dropped_on_me(other, other_is_backside, event, robot);  
+                }
+            }
+        }
+        console.log(other_widget + " dropped on " + this + " but unable to handle it.");
+    };
     
     box.get_index_of = function (part) {
         // parent should be a hole
