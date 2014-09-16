@@ -329,14 +329,14 @@ window.TOONTALK.widget = (function (TT) {
                     parent_of_frontside = widget;
                     return; 
                 }
-                parent_of_frontside = widget.get_backside();
+                parent_of_frontside = widget.get_backside(true);
             };
             widget.set_parent_of_backside = function (widget, parent_is_backside) {
                 if (!widget || !parent_is_backside) {
                     parent_of_backside = widget;
                     return; 
                 }
-                parent_of_backside =  widget.get_backside();
+                parent_of_backside =  widget.get_backside(true);
             };
             widget.closest_visible_ancestor = function () {
                 // returns this if visible
@@ -468,10 +468,10 @@ window.TOONTALK.widget = (function (TT) {
 //         },
         
         remove: function (event) {
-            var backside = this.get_backside();
+            var backside  = this.get_backside();
             var frontside = this.get_frontside();
             var parent_of_frontside = this.get_parent_of_frontside();
-            var parent_of_backside = this.get_parent_of_backside();
+            var parent_of_backside  = this.get_parent_of_backside();
             var backside_of_parent;
             if (backside) {
                 backside.remove_element();
