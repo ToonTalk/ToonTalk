@@ -748,10 +748,11 @@ window.TOONTALK.UTILITIES =
                         dragee.data("json", json_object);
                         // use two spaces to indent each level
                         json_div = toontalk_json_div(JSON.stringify(json_object, null, '  '));
-                        if (TT.UTILITIES.is_internet_explorer()) {
+                        // text is good for dragging to text editors
+                        event.dataTransfer.setData("text", json_div);
+                        // text/html should work when dragging to a rich text editor
+                        if (!TT.UTILITIES.is_internet_explorer()) {
                             // text/html causes an error in IE
-                            event.dataTransfer.setData("text", json_div);
-                        } else {
                             event.dataTransfer.setData("text/html", json_div);
                         }                      
                         widget.drag_started(json_object, is_resource);
