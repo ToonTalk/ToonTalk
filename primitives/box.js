@@ -148,6 +148,45 @@ window.TOONTALK.box = (function (TT) {
         }
         return true;
     };
+
+    box.compare_with = function (other) {
+        if (other.compare_with_box) {
+            return -1*other.compare_with_box(this);
+        }
+    };
+
+    box.compare_with_box = function (other_box) {
+        var box1_size = this.get_size();
+        var box2_size = other_box.get_size();
+        var i, hole1, hole2, hole_comparison;
+        if (box1_size > box2_size) {
+            return 1;
+        }
+        if (box1_size < box2_size) {
+            return -1;
+        }
+        for (i = 0; i < box1_size; i++) {
+            hole1 = this.get_hole_contents(i);
+            hole2 = other_box.get_hole_contents(i);
+            if (hole1 && !hole2) {
+                return 1;
+            }
+            if (!hole1 && hole2) {
+                return -1;
+            }
+            if (hole1 && hole2) {
+                if (hole1.compare_with) {
+                    hole_comparison = hole1.compare_with(hole2);
+                    if (hole_comparison === 1 || hole_comparison === -1) {
+                        return hole_comparison;
+                    }
+                } else {
+                    return; // undefined
+                }
+            }
+        }
+        return 0;
+    };
     
     box.match = function (context) {
         if (this.get_erased && this.get_erased()) {
