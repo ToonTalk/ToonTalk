@@ -1172,12 +1172,23 @@ window.TOONTALK.UTILITIES =
         },
         
         highlight_element: function (element, duration) {
+            var widget;
             if ($(element).is(".toontalk-highlight")) {
                 return; // already highlighted
             }
             // only one element can be highlighted
             TT.UTILITIES.remove_highlight(); // any old highlighting
-            $(element).addClass("toontalk-highlight");
+            widget = TT.UTILITIES.widget_from_jquery($(element));
+            if (!widget) {
+                return;
+            }
+            if (widget.widget_to_highlight) {
+                widget = widget.widget_to_highlight(event);
+            }
+            if (!widget) {
+                return;
+            }
+            $(widget.get_frontside_element()).addClass("toontalk-highlight");
             if (duration) {
                 setTimeout(function () {
                         TT.UTILITIES.remove_highlight();
@@ -1455,7 +1466,7 @@ window.TOONTALK.UTILITIES =
         
         make_resizable: function ($element, widget) {
             $element.resizable({resize: function (event, ui) {
-                                    // following needed for element widget's that are images
+                                    // following needed for element widgets that are images
                                     $element.find("img").css({width:  ui.size.width,
                                                               height: ui.size.height});
                                     widget.render();
@@ -1500,9 +1511,15 @@ window.TOONTALK.UTILITIES =
             return widget_copy;
         },
         
-        scale_to_fit: function (this_element, other_element, original_width, original_height) {
+        scale_to_fit: function (this_element, other_element, original_width, original_height, delay) {
             var new_width = $(other_element).width();
             var new_height = $(other_element).height();
+            var update_css = function () {
+                 $(this_element).css({transform: "scale(" + x_scale + ", " + y_scale + ")",
+                                 "transform-origin": "top left", 
+                                 width:  original_width,
+                                 height: original_height});
+            };
             var x_scale, y_scale;
             if (!original_width) {
                 original_width = $(this_element).width();
@@ -1512,10 +1529,11 @@ window.TOONTALK.UTILITIES =
             }
             x_scale = new_width/original_width;
             y_scale = new_height/original_height;
-            $(this_element).css({transform: "scale(" + x_scale + ", " + y_scale + ")",
-                                 "transform-origin": "top left", 
-                                 width:  original_width,
-                                 height: original_height});
+            if (delay) {
+                setTimeout(update_css, delay);
+            } else {
+                update_css();
+            }
             return {x_scale: x_scale,
                     y_scale: y_scale};
         },

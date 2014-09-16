@@ -15,9 +15,21 @@ window.TOONTALK.scale = (function (TT) {
     var scale = Object.create(TT.widget);
 
     scale.create = function (initial_contents, description, new_scale) {
-        var aspect_ratio = 123/91;
+        var full_size_width = 123;
+        var full_size_height = 91;
+        var aspect_ratio = full_size_width/full_size_height;
         var contents_listener = function () {
                                     new_scale.rerender();
+        };
+        var which_hole = function (event) {
+            var $frontside_element = $(new_scale.get_frontside_element());
+            var position = $frontside_element.offset();
+            var center = position.left+$frontside_element.width()/2;
+            if (event.clientX < center) {
+                return 0;
+            } else {
+                return 1;
+            }
         };
         var box_get_json, box_copy, box_get_path_to, previous_state;
         // new_scale is bound when copying a scale
@@ -42,10 +54,19 @@ window.TOONTALK.scale = (function (TT) {
             path.true_type = 'scale';
             return path;
         };
+        new_scale.widget_to_highlight = function (event) {
+            var hole_index = which_hole(event);
+            var hole = this.get_hole(hole_index);
+            var hole_contents = hole.get_contents();
+            if (hole_contents) {
+                return hole_contents;
+            }
+            return hole;
+        };
         new_scale.widget_dropped_on_me = function (dropped, is_backside, event, robot) {
             var left_contents  = this.get_hole_contents(0);
             var right_contents = this.get_hole_contents(1); 
-            var $frontside_element, position, center;
+            var hole_index;
             if (left_contents && !right_contents) {
                 this.set_hole(1, dropped);
                 return true;
@@ -54,17 +75,14 @@ window.TOONTALK.scale = (function (TT) {
                 this.set_hole(0, dropped);
                 return true;
             }
-            $frontside_element = $(this.get_frontside_element());
-            position = $frontside_element.offset();
-            center = position.left+$frontside_element.width()/2;
-            if (event.clientX < center) {
+            hole_index = which_hole(event);
+            if (hole_index === 0) {
                 if (left_contents) {
                     if (left_contents.widget_dropped_on_me) {
                         return left_contents.widget_dropped_on_me(dropped, is_backside, event, robot);
                     }
                     return; // not much can be done
                 }
-                this.set_hole(0, dropped);      
             } else {
                 if (right_contents) {
                     if (right_contents.widget_dropped_on_me) {
@@ -72,16 +90,18 @@ window.TOONTALK.scale = (function (TT) {
                     }
                     return; // not much can be done
                 }
-                this.set_hole(1, dropped);
             }
+            // hole was empty so fill it
+            this.set_hole(hole_index, dropped); 
             return true;
         };
         new_scale.update_display = function () {
             var frontside_element = this.get_frontside_element();
             var $frontside_element = $(frontside_element);
             var $scale_parts = $(frontside_element).children(".toontalk-scale-half");
-            var scale_width  = $frontside_element.width();
-            var scale_height = $frontside_element.height();
+            var container_element = $(frontside_element).parent().is(".toontalk-top-level-backside") ? frontside_element : frontside_element.parentElement;
+            var scale_width  = $(container_element).width();
+            var scale_height = $(container_element).height();
             var update_hole = function (hole_element, hole, index) {
                 var content_frontside_element = hole.get_frontside_element(true);
                 var content_frontside_element;
@@ -130,12 +150,9 @@ window.TOONTALK.scale = (function (TT) {
                 }                                          
             };
             var state, class_name;
-            // enforce the aspect ratio since image doesn't stretch
-            if (scale_width/scale_height > aspect_ratio) {
-                scale_width = scale_height*aspect_ratio;
-            } else {
-                scale_height = scale_width/aspect_ratio;
-            }
+            var scales = TT.UTILITIES.scale_to_fit(frontside_element, container_element, full_size_width, full_size_height);
+            scale_width  /= scales.x_scale;
+            scale_height /= scales.y_scale;
             if ($frontside_element.is(".toontalk-top-level-resource")) {
                 class_name = "toontalk-scale-balanced";
             } else {

@@ -258,6 +258,11 @@
 	background-image: url("images/border-quarter-size-highlighted.png");
 	background-repeat: round;
 }
+.toontalk-highlight.toontalk-scale-half {
+	background-color: rgb(255, 255, 255);
+	opacity: .5;
+	background-image: none;
+}
 .toontalk-top-level-number {
 	/* numbers look better with fixed widths -- easier to compare visually */
 	font-family: 'Lucida console', monospace;
