@@ -15,10 +15,11 @@ window.TOONTALK.scale = (function (TT) {
     var scale = Object.create(TT.widget);
 
     scale.create = function (initial_contents, description, new_scale) {
-        var box_get_json, box_copy, box_get_path_to, previous_state;
+        var aspect_ratio = 123/91;
         var contents_listener = function () {
                                     new_scale.rerender();
         };
+        var box_get_json, box_copy, box_get_path_to, previous_state;
         // new_scale is bound when copying a scale
         if (!new_scale) {
             new_scale = TT.box.create(2, undefined, initial_contents, description);
@@ -129,6 +130,12 @@ window.TOONTALK.scale = (function (TT) {
                 }                                          
             };
             var state, class_name;
+            // enforce the aspect ratio since image doesn't stretch
+            if (scale_width/scale_height > aspect_ratio) {
+                scale_width = scale_height*aspect_ratio;
+            } else {
+                scale_height = scale_width/aspect_ratio;
+            }
             if ($frontside_element.is(".toontalk-top-level-resource")) {
                 class_name = "toontalk-scale-balanced";
             } else {
