@@ -425,7 +425,7 @@ window.TOONTALK.backside =
                         TT.robot.in_training.edited(widget, {setter_name: "set_description",
                                                              argument_1: description,
                                                              toString: "change the description to '" + description + "'' of the " + type_name,
-                                                             button_selector: ",toontalk-description-input"});
+                                                             button_selector: ".toontalk-description-input"});
                     }
             };
             var settings = document.createElement("table");
