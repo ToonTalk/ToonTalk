@@ -673,6 +673,10 @@ window.TOONTALK.backside =
 
         is_backside: function () {
             return true;
+        },
+
+        is_of_type: function (type_name) {
+            return this.get_widget().is_of_type(type_name);
         }
 
     };

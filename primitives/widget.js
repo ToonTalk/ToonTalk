@@ -257,7 +257,7 @@ window.TOONTALK.widget = (function (TT) {
                     }
                     if (!left_offset) {
                         // pick a random location completely inside the target
-                        left_offset = ($(target_element).width()-$frontside_element.width()) * Math.random();
+                        left_offset = ($(target_element).width()-$frontside_element.width())  * Math.random();
                     }
                     if (!top_offset) {
                         top_offset = ($(target_element).height()-$frontside_element.height()) * Math.random();
@@ -350,6 +350,18 @@ window.TOONTALK.widget = (function (TT) {
                     }
                 }
                 return ancestor || this;
+            };
+            widget.ancestor_of_type = function (type_name) {
+                // returns first ancestor whose type is type_name
+                var ancestor = this;
+                while (ancestor && !ancestor.is_of_type(type_name)) {
+                    if (ancestor.is_backside()) {
+                        ancestor = ancestor.get_parent_of_backside();    
+                    } else {
+                        ancestor = ancestor.get_parent_of_frontside();
+                    }
+                }
+                return ancestor;
             };
             widget.has_ancestor = function (other) {
                 var ancestor = this;
