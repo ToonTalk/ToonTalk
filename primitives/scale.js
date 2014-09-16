@@ -63,6 +63,11 @@ window.TOONTALK.scale = (function (TT) {
             }
             return hole;
         };
+        new_scale.drop_on = function (other, is_backside, event, robot) {
+            if (other.widget_dropped_on_me) {
+                return other.widget_dropped_on_me(this, is_backside, event, robot);
+            }
+        };
         new_scale.widget_dropped_on_me = function (dropped, is_backside, event, robot) {
             var left_contents  = this.get_hole_contents(0);
             var right_contents = this.get_hole_contents(1); 
@@ -244,6 +249,7 @@ window.TOONTALK.scale = (function (TT) {
                }
             }
         };
+        // equals??
         new_scale.match = function (other) {
             if (other.match_with_scale) {
                 return other.match_with_scale(this);
@@ -255,6 +261,28 @@ window.TOONTALK.scale = (function (TT) {
                 return "matched";
             }
             return "not matched";
+        };
+        new_scale.compare_with = function (other) {
+            if (other.compare_with_scale) {
+                return -1*other.compare_with_scale(this);
+            }
+        };
+        new_scale.compare_with_scale = function (other_scale) {
+            var state1 = this.get_state();
+            var state2 = other_scale.get_state();
+            if (state1 && !state2) {
+                return 1;
+            }
+            if (!state1 && state2) {
+                return -1;
+            }
+            if (state1 > state2) {
+                return 1;
+            }
+            if (state1 < state2) {
+                return -1;
+            }
+            return 0;
         };
         // following should only be done when first becoming visible (and removed when becoming hidden)
         new_scale.get_hole(0).add_listener('value_changed', contents_listener);
