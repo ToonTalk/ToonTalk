@@ -10,7 +10,7 @@ window.TOONTALK.robot = (function (TT) {
     "use strict";
     var robot = Object.create(TT.widget);
     
-    robot.create = function (frontside_conditions, backside_conditions, body, description, thing_in_hand, run_once, next_robot) { // image_url removed
+    robot.create = function (frontside_conditions, backside_conditions, body, description, thing_in_hand, run_once, next_robot) {
         // frontside_conditions holds a widget that needs to be matched against the frontside of the widget to run
         // backside_conditions holds an object whose keys are type_names of required widgets on the backside
         // and whose values are widgets that need to match backside widgets of that type
@@ -18,9 +18,6 @@ window.TOONTALK.robot = (function (TT) {
         var new_robot = Object.create(robot);
         var first_in_team; // who should do the 'repeating'
         var animating = false; // true if animating due to being run while watched
-//         if (!image_url) {
-//             image_url = "images/RB00.PNG";
-//         }
         if (!body) {
             body = TT.actions.create();
         }
@@ -32,10 +29,6 @@ window.TOONTALK.robot = (function (TT) {
         };
         new_robot.set_frontside_conditions = function (new_value) {
             frontside_conditions = new_value;
-//             if (frontside_conditions) {
-//                 // only makes sense to erase things in frontside_conditions
-//                 TT.widget.erasable(frontside_conditions);
-//             }
         };
         new_robot.get_backside_conditions = function () {
             return backside_conditions;
@@ -143,6 +136,10 @@ window.TOONTALK.robot = (function (TT) {
         new_robot.set_run_once = function (new_value) {
             run_once = new_value;
         };
+        if (next_robot) {
+            // this will update first_in_team for subsequent robots
+            new_robot.set_next_robot(next_robot);
+        }
         new_robot = new_robot.add_standard_widget_functionality(new_robot);
         new_robot.set_description(description);
         if (TT.debugging) {

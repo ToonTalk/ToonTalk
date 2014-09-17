@@ -1,5 +1,5 @@
  /**
- * Implements ToonTalk's boxes
+ * Implements ToonTalk's scales that compare two widgets and lean towards the bigger/heavier/...
  * Authors: Ken Kahn
  * License: New BSD
  */
