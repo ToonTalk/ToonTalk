@@ -72,12 +72,14 @@ window.TOONTALK.robot = (function (TT) {
         new_robot.get_animating = function () {
             return animating;
         };
-        new_robot.set_animating = function (new_value) {
+        new_robot.set_animating = function (new_value, robot_position) {
             var frontside_element = this.get_frontside_element();
             var robot_position, parent_position;
             animating = new_value;
             if (animating) {
-                robot_position = $(frontside_element).position();
+                if (!robot_position) {
+                    robot_position = $(frontside_element).position();
+                }
                 parent_position = $(frontside_element.parentElement).position();
                 $(frontside_element).addClass("toontalk-robot-animating");
                 // z ordering (z-index) doesn't work unless the robot is a child of the top-level backside while animating

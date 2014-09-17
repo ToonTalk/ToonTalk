@@ -117,8 +117,6 @@ window.TOONTALK.actions =
         run_watched: function (context, top_level_context, queue, robot) {
             var steps = this.get_steps();
             var frontside_element = robot.get_frontside_element();
-            var robot_start_position = $(frontside_element).position();
-            var robot_parent_position = $(frontside_element.parentElement).position();
             var saved_parent_element = frontside_element.parentElement;
             var restore_after_last_event = function () {
                 $(frontside_element).addClass("toontalk-side-animating");
@@ -141,6 +139,16 @@ window.TOONTALK.actions =
                     1000);
             };
             var step_number = 0;
+            var robot_parent_position = $(frontside_element.parentElement).position();
+            var robot_start_position  = $(frontside_element).position();
+            var $backside_element;
+            if (robot_start_position.left === 0 && robot_start_position.top === 0) {
+                // doesn't know where it is so start center of where robot backside is
+                $backside_element = $(frontside_element).closest(".toontalk-backside-of-robot");
+                robot_start_position = $backside_element.position();
+                robot_start_position.left += $backside_element.width()/2;
+                robot_start_position.top  += $backside_element.height()/2;
+            }
             // not sure what the following accomplished
 //             if (robot.get_animating()) {
 //                 // is animating so is running a step while watched
@@ -172,7 +180,7 @@ window.TOONTALK.actions =
                    this.run_unwatched(context, top_level_context, queue, robot, step_number)
                 }
             }.bind(this);
-            robot.set_animating(true);
+            robot.set_animating(true, robot_start_position);
             robot.run_next_step();
             return true;             
         },
