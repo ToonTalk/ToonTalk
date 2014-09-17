@@ -7,6 +7,10 @@
  div#preload-images { 
  display: none; 
  }
+
+body {
+    font-family: "Tahoma";
+}
  
 .toontalk-top-level-resource {
 	 /* position: relative; */
