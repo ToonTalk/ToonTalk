@@ -1324,7 +1324,10 @@ background-image: url("images/dusty-morph.png");
    from { background-position:    0px; }
      to { background-position: -1238px; }
 }
-
+.toontalk-backside-of-scale {
+    background-color: rgb(239, 210, 248);
+	
+}
 .toontalk-scale-half {
 /* 	is invisible but receives drops */
     background-color: rgba(0,0,0,0);
