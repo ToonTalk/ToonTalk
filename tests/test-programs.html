@@ -3666,5 +3666,149 @@
     }
   ]
 }</div>
+<p>Drop on an empty nest:</p>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "bird",
+            "nest": {
+              "shared_widget_index": 0
+            }
+          },
+          "view": {
+            "frontside_width": 70,
+            "frontside_height": 102,
+            "frontside_left": 44,
+            "frontside_top": 153.8125
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "shared_widget_index": 0
+        }
+      },
+      {
+        "widget": {
+          "shared_widget_index": 0
+        },
+        "is_backside": true
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgba(245, 240, 240, 0.941176)",
+    "frontside_width": 0,
+    "frontside_height": 0,
+    "backside_width": 917,
+    "backside_height": 263,
+    "backside_left": 8,
+    "backside_top": 185.1875,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1,
+      "original_width": 1200,
+      "original_height": 475
+    },
+    "drag_x_offset": 908,
+    "drag_y_offset": 174.8125,
+    "backside": true
+  },
+  "version": 1,
+  "shared_widgets": [
+    {
+      "semantic": {
+        "type": "nest",
+        "contents": [],
+        "guid": "toontalk_id_1411063791950",
+        "waiting_robots": [],
+        "backside_widgets": [
+          {
+            "widget": {
+              "semantic": {
+                "type": "robot",
+                "frontside_conditions": {
+                  "semantic": {
+                    "type": "nest",
+                    "contents": [],
+                    "guid": "in a robot's condition",
+                    "waiting_robots": []
+                  },
+                  "view": {
+                    "frontside_width": 0,
+                    "frontside_height": 0
+                  },
+                  "version": 1
+                },
+                "body": {
+                  "type": "body",
+                  "steps": [
+                    {
+                      "type": "robot_action",
+                      "action_name": "pick up",
+                      "path": {
+                        "type": "path.to_resource",
+                        "resource": {
+                          "type": "number",
+                          "operator": "+",
+                          "numerator": "1",
+                          "denominator": "1",
+                          "format": "improper_fraction"
+                        }
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "drop it on",
+                      "path": {
+                        "type": "path.to_entire_context",
+                        "not_to_be_dereferenced": true
+                      }
+                    }
+                  ]
+                }
+              },
+              "view": {
+                "frontside_width": 66,
+                "frontside_height": 110,
+                "frontside_left": 223,
+                "frontside_top": 84,
+                "backside_geometry": {
+                  "x_scale": 1,
+                  "y_scale": 1,
+                  "original_width": 550,
+                  "original_height": 200
+                }
+              },
+              "version": 1
+            }
+          }
+        ]
+      },
+      "view": {
+        "frontside_width": 116,
+        "frontside_height": 98,
+        "frontside_left": 110,
+        "frontside_top": 27,
+        "backside_width": 564,
+        "backside_height": 200,
+        "backside_left": 283,
+        "backside_top": 21.1875,
+        "backside_geometry": {
+          "x_scale": 1,
+          "y_scale": 1,
+          "original_width": 564,
+          "original_height": 200
+        }
+      },
+      "version": 1
+    }
+  ]
+}</div>
 </body>
 </html>
