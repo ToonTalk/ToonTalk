@@ -729,6 +729,9 @@ background-image: url("images/dusty-morph.png");
 	width: 116px;
 	height: 98px;
 }
+.toontalk-backside-of-sensor {
+	background-color: rgb(248, 228, 210);
+}
 .toontalk-empty-nest {
 /* 	Perhaps should be renamed since it really for eggless nest but might have stuff on top */
 /* 	tried 	content: url("images/empty-nest.png");  but couldn't drag it */
