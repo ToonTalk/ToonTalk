@@ -708,6 +708,8 @@ window.TOONTALK.nest = (function (TT) {
                 if (other.dropped_on_other) {
                     // e.g. so egg can hatch from nest drop
                     other.dropped_on_other(this, other_is_backside, event, robot);
+                } else if (TT.robot.in_training) {
+                    TT.robot.in_training.dropped_on(other, this);
                 }
             } else {
                 other.drop_on(contents[0].get_widget(), other_is_backside, event, robot)
