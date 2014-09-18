@@ -429,9 +429,9 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
              this_frontside_element = this.get_frontside_element();
              target_absolute_position = $(this_frontside_element).offset();
              target_absolute_position.left -= $(bammer_element).width()*0.75; // hammer is on bammer's right
-             // aim for centre of number - Bammer's hammer when smashing is about 30% of his earlier height
-             target_absolute_position.left += $(this_frontside_element).width() *0.5+$(bammer_element).width() *0.3; 
-             target_absolute_position.top  -= $(this_frontside_element).height()*0.5+$(bammer_element).height()*0.7;
+             // aim for centre of number - Bammer's hammer when smashing is about 60% of his earlier height
+             target_absolute_position.left += $(this_frontside_element).width() *0.5+$(bammer_element).width() *0.1; 
+             target_absolute_position.top  -= $(this_frontside_element).height()*0.5+$(bammer_element).height()*0.4;
              hit_number_continuation = function () {
                  if (this.number_dropped_on_me_semantics(other_number, event, robot) && robot) {
                      // will stop if drop signaled an error
