@@ -725,7 +725,6 @@ window.TOONTALK.robot_backside =
         create: function (robot) {
             var backside = TT.backside.create(robot);
             var backside_element = backside.get_element();
-//             var image_url_input = TT.UTILITIES.create_text_input(robot.get_image_url(), "toontalk-image-url-input", "Image URL&nbsp;", "Type here to provide a URL for the appearance of this robot.");
             var run_once_input = TT.UTILITIES.create_check_box(!robot.get_run_once(),
                                                                "toontalk-run-once-check-box",
                                                                "When finished start again",

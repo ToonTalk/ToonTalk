@@ -543,7 +543,7 @@ window.TOONTALK.widget = (function (TT) {
                     frontside_element = this.get_frontside_element && this.get_frontside_element();
                     if (frontside_element) {
                         if (!$(frontside_element).is(".toontalk-plain-text-element")) {
-                            json_view.frontside_width = $(frontside_element).width();
+                            json_view.frontside_width  = $(frontside_element).width();
                             json_view.frontside_height = $(frontside_element).height();
                         }
                         if ($(frontside_element).is(":visible")) {
@@ -551,7 +551,7 @@ window.TOONTALK.widget = (function (TT) {
                         }
                         if (position) {
                             json_view.frontside_left = position.left;
-                            json_view.frontside_top = position.top;
+                            json_view.frontside_top  = position.top;
                         }
                     }
                 }
@@ -559,12 +559,15 @@ window.TOONTALK.widget = (function (TT) {
                 if (backside) {
                     backside_element = backside.get_element();
                     if (backside_element) {
-                        json_view.backside_width = $(backside_element).width();
+                        json_view.backside_width  = $(backside_element).width();
                         json_view.backside_height = $(backside_element).height();
                         if (!json_view.backside_left) {
                             position = $(backside_element).position();
                             json_view.backside_left = position.left;
-                            json_view.backside_top = position.top;             
+                            json_view.backside_top  = position.top;
+                            if ($(backside_element).find(".toontalk-settings-backside-button").html() === '&lt;') {
+                                json_view.advanced_settings_open = true;
+                            }       
                         }
                     }
                     if (backside.get_backside_dimensions()) {
@@ -576,7 +579,7 @@ window.TOONTALK.widget = (function (TT) {
                     json_view.backside_geometry = this.backside_geometry;
                 } 
                 // following are typically undefined unless in a container
-                json_view.saved_width = this.saved_width;
+                json_view.saved_width  = this.saved_width;
                 json_view.saved_height = this.saved_height;
                 json_semantic.description = this.get_description && this.get_description();
                 return json;

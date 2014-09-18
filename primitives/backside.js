@@ -212,15 +212,18 @@ window.TOONTALK.backside =
                                 json_view = json_array[index];
                                 if (json_view) {
                                     if (backside_widget_side.is_backside()) {
-                                        $(widget_side_element).css({left: json_view.backside_left,
-                                                                    top: json_view.backside_top,
-                                                                    width: json_view.backside_width,
+                                        $(widget_side_element).css({left:   json_view.backside_left,
+                                                                    top:    json_view.backside_top,
+                                                                    width:  json_view.backside_width,
                                                                     height: json_view.backside_height});
                                         backside_widget_side.get_widget().apply_backside_geometry();
+                                        if (json_view.advanced_settings_open) {
+                                            $(widget_side_element).find(".toontalk-settings-backside-button").click();
+                                        } 
                                     } else {
-                                        $(widget_side_element).css({left: json_view.frontside_left,
-                                                                    top: json_view.frontside_top,
-                                                                    width: json_view.frontside_width,
+                                        $(widget_side_element).css({left:   json_view.frontside_left,
+                                                                    top:    json_view.frontside_top,
+                                                                    width:  json_view.frontside_width,
                                                                     height: json_view.frontside_height});
                                     }
                                 }
