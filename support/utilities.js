@@ -1026,19 +1026,19 @@ window.TOONTALK.UTILITIES =
 //         },
         
         set_absolute_position: function ($element, absolute_position) {
-            var $ancestor = $element.parent();
-            var left = absolute_position.left;
-            var top =  absolute_position.top;
-            var ancestor_position;
-            while ($ancestor.is("*") && !$ancestor.is("html")) {
-                ancestor_position = $ancestor.position();
-                left -= ancestor_position.left;
-                top  -= ancestor_position.top;
-                $ancestor = $ancestor.parent();
-            }
+            // this really set position relative to $element's top-level-backside
+            // TODO: rename this
+            var top_level_position = $element.closest(".toontalk-top-level-backside").offset();
+            var left = absolute_position.left-top_level_position.left;
+            var top  = absolute_position.top -top_level_position.top;
             $element.css({left: left,
                           top:  top,
                           position: "absolute"});
+            if ($element.is(".toontalk-side-animating")) {
+                // animation doesn't work with JQuery css
+                $element.get(0).style.left = left+"px";
+                $element.get(0).style.top  = top +"px";
+            }
         },
         
         restore_resource: function ($dropped, dropped_widget) {

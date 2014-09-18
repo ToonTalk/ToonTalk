@@ -120,16 +120,14 @@ window.TOONTALK.actions =
             var saved_parent_element = frontside_element.parentElement;
             var restore_after_last_event = function () {
                 $(frontside_element).addClass("toontalk-side-animating");
-                frontside_element.style.left = (robot_start_position.left + robot_parent_position.left) + "px";
-                frontside_element.style.top  = (robot_start_position.top  + robot_parent_position.top)  + "px";
+                TT.UTILITIES.set_absolute_position($(frontside_element), robot_start_position);
                 // delay so there is some animation of returning 'home'
                 setTimeout(function () {
                         // robot was added to top-level backside so z-index will work as desired (robot on top of everything)
                         // the following restores it
-                        frontside_element.style.left = robot_start_position.left + "px";
-                        frontside_element.style.top  = robot_start_position.top  + "px";
                         saved_parent_element.appendChild(frontside_element);
-                        $(frontside_element).removeClass("toontalk-side-animating");
+                        // just in case it didn't make it to its destination home
+                        TT.UTILITIES.set_absolute_position($(frontside_element), robot_start_position);
                         robot.set_animating(false);
                         if (!robot.get_run_once()) {
                             robot.get_first_in_team().run(context, top_level_context, queue);
@@ -139,15 +137,20 @@ window.TOONTALK.actions =
                     1000);
             };
             var step_number = 0;
-            var robot_parent_position = $(frontside_element.parentElement).position();
-            var robot_start_position  = $(frontside_element).position();
-            var $backside_element;
-            if (robot_start_position.left === 0 && robot_start_position.top === 0) {
-                // doesn't know where it is so start center of where robot backside is
-                $backside_element = $(frontside_element).closest(".toontalk-backside-of-robot");
-                robot_start_position = $backside_element.position();
+            var robot_start_position = $(frontside_element).offset();
+            var robot_width  = $(frontside_element).width();
+            var robot_height = $(frontside_element).height();
+            var $backside_element = $(frontside_element).closest(".toontalk-backside");
+            var backside_rectangle = $backside_element.get(0).getBoundingClientRect();
+            var top_level_position = $(frontside_element).closest(".toontalk-top-level-backside").offset();
+            if (robot_start_position.left < backside_rectangle.left-top_level_position.left ||
+                robot_start_position.top  < backside_rectangle.top -top_level_position.top  ||
+                robot_start_position.left+robot_width  > backside_rectangle.right +top_level_position.left ||
+                robot_start_position.top +robot_height > backside_rectangle.bottom+top_level_position.top) {
+                // robot isn't within the backside so reset its home to bottom centre of backside parent
+                robot_start_position = $backside_element.offset();
                 robot_start_position.left += $backside_element.width()/2;
-                robot_start_position.top  += $backside_element.height()/2;
+                robot_start_position.top  += $backside_element.height()-robot_height;
             }
             // not sure what the following accomplished
 //             if (robot.get_animating()) {
@@ -175,8 +178,7 @@ window.TOONTALK.actions =
                 } else {
                    // e.g. user hid the robot while running
                    // first restore robot to its 'home'
-                   frontside_element.style.left = robot_start_position.left + "px";
-                   frontside_element.style.top  = robot_start_position.top  + "px";
+                   TT.UTILITIES.set_absolute_position($(frontside_element), robot_start_position);
                    this.run_unwatched(context, top_level_context, queue, robot, step_number)
                 }
             }.bind(this);
