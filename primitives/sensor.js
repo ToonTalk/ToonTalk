@@ -222,7 +222,7 @@ window.TOONTALK.sensor_backside =
             var update_attribute = function () {
                 sensor.set_attribute(event_attribute_input.button.value.trim());
             };
-            var settings_button = $(backside_element).find(".toontalk-settings-backside-button").get(0);
+            var advanced_settings_button = $(backside_element).find(".toontalk-settings-backside-button").get(0);
             event_name_input.button.addEventListener(     'change', update_event_name);
             event_attribute_input.button.addEventListener('change', update_attribute);
             $(activate_switch.button).click(function (event) {
@@ -237,9 +237,9 @@ window.TOONTALK.sensor_backside =
                 sensor.render();
                 event.stopPropagation();
             });
-            backside_element.insertBefore(event_name_input.container, settings_button);
-            backside_element.insertBefore(event_attribute_input.container, settings_button);
-            backside_element.insertBefore(activate_switch.container, settings_button);
+            backside_element.insertBefore(event_name_input.container, advanced_settings_button);
+            backside_element.insertBefore(event_attribute_input.container, advanced_settings_button);
+            backside_element.insertBefore(activate_switch.container, advanced_settings_button);
             return backside;
     }};
 }(window.TOONTALK));

@@ -775,7 +775,7 @@ window.TOONTALK.element_backside =
             var attribute_table = document.createElement("table");
             var attributes_chooser = document.createElement("div");
             var show_attributes_chooser = create_show_attributes_chooser(attributes_chooser);
-            var settings_button = TT.backside.create_settings_button(backside, element_widget);
+            var advanced_settings_button = TT.backside.create_advanced_settings_button(backside, element_widget);
             // conditional on URL parameter whether HTML or plain text
             // default is plain text (displayed and edited) (if there is any -- could be an image or something else)
             // full HTML editing but that is both insecure (should cleanse the HTML) and confusing to non-experts
@@ -814,7 +814,7 @@ window.TOONTALK.element_backside =
             backside_element.appendChild(attributes_chooser);
             backside_element.appendChild(show_attributes_chooser);
             backside_element.appendChild(attribute_table);
-            backside_element.appendChild(settings_button);
+            backside_element.appendChild(advanced_settings_button);
             $(attributes_chooser).hide();
             $(attributes_chooser).addClass("toontalk-attributes-chooser");
             backside.update_display = function () {

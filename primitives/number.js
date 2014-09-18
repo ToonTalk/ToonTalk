@@ -718,12 +718,12 @@ window.TOONTALK.number_backside =
             var number_set = TT.UTILITIES.create_horizontal_table(numerator_input.container, slash, denominator_input.container);
             var format_set = $(TT.UTILITIES.create_horizontal_table(decimal_format.container, proper_format.container, improper_format.container)).buttonset().get(0);
             var operator_set = $(TT.UTILITIES.create_horizontal_table(plus.container, minus.container, multiply.container, divide.container, power.container)).buttonset().get(0);
-            var settings_button = TT.backside.create_settings_button(backside, number);
+            var advanced_settings_button = TT.backside.create_advanced_settings_button(backside, number);
             var generic_backside_update = backside.update_display;
             slash.innerHTML = "/";
             $(slash).addClass("ui-widget"); // to look nice
             backside_element.appendChild(number_set);
-            backside_element.appendChild(settings_button);
+            backside_element.appendChild(advanced_settings_button);
             numerator_input.button.addEventListener('change', update_value);
             numerator_input.button.addEventListener('mouseout', update_value);
             numerator_input.button.addEventListener('mouseenter', function () {

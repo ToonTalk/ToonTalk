@@ -731,7 +731,7 @@ window.TOONTALK.robot_backside =
                                                                "Check this if you want the robot to start over again after finishing what he was trained to do.");
             var $next_robot_area = TT.UTILITIES.create_drop_area(window.TOONTALK.robot.empty_drop_area_instructions);
             var next_robot = robot.get_next_robot();
-            var settings_button = TT.backside.create_settings_button(backside, robot);
+            var advanced_settings_button = TT.backside.create_advanced_settings_button(backside, robot);
             var generic_backside_update = backside.update_display;
             $next_robot_area.data("drop_area_owner", robot);
             $(run_once_input.button).click(function (event) {
@@ -766,7 +766,7 @@ window.TOONTALK.robot_backside =
                 generic_backside_update();
             };
             backside_element.appendChild(this.create_train_button(backside, robot));
-            backside_element.appendChild(settings_button);
+            backside_element.appendChild(advanced_settings_button);
             $(run_once_input.container).addClass("toontalk-advanced-setting");
             $next_robot_area           .addClass("toontalk-advanced-setting");
             backside_element.appendChild(run_once_input.container);

@@ -608,7 +608,7 @@ window.TOONTALK.box_backside =
                 }
             };
             var backside_element = backside.get_element();
-            var settings_button = TT.backside.create_settings_button(backside, box);
+            var advanced_settings_button = TT.backside.create_advanced_settings_button(backside, box);
             var generic_backside_update = backside.update_display;
             size_input.button.addEventListener('change', update_value);
             size_input.button.addEventListener('mouseout', update_value);
@@ -625,7 +625,7 @@ window.TOONTALK.box_backside =
             };
             backside_element.appendChild(size_input.container);
             backside_element.appendChild($(TT.UTILITIES.create_horizontal_table(horizontal.container, vertical.container)).buttonset().get(0));
-            backside_element.appendChild(settings_button);
+            backside_element.appendChild(advanced_settings_button);
             backside.add_advanced_settings();
             backside.render();
             return backside;
