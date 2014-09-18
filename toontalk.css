@@ -732,6 +732,10 @@ background-image: url("images/dusty-morph.png");
 .toontalk-backside-of-sensor {
 	background-color: rgb(248, 228, 210);
 }
+.toontalk-backside-of-nest {
+    background-color: rgb(248, 248, 192);
+
+}
 .toontalk-empty-nest {
 /* 	Perhaps should be renamed since it really for eggless nest but might have stuff on top */
 /* 	tried 	content: url("images/empty-nest.png");  but couldn't drag it */
@@ -812,6 +816,10 @@ background-image: url("images/dusty-morph.png");
 .toontalk-string-value-from-sensor {
 	background-color: rgb(252, 240, 240);
 	text-align: center;
+}
+.toontalk-backside-of-bird {
+    background-color: rgb(230, 230, 240);
+	
 }
 .toontalk-bird-gimme {
     width:  103px;

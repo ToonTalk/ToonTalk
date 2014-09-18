@@ -240,7 +240,6 @@ window.TOONTALK.sensor_backside =
             backside_element.insertBefore(event_name_input.container, advanced_settings_button);
             backside_element.insertBefore(event_attribute_input.container, advanced_settings_button);
             backside_element.insertBefore(activate_switch.container, advanced_settings_button);
-            $(backside_element).addClass("toontalk-backside-of-sensor");
             return backside;
     }};
 }(window.TOONTALK));
