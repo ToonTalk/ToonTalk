@@ -211,7 +211,7 @@ window.TOONTALK.robot = (function (TT) {
                             sub_match_status = TT.UTILITIES.match(backside_condition_widget_of_type, backside_widget_side.get_widget());
                             condition_frontside_element = backside_condition_widget_of_type.get_frontside_element();
                             if (condition_frontside_element) {
-                                if (this.match_status === 'matched') {
+                                if (sub_match_status === 'matched') {
                                     $(condition_frontside_element).removeClass("toontalk-conditions-not-matched");
                                 } else {
                                     $(condition_frontside_element).addClass("toontalk-conditions-not-matched");
