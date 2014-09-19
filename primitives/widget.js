@@ -888,12 +888,12 @@ window.TOONTALK.widget = (function (TT) {
             frontside_element = this.get_frontside_element();
             // frontside_ancestor_that_is_backside_element is first parent that is a toontalk-backside
             $frontside_ancestor_that_is_backside_element = $(frontside_element).parent();
-            $frontside_ancestor_before_backside_element = $(frontside_element);
+            $frontside_ancestor_before_backside_element  = $(frontside_element);
             if ($frontside_ancestor_before_backside_element.is(".toontalk-top-level-resource")) {
                 return;
             }
             while ($frontside_ancestor_that_is_backside_element.length > 0 && !$frontside_ancestor_that_is_backside_element.is(".toontalk-backside")) {
-                $frontside_ancestor_before_backside_element = $frontside_ancestor_that_is_backside_element;
+                $frontside_ancestor_before_backside_element  = $frontside_ancestor_that_is_backside_element;
                 $frontside_ancestor_that_is_backside_element = $frontside_ancestor_that_is_backside_element.parent();
                 backside_is_parent = false;
             }
@@ -910,7 +910,7 @@ window.TOONTALK.widget = (function (TT) {
             }
             $(backside_element).css({
                 left: frontside_offset.left - container_offset.left,
-                top:  frontside_offset.top -  container_offset.top,
+                top:  frontside_offset.top  - container_offset.top,
                 opacity: .01
             });
             $frontside_ancestor_that_is_backside_element.append(backside_element);
@@ -920,11 +920,11 @@ window.TOONTALK.widget = (function (TT) {
             }
             if (backside_is_parent) {
                 final_left = frontside_ancestor_before_backside_element.offsetLeft + frontside_ancestor_before_backside_element.offsetWidth;
-                final_top = frontside_ancestor_before_backside_element.offsetTop;
+                final_top  = frontside_ancestor_before_backside_element.offsetTop;
             } else {
                 // widget is inside something so put backside under it
                 final_left = frontside_offset.left - container_offset.left;
-                final_top = (frontside_offset.top - container_offset.top) + frontside_element.offsetHeight;
+                final_top = (frontside_offset.top  - container_offset.top) + frontside_element.offsetHeight;
             }
             animate_backside_appearance(backside_element, "inherit");
             backside.render();
