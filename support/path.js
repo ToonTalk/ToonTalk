@@ -171,11 +171,9 @@ window.TOONTALK.path =
             };
         },
         get_path_to_resource: function (widget, json_history) {
-            if (widget.widget) {
-                // ignore the side information and just use the widget
-                // revisit this if resources are ever backside resources
-                widget = widget.widget;
-            }
+            // ignore the side information and just use the widget
+            // revisit this if resources are ever backside resources
+            widget = widget.get_widget(); // if widget is really the backside of the widget
             return {dereference: function (context, top_level_context, robot) {
                         var widget_copy = widget.copy();
                         var widget_frontside_element, copy_frontside_element;
