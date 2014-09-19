@@ -132,10 +132,17 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             operator = '+';
         } 
         new_number.set_value =
-            // ignores second argument (update_now) -- todo: update callers
             function (new_value) {
+                var listeners = this.get_listeners('value_changed');
+                if (listeners) {
+                    listeners.forEach(function (listener) {
+                        listener({type: 'value_changed',
+                                  old_value: value,
+                                  new_value: new_value});
+                    });
+                }
                 value = new_value;
-                this.rerender();
+                this.rerender(); // will update if visible
                 if (TT.debugging) {
                     this.debug_string = this.toString();
                 }
@@ -182,8 +189,8 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         return TT.number_backside.create(this); //.update_run_button_disabled_attribute();
     };
         
-    number.set_from_values = function (numerator, denominator, update_now) {
-        return this.set_value(bigrat_from_values(numerator, denominator), update_now);
+    number.set_from_values = function (numerator, denominator) {
+        return this.set_value(bigrat_from_values(numerator, denominator));
     };
 
     number.ONE = function () {
@@ -210,6 +217,22 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         // note that we are not considering the operator
         return bigrat.equals(this.get_value(), other_number.get_value());
     };
+
+    number.compare_with = function (other) {
+        if (other.compare_with_number) {
+            return -1*other.compare_with_number(this);
+        }
+    };
+
+    number.compare_with_number = function (other_number) {
+        if (bigrat.equals(this.get_value(), other_number.get_value())) {
+            return 0;
+        }
+        if (bigrat.isGreaterThan(this.get_value(), other_number.get_value())) {
+            return 1;
+        }
+        return -1;
+    };
     
     number.update_display = function () {
         // should compute width from frontside element
@@ -231,6 +254,9 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         } else if ($(frontside_element).parent().is(".toontalk-backside, .toontalk-json")) {
             $dimensions_holder = $(frontside_element);
             size_unconstrained_by_container = true;
+        } else if ($(frontside_element).parent().is(".toontalk-scale-half")) {
+            // scales set the size of contents explicitly 
+            $dimensions_holder = $(frontside_element);
         } else {
             $dimensions_holder = $(frontside_element).parent();
         }
@@ -380,10 +406,6 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             return;
         }
         var result = other.number_dropped_on_me(this, is_backside, event, robot);
-        if (event) {
-            this.rerender();
-        }
-//         this.remove();
         return true;
     };
     
@@ -407,8 +429,9 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
              this_frontside_element = this.get_frontside_element();
              target_absolute_position = $(this_frontside_element).offset();
              target_absolute_position.left -= $(bammer_element).width()*0.75; // hammer is on bammer's right
-             target_absolute_position.left += $(this_frontside_element).width()*0.5; // middle of number
-             target_absolute_position.top  -= $(this_frontside_element).height();
+             // aim for centre of number - Bammer's hammer when smashing is about 60% of his earlier height
+             target_absolute_position.left += $(this_frontside_element).width() *0.5+$(bammer_element).width() *0.1; 
+             target_absolute_position.top  -= $(this_frontside_element).height()*0.5+$(bammer_element).height()*0.4;
              hit_number_continuation = function () {
                  if (this.number_dropped_on_me_semantics(other_number, event, robot) && robot) {
                      // will stop if drop signaled an error
@@ -538,7 +561,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
                 };
     };
     
-    number.create_from_json = function (json) {
+    TT.creators_from_json["number"] = function (json) {
         return number.create(json.numerator, json.denominator, json.operator, json.format, json.description);
     };
 
@@ -567,10 +590,6 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     };
 
     number.integer_part = function () {
-    //        var result = Object.create(this);
-    //        var integer_part = bigrat.toBigInteger(this.get_value());
-    //        result.set_value(bigrat.set(bigrat.create(), integer_part, BigInteger.ONE));
-    //        return result;
         return this.create(this);
     };
 
@@ -657,7 +676,7 @@ window.TOONTALK.number_backside =
                 if (numerator === current_numerator && denominator === current_denominator) {
                     return;
                 }
-                number.set_from_values(numerator, denominator, true);
+                number.set_from_values(numerator, denominator);
                 if (TT.robot.in_training) {
                     first_class_name = event.srcElement.className.split(" ", 1)[0];
                     if (first_class_name === "toontalk-denominator-input") {
@@ -699,13 +718,12 @@ window.TOONTALK.number_backside =
             var number_set = TT.UTILITIES.create_horizontal_table(numerator_input.container, slash, denominator_input.container);
             var format_set = $(TT.UTILITIES.create_horizontal_table(decimal_format.container, proper_format.container, improper_format.container)).buttonset().get(0);
             var operator_set = $(TT.UTILITIES.create_horizontal_table(plus.container, minus.container, multiply.container, divide.container, power.container)).buttonset().get(0);
-            var settings_button = TT.backside.create_settings_button(backside, number);
-//             var infinite_stack_check_box = TT.backside.create_infinite_stack_check_box(backside, number);
+            var advanced_settings_button = TT.backside.create_advanced_settings_button(backside, number);
+            var generic_backside_update = backside.update_display;
             slash.innerHTML = "/";
             $(slash).addClass("ui-widget"); // to look nice
             backside_element.appendChild(number_set);
-            backside_element.appendChild(settings_button);
-//             backside_element.appendChild(infinite_stack_check_box.container);
+            backside_element.appendChild(advanced_settings_button);
             numerator_input.button.addEventListener('change', update_value);
             numerator_input.button.addEventListener('mouseout', update_value);
             numerator_input.button.addEventListener('mouseenter', function () {
@@ -753,7 +771,7 @@ window.TOONTALK.number_backside =
             backside.update_display = function () {
                 $(numerator_input.button).val(number.numerator_string());
                 $(denominator_input.button).val(number.denominator_string());
-                this.display_updated();
+                generic_backside_update();
             };
             $(format_set)  .addClass("toontalk-advanced-setting");
             $(operator_set).addClass("toontalk-advanced-setting");

@@ -4,5 +4,9 @@
  * License: New BSD
  */
  
- window.TOONTALK = {}; // create ToonTalk 'module' -- using 'window' as recommended by Caja to avoid use of global variables
- 
+ // create ToonTalk 'module' -- using 'window' as recommended by Caja to avoid use of global variables
+ window.TOONTALK = {}; 
+
+ // each widget type, path, and robot actions adds to this
+ window.TOONTALK.creators_from_json = {}; 
+

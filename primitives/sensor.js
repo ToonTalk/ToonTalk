@@ -12,10 +12,7 @@ window.TOONTALK.sensor = (function (TT) {
     var sensor = Object.create(TT.widget);
     
     var style_contents = function (widget, sensor) {
-//         var frontside_element;
         if (widget.get_type_name() === 'element') {
-//             frontside_element = widget.get_frontside_element(true);
-//             $(frontside_element).css({"font-size": $(sensor.get_frontside_element(true)).height()*0.5});
             widget.set_attribute('font-size', $(sensor.get_frontside_element(true)).height()*0.5, false, true);
             widget.set_additional_classes("toontalk-string-value-from-sensor");
             if (sensor.visible()) {
@@ -161,7 +158,7 @@ window.TOONTALK.sensor = (function (TT) {
             attribute = new_value;
         };
         new_sensor.match = function (other) {
-            // to do
+            // TODO:
             return "not matched";
         };
         new_sensor.set_sensor_of = function (new_value) {
@@ -170,7 +167,7 @@ window.TOONTALK.sensor = (function (TT) {
         return new_sensor;
     };
     
-    sensor.create_from_json = function (json, additional_info) {
+    TT.creators_from_json["sensor"] = function (json, additional_info) {
         var previous_contents = TT.UTILITIES.create_array_from_json(json.contents, additional_info);
         var sensor = TT.sensor.create(json.event_name,
                                       json.attribute,
@@ -225,7 +222,7 @@ window.TOONTALK.sensor_backside =
             var update_attribute = function () {
                 sensor.set_attribute(event_attribute_input.button.value.trim());
             };
-            var settings_button = $(backside_element).find(".toontalk-settings-backside-button").get(0);
+            var advanced_settings_button = $(backside_element).find(".toontalk-settings-backside-button").get(0);
             event_name_input.button.addEventListener(     'change', update_event_name);
             event_attribute_input.button.addEventListener('change', update_attribute);
             $(activate_switch.button).click(function (event) {
@@ -240,9 +237,9 @@ window.TOONTALK.sensor_backside =
                 sensor.render();
                 event.stopPropagation();
             });
-            backside_element.insertBefore(event_name_input.container, settings_button);
-            backside_element.insertBefore(event_attribute_input.container, settings_button);
-            backside_element.insertBefore(activate_switch.container, settings_button);
+            backside_element.insertBefore(event_name_input.container, advanced_settings_button);
+            backside_element.insertBefore(event_attribute_input.container, advanced_settings_button);
+            backside_element.insertBefore(activate_switch.container, advanced_settings_button);
             return backside;
     }};
 }(window.TOONTALK));

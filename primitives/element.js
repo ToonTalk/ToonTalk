@@ -261,6 +261,23 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             return 'not matched';
         }
     };
+
+    element.compare_with = function (other) {
+        if (other.compare_with_other_element) {
+            return other.compare_with_other_element(this);
+        }
+    };
+
+    element.compare_with_other_element = function (other_element) {
+        var comparison = other_element.get_HTML().localeCompare(this.get_HTML());
+        if (comparison < 0) {
+            return -1;
+        }
+        if (comparison > 0) {
+            return 1;
+        }
+        return comparison;
+    }
     
     element.create_backside = function () {
         return TT.element_backside.create(this); //.update_run_button_disabled_attribute();
@@ -340,7 +357,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             return;
         }
         widget_string = dropped.toString();
-        if (dropped.get_type_name() === 'number') {
+        if (dropped.is_of_type('number')) {
             attribute_value = this.get_attribute(attribute_name);
             if (typeof attribute_value === 'number') {
                 attribute_numerical_value = attribute_value;
@@ -476,26 +493,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             this.set_attribute("height", $(frontside_element).closest(".toontalk-box-hole").height(), false);
         }
         this.apply_css();
-//         if (backside) {
-//             backside.update_display();
-//         }
         this.fire_on_update_display_handlers();
     };
-    
-//     element.is_in_thought_bubble = function () {
-//         // this a workaround for the fact that toontalk-thought-bubble-contents's % values for width and height
-//         // don't get applied to images
-//         var $image_element = this.get_image_element();
-//         var frontside_element;
-//         if ($image_element) {
-//             frontside_element = this.get_frontside_element();
-//             if (frontside_element) {
-//                 // should try to tie the .6 to the 60% in toontalk-thought-bubble-contents
-//                 $image_element.width(0.6 * $(frontside_element).parent().width());
-//                 $image_element.height(0.4 * $(frontside_element).parent().height());
-//             }
-//         }
-//     };
         
     element.toString = function () {
         return "element whose HTML is '" + TT.UTILITIES.maximum_string_length(this.get_HTML(), 40) + "'";
@@ -524,7 +523,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 };
     };
     
-    element.create_from_json = function (json, additional_info) {
+    TT.creators_from_json["element"] = function (json, additional_info) {
         var reconstructed_element = element.create(decodeURIComponent(json.html), json.attributes, json.description);
         var ignore_attributes;
         if (additional_info && additional_info.event) {
@@ -569,7 +568,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             }};
     }
     
-    element.create_path_from_json = function (json) {
+    TT.creators_from_json["path_to_style_attribute"] = function (json) {
         var element_widget_path = TT.UTILITIES.create_from_json(json.element_widget_path);
         return element.extend_attribute_path(element_widget_path, json.attribute);
     };
@@ -582,6 +581,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     element.set_size_attributes = function (width, height) {
         this.set_attribute('width',  width);
         this.set_attribute('height', height);
+    };
+
+    element.set_location_attributes = function (left, top) {
+        this.set_attribute('left', left);
+        this.set_attribute('top',  top);
     };
     
     return element;
@@ -600,6 +604,8 @@ window.TOONTALK.element_backside =
                         sub_menus: ["background-color", "color", "opacity"]},
                        {label: "Font attributes",
                         sub_menus: ["font-size", "font-weight"]},
+                       {label: "Visibility",
+                        sub_menus: ["display", "visibility"]},
                        {label: "Transformations",
                         sub_menus: ["rotate", "skewX", "skewY", "transform-origin-x", "transform-origin-y"]}];
         var add_style_attribute = function (attribute) {
@@ -756,12 +762,13 @@ window.TOONTALK.element_backside =
             var attribute_table = document.createElement("table");
             var attributes_chooser = document.createElement("div");
             var show_attributes_chooser = create_show_attributes_chooser(attributes_chooser);
-            var settings_button = TT.backside.create_settings_button(backside, element_widget);
+            var advanced_settings_button = TT.backside.create_advanced_settings_button(backside, element_widget);
             // conditional on URL parameter whether HTML or plain text
             // default is plain text (displayed and edited) (if there is any -- could be an image or something else)
             // full HTML editing but that is both insecure (should cleanse the HTML) and confusing to non-experts
             var edit_HTML = TT.UTILITIES.get_current_url_boolean_parameter("elementHTML", false);
             var getter = edit_HTML ? "get_HTML" : "get_text";
+            var generic_backside_update = backside.update_display;
             var text, html_input, update_html;
             // need to ensure that it 'knows' its innerText, etc.
             element_widget.update_display();
@@ -794,7 +801,7 @@ window.TOONTALK.element_backside =
             backside_element.appendChild(attributes_chooser);
             backside_element.appendChild(show_attributes_chooser);
             backside_element.appendChild(attribute_table);
-            backside_element.appendChild(settings_button);
+            backside_element.appendChild(advanced_settings_button);
             $(attributes_chooser).hide();
             $(attributes_chooser).addClass("toontalk-attributes-chooser");
             backside.update_display = function () {
@@ -805,7 +812,7 @@ window.TOONTALK.element_backside =
                 if ($(attributes_chooser).is(":visible")) {
                     update_style_attribute_chooser(attributes_chooser, element_widget, attribute_table);
                 }
-                this.display_updated();
+                generic_backside_update();
             };
             // if the backside is hidden then so should the attributes chooser
             $(backside_element).find(".toontalk-hide-backside-button").click(function (event) {

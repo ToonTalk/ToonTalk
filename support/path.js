@@ -9,6 +9,23 @@
 window.TOONTALK.path = 
 (function (TT) {
     "use strict";
+
+    TT.creators_from_json["path.to_entire_context"] = function () {
+        return TT.path.to_entire_context();
+    };
+
+    TT.creators_from_json["path.top_level_backside"] = function () {
+        return TT.path.top_level_backside;
+    };
+
+    TT.creators_from_json["path.to_backside_widget_of_context"] = function (json) {
+        return TT.path.get_path_to_backside_widget_of_context(json.type_name);
+    };
+
+    TT.creators_from_json["path.to_resource"] = function (json, additional_info) {
+        return TT.path.get_path_to_resource(TT.UTILITIES.create_from_json(json.resource, additional_info));
+    };
+    
     return { 
         get_path_to: function (widget, robot) {
             var compute_path = function (widget, robot) {
@@ -139,27 +156,6 @@ window.TOONTALK.path =
             }
             return json;
         },
-        create_from_json: function (json, additional_info) {
-            var path = TT.UTILITIES.create_from_json(json, additional_info);
-            var next_path;
-            if (json.next_path) {
-                next_path = TT.UTILITIES.create_from_json(json.next_path, additional_info);
-                if (json.next_path.removing_widget) {
-                    next_path.removing_widget = true;
-                }
-                if (json.next_path.not_to_be_dereferenced) {
-                    next_path.not_to_be_dereferenced = true;
-                }
-                path.next = next_path;
-            }
-            if (json.removing_widget) {
-                path.removing_widget = true;
-            }
-            if (json.not_to_be_dereferenced) {
-                path.not_to_be_dereferenced = true;
-            }
-            return path;
-        },
         to_entire_context: function () {
             // an action that applies to the entire context (i.e. what the robot is working on)
             // need to create fresh ones since if there is a sub-path they shouldn't be sharing
@@ -174,15 +170,10 @@ window.TOONTALK.path =
                     }
             };
         },
-        entire_context_create_from_json: function () {
-            return TT.path.to_entire_context();
-        },
         get_path_to_resource: function (widget, json_history) {
-            if (widget.widget) {
-                // ignore the side information and just use the widget
-                // revisit this if resources are ever backside resources
-                widget = widget.widget;
-            }
+            // ignore the side information and just use the widget
+            // revisit this if resources are ever backside resources
+            widget = widget.get_widget(); // if widget is really the backside of the widget
             return {dereference: function (context, top_level_context, robot) {
                         var widget_copy = widget.copy();
                         var widget_frontside_element, copy_frontside_element;
@@ -211,14 +202,11 @@ window.TOONTALK.path =
                     }
             };
         },
-        path_to_resource_create_from_json: function (json, additional_info) {
-            return TT.path.get_path_to_resource(TT.UTILITIES.create_from_json(json.resource, additional_info));
-        },
         get_path_to_backside_widget_of_context: function (type_name) {
              return {dereference: function (context, top_level_context, robot) {
                         var referenced;
                         context.backside_widgets.some(function (backside_widget_side) {
-                            if (backside_widget_side.get_widget().get_type_name() === type_name) {
+                            if (backside_widget_side.get_widget().is_of_type(type_name)) {
                                 referenced = backside_widget_side.get_widget();
                                 return true; // stop searching
                             }
@@ -236,25 +224,40 @@ window.TOONTALK.path =
                     }
             };
         },
-        path_to_backside_widget_of_context_create_from_json: function (json) {
-            return TT.path.get_path_to_backside_widget_of_context(json.type_name)
+        create_from_json: function (json, additional_info) {
+            var path = TT.UTILITIES.create_from_json(json, additional_info);
+            var next_path;
+            if (json.next_path) {
+                next_path = TT.UTILITIES.create_from_json(json.next_path, additional_info);
+                if (json.next_path.removing_widget) {
+                    next_path.removing_widget = true;
+                }
+                if (json.next_path.not_to_be_dereferenced) {
+                    next_path.not_to_be_dereferenced = true;
+                }
+                path.next = next_path;
+            }
+            if (json.removing_widget) {
+                path.removing_widget = true;
+            }
+            if (json.not_to_be_dereferenced) {
+                path.not_to_be_dereferenced = true;
+            }
+            return path;
         },
         top_level_backside: {
             // this can be shared by all since only used to drop on -- not to pick up
             // if pick up then needs to be a fresh copy like get_path_to_resource
-            dereference: function () {
-                // need to test whether this works if robot is not being watched
-                return $(robot.get_frontside_element()).closest(".toontalk-top-level-backside");
+            dereference: function (context, top_level_context, robot) {
+                return context.ancestor_of_type('top-level');
             },
             toString: function () {
                 return "the top-level backside";
             },
             get_json: function () {
                 return {type: "path.top_level_backside"};
-            },
-            create_from_json: function () {
-                return TT.path.top_level_backside;
             }
         }
     };
+
 }(window.TOONTALK));

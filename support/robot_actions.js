@@ -9,6 +9,14 @@
 window.TOONTALK.actions = 
 (function (TT) {
     "use strict";
+
+    TT.creators_from_json["body"] = function (json) {
+        var actions = TT.actions.create();
+        // some steps need to refer back to this (i.e. the body)
+        actions.initialise_steps(TT.UTILITIES.create_array_from_json(json.steps, {body: actions}));
+        return actions;
+    };
+    
     return {
         create: function (steps) {
             var new_actions = Object.create(this);
@@ -109,21 +117,16 @@ window.TOONTALK.actions =
         run_watched: function (context, top_level_context, queue, robot) {
             var steps = this.get_steps();
             var frontside_element = robot.get_frontside_element();
-            var robot_start_position = $(frontside_element).position();
-            var robot_parent_position = $(frontside_element.parentElement).position();
             var saved_parent_element = frontside_element.parentElement;
             var restore_after_last_event = function () {
                 $(frontside_element).addClass("toontalk-side-animating");
-                frontside_element.style.left = (robot_start_position.left + robot_parent_position.left) + "px";
-                frontside_element.style.top  = (robot_start_position.top  + robot_parent_position.top)  + "px";
+                TT.UTILITIES.set_position_relative_to_top_level_backside($(frontside_element), robot_home);
                 // delay so there is some animation of returning 'home'
                 setTimeout(function () {
                         // robot was added to top-level backside so z-index will work as desired (robot on top of everything)
                         // the following restores it
-                        frontside_element.style.left = robot_start_position.left + "px";
-                        frontside_element.style.top  = robot_start_position.top  + "px";
                         saved_parent_element.appendChild(frontside_element);
-                        $(frontside_element).removeClass("toontalk-side-animating");
+                        TT.UTILITIES.set_absolute_position($(frontside_element), robot_home);
                         robot.set_animating(false);
                         if (!robot.get_run_once()) {
                             robot.get_first_in_team().run(context, top_level_context, queue);
@@ -133,13 +136,25 @@ window.TOONTALK.actions =
                     1000);
             };
             var step_number = 0;
-            // not sure what the following accomplished
-//             if (robot.get_animating()) {
-//                 // is animating so is running a step while watched
-//                 return true;
-//             }
+            var robot_home = $(frontside_element).offset();
+            var robot_start_position = $(frontside_element).position();
+            var robot_width  = $(frontside_element).width();
+            var robot_height = $(frontside_element).height();
+            var $backside_element = $(frontside_element).closest(".toontalk-backside");
+            var backside_rectangle = $backside_element.get(0).getBoundingClientRect();
+            var top_level_position = $(frontside_element).closest(".toontalk-top-level-backside").offset();
+            var $context_backside_element = $(context.get_backside().get_element());
+            if (robot_home.left < backside_rectangle.left-top_level_position.left ||
+                robot_home.top  < backside_rectangle.top -top_level_position.top  ||
+                robot_home.left+robot_width  > backside_rectangle.right +top_level_position.left ||
+                robot_home.top +robot_height > backside_rectangle.bottom+top_level_position.top) {
+                // robot isn't within the backside so reset its home to bottom centre of backside parent
+                robot_home = $backside_element.offset();
+                robot_home.left += $backside_element.width()/2;
+                robot_home.top  += $backside_element.height()-robot_height;
+            }
             robot.run_next_step = function () {
-                if (robot.visible()) {
+                if ($context_backside_element.is(":visible")) {
                     // pause between steps and give the previous step a chance to update the DOM     
                     setTimeout(function () {
                             if (step_number < steps.length) {
@@ -159,12 +174,18 @@ window.TOONTALK.actions =
                 } else {
                    // e.g. user hid the robot while running
                    // first restore robot to its 'home'
-                   frontside_element.style.left = robot_start_position.left + "px";
-                   frontside_element.style.top  = robot_start_position.top  + "px";
+                   robot.set_animating(false);
+                   // since not visible using set_absolute_position to robot_home doesn't work
+                   $(frontside_element).css({width:  '',
+                                             height: ''});
+                   // following doesn't use JQuery since it wasn't working
+                   frontside_element.style.left =  robot_start_position.left+"px";
+                   frontside_element.style.top  =  robot_start_position.top +"px";
+                   saved_parent_element.appendChild(frontside_element);
                    this.run_unwatched(context, top_level_context, queue, robot, step_number)
                 }
             }.bind(this);
-            robot.set_animating(true);
+            robot.set_animating(true, robot_home);
             robot.run_next_step();
             return true;             
         },
@@ -188,22 +209,21 @@ window.TOONTALK.actions =
         get_json: function (json_history) {
             return {type: "body",
                     steps: TT.UTILITIES.get_json_of_array(this.get_steps(), json_history)};
-        },
-        
-        create_from_json: function (json) {
-            var actions = TT.actions.create();
-            // some steps need to refer back to this (i.e. the body)
-            actions.initialise_steps(TT.UTILITIES.create_array_from_json(json.steps, {body: actions}));
-            return actions;
         }
         
     };
+
 }(window.TOONTALK));
 
 window.TOONTALK.newly_created_widgets_path =
 // paths to widgets created by previous steps
 (function (TT) {
     "use strict";
+
+    TT.creators_from_json["newly_created_widgets_path"] =  function (json) {
+        return TT.newly_created_widgets_path.create(json.index);
+    };
+    
     return {
         create: function (index) {
             return {
@@ -237,9 +257,8 @@ window.TOONTALK.newly_created_widgets_path =
                             index: index};
                 }
             };
-        },
-        create_from_json: function (json) {
-            return TT.newly_created_widgets_path.create(json.index);
         }
+        
     };
+
 }(window.TOONTALK));
