@@ -747,30 +747,32 @@ window.TOONTALK.nest = (function (TT) {
                 }
                 nest_width = $(frontside_element).width();
                 nest_height = $(frontside_element).height();
-                // tried to have a CSS class toontalk-widget-on-nest that specified width and height as 80%
-                // but it didn't work well - especially in FireFox
-                // timeout needed when loading otherwise something resets the width and height
-                setTimeout(function () {
-                        var border_adjustment = 2*contents_side_element.toontalk_border_size || 0;
-                        var width  = .8*nest_width;
-                        var height = .8*nest_height
-                        while (border_adjustment*2 >= width ||
-                               border_adjustment*2 >= height) {
-                            border_adjustment /= 2;
-                        }
-                        width  -= border_adjustment;
-                        height -= border_adjustment;
-                        $(contents_side_element).css({width:  width,
-                                                      height: height,
-                                                      // offset by 10% -- tried left: 10% but that only worked in first box hole
-                                                      left: nest_width*0.1,
-                                                      top:  nest_height*0.1});
-                        if (top_contents_widget.set_size_attributes) {
-                            // e.g. element widgets need to update their attributes
-                            top_contents_widget.set_size_attributes(width, height);
-                        }
-                    },
-                    2);
+                if (nest_width > 0 && nest_height > 0) {
+                    // tried to have a CSS class toontalk-widget-on-nest that specified width and height as 80%
+                    // but it didn't work well - especially in FireFox
+                    // timeout needed when loading otherwise something resets the width and height
+                    setTimeout(function () {
+                            var border_adjustment = 2*contents_side_element.toontalk_border_size || 0;
+                            var width  = .8*nest_width;
+                            var height = .8*nest_height
+                            while (border_adjustment*2 >= width ||
+                                   border_adjustment*2 >= height) {
+                                border_adjustment /= 2;
+                            }
+                            width  -= border_adjustment;
+                            height -= border_adjustment;
+                            $(contents_side_element).css({width:  width,
+                                                          height: height,
+                                                          // offset by 10% -- tried left: 10% but that only worked in first box hole
+                                                          left: nest_width*0.1,
+                                                          top:  nest_height*0.1});
+                            if (top_contents_widget.set_size_attributes) {
+                                // e.g. element widgets need to update their attributes
+                                top_contents_widget.set_size_attributes(width, height);
+                            }
+                        },
+                        2);
+                }
                 frontside_element.appendChild(contents_side_element);
                 $(frontside_element).addClass("toontalk-empty-nest");
                 if (contents[0].is_backside()) {
