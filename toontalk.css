@@ -38,9 +38,6 @@ body {
 	-webkit-transition: all 1s cubic-bezier(0.455, 0.03, 0.515, 0.955);
     transition:         all 1s cubic-bezier(0.455, 0.03, 0.515, 0.955);	
 }
-/* .toontalk-side:active {
-	border: solid 2px red;
-} */
 .toontalk-robot {
 /* 	this is the static version */
 	background-image: url("images/robot.png");

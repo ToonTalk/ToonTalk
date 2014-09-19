@@ -824,6 +824,29 @@ window.TOONTALK.nest = (function (TT) {
             });
             return found_one;
         };
+        new_nest.compare_with = function (other) {
+            if (contents.length > 0) {
+                return contents[0].compare_with(other);
+            }
+            if (other.compare_with_nest) {
+                return -1*other.compare_with_nest(this);
+            }
+        };
+        new_nest.compare_with_nest = function (other_nest) {
+            if (contents.length === 0) {
+                // both empty
+                return 0;
+            }
+            return 1; // this is heavier than an empty nest
+        };
+        new_nest.compare_with_number = function (other) {
+            if (contents.length > 0) {
+                return contents[0].compare_with(other);
+            }
+            return -1; // this is lighter
+        };
+        new_nest.compare_with_box   = new_nest.compare_with_number;
+        new_nest.compare_with_scale = new_nest.compare_with_number;
         new_nest = new_nest.add_standard_widget_functionality(new_nest);
         new_nest.set_description(description);
         if (TT.debugging) {
