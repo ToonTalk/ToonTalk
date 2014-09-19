@@ -528,7 +528,10 @@ window.TOONTALK.backside =
                     $(frontside_element).css({left:  backside_position.left,
                                                top:  backside_position.top});
                 }
+                // needs to added to backside_widgets of top_level and parent links updated
+                TT.UTILITIES.widget_from_jquery($backside_container).add_backside_widget(widget);
                 $backside_container.append(frontside_element);
+                widget.render();
             }
         },
         
