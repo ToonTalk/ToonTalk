@@ -1172,7 +1172,7 @@ window.TOONTALK.UTILITIES =
         },
         
         highlight_element: function (element, duration) {
-            var widget;
+            var widget, frontside_element;
             if ($(element).is(".toontalk-highlight")) {
                 return; // already highlighted
             }
@@ -1182,13 +1182,13 @@ window.TOONTALK.UTILITIES =
             if (!widget) {
                 return;
             }
-            if (widget.widget_to_highlight) {
-                widget = widget.widget_to_highlight(event);
-            }
-            if (!widget) {
-                return;
-            }
-            $(widget.get_frontside_element()).addClass("toontalk-highlight");
+            if (widget.element_to_highlight) {
+                element = widget.element_to_highlight(event);
+                if (!element) {
+                    return;
+                }      
+            }    
+            $(element).addClass("toontalk-highlight");
             if (duration) {
                 setTimeout(function () {
                         TT.UTILITIES.remove_highlight();

@@ -665,17 +665,6 @@ window.TOONTALK.box_hole =
                 }
                 return this.get_element();
             };
-            hole.update_display = function () {
-                // following no longer needed
-                // should be nothing to do
-                // but height percentage not working as expected
-//                 var box_frontside_element;
-//                 var box = this.get_parent_of_frontside().widget;
-//                 if (box && !box.get_horizontal()) {
-//                     box_frontside_element = box.get_frontside_element();
-//                     $(this.get_element()).css({"min-height": $(box_frontside_element).height() / box.get_size()});
-//                 }
-            };
             hole.get_frontside = function () {
                 // doubles as its own frontside
                 return this;

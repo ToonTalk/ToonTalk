@@ -566,7 +566,7 @@ window.TOONTALK.nest = (function (TT) {
             if (path_to_nest.next) {
                 return contents[0].get_widget().dereference(path_to_nest.next, top_level_context, robot);
             }
-            return contents[0].widget;         
+            return contents[0].get_widget();         
         };
         // defined here so that contents and other state can be private
         new_nest.get_json = function (json_history) {
@@ -722,6 +722,12 @@ window.TOONTALK.nest = (function (TT) {
                 return true;
             }
             return false;
+        };
+        new_nest.element_to_highlight = function (event) {
+            if (contents.length === 0) {
+                return this.get_frontside_element();
+            }
+            return contents[0].get_frontside_element();
         };
         new_nest.update_display = function () {
             var frontside = this.get_frontside(true);

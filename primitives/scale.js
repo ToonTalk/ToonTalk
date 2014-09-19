@@ -54,14 +54,14 @@ window.TOONTALK.scale = (function (TT) {
             path.true_type = 'scale';
             return path;
         };
-        new_scale.widget_to_highlight = function (event) {
+        new_scale.element_to_highlight = function (event) {
             var hole_index = which_hole(event);
             var hole = this.get_hole(hole_index);
             var hole_contents = hole.get_contents();
             if (hole_contents) {
-                return hole_contents;
+                return hole_contents.get_frontside_element();
             }
-            return hole;
+            return hole.get_frontside_element();
         };
         new_scale.drop_on = function (other, is_backside, event, robot) {
             if (other.widget_dropped_on_me) {
