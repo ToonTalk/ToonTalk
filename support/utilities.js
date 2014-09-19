@@ -1013,21 +1013,28 @@ window.TOONTALK.UTILITIES =
             return $drop_area;
         },
         
-//         absolute_position: function ($element) {
-//             var element_position;
-//             var absolute_position = {left: 0, top: 0};
-//             while ($element.parent().length > 0) {
-//                 element_position = $element.position();
-//                 absolute_position.left += element_position.left;
-//                 absolute_position.top += element_position.top;
-//                 $element = $element.parent();
-//             }
-//             return absolute_position;
-//         },
-        
         set_absolute_position: function ($element, absolute_position) {
-            // this really set position relative to $element's top-level-backside
-            // TODO: rename this
+            var $ancestor = $element.parent();
+            var left = absolute_position.left;
+            var top  = absolute_position.top;
+            var ancestor_position;
+            while ($ancestor.is("*") && !$ancestor.is("html")) {
+                ancestor_position = $ancestor.position();
+                left -= ancestor_position.left;
+                top  -= ancestor_position.top;
+                $ancestor = $ancestor.parent();
+            }
+            $element.css({left: left,
+                          top:  top,
+                          position: "absolute"});
+            if ($element.is(".toontalk-side-animating")) {
+                // animation doesn't work with JQuery css
+                $element.get(0).style.left = left+"px";
+                $element.get(0).style.top  = top +"px";
+            }
+        },
+        
+        set_position_relative_to_top_level_backside: function ($element, absolute_position) {
             var top_level_position = $element.closest(".toontalk-top-level-backside").offset();
             var left = absolute_position.left-top_level_position.left;
             var top  = absolute_position.top -top_level_position.top;

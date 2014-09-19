@@ -120,13 +120,12 @@ window.TOONTALK.actions =
             var saved_parent_element = frontside_element.parentElement;
             var restore_after_last_event = function () {
                 $(frontside_element).addClass("toontalk-side-animating");
-                TT.UTILITIES.set_absolute_position($(frontside_element), robot_start_position);
+                TT.UTILITIES.set_position_relative_to_top_level_backside($(frontside_element), robot_start_position);
                 // delay so there is some animation of returning 'home'
                 setTimeout(function () {
                         // robot was added to top-level backside so z-index will work as desired (robot on top of everything)
                         // the following restores it
                         saved_parent_element.appendChild(frontside_element);
-                        // just in case it didn't make it to its destination home
                         TT.UTILITIES.set_absolute_position($(frontside_element), robot_start_position);
                         robot.set_animating(false);
                         if (!robot.get_run_once()) {
@@ -152,11 +151,6 @@ window.TOONTALK.actions =
                 robot_start_position.left += $backside_element.width()/2;
                 robot_start_position.top  += $backside_element.height()-robot_height;
             }
-            // not sure what the following accomplished
-//             if (robot.get_animating()) {
-//                 // is animating so is running a step while watched
-//                 return true;
-//             }
             robot.run_next_step = function () {
                 if (robot.visible()) {
                     // pause between steps and give the previous step a chance to update the DOM     
@@ -178,6 +172,7 @@ window.TOONTALK.actions =
                 } else {
                    // e.g. user hid the robot while running
                    // first restore robot to its 'home'
+                   saved_parent_element.appendChild(frontside_element);
                    TT.UTILITIES.set_absolute_position($(frontside_element), robot_start_position);
                    this.run_unwatched(context, top_level_context, queue, robot, step_number)
                 }

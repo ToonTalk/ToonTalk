@@ -80,16 +80,16 @@ window.TOONTALK.robot = (function (TT) {
                 if (!robot_position) {
                     robot_position = $(frontside_element).offset();
                 }
-                $(frontside_element).addClass("toontalk-robot-animating");
+                $(frontside_element).addClass("toontalk-robot-animating toontalk-side-animating");
                 // z ordering (z-index) doesn't work unless the robot is a child of the top-level backside while animating
                 // need to change its relative coordinates so it doesn't move
                 $(frontside_element).css({width:  '', // rely upon toontalk-robot-animating for dimensions
                                           height: '', // otherwise doesn't animate well
                                           "z-index": TT.UTILITIES.next_z_index()});
-                TT.UTILITIES.set_absolute_position($(frontside_element), robot_position);
                 $(frontside_element).closest(".toontalk-top-level-backside").append(frontside_element);
+                TT.UTILITIES.set_position_relative_to_top_level_backside($(frontside_element), robot_position);
             } else {
-                $(frontside_element).removeClass("toontalk-robot-animating");
+                $(frontside_element).removeClass("toontalk-robot-animating toontalk-side-animating");
             }
         };
         new_robot.get_thing_in_hand = function () {
