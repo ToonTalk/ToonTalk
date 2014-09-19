@@ -481,10 +481,10 @@ window.TOONTALK.backside =
                     TT.UTILITIES.add_one_shot_event_handler($element.get(0), 'transitionend', 2500, remove_element);
                     if (!container_position) {
                         container_position = {left: 0, 
-                                              top: 0};
+                                               top: 0};
                     }
                     $element.css({left: frontside_offset.left - container_position.left,
-                                  top: frontside_offset.top - container_position.top,
+                                  top:  frontside_offset.top  - container_position.top,
                                   opacity: .1});                   
             };
             var record_backside_widget_positions = function () {
@@ -499,10 +499,10 @@ window.TOONTALK.backside =
                         position = $(backside_widget_side_element).position();
                         if (backside_widget_side.is_backside()) {
                             backside_widgets_json_views[index].backside_left = position.left;
-                            backside_widgets_json_views[index].backside_top = position.top;
+                            backside_widgets_json_views[index].backside_top  = position.top;
                         } else {
                             backside_widgets_json_views[index].frontside_left = position.left;
-                            backside_widgets_json_views[index].frontside_top = position.top;                               
+                            backside_widgets_json_views[index].frontside_top  = position.top;                               
                         }
                     }
                 });

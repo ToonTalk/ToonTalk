@@ -120,13 +120,13 @@ window.TOONTALK.actions =
             var saved_parent_element = frontside_element.parentElement;
             var restore_after_last_event = function () {
                 $(frontside_element).addClass("toontalk-side-animating");
-                TT.UTILITIES.set_position_relative_to_top_level_backside($(frontside_element), robot_start_position);
+                TT.UTILITIES.set_position_relative_to_top_level_backside($(frontside_element), robot_home);
                 // delay so there is some animation of returning 'home'
                 setTimeout(function () {
                         // robot was added to top-level backside so z-index will work as desired (robot on top of everything)
                         // the following restores it
                         saved_parent_element.appendChild(frontside_element);
-                        TT.UTILITIES.set_absolute_position($(frontside_element), robot_start_position);
+                        TT.UTILITIES.set_absolute_position($(frontside_element), robot_home);
                         robot.set_animating(false);
                         if (!robot.get_run_once()) {
                             robot.get_first_in_team().run(context, top_level_context, queue);
@@ -136,23 +136,25 @@ window.TOONTALK.actions =
                     1000);
             };
             var step_number = 0;
-            var robot_start_position = $(frontside_element).offset();
+            var robot_home = $(frontside_element).offset();
+            var robot_start_position = $(frontside_element).position();
             var robot_width  = $(frontside_element).width();
             var robot_height = $(frontside_element).height();
             var $backside_element = $(frontside_element).closest(".toontalk-backside");
             var backside_rectangle = $backside_element.get(0).getBoundingClientRect();
             var top_level_position = $(frontside_element).closest(".toontalk-top-level-backside").offset();
-            if (robot_start_position.left < backside_rectangle.left-top_level_position.left ||
-                robot_start_position.top  < backside_rectangle.top -top_level_position.top  ||
-                robot_start_position.left+robot_width  > backside_rectangle.right +top_level_position.left ||
-                robot_start_position.top +robot_height > backside_rectangle.bottom+top_level_position.top) {
+            var $context_backside_element = $(context.get_backside().get_element());
+            if (robot_home.left < backside_rectangle.left-top_level_position.left ||
+                robot_home.top  < backside_rectangle.top -top_level_position.top  ||
+                robot_home.left+robot_width  > backside_rectangle.right +top_level_position.left ||
+                robot_home.top +robot_height > backside_rectangle.bottom+top_level_position.top) {
                 // robot isn't within the backside so reset its home to bottom centre of backside parent
-                robot_start_position = $backside_element.offset();
-                robot_start_position.left += $backside_element.width()/2;
-                robot_start_position.top  += $backside_element.height()-robot_height;
+                robot_home = $backside_element.offset();
+                robot_home.left += $backside_element.width()/2;
+                robot_home.top  += $backside_element.height()-robot_height;
             }
             robot.run_next_step = function () {
-                if (robot.visible()) {
+                if ($context_backside_element.is(":visible")) {
                     // pause between steps and give the previous step a chance to update the DOM     
                     setTimeout(function () {
                             if (step_number < steps.length) {
@@ -172,12 +174,18 @@ window.TOONTALK.actions =
                 } else {
                    // e.g. user hid the robot while running
                    // first restore robot to its 'home'
+                   robot.set_animating(false);
+                   // since not visible using set_absolute_position to robot_home doesn't work
+                   $(frontside_element).css({width:  '',
+                                             height: ''});
+                   // following doesn't use JQuery since it wasn't working
+                   frontside_element.style.left =  robot_start_position.left+"px";
+                   frontside_element.style.top  =  robot_start_position.top +"px";
                    saved_parent_element.appendChild(frontside_element);
-                   TT.UTILITIES.set_absolute_position($(frontside_element), robot_start_position);
                    this.run_unwatched(context, top_level_context, queue, robot, step_number)
                 }
             }.bind(this);
-            robot.set_animating(true, robot_start_position);
+            robot.set_animating(true, robot_home);
             robot.run_next_step();
             return true;             
         },
