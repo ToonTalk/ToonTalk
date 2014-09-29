@@ -436,9 +436,8 @@ window.TOONTALK.robot = (function (TT) {
         }
         this.being_trained = true;
         this.set_frontside_conditions(context.copy(true));
-//   //    use minature image as cursor (if there is one)
-//         $("div").css({cursor: 'url(' + TT.UTILITIES.cursor_of_image(this.get_image_url()) + '), default'});
-        $("div").css({cursor: 'url("images/RB19.32x32.PNG"), default'});
+        // use miniature robot image for cursor
+        $("*").css({cursor: 'url(' + TT.UTILITIES.absolute_file_path("images/RB19.32x32.PNG") + '), default'});
         this.get_frontside_element().title = this.get_title();
         backside_element = this.get_backside_element();
         $(backside_element).find(".toontalk-conditions-panel").remove();
@@ -447,7 +446,7 @@ window.TOONTALK.robot = (function (TT) {
     robot.training_finished = function () {
         var newly_created_widgets = this.get_body().get_newly_created_widgets();
         var i, widget;
-        $("div").css({cursor: ''}); // restore cursor
+        $("*").css({cursor: ''}); // restore cursor
         for (i = 0; i < newly_created_widgets.length; i++) {
             widget = newly_created_widgets[i];
             if (widget.last_action === "drop it on top-level" || widget.last_action === "copy") {

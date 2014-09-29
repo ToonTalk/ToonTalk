@@ -1494,11 +1494,16 @@ window.TOONTALK.UTILITIES =
         },
         
         current_URL: function () {
-            var queryStart = window.location.href.indexOf('?');
-            if (queryStart < 0) {
-                return window.location.href;
+            return window.location.pathname;
+        },
+
+        absolute_file_path: function (relative_path) {
+            var current_URL = window.location.pathname;
+            var file_name_index = current_URL.lastIndexOf('ToonTalk/');
+            if (file_name_index < 0) {
+                return relative_path;
             }
-            return window.location.href.substring(0, queryStart);
+            return current_URL.substring(0, file_name_index+9) + relative_path;
         },
         
         copy_side: function (side, just_value, dimensions_too) {
