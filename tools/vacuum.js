@@ -93,7 +93,7 @@ window.TOONTALK.vacuum = (function (TT) {
                 set_mode('suck');
                 document.addEventListener('keyup', function (event) {
                     var character = String.fromCharCode(event.keyCode);
-                           if (character === 's' || character === 'S') {
+                    if (character === 's' || character === 'S') {
                         set_mode('suck');
                     } else if (character === 'e' || character === 'E') {
                         set_mode('erase');
@@ -107,7 +107,13 @@ window.TOONTALK.vacuum = (function (TT) {
         }
     };
 
-    TT.creators_from_json["vacuum"] = function () {
+    TT.creators_from_json["vacuum"] = function (json, additional_info) {
+        if (json.mode) {
+            setTimeout(function () {
+                    set_mode(json.mode);
+                }, 
+                1);
+        }
         return instance;
     };
 

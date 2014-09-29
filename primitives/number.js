@@ -214,7 +214,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     };
 
     number.equals_number = function (other_number) {
-        // note that we are not considering the operator
+        // note that we are not considering the operator -- TODO: decide if it should
         return bigrat.equals(this.get_value(), other_number.get_value());
     };
 

@@ -15,7 +15,7 @@ window.TOONTALK.widget = (function (TT) {
             return;
         }
         if (update) {
-            this.render();
+            this.rerender();
         }
         return frontside.get_element();
     };
