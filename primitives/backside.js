@@ -230,7 +230,7 @@ window.TOONTALK.backside =
                                 }
                             }
                             $backside_element.append(widget_side_element);
-                            backside_widget_side.get_widget().render();
+                            backside_widget_side.get_widget().rerender();
                         });
                     },
                     1);
@@ -690,7 +690,7 @@ window.TOONTALK.backside =
         },
 
         remove: function () {
-                this.get_widget().remove();
+            this.get_widget().remove();
         },
 
         is_backside: function () {
