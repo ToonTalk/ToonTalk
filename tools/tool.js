@@ -81,12 +81,12 @@ window.TOONTALK.tool = (function (TT) {
             };
 
             var find_widget_under_tool = function (event) {
-                // return what is under the tool not counting the tool itself)
+                // return what is under the tool
                 var element_under_tool, widget_under_tool, widget_type;
                 // hide the tool so it is not under itself
                 $(element).hide();
                 // select using the leftmost part of tool and vertical center
-                element_under_tool = document.elementFromPoint(event.pageX - drag_x_offset, (event.pageY - drag_y_offset) + tool_height/2);
+                element_under_tool = document.elementFromPoint(event.pageX - (window.pageXOffset + drag_x_offset), (event.pageY - (window.pageYOffset + drag_y_offset)) + tool_height/2);
                 $(element).show();
                 while (element_under_tool && !element_under_tool.toontalk_widget && 
                        (!$(element_under_tool).is(".toontalk-backside") || $(element_under_tool).is(".toontalk-top-level-backside"))) {

@@ -25,7 +25,7 @@ window.TOONTALK.UTILITIES =
         var json_start = div_string.indexOf('{');
         var json_end = div_string.lastIndexOf('}');
         if (json_start < 0 || json_end < 0) {
-//             console.log("Paste missing JSON encoding.");
+//          console.log("Paste missing JSON encoding.");
             return;
         }
         return div_string.substring(json_start, json_end+1);
@@ -862,7 +862,7 @@ window.TOONTALK.UTILITIES =
                         // not dropping on itself but on the widget underneath
                         // to not find $target again temporarily hide it
                         $target.hide();
-                        new_target = document.elementFromPoint(event.pageX, event.pageY);
+                        new_target = document.elementFromPoint(event.pageX-window.pageXOffset, event.pageY-window.pageYOffset);
                         $target.show();
                         if (new_target) {
                             $target = $(new_target).closest(".toontalk-side");
