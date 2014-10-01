@@ -852,7 +852,9 @@ window.TOONTALK.UTILITIES =
                     // if this is computed when needed and if dragging a resource it isn't the correct value
                     target_position = $target.offset();
                     TT.UTILITIES.remove_highlight();
+                    target_widget = TT.UTILITIES.widget_from_jquery($target);
                     if ($source && $source.length > 0 &&
+                        !target_widget.get_infinite_stack() && // OK to drop on infinite stack since will become a copy
                         ($source.get(0) === $target.get(0) || jQuery.contains($source.get(0), $target.get(0)))) {
                         if ($source.is(".toontalk-top-level-backside")) {
                             return; // let event propagate since this doesn't make sense
@@ -865,9 +867,9 @@ window.TOONTALK.UTILITIES =
                         if (new_target) {
                             $target = $(new_target).closest(".toontalk-side");
                             target_position = $target.offset();
+                            target_widget = TT.UTILITIES.widget_from_jquery($target);
                         }
                     }
-                    target_widget = TT.UTILITIES.widget_from_jquery($target);
                     if (json_object && json_object.view && json_object.view.drag_x_offset) {
                         drag_x_offset = json_object.view.drag_x_offset;
                         drag_y_offset = json_object.view.drag_y_offset;
@@ -876,7 +878,8 @@ window.TOONTALK.UTILITIES =
                         drag_y_offset = 0;
                     }
                     if ($source && $source.length > 0) {
-                        if ($source.get(0) === $target.get(0) || jQuery.contains($source.get(0), $target.get(0))) {
+                        if (!target_widget.get_infinite_stack() && ($source.get(0) === $target.get(0) || jQuery.contains($source.get(0), $target.get(0)))) {
+                            // OK to drop on infinite stack since will become a copy
                             // dropped of itself or dropped on a part of itself
                             // just moved it a little bit
                             // only called now that elementFromPoint is used to find another target when dropped on part of itself

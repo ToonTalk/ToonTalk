@@ -1006,6 +1006,9 @@ window.TOONTALK.widget = (function (TT) {
             widget.closest_visible_ancestor = function () {
                 return this;
             };
+            widget.get_infinite_stack = function () {
+                return false;
+            };
             widget = widget.add_sides_functionality(widget);
             widget = widget.runnable(widget);
             widget = widget.has_parent(widget);
