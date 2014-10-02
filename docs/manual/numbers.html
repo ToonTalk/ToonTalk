@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/sunny/jquery-ui.css" />
+<link rel="stylesheet" media="all" href="https://toontalk.github.io/ToonTalk/toontalk.css">
+<script src="https://toontalk.github.io/ToonTalk/compile/toontalk.js"></script>
+<title>Numbers in ToonTalk</title>
+<link rel="shortcut icon" href="favicon.ico" />
+</head>
+<body>
+<h2>Numbers</h2>
+<p>
+Numbers in ToonTalk are not like numbers in other programs. Integers can be any size (that fits in memory).
+Creating a number with a million digits can take a minute or two but adding two of them takes just a second.
+All numbers are really fractions whose numerator and denominator can be any size.
+Integers are just numbers whose denominator happens to be one.
+Fractions can be displayed as decimal numbers, mixed numbers (an integer together with a fraction between 0 and 1), or improper fractions.
+</p>
+<p>
+<b>Question:</b> Could a computer hold a Googolplex (one followed by a Googol zeroes)?
+<a href='http://physics.stackexchange.com/questions/4118/how-many-bytes-can-the-observable-universe-store' target='_blank'>
+<i title="A program could represent a Googolplex because it has a short description. But other numbers with a Googol digits can only be stored using more than a Googol bits.
+There probably aren't enough bits in the universe.
+Click this for more info.">
+Hover the mouse over this for an answer.</i></a>
+</p>
+<h3>Adding numbers</h3>
+<p>
+The easiest thing to do with numbers is to add them.
+Dropping a number on another combines them by addition.
+Try adding a Googol (one followed by one hundred zeroes) to a one by picking up the Googol and dropping it on the one.
+You might want to stretch the result to see it better.
+</p>
+<br>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "number",
+            "operator": "+",
+            "numerator": "10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+            "denominator": "1",
+            "format": "improper_fraction",
+            "infinite_stack": true
+          },
+          "view": {
+            "frontside_width": 444,
+            "frontside_height": 55,
+            "frontside_left": 46,
+            "frontside_top": 46,
+            "backside_geometry": {
+              "x_scale": 1,
+              "y_scale": 1,
+              "original_width": 550,
+              "original_height": 200
+            }
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "number",
+            "operator": "+",
+            "numerator": "1",
+            "denominator": "1",
+            "format": "improper_fraction"
+          },
+          "view": {
+            "frontside_width": 76,
+            "frontside_height": 55,
+            "frontside_left": 63,
+            "frontside_top": 201
+          },
+          "version": 1
+        }
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgba(245, 240, 240, 0.941176)",
+    "frontside_width": 0,
+    "frontside_height": 0,
+    "backside_width": 595,
+    "backside_height": 381,
+    "backside_left": 8,
+    "backside_top": 185.1875,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1,
+      "original_width": 1200,
+      "original_height": 475
+    },
+    "drag_x_offset": 303,
+    "drag_y_offset": 268.8125,
+    "backside": true
+  },
+  "version": 1
+}</div>
+<p>
+Try adding another Googol to the sum.
+</p>
+<h3>Editing numbers</h3>
+<p>
+If you click on a number its backside will appear.
+On the backside you can edit the numerator or denominator.
+Click on the Googol and try changing the denominator to 2.
+Try changing the denominator to 3.
+</p>
+<h3>Changing the format of numbers</h3>
+<p>
+Suppose you want to see your number (1/6th of a Googol because you divided by 2 and then by 3).
+On the backside of things in ToonTalk you'll see '<b>></b>'.
+Click on it to see advanced options.
+</p>
+<p>
+You should see something like this:
+<p>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "shared_widget_index": 0
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "number",
+            "operator": "+",
+            "numerator": "20000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001",
+            "denominator": "1",
+            "format": "improper_fraction"
+          },
+          "view": {
+            "frontside_width": 339,
+            "frontside_height": 55,
+            "frontside_left": 63,
+            "frontside_top": 201
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "shared_widget_index": 0
+        },
+        "is_backside": true
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgba(245, 240, 240, 0.941176)",
+    "frontside_width": 0,
+    "frontside_height": 0,
+    "backside_width": 924,
+    "backside_height": 381,
+    "backside_left": 8,
+    "backside_top": 352.15625,
+    "advanced_settings_open": true,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1,
+      "original_width": 595,
+      "original_height": 381
+    },
+    "drag_x_offset": 189,
+    "drag_y_offset": 348.84375,
+    "backside": true
+  },
+  "version": 1,
+  "shared_widgets": [
+    {
+      "semantic": {
+        "type": "number",
+        "operator": "+",
+        "numerator": "5000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "denominator": "3",
+        "format": "improper_fraction",
+        "infinite_stack": true
+      },
+      "view": {
+        "frontside_width": 444,
+        "frontside_height": 55,
+        "frontside_left": 46,
+        "frontside_top": 46,
+        "backside_width": 595,
+        "backside_height": 321,
+        "backside_left": 506,
+        "backside_top": 46,
+        "advanced_settings_open": true,
+        "backside_geometry": {
+          "x_scale": 1,
+          "y_scale": 1,
+          "original_width": 550,
+          "original_height": 200
+        }
+      },
+      "version": 1
+    }
+  ]
+}</div>
+<p>
+Try clicking on <b>Mixed number</b>.
+<p>
+<b>Question:</b> Do you understand the result?
+<a href='http://physics.stackexchange.com/questions/4118/how-many-bytes-can-the-observable-universe-store' target='_blank'>
+<i title="If you divide Googol by 6 you get 1 followed by 99 sixes. And a remainder of 2/3. 
+Click this for more info.">
+Hover the mouse over this for an answer.</i></a>
+</p>
+</p>
+</body>
+</html>
