@@ -372,17 +372,18 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
                 return "<table class='toontalk-operator-and-fraction'" + table_style + "><tr><td>" + operator_HTML + "</td><td>" + improper_fraction_HTML + "</td></tr></table>";
             }
         }
-        if (format === 'proper_fraction') {
+        if (format === 'mixed_number' || format === 'proper_fraction') {
+            // proper_fraction is the old name for mixed_number
             integer_part = this.integer_part();
             if (integer_part.is_zero()) {
                 return this.to_HTML(max_characters, font_size, 'improper_fraction', top_level, operator);
             }
             fractional_part = this.copy().subtract(integer_part).absolute_value();
             // split max_characters between the two parts and recur for each them
-            return '<table class="toontalk-number toontalk-proper_fraction' + extra_class + '"' + table_style + '>' +
-                   '<tr><td class="toontalk-number toontalk-integer-part-of-proper-fraction">' +
+            return '<table class="toontalk-number toontalk-mixed-number' + extra_class + '"' + table_style + '>' +
+                   '<tr><td class="toontalk-number toontalk-integer-part-of-mixed-number">' +
                     integer_part.to_HTML(max_characters/2, font_size, '', false, this.get_operator()) + // integers don't have formats but should display operator
-                    '</td><td class="toontalk-number toontalk-fraction-part-of-proper_fraction">' +
+                    '</td><td class="toontalk-number toontalk-fraction-part-of-mixed-number">' +
                     fractional_part.to_HTML(max_characters/2, font_size, 'improper_fraction', false) +
                    '</td></tr></table>';
         }
@@ -662,7 +663,7 @@ window.TOONTALK.number_backside =
             var numerator_input = TT.UTILITIES.create_text_area(current_numerator, "toontalk-numerator-input", "", "Type here to edit the numerator");
             var denominator_input = TT.UTILITIES.create_text_area(current_denominator, "toontalk-denominator-input", "", "Type here to edit the denominator");
             var decimal_format = TT.UTILITIES.create_radio_button("number_format", "decimal", "toontalk-decimal-radio-button", "Decimal", "Display number as a decimal.");
-            var proper_format = TT.UTILITIES.create_radio_button("number_format", "proper_fraction", "toontalk-proper-fraction-radio-button", "Proper fraction", "Display number as a proper fraction with an integer part and a fraction.");
+            var mixed_number_format = TT.UTILITIES.create_radio_button("number_format", "proper_fraction", "toontalk-proper-fraction-radio-button", "Mixed number", "Display number as an integer part and a proper fraction.");
             var improper_format =TT.UTILITIES.create_radio_button("number_format", "improper_fraction", "toontalk-improper-fraction-radio-button", "Improper fraction", "Display number as a simple fraction.");
             var plus = TT.UTILITIES.create_radio_button("operator", "+", "toontalk-plus-radio-button", "+", "Add me to what I'm dropped on."); // no need for &plus; and it doesn't work in IE9
             var minus = TT.UTILITIES.create_radio_button("operator", "-", "toontalk-minus-radio-button", "&minus;", "Subtract me from what I'm dropped on.");
@@ -692,7 +693,7 @@ window.TOONTALK.number_backside =
                 }
             };
             var update_format = function () {
-                var selected_button = TT.UTILITIES.selected_radio_button(decimal_format.button, proper_format.button, improper_format.button);
+                var selected_button = TT.UTILITIES.selected_radio_button(decimal_format.button, mixed_number_format.button, improper_format.button);
                 var format = selected_button.value;
                 number.set_format(format, true);
                 if (TT.robot.in_training) {
@@ -716,7 +717,7 @@ window.TOONTALK.number_backside =
                 }
             };
             var number_set = TT.UTILITIES.create_horizontal_table(numerator_input.container, slash, denominator_input.container);
-            var format_set = $(TT.UTILITIES.create_horizontal_table(decimal_format.container, proper_format.container, improper_format.container)).buttonset().get(0);
+            var format_set = $(TT.UTILITIES.create_horizontal_table(decimal_format.container, mixed_number_format.container, improper_format.container)).buttonset().get(0);
             var operator_set = $(TT.UTILITIES.create_horizontal_table(plus.container, minus.container, multiply.container, divide.container, power.container)).buttonset().get(0);
             var advanced_settings_button = TT.backside.create_advanced_settings_button(backside, number);
             var generic_backside_update = backside.update_display;
@@ -733,7 +734,7 @@ window.TOONTALK.number_backside =
             denominator_input.button.addEventListener('change', update_value);
             denominator_input.button.addEventListener('mouseout', update_value);
             decimal_format.button.addEventListener('change', update_format);
-            proper_format.button.addEventListener('change', update_format);
+            mixed_number_format.button.addEventListener('change', update_format);
             improper_format.button.addEventListener('change', update_format);
             switch (number.get_format()) {
                 case "decimal":
@@ -742,8 +743,9 @@ window.TOONTALK.number_backside =
                 case "improper_fraction":
                 TT.UTILITIES.check_radio_button(improper_format);
                 break;
-                case "proper_fraction":
-                TT.UTILITIES.check_radio_button(proper_format);
+                case "mixed_number":
+                case "proper_fraction": // older name
+                TT.UTILITIES.check_radio_button(mixed_number_format);
                 break;
             }
             switch (number.get_operator()) {
