@@ -72,6 +72,10 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     var generate_decimal_places_from_numerator_and_denominator = function (numerator, denominator, max_decimal_places) {
         var result = "";
         var ten = new BigInteger(10);
+        var negative = numerator.isNegative();
+        if (negative) {
+            numerator = numerator.abs();
+        }
         while (max_decimal_places > result.length) {
             numerator = numerator.multiply(ten);
             if (numerator.compare(denominator) < 0) {
@@ -80,9 +84,15 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
                 result += numerator.divide(denominator).toString();
                 numerator = numerator.remainder(denominator).multiply(ten);
                 if (numerator.isZero()) {
+                    if (negative_exponent) {
+                        result = '-' + result;
+                    }
                     return result;
                 }
             }
+        }
+        if (negative) {
+            result = '-' + result;
         }
         return result;
     };
@@ -356,7 +366,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     number.to_HTML = function (max_characters, font_size, format, top_level, operator, size_unconstrained_by_container) {
         var integer_as_string, integer_part, fractional_part, improper_fraction_HTML, digits_needed, shrinkage, table_style,
             // following needed for scientific notation
-            exponent, ten_to_exponent, exponent_area, significand, max_decimal_places, decimal_digits, integer_digit;
+            exponent, ten_to_exponent, exponent_area, significand, max_decimal_places, decimal_digits, integer_digit, negative;
         var extra_class = (top_level !== false) ? ' toontalk-top-level-number' : '';
         if (size_unconstrained_by_container) {
             extra_class += ' toontalk-number-size-unconstrained-by-container';
@@ -431,14 +441,23 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             return '<div class="toontalk-number toontalk-decimal' + extra_class + '" style="font-size: ' + font_size + 'px;">' + operator_HTML + this.decimal_string(max_characters, font_size) + '</div>';
         }
         if (format === 'scientific_notation') {
+            negative = bigrat.isNegative(this.get_value());
             exponent = scientific_notation_exponent(this.get_value());
             ten_to_exponent = bigrat.power(bigrat.create(), TEN, exponent);
             significand = bigrat.divide(bigrat.create(), this.get_value(), ten_to_exponent);
             exponent_area = 6+(exponent === 0 ? 1 : Math.ceil(Math.log10(Math.abs(exponent)))/2); // 6 for integer_digit, space, and '10x' - divide by 2 since superscript font is smaller
+            if (negative) {
+                exponent_area++; // need more room
+            }
             max_decimal_places = compute_max_decimal_places(max_characters, exponent_area, font_size); 
-            decimal_digits = generate_decimal_places_from_numerator_and_denominator(significand[0], significand[1], max_decimal_places);
-            integer_digit = decimal_digits.substring(0, 1);
-            decimal_digits = decimal_digits.substring(1);
+            decimal_digits = generate_decimal_places_from_numerator_and_denominator(significand[0], significand[1], max_decimal_places);      
+            if (negative) { // negative so include sign and first digit
+                integer_digit = decimal_digits.substring(0, 2);
+                decimal_digits = decimal_digits.substring(2);
+            } else {
+                integer_digit = decimal_digits.substring(0, 1);
+                decimal_digits = decimal_digits.substring(1);
+            }
             return '<table class="toontalk-number toontalk-scientific_notation' + extra_class + '"' + table_style + '>' +
                    '<tr><td class="toontalk-number toontalk-significand-of-scientific-notation">' +
                    '<div class="toontalk-number toontalk-decimal' + extra_class + '" style="font-size: ' + font_size + 'px;">' +
