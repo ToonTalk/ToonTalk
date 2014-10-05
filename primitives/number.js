@@ -84,7 +84,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
                 result += numerator.divide(denominator).toString();
                 numerator = numerator.remainder(denominator).multiply(ten);
                 if (numerator.isZero()) {
-                    if (negative_exponent) {
+                    if (negative) {
                         result = '-' + result;
                     }
                     return result;
@@ -680,11 +680,11 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             integer_string = "-" + integer_string;
         }
         var fractional_part = copy.subtract(integer_part);
-        var decimal_max_digits = compute_max_decimal_places(integer_string.length, max_decimal_places, font_size);
+        var decimal_max_digits = compute_max_decimal_places(max_decimal_places, integer_string.length, font_size);
         var integer_max_digits = Math.min(integer_string.length, max_decimal_places/2);
 //         var decimal_max_digits = max_decimal_places - (integer_max_digits + 0.5); // 1/2 for the decimal point since not monospace
         // bigger fonts mean more digits can be seen so compute more of them
-        var decimal_places = generate_decimal_places(fractional_part, max_decimal_places); // decimal_max_digits * font_size / 20);
+        var decimal_places = generate_decimal_places(fractional_part, decimal_max_digits);
         if (decimal_places.length < decimal_max_digits) {
             // not repeating and not too many decimal digits
 //             integer_max_digits = max_decimal_places-decimal_places.length;
@@ -694,7 +694,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         // split space between integer part and decimal part
         return fit_string_to_length(integer_string, integer_max_digits, font_size) +
                "<span class='toontalk-decimal-point'>.</span>" + // decimal point looks better if not monospace
-               shrink_to_fit(decimal_places, max_decimal_places/2, font_size, true);
+               shrink_to_fit(decimal_places, max_decimal_places, font_size, true);
 //             shrink_to_fit(decimal_places, decimal_max_digits, font_size, true);
     };
 
