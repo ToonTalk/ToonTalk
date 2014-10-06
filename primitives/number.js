@@ -379,7 +379,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     number.to_HTML = function (max_characters, font_size, format, top_level, operator, size_unconstrained_by_container) {
         var integer_as_string, integer_part, fractional_part, improper_fraction_HTML, digits_needed, shrinkage, table_style,
             // following needed for scientific notation
-            exponent, ten_to_exponent, exponent_area, significand, max_decimal_places, decimal_digits, integer_digit, negative;
+            exponent, ten_to_exponent, exponent_area, significand, max_decimal_places, decimal_digits, integer_digit, negative, decimal_part;
         var extra_class = (top_level !== false) ? ' toontalk-top-level-number' : '';
         if (size_unconstrained_by_container) {
             extra_class += ' toontalk-number-size-unconstrained-by-container';
@@ -462,6 +462,10 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             if (negative) {
                 exponent_area++; // need more room
             }
+            if (max_characters < exponent_area) {
+                // try again with a smaller font_size
+                return this.to_HTML(exponent_area, font_size*max_characters/exponent_area, format, top_level, operator, size_unconstrained_by_container);
+            }
             max_decimal_places = shrinking_digits_length(compute_number_of_full_size_characters_after_decimal_point(max_characters, exponent_area), font_size); 
             decimal_digits = generate_decimal_places_from_numerator_and_denominator(significand[0], significand[1], max_decimal_places);      
             if (negative) { // negative so include sign and first digit
@@ -471,12 +475,14 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
                 integer_digit = decimal_digits.substring(0, 1);
                 decimal_digits = decimal_digits.substring(1);
             }
+            decimal_part = shrink_to_fit(decimal_digits, max_characters*(1-(exponent_area/max_characters)), font_size, true);
+            if (decimal_part.length > 0) {
+                decimal_part = "<span class='toontalk-decimal-point'>.</span>" + decimal_part; // decimal point looks better if not monospace
+            }
             return '<table class="toontalk-number toontalk-scientific_notation' + extra_class + '"' + table_style + '>' +
                    '<tr><td class="toontalk-number toontalk-significand-of-scientific-notation">' +
                    '<div class="toontalk-number toontalk-decimal' + extra_class + '" style="font-size: ' + font_size + 'px;">' +
-                   operator_HTML + integer_digit + 
-                   "<span class='toontalk-decimal-point'>.</span>" + // decimal point looks better if not monospace
-                   shrink_to_fit(decimal_digits, max_characters*(1-(exponent_area/max_characters)), font_size, true) + '</div>' +
+                   operator_HTML + integer_digit + decimal_part +
                    '</td><td class="toontalk-number toontalk-exponent-of-scientific-notation">' +
                    '<div style="font-size: ' + font_size + 'px;">' +
                    ' &times;10<sup style="font-size: ' + font_size/2 + 'px;">' + exponent + '</sup></div>' +
