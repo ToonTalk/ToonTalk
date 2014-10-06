@@ -21,7 +21,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             index,
             size = 100,
             minimum_size = 50/font_size, // percentage that is half a pixel
-            factor = number_of_full_size_characters /(1+number_of_full_size_characters); // Math.pow(100, -1/steps); // (steps - 1) / steps;
+            factor = number_of_full_size_characters/(1+number_of_full_size_characters);
         if (fromLeft) {
             index = 0; // start with first digit or character
             while (size >= minimum_size && index < string.length) {
@@ -45,6 +45,13 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         return result;
     };
 
+    var shrinking_digits_length = function (number_of_full_size_characters, font_size) {
+        // returns number of shrinking digits that could fit in number_of_full_size_characters*font_size
+        // before getting below half a pixel
+        var factor = number_of_full_size_characters/(1+number_of_full_size_characters); 
+        return Math.ceil(Math.log(.5/font_size)/Math.log(factor));
+    };
+
     var fit_string_to_length = function (string, max_characters, font_size) {
         if (string.length <= Math.round(max_characters)) {
             return '<span class="toontalk-digit" style="font-size:100%">' + string + '</span>';
@@ -56,7 +63,6 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         if (max_characters < 5) {
             // decrease font size and try again
             return "<span style='font-size: 80%'>" + fit_string_to_length(string, max_characters * 1.25, font_size * 0.8) + "</span>";
-//          return string[0] + "<span class='toontalk-three-dots-in-number' style='font-size: 33%'>...</span>" + string[string.length - 1];
         }
         // substract 1 to look better
         var characters_on_each_side = max_characters/2-1;
@@ -64,20 +70,20 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
                shrink_to_fit(string, characters_on_each_side, font_size, false);
     };
 
-    var generate_decimal_places = function (fraction, max_decimal_places) {
+    var generate_decimal_places = function (fraction, number_of_full_size_characters) {
         var result = "";
         fraction = fraction.absolute_value();
-        return generate_decimal_places_from_numerator_and_denominator(fraction.get_value()[0], fraction.get_value()[1], max_decimal_places);
+        return generate_decimal_places_from_numerator_and_denominator(fraction.get_value()[0], fraction.get_value()[1], number_of_full_size_characters);
     };
 
-    var generate_decimal_places_from_numerator_and_denominator = function (numerator, denominator, max_decimal_places) {
+    var generate_decimal_places_from_numerator_and_denominator = function (numerator, denominator, number_of_full_size_characters) {
         var result = "";
         var ten = new BigInteger(10);
         var negative = numerator.isNegative();
         if (negative) {
             numerator = numerator.abs();
         }
-        while (max_decimal_places > result.length) {
+        while (number_of_full_size_characters > result.length) {
             numerator = numerator.multiply(ten);
             if (numerator.compare(denominator) < 0) {
                 result += "0";
@@ -88,6 +94,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
                     if (negative) {
                         result = '-' + result;
                     }
+                    result = remove_trailing_zeroes(result);
                     return result;
                 }
             }
@@ -98,12 +105,17 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         return result;
     };
 
-    var compute_max_decimal_places = function (max_decimal_places, integer_string_length, font_size) {
-        var integer_max_digits = Math.min(integer_string_length, max_decimal_places/2);
-        var decimal_max_digits = max_decimal_places-(integer_max_digits+0.5); // 1/2 for the decimal point since not monospace
-        // bigger fonts mean more digits can be seen so compute more of them
-        // TODO: revisit this calculation -- should figure out how many times the factor is multiplied by the font_size to reach half a pixel
-        return decimal_max_digits*font_size/6;
+    var remove_trailing_zeroes = function (string) {
+        if (string.length > 0 && string.charAt(string.length-1) === '0') {
+            return remove_trailing_zeroes(string.substring(0, string.length-1));
+        }
+        return string;
+    };
+
+    var compute_number_of_full_size_characters_after_decimal_point = function (number_of_full_size_characters, integer_string_length) {
+        var integer_max_digits = Math.min(integer_string_length, number_of_full_size_characters/2);
+         // 1 for the decimal point despite it being in a different font type
+        return number_of_full_size_characters-(integer_max_digits+1);
     };
     
     var bigrat_from_values = function (numerator, denominator) {
@@ -450,7 +462,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             if (negative) {
                 exponent_area++; // need more room
             }
-            max_decimal_places = compute_max_decimal_places(max_characters, exponent_area, font_size); 
+            max_decimal_places = shrinking_digits_length(compute_number_of_full_size_characters_after_decimal_point(max_characters, exponent_area), font_size); 
             decimal_digits = generate_decimal_places_from_numerator_and_denominator(significand[0], significand[1], max_decimal_places);      
             if (negative) { // negative so include sign and first digit
                 integer_digit = decimal_digits.substring(0, 2);
@@ -669,7 +681,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         return this.create(this);
     };
 
-    number.decimal_string = function (max_decimal_places, font_size) {
+    number.decimal_string = function (number_of_full_size_characters, font_size) {
         if (this.is_integer()) {
             return this.numerator_string();
         }
@@ -681,22 +693,24 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             integer_string = "-" + integer_string;
         }
         var fractional_part = copy.subtract(integer_part);
-        var decimal_max_digits = compute_max_decimal_places(max_decimal_places, integer_string.length, font_size);
-        var integer_max_digits = Math.min(integer_string.length, max_decimal_places/2);
-//         var decimal_max_digits = max_decimal_places - (integer_max_digits + 0.5); // 1/2 for the decimal point since not monospace
+        var number_of_full_size_characters_after_decimal_point = 
+            compute_number_of_full_size_characters_after_decimal_point(number_of_full_size_characters, integer_string.length);
+        var decimal_max_digits = shrinking_digits_length(number_of_full_size_characters_after_decimal_point, font_size);
+        var integer_max_digits = Math.min(integer_string.length, number_of_full_size_characters/2);
         // bigger fonts mean more digits can be seen so compute more of them
         var decimal_places = generate_decimal_places(fractional_part, decimal_max_digits);
-        if (decimal_places.length < decimal_max_digits) {
+        var after_decimal_point;
+        if (decimal_places.length < number_of_full_size_characters) {
             // not repeating and not too many decimal digits
-//             integer_max_digits = max_decimal_places-decimal_places.length;
-            decimal_max_digits = decimal_places.length;
+            after_decimal_point = decimal_places;
+        } else {
+            after_decimal_point = shrink_to_fit(decimal_places, number_of_full_size_characters_after_decimal_point, font_size, true);
         }
         // generate twice as many decimal places are there is room for so they shrink
         // split space between integer part and decimal part
         return fit_string_to_length(integer_string, integer_max_digits, font_size) +
                "<span class='toontalk-decimal-point'>.</span>" + // decimal point looks better if not monospace
-               shrink_to_fit(decimal_places, max_decimal_places, font_size, true);
-//             shrink_to_fit(decimal_places, decimal_max_digits, font_size, true);
+               after_decimal_point;
     };
 
     number.match = function (context) {
