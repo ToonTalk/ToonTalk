@@ -15,14 +15,16 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
 
     // private functions
 
-    var shrink_to_fit = function (string, length, fromLeft) {
+    var shrink_to_fit = function (string, number_of_full_size_characters, font_size, fromLeft) {
+        // after steps iteration the digits should be 1% of the initial size
         var result = '',
             index,
             size = 100,
-            factor = (length - 1) / length;
+            minimum_size = 50/font_size, // percentage that is half a pixel
+            factor = number_of_full_size_characters/(1+number_of_full_size_characters);
         if (fromLeft) {
             index = 0; // start with first digit or character
-            while (size >= 1 && index < string.length) {
+            while (size >= minimum_size && index < string.length) {
                 result = result + "<span class='toontalk-digit' style='font-size:" + size + "%'>" + string[index] + "<\/span>";
                 index += 1;
                 if (string[index] !== '-') {
@@ -32,7 +34,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             }
         } else {
             index = string.length - 1; // start with last digit or character
-            while (size >= 1 && index > 0) {
+            while (size >= minimum_size && index > 0) {
                 result = "<span class='toontalk-digit' style='font-size:" + size + "%'>" + string[index] + "<\/span>" + result;
                 index -= 1;
                 if (string[index] !== '-') {
@@ -43,7 +45,14 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         return result;
     };
 
-    var fit_string_to_length = function (string, max_characters) {
+    var shrinking_digits_length = function (number_of_full_size_characters, font_size) {
+        // returns number of shrinking digits that could fit in number_of_full_size_characters*font_size
+        // before getting below half a pixel
+        var factor = number_of_full_size_characters/(1+number_of_full_size_characters); 
+        return Math.ceil(Math.log(.5/font_size)/Math.log(factor));
+    };
+
+    var fit_string_to_length = function (string, max_characters, font_size) {
         if (string.length <= Math.round(max_characters)) {
             return '<span class="toontalk-digit" style="font-size:100%">' + string + '</span>';
         }
@@ -53,21 +62,28 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         }
         if (max_characters < 5) {
             // decrease font size and try again
-            return "<span style='font-size: 80%'>" + fit_string_to_length(string, max_characters * 1.25) + "</span>";
-//          return string[0] + "<span class='toontalk-three-dots-in-number' style='font-size: 33%'>...</span>" + string[string.length - 1];
+            return "<span style='font-size: 80%'>" + fit_string_to_length(string, max_characters * 1.25, font_size * 0.8) + "</span>";
         }
-        var characters_on_each_side = max_characters / 2;
-        return shrink_to_fit(string, characters_on_each_side, true) +
-               shrink_to_fit(string, characters_on_each_side, false);
+        // substract 1 to look better
+        var characters_on_each_side = max_characters/2-1;
+        return shrink_to_fit(string, characters_on_each_side, font_size, true) +
+               shrink_to_fit(string, characters_on_each_side, font_size, false);
     };
 
-    var generate_decimal_places = function (fraction, max_decimal_places) {
+    var generate_decimal_places = function (fraction, number_of_full_size_characters) {
         var result = "";
         fraction = fraction.absolute_value();
-        var numerator = fraction.get_value()[0];
-        var denominator = fraction.get_value()[1];
+        return generate_decimal_places_from_numerator_and_denominator(fraction.get_value()[0], fraction.get_value()[1], number_of_full_size_characters);
+    };
+
+    var generate_decimal_places_from_numerator_and_denominator = function (numerator, denominator, number_of_full_size_characters) {
+        var result = "";
         var ten = new BigInteger(10);
-        while (max_decimal_places > result.length) {
+        var negative = numerator.isNegative();
+        if (negative) {
+            numerator = numerator.abs();
+        }
+        while (number_of_full_size_characters > result.length) {
             numerator = numerator.multiply(ten);
             if (numerator.compare(denominator) < 0) {
                 result += "0";
@@ -75,11 +91,31 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
                 result += numerator.divide(denominator).toString();
                 numerator = numerator.remainder(denominator).multiply(ten);
                 if (numerator.isZero()) {
+                    if (negative) {
+                        result = '-' + result;
+                    }
+                    result = remove_trailing_zeroes(result);
                     return result;
                 }
             }
         }
+        if (negative) {
+            result = '-' + result;
+        }
         return result;
+    };
+
+    var remove_trailing_zeroes = function (string) {
+        if (string.length > 0 && string.charAt(string.length-1) === '0') {
+            return remove_trailing_zeroes(string.substring(0, string.length-1));
+        }
+        return string;
+    };
+
+    var compute_number_of_full_size_characters_after_decimal_point = function (number_of_full_size_characters, integer_string_length) {
+        var integer_max_digits = Math.min(integer_string_length, number_of_full_size_characters/2);
+         // 1 for the decimal point despite it being in a different font type
+        return number_of_full_size_characters-(integer_max_digits+1);
     };
     
     var bigrat_from_values = function (numerator, denominator) {
@@ -119,6 +155,25 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             return "";
         }
     };
+
+    var scientific_notation_exponent = function (rational_number) {
+        var absolute_value = bigrat.abs(bigrat.create(), rational_number);
+        var negative_exponent = bigrat.isLessThan(absolute_value, bigrat.ONE);
+        var integer_approximation, integer_approximation_as_string;
+        if (negative_exponent) {
+            // use reciprocal to compute exponent
+            integer_approximation = bigrat.toBigInteger(bigrat.divide(bigrat.create(), bigrat.ONE, absolute_value));
+        } else {
+            integer_approximation = bigrat.toBigInteger(absolute_value);
+        }
+        integer_approximation_as_string = integer_approximation.toString();
+        if (negative_exponent) {
+            return -integer_approximation_as_string.length;
+        }
+        return integer_approximation_as_string.length-1;
+    };
+
+    var TEN = bigrat.fromInteger(10);
 
     // public methods
     number.create = function (numerator, denominator, operator, format, description) {
@@ -322,7 +377,9 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     };
     
     number.to_HTML = function (max_characters, font_size, format, top_level, operator, size_unconstrained_by_container) {
-        var integer_as_string, integer_part, fractional_part, improper_fraction_HTML, digits_needed, shrinkage, table_style;
+        var integer_as_string, integer_part, fractional_part, improper_fraction_HTML, digits_needed, shrinkage, table_style,
+            // following needed for scientific notation
+            exponent, ten_to_exponent, exponent_area, significand, max_decimal_places, decimal_digits, integer_digit, negative, decimal_part;
         var extra_class = (top_level !== false) ? ' toontalk-top-level-number' : '';
         if (size_unconstrained_by_container) {
             extra_class += ' toontalk-number-size-unconstrained-by-container';
@@ -345,7 +402,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
                 max_characters = 2;
             }
         }
-        if (this.is_integer()) {
+        if (this.is_integer() && format !== 'scientific_notation') {
             integer_as_string = bigrat.toBigInteger(this.get_value()).toString();
             digits_needed = integer_as_string.length;
             if (operator_HTML.length > 0) {
@@ -356,33 +413,35 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
                 font_size *= max_characters / shrinkage;
                 max_characters = shrinkage;
             }
-            return '<div class="toontalk-number toontalk-integer' + extra_class + '" style="font-size: ' + font_size + 'px;">' + operator_HTML + fit_string_to_length(integer_as_string, max_characters) + '</div>';
+            return '<div class="toontalk-number toontalk-integer' + extra_class + '" style="font-size: ' + font_size + 'px;">' +
+                      operator_HTML + fit_string_to_length(integer_as_string, max_characters, font_size) + '</div>';
         }
         table_style = ' style="font-size:' + (font_size * 0.4) + 'px;"';
         if (format === 'improper_fraction' || !format) { // default format
             // double the max_characters since the font size is halved
             improper_fraction_HTML = 
                 '<table class="toontalk-number toontalk-improper-fraction' + extra_class + '"' + table_style + '>' +
-                '<tr class="toontalk-numerator"><td align="center" class="toontalk-number">' + fit_string_to_length(this.numerator_string(), max_characters * 2) + '</td></tr>' +
+                '<tr class="toontalk-numerator"><td align="center" class="toontalk-number">' + fit_string_to_length(this.numerator_string(), max_characters*2, font_size) + '</td></tr>' +
                 '<tr class="toontalk-fraction-line-as-row"><td  class="toontalk-fraction-line-as-table-entry"><div class="toontalk-fraction-line"></div></tr>' +
-                '<tr class="toontalk-denominator"><td align="center" class="toontalk-number">' + fit_string_to_length(this.denominator_string(), max_characters * 2) + '</td></tr></table>';
+                '<tr class="toontalk-denominator"><td align="center" class="toontalk-number">' + fit_string_to_length(this.denominator_string(), max_characters*2, font_size) + '</td></tr></table>';
             if (operator_HTML === '') {
                 return improper_fraction_HTML;
             } else {
                 return "<table class='toontalk-operator-and-fraction'" + table_style + "><tr><td>" + operator_HTML + "</td><td>" + improper_fraction_HTML + "</td></tr></table>";
             }
         }
-        if (format === 'proper_fraction') {
+        if (format === 'mixed_number' || format === 'proper_fraction') {
+            // proper_fraction is the old name for mixed_number
             integer_part = this.integer_part();
             if (integer_part.is_zero()) {
                 return this.to_HTML(max_characters, font_size, 'improper_fraction', top_level, operator);
             }
             fractional_part = this.copy().subtract(integer_part).absolute_value();
             // split max_characters between the two parts and recur for each them
-            return '<table class="toontalk-number toontalk-proper_fraction' + extra_class + '"' + table_style + '>' +
-                   '<tr><td class="toontalk-number toontalk-integer-part-of-proper-fraction">' +
+            return '<table class="toontalk-number toontalk-mixed-number' + extra_class + '"' + table_style + '>' +
+                   '<tr><td class="toontalk-number toontalk-integer-part-of-mixed-number">' +
                     integer_part.to_HTML(max_characters/2, font_size, '', false, this.get_operator()) + // integers don't have formats but should display operator
-                    '</td><td class="toontalk-number toontalk-fraction-part-of-proper_fraction">' +
+                    '</td><td class="toontalk-number toontalk-fraction-part-of-mixed-number">' +
                     fractional_part.to_HTML(max_characters/2, font_size, 'improper_fraction', false) +
                    '</td></tr></table>';
         }
@@ -393,6 +452,41 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
                 max_characters = 4;
             }
             return '<div class="toontalk-number toontalk-decimal' + extra_class + '" style="font-size: ' + font_size + 'px;">' + operator_HTML + this.decimal_string(max_characters, font_size) + '</div>';
+        }
+        if (format === 'scientific_notation') {
+            negative = bigrat.isNegative(this.get_value());
+            exponent = scientific_notation_exponent(this.get_value());
+            ten_to_exponent = bigrat.power(bigrat.create(), TEN, exponent);
+            significand = bigrat.divide(bigrat.create(), this.get_value(), ten_to_exponent);
+            exponent_area = 6+(exponent === 0 ? 1 : Math.ceil(Math.log10(Math.abs(exponent)))/2); // 6 for integer_digit, space, and '10x' - divide by 2 since superscript font is smaller
+            if (negative) {
+                exponent_area++; // need more room
+            }
+            if (max_characters < exponent_area+1) {
+                // try again with a smaller font_size
+                return this.to_HTML(exponent_area+1, font_size*max_characters/(exponent_area+1), format, top_level, operator, size_unconstrained_by_container);
+            }
+            max_decimal_places = shrinking_digits_length(compute_number_of_full_size_characters_after_decimal_point(max_characters, exponent_area), font_size); 
+            decimal_digits = generate_decimal_places_from_numerator_and_denominator(significand[0], significand[1], max_decimal_places);      
+            if (negative) { // negative so include sign and first digit
+                integer_digit = decimal_digits.substring(0, 2);
+                decimal_digits = decimal_digits.substring(2);
+            } else {
+                integer_digit = decimal_digits.substring(0, 1);
+                decimal_digits = decimal_digits.substring(1);
+            }
+            decimal_part = shrink_to_fit(decimal_digits, max_characters*(1-(exponent_area/max_characters)), font_size, true);
+            if (decimal_part.length > 0) {
+                decimal_part = "<span class='toontalk-decimal-point'>.</span>" + decimal_part; // decimal point looks better if not monospace
+            }
+            return '<table class="toontalk-number toontalk-scientific_notation' + extra_class + '"' + table_style + '>' +
+                   '<tr><td class="toontalk-number toontalk-significand-of-scientific-notation">' +
+                   '<div class="toontalk-number toontalk-decimal' + extra_class + '" style="font-size: ' + font_size + 'px;">' +
+                   operator_HTML + integer_digit + decimal_part +
+                   '</td><td class="toontalk-number toontalk-exponent-of-scientific-notation">' +
+                   '<div style="font-size: ' + font_size + 'px;">' +
+                   ' &times;10<sup style="font-size: ' + font_size/2 + 'px;">' + exponent + '</sup></div>' +
+                   '</td></tr></table>';
         }
         // else warn??
     };
@@ -593,7 +687,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         return this.create(this);
     };
 
-    number.decimal_string = function (max_decimal_places, font_size) {
+    number.decimal_string = function (number_of_full_size_characters, font_size) {
         if (this.is_integer()) {
             return this.numerator_string();
         }
@@ -605,20 +699,24 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             integer_string = "-" + integer_string;
         }
         var fractional_part = copy.subtract(integer_part);
-        var integer_max_digits = Math.min(integer_string.length, max_decimal_places / 2);
-        var decimal_max_digits = max_decimal_places - (integer_max_digits + 0.5); // 1/2 for the decimal point since not monospace
+        var number_of_full_size_characters_after_decimal_point = 
+            compute_number_of_full_size_characters_after_decimal_point(number_of_full_size_characters, integer_string.length);
+        var decimal_max_digits = shrinking_digits_length(number_of_full_size_characters_after_decimal_point, font_size);
+        var integer_max_digits = Math.min(integer_string.length, number_of_full_size_characters/2);
         // bigger fonts mean more digits can be seen so compute more of them
-        var decimal_places = generate_decimal_places(fractional_part, decimal_max_digits * font_size / 20);
-        if (decimal_places.length < decimal_max_digits) {
+        var decimal_places = generate_decimal_places(fractional_part, decimal_max_digits);
+        var after_decimal_point;
+        if (decimal_places.length < number_of_full_size_characters) {
             // not repeating and not too many decimal digits
-            integer_max_digits = max_decimal_places - decimal_places.length;
-            decimal_max_digits = decimal_places.length;
+            after_decimal_point = decimal_places;
+        } else {
+            after_decimal_point = shrink_to_fit(decimal_places, number_of_full_size_characters_after_decimal_point, font_size, true);
         }
         // generate twice as many decimal places are there is room for so they shrink
         // split space between integer part and decimal part
         return fit_string_to_length(integer_string, integer_max_digits, font_size) +
                "<span class='toontalk-decimal-point'>.</span>" + // decimal point looks better if not monospace
-               shrink_to_fit(decimal_places, decimal_max_digits, true);
+               after_decimal_point;
     };
 
     number.match = function (context) {
@@ -661,9 +759,10 @@ window.TOONTALK.number_backside =
             var current_denominator = number.denominator_string();
             var numerator_input = TT.UTILITIES.create_text_area(current_numerator, "toontalk-numerator-input", "", "Type here to edit the numerator");
             var denominator_input = TT.UTILITIES.create_text_area(current_denominator, "toontalk-denominator-input", "", "Type here to edit the denominator");
-            var decimal_format = TT.UTILITIES.create_radio_button("number_format", "decimal", "toontalk-decimal-radio-button", "Decimal", "Display number as a decimal.");
-            var proper_format = TT.UTILITIES.create_radio_button("number_format", "proper_fraction", "toontalk-proper-fraction-radio-button", "Proper fraction", "Display number as a proper fraction with an integer part and a fraction.");
+            var decimal_format = TT.UTILITIES.create_radio_button("number_format", "decimal", "toontalk-decimal-radio-button", "Decimal number", "Display number as a decimal.");
+            var mixed_number_format = TT.UTILITIES.create_radio_button("number_format", "proper_fraction", "toontalk-proper-fraction-radio-button", "Mixed number", "Display number as an integer part and a proper fraction.");
             var improper_format =TT.UTILITIES.create_radio_button("number_format", "improper_fraction", "toontalk-improper-fraction-radio-button", "Improper fraction", "Display number as a simple fraction.");
+            var scientific_format =TT.UTILITIES.create_radio_button("number_format", "scientific_notation", "toontalk-scientific-notation-radio-button", "Scientific notation", "Display number as a decimal between 1 and 10 multiplied by ten to some power.");
             var plus = TT.UTILITIES.create_radio_button("operator", "+", "toontalk-plus-radio-button", "+", "Add me to what I'm dropped on."); // no need for &plus; and it doesn't work in IE9
             var minus = TT.UTILITIES.create_radio_button("operator", "-", "toontalk-minus-radio-button", "&minus;", "Subtract me from what I'm dropped on.");
             var multiply = TT.UTILITIES.create_radio_button("operator", "*", "toontalk-times-radio-button", "&times;", "Multiply me with what I'm dropped on.");
@@ -692,7 +791,7 @@ window.TOONTALK.number_backside =
                 }
             };
             var update_format = function () {
-                var selected_button = TT.UTILITIES.selected_radio_button(decimal_format.button, proper_format.button, improper_format.button);
+                var selected_button = TT.UTILITIES.selected_radio_button(decimal_format.button, mixed_number_format.button, improper_format.button, scientific_format.button);
                 var format = selected_button.value;
                 number.set_format(format, true);
                 if (TT.robot.in_training) {
@@ -716,7 +815,7 @@ window.TOONTALK.number_backside =
                 }
             };
             var number_set = TT.UTILITIES.create_horizontal_table(numerator_input.container, slash, denominator_input.container);
-            var format_set = $(TT.UTILITIES.create_horizontal_table(decimal_format.container, proper_format.container, improper_format.container)).buttonset().get(0);
+            var format_set = $(TT.UTILITIES.create_horizontal_table(decimal_format.container, mixed_number_format.container, improper_format.container, scientific_format.container)).buttonset().get(0);
             var operator_set = $(TT.UTILITIES.create_horizontal_table(plus.container, minus.container, multiply.container, divide.container, power.container)).buttonset().get(0);
             var advanced_settings_button = TT.backside.create_advanced_settings_button(backside, number);
             var generic_backside_update = backside.update_display;
@@ -732,9 +831,10 @@ window.TOONTALK.number_backside =
             });
             denominator_input.button.addEventListener('change', update_value);
             denominator_input.button.addEventListener('mouseout', update_value);
-            decimal_format.button.addEventListener('change', update_format);
-            proper_format.button.addEventListener('change', update_format);
-            improper_format.button.addEventListener('change', update_format);
+            decimal_format.button     .addEventListener('change', update_format);
+            mixed_number_format.button.addEventListener('change', update_format);
+            improper_format.button    .addEventListener('change', update_format);
+            scientific_format.button  .addEventListener('change', update_format);
             switch (number.get_format()) {
                 case "decimal":
                 TT.UTILITIES.check_radio_button(decimal_format);
@@ -742,8 +842,12 @@ window.TOONTALK.number_backside =
                 case "improper_fraction":
                 TT.UTILITIES.check_radio_button(improper_format);
                 break;
-                case "proper_fraction":
-                TT.UTILITIES.check_radio_button(proper_format);
+                case "mixed_number":
+                case "proper_fraction": // older name
+                TT.UTILITIES.check_radio_button(mixed_number_format);
+                break;
+                case "scientific_format":
+                TT.UTILITIES.check_radio_button(scientific_format);
                 break;
             }
             switch (number.get_operator()) {

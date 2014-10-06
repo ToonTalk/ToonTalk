@@ -19,9 +19,9 @@ window.TOONTALK.DISPLAY_UPDATES =
                 // already scheduled to be rendered
                 return;
             }
-            if (TT.debugging && x.visible && !x.visible()) {
-                TT.UTILITIES.report_internal_error(x + " is invisible and yet is pending a display update");
-            }
+//             if (TT.debugging && x.visible && !x.visible()) {
+//                 TT.UTILITIES.report_internal_error(x + " is invisible and yet is pending a display update");
+//             }
             pending_updates.push(x);
         },
         

@@ -25,7 +25,7 @@ window.TOONTALK.UTILITIES =
         var json_start = div_string.indexOf('{');
         var json_end = div_string.lastIndexOf('}');
         if (json_start < 0 || json_end < 0) {
-//             console.log("Paste missing JSON encoding.");
+//          console.log("Paste missing JSON encoding.");
             return;
         }
         return div_string.substring(json_start, json_end+1);
@@ -852,7 +852,9 @@ window.TOONTALK.UTILITIES =
                     // if this is computed when needed and if dragging a resource it isn't the correct value
                     target_position = $target.offset();
                     TT.UTILITIES.remove_highlight();
+                    target_widget = TT.UTILITIES.widget_from_jquery($target);
                     if ($source && $source.length > 0 &&
+                        !(target_widget.get_infinite_stack && target_widget.get_infinite_stack()) && // OK to drop on infinite stack since will become a copy
                         ($source.get(0) === $target.get(0) || jQuery.contains($source.get(0), $target.get(0)))) {
                         if ($source.is(".toontalk-top-level-backside")) {
                             return; // let event propagate since this doesn't make sense
@@ -860,14 +862,14 @@ window.TOONTALK.UTILITIES =
                         // not dropping on itself but on the widget underneath
                         // to not find $target again temporarily hide it
                         $target.hide();
-                        new_target = document.elementFromPoint(event.pageX, event.pageY);
+                        new_target = document.elementFromPoint(event.pageX-window.pageXOffset, event.pageY-window.pageYOffset);
                         $target.show();
                         if (new_target) {
                             $target = $(new_target).closest(".toontalk-side");
                             target_position = $target.offset();
+                            target_widget = TT.UTILITIES.widget_from_jquery($target);
                         }
                     }
-                    target_widget = TT.UTILITIES.widget_from_jquery($target);
                     if (json_object && json_object.view && json_object.view.drag_x_offset) {
                         drag_x_offset = json_object.view.drag_x_offset;
                         drag_y_offset = json_object.view.drag_y_offset;
@@ -876,7 +878,9 @@ window.TOONTALK.UTILITIES =
                         drag_y_offset = 0;
                     }
                     if ($source && $source.length > 0) {
-                        if ($source.get(0) === $target.get(0) || jQuery.contains($source.get(0), $target.get(0))) {
+                        if (!(target_widget.get_infinite_stack && target_widget.get_infinite_stack()) && 
+                            ($source.get(0) === $target.get(0) || jQuery.contains($source.get(0), $target.get(0)))) {
+                            // OK to drop on infinite stack since will become a copy
                             // dropped of itself or dropped on a part of itself
                             // just moved it a little bit
                             // only called now that elementFromPoint is used to find another target when dropped on part of itself

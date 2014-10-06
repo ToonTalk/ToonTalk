@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/sunny/jquery-ui.css" />
+<link rel="stylesheet" media="all" href="https://toontalk.github.io/ToonTalk/toontalk.css">
+<script src="https://toontalk.github.io/ToonTalk/compile/toontalk.js"></script>
+<!-- Following from http://solidgone.org/Jqtoc -->
+<script src="../../libraries/jquery.jqTOC.js" type="text/javascript" charset="utf-8"></script>
+<link rel="stylesheet" media="all" href="../../libraries/jquery.jqTOC.css">
+<script type="text/javascript" charset="utf-8">
+	    $(document).ready(function(){
+	        $("div#table_of_contents").jqTOC({tocWidth:   200,
+                                              tocTitle:   'Click to navigate',
+                                              tocTopLink: 'Top of page'});
+	    })
+</script>
+<title>Numbers in ToonTalk</title>
+<link rel="shortcut icon" href="favicon.ico" />
+</head>
+<body>
+<h2>Numbers</h2>
+<p>
+Numbers in ToonTalk are not like numbers in other programs. Integers can be any size (that fits in memory).
+Creating a number with a million digits can take a minute or two but adding two of them takes just a second.
+All numbers are really fractions whose numerator and denominator can be any size.
+Integers are just numbers whose denominator happens to be one.
+Fractions can be displayed as decimal numbers, mixed numbers (an integer together with a fraction between 0 and 1), or improper fractions.
+</p>
+<p>
+<b>Question:</b> Could a computer hold a Googolplex (one followed by a Googol zeroes)?
+<a href='http://physics.stackexchange.com/questions/4118/how-many-bytes-can-the-observable-universe-store' target='_blank'>
+<i title="A program could represent a Googolplex because it has a short description. But other numbers with a Googol digits can only be stored using more than a Googol bits.
+There probably aren't enough bits in the universe.
+Click this for more info.">
+Hover the mouse over this for an answer.</i></a>
+</p>
+<div id="table_of_contents">
+<h3>Adding numbers</h3>
+<p>
+The easiest thing to do with numbers is to add them.
+Dropping a number on another combines them by addition.
+Try adding a Googol (one followed by one hundred zeroes) to a one by picking up the Googol and dropping it on the one.
+You might want to stretch the result to see it better.
+</p>
+<br>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "number",
+            "operator": "+",
+            "numerator": "10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+            "denominator": "1",
+            "format": "improper_fraction",
+            "infinite_stack": true
+          },
+          "view": {
+            "frontside_width": 444,
+            "frontside_height": 55,
+            "frontside_left": 46,
+            "frontside_top": 46,
+            "backside_geometry": {
+              "x_scale": 1,
+              "y_scale": 1,
+              "original_width": 550,
+              "original_height": 200
+            }
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "number",
+            "operator": "+",
+            "numerator": "1",
+            "denominator": "1",
+            "format": "improper_fraction"
+          },
+          "view": {
+            "frontside_width": 76,
+            "frontside_height": 55,
+            "frontside_left": 63,
+            "frontside_top": 201
+          },
+          "version": 1
+        }
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgba(245, 240, 240, 0.941176)",
+    "frontside_width": 0,
+    "frontside_height": 0,
+    "backside_width": 595,
+    "backside_height": 381,
+    "backside_left": 8,
+    "backside_top": 185.1875,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1,
+      "original_width": 1200,
+      "original_height": 475
+    },
+    "drag_x_offset": 303,
+    "drag_y_offset": 268.8125,
+    "backside": true
+  },
+  "version": 1
+}</div>
+<p>
+Try adding another Googol to the sum.
+</p>
+<h3>Editing numbers</h3>
+<p>
+If you click on a number its backside will appear.
+On the backside you can edit the numerator or denominator.
+Click on the Googol and try changing the denominator to 2.
+Try changing the denominator to 3.
+</p>
+<h3>Displaying numbers</h3>
+<p>
+Suppose you want to see your number (1/6th of a Googol because you divided by 2 and then by 3).
+On the backside of things in ToonTalk you'll see '<b>></b>'.
+Click on it to see advanced options.
+</p>
+<p>
+You should see something like this:
+<p>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "shared_widget_index": 0
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "number",
+            "operator": "+",
+            "numerator": "20000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001",
+            "denominator": "1",
+            "format": "improper_fraction"
+          },
+          "view": {
+            "frontside_width": 339,
+            "frontside_height": 55,
+            "frontside_left": 63,
+            "frontside_top": 201
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "shared_widget_index": 0
+        },
+        "is_backside": true
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgba(245, 240, 240, 0.941176)",
+    "frontside_width": 0,
+    "frontside_height": 0,
+    "backside_width": 924,
+    "backside_height": 381,
+    "backside_left": 8,
+    "backside_top": 352.15625,
+    "advanced_settings_open": true,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1,
+      "original_width": 595,
+      "original_height": 381
+    },
+    "drag_x_offset": 189,
+    "drag_y_offset": 348.84375,
+    "backside": true
+  },
+  "version": 1,
+  "shared_widgets": [
+    {
+      "semantic": {
+        "type": "number",
+        "operator": "+",
+        "numerator": "5000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "denominator": "3",
+        "format": "improper_fraction",
+        "infinite_stack": true
+      },
+      "view": {
+        "frontside_width": 444,
+        "frontside_height": 55,
+        "frontside_left": 46,
+        "frontside_top": 46,
+        "backside_width": 595,
+        "backside_height": 321,
+        "backside_left": 506,
+        "backside_top": 46,
+        "advanced_settings_open": true,
+        "backside_geometry": {
+          "x_scale": 1,
+          "y_scale": 1,
+          "original_width": 550,
+          "original_height": 200
+        }
+      },
+      "version": 1
+    }
+  ]
+}</div>
+<p>
+Try clicking on <b>Mixed number</b>.
+</p>
+<p>
+<b>Question:</b> Do you understand the result?
+<a href='https://www.khanacademy.org/math/cc-fourth-grade-math/cc-4th-fractions-topic/cc-4th-mixed-numbers/v/changing-an-improper-fraction-to-a-mixed-number' target='_blank'>
+<i title="If you divide Googol by 6 you get 1 followed by 99 sixes. And a remainder of 4. That is 4/6 or more simply 2/3. 
+Click this for more info.">
+Hover the mouse over this for an answer.</i></a>
+</p>
+<p>
+Try clicking on <b>Decimal</b>.
+<p>
+<b>Question:</b> Do you understand this result?
+<a href='https://www.khanacademy.org/math/cc-seventh-grade-math/cc-7th-fractions-decimals/cc-7th-fracs-to-decimals/v/converting-fractions-to-decimals-example' target='_blank'>
+<i title="If you divide Googol by 6 you get 1 followed by 99 sixes. And a remainder of 4. That is 4/6 or as a decimal it is .6666... repeated forever. 
+Click this for more info.">
+Hover the mouse over this for an answer.</i></a>
+</p>
+<p>
+Try clicking on <b>Scientific notation</b>.
+<p>
+<b>Question:</b> Do you understand this result?
+<a href='https://www.khanacademy.org/math/cc-eighth-grade-math/cc-8th-numbers-operations/cc-8th-scientific-notation/v/scientific-notation-old' target='_blank'>
+<i title="The first part (which is called a 'significand') is the same as 10/6 and the second part is a 99-plex (1 followed by 99 zeroes). If you were to multiply the first part of the number by 6 you would get 10. 10 times 99-plex is 100-plex or a Googol. 
+Click this for more info.">
+Hover the mouse over this for an answer.</i></a>
+</p>
+<h3>Mulitplying numbers</h3>
+<p>
+The advanced options on the backside can change how numbers are combined from the default of addition to multiplication.
+Click on the 10,000,000,000 below (also known as ten billion or <a href='http://mathworld.wolfram.com/n-Plex.html' target='_blank'>ten-plex</a>), then on <b>></b>, and then on <b>&times;</b>.
+Drop the <i>multiply by the ten-plex</i> on the 1.
+Try it again.
+</p>
+<p>
+<b>Question:</b> Do you understand the result?
+<a href='https://www.khanacademy.org/math/pre-algebra/exponents-radicals/exponent-properties/v/exponent-rules-part-1' target='_blank'>
+<i title="If you multiply ten-plex by ten-plex you get twenty-plex, a number that is 1 followed by 20 zeros. Mulitplying 10 to x by 10 to y results in 10 to x+y. 
+Click this for more info.">
+Hover the mouse over this for an answer.</i></a>
+</p>
+<p>
+<b>Question:</b> What do you get if you do the multiplication eight more times?
+<i title="If you multiply ten-plex by ten-plex ten times you get a hundred-plex or a Googol. ">
+Hover the mouse over this for an answer.</i></a>
+</p>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "number",
+            "operator": "+",
+            "numerator": "10000000000",
+            "denominator": "1",
+            "format": "proper_fraction",
+            "infinite_stack": true
+          },
+          "view": {
+            "frontside_width": 444,
+            "frontside_height": 55,
+            "frontside_left": 46,
+            "frontside_top": 46,
+            "backside_geometry": {
+              "x_scale": 1,
+              "y_scale": 1,
+              "original_width": 550,
+              "original_height": 200
+            }
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "number",
+            "operator": "+",
+            "numerator": "1",
+            "denominator": "1",
+            "format": "improper_fraction"
+          },
+          "view": {
+            "frontside_width": 444,
+            "frontside_height": 55,
+            "frontside_left": 56,
+            "frontside_top": 167,
+            "backside_geometry": {
+              "x_scale": 1,
+              "y_scale": 1,
+              "original_width": 550,
+              "original_height": 200
+            }
+          },
+          "version": 1
+        }
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgba(245, 240, 240, 0.941176)",
+    "frontside_width": 0,
+    "frontside_height": 0,
+    "backside_width": 998,
+    "backside_height": 294,
+    "backside_left": 8,
+    "backside_top": 185.1875,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1
+    },
+    "drag_x_offset": 702,
+    "drag_y_offset": 174.8125,
+    "backside": true
+  },
+  "version": 1
+}</div>
+<h3>Subtracting numbers</h3>
+<p>
+One way to subtract one from a Googol is to click on one of the ones, then on <b>></b>, and then <b>&minus;</b>.
+Then drop the <i>subtract one</i> operator on the Googol.
+</p>
+<br>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "number",
+            "operator": "+",
+            "numerator": "10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+            "denominator": "1",
+            "format": "proper_fraction"
+          },
+          "view": {
+            "frontside_width": 444,
+            "frontside_height": 55,
+            "frontside_left": 54,
+            "frontside_top": 201,
+            "backside_geometry": {
+              "x_scale": 1,
+              "y_scale": 1,
+              "original_width": 550,
+              "original_height": 200
+            }
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "number",
+            "operator": "+",
+            "numerator": "1",
+            "denominator": "1",
+            "format": "proper_fraction"
+          },
+          "view": {
+            "frontside_width": 444,
+            "frontside_height": 55,
+            "frontside_left": 51,
+            "frontside_top": 17,
+            "backside_geometry": {
+              "x_scale": 1,
+              "y_scale": 1,
+              "original_width": 550,
+              "original_height": 200
+            }
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "number",
+            "operator": "+",
+            "numerator": "1",
+            "denominator": "1",
+            "format": "proper_fraction"
+          },
+          "view": {
+            "frontside_width": 444,
+            "frontside_height": 55,
+            "frontside_left": 54,
+            "frontside_top": 107
+          },
+          "version": 1
+        }
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgba(245, 240, 240, 0.941176)",
+    "frontside_width": 0,
+    "frontside_height": 0,
+    "backside_width": 998,
+    "backside_height": 294,
+    "backside_left": 8,
+    "backside_top": 185.1875,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1
+    },
+    "drag_x_offset": 652,
+    "drag_y_offset": 173.8125,
+    "backside": true
+  },
+  "version": 1
+}</div>
+<p>
+Another way to subtract is to add a negative number.
+Click on the remaining one and edit its numerator to be -1.
+Drop the <i>add minus one</i> operator on the other number.
+</p>
+<p>
+<b>Question:</b> Do you see why both ways of subtracting do the same thing?
+<a href='https://www.khanacademy.org/math/pre-algebra/negatives-absolute-value-pre-alg/add-subtract-negatives-pre-alg/v/adding-and-subtracting-negative-number-examples' target='_blank'>
+<i title="To add a negative number and a number you can just subtract the positive version of the negative number from the other.
+Click this for more info.">
+Hover the mouse over this for an answer.</i></a>
+</p>
+<h3>Dividing numbers</h3>
+<p>
+Click on the fifty-plex below, then <b>></b>, then <b>&divide;</b>.
+Drop it on the one.
+Click on the result (it can be called a <a href='http://mathworld.wolfram.com/n-Minex.html' target='_blank'>fifty-minex</a>).
+Change its format to <b>Decimal</b>.
+The result <i>looks like</i> zeroes forever.
+Try stretching it wider until you see the final one.
+</p>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "number",
+            "operator": "+",
+            "numerator": "100000000000000000000000000000000000000000000000000",
+            "denominator": "1",
+            "format": "proper_fraction",
+            "infinite_stack": true
+          },
+          "view": {
+            "frontside_width": 444,
+            "frontside_height": 55,
+            "frontside_left": 57,
+            "frontside_top": 30,
+            "backside_geometry": {
+              "x_scale": 1,
+              "y_scale": 1,
+              "original_width": 550,
+              "original_height": 200
+            }
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "number",
+            "operator": "+",
+            "numerator": "1",
+            "denominator": "1",
+            "format": "improper_fraction"
+          },
+          "view": {
+            "frontside_width": 449,
+            "frontside_height": 55,
+            "frontside_left": 62,
+            "frontside_top": 179,
+            "backside_geometry": {
+              "x_scale": 1,
+              "y_scale": 1,
+              "original_width": 550,
+              "original_height": 200
+            }
+          },
+          "version": 1
+        }
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgba(245, 240, 240, 0.941176)",
+    "frontside_width": 0,
+    "frontside_height": 0,
+    "backside_width": 1046,
+    "backside_height": 277,
+    "backside_left": 8,
+    "backside_top": 185.1875,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1,
+      "original_width": 1200,
+      "original_height": 475
+    },
+    "drag_x_offset": 614,
+    "drag_y_offset": 185.8125,
+    "backside": true
+  },
+  "version": 1
+}</div>
+<h3>Raising to a power</h3>
+<p>
+Suppose you wanted to know what two multiplied a thousand times was.
+You could train a <a href=<'robots.html'>robot</a> to multiply by two a thousand times but there is an eaiser way.
+Click on the 1000 below, click <b>></b>, and then <b>Integer power</b>.
+Drop the <i>raise to the one thousandth power</i> operator on the two.
+</p>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "number",
+            "operator": "+",
+            "numerator": "1000",
+            "denominator": "1",
+            "format": "proper_fraction",
+            "infinite_stack": true
+          },
+          "view": {
+            "frontside_width": 444,
+            "frontside_height": 55,
+            "frontside_left": 57,
+            "frontside_top": 30,
+            "backside_geometry": {
+              "x_scale": 1,
+              "y_scale": 1,
+              "original_width": 550,
+              "original_height": 200
+            }
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "number",
+            "operator": "+",
+            "numerator": "2",
+            "denominator": "1",
+            "format": "improper_fraction"
+          },
+          "view": {
+            "frontside_width": 449,
+            "frontside_height": 55,
+            "frontside_left": 62,
+            "frontside_top": 179,
+            "backside_geometry": {
+              "x_scale": 1,
+              "y_scale": 1,
+              "original_width": 550,
+              "original_height": 200
+            }
+          },
+          "version": 1
+        }
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgba(245, 240, 240, 0.941176)",
+    "frontside_width": 0,
+    "frontside_height": 0,
+    "backside_width": 1046,
+    "backside_height": 277,
+    "backside_left": 8,
+    "backside_top": 185.1875,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1,
+      "original_width": 1200,
+      "original_height": 475
+    },
+    "drag_x_offset": 614,
+    "drag_y_offset": 170.8125,
+    "backside": true
+  },
+  "version": 1
+}</div>
+<p>
+If you try to drop the <i>raise to the one thousandth power</i> on the result then expect your browser to freeze for a minute or so as it computes two to the million.
+This number is over 300,000 digits long.
+With a normal font it would go for 79 pages.
+You can click at the numerator on the backside of the number, type control-a to select all the digits, and then paste into some other document to see all the digits. 
+</p>
+</body>
+</html>
