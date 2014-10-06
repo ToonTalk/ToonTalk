@@ -97,7 +97,7 @@ window.TOONTALK.scale = (function (TT) {
                 }
             }
             // hole was empty so fill it
-            this.set_hole(hole_index, dropped); 
+            this.set_hole(hole_index, dropped, event); 
             return true;
         };
         new_scale.update_display = function () {

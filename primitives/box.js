@@ -39,6 +39,7 @@ window.TOONTALK.box = (function (TT) {
         new_box.set_hole = function (index, new_value, update_display) {
             holes[index].set_contents(new_value);
             if (update_display) {
+                new_value.save_dimensions();
                 this.update_hole_display(index, new_value);
             }
             this.rerender();
@@ -770,7 +771,9 @@ window.TOONTALK.box_hole =
             };
             hole.removed_from_container = function (part, backside_removed, event) {
                 if (contents) {
-//                  contents = undefined;
+                    if (event) {
+                        contents.restore_dimensions();
+                    }
                     this.set_contents(undefined);
                     if (event) {
                         this.get_parent_of_frontside().render();
