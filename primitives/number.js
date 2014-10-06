@@ -462,9 +462,9 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             if (negative) {
                 exponent_area++; // need more room
             }
-            if (max_characters < exponent_area) {
+            if (max_characters < exponent_area+1) {
                 // try again with a smaller font_size
-                return this.to_HTML(exponent_area, font_size*max_characters/exponent_area, format, top_level, operator, size_unconstrained_by_container);
+                return this.to_HTML(exponent_area+1, font_size*max_characters/(exponent_area+1), format, top_level, operator, size_unconstrained_by_container);
             }
             max_decimal_places = shrinking_digits_length(compute_number_of_full_size_characters_after_decimal_point(max_characters, exponent_area), font_size); 
             decimal_digits = generate_decimal_places_from_numerator_and_denominator(significand[0], significand[1], max_decimal_places);      
