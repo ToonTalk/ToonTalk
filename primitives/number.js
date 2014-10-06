@@ -58,7 +58,8 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             return "<span style='font-size: 80%'>" + fit_string_to_length(string, max_characters * 1.25, font_size * 0.8) + "</span>";
 //          return string[0] + "<span class='toontalk-three-dots-in-number' style='font-size: 33%'>...</span>" + string[string.length - 1];
         }
-        var characters_on_each_side = max_characters / 2;
+        // substract 1 to look better
+        var characters_on_each_side = max_characters/2-1;
         return shrink_to_fit(string, characters_on_each_side, font_size, true) +
                shrink_to_fit(string, characters_on_each_side, font_size, false);
     };
@@ -738,7 +739,7 @@ window.TOONTALK.number_backside =
             var current_denominator = number.denominator_string();
             var numerator_input = TT.UTILITIES.create_text_area(current_numerator, "toontalk-numerator-input", "", "Type here to edit the numerator");
             var denominator_input = TT.UTILITIES.create_text_area(current_denominator, "toontalk-denominator-input", "", "Type here to edit the denominator");
-            var decimal_format = TT.UTILITIES.create_radio_button("number_format", "decimal", "toontalk-decimal-radio-button", "Decimal", "Display number as a decimal.");
+            var decimal_format = TT.UTILITIES.create_radio_button("number_format", "decimal", "toontalk-decimal-radio-button", "Decimal number", "Display number as a decimal.");
             var mixed_number_format = TT.UTILITIES.create_radio_button("number_format", "proper_fraction", "toontalk-proper-fraction-radio-button", "Mixed number", "Display number as an integer part and a proper fraction.");
             var improper_format =TT.UTILITIES.create_radio_button("number_format", "improper_fraction", "toontalk-improper-fraction-radio-button", "Improper fraction", "Display number as a simple fraction.");
             var scientific_format =TT.UTILITIES.create_radio_button("number_format", "scientific_notation", "toontalk-scientific-notation-radio-button", "Scientific notation", "Display number as a decimal between 1 and 10 multiplied by ten to some power.");
