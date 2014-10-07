@@ -645,6 +645,10 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     number.get_type_name = function () {
         return "number";
     };
+
+    number.get_help_URL = function () {
+        return "docs/manual/numbers.html";
+    };
     
     number.get_json = function () {
         return {type: "number",

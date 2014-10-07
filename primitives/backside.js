@@ -16,9 +16,11 @@ window.TOONTALK.backside =
             var $backside_element = $(backside_element);
             var x_scale = 1; // so can shrink this down
             var y_scale = 1;
-            var original_width, original_height, width_at_resize_start, height_at_resize_start, close_button, backside_widgets;
             var green_flag_element = document.createElement("div");
             var stop_sign_element  = document.createElement("div");
+            var help_URL = widget.get_help_URL && widget.get_help_URL();
+            var original_width, original_height, width_at_resize_start, height_at_resize_start, close_button, backside_widgets,
+                help_button, help_frame, close_help_button;
             var update_flag_and_stop_sign_classes = function (running) {
                     if (running) {
                         $(green_flag_element).addClass   ("toontalk-green-flag-active")
@@ -35,7 +37,7 @@ window.TOONTALK.backside =
             var update_flag_and_sign_position = function () {
                     var backside_width  = $backside_element.width();
                     var backside_height = $backside_element.height();
-                    var sign_width, close_button_width;
+                    var sign_width, close_button_width, green_flag_width;
                     if (backside_width === 0) {
                         // backside_element not yet added to the DOM
                         // should really listen to an event that it has been
@@ -50,6 +52,10 @@ window.TOONTALK.backside =
                         }
                         $(stop_sign_element) .css({right: close_button_width});
                         $(green_flag_element).css({right: close_button_width+sign_width+6}); // smaller gap needed
+                        if (help_button) {
+                                green_flag_width = $(green_flag_element).width();
+                            $(help_button).css({right: close_button_width+sign_width+green_flag_width+6});
+                        }
                     }
             };
             var description_label = this.create_description_label(backside, widget);
@@ -112,6 +118,24 @@ window.TOONTALK.backside =
                                                   });
             backside_element.appendChild(green_flag_element);
             backside_element.appendChild(stop_sign_element);
+            if (help_URL) {
+                help_button = document.createElement("div");
+                $(help_button).addClass("toontalk-widget-help-button")
+                               .click(function (event) {
+                                          help_frame = document.createElement("iframe");
+                                          $(help_frame).addClass("toontalk-help-frame");
+                                          help_frame.src = help_URL;
+                                          document.body.appendChild(help_frame);
+                                      });
+                help_button.innerHTML = '?'; // or could use italic i in a circle like tourist info
+                help_button.title = "Click to learn more about " + widget.get_type_name() + ".";
+                backside_element.appendChild(help_button);
+                close_help_button = document.createElement("div");
+                $(close_help_button).addClass("toontalk-close-help-frame-button")
+                               .click(function (event) {
+                                          $(help_frame).remove();
+                                      });
+            };        
             if (description_label) {
                 backside_element.appendChild(description_label); 
             }

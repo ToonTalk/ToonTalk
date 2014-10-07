@@ -522,6 +522,31 @@ body {
 	position: absolute;
 	top:   -25px;
 }
+.toontalk-widget-help-button {
+	cursor: pointer;
+	position: absolute;
+	color: white;
+	border: 1px solid #0B2E49;
+	border-radius: 20px;
+	background: #192EA4;
+	font-size: 26px;
+	/* font-weight: bold; */
+	display: inline-block;
+	line-height: 0px;
+	padding: 11px 3px;
+	top:   -25px;
+}
+.toontalk-help-frame {
+	position: absolute;
+	z-index: 999999999;
+	width:  100%;
+	height: 95%;
+	left:    0%;
+	top:     5%;
+	background-color:  white;
+	border-width: 5%;
+	border-color: gray;
+}
 .toontalk-settings-backside-button {
 	cursor: pointer;
 	font-family: 'Lucida serif';
