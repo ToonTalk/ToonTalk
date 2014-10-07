@@ -39,7 +39,9 @@ window.TOONTALK.box = (function (TT) {
         new_box.set_hole = function (index, new_value, update_display) {
             holes[index].set_contents(new_value);
             if (update_display) {
-                new_value.save_dimensions();
+                if (new_value) {
+                    new_value.save_dimensions();
+                }
                 this.update_hole_display(index, new_value);
             }
             this.rerender();
