@@ -153,16 +153,23 @@ If two <a href='numbers.html'>numbers</a> are compared then the side with the la
   "version": 1
 }</div>
 <p>
+<ul>
+<li>
 If two textual <a href='elements.html'>elements</a> are compared then the side which comes first alphabetically will tilt up.
+</li>
+<li>
 If two <a href='boxes.html'>boxes</a> are compared the one with more holes is 'heavier'.
 If they have the same number of holes then corresponding holes are compared.
 Empty holes are the 'lightest'.
 Filled holes are heavier if their contents are heavier.
+</li>
+<li>
 Other kinds of things can be compared (e.g. image <a href='elements.html'>elements</a>) and the result is arbitrary but repeatable.
+</ul>
 Scales will tilt back and forth if empty or if they contain things of different types.
-Experiment:
+<p>
+Try experimenting with this scale:
 </p>
-<br>
 <div class='toontalk-json'>{
   "semantic": {
     "type": "top_level",
@@ -339,6 +346,7 @@ Experiment:
 }</div>
 <p>
 <a href='robots.html'>Robots</a> can use scales to compare things.
+A robot will remember whether an action involved the left or right side the scale.
 If a scale is in the conditions of a robot then it matches only if the corresponding scale is tilted the same way.
 </p>
 </body>
