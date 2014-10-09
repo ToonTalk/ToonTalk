@@ -1621,6 +1621,21 @@ window.TOONTALK.UTILITIES =
         is_internet_explorer: function () {
             return TT.UTILITIES.is_browser_of_type("MSIE") || // before version 11
                    TT.UTILITIES.is_browser_of_type("Trident");
+        },
+
+        remove_z_index: function (html) {
+            var $element;
+            if (html.length === 0 || html.charAt(0) !== '<') {
+                // is plain text
+                return html;
+            }
+            if (html.indexOf("z-index") < 0) {
+                // doesn't have a z-index
+                return html;
+            }
+            $element = $(html);
+            $element.attr('z-index', '');
+            return $element.html();
         }
         
 //         create_menu_item: function (text) {

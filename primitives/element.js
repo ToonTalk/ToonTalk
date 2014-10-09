@@ -520,7 +520,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
 //             }
         });
         return {type: "element",
-                html: encodeURIComponent(this.get_HTML()), 
+                // z-index info is temporary and should not be captured here
+                html: encodeURIComponent(TT.UTILITIES.remove_z_index(this.get_HTML())), 
                 attributes: json_attributes,
                 attribute_values: json_attributes.map(this.get_attribute.bind(this)),
                 additional_classes: this.get_additional_classes()
