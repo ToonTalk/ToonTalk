@@ -529,12 +529,16 @@ body {
 	border: 1px solid #0B2E49;
 	border-radius: 20px;
 	background: #192EA4;
-	font-size: 26px;
-	/* font-weight: bold; */
+	font-family: "Georgia";
+	font-size: 22px;
+	width: 16px;
+	font-weight: bold;
+	font-style: italic;
 	display: inline-block;
 	line-height: 0px;
 	padding: 11px 3px;
-	top:   -25px;
+	top:   -27px;
+	text-align: center;
 }
 .toontalk-help-frame {
 	position: absolute;

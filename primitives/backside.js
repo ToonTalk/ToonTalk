@@ -53,8 +53,8 @@ window.TOONTALK.backside =
                         $(stop_sign_element) .css({right: close_button_width});
                         $(green_flag_element).css({right: close_button_width+sign_width+6}); // smaller gap needed
                         if (help_button) {
-                                green_flag_width = $(green_flag_element).width();
-                            $(help_button).css({right: close_button_width+sign_width+green_flag_width+6});
+                            green_flag_width = $(green_flag_element).width();
+                            $(help_button).css({right: close_button_width+sign_width+green_flag_width+12});
                         }
                     }
             };
@@ -127,7 +127,7 @@ window.TOONTALK.backside =
                                           help_frame.src = help_URL;
                                           document.body.appendChild(help_frame);
                                       });
-                help_button.innerHTML = '?'; // or could use italic i in a circle like tourist info
+                help_button.innerHTML = 'i'; // like tourist info -- alternatively could use a question mark
                 help_button.title = "Click to learn more about " + widget.get_type_name() + ".";
                 backside_element.appendChild(help_button);
                 close_help_button = document.createElement("div");
