@@ -544,6 +544,9 @@ body {
 	position: absolute;
     background: #192EA4;
 }
+.toontalk-attribute-help-button {
+	background: #9D59DD;
+}
 .toontalk-help-frame {
 	position: absolute;
 	z-index: 999999999;
