@@ -106,6 +106,9 @@ window.TOONTALK.sensor = (function (TT) {
         new_sensor.get_type_name = function () {
             return 'sensor';
         };
+        new_sensor.get_help_URL = function () {
+            return "docs/manual/sensors.html";
+        };
         new_sensor.toString = function () {
             return "a sensor of " + attribute + " for " + event_name + " sensors";
         };
@@ -208,9 +211,17 @@ window.TOONTALK.sensor_backside =
     
     return {
         create: function (sensor) {
-            var event_name_input =      TT.UTILITIES.create_text_input(sensor.get_event_name(), 'toontalk-sensor-event-name-input',      "Event name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",      "Type here the event name.",           "https://developer.mozilla.org/en-US/docs/Web/Events/" + sensor.get_event_name());
-            var event_attribute_input = TT.UTILITIES.create_text_input(sensor.get_attribute(),  'toontalk-sensor-event-attribute-input', "Event attribute", "Type here the event attribute name.", "https://developer.mozilla.org/en/docs/Web/API/Event");
-            var activate_switch =       TT.UTILITIES.create_check_box(sensor.get_active(),
+            var event_name_input      = TT.UTILITIES.create_text_input(sensor.get_event_name(), 
+                                                                       'toontalk-sensor-event-name-input',
+                                                                       "Event name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",
+                                                                       "Type here the event name.",
+                                                                       "https://developer.mozilla.org/en-US/docs/Web/Events/" + sensor.get_event_name());
+            var event_attribute_input = TT.UTILITIES.create_text_input(sensor.get_attribute(),
+                                                                       'toontalk-sensor-event-attribute-input',
+                                                                       "Event attribute",
+                                                                       "Type here the event attribute name.",
+                                                                       "https://developer.mozilla.org/en/docs/Web/API/Event");
+            var activate_switch       = TT.UTILITIES.create_check_box(sensor.get_active(),
                                                                       "toontalk-sensor-active-check-box",
                                                                       "Listening to events",
                                                                       "Check the box if you want to make this sensor active.");
@@ -237,9 +248,9 @@ window.TOONTALK.sensor_backside =
                 sensor.render();
                 event.stopPropagation();
             });
-            backside_element.insertBefore(event_name_input.container, advanced_settings_button);
+            backside_element.insertBefore(event_name_input.container,      advanced_settings_button);
             backside_element.insertBefore(event_attribute_input.container, advanced_settings_button);
-            backside_element.insertBefore(activate_switch.container, advanced_settings_button);
+            backside_element.insertBefore(activate_switch.container,       advanced_settings_button);
             return backside;
     }};
 }(window.TOONTALK));

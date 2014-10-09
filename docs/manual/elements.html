@@ -10,7 +10,204 @@
 <body>
 <h2>Web Page Elements</h2>
 <p>
-to be done
+You can drag text, pictures, and other HTML elements to ToonTalk.
+You can drag them from a web browser in another window or other programs that support drag and drop.
+You can drag image files to ToonTalk as well.
+</p>
+<p>
+Try it:
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "element",
+            "html": "Some%20text%20to%20edit.",
+            "attributes": [],
+            "attribute_values": [],
+            "erased": true
+          },
+          "view": {
+            "frontside_left": 57,
+            "frontside_top": 33.8125,
+            "backside_geometry": {
+              "x_scale": 1,
+              "y_scale": 1,
+              "original_width": 550,
+              "original_height": 200
+            }
+          },
+          "version": 1
+        }
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgba(245, 240, 240, 0.941176)",
+    "frontside_width": 0,
+    "frontside_height": 0,
+    "backside_width": 778,
+    "backside_height": 320,
+    "backside_left": 8,
+    "backside_top": 185.1875,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1,
+      "original_width": 1200,
+      "original_height": 475
+    },
+    "drag_x_offset": 213,
+    "drag_y_offset": 120.8125,
+    "backside": true
+  },
+  "version": 1
+}</div>
+</p>
+<p>
+Text elements can be edited.
+Click on the text to open its backside and edit its text.
+Try it:
+</p>
+<p>
+You can add controllers for style attributes of elements.
+Open the backside and click on <b>Add or remove style attributes</b>.
+Add <i>top</i>, <i>left</i>, and a few others.
+Notice that as you move the widget around the numbers change.
+Try changing the numbers.
+</p>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "element",
+            "html": "Some%20text%20to%20edit.",
+            "attributes": [],
+            "attribute_values": [],
+            "erased": true
+          },
+          "view": {
+            "frontside_left": 57,
+            "frontside_top": 33.8125,
+            "backside_geometry": {
+              "x_scale": 1,
+              "y_scale": 1,
+              "original_width": 550,
+              "original_height": 200
+            }
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "element",
+            "html": "Edit%20me",
+            "attributes": [],
+            "attribute_values": []
+          },
+          "view": {
+            "frontside_left": 46,
+            "frontside_top": 42.8125
+          },
+          "version": 1
+        }
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgba(245, 240, 240, 0.941176)",
+    "frontside_width": 0,
+    "frontside_height": 0,
+    "backside_width": 778,
+    "backside_height": 320,
+    "backside_left": 8,
+    "backside_top": 185.1875,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1,
+      "original_width": 1200,
+      "original_height": 475
+    },
+    "drag_x_offset": 131,
+    "drag_y_offset": 197.8125,
+    "backside": true
+  },
+  "version": 1
+}</div>
+<p>
+The <i>width</i> and <i>height</i> attributes for text elements can be confusing.
+They don't make the text change size, just the size of element.
+The attribute <i>font-size</i> will change the size of the text.
+If you set the <i>background-color</i> attributes
+and then change the <i>width</i> or <i>height</i> you'll see the size change.
+</p>
+<p>
+Here's an example:
+</p>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "element",
+            "html": "Edit%20me",
+            "attributes": [
+              "width",
+              "height",
+              "background-color"
+            ],
+            "attribute_values": [
+              "265",
+              "226",
+              "rgba(255, 0, 0, 0.498039)"
+            ]
+          },
+          "view": {
+            "frontside_left": 46,
+            "frontside_top": 42.8125,
+            "backside_geometry": {
+              "x_scale": 1,
+              "y_scale": 1,
+              "original_width": 550,
+              "original_height": 200
+            }
+          },
+          "version": 1
+        }
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgba(245, 240, 240, 0.941176)",
+    "frontside_width": 0,
+    "frontside_height": 0,
+    "backside_width": 778,
+    "backside_height": 320,
+    "backside_left": 8,
+    "backside_top": 185.1875,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1,
+      "original_width": 1200,
+      "original_height": 475
+    },
+    "drag_x_offset": 436,
+    "drag_y_offset": 167.8125,
+    "backside": true
+  },
+  "version": 1
+}</div>
+<p>
+<a href='robots.html'>Robots</a> can be trained to change the values of element attributes.
+They can make pictures and text move around, rotate, change size or colour, and more.
 </p>
 </body>
 </html>

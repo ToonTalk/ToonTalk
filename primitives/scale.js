@@ -200,6 +200,9 @@ window.TOONTALK.scale = (function (TT) {
         new_scale.get_type_name = function () {
             return 'scale';
         };
+        new_scale.get_help_URL = function () {
+            return "docs/manual/scales.html";
+        };
         new_scale.toString = function () {
             var left_contents  = this.get_hole(0); 
             var right_contents = this.get_hole(1);

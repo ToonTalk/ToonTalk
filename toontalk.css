@@ -522,6 +522,48 @@ body {
 	position: absolute;
 	top:   -25px;
 }
+.toontalk-help-button {
+	cursor: pointer;
+	color: white;
+	border: 1px solid #0B2E49;
+	border-radius: 20px;
+	background: #26990B;
+	font-family: "Georgia";
+	font-size: 22px;
+	width: 16px;
+	font-weight: bold;
+	font-style: italic;
+	text-decoration: none;
+	display: inline-block;
+	line-height: 0px;
+	padding: 11px 3px;
+	top:   -27px;
+	text-align: center;
+}
+.toontalk-widget-help-button {
+	position: absolute;
+    background: #192EA4;
+}
+.toontalk-attribute-help-button {
+	background: #9D59DD;
+}
+.toontalk-help-frame {
+	position: absolute;
+	z-index: 999999999;
+	width:  96%;
+	height: 94%;
+	left:    2%;
+	top:     4%;
+	background-color:  white;
+	border-width: 6px;
+	border-color: gray;
+}
+.toontalk-close-help-frame-button {
+	cursor: pointer;
+	position: absolute;
+	top:   0px;
+	right: 0px;
+}
 .toontalk-settings-backside-button {
 	cursor: pointer;
 	font-family: 'Lucida serif';

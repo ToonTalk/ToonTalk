@@ -2,43 +2,43 @@
 <html>
 <meta charset="utf-8">
 <head>
-<link rel="stylesheet" media="all" href="libraries/jquery-ui-1.10.4.custom/css/sunny/jquery-ui-1.10.4.custom.css">
-<link rel="stylesheet" media="all" href="toontalk.css">
-<script src="libraries/jquery-2.1.0.js"></script>
-<script src="libraries/jquery-ui-1.10.4.custom/js/jquery-ui-1.10.4.custom.js"></script>
+<link rel="stylesheet" media="all" href="http://toontalk.github.io/ToonTalk/libraries/jquery-ui-1.10.4.custom/css/sunny/jquery-ui-1.10.4.custom.css">
+<link rel="stylesheet" media="all" href="http://toontalk.github.io/ToonTalk/toontalk.css">
+<script src="http://toontalk.github.io/ToonTalk/libraries/jquery-2.1.0.js"></script>
+<script src="http://toontalk.github.io/ToonTalk/libraries/jquery-ui-1.10.4.custom/js/jquery-ui-1.10.4.custom.js"></script>
 <!--  not really using this
 <script src="libraries/jquery.ui.touch-punch.min.js"></script>
 --->
-<script src="libraries/rationaljs.js"></script>
-<script src="support/initial.js"></script>
-<script src="primitives/widget.js"></script>
-<script src="primitives/number.js"></script>
-<script src="primitives/robot.js"></script>
-<script src="primitives/box.js"></script>
-<script src="primitives/element.js"></script>
-<script src="primitives/bird.js"></script>
-<script src="primitives/scale.js"></script>
-<script src="primitives/sensor.js"></script>
-<script src="primitives/backside.js"></script>
-<script src="primitives/frontside.js"></script>
-<script src="tools/tool.js"></script>
-<script src="tools/wand.js"></script>
-<script src="tools/vacuum.js"></script>
-<script src="support/robot_actions.js"></script>
-<script src="support/robot_action.js"></script>
-<script src="support/path.js"></script>
-<script src="support/run_queue.js"></script>
-<script src="support/display_updates.js"></script>
+<script src="http://toontalk.github.io/ToonTalk/libraries/rationaljs.js"></script>
+<script src="http://toontalk.github.io/ToonTalk/support/initial.js"></script>
+<script src="http://toontalk.github.io/ToonTalk/primitives/widget.js"></script>
+<script src="http://toontalk.github.io/ToonTalk/primitives/number.js"></script>
+<script src="http://toontalk.github.io/ToonTalk/primitives/robot.js"></script>
+<script src="http://toontalk.github.io/ToonTalk/primitives/box.js"></script>
+<script src="http://toontalk.github.io/ToonTalk/primitives/element.js"></script>
+<script src="http://toontalk.github.io/ToonTalk/primitives/bird.js"></script>
+<script src="http://toontalk.github.io/ToonTalk/primitives/scale.js"></script>
+<script src="http://toontalk.github.io/ToonTalk/primitives/sensor.js"></script>
+<script src="http://toontalk.github.io/ToonTalk/primitives/backside.js"></script>
+<script src="http://toontalk.github.io/ToonTalk/primitives/frontside.js"></script>
+<script src="http://toontalk.github.io/ToonTalk/tools/tool.js"></script>
+<script src="http://toontalk.github.io/ToonTalk/tools/wand.js"></script>
+<script src="http://toontalk.github.io/ToonTalk/tools/vacuum.js"></script>
+<script src="http://toontalk.github.io/ToonTalk/support/robot_actions.js"></script>
+<script src="http://toontalk.github.io/ToonTalk/support/robot_action.js"></script>
+<script src="http://toontalk.github.io/ToonTalk/support/path.js"></script>
+<script src="http://toontalk.github.io/ToonTalk/support/run_queue.js"></script>
+<script src="http://toontalk.github.io/ToonTalk/support/display_updates.js"></script>
 <!-- following should be after all the primitive widgets are defined --->
-<script src="support/utilities.js"></script>
+<script src="http://toontalk.github.io/ToonTalk/support/utilities.js"></script>
 <!-- following only included during development/testing --->
-<script src="tests/tests.js"></script>
+<script src="http://toontalk.github.io/ToonTalk/tests/tests.js"></script>
 <title>ToonTalk Reborn Test Page</title>
 <link rel="shortcut icon" href="favicon.ico" />
 </head>
 <body>
 <p>
-<a href='docs/manual/index.html?reset=1' title='Click to visit the page that introduces everything.'>Learn how ToonTalk works</a>
+<a href='docs/manual/index.html' title='Click to visit the page that introduces everything.'>Learn how ToonTalk works</a>
 </p>
 <table class='toontalk-resource-table'>
 <tr>
@@ -71,7 +71,8 @@
       null,
       null
     ],
-    "horizontal": true
+    "horizontal": true,
+    "running": true
   },
   "view": {
     "frontside_width": 164,

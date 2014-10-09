@@ -943,7 +943,11 @@ window.TOONTALK.UTILITIES =
                             source_widget = TT.UTILITIES.create_from_json(json_object, {event: event});
                         }
                         if (!source_widget) {
-                            TT.UTILITIES.report_internal_error("Unable to construct a ToonTalk widget from the JSON.");
+                            if (json_object) {
+                                TT.UTILITIES.report_internal_error("Unable to construct a ToonTalk widget from the JSON.");
+                            } else if (TT.debugging) {
+                                console.log("No data transfer in drop.");
+                            }
                             event.stopPropagation();
                             return;
                         }
@@ -1292,8 +1296,8 @@ window.TOONTALK.UTILITIES =
                 input.id = TT.UTILITIES.generate_unique_id();
                 label_element.htmlFor = input.id;
                 if (documentation_url) {
-                    documentation_anchor = TT.UTILITIES.create_anchor_element("?", documentation_url);
-                    $(documentation_anchor).button();
+                    documentation_anchor = TT.UTILITIES.create_anchor_element("i", documentation_url);
+                    $(documentation_anchor).addClass("toontalk-help-button");
                 }
                 container = TT.UTILITIES.create_horizontal_table(label_element, input, documentation_anchor);
                 $(label_element).addClass("ui-widget");
@@ -1617,6 +1621,21 @@ window.TOONTALK.UTILITIES =
         is_internet_explorer: function () {
             return TT.UTILITIES.is_browser_of_type("MSIE") || // before version 11
                    TT.UTILITIES.is_browser_of_type("Trident");
+        },
+
+        remove_z_index: function (html) {
+            var $element;
+            if (html.length === 0 || html.charAt(0) !== '<') {
+                // is plain text
+                return html;
+            }
+            if (html.indexOf("z-index") < 0) {
+                // doesn't have a z-index
+                return html;
+            }
+            $element = $(html);
+            $element.attr('z-index', '');
+            return $element.html();
         }
         
 //         create_menu_item: function (text) {

@@ -503,6 +503,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     element.get_type_name = function () {
         return "element";
     };
+
+    element.get_help_URL = function () {
+        return "docs/manual/elements.html";
+    };
     
     element.get_json = function () {
         var attributes = this.get_style_attributes();
@@ -516,7 +520,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
 //             }
         });
         return {type: "element",
-                html: encodeURIComponent(this.get_HTML()), 
+                // z-index info is temporary and should not be captured here
+                html: encodeURIComponent(TT.UTILITIES.remove_z_index(this.get_HTML())), 
                 attributes: json_attributes,
                 attribute_values: json_attributes.map(this.get_attribute.bind(this)),
                 additional_classes: this.get_additional_classes()
@@ -660,8 +665,10 @@ window.TOONTALK.element_backside =
             var already_added = style_attributes.indexOf(option) >= 0;
             var title = "Click to add or remove the '" + option + "' style attribute from the backside of this element.";
             var check_box = TT.UTILITIES.create_check_box(already_added, "toontalk-style-attribute-check-box", option+"&nbsp;", title);
-            var documentation_link = TT.UTILITIES.create_anchor_element("(?)", documentation_source(option) + option);
+            var documentation_link = TT.UTILITIES.create_anchor_element("i", documentation_source(option) + option);
             var list_item = document.createElement("li");
+            $(documentation_link).addClass("toontalk-help-button toontalk-attribute-help-button");
+            $(documentation_link).css({color: "white"}); // ui-widget-content interferes with this
             check_box.container.appendChild(documentation_link);
             check_box.button.addEventListener('click', function (event) {
                 if (check_box.button.checked) {
