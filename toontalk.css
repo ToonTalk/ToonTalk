@@ -522,23 +522,27 @@ body {
 	position: absolute;
 	top:   -25px;
 }
-.toontalk-widget-help-button {
+.toontalk-help-button {
 	cursor: pointer;
-	position: absolute;
 	color: white;
 	border: 1px solid #0B2E49;
 	border-radius: 20px;
-	background: #192EA4;
+	background: #26990B;
 	font-family: "Georgia";
 	font-size: 22px;
 	width: 16px;
 	font-weight: bold;
 	font-style: italic;
+	text-decoration: none;
 	display: inline-block;
 	line-height: 0px;
 	padding: 11px 3px;
 	top:   -27px;
 	text-align: center;
+}
+.toontalk-widget-help-button {
+	position: absolute;
+    background: #192EA4;
 }
 .toontalk-help-frame {
 	position: absolute;

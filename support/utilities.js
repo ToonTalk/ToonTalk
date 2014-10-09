@@ -1296,8 +1296,8 @@ window.TOONTALK.UTILITIES =
                 input.id = TT.UTILITIES.generate_unique_id();
                 label_element.htmlFor = input.id;
                 if (documentation_url) {
-                    documentation_anchor = TT.UTILITIES.create_anchor_element("?", documentation_url);
-                    $(documentation_anchor).button();
+                    documentation_anchor = TT.UTILITIES.create_anchor_element("i", documentation_url);
+                    $(documentation_anchor).addClass("toontalk-help-button");
                 }
                 container = TT.UTILITIES.create_horizontal_table(label_element, input, documentation_anchor);
                 $(label_element).addClass("ui-widget");

@@ -120,14 +120,14 @@ window.TOONTALK.backside =
             backside_element.appendChild(stop_sign_element);
             if (help_URL) {
                 help_button = document.createElement("div");
-                $(help_button).addClass("toontalk-widget-help-button")
-                               .click(function (event) {
-                                          help_frame = document.createElement("iframe");
-                                          $(help_frame).addClass("toontalk-help-frame");
-                                          help_frame.src = help_URL;
-                                          document.body.appendChild(help_frame);
-                                          document.body.appendChild(close_help_button);
-                                      });
+                $(help_button).addClass("toontalk-help-button toontalk-widget-help-button")
+                              .click(function (event) {
+                                         help_frame = document.createElement("iframe");
+                                         $(help_frame).addClass("toontalk-help-frame");
+                                         help_frame.src = help_URL;
+                                         document.body.appendChild(help_frame);
+                                         document.body.appendChild(close_help_button);
+                                     });
                 help_button.innerHTML = 'i'; // like tourist info -- alternatively could use a question mark
                 help_button.title = "Click to learn more about " + widget.get_type_name() + ".";
                 close_help_button = document.createElement("div");
