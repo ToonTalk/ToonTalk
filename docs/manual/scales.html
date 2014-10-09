@@ -10,7 +10,336 @@
 <body>
 <h2>Scales</h2>
 <p>
-to be done
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "scale",
+    "size": 2,
+    "contents": [
+      null,
+      null
+    ],
+    "horizontal": true
+  },
+  "view": {
+    "frontside_width": 123,
+    "frontside_height": 91,
+    "frontside_left": 268,
+    "frontside_top": 53,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1,
+      "original_width": 123,
+      "original_height": 91
+    },
+    "drag_x_offset": 68,
+    "drag_y_offset": 66
+  },
+  "version": 1
+}</div>
+Scales can be used to compare <a href='index.html'>things</a>.
+If two <a href='numbers.html'>numbers</a> are compared then the side with the larger number will tilt down.
+</p>
+<br>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "scale",
+            "size": 2,
+            "contents": [
+              null,
+              null
+            ],
+            "horizontal": true
+          },
+          "view": {
+            "frontside_width": 123,
+            "frontside_height": 91,
+            "frontside_left": 181,
+            "frontside_top": 23,
+            "backside_geometry": {
+              "x_scale": 1,
+              "y_scale": 1,
+              "original_width": 123,
+              "original_height": 91
+            }
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "number",
+            "operator": "+",
+            "numerator": "1",
+            "denominator": "1",
+            "format": "improper_fraction"
+          },
+          "view": {
+            "frontside_width": 76,
+            "frontside_height": 55,
+            "frontside_left": 59,
+            "frontside_top": 39
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "number",
+            "operator": "+",
+            "numerator": "1",
+            "denominator": "1",
+            "format": "improper_fraction"
+          },
+          "view": {
+            "frontside_width": 76,
+            "frontside_height": 55,
+            "frontside_left": 336,
+            "frontside_top": 45
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "number",
+            "operator": "+",
+            "numerator": "2",
+            "denominator": "1",
+            "format": "improper_fraction"
+          },
+          "view": {
+            "frontside_width": 76,
+            "frontside_height": 55,
+            "frontside_left": 460,
+            "frontside_top": 44,
+            "backside_geometry": {
+              "x_scale": 1,
+              "y_scale": 1,
+              "original_width": 550,
+              "original_height": 200
+            }
+          },
+          "version": 1
+        }
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgba(245, 240, 240, 0.941176)",
+    "frontside_width": 0,
+    "frontside_height": 0,
+    "backside_width": 555,
+    "backside_height": 173,
+    "backside_left": 8,
+    "backside_top": 185.1875,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1,
+      "original_width": 1200,
+      "original_height": 475
+    },
+    "drag_x_offset": 371,
+    "drag_y_offset": 164.8125,
+    "backside": true
+  },
+  "version": 1
+}</div>
+<p>
+If two textual <a href='elements.html'>elements</a> are compared then the side which comes first alphabetically will tilt up.
+If two <a href='boxes.html'>boxes</a> are compared the one with more holes is 'heavier'.
+If they have the same number of holes then corresponding holes are compared.
+Empty holes are the 'lightest'.
+Filled holes are heavier if their contents are heavier.
+Other kinds of things can be compared (e.g. image <a href='elements.html'>elements</a>) and the result is arbitrary but repeatable.
+Scales will tilt back and forth if empty or if they contain things of different types.
+Experiment:
+</p>
+<br>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "element",
+            "html": "orange",
+            "attributes": [],
+            "attribute_values": []
+          },
+          "view": {
+            "frontside_left": 408,
+            "frontside_top": 119.8125,
+            "backside_geometry": {
+              "x_scale": 1,
+              "y_scale": 1,
+              "original_width": 550,
+              "original_height": 200
+            }
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "scale",
+            "size": 2,
+            "contents": [
+              null,
+              null
+            ],
+            "horizontal": true
+          },
+          "view": {
+            "frontside_width": 123,
+            "frontside_height": 91,
+            "frontside_left": 228,
+            "frontside_top": 16.375,
+            "backside_geometry": {
+              "x_scale": 1,
+              "y_scale": 1,
+              "original_width": 123,
+              "original_height": 91
+            }
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "element",
+            "html": "%3Cimg%20src%3D%22https%3A%2F%2Fencrypted-tbn1.gstatic.com%2Fimages%3Fq%3Dtbn%3AANd9GcRGQbHdJRg3QtOf4dadjrZIznF6e8_8CMRJ01FkNGyDqYlY4RoXyQj3Hw%22%20style%3D%22border-style%3A%20none%3B%20width%3A%20110px%3B%20height%3A%2080px%3B%20margin-left%3A%20-15px%3B%22%3E",
+            "attributes": [],
+            "attribute_values": []
+          },
+          "view": {
+            "frontside_width": 110,
+            "frontside_height": 80,
+            "frontside_left": 407,
+            "frontside_top": 28.8125
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "box",
+            "size": 2,
+            "contents": [
+              null,
+              null
+            ],
+            "horizontal": true
+          },
+          "view": {
+            "frontside_width": 164,
+            "frontside_height": 68,
+            "frontside_left": 40,
+            "frontside_top": 151.375,
+            "backside_geometry": {
+              "x_scale": 1,
+              "y_scale": 1,
+              "original_width": 171,
+              "original_height": 39
+            }
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "box",
+            "size": 2,
+            "contents": [
+              null,
+              null
+            ],
+            "horizontal": true
+          },
+          "view": {
+            "frontside_width": 164,
+            "frontside_height": 68,
+            "frontside_left": 346,
+            "frontside_top": 152.375
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "element",
+            "html": "%3Cimg%20src%3D%22https%3A%2F%2Fencrypted-tbn3.gstatic.com%2Fimages%3Fq%3Dtbn%3AANd9GcQnSi8igw8BSN-ZWSN_x-g2lyfZ1lzmCa48Z0X380qkwwhSTSqSvYwXTQ%22%20style%3D%22border-style%3A%20none%3B%20width%3A%2080px%3B%20height%3A%2080px%3B%22%3E",
+            "attributes": [],
+            "attribute_values": []
+          },
+          "view": {
+            "frontside_width": 80,
+            "frontside_height": 80,
+            "frontside_left": 91,
+            "frontside_top": 28.8125
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "element",
+            "html": "apple",
+            "attributes": [],
+            "attribute_values": []
+          },
+          "view": {
+            "frontside_left": 114,
+            "frontside_top": 116.8125,
+            "backside_geometry": {
+              "x_scale": 1,
+              "y_scale": 1,
+              "original_width": 550,
+              "original_height": 200
+            }
+          },
+          "version": 1
+        }
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgba(245, 240, 240, 0.941176)",
+    "frontside_width": 0,
+    "frontside_height": 0,
+    "backside_width": 582,
+    "backside_height": 261,
+    "backside_left": 8,
+    "backside_top": 185.1875,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1,
+      "original_width": 1200,
+      "original_height": 475
+    },
+    "drag_x_offset": 298,
+    "drag_y_offset": 207.8125,
+    "backside": true
+  },
+  "version": 1
+}</div>
+<p>
+<a href='robots.html'>Robots</a> can use scales to compare things.
+If a scale is in the conditions of a robot then it matches only if the corresponding scale is tilted the same way.
 </p>
 </body>
 </html>
