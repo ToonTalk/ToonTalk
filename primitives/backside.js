@@ -62,8 +62,8 @@ window.TOONTALK.backside =
             var close_title, close_handler;
             if (widget.close_button_ok(backside_element)) {
                 close_handler = function (event) {
-                                        backside.hide_backside(event);
-                                        event.stopPropagation();
+                                    backside.hide_backside(event);
+                                    event.stopPropagation();
                 };
                 // title should be re-computed on mouseenter
                 close_title = widget.get_description();
@@ -126,15 +126,19 @@ window.TOONTALK.backside =
                                           $(help_frame).addClass("toontalk-help-frame");
                                           help_frame.src = help_URL;
                                           document.body.appendChild(help_frame);
+                                          document.body.appendChild(close_help_button);
                                       });
                 help_button.innerHTML = 'i'; // like tourist info -- alternatively could use a question mark
                 help_button.title = "Click to learn more about " + widget.get_type_name() + ".";
-                backside_element.appendChild(help_button);
                 close_help_button = document.createElement("div");
                 $(close_help_button).addClass("toontalk-close-help-frame-button")
-                               .click(function (event) {
-                                          $(help_frame).remove();
-                                      });
+                                    .button()
+                                    .click(function (event) {
+                                               $(help_frame).remove();
+                                               $(close_help_button).remove();
+                                           });
+                close_help_button.innerHTML = "Return to ToonTalk";
+                backside_element.appendChild(help_button);
             };        
             if (description_label) {
                 backside_element.appendChild(description_label); 

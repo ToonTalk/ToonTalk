@@ -543,13 +543,19 @@ body {
 .toontalk-help-frame {
 	position: absolute;
 	z-index: 999999999;
-	width:  100%;
-	height: 95%;
-	left:    0%;
-	top:     5%;
+	width:  96%;
+	height: 94%;
+	left:    2%;
+	top:     4%;
 	background-color:  white;
-	border-width: 5%;
+	border-width: 6px;
 	border-color: gray;
+}
+.toontalk-close-help-frame-button {
+	cursor: pointer;
+	position: absolute;
+	top:   0px;
+	right: 0px;
 }
 .toontalk-settings-backside-button {
 	cursor: pointer;

@@ -503,6 +503,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     element.get_type_name = function () {
         return "element";
     };
+
+    element.get_help_URL = function () {
+        return "docs/manual/elements.html";
+    };
     
     element.get_json = function () {
         var attributes = this.get_style_attributes();

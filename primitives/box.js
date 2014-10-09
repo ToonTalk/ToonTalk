@@ -263,6 +263,10 @@ window.TOONTALK.box = (function (TT) {
         return "box";
     };
 
+    box.get_help_URL = function () {
+        return "docs/manual/boxes.html";
+    };
+
     box.get_json = function (json_history) {
         var contents_json = [];
         var size = this.get_size();

@@ -596,6 +596,10 @@ window.TOONTALK.robot = (function (TT) {
     robot.get_type_name = function () {
         return "robot";
     };
+
+    robot.get_help_URL = function () {
+        return "docs/manual/robots.html";
+    };
     
     robot.get_json = function (json_history) {
         var frontside_conditions = this.get_frontside_conditions();

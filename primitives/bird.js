@@ -363,6 +363,10 @@ window.TOONTALK.bird = (function (TT) {
         return "bird";
     };
     
+    bird.get_help_URL = function () {
+        return "docs/manual/birds-nests.html";
+    };
+
     bird.matching_resource = function (other) {
         // should only be one bird resource since bird identity is an issue
         return other.get_type_name && other.get_type_name() === this.get_type_name();
@@ -882,6 +886,10 @@ window.TOONTALK.nest = (function (TT) {
     
     nest.toString = function () {
         return "a nest"; // good enough for now
+    };
+
+    nest.get_help_URL = function () {
+        return "docs/manual/birds-nests.html";
     };
     
     nest.get_type_name = function () {

@@ -106,6 +106,9 @@ window.TOONTALK.sensor = (function (TT) {
         new_sensor.get_type_name = function () {
             return 'sensor';
         };
+        new_sensor.get_help_URL = function () {
+            return "docs/manual/sensors.html";
+        };
         new_sensor.toString = function () {
             return "a sensor of " + attribute + " for " + event_name + " sensors";
         };
