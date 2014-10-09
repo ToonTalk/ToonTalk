@@ -943,7 +943,11 @@ window.TOONTALK.UTILITIES =
                             source_widget = TT.UTILITIES.create_from_json(json_object, {event: event});
                         }
                         if (!source_widget) {
-                            TT.UTILITIES.report_internal_error("Unable to construct a ToonTalk widget from the JSON.");
+                            if (json_object) {
+                                TT.UTILITIES.report_internal_error("Unable to construct a ToonTalk widget from the JSON.");
+                            } else if (TT.debugging) {
+                                console.log("No data transfer in drop.");
+                            }
                             event.stopPropagation();
                             return;
                         }
