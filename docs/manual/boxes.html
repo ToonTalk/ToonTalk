@@ -10,7 +10,366 @@
 <body>
 <h2>Boxes</h2>
 <p>
-to be done
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "box",
+    "size": 2,
+    "contents": [
+      null,
+      null
+    ],
+    "horizontal": true,
+    "running": true
+  },
+  "view": {
+    "frontside_width": 164,
+    "frontside_height": 68,
+    "frontside_left": 268,
+    "frontside_top": 53,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1,
+      "original_width": 171,
+      "original_height": 39
+    },
+    "drag_x_offset": 68,
+    "drag_y_offset": 66
+  },
+  "version": 1
+}</div>
+Boxes are good for putting things in.
+You or a <a href='robots.html'>robot</a> can drop things in the holes of a box and later take them out again.
+Boxes can hold boxes.
+Try it out here:
+</p>
+<br>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "box",
+            "size": 2,
+            "contents": [
+              null,
+              null
+            ],
+            "horizontal": true,
+            "running": true
+          },
+          "view": {
+            "frontside_width": 164,
+            "frontside_height": 68,
+            "frontside_left": 21,
+            "frontside_top": 14,
+            "backside_geometry": {
+              "x_scale": 1,
+              "y_scale": 1,
+              "original_width": 171,
+              "original_height": 39
+            }
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "box",
+            "size": 2,
+            "contents": [
+              null,
+              null
+            ],
+            "horizontal": true
+          },
+          "view": {
+            "frontside_width": 164,
+            "frontside_height": 68,
+            "frontside_left": 241,
+            "frontside_top": 15
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "box",
+            "size": 2,
+            "contents": [
+              null,
+              null
+            ],
+            "horizontal": true
+          },
+          "view": {
+            "frontside_width": 164,
+            "frontside_height": 68,
+            "frontside_left": 462,
+            "frontside_top": 17
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "number",
+            "operator": "+",
+            "numerator": "1",
+            "denominator": "1",
+            "format": "improper_fraction"
+          },
+          "view": {
+            "frontside_width": 76,
+            "frontside_height": 55,
+            "frontside_left": 19,
+            "frontside_top": 147
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "number",
+            "operator": "+",
+            "numerator": "2",
+            "denominator": "1",
+            "format": "improper_fraction"
+          },
+          "view": {
+            "frontside_width": 76,
+            "frontside_height": 55,
+            "frontside_left": 127,
+            "frontside_top": 147,
+            "backside_geometry": {
+              "x_scale": 1,
+              "y_scale": 1,
+              "original_width": 550,
+              "original_height": 200
+            }
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "shared_widget_index": 0
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "bird",
+            "nest": {
+              "shared_widget_index": 0
+            }
+          },
+          "view": {
+            "frontside_width": 70,
+            "frontside_height": 102,
+            "frontside_left": 255,
+            "frontside_top": 123.8125
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "scale",
+            "size": 2,
+            "contents": [
+              null,
+              null
+            ],
+            "horizontal": true
+          },
+          "view": {
+            "frontside_width": 123,
+            "frontside_height": 91,
+            "frontside_left": 482,
+            "frontside_top": 126,
+            "backside_geometry": {
+              "x_scale": 1,
+              "y_scale": 1,
+              "original_width": 123,
+              "original_height": 91
+            }
+          },
+          "version": 1
+        }
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgba(245, 240, 240, 0.941176)",
+    "frontside_width": 0,
+    "frontside_height": 0,
+    "backside_width": 709,
+    "backside_height": 229,
+    "backside_left": 8,
+    "backside_top": 185.1875,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1,
+      "original_width": 1200,
+      "original_height": 475
+    },
+    "drag_x_offset": 634,
+    "drag_y_offset": 207.8125,
+    "backside": true
+  },
+  "version": 1,
+  "shared_widgets": [
+    {
+      "semantic": {
+        "type": "nest",
+        "contents": [],
+        "guid": "toontalk_id_1412862675679",
+        "waiting_robots": []
+      },
+      "view": {
+        "frontside_width": 116,
+        "frontside_height": 98,
+        "frontside_left": 346,
+        "frontside_top": 131
+      },
+      "version": 1
+    }
+  ]
+}</div>
+</p>
+<p>
+You can change the number of holes that a box has.
+Just open its backside by clicking on the box.
+Then edit the number of holes.
+Try it:
+</p>
+<br>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "box",
+            "size": 2,
+            "contents": [
+              null,
+              null
+            ],
+            "horizontal": true,
+            "running": true
+          },
+          "view": {
+            "frontside_width": 164,
+            "frontside_height": 68,
+            "frontside_left": 39,
+            "frontside_top": 36,
+            "backside_geometry": {
+              "x_scale": 1,
+              "y_scale": 1,
+              "original_width": 171,
+              "original_height": 39
+            }
+          },
+          "version": 1
+        }
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgba(245, 240, 240, 0.941176)",
+    "frontside_width": 0,
+    "frontside_height": 0,
+    "backside_width": 705,
+    "backside_height": 395,
+    "backside_left": 8,
+    "backside_top": 185.1875,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1,
+      "original_width": 1200,
+      "original_height": 475
+    },
+    "drag_x_offset": 395,
+    "drag_y_offset": 293.8125,
+    "backside": true
+  },
+  "version": 1
+}</div>
+<p>
+You can change the size of a box by dragging the edges.
+</p>
+<p>
+You can change a box from one whose holes are horizontal (left or right of each other)
+to boxes that are vertical (holes are above or below each other).
+Just click on the box to open it and click the <b>Left to right</b> or <b>Top to bottom</b> button.
+</p>
+<br>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "box",
+            "size": 2,
+            "contents": [
+              null,
+              null
+            ],
+            "horizontal": false
+          },
+          "view": {
+            "frontside_width": 164,
+            "frontside_height": 262,
+            "frontside_left": 39,
+            "frontside_top": 36,
+            "backside_geometry": {
+              "x_scale": 1,
+              "y_scale": 1,
+              "original_width": 171,
+              "original_height": 39
+            }
+          },
+          "version": 1
+        }
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgba(245, 240, 240, 0.941176)",
+    "frontside_width": 0,
+    "frontside_height": 0,
+    "backside_width": 705,
+    "backside_height": 395,
+    "backside_left": 8,
+    "backside_top": 564.59375,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1
+    },
+    "drag_x_offset": 416,
+    "drag_y_offset": 240.40625,
+    "backside": true
+  },
+  "version": 1
+}</div>
+<p>
+When a <a href='robots.html'>robot</a> uses a box he remembers which hole was involved by counting from the left
+(or the top if a vertical box).
+</p>
+<p>
+Boxes are similar to <a href='http://en.wikipedia.org/wiki/Array_data_structure' target='_blank'>arrays</a> or vectors
+in other programming languages.
 </p>
 </body>
 </html>
