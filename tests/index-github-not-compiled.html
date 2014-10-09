@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head>
+<link rel="stylesheet" media="all" href="http://toontalk.github.io/ToonTalk/libraries/jquery-ui-1.10.4.custom/css/sunny/jquery-ui-1.10.4.custom.css">
+<link rel="stylesheet" media="all" href="http://toontalk.github.io/ToonTalk/toontalk.css">
+<script src="http://toontalk.github.io/ToonTalk/libraries/jquery-2.1.0.js"></script>
+<script src="http://toontalk.github.io/ToonTalk/libraries/jquery-ui-1.10.4.custom/js/jquery-ui-1.10.4.custom.js"></script>
+<!--  not really using this
+<script src="libraries/jquery.ui.touch-punch.min.js"></script>
+--->
+<script src="http://toontalk.github.io/ToonTalk/libraries/rationaljs.js"></script>
+<script src="http://toontalk.github.io/ToonTalk/support/initial.js"></script>
+<script src="http://toontalk.github.io/ToonTalk/primitives/widget.js"></script>
+<script src="http://toontalk.github.io/ToonTalk/primitives/number.js"></script>
+<script src="http://toontalk.github.io/ToonTalk/primitives/robot.js"></script>
+<script src="http://toontalk.github.io/ToonTalk/primitives/box.js"></script>
+<script src="http://toontalk.github.io/ToonTalk/primitives/element.js"></script>
+<script src="http://toontalk.github.io/ToonTalk/primitives/bird.js"></script>
+<script src="http://toontalk.github.io/ToonTalk/primitives/scale.js"></script>
+<script src="http://toontalk.github.io/ToonTalk/primitives/sensor.js"></script>
+<script src="http://toontalk.github.io/ToonTalk/primitives/backside.js"></script>
+<script src="http://toontalk.github.io/ToonTalk/primitives/frontside.js"></script>
+<script src="http://toontalk.github.io/ToonTalk/tools/tool.js"></script>
+<script src="http://toontalk.github.io/ToonTalk/tools/wand.js"></script>
+<script src="http://toontalk.github.io/ToonTalk/tools/vacuum.js"></script>
+<script src="http://toontalk.github.io/ToonTalk/support/robot_actions.js"></script>
+<script src="http://toontalk.github.io/ToonTalk/support/robot_action.js"></script>
+<script src="http://toontalk.github.io/ToonTalk/support/path.js"></script>
+<script src="http://toontalk.github.io/ToonTalk/support/run_queue.js"></script>
+<script src="http://toontalk.github.io/ToonTalk/support/display_updates.js"></script>
+<!-- following should be after all the primitive widgets are defined --->
+<script src="http://toontalk.github.io/ToonTalk/support/utilities.js"></script>
+<!-- following only included during development/testing --->
+<script src="http://toontalk.github.io/ToonTalk/tests/tests.js"></script>
+<title>ToonTalk Reborn Test Page</title>
+<link rel="shortcut icon" href="favicon.ico" />
+</head>
+<body>
+<p>
+<a href='docs/manual/index.html' title='Click to visit the page that introduces everything.'>Learn how ToonTalk works</a>
+</p>
+<table class='toontalk-resource-table'>
+<tr>
+<td>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "number",
+    "operator": "+",
+    "numerator": "1",
+    "denominator": "1",
+    "format": "improper_fraction"
+  },
+  "view": {
+    "frontside_width": 76,
+    "frontside_height": 55,
+    "frontside_left": 57,
+    "frontside_top": 82,
+    "drag_x_offset": 19,
+    "drag_y_offset": 46
+  },
+  "version": 1
+}</div>
+</td>
+<td>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "box",
+    "size": 2,
+    "contents": [
+      null,
+      null
+    ],
+    "horizontal": true,
+    "running": true
+  },
+  "view": {
+    "frontside_width": 164,
+    "frontside_height": 68,
+    "frontside_left": 268,
+    "frontside_top": 53,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1,
+      "original_width": 171,
+      "original_height": 39
+    },
+    "drag_x_offset": 68,
+    "drag_y_offset": 66
+  },
+  "version": 1
+}</div>
+</td>
+<td>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "nest",
+    "contents": []
+  },
+  "view": {
+    "frontside_width": 116,
+    "frontside_height": 141
+  },
+  "version": 1
+}</div>
+</td>
+<td>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "scale",
+    "size": 2,
+    "contents": [
+      null,
+      null
+    ],
+    "horizontal": true
+  },
+  "view": {
+    "frontside_width": 123,
+    "frontside_height": 91,
+    "frontside_left": 268,
+    "frontside_top": 53,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1,
+      "original_width": 123,
+      "original_height": 91
+    },
+    "drag_x_offset": 68,
+    "drag_y_offset": 66
+  },
+  "version": 1
+}</div>
+</td>
+<td>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "sensor",
+    "contents": [],
+    "guid": "sensor sensor",
+    "waiting_robots": [],
+    "event_name": "keydown",
+    "attribute": "keyCode"
+  },
+  "view": {
+    "frontside_width": 116,
+    "frontside_height": 98,
+    "frontside_left": 6,
+    "frontside_top": 6,
+    "drag_x_offset": 48,
+    "drag_y_offset": 50
+  },
+  "version": 1
+}</div>
+</td>
+<td>
+<div class='toontalk-json'>{"semantic":{"type":"robot","body":{"type":"body","steps":[],"run_once":false}},
+                            "view": {"drag_x_offset":31,"drag_y_offset":48}}
+</div>
+</td>
+<td>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "wand"
+  },
+  "view": {
+    "frontside_width": 191,
+    "frontside_height": 31,
+    "frontside_left": 6,
+    "frontside_top": 6
+  },
+  "version": 1
+}</div>
+</td>
+<td>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "vacuum"
+  },
+  "view": {
+    "frontside_width": 123,
+    "frontside_height": 45,
+    "frontside_left": 6,
+    "frontside_top": 6
+  },
+  "version": 1
+}</div>
+</td>
+</tr>
+</table>
+<div class='toontalk-json'>{"semantic":{"type":"top_level"},"view":{"frontside_width":0,"frontside_height":0,"backside_width":1200,"backside_height":475,"backside_left":8,"backside_top":179,"id_of_original_dragree":"toontalk_id_1396518462430","drag_x_offset":269,"drag_y_offset":133,"original_width_fraction":0.2,"original_height_fraction":0.1,"backside":true},"version":1}</div>
+</body>
+</html>
