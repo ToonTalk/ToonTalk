@@ -208,35 +208,37 @@ window.TOONTALK.UTILITIES =
                         element.appendChild(widget.get_element());
                     } else if (widget.is_of_type('top-level')) {
                         top_level_widget_count++;
-                        local_storage_key = TT.UTILITIES.current_URL();
-                        if (top_level_widget_count > 1) {
-                            // for backwards compatibility don't add suffix to single top-level-widget pages
-                            local_storage_key += "#" + top_level_widget_count;
-                        }
-                        if (TT.UTILITIES.get_current_url_boolean_parameter("reset", false)) {
-                            try {
-                                window.localStorage.removeItem(local_storage_key);
-                            } catch (error) {
-                                TT.UTILITIES.display_message("Error removing previous state. Error message is " + error);
-                            }
-                        } else {
-                            try {
-                                stored_json_string = window.localStorage.getItem(local_storage_key);
-                            } catch (error) {
-                                message = "Error reading previous state. Error message is " + error;
-                                if (TT.UTILITIES.is_internet_explorer()) {
-                                    console.error(message);
-                                } else {
-                                    TT.UTILITIES.display_message();
-                                }
-                            }
-                            if (stored_json_string) {
-                                json = JSON.parse(stored_json_string);
-                                widget = TT.UTILITIES.create_from_json(json);
-                            }
-                        }
-                        widget.local_storage_key = local_storage_key;
+//                         local_storage_key = TT.UTILITIES.current_URL();
+//                         if (top_level_widget_count > 1) {
+//                             // for backwards compatibility don't add suffix to single top-level-widget pages
+//                             local_storage_key += "#" + top_level_widget_count;
+//                         }
+//                         if (TT.UTILITIES.get_current_url_boolean_parameter("reset", false)) {
+//                             try {
+//                                 window.localStorage.removeItem(local_storage_key);
+//                             } catch (error) {
+//                                 TT.UTILITIES.display_message("Error removing previous state. Error message is " + error);
+//                             }
+//                         } else {
+//                             try {
+//                                 stored_json_string = window.localStorage.getItem(local_storage_key);
+//                             } catch (error) {
+//                                 message = "Error reading previous state. Error message is " + error;
+//                                 if (TT.UTILITIES.is_internet_explorer()) {
+//                                     console.error(message);
+//                                 } else {
+//                                     TT.UTILITIES.display_message();
+//                                 }
+//                             }
+//                             if (stored_json_string) {
+//                                 json = JSON.parse(stored_json_string);
+//                                 widget = TT.UTILITIES.create_from_json(json);
+//                             }
+//                         }
+//                         widget.local_storage_key = local_storage_key;
+console.log("about to get backside of widget");
                         backside = widget.get_backside(true);
+                        console.log("about to get element of backside of widget");
                         backside_element = backside.get_element();
                         $(element).replaceWith(backside_element);
                         $(backside_element).css({width: json.view.backside_width,
@@ -1475,14 +1477,14 @@ window.TOONTALK.UTILITIES =
         },
 
         backup_all_top_level_widgets: function (immediately) {
-            var top_level_widget, backup_function;
-            if (!TT.UTILITIES.get_current_url_boolean_parameter("autosave", true)) {
-                return;
-            }
-            $(".toontalk-top-level-backside").each(function (index, element) {
-                var top_level_widget = TT.UTILITIES.widget_from_jquery($(element));
-                top_level_widget.backup_all(immediately);
-            });
+//             var top_level_widget, backup_function;
+//             if (!TT.UTILITIES.get_current_url_boolean_parameter("autosave", true)) {
+//                 return;
+//             }
+//             $(".toontalk-top-level-backside").each(function (index, element) {
+//                 var top_level_widget = TT.UTILITIES.widget_from_jquery($(element));
+//                 top_level_widget.backup_all(immediately);
+//             });
         },
         
         make_resizable: function ($element, widget) {
