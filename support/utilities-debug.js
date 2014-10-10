@@ -32,6 +32,7 @@ window.TOONTALK.UTILITIES =
     };
     var handle_drop = function ($target, $source, source_widget, target_widget, target_position, event, json_object, drag_x_offset, drag_y_offset, source_is_backside) {
         var new_target, backside_widgets_json, shared_widgets, top_level_element, top_level_backside_position, backside_widgets;
+        console.log("handle_drop called");
         if ($target.is(".toontalk-backside")) {
             if (source_widget.is_of_type('top-level')) {
                // add all top-level backsides contents but not the backside widget itself
@@ -120,6 +121,7 @@ window.TOONTALK.UTILITIES =
             TT.UTILITIES.report_internal_error("target element has no 'owner'");
             return; // let event propagate
         } else {
+            console.log("handle_drop called - 2");
             // before processing drop ensure that dropped item (source_widget) is visible and where dropped
             top_level_element = $target.closest(".toontalk-top-level-backside").get(0);
             top_level_element.appendChild($source.get(0));
@@ -145,6 +147,7 @@ window.TOONTALK.UTILITIES =
                     }
                 }
             }
+            console.log("handle_drop called - 3");
         }
         TT.UTILITIES.remove_highlight();
 //         if (target_widget && !drop_handled) {
@@ -287,7 +290,9 @@ console.log("about to get backside of widget");
                     });
                 });
             }
+            console.log("about to run queue");
             TT.QUEUE.run();
+            console.log("queue run");
             window.addEventListener('beforeunload', function (event) {
                 TT.UTILITIES.backup_all_top_level_widgets(true);
 //                 // following not needed if things are backed up to localStorage
@@ -437,6 +442,7 @@ console.log("about to get backside of widget");
                 if (json_semantic.backside_widgets) {
                     console.log("about to create backside_widgets");
                     backside_widgets = this.create_array_from_json(json_semantic.backside_widgets, additional_info);
+                    console.log("about to set_backside_widget_sides");
                     widget.set_backside_widget_sides(backside_widgets, 
                                                      json_semantic.backside_widgets.map(
                                                         function (json) {
@@ -720,6 +726,7 @@ console.log("about to get backside of widget");
                 function (event) {
                     var $source_element = $(event.target).closest(".toontalk-side");
                     var bounding_rectangle, json_object, json_div, widget, is_resource;
+                    console.log("dragstart");
                     // was using text/plain but IE complained
                     // see http://stackoverflow.com/questions/18065840/html5-drag-and-drop-not-working-on-ie11
                     if (event.dataTransfer.getData("text") && event.dataTransfer.getData("text").length > 0) {
