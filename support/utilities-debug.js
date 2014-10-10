@@ -207,7 +207,9 @@ window.TOONTALK.UTILITIES =
                         // isn't a widget. e.g. a tool
                         element.appendChild(widget.get_element());
                     } else if (widget.is_of_type('top-level')) {
+                        console.log("about to top_level_widget_count++");
                         top_level_widget_count++;
+                        console.log("top_level_widget_count is " + top_level_widget_count);
 //                         local_storage_key = TT.UTILITIES.current_URL();
 //                         if (top_level_widget_count > 1) {
 //                             // for backwards compatibility don't add suffix to single top-level-widget pages
