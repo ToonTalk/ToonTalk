@@ -317,6 +317,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         } else {
             $dimensions_holder = $(frontside_element).parent();
         }
+        console.log("number update_display started");
         if ($(frontside_element).is(".toontalk-carried-by-bird")) {
             // good enough values when carried by a bird
             client_width  = 100;
@@ -376,6 +377,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         if (backside) {
             backside.rerender();
         }
+        console.log("number update_display finished");
     };
     
     number.to_HTML = function (max_characters, font_size, format, top_level, operator, size_unconstrained_by_container) {
