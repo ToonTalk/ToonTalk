@@ -324,31 +324,7 @@ window.TOONTALK.backside =
             // following should be done by something like GWT's onLoad...
             // but DOMNodeInserted is deprecated and MutationObserver is only in IE11.
             // giving up on pre IE11 so use https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver
-            $backside_element.on('DOMNodeInserted', function (event) {
-                var $source = $(event.originalEvent.srcElement);
-                var owner_widget;
-                console.log("DOMNodeInserted");
-                if ($source.is(".toontalk-frontside") && $source.parent().is(".toontalk-backside")) {
-                    $source.addClass("toontalk-frontside-on-backside");
-                    if ($source.is(".ui-resizable")) {
-                        $source.resizable("enable");
-                    }
-                    owner_widget = TT.UTILITIES.widget_from_jquery($source);
-                    if (owner_widget) {
-                        owner_widget.render();
-                        console.log("DOMNodeInserted render");
-                    }
-                    console.log("DOMNodeInserted end");
-                }
-                event.stopPropagation();
-            });
-            $backside_element.on('DOMNodeRemoved', function (event) {
-                var $source = $(event.originalEvent.srcElement);
-                if ($source.is(".toontalk-frontside")) {
-                    $source.removeClass("toontalk-frontside-on-backside");
-                }
-                event.stopPropagation();
-            });
+            
             backside_element.addEventListener("mouseenter", function (event) {
                var frontside = widget.get_frontside();
                var parent_of_backside = widget.get_parent_of_backside();
