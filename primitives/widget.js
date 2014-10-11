@@ -641,9 +641,7 @@ window.TOONTALK.widget = (function (TT) {
             } else {
                 widget.set_parent_of_frontside(this, true);
             }
-//             if (backside) {
-//                 backside.update_run_button_disabled_attribute();
-//             }
+            widget.render();
         },
         
         remove_backside_widget: function (widget, is_backside, ignore_if_not_on_backside) {

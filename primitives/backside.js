@@ -161,9 +161,9 @@ window.TOONTALK.backside =
             }
             if (!widget.removed_from_container) {
                 widget.removed_from_container = function (other, backside_removed, event, ignore_if_not_on_backside) {
-                    if (!backside_removed) {
-                        $(other.get_frontside_element()).removeClass("toontalk-frontside-on-backside");
-                    }
+//                     if (!backside_removed) {
+//                         $(other.get_frontside_element()).removeClass("toontalk-frontside-on-backside");
+//                     }
                     if (!TT.robot.in_training) {
                        // robots in training take care of this (and need to to record things properly)
                        this.remove_backside_widget(other, backside_removed, ignore_if_not_on_backside);
@@ -324,28 +324,28 @@ window.TOONTALK.backside =
             // following should be done by something like GWT's onLoad...
             // but DOMNodeInserted is deprecated and MutationObserver is only in IE11.
             // giving up on pre IE11 so use https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver
-            $backside_element.on('DOMNodeInserted', function (event) {
-                var $source = $(event.originalEvent.srcElement);
-                var owner_widget;
-                if ($source.is(".toontalk-frontside") && $source.parent().is(".toontalk-backside")) {
-                    $source.addClass("toontalk-frontside-on-backside");
-                    if ($source.is(".ui-resizable")) {
-                        $source.resizable("enable");
-                    }
-                    owner_widget = TT.UTILITIES.widget_from_jquery($source);
-                    if (owner_widget) {
-                        owner_widget.render();
-                    }
-                }
-                event.stopPropagation();
-            });
-            $backside_element.on('DOMNodeRemoved', function (event) {
-                var $source = $(event.originalEvent.srcElement);
-                if ($source.is(".toontalk-frontside")) {
-                    $source.removeClass("toontalk-frontside-on-backside");
-                }
-                event.stopPropagation();
-            });
+//             $backside_element.on('DOMNodeInserted', function (event) {
+//                 var $source = $(event.originalEvent.srcElement);
+//                 var owner_widget;
+//                 if ($source.is(".toontalk-frontside") && $source.parent().is(".toontalk-backside")) {
+//                     $source.addClass("toontalk-frontside-on-backside");
+//                     if ($source.is(".ui-resizable")) {
+//                         $source.resizable("enable");
+//                     }
+//                     owner_widget = TT.UTILITIES.widget_from_jquery($source);
+//                     if (owner_widget) {
+//                         owner_widget.render();
+//                     }
+//                 }
+//                 event.stopPropagation();
+//             });
+//             $backside_element.on('DOMNodeRemoved', function (event) {
+//                 var $source = $(event.originalEvent.srcElement);
+//                 if ($source.is(".toontalk-frontside")) {
+//                     $source.removeClass("toontalk-frontside-on-backside");
+//                 }
+//                 event.stopPropagation();
+//             });
             backside_element.addEventListener("mouseenter", function (event) {
                var frontside = widget.get_frontside();
                var parent_of_backside = widget.get_parent_of_backside();
