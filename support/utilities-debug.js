@@ -245,6 +245,7 @@ console.log("about to get backside of widget");
                         backside = widget.get_backside(true);
                         console.log("about to get element of backside of widget");
                         backside_element = backside.get_element();
+                        console.log("about to replaceWith");
                         $(element).replaceWith(backside_element);
                         $(backside_element).css({width: json.view.backside_width,
                                                  height: json.view.backside_height,
@@ -268,6 +269,7 @@ console.log("about to get backside of widget");
                     // delay until geometry settles down
                     setTimeout(function () {
                             if (widget.update_display) {
+                                console.log("about to update_display in initialise");
                                 widget.update_display();
                             } // otherwise might be a tool
                             if (json.semantic.running) {
