@@ -204,34 +204,36 @@ window.TOONTALK.UTILITIES =
                         element.appendChild(widget.get_element());
                     } else if (widget.is_of_type('top-level')) {
                         top_level_widget_count++;
-                        local_storage_key = TT.UTILITIES.current_URL();
-                        if (top_level_widget_count > 1) {
-                            // for backwards compatibility don't add suffix to single top-level-widget pages
-                            local_storage_key += "#" + top_level_widget_count;
-                        }
-                        if (TT.UTILITIES.get_current_url_boolean_parameter("reset", false)) {
-                            try {
-                                window.localStorage.removeItem(local_storage_key);
-                            } catch (error) {
-                                TT.UTILITIES.display_message("Error removing previous state. Error message is " + error);
+                        if (!TT.no_local_storage) {
+                            local_storage_key = TT.UTILITIES.current_URL();
+                            if (top_level_widget_count > 1) {
+                                // for backwards compatibility don't add suffix to single top-level-widget pages
+                                local_storage_key += "#" + top_level_widget_count;
                             }
-                        } else {
-                            try {
-                                stored_json_string = window.localStorage.getItem(local_storage_key);
-                            } catch (error) {
-                                message = "Error reading previous state. Error message is " + error;
-                                if (TT.UTILITIES.is_internet_explorer()) {
-                                    console.error(message);
-                                } else {
-                                    TT.UTILITIES.display_message();
+                            if (TT.UTILITIES.get_current_url_boolean_parameter("reset", false)) {
+                                try {
+                                    window.localStorage.removeItem(local_storage_key);
+                                } catch (error) {
+                                    TT.UTILITIES.display_message("Error removing previous state. Error message is " + error);
+                                }
+                            } else {
+                                try {
+                                    stored_json_string = window.localStorage.getItem(local_storage_key);
+                                } catch (error) {
+                                    message = "Error reading previous state. Error message is " + error;
+                                    if (TT.UTILITIES.is_internet_explorer()) {
+                                        console.error(message);
+                                    } else {
+                                        TT.UTILITIES.display_message();
+                                    }
+                                }
+                                if (stored_json_string) {
+                                    json = JSON.parse(stored_json_string);
+                                    widget = TT.UTILITIES.create_from_json(json);
                                 }
                             }
-                            if (stored_json_string) {
-                                json = JSON.parse(stored_json_string);
-                                widget = TT.UTILITIES.create_from_json(json);
-                            }
+                            widget.local_storage_key = local_storage_key;
                         }
-                        widget.local_storage_key = local_storage_key;
                         backside = widget.get_backside(true);
                         backside_element = backside.get_element();
                         $(element).replaceWith(backside_element);
