@@ -139,7 +139,7 @@ body {
 }
 .toontalk-frontside {
 }
-.toontalk-frontside-on-backside {
+.toontalk-backside.toontalk-frontside {
 	position: absolute;
 }
 .toontalk-widget {
