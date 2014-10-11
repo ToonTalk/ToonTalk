@@ -126,6 +126,7 @@ body {
     min-height: initial;
 }
 .toontalk-top-level-frontside {
+/* 	TODO: determine if this is obsolete */
 	position: absolute;
 	cursor: move;
 	border: none;
@@ -138,9 +139,7 @@ body {
 	display: inline-block;	
 }
 .toontalk-frontside {
-}
-.toontalk-backside.toontalk-frontside {
-	position: absolute;
+    position: absolute;
 }
 .toontalk-widget {
 	width:  100%;
@@ -148,7 +147,6 @@ body {
 	display: inline-block;
 }
 .toontalk-box {
-	position: absolute;
 	background-color: rgb(244, 247, 214);
 	table-layout: fixed;
 	padding: 0px;
