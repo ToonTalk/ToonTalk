@@ -180,7 +180,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         var new_number = Object.create(number);
         // value is a private variable closed over below
         var value = bigrat_from_values(numerator, denominator);
-        console.log("number.create called");
+//         console.log("number.create called");
         if (!format) {
             format = "improper_fraction";
         }
@@ -232,7 +232,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             function () { 
                 return format; 
             };
-        console.log("number about to get standard_widget_functionality");
+//         console.log("number about to get standard_widget_functionality");
         new_number = number.add_standard_widget_functionality(new_number);
         new_number.set_description(description);
         if (TT.debugging) {
@@ -317,7 +317,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         } else {
             $dimensions_holder = $(frontside_element).parent();
         }
-        console.log("number update_display started");
+//         console.log("number update_display started");
         if ($(frontside_element).is(".toontalk-carried-by-bird")) {
             // good enough values when carried by a bird
             client_width  = 100;
@@ -377,7 +377,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         if (backside) {
             backside.rerender();
         }
-        console.log("number update_display finished");
+//         console.log("number update_display finished");
     };
     
     number.to_HTML = function (max_characters, font_size, format, top_level, operator, size_unconstrained_by_container) {

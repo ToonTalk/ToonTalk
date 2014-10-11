@@ -306,8 +306,8 @@ window.TOONTALK.UTILITIES =
         if (element === possible_ancestor) {
             return true;
         }
-        if (element.parentElement) {
-            return has_ancestor_element(element.parentElement, possible_ancestor);
+        if (element.parentNode) {
+            return has_ancestor_element(element.parentNode, possible_ancestor);
         }
     };
     $(document).ready(initialise);

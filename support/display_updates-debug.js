@@ -12,7 +12,7 @@ window.TOONTALK.DISPLAY_UPDATES =
     var time_of_last_update = 0;
     return {
         pending_update: function (x) {
-            console.log("pending_update called");
+//             console.log("pending_update called");
             if (!x.update_display) {
                 return;
             }
@@ -24,7 +24,7 @@ window.TOONTALK.DISPLAY_UPDATES =
 //                 TT.UTILITIES.report_internal_error(x + " is invisible and yet is pending a display update");
 //             }
             pending_updates.push(x);
-            console.log(x.get_type_name() + " pushed to pending_updates");
+//             console.log(x.get_type_name() + " pushed to pending_updates");
         },
         
         update_display: function () {
