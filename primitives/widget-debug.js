@@ -982,8 +982,12 @@ window.TOONTALK.widget = (function (TT) {
                 return 'matched';
             };
             widget.update_display = function () {
+                    console.log("top-level update_display started");
                 if (this.backside_widgets) {
+                    console.log("top-level update_display called with " + this.backside_widgets.length + " backside_widgets");
                     this.backside_widgets.forEach(function (widget_side) {
+                            console.log("top-level update_display foreach");
+                            console.log("top-level update_display foreach. visibile: " + widget_side.get_widget().visible());
                         if (widget_side.get_widget().visible()) {
                             widget_side.get_widget().update_display();
                         }    
