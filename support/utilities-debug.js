@@ -270,6 +270,8 @@ console.log("about to get backside of widget");
                     setTimeout(function () {
                             if (widget.update_display) {
                                 console.log("about to update_display in initialise");
+                                console.log("widget is " + widget.get_type_name());
+                                console.log("widget update_display is " + widget.update_display);
                                 widget.update_display();
                             } // otherwise might be a tool
                             if (json.semantic.running) {
