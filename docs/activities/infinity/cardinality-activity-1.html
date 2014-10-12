@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/sunny/jquery-ui.css" />
+<link rel="stylesheet" media="all" href="https://toontalk.github.io/ToonTalk/toontalk.css">
+<script src="https://toontalk.github.io/ToonTalk/compile/toontalk.js"></script>
+<title>Activity 1: Computing the Even Numbers in Two Ways</title>
+<link rel="shortcut icon" href="favicon.ico" />
+</head>
+<body>
+<h1><b>Activity 1: </b></h1>
+
+<h2><b>Computing the Even Numbers in Two Ways</b></h2>
+<table border="1" cellspacing="0" cellpadding="10" > 
+<tr>
+<td>
+<p style="text-align: center;font-size: 20pt;"><b><i>CHALLENGE</i></b></p>
+<p><b>Can the same thing be made using all the numbers once and also using every other number once?</b></p>
+</td>
+</tr>
+</table>
+<h2>Task A: Doubling each term in a sequence</h2>
+
+<p>Train a robot called Doubler that receives a number on a nest and gives a bird twice that number.
+Illustrated instructions for training this robot are the end of this handout.
+Test out your Doubler robot by dragging him to the back of this box:</p>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "bird",
+            "nest": {
+              "shared_widget_index": 0
+            }
+          },
+          "view": {
+            "frontside_width": 70,
+            "frontside_height": 102,
+            "frontside_left": 27,
+            "frontside_top": 21.8125
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "box",
+            "size": 2,
+            "contents": [
+              {
+                "shared_widget_index": 0
+              },
+              {
+                "semantic": {
+                  "type": "bird",
+                  "nest": {
+                    "shared_widget_index": 1
+                  }
+                },
+                "view": {
+                  "saved_width": 70,
+                  "saved_height": 102
+                },
+                "version": 1
+              }
+            ],
+            "horizontal": true
+          },
+          "view": {
+            "frontside_width": 164,
+            "frontside_height": 68,
+            "frontside_left": 124,
+            "frontside_top": 28,
+            "backside_geometry": {
+              "x_scale": 1,
+              "y_scale": 1,
+              "original_width": 171,
+              "original_height": 39
+            }
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "shared_widget_index": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "element",
+            "html": "Input",
+            "attributes": [],
+            "attribute_values": []
+          },
+          "view": {
+            "frontside_left": 40,
+            "frontside_top": 139.8125
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "element",
+            "html": "Output",
+            "attributes": [],
+            "attribute_values": []
+          },
+          "view": {
+            "frontside_left": 368,
+            "frontside_top": 134.8125
+          },
+          "version": 1
+        }
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgba(245, 240, 240, 0.941176)",
+    "frontside_width": 0,
+    "frontside_height": 0,
+    "backside_width": 785,
+    "backside_height": 381,
+    "backside_left": 8,
+    "backside_top": 185.1875,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1,
+      "original_width": 1200,
+      "original_height": 475
+    },
+    "drag_x_offset": 523,
+    "drag_y_offset": 221.8125,
+    "backside": true
+  },
+  "version": 1,
+  "shared_widgets": [
+    {
+      "semantic": {
+        "type": "nest",
+        "contents": [],
+        "guid": "toontalk_id_1413118519635",
+        "waiting_robots": []
+      },
+      "view": {
+        "saved_width": 116,
+        "saved_height": 141
+      },
+      "version": 1
+    },
+    {
+      "semantic": {
+        "type": "nest",
+        "contents": [],
+        "guid": "toontalk_id_1413118519638",
+        "waiting_robots": []
+      },
+      "view": {
+        "frontside_width": 116,
+        "frontside_height": 98,
+        "frontside_left": 339,
+        "frontside_top": 27
+      },
+      "version": 1
+    }
+  ]
+}</div>
+<p>Give the input bird a number and watch what appears on the output nest.
+Give the input bird a different number.
+If Doubler is working as it should then whatever number you give the input bird you should get twice that number on the output nest.</p>
+<table border="1" cellspacing="0" cellpadding="10" > 
+<tr>
+<td >
+<p><i>Clear off the Out nest of all the numbers. Give the input bird 1, and then 2, 3, 4, and 5. </i></p>
+
+<p><i>What numbers appear on the output nest?</i></p>
+</td>
+</tr>
+</table>
+<br>
+<textarea style="font-size: 14pt;" cols=68 rows=4>
+Enter your answer here.
+</textarea>
+<p>Let's give Doubler all the <i>natural numbers</i> (1, 2, 3, and so on forever).
+Since we can't type in all the natural numbers we'll need a robot to help us.
+We'll call him Add 1 since that is what he'll do over and over again.
+You'll find instructions for how to build Add 1 at the end of this handout.</p>
+
+<p>To test out Add 1 give it a box like this:</p>
+
+<p>and watch what numbers end up on the Nat Nums nest.</p>
+
+<br />
+<p>Try connecting Doubler to the sequence of <i>natural numbers</i> made by the Add 1 robot. You can do this by giving Doubler the box:</p>
+
+<p>Since the In hole is empty the robot won't do anything yet. Give the Add 1 robot this box:</p>
+
+<p>To get these robots to work together take out a nest with an egg in it. Give it a nice name. Drop the bird in the Numbers hole and the nest in the In hole.</p>
+
+<p>Did you notice that the first numbers coming out are even?</p>
+
+<p>Will there ever be an odd number? </p>
+
+<p>Explain</p>
+
+<p><b>Remember to save your robots in your notebook!</b></p>
+
+<b><br />
+</b> <b><br />
+</b> <h2>Task B: Removing every other term in a sequence</h2>
+
+<p>Train a robot called Split. As numbers arrive on the Input nest Split gives them alternatively to bird A and B. Instructions for training Split are at the end of this handout.</p>
+
+<p>Put the nest that receives the <i>natural numbers</i> produced by the Add 1 robot in the hole labeled Input and give the box toSplit. Give the Add 1 robot this box:</p>
+
+<p>What kind of numbers end up in A's nest?</p>
+
+<p>What kind of numbers end up in B's nest?</p>
+
+<p><b>Remember to save your robots in your notebook</b></p>
+
+<b><br />
+</b> <h2>>Task C: Thinking about the two ways of making all the even numbers</h2>
+
+<p>Copy the nest that will receive all the <i>natural numbers </i>produced by the Add 1 robot. Start up the Add 1 robot and you should see each copy of the nest receiving 1, 2, 3 and so on.</p>
+
+<p>Start again and give one copy to your Doublerrobot and the other to the Split robot. Now start up the Add 1 robot again with the box:</p>
+
+<p>If all the robots ran forever would there be a difference between the numbers that are on B's nest and the output nest of Doubler?</p>
+
+<p>If there is a difference, what is it? </p>
+
+<p>If there is no difference, how can they be the same sequence if Doubler uses every <i>natural number</i> and Split puts only half of the numbers on B's nest?
+</p>
+
+<b><br />
+</b> <b><br />
+</b> <h2>Task D: Even numbers dancing with <i>natural numbers</i></h2>
+
+<p>If you saw a room full of boys and girls and everyone was dancing with a partner of the opposite sex, could you figure out if there was the same number of boys as girls? Without counting!</p>
+
+<p>How would you convince someone you are right?
+</p>
+
+<p>Imagine that you are running the Doubler robot and that after the Add 1 robots gives a bird a number it is copied and begins dancing with the output number of the Doubler robot. So 1 dances with 2, 2 with 4, 3 with 6, and so on.</p>
+
+<p>If this continued forever would every even number be dancing with a <i>natural number</i>?</p>
+
+<p>Would every <i>natural number</i> be dancing with an even number?</p>
+
+<p>What does this tell you about how many even numbers there are?</p>
+
+<br />
+<p>You may be confused at this point. Infinity confused some of the world's best mathematicians. Galileo Galilei wrote in 1638 about how one line of reasoning leads you to think the sequences have the same number of numbers while another line of reasoning leads you to think there are fewer even numbers.</p>
+
+<p>What do you think?</p>
+
+<p>If you think they all pair up then how do you explain that the sequence of <i>natural numbers</i> contains all the even and all the odd numbers?</p>
+
+<p>If you don't think they pair up, what is different from the room of boys and girls?
+</p>
+
+<h2><b>Activity 1, Task A: How to Train the Doubler Robot</b></h2>
+<table>
+<tr>
+<td>
+<img src='images/doubler-1.png' title="Open the box's backside and drop a robot on the back.">
+</td>
+<tr>
+<tr>
+<td>
+<img src='images/doubler-2.png' title="Pick up the Magic Wand and release it after pointing to the 3.">
+</td>
+<tr>
+<tr>
+<td>
+<img src='images/doubler-3.png' title="Pick up the copied 3 and drop it on the 3 in the box.">
+</td>
+<tr>
+<tr>
+<td>
+<img src='images/doubler-4.png' title="Pick up the 6 and drop it on the bird.">
+</td>
+<tr>
+<tr>
+<td>
+<img src='images/doubler-5.png' title="Click on 'Stop training' and pick up the vacuum.">
+</td>
+<tr>
+<tr>
+<td>
+<img src='images/doubler-6.png' title="Type 'e' so the vacuum erases and release it while pointing to the 3.">
+</td>
+<tr>
+</table>
+<p>
+You can train the Doubler robot here:
+</p>
+<table class='toontalk-resource-table'>
+<tr>
+<td>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "number",
+    "operator": "+",
+    "numerator": "1",
+    "denominator": "1",
+    "format": "improper_fraction"
+  },
+  "view": {
+    "frontside_width": 76,
+    "frontside_height": 55,
+    "frontside_left": 57,
+    "frontside_top": 82,
+    "drag_x_offset": 19,
+    "drag_y_offset": 46
+  },
+  "version": 1
+}</div>
+</td>
+<td>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "box",
+    "size": 2,
+    "contents": [
+      null,
+      null
+    ],
+    "horizontal": true
+  },
+  "view": {
+    "frontside_width": 164,
+    "frontside_height": 68,
+    "frontside_left": 268,
+    "frontside_top": 53,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1,
+      "original_width": 171,
+      "original_height": 39
+    },
+    "drag_x_offset": 68,
+    "drag_y_offset": 66
+  },
+  "version": 1
+}</div>
+</td>
+<td>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "nest",
+    "contents": []
+  },
+  "view": {
+    "frontside_width": 116,
+    "frontside_height": 141
+  },
+  "version": 1
+}</div>
+</td>
+<td>
+<div class='toontalk-json'>{"semantic":{"type":"robot","body":{"type":"body","steps":[],"run_once":false}},
+                            "view": {"drag_x_offset":31,"drag_y_offset":48}}
+</div>
+</td>
+<td>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "wand"
+  },
+  "view": {
+    "frontside_width": 191,
+    "frontside_height": 31,
+    "frontside_left": 6,
+    "frontside_top": 6
+  },
+  "version": 1
+}</div>
+</td>
+<td>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "vacuum"
+  },
+  "view": {
+    "frontside_width": 123,
+    "frontside_height": 45,
+    "frontside_left": 6,
+    "frontside_top": 6
+  },
+  "version": 1
+}</div>
+</td>
+</tr>
+</table>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "top_level"
+  },
+  "view": {
+    "background_color": "rgba(245, 240, 240, 0.941176)",
+    "frontside_width": 0,
+    "frontside_height": 0,
+    "backside_width": 755,
+    "backside_height": 325,
+    "backside_left": 8,
+    "backside_top": 185.1875,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1,
+      "original_width": 1200,
+      "original_height": 475
+    },
+    "drag_x_offset": 506,
+    "drag_y_offset": 164.8125,
+    "backside": true
+  },
+  "version": 1
+}</div>
+<h2><b>Activity 1, Task A: How to Train the Add 1 Robot</b></h2>
+<table>
+<tr>
+<td>
+<img src='images/add-one-1.png' title="Put a zero and a bird in a box. Open the box's backside and drop a robot on the back.">
+</td>
+<tr>
+<tr>
+<td>
+<img src='images/add-one-2.png' title="Pick up a one and drop it on the zero.">
+</td>
+<tr>
+<tr>
+<td>
+<img src='images/add-one-3.png' title="Pick up the Magic Wand and copy the 1 in the box.">
+</td>
+<tr>
+<tr>
+<td>
+<img src='images/add-one-4.png' title="Pick up the copied 1 and drop it on the bird.">
+</td>
+<tr>
+<tr>
+<td>
+<img src='images/add-one-5.png' title="Click on 'Stop training' and pick up the vacuum.">
+</td>
+<tr>
+<tr>
+<td>
+<img src='images/add-one-6.png' title="Type 'e' so the vacuum erases and release it while pointing to the 0.">
+</td>
+<tr>
+</table>
+<p>
+You can train the Add 1 robot here:
+</p>
+<table class='toontalk-resource-table'>
+<tr>
+<td>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "number",
+    "operator": "+",
+    "numerator": "1",
+    "denominator": "1",
+    "format": "improper_fraction"
+  },
+  "view": {
+    "frontside_width": 76,
+    "frontside_height": 55,
+    "frontside_left": 57,
+    "frontside_top": 82,
+    "drag_x_offset": 19,
+    "drag_y_offset": 46
+  },
+  "version": 1
+}</div>
+</td>
+<td>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "box",
+    "size": 2,
+    "contents": [
+      null,
+      null
+    ],
+    "horizontal": true
+  },
+  "view": {
+    "frontside_width": 164,
+    "frontside_height": 68,
+    "frontside_left": 268,
+    "frontside_top": 53,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1,
+      "original_width": 171,
+      "original_height": 39
+    },
+    "drag_x_offset": 68,
+    "drag_y_offset": 66
+  },
+  "version": 1
+}</div>
+</td>
+<td>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "nest",
+    "contents": []
+  },
+  "view": {
+    "frontside_width": 116,
+    "frontside_height": 141
+  },
+  "version": 1
+}</div>
+</td>
+<td>
+<div class='toontalk-json'>{"semantic":{"type":"robot","body":{"type":"body","steps":[],"run_once":false}},
+                            "view": {"drag_x_offset":31,"drag_y_offset":48}}
+</div>
+</td>
+<td>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "wand"
+  },
+  "view": {
+    "frontside_width": 191,
+    "frontside_height": 31,
+    "frontside_left": 6,
+    "frontside_top": 6
+  },
+  "version": 1
+}</div>
+</td>
+<td>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "vacuum"
+  },
+  "view": {
+    "frontside_width": 123,
+    "frontside_height": 45,
+    "frontside_left": 6,
+    "frontside_top": 6
+  },
+  "version": 1
+}</div>
+</td>
+</tr>
+</table>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "top_level"
+  },
+  "view": {
+    "background_color": "rgba(245, 240, 240, 0.941176)",
+    "frontside_width": 0,
+    "frontside_height": 0,
+    "backside_width": 755,
+    "backside_height": 325,
+    "backside_left": 8,
+    "backside_top": 185.1875,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1,
+      "original_width": 1200,
+      "original_height": 475
+    },
+    "drag_x_offset": 506,
+    "drag_y_offset": 164.8125,
+    "backside": true
+  },
+  "version": 1
+}</div>
+<h2><b>Activity 1, Task B: How to Train the Split Robot</b></h2>
+
+</body>
+</html>
