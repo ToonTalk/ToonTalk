@@ -96,6 +96,10 @@ window.TOONTALK.robot = (function (TT) {
             return thing_in_hand;
         };
         new_robot.set_thing_in_hand = function (new_value) {
+            if (TT.debugging && new_value && new_value.get_type_name() === 'empty hole') {
+                TT.UTILITIES.report_internal_error("Robot trying to pick up an empty hole.");
+                return;
+            }
             thing_in_hand = new_value;
         };
         new_robot.get_next_robot = function () {
@@ -390,9 +394,11 @@ window.TOONTALK.robot = (function (TT) {
     
     robot.remove_from_container = function (part, container) {
         // this is used when running a robot -- not training
-        var do_removal = function () {
+        // need to compute index now since parent may have changed by the time this runs
+        var index = container.get_index_of && container.get_index_of(part);
+        var do_removal = function () { 
                 if (part.get_parent_of_frontside()) {
-                    container.removed_from_container(part, false, true);
+                    container.removed_from_container(part, false, true, index);
                 }
                 // otherwise do nothing since part may have already been removed from a nest in another container
         }

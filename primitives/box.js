@@ -336,6 +336,7 @@ window.TOONTALK.box = (function (TT) {
                 }
                 hole_element.toontalk_border_size = border_size;
             }
+            hole.render();
         };
         var horizontal = this.get_horizontal();
         var first_time = !$(frontside_element).is(".toontalk-box");
@@ -466,11 +467,12 @@ window.TOONTALK.box = (function (TT) {
         return part.get_parent_of_frontside().get_index();
     };
     
-    box.removed_from_container = function (part, backside_removed, event) {
+    box.removed_from_container = function (part, backside_removed, event, index) {
         var update_display = !!event;
-        var index = this.get_index_of(part);
-        var hole;
-        var part_frontside_element;
+        var hole, part_frontside_element;
+        if (typeof index === 'undefined') {
+            index = this.get_index_of(part);
+        }
         if (index >= 0) {
             this.set_hole(index, undefined, update_display);
             if (update_display) {
