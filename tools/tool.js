@@ -28,10 +28,11 @@ window.TOONTALK.tool = (function (TT) {
 
             var mouse_move = function (event) {
                 var widget_under_tool = find_widget_under_tool(event);
-                var new_highlighted_element;
+                var new_highlighted_element, scroll_adjustment;
                 event.preventDefault();
-                element.style.left = (event.pageX - drag_x_offset) + "px";
-                element.style.top  = (event.pageY - drag_y_offset) + "px";
+                scroll_adjustment = scroll_if_needed(event);
+                element.style.left = (event.pageX-scroll_adjustment.deltaX-drag_x_offset) + "px";
+                element.style.top  = (event.pageY-scroll_adjustment.deltaY-drag_y_offset) + "px";
                 if (widget_under_tool && widget_under_tool.is_of_type('top-level')) {
                     if (highlighted_element) { // remove old highlighting
                         TT.UTILITIES.remove_highlight();
@@ -78,6 +79,25 @@ window.TOONTALK.tool = (function (TT) {
                     1);
                 document.removeEventListener('mousemove',    mouse_move);
                 document.removeEventListener('mouseup',      mouse_up);
+            };
+
+            var scroll_if_needed = function (event) {
+                var margin = 20;
+                var deltaX = 0, 
+                    deltaY = 0;
+                if (event.clientX < margin) {
+                    deltaX = -margin;
+                } else if (event.clientX+margin > window.innerWidth) {
+                    deltaX = margin;
+                }
+                if (event.clientY < margin) {
+                    deltaY = -margin;
+                } else if (event.clientY+margin > window.innerHeight) {
+                    deltaY = margin;
+                }
+                window.scrollBy(deltaX, deltaY);
+                return {deltaX: deltaX,
+                        deltaY: deltaY};
             };
 
             var find_widget_under_tool = function (event) {
