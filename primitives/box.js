@@ -336,6 +336,7 @@ window.TOONTALK.box = (function (TT) {
                 }
                 hole_element.toontalk_border_size = border_size;
             }
+            hole.render();
         };
         var horizontal = this.get_horizontal();
         var first_time = !$(frontside_element).is(".toontalk-box");
