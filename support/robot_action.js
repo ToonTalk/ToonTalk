@@ -24,7 +24,7 @@ window.TOONTALK.robot_action =
              robot.set_thing_in_hand(widget_copy);
              return true;
          },
-         "drop it on": function (target, context, top_level_context, robot) {
+         "drop it on": function (target, context, top_level_context, robot, additional_info) {
              var thing_in_hand, thing_in_hand_frontside_element, thing_in_hand_position;
              if (target) {
                  thing_in_hand = robot.get_thing_in_hand();
@@ -38,7 +38,9 @@ window.TOONTALK.robot_action =
                          robot.set_thing_in_hand(undefined);
                          if (thing_in_hand.caused_robot_to_wait_before_next_step) {
                             // NOTE thing_in_hand needs to call robot.run_next_step();
-                            thing_in_hand.caused_robot_to_wait_before_next_step = undefined;
+                            if (!additional_info || !additional_info.running_watched) {
+                                thing_in_hand.caused_robot_to_wait_before_next_step = undefined;
+                            }
                             return false;
                          }
                          return true;
@@ -128,6 +130,10 @@ window.TOONTALK.robot_action =
             continuation();
             robot.run_next_step();
         };
+        if (widget.get_type_name() === 'empty hole') {
+            TT.UTILITIES.report_internal_error("Robot trying to pick up an empty hole.");
+            return;
+        }
         widget.save_dimensions();
         $(frontside_element).css({width:  frontside_element.offsetWidth  + "px",
                                   height: frontside_element.offsetHeight + "px"});
@@ -312,6 +318,10 @@ window.TOONTALK.robot_action =
             new_action.run_watched = function (context, top_level_context, robot) {
                 var referenced = TT.path.dereference_path(path, context, top_level_context, robot); 
                 var continuation = function () {
+                    if (!additional_info) {
+                        additional_info = {};
+                    }
+                    additional_info.running_watched = true;
                     // do the action unwatched
                     unwatched_run_function(referenced, context, top_level_context, robot, additional_info);
                 }
