@@ -630,7 +630,8 @@ window.TOONTALK.nest = (function (TT) {
                 frontside_element = this.get_frontside_element(true);
                 TT.UTILITIES.add_animation_class(frontside_element, "toontalk-hatch-egg");
                 hatching_finished_handler = function () {
-                    var backside_where_bird_goes, resting_left, resting_top, top_level_widget;
+                    var backside_where_bird_goes, top_level_backside_element, top_level_backside_position, 
+                        resting_left, resting_top, top_level_widget;
                     if (other_is_backside) {
                         backside_where_bird_goes = other.get_backside();
                     } else {
@@ -645,10 +646,12 @@ window.TOONTALK.nest = (function (TT) {
                             return;
                         }
                     }
+                    top_level_backside_element = backside_where_bird_goes.get_element();
+                    top_level_backside_position = $(top_level_backside_element).offset();
                     bird_frontside_element = bird.get_frontside_element(true);
                     $(bird_frontside_element).removeClass("toontalk-bird-static");
                     TT.UTILITIES.add_animation_class(bird_frontside_element, "toontalk-fly-southwest");
-                    nest_position = TT.UTILITIES.relative_position(frontside_element, backside_where_bird_goes.get_element());
+                    nest_position = TT.UTILITIES.relative_position(frontside_element, top_level_backside_element);
                     $(bird_frontside_element).css({left: nest_position.left,
                                                    top:  nest_position.top});
                     if (TT.robot.in_training) {
@@ -691,11 +694,11 @@ window.TOONTALK.nest = (function (TT) {
                             1);
                     }.bind(this);
                     $(bird_frontside_element).removeClass("toontalk-bird-static");
-                    resting_left = Math.max(10, nest_position.left-100);
-                    // because of the animation the top of the nest is higer than it appears so add more to top target
-                    resting_top = Math.max(10, nest_position.top+300);
-                    bird.animate_to_absolute_position({left: resting_left,
-                                                       top:  resting_top},
+                    resting_left = Math.max(10, nest_position.left-70);
+                    // because of the animation the top of the nest is higher than it appears so add more to top target
+                    resting_top = Math.max(10, nest_position.top+70);
+                    bird.animate_to_absolute_position({left: resting_left+top_level_backside_position.left,
+                                                       top:  resting_top +top_level_backside_position.top},
                                                       bird_fly_continuation);
                     this.rerender();
                 }.bind(this);
