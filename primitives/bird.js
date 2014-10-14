@@ -669,6 +669,12 @@ window.TOONTALK.nest = (function (TT) {
                                         // height while bird was hatching
                                         .css({width:  '',
                                               height: ''});
+                    if (this.get_parent_of_frontside().get_widget().get_type_name() === 'top-level') {
+                        // due to switch from animation of bird hatching in nest to static nest
+                        // position needs adjusting
+                        $(frontside_element).css({left: nest_position.left-5,
+                                                  top:  nest_position.top+45});
+                    }
                     bird_fly_continuation = function () {
                         $(bird_frontside_element).removeClass("toontalk-fly-southwest");
                         setTimeout(function () {
