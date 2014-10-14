@@ -36,7 +36,7 @@
 <body>
 <h1><b>Activity 1: </b></h1>
 
-<h2><b>Computing the Even Numbers in Two Ways</b></h2>
+<h2>Computing the Even Numbers in Two Ways</h2>
 <table border="1" cellspacing="0" cellpadding="10" > 
 <tr>
 <td>
@@ -46,10 +46,10 @@
 </tr>
 </table>
 <h2>Task A: Doubling each term in a sequence</h2>
-
 <p>Train a robot called Doubler that receives a number on a nest and gives a bird twice that number.
-Illustrated instructions for training this robot are the end of this handout.
-Test out your Doubler robot by dragging him to the back of this box:</p>
+See the <a href="#doubler-instructions">illustrated instructions for training this robot</a>.
+Test out your Doubler robot by dragging him to the back of the box below and then clicking either green flag:</p>
+<br>
 <div class='toontalk-json'>{
   "semantic": {
     "type": "top_level",
@@ -65,8 +65,8 @@ Test out your Doubler robot by dragging him to the back of this box:</p>
           "view": {
             "frontside_width": 70,
             "frontside_height": 102,
-            "frontside_left": 27,
-            "frontside_top": 21.8125
+            "frontside_left": 33,
+            "frontside_top": 27.8125
           },
           "version": 1
         }
@@ -74,38 +74,133 @@ Test out your Doubler robot by dragging him to the back of this box:</p>
       {
         "widget": {
           "semantic": {
-            "type": "box",
-            "size": 2,
-            "contents": [
-              {
-                "shared_widget_index": 0
-              },
-              {
-                "semantic": {
-                  "type": "bird",
-                  "nest": {
-                    "shared_widget_index": 1
-                  }
-                },
-                "view": {
-                  "saved_width": 70,
-                  "saved_height": 102
-                },
-                "version": 1
-              }
-            ],
-            "horizontal": true
+            "type": "element",
+            "html": "Input",
+            "attributes": [],
+            "attribute_values": []
           },
           "view": {
-            "frontside_width": 164,
-            "frontside_height": 68,
-            "frontside_left": 124,
-            "frontside_top": 28,
+            "frontside_left": 46,
+            "frontside_top": 145.8125
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "shared_widget_index": 2
+        },
+        "is_backside": true
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "number",
+            "operator": "+",
+            "numerator": "1",
+            "denominator": "1",
+            "format": "improper_fraction"
+          },
+          "view": {
+            "frontside_width": 76,
+            "frontside_height": 55,
+            "frontside_left": 23,
+            "frontside_top": 272
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "number",
+            "operator": "+",
+            "numerator": "2",
+            "denominator": "1",
+            "format": "improper_fraction"
+          },
+          "view": {
+            "frontside_width": 76,
+            "frontside_height": 55,
+            "frontside_left": 128,
+            "frontside_top": 275,
             "backside_geometry": {
               "x_scale": 1,
               "y_scale": 1,
-              "original_width": 171,
-              "original_height": 39
+              "original_width": 550,
+              "original_height": 200
+            }
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "number",
+            "operator": "+",
+            "numerator": "3",
+            "denominator": "1",
+            "format": "improper_fraction"
+          },
+          "view": {
+            "frontside_width": 76,
+            "frontside_height": 55,
+            "frontside_left": 235,
+            "frontside_top": 277,
+            "backside_geometry": {
+              "x_scale": 1,
+              "y_scale": 1,
+              "original_width": 550,
+              "original_height": 200
+            }
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "number",
+            "operator": "+",
+            "numerator": "4",
+            "denominator": "1",
+            "format": "improper_fraction"
+          },
+          "view": {
+            "frontside_width": 76,
+            "frontside_height": 55,
+            "frontside_left": 343,
+            "frontside_top": 279,
+            "backside_geometry": {
+              "x_scale": 1,
+              "y_scale": 1,
+              "original_width": 550,
+              "original_height": 200
+            }
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "number",
+            "operator": "+",
+            "numerator": "5",
+            "denominator": "1",
+            "format": "improper_fraction"
+          },
+          "view": {
+            "frontside_width": 76,
+            "frontside_height": 55,
+            "frontside_left": 448,
+            "frontside_top": 278,
+            "backside_geometry": {
+              "x_scale": 1,
+              "y_scale": 1,
+              "original_width": 550,
+              "original_height": 200
             }
           },
           "version": 1
@@ -120,30 +215,20 @@ Test out your Doubler robot by dragging him to the back of this box:</p>
         "widget": {
           "semantic": {
             "type": "element",
-            "html": "Input",
+            "html": "Output",
             "attributes": [],
             "attribute_values": []
           },
           "view": {
-            "frontside_left": 40,
-            "frontside_top": 139.8125
+            "frontside_left": 157,
+            "frontside_top": 144.8125
           },
           "version": 1
         }
       },
       {
         "widget": {
-          "semantic": {
-            "type": "element",
-            "html": "Output",
-            "attributes": [],
-            "attribute_values": []
-          },
-          "view": {
-            "frontside_left": 368,
-            "frontside_top": 134.8125
-          },
-          "version": 1
+          "shared_widget_index": 2
         }
       }
     ]
@@ -152,18 +237,18 @@ Test out your Doubler robot by dragging him to the back of this box:</p>
     "background_color": "rgba(245, 240, 240, 0.941176)",
     "frontside_width": 0,
     "frontside_height": 0,
-    "backside_width": 785,
-    "backside_height": 381,
+    "backside_width": 870,
+    "backside_height": 347,
     "backside_left": 8,
     "backside_top": 185.1875,
     "backside_geometry": {
       "x_scale": 1,
       "y_scale": 1,
-      "original_width": 1200,
-      "original_height": 475
+      "original_width": 886,
+      "original_height": 347
     },
-    "drag_x_offset": 523,
-    "drag_y_offset": 221.8125,
+    "drag_x_offset": 697,
+    "drag_y_offset": 326.8125,
     "backside": true
   },
   "version": 1,
@@ -176,6 +261,12 @@ Test out your Doubler robot by dragging him to the back of this box:</p>
         "waiting_robots": []
       },
       "view": {
+        "backside_geometry": {
+          "x_scale": 0.5567375886524821,
+          "y_scale": 1,
+          "original_width": 564,
+          "original_height": 200
+        },
         "saved_width": 116,
         "saved_height": 141
       },
@@ -185,62 +276,154 @@ Test out your Doubler robot by dragging him to the back of this box:</p>
       "semantic": {
         "type": "nest",
         "contents": [],
-        "guid": "toontalk_id_1413118519638",
+        "guid": "toontalk_id_1413285158417",
         "waiting_robots": []
       },
       "view": {
         "frontside_width": 116,
         "frontside_height": 98,
-        "frontside_left": 339,
-        "frontside_top": 27
+        "frontside_left": 132,
+        "frontside_top": 38
+      },
+      "version": 1
+    },
+    {
+      "semantic": {
+        "type": "box",
+        "size": 2,
+        "contents": [
+          {
+            "shared_widget_index": 0
+          },
+          {
+            "semantic": {
+              "type": "bird",
+              "nest": {
+                "shared_widget_index": 1
+              }
+            },
+            "view": {
+              "saved_width": 103,
+              "saved_height": 117
+            },
+            "version": 1
+          }
+        ],
+        "horizontal": true,
+        "backside_widgets": [
+          {
+            "widget": {
+              "semantic": {
+                "type": "element",
+                "html": "drop%20your%20robot%20here",
+                "attributes": [
+                  "width"
+                ],
+                "attribute_values": [
+                  "240"
+                ]
+              },
+              "view": {
+                "frontside_left": 124.56182861328125,
+                "frontside_top": 78.23202514648438,
+                "backside_geometry": {
+                  "x_scale": 1,
+                  "y_scale": 1,
+                  "original_width": 550,
+                  "original_height": 200
+                }
+              },
+              "version": 1
+            }
+          }
+        ]
+      },
+      "view": {
+        "frontside_width": 164,
+        "frontside_height": 68,
+        "frontside_left": 281,
+        "frontside_top": 41,
+        "backside_width": 550,
+        "backside_height": 253,
+        "backside_left": 513,
+        "backside_top": 32,
+        "backside_geometry": {
+          "x_scale": 0.6094776859504129,
+          "y_scale": 3.95455189254707,
+          "original_width": 171,
+          "original_height": 39
+        }
       },
       "version": 1
     }
   ]
 }</div>
-<p>Give the input bird a number and watch what appears on the output nest.
-Give the input bird a different number.
-If Doubler is working as it should then whatever number you give the input bird you should get twice that number on the output nest.</p>
 <table border="1" cellspacing="0" cellpadding="10" > 
 <tr>
 <td >
-<p><i>Clear off the Out nest of all the numbers. Give the input bird 1, and then 2, 3, 4, and 5. </i></p>
-
-<p><i>What numbers appear on the output nest?</i></p>
+<p><i>Give the input bird 1, and then 2, 3, 4, and 5. What numbers appear on the output nest?</i></p>
 </td>
 </tr>
 </table>
 <br>
-<textarea style="font-size: 14pt;" cols=68 rows=4>
+<textarea  cols="68" rows="4" style="font-size: 14pt;">
 Enter your answer here.
 </textarea>
+<p>
+If Doubler is working as it should then whatever number you give the input bird you should get twice that number on the output nest.
+</p>
 <p>Let's give Doubler all the <i>natural numbers</i> (1, 2, 3, and so on forever).
 Since we can't type in all the natural numbers we'll need a robot to help us.
 We'll call him Add 1 since that is what he'll do over and over again.
-You'll find instructions for how to build Add 1 at the end of this handout.</p>
-
-<p>To test out Add 1 give it a box like this:</p>
-
-<p>and watch what numbers end up on the Nat Nums nest.</p>
-
-<br />
-<p>Try connecting Doubler to the sequence of <i>natural numbers</i> made by the Add 1 robot. You can do this by giving Doubler the box:</p>
-
-<p>Since the In hole is empty the robot won't do anything yet. Give the Add 1 robot this box:</p>
-
-<p>To get these robots to work together take out a nest with an egg in it. Give it a nice name. Drop the bird in the Numbers hole and the nest in the In hole.</p>
-
+Visit the <a href="#add-1-instructions">instructions for how to build Add 1</a>.</p>
+<p>To test out Add 1 first drag <a href="#add-1-workarea">the entire workspace</a> you created here and click the green flag:
+</p>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "top_level"
+  },
+  "view": {
+    "background_color": "rgba(245, 240, 240, 0.941176)",
+    "frontside_width": 0,
+    "frontside_height": 0,
+    "backside_width": 867,
+    "backside_height": 332,
+    "backside_left": 8,
+    "backside_top": 185.1875,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1,
+      "original_width": 1200,
+      "original_height": 475
+    },
+    "drag_x_offset": 522,
+    "drag_y_offset": 224.8125,
+    "backside": true
+  },
+  "version": 1
+}</div>
+<p>and watch what numbers end up on the nest.</p>
+<p>
+Try connecting Doubler to the sequence of <i>natural numbers</i> made by the Add 1 robot.
+You can do this by draging the box with the Doubler robot on the back to the work area above.
+Also drag Add 1's output nest there.
+Remove the nest from the Doubler box and put Add 1's output nest there instead.
+Click the green flag and watch.
+</p>
+<table border="1" cellspacing="0" cellpadding="10" > 
+<tr>
+<td>
 <p>Did you notice that the first numbers coming out are even?</p>
-
 <p>Will there ever be an odd number? </p>
+</td>
+</tr>
+</table>
+<br>
+<textarea  cols="68" rows="4" style="font-size: 14pt;">
+Explain here.
+</textarea>
 
-<p>Explain</p>
-
-<p><b>Remember to save your robots in your notebook!</b></p>
-
-<b><br />
-</b> <b><br />
-</b> <h2>Task B: Removing every other term in a sequence</h2>
+<h2>Task B: Removing every other term in a sequence</h2>
 
 <p>Train a robot called Split. As numbers arrive on the Input nest Split gives them alternatively to bird A and B. Instructions for training Split are at the end of this handout.</p>
 
@@ -253,11 +436,11 @@ You'll find instructions for how to build Add 1 at the end of this handout.</p>
 <p><b>Remember to save your robots in your notebook</b></p>
 
 <b><br />
-</b> <h2>>Task C: Thinking about the two ways of making all the even numbers</h2>
+</b> <h2>Task C: Thinking about the two ways of making all the even numbers</h2>
 
-<p>Copy the nest that will receive all the <i>natural numbers </i>produced by the Add 1 robot. Start up the Add 1 robot and you should see each copy of the nest receiving 1, 2, 3 and so on.</p>
+<p>Copy the nest that will receive all the <i>natural numbers</i> produced by the Add 1 robot. Start up the Add 1 robot and you should see each copy of the nest receiving 1, 2, 3 and so on.</p>
 
-<p>Start again and give one copy to your Doublerrobot and the other to the Split robot. Now start up the Add 1 robot again with the box:</p>
+<p>Start again and give one copy to your Doubler robot and the other to the Split robot. Now start up the Add 1 robot again with the box:</p>
 
 <p>If all the robots ran forever would there be a difference between the numbers that are on B's nest and the output nest of Doubler?</p>
 
@@ -293,7 +476,7 @@ You'll find instructions for how to build Add 1 at the end of this handout.</p>
 <p>If you don't think they pair up, what is different from the room of boys and girls?
 </p>
 
-<h2><b>Activity 1, Task A: How to Train the Doubler Robot</b></h2>
+<h2 id="doubler-instructions"><b>Activity 1, Task A: How to Train the Doubler Robot</b></h2>
 <table  border="1" cellspacing="0" cellpadding="4">
 <tr>
 <td>
@@ -445,7 +628,7 @@ You can train the Doubler robot here:
   },
   "version": 1
 }</div>
-<h2><b>Activity 1, Task A: How to Train the Add 1 Robot</b></h2>
+<h2 id="add-1-instructions">Activity 1, Task A: How to Train the Add 1 Robot</h2>
 <table border="1" cellspacing="0" cellpadding="4">
 <tr>
 <td>
@@ -478,7 +661,7 @@ You can train the Doubler robot here:
 </td>
 </tr>
 </table>
-<p>
+<p id="add-1-workarea">
 You can train the Add 1 robot here:
 </p>
 <table class='toontalk-resource-table'>
@@ -603,7 +786,7 @@ You can train the Add 1 robot here:
   },
   "version": 1
 }</div>
-<h2><b>Activity 1, Task B: How to Train the Split Robot</b></h2>
+<h2>Activity 1, Task B: How to Train the Split Robot</h2>
 
 </body>
 </html>
