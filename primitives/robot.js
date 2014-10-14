@@ -96,10 +96,11 @@ window.TOONTALK.robot = (function (TT) {
             return thing_in_hand;
         };
         new_robot.set_thing_in_hand = function (new_value) {
-            thing_in_hand = new_value;
-            if (TT.debugging && thing_in_hand && thing_in_hand.get_type_name() === 'empty hole') {
+            if (TT.debugging && new_value && new_value.get_type_name() === 'empty hole') {
                 TT.UTILITIES.report_internal_error("Robot trying to pick up an empty hole.");
+                return;
             }
+            thing_in_hand = new_value;
         };
         new_robot.get_next_robot = function () {
             return next_robot;

@@ -36,6 +36,11 @@ window.TOONTALK.robot_action =
                          // update this when robots can drop backsides as well
                          thing_in_hand.drop_on(target, false, undefined, robot);
                          robot.set_thing_in_hand(undefined);
+                         if (thing_in_hand.caused_robot_to_wait_before_next_step) {
+                            // NOTE thing_in_hand needs to call robot.run_next_step();
+                            thing_in_hand.caused_robot_to_wait_before_next_step = undefined;
+                            return false;
+                         }
                          return true;
                      }
                      TT.UTILITIES.report_internal_error("Thing in robot's hand (" + thing_in_hand + ") doesn't handle 'drop_on'. Robot that " + robot);
