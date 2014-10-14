@@ -413,6 +413,10 @@ window.TOONTALK.nest = (function (TT) {
     var contents_height = function (height) {
         return height * 0.8;
     };
+
+    // Nests are uniquely identified by their guid
+    // the following should really be a weak table so to not interfere with garbage collection of nests
+    var guid_to_nest_table = {};
     
     nest.create = function (description, contents, waiting_robots, guid, original_nest) { // removed image_url
         var new_nest = Object.create(nest);
@@ -915,11 +919,16 @@ window.TOONTALK.nest = (function (TT) {
     
     TT.creators_from_json["nest"] = function (json, additional_info) {
         var waiting_robots; // TODO:
-        return TT.nest.create(json.description, 
-                              TT.UTILITIES.create_array_from_json(json.contents, additional_info), 
-                              waiting_robots, 
-                              json.guid,
-                              json.original_nest && TT.UTILITIES.create_from_json(json.original_nest, additional_info));
+        var nest = guid_to_nest_table[json.guid];
+        if (!nest) {
+            nest = TT.nest.create(json.description, 
+                                  TT.UTILITIES.create_array_from_json(json.contents, additional_info), 
+                                  waiting_robots, 
+                                  json.guid,
+                                  json.original_nest && TT.UTILITIES.create_from_json(json.original_nest, additional_info));
+            guid_to_nest_table[json.guid] = nest;                 
+        }
+        return nest;
     };
     
     return nest;
