@@ -647,8 +647,10 @@ window.TOONTALK.backside =
 //         },
 
         create_advanced_settings_button: function (backside, widget) {
-            var $settings_button = $("<div>></div>");
+            var buuton = document.createElement('div');
+            var $settings_button = $(buuton);
             var settings_showing = false;
+            buuton.innerHTML = '&gt;';
             $settings_button.addClass("toontalk-settings-backside-button");
             $settings_button.css({"z-index": TT.UTILITIES.next_z_index()});
             $settings_button.click(function (event) {

@@ -789,12 +789,12 @@ window.TOONTALK.widget = (function (TT) {
             if (!frontside) {
                 return false;
             }
-            ancestor = frontside.get_element().parentElement;
+            ancestor = frontside.get_element().parentNode;
             while (ancestor) {
                 if (ancestor.tagName === 'BODY') {
                     return true;
                 }
-                ancestor = ancestor.parentElement;
+                ancestor = ancestor.parentNode;
             }
             return false;
             // following reported false when size is 0 even though it might be code that is about to change that (if visible)
@@ -1030,8 +1030,11 @@ window.TOONTALK.widget = (function (TT) {
         },
 
         backup_all: function (immediately) {
-            var top_level_widget = this.top_level_widget();
-            var backup_function;
+            var top_level_widget, backup_function;
+            if (TT.no_local_storage) {
+                return;
+            }
+            top_level_widget = this.top_level_widget();
             if (top_level_widget && top_level_widget.local_storage_key) {
                 backup_function = function () {
                     var json = TT.UTILITIES.get_json_top_level(top_level_widget);

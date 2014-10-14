@@ -9,29 +9,32 @@
 window.TOONTALK.wand = (function (TT) {
     "use strict";
 
-    var element;
+    var wand = Object.create(null);
 
-    var instance = {
-        apply_tool: function (widget) {
-                        if (widget.get_type_name() !== 'top-level') {
-                            widget.add_copy_to_container();
+    wand.create = function () {
+        var element;
+        return  {
+            apply_tool: function (widget) {
+                            if (widget.get_type_name() !== 'top-level') {
+                                widget.add_copy_to_container();
+                            }
+                        },
+            get_element: function () {
+                            if (!element) {
+                                element = document.createElement("div");
+                                $(element).addClass("toontalk-wand");
+                                element.title = "Drag this magic wand over the thing you want to copy.";
+                                TT.tool.add_listeners(element, this);
+                            }
+                            return element;
                         }
-                    },
-        get_element: function () {
-            if (!element) {
-                element = document.createElement("div");
-                $(element).addClass("toontalk-wand");
-                element.title = "Drag this magic wand over the thing you want to copy.";
-                TT.tool.add_listeners(element, instance);
-            }
-            return element;
-        }
+            };
     };
 
     TT.creators_from_json["wand"] = function () {
-        return instance;
+        return TT.wand.create();
     };
 
-    return {instance: instance};
+    return wand;
 
 }(window.TOONTALK));

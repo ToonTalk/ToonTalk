@@ -271,7 +271,7 @@ console.log("about to get backside of widget");
                             if (widget.update_display) {
                                 console.log("about to update_display in initialise");
                                 console.log("widget is " + widget.get_type_name());
-                                console.log("widget update_display is " + widget.update_display);
+//                                 console.log("widget update_display is " + widget.update_display);
                                 widget.update_display();
                             } // otherwise might be a tool
                             if (json.semantic.running) {
@@ -323,8 +323,8 @@ console.log("about to get backside of widget");
         if (element === possible_ancestor) {
             return true;
         }
-        if (element.parentElement) {
-            return has_ancestor_element(element.parentElement, possible_ancestor);
+        if (element.parentNode) {
+            return has_ancestor_element(element.parentNode, possible_ancestor);
         }
     };
     $(document).ready(initialise);

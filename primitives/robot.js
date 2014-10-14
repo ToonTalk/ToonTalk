@@ -702,6 +702,7 @@ window.TOONTALK.robot_backside =
                                                                  robot,
                                                                  "toontalk-frontside-conditions-area"), 
                                           backside_element.firstChild);
+            frontside_condition_widget.render();
         }
         if (backside_conditions) {
             Object.keys(backside_conditions).forEach(function (type) {

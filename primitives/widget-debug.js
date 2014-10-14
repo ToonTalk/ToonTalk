@@ -787,18 +787,31 @@ window.TOONTALK.widget = (function (TT) {
         },
         
         visible: function () {
+//                 console.log("visible called");
             var frontside = this.get_frontside();
             var ancestor;
             if (!frontside) {
                 return false;
             }
-            ancestor = frontside.get_element().parentElement;
+//             console.log("visible about to get first ancestor");
+//             if (frontside.get_element()) {
+//                     console.log("visible got the frontside element");
+//                     console.log("visible parentNode is " + frontside.get_element().parentNode);
+//                     console.log("visible parentElement is " + frontside.get_element().parentElement);
+//                     if (frontside.get_element().parentNode) {
+//                      console.log("visible parentNode.tagName is " + frontside.get_element().parentNode.tagName);
+// //                     console.log("visible parentElement.tagName is " + frontside.get_element().parentElement.tagName);
+//                     }
+//             }
+            ancestor = frontside.get_element().parentNode;
             while (ancestor) {
+//                 console.log("ancestor tagName is " + ancestor.tagName);
                 if (ancestor.tagName === 'BODY') {
                     return true;
                 }
-                ancestor = ancestor.parentElement;
+                ancestor = ancestor.parentNode;
             }
+//             console.log("not visible");
             return false;
             // following reported false when size is 0 even though it might be code that is about to change that (if visible)
             // return $(frontside.get_element()).is(":visible"); 

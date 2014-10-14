@@ -8,9 +8,146 @@
 <link rel="shortcut icon" href="favicon.ico" />
 </head>
 <body>
-<h2>Sensors</h2>
+<h2><div class='toontalk-json'>{
+  "semantic": {
+    "type": "sensor",
+    "contents": [],
+    "guid": "sensor sensor",
+    "waiting_robots": [],
+    "event_name": "keydown",
+    "attribute": "keyCode"
+  },
+  "view": {
+    "frontside_width": 116,
+    "frontside_height": 98,
+    "frontside_left": 6,
+    "frontside_top": 6,
+    "drag_x_offset": 48,
+    "drag_y_offset": 50
+  },
+  "version": 1
+}</div>
+Sensors</h2>
 <p>
-to be done
+Sensor are <a href='birds-nests.html'>nests</a> whose <a href='birds-nests.html'>birds</a> 'live' inside the browser.
+They can be used the same ways as ordinary nests.
+The sensor above is listening for keyboard events (<i>keydown</i> events) and the bird reports the <i>keyCode</i> attribute of the event.
+Try a few keys on your keyboard and watch the sensor below.
+</p>
+<p>
+Unlike nests the backside of sensors has fields that can be edited to change what event and what attribute of the event the sensor tracks.
+Any of the browser events should work.
+<a href='https://developer.mozilla.org/en-US/docs/Web/Events' target='_blank'>Here is a good site</a> that documents all the events.
+Click on the sensor below and edit the event name and event attribute.
+For example, try changing the event name to <i>click</i>
+and the attribute to <i>which</i> to listen to mouse click events and see which mouse buton was clicked.
+</p>
+<br>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "sensor",
+            "contents": [],
+            "guid": "sensor",
+            "waiting_robots": [],
+            "event_name": "keydown",
+            "attribute": "keyCode",
+            "active": true
+          },
+          "view": {
+            "frontside_width": 116,
+            "frontside_height": 98,
+            "frontside_left": 32,
+            "frontside_top": 28,
+            "backside_geometry": {
+              "x_scale": 1,
+              "y_scale": 1,
+              "original_width": 584,
+              "original_height": 259
+            }
+          },
+          "version": 1
+        }
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgba(245, 240, 240, 0.941176)",
+    "frontside_width": 0,
+    "frontside_height": 0,
+    "backside_width": 809,
+    "backside_height": 361,
+    "backside_left": 8,
+    "backside_top": 185.1875,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1,
+      "original_width": 1200,
+      "original_height": 475
+    },
+    "drag_x_offset": 276,
+    "drag_y_offset": 198.8125,
+    "backside": true
+  },
+  "version": 1
+}</div>
+<p>
+You can also obtain a sensor that is restricted to events that happen to a ToonTalk widget.
+If you click on a widget and then on <b>></b> to see the advanced options you will see a <b>Make a sensor</b> button.
+Clicking it will produce a sensor for events that happen to that widget (e.g. the mouse click that was on the widget).
+Try it on the number below.
+</p>
+<br>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "number",
+            "operator": "+",
+            "numerator": "1",
+            "denominator": "1",
+            "format": "improper_fraction"
+          },
+          "view": {
+            "frontside_width": 76,
+            "frontside_height": 55,
+            "frontside_left": 29,
+            "frontside_top": 31
+          },
+          "version": 1
+        }
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgba(245, 240, 240, 0.941176)",
+    "frontside_width": 0,
+    "frontside_height": 0,
+    "backside_width": 809,
+    "backside_height": 361,
+    "backside_left": 8,
+    "backside_top": 185.1875,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1,
+      "original_width": 1200,
+      "original_height": 475
+    },
+    "drag_x_offset": 360,
+    "drag_y_offset": 213.8125,
+    "backside": true
+  },
+  "version": 1
+}</div>
+<p>
+Sensors are great for making interactive apps in ToonTalk, including games.
 </p>
 </body>
 </html>
