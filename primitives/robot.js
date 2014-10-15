@@ -586,7 +586,7 @@ window.TOONTALK.robot = (function (TT) {
         frontside_conditions_string = frontside_conditions.get_full_description();
         if (this.being_trained) {
             prefix = "is being trained.\n";
-            postfix = "\n..."; // to indicates still being constructed
+            postfix = "\n..."; // to indicate still being constructed
         }
         frontside_conditions_string = TT.UTILITIES.add_a_or_an(frontside_conditions_string);
         robot_description = prefix + "When working on something that matches " + frontside_conditions_string + " he will \n" + body.toString() + postfix;
