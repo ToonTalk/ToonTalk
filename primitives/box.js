@@ -247,7 +247,7 @@ window.TOONTALK.box = (function (TT) {
         var contents = "";
         var size = this.get_size();
         var i, hole;
-        var extra_text = "box that looks like ";
+        var extra_text = this.get_type_name() + " that looks like ";
         for (i = 0; i < size; i++) {
             hole = this.get_hole(i);
             contents += hole.get_full_description();
