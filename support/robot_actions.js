@@ -143,7 +143,7 @@ window.TOONTALK.actions =
             var $backside_element = $(frontside_element).closest(".toontalk-backside");
             var backside_rectangle = $backside_element.get(0).getBoundingClientRect();
             var top_level_position = $(frontside_element).closest(".toontalk-top-level-backside").offset();
-            var $context_backside_element = $(context.get_backside().get_element());
+            var context_backside = context.get_backside();
             if (robot_home.left < backside_rectangle.left-top_level_position.left ||
                 robot_home.top  < backside_rectangle.top -top_level_position.top  ||
                 robot_home.left+robot_width  > backside_rectangle.right +top_level_position.left ||
@@ -154,7 +154,7 @@ window.TOONTALK.actions =
                 robot_home.top  += $backside_element.height()-robot_height;
             }
             robot.run_next_step = function () {
-                if ($context_backside_element.is(":visible")) {
+                if (context_backside && $(context_backside.get_element()).is(":visible")) {
                     // pause between steps and give the previous step a chance to update the DOM     
                     setTimeout(function () {
                             if (step_number < steps.length) {
