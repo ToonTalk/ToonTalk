@@ -83,7 +83,7 @@ window.TOONTALK.bird = (function (TT) {
                         }
                         if (restore_contents) {
                             // if bird was inside something go back where it was
-                            this.top_level_widget().remove_backside_widget(this, false, true);
+                            top_level_widget.remove_backside_widget(this, false, true);
                             restore_contents();
                         }
                         TT.UTILITIES.add_animation_class(bird_frontside_element, "toontalk-bird-morph-to-static");
@@ -175,10 +175,10 @@ window.TOONTALK.bird = (function (TT) {
             height = $(bird_frontside_element).height();
             bird_style_position = bird_frontside_element.style.position;
             bird_frontside_element.style.position = 'absolute';
+            top_level_widget = this.top_level_widget();
             if (parent && parent.get_widget().temporarily_remove_contents &&
                 !(robot && !robot.visible())) {
                 // don't remove current contents if caused by unwatched robot
-                top_level_widget = this.top_level_widget();
                 restore_contents = parent.get_widget().temporarily_remove_contents(this, true);
                 if (restore_contents) {
                     // if it really did remove the contents
@@ -192,9 +192,12 @@ window.TOONTALK.bird = (function (TT) {
                                            height: height
                                            });
             nest_contents_frontside_element = nest_recieving_message.get_contents_frontside_element();
-            if (restore_contents) {
+            if (nest_contents_frontside_element && restore_contents) {
                 // nest_contents_frontside_element && $(nest_recieving_message.get_frontside_element()).is(":visible")) {
-                // head near the nest (southeast) to set down message, move nest contents, put message on nest and restore nest contents
+                // head near the nest (southeast) to set down message,
+                // move nest contents,
+                // put message on nest
+                // and restore nest contents
                 nest_width =  $(target_frontside_element).width();
                 nest_height = $(target_frontside_element).height();
                 nest_offset = $(target_frontside_element).offset();
@@ -251,7 +254,7 @@ window.TOONTALK.bird = (function (TT) {
                     }.bind(this);
                 this.fly_to(message_offset, set_down_message_continuation, delay_between_steps);
             } else {
-                this.fly_to(target_offset, bird_return_continuation, delay_between_steps);
+                this.fly_to(target_offset,  bird_return_continuation,      delay_between_steps);
             }  
         };
         new_bird.get_json = function (json_history) {
@@ -651,6 +654,7 @@ window.TOONTALK.nest = (function (TT) {
                     if (other_is_backside) {
                         backside_where_bird_goes = other.get_backside();
                     } else {
+                        // TODO: determine if this should be using this.top_level_widget()
                         top_level_widget = TT.UTILITIES.widget_from_jquery($(frontside_element).closest(".toontalk-top-level-backside"));
                         if (!top_level_widget) {
                             top_level_widget = TT.UTILITIES.widget_from_jquery($(other.get_widget().get_frontside_element(true)).closest(".toontalk-top-level-backside"));     
