@@ -66,8 +66,10 @@ window.TOONTALK.bird = (function (TT) {
                             }
                         };
                         bird_frontside_element.style.position = bird_style_position;
-                        bird_offset.left -= parent_offset.left;
-                        bird_offset.top  -= parent_offset.top;
+                        if (parent_offset) { // undefined if on unwatched backside
+                            bird_offset.left -= parent_offset.left;
+                            bird_offset.top  -= parent_offset.top;
+                        }
                         $(bird_frontside_element).css(bird_offset);
                         parent_element.appendChild(bird_frontside_element);
                         if (parent) {
