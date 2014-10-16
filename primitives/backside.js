@@ -514,13 +514,16 @@ window.TOONTALK.backside =
             };
             var record_backside_widget_positions = function () {
                 var backside_widgets = widget.get_backside_widgets();
-                var backside_widgets_json_views = widget.get_backside_widgets_json_views();
+                var backside_widgets_json_views = widget.get_backside_widgets_json_views(true);
                 var backside_widget_side_element;
                 backside_widgets.forEach(function (backside_widget_side, index) {
                     var backside_widget = backside_widget_side.get_widget();
                     var position;
                     backside_widget_side_element = backside_widget.get_element();
-                    if (backside_widget_side_element && backside_widgets_json_views && backside_widgets_json_views[index]) {
+                    if (backside_widget_side_element) {
+                        if (!backside_widgets_json_views[index]) {
+                            backside_widgets_json_views[index] = {};
+                        }
                         position = $(backside_widget_side_element).position();
                         if (backside_widget_side.is_backside()) {
                             backside_widgets_json_views[index].backside_left = position.left;

@@ -718,7 +718,10 @@ window.TOONTALK.widget = (function (TT) {
 //             }
         },
               
-        get_backside_widgets_json_views: function () {
+        get_backside_widgets_json_views: function (create) {
+            if (!this.backside_widgets_json_views && create) {
+                this.backside_widgets_json_views = [];
+            }
             return this.backside_widgets_json_views;
         },
         
@@ -873,7 +876,7 @@ window.TOONTALK.widget = (function (TT) {
                             $(element).addClass("toontalk-side-appearing");
                             TT.UTILITIES.add_one_shot_event_handler(element, "transitionend", 2500, remove_transition_class);
                             $(element).css({left: final_left,
-                                            top: final_top,
+                                            top:  final_top,
                                             opacity: final_opacity});
                             this.apply_backside_geometry();
                         }.bind(this),
@@ -938,6 +941,11 @@ window.TOONTALK.widget = (function (TT) {
             }
             animate_backside_appearance(backside_element, "inherit");
             backside.render();
+            if (this.backside_widgets) {
+                this.backside_widgets.forEach(function (widget_side) {
+                        widget_side.render();
+                });
+            }
             return backside;
         },
                 
