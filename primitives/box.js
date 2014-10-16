@@ -444,7 +444,7 @@ window.TOONTALK.box = (function (TT) {
 
     box.widget_dropped_on_me = function (other, other_is_backside, event, robot) {
         var i, hole, hole_contents, rectangle, horizontal;
-        if (event) {
+        if (event) { // not clear how this could be called without an event
             horizontal = this.get_horizontal();
             for (i = 0; i < this.get_size(); i++) {
                 hole = this.get_hole(i);
@@ -459,7 +459,7 @@ window.TOONTALK.box = (function (TT) {
                 }
             }
         }
-        console.log(other_widget + " dropped on " + this + " but unable to handle it.");
+        console.log(other + " dropped on " + this + " but unable to handle it.");
     };
     
     box.get_index_of = function (part) {
