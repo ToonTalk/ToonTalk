@@ -916,7 +916,7 @@ window.TOONTALK.UTILITIES =
                                     // can be undefined if container is a robot holding something
                                     // but probably that should be prevented earlier
                                     if ($container.is(".toontalk-backside")) {
-                                        container.remove_backside_widget(source_widget, source_is_backside);
+                                        container.remove_backside_widget(source_widget, source_is_backside, true);
                                     } else {
                                         container.removed_from_container(source_widget, source_is_backside, event);
                                         if (source_widget.restore_dimensions) {
