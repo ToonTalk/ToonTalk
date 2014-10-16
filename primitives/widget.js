@@ -325,6 +325,9 @@ window.TOONTALK.widget = (function (TT) {
                 return parent_of_backside;
             };
             widget.set_parent_of_frontside = function (new_parent, parent_is_backside) {
+                if (parent_of_frontside && parent_of_frontside.is_backside()) {
+                    parent_of_frontside.get_widget().remove_backside_widget(this, false, true);
+                }
                 if (!new_parent || !parent_is_backside) {
                     parent_of_frontside = new_parent;
                     return; 
@@ -332,6 +335,9 @@ window.TOONTALK.widget = (function (TT) {
                 parent_of_frontside = new_parent.get_backside(true);
             };
             widget.set_parent_of_backside = function (widget, parent_is_backside) {
+                if (parent_of_backside && parent_of_backside.is_backside()) {
+                    parent_of_backside.get_widget().remove_backside_widget(this, true, true);
+                }
                 if (!widget || !parent_is_backside) {
                     parent_of_backside = widget;
                     return; 
