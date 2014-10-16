@@ -56,8 +56,6 @@ window.TOONTALK.bird = (function (TT) {
                     var parent_offset = $(parent_element).offset();
                     var become_static;
                     if (temporary_bird) {
-                        nest_recieving_message.add_to_contents(message_side, this, true);
-                        nest_recieving_message.rerender();
                         this.remove();
                     } else {
                         become_static = function () {
