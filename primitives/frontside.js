@@ -38,7 +38,11 @@ window.TOONTALK.frontside =
                 }
                 if ($frontside_element.is(".toontalk-top-level-resource")) {
                     widget.set_running(!widget.get_running());
-                } else if (!widget.get_running()) {
+                } else if (widget.get_running()) {
+                    if (TT.debugging) {
+                        console.log("Ignoring click on running widget.");
+                    }
+                } else {
                     widget.open_backside();
                 }
                 event.stopPropagation();
