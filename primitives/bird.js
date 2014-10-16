@@ -190,7 +190,7 @@ window.TOONTALK.bird = (function (TT) {
                                            height: height
                                            });
             nest_contents_frontside_element = nest_recieving_message.get_contents_frontside_element();
-            if (nest_contents_frontside_element && $(nest_recieving_message.get_frontside_element()).is(":visible")) &&
+            if (nest_contents_frontside_element && $(nest_recieving_message.get_frontside_element()).is(":visible") &&
                 (!robot || robot.visible())) {
                 // just fly to nest and return if unwatched robot caused this
                 // head near the nest (southeast) to set down message,

@@ -919,8 +919,8 @@ window.TOONTALK.widget = (function (TT) {
                                     top:  0};
             }
             $(backside_element).css({
-                left: frontside_offset.left - container_offset.left,
-                top:  frontside_offset.top  - container_offset.top,
+                left: frontside_offset.left-container_offset.left,
+                top:  frontside_offset.top -container_offset.top,
                 opacity: .01
             });
             $frontside_ancestor_that_is_backside_element.append(backside_element);
@@ -933,8 +933,8 @@ window.TOONTALK.widget = (function (TT) {
                 final_top  = frontside_ancestor_before_backside_element.offsetTop;
             } else {
                 // widget is inside something so put backside under it
-                final_left = frontside_offset.left - container_offset.left;
-                final_top = (frontside_offset.top  - container_offset.top) + frontside_element.offsetHeight;
+                final_left = frontside_offset.left-container_offset.left;
+                final_top  = (frontside_offset.top-container_offset.top) + frontside_element.offsetHeight;
             }
             animate_backside_appearance(backside_element, "inherit");
             backside.render();
