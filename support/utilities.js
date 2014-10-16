@@ -1520,7 +1520,7 @@ window.TOONTALK.UTILITIES =
             var widget_copy = side.get_widget().copy(just_value);
             var frontside_element, copy_frontside_element;
             if (dimensions_too) {
-                frontside_element = side.widget.get_frontside_element();
+                frontside_element = side.get_widget().get_frontside_element();
                 if (frontside_element) {
                     copy_frontside_element = widget_copy.get_frontside_element(true);
                     $(copy_frontside_element).css({width:  $(frontside_element).width(),
