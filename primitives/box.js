@@ -443,14 +443,27 @@ window.TOONTALK.box = (function (TT) {
     };
 
     box.widget_dropped_on_me = function (other, other_is_backside, event, robot) {
-        var i, hole, hole_contents, rectangle, horizontal;
+        // if horizontal computes boundary seeing if event is left of the boundary
+        // otherwise sees if event is below boundary
+        var horizontal = this.get_horizontal();
+        var frontside_element = this.get_frontside_element();
+        var size = this.get_size();
+        var i, hole, hole_contents, position, increment, boundary;
+        if (size === 0) {
+            return;
+        }
+        position = $(frontside_element).offset();
+        increment = horizontal ? $(frontside_element).width()/size : $(frontside_element).height()/size;
+        boundary = horizontal ? position.left : position.top;
+        increment;
         if (event) { // not clear how this could be called without an event
-            horizontal = this.get_horizontal();
-            for (i = 0; i < this.get_size(); i++) {
+            for (i = 0; i < size; i++) {
                 hole = this.get_hole(i);
-                rectangle = hole.get_element().getBoundingClientRect();
-                if (horizontal ? (rectangle.left <= event.pageX && event.pageX <= rectangle.right) :
-                                 (rectangle.top  <= event.pageY && event.pageY <= rectangle.bottom)) {
+                boundary += increment;
+                if ((horizontal ? (event.pageX <= boundary) :
+                                  (event.pageY <= boundary)) ||
+                    // or is last one
+                    i+1 === size) {
                     hole_contents = hole.get_contents();
                     if (hole_contents) {
                         return other.drop_on(hole_contents, other_is_backside, event, robot);
@@ -459,7 +472,7 @@ window.TOONTALK.box = (function (TT) {
                 }
             }
         }
-        console.log(other + " dropped on " + this + " but unable to handle it.");
+        TT.UTILITIES.report_internal_error(other + " dropped on " + this + " but no event was provided.");
     };
     
     box.get_index_of = function (part) {
