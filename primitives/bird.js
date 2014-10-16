@@ -31,7 +31,7 @@ window.TOONTALK.bird = (function (TT) {
                         // generalise this with backside support too
                         other.remove_from_parent_of_frontside();
                     }
-                    nest.animate_bird_delivery(message_side, this, robot && robot.run_next_step);
+                    nest.animate_bird_delivery(message_side, this, robot && robot.run_next_step, robot);
                 } else {
                     nest.add_to_contents(message_side);
                     if (robot) {
@@ -46,7 +46,7 @@ window.TOONTALK.bird = (function (TT) {
             }
             return true;
         };
-        new_bird.animate_delivery_to = function (message_side, target_side, nest_recieving_message, starting_left, starting_top, after_delivery_continuation) {
+        new_bird.animate_delivery_to = function (message_side, target_side, nest_recieving_message, starting_left, starting_top, after_delivery_continuation, robot) {
             // starting_left and starting_top are optional and if given are in the coordinate system of the top-level backside
             var temporary_bird = !!nest_recieving_message;
             var parent = this.get_parent_of_frontside();
@@ -175,7 +175,9 @@ window.TOONTALK.bird = (function (TT) {
             height = $(bird_frontside_element).height();
             bird_style_position = bird_frontside_element.style.position;
             bird_frontside_element.style.position = 'absolute';
-            if (parent && parent.get_widget().temporarily_remove_contents) {
+            if (parent && parent.get_widget().temporarily_remove_contents &&
+                !(robot && !robot.visible())) {
+                // don't remove current contents if caused by unwatched robot
                 top_level_widget = this.top_level_widget();
                 restore_contents = parent.get_widget().temporarily_remove_contents(this, true);
                 if (restore_contents) {
@@ -190,7 +192,8 @@ window.TOONTALK.bird = (function (TT) {
                                            height: height
                                            });
             nest_contents_frontside_element = nest_recieving_message.get_contents_frontside_element();
-            if (nest_contents_frontside_element && $(nest_recieving_message.get_frontside_element()).is(":visible")) {
+            if (restore_contents) {
+                // nest_contents_frontside_element && $(nest_recieving_message.get_frontside_element()).is(":visible")) {
                 // head near the nest (southeast) to set down message, move nest contents, put message on nest and restore nest contents
                 nest_width =  $(target_frontside_element).width();
                 nest_height = $(target_frontside_element).height();
@@ -483,9 +486,9 @@ window.TOONTALK.nest = (function (TT) {
             }
             this.rerender();
         };
-        new_nest.animate_bird_delivery = function (message_side, bird, continuation) {
+        new_nest.animate_bird_delivery = function (message_side, bird, continuation, robot) {
             var start_position, bird_parent_element, visible;
-            bird.animate_delivery_to(message_side, this, undefined, undefined, undefined, continuation);
+            bird.animate_delivery_to(message_side, this, undefined, undefined, undefined, continuation, robot);
             if (nest_copies) {
                 start_position = $(bird.closest_visible_ancestor().get_widget().get_frontside_element()).closest(":visible").position();
                 bird_parent_element = bird.get_parent_of_frontside().get_element();
@@ -502,7 +505,7 @@ window.TOONTALK.nest = (function (TT) {
                             bird_copy = bird.copy(true);
                             bird_frontside_element = bird_copy.get_frontside_element(true); 
                             $(bird_parent_element).append(bird_frontside_element);
-                            bird_copy.animate_delivery_to(message_copy, nest_copy, nest_copy, start_position.left, start_position.top);
+                            bird_copy.animate_delivery_to(message_copy, nest_copy, nest_copy, start_position.left, start_position.top, undefined, robot);
                         }
                    }
                });
