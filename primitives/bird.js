@@ -176,9 +176,7 @@ window.TOONTALK.bird = (function (TT) {
             bird_style_position = bird_frontside_element.style.position;
             bird_frontside_element.style.position = 'absolute';
             top_level_widget = this.top_level_widget();
-            if (parent && parent.get_widget().temporarily_remove_contents &&
-                !(robot && !robot.visible())) {
-                // don't remove current contents if caused by unwatched robot
+            if (parent && parent.get_widget().temporarily_remove_contents) {
                 restore_contents = parent.get_widget().temporarily_remove_contents(this, true);
                 if (restore_contents) {
                     // if it really did remove the contents
@@ -192,8 +190,9 @@ window.TOONTALK.bird = (function (TT) {
                                            height: height
                                            });
             nest_contents_frontside_element = nest_recieving_message.get_contents_frontside_element();
-            if (nest_contents_frontside_element && restore_contents) {
-                // nest_contents_frontside_element && $(nest_recieving_message.get_frontside_element()).is(":visible")) {
+            if (nest_contents_frontside_element && $(nest_recieving_message.get_frontside_element()).is(":visible")) &&
+                (!robot || robot.visible())) {
+                // just fly to nest and return if unwatched robot caused this
                 // head near the nest (southeast) to set down message,
                 // move nest contents,
                 // put message on nest
