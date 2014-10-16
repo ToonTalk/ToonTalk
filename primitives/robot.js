@@ -395,6 +395,7 @@ window.TOONTALK.robot = (function (TT) {
     robot.remove_from_container = function (part, container) {
         // this is used when running a robot -- not training
         // need to compute index now since parent may have changed by the time this runs
+        // or perhaps not and a different bug was making it appear to be so
         var index = container.get_index_of && container.get_index_of(part);
         var do_removal = function () { 
                 if (part.get_parent_of_frontside()) {
@@ -586,7 +587,7 @@ window.TOONTALK.robot = (function (TT) {
         frontside_conditions_string = frontside_conditions.get_full_description();
         if (this.being_trained) {
             prefix = "is being trained.\n";
-            postfix = "\n..."; // to indicates still being constructed
+            postfix = "\n..."; // to indicate still being constructed
         }
         frontside_conditions_string = TT.UTILITIES.add_a_or_an(frontside_conditions_string);
         robot_description = prefix + "When working on something that matches " + frontside_conditions_string + " he will \n" + body.toString() + postfix;

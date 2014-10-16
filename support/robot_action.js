@@ -33,7 +33,7 @@ window.TOONTALK.robot_action =
                          if (target.visible && target.visible()) {
                              target.render();
                          }
-                         // update this when robots can drop backsides as well
+                         // TODO: update this when robots can drop backsides as well
                          thing_in_hand.drop_on(target, false, undefined, robot);
                          robot.set_thing_in_hand(undefined);
                          if (thing_in_hand.caused_robot_to_wait_before_next_step) {
@@ -332,8 +332,9 @@ window.TOONTALK.robot_action =
                 return watched_run_function(referenced, context, top_level_context, robot, continuation, additional_info);
             };
             new_action.toString = function () {
-                var action = additional_info && additional_info.toString ? additional_info.toString : action_name;
-                return action + " " + TT.path.toString(path);
+                // following is broken but not clear what the intent was -- perhaps sometimes additional_info has a better action description?
+//                 var action = additional_info && additional_info.toString ? additional_info.toString : action_name;
+                return action_name + " " + TT.path.toString(path);
             };
             new_action.get_json = function (json_history) {
                 return {type: "robot_action",

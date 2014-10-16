@@ -161,9 +161,6 @@ window.TOONTALK.backside =
             }
             if (!widget.removed_from_container) {
                 widget.removed_from_container = function (other, backside_removed, event, ignore_if_not_on_backside) {
-//                     if (!backside_removed) {
-//                         $(other.get_frontside_element()).removeClass("toontalk-frontside-on-backside");
-//                     }
                     if (!TT.robot.in_training) {
                        // robots in training take care of this (and need to to record things properly)
                        this.remove_backside_widget(other, backside_removed, ignore_if_not_on_backside);
@@ -517,13 +514,16 @@ window.TOONTALK.backside =
             };
             var record_backside_widget_positions = function () {
                 var backside_widgets = widget.get_backside_widgets();
-                var backside_widgets_json_views = widget.get_backside_widgets_json_views();
+                var backside_widgets_json_views = widget.get_backside_widgets_json_views(true);
                 var backside_widget_side_element;
                 backside_widgets.forEach(function (backside_widget_side, index) {
                     var backside_widget = backside_widget_side.get_widget();
                     var position;
                     backside_widget_side_element = backside_widget.get_element();
-                    if (backside_widget_side_element && backside_widgets_json_views && backside_widgets_json_views[index]) {
+                    if (backside_widget_side_element) {
+                        if (!backside_widgets_json_views[index]) {
+                            backside_widgets_json_views[index] = {};
+                        }
                         position = $(backside_widget_side_element).position();
                         if (backside_widget_side.is_backside()) {
                             backside_widgets_json_views[index].backside_left = position.left;
