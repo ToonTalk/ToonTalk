@@ -363,10 +363,6 @@ window.TOONTALK.bird = (function (TT) {
         this.animate_to_absolute_position(target_offset, full_continuation);
     };
     
-//     bird.image = function () {
-//         return TT.UTILITIES.create_image(this.get_image_url(), "toontalk-bird-image");   
-//     };
-    
     bird.toString = function () {
         return "a bird"; // good enough for now
     };

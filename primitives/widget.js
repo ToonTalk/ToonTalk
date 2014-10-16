@@ -944,6 +944,8 @@ window.TOONTALK.widget = (function (TT) {
             if (this.backside_widgets) {
                 this.backside_widgets.forEach(function (widget_side) {
                         widget_side.render();
+                        // TODO:
+//                         widget_side.set_visible(true);
                 });
             }
             return backside;

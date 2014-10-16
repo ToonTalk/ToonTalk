@@ -33,7 +33,7 @@ window.TOONTALK.robot_action =
                          if (target.visible && target.visible()) {
                              target.render();
                          }
-                         // update this when robots can drop backsides as well
+                         // TODO: update this when robots can drop backsides as well
                          thing_in_hand.drop_on(target, false, undefined, robot);
                          robot.set_thing_in_hand(undefined);
                          if (thing_in_hand.caused_robot_to_wait_before_next_step) {

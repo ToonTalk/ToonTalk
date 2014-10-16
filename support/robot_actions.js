@@ -59,7 +59,7 @@ window.TOONTALK.actions =
             };                
             new_actions.add_newly_created_widget = function (new_widget) {
                  if (TT.debugging && newly_created_widgets.indexOf(new_widget) >= 0) {
-                     TT.UTILITIES.report_internal_error("add_newly_created_widget called with not new widget.");
+                     console.log("add_newly_created_widget called with not new widget.");
                      return;
                 }
                 newly_created_widgets.push(new_widget);
