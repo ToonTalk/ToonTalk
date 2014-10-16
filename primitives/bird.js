@@ -934,7 +934,8 @@ window.TOONTALK.nest = (function (TT) {
     
     TT.creators_from_json["nest"] = function (json, additional_info) {
         var waiting_robots; // TODO:
-        var nest = guid_to_nest_table[json.guid];
+        // don't share the nest if this is a copy
+        var nest = !json.original_nest && guid_to_nest_table[json.guid];
         if (!nest) {
             nest = TT.nest.create(json.description, 
                                   TT.UTILITIES.create_array_from_json(json.contents, additional_info), 
