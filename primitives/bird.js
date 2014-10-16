@@ -554,7 +554,9 @@ window.TOONTALK.nest = (function (TT) {
             }
             // e.g. when a robot takes something off the nest
             if (path_to_nest.removing_widget) {
-                widget = this.removed_from_container().get_widget();
+                widget = contents[0];
+                robot.remove_from_container(widget, this);
+//              widget = this.removed_from_container().get_widget();
                 // isn't attached to the DOM because was removed from nest
                 if (this.visible()) {
                     nest_element = this.get_frontside_element();
