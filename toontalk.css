@@ -771,7 +771,10 @@ background-image: url("images/dusty-morph.png");
 }
 .toontalk-backside-of-nest {
     background-color: rgb(248, 248, 192);
-
+}
+.toontalk-slide {
+/* 	to have room for green flag and stop sign */
+	padding-top: 25px;
 }
 .toontalk-empty-nest {
 /* 	Perhaps should be renamed since it really for eggless nest but might have stuff on top */
