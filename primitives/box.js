@@ -284,6 +284,18 @@ window.TOONTALK.box = (function (TT) {
                 horizontal: this.get_horizontal()
                };
     };
+
+    box.walk_children = function (child_action) {
+        var size = this.get_size();
+        var i, hole_contents;
+        for (i = 0; i < size; i++) {
+            hole_contents = this.get_hole_contents(i);
+            if (hole_contents && !child_action(hole_contents)) {
+                // aborted
+                return;
+            }
+        }
+    }
     
     TT.creators_from_json['box'] = function (json, additional_info) {
         return box.create(json.size, json.horizontal, TT.UTILITIES.create_array_from_json(json.contents, additional_info), json.description);
@@ -773,10 +785,11 @@ window.TOONTALK.box_hole =
                 }
             };
             hole.visible = function () {
-                // why isn't this just is frontside_element visible?
-                // you can't see it but if box is visible then it is
-                // revisit this
+                // if box is visible then hole is
                 return this.get_parent_of_frontside().visible(); 
+            };
+            hole.set_visible = function () {
+                // nothing to do
             };
             hole.render = function () {
                 if (contents) {

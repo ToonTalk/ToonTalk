@@ -152,7 +152,7 @@ window.TOONTALK.bird = (function (TT) {
             message_element = message_side.get_element();
             carry_element(message_element, message_side);
             target_frontside_element = target_side.get_widget().closest_visible_ancestor().get_widget().get_frontside_element();
-            if (!($(target_frontside_element).is(":visible")) && !$(bird_frontside_element).is(":visible")) {
+            if (!target_side.visible() && !this.visible()) {
                 // neither are visible so just add contents to nest
                 nest_recieving_message.add_to_contents(message_side, this, true);
                 return;
@@ -190,7 +190,7 @@ window.TOONTALK.bird = (function (TT) {
                                            height: height
                                            });
             nest_contents_frontside_element = nest_recieving_message.get_contents_frontside_element();
-            if (nest_contents_frontside_element && $(nest_recieving_message.get_frontside_element()).is(":visible") &&
+            if (nest_contents_frontside_element && nest_recieving_message.visible() &&
                 (!robot || robot.visible())) {
                 // just fly to nest and return if unwatched robot caused this
                 // head near the nest (southeast) to set down message,

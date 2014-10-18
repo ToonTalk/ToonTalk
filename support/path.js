@@ -176,7 +176,7 @@ window.TOONTALK.path =
             widget = widget.get_widget(); // if widget is really the backside of the widget
             return {dereference: function (context, top_level_context, robot) {
                         var widget_copy = widget.copy();
-                        var widget_frontside_element, copy_frontside_element;
+                        var widget_frontside_element, widget_frontside_position, copy_frontside_element;
                         robot.add_newly_created_widget(widget_copy);
                         if (robot.visible() && !widget.visible()) {
                             // picking up a copy of a resource
@@ -184,8 +184,11 @@ window.TOONTALK.path =
                             widget_frontside_element = TT.UTILITIES.find_resource_equal_to_widget(widget);
                             if (widget_frontside_element) {
                                 copy_frontside_element = widget_copy.get_frontside_element();
+                                widget_frontside_position = $(widget_frontside_element).position();
                                 setTimeout(function ()  {
-                                    $(copy_frontside_element).css({width:  widget_frontside_element.offsetWidth,
+                                    $(copy_frontside_element).css({left:   widget_frontside_position.left,
+                                                                   top:    widget_frontside_position.top,
+                                                                   width:  widget_frontside_element.offsetWidth,
                                                                    height: widget_frontside_element.offsetHeight});
                                     },
                                     0);

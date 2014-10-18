@@ -86,8 +86,8 @@ window.TOONTALK.robot = (function (TT) {
                 $(frontside_element).css({width:  '', // rely upon toontalk-robot-animating for dimensions
                                           height: '', // otherwise doesn't animate well
                                           "z-index": TT.UTILITIES.next_z_index()});
-                $(frontside_element).closest(".toontalk-top-level-backside").append(frontside_element);
                 TT.UTILITIES.set_position_relative_to_top_level_backside($(frontside_element), robot_position);
+                $(frontside_element).closest(".toontalk-top-level-backside").append(frontside_element);
             } else {
                 $(frontside_element).removeClass("toontalk-robot-animating toontalk-side-animating");
             }

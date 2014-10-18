@@ -15,6 +15,7 @@ window.TOONTALK.frontside =
             var frontside = Object.create(this);
             var frontside_element = document.createElement('div');
             var $frontside_element = $(frontside_element);
+            var visible;
             $(frontside_element).addClass("toontalk-frontside toontalk-side");
             frontside_element.toontalk_widget = widget;
 //          console.log(widget + " with " + widget.debug_id + " associated with " + frontside_element.className);
@@ -24,6 +25,19 @@ window.TOONTALK.frontside =
             };
             frontside.get_widget = function () {
                 return widget;
+            };
+            frontside.visible = function () {
+                return visible;
+            };
+            frontside.set_visible = function (new_value) {
+                var widget = this.get_widget();
+                visible = new_value;
+                if (widget.walk_children) {
+                    widget.walk_children(function (child_side) {
+                                             child_side.set_visible(new_value);
+                                             return true; // continue to next child
+                    });
+                }
             };
             // prefer addEventListener over JQuery's equivalent since when I inspect listeners I get a link to this code
             frontside_element.addEventListener('click', function (event) {
@@ -69,9 +83,9 @@ window.TOONTALK.frontside =
             return this.get_widget().update_display();
         },
         
-        visible: function () {
-            return $(this.get_element()).is(":visible"); 
-        },
+//         visible: function () {
+//             return $(this.get_element()).is(":visible"); 
+//         },
         
         remove: function () {
             if (TT.debugging) {
