@@ -287,10 +287,9 @@ window.TOONTALK.box = (function (TT) {
 
     box.walk_children = function (child_action) {
         var size = this.get_size();
-        var i, hole_contents;
+        var i;
         for (i = 0; i < size; i++) {
-            hole_contents = this.get_hole_contents(i);
-            if (hole_contents && !child_action(hole_contents)) {
+            if (!child_action(this.get_hole(i))) {
                 // aborted
                 return;
             }
@@ -674,7 +673,7 @@ window.TOONTALK.box_hole =
         create: function (index) {
             // perhaps this should share more code with widget (e.g. done below with widget.has_parent)
             var hole = Object.create(this);
-            var contents, hole_element;
+            var contents, visible, hole_element;
             hole.get_element = function () {
                 if (!hole_element) {
                     hole_element = document.createElement("div");
@@ -780,6 +779,7 @@ window.TOONTALK.box_hole =
                     if (TT.debugging) {
                         hole.debug_string = "A hole containing " + contents;
                     }
+                    contents.set_visible(visible);
                 } else if (TT.debugging) {
                     hole.debug_string = "An empty hole";
                 }
@@ -788,8 +788,11 @@ window.TOONTALK.box_hole =
                 // if box is visible then hole is
                 return this.get_parent_of_frontside().visible(); 
             };
-            hole.set_visible = function () {
-                // nothing to do
+            hole.set_visible = function (new_value) {
+                visible = new_value;
+                if (contents) {
+                    contents.set_visible(new_value);
+                }
             };
             hole.render = function () {
                 if (contents) {

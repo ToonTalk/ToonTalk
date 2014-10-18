@@ -545,6 +545,7 @@ window.TOONTALK.nest = (function (TT) {
                     TT.UTILITIES.report_internal_error("Nothing removed from nest!");
                 }
                 if (contents.length > 0) {
+                    contents[0].set_visible(true);
                     $(contents[0].get_element()).show();
                 }
                 this.render();
@@ -835,6 +836,11 @@ window.TOONTALK.nest = (function (TT) {
                     return contents[0].get_widget().get_path_to(widget, robot);
                 }
             }
+        };
+        new_nest.walk_children = function (child_action) {
+            if (contents.length > 0) {
+                return child_action(contents[0]);
+            };
         };
         new_nest.top_contents_is = function (other) {
             return contents.length > 0 && contents[0].get_widget() === other;
