@@ -1,0 +1,207 @@
+/*
+ *  This is the file where you put your CSS changes. You should preferrably use this and
+ *  override the relevant properties you want to change here instead of customizing plone.css.
+ */
+ 
+/*
+**  DTML instructions to set caching headers. Inside comments area to play nicer with CSS editors.
+**
+** **   
+**   
+**   
+**   
+** */
+/*  */
+
+/*body {
+    font-family: Verdana, Helvetica, Arial, sans-serif;
+    font-weight: bold;
+}*/
+
+a:hover {
+text-decoration: underline;
+}
+
+/* p a {
+text-decoration: underline;
+} */
+
+div.stx a {
+text-decoration: underline;
+}
+
+p a:visited {
+color: Purple;
+background-color: transparent;
+}
+
+p a:active {
+color: Red;
+background-color: transparent;
+}
+
+
+a.skipnav {
+visibility: hidden;
+position: absolute;
+}
+
+.a {
+color: Blue;
+}
+
+.a:visited {
+color: Purple;
+}
+
+div.tabs {
+/* Navigational Plone Tabs(tm), implemented by customizing the a tag - they are surprisingly elegant. The power of CSS runs strong in these :) */
+border-collapse: collapse;
+border-bottom-color: 1px ridge;
+border-bottom-style: solid;
+border-bottom-width: 1px;
+padding: 0.5em 0em 0em 2em;
+white-space: nowrap;
+}
+
+div.tabs a {
+/* The normal, unselected tabs. They are all links */
+background: #E1FFE1;
+border-color: 1px ridge;
+border-width: 1px; 
+border-style: solid solid none solid;
+color: 1px ridge;
+font-weight: bold;
+height: 1.2em;
+margin-right: 0.5em;
+padding: 0em 2em;
+text-transform: ;
+}
+
+div.tabs a.selected {
+/* The selected tab. There's only one of this */
+background: #95FF95;
+border-bottom: #95FF95 1px solid;
+color: Dummy;
+font-weight: bold;
+}
+
+div.tabs a:hover {
+background: #95FF95;
+text-decoration: none;
+color: Dummy;
+}
+
+div.personalBar {
+background: #95FF95;
+color: Dummy;
+text-align: right;
+text-transform: ;
+}
+
+
+
+
+
+#contentBar {
+background: #FFFF9C;
+color: Dummy;
+text-align: right;
+text-transform: ;
+}
+
+#contentTabs a.selected {
+/* The selected tab. There's only one of this */
+background: #FFFF9C;
+border-bottom: #FFFF9C 1px solid;
+color: Dummy;
+font-weight: bold;
+}
+
+#contentTabs a:hover {
+background: #FFFF9C;
+color: Dummy;
+}
+
+span.card {
+border-width: 1px;
+border-style: solid;
+float: left;
+margin: 8px;
+padding: 5px;
+text-align: center;
+width: 120px;
+}
+
+span.card a {
+text-decoration: none;
+}
+
+span.groupcard {
+border-width: 1px;
+border-style: solid;
+float: left;
+margin: 3px;
+padding: 2px;
+text-align: center;
+width: 170px;
+height: 170px;
+}
+
+span.groupcard a {
+text-decoration: none;
+}
+
+
+/*div.box a {
+ text-decoration: none;
+}*/
+
+.advbox {
+border: none;
+vertical-align: top;
+}
+
+div.message {
+    background: Dummy;
+    border: 1px ridge;
+    color: Black;
+    font: bold 80% Verdana, Helvetica, Arial, sans-serif;
+    margin: 1em 0em 1em 0em;
+    padding: 0.5em 1em;
+    vertical-align: middle;
+}
+
+table.listing td,
+div.stx table td {
+    border-right: 1px solid;
+    padding: 1ex 1ex;
+    text-align: left;
+}
+
+table.listing th,
+div.stx table th {
+background: #EEFFCC;
+border-top: 1px solid;
+border-bottom: 1px solid;
+border-right: 1px solid;
+color: Black;
+font-weight: normal;
+padding: 0em 1em 0em 1em;
+text-transform: ;
+white-space: nowrap;
+}
+
+
+input.standalone {
+    background: White url(linkTransparent.gif) 9px 1px no-repeat;
+    color: Black;
+    cursor: pointer;
+    font-size: 80%;
+    font-weight: bold;
+    margin-bottom: 1em;
+    padding: 1px 1px 1px 15px;
+    text-transform: ;
+}
+
+/*  */

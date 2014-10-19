@@ -1,0 +1,78 @@
+A:hover {
+	TEXT-DECORATION: underline
+}
+DIV.stx A {
+	TEXT-DECORATION: underline
+}
+P A:visited {
+	COLOR: purple; BACKGROUND-COLOR: transparent
+}
+P A:active {
+	COLOR: red; BACKGROUND-COLOR: transparent
+}
+A.skipnav {
+	VISIBILITY: hidden; POSITION: absolute
+}
+.a {
+	COLOR: blue
+}
+.a:visited {
+	COLOR: purple
+}
+DIV.tabs {
+	PADDING-RIGHT: 0em; PADDING-LEFT: 2em; PADDING-BOTTOM: 0em; PADDING-TOP: 0.5em; BORDER-BOTTOM: 1px solid; WHITE-SPACE: nowrap; BORDER-COLLAPSE: collapse
+}
+DIV.tabs A {
+	BORDER-RIGHT: 1px solid; PADDING-RIGHT: 2em; BORDER-TOP: 1px solid; PADDING-LEFT: 2em; FONT-WEIGHT: bold; BACKGROUND: #e1ffe1; PADDING-BOTTOM: 0em; BORDER-LEFT: 1px solid; MARGIN-RIGHT: 0.5em; PADDING-TOP: 0em; BORDER-BOTTOM: 1px; HEIGHT: 1.2em
+}
+DIV.tabs A.selected {
+	FONT-WEIGHT: bold; BACKGROUND: #95ff95; BORDER-BOTTOM: #95ff95 1px solid
+}
+DIV.tabs A:hover {
+	BACKGROUND: #95ff95; TEXT-DECORATION: none
+}
+DIV.personalBar {
+	BACKGROUND: #95ff95; TEXT-ALIGN: right
+}
+#contentBar {
+	BACKGROUND: #ffff9c; TEXT-ALIGN: right
+}
+#contentTabs A.selected {
+	FONT-WEIGHT: bold; BACKGROUND: #ffff9c; BORDER-BOTTOM: #ffff9c 1px solid
+}
+#contentTabs A:hover {
+	BACKGROUND: #ffff9c
+}
+SPAN.card {
+	BORDER-RIGHT: 1px solid; PADDING-RIGHT: 5px; BORDER-TOP: 1px solid; PADDING-LEFT: 5px; FLOAT: left; PADDING-BOTTOM: 5px; MARGIN: 8px; BORDER-LEFT: 1px solid; WIDTH: 120px; PADDING-TOP: 5px; BORDER-BOTTOM: 1px solid; TEXT-ALIGN: center
+}
+SPAN.card A {
+	TEXT-DECORATION: none
+}
+SPAN.groupcard {
+	BORDER-RIGHT: 1px solid; PADDING-RIGHT: 2px; BORDER-TOP: 1px solid; PADDING-LEFT: 2px; FLOAT: left; PADDING-BOTTOM: 2px; MARGIN: 3px; BORDER-LEFT: 1px solid; WIDTH: 170px; PADDING-TOP: 2px; BORDER-BOTTOM: 1px solid; HEIGHT: 170px; TEXT-ALIGN: center
+}
+SPAN.groupcard A {
+	TEXT-DECORATION: none
+}
+.advbox {
+	VERTICAL-ALIGN: top; BORDER-TOP-STYLE: none; BORDER-RIGHT-STYLE: none; BORDER-LEFT-STYLE: none; BORDER-BOTTOM-STYLE: none
+}
+DIV.message {
+	BORDER-RIGHT: 1px ridge; PADDING-RIGHT: 1em; BORDER-TOP: 1px ridge; PADDING-LEFT: 1em; PADDING-BOTTOM: 0.5em; MARGIN: 1em 0em; FONT: bold 80% Verdana, Helvetica, Arial, sans-serif; VERTICAL-ALIGN: middle; BORDER-LEFT: 1px ridge; COLOR: black; PADDING-TOP: 0.5em; BORDER-BOTTOM: 1px ridge
+}
+TABLE.listing TD {
+	BORDER-RIGHT: 1px solid; PADDING-RIGHT: 1ex; PADDING-LEFT: 1ex; PADDING-BOTTOM: 1ex; PADDING-TOP: 1ex; TEXT-ALIGN: left
+}
+DIV.stx TABLE TD {
+	BORDER-RIGHT: 1px solid; PADDING-RIGHT: 1ex; PADDING-LEFT: 1ex; PADDING-BOTTOM: 1ex; PADDING-TOP: 1ex; TEXT-ALIGN: left
+}
+TABLE.listing TH {
+	BORDER-RIGHT: 1px solid; PADDING-RIGHT: 1em; BORDER-TOP: 1px solid; PADDING-LEFT: 1em; FONT-WEIGHT: normal; BACKGROUND: #eeffcc; PADDING-BOTTOM: 0em; COLOR: black; PADDING-TOP: 0em; BORDER-BOTTOM: 1px solid; WHITE-SPACE: nowrap
+}
+DIV.stx TABLE TH {
+	BORDER-RIGHT: 1px solid; PADDING-RIGHT: 1em; BORDER-TOP: 1px solid; PADDING-LEFT: 1em; FONT-WEIGHT: normal; BACKGROUND: #eeffcc; PADDING-BOTTOM: 0em; COLOR: black; PADDING-TOP: 0em; BORDER-BOTTOM: 1px solid; WHITE-SPACE: nowrap
+}
+INPUT.standalone {
+	PADDING-RIGHT: 1px; PADDING-LEFT: 15px; FONT-WEIGHT: bold; FONT-SIZE: 80%; BACKGROUND: url(linkTransparent.gif) white no-repeat 9px 1px; MARGIN-BOTTOM: 1em; PADDING-BOTTOM: 1px; CURSOR: pointer; COLOR: black; PADDING-TOP: 1px
+}
