@@ -517,8 +517,8 @@ window.TOONTALK.widget = (function (TT) {
         },
         
         get_side_element: function (create) {
-            // returns frontside if showing othewise backside
-            if (this.visible()) {
+            // returns frontside if showing otherwise backside
+            if (this.get_frontside().visible()) {
                 return this.get_frontside_element(create);
             } else {
                 return this.get_backside_element(create);

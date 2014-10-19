@@ -117,7 +117,7 @@ window.TOONTALK.robot_action =
 //             return;
 //         }
         left_offset = $(widget_frontside_element).width()/2;
-        top_offset  = $(widget_frontside_element).height()/-2;
+        top_offset  = $(widget_frontside_element).height()/2;
         // robots move at 1/4 pixel per millisecond for clarity
         robot.animate_to_widget(widget, continuation, .25, left_offset, top_offset);
         if (thing_in_hand) {
