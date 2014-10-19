@@ -61,12 +61,18 @@ window.TOONTALK.DISPLAY_UPDATES =
                     ensure_childen_have_higer_z_index(frontside_element, z_index);
                 }
                 // ensure that it is resizable if appropriate
-                if (frontside_element && !$(frontside_element).is(".toontalk-top-level-resource, .ui-resizable, .toontalk-bird, .toontalk-nest, .toontalk-box-hole, .toontalk-plain-text-element, .toontalk-conditions-contents, .toontalk-robot, .toontalk-widget, .toontalk-held-by-robot")) {
+                if (frontside_element && !$(frontside_element).is(".toontalk-top-level-resource, .toontalk-bird, .toontalk-nest, .toontalk-box-hole, .toontalk-plain-text-element, .toontalk-conditions-contents, .toontalk-robot, .toontalk-widget, .toontalk-held-by-robot")) {
                     // need to delay in order for the DOM to settle down with the changes caused by update_display
                     setTimeout(function () {
-                            TT.UTILITIES.make_resizable($(frontside_element), pending_update);
-                        },
-                        1);   
+                                   if ($parent_side_element.is('.toontalk-box-hole')) {
+                                       if ($(frontside_element).is(".ui-resizable")) {
+                                           $(frontside_element).resizable('destroy');
+                                       }
+                                   } else if (!$(frontside_element).is(".ui-resizable")) {
+                                       TT.UTILITIES.make_resizable($(frontside_element), pending_update);
+                                   }
+                              },
+                              1);   
                 }                  
             });
         },
