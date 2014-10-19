@@ -783,14 +783,14 @@ window.TOONTALK.widget = (function (TT) {
                 widget_copy = this.copy();
             }
             var frontside_element = this.get_frontside_element();
-            var frontside_element_copy = widget_copy.get_frontside_element();
-            var position = $(frontside_element).position();
+            var frontside_element_copy = widget_copy.get_frontside_element();  
             var $container_element = $(frontside_element).closest(".toontalk-backside");
+            var position = TT.UTILITIES.relative_position(frontside_element, $container_element.get(0));
             var container_widget = TT.UTILITIES.widget_from_jquery($container_element);
-            $(frontside_element_copy).css({width: $(frontside_element).width(),
+            $(frontside_element_copy).css({width:  $(frontside_element).width(),
                                            height: $(frontside_element).height(),
                                            left: position.left+30,
-                                           top: position.top+30});
+                                           top:  position.top+30});
             $container_element.append(frontside_element_copy);
             if (container_widget) {
                 container_widget.add_backside_widget(widget_copy);
