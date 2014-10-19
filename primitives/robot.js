@@ -709,6 +709,7 @@ window.TOONTALK.robot_backside =
                                                                  robot,
                                                                  "toontalk-frontside-conditions-area"), 
                                           backside_element.firstChild);
+            frontside_condition_widget.set_visible(true);
             frontside_condition_widget.render();
         }
         if (backside_conditions) {
@@ -727,6 +728,7 @@ window.TOONTALK.robot_backside =
                                                                        area_class_name);
                         }
                         backside_element.insertBefore(condition_element, backside_element.firstChild.nextSibling);
+                        backside_condition_widget.set_visible(true);
                         backside_condition_widget.render();
                     }
                 }
