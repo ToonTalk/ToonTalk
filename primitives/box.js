@@ -466,7 +466,6 @@ window.TOONTALK.box = (function (TT) {
         position = $(frontside_element).offset();
         increment = horizontal ? $(frontside_element).width()/size : $(frontside_element).height()/size;
         boundary = horizontal ? position.left : position.top;
-        increment;
         if (event) { // not clear how this could be called without an event
             for (i = 0; i < size; i++) {
                 hole = this.get_hole(i);
