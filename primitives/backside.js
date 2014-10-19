@@ -301,7 +301,6 @@ window.TOONTALK.backside =
             };
             backside_element.toontalk_widget = widget;
             TT.UTILITIES.drag_and_drop(backside_element);
-            // the following function should apply recursively...
             $backside_element.resizable(
                 {start: function () {
                     width_at_resize_start  = $backside_element.width();
