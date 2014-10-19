@@ -4,7 +4,7 @@
 <!-- <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/sunny/jquery-ui.css" />
 <link rel="stylesheet" media="all" href="https://toontalk.github.io/ToonTalk/toontalk.css">
 <script src="https://toontalk.github.io/ToonTalk/compile/toontalk.js"></script> -->
-<link rel="stylesheet" href="../../../libraries/jquery-ui-1.10.4.custom/css/sunny/jquery-ui.css" />
+<link rel="stylesheet" href="../../../libraries/jquery-ui-1.10.4.custom/css/sunny/jquery-ui-1.10.4.custom.css" />
 <link rel="stylesheet" media="all" href="../../../toontalk.css">
 <script src="../../../libraries/jquery-2.1.0.js"></script>
 <script src="../../../libraries/jquery-ui-1.10.4.custom/js/jquery-ui-1.10.4.custom.js"></script>
@@ -34,7 +34,7 @@
 <link rel="shortcut icon" href="favicon.ico" />
 </head>
 <body>
-<h1><b>Activity 1: </b></h1>
+<h1>Activity 1:</h1>
 
 <h2>Computing the Even Numbers in Two Ways</h2>
 <table border="1" cellspacing="0" cellpadding="10" > 
@@ -48,7 +48,7 @@
 <h2>Task A: Doubling each term in a sequence</h2>
 <p id="doubler-task">Train a robot called Doubler that receives a number on a nest and gives a bird twice that number.
 See the <a href="#doubler-instructions">illustrated instructions for training this robot</a>.
-Test out your Doubler robot by dragging him to the back of the box below and then clicking either green flag:</p>
+Test out your Doubler robot by dragging a copy of him to the back of the box below and then clicking either green flag:</p>
 <br>
 <div class='toontalk-json'>{
   "semantic": {
@@ -325,7 +325,7 @@ Test out your Doubler robot by dragging him to the back of the box below and the
               },
               "view": {
                 "frontside_left": 124.56182861328125,
-                "frontside_top": 78.23202514648438,
+                "frontside_top": 200.23202514648438,
                 "backside_geometry": {
                   "x_scale": 1,
                   "y_scale": 1,
@@ -358,15 +358,16 @@ Test out your Doubler robot by dragging him to the back of the box below and the
     }
   ]
 }</div>
+<br />
 <table border="1" cellspacing="0" cellpadding="10" > 
 <tr>
-<td >
+<td>
 <p><i>Give the input bird 1, and then 2, 3, 4, and 5. What numbers appear on the output nest?</i></p>
 </td>
 </tr>
 </table>
 <br>
-<textarea  cols="68" rows="4" style="font-size: 14pt;">
+<textarea  cols="69" rows="4" style="font-size: 14pt;">
 Enter your answer here.
 </textarea>
 <p>
@@ -376,39 +377,20 @@ If Doubler is working as it should then whatever number you give the input bird 
 Since we can't type in all the natural numbers we'll need a robot to help us.
 We'll call him Add 1 since that is what he'll do over and over again.
 Visit the <a href="#add-1-instructions">instructions for how to build Add 1</a>.</p>
-<p>To test out Add 1 first drag <a href="#add-1-workarea">the entire workspace</a> you created here and click the green flag:
-</p>
-<div class='toontalk-json'>{
-  "semantic": {
-    "type": "top_level"
-  },
-  "view": {
-    "background_color": "rgba(245, 240, 240, 0.941176)",
-    "frontside_width": 0,
-    "frontside_height": 0,
-    "backside_width": 867,
-    "backside_height": 332,
-    "backside_left": 8,
-    "backside_top": 185.1875,
-    "backside_geometry": {
-      "x_scale": 1,
-      "y_scale": 1,
-      "original_width": 1200,
-      "original_height": 475
-    },
-    "drag_x_offset": 522,
-    "drag_y_offset": 224.8125,
-    "backside": true
-  },
-  "version": 1
-}</div>
-<p>and watch what numbers end up on the nest.</p>
 <p>
-Try connecting Doubler to the sequence of <i>natural numbers</i> made by the Add 1 robot.
-You can do this by draging the box with the Doubler robot on the back to the work area above.
-Also drag Add 1's output nest there.
-Remove the nest from the Doubler box and put Add 1's output nest there instead.
-Click the green flag and watch.
+To test the Add 1 robot out go back to <a href="#add-1-workarea">where you trained the robot</a> and click the green flag.
+Watch what numbers end up on the nest.
+Stop it by clicking the stop sign.
+Try closing the backside of the box and run it again.
+</p>
+<p>
+Try connecting Doubler to the sequence of <a href="http://en.wikipedia.org/wiki/Natural_number" target="_blank">natural numbers</a>
+made by the Add 1 robot.
+You can do this by dragging the <a href="#add-1-workarea">nest of Add 1</a> to the empty hole of
+<a href="#doubler-workarea">the box with the Doubler robot on the back</a>. 
+Click the green flag of both the Add 1 and Doubler work areas and watch.
+You should see the bird from Add 1 bringing numbers to Doubler whose bird delivers those numbers doubled.
+Click the stop signs to stop things.
 </p>
 <table border="1" cellspacing="0" cellpadding="10" > 
 <tr>
@@ -499,7 +481,11 @@ Enter your answer here.
 <p>What does this tell you about how many even numbers there are?</p>
 
 <br />
-<p>You may be confused at this point. Infinity confused some of the world's best mathematicians. Galileo Galilei wrote in 1638 about how one line of reasoning leads you to think the sequences have the same number of numbers while another line of reasoning leads you to think there are fewer even numbers.</p>
+<p>You may be confused at this point. Infinity confused some of the world's best mathematicians.
+<a href="http://books.google.co.uk/books?id=BvyG03NrbC8C&pg=PA33&dq=Two+New+Sciences+Galileo+%22Pray+stop+a+moment%22&hl=en&sa=X&ei=x6NDVMKQAtjnaviIgtgM&ved=0CCsQ6AEwAA#v=onepage&q=Two%20New%20Sciences%20Galileo%20%22Pray%20stop%20a%20moment%22&f=false" target="_blank">
+Galileo Galilei wrote in 1638</a> about how one line of reasoning leads you to think the sequences have the same number of numbers
+while another line of reasoning leads you to think there are fewer even numbers.
+</p>
 
 <p>What do you think?</p>
 
@@ -508,7 +494,7 @@ Enter your answer here.
 <p>If you don't think they pair up, what is different from the room of boys and girls?
 </p>
 
-<h2 id="doubler-instructions"><b>Activity 1, Task A: How to Train the Doubler Robot</b></h2>
+<h2 id="doubler-instructions">Activity 1, Task A: One way to Train the Doubler Robot</h2>
 <table  border="1" cellspacing="0" cellpadding="4">
 <tr>
 <td>
@@ -535,7 +521,7 @@ Enter your answer here.
 </td>
 </tr>
 </table>
-<p>
+<p id="doubler-workarea">
 You can train the Doubler robot here:
 </p>
 <table class='toontalk-resource-table'>
@@ -661,7 +647,7 @@ You can train the Doubler robot here:
   "version": 1
 }</div>
 <a href="#doubler-task">Return to the task.</a>
-<h2 id="add-1-instructions">Activity 1, Task A: How to Train the Add 1 Robot</h2>
+<h2 id="add-1-instructions">Activity 1, Task A: One Way to Train the Add 1 Robot</h2>
 <table border="1" cellspacing="0" cellpadding="4">
 <tr>
 <td>
@@ -820,7 +806,7 @@ You can train the Add 1 robot here:
   "version": 1
 }</div>
 <a href="#add-1-task">Return to the task.</a>
-<h2 id="split-instructions">Activity 1, Task B: How to Train the Split Robot</h2>
+<h2 id="split-instructions">Activity 1, Task B: One Way to Train the Split Robot</h2>
 <table border="1" cellspacing="0" cellpadding="4">
 <tr>
 <td>
