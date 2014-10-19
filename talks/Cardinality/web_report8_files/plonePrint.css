@@ -1,0 +1,132 @@
+BODY {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; FONT-SIZE: 11pt; BACKGROUND: white; PADDING-BOTTOM: 0px; MARGIN: 0px; COLOR: black; PADDING-TOP: 0px
+}
+DIV.top {
+	DISPLAY: none; VISIBILITY: hidden
+}
+.netscape4 {
+	DISPLAY: none; VISIBILITY: hidden
+}
+.tabs {
+	DISPLAY: none; VISIBILITY: hidden
+}
+.personalBar {
+	DISPLAY: none; VISIBILITY: hidden
+}
+.pathBar {
+	DISPLAY: none; VISIBILITY: hidden
+}
+TD.left {
+	DISPLAY: none; VISIBILITY: hidden
+}
+TD.right {
+	DISPLAY: none; VISIBILITY: hidden
+}
+#contentTabs {
+	DISPLAY: none; VISIBILITY: hidden
+}
+#contentBar {
+	DISPLAY: none; VISIBILITY: hidden
+}
+DIV.documentActions {
+	DISPLAY: none; VISIBILITY: hidden
+}
+.footer {
+	DISPLAY: none; VISIBILITY: hidden
+}
+.help {
+	DISPLAY: none; VISIBILITY: hidden
+}
+.legend {
+	DISPLAY: none; VISIBILITY: hidden
+}
+DIV.message {
+	DISPLAY: none; VISIBILITY: hidden
+}
+INPUT {
+	DISPLAY: none; VISIBILITY: hidden
+}
+A.skipnav {
+	DISPLAY: none; VISIBILITY: hidden
+}
+UL {
+	LIST-STYLE-TYPE: square
+}
+.editableDocument {
+	PADDING-RIGHT: 0px! important; PADDING-LEFT: 0px! important; FONT-SIZE: 11pt; BACKGROUND: none transparent scroll repeat 0% 0%; PADDING-BOTTOM: 0px! important; MARGIN: 0px; BORDER-TOP-STYLE: none! important; PADDING-TOP: 0px! important; FONT-FAMILY: Georgia, Garamond, Times, serif; BORDER-RIGHT-STYLE: none! important; BORDER-LEFT-STYLE: none! important; TEXT-ALIGN: left; BORDER-BOTTOM-STYLE: none! important
+}
+.document {
+	PADDING-RIGHT: 0px! important; PADDING-LEFT: 0px! important; FONT-SIZE: 11pt; BACKGROUND: none transparent scroll repeat 0% 0%; PADDING-BOTTOM: 0px! important; MARGIN: 0px; BORDER-TOP-STYLE: none! important; PADDING-TOP: 0px! important; FONT-FAMILY: Georgia, Garamond, Times, serif; BORDER-RIGHT-STYLE: none! important; BORDER-LEFT-STYLE: none! important; TEXT-ALIGN: left; BORDER-BOTTOM-STYLE: none! important
+}
+.description {
+	PADDING-RIGHT: 0px! important; PADDING-LEFT: 0px! important; FONT-SIZE: 11pt; BACKGROUND: none transparent scroll repeat 0% 0%; PADDING-BOTTOM: 0px! important; MARGIN: 0px; BORDER-TOP-STYLE: none! important; PADDING-TOP: 0px! important; FONT-FAMILY: Georgia, Garamond, Times, serif; BORDER-RIGHT-STYLE: none! important; BORDER-LEFT-STYLE: none! important; TEXT-ALIGN: left; BORDER-BOTTOM-STYLE: none! important
+}
+.group {
+	PADDING-RIGHT: 0px! important; PADDING-LEFT: 0px! important; FONT-SIZE: 11pt; BACKGROUND: none transparent scroll repeat 0% 0%; PADDING-BOTTOM: 0px! important; MARGIN: 0px; BORDER-TOP-STYLE: none! important; PADDING-TOP: 0px! important; FONT-FAMILY: Georgia, Garamond, Times, serif; BORDER-RIGHT-STYLE: none! important; BORDER-LEFT-STYLE: none! important; TEXT-ALIGN: left; BORDER-BOTTOM-STYLE: none! important
+}
+LI {
+	PADDING-RIGHT: 0px! important; PADDING-LEFT: 0px! important; FONT-SIZE: 11pt; BACKGROUND: none transparent scroll repeat 0% 0%; PADDING-BOTTOM: 0px! important; MARGIN: 0px; BORDER-TOP-STYLE: none! important; PADDING-TOP: 0px! important; FONT-FAMILY: Georgia, Garamond, Times, serif; BORDER-RIGHT-STYLE: none! important; BORDER-LEFT-STYLE: none! important; TEXT-ALIGN: left; BORDER-BOTTOM-STYLE: none! important
+}
+#content {
+	PADDING-RIGHT: 0px! important; PADDING-LEFT: 0px! important; FONT-SIZE: 11pt; BACKGROUND: none transparent scroll repeat 0% 0%; PADDING-BOTTOM: 0px! important; MARGIN: 0px; BORDER-TOP-STYLE: none! important; PADDING-TOP: 0px! important; FONT-FAMILY: Georgia, Garamond, Times, serif; BORDER-RIGHT-STYLE: none! important; BORDER-LEFT-STYLE: none! important; TEXT-ALIGN: left; BORDER-BOTTOM-STYLE: none! important
+}
+.stx {
+	PADDING-RIGHT: 0px! important; PADDING-LEFT: 0px! important; FONT-SIZE: 11pt; BACKGROUND: none transparent scroll repeat 0% 0%; PADDING-BOTTOM: 0px! important; MARGIN: 0px; BORDER-TOP-STYLE: none! important; PADDING-TOP: 0px! important; FONT-FAMILY: Georgia, Garamond, Times, serif; BORDER-RIGHT-STYLE: none! important; BORDER-LEFT-STYLE: none! important; TEXT-ALIGN: left; BORDER-BOTTOM-STYLE: none! important
+}
+P {
+	PADDING-RIGHT: 0px! important; PADDING-LEFT: 0px! important; FONT-SIZE: 11pt; BACKGROUND: none transparent scroll repeat 0% 0%; PADDING-BOTTOM: 0px! important; MARGIN: 0px; BORDER-TOP-STYLE: none! important; PADDING-TOP: 0px! important; FONT-FAMILY: Georgia, Garamond, Times, serif; BORDER-RIGHT-STYLE: none! important; BORDER-LEFT-STYLE: none! important; TEXT-ALIGN: left; BORDER-BOTTOM-STYLE: none! important
+}
+.byline {
+	FONT-FAMILY: Georgia, Garamond, Times, serif
+}
+H1 {
+	FONT-WEIGHT: bold; BORDER-TOP-STYLE: none; FONT-FAMILY: Helvetica, Arial, sans-serif; BORDER-RIGHT-STYLE: none; BORDER-LEFT-STYLE: none; BORDER-BOTTOM-STYLE: none
+}
+H2 {
+	FONT-WEIGHT: bold; BORDER-TOP-STYLE: none; FONT-FAMILY: Helvetica, Arial, sans-serif; BORDER-RIGHT-STYLE: none; BORDER-LEFT-STYLE: none; BORDER-BOTTOM-STYLE: none
+}
+H3 {
+	FONT-WEIGHT: bold; BORDER-TOP-STYLE: none; FONT-FAMILY: Helvetica, Arial, sans-serif; BORDER-RIGHT-STYLE: none; BORDER-LEFT-STYLE: none; BORDER-BOTTOM-STYLE: none
+}
+H4 {
+	FONT-WEIGHT: bold; BORDER-TOP-STYLE: none; FONT-FAMILY: Helvetica, Arial, sans-serif; BORDER-RIGHT-STYLE: none; BORDER-LEFT-STYLE: none; BORDER-BOTTOM-STYLE: none
+}
+H5 {
+	FONT-WEIGHT: bold; BORDER-TOP-STYLE: none; FONT-FAMILY: Helvetica, Arial, sans-serif; BORDER-RIGHT-STYLE: none; BORDER-LEFT-STYLE: none; BORDER-BOTTOM-STYLE: none
+}
+H6 {
+	FONT-WEIGHT: bold; BORDER-TOP-STYLE: none; FONT-FAMILY: Helvetica, Arial, sans-serif; BORDER-RIGHT-STYLE: none; BORDER-LEFT-STYLE: none; BORDER-BOTTOM-STYLE: none
+}
+P {
+	MARGIN: 1em 0px; LINE-HEIGHT: 1.2em
+}
+#description {
+	MARGIN: 1em 0px; LINE-HEIGHT: 1.2em
+}
+PRE {
+	BORDER-RIGHT: black 1pt dashed; PADDING-RIGHT: 0px; BORDER-TOP: black 1pt dashed; PADDING-LEFT: 0px; FONT-SIZE: 8pt; PADDING-BOTTOM: 1em; OVERFLOW: auto; BORDER-LEFT: black 1pt dashed; PADDING-TOP: 1em; BORDER-BOTTOM: black 1pt dashed; WHITE-SPACE: pre
+}
+TABLE.listing {
+	BORDER-RIGHT: black 1pt solid; BORDER-TOP: black 1pt solid; BORDER-LEFT: black 1pt solid; BORDER-BOTTOM: black 1pt solid; BORDER-COLLAPSE: collapse
+}
+TABLE.listing TD {
+	BORDER-RIGHT: black 1pt solid; BORDER-TOP: black 1pt solid; BORDER-LEFT: black 1pt solid; BORDER-BOTTOM: black 1pt solid; BORDER-COLLAPSE: collapse
+}
+A {
+	COLOR: black! important
+}
+A.external {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; BACKGROUND: none transparent scroll repeat 0% 0%; PADDING-BOTTOM: 0px; PADDING-TOP: 0px
+}
+A:link {
+	BACKGROUND: none transparent scroll repeat 0% 0%; COLOR: #520; TEXT-DECORATION: underline
+}
+A:visited {
+	BACKGROUND: none transparent scroll repeat 0% 0%; COLOR: #520; TEXT-DECORATION: underline
+}
+DIV.document A:link:unknown {
+	content: " ( " attr(href) " ) "
+}
+DIV.document A:visited:unknown {
+	content: " ( " attr(href) " ) "
+}

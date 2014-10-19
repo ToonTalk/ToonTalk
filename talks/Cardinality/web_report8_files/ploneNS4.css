@@ -1,0 +1,291 @@
+BODY {
+	FONT-FAMILY: Verdana, Helvetica, sans-serif
+}
+TD {
+	FONT-FAMILY: Verdana, Helvetica, sans-serif
+}
+TH {
+	FONT-FAMILY: Verdana, Helvetica, sans-serif
+}
+DIV {
+	FONT-FAMILY: Verdana, Helvetica, sans-serif
+}
+SPAN {
+	FONT-FAMILY: Verdana, Helvetica, sans-serif
+}
+TABLE {
+	FONT-FAMILY: Verdana, Helvetica, sans-serif
+}
+BODY {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; BACKGROUND: white; PADDING-BOTTOM: 0px; COLOR: black; PADDING-TOP: 0px
+}
+A {
+	COLOR: blue; TEXT-DECORATION: none
+}
+P {
+	FONT-FAMILY: Verdana, Helvetica, sans-serif
+}
+P A {
+	TEXT-DECORATION: underline
+}
+P IMG {
+	BORDER-TOP-WIDTH: 0px; BORDER-LEFT-WIDTH: 0px; BORDER-BOTTOM-WIDTH: 0px; BORDER-RIGHT-WIDTH: 0px
+}
+HR {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-TOP: 0px
+}
+H1 {
+	COLOR: black
+}
+H2 {
+	COLOR: black
+}
+H3 {
+	COLOR: black
+}
+H4 {
+	COLOR: black
+}
+H5 {
+	COLOR: black
+}
+H6 {
+	COLOR: black
+}
+FORM {
+	BORDER-TOP-STYLE: none; BORDER-RIGHT-STYLE: none; BORDER-LEFT-STYLE: none; BORDER-BOTTOM-STYLE: none
+}
+TEXTAREA {
+	
+}
+INPUT {
+	
+}
+SELECT {
+	
+}
+abbr {
+	CURSOR: help; BORDER-BOTTOM: blue 1px dotted
+}
+ACRONYM {
+	CURSOR: help; BORDER-BOTTOM: blue 1px dotted
+}
+.explain {
+	CURSOR: help; BORDER-BOTTOM: blue 1px dotted
+}
+CODE {
+	
+}
+PRE {
+	BORDER-RIGHT: 1px ridge; PADDING-RIGHT: 1em; BORDER-TOP: 1px ridge; PADDING-LEFT: 1em; PADDING-BOTTOM: 1em; BORDER-LEFT: 1px ridge; PADDING-TOP: 1em; BORDER-BOTTOM: 1px ridge; BACKGROUND-COLOR: transparent
+}
+DIV.top {
+	BACKGROUND: none transparent scroll repeat 0% 0%; WIDTH: 100%
+}
+DIV.searchBox {
+	FLOAT: right; TEXT-ALIGN: right
+}
+DIV.tabs {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 1em; PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-TOP: 0px
+}
+DIV.tabs A {
+	FONT-WEIGHT: bold; BACKGROUND: none transparent scroll repeat 0% 0%; COLOR: blue
+}
+DIV.tabs A.selected {
+	FONT-WEIGHT: bold; BACKGROUND: none transparent scroll repeat 0% 0%; COLOR: blue
+}
+DIV.personalBar {
+	MARGIN: 0px; TEXT-ALIGN: right
+}
+DIV.personalBar A {
+	FONT-WEIGHT: bold
+}
+DIV.pathBar {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 1em; PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-TOP: 0px
+}
+TABLE.columns {
+	WIDTH: 100%
+}
+TABLE.columns TD.left {
+	VERTICAL-ALIGN: top; WIDTH: 15%; PADDING-TOP: 2em
+}
+TABLE.columns TD.main {
+	VERTICAL-ALIGN: top; WIDTH: 70%; PADDING-TOP: 2em
+}
+TABLE.columns TD.right {
+	VERTICAL-ALIGN: top; WIDTH: 15%; PADDING-TOP: 2em
+}
+DIV.contentTabs {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; PADDING-TOP: 0px
+}
+DIV.contentTabs A {
+	FONT-WEIGHT: bold; BACKGROUND: none transparent scroll repeat 0% 0%
+}
+DIV.contentTabs A.selected {
+	FONT-WEIGHT: bold
+}
+DIV.contentTabs A:hover {
+	
+}
+DIV.contentBar {
+	
+}
+DIV.document {
+	BACKGROUND: red
+}
+DIV.editableDocument {
+	BORDER-RIGHT: 1px ridge; PADDING-RIGHT: 1em; BORDER-TOP: 1px ridge; PADDING-LEFT: 1em; PADDING-BOTTOM: 0em; BORDER-LEFT: 1px ridge; PADDING-TOP: 0em; BORDER-BOTTOM: 1px ridge
+}
+DIV.message {
+	PADDING-RIGHT: 1em; PADDING-LEFT: 1em; PADDING-BOTTOM: 0.5em; FONT: bold 80% Verdana, Helvetica, Arial, sans-serif; VERTICAL-ALIGN: middle; PADDING-TOP: 0.5em
+}
+.description {
+	DISPLAY: block; FONT-FAMILY: Verdana, Helvetica, Arial, sans-serif
+}
+.footer {
+	CLEAR: both; PADDING-RIGHT: 0em; PADDING-LEFT: 0em; FLOAT: none; PADDING-BOTTOM: 0em; PADDING-TOP: 0em; TEXT-ALIGN: center
+}
+DIV.row {
+	CLEAR: both
+}
+DIV.rowEven {
+	CLEAR: both
+}
+DIV.rowOdd {
+	CLEAR: both
+}
+.group {
+	BORDER-RIGHT: 1px solid; PADDING-RIGHT: 1em; BORDER-TOP: 1px solid; PADDING-LEFT: 1em; PADDING-BOTTOM: 1em; BORDER-LEFT: 1px solid; PADDING-TOP: 1em; BORDER-BOTTOM: 1px solid
+}
+.legend {
+	FONT-WEIGHT: bold
+}
+INPUT.standalone {
+	FONT-WEIGHT: bold; CURSOR: pointer
+}
+INPUT.context {
+	FONT-WEIGHT: bold; CURSOR: pointer
+}
+.error {
+	BORDER-RIGHT: 1px ridge; BORDER-TOP: 1px ridge; BORDER-LEFT: 1px ridge; BORDER-BOTTOM: 1px ridge
+}
+.required {
+	BACKGROUND: url(required.gif) no-repeat right 50%
+}
+.label {
+	PADDING-RIGHT: 0em; PADDING-LEFT: 0em; FONT-WEIGHT: bold; PADDING-BOTTOM: 0em; PADDING-TOP: 0em
+}
+.field {
+	PADDING-RIGHT: 0em; PADDING-LEFT: 0em; PADDING-BOTTOM: 0em; PADDING-TOP: 0em; TEXT-ALIGN: left
+}
+.info {
+	PADDING-RIGHT: 0em; PADDING-LEFT: 0em; PADDING-BOTTOM: 0.2em; PADDING-TOP: 0em; TEXT-ALIGN: left
+}
+DIV.help {
+	FONT-WEIGHT: normal
+}
+SPAN.card {
+	BORDER-RIGHT: 1px solid; BORDER-TOP: 1px solid; BACKGROUND: none transparent scroll repeat 0% 0%; BORDER-LEFT: 1px solid; BORDER-BOTTOM: 1px solid; TEXT-ALIGN: center
+}
+SPAN.left {
+	FLOAT: left; WIDTH: 40%; TEXT-ALIGN: left
+}
+SPAN.right {
+	FLOAT: right; WIDTH: 40%; TEXT-ALIGN: right
+}
+TABLE.listing {
+	
+}
+TABLE.listing TH {
+	PADDING-RIGHT: 1em; PADDING-LEFT: 1em; FONT-WEIGHT: normal; PADDING-BOTTOM: 0em; COLOR: black; PADDING-TOP: 0em
+}
+TABLE.listing TR.odd {
+	BACKGROUND: none transparent scroll repeat 0% 0%
+}
+TABLE.listing TR.even {
+	
+}
+TABLE.listing TD {
+	PADDING-RIGHT: 1em; PADDING-LEFT: 1em; PADDING-BOTTOM: 0em; PADDING-TOP: 0em
+}
+TABLE.listing A:hover {
+	TEXT-DECORATION: underline
+}
+DIV.boxDetails {
+	TEXT-ALIGN: right
+}
+DIV.box {
+	BORDER-RIGHT: 1px solid; BORDER-TOP: 1px solid; MARGIN-BOTTOM: 1em; BORDER-LEFT: 1px solid; BORDER-BOTTOM: 1px solid
+}
+.boxTitle {
+	
+}
+TABLE.box A.comment {
+	PADDING-RIGHT: 0em; BACKGROUND-POSITION: 0px 0px; PADDING-LEFT: 2em; BACKGROUND-IMAGE: url(http://www.weblabs.org.uk/wlplone/discussionitem_icon.gif); PADDING-BOTTOM: 0.5em; PADDING-TOP: 0em
+}
+TABLE.box A.plain {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; PADDING-TOP: 0px
+}
+SPAN.folderName {
+	FONT-WEIGHT: bold; FONT-SIZE: 150%
+}
+DIV.spacer {
+	
+}
+.private {
+	COLOR: black
+}
+.published {
+	COLOR: #74ae0b
+}
+.pending {
+	COLOR: #ffa500
+}
+.syndicated {
+	COLOR: #008000
+}
+.expired {
+	COLOR: red
+}
+DIV.day {
+	BACKGROUND-COLOR: #ffffbb
+}
+DIV.date {
+	FONT-WEIGHT: bold
+}
+TABLE.calendar {
+	BORDER-RIGHT: 1px solid; BORDER-TOP: 1px solid; BORDER-LEFT: 1px solid; BORDER-BOTTOM: 1px solid; TEXT-ALIGN: right
+}
+TABLE.calendar A {
+	TEXT-DECORATION: none
+}
+TABLE.calendar A:hover {
+	TEXT-DECORATION: none
+}
+TABLE.calendar TH {
+	FONT-WEIGHT: bold; COLOR: black; TEXT-ALIGN: center
+}
+TABLE.calendar TD {
+	PADDING-RIGHT: 2px; PADDING-LEFT: 2px; PADDING-BOTTOM: 2px; WIDTH: 1.5em; PADDING-TOP: 2px
+}
+TABLE.calendar TD.weekdays {
+	BORDER-RIGHT: 1px; BORDER-TOP: 1px solid; BORDER-LEFT: 1px; BORDER-BOTTOM: 1px solid; TEXT-ALIGN: center
+}
+TABLE.calendar TD.event {
+	FONT-WEIGHT: bold
+}
+TABLE.calendar TD.noevent {
+	
+}
+TABLE.calendar TD.othermonth {
+	BORDER-RIGHT: #8cacbb 1px solid; BORDER-TOP: #8cacbb 1px solid; VERTICAL-ALIGN: bottom; BORDER-LEFT: #8cacbb 1px solid; BORDER-BOTTOM: #8cacbb 1px solid; BACKGROUND-COLOR: #ffffff
+}
+TABLE.calendar TD.holiday {
+	BORDER-RIGHT: #8cacbb 1px solid; BORDER-TOP: #8cacbb 1px solid; BORDER-LEFT: #8cacbb 1px solid; BORDER-BOTTOM: #8cacbb 1px solid; BACKGROUND-COLOR: #cf6060
+}
+TABLE.calendar TD.todayevent {
+	BORDER-RIGHT: 2px solid; BORDER-TOP: 2px solid; FONT-WEIGHT: bold; BORDER-LEFT: 2px solid; BORDER-BOTTOM: 2px solid
+}
+TABLE.calendar TD.todaynoevent {
+	BORDER-RIGHT: #ffa500 2px solid; BORDER-TOP: #ffa500 2px solid; BORDER-LEFT: #ffa500 2px solid; BORDER-BOTTOM: #ffa500 2px solid; BORDER-COLLAPSE: collapse
+}

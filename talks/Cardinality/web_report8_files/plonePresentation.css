@@ -1,0 +1,102 @@
+BODY {
+	FONT-SIZE: 40px; BACKGROUND: url(logo.jpg) white fixed no-repeat 95% 95%; MARGIN: 5%; COLOR: black; FONT-FAMILY: Verdana Helvetica Arial sans-serif
+}
+H1 {
+	BORDER-RIGHT: transparent 1px solid; PADDING-RIGHT: 0.5em; BORDER-TOP: transparent 1px solid; MARGIN-TOP: 1em; PADDING-LEFT: 0.5em; FONT-SIZE: 40px; BACKGROUND: none transparent scroll repeat 0% 0%; PAGE-BREAK-BEFORE: always; BORDER-LEFT: transparent 1px solid; PADDING-TOP: 0em; BORDER-BOTTOM: transparent 1px solid
+}
+H2 {
+	FONT-SIZE: 30px
+}
+P {
+	FONT-SIZE: 30px; TEXT-ALIGN: left
+}
+DL {
+	FONT-SIZE: 30px; TEXT-ALIGN: left
+}
+OL {
+	FONT-SIZE: 30px; TEXT-ALIGN: left
+}
+UL {
+	FONT-SIZE: 30px; TEXT-ALIGN: left
+}
+.description {
+	FONT-WEIGHT: normal; FONT-SIZE: 30px
+}
+DIV.top {
+	DISPLAY: none
+}
+.netscape4 {
+	DISPLAY: none
+}
+.tabs {
+	DISPLAY: none
+}
+.personalBar {
+	DISPLAY: none
+}
+.pathBar {
+	DISPLAY: none
+}
+TD.left {
+	DISPLAY: none
+}
+TD.right {
+	DISPLAY: none
+}
+.footer {
+	DISPLAY: none
+}
+.help {
+	DISPLAY: none
+}
+.legend {
+	DISPLAY: none
+}
+DIV.message {
+	DISPLAY: none
+}
+DIV.documentActions {
+	DISPLAY: none
+}
+INPUT {
+	DISPLAY: none
+}
+#contentTabs {
+	DISPLAY: none
+}
+#contentBar {
+	DISPLAY: none
+}
+UL {
+	LIST-STYLE-TYPE: square
+}
+PRE {
+	PADDING-RIGHT: 1em; PADDING-LEFT: 1em; FONT-SIZE: 20px; PADDING-BOTTOM: 1em; PADDING-TOP: 1em
+}
+DIV.editableDocument {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; BACKGROUND: none transparent scroll repeat 0% 0%; PADDING-BOTTOM: 0px; MARGIN: 0px; BORDER-TOP-STYLE: none; PADDING-TOP: 0px; BORDER-RIGHT-STYLE: none; BORDER-LEFT-STYLE: none; BORDER-BOTTOM-STYLE: none
+}
+DIV.document {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; BACKGROUND: none transparent scroll repeat 0% 0%; PADDING-BOTTOM: 0px; MARGIN: 0px; BORDER-TOP-STYLE: none; PADDING-TOP: 0px; BORDER-RIGHT-STYLE: none; BORDER-LEFT-STYLE: none; BORDER-BOTTOM-STYLE: none
+}
+.group {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; BACKGROUND: none transparent scroll repeat 0% 0%; PADDING-BOTTOM: 0px; MARGIN: 0px; BORDER-TOP-STYLE: none; PADDING-TOP: 0px; BORDER-RIGHT-STYLE: none; BORDER-LEFT-STYLE: none; BORDER-BOTTOM-STYLE: none
+}
+TABLE.listing {
+	BORDER-RIGHT: black 1pt solid; BORDER-TOP: black 1pt solid; BORDER-LEFT: black 1pt solid; BORDER-BOTTOM: black 1pt solid; BORDER-COLLAPSE: collapse
+}
+TABLE.listing TD {
+	BORDER-RIGHT: black 1pt solid; BORDER-TOP: black 1pt solid; BORDER-LEFT: black 1pt solid; BORDER-BOTTOM: black 1pt solid; BORDER-COLLAPSE: collapse
+}
+A:link {
+	FONT-WEIGHT: bold; BACKGROUND: none transparent scroll repeat 0% 0%; COLOR: #520; TEXT-DECORATION: underline
+}
+A:visited {
+	FONT-WEIGHT: bold; BACKGROUND: none transparent scroll repeat 0% 0%; COLOR: #520; TEXT-DECORATION: underline
+}
+DIV.document A:link:unknown {
+	FONT-SIZE: 90%; content: " (" attr(href) ") "
+}
+DIV.document A:visited:unknown {
+	FONT-SIZE: 90%; content: " (" attr(href) ") "
+}
