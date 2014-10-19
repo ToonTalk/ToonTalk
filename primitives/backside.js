@@ -19,8 +19,8 @@ window.TOONTALK.backside =
             var green_flag_element = document.createElement("div");
             var stop_sign_element  = document.createElement("div");
             var help_URL = widget.get_help_URL && widget.get_help_URL();
-            var original_width, original_height, width_at_resize_start, height_at_resize_start, close_button, backside_widgets,
-                help_button, help_frame, close_help_button;
+            var visible, original_width, original_height, width_at_resize_start, height_at_resize_start, 
+                close_button, backside_widgets, help_button, help_frame, close_help_button;
             var update_flag_and_stop_sign_classes = function (running) {
                     if (running) {
                         $(green_flag_element).addClass   ("toontalk-green-flag-active")
@@ -153,6 +153,16 @@ window.TOONTALK.backside =
             backside.get_widget = function () {
                 return widget;
             };
+            backside.visible = function () {
+                return visible;
+            };
+            backside.set_visible = function (new_value) {
+                var backside_widgets = this.get_widget().get_backside_widgets();
+                visible = new_value;
+                backside_widgets.forEach(function (backside_widget) {
+                        backside_widget.set_visible(new_value);
+                });
+            };
             if (!widget.get_backside) {
                 // e.g. top-level backside
                 widget.get_backside = function () {
@@ -230,6 +240,7 @@ window.TOONTALK.backside =
                 setTimeout(
                     function () {
                         var widget_side_element, json_view;
+                        var backside_visible = this.visible();
                         backside_widgets.forEach(function (backside_widget_side, index) {
                             var backside = backside_widget_side.get_widget().get_backside();
                             widget_side_element = backside_widget_side.get_element(true);
@@ -255,9 +266,10 @@ window.TOONTALK.backside =
                                 }
                             }
                             $backside_element.append(widget_side_element);
+                            backside_widget_side.set_visible(backside_visible);
                             backside_widget_side.get_widget().rerender();
                         });
-                    },
+                    }.bind(this),
                     1);
             };
             backside.get_backside_dimensions = function () {
@@ -387,10 +399,10 @@ window.TOONTALK.backside =
             $(this.get_element()).remove();
         },
         
-        visible: function () {
-            var backside_element = this.get_element();
-            return (backside_element && $(backside_element).is(":visible"));
-        },
+//         visible: function () {
+//             var backside_element = this.get_element();
+//             return (backside_element && $(backside_element).is(":visible"));
+//         },
         
 //         update_run_button_disabled_attribute: function () {
 //             var backside_element = this.get_element();
@@ -561,91 +573,13 @@ window.TOONTALK.backside =
                 $backside_container.append(frontside_element);
                 widget.render();
             }
+            if (widget.backside_widgets) {
+                widget.backside_widgets.forEach(function (widget_side) {
+                        widget_side.set_visible(false);
+                });
+            }
         },
         
-//         create_erase_button: function (backside, widget) {
-//             var backside_element = backside.get_element();
-//             var $backside_element = $(backside_element);
-//             var $erase_button = $("<button>Erase</button>").button();
-//             $erase_button.addClass("toontalk-erase-backside-button");
-//             TT.widget.erasable(widget); // should already be so but can't hurt to be sure
-//             var update_title = function () {
-//                 if (widget.get_erased()) {
-//                     $erase_button.button("option", "label", "Un-erase");
-//                     $erase_button.attr("title", "Click to restore this to how it was before it was erased.");
-//                 } else {
-//                     $erase_button.button("option", "label", "Erase");
-//                     $erase_button.attr("title", "Click to erase this so the robot won't be so fussy.");
-//                 }
-//             };
-//             update_title();
-//             $erase_button.click(function (event) {
-//                 var frontside_element = widget.get_frontside_element();
-//                 var erased = !widget.get_erased();
-//                 widget.set_erased(erased, true);
-//                 update_title();
-//                 if (TT.robot.in_training) {
-//                     TT.robot.in_training.erased_widget(widget, erased);
-//                 }
-//                 TT.UTILITIES.backup_all();
-//                 event.stopPropagation();
-//             });
-//             $erase_button.attr("title", "Click to hide this.");
-//             return $erase_button.get(0);
-//         },
-        
-//         create_copy_button: function (backside, widget) {
-//             var backside_element = backside.get_element();
-//             var $backside_element = $(backside_element);
-//             var $copy_button = $("<button>Copy</button>").button();
-//             $copy_button.addClass("toontalk-copy-backside-button");
-//             $copy_button.click(function (event) {
-//                 widget.add_copy_to_container();
-//                 TT.UTILITIES.backup_all();
-//                 event.stopPropagation();
-//             });
-//             $copy_button.attr("title", "Click to make a copy of this " + widget.get_type_name());
-//             return $copy_button.get(0);
-//         },
-        
-//         create_run_button: function (backside, widget) {
-//             var backside_element = backside.get_element();
-//             var $backside_element = $(backside_element);
-//             var $run_button = $("<button>Run</button>").button();
-//             $run_button.addClass("toontalk-run-backside-button");
-//             $run_button.get(0).toontalk_widget = widget;
-//             $run_button.click(function (event) {
-//                 var will_run = !widget.get_running();
-//                 TT.backside.update_run_button($run_button);
-//                 widget.set_running(will_run);
-//                 event.stopPropagation();
-//             });
-//             setTimeout(function () {
-//                     this.update_run_button($run_button);
-//                 }.bind(this),
-//                 1);            
-//             return $run_button.get(0);
-//         },
-        
-//         update_run_button: function ($run_button) {
-//             var widget = $run_button.get(0).toontalk_widget;
-//             var running = widget.get_running();
-//             if (!$run_button.is(":enabled")) {
-//                 $run_button.attr("title", "Add robots here to give behaviours to this " + widget.get_type_name());
-//                 return;
-//             }
-//             if (!$run_button.is(":visible")) {
-//                 return;
-//             }
-//             if (!running) {
-//                 $run_button.button("option", "label", "Run");
-//                 $run_button.attr("title", "Click to run the robots on this " + widget.get_type_name());
-//             } else {
-//                 $run_button.button("option", "label", "Stop");
-//                 $run_button.attr("title", "Click to stop running the robots on this " + widget.get_type_name());
-//             }
-//         },
-
         create_advanced_settings_button: function (backside, widget) {
             var buuton = document.createElement('div');
             var $settings_button = $(buuton);

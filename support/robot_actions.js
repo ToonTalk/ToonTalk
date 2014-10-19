@@ -154,7 +154,7 @@ window.TOONTALK.actions =
                 robot_home.top  += $backside_element.height()-robot_height;
             }
             robot.run_next_step = function () {
-                if (context_backside && $(context_backside.get_element()).is(":visible")) {
+                if (context_backside && context_backside.visible()) {
                     // pause between steps and give the previous step a chance to update the DOM     
                     setTimeout(function () {
                             if (step_number < steps.length) {

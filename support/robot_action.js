@@ -30,12 +30,12 @@ window.TOONTALK.robot_action =
                  thing_in_hand = robot.get_thing_in_hand();
                  if (thing_in_hand) {
                      if (thing_in_hand.drop_on) {
-                         if (target.visible && target.visible()) {
-                             target.render();
-                         }
                          // TODO: update this when robots can drop backsides as well
                          thing_in_hand.drop_on(target, false, undefined, robot);
                          robot.set_thing_in_hand(undefined);
+                         if (target.visible && target.visible()) {
+                             target.render();
+                         }
                          if (thing_in_hand.caused_robot_to_wait_before_next_step) {
                             // NOTE thing_in_hand needs to call robot.run_next_step();
                             if (!additional_info || !additional_info.running_watched) {
@@ -105,18 +105,19 @@ window.TOONTALK.robot_action =
         var thing_in_hand = robot.get_thing_in_hand();
         var robot_frontside_element = robot.get_frontside_element();
         var widget = side.get_widget();
-        var widget_frontside_element, left_offset, top_offset;
-        if (widget.get_frontside_element) {
-            widget_frontside_element = widget.get_frontside_element();
-        } else if (widget.get_side_element) {
-            widget_frontside_element = widget.get_side_element();
-        } else {
-            TT.UTILITIES.report_internal_error("Unable to find element corresponding to widget " + widget);
-            continuation();
-            return;
-        }
+        var widget_frontside_element = side.get_element(); 
+        var left_offset, top_offset;
+//         if (widget.get_frontside_element) {
+//             widget_frontside_element = widget.get_frontside_element();
+//         } else if (widget.get_side_element) {
+//             widget_frontside_element = widget.get_side_element();
+//         } else {
+//             TT.UTILITIES.report_internal_error("Unable to find element corresponding to widget " + widget);
+//             continuation();
+//             return;
+//         }
         left_offset = $(widget_frontside_element).width()/2;
-        top_offset  = $(widget_frontside_element).height()/-2;
+        top_offset  = $(widget_frontside_element).height()/2;
         // robots move at 1/4 pixel per millisecond for clarity
         robot.animate_to_widget(widget, continuation, .25, left_offset, top_offset);
         if (thing_in_hand) {
@@ -327,9 +328,10 @@ window.TOONTALK.robot_action =
                 }
                 if (!referenced) {
                     TT.UTILITIES.report_internal_error("Unable to dereference the path: " + TT.path.toString(path) + " in context: " + context.toString());
-                    return false;
+                    return;
                 }
-                return watched_run_function(referenced, context, top_level_context, robot, continuation, additional_info);
+                referenced.set_visible(true);
+                watched_run_function(referenced, context, top_level_context, robot, continuation, additional_info);
             };
             new_action.toString = function () {
                 // following is broken but not clear what the intent was -- perhaps sometimes additional_info has a better action description?

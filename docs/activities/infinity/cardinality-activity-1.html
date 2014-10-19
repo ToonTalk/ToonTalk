@@ -4,7 +4,7 @@
 <!-- <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/sunny/jquery-ui.css" />
 <link rel="stylesheet" media="all" href="https://toontalk.github.io/ToonTalk/toontalk.css">
 <script src="https://toontalk.github.io/ToonTalk/compile/toontalk.js"></script> -->
-<link rel="stylesheet" href="../../../libraries/jquery-ui-1.10.4.custom/css/sunny/jquery-ui.css" />
+<link rel="stylesheet" href="../../../libraries/jquery-ui-1.10.4.custom/css/sunny/jquery-ui-1.10.4.custom.css" />
 <link rel="stylesheet" media="all" href="../../../toontalk.css">
 <script src="../../../libraries/jquery-2.1.0.js"></script>
 <script src="../../../libraries/jquery-ui-1.10.4.custom/js/jquery-ui-1.10.4.custom.js"></script>
@@ -34,7 +34,7 @@
 <link rel="shortcut icon" href="favicon.ico" />
 </head>
 <body>
-<h1><b>Activity 1: </b></h1>
+<h1>Activity 1:</h1>
 
 <h2>Computing the Even Numbers in Two Ways</h2>
 <table border="1" cellspacing="0" cellpadding="10" > 
@@ -48,7 +48,7 @@
 <h2>Task A: Doubling each term in a sequence</h2>
 <p id="doubler-task">Train a robot called Doubler that receives a number on a nest and gives a bird twice that number.
 See the <a href="#doubler-instructions">illustrated instructions for training this robot</a>.
-Test out your Doubler robot by dragging him to the back of the box below and then clicking either green flag:</p>
+Test out your Doubler robot by dragging a copy of him to the back of the box below and then clicking either green flag:</p>
 <br>
 <div class='toontalk-json'>{
   "semantic": {
@@ -325,7 +325,7 @@ Test out your Doubler robot by dragging him to the back of the box below and the
               },
               "view": {
                 "frontside_left": 124.56182861328125,
-                "frontside_top": 78.23202514648438,
+                "frontside_top": 200.23202514648438,
                 "backside_geometry": {
                   "x_scale": 1,
                   "y_scale": 1,
@@ -358,15 +358,16 @@ Test out your Doubler robot by dragging him to the back of the box below and the
     }
   ]
 }</div>
+<br />
 <table border="1" cellspacing="0" cellpadding="10" > 
 <tr>
-<td >
+<td>
 <p><i>Give the input bird 1, and then 2, 3, 4, and 5. What numbers appear on the output nest?</i></p>
 </td>
 </tr>
 </table>
 <br>
-<textarea  cols="68" rows="4" style="font-size: 14pt;">
+<textarea  cols="69" rows="4" style="font-size: 14pt;">
 Enter your answer here.
 </textarea>
 <p>
@@ -376,39 +377,20 @@ If Doubler is working as it should then whatever number you give the input bird 
 Since we can't type in all the natural numbers we'll need a robot to help us.
 We'll call him Add 1 since that is what he'll do over and over again.
 Visit the <a href="#add-1-instructions">instructions for how to build Add 1</a>.</p>
-<p>To test out Add 1 first drag <a href="#add-1-workarea">the entire workspace</a> you created here and click the green flag:
-</p>
-<div class='toontalk-json'>{
-  "semantic": {
-    "type": "top_level"
-  },
-  "view": {
-    "background_color": "rgba(245, 240, 240, 0.941176)",
-    "frontside_width": 0,
-    "frontside_height": 0,
-    "backside_width": 867,
-    "backside_height": 332,
-    "backside_left": 8,
-    "backside_top": 185.1875,
-    "backside_geometry": {
-      "x_scale": 1,
-      "y_scale": 1,
-      "original_width": 1200,
-      "original_height": 475
-    },
-    "drag_x_offset": 522,
-    "drag_y_offset": 224.8125,
-    "backside": true
-  },
-  "version": 1
-}</div>
-<p>and watch what numbers end up on the nest.</p>
 <p>
-Try connecting Doubler to the sequence of <i>natural numbers</i> made by the Add 1 robot.
-You can do this by draging the box with the Doubler robot on the back to the work area above.
-Also drag Add 1's output nest there.
-Remove the nest from the Doubler box and put Add 1's output nest there instead.
-Click the green flag and watch.
+To test the Add 1 robot out go back to <a href="#add-1-workarea">where you trained the robot</a> and click the green flag.
+Watch what numbers end up on the nest.
+Stop it by clicking the stop sign.
+Try closing the backside of the box and run it again.
+</p>
+<p>
+Try connecting Doubler to the sequence of <a href="http://en.wikipedia.org/wiki/Natural_number" target="_blank">natural numbers</a>
+made by the Add 1 robot.
+You can do this by dragging the <a href="#add-1-workarea">nest of Add 1</a> to the empty hole of
+<a href="#doubler-workarea">the box with the Doubler robot on the back</a>. 
+Click the green flag of both the Add 1 and Doubler work areas and watch.
+You should see the bird from Add 1 bringing numbers to Doubler whose bird delivers those numbers doubled.
+Click the stop signs to stop things.
 </p>
 <table border="1" cellspacing="0" cellpadding="10" > 
 <tr>
@@ -425,37 +407,13 @@ Explain here.
 
 <h2>Task B: Removing every other term in a sequence</h2>
 <p id="split-task">Train a robot called Split.
-As numbers arrive on the input nest Split gives them alternatively to birds one and two.
+As numbers arrive on the input nest Split gives them alternatively to two birds.
+The nests of the birds should receive every other number.
 See the <a href="#split-instructions">instructions for training Split</a>.
 </p>
 <p>
-Drag the Split robot's box below and put the nest with the natural numbers in the first hole.
-Click on the green flag:</p>
-<br>
-<div class='toontalk-json'>{
-  "semantic": {
-    "type": "top_level"
-  },
-  "view": {
-    "background_color": "rgba(245, 240, 240, 0.941176)",
-    "frontside_width": 0,
-    "frontside_height": 0,
-    "backside_width": 867,
-    "backside_height": 332,
-    "backside_left": 8,
-    "backside_top": 185.1875,
-    "backside_geometry": {
-      "x_scale": 1,
-      "y_scale": 1,
-      "original_width": 1200,
-      "original_height": 475
-    },
-    "drag_x_offset": 522,
-    "drag_y_offset": 224.8125,
-    "backside": true
-  },
-  "version": 1
-}</div>
+Drag the nest with the natural numbers in the first hole of Split's box.
+Click on the green flag.</p>
 <table border="1" cellspacing="0" cellpadding="10" > 
 <tr>
 <td>
@@ -468,47 +426,92 @@ Click on the green flag:</p>
 <textarea  cols="68" rows="4" style="font-size: 14pt;">
 Enter your answer here.
 </textarea>
+
 <h2>Task C: Thinking about the two ways of making all the even numbers</h2>
-
-<p>Copy the nest that will receive all the <i>natural numbers</i> produced by the Add 1 robot. Start up the Add 1 robot and you should see each copy of the nest receiving 1, 2, 3 and so on.</p>
-
-<p>Start again and give one copy to your Doubler robot and the other to the Split robot. Now start up the Add 1 robot again with the box:</p>
-
-<p>If all the robots ran forever would there be a difference between the numbers that are on B's nest and the output nest of Doubler?</p>
-
-<p>If there is a difference, what is it? </p>
-
-<p>If there is no difference, how can they be the same sequence if Doubler uses every <i>natural number</i> and Split puts only half of the numbers on B's nest?
+<p>Copy the nest that will receive all the <i>natural numbers</i> produced by the Add 1 robot.
+Start up the Add 1 robot and you should see each copy of the nest receiving 1, 2, 3 and so on.
 </p>
-
-<b><br />
-</b> <b><br />
-</b> <h2>Task D: Even numbers dancing with <i>natural numbers</i></h2>
-
+<p>
+Give one copy of the natural numbers nest to your Doubler robot and the other to the Split robot.
+Start all of them running and observe carefully.
+</p>
+<table border="1" cellspacing="0" cellpadding="10" > 
+<tr>
+<td>
+<p>
+If all the robots ran forever would there be a difference between the numbers that are one of Split's nests
+and the output nest of Doubler?
+</p>
+<p>If there is a difference, what is it? </p>
+<p>If there is no difference, how can they be the same sequence if Doubler uses every <i>natural number</i>
+and Split puts only half of the numbers on B's nest?
+</p>
+</td>
+</tr>
+</table>
+<br />
+<textarea  cols="68" rows="4" style="font-size: 14pt;">
+Enter your answer here.
+</textarea>
+<h2>Task D: Even numbers dancing with <i>natural numbers</i></h2>
+<table border="1" cellspacing="0" cellpadding="10" > 
+<tr>
+<td>
 <p>If you saw a room full of boys and girls and everyone was dancing with a partner of the opposite sex, could you figure out if there was the same number of boys as girls? Without counting!</p>
-
 <p>How would you convince someone you are right?
 </p>
-
-<p>Imagine that you are running the Doubler robot and that after the Add 1 robots gives a bird a number it is copied and begins dancing with the output number of the Doubler robot. So 1 dances with 2, 2 with 4, 3 with 6, and so on.</p>
-
-<p>If this continued forever would every even number be dancing with a <i>natural number</i>?</p>
-
-<p>Would every <i>natural number</i> be dancing with an even number?</p>
-
-<p>What does this tell you about how many even numbers there are?</p>
-
+</td>
+</tr>
+</table>
 <br />
-<p>You may be confused at this point. Infinity confused some of the world's best mathematicians. Galileo Galilei wrote in 1638 about how one line of reasoning leads you to think the sequences have the same number of numbers while another line of reasoning leads you to think there are fewer even numbers.</p>
-
+<textarea  cols="68" rows="4" style="font-size: 14pt;">
+Enter your answer here.
+</textarea>
+<br />
+<br />
+<table border="1" cellspacing="0" cellpadding="10" > 
+<tr>
+<td>
+<p>Imagine that you are running the Doubler robot and that after the Add 1 robots gives a bird a number
+it is copied and begins dancing with the output number of the Doubler robot.
+So 1 dances with 2, 2 with 4, 3 with 6, and so on.</p>
+<p>If this continued forever would every even number be dancing with a <i>natural number</i>?</p>
+<p>Would every <i>natural number</i> be dancing with an even number?</p>
+<p>What does this tell you about how many even numbers there are?</p>
+</td>
+</tr>
+</table>
+<br />
+<textarea  cols="68" rows="4" style="font-size: 14pt;">
+Enter your answer here.
+</textarea>
+<br />
+<p>You may be confused at this point.
+Infinity confused some of the world's best mathematicians.
+<a href="http://books.google.co.uk/books?id=BvyG03NrbC8C&pg=PA33&dq=Two+New+Sciences+Galileo+%22Pray+stop+a+moment%22&hl=en&sa=X&ei=x6NDVMKQAtjnaviIgtgM&ved=0CCsQ6AEwAA#v=onepage&q=Two%20New%20Sciences%20Galileo%20%22Pray%20stop%20a%20moment%22&f=false" target="_blank">
+Galileo Galilei wrote in 1638</a> about how one line of reasoning leads you to think the sequences have the same number of numbers
+while another line of reasoning leads you to think there are fewer even numbers.
+</p>
+<table border="1" cellspacing="0" cellpadding="10" > 
+<tr>
+<td>
 <p>What do you think?</p>
-
-<p>If you think they all pair up then how do you explain that the sequence of <i>natural numbers</i> contains all the even and all the odd numbers?</p>
-
+<p>If you think they all pair up then how do you explain that the sequence of <i>natural numbers</i> contains all the even
+and all the odd numbers?</p>
 <p>If you don't think they pair up, what is different from the room of boys and girls?
 </p>
-
-<h2 id="doubler-instructions"><b>Activity 1, Task A: How to Train the Doubler Robot</b></h2>
+</td>
+</tr>
+</table>
+<br />
+<textarea  cols="68" rows="4" style="font-size: 14pt;">
+Enter your answer here.
+</textarea>
+<h1>Appendix: Help with Training the Robots</h1>
+<h2 id="doubler-instructions">Activity 1, Task A: One way to Train the Doubler Robot</h2>
+<p>
+Hover the mouse over a picture for more help.
+</p>
 <table  border="1" cellspacing="0" cellpadding="4">
 <tr>
 <td>
@@ -535,10 +538,7 @@ Enter your answer here.
 </td>
 </tr>
 </table>
-<p>
-You can train the Doubler robot here:
-</p>
-<table class='toontalk-resource-table'>
+<table id="doubler-workarea" class='toontalk-resource-table'>
 <tr>
 <td>
 <div class='toontalk-json'>{
@@ -638,14 +638,43 @@ You can train the Doubler robot here:
 </table>
 <div class='toontalk-json'>{
   "semantic": {
-    "type": "top_level"
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "element",
+            "html": "%3Cspan%20style%3D%22color%3A%20rgb(0%2C%200%2C%200)%3B%20font-family%3A%20Tahoma%2C%20'Trebuchet%20MS'%3B%20font-size%3A%2017.6000003814697px%3B%20font-style%3A%20normal%3B%20font-variant%3A%20normal%3B%20font-weight%3A%20normal%3B%20letter-spacing%3A%20normal%3B%20line-height%3A%20normal%3B%20orphans%3A%20auto%3B%20text-align%3A%20start%3B%20text-indent%3A%200px%3B%20text-transform%3A%20none%3B%20white-space%3A%20normal%3B%20widows%3A%20auto%3B%20word-spacing%3A%200px%3B%20-webkit-text-stroke-width%3A%200px%3B%20float%3A%20none%3B%20display%3A%20inline%20!important%3B%20z-index%3A%20108%3B%22%3ETrain%20the%20Doubler%20robot%20here%3C%2Fspan%3E",
+            "attributes": [
+              "width"
+            ],
+            "attribute_values": [
+              "260"
+            ]
+          },
+          "view": {
+            "frontside_width": 260,
+            "frontside_height": 22,
+            "frontside_left": 17,
+            "frontside_top": 11.8125,
+            "backside_geometry": {
+              "x_scale": 1,
+              "y_scale": 1,
+              "original_width": 550,
+              "original_height": 200
+            }
+          },
+          "version": 1
+        }
+      }
+    ]
   },
   "view": {
     "background_color": "rgba(245, 240, 240, 0.941176)",
     "frontside_width": 0,
     "frontside_height": 0,
-    "backside_width": 755,
-    "backside_height": 325,
+    "backside_width": 825,
+    "backside_height": 416,
     "backside_left": 8,
     "backside_top": 185.1875,
     "backside_geometry": {
@@ -654,14 +683,14 @@ You can train the Doubler robot here:
       "original_width": 1200,
       "original_height": 475
     },
-    "drag_x_offset": 506,
-    "drag_y_offset": 164.8125,
+    "drag_x_offset": 181,
+    "drag_y_offset": 165.8125,
     "backside": true
   },
   "version": 1
 }</div>
 <a href="#doubler-task">Return to the task.</a>
-<h2 id="add-1-instructions">Activity 1, Task A: How to Train the Add 1 Robot</h2>
+<h2 id="add-1-instructions">Activity 1, Task A: One Way to Train the Add 1 Robot</h2>
 <table border="1" cellspacing="0" cellpadding="4">
 <tr>
 <td>
@@ -694,10 +723,7 @@ You can train the Doubler robot here:
 </td>
 </tr>
 </table>
-<p id="add-1-workarea">
-You can train the Add 1 robot here:
-</p>
-<table class='toontalk-resource-table'>
+<table id="add-1-workarea" class='toontalk-resource-table'>
 <tr>
 <td>
 <div class='toontalk-json'>{
@@ -797,30 +823,57 @@ You can train the Add 1 robot here:
 </table>
 <div class='toontalk-json'>{
   "semantic": {
-    "type": "top_level"
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "element",
+            "html": "%3Cspan%20style%3D%22color%3A%20rgb(0%2C%200%2C%200)%3B%20font-family%3A%20Tahoma%2C%20'Trebuchet%20MS'%3B%20font-size%3A%2017.6000003814697px%3B%20font-style%3A%20normal%3B%20font-variant%3A%20normal%3B%20font-weight%3A%20normal%3B%20letter-spacing%3A%20normal%3B%20line-height%3A%20normal%3B%20orphans%3A%20auto%3B%20text-align%3A%20start%3B%20text-indent%3A%200px%3B%20text-transform%3A%20none%3B%20white-space%3A%20normal%3B%20widows%3A%20auto%3B%20word-spacing%3A%200px%3B%20-webkit-text-stroke-width%3A%200px%3B%20float%3A%20none%3B%20display%3A%20inline%20!important%3B%20z-index%3A%20108%3B%22%3ETrain%20the%20Add%201%20robot%20here%3C%2Fspan%3E",
+            "attributes": [
+              "width"
+            ],
+            "attribute_values": [
+              "260"
+            ]
+          },
+          "view": {
+            "frontside_width": 260,
+            "frontside_height": 22,
+            "frontside_left": 17,
+            "frontside_top": 11.8125,
+            "backside_geometry": {
+              "x_scale": 1,
+              "y_scale": 1,
+              "original_width": 550,
+              "original_height": 200
+            }
+          },
+          "version": 1
+        }
+      }
+    ]
   },
   "view": {
     "background_color": "rgba(245, 240, 240, 0.941176)",
     "frontside_width": 0,
     "frontside_height": 0,
-    "backside_width": 755,
-    "backside_height": 325,
+    "backside_width": 825,
+    "backside_height": 416,
     "backside_left": 8,
     "backside_top": 185.1875,
     "backside_geometry": {
       "x_scale": 1,
-      "y_scale": 1,
-      "original_width": 1200,
-      "original_height": 475
+      "y_scale": 1
     },
-    "drag_x_offset": 506,
-    "drag_y_offset": 164.8125,
+    "drag_x_offset": 350,
+    "drag_y_offset": 219.8125,
     "backside": true
   },
   "version": 1
 }</div>
 <a href="#add-1-task">Return to the task.</a>
-<h2 id="split-instructions">Activity 1, Task B: How to Train the Split Robot</h2>
+<h2 id="split-instructions">Activity 1, Task B: One Way to Train the Split Robot</h2>
 <table border="1" cellspacing="0" cellpadding="4">
 <tr>
 <td>
@@ -863,10 +916,8 @@ You can train the Add 1 robot here:
 </td>
 </tr>
 </table>
-<p id="split-workarea">
-You can train the Split robot here:
-</p>
-<table class='toontalk-resource-table'>
+<br />
+<table id="split-workarea" class='toontalk-resource-table'>
 <tr>
 <td>
 <div class='toontalk-json'>{
@@ -966,14 +1017,43 @@ You can train the Split robot here:
 </table>
 <div class='toontalk-json'>{
   "semantic": {
-    "type": "top_level"
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "element",
+            "html": "Train%20the%20Split%20robot%20here",
+            "attributes": [
+              "width",
+              "font-weight"
+            ],
+            "attribute_values": [
+              "260",
+              "800"
+            ]
+          },
+          "view": {
+            "frontside_left": 21,
+            "frontside_top": 13.8125,
+            "backside_geometry": {
+              "x_scale": 1,
+              "y_scale": 1,
+              "original_width": 550,
+              "original_height": 200
+            }
+          },
+          "version": 1
+        }
+      }
+    ]
   },
   "view": {
     "background_color": "rgba(245, 240, 240, 0.941176)",
     "frontside_width": 0,
     "frontside_height": 0,
-    "backside_width": 755,
-    "backside_height": 325,
+    "backside_width": 825,
+    "backside_height": 416,
     "backside_left": 8,
     "backside_top": 185.1875,
     "backside_geometry": {
@@ -982,8 +1062,8 @@ You can train the Split robot here:
       "original_width": 1200,
       "original_height": 475
     },
-    "drag_x_offset": 506,
-    "drag_y_offset": 164.8125,
+    "drag_x_offset": 343,
+    "drag_y_offset": 211.8125,
     "backside": true
   },
   "version": 1

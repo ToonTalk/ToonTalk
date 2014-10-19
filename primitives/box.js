@@ -284,6 +284,17 @@ window.TOONTALK.box = (function (TT) {
                 horizontal: this.get_horizontal()
                };
     };
+
+    box.walk_children = function (child_action) {
+        var size = this.get_size();
+        var i;
+        for (i = 0; i < size; i++) {
+            if (!child_action(this.get_hole(i))) {
+                // aborted
+                return;
+            }
+        }
+    }
     
     TT.creators_from_json['box'] = function (json, additional_info) {
         return box.create(json.size, json.horizontal, TT.UTILITIES.create_array_from_json(json.contents, additional_info), json.description);
@@ -455,7 +466,6 @@ window.TOONTALK.box = (function (TT) {
         position = $(frontside_element).offset();
         increment = horizontal ? $(frontside_element).width()/size : $(frontside_element).height()/size;
         boundary = horizontal ? position.left : position.top;
-        increment;
         if (event) { // not clear how this could be called without an event
             for (i = 0; i < size; i++) {
                 hole = this.get_hole(i);
@@ -662,7 +672,7 @@ window.TOONTALK.box_hole =
         create: function (index) {
             // perhaps this should share more code with widget (e.g. done below with widget.has_parent)
             var hole = Object.create(this);
-            var contents, hole_element;
+            var contents, visible, hole_element;
             hole.get_element = function () {
                 if (!hole_element) {
                     hole_element = document.createElement("div");
@@ -768,15 +778,20 @@ window.TOONTALK.box_hole =
                     if (TT.debugging) {
                         hole.debug_string = "A hole containing " + contents;
                     }
+                    contents.set_visible(visible);
                 } else if (TT.debugging) {
                     hole.debug_string = "An empty hole";
                 }
             };
             hole.visible = function () {
-                // why isn't this just is frontside_element visible?
-                // you can't see it but if box is visible then it is
-                // revisit this
+                // if box is visible then hole is
                 return this.get_parent_of_frontside().visible(); 
+            };
+            hole.set_visible = function (new_value) {
+                visible = new_value;
+                if (contents) {
+                    contents.set_visible(new_value);
+                }
             };
             hole.render = function () {
                 if (contents) {

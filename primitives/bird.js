@@ -152,7 +152,7 @@ window.TOONTALK.bird = (function (TT) {
             message_element = message_side.get_element();
             carry_element(message_element, message_side);
             target_frontside_element = target_side.get_widget().closest_visible_ancestor().get_widget().get_frontside_element();
-            if (!($(target_frontside_element).is(":visible")) && !$(bird_frontside_element).is(":visible")) {
+            if (!target_side.visible() && !this.visible()) {
                 // neither are visible so just add contents to nest
                 nest_recieving_message.add_to_contents(message_side, this, true);
                 return;
@@ -190,7 +190,7 @@ window.TOONTALK.bird = (function (TT) {
                                            height: height
                                            });
             nest_contents_frontside_element = nest_recieving_message.get_contents_frontside_element();
-            if (nest_contents_frontside_element && $(nest_recieving_message.get_frontside_element()).is(":visible") &&
+            if (nest_contents_frontside_element && nest_recieving_message.visible() &&
                 (!robot || robot.visible())) {
                 // just fly to nest and return if unwatched robot caused this
                 // head near the nest (southeast) to set down message,
@@ -545,6 +545,7 @@ window.TOONTALK.nest = (function (TT) {
                     TT.UTILITIES.report_internal_error("Nothing removed from nest!");
                 }
                 if (contents.length > 0) {
+                    contents[0].set_visible(true);
                     $(contents[0].get_element()).show();
                 }
                 this.render();
@@ -836,6 +837,11 @@ window.TOONTALK.nest = (function (TT) {
                 }
             }
         };
+        new_nest.walk_children = function (child_action) {
+            if (contents.length > 0) {
+                return child_action(contents[0]);
+            };
+        };
         new_nest.top_contents_is = function (other) {
             return contents.length > 0 && contents[0].get_widget() === other;
         };
@@ -928,7 +934,7 @@ window.TOONTALK.nest = (function (TT) {
     TT.creators_from_json["nest"] = function (json, additional_info) {
         var waiting_robots; // TODO:
         // don't share the nest if this is a copy
-        var nest = !json.original_nest && guid_to_nest_table[json.guid];
+        var nest = !json.original_nest && json.guid && guid_to_nest_table[json.guid];
         if (!nest) {
             nest = TT.nest.create(json.description, 
                                   TT.UTILITIES.create_array_from_json(json.contents, additional_info), 
