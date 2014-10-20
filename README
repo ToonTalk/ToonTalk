@@ -1,14 +1,5 @@
 This is a project to create an improved ToonTalk in JavaScript to run in web browsers.
 
-A paper about ToonTalk Reborn was presented at Constructionism 2014 and can be found here: https://github.com/ToonTalk/ToonTalk/blob/master/docs/TT-Reborn-Constructionism2014_v2.doc
-
-The latest 'release' can be explored at http://toontalk.github.io/ToonTalk/index.html.
-There are known minor problems with FireFox and Internet Explorer. We recommend you use Chrome until they are resolved.
-
-The slides for a talk about this can be found at: http://toontalk.github.io/ToonTalk/talks/Intro/index.html?reset=1
-
-Information about ToonTalk can be found at http://toontalk.com (but some of it is appropriate only for the desktop version).
-
-A collection of ideas and plans are described in this Google Doc: https://docs.google.com/document/d/1s4QsdUahAZoLCXgHPtAv99D12jrrMFDrGDCK0rjfcdQ/
+[Visit the Wiki] (https://github.com/ToonTalk/ToonTalk/wiki) to learn more.
 
 Contact: toontalk@gmail.com (Ken Kahn)
