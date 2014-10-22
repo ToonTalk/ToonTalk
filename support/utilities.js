@@ -15,9 +15,11 @@ window.TOONTALK.UTILITIES =
     var id_counter = new Date().getTime();
     var div_open = "<div class='toontalk-json'>";
     var div_close = "</div>";
-    var toontalk_json_div = function (json) {
+    var script_open = "<script>";
+    var script_close = "</script>";
+    var toontalk_json_div = function (json, type_name) {
         // convenience for dragging into documents (e.g. Word or WordPad -- not sure what else)
-        return div_open + json + div_close;
+        return div_open + "\nThis should be replaced by " + TT.UTILITIES.add_a_or_an(type_name) + ".\n" + script_open + json + script_close + div_close;
     };
     var extract_json_from_div_string = function (div_string) {
         // expecting div_string to begin with div_open and end with div_close
@@ -750,7 +752,7 @@ window.TOONTALK.UTILITIES =
                         }
                         dragee.data("json", json_object);
                         // use two spaces to indent each level
-                        json_div = toontalk_json_div(JSON.stringify(json_object, null, '  '));
+                        json_div = toontalk_json_div(JSON.stringify(json_object, null, '  '), widget.get_type_name());
                         // text is good for dragging to text editors
                         event.dataTransfer.setData("text", json_div);
                         // text/html should work when dragging to a rich text editor
