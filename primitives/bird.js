@@ -164,6 +164,10 @@ window.TOONTALK.bird = (function (TT) {
                 $top_level_backside_element = $(this.get_frontside_element()).closest(".toontalk-top-level-backside");
             }
             top_level_backside_element_bounding_box = $top_level_backside_element.offset();
+            if (!top_level_backside_element_bounding_box) {
+                top_level_backside_element_bounding_box = {left: 0,
+                                                           top:  0};
+            }
             if (starting_left) {
                 bird_offset = {left: starting_left+top_level_backside_element_bounding_box.left,
                                top:  starting_top +top_level_backside_element_bounding_box.top};
