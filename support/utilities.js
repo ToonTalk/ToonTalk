@@ -13,11 +13,49 @@ window.TOONTALK.UTILITIES =
     var z_index = 100;
     // id needs to be unique across ToonTalks due to drag and drop
     var id_counter = new Date().getTime();
-    var div_open = "<div class='toontalk-json'>";
-    var div_close = "</div>";
-    var toontalk_json_div = function (json) {
+    var div_json   = "<div class='toontalk-json'>";
+    var div_hidden = "<div style='display:none;'>"; // don't use a class since CSS might not be loaded
+    var div_close  = "</div>";
+    var backside_widgets_left;
+    var toontalk_json_div = function (json, widget) {
         // convenience for dragging into documents (e.g. Word or WordPad -- not sure what else)
-        return div_open + json + div_close;
+        var is_backside = json.view.backside;
+        var backside_widgets = widget.get_backside_widgets();
+        var type_description = widget.get_type_name();
+        if (type_description === 'top-level') {
+            if (is_backside) {
+                type_description = "a work area containing ";
+                if (backside_widgets.length === 0) {
+                    type_description = "an empty work area";
+                } else {
+                    if (backside_widgets.length === 1) {
+                        type_description += "one thing: ";
+                    } else {
+                        type_description += backside_widgets.length + " things: ";
+                    }
+                    backside_widgets_left = backside_widgets.length;
+                    backside_widgets.forEach(function (backside_widget) {
+                        backside_widgets_left--;
+                        type_description += TT.UTILITIES.add_a_or_an(backside_widget.get_type_name());
+                        if (backside_widgets_left === 1) {
+                            type_description += ", and ";
+                        } else if (backside_widgets_left > 1) {
+                            type_description += ", ";
+                        }
+                    });
+                }
+            } else {
+                type_description = "a top-level widget";
+            }
+        } else {
+            type_description = TT.UTILITIES.add_a_or_an(type_description);
+            if (is_backside) {
+                type_description = "the back of " + type_description;
+            }
+        }
+        return div_json + "\nThis will be replaced by " + type_description + ".\n" +
+                          div_hidden + JSON.stringify(json, null, '  ') + div_close +
+                          div_close;
     };
     var extract_json_from_div_string = function (div_string) {
         // expecting div_string to begin with div_open and end with div_close
@@ -196,6 +234,7 @@ window.TOONTALK.UTILITIES =
                 if (!json_string) {
                     return;
                 }
+                json_string = json_string.substring(json_string.indexOf("{"), json_string.lastIndexOf("}")+1);
                 json = JSON.parse(json_string);
                 widget = TT.UTILITIES.create_from_json(json);
                 if (widget) {
@@ -290,6 +329,7 @@ window.TOONTALK.UTILITIES =
 //                 event.returnValue = message;
 //                 return message;
             });
+            TT.UTILITIES.add_test_all_button();
         };
     var drag_ended = function () {
         if (!dragee) {
@@ -750,7 +790,7 @@ window.TOONTALK.UTILITIES =
                         }
                         dragee.data("json", json_object);
                         // use two spaces to indent each level
-                        json_div = toontalk_json_div(JSON.stringify(json_object, null, '  '));
+                        json_div = toontalk_json_div(json_object, widget);
                         // text is good for dragging to text editors
                         event.dataTransfer.setData("text", json_div);
                         // text/html should work when dragging to a rich text editor
@@ -1449,6 +1489,10 @@ window.TOONTALK.UTILITIES =
         
         add_a_or_an: function (word, upper_case) {
             var first_character = word.charAt(0);
+            if (word.indexOf("the ") === 0) {
+                // don't generate a the box
+                return word;
+            }
             if ("aeiou".indexOf(first_character) < 0) {
                 if (upper_case) {
                     return "A " + word;
@@ -1639,6 +1683,36 @@ window.TOONTALK.UTILITIES =
             $element = $(html);
             $element.attr('z-index', '');
             return $element.html();
+        },
+
+        add_test_all_button: function () {
+            var $div = $("#toontalk-test-all-button");
+            var div;
+            if ($div.length === 0) {
+                return;
+            }
+            $div.button();
+            div = $div.get(0);
+            div.innerHTML = "Run all tests";
+            var running = false;
+            $div.click(function (event) {
+                if (running) {
+                    $(".toontalk-stop-sign").each(function () {
+                        if ($(this).parent().is(".toontalk-top-level-backside")) {
+                            $(this).click();
+                        }
+                    });
+                    div.innerHTML = "Run all tests";
+                } else {
+                    $(".toontalk-green-flag").each(function () {
+                        if ($(this).parent().is(".toontalk-top-level-backside")) {
+                            $(this).click();
+                        }
+                    });
+                    div.innerHTML = "Stop all tests";
+                }
+                running = !running;
+            });
         }
         
 //         create_menu_item: function (text) {

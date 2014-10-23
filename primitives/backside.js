@@ -76,7 +76,7 @@ window.TOONTALK.backside =
                 close_button = TT.UTILITIES.create_close_button(close_handler, close_title);
                 backside_element.appendChild(close_button);                
             }
-            $(green_flag_element).addClass("toontalk-green-flag-inactive")
+            $(green_flag_element).addClass("toontalk-green-flag toontalk-green-flag-inactive")
                                  .click(function (event) {
                                             if (widget.can_run()) {
                                                 update_flag_and_stop_sign_classes(true);
@@ -100,7 +100,7 @@ window.TOONTALK.backside =
                                                           }
                                                           stop_sign_element.title = title;
                                                   });
-            $(stop_sign_element) .addClass("toontalk-stop-sign-active")
+            $(stop_sign_element) .addClass("toontalk-stop-sign toontalk-stop-sign-active")
                                  .click(function (event) {
                                             update_flag_and_stop_sign_classes(false);
                                             widget.set_running(false);                                                                          
@@ -258,6 +258,12 @@ window.TOONTALK.backside =
                                             backside.set_advanced_settings_showing(true, backside.get_element());
                                         } 
                                     } else {
+                                        if (json_view.frontside_width  === 0) {
+                                            json_view.frontside_width  = '';
+                                        }
+                                        if (json_view.frontside_height === 0) {
+                                            json_view.frontside_height = '';
+                                        }                                        
                                         $(widget_side_element).css({left:   json_view.frontside_left,
                                                                     top:    json_view.frontside_top,
                                                                     width:  json_view.frontside_width,
@@ -494,6 +500,10 @@ window.TOONTALK.backside =
                 $(backside_element).find(".toontalk-advanced-setting").hide();
             }
         },
+
+       get_type_name: function () {
+           return "the backside of " + TT.UTILITIES.add_a_or_an(this.get_widget().get_type_name());
+       },
         
         hide_backside: function (event) {
             var widget = this.get_widget();
@@ -535,7 +545,12 @@ window.TOONTALK.backside =
                         if (!backside_widgets_json_views[index]) {
                             backside_widgets_json_views[index] = {};
                         }
-                        position = $(backside_widget_side_element).position();
+                        if (backside_widget_side.start_position) {
+                            position = backside_widget_side.start_position;
+                            backside_widget_side.start_position = undefined;
+                        } else {
+                            position = $(backside_widget_side_element).position();
+                        }
                         if (backside_widget_side.is_backside()) {
                             backside_widgets_json_views[index].backside_left = position.left;
                             backside_widgets_json_views[index].backside_top  = position.top;
@@ -550,7 +565,7 @@ window.TOONTALK.backside =
             TT.UTILITIES.remove_highlight();
             if (parent_of_backside) {
                 if (parent_of_backside.is_backside()) {
-                    parent_of_backside.remove_backside_widget(widget, true);
+                    widget.set_parent_of_backside(undefined, true);
                 } else {
                     parent_of_backside.removed_from_container(widget, true, event, true);
                 }
