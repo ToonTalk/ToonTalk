@@ -17,28 +17,34 @@ window.TOONTALK.UTILITIES =
     var div_close = "</div>";
     var script_open = "<script>";
     var script_close = "</script>";
-    var toontalk_json_div = function (json) {
+    var toontalk_json_div = function (json, widget) {
         // convenience for dragging into documents (e.g. Word or WordPad -- not sure what else)
-        var type_name = json.semantic.type;
         var is_backside = json.view.backside;
-        var type_description;
-        if (type_name === 'top_level') {
+        var backside_widgets = widget.get_backside_widgets();
+        var type_description = widget.get_type_name();
+        if (type_description === 'top-level') {
             if (is_backside) {
                 type_description = "a work area with ";
-                if (json.semantic.backside_widgets.length === 0) {
+                if (backside_widgets.length === 0) {
                     type_description += "no widgets";
-                } else if (json.semantic.backside_widgets.length === 1) {
-                    type_description += "one widget";
                 } else {
-                    type_description += json.semantic.backside_widgets.length + " widgets";
+                    if (backside_widgets.length === 1) {
+                        type_description += "one widget: ";
+                    } else {
+                        type_description += backside_widgets.length + " widgets: ";
+                    }
+                    backside_widgets.forEach(function (backside_widget) {
+                        type_description += TT.UTILITIES.add_a_or_an(backside_widget.get_type_name()) + ", ";
+                    });
+                    type_description = type_description.substring(0, type_description.length-2);
                 }
             } else {
                 type_description = "a top-level widget";
             }
         } else {
-            type_description = TT.UTILITIES.add_a_or_an(type_name);
+            type_description = TT.UTILITIES.add_a_or_an(type_description);
             if (is_backside) {
-                type_description = "the backside of " + type_description;
+                type_description = "the back of " + type_description;
             }
         }
         return div_open + "\nThis will be replaced by " + type_description + ".\n" +
@@ -776,7 +782,7 @@ window.TOONTALK.UTILITIES =
                         }
                         dragee.data("json", json_object);
                         // use two spaces to indent each level
-                        json_div = toontalk_json_div(json_object);
+                        json_div = toontalk_json_div(json_object, widget);
                         // text is good for dragging to text editors
                         event.dataTransfer.setData("text", json_div);
                         // text/html should work when dragging to a rich text editor
@@ -1475,6 +1481,10 @@ window.TOONTALK.UTILITIES =
         
         add_a_or_an: function (word, upper_case) {
             var first_character = word.charAt(0);
+            if (word.indexOf("the ") === 0) {
+                // don't generate a the box
+                return word;
+            }
             if ("aeiou".indexOf(first_character) < 0) {
                 if (upper_case) {
                     return "A " + word;

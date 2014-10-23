@@ -494,6 +494,10 @@ window.TOONTALK.backside =
                 $(backside_element).find(".toontalk-advanced-setting").hide();
             }
         },
+
+       get_type_name: function () {
+           return "the backside of " + TT.UTILITIES.add_a_or_an(this.get_widget().get_type_name());
+       },
         
         hide_backside: function (event) {
             var widget = this.get_widget();
