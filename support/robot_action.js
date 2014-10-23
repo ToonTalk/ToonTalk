@@ -36,10 +36,10 @@ window.TOONTALK.robot_action =
                          if (target.visible && target.visible()) {
                              target.render();
                          }
-                         if (thing_in_hand.caused_robot_to_wait_before_next_step) {
+                         if (thing_in_hand.robot_waiting_before_next_step === robot) {
                             // NOTE thing_in_hand needs to call robot.run_next_step();
                             if (!additional_info || !additional_info.running_watched) {
-                                thing_in_hand.caused_robot_to_wait_before_next_step = undefined;
+                                thing_in_hand.robot_waiting_before_next_step = undefined;
                             }
                             return false;
                          }
@@ -163,9 +163,9 @@ window.TOONTALK.robot_action =
                 thing_in_hand.restore_dimensions();
                 // remove it from the robot's hand since the drop can take a few seconds
                 // and we don't want to see it in the robot's hand
-                if (thing_in_hand.caused_robot_to_wait_before_next_step) {
+                if (thing_in_hand.robot_waiting_before_next_step === robot) {
                     // NOTE thing_in_hand needs to call robot.run_next_step();
-                    thing_in_hand.caused_robot_to_wait_before_next_step = undefined;
+                    thing_in_hand.robot_waiting_before_next_step = undefined;
                 } else {
                     // e.g., a nest may take some time because the egg hatches
                     // but the robot is still holding it   

@@ -511,7 +511,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
              // do this if number is visible and user did the drop or a visible robot did it
              if (robot) {
                  // robot should wait for this
-                 other_number.caused_robot_to_wait_before_next_step = true;
+                 other_number.robot_waiting_before_next_step = robot;
              }
              bammer_element = document.createElement("div");
              $(bammer_element).addClass("toontalk-bammer-down");

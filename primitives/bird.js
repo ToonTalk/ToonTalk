@@ -90,6 +90,7 @@ window.TOONTALK.bird = (function (TT) {
                         TT.UTILITIES.add_one_shot_event_handler(bird_frontside_element, "animationend", 1000, become_static); 
                         if (after_delivery_continuation) {
                             after_delivery_continuation();
+                            message_side.caused_robot_to_wait_before_next_step = undefined;
                         }
                     }
                 }.bind(this);
