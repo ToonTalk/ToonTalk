@@ -157,9 +157,6 @@ window.TOONTALK.widget = (function (TT) {
                 widget.set_running = function (new_value, top_level_context) {
                     var backside_widgets = this.get_backside_widgets();
                     var backside_widget, backside_element;
-                    if (running && running === new_value) {
-                        return;
-                    }
                     running = new_value;
                     if (this.get_backside()) {
                         this.get_backside().run_status_changed(running);
@@ -174,7 +171,8 @@ window.TOONTALK.widget = (function (TT) {
                         }
                         if (backside_widget.is_of_type("robot")) {
                             // only frontsides of robots run
-                            if (!backside_widget_side.is_backside()) {
+                            if (!backside_widget_side.is_backside() && (!running || !backside_widget.get_running())) {
+                                // don't run robot is already running
                                 // could this set_stopped stuff be combined with set_running?
                                 if (running) {
                                     backside_widget.set_stopped(false);
