@@ -569,6 +569,11 @@ window.TOONTALK.nest = (function (TT) {
                     nest_offset = $(nest_element).offset();
                     $top_level_backside_element = $(nest_element).closest(".toontalk-backside-of-top-level");
                     top_level_backside_element_offset = $top_level_backside_element.offset();
+                    if (!top_level_backside_element_offset) {
+                        // perhaps nest is on the back of something
+                        top_level_backside_element_offset = {left: 0,
+                                                             top:  0};
+                    }
                     widget_element = widget.get_frontside_element();
                     nest_width =  $(nest_element).width();
                     nest_height = $(nest_element).height();
