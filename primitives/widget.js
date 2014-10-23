@@ -524,7 +524,7 @@ window.TOONTALK.widget = (function (TT) {
         },
         
         add_to_json: function (json_semantic, json_history) {
-            var json_view, json, position, frontside_element, backside, backside_element;
+            var json_view, json, position, frontside_element, backside, backside_element, frontside_width;
             if (json_semantic) {
                 if (json_semantic.view) {
                     // already contains both semantic and view
@@ -550,8 +550,11 @@ window.TOONTALK.widget = (function (TT) {
                     frontside_element = this.get_frontside_element && this.get_frontside_element();
                     if (frontside_element) {
                         if (!$(frontside_element).is(".toontalk-plain-text-element")) {
-                            json_view.frontside_width  = $(frontside_element).width();
-                            json_view.frontside_height = $(frontside_element).height();
+                            frontside_width = $(frontside_element).width();
+                            if (frontside_width !== 0) {
+                                json_view.frontside_width  = $(frontside_element).width();
+                                json_view.frontside_height = $(frontside_element).height();
+                            }
                         }
                         if ($(frontside_element).is(":visible")) {
                             position = $(frontside_element).position();

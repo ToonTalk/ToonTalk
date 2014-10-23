@@ -258,6 +258,12 @@ window.TOONTALK.backside =
                                             backside.set_advanced_settings_showing(true, backside.get_element());
                                         } 
                                     } else {
+                                        if (json_view.frontside_width  === 0) {
+                                            json_view.frontside_width  = '';
+                                        }
+                                        if (json_view.frontside_height === 0) {
+                                            json_view.frontside_height = '';
+                                        }                                        
                                         $(widget_side_element).css({left:   json_view.frontside_left,
                                                                     top:    json_view.frontside_top,
                                                                     width:  json_view.frontside_width,

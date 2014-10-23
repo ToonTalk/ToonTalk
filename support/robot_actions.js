@@ -144,6 +144,12 @@ window.TOONTALK.actions =
             var backside_rectangle = $backside_element.get(0).getBoundingClientRect();
             var top_level_position = $(frontside_element).closest(".toontalk-top-level-backside").offset();
             var context_backside = context.get_backside();
+            if (robot_width === 0) {
+                $(frontside_element).css({width:  '',
+                                          height: ''});
+                robot_width  = $(frontside_element).width();
+                robot_height = $(frontside_element).height();
+            }
             if (robot_home.left < backside_rectangle.left-top_level_position.left ||
                 robot_home.top  < backside_rectangle.top -top_level_position.top  ||
                 robot_home.left+robot_width  > backside_rectangle.right +top_level_position.left ||
