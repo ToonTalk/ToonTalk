@@ -157,6 +157,18 @@ window.TOONTALK.scale = (function (TT) {
             };
             var state, class_name;
             var scales = TT.UTILITIES.scale_to_fit(frontside_element, container_element, full_size_width, full_size_height);
+            if (scales.x_scale === 0) {
+                scales.x_scale = 1;
+            }
+            if (scales.y_scale === 0) {
+                scales.y_scale = 1;
+            }
+            if (scale_width === 0) {
+                scale_width = 1;
+            }
+            if (scale_height === 0) {
+                scale_height = 1;
+            }
             scale_width  /= scales.x_scale;
             scale_height /= scales.y_scale;
             if ($frontside_element.is(".toontalk-top-level-resource")) {
