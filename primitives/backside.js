@@ -559,7 +559,7 @@ window.TOONTALK.backside =
             TT.UTILITIES.remove_highlight();
             if (parent_of_backside) {
                 if (parent_of_backside.is_backside()) {
-                    parent_of_backside.remove_backside_widget(widget, true);
+                    widget.set_parent_of_backside(undefined, true);
                 } else {
                     parent_of_backside.removed_from_container(widget, true, event, true);
                 }
