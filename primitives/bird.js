@@ -27,7 +27,7 @@ window.TOONTALK.bird = (function (TT) {
                     $(frontside_element).removeClass("toontalk-bird-gimme");
                     if (robot) {
                         // robot needs to wait until delivery is finished
-                        other.caused_robot_to_wait_before_next_step = true;
+                        other.robot_waiting_before_next_step = robot;
                         // generalise this with backside support too
                         other.remove_from_parent_of_frontside();
                     }
@@ -90,7 +90,7 @@ window.TOONTALK.bird = (function (TT) {
                         TT.UTILITIES.add_one_shot_event_handler(bird_frontside_element, "animationend", 1000, become_static); 
                         if (after_delivery_continuation) {
                             after_delivery_continuation();
-                            message_side.caused_robot_to_wait_before_next_step = undefined;
+                            message_side.robot_waiting_before_next_step = undefined;
                         }
                     }
                 }.bind(this);
@@ -645,7 +645,7 @@ window.TOONTALK.nest = (function (TT) {
                 if (robot) {
                     robot.add_newly_created_widget(bird);
                     // since robot dropped the nest it needs to wait (if watched)
-                    this.caused_robot_to_wait_before_next_step = true;
+                    this.robot_waiting_before_next_step = robot;
                 }
                 this.rerender();
                 frontside_element = this.get_frontside_element(true);
