@@ -136,7 +136,10 @@ body {
 	height: 10%;
 }
 .toontalk-json {
-	display: inline-block;	
+	display: inline;
+}
+.toontalk-hidden {
+	display: none;
 }
 .toontalk-frontside {
     position: absolute;
