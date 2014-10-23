@@ -96,6 +96,8 @@ window.TOONTALK.robot_action =
     var pick_up_a_copy_animation = function (widget, context, top_level_context, robot, continuation) {
         var new_continuation = function () {
             continuation();
+            // ensure that newly created copy is visible
+            robot.get_recently_created_widget().set_visible(true);
             robot.update_display();
             robot.run_next_step();
         };
