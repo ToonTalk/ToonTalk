@@ -1579,7 +1579,7 @@ window.TOONTALK.UTILITIES =
         },
         
         scale_to_fit: function (this_element, other_element, original_width, original_height, delay) {
-            var new_width = $(other_element).width();
+            var new_width  = $(other_element).width();
             var new_height = $(other_element).height();
             var update_css = function () {
                  $(this_element).css({transform: "scale(" + x_scale + ", " + y_scale + ")",
@@ -1596,6 +1596,13 @@ window.TOONTALK.UTILITIES =
             }
             x_scale = new_width/original_width;
             y_scale = new_height/original_height;
+            // e.g. other_element doesn't know it dimensions
+            if (x_scale === 0) {
+                x_scale = 1;
+            }
+            if (y_scale === 0) {
+                y_scale = 1;
+            }
             if (delay) {
                 setTimeout(update_css, delay);
             } else {
