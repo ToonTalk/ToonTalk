@@ -329,6 +329,7 @@ window.TOONTALK.UTILITIES =
 //                 event.returnValue = message;
 //                 return message;
             });
+            TT.UTILITIES.add_test_all_button();
         };
     var drag_ended = function () {
         if (!dragee) {
@@ -1682,6 +1683,36 @@ window.TOONTALK.UTILITIES =
             $element = $(html);
             $element.attr('z-index', '');
             return $element.html();
+        },
+
+        add_test_all_button: function () {
+            var $div = $("#toontalk-test-all-button");
+            var div;
+            if ($div.length === 0) {
+                return;
+            }
+            $div.button();
+            div = $div.get(0);
+            div.innerHTML = "Run all tests";
+            var running = false;
+            $div.click(function (event) {
+                if (running) {
+                    $(".toontalk-stop-sign").each(function () {
+                        if ($(this).parent().is(".toontalk-top-level-backside")) {
+                            $(this).click();
+                        }
+                    });
+                    div.innerHTML = "Run all tests";
+                } else {
+                    $(".toontalk-green-flag").each(function () {
+                        if ($(this).parent().is(".toontalk-top-level-backside")) {
+                            $(this).click();
+                        }
+                    });
+                    div.innerHTML = "Stop all tests";
+                }
+                running = !running;
+            });
         }
         
 //         create_menu_item: function (text) {

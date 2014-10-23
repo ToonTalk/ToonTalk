@@ -76,7 +76,7 @@ window.TOONTALK.backside =
                 close_button = TT.UTILITIES.create_close_button(close_handler, close_title);
                 backside_element.appendChild(close_button);                
             }
-            $(green_flag_element).addClass("toontalk-green-flag-inactive")
+            $(green_flag_element).addClass("toontalk-green-flag toontalk-green-flag-inactive")
                                  .click(function (event) {
                                             if (widget.can_run()) {
                                                 update_flag_and_stop_sign_classes(true);
@@ -100,7 +100,7 @@ window.TOONTALK.backside =
                                                           }
                                                           stop_sign_element.title = title;
                                                   });
-            $(stop_sign_element) .addClass("toontalk-stop-sign-active")
+            $(stop_sign_element) .addClass("toontalk-stop-sign toontalk-stop-sign-active")
                                  .click(function (event) {
                                             update_flag_and_stop_sign_classes(false);
                                             widget.set_running(false);                                                                          
