@@ -17,9 +17,33 @@ window.TOONTALK.UTILITIES =
     var div_close = "</div>";
     var script_open = "<script>";
     var script_close = "</script>";
-    var toontalk_json_div = function (json, type_name) {
+    var toontalk_json_div = function (json) {
         // convenience for dragging into documents (e.g. Word or WordPad -- not sure what else)
-        return div_open + "\nThis should be replaced by " + TT.UTILITIES.add_a_or_an(type_name) + ".\n" + script_open + json + script_close + div_close;
+        var type_name = json.semantic.type;
+        var is_backside = json.view.backside;
+        var type_description;
+        if (type_name === 'top_level') {
+            if (is_backside) {
+                type_description = "a work area with ";
+                if (json.semantic.backside_widgets.length === 0) {
+                    type_description += "no widgets";
+                } else if (json.semantic.backside_widgets.length === 1) {
+                    type_description += "one widget";
+                } else {
+                    type_description += json.semantic.backside_widgets.length + " widgets";
+                }
+            } else {
+                type_description = "a top-level widget";
+            }
+        } else {
+            type_description = TT.UTILITIES.add_a_or_an(type_name);
+            if (is_backside) {
+                type_description = "the backside of " + type_description;
+            }
+        }
+        return div_open + "\nThis will be replaced by " + type_description + ".\n" +
+                          script_open + JSON.stringify(json, null, '  ') + script_close + 
+                          div_close;
     };
     var extract_json_from_div_string = function (div_string) {
         // expecting div_string to begin with div_open and end with div_close
@@ -752,7 +776,7 @@ window.TOONTALK.UTILITIES =
                         }
                         dragee.data("json", json_object);
                         // use two spaces to indent each level
-                        json_div = toontalk_json_div(JSON.stringify(json_object, null, '  '), widget.get_type_name());
+                        json_div = toontalk_json_div(json_object);
                         // text is good for dragging to text editors
                         event.dataTransfer.setData("text", json_div);
                         // text/html should work when dragging to a rich text editor
