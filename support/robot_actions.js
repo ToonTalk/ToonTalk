@@ -153,6 +153,8 @@ window.TOONTALK.actions =
                 robot_home.left += $backside_element.width()/2;
                 robot_home.top  += $backside_element.height()-robot_height;
             }
+            // store this so that if the backside is closed while it is running its position is restored
+            robot.start_position = robot_start_position;
             robot.run_next_step = function () {
                 if (context_backside && context_backside.visible()) {
                     // pause between steps and give the previous step a chance to update the DOM     

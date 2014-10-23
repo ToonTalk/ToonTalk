@@ -539,7 +539,12 @@ window.TOONTALK.backside =
                         if (!backside_widgets_json_views[index]) {
                             backside_widgets_json_views[index] = {};
                         }
-                        position = $(backside_widget_side_element).position();
+                        if (backside_widget_side.start_position) {
+                            position = backside_widget_side.start_position;
+                            backside_widget_side.start_position = undefined;
+                        } else {
+                            position = $(backside_widget_side_element).position();
+                        }
                         if (backside_widget_side.is_backside()) {
                             backside_widgets_json_views[index].backside_left = position.left;
                             backside_widgets_json_views[index].backside_top  = position.top;
