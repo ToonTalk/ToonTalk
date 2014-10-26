@@ -30,7 +30,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         if (typeof number === 'undefined') {
             last_character = value.substring(value.length-1);
             if ("0123456789x".indexOf(last_character) >= 0) {
-                // assumes that only CSS units ending in 'x' is 'px'
+                // assumes that the only CSS units ending in 'x' is 'px'
                 number = parseFloat(value);
                 if (isNaN(number)) {
                     return; // undefined
@@ -244,17 +244,17 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             }
             return 'not matched';
         }
-        if (!context.match_with_this_element) {
+        if (!context.match_with_this_element_widget) {
             return 'not matched';
         }
-        return context.match_with_this_element(this);
+        return context.match_with_this_element_widget(this);
     };
     
     element.match_with_any_element = function () {
         return 'matched';
     };
     
-    element.match_with_this_element = function (other_element) {
+    element.match_with_this_element_widget = function (other_element) {
         if (this.get_HTML() === other_element.get_HTML()) {
             return 'matched';
         } else {
@@ -410,48 +410,57 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     element.create_attribute_object = function (attribute_name) {
         var selector = ".toontalk-element-" + attribute_name + "-attribute-input";
         var backside_element = this.get_backside_element();
-        var $attribute_input, attribute_object;
+        var initial_value = this.get_attribute(this.attribute);
+        var this_element_widget = this;
+        var $attribute_input, attribute_object, 
+            // store some default number functions:
+            number_equals, number_update_display, number_set_value;
         if (backside_element) {
             $attribute_input = $(backside_element).find(selector);
             if ($attribute_input.length > 0) {
                 $attribute_input.get(0).toontalk_widget = this;
             }
         }
-        attribute_object =
-               {element_widget: this,
-                attribute: attribute_name,
-                get_type_name: function () {
-                    return "element attribute";
-                },
-                toString: function () {
-                    return "the " + this.attribute + " of " + this.element_widget;
-                },
-                get_side_element: function () {
-                    if ($attribute_input && $attribute_input.length > 0) {
-                        return $attribute_input.get(0);
-                    }
-                },
-                equals: function (other) {
-                    if (attribute_name === other.attribute) {
-                        return this.equals(other.element_widget);
-                    }
-                    return false;
-                },
-                visible: function () {
-                    return $attribute_input && $attribute_input.is(":visible");
-                },
-                widget_dropped_on_me: function (other, is_backside, event, robot) {
-                    this.element_widget.dropped_on_style_attribute(other, attribute_name, event, robot);
-                },
-                update_display: function () {
-                    if ($attribute_input) {
-                        $attribute_input.val(this.element_widget.get_attribute(this.attribute));
-                    }
-                },
-                render: function () {
-                    TT.DISPLAY_UPDATES.pending_update(this);
-                }
+        attribute_object = TT.number.create(0, 1);
+        number_set_value = attribute_object.set_value;
+        attribute_object.set_value_from_decimal(parseFloat(initial_value));
+        attribute_object.attribute = attribute_name; // TODO: rename? use accessors?
+        attribute_object.get_type_name = function () {
+            return "element attribute";
         };
+        attribute_object.toString = function () {
+            return "the " + this.attribute + " attribute of " + this_element_widget;
+        };
+//         attribute_object.get_element = function () {
+//             if ($attribute_input && $attribute_input.length > 0) {
+//                 return $attribute_input.get(0);
+//             }
+//         };
+        number_equals = attribute_object.equals;
+        attribute_object.equals = function (other) {
+            if (attribute_name === other.attribute) {
+                return this.equals(other.element_widget);
+            }
+            return number_equals.call(this, other);
+        };
+        attribute_object.set_value = function (new_value) {
+            // TODO: toFloat instead??
+            this_element_widget.set_attribute(this.attribute, new_value.toString());
+            return number_set_value.call(this, new_value);
+        };
+//         attribute_object.visible = function () {
+//             // TODO: determine if this should work this way or use widget.visible?
+//             return $attribute_input && $attribute_input.is(":visible");
+//         };
+// TODO: should this (or its backside) walk to visible attributes?
+        number_update_display = attribute_object.update_display;
+        attribute_object.update_display = function () {
+//             if ($attribute_input) {
+                number_set_value(attribute_object, this_element_widget.get_attribute(this.attribute));
+//             }
+            number_update_display.call(this);
+        };
+        // TODO: need a copy override method...
         if (TT.debugging) {
             attribute_object.debug_id = TT.UTILITIES.generate_unique_id();
         }
@@ -637,7 +646,6 @@ window.TOONTALK.element_backside =
                        if (backside_element && frontside_element) {
                            $(backside_element).find(".toontalk-element-top-attribute-input").val(event.originalEvent.clientY);
                        }
-
                    });
                }
             }
@@ -712,7 +720,7 @@ window.TOONTALK.element_backside =
     var update_style_attributes_table = function (table, element_widget) {
         var style_attributes = element_widget.get_style_attributes();
         var frontside_element = element_widget.get_frontside_element();
-        var row, td, attribute_value_editor;
+//         var row, td, attribute_value_editor;
         $(table).empty();
         style_attributes.forEach(function (attribute) {
             var value = element_widget.get_attribute(attribute);
@@ -720,23 +728,31 @@ window.TOONTALK.element_backside =
                 element_widget.set_attribute(attribute, this.value.trim(), true);
             };
             var classes = "toontalk-element-attribute-input toontalk-element-" + attribute + "-attribute-input";
-            row = document.createElement("tr");
+            var row = document.createElement("tr");
+            var td = document.createElement("td");
+            // TODO: create_attribute_object should be called create_attribute_widget
+            var attribute_number = element_widget.create_attribute_object(attribute);
+            var frontside_element = attribute_number.get_frontside_element();
             table.appendChild(row);
-            td = document.createElement("td");
             row.appendChild(td);
             td.appendChild(TT.UTILITIES.create_text_element(attribute));
             td = document.createElement("td");
             row.appendChild(td);
-            attribute_value_editor = TT.UTILITIES.create_text_input(value,
-                                                                    classes,
-                                                                    undefined,
-                                                                    "Click here to edit the '" + attribute + "' style attribute of this element.");
-            attribute_value_editor.button.name = attribute;
-            attribute_value_editor.button.addEventListener('input', update_value);
-            TT.UTILITIES.can_receive_drops(attribute_value_editor.container);
-            td.appendChild(attribute_value_editor.container);
+            attribute_number.set_visible(true); // TODO: turn this off when backside hidden
+            $(frontside_element).addClass("toontalk-element-attribute");
+            td.appendChild(frontside_element);
+            attribute_number.render();           
+            // TODO: add title like the following
+//             attribute_value_editor = TT.UTILITIES.create_text_input(value,
+//                                                                     classes,
+//                                                                     undefined,
+//                                                                     "Click here to edit the '" + attribute + "' style attribute of this element.");
+//             attribute_value_editor.button.name = attribute;
+//             attribute_value_editor.button.addEventListener('input', update_value);
+//             TT.UTILITIES.can_receive_drops(attribute_value_editor.container);
+//             td.appendChild(attribute_value_editor.container);
         });
-        return table;
+//         return table;
     };
     
     var create_show_attributes_chooser = function (attributes_chooser) {

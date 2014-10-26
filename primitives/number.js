@@ -203,6 +203,11 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
                 }
                 return this;
             };
+        new_number.set_value_from_decimal =
+            function (decimal) {
+                // e.g. an attribute value
+                this.set_value(bigrat.fromDecimal(decimal));
+            };
         new_number.get_value =
             function () { 
                 return value; 
@@ -319,6 +324,10 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             // good enough values when carried by a bird
             client_width  = 100;
             client_height =  40;
+        } else if ($(frontside_element).is(".toontalk-element-attribute")) {
+            // good enough values when carried by a bird
+            client_width  = 200;
+            client_height =  32;
         } else {
             if (!$dimensions_holder.is(":visible")) {
                 return;
