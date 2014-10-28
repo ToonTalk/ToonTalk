@@ -188,7 +188,11 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         } 
         new_number.set_value =
             function (new_value) {
-                var listeners = this.get_listeners('value_changed');
+                var listeners;
+                if (bigrat.equals(value, new_value)) {
+                    return;
+                }
+                listeners = this.get_listeners('value_changed');
                 if (listeners) {
                     listeners.forEach(function (listener) {
                         listener({type: 'value_changed',
@@ -204,9 +208,15 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
                 return this;
             };
         new_number.set_value_from_decimal =
-            function (decimal) {
+            function (decimal_string) {
                 // e.g. an attribute value
-                this.set_value(bigrat.fromDecimal(decimal));
+                if (typeof decimal_string === 'number') {
+                    this.set_value(bigrat.fromInteger(decimal_string));
+                    return;
+//                    decimal_string = decimal_string.toString();
+                }
+                // else should be a string
+                this.set_value(bigrat.fromDecimal(decimal_string));
             };
         new_number.get_value =
             function () { 
@@ -674,7 +684,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
 
     number.is_integer = function () {
         // check if denominator is 1 or numerator is 0
-        return this.get_value()[1].compare(BigInteger.ONE) === 0 ||
+        return this.get_value()[1].compare(BigInteger.ONE)  === 0 ||
                this.get_value()[0].compare(BigInteger.ZERO) === 0;
     };
 

@@ -406,11 +406,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             TT.robot.in_training.dropped_on(dropped, this.create_attribute_object(attribute_name));
         }
     };
-    
+
     element.create_attribute_object = function (attribute_name) {
         var selector = ".toontalk-element-" + attribute_name + "-attribute-input";
         var backside_element = this.get_backside_element();
-        var initial_value = this.get_attribute(this.attribute);
+        var attribute_value = this.get_attribute(attribute_name);
         var this_element_widget = this;
         var $attribute_input, attribute_object, 
             // store some default number functions:
@@ -423,7 +423,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         }
         attribute_object = TT.number.create(0, 1);
         number_set_value = attribute_object.set_value;
-        attribute_object.set_value_from_decimal(parseFloat(initial_value));
+        attribute_object.set_value_from_decimal(attribute_value);
+        attribute_object.set_infinite_stack(true);
         attribute_object.attribute = attribute_name; // TODO: rename? use accessors?
         attribute_object.get_type_name = function () {
             return "element attribute";
@@ -455,12 +456,12 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
 // TODO: should this (or its backside) walk to visible attributes?
         number_update_display = attribute_object.update_display;
         attribute_object.update_display = function () {
-//             if ($attribute_input) {
-                number_set_value(attribute_object, this_element_widget.get_attribute(this.attribute));
-//             }
+            attribute_object.set_value_from_decimal(this_element_widget.get_attribute(this.attribute));
             number_update_display.call(this);
         };
-        // TODO: need a copy override method...
+        attribute_object.copy = function (just_value) {
+            return this.add_to_copy(this_element_widget.create_attribute_object(attribute_name), just_value);
+        };
         if (TT.debugging) {
             attribute_object.debug_id = TT.UTILITIES.generate_unique_id();
         }
