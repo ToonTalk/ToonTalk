@@ -434,7 +434,6 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         attribute_widget = TT.number.create(0, 1);
         number_set_value = attribute_widget.set_value;
         attribute_widget.set_value_from_decimal(attribute_value);
-        attribute_widget.set_infinite_stack(true);
         attribute_widget.set_format('decimal');
         attribute_widget.attribute = attribute_name; // TODO: rename? use accessors?
         attribute_widget.get_type_name = function () {
@@ -480,9 +479,13 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     // ensures numbers are updated as the element is dragged
                     function (event) {
                         var top_level_position = $(this_element_widget.get_frontside_element()).closest(".toontalk-top-level-backside").offset();
-                        var attribute_value = attribute_name === 'left' ? 
-                                              event.pageX-top_level_position.left-this_element_widget.drag_x_offset :
-                                              event.pageY-top_level_position.top -this_element_widget.drag_y_offset;
+                        var attribute_value;
+                        if (!top_level_position) {
+                            top_level_position = {left: 0, top: 0};
+                        }
+                        attribute_value = attribute_name === 'left' ? 
+                                                             event.pageX-top_level_position.left-this_element_widget.drag_x_offset :
+                                                             event.pageY-top_level_position.top -this_element_widget.drag_y_offset;
                         attribute_widget.set_value_from_decimal(attribute_value);
                         number_update_display.call(attribute_widget);
                     });
@@ -765,6 +768,7 @@ window.TOONTALK.element_backside =
             var td = document.createElement("td");
             var attribute_number = element_widget.create_attribute_widget(attribute);
             var frontside_element = attribute_number.get_frontside_element();
+            attribute_number.set_infinite_stack(true);
             table.appendChild(row);
             row.appendChild(td);
             td.appendChild(TT.UTILITIES.create_text_element(attribute));
