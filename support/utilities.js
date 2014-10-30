@@ -822,7 +822,7 @@ window.TOONTALK.UTILITIES =
                                             height: json_object.view.frontside_height});
                             }
                         } else if (!dragee.parent().is(".toontalk-top-level-resource, .toontalk-drop-area") &&
-                                   !dragee.is(".toontalk-carried-by-bird") &&
+                                   !dragee.is(".toontalk-carried-by-bird, .toontalk-element-attribute") &&
                                    !TT.UTILITIES.has_animating_image(dragee.get(0))) {
                             dragee.css({width:  "100%",
                                         height: "100%"});
@@ -946,13 +946,13 @@ window.TOONTALK.UTILITIES =
                                 if (!source_is_backside && source_widget.get_infinite_stack && source_widget.get_infinite_stack()) {
                                     // leave the source there but create a copy
                                     source_widget = source_widget.copy();
-                                    width = $source.width();
+                                    width  = $source.width();
                                     height = $source.height();
                                     $source = $(source_widget.get_frontside_element(true));
                                     if ($target.is(".toontalk-backside")) {
                                         // if original dimensions available via json_object.view use it
                                         // otherwise copy size of infinite_stack
-                                        $source.css({width:  json_object.view.frontside_width || width,
+                                        $source.css({width:  json_object.view.frontside_width  || width,
                                                      height: json_object.view.frontside_height || height});
                                     }
                                 } else if (container.removed_from_container) {
