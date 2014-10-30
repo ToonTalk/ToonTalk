@@ -77,7 +77,7 @@ window.TOONTALK.DISPLAY_UPDATES =
         },
         
         run_cycle_is_over: function () {
-            var now = new Date().getTime();
+            var now = Date.now();
             if (now-time_of_last_update >= 20) {
                 // every 20ms but rather than use setInterval this way
                 // updates don't happen while a robot is running

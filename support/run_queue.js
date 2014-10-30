@@ -40,7 +40,7 @@ window.TOONTALK.queue =
         
         run: function () {
             var next_robot_run, context;
-            var end_time = new Date().getTime() + this.maximum_run;
+            var end_time = Date.now() + this.maximum_run;
             var now, element;
 //          if (this.to_run.length > 0) console.log("start time: " + (end_time-this.maximum_run));
 //             if (this.to_run.length > 0) {
@@ -51,9 +51,7 @@ window.TOONTALK.queue =
                     break;
                 }
                 // tried checking the time every nth time but then add 1 unwatched looked funny (appeared to skip some additions)
-                now = new Date().getTime();
-                if (now >= end_time) {
-//                  console.log("end time:   " + now);
+                if (Date.now() >= end_time) {
                     break; 
                 }
                 // TODO: use an efficient implementation of queues (linked lists?)

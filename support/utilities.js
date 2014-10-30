@@ -1193,7 +1193,6 @@ window.TOONTALK.UTILITIES =
                 // could support any number of parameters but not needed
                 handler_run = true;
                 if (handler) {
-//                  console.log("event " + event + " at " + new Date());
                     handler();
                 }
                 element.removeEventListener(event_name, one_shot_handler);
