@@ -408,16 +408,16 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             dropped.remove();
         }
         if (TT.robot.in_training) {
-            TT.robot.in_training.dropped_on(dropped, this.create_attribute_object(attribute_name));
+            TT.robot.in_training.dropped_on(dropped, this.create_attribute_widget(attribute_name));
         }
     };
 
-    element.create_attribute_object = function (attribute_name) {
+    element.create_attribute_widget = function (attribute_name) {
         var selector = ".toontalk-element-" + attribute_name + "-attribute-input";
         var backside_element = this.get_backside_element();
         var attribute_value = this.get_attribute(attribute_name);
         var this_element_widget = this;
-        var $attribute_input, attribute_object, 
+        var $attribute_input, attribute_widget, 
             // store some default number functions:
             number_equals, number_update_display, number_set_value;
         if (backside_element) {
@@ -426,48 +426,48 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 $attribute_input.get(0).toontalk_widget = this;
             }
         }
-        attribute_object = TT.number.create(0, 1);
-        number_set_value = attribute_object.set_value;
-        attribute_object.set_value_from_decimal(attribute_value);
-        attribute_object.set_infinite_stack(true);
-        attribute_object.attribute = attribute_name; // TODO: rename? use accessors?
-        attribute_object.get_type_name = function () {
+        attribute_widget = TT.number.create(0, 1);
+        number_set_value = attribute_widget.set_value;
+        attribute_widget.set_value_from_decimal(attribute_value);
+        attribute_widget.set_infinite_stack(true);
+        attribute_widget.set_format('decimal');
+        attribute_widget.attribute = attribute_name; // TODO: rename? use accessors?
+        attribute_widget.get_type_name = function () {
             return "element attribute";
         };
-        attribute_object.toString = function () {
+        attribute_widget.toString = function () {
             return "the " + this.attribute + " attribute of " + this_element_widget;
         };
-//         attribute_object.get_element = function () {
+//         attribute_widget.get_element = function () {
 //             if ($attribute_input && $attribute_input.length > 0) {
 //                 return $attribute_input.get(0);
 //             }
 //         };
-        number_equals = attribute_object.equals;
-        attribute_object.equals = function (other) {
+        number_equals = attribute_widget.equals;
+        attribute_widget.equals = function (other) {
             if (attribute_name === other.attribute) {
                 return this.equals(other.element_widget);
             }
             return number_equals.call(this, other);
         };
-        attribute_object.set_value = function (new_value) {
-            // TODO: toFloat instead??
+        attribute_widget.set_value = function (new_value) {
             this_element_widget.set_attribute(this.attribute, bigrat.toDecimal(new_value));
             return number_set_value.call(this, new_value);
         };
-//         attribute_object.visible = function () {
+//         attribute_widget.visible = function () {
 //             // TODO: determine if this should work this way or use widget.visible?
 //             return $attribute_input && $attribute_input.is(":visible");
 //         };
 // TODO: should this (or its backside) walk to visible attributes?
-        number_update_display = attribute_object.update_display;
-        attribute_object.update_display = function () {
+        number_update_display = attribute_widget.update_display;
+        attribute_widget.update_display = function () {
             var attribute_value = this_element_widget.get_attribute(this.attribute);
-            attribute_object.set_value_from_decimal(attribute_value);
+            attribute_widget.set_value_from_decimal(attribute_value);
             number_update_display.call(this);
         };
         if (attributes_needing_updating.indexOf(attribute_name) >= 0) {
             this.on_update_display(function () {
-               attribute_object.update_display();
+               attribute_widget.update_display();
                return true; // don't remove
             });
             if (attribute_name === 'left' || attribute_name === 'top') {
@@ -475,19 +475,18 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     // ensures numbers are updated as the element is dragged
                     function (event) {
                         var attribute_value = attribute_name === 'left' ? event.pageX : event.pageY;
-                        attribute_object.set_value_from_decimal(attribute_value);
-                        number_update_display.call(attribute_object);
-//                         widget.update_display();
+                        attribute_widget.set_value_from_decimal(attribute_value);
+                        number_update_display.call(attribute_widget);
                     });
             }
         }
-        attribute_object.copy = function (just_value) {
-            return this.add_to_copy(this_element_widget.create_attribute_object(attribute_name), just_value);
+        attribute_widget.copy = function (just_value) {
+            return this.add_to_copy(this_element_widget.create_attribute_widget(attribute_name), just_value);
         };
         if (TT.debugging) {
-            attribute_object.debug_id = TT.UTILITIES.generate_unique_id();
+            attribute_widget.debug_id = TT.UTILITIES.generate_unique_id();
         }
-        return attribute_object;
+        return attribute_widget;
     };
     
     element.update_display = function () {
@@ -596,7 +595,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 // if the robot is running on the backside of a widget that is on the backside of the top_level_context
                 // then use the top_level_context
                 var element_widget = path_to_element_widget.dereference((top_level_context || context), undefined, robot);
-                return element_widget.create_attribute_object(attribute_name);
+                return element_widget.create_attribute_widget(attribute_name);
             },
             toString: function () {
                 return "the '" + attribute_name + "' property of " + path_to_element_widget;
@@ -756,8 +755,7 @@ window.TOONTALK.element_backside =
             var classes = "toontalk-element-attribute-input toontalk-element-" + attribute + "-attribute-input";
             var row = document.createElement("tr");
             var td = document.createElement("td");
-            // TODO: create_attribute_object should be called create_attribute_widget
-            var attribute_number = element_widget.create_attribute_object(attribute);
+            var attribute_number = element_widget.create_attribute_widget(attribute);
             var frontside_element = attribute_number.get_frontside_element();
             table.appendChild(row);
             row.appendChild(td);

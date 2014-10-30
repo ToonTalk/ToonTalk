@@ -207,20 +207,23 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
                 }
                 return this;
             };
+        new_number.get_value =
+            function () { 
+                return value; 
+            };
         new_number.set_value_from_decimal =
             function (decimal_string) {
                 // e.g. an attribute value
                 if (typeof decimal_string === 'number') {
                     this.set_value(bigrat.fromInteger(decimal_string));
                     return;
-//                    decimal_string = decimal_string.toString();
                 }
                 // else should be a string
                 this.set_value(bigrat.fromDecimal(decimal_string));
             };
-        new_number.get_value =
+        new_number.get_format =
             function () { 
-                return value; 
+                return format; 
             };
         new_number.set_format =
             function (new_value, update_now) { 
@@ -241,10 +244,6 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
                     this.rerender();
                 }
                 return this;
-            };
-        new_number.get_format =
-            function () { 
-                return format; 
             };
         new_number = number.add_standard_widget_functionality(new_number);
         new_number.set_description(description);
