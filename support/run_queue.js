@@ -38,10 +38,9 @@ window.TOONTALK.queue =
         
         paused: false,
         
-        run: function (steps_limit, run_after_steps_limit) {
+        run: function () {
             var next_robot_run, context;
             var end_time = new Date().getTime() + this.maximum_run;
-            var counter = 0;
             var now, element;
 //          if (this.to_run.length > 0) console.log("start time: " + (end_time-this.maximum_run));
 //             if (this.to_run.length > 0) {
@@ -51,34 +50,30 @@ window.TOONTALK.queue =
                 if (this.paused) {
                     break;
                 }
-                counter++;
-                if (counter === 3) {
-                    counter = 0;
-                    // check the time every 3rd cycle -- runs significantly faster doing this
-                    now = new Date().getTime();
-                    if (now >= end_time) {
-    //                  console.log("end time:   " + now);
-                        break; 
-                    }
+                // tried checking the time every nth time but then add 1 unwatched looked funny (appeared to skip some additions)
+                now = new Date().getTime();
+                if (now >= end_time) {
+//                  console.log("end time:   " + now);
+                    break; 
                 }
                 // TODO: use an efficient implementation of queues (linked lists?)
                 next_robot_run = this.to_run.shift();
                 next_robot_run.robot.run_actions(next_robot_run.context, next_robot_run.top_level_context, next_robot_run.queue);
-                if (steps_limit) {
-                    // steps_limit only used for testing
-                    steps_limit -= 1;
-                    if (steps_limit === 0) {
-                        if (run_after_steps_limit) {
-                            run_after_steps_limit();
-                        }
-                        break;
-                    }
-                }
+//                 if (steps_limit) {
+//                     // steps_limit only used for testing
+//                     steps_limit -= 1;
+//                     if (steps_limit === 0) {
+//                         if (run_after_steps_limit) {
+//                             run_after_steps_limit();
+//                         }
+//                         break;
+//                     }
+//                 }
             }
             TT.DISPLAY_UPDATES.run_cycle_is_over();
             // give browser a chance to run
             TT.UTILITIES.set_timeout(function () {
-                                         this.run(steps_limit, run_after_steps_limit);
+                                         this.run();
                                      }.bind(this),
                                      // if more to run don't wait -- otherwise wait 4 milliseconds
                                      this.to_run.length > 0 ? 0 : 4); 
