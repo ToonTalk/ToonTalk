@@ -552,6 +552,9 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
                  $(bammer_element).removeClass("toontalk-bammer-down");
                  TT.UTILITIES.set_timeout(function () {
                          var top_level_offset = $top_level_backside_element.offset();
+                         if (!top_level_offset) {
+                             top_level_offset = {left: 0, top: 0};
+                         }
                          $(bammer_element).addClass("toontalk-bammer-away");
                          target_absolute_position.left = top_level_offset.left+$top_level_backside_element.width() -100;
                          target_absolute_position.top  = top_level_offset.top +$top_level_backside_element.height()+100;
