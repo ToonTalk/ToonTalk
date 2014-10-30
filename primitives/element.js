@@ -433,6 +433,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         }
         attribute_widget = TT.number.create(0, 1);
         number_set_value = attribute_widget.set_value;
+        attribute_widget.element_widget = this;
         attribute_widget.set_value_from_decimal(attribute_value);
         attribute_widget.set_format('decimal');
         attribute_widget.attribute = attribute_name; // TODO: rename? use accessors?
