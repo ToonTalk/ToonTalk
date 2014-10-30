@@ -34,13 +34,14 @@ window.TOONTALK.queue =
 //             return this.to_run.shift();
 //         },
         
-        maximum_run: 1, // milliseconds
+        maximum_run: 100, // milliseconds
         
         paused: false,
         
         run: function (steps_limit, run_after_steps_limit) {
             var next_robot_run, context;
             var end_time = new Date().getTime() + this.maximum_run;
+            var counter = 0;
             var now, element;
 //          if (this.to_run.length > 0) console.log("start time: " + (end_time-this.maximum_run));
 //             if (this.to_run.length > 0) {
@@ -50,10 +51,15 @@ window.TOONTALK.queue =
                 if (this.paused) {
                     break;
                 }
-                now = new Date().getTime();
-                if (now >= end_time) {
-//                  console.log("end time:   " + now);
-                    break; 
+                counter++;
+                if (counter === 10) {
+                    counter = 0;
+                    // check the time every 100 cycles -- runs 50% faster doing this
+                    now = new Date().getTime();
+                    if (now >= end_time) {
+    //                  console.log("end time:   " + now);
+                        break; 
+                    }
                 }
                 // TODO: use an efficient implementation of queues (linked lists?)
                 next_robot_run = this.to_run.shift();
@@ -70,10 +76,12 @@ window.TOONTALK.queue =
                 }
             }
             TT.DISPLAY_UPDATES.run_cycle_is_over();
-            setTimeout(function () {
-                          this.run(steps_limit, run_after_steps_limit);
-                       }.bind(this),
-                       0); // give browser a chance to run
+            // give browser a chance to run
+            TT.UTILITIES.set_timeout(function () {
+                                         this.run(steps_limit, run_after_steps_limit);
+                                     }.bind(this),
+                                     // if more to run don't wait -- otherwise wait 4 milliseconds
+                                     this.to_run.length > 0 ? 0 : 4); 
         }
         
     };
