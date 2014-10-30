@@ -16,6 +16,8 @@ var is_transformation_option = function (attribute) {
 
 window.TOONTALK.element = (function (TT) { // TT is for convenience and more legible code
     "use strict";
+
+    var attributes_needing_updating = ["left", "top", "width", "height"];
     
     var element = Object.create(TT.widget);
     
@@ -195,10 +197,12 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         new_element.fire_on_update_display_handlers = function () {
             if (on_update_display_handlers) {
                 setTimeout(function () {
-                        on_update_display_handlers.forEach(function (handler) {
-                            handler();
+                        on_update_display_handlers.forEach(function (handler, index) {
+                            if (!handler()) {
+                                // transient handler
+                                on_update_display_handlers.splice(index, 1);
+                            };
                         });
-                        on_update_display_handlers = [];
                     },
                     1);   
             }
@@ -317,7 +321,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         var css = {};
         var current_value, new_value_number;
         var style_attributes;
-//         console.log(attribute + " of " + this.debug_id + " is " + new_value);
+//      console.log(attribute + " of " + this.debug_id + " is " + new_value);
         if (!frontside_element) {
             return false;
         }
@@ -328,7 +332,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         // need to use a number for JQuery's css otherwise treats "100" as "auto"
         new_value_number = value_in_pixels(new_value, attribute);
         if (new_value_number) {
-            if (current_value === new_value_number) {
+            if (current_value == new_value_number) {
+                // using == instead of === since want type coercion. current_value might be a string
                 return;
             }
             new_value = new_value_number;
@@ -446,7 +451,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         };
         attribute_object.set_value = function (new_value) {
             // TODO: toFloat instead??
-            this_element_widget.set_attribute(this.attribute, new_value.toString());
+            this_element_widget.set_attribute(this.attribute, bigrat.toDecimal(new_value));
             return number_set_value.call(this, new_value);
         };
 //         attribute_object.visible = function () {
@@ -459,6 +464,12 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             attribute_object.set_value_from_decimal(this_element_widget.get_attribute(this.attribute));
             number_update_display.call(this);
         };
+        if (attributes_needing_updating.indexOf(attribute_name) >= 0) {
+            this.on_update_display(function () {
+               attribute_object.update_display();
+               return true; // don't remove
+            });
+        }
         attribute_object.copy = function (just_value) {
             return this.add_to_copy(this_element_widget.create_attribute_object(attribute_name), just_value);
         };
