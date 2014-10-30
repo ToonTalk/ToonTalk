@@ -321,6 +321,8 @@ window.TOONTALK.UTILITIES =
                     });
                 });
             }
+            TT.QUEUE = window.TOONTALK.queue.create();
+            // might want two queues: so new entries end up in the 'next queue'
             TT.QUEUE.run();
             window.addEventListener('beforeunload', function (event) {
                 TT.UTILITIES.backup_all_top_level_widgets(true);

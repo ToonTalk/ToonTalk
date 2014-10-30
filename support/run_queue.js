@@ -71,6 +71,3 @@ window.TOONTALK.queue =
         
     };
 }(window.TOONTALK));
-
-window.TOONTALK.QUEUE = window.TOONTALK.queue.create();
-// might want two queues: so new entries end up in the 'next queue'
