@@ -52,9 +52,9 @@ window.TOONTALK.queue =
                     break;
                 }
                 counter++;
-                if (counter === 10) {
+                if (counter === 3) {
                     counter = 0;
-                    // check the time every 100 cycles -- runs 50% faster doing this
+                    // check the time every 3rd cycle -- runs significantly faster doing this
                     now = new Date().getTime();
                     if (now >= end_time) {
     //                  console.log("end time:   " + now);
