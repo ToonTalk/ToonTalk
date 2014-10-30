@@ -57,6 +57,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     
     element.create = function (html, style_attributes, description, additional_classes) {
         var new_element = Object.create(element);
+        var widget_drag_started = new_element.drag_started;
         var pending_css, transform_css, on_update_display_handlers, $image_element;
         if (!style_attributes) {
             style_attributes = [];
@@ -227,6 +228,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             additional_classes = new_value;
         };
         new_element = new_element.add_standard_widget_functionality(new_element);
+        new_element.drag_started = function (json, is_resource) {
+            this.drag_x_offset = json.view.drag_x_offset;
+            this.drag_y_offset = json.view.drag_y_offset;
+            widget_drag_started.call(this, json, is_resource);
+        };
         new_element.set_description(description);
         if (TT.debugging) {
             new_element.debug_string = new_element.toString();
@@ -474,7 +480,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 this.get_frontside_element().addEventListener('drag',
                     // ensures numbers are updated as the element is dragged
                     function (event) {
-                        var attribute_value = attribute_name === 'left' ? event.pageX : event.pageY;
+                        var top_level_position = $(this_element_widget.get_frontside_element()).closest(".toontalk-top-level-backside").offset();
+                        var attribute_value = attribute_name === 'left' ? 
+                                              event.pageX-top_level_position.left-this_element_widget.drag_x_offset :
+                                              event.pageY-top_level_position.top -this_element_widget.drag_y_offset;
                         attribute_widget.set_value_from_decimal(attribute_value);
                         number_update_display.call(attribute_widget);
                     });
@@ -523,7 +532,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         }
         if (TT.UTILITIES.on_a_nest_in_a_box(frontside_element)) {
             // need to work around a CSS problem where nested percentage widths don't behave as expected
-            this.set_attribute("width", $(frontside_element).closest(".toontalk-box-hole").width(), false);
+            this.set_attribute("width",  $(frontside_element).closest(".toontalk-box-hole").width(),  false);
             this.set_attribute("height", $(frontside_element).closest(".toontalk-box-hole").height(), false);
         }
         this.apply_css();
@@ -656,7 +665,7 @@ window.TOONTALK.element_backside =
                if (attribute === 'left') {
                    frontside_element = element_widget.get_frontside_element();
                    $(frontside_element).on('drag', function (event) {
-                       var backside_element = element_widget.get_backside_element();
+                       var backside_element  = element_widget.get_backside_element();
                        var frontside_element = element_widget.get_frontside_element();
                        if (backside_element && frontside_element) {
                            $(backside_element).find(".toontalk-element-left-attribute-input").val(event.originalEvent.clientX);
@@ -666,7 +675,7 @@ window.TOONTALK.element_backside =
                } else if (attribute === 'top') {
                    frontside_element = element_widget.get_frontside_element();
                    $(frontside_element).on('drag', function (event) {
-                       var backside_element = element_widget.get_backside_element();
+                       var backside_element  = element_widget.get_backside_element();
                        var frontside_element = element_widget.get_frontside_element();
                        if (backside_element && frontside_element) {
                            $(backside_element).find(".toontalk-element-top-attribute-input").val(event.originalEvent.clientY);
