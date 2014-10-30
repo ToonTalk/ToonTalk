@@ -494,7 +494,7 @@ window.TOONTALK.robot = (function (TT) {
         } else {
             $(frontside_element).removeClass("toontalk-robot-not-matched");
         }
-        setTimeout( // wait for layout to settle down
+        TT.UTILITIES.set_timeout( // wait for layout to settle down
             function () {
                 var relative_left, relative_top, thing_in_hand_width, thing_in_hand_height, robot_width, robot_height, css;
                 if (thing_in_hand_frontside_element) {
@@ -521,8 +521,7 @@ window.TOONTALK.robot = (function (TT) {
                         thing_in_hand.render(); // or should it be rerender -- could it be invisible?
                     }
                 }
-            },
-            1);
+            });
         if (backside) {
             backside.rerender();
         }
@@ -678,7 +677,7 @@ window.TOONTALK.robot_backside =
         var conditions_panel;
 //      TT.UTILITIES.set_position_is_absolute(condition_element, false);
         $(condition_element).addClass("toontalk-conditions-contents " + class_name);
-        setTimeout(function () {
+        TT.UTILITIES.set_timeout(function () {
                 // this is needed since the element may be transparent and yet need to see the border
                 // should really wait until condition_element is attached to the DOM
                 $(condition_element).parent().addClass("toontalk-conditions-contents-container");
@@ -687,8 +686,7 @@ window.TOONTALK.robot_backside =
                                           width:  'inherit',
                                           height: 'inherit'});
                 condition_widget.render();
-            },
-            1);        
+            });        
         if (robot.match_status === 'not matched') {
             $(condition_element).addClass("toontalk-conditions-not-matched");
         } else {

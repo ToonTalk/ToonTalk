@@ -413,7 +413,7 @@ window.TOONTALK.box = (function (TT) {
         $(frontside_element).addClass(border_class);
         frontside_element.toontalk_border_size = border_size;
         // delay it until browser has rendered current elements
-        setTimeout(renderer, 1);
+        TT.UTILITIES.set_timeout(renderer);
     };
     
     box.update_hole_display = function (index, new_content) {

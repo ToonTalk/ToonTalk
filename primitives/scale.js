@@ -181,10 +181,9 @@ window.TOONTALK.scale = (function (TT) {
             if ($scale_parts.length === 2) {
                 $scale_parts.each(function (index, hole_element) {
                         // delaying ensures they contents of the holes have the right size
-                        setTimeout(function () {
+                        TT.UTILITIES.set_timeout(function () {
                                 update_hole(hole_element, this.get_hole(index), index);
-                            }.bind(this),
-                            1);
+                            }.bind(this));
                     }.bind(this));
             } else {
                 this.get_holes().forEach(function (hole, index) {

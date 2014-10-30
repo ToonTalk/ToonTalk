@@ -340,10 +340,9 @@ window.TOONTALK.UTILITIES =
         dragee.find("*").removeClass("toontalk-ignore-events");
         // need delay since there may be other listeners to drop events that need to know this
         // e.g. drop area for next robot
-        setTimeout(function () {
+        TT.UTILITIES.set_timeout(function () {
             dragee = undefined;
-            },
-            1); 
+            }); 
     };
     var has_ancestor_element = function (element, possible_ancestor) {
         if (element === possible_ancestor) {
@@ -353,6 +352,20 @@ window.TOONTALK.UTILITIES =
             return has_ancestor_element(element.parentNode, possible_ancestor);
         }
     };
+    // for implementing zero_timeout
+    var timeouts = [];
+    var timeout_message_name = "zero-timeout-message";
+    window.addEventListener("message", 
+                            function (event) {
+                                if (event.source == window && event.data == timeout_message_name) {
+                                    event.stopPropagation();
+                                    if (timeouts.length > 0) {
+                                        (timeouts.shift())();
+                                    }
+                                }   
+                            },
+                            true);
+
     $(document).ready(initialise);
     return {
         create_from_json: function (json, additional_info) {
@@ -1722,6 +1735,16 @@ window.TOONTALK.UTILITIES =
                 }
                 running = !running;
             });
+        },
+
+        set_timeout: function (delayed, delay) {
+            if (!delay) {
+                // see http://dbaron.org/log/20100309-faster-timeouts
+                timeouts.push(delayed);
+                window.postMessage(timeout_message_name, "*");
+            } else {
+                setTimeout(delayed, delay);
+            }
         }
         
 //         create_menu_item: function (text) {

@@ -197,15 +197,14 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         };
         new_element.fire_on_update_display_handlers = function () {
             if (on_update_display_handlers) {
-                setTimeout(function () {
+                TT.UTILITIES.set_timeout(function () {
                         on_update_display_handlers.forEach(function (handler, index) {
                             if (!handler()) {
                                 // transient handler
                                 on_update_display_handlers.splice(index, 1);
                             };
                         });
-                    },
-                    1);   
+                    });   
             }
         };
         new_element.get_image_element = function () {

@@ -872,7 +872,7 @@ window.TOONTALK.widget = (function (TT) {
             var backside_is_parent = true;
             var animate_backside_appearance = 
                 function (element, final_opacity) {
-                    setTimeout(
+                    TT.UTILITIES.set_timeout(
                         function ()  {
                             var remove_transition_class = function () {
                                 $(element).removeClass("toontalk-side-appearing");
@@ -886,8 +886,7 @@ window.TOONTALK.widget = (function (TT) {
                                             top:  final_top,
                                             opacity: final_opacity});
                             this.apply_backside_geometry();
-                        }.bind(this),
-                        1);
+                        }.bind(this));
                 }.bind(this);
             var backside_element, frontside_element, parent, $frontside_ancestor_that_is_backside_element,
                 $frontside_ancestor_before_backside_element, frontside_ancestor_before_backside_element, ancestor_that_owns_backside_element,
@@ -1086,7 +1085,7 @@ window.TOONTALK.widget = (function (TT) {
                 }
                 // delay it so the geometry settles down
                 setTimeout(backup_function, 100);
-            }            
+            }         
         },
         
         render: function () {

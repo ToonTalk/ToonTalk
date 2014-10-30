@@ -144,7 +144,7 @@ window.TOONTALK.backside =
                 backside_element.appendChild(description_label); 
             }
             // wait for DOM to settle down
-            setTimeout(update_flag_and_sign_position, 1);
+            TT.UTILITIES.set_timeout(update_flag_and_sign_position);
             $backside_element.addClass("toontalk-backside toontalk-side " + "toontalk-backside-of-" + widget.get_type_name());
             $backside_element.css({"z-index": TT.UTILITIES.next_z_index()});
             backside.get_element = function () {
@@ -237,7 +237,7 @@ window.TOONTALK.backside =
                     return;
                 }
                 // too soon to add these widgets so delay slightly
-                setTimeout(
+                TT.UTILITIES.set_timeout(
                     function () {
                         var widget_side_element, json_view;
                         var backside_visible = this.visible();
@@ -275,8 +275,7 @@ window.TOONTALK.backside =
                             backside_widget_side.set_visible(backside_visible);
                             backside_widget_side.get_widget().rerender();
                         });
-                    }.bind(this),
-                    1);
+                    }.bind(this));
             };
             backside.get_backside_dimensions = function () {
                 if (x_scale) {

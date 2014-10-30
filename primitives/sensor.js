@@ -180,12 +180,11 @@ window.TOONTALK.sensor = (function (TT) {
                                       // following postponed because of circularity of sensors and their widgets
         if (json.sensor_of) {
             // delay this due to the circularity of sensors and their widgets
-            setTimeout(function () {
+            TT.UTILITIES.set_timeout(function () {
                     sensor.set_sensor_of(TT.UTILITIES.create_from_json(json.sensor_of, additional_info));
                     // make sure listeners are updated
                     sensor.set_active(json.active);
-                },
-                1);
+                });
         } else {
             sensor.set_active(json.active);
         }

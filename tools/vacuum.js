@@ -111,10 +111,9 @@ window.TOONTALK.vacuum = (function (TT) {
     TT.creators_from_json["vacuum"] = function (json, additional_info) {
         var vacuum = TT.vacuum.create();
         if (json.mode) {
-            setTimeout(function () {
+            TT.UTILITIES.set_timeout(function () {
                     vacuum.set_mode(json.mode);
-                }, 
-                1);
+                });
         }
         return vacuum;
     };

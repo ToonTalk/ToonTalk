@@ -550,7 +550,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
                     robot.run_next_step();
                  } 
                  $(bammer_element).removeClass("toontalk-bammer-down");
-                 setTimeout(function () {
+                 TT.UTILITIES.set_timeout(function () {
                          var top_level_offset = $top_level_backside_element.offset();
                          $(bammer_element).addClass("toontalk-bammer-away");
                          target_absolute_position.left = top_level_offset.left+$top_level_backside_element.width() -100;
@@ -560,8 +560,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
                          };
                          TT.UTILITIES.animate_to_absolute_position(bammer_element, target_absolute_position, bammer_gone_continuation); 
                          $(bammer_element).css({opacity: 0.01});
-                     },
-                     1);
+                     });
              }.bind(this);
              TT.UTILITIES.animate_to_absolute_position(bammer_element, target_absolute_position, hit_number_continuation);
              $(bammer_element).css({opacity: 1.0,
