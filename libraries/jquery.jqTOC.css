@@ -1,0 +1,49 @@
+/* for IE6 fixed positioning support */
+* html {overflow-x:auto; overflow-y:hidden;}
+* html #toc_container {position:absolute; margin-right:15px;}
+body {
+	margin:0;
+	padding:0 10px 0 10px;
+	height:100%;
+	overflow-y:auto;
+}
+/* end fixes */
+
+#toc_container {
+   font: 12px/1.6em Verdana, Arial, Helvetica, sans-serif;
+   position:fixed;
+   right:0;
+   top:0em;
+   width:17em;
+   background: gray;
+}
+.toc_header {
+   background: #666;
+   color: #fff;
+   font-weight: bold;
+   cursor: pointer;
+   padding-left:10px;
+}
+.toc_content {
+   border: 3px solid #666;
+   padding: 0 20px 5px 20px;
+   display: none;
+   overflow: auto;
+}
+.toc_content a {
+   display: list-item;
+   text-decoration: none;
+   color: #ccc;
+}
+.toc_content a:hover {
+   color: #fff;
+}
+.toc_content a.indent {
+   list-style-type: circle;
+}
+.toc_top {
+   float: right;
+}
+.toc_top a {
+   color: purple;
+}

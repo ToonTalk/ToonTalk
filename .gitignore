@@ -216,7 +216,6 @@ pip-log.txt
 compile/all-in-one-2.html
 *.html#
 caja/
-libraries/
 
 tests/temp.html
 tests/temp2.html
