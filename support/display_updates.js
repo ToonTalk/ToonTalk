@@ -64,14 +64,14 @@ window.TOONTALK.DISPLAY_UPDATES =
                 if (frontside_element && !$(frontside_element).is(".toontalk-top-level-resource, .toontalk-bird, .toontalk-nest, .toontalk-box-hole, .toontalk-plain-text-element, .toontalk-conditions-contents, .toontalk-robot, .toontalk-widget, .toontalk-held-by-robot")) {
                     // need to delay in order for the DOM to settle down with the changes caused by update_display
                     TT.UTILITIES.set_timeout(function () {
-                                   if ($parent_side_element.is('.toontalk-box-hole')) {
-                                       if ($(frontside_element).is(".ui-resizable")) {
-                                           $(frontside_element).resizable('destroy');
-                                       }
-                                   } else if (!$(frontside_element).is(".ui-resizable")) {
-                                       TT.UTILITIES.make_resizable($(frontside_element), pending_update);
-                                   }
-                              });   
+                                                 if ($parent_side_element.is('.toontalk-box-hole')) {
+                                                     if ($(frontside_element).is(".ui-resizable")) {
+                                                         $(frontside_element).resizable('destroy');
+                                                     }
+                                                 } else if (!$(frontside_element).is(".ui-resizable")) {
+                                                     TT.UTILITIES.make_resizable($(frontside_element), pending_update);
+                                                 }
+                                            });   
                 }                  
             });
         },
