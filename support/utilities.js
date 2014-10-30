@@ -766,6 +766,7 @@ window.TOONTALK.UTILITIES =
                         TT.UTILITIES.report_internal_error("Possible bug that " + dragee + " doesn't have a known owner.");
                         dragee = $(element);
                     }
+                    widget.being_dragged = true;
                     bounding_rectangle = dragee.get(0).getBoundingClientRect();
                     is_resource = dragee.is(".toontalk-top-level-resource");
 //                     if (dragee.is(".toontalk-frontside")) {
@@ -810,6 +811,7 @@ window.TOONTALK.UTILITIES =
                     if (!dragee) {
                         dragee = $(event.target).closest(".toontalk-side");
                     }
+                    TT.UTILITIES.widget_from_jquery(dragee).being_dragged = undefined;
                     if (dragee.is(".toontalk-frontside")) {
                         if (dragee.parent().is(".toontalk-backside")) {
                             // restore ordinary size styles
@@ -828,7 +830,7 @@ window.TOONTALK.UTILITIES =
                     }
                     drag_ended();
                     event.stopPropagation();
-                });       
+                });     
         },
         
         can_receive_drops: function (element) {

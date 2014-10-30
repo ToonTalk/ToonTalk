@@ -461,7 +461,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
 // TODO: should this (or its backside) walk to visible attributes?
         number_update_display = attribute_object.update_display;
         attribute_object.update_display = function () {
-            attribute_object.set_value_from_decimal(this_element_widget.get_attribute(this.attribute));
+            var attribute_value = this_element_widget.get_attribute(this.attribute);
+            attribute_object.set_value_from_decimal(attribute_value);
             number_update_display.call(this);
         };
         if (attributes_needing_updating.indexOf(attribute_name) >= 0) {
@@ -469,6 +470,16 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                attribute_object.update_display();
                return true; // don't remove
             });
+            if (attribute_name === 'left' || attribute_name === 'top') {
+                this.get_frontside_element().addEventListener('drag',
+                    // ensures numbers are updated as the element is dragged
+                    function (event) {
+                        var attribute_value = attribute_name === 'left' ? event.pageX : event.pageY;
+                        attribute_object.set_value_from_decimal(attribute_value);
+                        number_update_display.call(attribute_object);
+//                         widget.update_display();
+                    });
+            }
         }
         attribute_object.copy = function (just_value) {
             return this.add_to_copy(this_element_widget.create_attribute_object(attribute_name), just_value);
@@ -483,6 +494,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         var frontside_element = this.get_frontside_element();
         var backside = this.get_backside();
         var rendering, additional_classes;
+        if (this.being_dragged) {
+            return;
+        }
         if (this.get_erased && this.get_erased()) {
             // could save the current opacity and restore it below
             $(frontside_element).css({opacity: 0});
