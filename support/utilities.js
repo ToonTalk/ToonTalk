@@ -340,10 +340,9 @@ window.TOONTALK.UTILITIES =
         dragee.find("*").removeClass("toontalk-ignore-events");
         // need delay since there may be other listeners to drop events that need to know this
         // e.g. drop area for next robot
-        setTimeout(function () {
+        TT.UTILITIES.set_timeout(function () {
             dragee = undefined;
-            },
-            1); 
+            }); 
     };
     var has_ancestor_element = function (element, possible_ancestor) {
         if (element === possible_ancestor) {
@@ -353,6 +352,20 @@ window.TOONTALK.UTILITIES =
             return has_ancestor_element(element.parentNode, possible_ancestor);
         }
     };
+    // for implementing zero_timeout
+    var timeouts = [];
+    var timeout_message_name = "zero-timeout-message";
+    window.addEventListener("message", 
+                            function (event) {
+                                if (event.source == window && event.data == timeout_message_name) {
+                                    event.stopPropagation();
+                                    if (timeouts.length > 0) {
+                                        (timeouts.shift())();
+                                    }
+                                }   
+                            },
+                            true);
+
     $(document).ready(initialise);
     return {
         create_from_json: function (json, additional_info) {
@@ -766,6 +779,7 @@ window.TOONTALK.UTILITIES =
                         TT.UTILITIES.report_internal_error("Possible bug that " + dragee + " doesn't have a known owner.");
                         dragee = $(element);
                     }
+                    widget.being_dragged = true;
                     bounding_rectangle = dragee.get(0).getBoundingClientRect();
                     is_resource = dragee.is(".toontalk-top-level-resource");
 //                     if (dragee.is(".toontalk-frontside")) {
@@ -810,6 +824,7 @@ window.TOONTALK.UTILITIES =
                     if (!dragee) {
                         dragee = $(event.target).closest(".toontalk-side");
                     }
+                    TT.UTILITIES.widget_from_jquery(dragee).being_dragged = undefined;
                     if (dragee.is(".toontalk-frontside")) {
                         if (dragee.parent().is(".toontalk-backside")) {
                             // restore ordinary size styles
@@ -820,7 +835,7 @@ window.TOONTALK.UTILITIES =
                                             height: json_object.view.frontside_height});
                             }
                         } else if (!dragee.parent().is(".toontalk-top-level-resource, .toontalk-drop-area") &&
-                                   !dragee.is(".toontalk-carried-by-bird") &&
+                                   !dragee.is(".toontalk-carried-by-bird, .toontalk-element-attribute") &&
                                    !TT.UTILITIES.has_animating_image(dragee.get(0))) {
                             dragee.css({width:  "100%",
                                         height: "100%"});
@@ -828,7 +843,7 @@ window.TOONTALK.UTILITIES =
                     }
                     drag_ended();
                     event.stopPropagation();
-                });       
+                });     
         },
         
         can_receive_drops: function (element) {
@@ -944,13 +959,13 @@ window.TOONTALK.UTILITIES =
                                 if (!source_is_backside && source_widget.get_infinite_stack && source_widget.get_infinite_stack()) {
                                     // leave the source there but create a copy
                                     source_widget = source_widget.copy();
-                                    width = $source.width();
+                                    width  = $source.width();
                                     height = $source.height();
                                     $source = $(source_widget.get_frontside_element(true));
                                     if ($target.is(".toontalk-backside")) {
                                         // if original dimensions available via json_object.view use it
                                         // otherwise copy size of infinite_stack
-                                        $source.css({width:  json_object.view.frontside_width || width,
+                                        $source.css({width:  json_object.view.frontside_width  || width,
                                                      height: json_object.view.frontside_height || height});
                                     }
                                 } else if (container.removed_from_container) {
@@ -1178,7 +1193,6 @@ window.TOONTALK.UTILITIES =
                 // could support any number of parameters but not needed
                 handler_run = true;
                 if (handler) {
-//                  console.log("event " + event + " at " + new Date());
                     handler();
                 }
                 element.removeEventListener(event_name, one_shot_handler);
@@ -1720,6 +1734,16 @@ window.TOONTALK.UTILITIES =
                 }
                 running = !running;
             });
+        },
+
+        set_timeout: function (delayed, delay) {
+            if (!delay) {
+                // see http://dbaron.org/log/20100309-faster-timeouts
+                timeouts.push(delayed);
+                window.postMessage(timeout_message_name, "*");
+            } else {
+                setTimeout(delayed, delay);
+            }
         }
         
 //         create_menu_item: function (text) {

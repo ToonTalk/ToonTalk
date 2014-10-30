@@ -98,10 +98,9 @@ window.TOONTALK.bird = (function (TT) {
                     stop_carrying_element();
                     nest_recieving_message.add_to_contents(message_side, this, true);
                     // return to original location
-                    setTimeout(function () {
+                    TT.UTILITIES.set_timeout(function () {
                             this.fly_to(bird_offset, bird_finished_continuation); 
-                        }.bind(this),
-                        1);
+                        }.bind(this));
                 }.bind(this);
             var carry_element = function (element, widget_side) {
                     this.element_to_display_when_flying = element;
@@ -113,7 +112,7 @@ window.TOONTALK.bird = (function (TT) {
                     element.height_before_carry = element.clientHeight;
                     // the timeout fixes a problem when a watched robot gives a bird something that
                     // thing carried is displayed displaced to the southeast from where it should be
-                    setTimeout(function () {
+                    TT.UTILITIES.set_timeout(function () {
                             $(this.element_to_display_when_flying).addClass("toontalk-carried-by-bird")
                                                                   .css({left: '',
                                                                         top:  '',
@@ -121,8 +120,7 @@ window.TOONTALK.bird = (function (TT) {
                                                                         height: '',
                                                                         position: ''});
                             this.update_display();
-                        }.bind(this),
-                        1);
+                        }.bind(this));
                 }.bind(this);
             var stop_carrying_element = function (where_to_leave_it) {
                     if (!this.element_to_display_when_flying) {
@@ -703,7 +701,7 @@ window.TOONTALK.nest = (function (TT) {
                     }
                     bird_fly_continuation = function () {
                         $(bird_frontside_element).removeClass("toontalk-fly-southwest");
-                        setTimeout(function () {
+                        TT.UTILITIES.set_timeout(function () {
                                 TT.UTILITIES.add_animation_class(bird_frontside_element, "toontalk-fly-down");
                                 fly_down_finished_handler = function () {
                                     var become_static = function () {
@@ -722,8 +720,7 @@ window.TOONTALK.nest = (function (TT) {
                                     bird.update_display();
                                 };
                                 TT.UTILITIES.add_one_shot_event_handler(frontside_element, "animationend", 1000, fly_down_finished_handler);
-                            }.bind(this),
-                            1);
+                            }.bind(this));
                     }.bind(this);
                     $(bird_frontside_element).removeClass("toontalk-bird-static");
                     resting_left = Math.max(10, nest_position.left-70);
@@ -790,7 +787,7 @@ window.TOONTALK.nest = (function (TT) {
                     // tried to have a CSS class toontalk-widget-on-nest that specified width and height as 80%
                     // but it didn't work well - especially in FireFox
                     // timeout needed when loading otherwise something resets the width and height
-                    setTimeout(function () {
+                    TT.UTILITIES.set_timeout(function () {
                             var border_adjustment = 2*contents_side_element.toontalk_border_size || 0;
                             var width  = .8*nest_width;
                             var height = .8*nest_height
@@ -810,7 +807,7 @@ window.TOONTALK.nest = (function (TT) {
                                 top_contents_widget.set_size_attributes(width, height);
                             }
                         },
-                        2);
+                        2); // TODO: see if 0 works here
                 }
                 frontside_element.appendChild(contents_side_element);
                 $(frontside_element).addClass("toontalk-empty-nest");

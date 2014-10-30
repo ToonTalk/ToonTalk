@@ -185,13 +185,12 @@ window.TOONTALK.path =
                             if (widget_frontside_element) {
                                 copy_frontside_element = widget_copy.get_frontside_element();
                                 widget_frontside_position = $(widget_frontside_element).position();
-                                setTimeout(function ()  {
+                                TT.UTILITIES.set_timeout(function ()  {
                                     $(copy_frontside_element).css({left:   widget_frontside_position.left,
                                                                    top:    widget_frontside_position.top,
                                                                    width:  widget_frontside_element.offsetWidth,
                                                                    height: widget_frontside_element.offsetHeight});
-                                    },
-                                    0);
+                                    });
                             }
                         }
                         return widget_copy;

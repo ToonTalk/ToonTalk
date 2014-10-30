@@ -188,7 +188,11 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         } 
         new_number.set_value =
             function (new_value) {
-                var listeners = this.get_listeners('value_changed');
+                var listeners;
+                if (bigrat.equals(value, new_value)) {
+                    return;
+                }
+                listeners = this.get_listeners('value_changed');
                 if (listeners) {
                     listeners.forEach(function (listener) {
                         listener({type: 'value_changed',
@@ -206,6 +210,20 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         new_number.get_value =
             function () { 
                 return value; 
+            };
+        new_number.set_value_from_decimal =
+            function (decimal_string) {
+                // e.g. an attribute value
+                if (typeof decimal_string === 'number') {
+                    this.set_value(bigrat.fromInteger(decimal_string));
+                    return;
+                }
+                // else should be a string
+                this.set_value(bigrat.fromDecimal(decimal_string));
+            };
+        new_number.get_format =
+            function () { 
+                return format; 
             };
         new_number.set_format =
             function (new_value, update_now) { 
@@ -226,10 +244,6 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
                     this.rerender();
                 }
                 return this;
-            };
-        new_number.get_format =
-            function () { 
-                return format; 
             };
         new_number = number.add_standard_widget_functionality(new_number);
         new_number.set_description(description);
@@ -319,6 +333,10 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             // good enough values when carried by a bird
             client_width  = 100;
             client_height =  40;
+        } else if ($(frontside_element).is(".toontalk-element-attribute")) {
+            // good enough values when carried by a bird
+            client_width  = 200;
+            client_height =  32;
         } else {
             if (!$dimensions_holder.is(":visible")) {
                 return;
@@ -532,7 +550,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
                     robot.run_next_step();
                  } 
                  $(bammer_element).removeClass("toontalk-bammer-down");
-                 setTimeout(function () {
+                 TT.UTILITIES.set_timeout(function () {
                          var top_level_offset = $top_level_backside_element.offset();
                          $(bammer_element).addClass("toontalk-bammer-away");
                          target_absolute_position.left = top_level_offset.left+$top_level_backside_element.width() -100;
@@ -542,8 +560,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
                          };
                          TT.UTILITIES.animate_to_absolute_position(bammer_element, target_absolute_position, bammer_gone_continuation); 
                          $(bammer_element).css({opacity: 0.01});
-                     },
-                     1);
+                     });
              }.bind(this);
              TT.UTILITIES.animate_to_absolute_position(bammer_element, target_absolute_position, hit_number_continuation);
              $(bammer_element).css({opacity: 1.0,
@@ -665,7 +682,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
 
     number.is_integer = function () {
         // check if denominator is 1 or numerator is 0
-        return this.get_value()[1].compare(BigInteger.ONE) === 0 ||
+        return this.get_value()[1].compare(BigInteger.ONE)  === 0 ||
                this.get_value()[0].compare(BigInteger.ZERO) === 0;
     };
 

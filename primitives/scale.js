@@ -157,12 +157,6 @@ window.TOONTALK.scale = (function (TT) {
             };
             var state, class_name;
             var scales = TT.UTILITIES.scale_to_fit(frontside_element, container_element, full_size_width, full_size_height);
-            if (scales.x_scale === 0) {
-                scales.x_scale = 1;
-            }
-            if (scales.y_scale === 0) {
-                scales.y_scale = 1;
-            }
             if (scale_width === 0) {
                 scale_width = 1;
             }
@@ -187,10 +181,9 @@ window.TOONTALK.scale = (function (TT) {
             if ($scale_parts.length === 2) {
                 $scale_parts.each(function (index, hole_element) {
                         // delaying ensures they contents of the holes have the right size
-                        setTimeout(function () {
+                        TT.UTILITIES.set_timeout(function () {
                                 update_hole(hole_element, this.get_hole(index), index);
-                            }.bind(this),
-                            1);
+                            }.bind(this));
                     }.bind(this));
             } else {
                 this.get_holes().forEach(function (hole, index) {

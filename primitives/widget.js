@@ -236,7 +236,7 @@ window.TOONTALK.widget = (function (TT) {
             var find_widget_element;
             if (!widget.animate_to_widget) {
                 find_widget_element = function (widget) {
-                    var widget_element = widget.get_side_element();
+                    var widget_element = widget.get_element();
                     if (!widget_element || !$(widget_element).is(":visible")) {        
                         // widget is assumed to be a fresh copy of a resource that has yet to be added to anything
                         widget_element = TT.UTILITIES.find_resource_equal_to_widget(widget);
@@ -514,14 +514,14 @@ window.TOONTALK.widget = (function (TT) {
             }
         },
         
-        get_side_element: function (create) {
-            // returns frontside if showing otherwise backside
-            if (this.get_frontside().visible()) {
-                return this.get_frontside_element(create);
-            } else {
-                return this.get_backside_element(create);
-            }
-        },
+//         get_side_element: function (create) {
+//             // returns frontside if showing otherwise backside
+//             if (this.get_frontside().visible()) {
+//                 return this.get_frontside_element(create);
+//             } else {
+//                 return this.get_backside_element(create);
+//             }
+//         },
         
         add_to_json: function (json_semantic, json_history) {
             var json_view, json, position, frontside_element, backside, backside_element, frontside_width;
@@ -872,7 +872,7 @@ window.TOONTALK.widget = (function (TT) {
             var backside_is_parent = true;
             var animate_backside_appearance = 
                 function (element, final_opacity) {
-                    setTimeout(
+                    TT.UTILITIES.set_timeout(
                         function ()  {
                             var remove_transition_class = function () {
                                 $(element).removeClass("toontalk-side-appearing");
@@ -886,8 +886,7 @@ window.TOONTALK.widget = (function (TT) {
                                             top:  final_top,
                                             opacity: final_opacity});
                             this.apply_backside_geometry();
-                        }.bind(this),
-                        1);
+                        }.bind(this));
                 }.bind(this);
             var backside_element, frontside_element, parent, $frontside_ancestor_that_is_backside_element,
                 $frontside_ancestor_before_backside_element, frontside_ancestor_before_backside_element, ancestor_that_owns_backside_element,
@@ -1086,7 +1085,7 @@ window.TOONTALK.widget = (function (TT) {
                 }
                 // delay it so the geometry settles down
                 setTimeout(backup_function, 100);
-            }            
+            }         
         },
         
         render: function () {

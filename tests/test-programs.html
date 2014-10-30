@@ -6,6 +6,7 @@
 <script src="../libraries/jquery-2.1.0.js"></script>
 <script src="../libraries/jquery-ui-1.10.4.custom/js/jquery-ui-1.10.4.custom.js"></script>
 <script src="../libraries/rationaljs.js"></script>
+<script src="../libraries/queue.js"></script>
 <script src="../support/initial.js"></script>
 <script src="../primitives/widget.js"></script>
 <script src="../primitives/number.js"></script>
@@ -6622,6 +6623,215 @@ This will be replaced by a work area with 4 widgets: a box, a box, the backside 
     }
   ]
 }</div>
-
+<p>Left until 1000</p>
+<div class='toontalk-json'>
+This will be replaced by an element.
+<div style='display:none;'>{
+  "semantic": {
+    "type": "element",
+    "html": "%3Cimg%20src%3D'data%3Aimage%2Fpng%3Bbase64%2CiVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAAAAAByaaZbAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3gkBCx0HPBHEtQAAA6VJREFUSMddlt12IzcMgz9QGnu37%2F%2BgPadu5kci0QuNs07tK0WiSYIAGBkj3p9CfBwp9L9jL%2FTxl%2FN8%2FIqPBy9%2B9z9HruNXRHy89zn4eE%2BN%2FLxmTK%2F4GQJcr68IgJJsPF%2FH7%2FsMxudL0QH8dzSBxz4eBuaLUJr5VU%2BA19Vkk%2BfxWBn0TIVFUQaIZtEiT2OA1gVNLlyrpObmiJpeBaunZIG9rqeEnIa7xRJgeyVY%2FWODV4gwtg0OAKcU4DditgAJJAFG8grTjbJIZEv4z4zqrhBTYAxqCyVfNSI8cv12jpkOKu%2FoOsuICSyU8pqzFC7HFsC1DztcsMC7zmnJrmh0yLnXBKej9adc1162E7fWNphfZy28tv5QL52n2xMMwbZpnpd7w0D01vO6hjZs4b41up00SQYcLUxpM2FAEa2yIm4sIhodRyCQ5WgRVFCLwIomFM0G1rXQ1FD7ZmcSVBeABZ4ECsAgmNl66PGHwM3Xo3%2Fw2wfP%2Fimgq8UPRTFHferBY%2F7Qw8ybS%2B8B7V%2BXP%2FXzOvIz3%2Fm6bgG9ohnr2s9NqxJh%2BXjlBnDMhtH8Ojb6nTqheY4RBmoaFHnORV%2FPwhF5zfbWA4Kod2mKQoppdAsKJBf4zlAE4Sq9Axauazxvplda8DYRCd23YOt%2B%2BG1SIqxFn1WTMiHzNjVRVfa3OIh0lUUsAdXEpcgkFqdG1kJ9DTzHZZSzdOthHGkLpxdL9q9prLpdMfejLFaPHaq%2BZmIZovdmj31OLKxo3a5%2Fx1hW0NqjdXOeflJL5X3TGMPbZmRJ7VHzGvGXMQHxUDel3gA7RIRdehCuADWF7dbBGUGoVTdLD2CtAQTIC2aQrWZUXULh0NBoN7ZyDQVE3BN2lsJ%2F5JJJqH4skHP0xyc%2Fd7ZPPVzXFtKPBXD4hx6Oq%2F24Pm96L0rY57%2Bf6Vyv86kPsz1fvq3yH5qlmsfZDeSOwDWOufQwAqu87%2F3OQBo1cubqtrCEx7XM21XQNK5866HTrEiqEKBuvKxqUbNjwoX41rQVsm91SxA%2FukFrRSjeCyWwpftsOxbv9D1StLzpVlxgi%2B8FZNVaB%2FfOWutI4NW0M0etNaw10UzAZd96SCzSugPGGAkovUo69yuF3v83zGOfIFJq6lBjn9NGaNsejbqOOS25Yotu5uucCcK9bSg5z6xa9FbbfnGNmdgBEe2x%2BZjTNhKKx7ObZLOMK4JormLbsCUURGXFExIF62vdHhNCoiAkJGmZl0KCaFFI9n8jF7g0%2BBO2zwAAAABJRU5ErkJggg%3D%3D'%20alt%3D'border-half-size-highlighted.png'%2F%3E",
+    "attributes": [
+      "left",
+      "top",
+      "width",
+      "height"
+    ],
+    "attribute_values": [
+      "1000",
+      "181",
+      "48",
+      "48"
+    ],
+    "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "number",
+            "operator": "+",
+            "numerator": "19",
+            "denominator": "1",
+            "format": "decimal",
+            "infinite_stack": true
+          },
+          "view": {
+            "backside_geometry": {
+              "x_scale": 1,
+              "y_scale": 1,
+              "original_width": 550,
+              "original_height": 200
+            },
+            "frontside_left": 70,
+            "frontside_top": 108
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "scale",
+            "size": 2,
+            "contents": [
+              {
+                "semantic": {
+                  "type": "number",
+                  "operator": "+",
+                  "numerator": "1000",
+                  "denominator": "1",
+                  "format": "decimal",
+                  "infinite_stack": true
+                },
+                "view": {},
+                "version": 1
+              },
+              {
+                "semantic": {
+                  "type": "number",
+                  "operator": "+",
+                  "numerator": "1000",
+                  "denominator": "1",
+                  "format": "improper_fraction"
+                },
+                "view": {
+                  "backside_geometry": {
+                    "x_scale": 1,
+                    "y_scale": 1,
+                    "original_width": 550,
+                    "original_height": 200
+                  }
+                },
+                "version": 1
+              }
+            ],
+            "horizontal": true,
+            "backside_widgets": [
+              {
+                "widget": {
+                  "semantic": {
+                    "type": "robot",
+                    "frontside_conditions": {
+                      "semantic": {
+                        "type": "scale",
+                        "size": 2,
+                        "contents": [
+                          {
+                            "semantic": {
+                              "type": "number",
+                              "operator": "+",
+                              "numerator": "9",
+                              "denominator": "1",
+                              "format": "decimal",
+                              "erased": true
+                            },
+                            "view": {},
+                            "version": 1
+                          },
+                          {
+                            "semantic": {
+                              "type": "number",
+                              "operator": "+",
+                              "numerator": "1000",
+                              "denominator": "1",
+                              "format": "improper_fraction",
+                              "erased": true
+                            },
+                            "view": {},
+                            "version": 1
+                          }
+                        ],
+                        "horizontal": true
+                      },
+                      "view": {
+                        "frontside_width": 123,
+                        "frontside_height": 91
+                      },
+                      "version": 1
+                    },
+                    "body": {
+                      "type": "body",
+                      "steps": [
+                        {
+                          "type": "robot_action",
+                          "action_name": "pick up",
+                          "path": {
+                            "type": "path.to_resource",
+                            "resource": {
+                              "type": "number",
+                              "operator": "+",
+                              "numerator": "1",
+                              "denominator": "1",
+                              "format": "improper_fraction"
+                            }
+                          },
+                          "additional_info": {
+                            "running_watched": true
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "drop it on",
+                          "path": {
+                            "type": "path.to_entire_context",
+                            "next_path": {
+                              "type": "box_path",
+                              "index": 0,
+                              "true_type": "scale"
+                            }
+                          },
+                          "additional_info": {
+                            "running_watched": true
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "view": {
+                    "backside_geometry": {
+                      "x_scale": 1,
+                      "y_scale": 1,
+                      "original_width": 550,
+                      "original_height": 200
+                    },
+                    "frontside_left": 196,
+                    "frontside_top": 79.40625
+                  },
+                  "version": 1
+                }
+              }
+            ]
+          },
+          "view": {
+            "frontside_width": 123,
+            "frontside_height": 91,
+            "backside_geometry": {
+              "x_scale": 1,
+              "y_scale": 1,
+              "original_width": 123,
+              "original_height": 91
+            },
+            "frontside_left": 302,
+            "frontside_top": 79
+          },
+          "version": 1
+        }
+      }
+    ]
+  },
+  "view": {
+    "frontside_width": 48,
+    "frontside_height": 48,
+    "frontside_left": 1000,
+    "frontside_top": 181,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1,
+      "original_width": 550,
+      "original_height": 200
+    },
+    "drag_x_offset": 23,
+    "drag_y_offset": 27.8125
+  },
+  "version": 1
+}</div></div>
 </body>
 </html>
