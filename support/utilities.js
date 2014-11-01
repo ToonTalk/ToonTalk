@@ -69,7 +69,7 @@ window.TOONTALK.UTILITIES =
         return div_string.substring(json_start, json_end+1);
     };
     var handle_drop = function ($target, $source, source_widget, target_widget, target_position, event, json_object, drag_x_offset, drag_y_offset, source_is_backside) {
-        var new_target, backside_widgets_json, shared_widgets, top_level_element, top_level_backside_position, backside_widgets;
+        var new_target, backside_widgets_json, shared_widgets, top_level_element, top_level_backside_position, backside_widgets, left, top;
         source_widget.set_visible(true);
         if ($target.is(".toontalk-backside")) {
             if (source_widget.is_of_type('top-level')) {
@@ -127,15 +127,37 @@ window.TOONTALK.UTILITIES =
             // not sure what is happening or even whey they are different
             // consider also using layerX and layerY
             if (!drag_x_offset) {
-                drag_x_offset = 0;
+                 drag_x_offset = 0;
+                 drag_y_offset = 0;
+                // drag a picture from a non-ToonTalk source so at least Windows displays about about a 90x90 square while dragging
+                // and, except for small images, it is 'held' at the bottom centre
+                // while images from web pages are held in the center
+                setTimeout(function () {
+                               var html   = source_widget.get_HTML();
+                               var width  = $source.width();
+                               var height = $source.height();
+                               var x_offset, y_offset;
+                               if (html.indexOf("data:image") >= 0) {
+                                   x_offset = Math.min(80, width)/2;
+                                   y_offset = 90;
+                                   if (height < 90) {
+                                       y_offset -= (90-height)/2;
+                                   }
+                               } else {
+                                   // is about 120x60
+                                   // but drag offset can be anywhere...
+                                   x_offset = Math.min(60, width/2);
+                                   y_offset = Math.min(30, height/2);  
+                               }
+                               $source.css({left: left-x_offset,
+                                            top:  top -y_offset}); 
+                          },
+                          50);
             }
-            if (!drag_y_offset) {
-                drag_y_offset = 0;
-            }
-            $source.css({
-                left: event.pageX - (target_position.left + drag_x_offset),
-                top:  event.pageY - (target_position.top  + drag_y_offset)
-            });
+            left = event.pageX - (target_position.left + drag_x_offset);
+            top  = event.pageY - (target_position.top  + drag_y_offset);
+            $source.css({left: left,
+                         top:  top});
 //             if ($source.is(".toontalk-frontside") && !$source.is('.ui-resizable')) {
 //                 // without the setTimeout the following prevents dragging components (e.g. widgets in boxes)
 //                 setTimeout(function () {
