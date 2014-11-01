@@ -936,7 +936,7 @@ window.TOONTALK.UTILITIES =
                     TT.UTILITIES.remove_highlight();
                     target_widget = TT.UTILITIES.widget_from_jquery($target);
                     if ($source && $source.length > 0 &&
-                        !(target_widget.get_infinite_stack && target_widget.get_infinite_stack()) && // OK to drop on infinite stack since will become a copy
+                        !(target_widget && target_widget.get_infinite_stack && target_widget.get_infinite_stack()) && // OK to drop on infinite stack since will become a copy
                         ($source.get(0) === $target.get(0) || jQuery.contains($source.get(0), $target.get(0)))) {
                         if ($source.is(".toontalk-top-level-backside")) {
                             return; // let event propagate since this doesn't make sense
@@ -960,7 +960,7 @@ window.TOONTALK.UTILITIES =
                         drag_y_offset = 0;
                     }
                     if ($source && $source.length > 0) {
-                        if (!(target_widget.get_infinite_stack && target_widget.get_infinite_stack()) && 
+                        if (!(target_widget && target_widget.get_infinite_stack && target_widget.get_infinite_stack()) && 
                             ($source.get(0) === $target.get(0) || jQuery.contains($source.get(0), $target.get(0)))) {
                             // OK to drop on infinite stack since will become a copy
                             // dropped of itself or dropped on a part of itself
