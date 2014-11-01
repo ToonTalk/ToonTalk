@@ -1785,7 +1785,6 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                       if (queue.length == 0) {
                           return undefined;
                       }
-                      // store the item at the front of the queue
                       item = queue[offset];
                       // increment the offset and remove the free space if necessary
                       if (++ offset * 2 >= queue.length){
@@ -1799,6 +1798,17 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                   // If the queue is empty then undefined is returned.
                   peek: function() {
                      return (queue.length > 0 ? queue[offset] : undefined);
+                  },
+                  // Ken Kahn added this the following
+                  // useful for debugging but should be avoided in production code
+                  does_any_item_satisfy: function (predicate) {
+                      var i;
+                      for (i = offset; i < queue.length; i++) {
+                           if (predicate(queue[i])) {
+                               return true;
+                           }
+                      }
+                      return false;
                   }
             };
         }
