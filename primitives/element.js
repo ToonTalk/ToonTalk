@@ -780,16 +780,17 @@ window.TOONTALK.element_backside =
             var row = document.createElement("tr");
             var td = document.createElement("td");
             var attribute_widget = element_widget.get_attribute_widget(attribute);
-            var frontside_element = attribute_widget.get_frontside_element();
+            var attribute_frontside_element = attribute_widget.get_frontside_element();
             attribute_widget.set_infinite_stack(true);
             table.appendChild(row);
             row.appendChild(td);
             td.appendChild(TT.UTILITIES.create_text_element(attribute));
             td = document.createElement("td");
+            $(td).addClass("toontalk-element-attribute-table-data");
             row.appendChild(td);
             attribute_widget.set_visible(true); // TODO: turn this off when backside hidden
-            $(frontside_element).addClass("toontalk-element-attribute");
-            td.appendChild(frontside_element);
+            $(attribute_frontside_element).addClass("toontalk-element-attribute");
+            td.appendChild(attribute_frontside_element);
             attribute_widget.render();           
             // TODO: add title like the following
 //             attribute_value_editor = TT.UTILITIES.create_text_input(value,
