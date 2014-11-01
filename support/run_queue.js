@@ -11,7 +11,7 @@ window.TOONTALK.queue =
         create: function () {
             var result = Object.create(this);
             // use a JavaScript array to hold the queue
-            result.to_run = new Queue();
+            result.to_run = TT.UTILITIES.create_queue();
             return result;
         },
         
