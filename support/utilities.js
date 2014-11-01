@@ -1657,9 +1657,13 @@ window.TOONTALK.UTILITIES =
         
         relative_position: function (target_element, reference_element) {
              var target_offset = $(target_element).offset();
-             var reference_offset = $(reference_element).offset();
-             return {left: target_offset.left-reference_offset.left,
-                     top:  target_offset.top-reference_offset.top};
+             var reference_offset;
+             if (reference_element) {
+                 reference_offset = $(reference_element).offset();
+                 target_offset.left -= reference_offset.left;
+                 target_offset.top  -= reference_offset.top;
+             }
+             return target_offset;
         },
         
         add_animation_class: function (element, class_name) {
