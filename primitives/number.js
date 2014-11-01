@@ -715,7 +715,8 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         if (this.is_integer()) {
             return this.numerator_string();
         }
-        var copy = this.copy();
+        // if this is a subclass of number we don't care -- just using the copy for convenience of calculation here
+        var copy = number.copy.call(this);
         var integer_part = copy.integer_part();
         var integer_string = integer_part.toString();
         if (integer_string === "0" && this.is_negative()) {
