@@ -325,8 +325,8 @@ window.TOONTALK.widget = (function (TT) {
             widget.get_parent_of_backside = function () {
                 return parent_of_backside;
             };
-            widget.set_parent_of_frontside = function (new_parent, parent_is_backside) {
-                if (parent_of_frontside && parent_of_frontside.is_backside()) {
+            widget.set_parent_of_frontside = function (new_parent, parent_is_backside, backside_widget_already_removed) {
+                if (parent_of_frontside && !backside_widget_already_removed && parent_of_frontside.is_backside()) {
                     parent_of_frontside.get_widget().remove_backside_widget(this, false, true);
                 }
                 if (!new_parent || !parent_is_backside) {
@@ -392,7 +392,7 @@ window.TOONTALK.widget = (function (TT) {
                          parent_of_frontside.removed_from_container(this, false, event);
                      }
                  }
-            }
+            };
             return widget;
         },
         
@@ -691,7 +691,7 @@ window.TOONTALK.widget = (function (TT) {
             } else {
                 parent_of_frontside = widget.get_parent_of_frontside();
                 if (parent_of_frontside && parent_of_frontside.get_widget() === this) {
-                    widget.set_parent_of_frontside(undefined);
+                    widget.set_parent_of_frontside(undefined, undefined, true);
                 }       
             }
             widget_side.set_visible(false);
