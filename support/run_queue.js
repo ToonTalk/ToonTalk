@@ -64,8 +64,8 @@ window.TOONTALK.queue =
             TT.UTILITIES.set_timeout(function () {
                                          this.run();
                                      }.bind(this),
-                                     // if more to run don't wait -- otherwise wait 4 milliseconds
-                                     this.to_run.isEmpty() ? 4 : 0); 
+                                     // if more to run don't wait -- otherwise wait
+                                     this.to_run.isEmpty() ? this.maximum_run : 0); 
         }
         
     };
