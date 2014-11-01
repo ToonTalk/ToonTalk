@@ -486,7 +486,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         number_update_display = attribute_widget.update_display;
         attribute_widget.update_display = function () {
             var attribute_value = this_element_widget.get_attribute(this.attribute);
-            attribute_widget.set_value_from_decimal(attribute_value);
+            if (!this.get_erased()) {
+                attribute_widget.set_value_from_decimal(attribute_value);
+            }
             number_update_display.call(this);
         };
         if (attributes_needing_updating.indexOf(attribute_name) >= 0) {
