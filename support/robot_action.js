@@ -106,22 +106,12 @@ window.TOONTALK.robot_action =
     var move_robot_animation = function (side, context, top_level_context, robot, continuation) {
         var thing_in_hand = robot.get_thing_in_hand();
         var robot_frontside_element = robot.get_frontside_element();
-        var widget = side.get_widget();
         var widget_frontside_element = side.get_element(); 
         var left_offset, top_offset;
-//         if (widget.get_frontside_element) {
-//             widget_frontside_element = widget.get_frontside_element();
-//         } else if (widget.get_side_element) {
-//             widget_frontside_element = widget.get_side_element();
-//         } else {
-//             TT.UTILITIES.report_internal_error("Unable to find element corresponding to widget " + widget);
-//             continuation();
-//             return;
-//         }
         left_offset = $(widget_frontside_element).width()/2;
         top_offset  = $(widget_frontside_element).height()/2;
         // robots move at 1/4 pixel per millisecond for clarity
-        robot.animate_to_widget(widget, continuation, .25, left_offset, top_offset);
+        robot.animate_to_widget(side, continuation, .25, left_offset, top_offset);
         if (thing_in_hand) {
             // so robot displays what he's holding
             robot.render();
@@ -159,6 +149,9 @@ window.TOONTALK.robot_action =
             if (thing_in_hand.drop_on) {
                 // need to see it before actions such as Bammer take place
                 $(robot.get_frontside_element()).closest(".toontalk-top-level-backside").append($thing_in_hand_frontside_element.get(0));
+//                 if (thing_in_hand_position.left === 0 && thing_in_hand_position.top === 0) {
+//                     thing_in_hand_position = $thing_in_hand_frontside_element.offset();
+//                 }
                 TT.UTILITIES.set_absolute_position($thing_in_hand_frontside_element, thing_in_hand_position);
                 thing_in_hand.restore_dimensions();
                 // remove it from the robot's hand since the drop can take a few seconds
