@@ -355,6 +355,12 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                                button_selector: ".toontalk-element-" + attribute + "-attribute-input"});
         }
         this.add_to_css(attribute, new_value);
+        // without the following the image remains square since only one of width/height set
+        if (attribute === 'width') {
+            this.add_to_css('height', this.get_attribute('height'));
+        } else if (attribute === 'height') {
+            this.add_to_css('width', this.get_attribute('width'));
+        }
         if (add_to_style_attributes) {
             style_attributes = this.get_style_attributes();
             if (style_attributes.indexOf(attribute) < 0) {
@@ -786,7 +792,6 @@ window.TOONTALK.element_backside =
             row.appendChild(td);
             td.appendChild(TT.UTILITIES.create_text_element(attribute));
             td = document.createElement("td");
-            $(td).addClass("toontalk-element-attribute-table-data");
             row.appendChild(td);
             attribute_widget.set_visible(true); // TODO: turn this off when backside hidden
             $(attribute_frontside_element).addClass("toontalk-element-attribute");
