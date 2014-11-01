@@ -129,7 +129,7 @@ window.TOONTALK.box = (function (TT) {
     };
     
     box.equals = function (other) {
-        return other.equals_box(this);
+        return other.equals_box && other.equals_box(this);
     };
     
     box.equals_box = function (other_box) {
