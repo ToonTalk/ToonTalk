@@ -1595,29 +1595,34 @@ window.TOONTALK.UTILITIES =
         },
         
         scale_to_fit: function (this_element, other_element, original_width, original_height, delay) {
-            var new_width  = $(other_element).width();
-            var new_height = $(other_element).height();
             var update_css = function () {
                  $(this_element).css({transform: "scale(" + x_scale + ", " + y_scale + ")",
-                                 "transform-origin": "top left", 
-                                 width:  original_width,
-                                 height: original_height});
+                                      "transform-origin": "top left", 
+                                      width:  original_width,
+                                      height: original_height});
             };
-            var x_scale, y_scale;
+            var new_width, new_height, x_scale, y_scale;
             if (!original_width) {
                 original_width = $(this_element).width();
             }
             if (!original_height) {
                 original_height = $(this_element).height();
             }
-            x_scale = new_width/original_width;
-            y_scale = new_height/original_height;
-            // e.g. other_element doesn't know it dimensions
-            if (x_scale === 0) {
+            if ($(other_element).is(".toontalk-backside")) {
                 x_scale = 1;
-            }
-            if (y_scale === 0) {
                 y_scale = 1;
+            } else {
+                new_width  = $(other_element).width();
+                new_height = $(other_element).height();
+                x_scale = new_width/original_width;
+                y_scale = new_height/original_height;
+                // e.g. other_element doesn't know it dimensions
+                if (x_scale === 0) {
+                    x_scale = 1;
+                }
+                if (y_scale === 0) {
+                    y_scale = 1;
+                }
             }
             if (delay) {
                 setTimeout(update_css, delay);
