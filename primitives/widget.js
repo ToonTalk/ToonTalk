@@ -363,7 +363,7 @@ window.TOONTALK.widget = (function (TT) {
                 var ancestor = this;
                 while (ancestor && !ancestor.is_of_type(type_name)) {
                     if (ancestor.is_backside()) {
-                        ancestor = ancestor.get_parent_of_backside();    
+                        ancestor = ancestor.get_widget().get_parent_of_backside();    
                     } else {
                         ancestor = ancestor.get_parent_of_frontside();
                     }
@@ -895,13 +895,12 @@ window.TOONTALK.widget = (function (TT) {
                 backside_element = backside.get_element();
                 if ($(backside_element).is(":visible")) {
                     TT.UTILITIES.highlight_element(backside_element, 1000);
-                    return;
+                    return backside;
                 }
                 // need to see if on backside is on the backside of another (and that is closed)
                 parent = this.get_parent_of_backside();
                 if (parent && parent.is_backside()) {
-                    parent.get_widget().open_backside();
-                    return;
+                    return parent.get_widget().open_backside();
                 }
             }
             frontside_element = this.get_frontside_element();
