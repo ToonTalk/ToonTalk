@@ -63,7 +63,7 @@ window.TOONTALK.actions =
                      return;
                 }
                 newly_created_widgets.push(new_widget);
-//                 console.log("Added " + new_widget + " (" + new_widget.debug_id + ") to list of newly_created_widgets. Length is " + newly_created_widgets.length);
+//              console.log("Added " + new_widget + " (" + new_widget.debug_id + ") to list of newly_created_widgets. Length is " + newly_created_widgets.length);
             };
             new_actions.get_newly_created_widgets = function () {
                 return newly_created_widgets;
@@ -149,6 +149,9 @@ window.TOONTALK.actions =
                                           height: ''});
                 robot_width  = $(frontside_element).width();
                 robot_height = $(frontside_element).height();
+            }
+            if (!top_level_position) {
+                top_level_position = {left: 0, top: 0};
             }
             if (robot_home.left < backside_rectangle.left-top_level_position.left ||
                 robot_home.top  < backside_rectangle.top -top_level_position.top  ||
