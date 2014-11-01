@@ -51,7 +51,9 @@ window.TOONTALK.scale = (function (TT) {
         };
         new_scale.get_path_to = function (widget, robot) {
             var path = box_get_path_to.call(this, widget, robot);
-            path.true_type = 'scale';
+            if (path) {
+                path.true_type = 'scale';
+            }
             return path;
         };
         new_scale.element_to_highlight = function (event) {
@@ -215,10 +217,10 @@ window.TOONTALK.scale = (function (TT) {
             var description, left_pan, right_pan;
             switch (this.get_state()) {
                 case -1:
-                description = "scale leaning to the left";
+                description = "scale leaning to the right";
                 break;
                 case 1:
-                description = "scale leaning to the right";
+                description = "scale leaning to the left";
                 break;
                 case 0:
                 description = "balanced scale";
