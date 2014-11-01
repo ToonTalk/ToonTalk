@@ -58,6 +58,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     element.create = function (html, style_attributes, description, additional_classes) {
         var new_element = Object.create(element);
         var widget_drag_started = new_element.drag_started;
+        var attribute_widgets = {}; // table related attribute_name and widget
         var pending_css, transform_css, on_update_display_handlers, $image_element;
         if (!style_attributes) {
             style_attributes = [];
@@ -111,6 +112,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         };
         new_element.set_style_attributes = function (new_value) {
             style_attributes = new_value;
+        };
+        new_element.get_attribute_widgets = function () {
+            return attribute_widgets;
         };
         new_element.get_pending_css = function () {
             return pending_css;
@@ -417,6 +421,15 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         }
     };
 
+    element.get_attribute_widget = function (attribute_name) {
+        var attribute_widget = this.get_attribute_widgets()[attribute_name];
+        if (!attribute_widget) {
+            attribute_widget = this.create_attribute_widget(attribute_name);
+            this.get_attribute_widgets()[attribute_name] = attribute_widget;
+        }
+        return attribute_widget;
+    };
+
     element.create_attribute_widget = function (attribute_name) {
         var selector = ".toontalk-element-" + attribute_name + "-attribute-input";
         var backside_element = this.get_backside_element();
@@ -607,7 +620,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 // if the robot is running on the backside of a widget that is on the backside of the top_level_context
                 // then use the top_level_context
                 var element_widget = path_to_element_widget.dereference((top_level_context || context), undefined, robot);
-                return element_widget.create_attribute_widget(attribute_name);
+                return element_widget.get_attribute_widget(attribute_name);
             },
             toString: function () {
                 return "the '" + attribute_name + "' property of " + path_to_element_widget;
@@ -617,7 +630,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                         attribute: attribute_name,
                         element_widget_path: path_to_element_widget.get_json()};
             }};
-    }
+    };
     
     TT.creators_from_json["path_to_style_attribute"] = function (json) {
         var element_widget_path = TT.UTILITIES.create_from_json(json.element_widget_path);
@@ -757,7 +770,6 @@ window.TOONTALK.element_backside =
     var update_style_attributes_table = function (table, element_widget) {
         var style_attributes = element_widget.get_style_attributes();
         var frontside_element = element_widget.get_frontside_element();
-//         var row, td, attribute_value_editor;
         $(table).empty();
         style_attributes.forEach(function (attribute) {
             var value = element_widget.get_attribute(attribute);
@@ -767,18 +779,18 @@ window.TOONTALK.element_backside =
             var classes = "toontalk-element-attribute-input toontalk-element-" + attribute + "-attribute-input";
             var row = document.createElement("tr");
             var td = document.createElement("td");
-            var attribute_number = element_widget.create_attribute_widget(attribute);
-            var frontside_element = attribute_number.get_frontside_element();
-            attribute_number.set_infinite_stack(true);
+            var attribute_widget = element_widget.get_attribute_widget(attribute);
+            var frontside_element = attribute_widget.get_frontside_element();
+            attribute_widget.set_infinite_stack(true);
             table.appendChild(row);
             row.appendChild(td);
             td.appendChild(TT.UTILITIES.create_text_element(attribute));
             td = document.createElement("td");
             row.appendChild(td);
-            attribute_number.set_visible(true); // TODO: turn this off when backside hidden
+            attribute_widget.set_visible(true); // TODO: turn this off when backside hidden
             $(frontside_element).addClass("toontalk-element-attribute");
             td.appendChild(frontside_element);
-            attribute_number.render();           
+            attribute_widget.render();           
             // TODO: add title like the following
 //             attribute_value_editor = TT.UTILITIES.create_text_input(value,
 //                                                                     classes,
