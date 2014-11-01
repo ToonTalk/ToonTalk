@@ -43,7 +43,8 @@ window.TOONTALK.path =
                 if (path) {
                     return path;
                 }
-                if (widget_type === "element attribute") { 
+                if (widget_type === "element attribute" && !widget.get_parent_of_frontside()) {
+                    // if widget.get_parent_of_frontside() then is a copy of the attribute element
                     return TT.element.create_attribute_path(widget, robot);
                 }
                 // if context is undefined something is wrong much earlier
