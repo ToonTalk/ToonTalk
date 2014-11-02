@@ -514,6 +514,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             }
         }
         attribute_widget.copy = function (just_value) {
+            if (just_value) {
+                // just copy as a number
+                return TT.number.copy.call(this, just_value);
+            }
             return this.add_to_copy(this_element_widget.create_attribute_widget(attribute_name), just_value);
         };
         if (TT.debugging) {
