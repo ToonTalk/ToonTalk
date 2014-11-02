@@ -145,6 +145,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             if (!frontside_element) {
                 return;
             }
+            if (!$(frontside_element).is(":visible")) {
+                return;
+            }
             if (transform_css) {
                 if (transform_css['rotate']) {
                     transform = 'rotate(' + transform_css['rotate'] + 'deg)';
@@ -182,15 +185,24 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 // can be undefined if all the transforms had a zero value
                 return;
             }
-            $(frontside_element).css(pending_css);
-            // if it contains an image then change it too (needed only for width and height)
-            if ($image_element && (pending_css.width || pending_css.height)) {
-                image_css = {};
-                image_css.width = pending_css.width;
-                image_css.height = pending_css.height;
-                $image_element.css(image_css);
-            }
-            pending_css = undefined;
+            // need to delay the following since width and height may not be known yet
+            TT.UTILITIES.set_timeout(function () {
+                // without the following the image remains square since only one of width/height set
+                if (pending_css.width && typeof pending_css.height === 'undefined') {
+                    pending_css.height = frontside_element.clientHeight;
+                } else if (pending_css.height && typeof pending_css.width === 'undefined') {
+                    pending_css.width = frontside_element.clientWidth;
+                }
+                $(frontside_element).css(pending_css);
+                // if it contains an image then change it too (needed only for width and height)
+                if ($image_element && (pending_css.width || pending_css.height)) {
+                    image_css = {};
+                    image_css.width  = pending_css.width;
+                    image_css.height = pending_css.height;
+                    $image_element.css(image_css);
+                }
+                pending_css = undefined;
+                });
         };
         new_element.on_update_display = function (handler) {
             if (!on_update_display_handlers) {
@@ -355,12 +367,6 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                                button_selector: ".toontalk-element-" + attribute + "-attribute-input"});
         }
         this.add_to_css(attribute, new_value);
-        // without the following the image remains square since only one of width/height set
-        if (attribute === 'width') {
-            this.add_to_css('height', this.get_attribute('height'));
-        } else if (attribute === 'height') {
-            this.add_to_css('width', this.get_attribute('width'));
-        }
         if (add_to_style_attributes) {
             style_attributes = this.get_style_attributes();
             if (style_attributes.indexOf(attribute) < 0) {
