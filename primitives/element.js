@@ -485,9 +485,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
 // TODO: should this (or its backside) walk to visible attributes?
         number_update_display = attribute_widget.update_display;
         attribute_widget.update_display = function () {
-            var attribute_value = this_element_widget.get_attribute(this.attribute);
             if (!this.get_erased()) {
-                attribute_widget.set_value_from_decimal(attribute_value);
+                attribute_widget.set_value_from_decimal(this_element_widget.get_attribute(this.attribute));
             }
             number_update_display.call(this);
         };
@@ -520,10 +519,19 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             }
             return this.add_to_copy(this_element_widget.create_attribute_widget(attribute_name), just_value);
         };
+        attribute_widget.get_json = function (json_history) {
+            return {type: 'attribute_number',
+                    attribute_name: attribute_name,
+                    element: TT.UTILITIES.get_json(this_element_widget, json_history)};            
+        };
         if (TT.debugging) {
             attribute_widget.debug_id = TT.UTILITIES.generate_unique_id();
         }
         return attribute_widget;
+    };
+
+    TT.creators_from_json["attribute_number"] = function (json, additional_info) {
+        return TT.UTILITIES.create_from_json(json.element, additional_info).create_attribute_widget(json.attribute_name);
     };
     
     element.update_display = function () {
