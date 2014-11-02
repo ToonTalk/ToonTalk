@@ -14,7 +14,8 @@ window.TOONTALK.scale = (function (TT) {
 
     var scale = Object.create(TT.widget);
 
-    scale.create = function (initial_contents, description, new_scale) {
+    scale.create = function (initial_contents, description, new_scale, inactive_state) {
+        // inactive_state is the state of the scale when it became inactive (or undefined)
         var full_size_width = 123;
         var full_size_height = 91;
         var aspect_ratio = full_size_width/full_size_height;
@@ -41,12 +42,13 @@ window.TOONTALK.scale = (function (TT) {
         box_get_path_to = new_scale.get_path_to;
         new_scale.copy = function (just_value) {
             var copy_as_box = box_copy.call(this, just_value);
-            var copy = TT.scale.create(undefined, undefined, copy_as_box);
+            var copy = TT.scale.create(undefined, undefined, copy_as_box, just_value && this.get_state());
             return new_scale.add_to_copy(copy, just_value);
         };
         new_scale.get_json = function (json_history) {
             var scale_json = box_get_json.call(this, json_history);
             scale_json.type = 'scale';
+            scale_json.inactive_state = this.get_inactive_state();
             return scale_json;
         };
         new_scale.get_path_to = function (widget, robot) {
@@ -88,7 +90,7 @@ window.TOONTALK.scale = (function (TT) {
                     if (left_contents.drop_on) {
                         return dropped.drop_on(left_contents, is_backside, event, robot);
                     }
-                    return; // not much can be done
+                    return; // not much can be done if contents doesn't accept drop_one
                 }
             } else {
                 if (right_contents) {
@@ -101,6 +103,9 @@ window.TOONTALK.scale = (function (TT) {
             // hole was empty so fill it
             this.set_hole(hole_index, dropped, event); 
             return true;
+        };
+        new_scale.get_inactive_state = function () {
+            return inactive_state;
         };
         new_scale.update_display = function () {
             var frontside_element = this.get_frontside_element();
@@ -246,8 +251,13 @@ window.TOONTALK.scale = (function (TT) {
         new_scale.get_state = function () {
             // can be -1, 0, 1 or undefined
             // 1 means left is heavier while -1 means right is
-            var left_contents  = this.get_hole_contents(0);
-            var right_contents = this.get_hole_contents(1);
+            var inactive_state = this.get_inactive_state();
+            var left_contents, right_contents;
+            if (inactive_state) {
+                return inactive_state;
+            }
+            left_contents  = this.get_hole_contents(0);
+            right_contents = this.get_hole_contents(1);
             if (!left_contents && !right_contents) {
                 return; // undefined
             } else if (!left_contents) {
@@ -308,7 +318,7 @@ window.TOONTALK.scale = (function (TT) {
     };
 
     TT.creators_from_json["scale"] = function (json, additional_info) {
-        return scale.create(TT.UTILITIES.create_array_from_json(json.contents, additional_info), json.description);
+        return scale.create(TT.UTILITIES.create_array_from_json(json.contents, additional_info), json.description, undefined, json.inactive_state);
     };
 
     return scale;
