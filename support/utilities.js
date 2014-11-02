@@ -392,7 +392,7 @@ window.TOONTALK.UTILITIES =
 
     $(document).ready(initialise);
     return {
-        create_from_json: function (json, additional_info) {
+        create_from_json: function (json, additional_info, delay_backside_widgets) {
             var widget, side_element, backside_widgets, json_semantic, json_view, size_css, json_of_shared_widget, shared_widget;
             if (!json) {
                 // was undefined and still is
@@ -433,7 +433,7 @@ window.TOONTALK.UTILITIES =
                 // following is to deal with reconstructing cyclic references
                 // if this is encountered again recursively will discover the JSON with shared_widget_index
 //                 additional_info.shared_widgets[json.shared_widget_index] = json;
-                widget = TT.UTILITIES.create_from_json(json_of_shared_widget, additional_info);
+                widget = TT.UTILITIES.create_from_json(json_of_shared_widget, additional_info, true);
 //                 if (additional_info.cyclic_widgets_json && typeof json_of_shared_widget.shared_widget_index === 'undefined') {
 //                     if (additional_info.cyclic_widgets_json.indexOf(json) >= 0) {
 //                         // contains cyclic references so make json into the widget
@@ -444,7 +444,13 @@ window.TOONTALK.UTILITIES =
 //                         widget = json;
 //                     }
 //                 }
-                additional_info.shared_widgets[json.shared_widget_index] = widget;              
+                additional_info.shared_widgets[json.shared_widget_index] = widget;
+                if (widget.finish_create_from_json_continuation) {
+                    // this part of the work was postponed so that shared_widgets could be set above
+                    // this prevents infinite recursion when processing self-referential JSON, e.g. element with attribute_object on back
+                    widget.finish_create_from_json_continuation();
+                    widget.finish_create_from_json_continuation = undefined;
+                }    
                 return widget;
             }
             json_semantic = json.semantic;
@@ -506,18 +512,29 @@ window.TOONTALK.UTILITIES =
                     widget.backside_geometry = json_view.backside_geometry;                    
                 }
                 if (json_semantic.backside_widgets) {
-                    backside_widgets = this.create_array_from_json(json_semantic.backside_widgets, additional_info);
-                    widget.set_backside_widget_sides(backside_widgets, 
-                                                     json_semantic.backside_widgets.map(
-                                                        function (json) {
-                                                            if (json.widget.shared_widget_index >= 0) {
-                                                                return additional_info.json_of_shared_widgets[json.widget.shared_widget_index].view;
-                                                            }
-                                                            return json.widget.view; 
-                                                     }));
+                    if (delay_backside_widgets) {
+                        // caller will call this 
+                        widget.finish_create_from_json_continuation = function () {
+                             this.add_backside_widgets_from_json(widget, json_semantic.backside_widgets, additional_info);   
+                        }.bind(this);
+                    } else {
+                        this.add_backside_widgets_from_json(widget, json_semantic.backside_widgets, additional_info);
+                    }
                 }
             }
             return widget;
+        },
+
+        add_backside_widgets_from_json: function (widget, json_semantic_backside_widgets, additional_info) {
+            var backside_widgets = this.create_array_from_json(json_semantic_backside_widgets, additional_info);
+            widget.set_backside_widget_sides(backside_widgets, 
+                                             json_semantic_backside_widgets.map(
+                                                  function (json) {
+                                                      if (json.widget.shared_widget_index >= 0) {
+                                                          return additional_info.json_of_shared_widgets[json.widget.shared_widget_index].view;
+                                                      }
+                                                      return json.widget.view; 
+                                                  }));
         },
         
         create_array_from_json: function (json_array, additional_info) {
