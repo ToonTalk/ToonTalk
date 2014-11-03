@@ -567,10 +567,14 @@ window.TOONTALK.UTILITIES =
             return json;
         },
         
+        fresh_json_history: function () {
+            return {widgets_encountered: [],
+                    shared_widgets: [],
+                    json_of_widgets_encountered: []};
+        },
+        
         get_json_top_level: function (widget) {
-            var json_history = {widgets_encountered: [],
-                                shared_widgets: [],
-                                json_of_widgets_encountered: []};
+            var json_history = this.fresh_json_history();
             var json = TT.UTILITIES.get_json(widget, json_history);
             if (json_history.shared_widgets.length > 0) {
                 json.shared_widgets = json_history.shared_widgets.map(function (shared_widget, widget_index) {
