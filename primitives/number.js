@@ -188,32 +188,45 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         } 
         new_number.set_value =
             function (new_value) {
-                var listeners;
+//                 console.log("set value " + new_value + " was " + value + " id is " + this.debug_id + " " + this);
+//                 if (this.debug_id === 'toontalk_id_1415038113558') {
+//                     console.log("debug this");
+//                 }
                 if (bigrat.equals(value, new_value)) {
                     return;
                 }
-                listeners = this.get_listeners('value_changed');
-                if (listeners) {
-                    listeners.forEach(function (listener) {
-                        listener({type: 'value_changed',
-                                  old_value: value,
-                                  new_value: new_value});
-                    });
-                }
+                this.fire_value_change_listeners(value, new_value);
                 value = new_value;
                 this.rerender(); // will update if visible
                 if (TT.debugging) {
                     this.debug_string = this.toString();
                 }
+//                 console.log("set value " + new_value + " was " + value + " id is " + this.debug_id + " " + this);
                 return this;
             };
+        new_number.fire_value_change_listeners = function (old_value, new_value) {
+            var listeners = this.get_listeners('value_changed');
+            var event;
+            if (listeners) {
+                event = {type: 'value_changed',
+                         old_value: old_value,
+                         new_value: new_value};
+                listeners.forEach(function (listener) {
+                    listener(event);
+                });
+            }
+        };
         new_number.get_value =
-            function () { 
+            function () {
+//                if (this.debug_id === 'toontalk_id_1415038113558') {
+//                     console.log("debug this");
+//                 }
                 return value; 
             };
         new_number.set_value_from_decimal =
             function (decimal_string) {
                 // e.g. an attribute value
+//                 console.log("set_value_from_decimal " + decimal_string + " " + this.debug_id);
                 if (typeof decimal_string === 'number') {
                     this.set_value(bigrat.fromInteger(decimal_string));
                     return;
@@ -294,6 +307,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     };
 
     number.compare_with_number = function (other_number) {
+//         console.log("compare with " + other_number + " id is " + other_number.debug_id);
         if (bigrat.equals(this.get_value(), other_number.get_value())) {
             return 0;
         }
@@ -653,8 +667,6 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     number.toString = function () {
         // addition is implicit so don't display it
         var operator_string = this.get_operator() === '+' ? '' : this.get_operator();
-        // erased_string was showing up in decimal number display
-//         var erased_string = this.get_erased() ? "erased: " : "";
         return operator_string + bigrat.str(this.get_value());
     };
     

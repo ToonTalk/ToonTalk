@@ -202,9 +202,10 @@ window.TOONTALK.robot = (function (TT) {
         var frontside_condition_widget = this.get_frontside_conditions();
         var backside_conditions, backside_widgets, condition_frontside_element, to_run_when_non_empty, next_robot_match_status;
         if (this.being_trained || !frontside_condition_widget || this.get_animating()) {
-            // should not run if being trained, has no conditions (really?), or is already running
+            // should not run if being trained, has no conditions (TODO: really?), or is already running
             return 'not matched';
         }
+//         console.log("Match is " + TT.UTILITIES.match(frontside_condition_widget, context) + " for condition " + frontside_condition_widget + " with " + context);
         this.match_status = TT.UTILITIES.match(frontside_condition_widget, context);
         condition_frontside_element = frontside_condition_widget.get_frontside_element();
         if (condition_frontside_element) {

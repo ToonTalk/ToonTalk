@@ -424,7 +424,7 @@ window.TOONTALK.widget = (function (TT) {
                     var listeners_for_type = listeners[type];
                     if (listeners_for_type) {
                         if (listeners_for_type.indexOf(listener) < 0) {
-                             listeners_for_type.push(listener);   
+                            listeners_for_type.push(listener);   
                         } 
                     } else {
                         listeners[type] = [listener];
