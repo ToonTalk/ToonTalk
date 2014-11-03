@@ -151,6 +151,7 @@ window.TOONTALK.actions =
                 robot_height = $(frontside_element).height();
             }
             if (!top_level_position) {
+                console.log("Unable to find top-level backside. Perhaps is 'visible' but not attached.");
                 top_level_position = {left: 0, top: 0};
             }
             if (robot_home.left < backside_rectangle.left-top_level_position.left ||

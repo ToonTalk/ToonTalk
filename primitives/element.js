@@ -515,6 +515,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                         var top_level_position = $(this_element_widget.get_frontside_element()).closest(".toontalk-top-level-backside").offset();
                         var attribute_value;
                         if (!top_level_position) {
+                            console.log("Unable to find top-level backside of an element for its position. Perhaps is 'visible' but not attached.");
                             top_level_position = {left: 0, top: 0};
                         }
                         attribute_value = attribute_name === 'left' ? 

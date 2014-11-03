@@ -1143,6 +1143,10 @@ window.TOONTALK.UTILITIES =
         
         set_position_relative_to_top_level_backside: function ($element, absolute_position) {
             var top_level_position = $element.closest(".toontalk-top-level-backside").offset();
+            if (!top_level_position) {
+                console.log("Unable to find top-level backside. Perhaps is 'visible' but not attached.");
+                top_level_position = {left: 0, top: 0};
+            }
             var left = absolute_position.left-top_level_position.left;
             var top  = absolute_position.top -top_level_position.top;
             $element.css({left: left,
