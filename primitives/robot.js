@@ -773,7 +773,7 @@ window.TOONTALK.robot_backside =
                 event.stopPropagation();
             });
             if (next_robot) {
-                $next_robot_area.append(next_robot.get_frontside_element());
+                $next_robot_area.append(next_robot.get_frontside_element(true));
             }
             $next_robot_area.get(0).addEventListener('drop', function (event) {
                 // start training when robot is dropped here
