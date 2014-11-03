@@ -199,10 +199,10 @@ window.TOONTALK.UTILITIES =
                     if (target_widget) {
                         target_widget.get_backside().widget_dropped_on_me(source_widget, source_is_backside, event);
                         // place it directly underneath the original target
-                        $source.css({
-                            left: $target.position().left,
-                            top:  $target.position().top + $target.height()
-                        });
+//                         $source.css({
+//                             left: $target.position().left,
+//                             top:  $target.position().top + $target.height()
+//                         });
                     }
                 }
             }
