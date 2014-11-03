@@ -494,7 +494,6 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
 //             // TODO: determine if this should work this way or use widget.visible?
 //             return $attribute_input && $attribute_input.is(":visible");
 //         };
-// TODO: should this (or its backside) walk to visible attributes?
         number_update_display = attribute_widget.update_display;
         attribute_widget.update_display = function () {
             var attribute_value;
@@ -862,6 +861,7 @@ window.TOONTALK.element_backside =
     
     return {
         create: function (element_widget) {
+            // TODO: determine if this should implement walk_children to the attributes in the table
             var backside = TT.backside.create(element_widget);
             var backside_element = backside.get_element();
             var html = element_widget.get_HTML();

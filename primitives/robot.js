@@ -134,6 +134,17 @@ window.TOONTALK.robot = (function (TT) {
                 next_robot.set_first_in_team(new_value);
             }
         };
+        new_robot.walk_children = function (child_action) {
+            if (next_robot) {
+                if (!child_action(next_robot));
+                return;
+            }
+            if (this.get_frontside_conditions()) {
+                if (!child_action(this.get_frontside_conditions())) {
+                    return;
+                }
+            }
+        };
         new_robot.get_run_once = function () {
             return run_once;
         };
