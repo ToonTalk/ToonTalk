@@ -801,6 +801,8 @@ window.TOONTALK.number_backside =
                     return;
                 }
                 number.set_from_values(numerator, denominator);
+                current_numerator   = numerator;
+                current_denominator = denominator;
                 if (TT.robot.in_training) {
                     first_class_name = event.srcElement.className.split(" ", 1)[0];
                     if (first_class_name === "toontalk-denominator-input") {

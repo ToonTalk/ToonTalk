@@ -294,7 +294,7 @@ window.TOONTALK.box = (function (TT) {
                 return;
             }
         }
-    }
+    };
     
     TT.creators_from_json['box'] = function (json, additional_info) {
         return box.create(json.size, json.horizontal, TT.UTILITIES.create_array_from_json(json.contents, additional_info), json.description);
