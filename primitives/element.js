@@ -58,7 +58,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     element.create = function (html, style_attributes, description, additional_classes) {
         var new_element = Object.create(element);
         var widget_drag_started = new_element.drag_started;
-        var attribute_widgets = {}; // table related attribute_name and widget
+        var attribute_widgets = {}; // table related attribute_name and widget in backside table
+        var original_copies   = {}; // table related attribute_name and all the widget copies for that attribute
         var pending_css, transform_css, on_update_display_handlers, $image_element;
         if (!style_attributes) {
             style_attributes = [];
@@ -115,6 +116,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         };
         new_element.get_attribute_widgets = function () {
             return attribute_widgets;
+        };
+        new_element.get_original_copies = function () {
+            return original_copies;
         };
         new_element.get_pending_css = function () {
             return pending_css;
@@ -453,9 +457,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         var backside_element = this.get_backside_element();
         var attribute_value = this.get_attribute(attribute_name);
         var this_element_widget = this;
-        var $attribute_input, attribute_widget, 
+        var $attribute_input, attribute_widget, original_copies,
             // store some default number functions:
-            number_equals, number_update_display, number_set_value;
+            number_equals, number_update_display, number_set_value, number_to_string;
         if (backside_element) {
             $attribute_input = $(backside_element).find(selector);
             if ($attribute_input.length > 0) {
@@ -463,7 +467,6 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             }
         }
         attribute_widget = TT.number.create(0, 1);
-        number_set_value = attribute_widget.set_value;
         attribute_widget.element_widget = this;
         attribute_widget.set_value_from_decimal(attribute_value);
         attribute_widget.set_format('decimal');
@@ -471,8 +474,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         attribute_widget.get_type_name = function () {
             return "element attribute";
         };
+        number_to_string = attribute_widget.toString;
         attribute_widget.toString = function () {
-            return "the " + this.attribute + " attribute of " + this_element_widget;
+            return number_to_string.call(this) + " (the " + this.attribute + " attribute of " + this_element_widget + ")";
         };
 //         attribute_widget.get_element = function () {
 //             if ($attribute_input && $attribute_input.length > 0) {
@@ -486,9 +490,23 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             }
             return number_equals.call(this, other);
         };
+        // a change to any of the copies is instantly reflected in all
+        original_copies = this.get_original_copies()[attribute_name];
+        if (original_copies) {
+            original_copies.push(attribute_widget);
+        } else {
+            this.get_original_copies()[attribute_name] = [attribute_widget];
+        }
+        number_set_value = attribute_widget.set_value;
         attribute_widget.set_value = function (new_value) {
+            var old_value, return_value;
+            this_element_widget.get_original_copies()[attribute_name].forEach(function (copy) {
+//                 var new_value_copy = bigrat.copy(bigrat.create(), new_value);
+//                 console.log("copy set value " + new_value + " id is " + copy.debug_id);
+                return_value = number_set_value.call(copy, new_value); 
+            });
             this_element_widget.set_attribute(this.attribute, bigrat.toDecimal(new_value));
-            return number_set_value.call(this, new_value);
+            return return_value;
         };
 //         attribute_widget.visible = function () {
 //             // TODO: determine if this should work this way or use widget.visible?
