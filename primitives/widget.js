@@ -325,8 +325,8 @@ window.TOONTALK.widget = (function (TT) {
             widget.get_parent_of_backside = function () {
                 return parent_of_backside;
             };
-            widget.set_parent_of_frontside = function (new_parent, parent_is_backside) {
-                if (parent_of_frontside && parent_of_frontside.is_backside()) {
+            widget.set_parent_of_frontside = function (new_parent, parent_is_backside, backside_widget_already_removed) {
+                if (parent_of_frontside && !backside_widget_already_removed && parent_of_frontside.is_backside()) {
                     parent_of_frontside.get_widget().remove_backside_widget(this, false, true);
                 }
                 if (!new_parent || !parent_is_backside) {
@@ -363,7 +363,7 @@ window.TOONTALK.widget = (function (TT) {
                 var ancestor = this;
                 while (ancestor && !ancestor.is_of_type(type_name)) {
                     if (ancestor.is_backside()) {
-                        ancestor = ancestor.get_parent_of_backside();    
+                        ancestor = ancestor.get_widget().get_parent_of_backside();    
                     } else {
                         ancestor = ancestor.get_parent_of_frontside();
                     }
@@ -392,7 +392,7 @@ window.TOONTALK.widget = (function (TT) {
                          parent_of_frontside.removed_from_container(this, false, event);
                      }
                  }
-            }
+            };
             return widget;
         },
         
@@ -424,7 +424,7 @@ window.TOONTALK.widget = (function (TT) {
                     var listeners_for_type = listeners[type];
                     if (listeners_for_type) {
                         if (listeners_for_type.indexOf(listener) < 0) {
-                             listeners_for_type.push(listener);   
+                            listeners_for_type.push(listener);   
                         } 
                     } else {
                         listeners[type] = [listener];
@@ -691,7 +691,7 @@ window.TOONTALK.widget = (function (TT) {
             } else {
                 parent_of_frontside = widget.get_parent_of_frontside();
                 if (parent_of_frontside && parent_of_frontside.get_widget() === this) {
-                    widget.set_parent_of_frontside(undefined);
+                    widget.set_parent_of_frontside(undefined, undefined, true);
                 }       
             }
             widget_side.set_visible(false);
@@ -895,13 +895,12 @@ window.TOONTALK.widget = (function (TT) {
                 backside_element = backside.get_element();
                 if ($(backside_element).is(":visible")) {
                     TT.UTILITIES.highlight_element(backside_element, 1000);
-                    return;
+                    return backside;
                 }
                 // need to see if on backside is on the backside of another (and that is closed)
                 parent = this.get_parent_of_backside();
                 if (parent && parent.is_backside()) {
-                    parent.get_widget().open_backside();
-                    return;
+                    return parent.get_widget().open_backside();
                 }
             }
             frontside_element = this.get_frontside_element();

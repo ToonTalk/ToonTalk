@@ -69,7 +69,7 @@ window.TOONTALK.UTILITIES =
         return div_string.substring(json_start, json_end+1);
     };
     var handle_drop = function ($target, $source, source_widget, target_widget, target_position, event, json_object, drag_x_offset, drag_y_offset, source_is_backside) {
-        var new_target, backside_widgets_json, shared_widgets, top_level_element, top_level_backside_position, backside_widgets;
+        var new_target, backside_widgets_json, shared_widgets, top_level_element, top_level_backside_position, backside_widgets, left, top;
         source_widget.set_visible(true);
         if ($target.is(".toontalk-backside")) {
             if (source_widget.is_of_type('top-level')) {
@@ -127,15 +127,37 @@ window.TOONTALK.UTILITIES =
             // not sure what is happening or even whey they are different
             // consider also using layerX and layerY
             if (!drag_x_offset) {
-                drag_x_offset = 0;
+                 drag_x_offset = 0;
+                 drag_y_offset = 0;
+                // drag a picture from a non-ToonTalk source so at least Windows displays about about a 90x90 square while dragging
+                // and, except for small images, it is 'held' at the bottom centre
+                // while images from web pages are held in the center
+                setTimeout(function () {
+                               var html   = source_widget.get_HTML();
+                               var width  = $source.width();
+                               var height = $source.height();
+                               var x_offset, y_offset;
+                               if (html.indexOf("data:image") >= 0) {
+                                   x_offset = Math.min(80, width)/2;
+                                   y_offset = 90;
+                                   if (height < 90) {
+                                       y_offset -= (90-height)/2;
+                                   }
+                               } else {
+                                   // is about 120x60
+                                   // but drag offset can be anywhere...
+                                   x_offset = Math.min(60, width/2);
+                                   y_offset = Math.min(30, height/2);  
+                               }
+                               $source.css({left: left-x_offset,
+                                            top:  top -y_offset}); 
+                          },
+                          50);
             }
-            if (!drag_y_offset) {
-                drag_y_offset = 0;
-            }
-            $source.css({
-                left: event.pageX - (target_position.left + drag_x_offset),
-                top:  event.pageY - (target_position.top  + drag_y_offset)
-            });
+            left = event.pageX - (target_position.left + drag_x_offset);
+            top  = event.pageY - (target_position.top  + drag_y_offset);
+            $source.css({left: left,
+                         top:  top});
 //             if ($source.is(".toontalk-frontside") && !$source.is('.ui-resizable')) {
 //                 // without the setTimeout the following prevents dragging components (e.g. widgets in boxes)
 //                 setTimeout(function () {
@@ -177,10 +199,10 @@ window.TOONTALK.UTILITIES =
                     if (target_widget) {
                         target_widget.get_backside().widget_dropped_on_me(source_widget, source_is_backside, event);
                         // place it directly underneath the original target
-                        $source.css({
-                            left: $target.position().left,
-                            top:  $target.position().top + $target.height()
-                        });
+//                         $source.css({
+//                             left: $target.position().left,
+//                             top:  $target.position().top + $target.height()
+//                         });
                     }
                 }
             }
@@ -370,7 +392,7 @@ window.TOONTALK.UTILITIES =
 
     $(document).ready(initialise);
     return {
-        create_from_json: function (json, additional_info) {
+        create_from_json: function (json, additional_info, delay_backside_widgets) {
             var widget, side_element, backside_widgets, json_semantic, json_view, size_css, json_of_shared_widget, shared_widget;
             if (!json) {
                 // was undefined and still is
@@ -411,7 +433,7 @@ window.TOONTALK.UTILITIES =
                 // following is to deal with reconstructing cyclic references
                 // if this is encountered again recursively will discover the JSON with shared_widget_index
 //                 additional_info.shared_widgets[json.shared_widget_index] = json;
-                widget = TT.UTILITIES.create_from_json(json_of_shared_widget, additional_info);
+                widget = TT.UTILITIES.create_from_json(json_of_shared_widget, additional_info, true);
 //                 if (additional_info.cyclic_widgets_json && typeof json_of_shared_widget.shared_widget_index === 'undefined') {
 //                     if (additional_info.cyclic_widgets_json.indexOf(json) >= 0) {
 //                         // contains cyclic references so make json into the widget
@@ -422,7 +444,13 @@ window.TOONTALK.UTILITIES =
 //                         widget = json;
 //                     }
 //                 }
-                additional_info.shared_widgets[json.shared_widget_index] = widget;              
+                additional_info.shared_widgets[json.shared_widget_index] = widget;
+                if (widget.finish_create_from_json_continuation) {
+                    // this part of the work was postponed so that shared_widgets could be set above
+                    // this prevents infinite recursion when processing self-referential JSON, e.g. element with attribute_object on back
+                    widget.finish_create_from_json_continuation();
+                    widget.finish_create_from_json_continuation = undefined;
+                }    
                 return widget;
             }
             json_semantic = json.semantic;
@@ -484,18 +512,29 @@ window.TOONTALK.UTILITIES =
                     widget.backside_geometry = json_view.backside_geometry;                    
                 }
                 if (json_semantic.backside_widgets) {
-                    backside_widgets = this.create_array_from_json(json_semantic.backside_widgets, additional_info);
-                    widget.set_backside_widget_sides(backside_widgets, 
-                                                     json_semantic.backside_widgets.map(
-                                                        function (json) {
-                                                            if (json.widget.shared_widget_index >= 0) {
-                                                                return additional_info.json_of_shared_widgets[json.widget.shared_widget_index].view;
-                                                            }
-                                                            return json.widget.view; 
-                                                     }));
+                    if (delay_backside_widgets) {
+                        // caller will call this 
+                        widget.finish_create_from_json_continuation = function () {
+                             this.add_backside_widgets_from_json(widget, json_semantic.backside_widgets, additional_info);   
+                        }.bind(this);
+                    } else {
+                        this.add_backside_widgets_from_json(widget, json_semantic.backside_widgets, additional_info);
+                    }
                 }
             }
             return widget;
+        },
+
+        add_backside_widgets_from_json: function (widget, json_semantic_backside_widgets, additional_info) {
+            var backside_widgets = this.create_array_from_json(json_semantic_backside_widgets, additional_info);
+            widget.set_backside_widget_sides(backside_widgets, 
+                                             json_semantic_backside_widgets.map(
+                                                  function (json) {
+                                                      if (json.widget.shared_widget_index >= 0) {
+                                                          return additional_info.json_of_shared_widgets[json.widget.shared_widget_index].view;
+                                                      }
+                                                      return json.widget.view; 
+                                                  }));
         },
         
         create_array_from_json: function (json_array, additional_info) {
@@ -528,10 +567,14 @@ window.TOONTALK.UTILITIES =
             return json;
         },
         
+        fresh_json_history: function () {
+            return {widgets_encountered: [],
+                    shared_widgets: [],
+                    json_of_widgets_encountered: []};
+        },
+        
         get_json_top_level: function (widget) {
-            var json_history = {widgets_encountered: [],
-                                shared_widgets: [],
-                                json_of_widgets_encountered: []};
+            var json_history = this.fresh_json_history();
             var json = TT.UTILITIES.get_json(widget, json_history);
             if (json_history.shared_widgets.length > 0) {
                 json.shared_widgets = json_history.shared_widgets.map(function (shared_widget, widget_index) {
@@ -914,7 +957,7 @@ window.TOONTALK.UTILITIES =
                     TT.UTILITIES.remove_highlight();
                     target_widget = TT.UTILITIES.widget_from_jquery($target);
                     if ($source && $source.length > 0 &&
-                        !(target_widget.get_infinite_stack && target_widget.get_infinite_stack()) && // OK to drop on infinite stack since will become a copy
+                        !(target_widget && target_widget.get_infinite_stack && target_widget.get_infinite_stack()) && // OK to drop on infinite stack since will become a copy
                         ($source.get(0) === $target.get(0) || jQuery.contains($source.get(0), $target.get(0)))) {
                         if ($source.is(".toontalk-top-level-backside")) {
                             return; // let event propagate since this doesn't make sense
@@ -938,7 +981,7 @@ window.TOONTALK.UTILITIES =
                         drag_y_offset = 0;
                     }
                     if ($source && $source.length > 0) {
-                        if (!(target_widget.get_infinite_stack && target_widget.get_infinite_stack()) && 
+                        if (!(target_widget && target_widget.get_infinite_stack && target_widget.get_infinite_stack()) && 
                             ($source.get(0) === $target.get(0) || jQuery.contains($source.get(0), $target.get(0)))) {
                             // OK to drop on infinite stack since will become a copy
                             // dropped of itself or dropped on a part of itself
@@ -1104,6 +1147,10 @@ window.TOONTALK.UTILITIES =
         
         set_position_relative_to_top_level_backside: function ($element, absolute_position) {
             var top_level_position = $element.closest(".toontalk-top-level-backside").offset();
+            if (!top_level_position) {
+                console.log("Unable to find top-level backside. Perhaps is 'visible' but not attached.");
+                top_level_position = {left: 0, top: 0};
+            }
             var left = absolute_position.left-top_level_position.left;
             var top  = absolute_position.top -top_level_position.top;
             $element.css({left: left,
@@ -1595,29 +1642,34 @@ window.TOONTALK.UTILITIES =
         },
         
         scale_to_fit: function (this_element, other_element, original_width, original_height, delay) {
-            var new_width  = $(other_element).width();
-            var new_height = $(other_element).height();
             var update_css = function () {
                  $(this_element).css({transform: "scale(" + x_scale + ", " + y_scale + ")",
-                                 "transform-origin": "top left", 
-                                 width:  original_width,
-                                 height: original_height});
+                                      "transform-origin": "top left", 
+                                      width:  original_width,
+                                      height: original_height});
             };
-            var x_scale, y_scale;
+            var new_width, new_height, x_scale, y_scale;
             if (!original_width) {
                 original_width = $(this_element).width();
             }
             if (!original_height) {
                 original_height = $(this_element).height();
             }
-            x_scale = new_width/original_width;
-            y_scale = new_height/original_height;
-            // e.g. other_element doesn't know it dimensions
-            if (x_scale === 0) {
+            if ($(other_element).is(".toontalk-backside")) {
                 x_scale = 1;
-            }
-            if (y_scale === 0) {
                 y_scale = 1;
+            } else {
+                new_width  = $(other_element).width();
+                new_height = $(other_element).height();
+                x_scale = new_width/original_width;
+                y_scale = new_height/original_height;
+                // e.g. other_element doesn't know it dimensions
+                if (x_scale === 0) {
+                    x_scale = 1;
+                }
+                if (y_scale === 0) {
+                    y_scale = 1;
+                }
             }
             if (delay) {
                 setTimeout(update_css, delay);
@@ -1630,9 +1682,13 @@ window.TOONTALK.UTILITIES =
         
         relative_position: function (target_element, reference_element) {
              var target_offset = $(target_element).offset();
-             var reference_offset = $(reference_element).offset();
-             return {left: target_offset.left-reference_offset.left,
-                     top:  target_offset.top-reference_offset.top};
+             var reference_offset;
+             if (reference_element) {
+                 reference_offset = $(reference_element).offset();
+                 target_offset.left -= reference_offset.left;
+                 target_offset.top  -= reference_offset.top;
+             }
+             return target_offset;
         },
         
         add_animation_class: function (element, class_name) {
@@ -1746,6 +1802,71 @@ window.TOONTALK.UTILITIES =
             } else {
                 setTimeout(delayed, delay);
             }
+        },
+
+        create_queue: function () {
+/*  Following based upon 
+
+Created by Stephen Morley - http://code.stephenmorley.org/ - and released under
+the terms of the CC0 1.0 Universal legal code:
+
+http://creativecommons.org/publicdomain/zero/1.0/legalcode
+
+Creates a new queue. A queue is a first-in-first-out (FIFO) data structure -
+items are added to the end of the queue and removed from the front.
+
+Edited by Ken Kahn for better integration with the rest of the ToonTalk code
+ */
+
+          // initialise the queue and offset
+          var queue  = [];
+          var offset = 0;
+
+          return {
+                  getLength: function() {
+                      return (queue.length - offset);
+                  },
+                  // Returns true if the queue is empty, and false otherwise.
+                  isEmpty: function() {
+                      return (queue.length == 0);
+                  },
+                  // Enqueues the specified item.
+                  enqueue:function(item) {
+                      queue.push(item);
+                  },
+                  // Dequeues an item and returns it. 
+                  // If the queue is empty, the value'undefined' is returned.
+                  dequeue: function () {
+                      var item;
+                      if (queue.length == 0) {
+                          return undefined;
+                      }
+                      item = queue[offset];
+                      // increment the offset and remove the free space if necessary
+                      if (++ offset * 2 >= queue.length){
+                         queue  = queue.slice(offset);
+                         offset = 0;
+                      }
+                      // return the dequeued item
+                      return item;
+                  },
+                  // Returns the item at the front of the queue (without dequeuing it).
+                  // If the queue is empty then undefined is returned.
+                  peek: function() {
+                     return (queue.length > 0 ? queue[offset] : undefined);
+                  },
+                  // Ken Kahn added this the following
+                  // useful for debugging but should be avoided in production code
+                  does_any_item_satisfy: function (predicate) {
+                      var i;
+                      for (i = offset; i < queue.length; i++) {
+                           if (predicate(queue[i])) {
+                               return true;
+                           }
+                      }
+                      return false;
+                  }
+            };
         }
         
 //         create_menu_item: function (text) {
@@ -1760,5 +1881,6 @@ window.TOONTALK.UTILITIES =
     };
     
 }(window.TOONTALK));
+
 
 window.TOONTALK.UTILITIES.available_types = ["number", "box", "element", "robot", "nest", "sensor", "top-level"];

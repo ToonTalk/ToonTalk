@@ -11,26 +11,25 @@ window.TOONTALK.queue =
         create: function () {
             var result = Object.create(this);
             // use a JavaScript array to hold the queue
-            result.to_run = new Queue();
+            result.to_run = TT.UTILITIES.create_queue();
             return result;
         },
         
         enqueue: function (robot_context_queue) {
-//             console.log("enqueued robot#" + robot_context_queue.robot.debug_id);
-//             if (TT.debugging) {
-//                 this.to_run.forEach(function (old) {
-//                     if (old.robot === robot_context_queue.robot) {
-//                         // until these kinds of bugs are fixed TT.UTILITIES.report_internal_error is too annoying
-//                         console.log("The same robot is being queued twice.");
-//                         console.log("Robot is " + old.robot);
-//                         return;
-//                     }
-//                 })
-//             }
+//          console.log("enqueued robot#" + robot_context_queue.robot.debug_id);
+            if (TT.debugging && this.to_run.does_any_item_satisfy(function (item) {
+                                                                      return item.robot === robot_context_queue.robot;
+                                                                  })) {
+                // until these kinds of bugs are fixed log this
+                // but TT.UTILITIES.report_internal_error is too annoying
+                console.log("The same robot is being queued twice.");
+                console.log("Robot is " + robot_context_queue.robot);
+                return;
+            }
             return this.to_run.enqueue(robot_context_queue);
         },
         
-        maximum_run: 100, // milliseconds
+        maximum_run: 50, // milliseconds
         
         paused: false,
         
@@ -65,8 +64,8 @@ window.TOONTALK.queue =
             TT.UTILITIES.set_timeout(function () {
                                          this.run();
                                      }.bind(this),
-                                     // if more to run don't wait -- otherwise wait 4 milliseconds
-                                     this.to_run.isEmpty() ? 4 : 0); 
+                                     // if more to run don't wait -- otherwise wait
+                                     this.to_run.isEmpty() ? this.maximum_run : 0); 
         }
         
     };

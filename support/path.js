@@ -43,7 +43,8 @@ window.TOONTALK.path =
                 if (path) {
                     return path;
                 }
-                if (widget_type === "element attribute") { 
+                if (widget_type === "element attribute" && !widget.get_parent_of_frontside()) {
+                    // if widget.get_parent_of_frontside() then is a copy of the attribute element
                     return TT.element.create_attribute_path(widget, robot);
                 }
                 // if context is undefined something is wrong much earlier
@@ -198,9 +199,10 @@ window.TOONTALK.path =
                     toString: function () {
                         return TT.UTILITIES.add_a_or_an(widget.toString());
                     },
-                    get_json: function (json_history) {
+                    get_json: function () {
                         return {type: "path.to_resource",
-                                resource: TT.path.get_json(widget, json_history)};
+                                // following resets json_history since within a path there shouldn't be sharing without the 'outside'
+                                resource: TT.path.get_json(widget, TT.UTILITIES.fresh_json_history())};
                     }
             };
         },

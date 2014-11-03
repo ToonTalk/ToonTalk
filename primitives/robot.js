@@ -134,6 +134,17 @@ window.TOONTALK.robot = (function (TT) {
                 next_robot.set_first_in_team(new_value);
             }
         };
+        new_robot.walk_children = function (child_action) {
+            if (next_robot) {
+                if (!child_action(next_robot));
+                return;
+            }
+            if (this.get_frontside_conditions()) {
+                if (!child_action(this.get_frontside_conditions())) {
+                    return;
+                }
+            }
+        };
         new_robot.get_run_once = function () {
             return run_once;
         };
@@ -191,9 +202,10 @@ window.TOONTALK.robot = (function (TT) {
         var frontside_condition_widget = this.get_frontside_conditions();
         var backside_conditions, backside_widgets, condition_frontside_element, to_run_when_non_empty, next_robot_match_status;
         if (this.being_trained || !frontside_condition_widget || this.get_animating()) {
-            // should not run if being trained, has no conditions (really?), or is already running
+            // should not run if being trained, has no conditions (TODO: really?), or is already running
             return 'not matched';
         }
+//         console.log("Match is " + TT.UTILITIES.match(frontside_condition_widget, context) + " for condition " + frontside_condition_widget + " with " + context);
         this.match_status = TT.UTILITIES.match(frontside_condition_widget, context);
         condition_frontside_element = frontside_condition_widget.get_frontside_element();
         if (condition_frontside_element) {
@@ -674,6 +686,7 @@ window.TOONTALK.robot_backside =
     var create_conditions_area = function (text, condition_widget, robot, class_name) {
         var description = TT.UTILITIES.create_text_element(text);
         var condition_element = condition_widget.get_frontside_element(true);
+        var condition_element_div_parent = document.createElement('div');
         var conditions_panel;
 //      TT.UTILITIES.set_position_is_absolute(condition_element, false);
         $(condition_element).addClass("toontalk-conditions-contents " + class_name);
@@ -682,7 +695,8 @@ window.TOONTALK.robot_backside =
                 // should really wait until condition_element is attached to the DOM
                 $(condition_element).parent().addClass("toontalk-conditions-contents-container");
                 $(condition_element).css({left:   'inherit',
-                                          top:    '4%', // unclear why this works but 0 or inherit leaves element too high
+                // following caused all conditions to be at the top 
+//                                        top:    '4%', // unclear why this works but 0 or inherit leaves element too high
                                           width:  'inherit',
                                           height: 'inherit'});
                 condition_widget.render();
@@ -692,7 +706,9 @@ window.TOONTALK.robot_backside =
         } else {
             $(condition_element).removeClass("toontalk-conditions-not-matched");
         }
-        conditions_panel = TT.UTILITIES.create_horizontal_table(description, condition_element);
+        // wrapping the condition_element in a div forces it to be in the right place in the table
+        condition_element_div_parent.appendChild(condition_element);
+        conditions_panel = TT.UTILITIES.create_horizontal_table(description, condition_element_div_parent);
         $(conditions_panel).addClass("toontalk-conditions-panel");
         return conditions_panel;
     };
@@ -758,7 +774,7 @@ window.TOONTALK.robot_backside =
                 event.stopPropagation();
             });
             if (next_robot) {
-                $next_robot_area.append(next_robot.get_frontside_element());
+                $next_robot_area.append(next_robot.get_frontside_element(true));
             }
             $next_robot_area.get(0).addEventListener('drop', function (event) {
                 // start training when robot is dropped here

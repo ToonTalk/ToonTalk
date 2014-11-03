@@ -220,7 +220,7 @@ window.TOONTALK.backside =
                     if (other.dropped_on_other) {
                         other.dropped_on_other(this.get_widget(), true, event);
                     }
-                    if (other.get_body && other.get_body().is_empty()) {
+                    if (other.get_body && other.get_body().is_empty() && !other.being_trained) {
                         // automate the start of training
                         backside_of_other = other.open_backside();
                         if (backside_of_other) {
