@@ -181,12 +181,12 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     pending_css['transform'] =         transform;
                 }
             };
-            if (!pending_css) {
-                // can be undefined if all the transforms had a zero value
-                return;
-            }
             // need to delay the following since width and height may not be known yet
             TT.UTILITIES.set_timeout(function () {
+                if (!pending_css) {
+                    // can be undefined if all the transforms had a zero value
+                    return;
+                }
                 // without the following the image remains square since only one of width/height set
                 if (pending_css.width && typeof pending_css.height === 'undefined') {
                     pending_css.height = frontside_element.clientHeight;
@@ -357,6 +357,12 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 // using == instead of === since want type coercion. current_value might be a string
                 return;
             }
+            // seems we have to live with integer values for width and height
+//             if ((attribute === 'width' || attribute === 'height') &&
+//                 current_value == Math.round(new_value_number)) { // note double equal here
+//                 // width and height as CSS style attributes become integers so don't set if equal when rounded
+//                 return;
+//             }
             new_value = new_value_number;
         }
         if (handle_training && TT.robot.in_training) {
@@ -491,8 +497,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
 // TODO: should this (or its backside) walk to visible attributes?
         number_update_display = attribute_widget.update_display;
         attribute_widget.update_display = function () {
+            var attribute_value;
             if (!this.get_erased()) {
-                attribute_widget.set_value_from_decimal(this_element_widget.get_attribute(this.attribute));
+                attribute_value = this_element_widget.get_attribute(this.attribute);
+                attribute_widget.set_value_from_decimal(attribute_value);
             }
             number_update_display.call(this);
         };
