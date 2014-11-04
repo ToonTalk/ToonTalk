@@ -459,7 +459,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         var this_element_widget = this;
         var $attribute_input, attribute_widget, original_copies,
             // store some default number functions:
-            number_equals, number_update_display, number_set_value, number_to_string;
+            number_equals, number_update_display, number_to_string;
         if (backside_element) {
             $attribute_input = $(backside_element).find(selector);
             if ($attribute_input.length > 0) {
@@ -497,13 +497,13 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         } else {
             this.get_original_copies()[attribute_name] = [attribute_widget];
         }
-        number_set_value = attribute_widget.set_value;
         attribute_widget.set_value = function (new_value) {
-            var old_value, return_value;
-            this_element_widget.get_original_copies()[attribute_name].forEach(function (copy) {
-//                 var new_value_copy = bigrat.copy(bigrat.create(), new_value);
+            var copies = this_element_widget.get_original_copies()[attribute_name];
+            var return_value;
+            copies.forEach(function (copy, index) {
+//                 var new_value_copy = index === 0 ? new_value : bigrat.copy(bigrat.create(), new_value);
 //                 console.log("copy set value " + new_value + " id is " + copy.debug_id);
-                return_value = number_set_value.call(copy, new_value); 
+                return_value = copy.set_value_from_sub_classes(new_value); 
             });
             this_element_widget.set_attribute(this.attribute, bigrat.toDecimal(new_value));
             return return_value;
@@ -556,9 +556,6 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     attribute_name: attribute_name,
                     element: TT.UTILITIES.get_json(this_element_widget, json_history)};            
         };
-        if (TT.debugging) {
-            attribute_widget.debug_id = TT.UTILITIES.generate_unique_id();
-        }
         return attribute_widget;
     };
 

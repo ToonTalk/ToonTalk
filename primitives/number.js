@@ -188,10 +188,6 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         } 
         new_number.set_value =
             function (new_value) {
-//                 console.log("set value " + new_value + " was " + value + " id is " + this.debug_id + " " + this);
-//                 if (this.debug_id === 'toontalk_id_1415038113558') {
-//                     console.log("debug this");
-//                 }
                 if (bigrat.equals(value, new_value)) {
                     return;
                 }
@@ -201,9 +197,11 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
                 if (TT.debugging) {
                     this.debug_string = this.toString();
                 }
-//                 console.log("set value " + new_value + " was " + value + " id is " + this.debug_id + " " + this);
                 return this;
             };
+        // sub classes can call set_value_from_sub_classes from within their set_value without recurring 
+        // since this closes over value calling super by storing and invoking this.set_value doesn't work well
+        new_number.set_value_from_sub_classes = new_number.set_value;
         new_number.fire_value_change_listeners = function (old_value, new_value) {
             var listeners = this.get_listeners('value_changed');
             var event;
@@ -263,6 +261,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         if (TT.debugging) {
             new_number.debug_string = new_number.toString();
             new_number.debug_id = TT.UTILITIES.generate_unique_id();
+            value.debug_id_new = new_number.debug_id; // for debugging
         }
         return new_number;
     };
