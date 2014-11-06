@@ -127,10 +127,16 @@ window.TOONTALK.GOOGLE_DRIVE =
            var insert_or_update = function (response) {
                gapi.client.load('drive', 'v2', function() {
                    var file_id = response && response.items && response.items.length > 0 && response.items[0].id;
-                   if (file_id) {
-                       TT.GOOGLE_DRIVE.insert_or_update_file(undefined, file_id, contents); 
+                   var callback = function (file) {
+                                      console.log("File " + file.title + " (" + file.id + ") " + (file_id ? "updated" : "created"));
+                   };
+                   if (file_id) { 
+                       TT.GOOGLE_DRIVE.insert_or_update_file(undefined, file_id,   contents, callback);
+                       TT.GOOGLE_DRIVE.download_file(response.items[0], function (response) {
+                           console.log(response);
+                       });
                    } else {
-                       TT.GOOGLE_DRIVE.insert_or_update_file(file_name, undefined, contents);   
+                       TT.GOOGLE_DRIVE.insert_or_update_file(file_name, undefined, contents, callback);   
                    }
                });
            };
@@ -194,13 +200,30 @@ window.TOONTALK.GOOGLE_DRIVE =
                   'body': request_body});
           }
           if (!callback) {
-              callback = function(file) {
-                  console.log("File save callback:");
-                  console.log(file);
-              };
+              callback = function () {
+                  // ignore
+              }
           }
           request.execute(callback);
-      }
+      },
+
+      download_file: function(file, callback) {
+          if (file.downloadUrl) {
+            var access_token = gapi.auth.getToken().access_token;
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', file.downloadUrl);
+            xhr.setRequestHeader('Authorization', 'Bearer ' + access_token);
+            xhr.onload = function() {
+              callback(xhr.responseText);
+            };
+            xhr.onerror = function() {
+              callback(null);
+            };
+            xhr.send();
+          } else {
+            callback(null);
+          }
+       }
    };
 
 }(window.TOONTALK));
