@@ -12,6 +12,9 @@ window.TOONTALK.SETTINGS =
     return {
       open: function (widget) {
           var settings_panel = document.createElement('div');
+          var close_handler = function () {
+              $(settings_panel).remove();
+          };
           var widget_element = widget.get_backside_element();
           var program_name = TT.UTILITIES.create_text_input(widget.get_setting('program_name'), 
                                                             "toontalk-program-name-input", 
@@ -32,12 +35,23 @@ window.TOONTALK.SETTINGS =
                                                             "toontalk-save-setting",
                                                             "Save automatically",
                                                             "Check this if you want your programs saved whenever you make changes to your program.");
+          var save_now      = TT.UTILITIES.create_button("Save now",
+                                                         "toontalk-save-button", 
+                                                         "Click to save your program now.", 
+                                                         function () {
+                                                             widget.save();
+                                                         });
+          var authorize     = TT.UTILITIES.create_button("Login to Google",
+                                                         "toontalk-google-login-button", 
+                                                         "Click to log in to Google to authorize use of your Google Drive.", 
+                                                         function () {
+                                                             TT.google_drive.authorize(function () {
+                                                                 $(authorize).remove();
+                                                             });
+                                                         });
           // create a div whose positioning isn't absolute
           // settings_panel needs to be absolute for at least z-index to work properly
           var contents_div = document.createElement('div');
-          var close_handler = function () {
-              $(settings_panel).remove();
-          };
           $(settings_panel).addClass("toontalk-settings-panel")
                            .css({width:  $(widget_element).width() +29,
                                  height: $(widget_element).height()+50,
@@ -47,11 +61,11 @@ window.TOONTALK.SETTINGS =
           settings_panel.appendChild(close_button);
           program_name.button .addEventListener('change', 
                                                 function () {
-                                                     settings.program_name = program_name.button.value.trim();
+                                                     widget.set_setting('program_name',     program_name.button.value.trim());
                                                 });
           google_drive.button .addEventListener('click', 
                                                 function (event) {
-                                                    widget.set_setting('use_google_drive',   google_drive.button.checked);
+                                                    widget.set_setting('use_google_drive',  google_drive.button.checked);
                                                 });
           local_storage.button.addEventListener('click', 
                                                 function (event) {
@@ -60,6 +74,11 @@ window.TOONTALK.SETTINGS =
           auto_save.button    .addEventListener('click', 
                                                 function (event) {
                                                     widget.set_setting('auto_save',         auto_save.button.checked);
+                                                    if (auto_save.button.checked) {
+                                                        $(save_now).hide();
+                                                    } else {
+                                                        $(save_now).show();
+                                                    }
                                                 });
           settings_panel.appendChild(contents_div);
           $(heading).css({"font-weight": 'bold',
@@ -69,7 +88,16 @@ window.TOONTALK.SETTINGS =
           contents_div.appendChild(program_name.container);
           contents_div.appendChild(google_drive.container);
           contents_div.appendChild(local_storage.container);
+          auto_save.container.appendChild(TT.UTILITIES.create_space());
+          auto_save.container.appendChild(save_now);
           contents_div.appendChild(auto_save.container);
+          if (widget.get_setting('auto_save')) {
+              $(save_now).hide();
+          }
+          if (widget.get_setting('use_google_drive') && TT.google_drive.get_status() === 'Need to authorize') {
+              google_drive.container.appendChild(TT.UTILITIES.create_space());
+              google_drive.container.appendChild(authorize);
+          }
           widget_element.appendChild(settings_panel);                  
       }  
     };

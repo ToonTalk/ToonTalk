@@ -1334,6 +1334,14 @@ window.TOONTALK.UTILITIES =
             z_index++;
             return z_index;
         },
+
+        create_button: function (label, class_name, title, click_handler) {
+            var $button = $("<button>" + label + "</button>").button();
+            $button.addClass(class_name)
+                   .click(click_handler)
+                   .attr("title", title);
+            return $button.get(0);
+        },
                 
         create_close_button: function (handler, title) {
             var close_button = document.createElement("div");
@@ -1374,6 +1382,13 @@ window.TOONTALK.UTILITIES =
             div.textContent = text;
             $(div).addClass('ui-widget');
             return div;
+        },
+
+        create_space: function () {
+           var span = document.createElement("span");
+           span.innerHTML = '&nbsp;';
+           $(span).addClass('ui-widget');
+           return span;    
         },
         
         create_anchor_element: function (html, url) {

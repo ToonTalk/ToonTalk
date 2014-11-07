@@ -443,7 +443,7 @@ window.TOONTALK.backside =
                                                           "Copy when dragged.",
                                                           "Check this if you want the " + widget.get_type_name()
                                                           + " to be copied instead of moved.");
-            $(check_box.button).click(function (event)  {
+            $(check_box.button).click(function (event) {
                 var infinite_stack = check_box.button.checked;
                 var action_string;
                 widget.set_infinite_stack(infinite_stack);

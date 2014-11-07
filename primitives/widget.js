@@ -987,7 +987,7 @@ window.TOONTALK.widget = (function (TT) {
                 // don't know why the following returns undefined
 //               $backside_element.attr("background-color")};
                 return {semantic: {type: "top_level"},
-                            view: {background_color: background_color}};
+                        view:     {background_color: background_color}};
             };
             widget.get_type_name = function () {
                  return "top-level";
@@ -1050,6 +1050,21 @@ window.TOONTALK.widget = (function (TT) {
             };
             widget.open_settings = function () {
                 TT.SETTINGS.open(widget);
+            };
+            widget.save = function () {
+                var json = TT.UTILITIES.get_json_top_level(this);
+                var google_drive_status;
+                if (this.get_setting('use_google_drive')) {
+                    google_drive_status = TT.google_drive.get_status();
+                    if (google_drive_status === "Ready") {
+                        TT.google_drive.upload_file(this.get_setting('program_name') + ".json", JSON.stringify(json));
+                    } else {
+                        console.log("Unable to save to Google Drive because: " + google_drive_status);
+                    }
+                }
+                if (this.get_setting('use_local_storage'))  {
+                        // TODO:
+                }
             };
             widget.get_backside(true).set_visible(true); // top-level backsides are always visible (at least for now)
             if (TT.debugging) {

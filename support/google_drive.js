@@ -14,16 +14,17 @@
     // perhaps this should be delayed until user requests saving?
     // made a global function so called by Google API 
 function handle_client_load() {
-    setTimeout(window.TOONTALK.GOOGLE_DRIVE.check_authorization, 1);
+    setTimeout(window.TOONTALK.google_drive.check_authorization, 1);
 };
 
-window.TOONTALK.GOOGLE_DRIVE = 
+window.TOONTALK.google_drive = 
 (function (TT) {
     "use strict";
     var CLIENT_ID = '1014278465319-fcagdv7f8232nvqevdkh87r4pmu6mvh8.apps.googleusercontent.com'; // dropbox
 //  var CLIENT_ID = '829199594800-54bk3k92fdepke86ik366cds9kmo4u0c.apps.googleusercontent.com'; // github.io
     var SCOPES = 'https://www.googleapis.com/auth/drive';
     var toontalk_folder_title = "ToonTalk Programs";
+    var status = "Need to authorize";
     var folder_id;
     return {
 
@@ -31,9 +32,9 @@ window.TOONTALK.GOOGLE_DRIVE =
        * Check if the current user has authorized the application.
        */
       check_authorization: function () {
-        gapi.auth.authorize(
-            {'client_id': CLIENT_ID, 'scope': SCOPES, 'immediate': true},
-            TT.GOOGLE_DRIVE.handle_authorization_result);
+          status = "Awaiting authorization";
+          gapi.auth.authorize({'client_id': CLIENT_ID, 'scope': SCOPES, 'immediate': true},
+                              TT.google_drive.handle_authorization_result);
       },
 
       /**
@@ -41,60 +42,52 @@ window.TOONTALK.GOOGLE_DRIVE =
        *
        * @param {Object} authorization_result Authorization result.
        */
-      handle_authorization_result: function (authorization_result) {
-        var authorization_button = document.getElementById('toontalk-autorization-button');
-        var save_button = document.getElementById('toontalk-save-button');
-        var display_save_button = function () {
-            save_button.style.display = 'block';
-            save_button.onclick = TT.GOOGLE_DRIVE.save_button_click_handler;
-        };
-        authorization_button.style.display = 'none';
-        save_button.style.display = 'none';
+      handle_authorization_result: function (authorization_result, callback) {
         if (authorization_result && !authorization_result.error) {
            // Access token has been successfully retrieved, requests can be sent to the API.
+           status = "Authorized";
+           if (callback) {
+               callback();
+           }
            var folder_id_callback = function (response) {
                var folder_creation_callback = function (response) {
                    if (response && response.id) {
                        folder_id = response.id;
-                       display_save_button();
+                       status = "Ready";
                    } else {
                        console.error("Failure to create folder '" + toontalk_folder_title + "'");
                    }
                }
                folder_id = response && response.items && response.items.length > 0 && response.items[0].id;
                if (folder_id) {
-                   display_save_button();
+                   status = "Ready";
                } else {
                    // create the folder
                    gapi.client.load('drive', 'v2', function() {
-                       TT.GOOGLE_DRIVE.insert_or_update_file(toontalk_folder_title, undefined, undefined, folder_creation_callback, true);
+                       TT.google_drive.insert_or_update_file(toontalk_folder_title, undefined, undefined, folder_creation_callback, true);
                    });
                }
            }
            if (folder_id) {
-               display_save_button();
+               status = "Ready";
            } else {
-               TT.GOOGLE_DRIVE.get_toontalk_folder_id(folder_id_callback);
+               TT.google_drive.get_toontalk_folder_id(folder_id_callback);
            }
         } else {
-          // No access token could be retrieved, show the button to start the authorization flow.
-          authorization_button.style.display = 'block';
-          authorization_button.onclick = function() {
-              gapi.auth.authorize(
-                  {'client_id': CLIENT_ID, 'scope': SCOPES, 'immediate': false},
-                  TT.GOOGLE_DRIVE.handle_authorization_result);
-          };
+           // No access token could be retrieved, show the button to start the authorization flow.
+           status = "Need to authorize";
         }
       },
 
-      save_button_click_handler: function () {
-          // TODO: display interface -- get name if save new or publish
-          // assume one top-level widget for now
-          $(".toontalk-top-level-backside").each(function (index, element) {
-                var top_level_widget = TT.UTILITIES.widget_from_jquery($(element));
-                var json = TT.UTILITIES.get_json_top_level(top_level_widget);
-                TT.GOOGLE_DRIVE.upload_file(top_level_widget.get_setting('program_name') + ".json", JSON.stringify(json));
-          });
+      authorize: function (callback) {
+          gapi.auth.authorize({'client_id': CLIENT_ID, 'scope': SCOPES, 'immediate': false},
+                              function (authorization_result) {
+                                TT.google_drive.handle_authorization_result(authorization_result, callback);
+                              });
+      },
+
+      get_status: function () {
+          return status;
       },
 
       list_files: function (query, callback) {
@@ -106,7 +99,7 @@ window.TOONTALK.GOOGLE_DRIVE =
 
       get_toontalk_folder_id: function (callback) {
           var query = "mimeType = 'application/vnd.google-apps.folder' and title ='" + toontalk_folder_title + "' and trashed = false";
-          TT.GOOGLE_DRIVE.list_files({q: query}, callback);
+          TT.google_drive.list_files({q: query}, callback);
       },
 
       get_toontalk_files: function (title, callback) {
@@ -115,7 +108,7 @@ window.TOONTALK.GOOGLE_DRIVE =
           if (title) {
               query += " and title='" + title + "'";
           }
-          TT.GOOGLE_DRIVE.list_files({q: query}, callback);
+          TT.google_drive.list_files({q: query}, callback);
       },
 
       /**
@@ -131,16 +124,16 @@ window.TOONTALK.GOOGLE_DRIVE =
                                       console.log("File " + file.title + " (" + file.id + ") " + (file_id ? "updated" : "created"));
                    };
                    if (file_id) { 
-                       TT.GOOGLE_DRIVE.insert_or_update_file(undefined, file_id,   contents, callback);
-                       TT.GOOGLE_DRIVE.download_file(response.items[0], function (response) {
+                       TT.google_drive.insert_or_update_file(undefined, file_id,   contents, callback);
+                       TT.google_drive.download_file(response.items[0], function (response) {
                            console.log(response);
                        });
                    } else {
-                       TT.GOOGLE_DRIVE.insert_or_update_file(file_name, undefined, contents, callback);   
+                       TT.google_drive.insert_or_update_file(file_name, undefined, contents, callback);   
                    }
                });
            };
-           TT.GOOGLE_DRIVE.get_toontalk_files(file_name, insert_or_update);
+           TT.google_drive.get_toontalk_files(file_name, insert_or_update);
       },
 
       /**
