@@ -49,6 +49,18 @@ window.TOONTALK.SETTINGS =
                                                                  $(authorize).remove();
                                                              });
                                                          });
+          var publish       = TT.UTILITIES.create_button("Publish",
+                                                         "toontalk-publish-button", 
+                                                         "Click to publish your program by generating a Google Drive URL.", 
+                                                         function () {
+                                                             widget.publish(display_published);
+                                                         });
+          var display_published = function (google_file) {
+              var link_to_publication = document.createElement('span');
+              var url = "https://googledrive.com/host/" + google_file.id + "/";
+              link_to_publication.innerHTML = "Published: <a href='" + url + "' target='_blank'>" + widget.get_setting('program_name') + "</a>";
+              contents_div.replaceChild(link_to_publication, publish);
+          };
           // create a div whose positioning isn't absolute
           // settings_panel needs to be absolute for at least z-index to work properly
           var contents_div = document.createElement('div');
@@ -98,8 +110,9 @@ window.TOONTALK.SETTINGS =
               google_drive.container.appendChild(TT.UTILITIES.create_space());
               google_drive.container.appendChild(authorize);
           }
+          contents_div.appendChild(publish);
           widget_element.appendChild(settings_panel);                  
-      }  
+      }
     };
 
 }(window.TOONTALK));

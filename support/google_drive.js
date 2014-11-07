@@ -116,12 +116,14 @@ window.TOONTALK.google_drive =
        *
        * @param {String} contents String contents of the saved file.
        */
-      upload_file: function (file_name, contents) {
+      upload_file: function (file_name, contents, callback) {
            var insert_or_update = function (response) {
                gapi.client.load('drive', 'v2', function() {
                    var file_id = response && response.items && response.items.length > 0 && response.items[0].id;
-                   var callback = function (file) {
+                   if (!callback) {
+                       callback = function (file) {
                                       console.log("File " + file.title + " (" + file.id + ") " + (file_id ? "updated" : "created"));
+                       };
                    };
                    if (file_id) { 
                        TT.google_drive.insert_or_update_file(undefined, file_id,   contents, callback);

@@ -1140,6 +1140,18 @@ window.TOONTALK.widget = (function (TT) {
                     this.save_to_local_storage(json);
                 }
             };
+            widget.publish = function (callback) {
+                var google_drive_status = TT.google_drive.get_status();;
+                var json, json_div, contents;
+                if (google_drive_status === "Ready") {
+                    json = TT.UTILITIES.get_json_top_level(this);
+                    json_div = TT.UTILITIES.toontalk_json_div(json, this);
+                    contents = TT.publish_part_1 + json_div + TT.publish_part_2;
+                    TT.google_drive.upload_file(this.get_setting('program_name') + ".html", contents, callback);
+                } else {
+                    console.log("Unable to publish to Google Drive because: " + google_drive_status);
+                }
+            }
             widget.save_to_local_storage = function (json) {
                 var key = "toontalk-json: " + this.get_setting('program_name');
                 var all_keys, message;
@@ -1173,3 +1185,22 @@ window.TOONTALK.widget = (function (TT) {
     };
 
 }(window.TOONTALK));
+
+window.TOONTALK.publish_part_1 =
+'<!DOCTYPE html>\n\
+<html>\n\
+<head>\n\
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/sunny/jquery-ui.css" />\n\
+<link rel="stylesheet" media="all" href="https://toontalk.github.io/ToonTalk/toontalk.css">\n\
+<script src="https://toontalk.github.io/ToonTalk/compile/toontalk.js"></script>\n\
+<title>ToonTalk Reborn Save Page</title>\n\
+<link rel="shortcut icon" href="favicon.ico" />\n\
+</head>\n\
+<body>\n\
+<p>\n\
+Edit this.\n\
+</p>\n\
+';
+window.TOONTALK.publish_part_2 =
+'</body>\n\
+</html>';
