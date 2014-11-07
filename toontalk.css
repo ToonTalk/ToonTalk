@@ -95,14 +95,6 @@ body {
 	min-width: 550px;
 	min-height: 200px;
 }
-.toontalk-settings {
-	position: absolute;
-	background-color: rgba(230, 230, 230, 0.94);
-	border-style: solid;
-	border-width: 2px;
-	border-color: rgb(185, 113, 141);
-	border-radius: 10px;
-}
 .toontalk-done-backside-button {
 
 }
@@ -525,6 +517,22 @@ body {
 	height: 19px;
 	position: absolute;
 	top:   -25px;
+}
+.toontalk-settings-button {
+	background-image: url("images/settings-gear.png");
+	background-repeat: no-repeat;
+	cursor: pointer;
+	width:  22px;
+	height: 22px;
+	position: absolute;
+	top:   -25px;
+}
+.toontalk-settings-panel {
+	background-color: rgb(245, 222, 245);
+	position: absolute;
+	opacity: .97;
+	border-radius: 10px;
+	border: 2px solid navy;
 }
 .toontalk-help-button {
 	cursor: pointer;

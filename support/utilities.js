@@ -1882,5 +1882,4 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
     
 }(window.TOONTALK));
 
-
 window.TOONTALK.UTILITIES.available_types = ["number", "box", "element", "robot", "nest", "sensor", "top-level"];

@@ -93,8 +93,8 @@ window.TOONTALK.GOOGLE_DRIVE =
           $(".toontalk-top-level-backside").each(function (index, element) {
                 var top_level_widget = TT.UTILITIES.widget_from_jquery($(element));
                 var json = TT.UTILITIES.get_json_top_level(top_level_widget);
-                TT.GOOGLE_DRIVE.upload_file("test.json", JSON.stringify(json));
-          });    
+                TT.GOOGLE_DRIVE.upload_file(top_level_widget.get_setting('program_name') + ".json", JSON.stringify(json));
+          });
       },
 
       list_files: function (query, callback) {

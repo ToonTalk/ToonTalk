@@ -979,6 +979,7 @@ window.TOONTALK.widget = (function (TT) {
 
          create_top_level_widget: function () {
             var widget = Object.create(TT.widget);
+            var settings = {};
             widget.get_json = function (json_history) {
                 var backside = this.get_backside(true);
                 var backside_element = backside.get_element();
@@ -1038,6 +1039,18 @@ window.TOONTALK.widget = (function (TT) {
             widget = widget.add_sides_functionality(widget);
             widget = widget.runnable(widget);
             widget = widget.has_parent(widget);
+            widget.get_setting = function (option_name) {
+                if (!settings[option_name]) {
+                    settings[option_name] = TT.DEFAULT_SETTINGS[option_name];     
+                }
+                return settings[option_name];
+            };
+            widget.set_setting = function (option_name, new_value) {
+                settings[option_name] = new_value;
+            };
+            widget.open_settings = function () {
+                TT.SETTINGS.open(widget);
+            };
             widget.get_backside(true).set_visible(true); // top-level backsides are always visible (at least for now)
             if (TT.debugging) {
                 widget.debug_id = TT.UTILITIES.generate_unique_id();
