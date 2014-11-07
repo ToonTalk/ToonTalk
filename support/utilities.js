@@ -252,7 +252,8 @@ window.TOONTALK.UTILITIES =
         $(".toontalk-json").each(
             function (index, element) {
                 var json_string = element.textContent;
-                var json, widget, frontside_element, backside_element, backside, stored_json_string, local_storage_key, message;
+                var json, widget, frontside_element, backside_element, backside,
+                    stored_json_string, local_storage_key, message, toontalk_last_key;
                 if (!json_string) {
                     return;
                 }
@@ -267,6 +268,7 @@ window.TOONTALK.UTILITIES =
                     } else if (widget.is_of_type('top-level')) {
                         top_level_widget_count++;
                         if (!TT.no_local_storage) {
+                            // revisit this - but needed for manual now
                             local_storage_key = TT.UTILITIES.current_URL();
                             if (top_level_widget_count > 1) {
                                 // for backwards compatibility don't add suffix to single top-level-widget pages
@@ -280,10 +282,18 @@ window.TOONTALK.UTILITIES =
                                 }
                             } else {
                                 try {
-                                    stored_json_string = window.localStorage.getItem(local_storage_key);
+                                    toontalk_last_key = window.localStorage.getItem('toontalk-last-key');
+                                    if (toontalk_last_key) {
+                                        stored_json_string = window.localStorage.getItem(toontalk_last_key);
+                                    }
+                                    if (!stored_json_string) {
+                                        // for backwards compatibility
+                                        stored_json_string = window.localStorage.getItem(local_storage_key);
+                                    }
                                 } catch (error) {
                                     message = "Error reading previous state. Error message is " + error;
                                     if (TT.UTILITIES.is_internet_explorer()) {
+                                        // TODO: determine if there still is a problem with IE11 and local storage
                                         console.error(message);
                                     } else {
                                         TT.UTILITIES.display_message();
@@ -294,7 +304,6 @@ window.TOONTALK.UTILITIES =
                                     widget = TT.UTILITIES.create_from_json(json);
                                 }
                             }
-                            widget.local_storage_key = local_storage_key;
                         }
                         backside = widget.get_backside(true);
                         backside_element = backside.get_element();
@@ -348,10 +357,6 @@ window.TOONTALK.UTILITIES =
             TT.QUEUE.run();
             window.addEventListener('beforeunload', function (event) {
                 TT.UTILITIES.backup_all_top_level_widgets(true);
-//                 // following not needed if things are backed up to localStorage
-//                 var message = "Have you saved your creations by dragging them to a program such as WordPad?";
-//                 event.returnValue = message;
-//                 return message;
             });
             TT.UTILITIES.add_test_all_button();
         };
@@ -1594,13 +1599,9 @@ window.TOONTALK.UTILITIES =
         },
 
         backup_all_top_level_widgets: function (immediately) {
-            var top_level_widget, backup_function;
-            if (!TT.UTILITIES.get_current_url_boolean_parameter("autosave", true)) {
-                return;
-            }
             $(".toontalk-top-level-backside").each(function (index, element) {
                 var top_level_widget = TT.UTILITIES.widget_from_jquery($(element));
-                top_level_widget.backup_all(immediately);
+                top_level_widget.save(immediately);
             });
         },
         
@@ -1817,6 +1818,19 @@ window.TOONTALK.UTILITIES =
             } else {
                 setTimeout(delayed, delay);
             }
+        },
+
+        get_all_local_storage_keys: function () {
+            var all_keys_json_string = window.localStorage.getItem('toontalk-all-keys');
+            if (all_keys_json_string) {
+                return JSON.parse(all_keys_json_string);
+            } else {
+                return [];
+            }
+        },
+
+        set_all_local_storage_keys: function (new_value) {
+            window.localStorage.setItem('toontalk-all-keys', JSON.stringify(new_value));   
         },
 
         create_queue: function () {

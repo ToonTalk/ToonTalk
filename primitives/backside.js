@@ -687,6 +687,10 @@ window.TOONTALK.backside =
             return true;
         },
 
+        get_parent: function () {
+            return this.get_parent_of_backside();
+        },
+
         is_of_type: function (type_name) {
             return this.get_widget().is_of_type(type_name);
         }

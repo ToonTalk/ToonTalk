@@ -21,7 +21,7 @@ window.TOONTALK.widget = (function (TT) {
     };
                 
     TT.creators_from_json["top_level"] = function (json) {
-        var widget = TT.widget.create_top_level_widget();
+        var widget = TT.widget.create_top_level_widget(json.settings);
         var $backside_element = $(widget.get_backside(true).get_element());
         $backside_element.addClass("toontalk-top-level-backside");
 //         $backside_element.click(
@@ -528,14 +528,15 @@ window.TOONTALK.widget = (function (TT) {
             if (json_semantic) {
                 if (json_semantic.view) {
                     // already contains both semantic and view
+                    json = json_semantic;
                     json_view = json_semantic.view;
                     json_semantic = json_semantic.semantic;
                 } else {
                     json_view = {};
+                    json = {semantic: json_semantic,
+                            view: json_view};
                 }
-                json = {semantic: json_semantic,
-                        view: json_view,
-                        version: 1};
+                json.version = 1;
                 if (this.get_erased && this.get_erased()) {
                     json_semantic.erased = true;
                 }
@@ -827,6 +828,10 @@ window.TOONTALK.widget = (function (TT) {
             // only the backside of a widget is backside
             return false;
         },
+
+        get_parent: function () {
+            return this.get_parent_of_frontside();
+        },
         
         drag_started: function (json, is_resource) {
             // by default records this if robot is being trained
@@ -966,7 +971,7 @@ window.TOONTALK.widget = (function (TT) {
         },
         
         top_level_widget: function () {
-            var widget;
+            var widget, parent;
             if (this.is_of_type('top-level')) {
                 return this;
             }
@@ -974,19 +979,74 @@ window.TOONTALK.widget = (function (TT) {
             if (widget) {
                 return widget;
             }
+            // TODO: revisit this -- may end up mixing up front and backsides
+            // but only used to find top-level widget if DOM doesn't provide it
+            parent = this.get_parent_of_frontside() || this.get_parent_of_backside();
+            if (parent) {
+                return parent.get_widget().top_level_widget();
+            }
             return this.create_top_level_widget();
-         },
+        },
 
-         create_top_level_widget: function () {
+        backup_all: function (immediately) {
+            var top_level_widget = this.top_level_widget();
+            if (top_level_widget) {
+                top_level_widget.save(immediately);
+            }
+        },
+
+        render: function () {
+            // typically first time it is displayed so no check if visible
+            TT.DISPLAY_UPDATES.pending_update(this);
+        },
+        
+        rerender: function () {
+            // state has changed so needs to be rendered again (if visible)
+            if (this.visible()) {
+                TT.DISPLAY_UPDATES.pending_update(this);
+            }
+        },
+        
+        hide: function () {
+            $(this.get_frontside_element()).hide();
+        },
+        
+        close_button_ok: function (element) {
+            return this.get_type_name() !== "top-level" &&
+                   !$(element).is(".toontalk-top-level-resource") &&
+                   !$(element).closest(".toontalk-conditions-panel").is("*");
+        },
+
+        get_widget: function () {
+            // caller may be asking a parent that could be a backside for its widget
+            return this;
+        },
+
+        add_to_top_level_backside: function (widget, train) {
+            var top_level_widget = this.top_level_widget();
+            var widget_frontside_element = widget.get_frontside_element(true);
+            top_level_widget.add_backside_widget(widget);
+            top_level_widget.get_backside_element().appendChild(widget_frontside_element);
+            widget.render();
+            if (train && TT.robot.in_training) {
+                TT.robot.in_training.dropped_on(widget, top_level_widget);
+            }
+            return widget_frontside_element;
+        },
+
+        create_top_level_widget: function (settings) {
             var widget = Object.create(TT.widget);
-            var settings = {};
+            if (!settings) {
+                settings = {};  
+            }
             widget.get_json = function (json_history) {
                 var backside = this.get_backside(true);
                 var backside_element = backside.get_element();
                 var background_color = document.defaultView.getComputedStyle(backside_element, null).getPropertyValue("background-color");
                 // don't know why the following returns undefined
 //               $backside_element.attr("background-color")};
-                return {semantic: {type: "top_level"},
+                return {semantic: {type: "top_level",
+                                   settings: settings},
                         view:     {background_color: background_color}};
             };
             widget.get_type_name = function () {
@@ -1036,11 +1096,14 @@ window.TOONTALK.widget = (function (TT) {
             widget.get_infinite_stack = function () {
                 return false;
             };
+            widget.top_level_widget = function () {
+                return this;
+            };
             widget = widget.add_sides_functionality(widget);
             widget = widget.runnable(widget);
             widget = widget.has_parent(widget);
             widget.get_setting = function (option_name) {
-                if (!settings[option_name]) {
+                if (typeof settings[option_name] === 'undefined') {
                     settings[option_name] = TT.DEFAULT_SETTINGS[option_name];     
                 }
                 return settings[option_name];
@@ -1051,10 +1114,18 @@ window.TOONTALK.widget = (function (TT) {
             widget.open_settings = function () {
                 TT.SETTINGS.open(widget);
             };
-            widget.save = function () {
-                var json = TT.UTILITIES.get_json_top_level(this);
-                var google_drive_status;
+            widget.save = function (immediately) {
+                var json, google_drive_status; 
+                if (!immediately) {
+                    // delay it so the geometry settles down -- perhaps 0 (i.e. 4ms) is good enough
+                    setTimeout(function () {
+                                   this.save(true);
+                               }.bind(this),
+                               100);
+                    return;
+                }
                 if (this.get_setting('use_google_drive')) {
+                    json = TT.UTILITIES.get_json_top_level(this);
                     google_drive_status = TT.google_drive.get_status();
                     if (google_drive_status === "Ready") {
                         TT.google_drive.upload_file(this.get_setting('program_name') + ".json", JSON.stringify(json));
@@ -1063,84 +1134,42 @@ window.TOONTALK.widget = (function (TT) {
                     }
                 }
                 if (this.get_setting('use_local_storage'))  {
-                        // TODO:
+                    if (!json) {
+                        json = TT.UTILITIES.get_json_top_level(this);
+                    }
+                    this.save_to_local_storage(json);
                 }
             };
+            widget.save_to_local_storage = function (json) {
+                var key = "toontalk-json: " + this.get_setting('program_name');
+                var all_keys, message;
+                try {
+                    window.localStorage.setItem(key, JSON.stringify(json));
+                    window.localStorage.setItem("toontalk-last-key", key);
+                    all_keys = TT.UTILITIES.get_all_local_storage_keys();
+                    if (all_keys.indexOf(key) < 0) {
+                        all_keys.push(key);
+                        TT.UTILITIES.set_all_local_storage_keys(all_keys);   
+                    }
+                } catch (error) {
+                    message = "Failed to save state to local storage since it requires " + JSON.stringify(json).length + " bytes. Error message is " + error;
+                    if (TT.UTILITIES.is_internet_explorer()) {
+                        console.error(message);
+                    } else {
+                        TT.UTILITIES.display_message(message);
+                    }
+                    // following could be displayed in the settings panel
+                    this.last_local_storage_error = message;
+                }
+            }  
             widget.get_backside(true).set_visible(true); // top-level backsides are always visible (at least for now)
             if (TT.debugging) {
                 widget.debug_id = TT.UTILITIES.generate_unique_id();
                 widget.debug_string = "Top-level widget"; 
             }
             return widget;
-        },
+        } // ends create_top_level_widget
 
-        add_to_top_level_backside: function (widget, train) {
-            var top_level_widget = this.top_level_widget();
-            var widget_frontside_element = widget.get_frontside_element(true);
-            top_level_widget.add_backside_widget(widget);
-            top_level_widget.get_backside_element().appendChild(widget_frontside_element);
-            widget.render();
-            if (train && TT.robot.in_training) {
-                TT.robot.in_training.dropped_on(widget, top_level_widget);
-            }
-            return widget_frontside_element;
-        },
-
-        backup_all: function (immediately) {
-            var top_level_widget, backup_function;
-            if (TT.no_local_storage) {
-                return;
-            }
-            top_level_widget = this.top_level_widget();
-            if (top_level_widget && top_level_widget.local_storage_key) {
-                backup_function = function () {
-                    var json = TT.UTILITIES.get_json_top_level(top_level_widget);
-                    var message;
-                    try {
-                        window.localStorage.setItem(top_level_widget.local_storage_key, JSON.stringify(json));
-                    } catch (error) {
-                        message = "Failed to save state to local storage since it requires " + JSON.stringify(json).length + " bytes. Error message is " + error;
-                        if (TT.UTILITIES.is_internet_explorer()) {
-                            console.error(message);
-                        } else {
-                            TT.UTILITIES.display_message(message);
-                        }
-                    }
-                };
-                if (immediately) {
-                    backup_function();
-                }
-                // delay it so the geometry settles down
-                setTimeout(backup_function, 100);
-            }         
-        },
-        
-        render: function () {
-            // typically first time it is displayed so no check if visible
-            TT.DISPLAY_UPDATES.pending_update(this);
-        },
-        
-        rerender: function () {
-            // state has changed so needs to be rendered again (if visible)
-            if (this.visible()) {
-                TT.DISPLAY_UPDATES.pending_update(this);
-            }
-        },
-        
-        hide: function () {
-            $(this.get_frontside_element()).hide();
-        },
-        
-        close_button_ok: function (element) {
-            return this.get_type_name() !== "top-level" &&
-                   !$(element).is(".toontalk-top-level-resource") &&
-                   !$(element).closest(".toontalk-conditions-panel").is("*");
-        },
-
-        get_widget: function () {
-            // caller may be asking a parent that could be a backside for its widget
-            return this;
-        }
     };
 
 }(window.TOONTALK));
