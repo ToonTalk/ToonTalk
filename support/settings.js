@@ -68,7 +68,7 @@ window.TOONTALK.SETTINGS =
           // create a div whose positioning isn't absolute
           // settings_panel needs to be absolute for at least z-index to work properly
           var contents_div = document.createElement('div');
-          var google_status = TT.google_drive.get_status();
+          var google_status = TT.google_drive ? TT.google_drive.get_status() : "Google Drive code not loaded";
           $(settings_panel).addClass("toontalk-settings-panel")
                            .css({width:  $(widget_element).width() +29,
                                  height: $(widget_element).height()+50,
