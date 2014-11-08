@@ -1145,7 +1145,7 @@ window.TOONTALK.widget = (function (TT) {
                 }
             };
             widget.publish = function (callback) {
-                var google_drive_status = TT.google_drive.get_status();;
+                var google_drive_status = TT.google_drive.get_status();
                 var json, json_div, contents, program_name;
                 if (google_drive_status === "Ready") {
                     json = TT.UTILITIES.get_json_top_level(this);
