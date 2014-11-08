@@ -1191,6 +1191,9 @@ window.TOONTALK.widget = (function (TT) {
 
 }(window.TOONTALK));
 
+// somehow <link href="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/css/froala_style.min.css" rel="stylesheet" type="text/css" />\n\
+// is missing
+
 window.TOONTALK.publish_part_1 =
 '<!DOCTYPE html>\n\
 <html>\n\
@@ -1199,7 +1202,6 @@ window.TOONTALK.publish_part_1 =
 <link rel="stylesheet" media="all" href="https://toontalk.github.io/ToonTalk/toontalk.css">\n\
 <link href="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/css/font-awesome.min.css" rel="stylesheet" type="text/css" />\n\
 <link href="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/css/froala_editor.min.css" rel="stylesheet" type="text/css" />\n\
-<link href="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/css/froala_style.min.css" rel="stylesheet" type="text/css" />\n\
 <script src="https://toontalk.github.io/ToonTalk/compile/toontalk.js"></script>\n\
 <script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/froala_editor.min.js"></script>\n\
 <script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/block_styles.min.js"></script>\n\
