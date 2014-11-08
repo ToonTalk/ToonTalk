@@ -8,12 +8,14 @@
 
 // loosely based upon https://developers.google.com/drive/web/quickstart/quickstart-js
 
-    /**
-       * Called when the client library is loaded to start the auth flow.
-    */
-    // perhaps this should be delayed until user requests saving?
-    // made a global function so called by Google API 
+    // Called when the client library is loaded to start the authorization flow.
+    // Is a global function since called by Google API 
 function handle_client_load() {
+    var origin = "https://dl.dropboxusercontent.com";
+    if (window.location.href.indexOf(origin) !== 0) {
+        status = "Only able to connect to " + origin;
+        return;
+    }
     setTimeout(window.TOONTALK.google_drive.check_authorization, 1);
 };
 
@@ -21,7 +23,7 @@ window.TOONTALK.google_drive =
 (function (TT) {
     "use strict";
     var CLIENT_ID = TT.GOOGLE_DRIVE_CLIENT_ID || '1014278465319-fcagdv7f8232nvqevdkh87r4pmu6mvh8.apps.googleusercontent.com'; // dropbox
-    var origin = "https://dl.dropboxusercontent.com";
+    // edit origin above if CLIENT_ID changed
 //  var CLIENT_ID = '829199594800-54bk3k92fdepke86ik366cds9kmo4u0c.apps.googleusercontent.com'; // github.io
     var SCOPES = 'https://www.googleapis.com/auth/drive';
     var toontalk_folder_title = "ToonTalk Programs";
@@ -33,10 +35,6 @@ window.TOONTALK.google_drive =
        * Check if the current user has authorized the application.
        */
       check_authorization: function () {
-          if (window.location.href.indexOf(origin) !== 0) {
-              status = "Only able to connect to " + origin;
-              return;
-          }
           status = "Awaiting authorization";
           gapi.auth.authorize({'client_id': CLIENT_ID, 'scope': SCOPES, 'immediate': true},
                               TT.google_drive.handle_authorization_result);
@@ -87,7 +85,7 @@ window.TOONTALK.google_drive =
       authorize: function (callback) {
           gapi.auth.authorize({'client_id': CLIENT_ID, 'scope': SCOPES, 'immediate': false},
                               function (authorization_result) {
-                                TT.google_drive.handle_authorization_result(authorization_result, callback);
+                                  TT.google_drive.handle_authorization_result(authorization_result, callback);
                               });
       },
 

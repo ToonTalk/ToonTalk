@@ -16,45 +16,47 @@ window.TOONTALK.SETTINGS =
               $(settings_panel).remove();
           };
           var widget_element = widget.get_backside_element();
-          var program_name = TT.UTILITIES.create_text_input(widget.get_setting('program_name'), 
-                                                            "toontalk-program-name-input", 
-                                                            "Current program name:", 
-                                                            "Edit this to change the name of your program", 
-                                                            "docs/manual/settings.html");
-          var close_button  = TT.UTILITIES.create_close_button(close_handler, "Click to close the settings panel.");
-          var heading       = TT.UTILITIES.create_text_element("Change how your programs are saved:");
-          var google_drive  = TT.UTILITIES.create_check_box(widget.get_setting('use_google_drive'), 
-                                                            "toontalk-save-setting",
-                                                            "Save to my Google Drive",
-                                                            "Check this if you want your programs saved to a 'ToonTalk Programs' folder in your Google Drive.");
-          var local_storage = TT.UTILITIES.create_check_box(widget.get_setting('use_local_storage'), 
-                                                            "toontalk-save-setting",
-                                                            "Save to this browser's local storage",
-                                                            "Check this if you want your programs saved in this browser's local storage.");
-          var auto_save     = TT.UTILITIES.create_check_box(widget.get_setting('auto_save'), 
-                                                            "toontalk-save-setting",
-                                                            "Save automatically",
-                                                            "Check this if you want your programs saved whenever you make changes to your program.");
-          var save_now      = TT.UTILITIES.create_button("Save now",
-                                                         "toontalk-save-button", 
-                                                         "Click to save your program now.", 
-                                                         function () {
-                                                             widget.save();
-                                                         });
-          var authorize     = TT.UTILITIES.create_button("Login to Google",
-                                                         "toontalk-google-login-button", 
-                                                         "Click to log in to Google to authorize use of your Google Drive.", 
-                                                         function () {
-                                                             TT.google_drive.authorize(function () {
-                                                                 $(authorize).remove();
-                                                             });
-                                                         });
-          var publish       = TT.UTILITIES.create_button("Publish",
-                                                         "toontalk-publish-button", 
-                                                         "Click to publish your program by generating a Google Drive URL.", 
-                                                         function () {
-                                                             widget.publish(display_published);
-                                                         });
+          var program_name   = TT.UTILITIES.create_text_input(widget.get_setting('program_name'), 
+                                                             "toontalk-program-name-input", 
+                                                             "Current program name:", 
+                                                             "Edit this to change the name of your program", 
+                                                             "docs/manual/settings.html");
+          var close_button   = TT.UTILITIES.create_close_button(close_handler, "Click to close the settings panel.");
+          var heading        = TT.UTILITIES.create_text_element("How should your program be saved?");
+          var google_drive   = TT.UTILITIES.create_check_box(widget.get_setting('auto_save_to_google_drive'), 
+                                                             "toontalk-save-setting",
+                                                             "Save automatically to my Google Drive",
+                                                             "Check this if you want your programs automatically saved to a 'ToonTalk Programs' folder in your Google Drive.");
+          var local_storage  = TT.UTILITIES.create_check_box(widget.get_setting('auto_save_to_local_storage'), 
+                                                             "toontalk-save-setting",
+                                                             "Save automatically to this browser's local storage",
+                                                             "Check this if you want your programs automatically saved in this browser's local storage.");
+         var save_now_google = TT.UTILITIES.create_button("Save to Google Drive now",
+                                                          "toontalk-save-button", 
+                                                          "Click to save your program now to your Google Drive account.", 
+                                                          function () {
+                                                              widget.save(true, {google_drive: true});
+                                                          });
+          var save_now_local = TT.UTILITIES.create_button("Save to browser's storage now",
+                                                          "toontalk-save-button", 
+                                                          "Click to save your program now to this browser's local storage.", 
+                                                          function () {
+                                                              widget.save(true, {local_storage: true});
+                                                          });                                                          
+          var authorize      = TT.UTILITIES.create_button("Login to Google",
+                                                          "toontalk-google-login-button", 
+                                                          "Click to log in to Google to authorize use of your Google Drive.", 
+                                                          function () {
+                                                              TT.google_drive.authorize(function () {
+                                                                  $(authorize).remove();
+                                                              });
+                                                          });
+          var publish        = TT.UTILITIES.create_button("Publish",
+                                                          "toontalk-publish-button", 
+                                                          "Click to publish your program by generating a Google Drive URL.", 
+                                                          function () {
+                                                              widget.publish(display_published);
+                                                          });
           var display_published = function (google_file) {
               var link_to_publication = document.createElement('span');
               var url = "https://googledrive.com/host/" + google_file.id + "/";
@@ -64,6 +66,7 @@ window.TOONTALK.SETTINGS =
           // create a div whose positioning isn't absolute
           // settings_panel needs to be absolute for at least z-index to work properly
           var contents_div = document.createElement('div');
+          var google_status = TT.google_drive.get_status();
           $(settings_panel).addClass("toontalk-settings-panel")
                            .css({width:  $(widget_element).width() +29,
                                  height: $(widget_element).height()+50,
@@ -73,25 +76,35 @@ window.TOONTALK.SETTINGS =
           settings_panel.appendChild(close_button);
           program_name.button .addEventListener('change', 
                                                 function () {
-                                                     widget.set_setting('program_name',     program_name.button.value.trim());
+                                                     widget.set_setting('program_name',              program_name.button.value.trim());
                                                 });
           google_drive.button .addEventListener('click', 
                                                 function (event) {
-                                                    widget.set_setting('use_google_drive',  google_drive.button.checked);
+                                                    widget.set_setting('auto_save_to_google_drive',  google_drive.button.checked);
+                                                    if (google_drive.button.checked) {
+                                                        $(save_now_google).hide();
+                                                    } else {
+                                                        $(save_now_google).show();
+                                                    }
                                                 });
           local_storage.button.addEventListener('click', 
                                                 function (event) {
-                                                    widget.set_setting('use_local_storage', local_storage.button.checked);
-                                                });
-          auto_save.button    .addEventListener('click', 
-                                                function (event) {
-                                                    widget.set_setting('auto_save',         auto_save.button.checked);
-                                                    if (auto_save.button.checked) {
-                                                        $(save_now).hide();
+                                                    widget.set_setting('auto_save_to_local_storage', local_storage.button.checked);
+                                                    if (local_storage.button.checked) {
+                                                        $(save_now_local).hide();
                                                     } else {
-                                                        $(save_now).show();
+                                                        $(save_now_local).show();
                                                     }
                                                 });
+//           auto_save.button    .addEventListener('click', 
+//                                                 function (event) {
+//                                                     widget.set_setting('auto_save',         auto_save.button.checked);
+//                                                     if (auto_save.button.checked) {
+//                                                         $(save_now).hide();
+//                                                     } else {
+//                                                         $(save_now).show();
+//                                                     }
+//                                                 });
           settings_panel.appendChild(contents_div);
           $(heading).css({"font-weight": 'bold',
                           "font-size": 24,
@@ -100,17 +113,32 @@ window.TOONTALK.SETTINGS =
           contents_div.appendChild(program_name.container);
           contents_div.appendChild(google_drive.container);
           contents_div.appendChild(local_storage.container);
-          auto_save.container.appendChild(TT.UTILITIES.create_space());
-          auto_save.container.appendChild(save_now);
-          contents_div.appendChild(auto_save.container);
-          if (widget.get_setting('auto_save')) {
-              $(save_now).hide();
+          google_drive.container.appendChild(TT.UTILITIES.create_space());
+          google_drive.container.appendChild(save_now_google);
+          if (widget.get_setting('auto_save_to_google_drive')) {
+              $(save_now_google).hide();
           }
-          if (widget.get_setting('use_google_drive') && TT.google_drive.get_status() === 'Need to authorize') {
+          local_storage.container.appendChild(TT.UTILITIES.create_space());
+          local_storage.container.appendChild(save_now_local);
+          if (widget.get_setting('auto_save_to_local_storage')) {
+              $(save_now_local).hide();
+          }
+          if (google_status === 'Need to authorize') {
               google_drive.container.appendChild(TT.UTILITIES.create_space());
               google_drive.container.appendChild(authorize);
+          } else if (google_status !== 'Authorized' && google_status !== 'Ready') {
+              // delayed because JQuery otherwise complains that the buttons haven't been initialsed
+              setTimeout(function () {
+                             google_drive.button.disabled = true; // is a checkbox
+                             $(publish)            .button("option", "disabled", true);
+                             $(save_now_google)    .button("option", "disabled", true);
+                             google_drive.container.title = "Inactived because attempt to connect to Google Drive returned: " + google_status;
+                             publish.title                = google_drive.container.title;
+                             save_now_google.title        = google_drive.container.title;          
+                         },
+                         1);
           }
-          contents_div.appendChild(publish);
+          $(program_name.container).find("tr").append(TT.UTILITIES.create_table_entry(publish)); 
           widget_element.appendChild(settings_panel);                  
       }
     };
@@ -119,7 +147,6 @@ window.TOONTALK.SETTINGS =
 
 window.TOONTALK.DEFAULT_SETTINGS = {
     program_name:      "My first program",
-    use_google_drive:  true,
-    use_local_storage: true,
-    auto_save:         true
+    auto_save_to_google_drive:  true,
+    auto_save_to_local_storage: true
 };

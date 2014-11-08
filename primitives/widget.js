@@ -1114,26 +1114,30 @@ window.TOONTALK.widget = (function (TT) {
             widget.open_settings = function () {
                 TT.SETTINGS.open(widget);
             };
-            widget.save = function (immediately) {
-                var json, google_drive_status; 
+            widget.save = function (immediately, parameters) {
+                var json, google_drive_status;
+                if (!parameters) {
+                    parameters = {google_drive:  this.get_setting('auto_save_to_google_drive'),
+                                  local_storage: this.get_setting('auto_save_to_local_storage')};
+                }
                 if (!immediately) {
                     // delay it so the geometry settles down -- perhaps 0 (i.e. 4ms) is good enough
                     setTimeout(function () {
-                                   this.save(true);
+                                   this.save(true, parameters);
                                }.bind(this),
                                100);
                     return;
                 }
-                if (this.get_setting('use_google_drive')) {
+                if (parameters.google_drive) {
                     json = TT.UTILITIES.get_json_top_level(this);
                     google_drive_status = TT.google_drive.get_status();
                     if (google_drive_status === "Ready") {
                         TT.google_drive.upload_file(this.get_setting('program_name') + ".json", JSON.stringify(json));
-                    } else {
+                    } else if (google_drive_status.indexOf("Only able to connect to ") !== 0) {
                         console.log("Unable to save to Google Drive because: " + google_drive_status);
                     }
                 }
-                if (this.get_setting('use_local_storage'))  {
+                if (parameters.local_storage) { 
                     if (!json) {
                         json = TT.UTILITIES.get_json_top_level(this);
                     }

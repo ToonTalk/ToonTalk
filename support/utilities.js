@@ -1536,6 +1536,12 @@ window.TOONTALK.UTILITIES =
             table_element.appendChild(row);
             return row;
         },
+
+        create_table_entry: function (element) {
+            var td = document.createElement('td');
+            td.appendChild(element);
+            return td;
+        },
         
         selected_radio_button: function () {
             var i, selected;
