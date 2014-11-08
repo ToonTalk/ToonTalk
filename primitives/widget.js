@@ -1132,12 +1132,12 @@ window.TOONTALK.widget = (function (TT) {
                     json = TT.UTILITIES.get_json_top_level(this);
                     google_drive_status = TT.google_drive.get_status();
                     if (google_drive_status === "Ready") {
-                        TT.google_drive.upload_file(this.get_setting('program_name') + ".json", JSON.stringify(json));
+                        TT.google_drive.upload_file(this.get_setting('program_name'), "json", JSON.stringify(json));
                     } else if (google_drive_status.indexOf("Only able to connect to ") !== 0) {
                         console.log("Unable to save to Google Drive because: " + google_drive_status);
                     }
                 }
-                if (parameters.local_storage) { 
+                if (parameters.local_storage) {
                     if (!json) {
                         json = TT.UTILITIES.get_json_top_level(this);
                     }
@@ -1151,7 +1151,7 @@ window.TOONTALK.widget = (function (TT) {
                     json = TT.UTILITIES.get_json_top_level(this);
                     json_div = TT.UTILITIES.toontalk_json_div(json, this);
                     contents = TT.publish_part_1 + json_div + TT.publish_part_2;
-                    TT.google_drive.upload_file(this.get_setting('program_name') + ".html", contents, callback);
+                    TT.google_drive.upload_file(this.get_setting('program_name'), "html", contents, callback);
                 } else {
                     console.log("Unable to publish to Google Drive because: " + google_drive_status);
                 }

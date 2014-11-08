@@ -533,6 +533,8 @@ body {
 	opacity: .97;
 	border-radius: 10px;
 	border: 2px solid navy;
+/* 	Need enough width for interface and links to published pages */
+	min-width: 800px;
 }
 .toontalk-help-button {
 	cursor: pointer;

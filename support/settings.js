@@ -61,7 +61,8 @@ window.TOONTALK.SETTINGS =
               var link_to_publication = document.createElement('span');
               var url = "https://googledrive.com/host/" + google_file.id + "/";
               link_to_publication.innerHTML = "Published: <a href='" + url + "' target='_blank'>" + widget.get_setting('program_name') + "</a>";
-              contents_div.replaceChild(link_to_publication, publish);
+              $(program_name.container).find("tr").append(TT.UTILITIES.create_table_entry(link_to_publication));
+//               contents_div.replaceChild(link_to_publication, publish);
           };
           // create a div whose positioning isn't absolute
           // settings_panel needs to be absolute for at least z-index to work properly
