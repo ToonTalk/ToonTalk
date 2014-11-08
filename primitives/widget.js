@@ -1117,7 +1117,7 @@ window.TOONTALK.widget = (function (TT) {
             widget.save = function (immediately, parameters) {
                 var json, google_drive_status;
                 if (!parameters) {
-                    parameters = {google_drive:  this.get_setting('auto_save_to_google_drive'),
+                    parameters = {google_drive:  this.get_setting('auto_save_to_google_drive') && TT.google_drive,
                                   local_storage: this.get_setting('auto_save_to_local_storage')};
                 }
                 if (!immediately) {

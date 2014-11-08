@@ -60,9 +60,10 @@ window.TOONTALK.SETTINGS =
           var display_published = function (google_file) {
               var link_to_publication = document.createElement('span');
               var url = "https://googledrive.com/host/" + google_file.id + "/";
+              // note can replace the link with code that calls window.open in order to get a reference to that window for postMessage
+              // and can check the current contents using something like $($('.toontalk-edit')[1]).editable('getHTML', false, true) 
               link_to_publication.innerHTML = "Published: <a href='" + url + "' target='_blank'>" + widget.get_setting('program_name') + "</a>";
               $(program_name.container).find("tr").append(TT.UTILITIES.create_table_entry(link_to_publication));
-//               contents_div.replaceChild(link_to_publication, publish);
           };
           // create a div whose positioning isn't absolute
           // settings_panel needs to be absolute for at least z-index to work properly
