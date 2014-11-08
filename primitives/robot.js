@@ -136,8 +136,9 @@ window.TOONTALK.robot = (function (TT) {
         };
         new_robot.walk_children = function (child_action) {
             if (next_robot) {
-                if (!child_action(next_robot));
-                return;
+                if (!child_action(next_robot)) {
+                    return;
+                }
             }
             if (this.get_frontside_conditions()) {
                 if (!child_action(this.get_frontside_conditions())) {

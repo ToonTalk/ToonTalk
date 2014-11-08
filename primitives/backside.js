@@ -19,7 +19,7 @@ window.TOONTALK.backside =
             var green_flag_element = document.createElement("div");
             var stop_sign_element  = document.createElement("div");
             var help_URL = widget.get_help_URL && widget.get_help_URL();
-            var visible, original_width, original_height, width_at_resize_start, height_at_resize_start, 
+            var settings_button, visible, original_width, original_height, width_at_resize_start, height_at_resize_start, 
                 close_button, backside_widgets, help_button, help_frame, close_help_button;
             var update_flag_and_stop_sign_classes = function (running) {
                     if (running) {
@@ -37,7 +37,7 @@ window.TOONTALK.backside =
             var update_flag_and_sign_position = function () {
                     var backside_width  = $backside_element.width();
                     var backside_height = $backside_element.height();
-                    var sign_width, close_button_width, green_flag_width;
+                    var sign_width, close_button_width, green_flag_width, help_button_width;
                     if (backside_width === 0) {
                         // backside_element not yet added to the DOM
                         // should really listen to an event that it has been
@@ -52,9 +52,13 @@ window.TOONTALK.backside =
                         }
                         $(stop_sign_element) .css({right: close_button_width});
                         $(green_flag_element).css({right: close_button_width+sign_width+6}); // smaller gap needed
-                        if (help_button) {
-                            green_flag_width = $(green_flag_element).width();
+                        green_flag_width = $(green_flag_element).width();
+                        if (help_button) {          
                             $(help_button).css({right: close_button_width+sign_width+green_flag_width+12});
+                        }
+                        if (settings_button) {
+                            help_button_width = $(help_button).width() || 0;
+                            $(settings_button).css({right: close_button_width+sign_width+green_flag_width+help_button_width+12});
                         }
                     }
             };
@@ -74,7 +78,7 @@ window.TOONTALK.backside =
                 }
                 close_title = "Click to hide this back side of " + close_title + ".";
                 close_button = TT.UTILITIES.create_close_button(close_handler, close_title);
-                backside_element.appendChild(close_button);                
+                backside_element.appendChild(close_button);        
             }
             $(green_flag_element).addClass("toontalk-green-flag toontalk-green-flag-inactive")
                                  .click(function (event) {
@@ -142,6 +146,15 @@ window.TOONTALK.backside =
             };        
             if (description_label) {
                 backside_element.appendChild(description_label); 
+            }
+            if (widget.is_of_type('top-level')) {
+                settings_button = document.createElement("div");
+                $(settings_button).addClass("toontalk-settings-button")
+                                  .click(function (event) {
+                                          widget.open_settings();
+                                  });
+                settings_button.title = "Click to change settings or open a different program.";   
+                backside_element.appendChild(settings_button);         
             }
             // wait for DOM to settle down
             TT.UTILITIES.set_timeout(update_flag_and_sign_position);
@@ -430,7 +443,7 @@ window.TOONTALK.backside =
                                                           "Copy when dragged.",
                                                           "Check this if you want the " + widget.get_type_name()
                                                           + " to be copied instead of moved.");
-            $(check_box.button).click(function (event)  {
+            $(check_box.button).click(function (event) {
                 var infinite_stack = check_box.button.checked;
                 var action_string;
                 widget.set_infinite_stack(infinite_stack);
@@ -672,6 +685,10 @@ window.TOONTALK.backside =
 
         is_backside: function () {
             return true;
+        },
+
+        get_parent: function () {
+            return this.get_parent_of_backside();
         },
 
         is_of_type: function (type_name) {

@@ -52,13 +52,17 @@ window.TOONTALK.tool = (function (TT) {
 
             var mouse_up = function (event) {
                 var widget_under_tool = find_widget_under_tool(event);
+                var top_level_widget;
                 event.preventDefault();
                 if (highlighted_element) { // remove old highlighting
                     TT.UTILITIES.remove_highlight();
                 }
                 if (widget_under_tool && widget_under_tool.add_copy_to_container) {
+                    // need to determine the top_level_widget first since if tool is vacuum
+                    // it will be removed
+                    top_level_widget = widget_under_tool.top_level_widget();
                     tool.apply_tool(widget_under_tool, event);
-                    widget_under_tool.backup_all();
+                    top_level_widget.backup_all();
                 }
                 if (!widget_under_tool && tool.nothing_under_tool) {
                     tool.nothing_under_tool();

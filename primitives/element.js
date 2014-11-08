@@ -497,6 +497,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         } else {
             this.get_original_copies()[attribute_name] = [attribute_widget];
         }
+        // another way to implement this would be for the recursive call to add an extra parameter: ignore_copies
         attribute_widget.set_value = function (new_value) {
             var copies = this_element_widget.get_original_copies()[attribute_name];
             var return_value;

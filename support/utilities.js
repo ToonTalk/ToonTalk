@@ -17,46 +17,6 @@ window.TOONTALK.UTILITIES =
     var div_hidden = "<div style='display:none;'>"; // don't use a class since CSS might not be loaded
     var div_close  = "</div>";
     var backside_widgets_left;
-    var toontalk_json_div = function (json, widget) {
-        // convenience for dragging into documents (e.g. Word or WordPad -- not sure what else)
-        var is_backside = json.view.backside;
-        var backside_widgets = widget.get_backside_widgets();
-        var type_description = widget.get_type_name();
-        if (type_description === 'top-level') {
-            if (is_backside) {
-                type_description = "a work area containing ";
-                if (backside_widgets.length === 0) {
-                    type_description = "an empty work area";
-                } else {
-                    if (backside_widgets.length === 1) {
-                        type_description += "one thing: ";
-                    } else {
-                        type_description += backside_widgets.length + " things: ";
-                    }
-                    backside_widgets_left = backside_widgets.length;
-                    backside_widgets.forEach(function (backside_widget) {
-                        backside_widgets_left--;
-                        type_description += TT.UTILITIES.add_a_or_an(backside_widget.get_type_name());
-                        if (backside_widgets_left === 1) {
-                            type_description += ", and ";
-                        } else if (backside_widgets_left > 1) {
-                            type_description += ", ";
-                        }
-                    });
-                }
-            } else {
-                type_description = "a top-level widget";
-            }
-        } else {
-            type_description = TT.UTILITIES.add_a_or_an(type_description);
-            if (is_backside) {
-                type_description = "the back of " + type_description;
-            }
-        }
-        return div_json + "\nThis will be replaced by " + type_description + ".\n" +
-                          div_hidden + JSON.stringify(json, null, '  ') + div_close +
-                          div_close;
-    };
     var extract_json_from_div_string = function (div_string) {
         // expecting div_string to begin with div_open and end with div_close
         // but users may be dragging something different
@@ -252,7 +212,8 @@ window.TOONTALK.UTILITIES =
         $(".toontalk-json").each(
             function (index, element) {
                 var json_string = element.textContent;
-                var json, widget, frontside_element, backside_element, backside, stored_json_string, local_storage_key, message;
+                var json, widget, frontside_element, backside_element, backside,
+                    stored_json_string, local_storage_key, message, toontalk_last_key;
                 if (!json_string) {
                     return;
                 }
@@ -267,6 +228,7 @@ window.TOONTALK.UTILITIES =
                     } else if (widget.is_of_type('top-level')) {
                         top_level_widget_count++;
                         if (!TT.no_local_storage) {
+                            // revisit this - but needed for manual now
                             local_storage_key = TT.UTILITIES.current_URL();
                             if (top_level_widget_count > 1) {
                                 // for backwards compatibility don't add suffix to single top-level-widget pages
@@ -280,10 +242,18 @@ window.TOONTALK.UTILITIES =
                                 }
                             } else {
                                 try {
-                                    stored_json_string = window.localStorage.getItem(local_storage_key);
+                                    toontalk_last_key = window.localStorage.getItem('toontalk-last-key');
+                                    if (toontalk_last_key) {
+                                        stored_json_string = window.localStorage.getItem(toontalk_last_key);
+                                    }
+                                    if (!stored_json_string) {
+                                        // for backwards compatibility
+                                        stored_json_string = window.localStorage.getItem(local_storage_key);
+                                    }
                                 } catch (error) {
                                     message = "Error reading previous state. Error message is " + error;
                                     if (TT.UTILITIES.is_internet_explorer()) {
+                                        // TODO: determine if there still is a problem with IE11 and local storage
                                         console.error(message);
                                     } else {
                                         TT.UTILITIES.display_message();
@@ -294,7 +264,6 @@ window.TOONTALK.UTILITIES =
                                     widget = TT.UTILITIES.create_from_json(json);
                                 }
                             }
-                            widget.local_storage_key = local_storage_key;
                         }
                         backside = widget.get_backside(true);
                         backside_element = backside.get_element();
@@ -348,10 +317,6 @@ window.TOONTALK.UTILITIES =
             TT.QUEUE.run();
             window.addEventListener('beforeunload', function (event) {
                 TT.UTILITIES.backup_all_top_level_widgets(true);
-//                 // following not needed if things are backed up to localStorage
-//                 var message = "Have you saved your creations by dragging them to a program such as WordPad?";
-//                 event.returnValue = message;
-//                 return message;
             });
             TT.UTILITIES.add_test_all_button();
         };
@@ -687,6 +652,48 @@ window.TOONTALK.UTILITIES =
             array_of_widgets.splice(insertion_index, 0, widget);
             return insertion_index;
         },
+
+        toontalk_json_div: function (json, widget) {
+            // convenience for dragging into documents (e.g. Word or WordPad -- not sure what else)
+            // also for publishing to the cloud
+            var is_backside = json.view.backside;
+            var backside_widgets = widget.get_backside_widgets();
+            var type_description = widget.get_type_name();
+            if (type_description === 'top-level') {
+                if (is_backside) {
+                    type_description = "a work area containing ";
+                    if (backside_widgets.length === 0) {
+                        type_description = "an empty work area";
+                    } else {
+                        if (backside_widgets.length === 1) {
+                            type_description += "one thing: ";
+                        } else {
+                            type_description += backside_widgets.length + " things: ";
+                        }
+                        backside_widgets_left = backside_widgets.length;
+                        backside_widgets.forEach(function (backside_widget) {
+                            backside_widgets_left--;
+                            type_description += TT.UTILITIES.add_a_or_an(backside_widget.get_type_name());
+                            if (backside_widgets_left === 1) {
+                                type_description += ", and ";
+                            } else if (backside_widgets_left > 1) {
+                                type_description += ", ";
+                            }
+                        });
+                    }
+                } else {
+                    type_description = "a top-level widget";
+                }
+            } else {
+                type_description = TT.UTILITIES.add_a_or_an(type_description);
+                if (is_backside) {
+                    type_description = "the back of " + type_description;
+                }
+            }
+            return div_json + "\nThis will be replaced by " + type_description + ".\n" +
+                              div_hidden + JSON.stringify(json, null, '  ') + div_close +
+                              div_close;
+    },
         
 //         tree_replace_all: function (object, replace, replacement) {
 //             // returns object with all occurences of replace replaced with replacement
@@ -849,7 +856,7 @@ window.TOONTALK.UTILITIES =
                         }
                         dragee.data("json", json_object);
                         // use two spaces to indent each level
-                        json_div = toontalk_json_div(json_object, widget);
+                        json_div = TT.UTILITIES.toontalk_json_div(json_object, widget);
                         // text is good for dragging to text editors
                         event.dataTransfer.setData("text", json_div);
                         // text/html should work when dragging to a rich text editor
@@ -1334,6 +1341,14 @@ window.TOONTALK.UTILITIES =
             z_index++;
             return z_index;
         },
+
+        create_button: function (label, class_name, title, click_handler) {
+            var $button = $("<button>" + label + "</button>").button();
+            $button.addClass(class_name)
+                   .click(click_handler)
+                   .attr("title", title);
+            return $button.get(0);
+        },
                 
         create_close_button: function (handler, title) {
             var close_button = document.createElement("div");
@@ -1374,6 +1389,13 @@ window.TOONTALK.UTILITIES =
             div.textContent = text;
             $(div).addClass('ui-widget');
             return div;
+        },
+
+        create_space: function () {
+           var span = document.createElement("span");
+           span.innerHTML = '&nbsp;';
+           $(span).addClass('ui-widget');
+           return span;    
         },
         
         create_anchor_element: function (html, url) {
@@ -1514,6 +1536,12 @@ window.TOONTALK.UTILITIES =
             table_element.appendChild(row);
             return row;
         },
+
+        create_table_entry: function (element) {
+            var td = document.createElement('td');
+            td.appendChild(element);
+            return td;
+        },
         
         selected_radio_button: function () {
             var i, selected;
@@ -1579,13 +1607,9 @@ window.TOONTALK.UTILITIES =
         },
 
         backup_all_top_level_widgets: function (immediately) {
-            var top_level_widget, backup_function;
-            if (!TT.UTILITIES.get_current_url_boolean_parameter("autosave", true)) {
-                return;
-            }
             $(".toontalk-top-level-backside").each(function (index, element) {
                 var top_level_widget = TT.UTILITIES.widget_from_jquery($(element));
-                top_level_widget.backup_all(immediately);
+                top_level_widget.save(immediately);
             });
         },
         
@@ -1804,6 +1828,19 @@ window.TOONTALK.UTILITIES =
             }
         },
 
+        get_all_local_storage_keys: function () {
+            var all_keys_json_string = window.localStorage.getItem('toontalk-all-keys');
+            if (all_keys_json_string) {
+                return JSON.parse(all_keys_json_string);
+            } else {
+                return [];
+            }
+        },
+
+        set_all_local_storage_keys: function (new_value) {
+            window.localStorage.setItem('toontalk-all-keys', JSON.stringify(new_value));   
+        },
+
         create_queue: function () {
 /*  Following based upon 
 
@@ -1881,6 +1918,5 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
     };
     
 }(window.TOONTALK));
-
 
 window.TOONTALK.UTILITIES.available_types = ["number", "box", "element", "robot", "nest", "sensor", "top-level"];

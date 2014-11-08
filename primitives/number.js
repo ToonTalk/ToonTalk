@@ -200,7 +200,8 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
                 return this;
             };
         // sub classes can call set_value_from_sub_classes from within their set_value without recurring 
-        // since this closes over value calling super by storing and invoking this.set_value doesn't work well
+        // since this closes over value calling super by storing and invoking this.set_value doesn't work 
+        // if as in attribute_object.set_value it needs to set_value of its copies (without each of them doing the same)
         new_number.set_value_from_sub_classes = new_number.set_value;
         new_number.fire_value_change_listeners = function (old_value, new_value) {
             var listeners = this.get_listeners('value_changed');
