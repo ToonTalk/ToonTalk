@@ -1196,15 +1196,28 @@ window.TOONTALK.publish_part_1 =
 <head>\n\
 <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/sunny/jquery-ui.css" />\n\
 <link rel="stylesheet" media="all" href="https://toontalk.github.io/ToonTalk/toontalk.css">\n\
+<link href="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/css/font-awesome.min.css" rel="stylesheet" type="text/css" />\n\
+<link href="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/css/froala_editor.min.css" rel="stylesheet" type="text/css" />\n\
+<link href="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/css/froala_style.min.css" rel="stylesheet" type="text/css" />\n\
 <script src="https://toontalk.github.io/ToonTalk/compile/toontalk.js"></script>\n\
+<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/froala_editor.min.js"></script>\n\
 <title>ToonTalk Reborn Save Page</title>\n\
 <link rel="shortcut icon" href="favicon.ico" />\n\
 </head>\n\
 <body>\n\
-<p>\n\
-Edit this.\n\
-</p>\n\
+<form>\n\
+<textarea class="toontalk-edit" name="content">Edit this.</textarea>\n\
+</form>\n\
 ';
 window.TOONTALK.publish_part_2 =
-'</body>\n\
+'<form>\n\
+<textarea class="toontalk-edit" name="content">And edit this.</textarea>\n\
+</form>\n\
+<script>\n\
+      $(function() {\n\
+          $(".toontalk-edit").editable({inlineMode: true})\n\
+      });\n\
+  </script>\n\
+</body>\n\
 </html>';
+
