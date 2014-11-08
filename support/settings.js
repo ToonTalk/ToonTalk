@@ -146,7 +146,7 @@ window.TOONTALK.SETTINGS =
 }(window.TOONTALK));
 
 window.TOONTALK.DEFAULT_SETTINGS = {
-    program_name:      "My first program",
+    program_name:               "My first program",
     auto_save_to_google_drive:  true,
     auto_save_to_local_storage: true
 };

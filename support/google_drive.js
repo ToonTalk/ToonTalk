@@ -11,25 +11,30 @@
     // Called when the client library is loaded to start the authorization flow.
     // Is a global function since called by Google API 
 function handle_client_load() {
-    var origin = "https://dl.dropboxusercontent.com";
-    if (window.location.href.indexOf(origin) !== 0) {
-        status = "Only able to connect to " + origin;
-        return;
-    }
-    setTimeout(window.TOONTALK.google_drive.check_authorization, 1);
+    "use strict";
+    window.TOONTALK.google_drive.handle_client_load();
 };
 
 window.TOONTALK.google_drive = 
 (function (TT) {
     "use strict";
     var CLIENT_ID = TT.GOOGLE_DRIVE_CLIENT_ID || '1014278465319-fcagdv7f8232nvqevdkh87r4pmu6mvh8.apps.googleusercontent.com'; // dropbox
+    var origin = "https://dl.dropboxusercontent.com";
     // edit origin above if CLIENT_ID changed
 //  var CLIENT_ID = '829199594800-54bk3k92fdepke86ik366cds9kmo4u0c.apps.googleusercontent.com'; // github.io
     var SCOPES = 'https://www.googleapis.com/auth/drive';
-    var toontalk_folder_title = "ToonTalk Programs";
+    var toontalk_programs_folder_title = "ToonTalk Programs";
+    var toontalk_pages_folder_title    = "ToonTalk Pages";
     var status = "Need to authorize";
-    var folder_id;
+    var programs_folder_id, pages_folder_id;
     return {
+        handle_client_load: function () {
+            if (window.location.href.indexOf(origin) !== 0) {
+                status = "Only able to connect to " + origin;
+                return;
+            }
+            setTimeout(window.TOONTALK.google_drive.check_authorization, 1);
+        },
 
        /**
        * Check if the current user has authorized the application.
@@ -52,29 +57,29 @@ window.TOONTALK.google_drive =
            if (callback) {
                callback();
            }
-           var folder_id_callback = function (response) {
+           var programs_folder_id_callback = function (response) {
                var folder_creation_callback = function (response) {
                    if (response && response.id) {
-                       folder_id = response.id;
+                       programs_folder_id = response.id;
                        status = "Ready";
                    } else {
-                       console.error("Failure to create folder '" + toontalk_folder_title + "'");
+                       console.error("Failure to create folder '" + toontalk_programs_folder_title + "'");
                    }
                }
-               folder_id = response && response.items && response.items.length > 0 && response.items[0].id;
-               if (folder_id) {
+               programs_folder_id = response && response.items && response.items.length > 0 && response.items[0].id;
+               if (programs_folder_id) {
                    status = "Ready";
                } else {
                    // create the folder
                    gapi.client.load('drive', 'v2', function() {
-                       TT.google_drive.insert_or_update_file(toontalk_folder_title, undefined, undefined, folder_creation_callback, true);
+                       TT.google_drive.insert_or_update_file(toontalk_programs_folder_title, undefined, undefined, folder_creation_callback, true);
                    });
                }
            }
-           if (folder_id) {
+           if (programs_folder_id) {
                status = "Ready";
            } else {
-               TT.google_drive.get_toontalk_folder_id(folder_id_callback);
+               TT.google_drive.get_folder_id(toontalk_programs_folder_title, programs_folder_id_callback);
            }
         } else {
            // No access token could be retrieved, show the button to start the authorization flow.
@@ -89,6 +94,32 @@ window.TOONTALK.google_drive =
                               });
       },
 
+      createPublicFolder: function (folder_name) {
+          // based on https://developers.google.com/drive/web/publish-site
+          var body = {
+            'title': folder_name,
+            'mimeType': "application/vnd.google-apps.folder"
+          };
+
+          var request = gapi.client.drive.files.insert({
+            'resource': body
+          });
+
+          request.execute(function(resp) {
+            console.log('Folder ID: ' + resp.id);
+            var permissionBody = {
+              'value': '',
+              'type': 'anyone',
+              'role': 'reader'
+            };
+            var permissionRequest = gapi.client.drive.permissions.insert({
+              'fileId': resp.id,
+              'resource': permissionBody
+            });
+            permissionRequest.execute(function(resp) { });
+          });
+      },
+
       get_status: function () {
           return status;
       },
@@ -100,13 +131,13 @@ window.TOONTALK.google_drive =
           request.execute(callback);
       },
 
-      get_toontalk_folder_id: function (callback) {
-          var query = "mimeType = 'application/vnd.google-apps.folder' and title ='" + toontalk_folder_title + "' and trashed = false";
+      get_folder_id: function (folder_name, callback) {
+          var query = "mimeType = 'application/vnd.google-apps.folder' and title ='" + folder_name + "' and trashed = false";
           TT.google_drive.list_files({q: query}, callback);
       },
 
-      get_toontalk_files: function (title, callback) {
-          // gets all in toontalk_folder_title if title undefined
+      get_toontalk_files: function (title, folder_id, callback) {
+          // gets all in folder_name if title undefined
           var query = "'" + folder_id + "' in parents and trashed = false";
           if (title) {
               query += " and title='" + title + "'";
@@ -130,15 +161,15 @@ window.TOONTALK.google_drive =
                    };
                    if (file_id) { 
                        TT.google_drive.insert_or_update_file(undefined, file_id,   contents, callback);
-                       TT.google_drive.download_file(response.items[0], function (response) {
-                           console.log(response);
-                       });
+//                        TT.google_drive.download_file(response.items[0], function (response) {
+//                            console.log(response);
+//                        });
                    } else {
                        TT.google_drive.insert_or_update_file(file_name, undefined, contents, callback);   
                    }
                });
            };
-           TT.google_drive.get_toontalk_files(file_name, insert_or_update);
+           TT.google_drive.get_toontalk_files(file_name, programs_folder_id, insert_or_update);
       },
 
       /**
@@ -163,7 +194,7 @@ window.TOONTALK.google_drive =
               request_body = JSON.stringify(metadata);
           } else {
               metadata["parents"] = [{"kind": "drive#fileLink",
-                                      "id": folder_id}];
+                                      "id": programs_folder_id}];
               request_body =
                   delimiter +
                   'Content-Type: application/json\r\n\r\n' +
