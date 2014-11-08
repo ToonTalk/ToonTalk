@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/sunny/jquery-ui.css" />
+<link rel="stylesheet" media="all" href="https://toontalk.github.io/ToonTalk/toontalk.css">
+  <!-- Include Font Awesome. -->
+  <link href="../libraries/froala-wysiwyg-editor/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+
+  <!-- Include Editor style. -->
+  <link href="../libraries/froala-wysiwyg-editor/css/froala_editor.min.css" rel="stylesheet" type="text/css" />
+  <link href="../libraries/froala-wysiwyg-editor/css/froala_style.min.css" rel="stylesheet" type="text/css" />
+<script src="https://toontalk.github.io/ToonTalk/compile/toontalk.js"></script>
+<!-- Include JS files. -->
+  <script src="../libraries/froala-wysiwyg-editor/js/froala_editor.min.js"></script>
+<title>ToonTalk Reborn Save Page</title>
+<link rel="shortcut icon" href="favicon.ico" />
+</head>
+<body>
+ <form>
+    <textarea class='toontalk-edit' name="content">Edit this.</textarea>
+  </form>
+<div class='toontalk-json'>
+This will be replaced by a top-level widget.
+<div style='display:none;'>{
+  "semantic": {
+    "type": "top_level",
+    "settings": {
+      "program_name": "My first program",
+      "use_google_drive": true,
+      "use_local_storage": true,
+      "auto_save": true,
+      "auto_save_to_google_drive": true,
+      "auto_save_to_local_storage": true
+    },
+    "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "number",
+            "operator": "+",
+            "numerator": "1",
+            "denominator": "1",
+            "format": "improper_fraction"
+          },
+          "view": {
+            "frontside_width": 76,
+            "frontside_height": 55,
+            "frontside_left": 412,
+            "frontside_top": 21
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "number",
+            "operator": "+",
+            "numerator": "3",
+            "denominator": "1",
+            "format": "improper_fraction"
+          },
+          "view": {
+            "frontside_width": 76,
+            "frontside_height": 55,
+            "frontside_left": 195,
+            "frontside_top": 21
+          },
+          "version": 1
+        }
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgba(245, 240, 240, 0.941176)",
+    "backside_width": 559,
+    "backside_height": 230,
+    "backside_left": 8,
+    "backside_top": 181.1875,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1
+    }
+  },
+  "version": 1
+}</div></div>
+ <form>
+    <textarea class="toontalk-edit" name="content">And this.</textarea>
+  </form>
+<script>
+      $(function() {
+          $('.toontalk-edit').editable({inlineMode: true})
+      });
+  </script>
+  </body>
+</html>
