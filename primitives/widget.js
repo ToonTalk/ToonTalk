@@ -655,6 +655,12 @@ window.TOONTALK.widget = (function (TT) {
             widget_side.set_visible(backside.visible());
             widget.render();
         },
+
+        remove_all_backside_widgets: function () {
+            while (this.backside_widgets.length > 0) {
+                this.remove_backside_widget(this.backside_widgets[0], this.backside_widgets[0].is_backside());
+            }
+        },
         
         remove_backside_widget: function (widget, is_backside, ignore_if_not_on_backside) {
             var backside = this.get_backside();
@@ -721,8 +727,7 @@ window.TOONTALK.widget = (function (TT) {
                         backside_widget.get_widget().set_parent_of_frontside(this, true);
                     }
                     backside_widget.set_visible(backside_visible);
-                }.bind(this));
-                
+                }.bind(this)); 
             }
 //             if (backside) {
 //                 backside.update_run_button_disabled_attribute();
@@ -1114,7 +1119,7 @@ window.TOONTALK.widget = (function (TT) {
             widget.open_settings = function () {
                 TT.SETTINGS.open(widget);
             };
-            widget.save = function (immediately, parameters) {
+            widget.save = function (immediately, parameters, callback) {
                 var json, google_drive_status;
                 if (!parameters) {
                     parameters = {google_drive:  this.get_setting('auto_save_to_google_drive') && TT.google_drive,
@@ -1132,7 +1137,8 @@ window.TOONTALK.widget = (function (TT) {
                     json = TT.UTILITIES.get_json_top_level(this);
                     google_drive_status = TT.google_drive.get_status();
                     if (google_drive_status === "Ready") {
-                        TT.google_drive.upload_file(this.get_setting('program_name'), "json", JSON.stringify(json));
+                        TT.google_drive.upload_file(this.get_setting('program_name'), "json", JSON.stringify(json), callback);
+                        callback = undefined;
                     } else if (google_drive_status.indexOf("Only able to connect to ") !== 0) {
                         console.log("Unable to save to Google Drive because: " + google_drive_status);
                     }
@@ -1142,6 +1148,9 @@ window.TOONTALK.widget = (function (TT) {
                         json = TT.UTILITIES.get_json_top_level(this);
                     }
                     this.save_to_local_storage(json);
+                }
+                if (callback) {
+                    callback();
                 }
             };
             widget.publish = function (callback) {
@@ -1186,11 +1195,11 @@ window.TOONTALK.widget = (function (TT) {
                      callback = function (google_file) {
                                     var download_callback = 
                                         function (json_string) {
-                                            var json, widget;
+                                            var json; // , saved_widget;
                                             if (json_string) {
                                                 json = JSON.parse(json_string);
-                                                widget = TT.UTILITIES.create_from_json(json);
-                                                // and first remove all backside_widgets
+//                                                 saved_widget = TT.UTILITIES.create_from_json(json);
+                                                widget.remove_all_backside_widgets();
                                                 TT.UTILITIES.add_backside_widgets_from_json(widget, json.semantic.backside_widgets);
                                             }
                                     };

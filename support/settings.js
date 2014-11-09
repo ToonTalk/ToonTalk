@@ -80,13 +80,19 @@ window.TOONTALK.SETTINGS =
           program_name.button .addEventListener('change', 
                                                 function () {
                                                     var new_program_name = program_name.button.value.trim();
-                                                     if (current_program_name !== new_program_name) {
-                                                         widget.save(); // in case it has changed
-                                                         current_program_name = new_program_name;
-                                                         widget.set_setting('program_name', new_program_name);
-                                                         widget.load(true); // use Google Drive
-                                                     }
-                                                });
+                                                    var saved_callback;
+                                                    if (current_program_name !== new_program_name) {
+                                                        saved_callback = 
+                                                            function () {
+                                                                current_program_name = new_program_name;
+                                                                widget.set_setting('program_name', new_program_name);
+                                                                widget.load(true); // use Google Drive TODO: revisit this
+                                                         };
+                                                         // save in case current program has changed
+                                                         widget.save(true, undefined, saved_callback);
+                                                         
+                                                    }
+                                               });
           google_drive.button .addEventListener('click', 
                                                 function (event) {
                                                     widget.set_setting('auto_save_to_google_drive', google_drive.button.checked);
