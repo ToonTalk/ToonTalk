@@ -16,7 +16,8 @@ window.TOONTALK.SETTINGS =
               $(settings_panel).remove();
           };
           var widget_element = widget.get_backside_element();
-          var program_name   = TT.UTILITIES.create_text_input(widget.get_setting('program_name'), 
+          var current_program_name = widget.get_setting('program_name');
+          var program_name   = TT.UTILITIES.create_text_input(current_program_name, 
                                                              "toontalk-program-name-input", 
                                                              "Current program name:", 
                                                              "Edit this to change the name of your program", 
@@ -78,11 +79,17 @@ window.TOONTALK.SETTINGS =
           settings_panel.appendChild(close_button);
           program_name.button .addEventListener('change', 
                                                 function () {
-                                                     widget.set_setting('program_name',              program_name.button.value.trim());
+                                                    var new_program_name = program_name.button.value.trim();
+                                                     if (current_program_name !== new_program_name) {
+                                                         widget.save(); // in case it has changed
+                                                         current_program_name = new_program_name;
+                                                         widget.set_setting('program_name', new_program_name);
+                                                         widget.load(true); // use Google Drive
+                                                     }
                                                 });
           google_drive.button .addEventListener('click', 
                                                 function (event) {
-                                                    widget.set_setting('auto_save_to_google_drive',  google_drive.button.checked);
+                                                    widget.set_setting('auto_save_to_google_drive', google_drive.button.checked);
                                                     if (google_drive.button.checked) {
                                                         $(save_now_google).hide();
                                                     } else {

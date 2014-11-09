@@ -57,8 +57,10 @@ window.TOONTALK.google_drive =
            if (callback) {
                callback();
            }
-           TT.google_drive.get_folder_ids(function () {
-               status = "Ready";
+           gapi.client.load('drive', 'v2', function() {
+               TT.google_drive.get_folder_ids(function () {
+                   status = "Ready";
+               });
            });
         } else {
            // No access token could be retrieved, show the button to start the authorization flow.
@@ -138,6 +140,17 @@ window.TOONTALK.google_drive =
               query += " and title='" + title + "'";
           }
           TT.google_drive.list_files({q: query}, callback);
+      },
+
+      get_toontalk_program_file: function (file_name, callback) {
+          var query = "'" + programs_folder_id + "' in parents and trashed = false and title='" + file_name + "'";
+          TT.google_drive.list_files({q: query}, function (response) {
+              if (response && response.items && response.items.length > 0) {
+                  callback(response.items[0]);
+              } else {
+                  callback(null); // should this be an error object?
+              }
+          });
       },
 
       /**
@@ -223,21 +236,24 @@ window.TOONTALK.google_drive =
           // based on https://developers.google.com/drive/web/publish-site
           var request_body = {'title':    folder_name,
                               'mimeType': "application/vnd.google-apps.folder"};
-          var request = gapi.client.request({'path':   '/drive/v2/files',
-                                             'method': 'POST',
-                                             'body':   JSON.stringify(request_body)});
+//           var request = gapi.client.request({'path':   '/drive/v2/files',
+//                                              'method': 'POST',
+//                                              'body':   JSON.stringify(request_body)});
+          var request = gapi.client.drive.files.insert({'resource': request_body});
           var request_callback;
           if (public_access) {
               request_callback = function (response) {
-//                   var permission_request = gapi.client.drive.permissions.insert({'fileId':  response.id,
-//                                                                                  'resource': permission_body});
-                  var permission_request = gapi.client.request(
-                                            {'path':   '/drive/v2/files/' + response.id + "/permissions",
-                                             'method': 'POST',
-                                             'parameters': {'fileId': response.id},
-                                             'body':   {'value': '',
-                                                        'type': 'anyone',
-                                                        'role': 'reader'}});
+                  var permission_request = gapi.client.drive.permissions.insert({'fileId':  response.id,
+                                                                                 'resource': {'value': '',
+                                                                                              'type': 'anyone',
+                                                                                              'role': 'reader'}});
+//                   var permission_request = gapi.client.request(
+//                                             {'path':   '/drive/v2/files/' + response.id + "/permissions",
+//                                              'method': 'POST',
+//                                              'parameters': {'fileId': response.id},
+//                                              'body':   {'value': '',
+//                                                         'type': 'anyone',
+//                                                         'role': 'reader'}});
 //                   https://www.googleapis.com/drive/v2/files/fileId/permissions
                   permission_request.execute(function (permission_response) {
 //                       console.log(permission_response);
@@ -252,19 +268,19 @@ window.TOONTALK.google_drive =
 
       download_file: function(file, callback) {
           if (file.downloadUrl) {
-            var access_token = gapi.auth.getToken().access_token;
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', file.downloadUrl);
-            xhr.setRequestHeader('Authorization', 'Bearer ' + access_token);
-            xhr.onload = function() {
-              callback(xhr.responseText);
-            };
-            xhr.onerror = function() {
-              callback(null);
-            };
-            xhr.send();
+              var access_token = gapi.auth.getToken().access_token;
+              var xhr = new XMLHttpRequest();
+              xhr.open('GET', file.downloadUrl);
+              xhr.setRequestHeader('Authorization', 'Bearer ' + access_token);
+              xhr.onload = function() {
+                               callback(xhr.responseText);
+              };
+              xhr.onerror = function() {
+                                callback(null);
+              };
+              xhr.send();
           } else {
-            callback(null);
+              callback(null);
           }
        }
    };

@@ -1156,7 +1156,7 @@ window.TOONTALK.widget = (function (TT) {
                 } else {
                     console.log("Unable to publish to Google Drive because: " + google_drive_status);
                 }
-            }
+            };
             widget.save_to_local_storage = function (json) {
                 var key = "toontalk-json: " + this.get_setting('program_name');
                 var all_keys, message;
@@ -1178,7 +1178,31 @@ window.TOONTALK.widget = (function (TT) {
                     // following could be displayed in the settings panel
                     this.last_local_storage_error = message;
                 }
-            }  
+            };
+            widget.load = function (google_drive) {
+                var file_name, google_file, callback;
+                 if (google_drive) {
+                     file_name = this.get_setting('program_name') + ".json";
+                     callback = function (google_file) {
+                                    var download_callback = 
+                                        function (json_string) {
+                                            var json, widget;
+                                            if (json_string) {
+                                                json = JSON.parse(json_string);
+                                                widget = TT.UTILITIES.create_from_json(json);
+                                                // and first remove all backside_widgets
+                                                TT.UTILITIES.add_backside_widgets_from_json(widget, json.semantic.backside_widgets);
+                                            }
+                                    };
+                                    if (google_file) {
+                                        TT.google_drive.download_file(google_file, download_callback);
+                                    }
+                     };
+                     TT.google_drive.get_toontalk_program_file(file_name, callback);
+                 } else {
+                     // get local storage code from UTILITIES
+                 }
+            };
             widget.get_backside(true).set_visible(true); // top-level backsides are always visible (at least for now)
             if (TT.debugging) {
                 widget.debug_id = TT.UTILITIES.generate_unique_id();
