@@ -160,6 +160,7 @@ window.TOONTALK.google_drive =
        */
       upload_file: function (file_name, extension, contents, callback) {
           var folder_id = extension === 'json' ? programs_folder_id : pages_folder_id;
+          var toontalk_type = extension === 'json' ? 'program' : 'page';
           var full_file_name = file_name + "." + extension;
           var insert_or_update = function (response) {
               gapi.client.load('drive', 'v2', function() {
@@ -170,33 +171,27 @@ window.TOONTALK.google_drive =
                       };
                   };
                   if (file_id) { 
-                      TT.google_drive.insert_or_update_file(undefined, file_id, contents, folder_id, callback);
+                      TT.google_drive.insert_or_update_file(undefined, file_id, toontalk_type, contents, folder_id, callback);
 //                        TT.google_drive.download_file(response.items[0], function (response) {
 //                            console.log(response);
 //                        });
                   } else {
-                      TT.google_drive.insert_or_update_file(full_file_name, undefined, contents, folder_id, callback);   
+                      TT.google_drive.insert_or_update_file(full_file_name, undefined, toontalk_type, contents, folder_id, callback);   
                   }
               });
           };
           TT.google_drive.get_toontalk_files(full_file_name, folder_id, insert_or_update);
       },
 
-      /**
-       * Insert new file.
-       *
-       * @param {String} file_name String name of the saved file.
-       * @param {String} contents String contents of the saved file.
-       * @param {Function} callback Function to call when the request is complete.
-       */
-      insert_or_update_file: function (file_name, file_id, contents, folder_id, callback) {
+      insert_or_update_file: function (file_name, file_id, toontalk_type, contents, folder_id, callback) {
           // if already exists then file_id is defined otherwise file_name
           var boundary = '-------314159265358979323846'; // could declare as const - ECMAScript 6
           var delimiter = "\r\n--" + boundary + "\r\n";
           var close_delim = "\r\n--" + boundary + "--";
           var content_type = 'text/html'; // or should it be application/json?
           var metadata = {'title':    file_name,
-                          'mimeType': content_type};
+                          'mimeType': content_type,
+                          'properties': {"toontalk_file": toontalk_type}};
           var request_body, path, method, request;
           metadata["parents"] = [{"kind": "drive#fileLink",
                                     "id": folder_id}];
