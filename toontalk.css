@@ -530,7 +530,7 @@ body {
 .toontalk-settings-panel {
 	background-color: rgb(245, 222, 245);
 	position: absolute;
-	opacity: .97;
+	opacity: .94;
 	border-radius: 10px;
 	border: 2px solid navy;
 /* 	Need enough width for interface and links to published pages */
