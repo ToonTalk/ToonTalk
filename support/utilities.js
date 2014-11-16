@@ -491,7 +491,11 @@ window.TOONTALK.UTILITIES =
         },
 
         add_backside_widgets_from_json: function (widget, json_semantic_backside_widgets, additional_info) {
-            var backside_widgets = this.create_array_from_json(json_semantic_backside_widgets, additional_info);
+            var backside_widgets;
+            if (!json_semantic_backside_widgets) {
+                return;
+            }
+            backside_widgets = this.create_array_from_json(json_semantic_backside_widgets, additional_info);
             widget.set_backside_widget_sides(backside_widgets, 
                                              json_semantic_backside_widgets.map(
                                                   function (json) {

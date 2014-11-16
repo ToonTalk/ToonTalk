@@ -657,8 +657,12 @@ window.TOONTALK.widget = (function (TT) {
         },
 
         remove_all_backside_widgets: function () {
+            if (!this.backside_widgets) {
+                return;
+            }
             while (this.backside_widgets.length > 0) {
-                this.remove_backside_widget(this.backside_widgets[0], this.backside_widgets[0].is_backside());
+                this.backside_widgets[0].remove();
+//              this.remove_backside_widget(this.backside_widgets[0], this.backside_widgets[0].is_backside());
             }
         },
         
@@ -1122,7 +1126,7 @@ window.TOONTALK.widget = (function (TT) {
             widget.save = function (immediately, parameters, callback) {
                 var json, google_drive_status;
                 if (!parameters) {
-                    parameters = {google_drive:  this.get_setting('auto_save_to_google_drive') && TT.google_drive,
+                    parameters = {google_drive:  TT.google_drive && this.get_setting('auto_save_to_google_drive'),
                                   local_storage: this.get_setting('auto_save_to_local_storage')};
                 }
                 if (!immediately) {
@@ -1188,29 +1192,31 @@ window.TOONTALK.widget = (function (TT) {
                     this.last_local_storage_error = message;
                 }
             };
-            widget.load = function (google_drive) {
-                var file_name, google_file, callback;
-                 if (google_drive) {
-                     file_name = this.get_setting('program_name') + ".json";
-                     callback = function (google_file) {
-                                    var download_callback = 
-                                        function (json_string) {
-                                            var json; // , saved_widget;
-                                            if (json_string) {
-                                                json = JSON.parse(json_string);
-//                                                 saved_widget = TT.UTILITIES.create_from_json(json);
-                                                widget.remove_all_backside_widgets();
-                                                TT.UTILITIES.add_backside_widgets_from_json(widget, json.semantic.backside_widgets);
-                                            }
-                                    };
-                                    if (google_file) {
-                                        TT.google_drive.download_file(google_file, download_callback);
-                                    }
-                     };
-                     TT.google_drive.get_toontalk_program_file(file_name, callback);
-                 } else {
-                     // get local storage code from UTILITIES
-                 }
+            widget.load = function (google_drive_first) {
+                var program_name = this.get_setting('program_name');
+                var file_name = program_name + ".json";
+                var key = "toontalk-json: " + program_name;
+                var download_callback = 
+                    function (json_string) {
+                        var json;
+                        if (json_string) {
+                            json = JSON.parse(json_string);
+                            widget.remove_all_backside_widgets();
+                            TT.UTILITIES.add_backside_widgets_from_json(widget, json.semantic.backside_widgets);
+                        }
+                };
+                var callback = function (google_file) {   
+                     if (google_file) {
+                         TT.google_drive.download_file(google_file, download_callback);
+                     } else {
+                         download_callback(window.localStorage.getItem(key));
+                     }
+                };
+                if (google_drive_first && TT.google_drive && TT.google_drive.get_status() === 'Ready') {
+                    TT.google_drive.get_toontalk_program_file(file_name, callback);
+                } else {
+                    download_callback(window.localStorage.getItem(key));
+                }
             };
             widget.get_backside(true).set_visible(true); // top-level backsides are always visible (at least for now)
             if (TT.debugging) {
