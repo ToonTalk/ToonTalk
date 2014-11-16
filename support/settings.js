@@ -84,9 +84,17 @@ window.TOONTALK.SETTINGS =
                                                     if (current_program_name !== new_program_name) {
                                                         saved_callback = 
                                                             function () {
+                                                                var callback =
+                                                                    function () {
+                                                                        // delay this since newly added widgets have yet to update their display (and z-index)
+                                                                        setTimeout(function () {
+                                                                                       $(settings_panel).css({"z-index": TT.UTILITIES.next_z_index()});
+                                                                                   },
+                                                                                   500);  
+                                                                    }
                                                                 current_program_name = new_program_name;
                                                                 widget.set_setting('program_name', new_program_name);
-                                                                widget.load(true); // use Google Drive TODO: revisit this
+                                                                widget.load(true, callback); // use Google Drive first
                                                          };
                                                          // save in case current program has changed
                                                          widget.save(true, undefined, saved_callback);

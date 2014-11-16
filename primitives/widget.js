@@ -1192,7 +1192,7 @@ window.TOONTALK.widget = (function (TT) {
                     this.last_local_storage_error = message;
                 }
             };
-            widget.load = function (google_drive_first) {
+            widget.load = function (google_drive_first, load_callback) {
                 var program_name = this.get_setting('program_name');
                 var file_name = program_name + ".json";
                 var key = "toontalk-json: " + program_name;
@@ -1203,6 +1203,9 @@ window.TOONTALK.widget = (function (TT) {
                             json = JSON.parse(json_string);
                             widget.remove_all_backside_widgets();
                             TT.UTILITIES.add_backside_widgets_from_json(widget, json.semantic.backside_widgets);
+                            if (load_callback) {
+                                load_callback();
+                            }
                         }
                 };
                 var callback = function (google_file) {   
