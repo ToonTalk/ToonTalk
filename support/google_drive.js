@@ -53,7 +53,7 @@ window.TOONTALK.google_drive =
       handle_authorization_result: function (authorization_result, callback) {
         if (authorization_result && !authorization_result.error) {
            // Access token has been successfully retrieved, requests can be sent to the API.
-           status = "Authorized";
+           status = "Authorized but not yet ready";
            if (callback) {
                callback();
            }
@@ -133,9 +133,10 @@ window.TOONTALK.google_drive =
           TT.google_drive.list_files({q: query}, callback);
       },
 
-      get_toontalk_files: function (title, folder_id, callback) {
-          // gets all in folder_name if title undefined
-          var query = "'" + folder_id + "' in parents and trashed = false";
+      get_toontalk_files: function (title, toontalk_type, callback) {
+          // gets all files of toontalk_type if title undefined 
+          // used to get all in folder_id but user may get files via sharing or re-organise their files
+          var query = "properties has {key='ToonTalkType' and value='" + toontalk_type + "' and visibility='PUBLIC'} and trashed = false";
           if (title) {
               query += " and title='" + title + "'";
           }
@@ -180,7 +181,7 @@ window.TOONTALK.google_drive =
                   }
               });
           };
-          TT.google_drive.get_toontalk_files(full_file_name, folder_id, insert_or_update);
+          TT.google_drive.get_toontalk_files(full_file_name, toontalk_type, insert_or_update);
       },
 
       insert_or_update_file: function (file_name, file_id, toontalk_type, contents, folder_id, callback) {
@@ -190,8 +191,14 @@ window.TOONTALK.google_drive =
           var close_delim = "\r\n--" + boundary + "--";
           var content_type = 'text/html'; // or should it be application/json?
           var metadata = {'title':    file_name,
-                          'mimeType': content_type,
-                          'properties': {"toontalk_file": toontalk_type}};
+                          'mimeType': content_type};
+          var full_callback =
+              function (file) {
+                  TT.google_drive.insert_property(file.id, 'ToonTalkType', toontalk_type, 'PUBLIC');
+                  if (callback) {
+                      callback(file);
+                  }
+              }          
           var request_body, path, method, request;
           metadata["parents"] = [{"kind": "drive#fileLink",
                                     "id": folder_id}];
@@ -219,12 +226,7 @@ window.TOONTALK.google_drive =
                 'Content-Type': 'multipart/mixed; boundary="' + boundary + '"'
               },
               'body': request_body});
-          if (!callback) {
-              callback = function () {
-                  // ignore
-              }
-          }
-          request.execute(callback);
+          request.execute(full_callback);
       },
 
       create_folder: function (folder_name, public_access, callback) {
@@ -249,7 +251,7 @@ window.TOONTALK.google_drive =
 //                                              'body':   {'value': '',
 //                                                         'type': 'anyone',
 //                                                         'role': 'reader'}});
-//                   https://www.googleapis.com/drive/v2/files/fileId/permissions
+//                   https://www.googleapis.com/drive/v2/files/file_id/permissions
                   permission_request.execute(function (permission_response) {
 //                       console.log(permission_response);
                       callback(response)
@@ -277,7 +279,28 @@ window.TOONTALK.google_drive =
           } else {
               callback(null);
           }
-       }
+       },
+
+       /**
+ * Insert a new custom file property.
+ *
+ * @param {String} file_id ID of the file to insert property for.
+ * @param {String} key ID of the property.
+ * @param {String} value Property value.
+ * @param {String} visibility 'PUBLIC' to make the property visible by all apps,
+ *     or 'PRIVATE' to make it only available to the app that created it.
+ */
+     insert_property: function(file_id, key, value, visibility) {
+         var body = {'key': key,
+                     'value': value,
+                     'visibility': visibility};
+         var request = gapi.client.drive.properties.insert({'fileId': file_id,
+                                                            'resource': body});
+         request.execute(function (response) { 
+//              console.log(response);
+         });
+    }
+    
    };
 
 }(window.TOONTALK));
