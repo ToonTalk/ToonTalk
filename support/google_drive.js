@@ -194,7 +194,10 @@ window.TOONTALK.google_drive =
                           'mimeType': content_type};
           var full_callback =
               function (file) {
-                  TT.google_drive.insert_property(file.id, 'ToonTalkType', toontalk_type, 'PUBLIC');
+                  if (!file_id) {
+                      // is new so add custom property for retrieval 
+                      TT.google_drive.insert_property(file.id, 'ToonTalkType', toontalk_type, 'PUBLIC');
+                  }
                   if (callback) {
                       callback(file);
                   }
