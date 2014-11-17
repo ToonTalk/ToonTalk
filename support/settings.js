@@ -9,6 +9,44 @@
 window.TOONTALK.SETTINGS = 
 (function (TT) {
     "use strict";
+    var add_files_table = function (toontalk_type, parent_element) {
+        // TODO: switch between Google Drive, local storage, etc.
+        var callback = function (response) {
+            var table; 
+            if (response.error) {
+                console.log(response.error.message);
+                console.log("Google drive status: " + TT.google_drive.get_status());
+                return;
+            }
+            table = document.createElement('table');
+            $(table).DataTable({
+               data: response.items,
+               columns: [{data: 'title', 
+                          title: "Name",
+                          render: function (data, type, full, meta) {
+                                        var name = data.substring(0, data.length-5);
+                                        return "<a href='javascript:window.alert(name)' title='Click to switch to this program.'>" + name + "</a>";
+//                                         var click_handler = function () {
+//                                             // TODO:
+//                                         };
+//                                         var button = TT.UTILITIES.create_button(name, "toontalk-file-load-button", "Click to switch to this program.", click_handler);
+//                                         return button.innerHTML;
+                          }}, 
+                         {data: 'modifiedDate', 
+                          title: "Modified",
+                          render: function (data, type, full, meta) {
+                                      return new Date(data).toUTCString();
+                          }},
+                         {data: 'createdDate', 
+                          title: "Created",
+                          render: function (data, type, full, meta) {
+                                      return new Date(data).toUTCString();
+                          }},
+                         {data: 'fileSize', title: "Size"}]});
+            parent_element.appendChild(table);
+        };
+        TT.google_drive.get_toontalk_files(false, toontalk_type, callback);
+    };
     return {
       open: function (widget) {
           var settings_panel = document.createElement('div');
@@ -161,7 +199,8 @@ window.TOONTALK.SETTINGS =
                          },
                          1);
           }
-          $(program_name.container).find("tr").append(TT.UTILITIES.create_table_entry(publish)); 
+          $(program_name.container).find("tr").append(TT.UTILITIES.create_table_entry(publish));
+          add_files_table('program', settings_panel);
           widget_element.appendChild(settings_panel);                  
       }
     };

@@ -168,6 +168,14 @@ window.TOONTALK.google_drive =
                   var file_id = response && response.items && response.items.length > 0 && response.items[0].id;
                   if (!callback) {
                       callback = function (file) {
+                                     if (file.error) {
+                                         console.log("Google drive status: " + TT.google_drive.get_status());
+                                         if (file.error.message === "Login Required") {
+                                            // TODO:
+                                         } else {
+                                            console.log(file.error.message);
+                                         }
+                                     }
                                      console.log("File " + file.title + " (" + file.id + ") " + (file_id ? "updated" : "created"));
                       };
                   };

@@ -1132,7 +1132,7 @@ window.TOONTALK.widget = (function (TT) {
                 if (!immediately) {
                     // delay it so the geometry settles down -- perhaps 0 (i.e. 4ms) is good enough
                     setTimeout(function () {
-                                   this.save(true, parameters);
+                                   this.save(true, parameters, callback);
                                }.bind(this),
                                100);
                     return;
