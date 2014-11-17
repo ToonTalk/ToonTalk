@@ -1269,7 +1269,7 @@ window.TOONTALK.publish_part_3 =
 </form>\n\
 <script>\n\
       $(function() {\n\
-          $(".toontalk-edit").editable({inlineMode: true})\n\
+          $(".toontalk-edit").editable({inlineMode: true, imageUpload: false})\n\
       });\n\
   </script>\n\
 </body>\n\
