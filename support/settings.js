@@ -9,7 +9,7 @@
 window.TOONTALK.SETTINGS = 
 (function (TT) {
     "use strict";
-    var add_files_table = function (toontalk_type, parent_element) {
+    var add_files_table = function (toontalk_type, parent_element, widget) {
         // TODO: switch between Google Drive, local storage, etc.
         var callback = function (response) {
             var table; 
@@ -25,12 +25,7 @@ window.TOONTALK.SETTINGS =
                           title: "Name",
                           render: function (data, type, full, meta) {
                                         var name = data.substring(0, data.length-5);
-                                        return "<a href='javascript:window.alert(name)' title='Click to switch to this program.'>" + name + "</a>";
-//                                         var click_handler = function () {
-//                                             // TODO:
-//                                         };
-//                                         var button = TT.UTILITIES.create_button(name, "toontalk-file-load-button", "Click to switch to this program.", click_handler);
-//                                         return button.innerHTML;
+                                        return "<div title='Click to switch to this program.' class='toontalk-file-load-button'>" + name + "</div>";
                           }}, 
                          {data: 'modifiedDate', 
                           title: "Modified",
@@ -44,6 +39,17 @@ window.TOONTALK.SETTINGS =
                           }},
                          {data: 'fileSize', title: "Size"}]});
             parent_element.appendChild(table);
+            $(".toontalk-file-load-button").click(function (event) {
+                var callback = function () {
+                    $(parent_element).remove();
+                };
+                var saved_callback = function () {
+                     widget.set_setting('program_name', event.target.innerText);
+                     widget.load(true, callback); // uses Google Drive - TODO: generalise  
+                };
+                // save in case current program has changed
+                widget.save(true, undefined, saved_callback);
+            });
         };
         TT.google_drive.get_toontalk_files(false, toontalk_type, callback);
     };
@@ -136,7 +142,6 @@ window.TOONTALK.SETTINGS =
                                                          };
                                                          // save in case current program has changed
                                                          widget.save(true, undefined, saved_callback);
-                                                         
                                                     }
                                                });
           google_drive.button .addEventListener('click', 
@@ -200,7 +205,7 @@ window.TOONTALK.SETTINGS =
                          1);
           }
           $(program_name.container).find("tr").append(TT.UTILITIES.create_table_entry(publish));
-          add_files_table('program', settings_panel);
+          add_files_table('program', settings_panel, widget);
           widget_element.appendChild(settings_panel);                  
       }
     };
