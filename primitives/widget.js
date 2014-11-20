@@ -1256,7 +1256,6 @@ window.TOONTALK.publish_part_1 =
 '<!DOCTYPE html>\n\
 <html>\n\
 <head>\n\
-<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/sunny/jquery-ui.css" />\n\
 <link rel="stylesheet" media="all" href="https://toontalk.github.io/ToonTalk/toontalk.css">\n\
 <link href="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/css/font-awesome.min.css" rel="stylesheet" type="text/css" />\n\
 <link href="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/css/froala_editor.min.css" rel="stylesheet" type="text/css" />\n\
