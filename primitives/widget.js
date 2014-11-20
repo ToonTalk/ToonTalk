@@ -35,6 +35,9 @@ window.TOONTALK.widget = (function (TT) {
 //         );
         return widget;
     };
+
+    var local_storage_key_prefix           = "toontalk-json: ";
+    var local_storage_meta_data_key_prefix = "toontalk-meta-data: ";
     
     return {
         
@@ -1170,10 +1173,23 @@ window.TOONTALK.widget = (function (TT) {
                     console.log("Unable to publish to Google Drive because: " + google_drive_status);
                 }
             };
-            widget.save_to_local_storage = function (json) {
-                var key = "toontalk-json: " + this.get_setting('program_name');
-                var all_keys, message;
+            widget.save_to_local_storage = function (json, time_stamp) {
+                var program_name = this.get_setting('program_name');
+                var key =           local_storage_key_prefix           + program_name;
+                var meta_data_key = local_storage_meta_data_key_prefix + program_name;
+                var all_keys, meta_data, message;
+                if (!time_stamp) {
+                    time_stamp = Date.now();
+                }
                 try {
+                    meta_data = window.localStorage.getItem(meta_data_key);
+                    if (meta_data) {
+                        meta_data = JSON.parse(meta_data);
+                    } else {
+                        meta_data = {created: time_stamp};
+                    }
+                    meta_data.last_modified = time_stamp;
+                    window.localStorage.setItem(meta_data_key, JSON.stringify(meta_data));
                     window.localStorage.setItem(key, JSON.stringify(json));
                     window.localStorage.setItem("toontalk-last-key", key);
                     all_keys = TT.UTILITIES.get_all_local_storage_keys();
@@ -1195,7 +1211,7 @@ window.TOONTALK.widget = (function (TT) {
             widget.load = function (google_drive_first, load_callback) {
                 var program_name = this.get_setting('program_name');
                 var file_name = program_name + ".json";
-                var key = "toontalk-json: " + program_name;
+                var key = local_storage_key_prefix + program_name;
                 var download_callback = 
                     function (json_string) {
                         var json;
