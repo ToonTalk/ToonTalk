@@ -228,7 +228,7 @@ window.TOONTALK.UTILITIES =
                     } else if (widget.is_of_type('top-level')) {
                         top_level_widget_count++;
                         if (!TT.no_local_storage) {
-                            // revisit this - but needed for manual now
+                            // TODO: revisit this - but needed for manual now
                             local_storage_key = TT.UTILITIES.current_URL();
                             if (top_level_widget_count > 1) {
                                 // for backwards compatibility don't add suffix to single top-level-widget pages
@@ -241,22 +241,24 @@ window.TOONTALK.UTILITIES =
                                     TT.UTILITIES.display_message("Error removing previous state. Error message is " + error);
                                 }
                             } else {
-                                try {
-                                    toontalk_last_key = window.localStorage.getItem('toontalk-last-key');
-                                    if (toontalk_last_key) {
-                                        stored_json_string = window.localStorage.getItem(toontalk_last_key);
-                                    }
-                                    if (!stored_json_string) {
-                                        // for backwards compatibility
-                                        stored_json_string = window.localStorage.getItem(local_storage_key);
-                                    }
-                                } catch (error) {
-                                    message = "Error reading previous state. Error message is " + error;
-                                    if (TT.UTILITIES.is_internet_explorer()) {
-                                        // TODO: determine if there still is a problem with IE11 and local storage
-                                        console.error(message);
-                                    } else {
-                                        TT.UTILITIES.display_message();
+                                if (json.load_most_recent_program) {
+                                    try {
+                                        toontalk_last_key = window.localStorage.getItem('toontalk-last-key');
+                                        if (toontalk_last_key) {
+                                            stored_json_string = window.localStorage.getItem(toontalk_last_key);
+                                        }
+                                        if (!stored_json_string) {
+                                            // for backwards compatibility
+                                            stored_json_string = window.localStorage.getItem(local_storage_key);
+                                        }
+                                    } catch (error) {
+                                        message = "Error reading previous state. Error message is " + error;
+                                        if (TT.UTILITIES.is_internet_explorer()) {
+                                            // TODO: determine if there still is a problem with IE11 and local storage
+                                            console.error(message);
+                                        } else {
+                                            TT.UTILITIES.display_message();
+                                        }
                                     }
                                 }
                                 if (stored_json_string) {
