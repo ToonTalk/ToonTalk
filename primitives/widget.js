@@ -1143,7 +1143,7 @@ window.TOONTALK.widget = (function (TT) {
                     if (google_drive_status === "Ready") {
                         TT.google_drive.upload_file(this.get_setting('program_name'), "json", JSON.stringify(json), callback);
                         callback = undefined;
-                    } else if (google_drive_status.indexOf("Only able to connect to ") !== 0) {
+                    } else if (TT.google_drive.connection_to_google_drive_possible()) {
                         console.log("Unable to save to Google Drive because: " + google_drive_status);
                     }
                 }

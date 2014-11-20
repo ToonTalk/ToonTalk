@@ -26,11 +26,12 @@ window.TOONTALK.google_drive =
     var toontalk_programs_folder_title = "ToonTalk Programs";
     var toontalk_pages_folder_title    = "ToonTalk Pages";
     var status = "Need to authorize";
+    var wrong_origin_message = "Connections to Google Drive are configured for the following domain only: ";
     var programs_folder_id, pages_folder_id;
     return {
         handle_client_load: function () {
             if (window.location.href.indexOf(origin) !== 0) {
-                status = "Only able to connect to " + origin;
+                status = wrong_origin_message + origin + ". If you are hosting ToonTalk elsewhere you need to set window.TOONTALK.GOOGLE_DRIVE_CLIENT_ID and window.TOONTALK.ORIGIN_FOR_GOOGLE_DRIVE";
                 return;
             }
             setTimeout(window.TOONTALK.google_drive.check_authorization, 1);
@@ -121,6 +122,10 @@ window.TOONTALK.google_drive =
           return status;
       },
 
+      connection_to_google_drive_possible: function () {
+          return status.indexOf(wrong_origin_message) !== 0;
+      },
+
       list_files: function (query, callback) {
           var request = gapi.client.request({'path': '/drive/v2/files',
                                              'method': 'GET',
@@ -136,7 +141,12 @@ window.TOONTALK.google_drive =
       get_toontalk_files: function (title, toontalk_type, callback) {
           // gets all files of toontalk_type if title undefined 
           // used to get all in folder_id but user may get files via sharing or re-organise their files
-          var query = "properties has {key='ToonTalkType' and value='" + toontalk_type + "' and visibility='PUBLIC'} and trashed = false";
+          var query;
+          if (!gapi) {
+              callback("Google Drive API not available.");
+              return;
+          }
+          query = "properties has {key='ToonTalkType' and value='" + toontalk_type + "' and visibility='PUBLIC'} and trashed = false";
           if (title) {
               query += " and title='" + title + "'";
           }

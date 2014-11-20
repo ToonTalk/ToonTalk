@@ -12,9 +12,15 @@ window.TOONTALK.SETTINGS =
     var add_files_table = function (toontalk_type, parent_element, widget) {
         // TODO: switch between Google Drive, local storage, etc.
         var callback = function (response) {
-            var table; 
-            if (response.error) {
-                console.log(response.error.message);
+            var error;
+            var table;
+            if (typeof response === 'String') {
+                error = response;
+            } else if (response.error) {
+                error = response.error.message;
+            }
+            if (error) {
+                console.log(error);
                 console.log("Google drive status: " + TT.google_drive.get_status());
                 return;
             }

@@ -537,7 +537,7 @@ body {
 	min-width: 800px;
 }
 .toontalk-file-load-button {
-	color: -webkit-link;
+	color: blue;
 	text-decoration: underline;
     cursor: pointer;
 }
