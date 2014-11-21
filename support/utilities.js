@@ -1579,6 +1579,84 @@ window.TOONTALK.UTILITIES =
             }
             return image;  
         },
+
+        create_tabs: function (labels, elements) {
+            var tabs = document.createElement('div');
+            var ul   = document.createElement('ul');
+            var id;
+//             if (elements.length === 1) {
+//                 // no point making a tab of one thing
+//                 return elements[0];
+//             }
+            if (labels.length !== elements.length) {
+                console.error("UTILITIES.create_tabs called with different length lists.");
+                return tabs;  
+            }
+            labels.forEach(function (label, index) {
+                var li     = document.createElement('li');
+                var anchor = document.createElement('a');
+                var label_element;
+                if (typeof label === 'string') {
+                    label_element = document.createElement('span');
+                    label_element.innerHTML = label;
+                } else {
+                    label_element = label; // is already an element
+                }
+                id = "tab-" + index;
+                anchor.href = "#" + id;
+                anchor.appendChild(label_element);
+                li.appendChild(anchor);
+                ul.appendChild(li);
+                elements[index].id = id;
+            });
+            tabs.appendChild(ul);
+            elements.forEach(function (element) {
+                tabs.appendChild(element);
+            });
+            $(tabs).tabs(); // use JQuery UI widget
+            return tabs;
+        },
+
+        create_file_data_table: function (data, in_cloud) {
+            var table = document.createElement('table');
+            $(table).DataTable({
+               data: data,
+               columns: [{data: 'title', 
+                          title: "Name",
+                          render: function (data, type, full, meta) {
+                                        var name = in_cloud ? data.substring(0, data.length-5) : data;
+                                        return "<div class='toontalk-file-load-button'>" + name + "</div>";
+                          }}, 
+                         {data: 'modifiedDate', 
+                          title: "Modified",
+                          render: function (data, type, full, meta) {
+                                      return new Date(data).toUTCString();
+                          }},
+                         {data: 'createdDate', 
+                          title: "Created",
+                          render: function (data, type, full, meta) {
+                                      return new Date(data).toUTCString();
+                          }},
+                         {data: 'fileSize', 
+                          title: "Size"}]});
+            $(table).addClass("toontalk-file-table");
+            return table;
+        },
+
+        create_local_files_table: function (widget) {
+            var all_program_names = TT.UTILITIES.get_all_locally_stored_program_names();
+            var data = all_program_names.map(function (program_name) {
+                var meta_data = TT.UTILITIES.get_local_storage_meta_data(program_name);
+                if (meta_data) {
+                    return {title: program_name,
+                            modifiedDate: meta_data.last_modified,
+                            createdDate:  meta_data.created,
+                            fileSize:     meta_data.file_size
+                            };
+                }
+            });
+            return TT.UTILITIES.create_file_data_table(data, false);
+        },
         
         get_dragee: function () {
             return dragee;
@@ -1834,17 +1912,38 @@ window.TOONTALK.UTILITIES =
             }
         },
 
-        get_all_local_storage_keys: function () {
-            var all_keys_json_string = window.localStorage.getItem('toontalk-all-keys');
-            if (all_keys_json_string) {
-                return JSON.parse(all_keys_json_string);
+        get_all_locally_stored_program_names: function () {
+            var all_program_names_json_string = window.localStorage.getItem('toontalk-all-program-names');
+            if (all_program_names_json_string) {
+                return JSON.parse(all_program_names_json_string);
             } else {
                 return [];
             }
         },
 
-        set_all_local_storage_keys: function (new_value) {
-            window.localStorage.setItem('toontalk-all-keys', JSON.stringify(new_value));   
+        set_all_locally_stored_program_names: function (new_value) {
+            window.localStorage.setItem('toontalk-all-program-names', JSON.stringify(new_value));   
+        },
+
+        get_local_storage_meta_data: function (program_name) {
+            var meta_data_key = TT.UTILITIES.local_storage_program_meta_data_key(program_name);
+            var meta_data;
+            try {
+                meta_data = window.localStorage.getItem(meta_data_key);
+                if (meta_data) {
+                    return JSON.parse(meta_data);
+                }
+            } catch (e) {
+                // return nothing
+            }
+        },
+
+        local_storage_program_key: function (program_name) {
+            return "toontalk-json: " + program_name;
+        },
+
+        local_storage_program_meta_data_key: function (program_name) {
+            return "toontalk-meta-data: " + program_name;
         },
 
         create_queue: function () {

@@ -35,9 +35,6 @@ window.TOONTALK.widget = (function (TT) {
 //         );
         return widget;
     };
-
-    var local_storage_key_prefix           = "toontalk-json: ";
-    var local_storage_meta_data_key_prefix = "toontalk-meta-data: ";
     
     return {
         
@@ -1175,9 +1172,9 @@ window.TOONTALK.widget = (function (TT) {
             };
             widget.save_to_local_storage = function (json, time_stamp) {
                 var program_name = this.get_setting('program_name');
-                var key =           local_storage_key_prefix           + program_name;
-                var meta_data_key = local_storage_meta_data_key_prefix + program_name;
-                var all_keys, meta_data, message;
+                var key =           TT.UTILITIES.local_storage_program_key(program_name);
+                var meta_data_key = TT.UTILITIES.local_storage_program_meta_data_key(program_name);
+                var all_program_names, meta_data, message, json_string;
                 if (!time_stamp) {
                     time_stamp = Date.now();
                 }
@@ -1189,13 +1186,15 @@ window.TOONTALK.widget = (function (TT) {
                         meta_data = {created: time_stamp};
                     }
                     meta_data.last_modified = time_stamp;
+                    json_string = JSON.stringify(json);
+                    meta_data.file_size = json_string.length;
                     window.localStorage.setItem(meta_data_key, JSON.stringify(meta_data));
-                    window.localStorage.setItem(key, JSON.stringify(json));
+                    window.localStorage.setItem(key, json_string);
                     window.localStorage.setItem("toontalk-last-key", key);
-                    all_keys = TT.UTILITIES.get_all_local_storage_keys();
-                    if (all_keys.indexOf(key) < 0) {
-                        all_keys.push(key);
-                        TT.UTILITIES.set_all_local_storage_keys(all_keys);   
+                    all_program_names = TT.UTILITIES.get_all_locally_stored_program_names();
+                    if (all_program_names.indexOf(program_name) < 0) {
+                        all_program_names.push(program_name);
+                        TT.UTILITIES.set_all_locally_stored_program_names(all_program_names);   
                     }
                 } catch (error) {
                     message = "Failed to save state to local storage since it requires " + JSON.stringify(json).length + " bytes. Error message is " + error;
@@ -1211,7 +1210,7 @@ window.TOONTALK.widget = (function (TT) {
             widget.load = function (google_drive_first, load_callback) {
                 var program_name = this.get_setting('program_name');
                 var file_name = program_name + ".json";
-                var key = local_storage_key_prefix + program_name;
+                var key = TT.UTILITIES.local_storage_program_key(program_name);
                 var download_callback = 
                     function (json_string) {
                         var json;
@@ -1252,14 +1251,18 @@ window.TOONTALK.widget = (function (TT) {
 // somehow <link href="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/css/froala_style.min.css" rel="stylesheet" type="text/css" />\n\
 // is missing
 
+// releases should use the following:
+// <script src="https://toontalk.github.io/ToonTalk/compile/toontalk.js"></script>\n\
+// <link rel="stylesheet" media="all" href="https://toontalk.github.io/ToonTalk/toontalk.css">\n\
+
 window.TOONTALK.publish_part_1 =
 '<!DOCTYPE html>\n\
 <html>\n\
 <head>\n\
-<link rel="stylesheet" media="all" href="https://toontalk.github.io/ToonTalk/toontalk.css">\n\
+<link rel="stylesheet" media="all" href="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/toontalk.css">\n\
 <link href="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/css/font-awesome.min.css" rel="stylesheet" type="text/css" />\n\
 <link href="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/css/froala_editor.min.css" rel="stylesheet" type="text/css" />\n\
-<script src="https://toontalk.github.io/ToonTalk/compile/toontalk.js"></script>\n\
+<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/compile/toontalk.js"></script>\n\
 <script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/froala_editor.min.js"></script>\n\
 <script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/block_styles.min.js"></script>\n\
 <script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/colors.min.js"></script>\n\

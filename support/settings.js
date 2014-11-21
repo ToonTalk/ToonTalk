@@ -9,12 +9,40 @@
 window.TOONTALK.SETTINGS = 
 (function (TT) {
     "use strict";
-    var add_files_table = function (toontalk_type, parent_element, widget) {
-        // TODO: switch between Google Drive, local storage, etc.
-        var callback = function (response) {
-            var error;
-            var table;
-            if (typeof response === 'String') {
+    var add_files_tabs = function (widget, cloud_available, settings_panel) {
+        var labels = [];
+        var tables = [];
+        var local_files_tab_index = cloud_available ? 1: 0; // so cloud version is first if available
+        var cloud_files_index = 0;
+        var cloud_pages_index = 2;
+        var local_files_table = TT.UTILITIES.create_local_files_table(widget);
+        labels[local_files_tab_index] = "Programs stored in browser";
+        add_click_listeners(widget, local_files_table, false, 'program', settings_panel);
+        tables[local_files_tab_index] = local_files_table;
+        if (cloud_available) {
+            create_cloud_files_table('program', widget, settings_panel, function (table) {
+                labels[cloud_files_index] = "Programs in cloud";
+                tables[cloud_files_index] = table || TT.UTILITIES.create_text_element("Error connecting");
+                if (tables[cloud_pages_index]) {
+                    settings_panel.appendChild(TT.UTILITIES.create_tabs(labels, tables));
+                }
+            });
+            create_cloud_files_table('page', widget, settings_panel, function (table) {
+                labels[cloud_pages_index] = "Published pages";
+                tables[cloud_pages_index] = table || TT.UTILITIES.create_text_element("Error connecting");
+                if (tables[cloud_files_index]) {
+                    settings_panel.appendChild(TT.UTILITIES.create_tabs(labels, tables));
+                }
+            });
+        } else {
+            // no network responses to wait for
+            settings_panel.appendChild(TT.UTILITIES.create_tabs(labels, tables));
+        }
+    };
+    var create_cloud_files_table = function (toontalk_type, widget, settings_panel, callback) {
+        var full_callback = function (response) {
+            var error, table;
+            if (typeof response === 'string') {
                 error = response;
             } else if (response.error) {
                 error = response.error.message;
@@ -22,42 +50,32 @@ window.TOONTALK.SETTINGS =
             if (error) {
                 console.log(error);
                 console.log("Google drive status: " + TT.google_drive.get_status());
+                callback(null);
                 return;
             }
-            table = document.createElement('table');
-            $(table).DataTable({
-               data: response.items,
-               columns: [{data: 'title', 
-                          title: "Name",
-                          render: function (data, type, full, meta) {
-                                        var name = data.substring(0, data.length-5);
-                                        return "<div title='Click to switch to this program.' class='toontalk-file-load-button'>" + name + "</div>";
-                          }}, 
-                         {data: 'modifiedDate', 
-                          title: "Modified",
-                          render: function (data, type, full, meta) {
-                                      return new Date(data).toUTCString();
-                          }},
-                         {data: 'createdDate', 
-                          title: "Created",
-                          render: function (data, type, full, meta) {
-                                      return new Date(data).toUTCString();
-                          }},
-                         {data: 'fileSize', title: "Size"}]});
-            parent_element.appendChild(table);
-            $(".toontalk-file-load-button").click(function (event) {
-                var callback = function () {
-                    $(parent_element).remove();
-                };
-                var saved_callback = function () {
-                     widget.set_setting('program_name', event.target.innerText);
-                     widget.load(true, callback); // uses Google Drive - TODO: generalise  
-                };
-                // save in case current program has changed
-                widget.save(true, undefined, saved_callback);
-            });
+            table = TT.UTILITIES.create_file_data_table(response.items, true);
+            add_click_listeners(widget, table, true, toontalk_type, settings_panel);
+            callback(table);
         };
-        TT.google_drive.get_toontalk_files(false, toontalk_type, callback);
+        TT.google_drive.get_toontalk_files(false, toontalk_type, full_callback);
+    };
+    
+    var add_click_listeners = function (widget, table, in_the_cloud, toontalk_type, settings_panel) {
+        $(table).find(".toontalk-file-load-button").click(function (event) {
+            var callback = function () {
+                $(settings_panel).remove();
+            };
+            var saved_callback = function () {
+                if (toontalk_type === 'program') {
+                    widget.set_setting('program_name', event.target.innerText);
+                    widget.load(in_the_cloud, callback);
+                } else {
+                    alert("Not yet implemented");
+                }
+            };
+            // save in case current program has changed
+            widget.save(true, undefined, saved_callback);
+        }).attr('title', "Click to switch to this program.");
     };
     return {
       open: function (widget) {
@@ -120,6 +138,7 @@ window.TOONTALK.SETTINGS =
           // settings_panel needs to be absolute for at least z-index to work properly
           var contents_div = document.createElement('div');
           var google_status = TT.google_drive ? TT.google_drive.get_status() : "Google Drive code not loaded";
+          var cloud_available = true; // unless discovered otherwise below
           $(settings_panel).addClass("toontalk-settings-panel")
                            .css({width:  $(widget_element).width() +29,
                                  height: $(widget_element).height()+50,
@@ -168,15 +187,6 @@ window.TOONTALK.SETTINGS =
                                                         $(save_now_local).show();
                                                     }
                                                 });
-//           auto_save.button    .addEventListener('click', 
-//                                                 function (event) {
-//                                                     widget.set_setting('auto_save',         auto_save.button.checked);
-//                                                     if (auto_save.button.checked) {
-//                                                         $(save_now).hide();
-//                                                     } else {
-//                                                         $(save_now).show();
-//                                                     }
-//                                                 });
           settings_panel.appendChild(contents_div);
           $(heading).css({"font-weight": 'bold',
                           "font-size": 24,
@@ -199,7 +209,8 @@ window.TOONTALK.SETTINGS =
               google_drive.container.appendChild(TT.UTILITIES.create_space());
               google_drive.container.appendChild(authorize);
           } else if (google_status !== 'Authorized' && google_status !== 'Ready') {
-              // delayed because JQuery otherwise complains that the buttons haven't been initialsed
+              cloud_available = false;
+              // delayed because JQuery otherwise complains that the buttons haven't been initialised
               setTimeout(function () {
                              google_drive.button.disabled = true; // is a checkbox
                              $(publish)            .button("option", "disabled", true);
@@ -211,7 +222,7 @@ window.TOONTALK.SETTINGS =
                          1);
           }
           $(program_name.container).find("tr").append(TT.UTILITIES.create_table_entry(publish));
-          add_files_table('program', settings_panel, widget);
+          add_files_tabs(widget, cloud_available, settings_panel);
           widget_element.appendChild(settings_panel);                  
       }
     };
