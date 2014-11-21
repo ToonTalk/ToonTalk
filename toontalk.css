@@ -1549,7 +1549,7 @@ background-image: url("images/dusty-morph.png");
 	height: 100%;
 }
 .ui-resizable {
-	position: relative;
+	/* position: relative; */
 }
 .ui-resizable-handle {
 	position: absolute;
