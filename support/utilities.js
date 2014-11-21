@@ -207,7 +207,6 @@ window.TOONTALK.UTILITIES =
     };
     var initialise = function () {
         var includes_top_level_backside = false;
-        var top_level_widget_count = 0;
         TT.debugging = TT.UTILITIES.get_current_url_boolean_parameter('debugging', false);
         $(".toontalk-json").each(
             function (index, element) {
@@ -226,21 +225,8 @@ window.TOONTALK.UTILITIES =
                         // isn't a widget. e.g. a tool
                         element.appendChild(widget.get_element());
                     } else if (widget.is_of_type('top-level')) {
-                        top_level_widget_count++;
                         if (!TT.no_local_storage) {
-                            // TODO: revisit this - but needed for manual now
-                            local_storage_key = TT.UTILITIES.current_URL();
-                            if (top_level_widget_count > 1) {
-                                // for backwards compatibility don't add suffix to single top-level-widget pages
-                                local_storage_key += "#" + top_level_widget_count;
-                            }
-                            if (TT.UTILITIES.get_current_url_boolean_parameter("reset", false)) {
-                                try {
-                                    window.localStorage.removeItem(local_storage_key);
-                                } catch (error) {
-                                    TT.UTILITIES.display_message("Error removing previous state. Error message is " + error);
-                                }
-                            } else {
+                            if (!TT.UTILITIES.get_current_url_boolean_parameter("reset", false)) {
                                 if (json.load_most_recent_program) {
                                     try {
                                         toontalk_last_key = window.localStorage.getItem('toontalk-last-key');
