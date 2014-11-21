@@ -65,7 +65,7 @@ window.TOONTALK.UTILITIES =
                    top_level_element.appendChild(element_of_backside_widget);
                    position = $(element_of_backside_widget).position();
                    $(element_of_backside_widget).css({left: position.left + left_offset,
-                                                      top:  position.top + top_offset,
+                                                      top:  position.top  + top_offset,
                                                       width:  width,
                                                       height: height});
                    if (backside_widget_side.is_backside()) {

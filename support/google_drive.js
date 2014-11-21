@@ -142,10 +142,10 @@ window.TOONTALK.google_drive =
           // gets all files of toontalk_type if title undefined 
           // used to get all in folder_id but user may get files via sharing or re-organise their files
           var query;
-          if (!gapi) {
-              callback("Google Drive API not available.");
-              return;
-          }
+//           if (!gapi) {
+//               callback("Google Drive API not available.");
+//               return;
+//           }
           query = "properties has {key='ToonTalkType' and value='" + toontalk_type + "' and visibility='PUBLIC'} and trashed = false";
           if (title) {
               query += " and title='" + title + "'";

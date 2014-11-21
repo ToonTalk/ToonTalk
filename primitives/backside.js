@@ -22,45 +22,45 @@ window.TOONTALK.backside =
             var settings_button, visible, original_width, original_height, width_at_resize_start, height_at_resize_start, 
                 close_button, backside_widgets, help_button, help_frame, close_help_button;
             var update_flag_and_stop_sign_classes = function (running) {
-                    if (running) {
-                        $(green_flag_element).addClass   ("toontalk-green-flag-active")
-                                             .removeClass("toontalk-green-flag-inactive");
-                        $(stop_sign_element) .addClass   ("toontalk-stop-sign-inactive")
-                                             .removeClass("toontalk-stop-sign-active");
-                    } else {
-                        $(green_flag_element).addClass   ("toontalk-green-flag-inactive")
-                                             .removeClass("toontalk-green-flag-active");
-                        $(stop_sign_element) .addClass   ("toontalk-stop-sign-active")
-                                             .removeClass("toontalk-stop-sign-inactive");
-                    }
+                if (running) {
+                    $(green_flag_element).addClass   ("toontalk-green-flag-active")
+                                        .removeClass("toontalk-green-flag-inactive");
+                    $(stop_sign_element) .addClass   ("toontalk-stop-sign-inactive")
+                                         .removeClass("toontalk-stop-sign-active");
+                } else {
+                    $(green_flag_element).addClass   ("toontalk-green-flag-inactive")
+                                         .removeClass("toontalk-green-flag-active");
+                    $(stop_sign_element) .addClass   ("toontalk-stop-sign-active")
+                                         .removeClass("toontalk-stop-sign-inactive");
+                }
             };
             var update_flag_and_sign_position = function () {
-                    var backside_width  = $backside_element.width();
-                    var backside_height = $backside_element.height();
-                    var sign_width, close_button_width, green_flag_width, help_button_width;
-                    if (backside_width === 0) {
-                        // backside_element not yet added to the DOM
-                        // should really listen to an event that it has been
-                        setTimeout(update_flag_and_sign_position, 100);
+                var backside_width  = $backside_element.width();
+                var backside_height = $backside_element.height();
+                var sign_width, close_button_width, green_flag_width, help_button_width;
+                if (backside_width === 0) {
+                    // backside_element not yet added to the DOM
+                    // should really listen to an event that it has been
+                    setTimeout(update_flag_and_sign_position, 100);
+                } else {
+                    sign_width = $(stop_sign_element) .width();
+                    close_button_width = $(close_button).width();
+                    if (close_button_width) {
+                        close_button_width += 14; // needs a gap
                     } else {
-                        sign_width = $(stop_sign_element) .width();
-                        close_button_width = $(close_button).width();
-                        if (close_button_width) {
-                            close_button_width += 14; // needs a gap
-                        } else {
-                            close_button_width = 0; // width() may have returned null
-                        }
-                        $(stop_sign_element) .css({right: close_button_width});
-                        $(green_flag_element).css({right: close_button_width+sign_width+6}); // smaller gap needed
-                        green_flag_width = $(green_flag_element).width();
-                        if (help_button) {          
-                            $(help_button).css({right: close_button_width+sign_width+green_flag_width+12});
-                        }
-                        if (settings_button) {
-                            help_button_width = $(help_button).width() || 0;
-                            $(settings_button).css({right: close_button_width+sign_width+green_flag_width+help_button_width+12});
-                        }
+                        close_button_width = 0; // width() may have returned null
                     }
+                    $(stop_sign_element) .css({right: close_button_width});
+                    $(green_flag_element).css({right: close_button_width+sign_width+6}); // smaller gap needed
+                    green_flag_width = $(green_flag_element).width();
+                    if (help_button) {          
+                        $(help_button).css({right: close_button_width+sign_width+green_flag_width+12});
+                    }
+                    if (settings_button) {
+                        help_button_width = $(help_button).width() || 0;
+                        $(settings_button).css({right: close_button_width+sign_width+green_flag_width+help_button_width+12});
+                    }
+                }
             };
             var description_label = this.create_description_label(backside, widget);
             var close_title, close_handler;

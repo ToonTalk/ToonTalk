@@ -618,12 +618,12 @@ window.TOONTALK.widget = (function (TT) {
                         if (json_backside_widget_side.is_backside) {
                             if (backside_widget_view.backside_left) {
                                 json_view.backside_left = backside_widget_view.backside_left;
-                                json_view.backside_top = backside_widget_view.backside_top;
+                                json_view.backside_top  = backside_widget_view.backside_top;
                             }
                         } else {
                             if (backside_widget_view.frontside_left) {
                                 json_view.frontside_left = backside_widget_view.frontside_left;
-                                json_view.frontside_top = backside_widget_view.frontside_top;
+                                json_view.frontside_top  = backside_widget_view.frontside_top;
                             }
                         }
                     });
