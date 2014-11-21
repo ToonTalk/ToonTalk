@@ -302,6 +302,10 @@ window.TOONTALK.google_drive =
           }
        },
 
+       google_drive_url: function (id) {
+           return "https://googledrive.com/host/" + id + "/";
+       },
+
        /**
  * Insert a new custom file property.
  *

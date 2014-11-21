@@ -17,7 +17,7 @@ window.TOONTALK.SETTINGS =
         var cloud_pages_index = 2;
         var local_files_table = TT.UTILITIES.create_local_files_table(widget);
         labels[local_files_tab_index] = "Programs stored in browser";
-        add_click_listeners(widget, local_files_table, false, 'program', settings_panel);
+        add_click_listeners(widget, local_files_table, false, settings_panel);
         tables[local_files_tab_index] = local_files_table;
         if (cloud_available) {
             create_cloud_files_table('program', widget, settings_panel, function (table) {
@@ -41,7 +41,7 @@ window.TOONTALK.SETTINGS =
     };
     var create_cloud_files_table = function (toontalk_type, widget, settings_panel, callback) {
         var full_callback = function (response) {
-            var error, table;
+            var error, table, class_name;
             if (typeof response === 'string') {
                 error = response;
             } else if (response.error) {
@@ -53,29 +53,33 @@ window.TOONTALK.SETTINGS =
                 callback(null);
                 return;
             }
-            table = TT.UTILITIES.create_file_data_table(response.items, true);
-            add_click_listeners(widget, table, true, toontalk_type, settings_panel);
+            class_name = (toontalk_type === 'program') ? "toontalk-file-load-button" : "toontalk-published-page-button";
+            table = TT.UTILITIES.create_file_data_table(response.items, true, class_name);
+            add_click_listeners(widget, table, true, settings_panel);
             callback(table);
         };
         TT.google_drive.get_toontalk_files(false, toontalk_type, full_callback);
     };
     
-    var add_click_listeners = function (widget, table, in_the_cloud, toontalk_type, settings_panel) {
-        $(table).find(".toontalk-file-load-button").click(function (event) {
+    var add_click_listeners = function (widget, table, in_the_cloud, settings_panel) {
+        var program_click_handler = function (event) {
             var callback = function () {
                 $(settings_panel).remove();
             };
             var saved_callback = function () {
-                if (toontalk_type === 'program') {
-                    widget.set_setting('program_name', event.target.innerText);
-                    widget.load(in_the_cloud, callback);
-                } else {
-                    alert("Not yet implemented");
-                }
-            };
+                widget.set_setting('program_name', event.target.innerText);
+                // TODO: when in the cloud use this.title or the like to directly load the Google file
+                widget.load(in_the_cloud, callback);
+            }.bind(this);
             // save in case current program has changed
             widget.save(true, undefined, saved_callback);
-        }).attr('title', "Click to switch to this program.");
+        };
+        var page_click_handler = function (event) {
+            // title of this element is the URL
+            console.log(window.open(this.title, "published page editor"));
+        };
+        $(table).find(".toontalk-file-load-button")     .click(program_click_handler);
+        $(table).find(".toontalk-published-page-button").click(page_click_handler);  
     };
     return {
       open: function (widget) {
@@ -127,12 +131,19 @@ window.TOONTALK.SETTINGS =
                                                               widget.publish(display_published);
                                                           });
           var display_published = function (google_file) {
+              var link_to_publication = create_connection_to_google_file(google_file, "Published: ");
+              $(program_name.container).find("tr").append(TT.UTILITIES.create_table_entry(link_to_publication));
+          };
+          var create_connection_to_google_file = function (google_file, prefix) {
               var link_to_publication = document.createElement('span');
-              var url = "https://googledrive.com/host/" + google_file.id + "/";
+              var url = TT.google_drive.google_drive_url(google_file.id);
               // note can replace the link with code that calls window.open in order to get a reference to that window for postMessage
               // and can check the current contents using something like $($('.toontalk-edit')[1]).editable('getHTML', false, true) 
-              link_to_publication.innerHTML = "Published: <a href='" + url + "' target='_blank'>" + widget.get_setting('program_name') + "</a>";
-              $(program_name.container).find("tr").append(TT.UTILITIES.create_table_entry(link_to_publication));
+              link_to_publication.innerHTML = prefix + "<div class='toontalk-published-page-button'>" + widget.get_setting('program_name') + "</div>";
+              link_to_publication.addEventListener('click', function (event) {
+                  console.log(window.open(url, "published page editor"));
+              });
+              return link_to_publication;
           };
           // create a div whose positioning isn't absolute
           // settings_panel needs to be absolute for at least z-index to work properly

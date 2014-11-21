@@ -1599,15 +1599,16 @@ window.TOONTALK.UTILITIES =
             return tabs;
         },
 
-        create_file_data_table: function (data, in_cloud) {
+        create_file_data_table: function (files_data, in_cloud, button_class) {
             var table = document.createElement('table');
             $(table).DataTable({
-               data: data,
+               data: files_data,
                columns: [{data: 'title', 
                           title: "Name",
                           render: function (data, type, full, meta) {
                                         var name = in_cloud ? data.substring(0, data.length-5) : data;
-                                        return "<div class='toontalk-file-load-button'>" + name + "</div>";
+                                        var title = in_cloud ? TT.google_drive.google_drive_url(full.id) : "Click to load this program.";
+                                        return "<div class='" + button_class + "' title='" + title + "'>" + name + "</div>";
                           }}, 
                          {data: 'modifiedDate', 
                           title: "Modified",
@@ -1637,7 +1638,7 @@ window.TOONTALK.UTILITIES =
                             };
                 }
             });
-            return TT.UTILITIES.create_file_data_table(data, false);
+            return TT.UTILITIES.create_file_data_table(data, false, "toontalk-file-load-button");
         },
         
         get_dragee: function () {

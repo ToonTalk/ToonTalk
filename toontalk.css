@@ -536,7 +536,7 @@ body {
 /* 	Need enough width for interface and links to published pages */
 	min-width: 800px;
 }
-.toontalk-file-load-button {
+.toontalk-file-load-button, .toontalk-published-page-button {
 	color: blue;
 	text-decoration: underline;
     cursor: pointer;
