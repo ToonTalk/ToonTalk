@@ -212,7 +212,7 @@ window.TOONTALK.UTILITIES =
             function (index, element) {
                 var json_string = element.textContent;
                 var json, widget, frontside_element, backside_element, backside,
-                    stored_json_string, local_storage_key, message, toontalk_last_key;
+                    stored_json_string, message, toontalk_last_key;
                 if (!json_string) {
                     return;
                 }
@@ -232,10 +232,6 @@ window.TOONTALK.UTILITIES =
                                         toontalk_last_key = window.localStorage.getItem('toontalk-last-key');
                                         if (toontalk_last_key) {
                                             stored_json_string = window.localStorage.getItem(toontalk_last_key);
-                                        }
-                                        if (!stored_json_string) {
-                                            // for backwards compatibility
-                                            stored_json_string = window.localStorage.getItem(local_storage_key);
                                         }
                                     } catch (error) {
                                         message = "Error reading previous state. Error message is " + error;
@@ -290,7 +286,7 @@ window.TOONTALK.UTILITIES =
                 }
             });
             if (!includes_top_level_backside) {
-                // since there is no backside 'work space' need a way to turn things off
+                // since there is no backside 'work space' we need a way to turn things off
                 $(document).click(function () {
                     $(".toontalk-frontside").each(function (index, element) {
                         var widget = element.toontalk_widget;
