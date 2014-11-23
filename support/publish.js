@@ -127,6 +127,7 @@ window.addEventListener("message", message_handler, false);\n\
                 // do something?
             };
             message_data.edits.forEach(function (edit, index) {
+                var dynamic_index = index == 0 ? 1 : 3;
                 if (edit) {
                     dynamic_contents[index+1] = edit; //  dynamic_contents[0] is page title
                 }
