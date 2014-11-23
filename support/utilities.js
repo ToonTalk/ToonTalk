@@ -330,15 +330,18 @@ window.TOONTALK.UTILITIES =
     var timeout_message_name = "zero-timeout-message";
     window.addEventListener("message", 
                             function (event) {
-                                if (event.source == window && event.data == timeout_message_name) {
+                                if (event.source === window && event.data === timeout_message_name) {
                                     event.stopPropagation();
                                     if (timeouts.length > 0) {
                                         (timeouts.shift())();
                                     }
-                                }   
+                                    return;
+                                }
+                                if (event.data.edits) {
+                                    TT.publish.republish(event.data);
+                                }
                             },
-                            true);
-
+                            false); // don't capture events
     $(document).ready(initialise);
     return {
         create_from_json: function (json, additional_info, delay_backside_widgets) {
@@ -1608,7 +1611,7 @@ window.TOONTALK.UTILITIES =
                           render: function (data, type, full, meta) {
                                         var name = in_cloud ? data.substring(0, data.length-5) : data;
                                         var title = in_cloud ? TT.google_drive.google_drive_url(full.id) : "Click to load this program.";
-                                        return "<div class='" + button_class + "' title='" + title + "'>" + name + "</div>";
+                                        return "<div class='" + button_class + "' title='" + title + "'fileId='" + full.id + "'>" + name + "</div>";
                           }}, 
                          {data: 'modifiedDate', 
                           title: "Modified",

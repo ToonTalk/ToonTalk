@@ -76,11 +76,45 @@ window.TOONTALK.SETTINGS =
         };
         var page_click_handler = function (event) {
             // title of this element is the URL
-            console.log(window.open(this.title, "published page editor"));
+            open_url_and_enable_editor(this.title, this.fileId);            
         };
         $(table).find(".toontalk-file-load-button")     .click(program_click_handler);
         $(table).find(".toontalk-published-page-button").click(page_click_handler);  
     };
+
+    var open_url_and_enable_editor = function (url, file_id) {
+        var new_window = window.open(url, "published page editor");
+        // TODO: post every second (for a say a minute) until a response is received
+        repeated_post_message_until_reply(function () {
+                                              // using * instead of url
+                                              // since https://googledrive.com/host/...
+                                              // becomes https://a1801c08722da65109a4efa9e0ae4bdf83fafed0.googledrive.com/host/...
+                                              new_window.postMessage({save_edits_to: window.location.href,
+                                                                      file_id: file_id},
+                                                                     "*");
+                                          },
+                                          file_id);
+    };
+
+    var repeated_post_message_until_reply = function (time_out_callback, file_id) {
+        var message_acknowledged = false;
+        var message_listener = function (event) {
+            message_acknowledged = event.data.editor_enabled_for && event.data.editor_enabled_for === file_id;
+            if (message_acknowledged) {
+                window.removeEventListener("message", message_listener);
+            }
+        }
+        window.addEventListener("message", message_listener);
+        if (!message_acknowledged) {
+            setTimeout(function () {
+                          time_out_callback();
+                          // and try again after a delay (unless acknowledged)
+                          repeated_post_message_until_reply(time_out_callback, file_id);
+                          },
+                          500);
+        }
+    };
+
     return {
       open: function (widget) {
           var settings_panel = document.createElement('div');
@@ -137,11 +171,9 @@ window.TOONTALK.SETTINGS =
           var create_connection_to_google_file = function (google_file, prefix) {
               var link_to_publication = document.createElement('span');
               var url = TT.google_drive.google_drive_url(google_file.id);
-              // note can replace the link with code that calls window.open in order to get a reference to that window for postMessage
-              // and can check the current contents using something like $($('.toontalk-edit')[1]).editable('getHTML', false, true) 
               link_to_publication.innerHTML = prefix + "<div class='toontalk-published-page-button'>" + widget.get_setting('program_name') + "</div>";
               link_to_publication.addEventListener('click', function (event) {
-                  console.log(window.open(url, "published page editor"));
+                  open_url_and_enable_editor(url, google_file.id);
               });
               return link_to_publication;
           };

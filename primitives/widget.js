@@ -1158,17 +1158,7 @@ window.TOONTALK.widget = (function (TT) {
                 }
             };
             widget.publish = function (callback) {
-                var google_drive_status = TT.google_drive.get_status();
-                var json, json_div, contents, program_name;
-                if (google_drive_status === "Ready") {
-                    json = TT.UTILITIES.get_json_top_level(this);
-                    json_div = TT.UTILITIES.toontalk_json_div(json, this);
-                    program_name = this.get_setting('program_name');
-                    contents = TT.publish_part_1 + program_name + TT.publish_part_2 + json_div + TT.publish_part_3;
-                    TT.google_drive.upload_file(program_name, "html", contents, callback);
-                } else {
-                    console.log("Unable to publish to Google Drive because: " + google_drive_status);
-                }
+                TT.publish.publish_widget(this.get_setting('program_name'), this, callback);   
             };
             widget.save_to_local_storage = function (json, time_stamp) {
                 var program_name = this.get_setting('program_name');
@@ -1247,49 +1237,4 @@ window.TOONTALK.widget = (function (TT) {
     };
 
 }(window.TOONTALK));
-
-// somehow <link href="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/css/froala_style.min.css" rel="stylesheet" type="text/css" />\n\
-// is missing
-
-// releases should use the following:
-// <script src="https://toontalk.github.io/ToonTalk/compile/toontalk.js"></script>\n\
-// <link rel="stylesheet" media="all" href="https://toontalk.github.io/ToonTalk/toontalk.css">\n\
-
-window.TOONTALK.publish_part_1 =
-'<!DOCTYPE html>\n\
-<html>\n\
-<head>\n\
-<link rel="stylesheet" media="all" href="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/toontalk.css">\n\
-<link href="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/css/font-awesome.min.css" rel="stylesheet" type="text/css" />\n\
-<link href="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/css/froala_editor.min.css" rel="stylesheet" type="text/css" />\n\
-<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/compile/toontalk.js"></script>\n\
-<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/froala_editor.min.js"></script>\n\
-<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/block_styles.min.js"></script>\n\
-<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/colors.min.js"></script>\n\
-<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/font_family.min.js"></script>\n\
-<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/font_size.min.js"></script>\n\
-<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/lists.min.js"></script>\n\
-<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/tables.min.js"></script>\n\
-<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/video.min.js"></script>\n\
-<title>';
-window.TOONTALK.publish_part_2 =
-'</title>\n\
-<link rel="shortcut icon" href="favicon.ico" />\n\
-</head>\n\
-<body>\n\
-<form>\n\
-<textarea class="toontalk-edit" name="content">Edit this.</textarea>\n\
-</form>\n\
-';
-window.TOONTALK.publish_part_3 =
-'<form>\n\
-<textarea class="toontalk-edit" name="content">And edit this.</textarea>\n\
-</form>\n\
-<script>\n\
-      $(function() {\n\
-          $(".toontalk-edit").editable({inlineMode: true, imageUpload: false})\n\
-      });\n\
-  </script>\n\
-</body>\n\
-</html>';
 

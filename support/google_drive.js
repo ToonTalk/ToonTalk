@@ -170,7 +170,6 @@ window.TOONTALK.google_drive =
        * @param {String} contents String contents of the saved file.
        */
       upload_file: function (file_name, extension, contents, callback) {
-          var folder_id = extension === 'json' ? programs_folder_id : pages_folder_id;
           var toontalk_type = extension === 'json' ? 'program' : 'page';
           var full_file_name = file_name + "." + extension;
           var insert_or_update = function (response) {
@@ -190,19 +189,19 @@ window.TOONTALK.google_drive =
                       };
                   };
                   if (file_id) { 
-                      TT.google_drive.insert_or_update_file(undefined, file_id, toontalk_type, contents, folder_id, callback);
+                      TT.google_drive.insert_or_update_file(undefined, file_id, toontalk_type, contents, callback);
 //                        TT.google_drive.download_file(response.items[0], function (response) {
 //                            console.log(response);
 //                        });
                   } else {
-                      TT.google_drive.insert_or_update_file(full_file_name, undefined, toontalk_type, contents, folder_id, callback);   
+                      TT.google_drive.insert_or_update_file(full_file_name, undefined, toontalk_type, contents, callback);   
                   }
               });
           };
           TT.google_drive.get_toontalk_files(full_file_name, toontalk_type, insert_or_update);
       },
 
-      insert_or_update_file: function (file_name, file_id, toontalk_type, contents, folder_id, callback) {
+      insert_or_update_file: function (file_name, file_id, toontalk_type, contents, callback) {
           // if already exists then file_id is defined otherwise file_name
           var boundary = '-------314159265358979323846'; // could declare as const - ECMAScript 6
           var delimiter = "\r\n--" + boundary + "\r\n";
@@ -219,10 +218,11 @@ window.TOONTALK.google_drive =
                   if (callback) {
                       callback(file);
                   }
-              }          
+              };
+          var folder_id = toontalk_type === 'program' ? programs_folder_id : pages_folder_id;        
           var request_body, path, method, request;
           metadata["parents"] = [{"kind": "drive#fileLink",
-                                    "id": folder_id}];
+                                  "id":   folder_id}];
           request_body =
               delimiter +
               'Content-Type: application/json\r\n\r\n' +
