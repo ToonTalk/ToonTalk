@@ -127,9 +127,9 @@ window.addEventListener("message", message_handler, false);\n\
                 // do something?
             };
             message_data.edits.forEach(function (edit, index) {
-                var dynamic_index = index == 0 ? 1 : 3;
+                var dynamic_index = index === 0 ? 1 : 3;
                 if (edit) {
-                    dynamic_contents[index+1] = edit; //  dynamic_contents[0] is page title
+                    dynamic_contents[dynamic_index] = edit;
                 }
             });
             TT.google_drive.insert_or_update_file(undefined, message_data.file_id, 'page', assemble_contents(), callback);
