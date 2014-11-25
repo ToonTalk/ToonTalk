@@ -1611,7 +1611,8 @@ window.TOONTALK.UTILITIES =
                           render: function (data, type, full, meta) {
                                         var name = in_cloud ? data.substring(0, data.length-5) : data;
                                         var title = in_cloud ? TT.google_drive.google_drive_url(full.id) : "Click to load this program.";
-                                        return "<div class='" + button_class + "' title='" + title + "'fileId='" + full.id + "'>" + name + "</div>";
+                                        // fileId becomes fileid in Chrome (and maybe other browsers)
+                                        return "<div class='" + button_class + "' title='" + title + "'id='" + full.id + "'>" + name + "</div>";
                           }}, 
                          {data: 'modifiedDate', 
                           title: "Modified",

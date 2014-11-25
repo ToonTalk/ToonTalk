@@ -76,7 +76,7 @@ window.TOONTALK.SETTINGS =
         };
         var page_click_handler = function (event) {
             // title of this element is the URL
-            open_url_and_enable_editor(this.title, this.fileId);            
+            open_url_and_enable_editor(this.title, this.id);            
         };
         $(table).find(".toontalk-file-load-button")     .click(program_click_handler);
         $(table).find(".toontalk-published-page-button").click(page_click_handler);  
@@ -84,7 +84,6 @@ window.TOONTALK.SETTINGS =
 
     var open_url_and_enable_editor = function (url, file_id) {
         var new_window = window.open(url, "published page editor");
-        // TODO: post every second (for a say a minute) until a response is received
         repeated_post_message_until_reply(function () {
                                               // using * instead of url
                                               // since https://googledrive.com/host/...
@@ -96,16 +95,17 @@ window.TOONTALK.SETTINGS =
                                           file_id);
     };
 
+    var message_acknowledged = {};
+
     var repeated_post_message_until_reply = function (time_out_callback, file_id) {
-        var message_acknowledged = false;
         var message_listener = function (event) {
-            message_acknowledged = event.data.editor_enabled_for && event.data.editor_enabled_for === file_id;
-            if (message_acknowledged) {
+            if (event.data.editor_enabled_for && event.data.editor_enabled_for === file_id) {
+                message_acknowledged.file_id = true;
                 window.removeEventListener("message", message_listener);
             }
         }
         window.addEventListener("message", message_listener);
-        if (!message_acknowledged) {
+        if (!message_acknowledged.file_id) {
             setTimeout(function () {
                           time_out_callback();
                           // and try again after a delay (unless acknowledged)
