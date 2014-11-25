@@ -43,18 +43,18 @@ static_contents[1] =
 </head>\n\
 <body>\n\
 <form>\n\
-<textarea class="toontalk-edit" name="content">';
+<div class="toontalk-edit" name="content">';
 // first editor contents inserted here
 static_contents[2] = 
-'</textarea>\n\
+'</div>\n\
 </form>\n';
 // widget div inserted here
 static_contents[3] = 
 '\n<form>\n\
-<textarea class="toontalk-edit" name="content">';
+<div class="toontalk-edit" name="content">';
 // second editor contents inserted here
 static_contents[4] =
-'</textarea>\n\
+'</div>\n\
 </form>\n\
 <script>\n\
 var current_contents = [];\n\
