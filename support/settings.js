@@ -95,24 +95,27 @@ window.TOONTALK.SETTINGS =
                                           file_id);
     };
 
-    var message_acknowledged = {};
-
-    var repeated_post_message_until_reply = function (time_out_callback, file_id) {
+    var repeated_post_message_until_reply = function (message_poster, file_id) {
         var message_listener = function (event) {
             if (event.data.editor_enabled_for && event.data.editor_enabled_for === file_id) {
-                message_acknowledged.file_id = true;
+                message_acknowledged = true;
                 window.removeEventListener("message", message_listener);
             }
-        }
-        window.addEventListener("message", message_listener);
-        if (!message_acknowledged.file_id) {
+        };
+        var repeat_until_acknowledged = function (message_poster, file_id) {
+            if (message_acknowledged) {
+                return;
+            }
             setTimeout(function () {
-                          time_out_callback();
-                          // and try again after a delay (unless acknowledged)
-                          repeated_post_message_until_reply(time_out_callback, file_id);
-                          },
-                          500);
-        }
+                           message_poster();
+                           // and try again after a delay (unless acknowledged)
+                           repeat_until_acknowledged(message_poster, file_id);
+                       },
+                       500);
+        };
+        var message_acknowledged = false;
+        window.addEventListener("message", message_listener);
+        repeat_until_acknowledged(message_poster, file_id);
     };
 
     return {

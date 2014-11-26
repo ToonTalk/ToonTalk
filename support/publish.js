@@ -8,7 +8,7 @@
 
 window.TOONTALK.publish = (function (TT) {
 
-    var dynamic_contents = ["replaced by page title", "Edit this.", "replace with widget div", "And edit this.", ""];
+    var dynamic_contents = ["replaced by page title", "Edit this. Select text for formatting.", "replace with widget div", "And edit this.", ""];
     var widget_div_index = 2;
     var static_contents = [];
     var program_name;
@@ -104,8 +104,7 @@ window.addEventListener("message", message_handler, false);\n\
     return {
         publish_widget: function (page_title, widget, callback) {
            // TODO: generalize this to other cloud services
-           var google_drive_status = TT.google_drive.get_status();
-           
+           var google_drive_status = TT.google_drive.get_status();    
            var json;
            dynamic_contents[0] = page_title;
            if (google_drive_status === "Ready") {
