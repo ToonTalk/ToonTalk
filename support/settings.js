@@ -254,7 +254,7 @@ window.TOONTALK.SETTINGS =
           if (google_status === 'Need to authorize') {
               google_drive.container.appendChild(TT.UTILITIES.create_space());
               google_drive.container.appendChild(authorize);
-          } else if (google_status !== 'Authorized' && google_status !== 'Ready') {
+          } else if (google_status !== 'Authorized' && google_status !== 'Ready' && google_status !== 'Authorized but not yet ready') {
               cloud_available = false;
               // delayed because JQuery otherwise complains that the buttons haven't been initialised
               setTimeout(function () {
