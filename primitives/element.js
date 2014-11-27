@@ -150,6 +150,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 return;
             }
             if (!$(frontside_element).is(":visible")) {
+                // not yet visible so postpone
+                TT.UTILITIES.set_timeout(function () {
+                    this.apply_css();
+                }.bind(this),
+                100);
                 return;
             }
             if (transform_css) {
@@ -581,7 +586,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             $(frontside_element).css({opacity: 1});
         }
         if (frontside_element.children.length === $(frontside_element).children(".ui-resizable-handle").length) {
-            // only children are resize handles so add the HTML
+            // the only children are resize handles so add the HTML
             rendering = document.createElement('div');
             rendering.innerHTML = this.get_HTML();
             frontside_element.appendChild(rendering);

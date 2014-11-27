@@ -1113,7 +1113,7 @@ window.TOONTALK.widget = (function (TT) {
             widget = widget.has_parent(widget);
             widget.get_setting = function (option_name) {
                 if (typeof settings[option_name] === 'undefined') {
-                    settings[option_name] = TT.DEFAULT_SETTINGS[option_name];     
+                    settings[option_name] = TT.DEFAULT_SETTINGS && TT.DEFAULT_SETTINGS[option_name];     
                 }
                 return settings[option_name];
             };
