@@ -622,9 +622,25 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         return "docs/manual/elements.html";
     };
     
-    element.get_json = function () {
+    element.get_json = function (json_history) {
         var attributes = this.get_style_attributes();
         var json_attributes = [];
+        var html = this.get_HTML();
+        // rewrite using startsWith in Ecma 6
+        var html_worth_sharing = html.indexOf("<img src='data:image/") === 0;
+        var html_encoded, html_index;
+        if (html_worth_sharing) {
+            if (!json_history.shared_html) {
+                json_history.shared_html = [];
+            }
+            html_index = json_history.shared_html.indexOf(html);
+            if (html_index < 0) {
+                html_index = json_history.shared_html.push(html)-1;
+            }
+            html_encoded = {shared_html_index: html_index};
+        } else {
+            html_encoded = encodeURIComponent(TT.UTILITIES.remove_z_index(this.get_HTML()));
+        }
         attributes.forEach(function (item) {
             // don't want them to appear where they were in the source page
             // need to revisit this since sometimes we want left and top
@@ -635,7 +651,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         });
         return {type: "element",
                 // z-index info is temporary and should not be captured here
-                html: encodeURIComponent(TT.UTILITIES.remove_z_index(this.get_HTML())), 
+                html: html_encoded, 
                 attributes: json_attributes,
                 attribute_values: json_attributes.map(this.get_attribute.bind(this)),
                 additional_classes: this.get_additional_classes()
@@ -643,7 +659,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     };
     
     TT.creators_from_json["element"] = function (json, additional_info) {
-        var reconstructed_element = element.create(decodeURIComponent(json.html), json.attributes, json.description);
+        var html = typeof json.html === 'string' ? decodeURIComponent(json.html) : additional_info.shared_html[json.html.shared_html_index]; 
+        var reconstructed_element = element.create(html, json.attributes, json.description);
         var ignore_attributes;
         if (additional_info && additional_info.event) {
             // perhaps should check that event is a drop event

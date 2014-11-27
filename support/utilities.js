@@ -367,6 +367,9 @@ window.TOONTALK.UTILITIES =
                 additional_info.json_of_shared_widgets = json.shared_widgets;
                 additional_info.shared_widgets = [];
             }
+            if (json.shared_html) {
+                additional_info.shared_html = json.shared_html;   
+            }
             if (json.widget) {
                 // is a context where need to know which side of the widget
                 widget = TT.UTILITIES.create_from_json(json.widget, additional_info);
@@ -564,6 +567,7 @@ window.TOONTALK.UTILITIES =
                     }
                 });
             }
+            json.shared_html = json_history.shared_html;
             return json;
         },
         

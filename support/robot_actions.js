@@ -10,10 +10,11 @@ window.TOONTALK.actions =
 (function (TT) {
     "use strict";
 
-    TT.creators_from_json["body"] = function (json) {
+    TT.creators_from_json["body"] = function (json, additional_info) {
         var actions = TT.actions.create();
         // some steps need to refer back to this (i.e. the body)
-        actions.initialise_steps(TT.UTILITIES.create_array_from_json(json.steps, {body: actions}));
+        additional_info.body = actions;
+        actions.initialise_steps(TT.UTILITIES.create_array_from_json(json.steps, additional_info));
         return actions;
     };
     
