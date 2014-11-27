@@ -278,17 +278,17 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             }
             return 'not matched';
         }
-        if (!context.match_with_this_element_widget) {
+        if (!context.match_with_another_element_widget) {
             return 'not matched';
         }
-        return context.match_with_this_element_widget(this);
+        return context.match_with_another_element_widget(this);
     };
     
     element.match_with_any_element = function () {
         return 'matched';
     };
     
-    element.match_with_this_element_widget = function (other_element) {
+    element.match_with_another_element_widget = function (other_element) {
         if (this.get_HTML() === other_element.get_HTML()) {
             return 'matched';
         } else {
@@ -462,9 +462,28 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         var backside_element = this.get_backside_element();
         var attribute_value = this.get_attribute(attribute_name);
         var this_element_widget = this;
+        var drag_listener = 
+            function (event) {
+                // ensures numbers are updated as the element is dragged
+                var owner = attribute_widget.get_attribute_owner();
+                var top_level_position, attribute_value;
+                if (event.currentTarget.toontalk_widget !== owner) {
+                    return;
+                }
+                top_level_position = $(owner.get_frontside_element()).closest(".toontalk-top-level-backside").offset();
+                if (!top_level_position) {
+                    console.log("Unable to find top-level backside of an element for its position. Perhaps is 'visible' but not attached.");
+                    top_level_position = {left: 0, top: 0};
+                }
+                attribute_value = attribute_name === 'left' ? 
+                                  event.pageX-top_level_position.left-owner.drag_x_offset :
+                                  event.pageY-top_level_position.top -owner.drag_y_offset;
+                attribute_widget.set_value_from_decimal(attribute_value);
+                number_update_display.call(attribute_widget);
+        }.bind(this);
         var $attribute_input, attribute_widget, original_copies,
             // store some default number functions:
-            number_equals, number_update_display, number_to_string;
+            number_equals, number_update_display, number_to_string, frontside_element;
         if (backside_element) {
             $attribute_input = $(backside_element).find(selector);
             if ($attribute_input.length > 0) {
@@ -481,7 +500,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         };
         number_to_string = attribute_widget.toString;
         attribute_widget.toString = function () {
-            return number_to_string.call(this) + " (the " + this.attribute + " attribute of " + this_element_widget + ")";
+            return number_to_string.call(this) + " (the " + this.attribute + " attribute of " + this.get_attribute_owner() + ")";
         };
 //         attribute_widget.get_element = function () {
 //             if ($attribute_input && $attribute_input.length > 0) {
@@ -511,7 +530,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
 //                 console.log("copy set value " + new_value + " id is " + copy.debug_id);
                 return_value = copy.set_value_from_sub_classes(new_value); 
             });
-            this_element_widget.set_attribute(this.attribute, bigrat.toDecimal(new_value));
+            this.get_attribute_owner().set_attribute(this.attribute, bigrat.toDecimal(new_value));
             return return_value;
         };
 //         attribute_widget.visible = function () {
@@ -522,7 +541,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         attribute_widget.update_display = function () {
             var attribute_value;
             if (!this.get_erased()) {
-                attribute_value = this_element_widget.get_attribute(this.attribute);
+                attribute_value = this.get_attribute_owner().get_attribute(this.attribute);
                 attribute_widget.set_value_from_decimal(attribute_value);
             }
             number_update_display.call(this);
@@ -533,21 +552,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                return true; // don't remove
             });
             if (attribute_name === 'left' || attribute_name === 'top') {
-                this.get_frontside_element().addEventListener('drag',
-                    // ensures numbers are updated as the element is dragged
-                    function (event) {
-                        var top_level_position = $(this_element_widget.get_frontside_element()).closest(".toontalk-top-level-backside").offset();
-                        var attribute_value;
-                        if (!top_level_position) {
-                            console.log("Unable to find top-level backside of an element for its position. Perhaps is 'visible' but not attached.");
-                            top_level_position = {left: 0, top: 0};
-                        }
-                        attribute_value = attribute_name === 'left' ? 
-                                                             event.pageX-top_level_position.left-this_element_widget.drag_x_offset :
-                                                             event.pageY-top_level_position.top -this_element_widget.drag_y_offset;
-                        attribute_widget.set_value_from_decimal(attribute_value);
-                        number_update_display.call(attribute_widget);
-                    });
+                frontside_element = this.get_frontside_element();
+                frontside_element.addEventListener('drag', drag_listener);
             }
         }
         attribute_widget.copy = function (just_value) {
@@ -561,6 +567,25 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             return {type: 'attribute_number',
                     attribute_name: attribute_name,
                     element: TT.UTILITIES.get_json(this_element_widget, json_history)};            
+        };
+        attribute_widget.get_attribute_owner = function () {
+            // return this_element_widget or backside top ancestor of type element
+            var backside_ancestor_side = this.get_parent_of_backside();
+            var widget, widget_parent;
+            if (!backside_ancestor_side) { // not clear if this can happen
+                return this_element_widget;
+            }
+            if (!backside_ancestor_side.is_of_type('element')) {
+                return this_element_widget;
+            }
+            widget = backside_ancestor_side.get_widget();
+            widget_parent = widget.get_parent_of_backside();
+            while ((widget_parent &&
+                    widget_parent.is_of_type('element'))) {
+                widget = widget_parent.get_widget();
+                widget_parent = widget.get_parent_of_backside();
+            }
+            return widget;
         };
         return attribute_widget;
     };
