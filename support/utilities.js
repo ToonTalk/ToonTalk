@@ -345,6 +345,16 @@ window.TOONTALK.UTILITIES =
     $(document).ready(initialise);
     return {
         create_from_json: function (json, additional_info, delay_backside_widgets) {
+            var handle_delayed_backside_widgets = function (widget, additional_info, shared_widget_index) {
+                additional_info.shared_widgets[shared_widget_index] = widget;
+                if (widget.finish_create_from_json_continuation) {
+                    // this part of the work was postponed so that shared_widgets could be set above
+                    // this prevents infinite recursion when processing self-referential JSON, e.g. element with attribute_object on back
+                    widget.finish_create_from_json_continuation();
+                    widget.finish_create_from_json_continuation = undefined;
+                }    
+                return widget;   
+            };
             var widget, side_element, backside_widgets, json_semantic, json_view, size_css, json_of_shared_widget, shared_widget;
             if (!json) {
                 // was undefined and still is
@@ -385,6 +395,7 @@ window.TOONTALK.UTILITIES =
                 // following is to deal with reconstructing cyclic references
                 // if this is encountered again recursively will discover the JSON with shared_widget_index
 //                 additional_info.shared_widgets[json.shared_widget_index] = json;
+                // following postpones creation of backside widgets to deal with cycles
                 widget = TT.UTILITIES.create_from_json(json_of_shared_widget, additional_info, true);
 //                 if (additional_info.cyclic_widgets_json && typeof json_of_shared_widget.shared_widget_index === 'undefined') {
 //                     if (additional_info.cyclic_widgets_json.indexOf(json) >= 0) {
@@ -396,14 +407,7 @@ window.TOONTALK.UTILITIES =
 //                         widget = json;
 //                     }
 //                 }
-                additional_info.shared_widgets[json.shared_widget_index] = widget;
-                if (widget.finish_create_from_json_continuation) {
-                    // this part of the work was postponed so that shared_widgets could be set above
-                    // this prevents infinite recursion when processing self-referential JSON, e.g. element with attribute_object on back
-                    widget.finish_create_from_json_continuation();
-                    widget.finish_create_from_json_continuation = undefined;
-                }    
-                return widget;
+                return handle_delayed_backside_widgets(widget, additional_info, json.shared_widget_index);
             }
             json_semantic = json.semantic;
             if (!json_semantic) {
@@ -412,7 +416,8 @@ window.TOONTALK.UTILITIES =
             }
             json_view = json.view;
             if (json_semantic.shared_widget_index >= 0) {
-                return TT.UTILITIES.create_from_json(additional_info.json_of_shared_widgets[json_semantic.shared_widget_index], additional_info);
+                widget = TT.UTILITIES.create_from_json(additional_info.json_of_shared_widgets[json_semantic.shared_widget_index], additional_info, true);
+                return handle_delayed_backside_widgets(widget, additional_info, json_semantic.shared_widget_index);
             } else if (TT.creators_from_json[json_semantic.type]) {
                 if (!additional_info) {
                     additional_info = {};
