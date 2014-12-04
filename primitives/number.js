@@ -562,7 +562,10 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
                  if (this.number_dropped_on_me_semantics(other_number, event, robot) && robot) {
                      // will stop if drop signaled an error
                     robot.run_next_step();
-                 } 
+                 }
+                 if (event) {
+                     this.backup_all();
+                 }
                  $(bammer_element).removeClass("toontalk-bammer-down");
                  TT.UTILITIES.set_timeout(function () {
                          var top_level_offset = $top_level_backside_element.offset();
