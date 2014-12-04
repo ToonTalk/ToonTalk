@@ -584,7 +584,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     }
                     return get_backside_parent(parent.get_widget());
                 }
-                console.log("Expected " + widget + " to have a parent of its front side.");
+                // if backside never opened then the attribute_widget may not have a parent
+                // which is OK since will treat this_element_widget as its owner
             };
             // if this is a copy use the original 
             var original = this.get_original_attribute_widget();
