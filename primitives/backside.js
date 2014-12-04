@@ -129,8 +129,8 @@ window.TOONTALK.backside =
                                          help_frame = document.createElement("iframe");
                                          $(help_frame).addClass("toontalk-help-frame");
                                          help_frame.src = help_URL;
-                                         document.body.appendChild(help_frame);
                                          document.body.appendChild(close_help_button);
+                                         document.body.appendChild(help_frame);
                                      });
                 help_button.innerHTML = 'i'; // like tourist info -- alternatively could use a question mark
                 help_button.title = "Click to learn more about " + widget.get_type_name() + ".";
