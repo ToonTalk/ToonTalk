@@ -488,8 +488,8 @@ window.TOONTALK.widget = (function (TT) {
                     } else {
                         backside_of_parent = parent_of_backside.get_backside();
                     }
-                    if (backside_of_parent.removed_from_container) {
-                        backside_of_parent.removed_from_container(this, true, event);
+                    if (backside_of_parent.get_widget().removed_from_container) {
+                        backside_of_parent.get_widget().removed_from_container(this, true, event);
                     }
                 }  
             }
