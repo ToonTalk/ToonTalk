@@ -552,7 +552,7 @@ window.TOONTALK.backside =
                 backside_widgets.forEach(function (backside_widget_side, index) {
                     var backside_widget = backside_widget_side.get_widget();
                     var position;
-                    backside_widget_side_element = backside_widget.get_element();
+                    backside_widget_side_element = backside_widget_side.get_element();
                     if (backside_widget_side_element) {
                         if (!backside_widgets_json_views[index]) {
                             backside_widgets_json_views[index] = {};
