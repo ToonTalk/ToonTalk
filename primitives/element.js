@@ -583,8 +583,13 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 }
                 console.log("Expected " + widget + " to have a parent of its front side.");
             };
-            var backside_ancestor_side = get_backside_parent(this);
-            var widget, widget_parent;
+            // if this is a copy use the original 
+            var original = this_element_widget.get_original_copies()[attribute_name][0];
+            if (original !== this) {
+                return original.get_attribute_owner();
+            }
+            var backside_ancestor_side, widget, widget_parent;
+            backside_ancestor_side = get_backside_parent(this);
             if (!backside_ancestor_side) {
                 return this_element_widget;
             }
