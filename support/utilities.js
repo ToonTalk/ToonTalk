@@ -337,7 +337,7 @@ window.TOONTALK.UTILITIES =
                                     }
                                     return;
                                 }
-                                if (event.data.edits) {
+                                if (event.data.editable_contents) {
                                     TT.publish.republish(event.data);
                                 }
                             },

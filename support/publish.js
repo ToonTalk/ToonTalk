@@ -8,10 +8,8 @@
 
 window.TOONTALK.publish = (function (TT) {
 
-    var dynamic_contents = ["replaced by page title", "Edit this. Select text for formatting.", "replace with widget div", "And edit this.", ""];
     var widget_div_index = 2;
     var static_contents = [];
-    var program_name;
 
 // somehow <link href="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/css/froala_style.min.css" rel="stylesheet" type="text/css" />\n\
 // is missing
@@ -57,19 +55,30 @@ static_contents[4] =
 '</div>\n\
 </form>\n\
 <script>\n\
-var current_contents = [];\n\
+window.TOONTALK.publish = (function (TT) {\n\
+var editable_contents = [];\n\
+var widgets_json = [];\n\
 var editor_enabled = false;\n\
 var send_edit_updates = function (other_window, other_target, file_id) {\n\
-    var edits = [];\n\
+    var any_edits = false;\n\
     $(".toontalk-edit").each(function (index, element) {\n\
                                  var content = $(element).editable("getHTML", false, true);\n\
-                                 if (current_contents[index] && current_contents[index] !== content) {\n\
-                                     edits[index] = content;\n\
+                                 if (editable_contents[index] && editable_contents[index] !== content) {\n\
+                                     any_edits = true;\n\
                                  }\n\
-                                 current_contents[index] = content;\n\
+                                 editable_contents[index] = content;\n\
     });\n\
-    if (edits.length > 0) {\n\
-        other_window.postMessage({edits: edits, file_id: file_id}, other_target);\n\
+    $(".toontalk-backside-of-top-level").each(function (index, element) {\n\
+        var widget = TT.UTILITIES.widget_from_jquery($(element));\n\
+        var json = TT.UTILITIES.get_json_top_level(widget);\n\
+        var json_div = TT.UTILITIES.toontalk_json_div(json, widget);\n\
+        if (widgets_json[index] && widgets_json[index] !== json_div) {\n\
+            any_edits = true;\n\
+        }\n\
+        widgets_json[index] = json_div;\n\
+    });\n\
+    if (any_edits) {\n\
+        other_window.postMessage({title: document.title, editable_contents: editable_contents, widgets_json: widgets_json, file_id: file_id}, other_target);\n\
     }\n\
     setTimeout(function () {\n\
                    send_edit_updates(other_window, other_target, file_id);\n\
@@ -89,31 +98,40 @@ var message_handler =\n\
         };\n\
     };\n\
 window.addEventListener("message", message_handler, false);\n\
+}(window.TOONTALK));\n\
 </script>\n\
 </body>\n\
 </html>';
     
-    var assemble_contents = function () {
+    var assemble_contents = function (title, editable_contents, widgets_json) {
         var contents = "";
         static_contents.forEach(function (static_content, index) {
+                                    var dynamic_content;
                                     contents += static_content;
-                                    contents += dynamic_contents[index];
+                                    if (index === 0) {
+                                        dynamic_content = title;
+                                    } else if (index%2 === 1) {
+                                        dynamic_content = editable_contents[(index-1)/2];
+                                    } else {
+                                        dynamic_content = widgets_json[(index-2)/2];
+                                    } 
+                                    if (dynamic_content) {
+                                        contents += dynamic_content;
+                                    }                                   
                                 });
         return contents;
     };
     return {
         publish_widget: function (page_title, widget, callback) {
            // TODO: generalize this to other cloud services
-           var google_drive_status = TT.google_drive.get_status();    
-           var json;
-           dynamic_contents[0] = page_title;
+           var google_drive_status = TT.google_drive.get_status();
+           var editable_contents = ["Edit this. Select text for formatting.", "And edit this."];
+           var program_name, json, json_div;
            if (google_drive_status === "Ready") {
-               if (widget) {
-                   json = TT.UTILITIES.get_json_top_level(widget);
-                   dynamic_contents[widget_div_index] = TT.UTILITIES.toontalk_json_div(json, widget);
-                   program_name = widget.get_setting('program_name')
-               }
-               contents = assemble_contents();
+               json = TT.UTILITIES.get_json_top_level(widget);
+               json_div = TT.UTILITIES.toontalk_json_div(json, widget);
+               program_name = widget.get_setting('program_name');
+               contents = assemble_contents(page_title, editable_contents, [json_div]);
                TT.google_drive.upload_file(program_name, "html", contents, callback);
            } else {
                console.log("Unable to publish to Google Drive because: " + google_drive_status);
@@ -123,15 +141,14 @@ window.addEventListener("message", message_handler, false);\n\
 
         republish: function (message_data) {
             var callback = function () {
-                // do something?
+                // do something more?
+                console.log("Published page '" + message_data.title + "' updated.");
             };
-            message_data.edits.forEach(function (edit, index) {
-                var dynamic_index = index === 0 ? 1 : 3;
-                if (edit) {
-                    dynamic_contents[dynamic_index] = edit;
-                }
-            });
-            TT.google_drive.insert_or_update_file(undefined, message_data.file_id, 'page', assemble_contents(), callback);
+            TT.google_drive.insert_or_update_file(undefined, 
+                                                  message_data.file_id,
+                                                  'page',
+                                                  assemble_contents(message_data.title, message_data.editable_contents, message_data.widgets_json),
+                                                  callback);
         }
     };
 
