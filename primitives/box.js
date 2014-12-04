@@ -437,7 +437,7 @@ window.TOONTALK.box = (function (TT) {
             if (other.widget_dropped_on_me) {
                 return other.widget_dropped_on_me(this, is_backside, event);
             }
-            console.log("No handler for drop of " + this.toString() + " on " + other.toString());
+            console.log("No handler for drop of " + this + " on " + other);
             return;
         }
         result = other.box_dropped_on_me(this, event);

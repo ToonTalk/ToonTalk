@@ -360,10 +360,10 @@ window.TOONTALK.UTILITIES =
                 // was undefined and still is
                 return;
             }
+            if (!additional_info) {
+                additional_info = {};
+            }
             if (json.shared_widgets) {
-                if (!additional_info) {
-                    additional_info = {};
-                }
                 additional_info.json_of_shared_widgets = json.shared_widgets;
                 additional_info.shared_widgets = [];
             }
