@@ -96,9 +96,9 @@ window.addEventListener("message", message_handler, false);\n\
     var assemble_contents = function () {
         var contents = "";
         static_contents.forEach(function (static_content, index) {
-                   contents += static_content;
-                   contents += dynamic_contents[index];
-               });
+                                    contents += static_content;
+                                    contents += dynamic_contents[index];
+                                });
         return contents;
     };
     return {

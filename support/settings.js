@@ -48,6 +48,10 @@ window.TOONTALK.SETTINGS =
                 error = response.error.message;
             }
             if (error) {
+                if (error === 'Need to authorize' || error === "Login Required") {
+                    TT.google_drive.authorize(callback);
+                    return;
+                }
                 console.log(error);
                 console.log("Google drive status: " + TT.google_drive.get_status());
                 callback(null);
