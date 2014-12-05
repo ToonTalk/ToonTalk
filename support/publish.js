@@ -54,52 +54,7 @@ static_contents[3] =
 static_contents[4] =
 '</div>\n\
 </form>\n\
-<script>\n\
-window.TOONTALK.publish = (function (TT) {\n\
-var editable_contents = [];\n\
-var widgets_json = [];\n\
-var editor_enabled = false;\n\
-var send_edit_updates = function (other_window, other_target, file_id) {\n\
-    var any_edits = false;\n\
-    $(".toontalk-edit").each(function (index, element) {\n\
-                                 var content = $(element).editable("getHTML", false, true);\n\
-                                 if (editable_contents[index] && editable_contents[index] !== content) {\n\
-                                     any_edits = true;\n\
-                                 }\n\
-                                 editable_contents[index] = content;\n\
-    });\n\
-    $(".toontalk-backside-of-top-level").each(function (index, element) {\n\
-        var widget = TT.UTILITIES.widget_from_jquery($(element));\n\
-        var json = TT.UTILITIES.get_json_top_level(widget);\n\
-        var json_div = TT.UTILITIES.toontalk_json_div(json, widget);\n\
-        if (widgets_json[index] && widgets_json[index] !== json_div) {\n\
-            any_edits = true;\n\
-        }\n\
-        widgets_json[index] = json_div;\n\
-    });\n\
-    if (any_edits) {\n\
-        other_window.postMessage({title: document.title, editable_contents: editable_contents, widgets_json: widgets_json, file_id: file_id}, other_target);\n\
-    }\n\
-    setTimeout(function () {\n\
-                   send_edit_updates(other_window, other_target, file_id);\n\
-               },\n\
-               10000);\n\
-};\n\
-var message_handler =\n\
-    function (event) {\n\
-        if (event.data.save_edits_to) {\n\
-            if (editor_enabled) {\n\
-                return;\n\
-            }\n\
-            editor_enabled = true;\n\
-            $(".toontalk-edit").editable({inlineMode: true, imageUpload: false});\n\
-            event.source.postMessage({editor_enabled_for: event.data.file_id}, event.data.save_edits_to);\n\
-            send_edit_updates(event.source, event.data.save_edits_to, event.data.file_id);\n\
-        };\n\
-    };\n\
-window.addEventListener("message", message_handler, false);\n\
-}(window.TOONTALK));\n\
-</script>\n\
+<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/support/published_support.js"></script>\n\
 </body>\n\
 </html>';
     
@@ -123,20 +78,32 @@ window.addEventListener("message", message_handler, false);\n\
     };
     return {
         publish_widget: function (page_title, widget, callback) {
-           // TODO: generalize this to other cloud services
-           var google_drive_status = TT.google_drive.get_status();
-           var editable_contents = ["Edit this. Select text for formatting.", "And edit this."];
-           var program_name, json, json_div;
-           if (google_drive_status === "Ready") {
-               json = TT.UTILITIES.get_json_top_level(widget);
-               json_div = TT.UTILITIES.toontalk_json_div(json, widget);
-               program_name = widget.get_setting('program_name');
-               contents = assemble_contents(page_title, editable_contents, [json_div]);
-               TT.google_drive.upload_file(program_name, "html", contents, callback);
-           } else {
-               console.log("Unable to publish to Google Drive because: " + google_drive_status);
-               callback(null);
-           }
+            // TODO: generalize this to other cloud services
+            var google_drive_status = TT.google_drive.get_status();
+            var editable_contents = ["Edit this. Select text for formatting.", "And edit this."];
+            var insert_or_update = function (response) {
+                var file = response && response.items && response.items.length > 0 && response.items[0];
+                if (file) {
+                    // re-use existing file but update with new widget JSON
+                    callback(file, widgets_json);
+                } else {
+                    contents = assemble_contents(page_title, editable_contents, widgets_json);
+                    // upload or insert??
+                    TT.google_drive.upload_file(program_name, "html", contents, callback);
+                }
+            };
+            var program_name, json, widgets_json;
+            if (google_drive_status === "Ready") {
+                json = TT.UTILITIES.get_json_top_level(widget);
+                widgets_json = [TT.UTILITIES.toontalk_json_div(json, widget)];
+                program_name = widget.get_setting('program_name');
+                TT.google_drive.get_toontalk_files(TT.google_drive.full_file_name(program_name, 'page'), 
+                                                  'page',
+                                                  insert_or_update);
+            } else {
+                console.log("Unable to publish to Google Drive because: " + google_drive_status);
+                callback(null);
+            }
         },
 
         republish: function (message_data) {

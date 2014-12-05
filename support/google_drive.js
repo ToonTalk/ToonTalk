@@ -169,9 +169,9 @@ window.TOONTALK.google_drive =
        *
        * @param {String} contents String contents of the saved file.
        */
-      upload_file: function (file_name, extension, contents, callback) {
+      upload_file: function (program_name, extension, contents, callback) {
           var toontalk_type = extension === 'json' ? 'program' : 'page';
-          var full_file_name = file_name + "." + extension;
+          var full_file_name = program_name + "." + extension;
           var insert_or_update = function (response) {
               gapi.client.load('drive', 'v2', function() {
                   var file_id = response && response.items && response.items.length > 0 && response.items[0].id;
@@ -199,6 +199,11 @@ window.TOONTALK.google_drive =
               });
           };
           TT.google_drive.get_toontalk_files(full_file_name, toontalk_type, insert_or_update);
+      },
+
+      full_file_name: function (program_name, toontalk_type) {
+          var extension = toontalk_type === 'program' ? 'json' : 'html';
+          return program_name + "." + extension;
       },
 
       insert_or_update_file: function (file_name, file_id, toontalk_type, contents, callback) {

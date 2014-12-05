@@ -80,46 +80,10 @@ window.TOONTALK.SETTINGS =
         };
         var page_click_handler = function (event) {
             // title of this element is the URL
-            open_url_and_enable_editor(this.title, this.id);            
+            TT.UTILITIES.open_url_and_enable_editor(this.title, this.id);            
         };
         $(table).find(".toontalk-file-load-button")     .click(program_click_handler);
         $(table).find(".toontalk-published-page-button").click(page_click_handler);  
-    };
-
-    var open_url_and_enable_editor = function (url, file_id) {
-        var new_window = window.open(url, "published page editor");
-        repeated_post_message_until_reply(function () {
-                                              // using * instead of url
-                                              // since https://googledrive.com/host/...
-                                              // becomes https://a1801c08722da65109a4efa9e0ae4bdf83fafed0.googledrive.com/host/...
-                                              new_window.postMessage({save_edits_to: window.location.href,
-                                                                      file_id: file_id},
-                                                                     "*");
-                                          },
-                                          file_id);
-    };
-
-    var repeated_post_message_until_reply = function (message_poster, file_id) {
-        var message_listener = function (event) {
-            if (event.data.editor_enabled_for && event.data.editor_enabled_for === file_id) {
-                message_acknowledged = true;
-                window.removeEventListener("message", message_listener);
-            }
-        };
-        var repeat_until_acknowledged = function (message_poster, file_id) {
-            if (message_acknowledged) {
-                return;
-            }
-            setTimeout(function () {
-                           message_poster();
-                           // and try again after a delay (unless acknowledged)
-                           repeat_until_acknowledged(message_poster, file_id);
-                       },
-                       500);
-        };
-        var message_acknowledged = false;
-        window.addEventListener("message", message_listener);
-        repeat_until_acknowledged(message_poster, file_id);
     };
 
     return {
@@ -171,16 +135,17 @@ window.TOONTALK.SETTINGS =
                                                           function () {
                                                               widget.publish(display_published);
                                                           });
-          var display_published = function (google_file) {
-              var link_to_publication = create_connection_to_google_file(google_file, "Published: ");
+          var display_published = function (google_file, extra_info) {
+              // currently extra_info is the JSON of the current widgets if previously published
+              var link_to_publication = create_connection_to_google_file(google_file, "Published: ", extra_info);
               $(program_name.container).find("tr").append(TT.UTILITIES.create_table_entry(link_to_publication));
           };
-          var create_connection_to_google_file = function (google_file, prefix) {
+          var create_connection_to_google_file = function (google_file, prefix, extra_info) {
               var link_to_publication = document.createElement('span');
               var url = TT.google_drive.google_drive_url(google_file.id);
               link_to_publication.innerHTML = prefix + "<div class='toontalk-published-page-button'>" + widget.get_setting('program_name') + "</div>";
               link_to_publication.addEventListener('click', function (event) {
-                  open_url_and_enable_editor(url, google_file.id);
+                  TT.UTILITIES.open_url_and_enable_editor(url, google_file.id, extra_info);
               });
               return link_to_publication;
           };

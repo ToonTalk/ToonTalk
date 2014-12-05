@@ -205,105 +205,28 @@ window.TOONTALK.UTILITIES =
             reader.readAsText(file);
         }
     };
-    var initialise = function () {
-        var includes_top_level_backside = false;
+    var initialise = function () {   
         TT.debugging = TT.UTILITIES.get_current_url_boolean_parameter('debugging', false);
-        $(".toontalk-json").each(
-            function (index, element) {
-                var json_string = element.textContent;
-                var json, widget, frontside_element, backside_element, backside,
-                    stored_json_string, message, toontalk_last_key;
-                if (!json_string) {
-                    return;
-                }
-                json_string = json_string.substring(json_string.indexOf("{"), json_string.lastIndexOf("}")+1);
-                json = JSON.parse(json_string);
-                widget = TT.UTILITIES.create_from_json(json);
-                if (widget) {
-                    element.textContent = ""; // served its purpose of being parsed as JSON
-                    if (!widget.get_type_name) {
-                        // isn't a widget. e.g. a tool
-                        element.appendChild(widget.get_element());
-                    } else if (widget.is_of_type('top-level')) {
-                        if (!TT.no_local_storage) {
-                            if (!TT.UTILITIES.get_current_url_boolean_parameter("reset", false)) {
-                                if (json.load_most_recent_program) {
-                                    try {
-                                        toontalk_last_key = window.localStorage.getItem('toontalk-last-key');
-                                        if (toontalk_last_key) {
-                                            stored_json_string = window.localStorage.getItem(toontalk_last_key);
-                                        }
-                                    } catch (error) {
-                                        message = "Error reading previous state. Error message is " + error;
-                                        if (TT.UTILITIES.is_internet_explorer()) {
-                                            // TODO: determine if there still is a problem with IE11 and local storage
-                                            console.error(message);
-                                        } else {
-                                            TT.UTILITIES.display_message();
-                                        }
-                                    }
-                                }
-                                if (stored_json_string) {
-                                    json = JSON.parse(stored_json_string);
-                                    widget = TT.UTILITIES.create_from_json(json);
-                                }
-                            }
-                        }
-                        backside = widget.get_backside(true);
-                        backside_element = backside.get_element();
-                        $(element).replaceWith(backside_element);
-                        $(backside_element).css({width: json.view.backside_width,
-                                                 height: json.view.backside_height,
-                                                 // color may be undefined
-                                                 // do the following in a more general manner
-                                                 // perhaps using additional classes?
-                                                 "background-color": json.view.background_color,
-                                                 "border-width": json.view.border_width});
-                        includes_top_level_backside = true;
-                    } else {
-                        $(element).addClass("toontalk-top-level-resource");
-                        frontside_element = widget.get_frontside_element();
-                        $(frontside_element).addClass("toontalk-top-level-resource")
-                                            .css({position: 'relative'});
-                        element.appendChild(frontside_element);
+        var includes_top_level_backside = TT.UTILITIES.process_json_elements();
+        if (!includes_top_level_backside) {
+            // since there is no backside 'work space' we need a way to turn things off
+            $(document).click(function () {
+                $(".toontalk-frontside").each(function (index, element) {
+                    var widget = element.toontalk_widget;
+                    if (widget && widget.set_running) {
+                        widget.set_running(false);
                     }
-                    if (widget.set_active) {
-                        // resource shouldn't run -- at least not sensor nests
-                        widget.set_active(false);
-                    }
-                    // delay until geometry settles down
-                    setTimeout(function () {
-                            if (widget.update_display) {
-                                widget.update_display();
-                            } // otherwise might be a tool
-                            if (json.semantic.running) {
-                                widget.set_running(true);
-                            }
-                        },
-                    1);
-                } else {
-                    TT.UTILITIES.report_internal_error("Could not recreate a widget from this JSON: " + json_string);
-                }
-            });
-            if (!includes_top_level_backside) {
-                // since there is no backside 'work space' we need a way to turn things off
-                $(document).click(function () {
-                    $(".toontalk-frontside").each(function (index, element) {
-                        var widget = element.toontalk_widget;
-                        if (widget && widget.set_running) {
-                            widget.set_running(false);
-                        }
-                    });
                 });
-            }
-            TT.QUEUE = window.TOONTALK.queue.create();
-            // might want two queues: so new entries end up in the 'next queue'
-            TT.QUEUE.run();
-            window.addEventListener('beforeunload', function (event) {
-                TT.UTILITIES.backup_all_top_level_widgets(true);
             });
-            TT.UTILITIES.add_test_all_button();
-        };
+        }
+        TT.QUEUE = window.TOONTALK.queue.create();
+        // might want two queues: so new entries end up in the 'next queue'
+        TT.QUEUE.run();
+        window.addEventListener('beforeunload', function (event) {
+            TT.UTILITIES.backup_all_top_level_widgets(true);
+        });
+        TT.UTILITIES.add_test_all_button();
+    };
     var drag_ended = function () {
         if (!dragee) {
             return;
@@ -1130,6 +1053,88 @@ window.TOONTALK.UTILITIES =
             TT.UTILITIES.can_receive_drops(drop_area);
             return $drop_area;
         },
+   
+        process_json_elements: function () {
+            var includes_top_level_backside = false;
+            $(".toontalk-json").each(
+                function (index, element) {
+                    var json_string = element.textContent;
+                    var json, widget, frontside_element, backside_element, backside,
+                        stored_json_string, message, toontalk_last_key;
+                    if (!json_string) {
+                        return;
+                    }
+                    json_string = json_string.substring(json_string.indexOf("{"), json_string.lastIndexOf("}")+1);
+                    json = JSON.parse(json_string);
+                    widget = TT.UTILITIES.create_from_json(json);
+                    if (widget) {
+                        element.textContent = ""; // served its purpose of being parsed as JSON
+                        if (!widget.get_type_name) {
+                            // isn't a widget. e.g. a tool
+                            element.appendChild(widget.get_element());
+                        } else if (widget.is_of_type('top-level')) {
+                            if (!TT.no_local_storage) {
+                                if (!TT.UTILITIES.get_current_url_boolean_parameter("reset", false)) {
+                                    if (json.load_most_recent_program) {
+                                        try {
+                                            toontalk_last_key = window.localStorage.getItem('toontalk-last-key');
+                                            if (toontalk_last_key) {
+                                                stored_json_string = window.localStorage.getItem(toontalk_last_key);
+                                            }
+                                        } catch (error) {
+                                            message = "Error reading previous state. Error message is " + error;
+                                                if (TT.UTILITIES.is_internet_explorer()) {
+                                                // TODO: determine if there still is a problem with IE11 and local storage
+                                                console.error(message);
+                                            } else {
+                                                TT.UTILITIES.display_message();
+                                            }
+                                        }
+                                    }
+                                    if (stored_json_string) {
+                                        json = JSON.parse(stored_json_string);
+                                        widget = TT.UTILITIES.create_from_json(json);
+                                    }
+                                }
+                            }
+                            backside = widget.get_backside(true);
+                            backside_element = backside.get_element();
+                            $(element).replaceWith(backside_element);
+                            $(backside_element).css({width: json.view.backside_width,
+                                                     height: json.view.backside_height,
+                                                     // color may be undefined
+                                                     // do the following in a more general manner
+                                                     // perhaps using additional classes?
+                                                     "background-color": json.view.background_color,
+                                                     "border-width": json.view.border_width});
+                            includes_top_level_backside = true;
+                        } else {
+                            $(element).addClass("toontalk-top-level-resource");
+                            frontside_element = widget.get_frontside_element();
+                            $(frontside_element).addClass("toontalk-top-level-resource")
+                                                .css({position: 'relative'});
+                            element.appendChild(frontside_element);
+                        }
+                        if (widget.set_active) {
+                            // resource shouldn't run -- at least not sensor nests
+                            widget.set_active(false);
+                        }
+                        // delay until geometry settles down
+                        setTimeout(function () {
+                                if (widget.update_display) {
+                                    widget.update_display();
+                                } // otherwise might be a tool
+                                if (json.semantic.running) {
+                                    widget.set_running(true);
+                                }
+                            },
+                            1);
+                    } else {
+                        TT.UTILITIES.report_internal_error("Could not recreate a widget from this JSON: " + json_string);
+                    }
+                });
+            return includes_top_level_backside;
+        },
         
         set_absolute_position: function ($element, absolute_position) {
             var $ancestor = $element.parent();
@@ -1940,6 +1945,43 @@ window.TOONTALK.UTILITIES =
 
         local_storage_program_meta_data_key: function (program_name) {
             return "toontalk-meta-data: " + program_name;
+        },
+
+        open_url_and_enable_editor: function (url, file_id, widgets_json) {
+            // widgets_json can be undefined
+            var new_window = window.open(url, "published page editor");
+            var repeatedly_post_message_until_reply = function (message_poster, file_id) {
+                var message_listener = function (event) {
+                    if (event.data.editor_enabled_for && event.data.editor_enabled_for === file_id) {
+                        message_acknowledged = true;
+                        window.removeEventListener("message", message_listener);
+                    }
+                };
+                var repeat_until_acknowledged = function (message_poster, file_id) {
+                    if (message_acknowledged) {
+                        return;
+                    }
+                    setTimeout(function () {
+                                   message_poster();
+                                   // and try again after a delay (unless acknowledged)
+                                   repeat_until_acknowledged(message_poster, file_id);
+                               },
+                               500);
+                };
+                var message_acknowledged = false;
+                window.addEventListener("message", message_listener);
+                repeat_until_acknowledged(message_poster, file_id);
+            };
+            repeatedly_post_message_until_reply(function () {
+                                                    // using * instead of url
+                                                    // since https://googledrive.com/host/...
+                                                    // becomes https://a1801c08722da65109a4efa9e0ae4bdf83fafed0.googledrive.com/host/...
+                                                    new_window.postMessage({save_edits_to: window.location.href,
+                                                                            file_id: file_id,
+                                                                            widgets_json: widgets_json},
+                                                                           "*");
+                                                },
+                                                file_id);
         },
 
         create_queue: function () {
