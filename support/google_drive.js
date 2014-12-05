@@ -18,10 +18,9 @@ function handle_client_load() {
 window.TOONTALK.google_drive = 
 (function (TT) {
     "use strict";
-    var CLIENT_ID = TT.GOOGLE_DRIVE_CLIENT_ID  || '1014278465319-fcagdv7f8232nvqevdkh87r4pmu6mvh8.apps.googleusercontent.com'; // dropbox
-    var origin    = TT.ORIGIN_FOR_GOOGLE_DRIVE || "https://dl.dropboxusercontent.com";
+    var CLIENT_ID = TT.GOOGLE_DRIVE_CLIENT_ID  || '829199594800-54bk3k92fdepke86ik366cds9kmo4u0c.apps.googleusercontent.com'; // GitHub
+    var origin    = TT.ORIGIN_FOR_GOOGLE_DRIVE || "http://toontalk.github.io";
     // edit origin above if CLIENT_ID changed
-//  var CLIENT_ID = '829199594800-54bk3k92fdepke86ik366cds9kmo4u0c.apps.googleusercontent.com'; // github.io
     var SCOPES = 'https://www.googleapis.com/auth/drive';
     var toontalk_programs_folder_title = "ToonTalk Programs";
     var toontalk_pages_folder_title    = "ToonTalk Pages";
