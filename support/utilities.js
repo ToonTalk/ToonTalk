@@ -1133,7 +1133,9 @@ window.TOONTALK.UTILITIES =
                             // resource shouldn't run -- at least not sensor nests
                             widget.set_active(false);
                         }
-                        widget.set_visible(true);
+                        if (widget.set_visible) {
+                            widget.set_visible(true);
+                        }
                         // delay until geometry settles down
                         setTimeout(function () {
                                 if (widget.update_display) {
