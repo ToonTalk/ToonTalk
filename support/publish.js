@@ -94,9 +94,11 @@ static_contents[4] =
             };
             var program_name, json, widgets_json;
             if (google_drive_status === "Ready") {
-                json = TT.UTILITIES.get_json_top_level(widget);
-                widgets_json = [TT.UTILITIES.toontalk_json_div(json, widget)];
+                json = TT.UTILITIES.get_json_top_level(widget);     
                 program_name = widget.get_setting('program_name');
+                widget.set_setting('program_name', program_name + " (published version)");
+                widgets_json = [TT.UTILITIES.toontalk_json_div(json, widget)];
+                widget.set_setting('program_name', program_name);
                 TT.google_drive.get_toontalk_files(TT.google_drive.full_file_name(program_name, 'page'), 
                                                   'page',
                                                   insert_or_update);
