@@ -210,13 +210,25 @@ window.TOONTALK.UTILITIES =
         var includes_top_level_backside = TT.UTILITIES.process_json_elements();
         if (!includes_top_level_backside) {
             // since there is no backside 'work space' we need a way to turn things off
-            $(document).click(function () {
+            // since clicking on a running widget may not work since its HTML is changing
+            // though maybe the container can be constant TODO: investigate this
+            $(document).click(function (event) {
+                event.stopPropagation();
                 $(".toontalk-frontside").each(function (index, element) {
                     var widget = element.toontalk_widget;
                     if (widget && widget.set_running) {
                         widget.set_running(false);
                     }
                 });
+            });
+            $(".toontalk-top-level-resource").each(function (index, element) {
+                    $(element).click(function (event) {
+                        var widget = element.toontalk_widget;
+                        if (widget && widget.set_running && !$(element).is(".toontalk-top-level-resource-container")) {
+                            widget.set_visible(true);
+                            widget.set_running(true);
+                        }
+                    });
             });
         }
         TT.QUEUE = window.TOONTALK.queue.create();
