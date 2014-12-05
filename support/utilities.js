@@ -1139,6 +1139,7 @@ window.TOONTALK.UTILITIES =
                                     widget.update_display();
                                 } // otherwise might be a tool
                                 if (json.semantic.running) {
+                                    widget.set_visible(true);
                                     widget.set_running(true);
                                 }
                             },
