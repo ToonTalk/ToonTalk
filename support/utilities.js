@@ -1109,10 +1109,12 @@ window.TOONTALK.UTILITIES =
                                                      "border-width": json.view.border_width});
                             includes_top_level_backside = true;
                         } else {
-                            $(element).addClass("toontalk-top-level-resource");
+                            // TODO: determine why both levels have the same class here
+                            $(element).addClass("toontalk-top-level-resource toontalk-top-level-resource-container");
                             frontside_element = widget.get_frontside_element();
                             $(frontside_element).addClass("toontalk-top-level-resource")
                                                 .css({position: 'relative'});
+                            element.toontalk_widget = widget;
                             element.appendChild(frontside_element);
                         }
                         if (widget.set_active) {
@@ -1802,16 +1804,15 @@ window.TOONTALK.UTILITIES =
         
         add_animation_class: function (element, class_name) {
             // if any code set the size explicitly then the animation won't display correctly
-            $(element)
-                .css({width:  '',
-                      height: ''})
-                .addClass(class_name);
+            $(element).css({width:  '',
+                            height: ''})
+                      .addClass(class_name);
         },
         
         widget_from_jquery: function ($element) {
-            if ($element.length > 0) {
-                return $element.get(0).toontalk_widget;
-            }
+             if ($element.length > 0) {
+                 return $element.get(0).toontalk_widget;
+             }
         },
         
         has_animating_image: function (element) {

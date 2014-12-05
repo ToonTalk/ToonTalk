@@ -1157,8 +1157,8 @@ window.TOONTALK.widget = (function (TT) {
                     callback();
                 }
             };
-            widget.publish = function (callback) {
-                TT.publish.publish_widget(this.get_setting('program_name'), this, callback);   
+            widget.publish = function (callback, as_workspace) {
+                TT.publish.publish_widget(this.get_setting('program_name'), this, as_workspace, callback);   
             };
             widget.save_to_local_storage = function (json, time_stamp) {
                 var program_name = this.get_setting('program_name');

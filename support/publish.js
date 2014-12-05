@@ -8,16 +8,13 @@
 
 window.TOONTALK.publish = (function (TT) {
 
-    var widget_div_index = 2;
-    var static_contents = [];
-
 // somehow <link href="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/css/froala_style.min.css" rel="stylesheet" type="text/css" />\n\
 // is missing
 
 // releases should use the following:
 // <script src="https://toontalk.github.io/ToonTalk/compile/toontalk.js"></script>\n\
 // <link rel="stylesheet" media="all" href="https://toontalk.github.io/ToonTalk/toontalk.css">\n\
-static_contents[0] =
+var static_contents_header_1 =
     '<!DOCTYPE html>\n\
 <html>\n\
 <head>\n\
@@ -35,49 +32,29 @@ static_contents[0] =
 <script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/video.min.js"></script>\n\
 <title>';
 // title will be inserted here
-static_contents[1] =
+var static_contents_header_2 =
 '</title>\n\
 <link rel="shortcut icon" href="favicon.ico" />\n\
 </head>\n\
-<body>\n\
-<form>\n\
-<div class="toontalk-edit" name="content">';
-// first editor contents inserted here
-static_contents[2] = 
-'</div>\n\
-</form>\n';
-// widget div inserted here
-static_contents[3] = 
-'\n<form>\n\
-<div class="toontalk-edit" name="content">';
-// second editor contents inserted here
-static_contents[4] =
-'</div>\n\
-</form>\n\
-<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/support/published_support.js"></script>\n\
+<body>';
+var static_contents_end =
+'<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/support/published_support.js"></script>\n\
 </body>\n\
 </html>';
     
     var assemble_contents = function (title, editable_contents, widgets_json) {
-        var contents = "";
-        static_contents.forEach(function (static_content, index) {
-                                    var dynamic_content;
-                                    contents += static_content;
-                                    if (index === 0) {
-                                        dynamic_content = title;
-                                    } else if (index%2 === 1) {
-                                        dynamic_content = editable_contents[(index-1)/2];
-                                    } else {
-                                        dynamic_content = widgets_json[(index-2)/2];
-                                    } 
-                                    if (dynamic_content) {
-                                        contents += dynamic_content;
-                                    }                                   
-                                });
+        var contents = static_contents_header_1 + title + static_contents_header_2;
+        editable_contents.forEach(function (editable_content, index) {
+                                      contents += '<div class="toontalk-edit" name="content">' + editable_content + "</div>";
+                                      if (widgets_json[index]) {
+                                          contents += widgets_json[index]; 
+                                      }                                              
+                                  });
+        contents += static_contents_end;
         return contents;
     };
     return {
-        publish_widget: function (page_title, widget, callback) {
+        publish_widget: function (page_title, widget, as_workspace, callback) {
             // TODO: generalize this to other cloud services
             var google_drive_status = TT.google_drive.get_status();
             var editable_contents = ["Edit this. Select text for formatting.", "And edit this."];
@@ -92,13 +69,29 @@ static_contents[4] =
                     TT.google_drive.upload_file(program_name, "html", contents, callback);
                 }
             };
-            var program_name, json, widgets_json;
+            var program_name, json, widgets_json, widgets;
             if (google_drive_status === "Ready") {
-                json = TT.UTILITIES.get_json_top_level(widget);     
                 program_name = widget.get_setting('program_name');
-                widget.set_setting('program_name', program_name + " (published version)");
-                widgets_json = [TT.UTILITIES.toontalk_json_div(json, widget)];
-                widget.set_setting('program_name', program_name);
+                if (as_workspace) {
+                    json = TT.UTILITIES.get_json_top_level(widget);
+                    widget.set_setting('program_name', program_name + " (published version)");
+                    widgets_json = [TT.UTILITIES.toontalk_json_div(json, widget)];
+                    widget.set_setting('program_name', program_name);
+                } else {
+                    widgets = widget.get_backside_widgets();
+                    widgets_json = [];
+                    widgets.forEach(function (widget, index) {
+                        if (!widget.visible()) {
+                            return;
+                        }
+                        json = TT.UTILITIES.get_json_top_level(widget);
+                        widgets_json.push(TT.UTILITIES.toontalk_json_div(json, widget));
+                        if (index > 1) {
+                            editable_contents[index] = editable_contents[1]; // repeat it as many times as needed
+                        }
+                    });
+                    editable_contents.push(editable_contents[1]); // final editable text
+                }
                 TT.google_drive.get_toontalk_files(TT.google_drive.full_file_name(program_name, 'page'), 
                                                   'page',
                                                   insert_or_update);

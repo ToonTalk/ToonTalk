@@ -109,12 +109,12 @@ window.TOONTALK.SETTINGS =
                                                              "toontalk-save-setting",
                                                              "Save automatically to this browser's local storage",
                                                              "Check this if you want your programs automatically saved in this browser's local storage.");
-         var save_now_google = TT.UTILITIES.create_button("Save to Google Drive now",
-                                                          "toontalk-save-button", 
-                                                          "Click to save your program now to your Google Drive account.", 
-                                                          function () {
-                                                              widget.save(true, {google_drive: true});
-                                                          });
+          var save_now_google = TT.UTILITIES.create_button("Save to Google Drive now",
+                                                           "toontalk-save-button", 
+                                                           "Click to save your program now to your Google Drive account.", 
+                                                           function () {
+                                                               widget.save(true, {google_drive: true});
+                                                           });
           var save_now_local = TT.UTILITIES.create_button("Save to browser's storage now",
                                                           "toontalk-save-button", 
                                                           "Click to save your program now to this browser's local storage.", 
@@ -133,12 +133,16 @@ window.TOONTALK.SETTINGS =
                                                           "toontalk-publish-button", 
                                                           "Click to publish your program by generating a Google Drive URL.", 
                                                           function () {
-                                                              widget.publish(display_published);
+                                                              widget.publish(display_published, as_workspace.button.checked);
                                                           });
+          var as_workspace   = TT.UTILITIES.create_check_box(widget.get_setting('publish_as_workspace'), 
+                                                             "toontalk-publish-setting",
+                                                             "As a workspace",
+                                                             "Check this if you want to publish the workspace and its widgets. Uncheck it you wish to publish just the widgets.");
           var display_published = function (google_file, extra_info) {
               // currently extra_info is the JSON of the current widgets if previously published
               var link_to_publication = create_connection_to_google_file(google_file, "Published: ", extra_info);
-              $(program_name.container).find("tr").append(TT.UTILITIES.create_table_entry(link_to_publication));
+              $(program_name.container).children("tr").append(TT.UTILITIES.create_table_entry(link_to_publication));
           };
           var create_connection_to_google_file = function (google_file, prefix, extra_info) {
               var link_to_publication = document.createElement('span');
@@ -154,6 +158,7 @@ window.TOONTALK.SETTINGS =
           var contents_div = document.createElement('div');
           var google_status = TT.google_drive && typeof gapi !== 'undefined' ? TT.google_drive.get_status() : "Google Drive API not loaded";
           var cloud_available = true; // unless discovered otherwise below
+          var publish_and_as_workspace = TT.UTILITIES.create_vertical_table(publish, as_workspace.container);
           $(settings_panel).addClass("toontalk-settings-panel")
                            .css({width:  $(widget_element).width() +29,
                                  height: $(widget_element).height()+50,
@@ -202,6 +207,10 @@ window.TOONTALK.SETTINGS =
                                                         $(save_now_local).show();
                                                     }
                                                 });
+          as_workspace.button.addEventListener('click', 
+                                                function (event) {
+                                                    widget.set_setting('publish_as_workspace', as_workspace.button.checked);
+                                                });
           settings_panel.appendChild(contents_div);
           $(heading).css({"font-weight": 'bold',
                           "font-size": 24,
@@ -236,7 +245,7 @@ window.TOONTALK.SETTINGS =
                          },
                          1);
           }
-          $(program_name.container).find("tr").append(TT.UTILITIES.create_table_entry(publish));
+          $(program_name.container).children("tr").append(TT.UTILITIES.create_table_entry(publish_and_as_workspace));
           add_files_tabs(widget, cloud_available, settings_panel);
           widget_element.appendChild(settings_panel);                  
       }

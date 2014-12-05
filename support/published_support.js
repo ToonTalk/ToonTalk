@@ -21,7 +21,7 @@ var send_edit_updates = function (other_window, other_target, file_id) {
                                  }
                                  editable_contents[index] = content;
     });
-    $(".toontalk-backside-of-top-level").each(function (index, element) {
+    $(".toontalk-backside-of-top-level, .toontalk-top-level-resource-container").each(function (index, element) {
         var widget = TT.UTILITIES.widget_from_jquery($(element));
         var json = TT.UTILITIES.get_json_top_level(widget);
         var json_div = TT.UTILITIES.toontalk_json_div(json, widget);
@@ -41,6 +41,7 @@ var send_edit_updates = function (other_window, other_target, file_id) {
 
 var message_handler =
     function (event) {
+        var $elements, current_widget_count, new_widget_count;
         if (event.data.save_edits_to) {
             if (editor_enabled) {
                 return;
@@ -48,7 +49,21 @@ var message_handler =
             editor_enabled = true;
             $(".toontalk-edit").editable({inlineMode: true, imageUpload: false});
             if (event.data.widgets_json) {
-                $(".toontalk-backside-of-top-level").replaceWith(event.data.widgets_json);
+                $elements = $(".toontalk-backside-of-top-level, .toontalk-top-level-resource-container");
+                current_widget_count = $elements.length;
+                new_widget_count = event.data.widgets_json.length;
+                $elements.each(function (index, element) {
+                    if (index < new_widget_count) {
+                        $(element).replaceWith(event.data.widgets_json[index]);
+                    } else {
+                        $(element).remove();
+                    }
+                });
+                while (new_widget_count > current_widget_count) {
+                    document.body.appendChild($(event.data.widgets_json[current_widget_count]).get(0));
+                    current_widget_count++;
+                    document.body.appendChild($("<div class='toontalk-edit'>Edit this</div>").editable({inlineMode: true, imageUpload: false}).get(0));
+                }
                 TT.UTILITIES.process_json_elements();
             }
             event.source.postMessage({editor_enabled_for: event.data.file_id}, event.data.save_edits_to);
