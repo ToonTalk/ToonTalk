@@ -3,17 +3,175 @@
 <head>
 <link rel="stylesheet" media="all" href="../../toontalk.css">
 <script src="../../compile/toontalk.js"></script>
+<script>
+window.TOONTALK.GOOGLE_DRIVE_CLIENT_ID  = '829199594800-54bk3k92fdepke86ik366cds9kmo4u0c.apps.googleusercontent.com';
+window.TOONTALK.ORIGIN_FOR_GOOGLE_DRIVE = 'http://toontalk.github.io';
+</script>
+<script src="https://apis.google.com/js/client.js?onload=handle_client_load"></script>
 <title>Settings</title>
 <link rel="shortcut icon" href="favicon.ico" />
 </head>
 <body>
 <h2>Saving programs</h2>
 <p>
-to be done
+To save your program click on the <img src="../../images/settings-gear.png" width="22" height="22" alt="a gear" /> icon.
+You can edit the <i>Current program name</i> to whatever you like.
+Programs can be automatically saved when changed or if turn auto-save off you can save them when you choose.
+If you have a <a href="https://docs.google.com/">Google Drive account</a> you can save to your account.
+Or you can save your programs inside of this browser.
+Or you can do both.
+</p>
+<p>
+You can try it here:
+<div class='toontalk-json'>
+This will be replaced by a work area containing 2 things: a number, and an element.
+<div style='display:none;'>{
+  "semantic": {
+    "type": "top_level",
+    "settings": {
+      "auto_save_to_google_drive": true,
+      "auto_save_to_local_storage": true,
+      "program_name": "Edit this to give the program a name"
+    },
+    "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "number",
+            "operator": "+",
+            "numerator": "106",
+            "denominator": "1",
+            "format": "improper_fraction",
+            "backside_widgets": [
+              {
+                "widget": {
+                  "semantic": {
+                    "type": "robot",
+                    "frontside_conditions": {
+                      "semantic": {
+                        "type": "number",
+                        "operator": "+",
+                        "numerator": "1",
+                        "denominator": "1",
+                        "format": "improper_fraction",
+                        "erased": true
+                      },
+                      "view": {
+                        "frontside_width": 200,
+                        "frontside_height": 36
+                      },
+                      "version": 1
+                    },
+                    "body": {
+                      "type": "body",
+                      "steps": [
+                        {
+                          "type": "robot_action",
+                          "action_name": "pick up",
+                          "path": {
+                            "type": "path.to_resource",
+                            "resource": {
+                              "type": "number",
+                              "operator": "+",
+                              "numerator": "1",
+                              "denominator": "1",
+                              "format": "improper_fraction"
+                            }
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "drop it on",
+                          "path": {
+                            "type": "path.to_entire_context"
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "view": {
+                    "frontside_width": 73,
+                    "frontside_height": 101,
+                    "backside_geometry": {
+                      "x_scale": 1,
+                      "y_scale": 1,
+                      "original_width": 480,
+                      "original_height": 83
+                    }
+                  },
+                  "version": 1
+                }
+              }
+            ]
+          },
+          "view": {
+            "frontside_width": 310,
+            "frontside_height": 55,
+            "frontside_left": 377,
+            "frontside_top": 18.78125,
+            "backside_width": 0,
+            "backside_height": 0,
+            "backside_left": 0,
+            "backside_top": 0,
+            "backside_geometry": {
+              "x_scale": 1,
+              "y_scale": 1
+            }
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "element",
+            "html": "Here%20is%20a%20program%20that%20counts%3A",
+            "attributes": [],
+            "attribute_values": []
+          },
+          "view": {
+            "frontside_left": 106,
+            "frontside_top": 36.8125
+          },
+          "version": 1
+        }
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgba(245, 240, 240, 0.941176)",
+    "backside_width": 820,
+    "backside_height": 164,
+    "backside_left": 8,
+    "backside_top": 181.1875,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1
+    },
+    "drag_x_offset": 130,
+    "drag_y_offset": 145.8125,
+    "backside": true
+  },
+  "version": 1
+}</div></div>
+</p>
+<p>
+You can share your programs by going to Google Drive and sharing the files you will find in the <i>ToonTalk Programs</i> folder.
 </p>
 <h2>Loading programs</h2>
 <p>
-to be done
+You can browse for saved programs and clicking on a program name loads the program.
+</p>
+<p>
+Try it!
+</p>
+<h2>Publishing programs</h2>
+<p>
+if you have Google Drive account you can publish your program as a public web page containing either the work space or as a list of widgets depending upon whether the <i>As a workspace</i> checkbox is checked.
+A link to your page should then appear and you can edit the text or change the workspace and your edits will be saved.
+</p>
+<p>
+Try it!
 </p>
 </body>
 </html>
