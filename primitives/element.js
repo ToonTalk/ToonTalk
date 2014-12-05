@@ -58,8 +58,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     element.create = function (html, style_attributes, description, additional_classes) {
         var new_element = Object.create(element);
         var widget_drag_started = new_element.drag_started;
-        var attribute_widgets = {}; // table related attribute_name and widget in backside table
-        var original_copies   = {}; // table related attribute_name and all the widget copies for that attribute
+        var attribute_widgets = {}; // table relating attribute_name and widget in backside table
+        var original_copies   = {}; // table relating attribute_name and all the widget copies for that attribute
         var pending_css, transform_css, on_update_display_handlers, $image_element;
         if (!style_attributes) {
             style_attributes = [];
@@ -150,6 +150,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 return;
             }
             if (!$(frontside_element).is(":visible")) {
+                // not yet visible so postpone
+                TT.UTILITIES.set_timeout(function () {
+                    this.apply_css();
+                }.bind(this),
+                100);
                 return;
             }
             if (transform_css) {
@@ -273,17 +278,17 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             }
             return 'not matched';
         }
-        if (!context.match_with_this_element_widget) {
+        if (!context.match_with_another_element_widget) {
             return 'not matched';
         }
-        return context.match_with_this_element_widget(this);
+        return context.match_with_another_element_widget(this);
     };
     
     element.match_with_any_element = function () {
         return 'matched';
     };
     
-    element.match_with_this_element_widget = function (other_element) {
+    element.match_with_another_element_widget = function (other_element) {
         if (this.get_HTML() === other_element.get_HTML()) {
             return 'matched';
         } else {
@@ -356,7 +361,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         }
         // need to use a number for JQuery's css otherwise treats "100" as "auto"
         new_value_number = value_in_pixels(new_value, attribute);
-        if (new_value_number) {
+        if (typeof new_value_number === 'number') {
             if (current_value == new_value_number) {
                 // using == instead of === since want type coercion. current_value might be a string
                 return;
@@ -457,9 +462,28 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         var backside_element = this.get_backside_element();
         var attribute_value = this.get_attribute(attribute_name);
         var this_element_widget = this;
+        var drag_listener = 
+            function (event) {
+                // ensures numbers are updated as the element is dragged
+                var owner = attribute_widget.get_attribute_owner();
+                var top_level_position, attribute_value;
+                if (event.currentTarget.toontalk_widget !== owner) {
+                    return;
+                }
+                top_level_position = $(owner.get_frontside_element()).closest(".toontalk-top-level-backside").offset();
+                if (!top_level_position) {
+                    console.log("Unable to find top-level backside of an element for its position. Perhaps is 'visible' but not attached.");
+                    top_level_position = {left: 0, top: 0};
+                }
+                attribute_value = attribute_name === 'left' ? 
+                                  event.pageX-top_level_position.left-owner.drag_x_offset :
+                                  event.pageY-top_level_position.top -owner.drag_y_offset;
+                attribute_widget.set_value_from_decimal(attribute_value);
+                number_update_display.call(attribute_widget);
+        }.bind(this);
         var $attribute_input, attribute_widget, original_copies,
             // store some default number functions:
-            number_equals, number_update_display, number_to_string;
+            number_equals, number_update_display, number_to_string, frontside_element;
         if (backside_element) {
             $attribute_input = $(backside_element).find(selector);
             if ($attribute_input.length > 0) {
@@ -476,7 +500,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         };
         number_to_string = attribute_widget.toString;
         attribute_widget.toString = function () {
-            return number_to_string.call(this) + " (the " + this.attribute + " attribute of " + this_element_widget + ")";
+            return number_to_string.call(this) + " (" + this.attribute + ")";
         };
 //         attribute_widget.get_element = function () {
 //             if ($attribute_input && $attribute_input.length > 0) {
@@ -501,12 +525,14 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         attribute_widget.set_value = function (new_value) {
             var copies = this_element_widget.get_original_copies()[attribute_name];
             var return_value;
-            copies.forEach(function (copy, index) {
+            if (this.get_attribute_owner().set_attribute(this.attribute, bigrat.toDecimal(new_value))) {
+                // if the new_value is different from the current value
+                copies.forEach(function (copy, index) {
 //                 var new_value_copy = index === 0 ? new_value : bigrat.copy(bigrat.create(), new_value);
 //                 console.log("copy set value " + new_value + " id is " + copy.debug_id);
-                return_value = copy.set_value_from_sub_classes(new_value); 
-            });
-            this_element_widget.set_attribute(this.attribute, bigrat.toDecimal(new_value));
+                  return_value = copy.set_value_from_sub_classes(new_value); 
+              });
+            }
             return return_value;
         };
 //         attribute_widget.visible = function () {
@@ -517,7 +543,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         attribute_widget.update_display = function () {
             var attribute_value;
             if (!this.get_erased()) {
-                attribute_value = this_element_widget.get_attribute(this.attribute);
+                attribute_value = this.get_attribute_owner().get_attribute(this.attribute);
                 attribute_widget.set_value_from_decimal(attribute_value);
             }
             number_update_display.call(this);
@@ -528,21 +554,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                return true; // don't remove
             });
             if (attribute_name === 'left' || attribute_name === 'top') {
-                this.get_frontside_element().addEventListener('drag',
-                    // ensures numbers are updated as the element is dragged
-                    function (event) {
-                        var top_level_position = $(this_element_widget.get_frontside_element()).closest(".toontalk-top-level-backside").offset();
-                        var attribute_value;
-                        if (!top_level_position) {
-                            console.log("Unable to find top-level backside of an element for its position. Perhaps is 'visible' but not attached.");
-                            top_level_position = {left: 0, top: 0};
-                        }
-                        attribute_value = attribute_name === 'left' ? 
-                                                             event.pageX-top_level_position.left-this_element_widget.drag_x_offset :
-                                                             event.pageY-top_level_position.top -this_element_widget.drag_y_offset;
-                        attribute_widget.set_value_from_decimal(attribute_value);
-                        number_update_display.call(attribute_widget);
-                    });
+                frontside_element = this.get_frontside_element();
+                frontside_element.addEventListener('drag', drag_listener);
             }
         }
         attribute_widget.copy = function (just_value) {
@@ -556,6 +569,45 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             return {type: 'attribute_number',
                     attribute_name: attribute_name,
                     element: TT.UTILITIES.get_json(this_element_widget, json_history)};            
+        };
+        attribute_widget.get_original_attribute_widget = function () {
+            return this_element_widget.get_original_copies()[attribute_name][0];
+        };
+        attribute_widget.get_attribute_owner = function () {
+            // return this_element_widget or backside top ancestor of type element
+            var get_backside_parent = function (widget) {
+                // follows front side parent until a backside parent is found
+                var parent = widget.get_parent_of_frontside();
+                if (parent) {
+                    if (parent.is_backside()) {
+                        return parent;
+                    }
+                    return get_backside_parent(parent.get_widget());
+                }
+                // if backside never opened then the attribute_widget may not have a parent
+                // which is OK since will treat this_element_widget as its owner
+            };
+            // if this is a copy use the original 
+            var original = this.get_original_attribute_widget();
+            if (original !== this) {
+                return original.get_attribute_owner();
+            }
+            var backside_ancestor_side, widget, widget_parent;
+            backside_ancestor_side = get_backside_parent(this);
+            if (!backside_ancestor_side) {
+                return this_element_widget;
+            }
+            if (!backside_ancestor_side.is_of_type('element')) {
+                return this_element_widget;
+            }
+            widget = backside_ancestor_side.get_widget();
+            widget_parent = widget.get_parent_of_backside();
+            while ((widget_parent &&
+                    widget_parent.is_of_type('element'))) {
+                widget = widget_parent.get_widget();
+                widget_parent = widget.get_parent_of_backside();
+            }
+            return widget;
         };
         return attribute_widget;
     };
@@ -581,7 +633,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             $(frontside_element).css({opacity: 1});
         }
         if (frontside_element.children.length === $(frontside_element).children(".ui-resizable-handle").length) {
-            // only children are resize handles so add the HTML
+            // the only children are resize handles so add the HTML
             rendering = document.createElement('div');
             rendering.innerHTML = this.get_HTML();
             frontside_element.appendChild(rendering);
@@ -606,7 +658,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     };
         
     element.toString = function () {
-        return "element whose HTML is '" + TT.UTILITIES.maximum_string_length(this.get_HTML(), 40) + "'";
+        var description = "element whose HTML is '" + TT.UTILITIES.maximum_string_length(this.get_HTML(), 40) + "'";
+        if (TT.debugging) {
+            description += " (" + this.debug_id + ")";
+        }
+        return description;
     };
     
     element.get_type_name = function () {
@@ -617,9 +673,26 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         return "docs/manual/elements.html";
     };
     
-    element.get_json = function () {
+    element.get_json = function (json_history) {
         var attributes = this.get_style_attributes();
         var json_attributes = [];
+        var html = TT.UTILITIES.remove_z_index(this.get_HTML()); // z-index is transient
+        var html_encoded = encodeURIComponent(html);
+        // rewrite using startsWith in ECMAScript version 6
+        var html_worth_sharing = html.indexOf("<img src='data:image/") === 0;
+        var html_encoded_or_shared, html_index;
+        if (html_worth_sharing) {
+            if (!json_history.shared_html) {
+                json_history.shared_html = [];
+            }
+            html_index = json_history.shared_html.indexOf(html_encoded);
+            if (html_index < 0) {
+                html_index = json_history.shared_html.push(html_encoded)-1;
+            }
+            html_encoded_or_shared = {shared_html_index: html_index};
+        } else {
+            html_encoded_or_shared = html_encoded;
+        }
         attributes.forEach(function (item) {
             // don't want them to appear where they were in the source page
             // need to revisit this since sometimes we want left and top
@@ -630,7 +703,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         });
         return {type: "element",
                 // z-index info is temporary and should not be captured here
-                html: encodeURIComponent(TT.UTILITIES.remove_z_index(this.get_HTML())), 
+                html: html_encoded_or_shared, 
                 attributes: json_attributes,
                 attribute_values: json_attributes.map(this.get_attribute.bind(this)),
                 additional_classes: this.get_additional_classes()
@@ -638,7 +711,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     };
     
     TT.creators_from_json["element"] = function (json, additional_info) {
-        var reconstructed_element = element.create(decodeURIComponent(json.html), json.attributes, json.description);
+        var html = decodeURIComponent(typeof json.html === 'string' ? json.html : additional_info.shared_html[json.html.shared_html_index]); 
+        var reconstructed_element = element.create(html, json.attributes, json.description);
         var ignore_attributes;
         if (additional_info && additional_info.event) {
             // perhaps should check that event is a drop event
@@ -784,7 +858,7 @@ window.TOONTALK.element_backside =
                 } else {
                     remove_style_attribute(option);
                 }
-                update_style_attributes_table(attribute_table, element_widget);
+                update_style_attributes_table(attribute_table, element_widget, element_widget.get_backside());
             });
             list_item.appendChild(check_box.container);
             menu_list.appendChild(list_item);
@@ -817,7 +891,7 @@ window.TOONTALK.element_backside =
         return attributes_chooser;
     };
     
-    var update_style_attributes_table = function (table, element_widget) {
+    var update_style_attributes_table = function (table, element_widget, backside) {
         var style_attributes = element_widget.get_style_attributes();
         var frontside_element = element_widget.get_frontside_element();
         $(table).empty();
@@ -831,6 +905,7 @@ window.TOONTALK.element_backside =
             var td = document.createElement("td");
             var attribute_widget = element_widget.get_attribute_widget(attribute);
             var attribute_frontside_element = attribute_widget.get_frontside_element();
+            attribute_widget.set_parent_of_frontside(backside, false, true); // a white lie
             attribute_widget.set_infinite_stack(true);
             table.appendChild(row);
             row.appendChild(td);
@@ -920,7 +995,7 @@ window.TOONTALK.element_backside =
                 return attributes_chooser;
             };
             update_style_attribute_chooser(attributes_chooser, element_widget, attribute_table);
-            update_style_attributes_table(attribute_table, element_widget);
+            update_style_attributes_table(attribute_table, element_widget, backside);
             backside_element.appendChild(attributes_chooser);
             backside_element.appendChild(show_attributes_chooser);
             backside_element.appendChild(attribute_table);
@@ -931,7 +1006,7 @@ window.TOONTALK.element_backside =
                 if (html_input) {
                     $(html_input.button).val(element_widget[getter]());
                 }
-                update_style_attributes_table(attribute_table, element_widget);
+                update_style_attributes_table(attribute_table, element_widget, backside);
                 if ($(attributes_chooser).is(":visible")) {
                     update_style_attribute_chooser(attributes_chooser, element_widget, attribute_table);
                 }

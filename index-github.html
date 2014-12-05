@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8" />
+<head>
+<link rel="stylesheet" media="all" href="toontalk.css" />
+<script src="libraries/jquery-2.1.1.min.js"></script>
+<script src="libraries/jquery-ui-1.11.2.custom/jquery-ui.min.js"></script>
+<script type="text/javascript" charset="utf8" src="libraries/DataTables-1.10.4/media/js/jquery.dataTables.js"></script>
+<script src="libraries/rationaljs.js"></script>
+<script src="support/initial.js"></script>
+<script src="primitives/widget.js"></script>
+<script src="primitives/number.js"></script>
+<script src="primitives/robot.js"></script>
+<script src="primitives/box.js"></script>
+<script src="primitives/element.js"></script>
+<script src="primitives/bird.js"></script>
+<script src="primitives/scale.js"></script>
+<script src="primitives/sensor.js"></script>
+<script src="primitives/backside.js"></script>
+<script src="primitives/frontside.js"></script>
+<script src="tools/tool.js"></script>
+<script src="tools/wand.js"></script>
+<script src="tools/vacuum.js"></script>
+<script src="support/robot_actions.js"></script>
+<script src="support/robot_action.js"></script>
+<script src="support/path.js"></script>
+<script src="support/run_queue.js"></script>
+<script src="support/display_updates.js"></script>
+<script src="support/settings.js"></script>
+<script src="support/publish.js"></script>
+<script>
+window.TOONTALK.GOOGLE_DRIVE_CLIENT_ID  = '829199594800-54bk3k92fdepke86ik366cds9kmo4u0c.apps.googleusercontent.com';
+window.TOONTALK.ORIGIN_FOR_GOOGLE_DRIVE = 'http://toontalk.github.io';
+</script>
+<script src="support/google_drive.js"></script>
+<script src="support/utilities.js"></script>
+<script src="https://apis.google.com/js/client.js?onload=handle_client_load"></script>
+<title>ToonTalk Reborn</title>
+<link rel="shortcut icon" href="favicon.ico" />
+</head>
+<body>
+<p>
+<a href='docs/manual/index.html?reset=1' title='Click to visit the page that introduces everything.'>Learn how ToonTalk works</a>
+</p>
+<table class='toontalk-resource-table'>
+<tr>
+<td>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "number",
+    "operator": "+",
+    "numerator": "1",
+    "denominator": "1",
+    "format": "improper_fraction"
+  },
+  "view": {
+    "frontside_width": 76,
+    "frontside_height": 55,
+    "frontside_left": 57,
+    "frontside_top": 82,
+    "drag_x_offset": 19,
+    "drag_y_offset": 46
+  },
+  "version": 1
+}</div>
+</td>
+<td>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "box",
+    "size": 2,
+    "contents": [
+      null,
+      null
+    ],
+    "horizontal": true
+  },
+  "view": {
+    "frontside_width": 164,
+    "frontside_height": 68,
+    "frontside_left": 268,
+    "frontside_top": 53,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1,
+      "original_width": 171,
+      "original_height": 39
+    },
+    "drag_x_offset": 68,
+    "drag_y_offset": 66
+  },
+  "version": 1
+}</div>
+</td>
+<td>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "nest",
+    "contents": []
+  },
+  "view": {
+    "image_url": "images/HATCH01.PNG",
+    "frontside_width": 116,
+    "frontside_height": 141
+  },
+  "version": 1
+}</div>
+</td>
+<td>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "scale",
+    "size": 2,
+    "contents": [
+      null,
+      null
+    ],
+    "horizontal": true
+  },
+  "view": {
+    "frontside_width": 123,
+    "frontside_height": 91,
+    "frontside_left": 268,
+    "frontside_top": 53,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1,
+      "original_width": 123,
+      "original_height": 91
+    },
+    "drag_x_offset": 68,
+    "drag_y_offset": 66
+  },
+  "version": 1
+}</div>
+</td>
+<td>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "sensor",
+    "contents": [],
+    "guid": "sensor sensor",
+    "waiting_robots": [],
+    "event_name": "keydown",
+    "attribute": "keyCode"
+  },
+  "view": {
+    "frontside_width": 116,
+    "frontside_height": 98,
+    "frontside_left": 6,
+    "frontside_top": 6,
+    "drag_x_offset": 48,
+    "drag_y_offset": 50
+  },
+  "version": 1
+}</div>
+</td>
+<td>
+<div class='toontalk-json'>{"semantic":{"type":"robot","body":{"type":"body","steps":[],"run_once":false}},
+                            "view": {"drag_x_offset":31,"drag_y_offset":48}}
+</div></td>
+<td>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "wand"
+  },
+  "view": {
+    "frontside_width": 191,
+    "frontside_height": 31,
+    "frontside_left": 6,
+    "frontside_top": 6
+  },
+  "version": 1
+}</div>
+</td>
+<td>
+<div class='toontalk-json'>{
+  "semantic": {
+    "type": "vacuum"
+  },
+  "view": {
+    "frontside_width": 123,
+    "frontside_height": 45,
+    "frontside_left": 6,
+    "frontside_top": 6
+  },
+  "version": 1
+}</div>
+</td>
+</tr>
+</table>
+<div class='toontalk-json'>
+{"load_most_recent_program": true,
+  "semantic":{"type":"top_level"},"view":{"frontside_width":0,"frontside_height":0,"backside_width":1200,"backside_height":475,"backside_left":8,"backside_top":179,"backside":true},"version":1}
+</div>
+<!-- An easy way to preload images -- thanks http://perishablepress.com/a-way-to-preload-images-without-javascript-that-is-so-much-better/ -->
+<div id="preload-images">
+   <img src="images/robot.png" width="1" height="1" alt="Image 01" />
+   <img src="images/robot-working.png" width="1" height="1" alt="Image 01" />
+   <img src="images/floor-tile.png" width="1" height="1" alt="Image 01" />
+   <img src="images/hole-tile-half-size.png" width="1" height="1" alt="Image 01" />
+   <img src="images/box-border.png" width="1" height="1" alt="Image 01" />
+   <img src="images/box-border.png" width="1" height="1" alt="Image 01" />
+   <img src="images/box-border.png" width="1" height="1" alt="Image 01" />
+   <img src="images/box-border.png" width="1" hight="1" alt="Image 01" />
+   <img src="images/box-border-half-size.png" width="1" height="1" alt="Image 01" />
+   <img src="images/box-border-half-size.png" width="1" height="1" alt="Image 01" />
+   <img src="images/box-border-half-size.png" width="1" height="1" alt="Image 01" />
+   <img src="images/box-border-half-size.png" width="1" height="1" alt="Image 01" />
+   <img src="images/box-border-quarter-size.png" width="1" height="1" alt="Image 01" />
+   <img src="images/box-border-quarter-size.png" width="1" height="1" alt="Image 01" />
+   <img src="images/box-border-quarter-size.png" width="1" height="1" alt="Image 01" />
+   <img src="images/box-border-quarter-size.png" width="1" height="1" alt="Image 01" />
+   <img src="images/box-border-eighth-size.png" width="1" height="1" alt="Image 01" />
+   <img src="images/box-border-eighth-size.png" width="1" height="1" alt="Image 01" />
+   <img src="images/box-border-eighth-size.png" width="1" height="1" alt="Image 01" />
+   <img src="images/box-border-eighth-size.png" width="1" height="1" alt="Image 01" />
+   <img src="images/box-border.png" width="1" height="1" alt="Image 01" />
+   <img src="images/box-border.png" width="1" height="1" alt="Image 01" />
+   <img src="images/box-border.png" width="1" height="1" alt="Image 01" />
+   <img src="images/box-border.png" width="1" height="1" alt="Image 01" />
+   <img src="images/box-border-half-size.png" width="1" height="1" alt="Image 01" />
+   <img src="images/box-border-half-size.png" width="1" height="1" alt="Image 01" />
+   <img src="images/box-border-half-size.png" width="1" height="1" alt="Image 01" />
+   <img src="images/box-border-half-size.png" width="1" height="1" alt="Image 01" />
+   <img src="images/box-border-quarter-size.png" width="1" height="1" alt="Image 01" />
+   <img src="images/box-border-quarter-size.png" width="1" height="1" alt="Image 01" />
+   <img src="images/box-border-quarter-size.png" width="1" height="1" alt="Image 01" />
+   <img src="images/box-border-quarter-size.png" width="1" height="1" alt="Image 01" />
+   <img src="images/box-border-eighth-size.png" width="1" height="1" alt="Image 01" />
+   <img src="images/box-border-eighth-size.png" width="1" hight="1" alt="Image 01" />
+   <img src="images/box-border-eighth-size.png" width="1" height="1" alt="Image 01" />
+   <img src="images/box-border-eighth-size.png" width="1" height="1" alt="Image 01" />
+   <img src="images/box-border.png" width="1" height="1" alt="Image 01" />
+   <img src="images/box-border.png" width="1" height="1" alt="Image 01" />
+   <img src="images/box-border.png" width="1" height="1" alt="Image 01" />
+   <img src="images/box-border.png" width="1" height="1" alt="Image 01" />
+   <img src="images/box-border-half-size.png" width="1" height="1" alt="Image 01" />
+   <img src="images/box-border-half-size.png" width="1" height="1" alt="Image 01" />
+   <img src="images/box-border-half-size.png" width="1" height="1" alt="Image 01" />
+   <img src="images/box-border-half-size.png" width="1" height="1" alt="Image 01" />
+   <img src="images/box-border-quarter-size.png" width="1" height="1" alt="Image 01" />
+   <img src="images/box-border-quarter-size.png" width="1" height="1" alt="Image 01" />
+   <img src="images/box-border-quarter-size.png" width="1" height="1" alt="Image 01" />
+   <img src="images/box-border-quarter-size.png" width="1" height="1" alt="Image 01" />
+   <img src="images/box-border-eighth-size.png" width="1" height="1" alt="Image 01" />
+   <img src="images/box-border-eighth-size.png" width="1" hight="1" alt="Image 01" />
+   <img src="images/box-border-eighth-size.png" width="1" height="1" alt="Image 01" />
+   <img src="images/box-border-eighth-size.png" width="1" height="1" alt="Image 01" />
+   <img src="images/hole-tile-quarter-size.png" width="1" height="1" alt="Image 01" />
+   <img src="images/border-quarter-size-highlighted.png" width="1" height="1" alt="Image 01" />
+   <img src="images/number-border.png" width="1" height="1" alt="Image 01" />
+   <img src="images/number-border.png" width="1" height="1" alt="Image 01" />
+   <img src="images/number-border.png" width="1" height="1" alt="Image 01" />
+   <img src="images/number-border.png" width="1" height="1" alt="Image 01" />
+   <img src="images/number-border-half-size.png" width="1" height="1" alt="Image 01" />
+   <img src="images/number-border-half-size.png" width="1" height="1" alt="Image 01" />
+   <img src="images/number-border-half-size.png" width="1" height="1" alt="Image 01" />
+   <img src="images/number-border-half-size.png" width="1" height="1" alt="Image 01" />
+   <img src="images/number-border-quarter-size.png" width="1" height="1" alt="Image 01" />
+   <img src="images/number-border-quarter-size.png" width="1" height="1" alt="Image 01" />
+   <img src="images/number-border-quarter-size.png" width="1" height="1" alt="Image 01" />
+   <img src="images/number-border-quarter-size.png" width="1" height="1" alt="Image 01" />
+   <img src="images/number-border-eighth-size.png" width="1" height="1" alt="Image 01" />
+   <img src="images/number-border-eighth-size.png" width="1" height="1" alt="Image 01" />
+   <img src="images/number-border-eighth-size.png" width="1" height="1" alt="Image 01" />
+   <img src="images/number-border-eighth-size.png" width="1" hight="1" alt="Image 01" />
+   <img src="images/border-highlighted.png" width="1" height="1" alt="Image 01" />
+   <img src="images/border-highlighted.png" width="1" height="1" alt="Image 01" />
+   <img src="images/border-highlighted.png" width="1" height="1" alt="Image 01" />
+   <img src="images/border-highlighted.png" width="1" height="1" alt="Image 01" />
+   <img src="images/border-half-size-highlighted.png" width="1" height="1" alt="Image 01" />
+   <img src="images/border-half-size-highlighted.png" width="1" height="1" alt="Image 01" />
+   <img src="images/border-half-size-highlighted.png" width="1" height="1" alt="Image 01" />
+   <img src="images/border-half-size-highlighted.png" width="1" height="1" alt="Image 01" />
+   <img src="images/border-quarter-size-highlighted.png" width="1" height="1" alt="Image 01" />
+   <img src="images/border-quarter-size-highlighted.png" width="1" height="1" alt="Image 01" />
+   <img src="images/border-quarter-size-highlighted.png" width="1" height="1" alt="Image 01" />
+   <img src="images/border-quarter-size-highlighted.png" width="1" height="1" alt="Image 01" />
+   <img src="images/border-eighth-size-highlighted.png" width="1" height="1" alt="Image 01" />
+   <img src="images/border-eighth-size-highlighted.png" width="1" height="1" alt="Image 01" />
+   <img src="images/border-eighth-size-highlighted.png" width="1" height="1" alt="Image 01" />
+   <img src="images/border-eighth-size-highlighted.png" width="1" height="1" alt="Image 01" />
+   <img src="images/border-highlighted.png" width="1" height="1" alt="Image 01" />
+   <img src="images/border-highlighted.png" width="1" height="1" alt="Image 01" />
+   <img src="images/border-highlighted.png" width="1" height="1" alt="Image 01" />
+   <img src="images/border-highlighted.png" width="1" height="1" alt="Image 01" />
+   <img src="images/border-half-size-highlighted.png" width="1" height="1" alt="Image 01" />
+   <img src="images/border-half-size-highlighted.png" width="1" height="1" alt="Image 01" />
+   <img src="images/border-half-size-highlighted.png" width="1" height="1" alt="Image 01" />
+   <img src="images/border-half-size-highlighted.png" width="1" height="1" alt="Image 01" />
+   <img src="images/border-quarter-size-highlighted.png" width="1" height="1" alt="Image 01" />
+   <img src="images/border-quarter-size-highlighted.png" width="1" height="1" alt="Image 01" />
+   <img src="images/border-quarter-size-highlighted.png" width="1" height="1" alt="Image 01" />
+   <img src="images/border-quarter-size-highlighted.png" width="1" height="1" alt="Image 01" />
+   <img src="images/border-eighth-size-highlighted.png" width="1" height="1" alt="Image 01" />
+   <img src="images/border-eighth-size-highlighted.png" width="1" height="1" alt="Image 01" />
+   <img src="images/border-eighth-size-highlighted.png" width="1" height="1" alt="Image 01" />
+   <img src="images/border-eighth-size-highlighted.png" width="1" height="1" alt="Image 01" />
+   <img src="images/green-flag-inactive.png" width="1" height="1" alt="Image 01" />
+   <img src="images/green-flag-active.png" width="1" height="1" alt="Image 01" />
+   <img src="images/stop-sign-inactive.png" width="1" height="1" alt="Image 01" />
+   <img src="images/stop-sign-active.png" width="1" height="1" alt="Image 01" />
+   <img src="images/settings-gear.png" width="1" height="1" alt="Image 01" />
+   <img src="images/wand-static.png" width="1" height="1" alt="Image 01" />
+   <img src="images/wand-static-small.png" width="1" height="1" alt="Image 01" />
+   <img src="images/dusty-static.png" width="1" height="1" alt="Image 01" />
+   <img src="images/dusty-static-S.png" width="1" height="1" alt="Image 01" />
+   <img src="images/dusty-static-R.png" width="1" height="1" alt="Image 01" />
+   <img src="images/dusty-static-E.png" width="1" height="1" alt="Image 01" />
+   <img src="images/dusty-morph.png" width="1" height="1" alt="Image 01" />
+   <img src="images/dusty-ready.png" width"1" height="1" alt="Image 01" />
+   <img src="images/dusty-ready-small.png"width="1" height="1" alt="Image 01" />
+   <img src="images/hatch-egg-strip.png" width="1" height="1" alt="Image 01" />
+   <img src="images/sensor-nest.png" wdth="1" height="1" alt="Image 01" />
+   <img src="images/sensor-nest-inactive.png" width="1" height="1" alt="Image 01" />
+   <img src="images/empty-nest.png" width="1" height="1" alt="Image 01" />
+   <img src="images/empty-nest.png" width="1" height="1" alt="Image 01" />
+   <img src="images/hatch-egg-strip.png" width="1" height="1" alt="Image 01" />
+   <img src="images/hatch-egg-strip.png" width="1" height="1" alt="Image 01" />
+   <img src="images/bird-gimme.png" width="1" height="1" alt="Image 01" />
+   <img src="images/bird-static.png" width="1" height="1" alt="Image 01" />
+   <img src="images/bird-morph.png" width="1" height="1" alt="Image 01" />
+   <img src="images/bird-morph.png" width="1" height="1" alt="Image 01" />
+   <img src="images/fly-down.png" width="1" height="1" alt="Image 01" />
+   <img src="images/bammer-away.png" width="1" height="1" alt="Image 01" />
+   <img src="images/bammer-down.png" width="1" height="1" alt="Image 01" />
+   <img src="images/fly-southwest.png" width="1" height="1" alt="Image 01" />
+   <img src="images/fly-south.png" width="1" height="1" alt="Image 01" />
+   <img src="images/fly-southeast.png" width="1" height="1" alt="Image 01" />
+   <img src="images/fly-west.png" width="1" height="1" alt="Image 01" />
+   <img src="images/fly-northwest.png" width="1" hight="1" alt="Image 01" />
+   <img src="images/fly-north.png" width="1" height="1" alt="Image 01" />
+   <img src="images/fly-northeast.png" width="1" height="1" alt="Image 01" />
+   <img src="images/fly-east.png" width="1" height="1" alt="Image 01" />
+   <img src="images/robot-waiting.png "width="1" height="1" alt="Image 01" />
+</div>
+</body>
+</html>

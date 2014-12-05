@@ -270,7 +270,7 @@ window.TOONTALK.robot_action =
          } 
     };
 
-    TT.creators_from_json["robot_action"] = function (json, ignore_view, additional_info) {
+    TT.creators_from_json["robot_action"] = function (json, additional_info) {
         if (json.additional_info) {
             return TT.robot_action.create(TT.path.create_from_json(json.path, additional_info), json.action_name, json.additional_info);
         } else {

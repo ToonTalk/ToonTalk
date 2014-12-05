@@ -133,9 +133,9 @@ window.TOONTALK.widget = (function (TT) {
                     backside = undefined;
                     // do this recursively so backsides are fully reconstructed
                     // otherwise things like JQuery UI 'button' is not reapplied
-                    this.get_backside_widgets().forEach(function (backside_widget) {
-                            backside_widget.get_widget().forget_backside();
-                    });
+//                     this.get_backside_widgets().forEach(function (backside_widget) {
+//                             backside_widget.get_widget().forget_backside();
+//                     });
                 };
             }
             if (!widget.create_backside) {
@@ -488,8 +488,8 @@ window.TOONTALK.widget = (function (TT) {
                     } else {
                         backside_of_parent = parent_of_backside.get_backside();
                     }
-                    if (backside_of_parent.removed_from_container) {
-                        backside_of_parent.removed_from_container(this, true, event);
+                    if (backside_of_parent.get_widget().removed_from_container) {
+                        backside_of_parent.get_widget().removed_from_container(this, true, event);
                     }
                 }  
             }
@@ -618,12 +618,12 @@ window.TOONTALK.widget = (function (TT) {
                         if (json_backside_widget_side.is_backside) {
                             if (backside_widget_view.backside_left) {
                                 json_view.backside_left = backside_widget_view.backside_left;
-                                json_view.backside_top = backside_widget_view.backside_top;
+                                json_view.backside_top  = backside_widget_view.backside_top;
                             }
                         } else {
                             if (backside_widget_view.frontside_left) {
                                 json_view.frontside_left = backside_widget_view.frontside_left;
-                                json_view.frontside_top = backside_widget_view.frontside_top;
+                                json_view.frontside_top  = backside_widget_view.frontside_top;
                             }
                         }
                     });
@@ -654,6 +654,16 @@ window.TOONTALK.widget = (function (TT) {
             }
             widget_side.set_visible(backside.visible());
             widget.render();
+        },
+
+        remove_all_backside_widgets: function () {
+            if (!this.backside_widgets) {
+                return;
+            }
+            while (this.backside_widgets.length > 0) {
+                this.backside_widgets[0].remove();
+//              this.remove_backside_widget(this.backside_widgets[0], this.backside_widgets[0].is_backside());
+            }
         },
         
         remove_backside_widget: function (widget, is_backside, ignore_if_not_on_backside) {
@@ -721,8 +731,7 @@ window.TOONTALK.widget = (function (TT) {
                         backside_widget.get_widget().set_parent_of_frontside(this, true);
                     }
                     backside_widget.set_visible(backside_visible);
-                }.bind(this));
-                
+                }.bind(this)); 
             }
 //             if (backside) {
 //                 backside.update_run_button_disabled_attribute();
@@ -1104,7 +1113,7 @@ window.TOONTALK.widget = (function (TT) {
             widget = widget.has_parent(widget);
             widget.get_setting = function (option_name) {
                 if (typeof settings[option_name] === 'undefined') {
-                    settings[option_name] = TT.DEFAULT_SETTINGS[option_name];     
+                    settings[option_name] = TT.DEFAULT_SETTINGS && TT.DEFAULT_SETTINGS[option_name];     
                 }
                 return settings[option_name];
             };
@@ -1114,16 +1123,16 @@ window.TOONTALK.widget = (function (TT) {
             widget.open_settings = function () {
                 TT.SETTINGS.open(widget);
             };
-            widget.save = function (immediately, parameters) {
+            widget.save = function (immediately, parameters, callback) {
                 var json, google_drive_status;
                 if (!parameters) {
-                    parameters = {google_drive:  this.get_setting('auto_save_to_google_drive') && TT.google_drive,
+                    parameters = {google_drive:  TT.google_drive && this.get_setting('auto_save_to_google_drive'),
                                   local_storage: this.get_setting('auto_save_to_local_storage')};
                 }
                 if (!immediately) {
                     // delay it so the geometry settles down -- perhaps 0 (i.e. 4ms) is good enough
                     setTimeout(function () {
-                                   this.save(true, parameters);
+                                   this.save(true, parameters, callback);
                                }.bind(this),
                                100);
                     return;
@@ -1132,8 +1141,9 @@ window.TOONTALK.widget = (function (TT) {
                     json = TT.UTILITIES.get_json_top_level(this);
                     google_drive_status = TT.google_drive.get_status();
                     if (google_drive_status === "Ready") {
-                        TT.google_drive.upload_file(this.get_setting('program_name'), "json", JSON.stringify(json));
-                    } else if (google_drive_status.indexOf("Only able to connect to ") !== 0) {
+                        TT.google_drive.upload_file(this.get_setting('program_name'), "json", JSON.stringify(json), callback);
+                        callback = undefined;
+                    } else if (TT.google_drive.connection_to_google_drive_possible()) {
                         console.log("Unable to save to Google Drive because: " + google_drive_status);
                     }
                 }
@@ -1143,30 +1153,38 @@ window.TOONTALK.widget = (function (TT) {
                     }
                     this.save_to_local_storage(json);
                 }
-            };
-            widget.publish = function (callback) {
-                var google_drive_status = TT.google_drive.get_status();
-                var json, json_div, contents, program_name;
-                if (google_drive_status === "Ready") {
-                    json = TT.UTILITIES.get_json_top_level(this);
-                    json_div = TT.UTILITIES.toontalk_json_div(json, this);
-                    program_name = this.get_setting('program_name');
-                    contents = TT.publish_part_1 + program_name + TT.publish_part_2 + json_div + TT.publish_part_3;
-                    TT.google_drive.upload_file(program_name, "html", contents, callback);
-                } else {
-                    console.log("Unable to publish to Google Drive because: " + google_drive_status);
+                if (callback) {
+                    callback();
                 }
-            }
-            widget.save_to_local_storage = function (json) {
-                var key = "toontalk-json: " + this.get_setting('program_name');
-                var all_keys, message;
+            };
+            widget.publish = function (callback, as_workspace) {
+                TT.publish.publish_widget(this.get_setting('program_name'), this, as_workspace, callback);   
+            };
+            widget.save_to_local_storage = function (json, time_stamp) {
+                var program_name = this.get_setting('program_name');
+                var key =           TT.UTILITIES.local_storage_program_key(program_name);
+                var meta_data_key = TT.UTILITIES.local_storage_program_meta_data_key(program_name);
+                var all_program_names, meta_data, message, json_string;
+                if (!time_stamp) {
+                    time_stamp = Date.now();
+                }
                 try {
-                    window.localStorage.setItem(key, JSON.stringify(json));
+                    meta_data = window.localStorage.getItem(meta_data_key);
+                    if (meta_data) {
+                        meta_data = JSON.parse(meta_data);
+                    } else {
+                        meta_data = {created: time_stamp};
+                    }
+                    meta_data.last_modified = time_stamp;
+                    json_string = JSON.stringify(json);
+                    meta_data.file_size = json_string.length;
+                    window.localStorage.setItem(meta_data_key, JSON.stringify(meta_data));
+                    window.localStorage.setItem(key, json_string);
                     window.localStorage.setItem("toontalk-last-key", key);
-                    all_keys = TT.UTILITIES.get_all_local_storage_keys();
-                    if (all_keys.indexOf(key) < 0) {
-                        all_keys.push(key);
-                        TT.UTILITIES.set_all_local_storage_keys(all_keys);   
+                    all_program_names = TT.UTILITIES.get_all_locally_stored_program_names();
+                    if (all_program_names.indexOf(program_name) < 0) {
+                        all_program_names.push(program_name);
+                        TT.UTILITIES.set_all_locally_stored_program_names(all_program_names);   
                     }
                 } catch (error) {
                     message = "Failed to save state to local storage since it requires " + JSON.stringify(json).length + " bytes. Error message is " + error;
@@ -1178,7 +1196,36 @@ window.TOONTALK.widget = (function (TT) {
                     // following could be displayed in the settings panel
                     this.last_local_storage_error = message;
                 }
-            }  
+            };
+            widget.load = function (google_drive_first, load_callback) {
+                var program_name = this.get_setting('program_name');
+                var file_name = program_name + ".json";
+                var key = TT.UTILITIES.local_storage_program_key(program_name);
+                var download_callback = 
+                    function (json_string) {
+                        var json;
+                        if (json_string) {
+                            json = JSON.parse(json_string);
+                            widget.remove_all_backside_widgets();
+                            TT.UTILITIES.add_backside_widgets_from_json(widget, json.semantic.backside_widgets);
+                            if (load_callback) {
+                                load_callback();
+                            }
+                        }
+                };
+                var callback = function (google_file) {   
+                     if (google_file) {
+                         TT.google_drive.download_file(google_file, download_callback);
+                     } else {
+                         download_callback(window.localStorage.getItem(key));
+                     }
+                };
+                if (google_drive_first && TT.google_drive && TT.google_drive.get_status() === 'Ready') {
+                    TT.google_drive.get_toontalk_program_file(file_name, callback);
+                } else {
+                    download_callback(window.localStorage.getItem(key));
+                }
+            };
             widget.get_backside(true).set_visible(true); // top-level backsides are always visible (at least for now)
             if (TT.debugging) {
                 widget.debug_id = TT.UTILITIES.generate_unique_id();
@@ -1190,44 +1237,4 @@ window.TOONTALK.widget = (function (TT) {
     };
 
 }(window.TOONTALK));
-
-window.TOONTALK.publish_part_1 =
-'<!DOCTYPE html>\n\
-<html>\n\
-<head>\n\
-<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/sunny/jquery-ui.css" />\n\
-<link rel="stylesheet" media="all" href="https://toontalk.github.io/ToonTalk/toontalk.css">\n\
-<link href="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/css/font-awesome.min.css" rel="stylesheet" type="text/css" />\n\
-<link href="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/css/froala_editor.min.css" rel="stylesheet" type="text/css" />\n\
-<link href="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/css/froala_style.min.css" rel="stylesheet" type="text/css" />\n\
-<script src="https://toontalk.github.io/ToonTalk/compile/toontalk.js"></script>\n\
-<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/froala_editor.min.js"></script>\n\
-<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/block_styles.min.js"></script>\n\
-<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/colors.min.js"></script>\n\
-<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/font_family.min.js"></script>\n\
-<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/font_size.min.js"></script>\n\
-<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/lists.min.js"></script>\n\
-<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/tables.min.js"></script>\n\
-<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/video.min.js"></script>\n\
-<title>';
-window.TOONTALK.publish_part_2 =
-'</title>\n\
-<link rel="shortcut icon" href="favicon.ico" />\n\
-</head>\n\
-<body>\n\
-<form>\n\
-<textarea class="toontalk-edit" name="content">Edit this.</textarea>\n\
-</form>\n\
-';
-window.TOONTALK.publish_part_3 =
-'<form>\n\
-<textarea class="toontalk-edit" name="content">And edit this.</textarea>\n\
-</form>\n\
-<script>\n\
-      $(function() {\n\
-          $(".toontalk-edit").editable({inlineMode: true})\n\
-      });\n\
-  </script>\n\
-</body>\n\
-</html>';
 
