@@ -221,15 +221,7 @@ window.TOONTALK.UTILITIES =
                     }
                 });
             });
-            $(".toontalk-top-level-resource").each(function (index, element) {
-                    $(element).click(function (event) {
-                        var widget = element.toontalk_widget;
-                        if (widget && widget.set_running && !$(element).is(".toontalk-top-level-resource-container")) {
-                            widget.set_visible(true);
-                            widget.set_running(true);
-                        }
-                    });
-            });
+            // frontside's click handler will run the top-level resource widgets if clicked
         }
         TT.QUEUE = window.TOONTALK.queue.create();
         // might want two queues: so new entries end up in the 'next queue'
