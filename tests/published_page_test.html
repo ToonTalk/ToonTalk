@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" media="all" href="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/toontalk.css">
+<link href="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+<link href="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/css/froala_editor.min.css" rel="stylesheet" type="text/css" />
+<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/jquery-2.1.1.min.js"></script>
+<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/jquery-ui-1.11.2.custom/jquery-ui.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/DataTables-1.10.4/media/js/jquery.dataTables.js"></script>
+<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/rationaljs.js"></script>
+<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/support/initial.js"></script>
+<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/primitives/widget.js"></script>
+<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/primitives/number.js"></script>
+<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/primitives/robot.js"></script>
+<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/primitives/box.js"></script>
+<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/primitives/element.js"></script>
+<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/primitives/bird.js"></script>
+<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/primitives/scale.js"></script>
+<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/primitives/sensor.js"></script>
+<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/primitives/backside.js"></script>
+<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/primitives/frontside.js"></script>
+<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/tools/tool.js"></script>
+<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/tools/wand.js"></script>
+<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/tools/vacuum.js"></script>
+<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/support/robot_actions.js"></script>
+<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/support/robot_action.js"></script>
+<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/support/path.js"></script>
+<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/support/run_queue.js"></script>
+<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/support/display_updates.js"></script>
+<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/support/utilities.js"></script>
+<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/support/display_updates.js"></script>
+<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/support/settings.js"></script>
+<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/support/publish.js"></script>
+<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/froala_editor.min.js"></script>
+<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/block_styles.min.js"></script>
+<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/colors.min.js"></script>
+<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/font_family.min.js"></script>
+<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/font_size.min.js"></script>
+<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/lists.min.js"></script>
+<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/tables.min.js"></script>
+<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/video.min.js"></script>
+<title>Demo for Daavid</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<script>
+// $(document).ready(function () {
+//     window.TOONTALK.UTILITIES.enable_editor($(".toontalk-saver-iframe").get(0).contentWindow,
+//                                             "https://dl.dropboxusercontent.com/u/51973316/ToonTalk/support/save_page.html",
+//                                             "0B0taMM6vlEqQc2NLQmFpQk41ZjA"); 
+//     });
+var message_handler =
+    function (event) {
+        if (event.data.save_edits_to) {
+            window.TOONTALK.published_support.enable_editor(event.source, event.data.save_edits_to, event.data.file_id, event.data.widgets_json);
+        }
+    };
+
+window.addEventListener("message", message_handler, false);
+</script>
+</head>
+<body><div class="toontalk-edit" name="content"><p class="fr-tag">Edit this. Select text for formatting.</p></div><div class='toontalk-json'>
+This will be replaced by a number.
+<div style='display:none;'>{
+  "semantic": {
+    "type": "number",
+    "operator": "+",
+    "numerator": "4309584",
+    "denominator": "1",
+    "format": "improper_fraction",
+    "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "robot",
+            "frontside_conditions": {
+              "semantic": {
+                "type": "number",
+                "operator": "+",
+                "numerator": "1",
+                "denominator": "1",
+                "format": "improper_fraction",
+                "erased": true
+              },
+              "view": {},
+              "version": 1
+            },
+            "body": {
+              "type": "body",
+              "steps": [
+                {
+                  "type": "robot_action",
+                  "action_name": "pick up",
+                  "path": {
+                    "type": "path.to_resource",
+                    "resource": {
+                      "type": "number",
+                      "operator": "+",
+                      "numerator": "1",
+                      "denominator": "1",
+                      "format": "improper_fraction"
+                    }
+                  },
+                  "additional_info": {
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "drop it on",
+                  "path": {
+                    "type": "path.to_entire_context"
+                  },
+                  "additional_info": {
+                    "running_watched": true
+                  }
+                }
+              ]
+            }
+          },
+          "view": {
+            "backside_geometry": {
+              "x_scale": 1,
+              "y_scale": 1,
+              "original_width": 550,
+              "original_height": 200
+            },
+            "frontside_left": 24,
+            "frontside_top": 98
+          },
+          "version": 1
+        }
+      }
+    ]
+  },
+  "view": {
+    "frontside_width": 441,
+    "frontside_height": 55,
+    "frontside_left": 8,
+    "frontside_top": 43,
+    "backside_width": 0,
+    "backside_height": 0,
+    "backside_left": 0,
+    "backside_top": 0,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1
+    }
+  },
+  "version": 1
+}</div></div><div class="toontalk-edit" name="content"><p class="fr-tag">And edit this.</p></div>
+<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/support/published_support.js"></script>
+<iframe class="toontalk-saver-iframe" src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/support/save_page.html?id=0B0taMM6vlEqQc2NLQmFpQk41ZjA" width="10" height="10" />
+</body>
+</html>
