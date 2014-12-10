@@ -1122,7 +1122,7 @@ window.TOONTALK.UTILITIES =
                             element.appendChild(frontside_element);
                         }
                         if (widget.set_active) {
-                            // resource shouldn't run -- at least not sensor nests
+                            // sensor resources shouldn't run -- currently they are only ones support set_active
                             widget.set_active(false);
                         }
                         if (widget.set_visible) {
@@ -1956,8 +1956,12 @@ window.TOONTALK.UTILITIES =
         },
 
         open_url_and_enable_editor: function (url, file_id, widgets_json) {
-            // widgets_json can be undefined
             var new_window = window.open(url, "published page editor");
+            TT.UTILITIES.enable_editor(new_window, url, file_id, widgets_json);
+        },
+
+        enable_editor: function (editor_window, url, file_id, widgets_json) {
+            // widgets_json can be undefined
             var repeatedly_post_message_until_reply = function (message_poster, file_id) {
                 var message_listener = function (event) {
                     if (event.data.editor_enabled_for && event.data.editor_enabled_for === file_id) {
@@ -1984,10 +1988,10 @@ window.TOONTALK.UTILITIES =
                                                     // using * instead of url
                                                     // since https://googledrive.com/host/...
                                                     // becomes https://a1801c08722da65109a4efa9e0ae4bdf83fafed0.googledrive.com/host/...
-                                                    new_window.postMessage({save_edits_to: window.location.href,
-                                                                            file_id: file_id,
-                                                                            widgets_json: widgets_json},
-                                                                           "*");
+                                                    editor_window.postMessage({save_edits_to: window.location.href,
+                                                                               file_id: file_id,
+                                                                               widgets_json: widgets_json},
+                                                                              "*");
                                                 },
                                                 file_id);
         },

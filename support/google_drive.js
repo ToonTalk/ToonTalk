@@ -28,21 +28,25 @@ window.TOONTALK.google_drive =
     var wrong_origin_message = "Connections to Google Drive are configured for the following domain only: ";
     var programs_folder_id, pages_folder_id;
     return {
-        handle_client_load: function () {
+        handle_client_load: function (callback_when_authorized) {
             if (window.location.href.indexOf(origin) !== 0) {
                 status = wrong_origin_message + origin + ". If you are hosting ToonTalk elsewhere you need to set window.TOONTALK.GOOGLE_DRIVE_CLIENT_ID and window.TOONTALK.ORIGIN_FOR_GOOGLE_DRIVE";
                 return;
             }
-            setTimeout(window.TOONTALK.google_drive.check_authorization, 1);
+            setTimeout(function () {
+                           TT.google_drive.check_authorization(callback_when_authorized);
+                       });
         },
 
        /**
        * Check if the current user has authorized the application.
        */
-      check_authorization: function () {
+      check_authorization: function (callback) {
           status = "Awaiting authorization";
           gapi.auth.authorize({'client_id': CLIENT_ID, 'scope': SCOPES, 'immediate': true},
-                              TT.google_drive.handle_authorization_result);
+                              function (authorization_result) {
+                                  TT.google_drive.handle_authorization_result(authorization_result, callback);
+                              });
       },
 
       /**
@@ -54,14 +58,14 @@ window.TOONTALK.google_drive =
         if (authorization_result && !authorization_result.error) {
            // Access token has been successfully retrieved, requests can be sent to the API.
            status = "Authorized but not yet ready";
-           if (callback) {
-               callback();
-           }
            gapi.client.load('drive', 'v2', function() {
                TT.google_drive.get_folder_ids(function () {
                    status = "Ready";
                });
            });
+           if (callback) {
+               callback();
+           }
         } else {
            // No access token could be retrieved, show the button to start the authorization flow.
            status = "Need to authorize";
