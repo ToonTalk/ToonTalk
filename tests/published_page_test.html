@@ -41,21 +41,6 @@
 <script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/video.min.js"></script>
 <title>Demo for Daavid</title>
 <link rel="shortcut icon" href="favicon.ico" />
-<script>
-// $(document).ready(function () {
-//     window.TOONTALK.UTILITIES.enable_editor($(".toontalk-saver-iframe").get(0).contentWindow,
-//                                             "https://dl.dropboxusercontent.com/u/51973316/ToonTalk/support/save_page.html",
-//                                             "0B0taMM6vlEqQc2NLQmFpQk41ZjA"); 
-//     });
-var message_handler =
-    function (event) {
-        if (event.data.save_edits_to) {
-            window.TOONTALK.published_support.enable_editor(event.source, event.data.save_edits_to, event.data.file_id, event.data.widgets_json);
-        }
-    };
-
-window.addEventListener("message", message_handler, false);
-</script>
 </head>
 <body><div class="toontalk-edit" name="content"><p class="fr-tag">Edit this. Select text for formatting.</p></div><div class='toontalk-json'>
 This will be replaced by a number.
@@ -148,6 +133,6 @@ This will be replaced by a number.
   "version": 1
 }</div></div><div class="toontalk-edit" name="content"><p class="fr-tag">And edit this.</p></div>
 <script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/support/published_support.js"></script>
-<iframe class="toontalk-saver-iframe" src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/support/save_page.html?id=0B0taMM6vlEqQc2NLQmFpQk41ZjA" width="0" height="0" />
+<!-- <iframe class="toontalk-saver-iframe" src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/support/save_page.html?id=0B0taMM6vlEqQc2NLQmFpQk41ZjA" width="0" height="0" /> -->
 </body>
 </html>

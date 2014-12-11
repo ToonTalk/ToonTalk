@@ -19,8 +19,21 @@ var message_handler =
             TT.published_support.enable_editor(event.source, event.data.save_edits_to, event.data.file_id, event.data.widgets_json);
         }
     };
-
 window.addEventListener("message", message_handler, false);
+
+var add_save_edits_iframe = function () {
+    var file_id_end   = window.location.href.lastIndexOf("/");
+    var file_id_start = window.location.href.lastIndexOf("/", file_id_end-1);
+    var file_id       = window.location.href.substring(file_id_start+1, file_id_end);
+    var iframe        = document.createElement("iframe");
+    iframe.className  = "toontalk-saver-iframe";
+    // REPLACE WITH GitHub.io version:
+    iframe.src        = "https://dl.dropboxusercontent.com/u/51973316/ToonTalk/support/save_page.html?id=" + file_id;
+    iframe.width      = "0";
+    iframe.height     = "0";
+    document.body.appendChild(iframe);
+};
+add_save_edits_iframe();
 
 return {
     enable_editor: function (saving_window, saving_window_URL, file_id, widgets_json) {
