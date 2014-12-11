@@ -221,15 +221,7 @@ window.TOONTALK.UTILITIES =
                     }
                 });
             });
-            $(".toontalk-top-level-resource").each(function (index, element) {
-                    $(element).click(function (event) {
-                        var widget = element.toontalk_widget;
-                        if (widget && widget.set_running && !$(element).is(".toontalk-top-level-resource-container")) {
-                            widget.set_visible(true);
-                            widget.set_running(true);
-                        }
-                    });
-            });
+            // frontside's click handler will run the top-level resource widgets if clicked
         }
         TT.QUEUE = window.TOONTALK.queue.create();
         // might want two queues: so new entries end up in the 'next queue'
@@ -1130,7 +1122,7 @@ window.TOONTALK.UTILITIES =
                             element.appendChild(frontside_element);
                         }
                         if (widget.set_active) {
-                            // resource shouldn't run -- at least not sensor nests
+                            // sensor resources shouldn't run -- currently they are only ones support set_active
                             widget.set_active(false);
                         }
                         if (widget.set_visible) {
@@ -1643,7 +1635,12 @@ window.TOONTALK.UTILITIES =
                                         var name = in_cloud ? data.substring(0, data.length-5) : data;
                                         var title = in_cloud ? TT.google_drive.google_drive_url(full.id) : "Click to load this program.";
                                         // fileId becomes fileid in Chrome (and maybe other browsers)
-                                        return "<div class='" + button_class + "' title='" + title + "'id='" + full.id + "'>" + name + "</div>";
+                                        if (button_class) {
+                                            return "<div class='" + button_class + "' title='" + title + "'id='" + full.id + "'>" + name + "</div>";
+                                        } else {
+                                            // is just an ordinarly link now
+                                            return "<a href='" + title + "'target='_blank' title='Click to open published page.'>" + name + "</a>";
+                                        }
                           }}, 
                          {data: 'modifiedDate', 
                           title: "Modified",
@@ -1963,9 +1960,13 @@ window.TOONTALK.UTILITIES =
             return "toontalk-meta-data: " + program_name;
         },
 
-        open_url_and_enable_editor: function (url, file_id, widgets_json) {
+//         open_url_and_enable_editor: function (url, file_id, widgets_json) {
+//             var new_window = window.open(url, "published page editor");
+//             TT.UTILITIES.enable_editor(new_window, url, file_id, widgets_json);
+//         },
+
+        enable_editor: function (editor_window, url, file_id, widgets_json) {
             // widgets_json can be undefined
-            var new_window = window.open(url, "published page editor");
             var repeatedly_post_message_until_reply = function (message_poster, file_id) {
                 var message_listener = function (event) {
                     if (event.data.editor_enabled_for && event.data.editor_enabled_for === file_id) {
@@ -1992,10 +1993,10 @@ window.TOONTALK.UTILITIES =
                                                     // using * instead of url
                                                     // since https://googledrive.com/host/...
                                                     // becomes https://a1801c08722da65109a4efa9e0ae4bdf83fafed0.googledrive.com/host/...
-                                                    new_window.postMessage({save_edits_to: window.location.href,
-                                                                            file_id: file_id,
-                                                                            widgets_json: widgets_json},
-                                                                           "*");
+                                                    editor_window.postMessage({save_edits_to: window.location.href,
+                                                                               file_id: file_id,
+                                                                               widgets_json: widgets_json},
+                                                                              "*");
                                                 },
                                                 file_id);
         },
