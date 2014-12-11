@@ -1393,6 +1393,11 @@ body {
 .toontalk-alert {
 	background-color: #F7F8E0;
 }
+.toontalk-saver-iframe {
+	width:   0px;
+	height:  0px;
+	display: none;
+}
 .toontalk-settings-backside-button {
 	cursor: pointer;
 	font-family: 'Lucida serif';

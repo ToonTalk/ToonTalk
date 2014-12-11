@@ -31,9 +31,6 @@ var add_save_edits_iframe = function () {
     iframe.className  = "toontalk-saver-iframe";
     // REPLACE WITH GitHub.io version:
     iframe.src        = "https://dl.dropboxusercontent.com/u/51973316/ToonTalk/support/save_page.html?id=" + file_id;
-    iframe.width      = "0";
-    iframe.height     = "0";
-    iframe.display    = "none";
     document.body.appendChild(iframe);
 };
 add_save_edits_iframe();
