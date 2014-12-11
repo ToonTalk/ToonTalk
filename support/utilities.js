@@ -1635,7 +1635,12 @@ window.TOONTALK.UTILITIES =
                                         var name = in_cloud ? data.substring(0, data.length-5) : data;
                                         var title = in_cloud ? TT.google_drive.google_drive_url(full.id) : "Click to load this program.";
                                         // fileId becomes fileid in Chrome (and maybe other browsers)
-                                        return "<div class='" + button_class + "' title='" + title + "'id='" + full.id + "'>" + name + "</div>";
+                                        if (button_class) {
+                                            return "<div class='" + button_class + "' title='" + title + "'id='" + full.id + "'>" + name + "</div>";
+                                        } else {
+                                            // is just an ordinarly link now
+                                            return "<a href='" + title + "'target='_blank' title='Click to open published page.'>" + name + "</a>";
+                                        }
                           }}, 
                          {data: 'modifiedDate', 
                           title: "Modified",
@@ -1955,10 +1960,10 @@ window.TOONTALK.UTILITIES =
             return "toontalk-meta-data: " + program_name;
         },
 
-        open_url_and_enable_editor: function (url, file_id, widgets_json) {
-            var new_window = window.open(url, "published page editor");
-            TT.UTILITIES.enable_editor(new_window, url, file_id, widgets_json);
-        },
+//         open_url_and_enable_editor: function (url, file_id, widgets_json) {
+//             var new_window = window.open(url, "published page editor");
+//             TT.UTILITIES.enable_editor(new_window, url, file_id, widgets_json);
+//         },
 
         enable_editor: function (editor_window, url, file_id, widgets_json) {
             // widgets_json can be undefined

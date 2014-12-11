@@ -57,7 +57,8 @@ window.TOONTALK.SETTINGS =
                 callback(null);
                 return;
             }
-            class_name = (toontalk_type === 'program') ? "toontalk-file-load-button" : "toontalk-published-page-button";
+            // published pages don't have a button class -- they are now ordinary links
+            class_name = (toontalk_type === 'program') && "toontalk-file-load-button"; 
             table = TT.UTILITIES.create_file_data_table(response.items, true, class_name);
             add_click_listeners(widget, table, true, settings_panel);
             callback(table);
@@ -78,12 +79,12 @@ window.TOONTALK.SETTINGS =
             // save in case current program has changed
             widget.save(true, undefined, saved_callback);
         };
-        var page_click_handler = function (event) {
-            // title of this element is the URL
-            TT.UTILITIES.open_url_and_enable_editor(this.title, this.id);            
-        };
-        $(table).find(".toontalk-file-load-button")     .click(program_click_handler);
-        $(table).find(".toontalk-published-page-button").click(page_click_handler);  
+//         var page_click_handler = function (event) {
+//             // title of this element is the URL
+//             TT.UTILITIES.open_url_and_enable_editor(this.title, this.id);            
+//         };
+        $(table).find(".toontalk-file-load-button").click(program_click_handler);
+//         $(table).find(".toontalk-published-page-button").click(page_click_handler);
     };
 
     return {
@@ -147,10 +148,10 @@ window.TOONTALK.SETTINGS =
           var create_connection_to_google_file = function (google_file, prefix, extra_info) {
               var link_to_publication = document.createElement('span');
               var url = TT.google_drive.google_drive_url(google_file.id);
-              link_to_publication.innerHTML = prefix + "<div class='toontalk-published-page-button'>" + widget.get_setting('program_name') + "</div>";
-              link_to_publication.addEventListener('click', function (event) {
-                  TT.UTILITIES.open_url_and_enable_editor(url, google_file.id, extra_info);
-              });
+              link_to_publication.innerHTML = prefix + "<a href='" + url + "' target='_blank'>" + widget.get_setting('program_name') + "</a>";
+//               link_to_publication.addEventListener('click', function (event) {
+//                   TT.UTILITIES.open_url_and_enable_editor(url, google_file.id, extra_info);
+//               });
               return link_to_publication;
           };
           // create a div whose positioning isn't absolute
