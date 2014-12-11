@@ -35,18 +35,34 @@ window.TOONTALK.ORIGIN_FOR_GOOGLE_DRIVE = 'https://dl.dropboxusercontent.com';
 <script>
 function authorize_then_inform_parent_to_save_edits() {
     "use strict";
-    var callback_when_authorized = function () {
-        var file_id_index = window.location.href.indexOf("id=");
-        if (file_id_index < 0) {
-            alert(window.location.href + " expected to end with id=...");
+    var callback_when_authorized = function (error) {
+        var file_id_index, file_id;
+        if (typeof error === 'string') {
+            window.parent.postMessage({authorization_problem: error,
+                                       respond_to: window.location.href},
+                                      "*");
+            return;
         }
-        var file_id = window.location.href.substring(file_id_index+3);
+        file_id_index = window.location.href.indexOf("id=");
+        if (file_id_index < 0) {
+            console.error(window.location.href + " expected to end with id=...");
+            return;
+        }
+        file_id = window.location.href.substring(file_id_index+3);
         window.parent.postMessage({save_edits_to: window.location.href,
                                    file_id: file_id},
                                   "*");
     };
     window.TOONTALK.google_drive.handle_client_load(callback_when_authorized);
 };
+var message_handler =
+    function (event) {
+        if (event.data === "user wants to authorize") {
+            window.TOONTALK.google_drive.authorize(authorize_then_inform_parent_to_save_edits);
+        }
+    };
+window.addEventListener("message", message_handler, false);
+                                                   
 </script>
 <script src="https://apis.google.com/js/client.js?onload=authorize_then_inform_parent_to_save_edits"></script>
 <title>ToonTalk hidden iframe for saving edits</title>

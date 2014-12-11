@@ -17,6 +17,8 @@ var message_handler =
     function (event) {
         if (event.data.save_edits_to) {
             TT.published_support.enable_editor(event.source, event.data.save_edits_to, event.data.file_id, event.data.widgets_json);
+        } else if (event.data.authorization_problem) {
+            respond_to_authorization_need(event.data.authorization_problem, event.source, event.data.respond_to);
         }
     };
 window.addEventListener("message", message_handler, false);
@@ -34,6 +36,30 @@ var add_save_edits_iframe = function () {
     document.body.appendChild(iframe);
 };
 add_save_edits_iframe();
+
+var respond_to_authorization_need = function (error, saving_window, saving_window_URL) {
+    var alert_element = document.createElement('div');
+    var authorize;
+    alert_element.className = "toontalk-alert";
+    if (error === 'Need to authorize') {
+        alert_element.innerHTML = "Editing will be enabled if you can log into your Google Drive account. ";
+        authorize = TT.UTILITIES.create_button("Login to Google",
+                                               "toontalk-google-login-button", 
+                                               "Click to log in to Google to authorize use of your Google Drive.", 
+                                               function () {
+                                                   $(alert_element).remove();
+                                                   saving_window.postMessage("user wants to authorize", saving_window_URL); 
+                                               });
+        alert_element.appendChild(authorize);
+    } else {
+        alert_element.innerHTML = "Editing disabled because unable to get authorization to access your Google Drive files. Problem is '" + error + "'";
+    }
+    document.body.insertBefore(alert_element, document.body.firstChild);
+    setTimeout(function () {
+                   $(alert_element).remove();
+               },
+               10000); // alert goes away after 10 seconds
+};
 
 return {
     enable_editor: function (saving_window, saving_window_URL, file_id, widgets_json) {

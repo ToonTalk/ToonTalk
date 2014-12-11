@@ -31,6 +31,9 @@ window.TOONTALK.google_drive =
         handle_client_load: function (callback_when_authorized) {
             if (window.location.href.indexOf(origin) !== 0) {
                 status = wrong_origin_message + origin + ". If you are hosting ToonTalk elsewhere you need to set window.TOONTALK.GOOGLE_DRIVE_CLIENT_ID and window.TOONTALK.ORIGIN_FOR_GOOGLE_DRIVE";
+                if (callback_when_authorized) {
+                    callback_when_authorized(status);
+                }
                 return;
             }
             setTimeout(function () {
@@ -69,6 +72,9 @@ window.TOONTALK.google_drive =
         } else {
            // No access token could be retrieved, show the button to start the authorization flow.
            status = "Need to authorize";
+           if (callback) {
+               callback(status);
+           }
         }
       },
 

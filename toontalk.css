@@ -1390,6 +1390,9 @@ body {
 	top:   0px;
 	right: 16px;
 }
+.toontalk-alert {
+	background-color: #F7F8E0;
+}
 .toontalk-settings-backside-button {
 	cursor: pointer;
 	font-family: 'Lucida serif';
