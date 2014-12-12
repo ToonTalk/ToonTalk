@@ -207,22 +207,19 @@ window.TOONTALK.UTILITIES =
     };
     var initialise = function () {   
         TT.debugging = TT.UTILITIES.get_current_url_boolean_parameter('debugging', false);
-        var includes_top_level_backside = TT.UTILITIES.process_json_elements();
-        if (!includes_top_level_backside) {
-            // since there is no backside 'work space' we need a way to turn things off
-            // since clicking on a running widget may not work since its HTML is changing
-            // though maybe the container can be constant TODO: investigate this
-            $(document).click(function (event) {
-                event.stopPropagation();
-                $(".toontalk-frontside").each(function (index, element) {
-                    var widget = element.toontalk_widget;
-                    if (widget && widget.set_running) {
-                        widget.set_running(false);
-                    }
-                });
+        TT.UTILITIES.process_json_elements();
+        // for top-level resources since they are not on the backside 'work space' we need a way to turn them off
+        // clicking on a running widget may not work since its HTML may be changing constantly
+        $(document).click(function (event) {
+            event.stopPropagation();
+            $(".toontalk-top-level-resource").each(function (index, element) {
+                var widget = element.toontalk_widget;
+                if (widget && widget.set_running) {
+                    widget.set_running(false);
+                }
             });
-            // frontside's click handler will run the top-level resource widgets if clicked
-        }
+        });
+        // frontside's click handler will run the top-level resource widgets if clicked
         TT.QUEUE = window.TOONTALK.queue.create();
         // might want two queues: so new entries end up in the 'next queue'
         TT.QUEUE.run();
@@ -1059,7 +1056,6 @@ window.TOONTALK.UTILITIES =
         },
    
         process_json_elements: function () {
-            var includes_top_level_backside = false;
             $(".toontalk-json").each(
                 function (index, element) {
                     var json_string = element.textContent;
@@ -1111,7 +1107,6 @@ window.TOONTALK.UTILITIES =
                                                      // perhaps using additional classes?
                                                      "background-color": json.view.background_color,
                                                      "border-width": json.view.border_width});
-                            includes_top_level_backside = true;
                         } else {
                             // TODO: determine why both levels have the same class here
                             $(element).addClass("toontalk-top-level-resource toontalk-top-level-resource-container");
@@ -1142,7 +1137,6 @@ window.TOONTALK.UTILITIES =
                         TT.UTILITIES.report_internal_error("Could not recreate a widget from this JSON: " + json_string);
                     }
                 });
-            return includes_top_level_backside;
         },
         
         set_absolute_position: function ($element, absolute_position) {
