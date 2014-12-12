@@ -296,7 +296,15 @@ window.TOONTALK.widget = (function (TT) {
                     var description = this.get_description();
                     var title;
                     if ($(frontside_element).is(".toontalk-top-level-resource")) {
-                        title = "Drag this " + type_name + " to a work area.";   
+                        if (this.can_run && this.can_run()) {
+                            if (this.get_running()) {
+                                title = "Click elsewhere to stop this from running. Click on it to start it up again.";
+                            } else {
+                                title = "Click to start this running. Click elsewhere to stop it.";
+                            }
+                        } else {
+                           title = "Drag this " + type_name + " to a work area.";
+                        }   
                     } else if (!backside || !backside.get_element()) {
                         title = "Click to see the back side of this " + type_name;
                     } else if (!description) {
