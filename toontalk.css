@@ -1289,6 +1289,9 @@ body {
 	/* could be fancier -- e.g. glowing */
 	border: solid 3px red;
 }
+.toontalk-conditions-waiting {
+	border: solid 3px yellow;
+}
 .toontalk-green-flag-inactive, .toontalk-green-flag-active:hover {
 	background-image: url("images/green-flag-inactive.png");
 	background-repeat: no-repeat;

@@ -56,6 +56,7 @@ window.TOONTALK.widget = (function (TT) {
                     return this.get_type_name() === type_name;
                 };
             }
+            widget.is_widget = true;
             return widget;
         },
         
@@ -883,16 +884,6 @@ window.TOONTALK.widget = (function (TT) {
             return false;
         },
         
-        match_box: function () {
-            // if a box didn't respond to this then not matched
-            return 'not matched';
-        },
-        
-        match_number: function () {
-            // if a number didn't respond to this then not matched
-            return 'not matched';
-        },
-        
         open_backside: function (continuation) {
             // continuation will be run after animation is completed
             var backside = this.get_backside();
@@ -1239,6 +1230,7 @@ window.TOONTALK.widget = (function (TT) {
                     download_callback(window.localStorage.getItem(key));
                 }
             };
+            widget.is_widget = true;
             widget.get_backside(true).set_visible(true); // top-level backsides are always visible (at least for now)
             if (TT.debugging) {
                 widget.debug_id = TT.UTILITIES.generate_unique_id();

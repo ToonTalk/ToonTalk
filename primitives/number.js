@@ -759,28 +759,28 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
                after_decimal_point;
     };
 
-    number.match = function (context) {
+    number.match = function (other) {
         if (this.get_erased && this.get_erased()) {
-            if (context.match_with_any_number) {
-                return context.match_with_any_number();
+            if (other.match_with_any_number) {
+                return other.match_with_any_number();
             }
-            return 'not matched'; // since doesn't handle match_with_any_number
+            return this; // since doesn't handle match_with_any_number
         }
-        if (!context.match_with_this_number) {
-            return 'not matched';
+        if (!other.match_with_this_number) {
+            return this;
         }
-        return context.match_with_this_number(this);
+        return other.match_with_this_number(this);
     };
 
     number.match_with_any_number = function () {
         return 'matched';
     };
 
-    number.match_with_this_number = function (other_number) {
-        if (other_number.equals(this)) {
+    number.match_with_this_number = function (number_pattern) {
+        if (number_pattern.equals(this)) {
             return 'matched';
         }
-        return 'not matched';
+        return number_pattern;
     };
     
     return number;

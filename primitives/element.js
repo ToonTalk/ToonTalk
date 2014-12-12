@@ -271,28 +271,28 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         return this.add_to_copy(copy, just_value);
     };
     
-    element.match = function (context) {
+    element.match = function (other) {
         if (this.get_erased && this.get_erased()) {
-            if (context.match_with_any_element) {
-                return context.match_with_any_element();
+            if (other.match_with_any_element) {
+                return other.match_with_any_element();
             }
-            return 'not matched';
+            return this;
         }
-        if (!context.match_with_another_element_widget) {
-            return 'not matched';
+        if (!other.match_with_another_element_widget) {
+            return this;
         }
-        return context.match_with_another_element_widget(this);
+        return other.match_with_another_element_widget(this);
     };
     
     element.match_with_any_element = function () {
         return 'matched';
     };
     
-    element.match_with_another_element_widget = function (other_element) {
-        if (this.get_HTML() === other_element.get_HTML()) {
+    element.match_with_another_element_widget = function (element_pattern) {
+        if (this.get_HTML() === element_pattern.get_HTML()) {
             return 'matched';
         } else {
-            return 'not matched';
+            return element_pattern;
         }
     };
 

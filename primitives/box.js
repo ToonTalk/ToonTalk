@@ -191,17 +191,17 @@ window.TOONTALK.box = (function (TT) {
         return 0;
     };
     
-    box.match = function (context) {
+    box.match = function (other) {
         if (this.get_erased && this.get_erased()) {
-            if (context.match_with_any_box) {
-                return context.match_with_any_box();
+            if (other.match_with_any_box) {
+                return other.match_with_any_box();
             }
-            return 'not matched';
+            return this;
         }
-        if (!context.match_with_this_box) {
-            return 'not matched';
+        if (!other.match_with_this_box) {
+            return this;
         }
-        return context.match_with_this_box(this);
+        return other.match_with_this_box(this);
     };
     
     box.match_with_any_box = function () {
@@ -213,7 +213,7 @@ window.TOONTALK.box = (function (TT) {
         var waiting_nests = [];
         var i, my_hole, pattern_hole, hole_match;
         if (size !== pattern_box.get_size()) {
-            return 'not matched';
+            return pattern_box;
         }
         for (i = 0; i < size; i++) {
             pattern_hole = pattern_box.get_hole_contents(i);
@@ -221,11 +221,12 @@ window.TOONTALK.box = (function (TT) {
                 my_hole = this.get_hole_contents(i);
                 if (!my_hole) {
                     // expected something -- not an empty hole
-                    return 'not matched';
+                    return pattern_box;
                 }
                 hole_match = TT.UTILITIES.match(pattern_hole, my_hole);
-                if (hole_match === 'not matched') {
-                    return 'not matched';
+                if (hole_match.is_widget) {
+                    // sub-match failed
+                    return hole_match;
                 }
                 if (hole_match !== 'matched') {
                     // suspended on a nest so combine the suspended nests

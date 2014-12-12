@@ -201,21 +201,22 @@ window.TOONTALK.robot = (function (TT) {
     
     robot.run = function (context, top_level_context, queue) {
         var frontside_condition_widget = this.get_frontside_conditions();
+        var clear_all_mismatch_displays = function (widget) {
+            if (widget.visible()) {
+               $(widget.get_frontside_element()).removeClass("toontalk-conditions-not-matched toontalk-conditions-waiting")
+                                                // clear all the mismatch displays from descendants
+                                                .find(".toontalk-conditions-not-matched, toontalk-conditions-waiting").removeClass("toontalk-conditions-not-matched toontalk-conditions-waiting");
+
+            }
+        };
         var backside_conditions, backside_widgets, condition_frontside_element, to_run_when_non_empty, next_robot_match_status;
         if (this.being_trained || !frontside_condition_widget || this.get_animating()) {
             // should not run if being trained, has no conditions (TODO: really?), or is already running
-            return 'not matched';
+            return this;
         }
-//         console.log("Match is " + TT.UTILITIES.match(frontside_condition_widget, context) + " for condition " + frontside_condition_widget + " with " + context);
+        clear_all_mismatch_displays(frontside_condition_widget);
+//      console.log("Match is " + TT.UTILITIES.match(frontside_condition_widget, context) + " for condition " + frontside_condition_widget + " with " + context);
         this.match_status = TT.UTILITIES.match(frontside_condition_widget, context);
-        condition_frontside_element = frontside_condition_widget.get_frontside_element();
-        if (condition_frontside_element) {
-            if (this.match_status === 'matched') {
-                $(condition_frontside_element).removeClass("toontalk-conditions-not-matched");
-            } else {
-                $(condition_frontside_element).addClass("toontalk-conditions-not-matched");
-            }
-        }
         if (this.match_status === 'matched') {
             backside_conditions = this.get_backside_conditions();
             if (backside_conditions) {
@@ -225,15 +226,8 @@ window.TOONTALK.robot = (function (TT) {
                         var backside_condition_widget_of_type = !backside_widget_side.is_backside() && backside_conditions[backside_widget_side.get_widget().get_type_name()];
                         var sub_match_status;
                         if (backside_condition_widget_of_type) {
+                            clear_all_mismatch_displays(backside_condition_widget_of_type);
                             sub_match_status = TT.UTILITIES.match(backside_condition_widget_of_type, backside_widget_side.get_widget());
-                            condition_frontside_element = backside_condition_widget_of_type.get_frontside_element();
-                            if (condition_frontside_element) {
-                                if (sub_match_status === 'matched') {
-                                    $(condition_frontside_element).removeClass("toontalk-conditions-not-matched");
-                                } else {
-                                    $(condition_frontside_element).addClass("toontalk-conditions-not-matched");
-                                }
-                            }
                             if (sub_match_status !== 'matched') {
                                 this.match_status = sub_match_status;
                                 // stop going through backside_widgets
@@ -243,49 +237,54 @@ window.TOONTALK.robot = (function (TT) {
                     }.bind(this));
                 }
             }
-        } else if (!this.match_status) {
-            this.match_status = 'not matched';
+//         } else if (!this.match_status) {
+//             this.match_status = 'not matched';
         }
 //      console.log("robot#" + this.debug_id + " match_status is " + this.match_status);
-        switch (this.match_status) {
-        case 'matched':
+        if (this.match_status === 'matched') {
             if (!queue) {
                 queue = TT.QUEUE;
             }
             this.get_body().reset_newly_created_widgets();
             queue.enqueue({robot: this, context: context, top_level_context: top_level_context, queue: queue});
             return this.match_status;
-        case 'not matched':
+        }
+        if (this.match_status.is_widget) { // failed to match - this.match_status is the cause
+            $(this.match_status.get_frontside_element()).addClass("toontalk-conditions-not-matched");
+            this.rerender();
             if (this.get_next_robot()) {
                 return this.get_next_robot().run(context, top_level_context, queue);
             }
             return this.match_status;
-        default:
-            if (this.get_next_robot()) {
-                next_robot_match_status = this.get_next_robot().run(context, top_level_context, queue);
-                if (next_robot_match_status === 'matched') {
-                    return next_robot_match_status;
-                } else if (next_robot_match_status != 'not matched') {
-                    // subsequent robot suspended too -- perhaps on different things
-                    next_robot_match_status.forEach(function (sub_match_status) {
-                        if (this.match_status.indexOf(sub_match_status) < 0) {
-                            this.match_status.push(sub_match_status);
-                        }
-                    });
-                }
-            }
-            if (this.get_first_in_team() === this) {
-                to_run_when_non_empty = {robot: this,
-                                         context: context,
-                                         top_level_context: top_level_context,
-                                         queue: queue};
-                this.match_status.forEach(function (sub_match_status) {
-                    sub_match_status.run_when_non_empty(to_run_when_non_empty);
-                });
-                TT.UTILITIES.add_animation_class(this.get_frontside_element(), "toontalk-robot-waiting");
-            }
-            return this.match_status;                    
         }
+        // suspended waiting on a nest
+//         this.match_status.forEach(function (waiting_widget) {
+//             $(waiting_widget.get_frontside_element()).addClass("toontalk-conditions-waiting");
+//         });
+        if (this.get_next_robot()) {
+            next_robot_match_status = this.get_next_robot().run(context, top_level_context, queue);
+            if (next_robot_match_status === 'matched') {
+                return next_robot_match_status;
+            } else if (!next_robot_match_status.is_widget) {
+                // subsequent robot suspended too -- perhaps on different things
+                next_robot_match_status.forEach(function (sub_match_status) {
+                    if (this.match_status.indexOf(sub_match_status) < 0) {
+                        this.match_status.push(sub_match_status);
+                    }
+                });
+            }
+        }
+        if (this.get_first_in_team() === this) {
+            to_run_when_non_empty = {robot: this,
+                                     context: context,
+                                     top_level_context: top_level_context,
+                                     queue: queue};
+            this.match_status.forEach(function (sub_match_status) {
+                sub_match_status.run_when_non_empty(to_run_when_non_empty);
+            });
+                TT.UTILITIES.add_animation_class(this.get_frontside_element(), "toontalk-robot-waiting");
+        }
+        return this.match_status;                    
     };
     
     robot.set_stopped = function (new_value) {
@@ -502,10 +501,12 @@ window.TOONTALK.robot = (function (TT) {
         if (thing_in_hand_frontside_element) {
             frontside_element.appendChild(thing_in_hand_frontside_element);
         }
-        if (this.match_status === 'not matched') {
-            $(frontside_element).addClass("toontalk-side-animating toontalk-robot-not-matched");
-        } else {
-            $(frontside_element).removeClass("toontalk-robot-not-matched");
+        if (this.match_status) {
+            if (this.match_status.is_widget) { // didn't match
+                $(frontside_element).addClass("toontalk-side-animating toontalk-robot-not-matched");
+            } else {
+                $(frontside_element).removeClass("toontalk-robot-not-matched");
+            }
         }
         TT.UTILITIES.set_timeout( // wait for layout to settle down
             function () {
@@ -603,7 +604,7 @@ window.TOONTALK.robot = (function (TT) {
         }
         frontside_conditions_string = TT.UTILITIES.add_a_or_an(frontside_conditions_string);
         robot_description = prefix + "When working on something that matches " + frontside_conditions_string + " he will \n" + body.toString() + postfix;
-        if (this.match_status === 'not matched') {
+        if (this.match_status && this.match_status.is_widget) {
             robot_description = "He isn't running because his conditions don't match. Click to edit his conditions.\n" + robot_description;
         }
         if (next_robot) {
@@ -701,11 +702,15 @@ window.TOONTALK.robot_backside =
                                           width:  'inherit',
                                           height: 'inherit'});
                 condition_widget.render();
-            });        
-        if (robot.match_status === 'not matched') {
-            $(condition_element).addClass("toontalk-conditions-not-matched");
-        } else {
-            $(condition_element).removeClass("toontalk-conditions-not-matched");
+            });
+        if (robot.match_status) {   
+            if (robot.match_status.is_widget) {
+                $(robot.match_status.get_frontside_element()).addClass("toontalk-conditions-not-matched");
+            } else if (robot.match_status !== 'matched') {
+//                 robot.match_status.forEach(function (waiting_widget) {
+//                     $(waiting_widget).get_frontside_element().addClass("toontalk-conditions-waiting");
+//                 });
+            }
         }
         // wrapping the condition_element in a div forces it to be in the right place in the table
         condition_element_div_parent.appendChild(condition_element);

@@ -275,13 +275,13 @@ window.TOONTALK.scale = (function (TT) {
             if (other.match_with_scale) {
                 return other.match_with_scale(this);
             }
-            return "not matched";
+            return this;
         };
-        new_scale.match_with_scale = function (other_scale) {
-            if (this.get_state() === other_scale.get_state()) {
-                return "matched";
+        new_scale.match_with_scale = function (scale_pattern) {
+            if (this.get_state() === scale_pattern.get_state()) {
+                return 'matched';
             }
-            return "not matched";
+            return scale_pattern;
         };
         new_scale.compare_with = function (other) {
             if (other.compare_with_scale) {

@@ -162,11 +162,11 @@ window.TOONTALK.sensor = (function (TT) {
         };
         new_sensor.match = function (other) {
             // TODO:
-            return "not matched";
+            return this;
         };
         new_sensor.set_sensor_of = function (new_value) {
             widget = new_value;
-        }
+        };
         return new_sensor;
     };
     

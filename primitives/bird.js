@@ -299,7 +299,7 @@ window.TOONTALK.bird = (function (TT) {
         if (other.match_with_any_bird) {
             return other.match_with_any_bird(this);
         }
-        return "not matched";
+        return this;
     };
     
     bird.match_with_any_bird = function () {
@@ -914,7 +914,7 @@ window.TOONTALK.nest = (function (TT) {
         if (other.match_nest_with_nest) {
             return other.match_nest_with_nest(this);
         }
-        return "not matched";
+        return other;
     };
 
     nest.match_nest_with_nest = function (other_nest) {

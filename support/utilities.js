@@ -1722,7 +1722,7 @@ window.TOONTALK.UTILITIES =
         
         match: function (pattern, widget) {
             var match_status = pattern.match(widget);
-            if (match_status === 'not matched' && widget.matched_by) {
+            if (match_status.is_widget && widget.matched_by) {
                 // e.g. widget is a nest             
                 return widget.matched_by(pattern);
             }
