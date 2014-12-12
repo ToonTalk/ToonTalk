@@ -155,8 +155,12 @@ window.TOONTALK.widget = (function (TT) {
             }
             if (!widget.set_running) {
                 widget.set_running = function (new_value, top_level_context) {
-                    var backside_widgets = this.get_backside_widgets();
-                    var backside_widget, backside_element;
+                    var backside_widgets, backside_widget, backside_element;
+                    if (running === new_value) {
+                        return;
+                    }
+                    backside_widgets = this.get_backside_widgets();
+                    
                     running = new_value;
                     if (this.get_backside()) {
                         this.get_backside().run_status_changed(running);
@@ -172,7 +176,7 @@ window.TOONTALK.widget = (function (TT) {
                         if (backside_widget.is_of_type("robot")) {
                             // only frontsides of robots run
                             if (!backside_widget_side.is_backside() && (!running || !backside_widget.get_running())) {
-                                // don't run robot is already running
+                                // don't run robot if already running
                                 // could this set_stopped stuff be combined with set_running?
                                 if (running) {
                                     backside_widget.set_stopped(false);
@@ -790,6 +794,7 @@ window.TOONTALK.widget = (function (TT) {
                     copy.set_backside_widget_sides(TT.UTILITIES.copy_widget_sides(backside_widgets), this.get_backside_widgets_json_views());
                 }
             }
+            copy.set_visible(this.visible());
             return copy;
         },
         
