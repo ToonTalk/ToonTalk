@@ -439,8 +439,8 @@ window.TOONTALK.nest = (function (TT) {
             if (contents.length > 0) {
                 return TT.UTILITIES.match(other, contents[0].get_widget());
             } else {
-                // suspend on this nest
-                return [this];
+                // suspend on this nest -- other is reported for help providing useful feedback
+                return [[this, other]];
             }
         };
         new_nest.run_when_non_empty = function (robot_run) {

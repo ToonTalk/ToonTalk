@@ -203,10 +203,9 @@ window.TOONTALK.robot = (function (TT) {
         var frontside_condition_widget = this.get_frontside_conditions();
         var clear_all_mismatch_displays = function (widget) {
             if (widget.visible()) {
-               $(widget.get_frontside_element()).removeClass("toontalk-conditions-not-matched toontalk-conditions-waiting")
-                                                // clear all the mismatch displays from descendants
-                                                .find(".toontalk-conditions-not-matched, toontalk-conditions-waiting").removeClass("toontalk-conditions-not-matched toontalk-conditions-waiting");
-
+                $(widget.get_frontside_element()).removeClass("toontalk-conditions-not-matched toontalk-conditions-waiting")
+                                                 // clear all the mismatch displays from descendants
+                                                 .find(".toontalk-conditions-not-matched, .toontalk-conditions-waiting").removeClass("toontalk-conditions-not-matched toontalk-conditions-waiting");
             }
         };
         var backside_conditions, backside_widgets, condition_frontside_element, to_run_when_non_empty, next_robot_match_status;
@@ -215,6 +214,7 @@ window.TOONTALK.robot = (function (TT) {
             return this;
         }
         clear_all_mismatch_displays(frontside_condition_widget);
+        this.rerender();
 //      console.log("Match is " + TT.UTILITIES.match(frontside_condition_widget, context) + " for condition " + frontside_condition_widget + " with " + context);
         this.match_status = TT.UTILITIES.match(frontside_condition_widget, context);
         if (this.match_status === 'matched') {
@@ -258,9 +258,9 @@ window.TOONTALK.robot = (function (TT) {
             return this.match_status;
         }
         // suspended waiting on a nest
-//         this.match_status.forEach(function (waiting_widget) {
-//             $(waiting_widget.get_frontside_element()).addClass("toontalk-conditions-waiting");
-//         });
+        this.match_status.forEach(function (waiting_widget) {
+            $(waiting_widget[1].get_frontside_element()).addClass("toontalk-conditions-waiting");
+        });
         if (this.get_next_robot()) {
             next_robot_match_status = this.get_next_robot().run(context, top_level_context, queue);
             if (next_robot_match_status === 'matched') {
@@ -280,7 +280,7 @@ window.TOONTALK.robot = (function (TT) {
                                      top_level_context: top_level_context,
                                      queue: queue};
             this.match_status.forEach(function (sub_match_status) {
-                sub_match_status.run_when_non_empty(to_run_when_non_empty);
+                sub_match_status[0].run_when_non_empty(to_run_when_non_empty);
             });
                 TT.UTILITIES.add_animation_class(this.get_frontside_element(), "toontalk-robot-waiting");
         }
@@ -703,13 +703,14 @@ window.TOONTALK.robot_backside =
                                           height: 'inherit'});
                 condition_widget.render();
             });
-        if (robot.match_status) {   
+        if (robot.match_status) {
             if (robot.match_status.is_widget) {
                 $(robot.match_status.get_frontside_element()).addClass("toontalk-conditions-not-matched");
             } else if (robot.match_status !== 'matched') {
-//                 robot.match_status.forEach(function (waiting_widget) {
-//                     $(waiting_widget).get_frontside_element().addClass("toontalk-conditions-waiting");
-//                 });
+                robot.match_status.forEach(function (waiting_widget) {
+                    // waiting_widget is [widget, pattern]
+                    $(waiting_widget[1]).get_frontside_element().addClass("toontalk-conditions-waiting");
+                });
             }
         }
         // wrapping the condition_element in a div forces it to be in the right place in the table
