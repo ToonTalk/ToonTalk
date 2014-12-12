@@ -604,8 +604,12 @@ window.TOONTALK.robot = (function (TT) {
         }
         frontside_conditions_string = TT.UTILITIES.add_a_or_an(frontside_conditions_string);
         robot_description = prefix + "When working on something that matches " + frontside_conditions_string + " he will \n" + body.toString() + postfix;
-        if (this.match_status && this.match_status.is_widget) {
-            robot_description = "He isn't running because the " + this.match_status + " in his conditions (highlighted in red) doesn't match the corresponding widget. Perhaps editing his conditions will help.\n" + robot_description;
+        if (this.match_status) {
+            if (this.match_status.is_widget) {
+                robot_description = "He isn't running because the " + this.match_status + " in his conditions (highlighted in red) doesn't match the corresponding widget. Perhaps editing his conditions will help.\n" + robot_description;
+            } else {
+                robot_description = "He is waiting for something to be delivered to the nest that matches the " + this.match_status[0][1] + "in his conditions (highlighted in yellow).\n" + robot_description;
+            }
         }
         if (next_robot) {
             robot_description += "\nIf it doesn't match then the next robot will try to run.\n" + next_robot.toString();
