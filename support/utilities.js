@@ -211,8 +211,8 @@ window.TOONTALK.UTILITIES =
         // for top-level resources since they are not on the backside 'work space' we need a way to turn them off
         // clicking on a running widget may not work since its HTML may be changing constantly
         $(document).click(function (event) {
-            event.stopPropagation();
-            $(".toontalk-top-level-resource").each(function (index, element) {
+//          event.stopPropagation();
+            $(".toontalk-top-level-resource-container").each(function (index, element) {
                 var widget = element.toontalk_widget;
                 if (widget && widget.set_running) {
                     widget.set_running(false);
@@ -1186,6 +1186,7 @@ window.TOONTALK.UTILITIES =
                 dropped_element_copy = dropped_copy.get_frontside_element();
                 $(dropped_element_copy).css({width:  $dropped.width(),
                                              height: $dropped.height()});
+                $dropped.parent().removeClass("toontalk-top-level-resource toontalk-top-level-resource-container");
                 $dropped.removeClass("toontalk-top-level-resource");
                 $(dropped_element_copy).addClass("toontalk-top-level-resource")
                                        .css({position: 'relative'});
