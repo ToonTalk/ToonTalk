@@ -509,9 +509,16 @@ window.TOONTALK.box = (function (TT) {
     
     box.get_path_to = function (widget, robot) {
         var size = this.get_size();
-        var index, part, path, sub_path;
+        var index, part, path, sub_path, parent_box;
         if (widget.get_type_name() === 'empty hole') {
-            return TT.box.path.create(widget.get_index());
+            parent_box = widget.get_parent_of_frontside();
+            sub_path = TT.box.path.create(widget.get_index());
+            if (parent_box === this) {
+                return sub_path;
+            }
+            path = this.get_path_to(parent_box);
+            path.next = sub_path;
+            return path;
         }
         for (index = 0; index < size; index++) {
             part = this.get_hole_contents(index) || this.get_contents_temporarily_removed(index);
