@@ -1187,8 +1187,8 @@ window.TOONTALK.UTILITIES =
                 $(dropped_element_copy).css({width:  $dropped.width(),
                                              height: $dropped.height()});
                 $dropped.parent().removeClass("toontalk-top-level-resource toontalk-top-level-resource-container");
-                $dropped.removeClass("toontalk-top-level-resource");
-                $(dropped_element_copy).addClass("toontalk-top-level-resource")
+                $dropped.removeClass("toontalk-top-level-resource toontalk-top-level-resource-container");
+                $(dropped_element_copy).addClass("toontalk-top-level-resource toontalk-top-level-resource-container")
                                        .css({position: 'relative'});
                 $dropped.get(0).parentElement.appendChild(dropped_element_copy);
 //                 $dropped.parent().append(dropped_element_copy);
