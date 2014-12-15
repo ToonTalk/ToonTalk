@@ -837,10 +837,14 @@ window.TOONTALK.nest = (function (TT) {
             nest_copies.push(nest_copy);
         };
         new_nest.get_path_to = function (widget, robot) {
+            var path;
             if (contents.length > 0) {
                 if (contents[0].get_widget().get_path_to) {
                     // assuming frontside
                     return contents[0].get_widget().get_path_to(widget, robot);
+                } else if (contents[0].get_widget() === widget) {
+                    // should dereference the top of the nest
+                    return TT.path.to_entire_context();
                 }
             }
         };

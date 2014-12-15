@@ -109,7 +109,7 @@ window.TOONTALK.path =
                     dereferenced = context.dereference(path, top_level_context, robot);
                 }
             } else {
-                // no path means entire context -- I don't think this is still true
+                // no path means entire context -- TODO: determine if this is still true
                 dereferenced = context;
             }
             return dereferenced;
