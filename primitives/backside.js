@@ -89,7 +89,7 @@ window.TOONTALK.backside =
                                                 if (widget.is_of_type('top-level')) {
                                                     TT.UTILITIES.display_message("There is nothing to run.");
                                                 } else {
-                                                    TT.UTILITIES.display_message("This " + widget + " has nothing to run. Add some robots on the back.");
+                                                    TT.UTILITIES.display_message("This " + widget.get_type_name() + " has nothing to run. Add some robots on the back.");
                                                 }
                                             }                                                                       
                                         })
