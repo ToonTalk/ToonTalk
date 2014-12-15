@@ -607,7 +607,7 @@ window.TOONTALK.robot = (function (TT) {
         if (this.match_status) {
             if (this.match_status.is_widget) {
                 robot_description = "He isn't running because the " + this.match_status + " in his conditions (highlighted in red) doesn't match the corresponding widget. Perhaps editing his conditions will help.\n" + robot_description;
-            } else {
+            } else if (this.match_status !== 'matched') {
                 robot_description = "He is waiting for something to be delivered to the nest that matches the " + this.match_status[0][1] + "in his conditions (highlighted in yellow).\n" + robot_description;
             }
         }
