@@ -713,7 +713,7 @@ window.TOONTALK.robot_backside =
             } else if (robot.match_status !== 'matched') {
                 robot.match_status.forEach(function (waiting_widget) {
                     // waiting_widget is [widget, pattern]
-                    $(waiting_widget[1]).get_frontside_element().addClass("toontalk-conditions-waiting");
+                    $(waiting_widget[1].get_frontside_element()).addClass("toontalk-conditions-waiting");
                 });
             }
         }
