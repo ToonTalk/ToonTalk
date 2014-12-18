@@ -157,7 +157,8 @@ window.TOONTALK.widget = (function (TT) {
             if (!widget.set_running) {
                 widget.set_running = function (new_value, top_level_context) {
                     var backside_widgets, backside_widget, backside_element;
-                    if (running === new_value) {
+                    if (running === new_value && running) {
+                        // even if not running some part might be running and should be turned off
                         return;
                     }
                     backside_widgets = this.get_backside_widgets();       
