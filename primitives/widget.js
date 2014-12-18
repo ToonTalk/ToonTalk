@@ -371,6 +371,24 @@ window.TOONTALK.widget = (function (TT) {
                 }
                 return ancestor || this;
             };
+            widget.closest_visible_ancestor_or_frontside = function () {
+                // differs from closest_visible_ancestor in that if a backside has no parent then continues with frontside
+                var ancestor = this;
+                var previous_ancestor;
+                while (ancestor && !ancestor.visible()) {
+                    previous_ancestor = ancestor;
+                    if (ancestor.is_backside()) {
+                        ancestor = ancestor.get_parent_of_backside();
+                        if (!ancestor) {
+                            // widget represents the frontside which may be visible
+                            ancestor = previous_ancestor.get_widget();
+                        }  
+                    } else {
+                        ancestor = ancestor.get_parent_of_frontside();
+                    }
+                }
+                return ancestor || this;
+            };
             widget.ancestor_of_type = function (type_name) {
                 // returns first ancestor whose type is type_name
                 var ancestor = this;

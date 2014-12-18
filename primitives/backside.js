@@ -188,6 +188,12 @@ window.TOONTALK.backside =
             backside.get_parent_of_frontside = function () {
                 return widget.get_parent_of_frontside();
             };
+            backside.get_frontside = function () {
+                return widget.get_frontside();
+            };
+            backside.get_frontside_element = function () {
+                return widget.get_frontside_element();
+            };
             if (!widget.removed_from_container) {
                 widget.removed_from_container = function (other, backside_removed, event, ignore_if_not_on_backside) {
                     if (!TT.robot.in_training) {
