@@ -712,7 +712,7 @@ window.TOONTALK.box_hole =
             hole.widget_dropped_on_me = function (dropped, is_backside, event, robot) {
                 var box = this.get_parent_of_frontside();
                 var $hole_element;
-                if (TT.robot.in_training) {
+                if (TT.robot.in_training && event) {
                     TT.robot.in_training.dropped_on(dropped, this);
                 }
                 if (event && dropped.save_dimensions) { // and maybe watched robot too?

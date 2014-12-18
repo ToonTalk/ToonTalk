@@ -41,7 +41,7 @@ window.TOONTALK.bird = (function (TT) {
             } else {
                 console.log("to do: handle drop on a nestless bird -- just removes other?");
             }
-            if (TT.robot.in_training) {
+            if (TT.robot.in_training && event) {
                 TT.robot.in_training.dropped_on(other, this);
             }
             return true;
@@ -677,7 +677,7 @@ window.TOONTALK.nest = (function (TT) {
                     nest_position = TT.UTILITIES.relative_position(frontside_element, top_level_backside_element);
                     $(bird_frontside_element).css({left: nest_position.left,
                                                    top:  nest_position.top});
-                    if (TT.robot.in_training) {
+                    TT.robot.in_training && (event || TT.robot.in_training === robot)) {
                         // bird is a newly created widget
                         TT.robot.in_training.add_newly_created_widget(bird);
                         // robot should not add steps for the hatching of the bird - hence true argument
@@ -743,7 +743,7 @@ window.TOONTALK.nest = (function (TT) {
                 if (other.dropped_on_other) {
                     // e.g. so egg can hatch from nest drop
                     other.dropped_on_other(this, other_is_backside, event, robot);
-                } else if (TT.robot.in_training) {
+                } else TT.robot.in_training && (event || TT.robot.in_training === robot)) {
                     TT.robot.in_training.dropped_on(other, this);
                 }
             } else {

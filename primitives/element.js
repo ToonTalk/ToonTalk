@@ -443,7 +443,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         if (!dropped.get_infinite_stack()) {
             dropped.remove();
         }
-        if (TT.robot.in_training) {
+        if (TT.robot.in_training && event) {
             TT.robot.in_training.dropped_on(dropped, this.create_attribute_widget(attribute_name));
         }
     };

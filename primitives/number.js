@@ -593,7 +593,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
      };
 
     number.number_dropped_on_me_semantics = function (other_number, event, robot) { 
-        if (TT.robot.in_training) {
+        if (TT.robot.in_training && event) {
             TT.robot.in_training.dropped_on(other_number, this);
         }
         other_number.remove();

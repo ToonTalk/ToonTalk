@@ -228,7 +228,7 @@ window.TOONTALK.backside =
                         other.animate_to_element(backside_element);
                     }
                     TT.UTILITIES.set_position_is_absolute(other_side_element, true, event); // when on the backside
-                    if (TT.robot.in_training && !ignore_training) {
+                    if (TT.robot.in_training && !ignore_training && event) {
                         TT.robot.in_training.dropped_on(other, this.get_widget());
                     }
                     if (other_is_backside && this.get_widget().get_type_name() != 'top-level') {
