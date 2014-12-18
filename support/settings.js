@@ -192,6 +192,11 @@ window.TOONTALK.SETTINGS =
                                                });
           google_drive.button .addEventListener('click', 
                                                 function (event) {
+                                                    // if turnning off auto-saving save one last time
+                                                    // which also saves the new setting of save to local_storage
+                                                    // if turnning on OK to begin autosaving immediately
+                                                    widget.save(true, {auto_save_to_google_drive: local_storage.button.checked,
+                                                                       gooogle_drive: true});
                                                     widget.set_setting('auto_save_to_google_drive', google_drive.button.checked);
                                                     if (google_drive.button.checked) {
                                                         $(save_now_google).hide();
@@ -201,6 +206,11 @@ window.TOONTALK.SETTINGS =
                                                 });
           local_storage.button.addEventListener('click', 
                                                 function (event) {
+                                                    // if turnning off auto-saving save one last time
+                                                    // which also saves the new setting of save to local_storage
+                                                    // if turnning on OK to begin autosaving immediately
+                                                    widget.save(true, {auto_save_to_local_storage: local_storage.button.checked,
+                                                                       local_storage: true});
                                                     widget.set_setting('auto_save_to_local_storage', local_storage.button.checked);
                                                     if (local_storage.button.checked) {
                                                         $(save_now_local).hide();

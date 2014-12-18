@@ -1159,9 +1159,14 @@ window.TOONTALK.widget = (function (TT) {
             widget.save = function (immediately, parameters, callback) {
                 var json, google_drive_status;
                 if (!parameters) {
-                    parameters = {google_drive:  TT.google_drive && this.get_setting('auto_save_to_google_drive'),
-                                  local_storage: this.get_setting('auto_save_to_local_storage')};
+                    parameters = {};
                 }
+                if (typeof parameters.google_drive === 'undefined') {
+                    parameters.google_drive = TT.google_drive && this.get_setting('auto_save_to_google_drive');
+                }
+                if (typeof parameters.local_storage === 'undefined') {
+                    local_storage: this.get_setting('auto_save_to_local_storage');
+                };
                 if (!immediately) {
                     // delay it so the geometry settles down -- perhaps 0 (i.e. 4ms) is good enough
                     setTimeout(function () {
