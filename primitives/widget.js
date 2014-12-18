@@ -160,8 +160,7 @@ window.TOONTALK.widget = (function (TT) {
                     if (running === new_value) {
                         return;
                     }
-                    backside_widgets = this.get_backside_widgets();
-                    
+                    backside_widgets = this.get_backside_widgets();       
                     running = new_value;
                     if (this.get_backside()) {
                         this.get_backside().run_status_changed(running);
@@ -198,6 +197,14 @@ window.TOONTALK.widget = (function (TT) {
                             }
                         }
                     }.bind(this));
+                    if (this.walk_children) {
+                        this.walk_children(function (child) {
+                                if (child.set_running) {
+                                    child.set_running(running);
+                                }
+                                return true;
+                        });
+                    }
 //                     backside_element = this.get_backside_element();
 //                     if (backside_element) {
 //                         $(backside_element).find(".toontalk-run-backside-button").each(function (index, element) {
@@ -1247,6 +1254,9 @@ window.TOONTALK.widget = (function (TT) {
                 } else {
                     download_callback(window.localStorage.getItem(key));
                 }
+            };
+            widget.walk_children = function () {
+                // ignore since top-level widgets are currently only used for their backside
             };
             widget.is_widget = true;
             widget.get_backside(true).set_visible(true); // top-level backsides are always visible (at least for now)

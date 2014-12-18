@@ -24,7 +24,7 @@ window.TOONTALK.backside =
             var update_flag_and_stop_sign_classes = function (running) {
                 if (running) {
                     $(green_flag_element).addClass   ("toontalk-green-flag-active")
-                                        .removeClass("toontalk-green-flag-inactive");
+                                         .removeClass("toontalk-green-flag-inactive");
                     $(stop_sign_element) .addClass   ("toontalk-stop-sign-inactive")
                                          .removeClass("toontalk-stop-sign-active");
                 } else {

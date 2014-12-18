@@ -813,6 +813,11 @@ window.TOONTALK.box_hole =
                 }
                 // otherwise nothing to do
             };
+            hole.set_running = function (new_value) {
+                if (contents) {
+                    contents.set_running(new_value);
+                }
+            };
             hole.removed_from_container = function (part, backside_removed, event) {
                 if (contents) {
                     if (event) {
