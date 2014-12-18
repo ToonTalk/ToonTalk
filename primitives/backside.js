@@ -181,7 +181,13 @@ window.TOONTALK.backside =
                 widget.get_backside = function () {
                     return backside;
                 };
-            }
+            };
+            backside.get_parent_of_backside = function () {
+                return widget.get_parent_of_backside();
+            };
+            backside.get_parent_of_frontside = function () {
+                return widget.get_parent_of_frontside();
+            };
             if (!widget.removed_from_container) {
                 widget.removed_from_container = function (other, backside_removed, event, ignore_if_not_on_backside) {
                     if (!TT.robot.in_training) {

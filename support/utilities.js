@@ -1834,6 +1834,7 @@ window.TOONTALK.UTILITIES =
         },
 
         display_message: function (message) {
+            console.error(message);
             alert(message); // for now
         },
 
