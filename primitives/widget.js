@@ -692,6 +692,9 @@ window.TOONTALK.widget = (function (TT) {
                 widget.set_parent_of_frontside(this, true);
             }
             widget_side.set_visible(backside.visible());
+            if (this.get_running()) {
+                widget.set_running(true);
+            }
             widget.render();
         },
 
