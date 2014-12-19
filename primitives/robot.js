@@ -45,7 +45,7 @@ window.TOONTALK.robot = (function (TT) {
             }
         };
         new_robot.add_to_backside_conditions = function (widget) {
-            var widget_copy = widget.copy(true);
+            var widget_copy = widget.copy({just_value: true});
             if (!backside_conditions) {
                 backside_conditions = {};
             }
@@ -168,18 +168,18 @@ window.TOONTALK.robot = (function (TT) {
         return TT.robot_backside.create(this); //.update_run_button_disabled_attribute();
     };
     
-    robot.copy = function (just_value) {
+    robot.copy = function (parameters) {
         var frontside_conditions = this.get_frontside_conditions();
         var backside_conditions = this.get_backside_conditions();
-        var frontside_conditions_copy = frontside_conditions ? frontside_conditions.copy(true) : undefined;
+        var frontside_conditions_copy = frontside_conditions ? frontside_conditions.copy({just_value: true}) : undefined;
         var next_robot = this.get_next_robot();
-        var next_robot_copy = next_robot ? next_robot.copy(just_value) : undefined;
+        var next_robot_copy = next_robot ? next_robot.copy(parameters) : undefined;
         var backside_conditions_copy;
         if (backside_conditions) {
             backside_conditions_copy = {};
             TT.UTILITIES.available_types.forEach(function (type) {
                 if (backside_conditions_copy[type]) {
-                    backside_conditions_copy[type] = backside_conditions_copy[type].copy(true);
+                    backside_conditions_copy[type] = backside_conditions_copy[type].copy({just_value: true});
                 }
             });
         }
@@ -191,7 +191,7 @@ window.TOONTALK.robot = (function (TT) {
                                this.get_thing_in_hand(),
                                this.get_run_once(),
                                next_robot_copy);
-        return this.add_to_copy(copy, just_value);
+        return this.add_to_copy(copy, parameters);
     };
     
     robot.match = function () {
@@ -325,7 +325,7 @@ window.TOONTALK.robot = (function (TT) {
         if (is_resource) {
             new_widget = widget; // this widget was just created
             // robot needs a copy of the resource to avoid sharing it with training widget
-            widget_copy = widget.copy();
+            widget_copy = widget.copy({});
             path = TT.path.get_path_to_resource(widget_copy);
         } else {
             path = TT.path.get_path_to(widget, this);
@@ -454,7 +454,7 @@ window.TOONTALK.robot = (function (TT) {
             return;
         }
         this.being_trained = true;
-        this.set_frontside_conditions(context.copy(true));
+        this.set_frontside_conditions(context.copy({just_value: true}));
         // use miniature robot image for cursor
         $("*").css({cursor: 'url(' + TT.UTILITIES.absolute_file_path("images/RB19.32x32.PNG") + '), default'});
         this.get_frontside_element().title = this.get_title();

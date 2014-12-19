@@ -100,15 +100,15 @@ window.TOONTALK.box = (function (TT) {
             }
             return true;
         };
-        new_box.copy = function (just_value) {
+        new_box.copy = function (parameters) {
             var holes_copied = holes.map(function (hole) {
                 var content = hole.get_contents();
                 if (content)
-                    return content.copy(just_value);
+                    return content.copy(parameters);
                 }
             );
             var copy = box.create(size, horizontal, holes_copied, this.get_description());
-            return this.add_to_copy(copy, just_value);
+            return this.add_to_copy(copy, parameters);
         };
         new_box = new_box.add_standard_widget_functionality(new_box);
         for (i = 0; i < size; i++) {
@@ -737,7 +737,7 @@ window.TOONTALK.box_hole =
             hole.add_to_json = function (json) {
                 return json;
             };
-            hole.copy = function (just_value) {
+            hole.copy = function (parameters) {
                 // is this obsolete???
                 return TT.box_hole.create(index);
             };

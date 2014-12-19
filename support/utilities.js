@@ -636,19 +636,19 @@ window.TOONTALK.UTILITIES =
 //             }      
 //         },
         
-        copy_widgets: function (widgets, just_value) {
+        copy_widgets: function (widgets, parameters) {
             // rewrite using map
             var widgets_copy = [];
             var i;
             for (i = 0; i < widgets.length; i++) {
-                widgets_copy[i] = widgets[i] && widgets[i].copy(just_value);
+                widgets_copy[i] = widgets[i] && widgets[i].copy(parameters);
             }
             return widgets_copy;
         },
         
-        copy_widget_sides: function (widget_sides, just_value) {
+        copy_widget_sides: function (widget_sides, parameters) {
             return widget_sides.map(function (widget_side) {
-                var widget_copy = widget_side.get_widget().copy(just_value);
+                var widget_copy = widget_side.get_widget().copy(parameters);
                 if (widget_side.is_backside()) {
                     widget_copy.get_backside();
                 }
@@ -934,7 +934,7 @@ window.TOONTALK.UTILITIES =
                             if (container) {
                                 if (!source_is_backside && source_widget.get_infinite_stack && source_widget.get_infinite_stack()) {
                                     // leave the source there but create a copy
-                                    source_widget = source_widget.copy();
+                                    source_widget = source_widget.copy({});
                                     width  = $source.width();
                                     height = $source.height();
                                     $source = $(source_widget.get_frontside_element(true));
@@ -1182,7 +1182,7 @@ window.TOONTALK.UTILITIES =
             var dropped_copy, dropped_element_copy;
             if ($dropped.is(".toontalk-top-level-resource")) {
                 // restore original
-                dropped_copy = dropped_widget.copy(false, true);
+                dropped_copy = dropped_widget.copy({fresh_copy: true}); // nest copies should be fresh - not linked
                 dropped_element_copy = dropped_copy.get_frontside_element();
                 $(dropped_element_copy).css({width:  $dropped.width(),
                                              height: $dropped.height()});
@@ -1742,8 +1742,8 @@ window.TOONTALK.UTILITIES =
             return current_URL.substring(0, file_name_index+9) + relative_path;
         },
         
-        copy_side: function (side, just_value, dimensions_too) {
-            var widget_copy = side.get_widget().copy(just_value);
+        copy_side: function (side, parameters, dimensions_too) {
+            var widget_copy = side.get_widget().copy(parameters);
             var frontside_element, copy_frontside_element;
             if (dimensions_too) {
                 frontside_element = side.get_widget().get_frontside_element();

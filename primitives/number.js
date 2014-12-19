@@ -283,8 +283,8 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         return this.create(0);
     };
 
-    number.copy = function (just_value) {
-        return this.add_to_copy(number.create(this.get_value()[0], this.get_value()[1], this.get_operator(), this.get_format(), this.get_description()), just_value);
+    number.copy = function (parameters) {
+        return this.add_to_copy(number.create(this.get_value()[0], this.get_value()[1], this.get_operator(), this.get_format(), this.get_description()), parameters);
     };
     
     number.is_number = function () {
@@ -468,7 +468,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             if (integer_part.is_zero()) {
                 return this.to_HTML(max_characters, font_size, 'improper_fraction', top_level, operator);
             }
-            fractional_part = this.copy().subtract(integer_part).absolute_value();
+            fractional_part = this.copy({just_value: true}).subtract(integer_part).absolute_value();
             // split max_characters between the two parts and recur for each them
             return '<table class="toontalk-number toontalk-mixed-number' + extra_class + '"' + table_style + '>' +
                    '<tr><td class="toontalk-number toontalk-integer-part-of-mixed-number">' +

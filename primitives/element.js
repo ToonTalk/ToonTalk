@@ -265,10 +265,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         return new_element;
     };
     
-    element.copy = function (just_value) {
+    element.copy = function (parameters) {
         // copy has a copy of the attributes array as well
         var copy = element.create(this.get_HTML(), this.get_style_attributes().slice(), this.get_description());
-        return this.add_to_copy(copy, just_value);
+        return this.add_to_copy(copy, parameters);
     };
     
     element.match = function (other) {
@@ -558,12 +558,12 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 frontside_element.addEventListener('drag', drag_listener);
             }
         }
-        attribute_widget.copy = function (just_value) {
-            if (just_value) {
+        attribute_widget.copy = function (parameters) {
+            if (parameters.just_value) {
                 // just copy as a number
-                return TT.number.copy.call(this, just_value);
+                return TT.number.copy.call(this, parameters);
             }
-            return this.add_to_copy(this_element_widget.create_attribute_widget(attribute_name), just_value);
+            return this.add_to_copy(this_element_widget.create_attribute_widget(attribute_name), parameters);
         };
         attribute_widget.get_json = function (json_history) {
             return {type: 'attribute_number',

@@ -40,10 +40,10 @@ window.TOONTALK.scale = (function (TT) {
         box_get_json = new_scale.get_json;
         box_copy = new_scale.copy;
         box_get_path_to = new_scale.get_path_to;
-        new_scale.copy = function (just_value) {
-            var copy_as_box = box_copy.call(this, just_value);
-            var copy = TT.scale.create(undefined, undefined, copy_as_box, just_value && this.get_state());
-            return new_scale.add_to_copy(copy, just_value);
+        new_scale.copy = function (parameters) {
+            var copy_as_box = box_copy.call(this, parameters);
+            var copy = TT.scale.create(undefined, undefined, copy_as_box, parameters && this.get_state());
+            return new_scale.add_to_copy(copy, parameters);
         };
         new_scale.get_json = function (json_history) {
             var scale_json = box_get_json.call(this, json_history);
