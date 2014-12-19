@@ -809,7 +809,7 @@ window.TOONTALK.widget = (function (TT) {
             return can_run;
         },
         
-        add_to_copy: function (copy, just_value) {
+        add_to_copy: function (copy, parameters) {
             var backside_widgets;
             if (this.get_erased && this.get_erased()) {
                 if (!copy.set_erased) {
@@ -818,10 +818,10 @@ window.TOONTALK.widget = (function (TT) {
                 }
                 copy.set_erased(this.get_erased());
             }
-            if (!just_value) {
+            if (!parameters) {
                 backside_widgets = this.get_backside_widgets();
                 if (backside_widgets.length > 0) {
-                    copy.set_backside_widget_sides(TT.UTILITIES.copy_widget_sides(backside_widgets), this.get_backside_widgets_json_views());
+                    copy.set_backside_widget_sides(TT.UTILITIES.copy_widget_sides(backside_widgets, parameters), this.get_backside_widgets_json_views());
                 }
             }
             copy.set_visible(this.visible());
@@ -839,7 +839,7 @@ window.TOONTALK.widget = (function (TT) {
         
         add_copy_to_container: function (widget_copy) {
             if (!widget_copy) {
-                widget_copy = this.copy();
+                widget_copy = this.copy({});
             }
             var frontside_element = this.get_frontside_element();
             var frontside_element_copy = widget_copy.get_frontside_element();  
@@ -1165,7 +1165,7 @@ window.TOONTALK.widget = (function (TT) {
                     parameters.google_drive = TT.google_drive && this.get_setting('auto_save_to_google_drive');
                 }
                 if (typeof parameters.local_storage === 'undefined') {
-                    local_storage: this.get_setting('auto_save_to_local_storage');
+                    parameters.local_storage = this.get_setting('auto_save_to_local_storage');
                 };
                 if (!immediately) {
                     // delay it so the geometry settles down -- perhaps 0 (i.e. 4ms) is good enough
