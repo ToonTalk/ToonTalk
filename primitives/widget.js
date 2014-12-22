@@ -920,7 +920,6 @@ window.TOONTALK.widget = (function (TT) {
         open_backside: function (continuation) {
             // continuation will be run after animation is completed
             var backside = this.get_backside();
-            var backside_is_parent = true;
             var animate_backside_appearance = 
                 function (element, final_opacity) {
                     TT.UTILITIES.set_timeout(
@@ -964,7 +963,6 @@ window.TOONTALK.widget = (function (TT) {
             while ($frontside_ancestor_that_is_backside_element.length > 0 && !$frontside_ancestor_that_is_backside_element.is(".toontalk-backside")) {
                 $frontside_ancestor_before_backside_element  = $frontside_ancestor_that_is_backside_element;
                 $frontside_ancestor_that_is_backside_element = $frontside_ancestor_that_is_backside_element.parent();
-                backside_is_parent = false;
             }
             frontside_ancestor_before_backside_element = $frontside_ancestor_before_backside_element.get(0);
             backside = this.get_backside(true);
@@ -987,14 +985,9 @@ window.TOONTALK.widget = (function (TT) {
             if (ancestor_that_owns_backside_element) {
                 ancestor_that_owns_backside_element.add_backside_widget(this, true);
             }
-            if (backside_is_parent) {
-                final_left = frontside_ancestor_before_backside_element.offsetLeft + frontside_ancestor_before_backside_element.offsetWidth;
-                final_top  = frontside_ancestor_before_backside_element.offsetTop;
-            } else {
-                // widget is inside something so put backside under it
-                final_left = frontside_offset.left-container_offset.left;
-                final_top  = (frontside_offset.top-container_offset.top) + frontside_element.offsetHeight;
-            }
+            // put backside under the widget
+            final_left = frontside_offset.left-container_offset.left;
+            final_top  = (frontside_offset.top-container_offset.top) + frontside_element.offsetHeight;
             animate_backside_appearance(backside_element, "inherit");
             backside.render();
             if (this.backside_widgets) {
