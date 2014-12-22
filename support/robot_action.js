@@ -11,7 +11,7 @@ window.TOONTALK.robot_action =
     "use strict";
     var unwatched_run_functions =
         {"copy": function (widget, context, top_level_context, robot) {
-            robot.add_newly_created_widget(widget.copy());
+            robot.add_newly_created_widget(widget.copy({}));
             return true;
          },
          "pick up": function (widget, context, top_level_context, robot) {
@@ -19,7 +19,7 @@ window.TOONTALK.robot_action =
              return true;
          },
          "pick up a copy of": function (widget, context, top_level_context, robot) {
-             var widget_copy = widget.copy();
+             var widget_copy = widget.copy({});
              robot.add_newly_created_widget(widget_copy);
              robot.set_thing_in_hand(widget_copy);
              return true;

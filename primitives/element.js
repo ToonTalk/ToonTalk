@@ -141,7 +141,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             pending_css[attribute] = value;
         };
         new_element.apply_css = function () {
-            var frontside_element, image_css, transform;
+            var frontside_element, transform;
             if (!pending_css && !transform_css) {
                 return;
             }
@@ -205,10 +205,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 $(frontside_element).css(pending_css);
                 // if it contains an image then change it too (needed only for width and height)
                 if ($image_element && (pending_css.width || pending_css.height)) {
-                    image_css = {};
-                    image_css.width  = pending_css.width;
-                    image_css.height = pending_css.height;
-                    $image_element.css(image_css);
+                    $image_element.css({width:  pending_css.width,
+                                        height: pending_css.height});
                 }
                 pending_css = undefined;
                 });
@@ -241,7 +239,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 $image_element = undefined;
             } else {
                 // make sure that the front side has the same dimensions as its image
-                $(frontside_element).width($image_element.width());
+                $(frontside_element).width( $image_element.width());
                 $(frontside_element).height($image_element.height());
             }
         };
@@ -265,34 +263,34 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         return new_element;
     };
     
-    element.copy = function (just_value) {
+    element.copy = function (parameters) {
         // copy has a copy of the attributes array as well
         var copy = element.create(this.get_HTML(), this.get_style_attributes().slice(), this.get_description());
-        return this.add_to_copy(copy, just_value);
+        return this.add_to_copy(copy, parameters);
     };
     
-    element.match = function (context) {
+    element.match = function (other) {
         if (this.get_erased && this.get_erased()) {
-            if (context.match_with_any_element) {
-                return context.match_with_any_element();
+            if (other.match_with_any_element) {
+                return other.match_with_any_element();
             }
-            return 'not matched';
+            return this;
         }
-        if (!context.match_with_another_element_widget) {
-            return 'not matched';
+        if (!other.match_with_another_element_widget) {
+            return this;
         }
-        return context.match_with_another_element_widget(this);
+        return other.match_with_another_element_widget(this);
     };
     
     element.match_with_any_element = function () {
         return 'matched';
     };
     
-    element.match_with_another_element_widget = function (other_element) {
-        if (this.get_HTML() === other_element.get_HTML()) {
+    element.match_with_another_element_widget = function (element_pattern) {
+        if (this.get_HTML() === element_pattern.get_HTML()) {
             return 'matched';
         } else {
-            return 'not matched';
+            return element_pattern;
         }
     };
 
@@ -316,10 +314,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     element.create_backside = function () {
         return TT.element_backside.create(this); //.update_run_button_disabled_attribute();
     };
-    
-    element.get_attribute = function (attribute) {
+
+    element.get_attribute_from_pending_css = function (attribute) {
         var pending_css = this.get_pending_css();
-        var frontside_element, transform_css, value;
+        var transform_css;
         if (pending_css && pending_css[attribute]) {
             return pending_css[attribute];
         }
@@ -327,8 +325,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         if (transform_css && transform_css[attribute]) {
             return transform_css[attribute];
         }
-        frontside_element = this.get_frontside_element();
-        value = frontside_element.style[attribute];
+    };
+
+    element.get_attribute_from_current_css = function (attribute) {
+        var frontside_element = this.get_frontside_element();
+        var value = frontside_element.style[attribute];
         if (value === "") {
             // this caused integer rounding (at least of font-size)
             // but if the above doesn't find a value seems sometimes this does
@@ -345,6 +346,14 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         return value.replace("px", "");
     };
     
+    element.get_attribute = function (attribute) {
+        var value = this.get_attribute_from_pending_css(attribute);
+        if (typeof value !== 'undefined') {
+            return value;
+        };
+        return this.get_attribute_from_current_css(attribute);
+    };
+    
     element.set_attribute = function (attribute, new_value, handle_training, add_to_style_attributes) {
         var frontside = this.get_frontside(true);
         var frontside_element = frontside.get_element();
@@ -355,16 +364,19 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         if (!frontside_element) {
             return false;
         }
-        current_value = this.get_attribute(attribute);
+        current_value = this.get_attribute_from_pending_css(attribute);
         if (current_value === new_value) {
             return false;
         }
+        if (typeof current_value === 'undefined') {
+            current_value = this.get_attribute_from_current_css(attribute);
+        }      
         // need to use a number for JQuery's css otherwise treats "100" as "auto"
         new_value_number = value_in_pixels(new_value, attribute);
         if (typeof new_value_number === 'number') {
             if (current_value == new_value_number) {
                 // using == instead of === since want type coercion. current_value might be a string
-                return;
+                return true;
             }
             // seems we have to live with integer values for width and height
 //             if ((attribute === 'width' || attribute === 'height') &&
@@ -443,7 +455,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         if (!dropped.get_infinite_stack()) {
             dropped.remove();
         }
-        if (TT.robot.in_training) {
+        if (TT.robot.in_training && event) {
             TT.robot.in_training.dropped_on(dropped, this.create_attribute_widget(attribute_name));
         }
     };
@@ -558,12 +570,12 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 frontside_element.addEventListener('drag', drag_listener);
             }
         }
-        attribute_widget.copy = function (just_value) {
-            if (just_value) {
+        attribute_widget.copy = function (parameters) {
+            if (parameters.just_value) {
                 // just copy as a number
-                return TT.number.copy.call(this, just_value);
+                return TT.number.copy.call(this, parameters);
             }
-            return this.add_to_copy(this_element_widget.create_attribute_widget(attribute_name), just_value);
+            return this.add_to_copy(this_element_widget.create_attribute_widget(attribute_name), parameters);
         };
         attribute_widget.get_json = function (json_history) {
             return {type: 'attribute_number',
@@ -619,6 +631,15 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     element.update_display = function () {
         var frontside_element = this.get_frontside_element();
         var backside = this.get_backside();
+        var element_description = function (element) {
+            if (this.get_image_element()) {
+                return "image";
+            }
+            if ($(element).is(".toontalk-plain-text-element")) {
+                return "text";
+            }
+            return "element";
+        }.bind(this);
         var rendering, additional_classes;
         if (this.being_dragged) {
             return;
@@ -655,6 +676,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         }
         this.apply_css();
         this.fire_on_update_display_handlers();
+        frontside_element.title = "Click to see the backside where you can place robots or change the style of this " + element_description(frontside_element);
     };
         
     element.toString = function () {
@@ -769,6 +791,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     element.set_size_attributes = function (width, height) {
         this.set_attribute('width',  width);
         this.set_attribute('height', height);
+        TT.UTILITIES.set_timeout(function () {
+            this.rerender();
+        }.bind(this));        
     };
 
     element.set_location_attributes = function (left, top) {

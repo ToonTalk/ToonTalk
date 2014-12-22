@@ -79,7 +79,7 @@ window.TOONTALK.path =
                 if (path) {
                     return path;
                 }
-                return TT.path.get_path_to_resource(widget.copy());
+                return TT.path.get_path_to_resource(widget.copy({}));
             }
             var path = compute_path(widget, robot);
             if (path && widget.dereference_contents) {
@@ -109,7 +109,7 @@ window.TOONTALK.path =
                     dereferenced = context.dereference(path, top_level_context, robot);
                 }
             } else {
-                // no path means entire context -- I don't think this is still true
+                // no path means entire context -- TODO: determine if this is still true
                 dereferenced = context;
             }
             return dereferenced;
@@ -176,7 +176,7 @@ window.TOONTALK.path =
             // revisit this if resources are ever backside resources
             widget = widget.get_widget(); // if widget is really the backside of the widget
             return {dereference: function (context, top_level_context, robot) {
-                        var widget_copy = widget.copy();
+                        var widget_copy = widget.copy({});
                         var widget_frontside_element, widget_frontside_position, copy_frontside_element;
                         robot.add_newly_created_widget(widget_copy);
                         if (robot.visible() && !widget.visible()) {

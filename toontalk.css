@@ -902,8 +902,8 @@ body {
 	min-width: 550px;
 	min-height: 200px;
 }
-.toontalk-done-backside-button {
-
+.toontalk-backside.toontalk-highlight {
+	border-color: white;
 }
 .toontalk-backside-of-number {
 	background-color: rgba(220, 255, 236, .94);
@@ -1288,6 +1288,9 @@ body {
 .toontalk-conditions-not-matched {
 	/* could be fancier -- e.g. glowing */
 	border: solid 3px red;
+}
+.toontalk-conditions-waiting {
+	border: solid 3px yellow;
 }
 .toontalk-green-flag-inactive, .toontalk-green-flag-active:hover {
 	background-image: url("images/green-flag-inactive.png");

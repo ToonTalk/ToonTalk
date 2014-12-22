@@ -55,7 +55,7 @@ window.TOONTALK.vacuum = (function (TT) {
                 var restoring, initial_location, restored_front_side_element;
                 if (mode === 'suck') {
                     if (widget.remove && widget.get_type_name() !== 'top-level') {
-                        if (TT.robot.in_training) {
+                       if (TT.robot.in_training && event) {
                             TT.robot.in_training.removed(widget);
                         }
                         widget.remove(event);
@@ -66,7 +66,7 @@ window.TOONTALK.vacuum = (function (TT) {
                         var frontside_element = widget.get_frontside_element();
                         var erased = !widget.get_erased();
                         widget.set_erased(erased, true);
-                        if (TT.robot.in_training) {
+                        if (TT.robot.in_training && event) {
                             TT.robot.in_training.set_erased(widget, erased);
                         }
                     }

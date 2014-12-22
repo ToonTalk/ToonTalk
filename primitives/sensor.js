@@ -69,17 +69,17 @@ window.TOONTALK.sensor = (function (TT) {
                 new_sensor.add_to_contents(value_widget);
             }
         }.bind(this);
-        new_sensor.copy = function (just_value) {
+        new_sensor.copy = function (parameters) {
             var copy;
-            if (just_value && this.has_contents()) {
-                return nest_copy.call(this, true);
+            if (parameters.just_value && this.has_contents()) {
+                return nest_copy.call(this, parameters);
             }
             // note that widget is not copied since there can be multiple sensors of the same widget
             // there is an issue about sensor having access to nest's contents
             // so TT.UTILITIES.copy_widget_sides(contents) not appropriate
             // so perhaps this should be in the same expression as nest to share privately...
-            copy = TT.sensor.create(event_name, attribute, description, undefined, active, just_value ? undefined : widget);
-            return new_sensor.add_to_copy(copy, just_value);
+            copy = TT.sensor.create(event_name, attribute, description, undefined, active, parameters ? undefined : widget);
+            return new_sensor.add_to_copy(copy, parameters);
         };
         new_sensor.get_json = function (json_history) {
             var nest_json = nest_get_json.call(this, json_history);
@@ -162,11 +162,11 @@ window.TOONTALK.sensor = (function (TT) {
         };
         new_sensor.match = function (other) {
             // TODO:
-            return "not matched";
+            return this;
         };
         new_sensor.set_sensor_of = function (new_value) {
             widget = new_value;
-        }
+        };
         return new_sensor;
     };
     

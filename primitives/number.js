@@ -283,8 +283,8 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         return this.create(0);
     };
 
-    number.copy = function (just_value) {
-        return this.add_to_copy(number.create(this.get_value()[0], this.get_value()[1], this.get_operator(), this.get_format(), this.get_description()), just_value);
+    number.copy = function (parameters) {
+        return this.add_to_copy(number.create(this.get_value()[0], this.get_value()[1], this.get_operator(), this.get_format(), this.get_description()), parameters);
     };
     
     number.is_number = function () {
@@ -468,7 +468,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             if (integer_part.is_zero()) {
                 return this.to_HTML(max_characters, font_size, 'improper_fraction', top_level, operator);
             }
-            fractional_part = this.copy().subtract(integer_part).absolute_value();
+            fractional_part = this.copy({just_value: true}).subtract(integer_part).absolute_value();
             // split max_characters between the two parts and recur for each them
             return '<table class="toontalk-number toontalk-mixed-number' + extra_class + '"' + table_style + '>' +
                    '<tr><td class="toontalk-number toontalk-integer-part-of-mixed-number">' +
@@ -593,7 +593,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
      };
 
     number.number_dropped_on_me_semantics = function (other_number, event, robot) { 
-        if (TT.robot.in_training) {
+        if (TT.robot.in_training && event) {
             TT.robot.in_training.dropped_on(other_number, this);
         }
         other_number.remove();
@@ -759,28 +759,28 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
                after_decimal_point;
     };
 
-    number.match = function (context) {
+    number.match = function (other) {
         if (this.get_erased && this.get_erased()) {
-            if (context.match_with_any_number) {
-                return context.match_with_any_number();
+            if (other.match_with_any_number) {
+                return other.match_with_any_number();
             }
-            return 'not matched'; // since doesn't handle match_with_any_number
+            return this; // since doesn't handle match_with_any_number
         }
-        if (!context.match_with_this_number) {
-            return 'not matched';
+        if (!other.match_with_this_number) {
+            return this;
         }
-        return context.match_with_this_number(this);
+        return other.match_with_this_number(this);
     };
 
     number.match_with_any_number = function () {
         return 'matched';
     };
 
-    number.match_with_this_number = function (other_number) {
-        if (other_number.equals(this)) {
+    number.match_with_this_number = function (number_pattern) {
+        if (number_pattern.equals(this)) {
             return 'matched';
         }
-        return 'not matched';
+        return number_pattern;
     };
     
     return number;

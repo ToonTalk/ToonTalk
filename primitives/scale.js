@@ -22,14 +22,21 @@ window.TOONTALK.scale = (function (TT) {
         var contents_listener = function () {
                                     new_scale.rerender();
         };
-        var which_hole = function (event) {
+        var which_hole = function (point, or_entire_scale) {
+            // if or_entire_scale is true can return -1 meaning the whole scale
             var $frontside_element = $(new_scale.get_frontside_element());
             var position = $frontside_element.offset();
-            var center = position.left+$frontside_element.width()/2;
-            if (event.clientX < center) {
+            var width = $frontside_element.width();
+            var center = position.left+width/2;
+            var distance_to_center = point.clientX-center;
+            var error = or_entire_scale ? width/10 : 0; // within 1/10 of the width to center
+            if (-distance_to_center > error) {
                 return 0;
-            } else {
+            } else if (distance_to_center > error) {
                 return 1;
+            } else {
+                // at center
+                return -1;
             }
         };
         var box_get_json, box_copy, box_get_path_to, previous_state;
@@ -40,10 +47,10 @@ window.TOONTALK.scale = (function (TT) {
         box_get_json = new_scale.get_json;
         box_copy = new_scale.copy;
         box_get_path_to = new_scale.get_path_to;
-        new_scale.copy = function (just_value) {
-            var copy_as_box = box_copy.call(this, just_value);
-            var copy = TT.scale.create(undefined, undefined, copy_as_box, just_value && this.get_state());
-            return new_scale.add_to_copy(copy, just_value);
+        new_scale.copy = function (parameters) {
+            var copy_as_box = box_copy.call(this, parameters);
+            var copy = TT.scale.create(undefined, undefined, copy_as_box, parameters && this.get_state());
+            return new_scale.add_to_copy(copy, parameters);
         };
         new_scale.get_json = function (json_history) {
             var scale_json = box_get_json.call(this, json_history);
@@ -58,10 +65,15 @@ window.TOONTALK.scale = (function (TT) {
             }
             return path;
         };
-        new_scale.element_to_highlight = function (event) {
-            var hole_index = which_hole(event);
-            var hole = this.get_hole(hole_index);
-            var hole_contents = hole.get_contents();
+        new_scale.element_to_highlight = function (point) {
+            var hole_index = which_hole(point, true);
+            var hole, hole_contents;
+            if (hole_index < 0) {
+                // highlight the whole scale
+                return this.get_frontside_element();
+            }
+            hole = this.get_hole(hole_index);
+            hole_contents = hole.get_contents();
             if (hole_contents) {
                 return hole_contents.get_frontside_element();
             }
@@ -84,7 +96,7 @@ window.TOONTALK.scale = (function (TT) {
                 this.set_hole(0, dropped);
                 return true;
             }
-            hole_index = which_hole(event);
+            hole_index = which_hole(event, false);
             if (hole_index === 0) {
                 if (left_contents) {
                     if (left_contents.drop_on) {
@@ -275,13 +287,13 @@ window.TOONTALK.scale = (function (TT) {
             if (other.match_with_scale) {
                 return other.match_with_scale(this);
             }
-            return "not matched";
+            return this;
         };
-        new_scale.match_with_scale = function (other_scale) {
-            if (this.get_state() === other_scale.get_state()) {
-                return "matched";
+        new_scale.match_with_scale = function (scale_pattern) {
+            if (this.get_state() === scale_pattern.get_state()) {
+                return 'matched';
             }
-            return "not matched";
+            return scale_pattern;
         };
         new_scale.compare_with = function (other) {
             if (other.compare_with_scale) {

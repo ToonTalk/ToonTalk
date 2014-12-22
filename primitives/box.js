@@ -100,15 +100,15 @@ window.TOONTALK.box = (function (TT) {
             }
             return true;
         };
-        new_box.copy = function (just_value) {
+        new_box.copy = function (parameters) {
             var holes_copied = holes.map(function (hole) {
                 var content = hole.get_contents();
                 if (content)
-                    return content.copy(just_value);
+                    return content.copy(parameters);
                 }
             );
             var copy = box.create(size, horizontal, holes_copied, this.get_description());
-            return this.add_to_copy(copy, just_value);
+            return this.add_to_copy(copy, parameters);
         };
         new_box = new_box.add_standard_widget_functionality(new_box);
         for (i = 0; i < size; i++) {
@@ -191,17 +191,17 @@ window.TOONTALK.box = (function (TT) {
         return 0;
     };
     
-    box.match = function (context) {
+    box.match = function (other) {
         if (this.get_erased && this.get_erased()) {
-            if (context.match_with_any_box) {
-                return context.match_with_any_box();
+            if (other.match_with_any_box) {
+                return other.match_with_any_box();
             }
-            return 'not matched';
+            return this;
         }
-        if (!context.match_with_this_box) {
-            return 'not matched';
+        if (!other.match_with_this_box) {
+            return this;
         }
-        return context.match_with_this_box(this);
+        return other.match_with_this_box(this);
     };
     
     box.match_with_any_box = function () {
@@ -213,7 +213,7 @@ window.TOONTALK.box = (function (TT) {
         var waiting_nests = [];
         var i, my_hole, pattern_hole, hole_match;
         if (size !== pattern_box.get_size()) {
-            return 'not matched';
+            return pattern_box;
         }
         for (i = 0; i < size; i++) {
             pattern_hole = pattern_box.get_hole_contents(i);
@@ -221,11 +221,12 @@ window.TOONTALK.box = (function (TT) {
                 my_hole = this.get_hole_contents(i);
                 if (!my_hole) {
                     // expected something -- not an empty hole
-                    return 'not matched';
+                    return pattern_box;
                 }
                 hole_match = TT.UTILITIES.match(pattern_hole, my_hole);
-                if (hole_match === 'not matched') {
-                    return 'not matched';
+                if (hole_match.is_widget) {
+                    // sub-match failed
+                    return hole_match;
                 }
                 if (hole_match !== 'matched') {
                     // suspended on a nest so combine the suspended nests
@@ -509,9 +510,16 @@ window.TOONTALK.box = (function (TT) {
     
     box.get_path_to = function (widget, robot) {
         var size = this.get_size();
-        var index, part, path, sub_path;
+        var index, part, path, sub_path, parent_box;
         if (widget.get_type_name() === 'empty hole') {
-            return TT.box.path.create(widget.get_index());
+            parent_box = widget.get_parent_of_frontside();
+            sub_path = TT.box.path.create(widget.get_index());
+            if (parent_box === this) {
+                return sub_path;
+            }
+            path = this.get_path_to(parent_box);
+            path.next = sub_path;
+            return path;
         }
         for (index = 0; index < size; index++) {
             part = this.get_hole_contents(index) || this.get_contents_temporarily_removed(index);
@@ -642,10 +650,10 @@ window.TOONTALK.box_backside =
             var backside_element = backside.get_element();
             var advanced_settings_button = TT.backside.create_advanced_settings_button(backside, box);
             var generic_backside_update = backside.update_display;
-            size_input.button.addEventListener('change', update_value);
+            size_input.button.addEventListener('change',   update_value);
             size_input.button.addEventListener('mouseout', update_value);
-            horizontal.button.addEventListener('change', update_orientation);
-            vertical.button.addEventListener('change', update_orientation);
+            horizontal.button.addEventListener('change',   update_orientation);
+            vertical.button  .addEventListener('change',   update_orientation);
             backside.update_display = function () {
                 size_input.button.value = box.get_size().toString();
                 if (box.get_horizontal()) {
@@ -704,7 +712,7 @@ window.TOONTALK.box_hole =
             hole.widget_dropped_on_me = function (dropped, is_backside, event, robot) {
                 var box = this.get_parent_of_frontside();
                 var $hole_element;
-                if (TT.robot.in_training) {
+                if (TT.robot.in_training && event) {
                     TT.robot.in_training.dropped_on(dropped, this);
                 }
                 if (event && dropped.save_dimensions) { // and maybe watched robot too?
@@ -729,7 +737,7 @@ window.TOONTALK.box_hole =
             hole.add_to_json = function (json) {
                 return json;
             };
-            hole.copy = function (just_value) {
+            hole.copy = function (parameters) {
                 // is this obsolete???
                 return TT.box_hole.create(index);
             };
@@ -804,6 +812,11 @@ window.TOONTALK.box_hole =
                     return contents.rerender();
                 }
                 // otherwise nothing to do
+            };
+            hole.set_running = function (new_value) {
+                if (contents) {
+                    contents.set_running(new_value);
+                }
             };
             hole.removed_from_container = function (part, backside_removed, event) {
                 if (contents) {
