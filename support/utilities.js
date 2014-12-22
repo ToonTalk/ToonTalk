@@ -1193,7 +1193,6 @@ window.TOONTALK.UTILITIES =
                 $(dropped_element_copy).addClass("toontalk-top-level-resource toontalk-top-level-resource-container")
                                        .css({position: 'relative'});
                 $dropped.get(0).parentElement.appendChild(dropped_element_copy);
-//                 $dropped.parent().append(dropped_element_copy);
                 TT.DISPLAY_UPDATES.pending_update(dropped_copy);
                 if (dropped_widget.set_active) {
                     dropped_widget.set_active(true);

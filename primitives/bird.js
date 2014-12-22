@@ -679,7 +679,8 @@ window.TOONTALK.nest = (function (TT) {
             contents_copy = TT.UTILITIES.copy_widget_sides(contents, parameters);
             if (parameters.fresh_copy) {
                 // e.g. could be a resource that shouldn't be linked to its copy
-                copy = TT.nest.create(this.get_description(), contents_copy, [], TT.UTILITIES.generate_unique_id());
+                // don't give the copy a GUID if master doesn't have one (e.g. still has egg in nest)
+                copy = TT.nest.create(this.get_description(), contents_copy, [], guid && TT.UTILITIES.generate_unique_id());
             } else {
                 new_original_nest = (original_nest || this);
                 if (parameters.birds_copied && parameters.birds_copied[this]) {
