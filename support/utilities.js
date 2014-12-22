@@ -226,6 +226,8 @@ window.TOONTALK.UTILITIES =
         window.addEventListener('beforeunload', function (event) {
             TT.UTILITIES.backup_all_top_level_widgets(true);
         });
+        // nicer looking tool tips
+        $(document).tooltip();
         TT.UTILITIES.add_test_all_button();
     };
     var drag_ended = function () {
