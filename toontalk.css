@@ -902,8 +902,8 @@ body {
 	min-width: 550px;
 	min-height: 200px;
 }
-.toontalk-done-backside-button {
-
+.toontalk-backside.toontalk-highlight {
+	border-color: white;
 }
 .toontalk-backside-of-number {
 	background-color: rgba(220, 255, 236, .94);

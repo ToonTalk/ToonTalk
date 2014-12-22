@@ -650,10 +650,10 @@ window.TOONTALK.box_backside =
             var backside_element = backside.get_element();
             var advanced_settings_button = TT.backside.create_advanced_settings_button(backside, box);
             var generic_backside_update = backside.update_display;
-            size_input.button.addEventListener('change', update_value);
+            size_input.button.addEventListener('change',   update_value);
             size_input.button.addEventListener('mouseout', update_value);
-            horizontal.button.addEventListener('change', update_orientation);
-            vertical.button.addEventListener('change', update_orientation);
+            horizontal.button.addEventListener('change',   update_orientation);
+            vertical.button  .addEventListener('change',   update_orientation);
             backside.update_display = function () {
                 size_input.button.value = box.get_size().toString();
                 if (box.get_horizontal()) {

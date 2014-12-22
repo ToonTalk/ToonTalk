@@ -388,12 +388,11 @@ window.TOONTALK.backside =
                var frontside = widget.get_frontside();
                var parent_of_backside = widget.get_parent_of_backside();
                if (frontside && (!parent_of_backside || parent_of_backside.get_widget().is_of_type('top-level'))) {
-                   TT.UTILITIES.highlight_element(frontside.get_element(), event);
+                   TT.UTILITIES.highlight_element(frontside.get_element());
                }
             });
-            backside_element.addEventListener("mouseout", function (event) {
-               var frontside = widget.get_frontside();
-               if (frontside) {
+            backside_element.addEventListener("mouseleave", function (event) {
+               if (!widget.is_of_type('top-level')) {
                    TT.UTILITIES.remove_highlight();
                }
             });
@@ -504,7 +503,7 @@ window.TOONTALK.backside =
             var backside_element = this.get_element();
             $(settings).addClass("toontalk-advanced-setting");
             $(description_text_area.button).val(widget.get_description());
-            description_text_area.button.addEventListener('change', description_change);
+            description_text_area.button.addEventListener('change',   description_change);
             description_text_area.button.addEventListener('mouseout', description_change);
             $create_sensor_button.click(function (event) {
                     var sensor = TT.sensor.create('click', 'which', undefined, undefined, true, widget);
@@ -529,7 +528,7 @@ window.TOONTALK.backside =
            return "the backside of " + TT.UTILITIES.add_a_or_an(this.get_widget().get_type_name());
        },
         
-        hide_backside: function (event) {
+       hide_backside: function (event) {
             var widget = this.get_widget();
             var frontside_element = widget.get_frontside_element();
             var $backside_element = $(widget.get_backside_element());

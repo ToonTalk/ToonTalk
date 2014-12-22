@@ -67,7 +67,7 @@ window.TOONTALK.frontside =
                     TT.UTILITIES.highlight_element(backside.get_element());
                 }
             });
-            frontside_element.addEventListener("mouseout", function (event) {
+            frontside_element.addEventListener("mouseleave", function (event) {
                 var backside = widget.get_backside();
                 if (backside) {
                     TT.UTILITIES.remove_highlight();
