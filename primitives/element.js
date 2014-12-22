@@ -639,7 +639,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 return "text";
             }
             return "element";
-        };
+        }.bind(this);
         var rendering, additional_classes;
         if (this.being_dragged) {
             return;
