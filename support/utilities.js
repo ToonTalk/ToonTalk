@@ -1017,7 +1017,7 @@ window.TOONTALK.UTILITIES =
                     !$target.is(".toontalk-being-dragged") &&
                     !(dragee && has_ancestor_element($target.get(0), dragee.get(0)))) {
                     // could support a can_drop protocol and use it here
-                    TT.UTILITIES.highlight_element(event, $target);
+                    TT.UTILITIES.highlight_element($target, event);
                     // moving over decendants triggers dragleave unless their pointer events are turned off
                     // they are restored on dragend
                     if (!$target.is(".toontalk-backside, .toontalk-drop-area") && TT.UTILITIES.widget_from_jquery($(element)).get_type_name() !== 'box') {
@@ -1309,7 +1309,7 @@ window.TOONTALK.UTILITIES =
             return Math.sqrt(delta_x*delta_x+delta_y*delta_y);
         },
         
-        highlight_element: function (point, element, duration) {
+        highlight_element: function (element, point, duration) {
             var widget, frontside_element;
             if ($(element).is(".toontalk-highlight")) {
                 return; // already highlighted
@@ -1320,13 +1320,14 @@ window.TOONTALK.UTILITIES =
             if (!widget) {
                 return;
             }
-            if (widget.element_to_highlight) {
+            if (widget.element_to_highlight && point) {
                 element = widget.element_to_highlight(point);
                 if (!element) {
                     return;
                 }      
             }    
-            $(element).addClass("toontalk-highlight");
+            $(element).addClass("toontalk-highlight")
+                      .css({"z-index": TT.UTILITIES.next_z_index()});
             if (duration) {
                 setTimeout(function () {
                         TT.UTILITIES.remove_highlight();
