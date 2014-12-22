@@ -840,7 +840,7 @@ window.TOONTALK.nest = (function (TT) {
             }
             return false;
         };
-        new_nest.element_to_highlight = function (event) {
+        new_nest.element_to_highlight = function () {
             if (contents.length === 0) {
                 return this.get_frontside_element();
             }

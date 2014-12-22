@@ -29,10 +29,14 @@ window.TOONTALK.tool = (function (TT) {
             var mouse_move = function (event) {
                 var widget_under_tool = find_widget_under_tool(event);
                 var new_highlighted_element, scroll_adjustment;
+                var point = {};
                 event.preventDefault();
                 scroll_adjustment = scroll_if_needed(event);
-                element.style.left = (event.pageX-scroll_adjustment.deltaX-drag_x_offset) + "px";
-                element.style.top  = (event.pageY-scroll_adjustment.deltaY-drag_y_offset) + "px";
+                // using clientX and clientY so can pass event as point when appropriate
+                point.clientX = event.pageX-scroll_adjustment.deltaX-drag_x_offset;
+                point.clientY = event.pageY-scroll_adjustment.deltaY-drag_y_offset;
+                element.style.left = point.clientX + "px";
+                element.style.top  = point.clientY + "px";
                 if (widget_under_tool && widget_under_tool.is_of_type('top-level')) {
                     if (highlighted_element) { // remove old highlighting
                         TT.UTILITIES.remove_highlight();
@@ -47,7 +51,7 @@ window.TOONTALK.tool = (function (TT) {
                     }
                 }
                 highlighted_element = new_highlighted_element;
-                TT.UTILITIES.highlight_element(highlighted_element);
+                TT.UTILITIES.highlight_element(point, highlighted_element);
             };
 
             var mouse_up = function (event) {

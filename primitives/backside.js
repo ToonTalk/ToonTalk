@@ -392,7 +392,7 @@ window.TOONTALK.backside =
                var frontside = widget.get_frontside();
                var parent_of_backside = widget.get_parent_of_backside();
                if (frontside && (!parent_of_backside || parent_of_backside.get_widget().is_of_type('top-level'))) {
-                   TT.UTILITIES.highlight_element(frontside.get_element());
+                   TT.UTILITIES.highlight_element(event, frontside.get_element());
                }
             });
             backside_element.addEventListener("mouseleave", function (event) {

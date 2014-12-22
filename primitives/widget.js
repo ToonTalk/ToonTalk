@@ -944,7 +944,7 @@ window.TOONTALK.widget = (function (TT) {
             if (backside) {
                 backside_element = backside.get_element();
                 if ($(backside_element).is(":visible")) {
-                    TT.UTILITIES.highlight_element(backside_element, 1000);
+//                     TT.UTILITIES.highlight_element(?, backside_element, 1000);
                     return backside;
                 }
                 // need to see if on backside is on the backside of another (and that is closed)
