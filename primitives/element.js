@@ -631,6 +631,15 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     element.update_display = function () {
         var frontside_element = this.get_frontside_element();
         var backside = this.get_backside();
+        var element_description = function (element) {
+            if (this.get_image_element()) {
+                return "image";
+            }
+            if ($(element).is(".toontalk-plain-text-element")) {
+                return "text";
+            }
+            return "element";
+        };
         var rendering, additional_classes;
         if (this.being_dragged) {
             return;
@@ -667,6 +676,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         }
         this.apply_css();
         this.fire_on_update_display_handlers();
+        frontside_element.title = "Click to see the backside where you can place robots or change the style of this " + element_description(frontside_element);
     };
         
     element.toString = function () {
