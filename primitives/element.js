@@ -141,7 +141,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             pending_css[attribute] = value;
         };
         new_element.apply_css = function () {
-            var frontside_element, image_css, transform;
+            var frontside_element, transform;
             if (!pending_css && !transform_css) {
                 return;
             }
@@ -205,10 +205,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 $(frontside_element).css(pending_css);
                 // if it contains an image then change it too (needed only for width and height)
                 if ($image_element && (pending_css.width || pending_css.height)) {
-                    image_css = {};
-                    image_css.width  = pending_css.width;
-                    image_css.height = pending_css.height;
-                    $image_element.css(image_css);
+                    $image_element.css({width:  pending_css.width,
+                                        height: pending_css.height});
                 }
                 pending_css = undefined;
                 });
@@ -241,7 +239,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 $image_element = undefined;
             } else {
                 // make sure that the front side has the same dimensions as its image
-                $(frontside_element).width($image_element.width());
+                $(frontside_element).width( $image_element.width());
                 $(frontside_element).height($image_element.height());
             }
         };
@@ -316,10 +314,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     element.create_backside = function () {
         return TT.element_backside.create(this); //.update_run_button_disabled_attribute();
     };
-    
-    element.get_attribute = function (attribute) {
+
+    element.get_attribute_from_pending_css = function (attribute) {
         var pending_css = this.get_pending_css();
-        var frontside_element, transform_css, value;
+        var transform_css;
         if (pending_css && pending_css[attribute]) {
             return pending_css[attribute];
         }
@@ -327,8 +325,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         if (transform_css && transform_css[attribute]) {
             return transform_css[attribute];
         }
-        frontside_element = this.get_frontside_element();
-        value = frontside_element.style[attribute];
+    };
+
+    element.get_attribute_from_current_css = function (attribute) {
+        var frontside_element = this.get_frontside_element();
+        var value = frontside_element.style[attribute];
         if (value === "") {
             // this caused integer rounding (at least of font-size)
             // but if the above doesn't find a value seems sometimes this does
@@ -345,6 +346,14 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         return value.replace("px", "");
     };
     
+    element.get_attribute = function (attribute) {
+        var value = this.get_attribute_from_pending_css(attribute);
+        if (typeof value !== 'undefined') {
+            return value;
+        };
+        return this.get_attribute_from_current_css(attribute);
+    };
+    
     element.set_attribute = function (attribute, new_value, handle_training, add_to_style_attributes) {
         var frontside = this.get_frontside(true);
         var frontside_element = frontside.get_element();
@@ -355,16 +364,19 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         if (!frontside_element) {
             return false;
         }
-        current_value = this.get_attribute(attribute);
+        current_value = this.get_attribute_from_pending_css(attribute);
         if (current_value === new_value) {
             return false;
         }
+        if (typeof current_value === 'undefined') {
+            current_value = this.get_attribute_from_current_css(attribute);
+        }      
         // need to use a number for JQuery's css otherwise treats "100" as "auto"
         new_value_number = value_in_pixels(new_value, attribute);
         if (typeof new_value_number === 'number') {
             if (current_value == new_value_number) {
                 // using == instead of === since want type coercion. current_value might be a string
-                return;
+                return true;
             }
             // seems we have to live with integer values for width and height
 //             if ((attribute === 'width' || attribute === 'height') &&
@@ -769,6 +781,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     element.set_size_attributes = function (width, height) {
         this.set_attribute('width',  width);
         this.set_attribute('height', height);
+        TT.UTILITIES.set_timeout(function () {
+            this.rerender();
+        }.bind(this));        
     };
 
     element.set_location_attributes = function (left, top) {
