@@ -63,6 +63,28 @@ window.TOONTALK.backside =
                 }
             };
             var description_label = this.create_description_label(backside, widget);
+            var update_green_flag_title = function () {
+                                              var title;
+                                              if (widget.get_running()) {
+                                                  title = "To stop this click on the stop sign.";
+                                              } else if (widget.can_run()) {
+                                                  title = "Click this to start this running."; 
+                                              } else {
+                                                  title = "There is nothing to run on this.";
+                                              }
+                                              green_flag_element.title = title;
+                                          };
+            var update_stop_sign_title = function () {
+                                             var title;
+                                             if (widget.get_running()) {
+                                                 title = "Click to stop this from running.";
+                                             } else if (widget.can_run()) {
+                                                 title = "This has stopped. Click on the flag to start running it."; 
+                                             } else {
+                                                 title = "There is nothing to run here.";
+                                             }
+                                             stop_sign_element.title = title;
+                                         };
             var close_title, close_handler;
             if (widget.close_button_ok(backside_element)) {
                 close_handler = function (event) {
@@ -85,6 +107,7 @@ window.TOONTALK.backside =
                                             if (widget.can_run()) {
                                                 update_flag_and_stop_sign_classes(true);
                                                 widget.set_running(true);
+                                                update_stop_sign_title();
                                             } else {
                                                 if (widget.is_of_type('top-level')) {
                                                     TT.UTILITIES.display_message("There is nothing to run.");
@@ -93,33 +116,14 @@ window.TOONTALK.backside =
                                                 }
                                             }                                                                       
                                         })
-                                 .on('mouseenter', function (event) {
-                                                          var title;
-                                                          if (widget.get_running()) {
-                                                              title = "Click to stop this from running.";
-                                                          } else if (widget.can_run()) {
-                                                              title = "This has stopped. Click on the flag to start running it."; 
-                                                          } else {
-                                                              title = "There is nothing to run here.";
-                                                          }
-                                                          stop_sign_element.title = title;
-                                                  });
+                                 .on('mouseenter', update_stop_sign_title);
             $(stop_sign_element) .addClass("toontalk-stop-sign toontalk-stop-sign-active")
                                  .click(function (event) {
                                             update_flag_and_stop_sign_classes(false);
-                                            widget.set_running(false);                                                                          
+                                            widget.set_running(false);
+                                            update_green_flag_title();                                                                         
                                         })
-                                 .on('mouseenter', function (event) {
-                                                          var title;
-                                                          if (widget.get_running()) {
-                                                              title = "To stop this click on the stop sign.";
-                                                          } else if (widget.can_run()) {
-                                                              title = "Click this to start this running."; 
-                                                          } else {
-                                                              title = "There is nothing to run on this.";
-                                                          }
-                                                          green_flag_element.title = title;
-                                                  });
+                                 .on('mouseenter', update_green_flag_title);
             backside_element.appendChild(green_flag_element);
             backside_element.appendChild(stop_sign_element);
             if (help_URL) {
