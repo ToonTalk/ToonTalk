@@ -683,29 +683,31 @@ window.TOONTALK.nest = (function (TT) {
             } else {
                 new_original_nest = (original_nest || this);
                 if (parameters.birds_copied && parameters.birds_copied[this]) {
-                    // create a fresh copy of the nest
-                    copy = TT.nest.create(this.get_description(), contents_copy, [], TT.UTILITIES.generate_unique_id());
-                    parameters.birds_copied[this].forEach(function (bird) {
-                        bird_set_nest.call(bird, copy);
-                    });
                     if (parameters.nests_copied && parameters.nests_copied[new_original_nest]) {
                         // this nest has already been copied
                         // so make copies use this fresh copy as its original_nest
+                        copy = parameters.nests_copied[nest][0].copy({});
                         parameters.nests_copied[new_original_nest].forEach(function (nest_copy) {
                             update_nest.call(nest_copy, copy);
                         });                    
+                    } else {
+                        // create a fresh copy of the nest
+                        copy = TT.nest.create(this.get_description(), contents_copy, [], TT.UTILITIES.generate_unique_id());
                     }
+                    parameters.birds_copied[this].forEach(function (bird) {
+                        bird_set_nest.call(bird, copy);
+                    });
                 } else {
                     copy = TT.nest.create(this.get_description(), contents_copy, [], guid, new_original_nest);
-                    if (!parameters.nests_copied) {
-                        parameters.nests_copied = {};
-                    }
-                    if (parameters.nests_copied[new_original_nest]) {
-                        parameters.nests_copied[new_original_nest].push(copy);  
-                    } else {
-                        // first of this group of nest copies to be copied
-                        parameters.nests_copied[new_original_nest] = [copy];
-                    }
+                }
+                if (!parameters.nests_copied) {
+                    parameters.nests_copied = {};
+                }
+                if (parameters.nests_copied[new_original_nest]) {
+                    parameters.nests_copied[new_original_nest].push(copy);  
+                } else {
+                    // first of this group of nest copies to be copied
+                    parameters.nests_copied[new_original_nest] = [copy];
                 }
             }
             return this.add_to_copy(copy, parameters);
