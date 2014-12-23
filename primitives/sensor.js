@@ -167,6 +167,9 @@ window.TOONTALK.sensor = (function (TT) {
         new_sensor.set_sensor_of = function (new_value) {
             widget = new_value;
         };
+        new_sensor.get_custom_title_prefix = function () {
+            return "Use this nest to receive notices of events.";
+        };
         return new_sensor;
     };
     

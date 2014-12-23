@@ -79,10 +79,6 @@ window.TOONTALK.SETTINGS =
             // save in case current program has changed
             widget.save(true, undefined, saved_callback);
         };
-//         var page_click_handler = function (event) {
-//             // title of this element is the URL
-//             TT.UTILITIES.open_url_and_enable_editor(this.title, this.id);            
-//         };
         $(table).find(".toontalk-file-load-button").click(program_click_handler);
 //         $(table).find(".toontalk-published-page-button").click(page_click_handler);
     };
@@ -148,10 +144,10 @@ window.TOONTALK.SETTINGS =
           var create_connection_to_google_file = function (google_file, prefix, extra_info) {
               var link_to_publication = document.createElement('span');
               var url = TT.google_drive.google_drive_url(google_file.id);
+              if (TT.TRANSLATION_ENABLED) {
+                  url = TT.UTILITIES.add_URL_parameter(url, "translate", "1");
+              }
               link_to_publication.innerHTML = prefix + "<a href='" + url + "' target='_blank'>" + widget.get_setting('program_name') + "</a>";
-//               link_to_publication.addEventListener('click', function (event) {
-//                   TT.UTILITIES.open_url_and_enable_editor(url, google_file.id, extra_info);
-//               });
               return link_to_publication;
           };
           // create a div whose positioning isn't absolute

@@ -784,6 +784,10 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         }
         return number_pattern;
     };
+
+    number.get_custom_title_prefix = function () {
+        return "Drop another number on me and I'll add it to my value (unless it has been changed so that I'll subtract, multiply, or divide instead).";
+    };
     
     return number;
 }(window.TOONTALK));
