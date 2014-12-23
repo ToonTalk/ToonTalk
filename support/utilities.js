@@ -1665,7 +1665,7 @@ window.TOONTALK.UTILITIES =
                                         var url = in_cloud ? TT.google_drive.google_drive_url(full.id) : "Click to load this program.";
                                         // fileId becomes fileid in Chrome (and maybe other browsers)
                                         if (button_class) {
-                                            return "<div class='" + button_class + "' title='" + title + "'id='" + full.id + "'>" + name + "</div>";
+                                            return "<div class='" + button_class + "' title='" + url + "'id='" + full.id + "'>" + name + "</div>";
                                         } else {
                                             // is just an ordinarly link now
                                             if (TT.TRANSLATION_ENABLED) {
