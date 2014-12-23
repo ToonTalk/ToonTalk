@@ -233,6 +233,9 @@ window.TOONTALK.UTILITIES =
             $("a").each(function (index, element) {
                             element.href = TT.UTILITIES.add_URL_parameter(element.href, "translate", "1"); 
                         });
+            if (TT.initialise_translator) {
+                TT.initialise_translator();
+            }
         } else {
             $("#google_translate_element").remove();
         }
