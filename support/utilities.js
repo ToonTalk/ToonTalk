@@ -1610,7 +1610,7 @@ window.TOONTALK.UTILITIES =
                 // that tries again with github server
                 error_handler = function (event) {
                     image.removeEventListener('error', error_handler);
-                    image.src = "https://toontalk.github.io/ToonTalk/" + url;
+                    image.src = "http://toontalk.github.io/ToonTalk/" + url;
                 }
                 image.addEventListener('error', error_handler);
             }
