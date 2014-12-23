@@ -12,38 +12,38 @@ window.TOONTALK.publish = (function (TT) {
 // is missing
 
 var static_contents_header_1 =
-    '<!DOCTYPE html>\n\
-<html>\n\
-<head>\n\
-<link rel="stylesheet" media="all" href="https://toontalk.github.io/ToonTalk/toontalk.css">\n\
-<link href="https://toontalk.github.io/ToonTalk/libraries/froala-wysiwyg-editor/css/font-awesome.min.css" rel="stylesheet" type="text/css" />\n\
-<link href="https://toontalk.github.io/ToonTalk/libraries/froala-wysiwyg-editor/css/froala_editor.min.css" rel="stylesheet" type="text/css" />\n\
-<script src="https://toontalk.github.io/ToonTalk/compile/toontalk.js"></script>\n\
-<script src="https://toontalk.github.io/ToonTalk/libraries/jquery-ui-1.11.2.custom/jquery-ui.min.js"></script>\n\
-<script src="https://toontalk.github.io/ToonTalk/libraries/froala-wysiwyg-editor/js/froala_editor.min.js"></script>\n\
-<script src="https://toontalk.github.io/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/block_styles.min.js"></script>\n\
-<script src="https://toontalk.github.io/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/colors.min.js"></script>\n\
-<script src="https://toontalk.github.io/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/font_family.min.js"></script>\n\
-<script src="https://toontalk.github.io/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/font_size.min.js"></script>\n\
-<script src="https://toontalk.github.io/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/lists.min.js"></script>\n\
-<script src="https://toontalk.github.io/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/tables.min.js"></script>\n\
-<script src="https://toontalk.github.io/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/video.min.js"></script>\n\
-<title>';
+'<!DOCTYPE html>\n' +
+'<html>\n' +
+'<head>\n' +
+'<link rel="stylesheet" media="all" href="https://toontalk.github.io/ToonTalk/toontalk.css">\n' +
+'<link href="https://toontalk.github.io/ToonTalk/libraries/froala-wysiwyg-editor/css/font-awesome.min.css" rel="stylesheet" type="text/css" />\n' +
+'<link href="https://toontalk.github.io/ToonTalk/libraries/froala-wysiwyg-editor/css/froala_editor.min.css" rel="stylesheet" type="text/css" />\n' +
+'<script src="https://toontalk.github.io/ToonTalk/compile/toontalk.js"></script>\n' +
+'<script src="https://toontalk.github.io/ToonTalk/libraries/jquery-ui-1.11.2.custom/jquery-ui.min.js"></script>\n' +
+'<script src="https://toontalk.github.io/ToonTalk/libraries/froala-wysiwyg-editor/js/froala_editor.min.js"></script>\n' +
+'<script src="https://toontalk.github.io/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/block_styles.min.js"></script>\n' +
+'<script src="https://toontalk.github.io/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/colors.min.js"></script>\n' +
+'<script src="https://toontalk.github.io/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/font_family.min.js"></script>\n' +
+'<script src="https://toontalk.github.io/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/font_size.min.js"></script>\n' +
+'<script src="https://toontalk.github.io/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/lists.min.js"></script>\n' +
+'<script src="https://toontalk.github.io/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/tables.min.js"></script>\n' +
+'<script src="https://toontalk.github.io/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/video.min.js"></script>\n' +
+'<title>\n';
 // title will be inserted here
 var static_contents_header_2 =
-'</title>\n\
-<link rel="shortcut icon" href="favicon.ico" />\n\
-</head>\n\
-<body>';
+'</title>\n' +
+'<link rel="shortcut icon" href="favicon.ico" />\n' +
+'</head>\n' +
+'<body>\n';
 var static_contents_end =
-'<script src="https://toontalk.github.io/ToonTalk/support/published_support.js"></script>\n\
-</body>\n\
-</html>';
+'<script src="https://toontalk.github.io/ToonTalk/support/published_support.js"></script>\n' +
+'</body>\n' +
+'</html>\n';
     
     var assemble_contents = function (title, editable_contents, widgets_json) {
         var contents = static_contents_header_1 + title + static_contents_header_2;
         editable_contents.forEach(function (editable_content, index) {
-                                      contents += '<div class="toontalk-edit" name="content">' + editable_content + "</div>";
+                                      contents += '<div class="toontalk-edit" name="content">\n' + editable_content + "</div>";
                                       if (widgets_json[index]) {
                                           contents += widgets_json[index]; 
                                       }                                              
