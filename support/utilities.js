@@ -6,6 +6,12 @@
  
 /*jslint browser: true, devel: true, plusplus: true, vars: true, white: true */
 
+// so can optionally have Google Translate
+function googleTranslateElementInit() {
+    "use strict";
+    new google.translate.TranslateElement({pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+}
+
 window.TOONTALK.UTILITIES = 
 (function (TT) {
     "use strict";
@@ -205,7 +211,8 @@ window.TOONTALK.UTILITIES =
             reader.readAsText(file);
         }
     };
-    var initialise = function () {   
+    var initialise = function () {
+        var translation_div;
         TT.debugging = TT.UTILITIES.get_current_url_boolean_parameter('debugging', false);
         TT.UTILITIES.process_json_elements();
         // for top-level resources since they are not on the backside 'work space' we need a way to turn them off
@@ -233,13 +240,23 @@ window.TOONTALK.UTILITIES =
             $("a").each(function (index, element) {
                             element.href = TT.UTILITIES.add_URL_parameter(element.href, "translate", "1"); 
                         });
-            if (TT.initialise_translator) {
-                TT.initialise_translator();
+            if (!$("#google_translate_element").is("*")) {
+                // if one wasn't added to the page then add it at the top of the body
+                translation_div = document.createElement("div");
+                translation_div.id = "google_translate_element";
+                document.body.insertBefore(translation_div, document.body.firstChild);
             }
+            document.head.appendChild($('<meta name="google-translate-customization" content="7e20c0dc38d147d6-a2c819007bfac9d1-gc84ee27cc12fd5d1-1b"></meta>')[0]);
+            load_script("//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit");
         } else {
             $("#google_translate_element").remove();
         }
         TT.UTILITIES.add_test_all_button();
+    };
+    var load_script = function (url) {
+        var script = document.createElement('script');
+        script.src = url;
+        document.body.appendChild(script);
     };
     var drag_ended = function () {
         if (!dragee) {
