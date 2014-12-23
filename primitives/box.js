@@ -601,6 +601,10 @@ window.TOONTALK.box = (function (TT) {
         }
     };
 
+    box.get_custom_title_prefix = function () {
+        return "Drop things in my holes to keep them for later.";
+    };
+
     TT.creators_from_json["box_path"] = function (json, additional_info) {
         var path = box.path.create(json.index);
         if (json.next) {

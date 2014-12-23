@@ -316,12 +316,12 @@ window.TOONTALK.widget = (function (TT) {
                                 title = "Click to start this running. Click elsewhere to stop it.";
                             }
                         } else {
-                           title = "Drag this " + type_name + " to a work area.";
+                            title = "Drag this " + type_name + " to a work area.";
                         }   
                     } else if (!backside || !backside.get_element()) {
                         title = "Click to see the back side of this " + type_name;
                     } else if (!description) {
-                       return TT.UTILITIES.add_a_or_an(type_name, true);
+                        title = TT.UTILITIES.add_a_or_an(type_name, true);
                     }
                     if (description) {
                         description = "This " + type_name + " " + description;
@@ -330,6 +330,13 @@ window.TOONTALK.widget = (function (TT) {
                         } else {
                             title = description;   
                         }
+                    }
+                    if (this.get_custom_title_prefix) {
+                         title = this.get_custom_title_prefix() + " " + title;
+                    }
+                    if (".?!".indexOf(title[title.length-1]) < 0) {
+                        // doesn't end in punctuation so add a period
+                        title += ".";
                     }
                     return title;
                 };

@@ -326,6 +326,9 @@ window.TOONTALK.scale = (function (TT) {
         if (new_scale.get_hole_contents(1)) {
             new_scale.get_hole_contents(1).add_listener('value_changed', contents_listener);
         }
+        new_scale.get_custom_title_prefix = function () {
+            return "Use me to compare two things.";
+        };
         return new_scale;
     };
 

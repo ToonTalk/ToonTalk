@@ -420,6 +420,10 @@ window.TOONTALK.bird = (function (TT) {
             return other.widget_dropped_on_me(this, false, event, robot);
         }
     };
+
+    bird.get_custom_title_prefix = function () {
+        return "Drop something on me and I'll take it to my nest.";
+    };
     
     return bird;
 }(window.TOONTALK));
@@ -1030,6 +1034,10 @@ window.TOONTALK.nest = (function (TT) {
     nest.matching_resource = function (other) {
         // should only be one nest resource since nest identity is an issue
         return other.get_type_name && other.get_type_name() === this.get_type_name();
+    };
+
+    nest.get_custom_title_prefix = function () {
+        return "Drop something on my bird and she'll take it here.";
     };
     
     TT.creators_from_json["nest"] = function (json, additional_info) {
