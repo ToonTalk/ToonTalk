@@ -18,8 +18,8 @@ function handle_client_load() {
 window.TOONTALK.google_drive = 
 (function (TT) {
     "use strict";
-    var CLIENT_ID = TT.GOOGLE_DRIVE_CLIENT_ID  || '29199594800-54bk3k92fdepke86ik366cds9kmo4u0c.apps.googleusercontent.com'; // GitHub
-    var origin    = TT.ORIGIN_FOR_GOOGLE_DRIVE || "http://toontalk.github.io";
+    var CLIENT_ID = TT.GOOGLE_DRIVE_CLIENT_ID  || '148386604750-704q35l4gcffpj2nn3p4ivcopl81nm27.apps.googleusercontent.com';
+    var origin    = TT.ORIGIN_FOR_GOOGLE_DRIVE || "toontalk.github.io";
     // edit origin above if CLIENT_ID changed
     var SCOPES = 'https://www.googleapis.com/auth/drive';
     var toontalk_programs_folder_title = "ToonTalk Programs";
@@ -29,7 +29,7 @@ window.TOONTALK.google_drive =
     var programs_folder_id, pages_folder_id;
     return {
         handle_client_load: function (callback_when_authorized) {
-            if (window.location.href.indexOf(origin) !== 0) {
+            if (window.location.href.indexOf(origin) >= 0) {
                 status = wrong_origin_message + origin + ". If you are hosting ToonTalk elsewhere you need to set window.TOONTALK.GOOGLE_DRIVE_CLIENT_ID and window.TOONTALK.ORIGIN_FOR_GOOGLE_DRIVE";
                 if (callback_when_authorized) {
                     callback_when_authorized(status);
