@@ -400,7 +400,10 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             frontside_element.appendChild(child_element);
         }
         child_element.innerHTML = new_HTML;
-        $(child_element).addClass("toontalk-widget");
+        // numbers looked wrong when translated (extra spaces between digits)
+        child_element.translate = "no";
+        child_element.lang      = "en";
+        $(child_element).addClass("toontalk-widget notranslate");
         frontside_element.title = this.get_title();
         backside = this.get_backside();
         if (backside) {
