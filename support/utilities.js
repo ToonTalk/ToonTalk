@@ -247,7 +247,7 @@ window.TOONTALK.UTILITIES =
                 document.body.insertBefore(translation_div, document.body.firstChild);
             }
             document.head.appendChild($('<meta name="google-translate-customization" content="7e20c0dc38d147d6-a2c819007bfac9d1-gc84ee27cc12fd5d1-1b"></meta>')[0]);
-            load_script("//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit");
+            load_script("https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit");
         } else {
             $("#google_translate_element").remove();
         }
@@ -1610,7 +1610,7 @@ window.TOONTALK.UTILITIES =
                 // that tries again with github server
                 error_handler = function (event) {
                     image.removeEventListener('error', error_handler);
-                    image.src = "http://toontalk.github.io/ToonTalk/" + url;
+                    image.src = "https://toontalk.github.io/ToonTalk/" + url;
                 }
                 image.addEventListener('error', error_handler);
             }
