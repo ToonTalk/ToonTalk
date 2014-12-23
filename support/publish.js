@@ -33,8 +33,11 @@ var static_contents_header_1 =
 var static_contents_header_2 =
 '</title>\n' +
 '<link rel="shortcut icon" href="favicon.ico" />\n' +
+'<meta name="google-translate-customization" content="7e20c0dc38d147d6-a2c819007bfac9d1-gc84ee27cc12fd5d1-1b"></meta>\n' +
 '</head>\n' +
-'<body>\n';
+'<body>\n' +
+'<div id="google_translate_element"></div>\n' +
+'<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>\n';
 var static_contents_end =
 '<script src="https://toontalk.github.io/ToonTalk/support/published_support.js"></script>\n' +
 '</body>\n' +

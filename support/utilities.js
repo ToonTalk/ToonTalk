@@ -1645,13 +1645,16 @@ window.TOONTALK.UTILITIES =
                           title: "Name",
                           render: function (data, type, full, meta) {
                                         var name = in_cloud ? data.substring(0, data.length-5) : data;
-                                        var title = in_cloud ? TT.google_drive.google_drive_url(full.id) : "Click to load this program.";
+                                        var url = in_cloud ? TT.google_drive.google_drive_url(full.id) : "Click to load this program.";
                                         // fileId becomes fileid in Chrome (and maybe other browsers)
                                         if (button_class) {
                                             return "<div class='" + button_class + "' title='" + title + "'id='" + full.id + "'>" + name + "</div>";
                                         } else {
                                             // is just an ordinarly link now
-                                            return "<a href='" + title + "'target='_blank' title='Click to open published page.'>" + name + "</a>";
+                                            if (TT.TRANSLATION_ENABLED) {
+                                                url = TT.UTILITIES.add_URL_parameter(url, "translate", "1");
+                                            }
+                                            return "<a href='" + url + "'target='_blank' title='Click to open published page.'>" + name + "</a>";
                                         }
                           }}, 
                          {data: 'modifiedDate', 
