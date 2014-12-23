@@ -332,7 +332,7 @@ window.TOONTALK.widget = (function (TT) {
                         }
                     }
                     if (this.get_custom_title_prefix) {
-                         title = this.get_custom_title_prefix() + " " + title;
+                        title = this.get_custom_title_prefix() + " " + title;
                     }
                     if (".?!".indexOf(title[title.length-1]) < 0) {
                         // doesn't end in punctuation so add a period
