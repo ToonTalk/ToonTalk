@@ -1436,7 +1436,9 @@ window.TOONTALK.UTILITIES =
                 label_element.htmlFor = input.id;
                 if (documentation_url) {
                     documentation_anchor = TT.UTILITIES.create_anchor_element("i", documentation_url);
-                    $(documentation_anchor).addClass("toontalk-help-button");
+                    $(documentation_anchor).addClass("toontalk-help-button notranslate");
+                    documentation_anchor.translate = "no"; // should not be translated
+                    documentation_anchor.lang      = "en";
                 }
                 container = TT.UTILITIES.create_horizontal_table(label_element, input, documentation_anchor);
                 $(label_element).addClass("ui-widget");

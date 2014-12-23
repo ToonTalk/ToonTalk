@@ -128,7 +128,9 @@ window.TOONTALK.backside =
             backside_element.appendChild(stop_sign_element);
             if (help_URL) {
                 help_button = document.createElement("div");
-                $(help_button).addClass("toontalk-help-button toontalk-widget-help-button")
+                // notranslate shouldn't be needed and is the older way of avoiding translation
+                // see http://www.w3.org/International/questions/qa-translate-flag
+                $(help_button).addClass("toontalk-help-button notranslate toontalk-widget-help-button")
                               .click(function (event) {
                                          help_frame = document.createElement("iframe");
                                          $(help_frame).addClass("toontalk-help-frame");
@@ -138,6 +140,7 @@ window.TOONTALK.backside =
                                      });
                 help_button.innerHTML = 'i'; // like tourist info -- alternatively could use a question mark
                 help_button.translate = "no"; // should not be translated
+                help_button.lang      = "en";
                 help_button.title = "Click to learn more about " + widget.get_type_name() + ".";
                 close_help_button = document.createElement("div");
                 $(close_help_button).addClass("toontalk-close-help-frame-button")
