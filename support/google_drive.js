@@ -18,8 +18,8 @@ function handle_client_load() {
 window.TOONTALK.google_drive = 
 (function (TT) {
     "use strict";
-    var CLIENT_ID = TT.GOOGLE_DRIVE_CLIENT_ID  || '148386604750-704q35l4gcffpj2nn3p4ivcopl81nm27.apps.googleusercontent.com'; // GitHub
-    var origin    = TT.ORIGIN_FOR_GOOGLE_DRIVE || "https://toontalk.github.io";
+    var CLIENT_ID = TT.GOOGLE_DRIVE_CLIENT_ID  || '29199594800-54bk3k92fdepke86ik366cds9kmo4u0c.apps.googleusercontent.com'; // GitHub
+    var origin    = TT.ORIGIN_FOR_GOOGLE_DRIVE || "http://toontalk.github.io";
     // edit origin above if CLIENT_ID changed
     var SCOPES = 'https://www.googleapis.com/auth/drive';
     var toontalk_programs_folder_title = "ToonTalk Programs";
