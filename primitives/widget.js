@@ -994,7 +994,8 @@ window.TOONTALK.widget = (function (TT) {
             }
             // put backside under the widget
             final_left = frontside_offset.left-container_offset.left;
-            final_top  = (frontside_offset.top-container_offset.top) + frontside_element.offsetHeight;
+            // leave a gap between front and backside -- don't want settings, flag, and stop sign to be overlapped
+            final_top  = (frontside_offset.top-container_offset.top) + frontside_element.offsetHeight + 26, 
             animate_backside_appearance(backside_element, "inherit");
             backside.render();
             if (this.backside_widgets) {
