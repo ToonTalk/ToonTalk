@@ -876,7 +876,7 @@ window.TOONTALK.element_backside =
             var list_item = document.createElement("li");
             $(documentation_link).addClass("toontalk-help-button notranslate toontalk-attribute-help-button");
             $(documentation_link).css({color: "white"}); // ui-widget-content interferes with this
-            documentation_link.translate = "no"; // should not be translated
+            documentation_link.translate = false; // should not be translated
             documentation_link.lang      = "en";
             check_box.container.appendChild(documentation_link);
             check_box.button.addEventListener('click', function (event) {

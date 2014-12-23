@@ -86,6 +86,9 @@ window.TOONTALK.backside =
                                              stop_sign_element.title = title;
                                          };
             var close_title, close_handler;
+            if (TT.TRANSLATION_ENABLED) {
+                help_URL = TT.UTILITIES.add_URL_parameter(help_URL, "translate", "1");
+            }
             if (widget.close_button_ok(backside_element)) {
                 close_handler = function (event) {
                                     backside.hide_backside(event);
@@ -139,8 +142,7 @@ window.TOONTALK.backside =
                                          document.body.appendChild(help_frame);
                                      });
                 help_button.innerHTML = 'i'; // like tourist info -- alternatively could use a question mark
-                help_button.translate = "no"; // should not be translated
-                help_button.lang      = "en";
+                help_button.translate = false; // should not be translated
                 help_button.title = "Click to learn more about " + widget.get_type_name() + ".";
                 close_help_button = document.createElement("div");
                 $(close_help_button).addClass("toontalk-close-help-frame-button")
