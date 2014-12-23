@@ -874,8 +874,10 @@ window.TOONTALK.element_backside =
             var check_box = TT.UTILITIES.create_check_box(already_added, "toontalk-style-attribute-check-box", option+"&nbsp;", title);
             var documentation_link = TT.UTILITIES.create_anchor_element("i", documentation_source(option) + option);
             var list_item = document.createElement("li");
-            $(documentation_link).addClass("toontalk-help-button toontalk-attribute-help-button");
+            $(documentation_link).addClass("toontalk-help-button notranslate toontalk-attribute-help-button");
             $(documentation_link).css({color: "white"}); // ui-widget-content interferes with this
+            documentation_link.translate = false; // should not be translated
+            documentation_link.lang      = "en";
             check_box.container.appendChild(documentation_link);
             check_box.button.addEventListener('click', function (event) {
                 if (check_box.button.checked) {

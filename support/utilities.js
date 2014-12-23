@@ -228,6 +228,14 @@ window.TOONTALK.UTILITIES =
         });
         // nicer looking tool tips
         $(document).tooltip();
+        TT.TRANSLATION_ENABLED = TT.UTILITIES.get_current_url_boolean_parameter("translate", false);
+        if (TT.TRANSLATION_ENABLED) {
+            $("a").each(function (index, element) {
+                            element.href = TT.UTILITIES.add_URL_parameter(element.href, "translate", "1"); 
+                        });
+        } else {
+            $("#google_translate_element").remove();
+        }
         TT.UTILITIES.add_test_all_button();
     };
     var drag_ended = function () {
@@ -1412,6 +1420,9 @@ window.TOONTALK.UTILITIES =
         create_anchor_element: function (html, url) {
             var anchor = document.createElement("a");
             anchor.innerHTML = html;
+            if (TT.TRANSLATION_ENABLED) {
+                url = TT.UTILITIES.add_URL_parameter(url, "translate", "1");
+            }
             anchor.href= url;
             anchor.target = '_blank';
             return anchor;
@@ -1436,7 +1447,8 @@ window.TOONTALK.UTILITIES =
                 label_element.htmlFor = input.id;
                 if (documentation_url) {
                     documentation_anchor = TT.UTILITIES.create_anchor_element("i", documentation_url);
-                    $(documentation_anchor).addClass("toontalk-help-button");
+                    $(documentation_anchor).addClass("toontalk-help-button notranslate");
+                    documentation_anchor.translate = false; // should not be translated
                 }
                 container = TT.UTILITIES.create_horizontal_table(label_element, input, documentation_anchor);
                 $(label_element).addClass("ui-widget");
@@ -1672,6 +1684,35 @@ window.TOONTALK.UTILITIES =
         
         get_dragee: function () {
             return dragee;
+        },
+
+        add_URL_parameter: function (url, parameter, value) {
+            url = TT.UTILITIES.remove_URL_parameter(url, parameter);
+            var query_index, parameter_conjunction;
+            query_index = url.indexOf('?');
+            parameter_conjunction = query_index >= 0 ? '&' : '?';
+            return url + parameter_conjunction + parameter + "=" + value;
+        },
+
+        remove_URL_parameter: function (url, parameter) {
+            var old_parameter_index = url.indexOf("&" + parameter + "=");
+            var query_index, parameter_conjunction, value_end_index;
+            if (old_parameter_index < 0) {
+                old_parameter_index = url.indexOf("?" + parameter + "=");   
+            }
+            if (old_parameter_index < 0) {
+                return url; // nothing to removeClass
+            }
+            value_end_index = url.indexOf('&', old_parameter_index+1);
+            if (value_end_index < 0) {
+               value_end_index = url.length;
+            }
+            url = url.substring(0, old_parameter_index) + url.substring(value_end_index);
+            if (url[url.length-1] === '?') {
+                // remove ? if at end of the URL
+                url = substring(0, url.length-1);
+            }
+            return url;
         },
         
         add_a_or_an: function (word, upper_case) {
