@@ -8,26 +8,27 @@
 
 window.TOONTALK.publish = (function (TT) {
 
-// somehow <link href="https://toontalk.github.io/ToonTalk/libraries/froala-wysiwyg-editor/css/froala_style.min.css" rel="stylesheet" type="text/css" />\n\
-// is missing
+// somehow libraries/froala-wysiwyg-editor/css/froala_style.min.css is missing
+
+// Using DropBox rather than GitHub for Froala since otherwise web fonts won't load due to lack of cross site permissions
 
 var static_contents_header_1 =
 '<!DOCTYPE html>\n' +
 '<html>\n' +
 '<head>\n' +
 '<link rel="stylesheet" media="all" href="https://toontalk.github.io/ToonTalk/toontalk.css">\n' +
-'<link href="https://toontalk.github.io/ToonTalk/libraries/froala-wysiwyg-editor/css/font-awesome.min.css" rel="stylesheet" type="text/css" />\n' +
-'<link href="https://toontalk.github.io/ToonTalk/libraries/froala-wysiwyg-editor/css/froala_editor.min.css" rel="stylesheet" type="text/css" />\n' +
+'<link href="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/css/font-awesome.min.css" rel="stylesheet" type="text/css" />\n' +
+'<link href="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/css/froala_editor.min.css" rel="stylesheet" type="text/css" />\n' +
 '<script src="https://toontalk.github.io/ToonTalk/compile/toontalk.js"></script>\n' +
 '<script src="https://toontalk.github.io/ToonTalk/libraries/jquery-ui-1.11.2.custom/jquery-ui.min.js"></script>\n' +
-'<script src="https://toontalk.github.io/ToonTalk/libraries/froala-wysiwyg-editor/js/froala_editor.min.js"></script>\n' +
-'<script src="https://toontalk.github.io/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/block_styles.min.js"></script>\n' +
-'<script src="https://toontalk.github.io/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/colors.min.js"></script>\n' +
-'<script src="https://toontalk.github.io/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/font_family.min.js"></script>\n' +
-'<script src="https://toontalk.github.io/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/font_size.min.js"></script>\n' +
-'<script src="https://toontalk.github.io/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/lists.min.js"></script>\n' +
-'<script src="https://toontalk.github.io/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/tables.min.js"></script>\n' +
-'<script src="https://toontalk.github.io/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/video.min.js"></script>\n' +
+'<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/froala_editor.min.js"></script>\n' +
+'<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/block_styles.min.js"></script>\n' +
+'<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/colors.min.js"></script>\n' +
+'<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/font_family.min.js"></script>\n' +
+'<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/font_size.min.js"></script>\n' +
+'<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/lists.min.js"></script>\n' +
+'<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/tables.min.js"></script>\n' +
+'<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/video.min.js"></script>\n' +
 '<title>\n';
 // title will be inserted here
 var static_contents_header_2 =
