@@ -173,11 +173,6 @@ window.TOONTALK.google_drive =
           });
       },
 
-      /**
-       * Start the file upload.
-       *
-       * @param {String} contents String contents of the saved file.
-       */
       upload_file: function (program_name, extension, contents, callback) {
           var toontalk_type = extension === 'json' ? 'program' : 'page';
           var full_file_name = program_name + "." + extension;
