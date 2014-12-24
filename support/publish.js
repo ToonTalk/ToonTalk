@@ -41,15 +41,16 @@ var static_contents_end =
 '</html>\n';
     
     var assemble_contents = function (title, editable_contents, widgets_json) {
-        var contents = static_contents_header_1 + title + static_contents_header_2;
-        editable_contents.forEach(function (editable_content, index) {
-                                      contents += '<div class="toontalk-edit" name="content">\n' + editable_content + "</div>";
-                                      if (widgets_json[index]) {
-                                          contents += widgets_json[index]; 
-                                      }                                              
-                                  });
-        contents += static_contents_end;
-        return contents;
+        var page_contents = static_contents_header_1 + title + static_contents_header_2;
+        var add_content = function (editable_content, index) {
+                              page_contents += '<div class="toontalk-edit" name="content">\n' + editable_content + "\n</div>\n";
+                              if (widgets_json[index]) {
+                                  page_contents += widgets_json[index]; 
+                              }
+                           };
+        editable_contents.forEach(add_content);
+        page_contents += static_contents_end;
+        return page_contents;
     };
     return {
         publish_widget: function (page_title, widget, as_workspace, callback) {

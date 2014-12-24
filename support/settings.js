@@ -101,7 +101,9 @@ window.TOONTALK.SETTINGS =
           var google_drive   = TT.UTILITIES.create_check_box(widget.get_setting('auto_save_to_google_drive'), 
                                                              "toontalk-save-setting",
                                                              "Save automatically to my Google Drive",
-                                                             "Check this if you want your programs automatically saved to a 'ToonTalk Programs' folder in your Google Drive.");
+                                                             // ideally "ToonTalk Programs" should be <i translate='no'>ToonTalk Programs</i>
+                                                             // but see http://stackoverflow.com/questions/15734105/jquery-ui-tooltip-does-not-support-html-content
+                                                             'Check this if you want your programs automatically saved to a "ToonTalk Programs" folder in your Google Drive.');
           var local_storage  = TT.UTILITIES.create_check_box(widget.get_setting('auto_save_to_local_storage'), 
                                                              "toontalk-save-setting",
                                                              "Save automatically to this browser's local storage",
