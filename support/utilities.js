@@ -234,7 +234,18 @@ window.TOONTALK.UTILITIES =
             TT.UTILITIES.backup_all_top_level_widgets(true);
         });
         // nicer looking tool tips
-        $(document).tooltip();
+        // customization to crude talk balloons thanks to http://jsfiddle.net/pragneshkaria/Qv6L2/49/
+        $(document).tooltip({position: {
+             my: "center bottom-20",
+             at: "center top",
+             using: function (position, feedback) {
+                 $(this).css(position);
+                 $("<div>").addClass("toontalk-arrow")
+                           .addClass(feedback.vertical)
+                           .addClass(feedback.horizontal)
+                           .appendTo(this);
+             }
+         }});
         TT.TRANSLATION_ENABLED = TT.UTILITIES.get_current_url_boolean_parameter("translate", false);
         if (TT.TRANSLATION_ENABLED) {
             $("a").each(function (index, element) {
@@ -772,6 +783,7 @@ window.TOONTALK.UTILITIES =
                 function (event) {
                     var $source_element = $(event.target).closest(".toontalk-side");
                     var bounding_rectangle, json_object, json_div, widget, is_resource;
+                    $(".ui-tooltip").remove();
                     // was using text/plain but IE complained
                     // see http://stackoverflow.com/questions/18065840/html5-drag-and-drop-not-working-on-ie11
                     if (event.dataTransfer.getData("text") && event.dataTransfer.getData("text").length > 0) {

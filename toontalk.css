@@ -2275,3 +2275,51 @@ background-image: url("images/dusty-morph.png");
    from { background-position:    0px; }
      to { background-position: -615px; }
 }
+
+/* For talk balloon tool tips: */
+
+.ui-tooltip, .toontalk-arrow:after {
+    background: green;
+}
+.ui-tooltip {
+    padding: 10px 20px;
+    color: white;
+    border-radius: 20px;
+    font: bold 14px "Helvetica Neue", Sans-Serif
+    box-shadow: 0 0 7px black;
+}
+.toontalk-arrow {
+    width: 70px;
+    height: 26px;
+    overflow: hidden;
+    position: absolute;
+    left: 50%;
+    margin-left: -35px;
+    bottom: -26px;
+}
+.toontalk-arrow.top {
+    top: -6px;
+    bottom: auto;
+}
+.toontalk-arrow.left {
+    left: 20%;
+}
+.toontalk-arrow:after {
+    content:"";
+    position: absolute;
+    left: 20px;
+    top: -20px;
+    width: 36px;
+    height: 36px;
+    box-shadow: 6px 5px 9px -9px black;
+    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+    tranform: rotate(45deg);
+}
+.toontalk-arrow.top:after {
+    bottom: -20px;
+    top: auto;
+}
+
