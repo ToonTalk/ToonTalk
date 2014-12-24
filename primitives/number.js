@@ -173,6 +173,10 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         return integer_approximation_as_string.length-1;
     };
 
+    // Math.log10 not defined in IE11
+    var natural_log_of_10 = Math.log(10);
+    var log10 = Math.log10 ? Math.log10 : function (x) { return Math.log(x)/natural_log_of_10 };
+
     var TEN = bigrat.fromInteger(10);
 
     // public methods
@@ -492,7 +496,8 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             exponent = scientific_notation_exponent(this.get_value());
             ten_to_exponent = bigrat.power(bigrat.create(), TEN, exponent);
             significand = bigrat.divide(bigrat.create(), this.get_value(), ten_to_exponent);
-            exponent_area = 6+(exponent === 0 ? 1 : Math.ceil(Math.log10(Math.abs(exponent)))/2); // 6 for integer_digit, space, and '10x' - divide by 2 since superscript font is smaller
+            // 6 for integer_digit, space, and '10x' - divide by 2 since superscript font is smaller
+            exponent_area = 6+(exponent === 0 ? 1 : Math.ceil(log10(Math.abs(exponent)))/2);
             if (negative) {
                 exponent_area++; // need more room
             }
