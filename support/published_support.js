@@ -65,7 +65,9 @@ return {
             return;
         }
         editor_enabled = true;
-        $(".toontalk-edit").editable({inlineMode: true, imageUpload: false});
+        $(".toontalk-edit").editable({inlineMode: true,
+                                      imageUpload: false, 
+                                      crossDomain: true});
         $elements = $(".toontalk-backside-of-top-level, .toontalk-top-level-resource-container");
         if (widgets_json) {
             current_widget_count = $elements.length;
