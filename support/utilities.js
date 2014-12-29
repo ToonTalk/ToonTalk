@@ -293,7 +293,7 @@ window.TOONTALK.UTILITIES =
             !$target.is(".toontalk-being-dragged") &&
             !(dragee && has_ancestor_element($target.get(0), dragee.get(0)))) {
             // could support a can_drop protocol and use it here
-            TT.UTILITIES.highlight_element($target, event);
+            TT.UTILITIES.highlight_element($target.get(0), event);
             // moving over decendants triggers dragleave unless their pointer events are turned off
             // they are restored on dragend
             if (!$target.is(".toontalk-backside, .toontalk-drop-area") && TT.UTILITIES.widget_of_element(element).get_type_name() !== 'box') {
@@ -1372,7 +1372,8 @@ window.TOONTALK.UTILITIES =
                 return; // already highlighted
             }
             // only one element can be highlighted
-            TT.UTILITIES.remove_highlight(); // any old highlighting
+            // first remove old highlighting (if any)
+            TT.UTILITIES.remove_highlight(); 
             widget = TT.UTILITIES.widget_of_element(element);
             if (!widget) {
                 return;
@@ -2148,7 +2149,7 @@ window.TOONTALK.UTILITIES =
                     drag_end_handler(event, element);
                     widget = TT.UTILITIES.find_widget_on_page(touch, element, 0, 0);
                     if (widget) {
-                        drop_handler(touch, widget.get_frontside_element());
+                        drop_handler(event, widget.get_frontside_element());
                     }
                 } else {
                     // touch_start time out will see this and treat it all as a click
