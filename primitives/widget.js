@@ -847,7 +847,7 @@ window.TOONTALK.widget = (function (TT) {
             console.assert(false, "copy not implemented");
         },
         
-        add_copy_to_container: function (widget_copy) {
+        add_copy_to_container: function (widget_copy, x_offset, y_offset) {
             if (!widget_copy) {
                 widget_copy = this.copy({});
             }
@@ -857,6 +857,12 @@ window.TOONTALK.widget = (function (TT) {
             var position, container_widget;
             if ($container_element.length === 0) {
                 $container_element = $(".toontalk-backside");  
+            }
+            if (typeof x_offset === 'undefined') {
+                x_offset = 30;
+            }
+            if (typeof y_offset === 'undefined') {
+                y_offset = 30;
             }
             position = TT.UTILITIES.relative_position(frontside_element, $container_element.get(0));
             container_widget = TT.UTILITIES.widget_from_jquery($container_element);

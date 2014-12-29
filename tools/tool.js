@@ -8,7 +8,6 @@
 
 window.TOONTALK.tool = (function (TT) {
     "use strict";
-
     return {
         add_listeners: function (element, tool) {
             var home_position, drag_x_offset, drag_y_offset, tool_height, highlighted_element;
@@ -27,7 +26,7 @@ window.TOONTALK.tool = (function (TT) {
             };
 
             var mouse_move = function (event) {
-                var widget_under_tool = find_widget_under_tool(event);
+                var widget_under_tool = TT.UTILITIES.find_widget_on_page(event, element, drag_x_offset, drag_y_offset-tool_height/2);
                 var new_highlighted_element, scroll_adjustment;
                 var point = {};
                 event.preventDefault();
@@ -55,7 +54,7 @@ window.TOONTALK.tool = (function (TT) {
             };
 
             var mouse_up = function (event) {
-                var widget_under_tool = find_widget_under_tool(event);
+                var widget_under_tool = TT.UTILITIES.find_widget_on_page(event, element, drag_x_offset, drag_y_offset);
                 var top_level_widget;
                 event.preventDefault();
                 if (highlighted_element) { // remove old highlighting
@@ -106,32 +105,7 @@ window.TOONTALK.tool = (function (TT) {
                 return {deltaX: deltaX,
                         deltaY: deltaY};
             };
-
-            var find_widget_under_tool = function (event) {
-                // return what is under the tool
-                var element_under_tool, widget_under_tool, widget_type;
-                // hide the tool so it is not under itself
-                $(element).hide();
-                // select using the leftmost part of tool and vertical center
-                element_under_tool = document.elementFromPoint(event.pageX - (window.pageXOffset + drag_x_offset), (event.pageY - (window.pageYOffset + drag_y_offset)) + tool_height/2);
-                $(element).show();
-                while (element_under_tool && !element_under_tool.toontalk_widget && 
-                       (!$(element_under_tool).is(".toontalk-backside") || $(element_under_tool).is(".toontalk-top-level-backside"))) {
-                    // element might be a 'sub-element' so go up parent links to find ToonTalk widget
-                    element_under_tool = element_under_tool.parentNode;
-                }
-                if (element_under_tool) {
-                    widget_under_tool = element_under_tool.toontalk_widget;
-                }
-                if (!widget_under_tool) {
-                    return;
-                }
-                widget_type = widget_under_tool.get_type_name();
-                if (widget_under_tool && widget_type === "empty hole") {
-                    return widget_under_tool.get_parent_of_frontside();
-                }
-                return widget_under_tool;
-            };            
+            
             element.addEventListener('mousedown', mouse_down);
        }
     };
