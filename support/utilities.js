@@ -35,7 +35,7 @@ window.TOONTALK.UTILITIES =
         return div_string.substring(json_start, json_end+1);
     };
     var drag_start_handler = function (event, element) {
-        var $source_element = $(event.target).closest(".toontalk-side");
+        var $source_element = $(element).closest(".toontalk-side");
         var bounding_rectangle, json_object, json_div, widget, is_resource;
         $(".ui-tooltip").remove();
         // was using text/plain but IE complained
@@ -103,7 +103,7 @@ window.TOONTALK.UTILITIES =
                     dragee.css({width:  json_object.view.frontside_width,
                                 height: json_object.view.frontside_height});
                 }
-            } else if (!dragee.parent().is(".toontalk-top-level-resource, .toontalk-drop-area") &&
+            } else if (!dragee.parent().is(".toontalk-top-level-resource, .toontalk-drop-area, .toontalk-json") &&
                        !dragee.is(".toontalk-carried-by-bird, .toontalk-element-attribute") &&
                        !TT.UTILITIES.has_animating_image(dragee.get(0))) {
                 dragee.css({width:  "100%",
@@ -136,6 +136,7 @@ window.TOONTALK.UTILITIES =
         if ($(event.target).is(".toontalk-drop-area-instructions")) {
             $target = $(event.target).parent();
         } else if ($(event.target).is(".toontalk-element-attribute-input")) {
+            // TODO: determine if this is obsolete and not used
             // should work for any input -- need to generalise this
             $target = $(event.target).closest(".toontalk-side");
             target_widget = TT.UTILITIES.widget_from_jquery($target);
@@ -154,7 +155,7 @@ window.TOONTALK.UTILITIES =
             $target = $(event.target);
         } else {
             // closest includes 'self'
-            $target = $(event.target).closest(".toontalk-side");
+            $target = $(element).closest(".toontalk-side");
         }
         if ($target.length === 0) {
             return;
@@ -304,7 +305,7 @@ window.TOONTALK.UTILITIES =
         }
     };
     var handle_drop = function ($target, $source, source_widget, target_widget, target_position, event, json_object, drag_x_offset, drag_y_offset, source_is_backside) {
-        var new_target, backside_widgets_json, shared_widgets, top_level_element, top_level_backside_position, backside_widgets, left, top;
+        var new_target, backside_widgets_json, shared_widgets, top_level_element, top_level_backside_position, backside_widgets, left, top, element_here;
         source_widget.set_visible(true);
         if ($target.is(".toontalk-backside")) {
             if (source_widget.is_of_type('top-level')) {
@@ -413,12 +414,26 @@ window.TOONTALK.UTILITIES =
         } else if ($source.is(".toontalk-backside-of-top-level")) {
             // dragging top-level backside to itself or one of its children is ignored
             return;
-        } else if (!target_widget) {
-            TT.UTILITIES.report_internal_error("target element has no 'owner'");
+        } else if (!target_widget && !event.changedTouches) {
+            TT.UTILITIES.report_internal_error("target widget missing");
             return; // let event propagate
         } else {
             // before processing drop ensure that dropped item (source_widget) is visible and where dropped
             top_level_element = $target.closest(".toontalk-top-level-backside").get(0);
+            if (!top_level_element && event.changedTouches) {
+                // i.e. when dragging using touch events
+                element_here = document.elementFromPoint(event.changedTouches[0].pageX-window.pageXOffset, event.changedTouches[0].pageY-window.pageYOffset);
+                if ($(element_here).is(".toontalk-top-level-backside")) {
+                    top_level_element = element_here;
+                } else {
+                    top_level_element = $(element_here).closest(".toontalk-top-level-backside").get(0);
+                }
+                if (!top_level_element) {
+                    // pick any top level backside
+                    top_level_element = $(".toontalk-top-level-backside").get(0);
+                }
+                target_widget = TT.UTILITIES.widget_of_element(top_level_element).get_backside();
+            }
             top_level_element.appendChild($source.get(0));
             top_level_backside_position = $(top_level_element).offset();
             $source.css({
@@ -1255,6 +1270,7 @@ window.TOONTALK.UTILITIES =
                     dropped_widget.set_active(true);
                     dropped_copy.set_active(false);
                 }
+                return dropped_copy;
             }
         },
         
@@ -1368,6 +1384,9 @@ window.TOONTALK.UTILITIES =
         
         highlight_element: function (element, point, duration) {
             var widget, frontside_element;
+            if (!element) {
+                return;
+            }
             if ($(element).is(".toontalk-highlight")) {
                 return; // already highlighted
             }
@@ -2130,6 +2149,13 @@ window.TOONTALK.UTILITIES =
                                 widget.add_copy_to_container(widget_copy, 0, 0);
                                 widget.set_infinite_stack(false);
                                 widget_copy.set_infinite_stack(true);
+                            } else if ($(element).is(".toontalk-top-level-resource")) {
+                                widget_copy = TT.UTILITIES.restore_resource($(element), TT.UTILITIES.widget_of_element(element));
+                                $(element).addClass("toontalk-top-level-resource-container toontalk-top-level-resource");
+                                element = widget_copy.get_frontside_element();
+                                $(element).removeClass("toontalk-top-level-resource-container toontalk-top-level-resource");
+//                                 "toontalk-top-level-resource-container"
+//                                 widget_under_element.add_to_top_level_backside(widget_copy);
                             }
                             drag_start_handler(event, element);
                             bounding_rectangle = dragee.get(0).getBoundingClientRect();
@@ -2157,15 +2183,15 @@ window.TOONTALK.UTILITIES =
                 }
             };
             var touch_move_handler = function (event) {
-                var widget, touch;
+                var widget_under_element, widget, widget_copy, touch;
                 event.preventDefault();
                 if (drag_started) {
                     touch = event.changedTouches[0];
                     TT.UTILITIES.set_absolute_position($(element), {left: touch.clientX-drag_x_offset,
                                                                     top:  touch.clientY-drag_y_offset});
-                    widget = TT.UTILITIES.find_widget_on_page(touch, element, 0, 0);
-                    if (widget) {
-                        drag_enter_handler(touch, widget.get_frontside_element());
+                    widget_under_element = TT.UTILITIES.find_widget_on_page(touch, element, 0, 0);
+                    if (widget_under_element) {
+                        drag_enter_handler(touch, widget_under_element.get_frontside_element());
                     }
                 }
             };
