@@ -868,8 +868,8 @@ window.TOONTALK.widget = (function (TT) {
             container_widget = TT.UTILITIES.widget_from_jquery($container_element);
             $(frontside_element_copy).css({width:  $(frontside_element).width(),
                                            height: $(frontside_element).height(),
-                                           left: position.left+30,
-                                           top:  position.top+30});
+                                           left: position.left+x_offset,
+                                           top:  position.top+y_offset});
             $container_element.append(frontside_element_copy);
             if (container_widget) {
                 container_widget.add_backside_widget(widget_copy);

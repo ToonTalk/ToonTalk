@@ -1067,11 +1067,15 @@ window.TOONTALK.UTILITIES =
         },
         
         drag_and_drop: function (element) {
+            var maximum_click_duration;
             TT.UTILITIES.draggable(element);
             TT.UTILITIES.can_receive_drops(element);
             if (!$(element).is(".toontalk-backside-of-top-level")) {
                 // touch interface doesn't (yet) support drag and drop of top-level backsides or dataTransfer
-                TT.UTILITIES.enable_touch_events(element, 500); // 1/2 second is the longest 'click'
+                // resources can only dragged so no need to wait to see if is a click
+                // otherwise 1/2 second is the longest 'click'
+                maximum_click_duration = $(element).is(".toontalk-top-level-resource") ? 0 : 500;
+                TT.UTILITIES.enable_touch_events(element, maximum_click_duration);
             }
         },
         
@@ -1280,7 +1284,6 @@ window.TOONTALK.UTILITIES =
                     dropped_widget.set_active(true);
                     dropped_copy.set_active(false);
                 }
-                return dropped_copy;
             }
         },
         
@@ -2136,13 +2139,14 @@ window.TOONTALK.UTILITIES =
         },
 
         enable_touch_events: function (element, maximum_click_duration) {
+            var original_element = element;
             var touch_start_handler = function (event) {
                 event.preventDefault();
                 event.stopPropagation();
                 TT.UTILITIES.set_timeout(
                     function () {
                         var touch = event.changedTouches[0];
-                        var simulatedEvent, bounding_rectangle, widget, widget_copy;
+                        var simulatedEvent, bounding_rectangle, widget, widget_copy, element_position;
                         if (touch_end_occurred) {
                             touch_end_occurred = false;   
                             simulatedEvent = document.createEvent("MouseEvent");
@@ -2160,17 +2164,25 @@ window.TOONTALK.UTILITIES =
                                 widget.set_infinite_stack(false);
                                 widget_copy.set_infinite_stack(true);
                             } else if ($(element).is(".toontalk-top-level-resource")) {
-                                widget_copy = TT.UTILITIES.restore_resource($(element), TT.UTILITIES.widget_of_element(element));
-                                $(element).addClass("toontalk-top-level-resource-container toontalk-top-level-resource");
-                                element = widget_copy.get_frontside_element();
-                                $(element).removeClass("toontalk-top-level-resource-container toontalk-top-level-resource");
-//                                 "toontalk-top-level-resource-container"
-//                                 widget_under_element.add_to_top_level_backside(widget_copy);
+                                widget_copy = widget.copy({});
+                                widget.add_copy_to_container(widget_copy, 0, 0);
+                                // need to capture the position of the original
+                                element_position = $(element).offset();
+                                element = widget_copy.get_frontside_element(true);
+                                // tried to drag the resource and restore here but messed up the layout until drag was over
+//                                 TT.UTILITIES.restore_resource($(element), TT.UTILITIES.widget_of_element(element));
+//                                 $(element).addClass("toontalk-top-level-resource-container toontalk-top-level-resource");
+//                                 element = widget_copy.get_frontside_element();
+//                                 $(element).css({//left: element_position.left,
+//                                                 //top:  element_position.top,
+//                                                 "z-index": TT.UTILITIES.next_z_index()});                               
+                            }
+                            if (!element_position) {
+                                element_position = $(element).offset();
                             }
                             drag_start_handler(event, element);
-                            bounding_rectangle = dragee.get(0).getBoundingClientRect();
-                            drag_x_offset = touch.clientX - bounding_rectangle.left;
-                            drag_y_offset = touch.clientY - bounding_rectangle.top;
+                            drag_x_offset = touch.clientX - element_position.left;
+                            drag_y_offset = touch.clientY - element_position.top;
                         }
                     },
                     maximum_click_duration);
@@ -2191,6 +2203,8 @@ window.TOONTALK.UTILITIES =
                     // touch_start time out will see this and treat it all as a click
                     touch_end_occurred = true;
                 }
+                // restore the original element
+                element = original_element;
             };
             var touch_move_handler = function (event) {
                 var widget_under_element, widget, widget_copy, touch;
