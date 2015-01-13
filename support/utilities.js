@@ -115,7 +115,7 @@ window.TOONTALK.UTILITIES =
     };
     var drop_handler = function (event, element) {
         var $source, source_widget, $target, target_widget, drag_x_offset, drag_y_offset, target_position, 
-            new_target, source_is_backside, $container, container, width, height, i;
+            new_target, source_is_backside, $container, container, width, height, i, page_x, page_y;
         var json_object = TT.UTILITIES.data_transfer_json_object(event);
         // should this set the dropEffect? 
         // https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer#dropEffect.28.29 
@@ -177,7 +177,9 @@ window.TOONTALK.UTILITIES =
             // not dropping on itself but on the widget underneath
             // to not find $target again temporarily hide it
             $target.hide();
-            new_target = document.elementFromPoint(event.pageX-window.pageXOffset, event.pageY-window.pageYOffset);
+            page_x = TT.UTILITIES.page_x(event);
+            page_x = TT.UTILITIES.page_y(event);
+            new_target = document.elementFromPoint(page_x-window.pageXOffset,page_y-window.pageYOffset);
             $target.show();
             if (new_target) {
                 $target = $(new_target).closest(".toontalk-side");
@@ -305,7 +307,10 @@ window.TOONTALK.UTILITIES =
         }
     };
     var handle_drop = function ($target, $source, source_widget, target_widget, target_position, event, json_object, drag_x_offset, drag_y_offset, source_is_backside) {
-        var new_target, backside_widgets_json, shared_widgets, top_level_element, top_level_backside_position, backside_widgets, left, top, element_here;
+        var page_x = TT.UTILITIES.page_x(event);
+        var page_y = TT.UTILITIES.page_y(event);
+            var new_target, backside_widgets_json, shared_widgets, top_level_element, top_level_backside_position, backside_widgets, 
+            left, top, element_here;
         source_widget.set_visible(true);
         if ($target.is(".toontalk-backside")) {
             if (source_widget.is_of_type('top-level')) {
@@ -391,8 +396,8 @@ window.TOONTALK.UTILITIES =
               },
               50);
             }
-            left = event.pageX - (target_position.left + drag_x_offset);
-            top  = event.pageY - (target_position.top  + drag_y_offset);
+            left = page_x - (target_position.left + drag_x_offset);
+            top  = page_y - (target_position.top  + drag_y_offset);
             $source.css({left: left,
                          top:  top});
 //             if ($source.is(".toontalk-frontside") && !$source.is('.ui-resizable')) {
@@ -422,7 +427,7 @@ window.TOONTALK.UTILITIES =
             top_level_element = $target.closest(".toontalk-top-level-backside").get(0);
             if (!top_level_element && event.changedTouches) {
                 // i.e. when dragging using touch events
-                element_here = document.elementFromPoint(event.changedTouches[0].pageX-window.pageXOffset, event.changedTouches[0].pageY-window.pageYOffset);
+                element_here = document.elementFromPoint(page_x-window.pageXOffset, page_y-window.pageYOffset);
                 if ($(element_here).is(".toontalk-top-level-backside")) {
                     top_level_element = element_here;
                 } else {
@@ -437,8 +442,8 @@ window.TOONTALK.UTILITIES =
             top_level_element.appendChild($source.get(0));
             top_level_backside_position = $(top_level_element).offset();
             $source.css({
-                left: event.pageX - (top_level_backside_position.left + drag_x_offset),
-                top:  event.pageY - (top_level_backside_position.top  + drag_y_offset)}
+                left: page_x - (top_level_backside_position.left + drag_x_offset),
+                top:  page_y - (top_level_backside_position.top  + drag_y_offset)}
             );
             if (source_widget.drop_on && source_widget.drop_on(target_widget, source_is_backside, event)) {
             } else if (target_widget.widget_dropped_on_me && target_widget.widget_dropped_on_me(source_widget, source_is_backside, event)) {
@@ -2205,13 +2210,31 @@ window.TOONTALK.UTILITIES =
             element.addEventListener("touchcancel", touch_end_handler,   true); // good enough?
         },
 
+        page_x: function (event) {
+            // either mouse location or first touch location
+            if (event.changedTouches) {
+                return event.changedTouches[0].pageX;
+            }
+            return event.pageX;
+        },
+
+        page_y: function (event) {
+            // either mouse location or first touch location
+            if (event.changedTouches) {
+                return event.changedTouches[0].pageY;
+            }
+            return event.pageY;
+        },
+
         find_widget_on_page: function (event, element, x_offset, y_offset) {
             // return what is under the element
+            var page_x = TT.UTILITIES.page_x(event);
+            var page_y = TT.UTILITIES.page_y(event);
             var element_on_page, widget_on_page, widget_type;
             // hide the tool so it is not under itself
             $(element).hide();
             // select using the leftmost part of tool and vertical center
-            element_on_page = document.elementFromPoint(event.pageX - (window.pageXOffset + x_offset), (event.pageY - (window.pageYOffset + y_offset)));
+            element_on_page = document.elementFromPoint(page_x - (window.pageXOffset + x_offset), (page_y - (window.pageYOffset + y_offset)));
             $(element).show();
             while (element_on_page && !element_on_page.toontalk_widget && 
                    (!$(element_on_page).is(".toontalk-backside") || $(element_on_page).is(".toontalk-top-level-backside"))) {
