@@ -36,6 +36,8 @@ window.TOONTALK.UTILITIES =
     };
     var drag_start_handler = function (event, element) {
         var $source_element = $(element).closest(".toontalk-side");
+        var client_x = TT.UTILITIES.get_mouse_or_first_touch_event_attribute("clientX", event);
+        var client_y = TT.UTILITIES.get_mouse_or_first_touch_event_attribute("clientY", event);
         var bounding_rectangle, json_object, json_div, widget, is_resource;
         $(".ui-tooltip").remove();
         // was using text/plain but IE complained
@@ -59,12 +61,10 @@ window.TOONTALK.UTILITIES =
 //             dragee.css({width:  bounding_rectangle.width,
 //                         height: bounding_rectangle.height});
 //         }
-        if (event.dataTransfer && widget.get_json) {
-            event.dataTransfer.effectAllowed = is_resource ? 'copy' : 'move';
+        if (widget.get_json) {
             json_object = TT.UTILITIES.get_json_top_level(widget);
-            // not sure if the following is obsolete
-            json_object.view.drag_x_offset = event.clientX - bounding_rectangle.left;
-            json_object.view.drag_y_offset = event.clientY - bounding_rectangle.top;
+            json_object.view.drag_x_offset = client_x - bounding_rectangle.left;
+            json_object.view.drag_y_offset = client_y - bounding_rectangle.top;
             if (!json_object.view.frontside_width) {
                 if (dragee.parent().is(".toontalk-backside")) {
                     json_object.view.frontside_width  = dragee.width();
@@ -74,16 +74,18 @@ window.TOONTALK.UTILITIES =
             if (dragee.is(".toontalk-backside")) {
                 json_object.view.backside = true;
             }
-            dragee.data("json", json_object);
-            // use two spaces to indent each level
-            json_div = TT.UTILITIES.toontalk_json_div(json_object, widget);
-            // text is good for dragging to text editors
-            event.dataTransfer.setData("text", json_div);
-            // text/html should work when dragging to a rich text editor
-            if (!TT.UTILITIES.is_internet_explorer()) {
-                // text/html causes an error in IE
-                event.dataTransfer.setData("text/html", json_div);
-            }          
+            dragee.data("json", json_object);   
+            if (event.dataTransfer) {
+                json_div = TT.UTILITIES.toontalk_json_div(json_object, widget);
+                event.dataTransfer.effectAllowed = is_resource ? 'copy' : 'move';
+                // text is good for dragging to text editors
+                event.dataTransfer.setData("text", json_div);
+                // text/html should work when dragging to a rich text editor
+                if (!TT.UTILITIES.is_internet_explorer()) {
+                    // text/html causes an error in IE
+                    event.dataTransfer.setData("text/html", json_div);
+                }
+            }         
             widget.drag_started(json_object, is_resource);
         }
         dragee.addClass("toontalk-being-dragged");
@@ -99,7 +101,6 @@ window.TOONTALK.UTILITIES =
                 // restore ordinary size styles
                 var json_object = dragee.data("json");
                 if (json_object) {
-                    dragee.data("json", ""); // no point wasting memory on this anymore
                     dragee.css({width:  json_object.view.frontside_width,
                                 height: json_object.view.frontside_height});
                 }
@@ -117,6 +118,10 @@ window.TOONTALK.UTILITIES =
         var $source, source_widget, $target, target_widget, drag_x_offset, drag_y_offset, target_position, 
             new_target, source_is_backside, $container, container, width, height, i, page_x, page_y;
         var json_object = TT.UTILITIES.data_transfer_json_object(event);
+        if (!json_object) {
+            json_object = dragee.data("json");
+        }
+        dragee.data("json", ""); // no point wasting memory on this anymore
         // should this set the dropEffect? 
         // https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer#dropEffect.28.29 
         // restore events to decendants
@@ -177,8 +182,8 @@ window.TOONTALK.UTILITIES =
             // not dropping on itself but on the widget underneath
             // to not find $target again temporarily hide it
             $target.hide();
-            page_x = TT.UTILITIES.page_x(event);
-            page_x = TT.UTILITIES.page_y(event);
+            page_x = TT.UTILITIES.get_mouse_or_first_touch_event_attribute("pageX", event);
+            page_y = TT.UTILITIES.get_mouse_or_first_touch_event_attribute("pageY", event);
             new_target = document.elementFromPoint(page_x-window.pageXOffset,page_y-window.pageYOffset);
             $target.show();
             if (new_target) {
@@ -307,8 +312,8 @@ window.TOONTALK.UTILITIES =
         }
     };
     var handle_drop = function ($target, $source, source_widget, target_widget, target_position, event, json_object, drag_x_offset, drag_y_offset, source_is_backside) {
-        var page_x = TT.UTILITIES.page_x(event);
-        var page_y = TT.UTILITIES.page_y(event);
+        var page_x = TT.UTILITIES.get_mouse_or_first_touch_event_attribute("pageX", event);
+        var page_y = TT.UTILITIES.get_mouse_or_first_touch_event_attribute("pageY", event);
             var new_target, backside_widgets_json, shared_widgets, top_level_element, top_level_backside_position, backside_widgets, 
             left, top, element_here;
         source_widget.set_visible(true);
@@ -2192,8 +2197,8 @@ window.TOONTALK.UTILITIES =
                 event.preventDefault();
                 if (drag_started) {
                     touch = event.changedTouches[0];
-                    TT.UTILITIES.set_absolute_position($(element), {left: touch.clientX-drag_x_offset,
-                                                                    top:  touch.clientY-drag_y_offset});
+                    TT.UTILITIES.set_absolute_position($(element), {left: touch.pageX-drag_x_offset,
+                                                                    top:  touch.pageY-drag_y_offset});
                     widget_under_element = TT.UTILITIES.find_widget_on_page(touch, element, 0, 0);
                     if (widget_under_element) {
                         drag_enter_handler(touch, widget_under_element.get_frontside_element());
@@ -2210,26 +2215,18 @@ window.TOONTALK.UTILITIES =
             element.addEventListener("touchcancel", touch_end_handler,   true); // good enough?
         },
 
-        page_x: function (event) {
-            // either mouse location or first touch location
+        get_mouse_or_first_touch_event_attribute: function (attribute, event) {
+            // either mouse event's attribute or first touch' location's attribute
             if (event.changedTouches) {
-                return event.changedTouches[0].pageX;
+                return event.changedTouches[0][attribute];
             }
-            return event.pageX;
-        },
-
-        page_y: function (event) {
-            // either mouse location or first touch location
-            if (event.changedTouches) {
-                return event.changedTouches[0].pageY;
-            }
-            return event.pageY;
+            return event[attribute];
         },
 
         find_widget_on_page: function (event, element, x_offset, y_offset) {
             // return what is under the element
-            var page_x = TT.UTILITIES.page_x(event);
-            var page_y = TT.UTILITIES.page_y(event);
+            var page_x = TT.UTILITIES.get_mouse_or_first_touch_event_attribute("pageX", event);
+            var page_y = TT.UTILITIES.get_mouse_or_first_touch_event_attribute("pageY", event);
             var element_on_page, widget_on_page, widget_type;
             // hide the tool so it is not under itself
             $(element).hide();
