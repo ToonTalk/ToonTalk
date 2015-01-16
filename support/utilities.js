@@ -324,7 +324,7 @@ window.TOONTALK.UTILITIES =
     var handle_drop = function ($target, $source, source_widget, target_widget, target_position, event, json_object, drag_x_offset, drag_y_offset, source_is_backside) {
         var page_x = TT.UTILITIES.get_mouse_or_first_touch_event_attribute("pageX", event);
         var page_y = TT.UTILITIES.get_mouse_or_first_touch_event_attribute("pageY", event);
-            var new_target, backside_widgets_json, shared_widgets, top_level_element, top_level_backside_position, backside_widgets, 
+        var new_target, backside_widgets_json, shared_widgets, top_level_element, top_level_backside_position, backside_widgets, 
             left, top, element_here;
         source_widget.set_visible(true);
         if ($target.is(".toontalk-backside")) {
@@ -536,7 +536,11 @@ window.TOONTALK.UTILITIES =
         // might want two queues: so new entries end up in the 'next queue'
         TT.QUEUE.run();
         window.addEventListener('beforeunload', function (event) {
-            TT.UTILITIES.backup_all_top_level_widgets(true);
+            try {
+                TT.UTILITIES.backup_all_top_level_widgets(true);
+            } catch (error) {
+                console.log(error);
+            }
         });
         // nicer looking tool tips
         // customization to crude talk balloons thanks to http://jsfiddle.net/pragneshkaria/Qv6L2/49/
@@ -1573,7 +1577,7 @@ window.TOONTALK.UTILITIES =
                          .addClass("toontalk-text-input")
                          .css({"background-color": "white"});
             text_input.addEventListener('touchstart', function () {
-                $(text_input).focus();
+                $(text_input).select();
             });
             return {container: container,
                     button: text_input};
@@ -1600,7 +1604,7 @@ window.TOONTALK.UTILITIES =
                         .addClass("toontalk-text-area")
                         .css({"background": "white"}); // somehow JQuery gives a background color despite toontalk-text-area's CSS
             text_area.addEventListener('touchstart', function () {
-                $(text_area).focus();
+                $(text_area).select();
             });
             $(label_element).addClass("ui-widget");
             return {container: container,
@@ -2174,10 +2178,13 @@ window.TOONTALK.UTILITIES =
             var original_element = element;
             var touch_start_handler = function (event) {
                 event.preventDefault();
-                // following interfered with text area input
-                if (event.srcElement.tagName !== 'TEXTAREA' && event.srcElement.tagName !== 'INPUT') {
-                    event.stopPropagation();
+                // text area input and resize handles work differently
+                if (event.srcElement.tagName === 'TEXTAREA' || 
+                    event.srcElement.tagName === 'INPUT' ||
+                    $(event.srcElement).is(".ui-resizable-handle")) {
+                   return;
                 }
+                event.stopPropagation();
                 TT.UTILITIES.set_timeout(
                     function () {
                         var touch = event.changedTouches[0];
@@ -2204,7 +2211,11 @@ window.TOONTALK.UTILITIES =
                                 // need to capture the position of the original
                                 element_position = $(element).offset();
                                 element = widget_copy.get_frontside_element(true);
-                                // tried to drag the resource and restore here but messed up the layout until drag was over
+//                                 closest_top_level_backside = TT.UTILITIES.closest_top_level_backside(touch.pageX, touch.pageY);
+//                                 closest_top_level_backside.add_backside_widget(widget_copy);
+//                                 closest_top_level_backside.get_backside_element().appendChild(element);
+//                                 widget_copy.render();
+//                                 tried to drag the resource and restore here but messed up the layout until drag was over
 //                                 TT.UTILITIES.restore_resource($(element), TT.UTILITIES.widget_of_element(element));
 //                                 $(element).addClass("toontalk-top-level-resource-container toontalk-top-level-resource");
 //                                 element = widget_copy.get_frontside_element();
@@ -2230,9 +2241,9 @@ window.TOONTALK.UTILITIES =
                     drag_started = false;
                     touch = event.changedTouches[0];
                     drag_end_handler(event, element);
-                    widget = TT.UTILITIES.find_widget_on_page(touch, element, 0, 0);
+                    widget = TT.UTILITIES.widget_of_element(element); //TT.UTILITIES.find_widget_on_page(touch, element, 0, 0);
                     if (widget) {
-                        drop_handler(event, widget.get_frontside_element());
+                        drop_handler(event, element); // widget.get_frontside_element());
                     }
                 } else {
                     // touch_start time out will see this and treat it all as a click
@@ -2263,7 +2274,7 @@ window.TOONTALK.UTILITIES =
             var touch_end_occurred = false;
             var drag_x_offset = 0;
             var drag_y_offset = 0;
-            var widget_drag_entered;
+            var widget_drag_entered, closest_top_level_backside;
             element.addEventListener("touchstart",  touch_start_handler, true);
             element.addEventListener("touchmove",   touch_move_handler,  true);
             element.addEventListener("touchend",    touch_end_handler,   true);
@@ -2304,6 +2315,25 @@ window.TOONTALK.UTILITIES =
                 return widget_on_page.get_parent_of_frontside();
             }
             return widget_on_page;
+       },
+
+       closest_top_level_backside: function (x, y) {
+           var best_so_far, best_distance_so_far;
+           $(".toontalk-top-level-backside").each(function () {
+               var position = $(this).offset();
+               var this_distance = (position.left + $(this).width()/2 - x)^2 + 
+                                   (position.top  + $(this).height()/2 - x)^2;;
+               if (best_so_far) {
+                   if (this_distance < best_distance_so_far) {
+                        best_so_far = this;
+                        best_distance_so_far = this_distance;
+                   }
+               } else {
+                   best_so_far = this;
+                   best_distance_so_far = this_distance;
+               }
+           });
+           return TT.UTILITIES.widget_of_element(best_so_far);
        },
 
 //         enable_touch_events: function (maximum_click_duration) {
