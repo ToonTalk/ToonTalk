@@ -15,14 +15,16 @@ window.TOONTALK.tool = (function (TT) {
             var mouse_down = function (event) {
                 // should this check which mouse button? (event.button)
                 var bounding_rect = element.getBoundingClientRect();
-                drag_x_offset = event.clientX - bounding_rect.left;
-                drag_y_offset = event.clientY - bounding_rect.top;
+                drag_x_offset = TT.UTILITIES.get_mouse_or_first_touch_event_attribute('clientX', event) - bounding_rect.left;
+                drag_y_offset = TT.UTILITIES.get_mouse_or_first_touch_event_attribute('clientY', event) - bounding_rect.top;
                 tool_height = bounding_rect.height;
                 event.preventDefault();
                 $(element).addClass("toontalk-tool-held");
                 home_position = $(element).offset();
-                document.addEventListener('mousemove', mouse_move);
-                document.addEventListener('mouseup',   mouse_up);
+                document.addEventListener('mousemove',  mouse_move);
+                document.addEventListener('touchmove',  mouse_move);
+                document.addEventListener('mouseup',    mouse_up);
+                document.addEventListener('touchend',   mouse_up);
             };
 
             var mouse_move = function (event) {
@@ -32,8 +34,8 @@ window.TOONTALK.tool = (function (TT) {
                 event.preventDefault();
                 scroll_adjustment = scroll_if_needed(event);
                 // using clientX and clientY so can pass event as point when appropriate
-                point.clientX = event.pageX-scroll_adjustment.deltaX-drag_x_offset;
-                point.clientY = event.pageY-scroll_adjustment.deltaY-drag_y_offset;
+                point.clientX = TT.UTILITIES.get_mouse_or_first_touch_event_attribute('pageX', event) -scroll_adjustment.deltaX-drag_x_offset;
+                point.clientY = TT.UTILITIES.get_mouse_or_first_touch_event_attribute('pageY', event) -scroll_adjustment.deltaY-drag_y_offset;
                 element.style.left = point.clientX + "px";
                 element.style.top  = point.clientY + "px";
                 if (widget_under_tool && widget_under_tool.is_of_type('top-level')) {
@@ -84,7 +86,9 @@ window.TOONTALK.tool = (function (TT) {
                                element.style.top  = home_position.top  + "px";
                     });
                 document.removeEventListener('mousemove',    mouse_move);
+                document.removeEventListener('touchmove',    mouse_move);
                 document.removeEventListener('mouseup',      mouse_up);
+                document.removeEventListener('touchend',     mouse_up);
             };
 
             var scroll_if_needed = function (event) {
@@ -106,7 +110,8 @@ window.TOONTALK.tool = (function (TT) {
                         deltaY: deltaY};
             };
             
-            element.addEventListener('mousedown', mouse_down);
+            element.addEventListener('mousedown',  mouse_down);
+            element.addEventListener('touchstart', mouse_down);
        }
     };
 
