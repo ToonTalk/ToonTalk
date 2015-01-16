@@ -2175,7 +2175,9 @@ window.TOONTALK.UTILITIES =
             var touch_start_handler = function (event) {
                 event.preventDefault();
                 // following interfered with text area input
-//              event.stopPropagation();
+                if (event.srcElement.tagName !== 'TEXTAREA' && event.srcElement.tagName !== 'INPUT') {
+                    event.stopPropagation();
+                }
                 TT.UTILITIES.set_timeout(
                     function () {
                         var touch = event.changedTouches[0];
