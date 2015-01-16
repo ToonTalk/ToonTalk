@@ -599,14 +599,14 @@ window.TOONTALK.widget = (function (TT) {
                     // otherwise geometry isn't needed
                     frontside_element = this.get_frontside_element && this.get_frontside_element();
                     if (frontside_element) {
+                        frontside_width = $(frontside_element).width();
                         if (!$(frontside_element).is(".toontalk-plain-text-element")) {
-                            frontside_width = $(frontside_element).width();
                             if (frontside_width !== 0) {
                                 json_view.frontside_width  = $(frontside_element).width();
                                 json_view.frontside_height = $(frontside_element).height();
                             }
                         }
-                        if ($(frontside_element).is(":visible")) {
+                        if (frontside_width !== 0) {
                             position = $(frontside_element).position();
                         }
                         if (position) {
@@ -724,7 +724,7 @@ window.TOONTALK.widget = (function (TT) {
             var widget_index, parent_of_backside, parent_of_frontside;
             if (TT.debugging && !this.backside_widgets) {
                 if (ignore_if_not_on_backside) {
-                    console.log("remove_backside_widget called and there are no backside_widgets")
+                    console.log("remove_backside_widget called and there are no backside_widgets");
                 } else {
                     TT.UTILITIES.report_internal_error("Couldn't remove a widget from backside widgets.");
                 }
@@ -870,7 +870,7 @@ window.TOONTALK.widget = (function (TT) {
                                            height: $(frontside_element).height(),
                                            left: position.left+x_offset,
                                            top:  position.top+y_offset});
-            $container_element.append(frontside_element_copy);
+            $container_element.get(0).appendChild(frontside_element_copy);
             if (container_widget) {
                 container_widget.add_backside_widget(widget_copy);
 //              console.log("Added the copy " + widget_copy + " (" + widget_copy.debug_id + ") to " + container_widget + " (" + container_widget.debug_id + ")");
