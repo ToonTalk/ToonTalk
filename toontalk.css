@@ -1144,7 +1144,10 @@ body {
 .toontalk-text-input {
     color: inherit;
     background: none;
-    cursor: text;	
+    cursor: text;
+}
+.toontalk-text-area {
+	background-color: white;
 }
 .toontalk-numerator-input {
 }

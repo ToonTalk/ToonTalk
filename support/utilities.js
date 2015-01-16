@@ -1544,13 +1544,16 @@ window.TOONTALK.UTILITIES =
         // and because of a comment about disability software
         // see http://stackoverflow.com/questions/774054/should-i-put-input-tag-inside-label-tag
         
-        create_text_input: function (value, class_name, label, title, documentation_url) {
+        create_text_input: function (value, class_name, label, title, documentation_url, type) {
             var text_input = document.createElement("input");
             var label_element, container, documentation_anchor;
             text_input.type = "text";
             text_input.className = class_name;
             text_input.value = value;
             text_input.title = title;
+            if (type) {
+                text_input.type = type;
+            }
             if (label) {
                 label_element = document.createElement("label");
                 label_element.innerHTML = label;
@@ -1576,20 +1579,26 @@ window.TOONTALK.UTILITIES =
                     button: text_input};
         },
         
-        create_text_area: function (value, class_name, label, title) {
+        create_text_area: function (value, class_name, label, title, type) {
             var text_area = document.createElement("textarea");
             var label_element, container;
             text_area.className = class_name;
             text_area.value = value;
             text_area.title = title;
+            // the intent here was to be able to change the default virtual keyboard to numeric
+            // but only works for input not textarea elements
+            // and because numbers can be so large need textarea
+//             if (type) {
+//                 text_area.type = type;
+//             }
             label_element = document.createElement("label");
             label_element.innerHTML = label;
             text_area.id = TT.UTILITIES.generate_unique_id();
             label_element.htmlFor = text_area.id;
             container = TT.UTILITIES.create_horizontal_table(label_element, text_area);
             $(text_area).button()
-                        .addClass("toontalk-text-text_area")
-                        .css({"background": "white"});
+                        .addClass("toontalk-text-area")
+                        .css({"background": "white"}); // somehow JQuery gives a background color despite toontalk-text-area's CSS
             text_area.addEventListener('touchstart', function () {
                 $(text_area).focus();
             });
