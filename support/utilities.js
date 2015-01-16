@@ -567,7 +567,6 @@ window.TOONTALK.UTILITIES =
         } else {
             $("#google_translate_element").remove();
         }
-//         TT.UTILITIES.treat_touch_end_as_click();
         TT.UTILITIES.add_test_all_button();
     };
     var load_script = function (url) {
@@ -1136,14 +1135,6 @@ window.TOONTALK.UTILITIES =
                                                  current_highlighted_element = undefined;
                                              }
                                          }
-//                                          var widget_drag_leaving;
-//                                          if (widget_drag_entered) {
-//                                              widget_drag_leaving = TT.UTILITIES.widget_from_jquery($(event.currentTarget));
-//                                              if (widget_drag_leaving !== widget_drag_entered) {
-//                                                 TT.UTILITIES.remove_highlight(widget_drag_entered.get_frontside_element());
-//                                                 widget_drag_entered = undefined;
-//                                              }
-//                                          }
                                          event.stopPropagation();
                                      });
             // following attempt to use JQuery UI draggable but it provides mouseevents rather than dragstart and the like
@@ -1554,31 +1545,35 @@ window.TOONTALK.UTILITIES =
         // see http://stackoverflow.com/questions/774054/should-i-put-input-tag-inside-label-tag
         
         create_text_input: function (value, class_name, label, title, documentation_url) {
-            var input = document.createElement("input");
+            var text_input = document.createElement("input");
             var label_element, container, documentation_anchor;
-            input.type = "text";
-            input.className = class_name;
-            input.value = value;
-            input.title = title;
+            text_input.type = "text";
+            text_input.className = class_name;
+            text_input.value = value;
+            text_input.title = title;
             if (label) {
                 label_element = document.createElement("label");
                 label_element.innerHTML = label;
-                input.id = TT.UTILITIES.generate_unique_id();
-                label_element.htmlFor = input.id;
+                text_input.id = TT.UTILITIES.generate_unique_id();
+                label_element.htmlFor = text_input.id;
                 if (documentation_url) {
                     documentation_anchor = TT.UTILITIES.create_anchor_element("i", documentation_url);
                     $(documentation_anchor).addClass("toontalk-help-button notranslate");
                     documentation_anchor.translate = false; // should not be translated
                 }
-                container = TT.UTILITIES.create_horizontal_table(label_element, input, documentation_anchor);
+                container = TT.UTILITIES.create_horizontal_table(label_element, text_input, documentation_anchor);
                 $(label_element).addClass("ui-widget");
             } else {
-                container = input;
+                container = text_input;
             }     
-            $(input).button().addClass("toontalk-text-input");
-            $(input).css({"background-color": "white"});
+            $(text_input).button()
+                         .addClass("toontalk-text-input")
+                         .css({"background-color": "white"});
+            text_input.addEventListener('touchstart', function () {
+                $(text_input).focus();
+            });
             return {container: container,
-                    button: input};
+                    button: text_input};
         },
         
         create_text_area: function (value, class_name, label, title) {
@@ -1592,8 +1587,12 @@ window.TOONTALK.UTILITIES =
             text_area.id = TT.UTILITIES.generate_unique_id();
             label_element.htmlFor = text_area.id;
             container = TT.UTILITIES.create_horizontal_table(label_element, text_area);
-            $(text_area).button().addClass("toontalk-text-text_area");
-            $(text_area).css({"background": "white"});
+            $(text_area).button()
+                        .addClass("toontalk-text-text_area")
+                        .css({"background": "white"});
+            text_area.addEventListener('touchstart', function () {
+                $(text_area).focus();
+            });
             $(label_element).addClass("ui-widget");
             return {container: container,
                     button: text_area};
@@ -2162,25 +2161,12 @@ window.TOONTALK.UTILITIES =
                                                 file_id);
         },
 
-        treat_touch_end_as_click: function () {
-            var touch_end_handler = function (event) {
-                var touch = event.changedTouches[0];
-                var simulatedEvent = document.createEvent("MouseEvent");
-                simulatedEvent.initMouseEvent('click', true, true, window, 1,
-                                              touch.screenX, touch.screenY,
-                                              touch.clientX, touch.clientY, false,
-                                              false, false, false, 0, null);
-               touch.target.dispatchEvent(simulatedEvent);
-               event.preventDefault();
-            };
-            document.addEventListener("touchend", touch_end_handler, true);
-        },
-
         enable_touch_events: function (element, maximum_click_duration) {
             var original_element = element;
             var touch_start_handler = function (event) {
                 event.preventDefault();
-                event.stopPropagation();
+                // following interfered with text area input
+//              event.stopPropagation();
                 TT.UTILITIES.set_timeout(
                     function () {
                         var touch = event.changedTouches[0];
