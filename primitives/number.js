@@ -876,14 +876,16 @@ window.TOONTALK.number_backside =
             $(slash).addClass("ui-widget"); // to look nice
             backside_element.appendChild(number_set);
             backside_element.appendChild(advanced_settings_button);
-            numerator_input.button.addEventListener('change', update_value);
+            numerator_input.button.addEventListener('change',   update_value);
             numerator_input.button.addEventListener('mouseout', update_value);
             numerator_input.button.addEventListener('mouseenter', function () {
                 current_numerator = numerator_input.button.value.trim();
+            });
+            denominator_input.button.addEventListener('change',   update_value);
+            denominator_input.button.addEventListener('mouseout', update_value);
+            denominator_input.button.addEventListener('mouseenter', function () {
                 current_denominator = denominator_input.button.value.trim();
             });
-            denominator_input.button.addEventListener('change', update_value);
-            denominator_input.button.addEventListener('mouseout', update_value);
             decimal_format.button     .addEventListener('change', update_format);
             mixed_number_format.button.addEventListener('change', update_format);
             improper_format.button    .addEventListener('change', update_format);
