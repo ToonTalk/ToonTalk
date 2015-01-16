@@ -1130,10 +1130,11 @@ window.TOONTALK.UTILITIES =
                                      });
             element.addEventListener('dragleave', 
                                      function (event) {
-                                         var $underneath = $toontalk_side_underneath(element);
-                                         if (current_highlighted_element && !$underneath) {
-                                             TT.UTILITIES.remove_highlight(current_highlighted_element);
-                                             current_highlighted_element = undefined;
+                                         if (current_highlighted_element) {
+                                             if (!TT.UTILITIES.inside_rectangle(event.clientX, event.clientY, current_highlighted_element.getBoundingClientRect())) {
+                                                 TT.UTILITIES.remove_highlight(current_highlighted_element);
+                                                 current_highlighted_element = undefined;
+                                             }
                                          }
 //                                          var widget_drag_leaving;
 //                                          if (widget_drag_entered) {
@@ -1468,6 +1469,11 @@ window.TOONTALK.UTILITIES =
                 return url.substring(0, extensionStart) + ".32x32" + url.substring(extensionStart);
             }
             return url;
+        },
+
+        inside_rectangle: function (x, y, rectangle) {
+            return (x >= rectangle.left && x <= rectangle.right &&
+                    y >= rectangle.top  && y <= rectangle.bottom);
         },
         
         next_z_index: function () {
