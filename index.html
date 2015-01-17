@@ -9,8 +9,12 @@ window.TOONTALK = {GOOGLE_DRIVE_CLIENT_ID:  '148386604750-704q35l4gcffpj2nn3p4iv
                    ORIGIN_FOR_GOOGLE_DRIVE: 'toontalk.github.io'};
 </script>
 <script src="compile/toontalk.js"></script>
+<!-- Following caused errors when included in closure compiler due to use of JQuery UI titles -->
 <script src="libraries/jquery-ui-1.11.2.custom/jquery-ui.min.js"></script>
 <script src="https://apis.google.com/js/client.js?onload=handle_client_load"></script>
+<!-- The following enables JQuery UI resize handles to respond to touch 
+     Note that including this in the closure compiler resulted in errors -->
+<script src="libraries/jquery.ui.touch-punch.min.js"></script>
 <title>ToonTalk Reborn</title>
 <link rel="shortcut icon" href="favicon.ico" />
 </head>
