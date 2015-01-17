@@ -25,7 +25,8 @@ window.TOONTALK.tool = (function (TT) {
                 document.addEventListener('touchmove',  mouse_move);
                 document.addEventListener('mouseup',    mouse_up);
                 document.addEventListener('touchend',   mouse_up);
-                if (TT.debugging && TT.debugging.startsWith('touch')) {
+                // rewrite using startsWith in ECMAScript version 6
+                if (TT.debugging && TT.debugging.indexof('touch') === 0) {
                     TT.debugging += "\nmouse_down at " + Date.now();
                 }
             };
@@ -41,7 +42,8 @@ window.TOONTALK.tool = (function (TT) {
                 point.clientY = TT.UTILITIES.get_mouse_or_first_touch_event_attribute('pageY', event) -scroll_adjustment.deltaY-drag_y_offset;
                 element.style.left = point.clientX + "px";
                 element.style.top  = point.clientY + "px";
-                if (TT.debugging && TT.debugging.startsWith('touch')) {
+                // rewrite using startsWith in ECMAScript version 6
+                if (TT.debugging && TT.debugging.indexof('touch') === 0) {
                     TT.debugging += "\nmouse_move at " + Date.now() + " now at " + element.style.left + ", " + element.style.top;
                 }
                 if (widget_under_tool && widget_under_tool.is_of_type('top-level')) {
@@ -95,7 +97,8 @@ window.TOONTALK.tool = (function (TT) {
                 document.removeEventListener('touchmove',    mouse_move);
                 document.removeEventListener('mouseup',      mouse_up);
                 document.removeEventListener('touchend',     mouse_up);
-                if (TT.debugging && TT.debugging.startsWith('touch')) {
+                // rewrite using startsWith in ECMAScript version 6
+                if (TT.debugging && TT.debugging.indexof('touch') === 0) {
                     TT.debugging += "\nmouse_up at " + Date.now();
                     alert(TT.debugging);
                     TT.debugging = 'touch';
