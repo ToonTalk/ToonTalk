@@ -121,7 +121,9 @@ window.TOONTALK.UTILITIES =
         if (!json_object) {
             json_object = dragee.data("json");
         }
-        dragee.data("json", ""); // no point wasting memory on this anymore
+        if (dragee) {
+            dragee.data("json", ""); // no point wasting memory on this anymore
+        }
         // should this set the dropEffect? 
         // https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer#dropEffect.28.29 
         // restore events to decendants
