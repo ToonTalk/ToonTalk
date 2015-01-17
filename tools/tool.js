@@ -25,6 +25,9 @@ window.TOONTALK.tool = (function (TT) {
                 document.addEventListener('touchmove',  mouse_move);
                 document.addEventListener('mouseup',    mouse_up);
                 document.addEventListener('touchend',   mouse_up);
+                if (TT.debugging && TT.debugging.startsWith('touch')) {
+                    TT.debugging += "\nmouse_down at " + Date.now();
+                }
             };
 
             var mouse_move = function (event) {
@@ -38,6 +41,9 @@ window.TOONTALK.tool = (function (TT) {
                 point.clientY = TT.UTILITIES.get_mouse_or_first_touch_event_attribute('pageY', event) -scroll_adjustment.deltaY-drag_y_offset;
                 element.style.left = point.clientX + "px";
                 element.style.top  = point.clientY + "px";
+                if (TT.debugging && TT.debugging.startsWith('touch')) {
+                    TT.debugging += "\nmouse_move at " + Date.now() + " now at " + element.style.left + ", " + element.style.top;
+                }
                 if (widget_under_tool && widget_under_tool.is_of_type('top-level')) {
                     if (highlighted_element) { // remove old highlighting
                         TT.UTILITIES.remove_highlight();
@@ -89,6 +95,11 @@ window.TOONTALK.tool = (function (TT) {
                 document.removeEventListener('touchmove',    mouse_move);
                 document.removeEventListener('mouseup',      mouse_up);
                 document.removeEventListener('touchend',     mouse_up);
+                if (TT.debugging && TT.debugging.startsWith('touch')) {
+                    TT.debugging += "\nmouse_up at " + Date.now();
+                    alert(TT.debugging);
+                    TT.debugging = 'touch';
+                }
             };
 
             var scroll_if_needed = function (event) {

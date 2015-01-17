@@ -518,7 +518,7 @@ window.TOONTALK.UTILITIES =
     };
     var initialise = function () {
         var translation_div;
-        TT.debugging = TT.UTILITIES.get_current_url_boolean_parameter('debugging', false);
+        TT.debugging = TT.UTILITIES.get_current_url_parameter('debugging');
         TT.UTILITIES.process_json_elements();
         // for top-level resources since they are not on the backside 'work space' we need a way to turn them off
         // clicking on a running widget may not work since its HTML may be changing constantly
@@ -2039,6 +2039,20 @@ window.TOONTALK.UTILITIES =
             return false;
         },
 
+         get_current_url_parameter: function (parameter, default_value) {
+             var parameter_start = window.location.href.indexOf(parameter+"=");
+             var parameter_end, next_parameter_start;
+             if (parameter_start < 0) {
+                 return default_value;
+             }
+             parameter_end = parameter_start+parameter.length+1;
+             next_parameter_start = window.location.href.indexOf("&", parameter_end);
+             if (next_parameter_start < 0) {
+                 next_parameter_start = window.location.href.length;
+             }
+             return window.location.href.substring(parameter_end, next_parameter_start);             
+         },
+
         is_browser_of_type: function (type) {
             // type can be "MSIE", "Firefox", "Safari", "Chrome", "Opera"
             return window.navigator.userAgent.indexOf(type) >= 0;
@@ -2177,11 +2191,17 @@ window.TOONTALK.UTILITIES =
         enable_touch_events: function (element, maximum_click_duration) {
             var original_element = element;
             var touch_start_handler = function (event) {
+                if (TT.debugging && TT.debugging.startsWith('touch')) {
+                    TT.debugging += "\ntouch start";
+                }
                 event.preventDefault();
                 // text area input and resize handles work differently
                 if (event.srcElement.tagName === 'TEXTAREA' || 
                     event.srcElement.tagName === 'INPUT' ||
                     $(event.srcElement).is(".ui-resizable-handle")) {
+                    if (TT.debugging && TT.debugging.startsWith('touch')) {
+                        TT.debugging += "\ntouch start ignored due to tag name or class";
+                    }
                    return;
                 }
                 event.stopPropagation();
@@ -2197,6 +2217,11 @@ window.TOONTALK.UTILITIES =
                                                           touch.clientX, touch.clientY, false,
                                                           false, false, false, 0, null);
                             touch.target.dispatchEvent(simulatedEvent);
+                            if (TT.debugging && TT.debugging.startsWith('touch')) {
+                                TT.debugging += "\ntouch end treated as click";
+                                alert(TT.debugging);
+                                TT.debugging = 'touch';
+                            }   
                         } else {
                             drag_started = true;
                             widget = TT.UTILITIES.widget_of_element(element);
@@ -2229,6 +2254,9 @@ window.TOONTALK.UTILITIES =
                             drag_start_handler(event, element);
                             drag_x_offset = touch.clientX - element_position.left;
                             drag_y_offset = touch.clientY - element_position.top;
+                            if (TT.debugging && TT.debugging.startsWith('touch')) {
+                                TT.debugging += "\ndrag started";
+                            }
                         }
                     },
                     maximum_click_duration);
@@ -2242,8 +2270,18 @@ window.TOONTALK.UTILITIES =
                     touch = event.changedTouches[0];
                     drag_end_handler(event, element);
                     widget = TT.UTILITIES.widget_of_element(element); //TT.UTILITIES.find_widget_on_page(touch, element, 0, 0);
+                    if (TT.debugging && TT.debugging.startsWith('touch')) {
+                        TT.debugging += "\ndrag ended";
+                    }
                     if (widget) {
                         drop_handler(event, element); // widget.get_frontside_element());
+                        if (TT.debugging && TT.debugging.startsWith('touch')) {
+                            TT.debugging += "\ndrop happened";
+                        }
+                    }
+                    if (TT.debugging && TT.debugging.startsWith('touch')) {
+                        alert(TT.debugging);
+                        TT.debugging = 'touch';
                     }
                 } else {
                     // touch_start time out will see this and treat it all as a click
@@ -2268,6 +2306,11 @@ window.TOONTALK.UTILITIES =
                         drag_enter_handler(touch, widget_under_element.get_frontside_element());
                         widget_drag_entered = widget_under_element;
                     }
+                    if (TT.debugging && TT.debugging.startsWith('touch')) {
+                        TT.debugging += "\ndragged to " + (touch.pageX-drag_x_offset) + ", " + (touch.pageY-drag_y_offset);
+                    }
+                } else if (TT.debugging && TT.debugging.startsWith('touch')) {
+                    TT.debugging += "\ntouch move ignored since drag_started not yet set. " + Date.now();
                 }
             };
             var drag_started       = false;
