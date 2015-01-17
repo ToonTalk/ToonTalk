@@ -81,7 +81,8 @@ window.TOONTALK.box = (function (TT) {
         };
         new_box.set_size = function (new_size, update_display) {
             var i;
-            if (size === new_size) {
+            if (size === new_size || new_size < 0 || isNaN(new_size)) {
+                // ingore no change, negative or NaN values
                 return false;
             }
             holes.length = new_size;
@@ -626,7 +627,7 @@ window.TOONTALK.box_backside =
     return {
         create: function (box) {
             var backside = TT.backside.create(box);
-            var size_input = TT.UTILITIES.create_text_input(box.get_size().toString(), 'toontalk-box-size-input', "Number of holes", "Type here to edit the number of holes.");
+            var size_input = TT.UTILITIES.create_text_input(box.get_size().toString(), 'toontalk-box-size-input', "Number of holes", "Type here to edit the number of holes.", undefined, "number");
             var horizontal = TT.UTILITIES.create_radio_button("box_orientation", "horizontal", "toontalk-horizontal-radio-button", "Left to right", "Show box horizontally."); // might be nicer replaced by an icon
             var vertical = TT.UTILITIES.create_radio_button("box_orientation", "vertical", "toontalk-vertical-radio-button", "Top to bottom", "Show box vertically.");
             var update_value = function () {

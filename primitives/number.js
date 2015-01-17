@@ -173,6 +173,10 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         return integer_approximation_as_string.length-1;
     };
 
+    // Math.log10 not defined in IE11
+    var natural_log_of_10 = Math.log(10);
+    var log10 = Math.log10 ? Math.log10 : function (x) { return Math.log(x)/natural_log_of_10 };
+
     var TEN = bigrat.fromInteger(10);
 
     // public methods
@@ -492,7 +496,8 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
             exponent = scientific_notation_exponent(this.get_value());
             ten_to_exponent = bigrat.power(bigrat.create(), TEN, exponent);
             significand = bigrat.divide(bigrat.create(), this.get_value(), ten_to_exponent);
-            exponent_area = 6+(exponent === 0 ? 1 : Math.ceil(Math.log10(Math.abs(exponent)))/2); // 6 for integer_digit, space, and '10x' - divide by 2 since superscript font is smaller
+            // 6 for integer_digit, space, and '10x' - divide by 2 since superscript font is smaller
+            exponent_area = 6+(exponent === 0 ? 1 : Math.ceil(log10(Math.abs(exponent)))/2);
             if (negative) {
                 exponent_area++; // need more room
             }
@@ -803,8 +808,12 @@ window.TOONTALK.number_backside =
             var slash = document.createElement("div");
             var current_numerator = number.numerator_string();
             var current_denominator = number.denominator_string();
-            var numerator_input = TT.UTILITIES.create_text_area(current_numerator, "toontalk-numerator-input", "", "Type here to edit the numerator");
-            var denominator_input = TT.UTILITIES.create_text_area(current_denominator, "toontalk-denominator-input", "", "Type here to edit the denominator");
+            var numerator_input = TT.UTILITIES.create_text_area(current_numerator, "toontalk-numerator-input", "", 
+                                                                "Type here to edit the numerator",
+                                                                "number");
+            var denominator_input = TT.UTILITIES.create_text_area(current_denominator, "toontalk-denominator-input", "", 
+                                                                  "Type here to edit the denominator",
+                                                                  "number");
             var decimal_format = TT.UTILITIES.create_radio_button("number_format", "decimal", "toontalk-decimal-radio-button", "Decimal number", "Display number as a decimal.");
             var mixed_number_format = TT.UTILITIES.create_radio_button("number_format", "proper_fraction", "toontalk-proper-fraction-radio-button", "Mixed number", "Display number as an integer part and a proper fraction.");
             var improper_format =TT.UTILITIES.create_radio_button("number_format", "improper_fraction", "toontalk-improper-fraction-radio-button", "Improper fraction", "Display number as a simple fraction.");
@@ -871,14 +880,16 @@ window.TOONTALK.number_backside =
             $(slash).addClass("ui-widget"); // to look nice
             backside_element.appendChild(number_set);
             backside_element.appendChild(advanced_settings_button);
-            numerator_input.button.addEventListener('change', update_value);
+            numerator_input.button.addEventListener('change',   update_value);
             numerator_input.button.addEventListener('mouseout', update_value);
             numerator_input.button.addEventListener('mouseenter', function () {
                 current_numerator = numerator_input.button.value.trim();
+            });
+            denominator_input.button.addEventListener('change',   update_value);
+            denominator_input.button.addEventListener('mouseout', update_value);
+            denominator_input.button.addEventListener('mouseenter', function () {
                 current_denominator = denominator_input.button.value.trim();
             });
-            denominator_input.button.addEventListener('change', update_value);
-            denominator_input.button.addEventListener('mouseout', update_value);
             decimal_format.button     .addEventListener('change', update_format);
             mixed_number_format.button.addEventListener('change', update_format);
             improper_format.button    .addEventListener('change', update_format);

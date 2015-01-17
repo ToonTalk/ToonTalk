@@ -8,7 +8,6 @@
 
 window.TOONTALK.tool = (function (TT) {
     "use strict";
-
     return {
         add_listeners: function (element, tool) {
             var home_position, drag_x_offset, drag_y_offset, tool_height, highlighted_element;
@@ -16,27 +15,35 @@ window.TOONTALK.tool = (function (TT) {
             var mouse_down = function (event) {
                 // should this check which mouse button? (event.button)
                 var bounding_rect = element.getBoundingClientRect();
-                drag_x_offset = event.clientX - bounding_rect.left;
-                drag_y_offset = event.clientY - bounding_rect.top;
+                drag_x_offset = TT.UTILITIES.get_mouse_or_first_touch_event_attribute('clientX', event) - bounding_rect.left;
+                drag_y_offset = TT.UTILITIES.get_mouse_or_first_touch_event_attribute('clientY', event) - bounding_rect.top;
                 tool_height = bounding_rect.height;
                 event.preventDefault();
                 $(element).addClass("toontalk-tool-held");
                 home_position = $(element).offset();
-                document.addEventListener('mousemove', mouse_move);
-                document.addEventListener('mouseup',   mouse_up);
+                document.addEventListener('mousemove',  mouse_move);
+                document.addEventListener('touchmove',  mouse_move);
+                document.addEventListener('mouseup',    mouse_up);
+                document.addEventListener('touchend',   mouse_up);
+                if (TT.debugging && TT.debugging.startsWith('touch')) {
+                    TT.debugging += "\nmouse_down at " + Date.now();
+                }
             };
 
             var mouse_move = function (event) {
-                var widget_under_tool = find_widget_under_tool(event);
+                var widget_under_tool = TT.UTILITIES.find_widget_on_page(event, element, drag_x_offset, drag_y_offset-tool_height/2);
                 var new_highlighted_element, scroll_adjustment;
                 var point = {};
                 event.preventDefault();
                 scroll_adjustment = scroll_if_needed(event);
                 // using clientX and clientY so can pass event as point when appropriate
-                point.clientX = event.pageX-scroll_adjustment.deltaX-drag_x_offset;
-                point.clientY = event.pageY-scroll_adjustment.deltaY-drag_y_offset;
+                point.clientX = TT.UTILITIES.get_mouse_or_first_touch_event_attribute('pageX', event) -scroll_adjustment.deltaX-drag_x_offset;
+                point.clientY = TT.UTILITIES.get_mouse_or_first_touch_event_attribute('pageY', event) -scroll_adjustment.deltaY-drag_y_offset;
                 element.style.left = point.clientX + "px";
                 element.style.top  = point.clientY + "px";
+                if (TT.debugging && TT.debugging.startsWith('touch')) {
+                    TT.debugging += "\nmouse_move at " + Date.now() + " now at " + element.style.left + ", " + element.style.top;
+                }
                 if (widget_under_tool && widget_under_tool.is_of_type('top-level')) {
                     if (highlighted_element) { // remove old highlighting
                         TT.UTILITIES.remove_highlight();
@@ -55,7 +62,7 @@ window.TOONTALK.tool = (function (TT) {
             };
 
             var mouse_up = function (event) {
-                var widget_under_tool = find_widget_under_tool(event);
+                var widget_under_tool = TT.UTILITIES.find_widget_on_page(event, element, drag_x_offset, drag_y_offset);
                 var top_level_widget;
                 event.preventDefault();
                 if (highlighted_element) { // remove old highlighting
@@ -85,7 +92,14 @@ window.TOONTALK.tool = (function (TT) {
                                element.style.top  = home_position.top  + "px";
                     });
                 document.removeEventListener('mousemove',    mouse_move);
+                document.removeEventListener('touchmove',    mouse_move);
                 document.removeEventListener('mouseup',      mouse_up);
+                document.removeEventListener('touchend',     mouse_up);
+                if (TT.debugging && TT.debugging.startsWith('touch')) {
+                    TT.debugging += "\nmouse_up at " + Date.now();
+                    alert(TT.debugging);
+                    TT.debugging = 'touch';
+                }
             };
 
             var scroll_if_needed = function (event) {
@@ -106,33 +120,9 @@ window.TOONTALK.tool = (function (TT) {
                 return {deltaX: deltaX,
                         deltaY: deltaY};
             };
-
-            var find_widget_under_tool = function (event) {
-                // return what is under the tool
-                var element_under_tool, widget_under_tool, widget_type;
-                // hide the tool so it is not under itself
-                $(element).hide();
-                // select using the leftmost part of tool and vertical center
-                element_under_tool = document.elementFromPoint(event.pageX - (window.pageXOffset + drag_x_offset), (event.pageY - (window.pageYOffset + drag_y_offset)) + tool_height/2);
-                $(element).show();
-                while (element_under_tool && !element_under_tool.toontalk_widget && 
-                       (!$(element_under_tool).is(".toontalk-backside") || $(element_under_tool).is(".toontalk-top-level-backside"))) {
-                    // element might be a 'sub-element' so go up parent links to find ToonTalk widget
-                    element_under_tool = element_under_tool.parentNode;
-                }
-                if (element_under_tool) {
-                    widget_under_tool = element_under_tool.toontalk_widget;
-                }
-                if (!widget_under_tool) {
-                    return;
-                }
-                widget_type = widget_under_tool.get_type_name();
-                if (widget_under_tool && widget_type === "empty hole") {
-                    return widget_under_tool.get_parent_of_frontside();
-                }
-                return widget_under_tool;
-            };            
-            element.addEventListener('mousedown', mouse_down);
+            
+            element.addEventListener('mousedown',  mouse_down);
+            element.addEventListener('touchstart', mouse_down);
        }
     };
 

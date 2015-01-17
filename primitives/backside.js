@@ -257,10 +257,13 @@ window.TOONTALK.backside =
                     }
                     if (other.get_body && other.get_body().is_empty() && !other.being_trained) {
                         // automate the start of training
-                        backside_of_other = other.open_backside();
-                        if (backside_of_other) {
-                            $(backside_of_other.get_element()).find(".toontalk-train-backside-button").click();
-                        }
+                        // delayed so position settles down (needed for touch events)
+                        setTimeout(function () {
+                                       backside_of_other = other.open_backside();
+                                       if (backside_of_other) {
+                                           $(backside_of_other.get_element()).find(".toontalk-train-backside-button").click();
+                                       }    
+                                   });           
                     }
                     if (event) {
                         other.get_widget().backup_all();

@@ -15,6 +15,27 @@ window.TOONTALK.frontside =
             var frontside = Object.create(this);
             var frontside_element = document.createElement('div');
             var $frontside_element = $(frontside_element);
+            var click_handler = function (event) {
+                if ($(event.target).is('.ui-resizable-handle')) { 
+                    // don't let resize events cause click response
+                    // see http://stackoverflow.com/questions/5709220/how-to-cancel-click-after-resizable-events
+                    return;
+                }
+                if (event.type === 'click' && event.which !== 1) {
+                    // only left button opens it
+                    return;
+                }
+                if ($frontside_element.is(".toontalk-top-level-resource")) {
+                    widget.set_running(!widget.get_running());
+                } else if (widget.get_running()) {
+                    if (TT.debugging) {
+                        console.log("Ignoring click on running widget.");
+                    }
+                } else {
+                    widget.open_backside();
+                }
+                event.stopPropagation();
+            };
             var visible;
             $(frontside_element).addClass("toontalk-frontside toontalk-side");
             frontside_element.toontalk_widget = widget;
@@ -40,27 +61,8 @@ window.TOONTALK.frontside =
                 }
             };
             // prefer addEventListener over JQuery's equivalent since when I inspect listeners I get a link to this code
-            frontside_element.addEventListener('click', function (event) {
-                if ($(event.target).is('.ui-resizable-handle')) { 
-                    // don't let resize events cause click response
-                    // see http://stackoverflow.com/questions/5709220/how-to-cancel-click-after-resizable-events
-                    return;
-                }
-                if (event.which !== 1) {
-                    // only left button opens it
-                    return;
-                }
-                if ($frontside_element.is(".toontalk-top-level-resource")) {
-                    widget.set_running(!widget.get_running());
-                } else if (widget.get_running()) {
-                    if (TT.debugging) {
-                        console.log("Ignoring click on running widget.");
-                    }
-                } else {
-                    widget.open_backside();
-                }
-                event.stopPropagation();
-            });
+            frontside_element.addEventListener('click',      click_handler);
+            frontside_element.addEventListener('touchstart', click_handler);
             frontside_element.addEventListener("mouseenter", function (event) {
                 var backside = widget.get_backside();
                 if (backside) {
