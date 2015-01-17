@@ -2193,7 +2193,8 @@ window.TOONTALK.UTILITIES =
         enable_touch_events: function (element, maximum_click_duration) {
             var original_element = element;
             var touch_start_handler = function (event) {
-                if (TT.debugging && TT.debugging.startsWith('touch')) {
+                // rewrite using startsWith in ECMAScript version 6
+                if (TT.debugging && TT.debugging.indexof('touch') === 0) {
                     TT.debugging += "\ntouch start";
                 }
                 event.preventDefault();
@@ -2201,7 +2202,8 @@ window.TOONTALK.UTILITIES =
                 if (event.srcElement.tagName === 'TEXTAREA' || 
                     event.srcElement.tagName === 'INPUT' ||
                     $(event.srcElement).is(".ui-resizable-handle")) {
-                    if (TT.debugging && TT.debugging.startsWith('touch')) {
+                    // rewrite using startsWith in ECMAScript version 6
+                    if (TT.debugging && TT.debugging.indexof('touch') === 0) {
                         TT.debugging += "\ntouch start ignored due to tag name or class";
                     }
                    return;
@@ -2219,7 +2221,7 @@ window.TOONTALK.UTILITIES =
                                                           touch.clientX, touch.clientY, false,
                                                           false, false, false, 0, null);
                             touch.target.dispatchEvent(simulatedEvent);
-                            if (TT.debugging && TT.debugging.startsWith('touch')) {
+                            if (TT.debugging && TT.debugging.indexof('touch') === 0) {
                                 TT.debugging += "\ntouch end treated as click";
                                 alert(TT.debugging);
                                 TT.debugging = 'touch';
@@ -2256,7 +2258,7 @@ window.TOONTALK.UTILITIES =
                             drag_start_handler(event, element);
                             drag_x_offset = touch.clientX - element_position.left;
                             drag_y_offset = touch.clientY - element_position.top;
-                            if (TT.debugging && TT.debugging.startsWith('touch')) {
+                            if (TT.debugging && TT.debugging.indexof('touch') === 0) {
                                 TT.debugging += "\ndrag started";
                             }
                         }
@@ -2272,16 +2274,16 @@ window.TOONTALK.UTILITIES =
                     touch = event.changedTouches[0];
                     drag_end_handler(event, element);
                     widget = TT.UTILITIES.widget_of_element(element); //TT.UTILITIES.find_widget_on_page(touch, element, 0, 0);
-                    if (TT.debugging && TT.debugging.startsWith('touch')) {
+                    if (TT.debugging && TT.debugging.indexof('touch') === 0) {
                         TT.debugging += "\ndrag ended";
                     }
                     if (widget) {
                         drop_handler(event, element); // widget.get_frontside_element());
-                        if (TT.debugging && TT.debugging.startsWith('touch')) {
+                        if (TT.debugging && TT.debugging.indexof('touch') === 0) {
                             TT.debugging += "\ndrop happened";
                         }
                     }
-                    if (TT.debugging && TT.debugging.startsWith('touch')) {
+                    if (TT.debugging && TT.debugging.indexof('touch') === 0) {
                         alert(TT.debugging);
                         TT.debugging = 'touch';
                     }
@@ -2308,10 +2310,10 @@ window.TOONTALK.UTILITIES =
                         drag_enter_handler(touch, widget_under_element.get_frontside_element());
                         widget_drag_entered = widget_under_element;
                     }
-                    if (TT.debugging && TT.debugging.startsWith('touch')) {
+                    if (TT.debugging && TT.debugging.indexof('touch') === 0) {
                         TT.debugging += "\ndragged to " + (touch.pageX-drag_x_offset) + ", " + (touch.pageY-drag_y_offset);
                     }
-                } else if (TT.debugging && TT.debugging.startsWith('touch')) {
+                } else if (TT.debugging && TT.debugging.indexof('touch') === 0) {
                     TT.debugging += "\ntouch move ignored since drag_started not yet set. " + Date.now();
                 }
             };
