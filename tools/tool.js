@@ -64,7 +64,7 @@ window.TOONTALK.tool = (function (TT) {
             };
 
             var mouse_up = function (event) {
-                var widget_under_tool = TT.UTILITIES.find_widget_on_page(event, element, drag_x_offset, drag_y_offset);
+                var widget_under_tool = TT.UTILITIES.find_widget_on_page(event, element, drag_x_offset, drag_y_offset, drag_y_offset-tool_height/2);
                 var top_level_widget;
                 event.preventDefault();
                 if (highlighted_element) { // remove old highlighting
