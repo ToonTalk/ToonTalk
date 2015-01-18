@@ -44,7 +44,7 @@ window.TOONTALK.vacuum = (function (TT) {
 
         var update_title = function () {
             if (mode === 'restore' && removed_items.length === 0) {
-                element.title = "The vacuum is empty. Type 'r' to switch to removing. Type 'e' to switch to erasing.";
+                element.title = "The vacuum is empty. Type 's' to switch to sucking. Type 'e' to switch to erasing.";
             } else {
                 element.title = titles[mode];
             }
