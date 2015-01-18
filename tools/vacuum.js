@@ -52,7 +52,7 @@ window.TOONTALK.vacuum = (function (TT) {
 
         return {
             apply_tool: function (widget, event) {
-                var restoring, initial_location, restored_front_side_element;
+                var restoring, initial_location, restored_front_side_element, new_erased;
                 if (mode === 'suck') {
                     if (widget.remove && widget.get_type_name() !== 'top-level') {
                        if (TT.robot.in_training && event) {
@@ -61,13 +61,13 @@ window.TOONTALK.vacuum = (function (TT) {
                         widget.remove(event);
                         removed_items.push(widget);
                      } // else warn??
-                } else if (mode === 'erase') {
+                } else if (mode === 'erase' || (mode === 'restore' && widget.get_erased())) {
+                    // erase mode toggles and restore mode unerases if erased
                     if (widget.get_type_name() !== 'top-level') {
-                        var frontside_element = widget.get_frontside_element();
-                        var erased = !widget.get_erased();
-                        widget.set_erased(erased, true);
+                        new_erased = !widget.get_erased();
+                        widget.set_erased(new_erased, true);
                         if (TT.robot.in_training && event) {
-                            TT.robot.in_training.set_erased(widget, erased);
+                            TT.robot.in_training.set_erased(widget, new_erased);
                         }
                     }
                 } else if (mode === 'restore') {
