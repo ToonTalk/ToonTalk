@@ -750,6 +750,9 @@ window.TOONTALK.box_hole =
                 return "matched";
             };
             hole.get_type_name = function () {
+                if (contents) {
+                    return contents.get_type_name();
+                }
                 return "empty hole";
             };
             hole.is_of_type = function (type_name) {
