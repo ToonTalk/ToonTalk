@@ -127,10 +127,13 @@ window.TOONTALK.robot_action =
             TT.UTILITIES.report_internal_error("Robot trying to pick up an empty hole.");
             return;
         }
-        widget.save_dimensions();
-        $(frontside_element).css({width:  frontside_element.offsetWidth  + "px",
-                                  height: frontside_element.offsetHeight + "px"});
-        move_robot_animation(widget, context, top_level_context, robot, new_continuation);
+        if (widget.save_dimensions()) {
+            $(frontside_element).css({width:  frontside_element.offsetWidth  + "px",
+                                      height: frontside_element.offsetHeight + "px"});
+            move_robot_animation(widget, context, top_level_context, robot, new_continuation);
+        } else {
+            new_continuation();
+        }
     };
     var drop_it_on_animation = function (widget, context, top_level_context, robot, continuation) {
         var thing_in_hand = robot.get_thing_in_hand();
