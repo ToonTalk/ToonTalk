@@ -29,6 +29,10 @@ window.TOONTALK.tool = (function (TT) {
                 if (TT.debugging && TT.debugging.indexOf('touch') === 0) {
                     TT.debugging += "\nmouse_down at " + Date.now();
                 }
+                // not sure why the tool tip doesn't got away but force it here
+                $(".ui-tooltip").each(function () {
+                                          $(this).hide();
+                                      });
             };
 
             var mouse_move = function (event) {
@@ -36,6 +40,10 @@ window.TOONTALK.tool = (function (TT) {
                 var new_highlighted_element, scroll_adjustment;
                 var point = {};
                 event.preventDefault();
+                // not sure why the tool tip doesn't got away but force it here
+                $(".ui-tooltip").each(function () {
+                                          $(this).hide();
+                                      });
                 scroll_adjustment = scroll_if_needed(event);
                 // using clientX and clientY so can pass event as point when appropriate
                 point.clientX = TT.UTILITIES.get_mouse_or_first_touch_event_attribute('pageX', event) -scroll_adjustment.deltaX-drag_x_offset;
