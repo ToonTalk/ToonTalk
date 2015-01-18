@@ -2353,6 +2353,9 @@ window.TOONTALK.UTILITIES =
             if (!widget_on_page) {
                 return;
             }
+            if (widget_on_page && widget_on_page.get_contents && widget_on_page.get_contents()) {
+                widget_on_page = widget_on_page.get_contents();
+            }
             widget_type = widget_on_page.get_type_name();
             if (widget_on_page && widget_type === "empty hole") {
                 return widget_on_page.get_parent_of_frontside();

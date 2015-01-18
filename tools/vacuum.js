@@ -61,7 +61,7 @@ window.TOONTALK.vacuum = (function (TT) {
                         widget.remove(event);
                         removed_items.push(widget);
                      } // else warn??
-                } else if (mode === 'erase' || (mode === 'restore' && widget.get_erased())) {
+                } else if (mode === 'erase' || (mode === 'restore' && widget.get_erased && widget.get_erased())) {
                     // erase mode toggles and restore mode unerases if erased
                     if (widget.get_type_name() !== 'top-level') {
                         new_erased = !widget.get_erased();
