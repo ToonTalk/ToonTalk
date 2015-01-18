@@ -546,17 +546,24 @@ window.TOONTALK.UTILITIES =
         });
         // nicer looking tool tips
         // customization to crude talk balloons thanks to http://jsfiddle.net/pragneshkaria/Qv6L2/49/
-        $(document).tooltip({position: {
-             my: "center bottom-20",
-             at: "center top",
-             using: function (position, feedback) {
-                 $(this).css(position);
-                 $("<div>").addClass("toontalk-arrow")
-                           .addClass(feedback.vertical)
-                           .addClass(feedback.horizontal)
-                           .appendTo(this);
-             }
-         }});
+        $(document).tooltip(
+            {position: {
+                 my: "center bottom-20",
+                 at: "center top",
+                 using: function (position, feedback) {
+                     $(this).css(position);
+                     $("<div>").addClass("toontalk-arrow")
+                               .addClass(feedback.vertical)
+                               .addClass(feedback.horizontal)
+                               .appendTo(this);
+                 }},
+            open: function (event, ui) {
+                      setTimeout(function () {
+                                     $(ui.tooltip).hide();
+                      }, 
+                      ui.tooltip.get(0).innerText.length * (TT.MAXIMUM_TOOLTIP_DURATION_PER_CHARACTER || 100));
+                  }
+           });
         TT.TRANSLATION_ENABLED = TT.UTILITIES.get_current_url_boolean_parameter("translate", false);
         if (TT.TRANSLATION_ENABLED) {
             $("a").each(function (index, element) {
@@ -2239,18 +2246,7 @@ window.TOONTALK.UTILITIES =
                                 widget.add_copy_to_container(widget_copy, 0, 0);
                                 // need to capture the position of the original
                                 element_position = $(element).offset();
-                                element = widget_copy.get_frontside_element(true);
-//                                 closest_top_level_backside = TT.UTILITIES.closest_top_level_backside(touch.pageX, touch.pageY);
-//                                 closest_top_level_backside.add_backside_widget(widget_copy);
-//                                 closest_top_level_backside.get_backside_element().appendChild(element);
-//                                 widget_copy.render();
-//                                 tried to drag the resource and restore here but messed up the layout until drag was over
-//                                 TT.UTILITIES.restore_resource($(element), TT.UTILITIES.widget_of_element(element));
-//                                 $(element).addClass("toontalk-top-level-resource-container toontalk-top-level-resource");
-//                                 element = widget_copy.get_frontside_element();
-//                                 $(element).css({//left: element_position.left,
-//                                                 //top:  element_position.top,
-//                                                 "z-index": TT.UTILITIES.next_z_index()});                               
+                                element = widget_copy.get_frontside_element(true);                              
                             }
                             if (!element_position) {
                                 element_position = $(element).offset();
