@@ -439,7 +439,7 @@ window.TOONTALK.widget = (function (TT) {
                          // !event because if a robot is doing this no warning if already removed
                          parent_of_frontside.remove_backside_widget(this, false, !event);
                      } else if (parent_of_frontside.removed_from_container) {
-                         parent_of_frontside.removed_from_container(this, false, !event);
+                         parent_of_frontside.removed_from_container(this, false, event);
                      }
                  }
             };
