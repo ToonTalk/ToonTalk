@@ -31,7 +31,8 @@ window.TOONTALK.bird = (function (TT) {
                     TT.UTILITIES.display_message("Bird can't take its nest to its nest!");
                     return false;
                 }
-                if (this.visible() || nest.visible() || nest.any_nest_copies_visible()) {
+                if (nest.visible() || nest.any_nest_copies_visible()) {
+                    // used to include this.visible() || but then when nest was on backside flew off to 0,0
                     other.save_dimensions();
                     // doesn't matter if robot is visible or there is a user event -- if either end visible show the delivery
                     frontside_element = this.get_frontside_element();
