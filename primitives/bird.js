@@ -1,6 +1,6 @@
  /**
  * Implements ToonTalk's birds and nests
- * box.Authors = Ken Kahn
+ * Authors = Ken Kahn
  * License: New BSD
  */
  
@@ -19,6 +19,7 @@ window.TOONTALK.bird = (function (TT) {
     
     bird.create = function (nest, description) { // image_url removed
         var new_bird = Object.create(bird);
+        var waiting_robots = [];
         bird_set_nest = function (new_value) {
             nest = new_value;
         };
@@ -65,7 +66,7 @@ window.TOONTALK.bird = (function (TT) {
             var bird_offset = $(visible_ancestor.get_frontside_element()).offset();
             var bird_finished_continuation = function () {
                     var parent_offset = $(parent_element).offset();
-                    var become_static;
+                    var become_static, current_waiting_robots;
                     if (temporary_bird) {
                         this.remove();
                     } else {
@@ -96,6 +97,13 @@ window.TOONTALK.bird = (function (TT) {
                             // if bird was inside something go back where it was
                             top_level_widget.remove_backside_widget(this, false, true);
                             restore_contents();
+                            if (waiting_robots) {
+                                current_waiting_robots = waiting_robots;
+                                waiting_robots = [];
+                                current_waiting_robots.forEach(function (robot_run) {
+                                    robot_run.robot.run(robot_run.context, robot_run.top_level_context, robot_run.queue);
+                                });
+                            }
                         }
                         TT.UTILITIES.add_animation_class(bird_frontside_element, "toontalk-bird-morph-to-static");
                         TT.UTILITIES.add_one_shot_event_handler(bird_frontside_element, "animationend", 1000, become_static); 
@@ -304,6 +312,10 @@ window.TOONTALK.bird = (function (TT) {
             }
             return this.add_to_copy(copy, parameters);
         };
+        new_bird.run_when_non_empty = function (robot_run) {
+            // typically is a robot waiting for this bird to return to a box hole
+            waiting_robots.push(robot_run);
+        };
         new_bird = new_bird.add_standard_widget_functionality(new_bird);
         new_bird.set_description(description);
         if (TT.debugging) {
@@ -376,8 +388,8 @@ window.TOONTALK.bird = (function (TT) {
         var delta_y = target_offset.top-bird_offset.top;
         var angle = Math.atan2(delta_y, delta_x); // in radians
         var region = Math.round((angle/Math.PI+1)*4) % 8;
-        var direction = ["toontalk-fly-west","toontalk-fly-northwest","toontalk-fly-north", "toontalk-fly-northeast", 
-                         "toontalk-fly-east","toontalk-fly-southeast","toontalk-fly-south","toontalk-fly-southwest"][region];
+        var direction = ["toontalk-fly-west", "toontalk-fly-northwest", "toontalk-fly-north", "toontalk-fly-northeast", 
+                         "toontalk-fly-east", "toontalk-fly-southeast", "toontalk-fly-south", "toontalk-fly-southwest"][region];
         var bird_position = $(frontside_element).position();
         TT.UTILITIES.add_animation_class(frontside_element, direction);
         var full_continuation = function () {

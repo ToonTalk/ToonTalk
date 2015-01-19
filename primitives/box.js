@@ -211,8 +211,9 @@ window.TOONTALK.box = (function (TT) {
 
     box.match_with_this_box = function (pattern_box) {
         var size = this.get_size();
-        var waiting_nests = [];
-        var i, my_hole, pattern_hole, hole_match;
+        // typically only nests are waiting but a bird busy delivering before returning to a hole also waits
+        var waiting_widgets = [];
+        var i, my_hole, pattern_hole, hole_match, contents_temporarily_removed;
         if (size !== pattern_box.get_size()) {
             return pattern_box;
         }
@@ -220,27 +221,34 @@ window.TOONTALK.box = (function (TT) {
             pattern_hole = pattern_box.get_hole_contents(i);
             if (pattern_hole) {
                 my_hole = this.get_hole_contents(i);
-                if (!my_hole) {
-                    // expected something -- not an empty hole
-                    return pattern_box;
-                }
-                hole_match = TT.UTILITIES.match(pattern_hole, my_hole);
-                if (hole_match.is_widget) {
-                    // sub-match failed
-                    return hole_match;
-                }
-                if (hole_match !== 'matched') {
-                    // suspended on a nest so combine the suspended nests
-                    if (waiting_nests.length === 0) {
-                        waiting_nests = hole_match;
+                if (my_hole) {
+                    hole_match = TT.UTILITIES.match(pattern_hole, my_hole);
+                    if (hole_match.is_widget) {
+                        // sub-match failed
+                        return hole_match;
+                    }
+                    if (hole_match !== 'matched') {
+                        // suspended on a nest so combine the suspended nests
+                        if (waiting_widgets.length === 0) {
+                            waiting_widgets = hole_match;
+                        } else {
+                            waiting_widgets = waiting_widgets.concat(hole_match);
+                        }
+                    }
+                } else {
+                    // first check if contents temporarily missing (e.g. a bird busy delivering)
+                    contents_temporarily_removed = this.get_contents_temporarily_removed(i);
+                    if (contents_temporarily_removed) {
+                        waiting_widgets.push(contents_temporarily_removed);
                     } else {
-                        waiting_nests = waiting_nests.concat(hole_match);
+                        // expected something -- not an empty hole
+                        return pattern_box; // or should this be pattern_hole to provide more tragetted feedback?
                     }
                 }
             }
         }
-        if (waiting_nests.length > 0) {
-            return waiting_nests;
+        if (waiting_widgets.length > 0) {
+            return waiting_widgets;
         }
         return 'matched';
     };
