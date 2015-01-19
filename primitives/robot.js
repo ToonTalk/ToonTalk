@@ -1,6 +1,6 @@
  /**
  * Implements ToonTalk's robots
- * box.Authors = Ken Kahn
+ * Authors = Ken Kahn
  * License: New BSD
  */
  
@@ -259,7 +259,10 @@ window.TOONTALK.robot = (function (TT) {
         }
         // suspended waiting on a nest
         this.match_status.forEach(function (waiting_widget) {
-            $(waiting_widget[1].get_frontside_element()).addClass("toontalk-conditions-waiting");
+            if (waiting_widget[1]) {
+                // true for nests but not birds busy delivering
+                $(waiting_widget[1].get_frontside_element()).addClass("toontalk-conditions-waiting");
+            }
         });
         if (this.get_next_robot()) {
             next_robot_match_status = this.get_next_robot().run(context, top_level_context, queue);
@@ -280,7 +283,13 @@ window.TOONTALK.robot = (function (TT) {
                                      top_level_context: top_level_context,
                                      queue: queue};
             this.match_status.forEach(function (sub_match_status) {
-                sub_match_status[0].run_when_non_empty(to_run_when_non_empty);
+                if (sub_match_status[0]) {
+                    // e.g. a nest
+                    sub_match_status[0].run_when_non_empty(to_run_when_non_empty);
+                } else {
+                    // e.g. a bird busy delivering
+                    sub_match_status.run_when_non_empty(to_run_when_non_empty);
+                }
             });
                 TT.UTILITIES.add_animation_class(this.get_frontside_element(), "toontalk-robot-waiting");
         }
@@ -408,9 +417,9 @@ window.TOONTALK.robot = (function (TT) {
         // this is used when running a robot -- not training
         // need to compute index now since parent may have changed by the time this runs
         // or perhaps not and a different bug was making it appear to be so
-        var index = container.get_index_of && container.get_index_of(part);
+        var index = container.get_index_of && part.get_parent_of_frontside() && container.get_index_of(part);
         var do_removal = function () { 
-                if (part.get_parent_of_frontside()) {
+                if (index >= 0) {
                     container.removed_from_container(part, false, true, index);
                 }
                 // otherwise do nothing since part may have already been removed from a nest in another container

@@ -11,9 +11,9 @@ window.TOONTALK.vacuum = (function (TT) {
 
     var vacuum = Object.create(null);
   
-    var titles = {suck:    "Drag this vacuum over the thing you want to remove. Click or type 'e' to switch to erasing. Type 'r' to restore previously removed or erased things.",
-                  erase:   "Drag this vacuum over the thing you want to erase (or un-erase). Type 's' to switch to sucking. Click or type 'r' to restore contents.",
-                  restore: "Drag this over the work area. Each time you release it a widget is restored. Click or type 's' to switch to sucking. Type 'e' to switch to erasing."};
+    var titles = {suck:    "Drag this vacuum over the thing you want to remove. Click or type 'e' to switch to erasing. Click twice or type 'r' to restore previously removed or erased things.",
+                  erase:   "Drag this vacuum over the thing you want to erase (or un-erase). Click twice or type 's' to switch to sucking. Click or type 'r' to restore contents.",
+                  restore: "Drag this over the work area. Each time you release it a widget is restored. Click or type 's' to switch to sucking. Click twice or type 'e' to switch to erasing."};
 
     var mode_classes = {suck:    "toontalk-vacuum-s",
                         erase:   "toontalk-vacuum-e",
@@ -44,7 +44,7 @@ window.TOONTALK.vacuum = (function (TT) {
 
         var update_title = function () {
             if (mode === 'restore' && removed_items.length === 0) {
-                element.title = "The vacuum is empty. Type 'r' to switch to removing. Type 'e' to switch to erasing.";
+                element.title = "The vacuum is empty. Type 's' to switch to sucking. Type 'e' to switch to erasing.";
             } else {
                 element.title = titles[mode];
             }
@@ -52,7 +52,7 @@ window.TOONTALK.vacuum = (function (TT) {
 
         return {
             apply_tool: function (widget, event) {
-                var restoring, initial_location, restored_front_side_element;
+                var restoring, initial_location, restored_front_side_element, new_erased;
                 if (mode === 'suck') {
                     if (widget.remove && widget.get_type_name() !== 'top-level') {
                        if (TT.robot.in_training && event) {
@@ -61,13 +61,13 @@ window.TOONTALK.vacuum = (function (TT) {
                         widget.remove(event);
                         removed_items.push(widget);
                      } // else warn??
-                } else if (mode === 'erase') {
+                } else if (mode === 'erase' || (mode === 'restore' && widget.get_erased && widget.get_erased())) {
+                    // erase mode toggles and restore mode unerases if erased
                     if (widget.get_type_name() !== 'top-level') {
-                        var frontside_element = widget.get_frontside_element();
-                        var erased = !widget.get_erased();
-                        widget.set_erased(erased, true);
+                        new_erased = !widget.get_erased();
+                        widget.set_erased(new_erased, true);
                         if (TT.robot.in_training && event) {
-                            TT.robot.in_training.set_erased(widget, erased);
+                            TT.robot.in_training.set_erased(widget, new_erased);
                         }
                     }
                 } else if (mode === 'restore') {

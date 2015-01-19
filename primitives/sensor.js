@@ -1,6 +1,6 @@
  /**
  * Implements ToonTalk's sensors (primitive sensors represented by nests)
- * box.Authors = Ken Kahn
+ * Authors = Ken Kahn
  * License: New BSD
  */
  

@@ -436,7 +436,8 @@ window.TOONTALK.widget = (function (TT) {
             widget.remove_from_parent_of_frontside = function (event) {
                  if (parent_of_frontside) {
                      if (parent_of_frontside.is_backside()) {
-                         parent_of_frontside.remove_backside_widget(this, false);
+                         // !event because if a robot is doing this no warning if already removed
+                         parent_of_frontside.remove_backside_widget(this, false, !event);
                      } else if (parent_of_frontside.removed_from_container) {
                          parent_of_frontside.removed_from_container(this, false, event);
                      }
