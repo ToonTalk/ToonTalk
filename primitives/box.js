@@ -509,6 +509,9 @@ window.TOONTALK.box = (function (TT) {
                 return sub_path;
             }
             path = this.get_path_to(parent_box);
+            if (!path) {
+                return;
+            }
             path.next = sub_path;
             return path;
         }
