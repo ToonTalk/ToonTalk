@@ -300,7 +300,7 @@ window.TOONTALK.UTILITIES =
         var dragee = TT.UTILITIES.get_dragee();
         if (!$target.is(".toontalk-top-level-backside") && 
             !$target.closest(".toontalk-top-level-resource").is("*") &&
-            !$target.is(".toontalk-being-dragged") &&
+            !$target.is(".toontalk-being-dragged") && // is dragee.get(0) === $target.get(0) a better way to express this?
             !(dragee && has_ancestor_element($target.get(0), dragee.get(0)))) {
             return $target;
         }
@@ -1117,10 +1117,19 @@ window.TOONTALK.UTILITIES =
         
         can_receive_drops: function (element) {
             // was using JQuery's 'on' but that didn't support additional listeners
+            var highlight_element = 
+                function (event) {
+                    var highlighted_element = drag_enter_handler(event, element);
+                    if (highlighted_element && current_highlighted_element !== highlighted_element) {
+                        TT.UTILITIES.remove_highlight(current_highlighted_element);
+                    }
+                    current_highlighted_element = highlighted_element;
+                    event.stopPropagation();
+            };
             var current_highlighted_element;
             element.addEventListener('dragover',
                                      function (event) {
-                                         // think about drop feedback
+                                         highlight_element(event); // for drop feedback
                                          event.preventDefault();
                                          return false;
                                      });
@@ -1131,15 +1140,7 @@ window.TOONTALK.UTILITIES =
                                          drop_handler(event, element);
                                          event.stopPropagation();
                                      });
-            element.addEventListener('dragenter', 
-                                     function (event) {
-                                         var highlighted_element = drag_enter_handler(event, element);
-                                         if (highlighted_element && current_highlighted_element !== highlighted_element) {
-                                             TT.UTILITIES.remove_highlight(current_highlighted_element);
-                                         }
-                                         current_highlighted_element = highlighted_element;
-                                         event.stopPropagation();
-                                     });
+            element.addEventListener('dragenter', highlight_element);
             element.addEventListener('dragleave', 
                                      function (event) {
                                          if (current_highlighted_element) {
@@ -1433,9 +1434,6 @@ window.TOONTALK.UTILITIES =
             if (!element) {
                 return;
             }
-            if ($(element).is(".toontalk-highlight")) {
-                return; // already highlighted
-            }
             // only one element can be highlighted
             // first remove old highlighting (if any)
             TT.UTILITIES.remove_highlight(); 
@@ -1448,7 +1446,10 @@ window.TOONTALK.UTILITIES =
                 if (!element) {
                     return;
                 }      
-            }    
+            }
+            if ($(element).is(".toontalk-highlight")) {
+                return; // already highlighted
+            }
             $(element).addClass("toontalk-highlight")
                       .css({"z-index": TT.UTILITIES.next_z_index()});
             if (duration) {

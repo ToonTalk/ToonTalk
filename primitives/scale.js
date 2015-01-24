@@ -22,23 +22,6 @@ window.TOONTALK.scale = (function (TT) {
         var contents_listener = function () {
                                     new_scale.rerender();
         };
-        var which_hole = function (point, or_entire_scale) {
-            // if or_entire_scale is true can return -1 meaning the whole scale
-            var $frontside_element = $(new_scale.get_frontside_element());
-            var position = $frontside_element.offset();
-            var width = $frontside_element.width();
-            var center = position.left+width/2;
-            var distance_to_center = point.clientX-center;
-            var error = or_entire_scale ? width/10 : 0; // within 1/10 of the width to center
-            if (-distance_to_center > error) {
-                return 0;
-            } else if (distance_to_center > error) {
-                return 1;
-            } else {
-                // at center
-                return -1;
-            }
-        };
         var box_get_json, box_copy, box_get_path_to, previous_state;
         // new_scale is bound when copying a scale
         if (!new_scale) {
@@ -65,20 +48,6 @@ window.TOONTALK.scale = (function (TT) {
             }
             return path;
         };
-        new_scale.element_to_highlight = function (point) {
-            var hole_index = which_hole(point, true);
-            var hole, hole_contents;
-            if (hole_index < 0) {
-                // highlight the whole scale
-                return this.get_frontside_element();
-            }
-            hole = this.get_hole(hole_index);
-            hole_contents = hole.get_contents();
-            if (hole_contents) {
-                return hole_contents.get_frontside_element();
-            }
-            return hole.get_frontside_element();
-        };
         new_scale.drop_on = function (other, is_backside, event, robot) {
             if (other.widget_dropped_on_me) {
                 return other.widget_dropped_on_me(this, is_backside, event, robot);
@@ -96,7 +65,7 @@ window.TOONTALK.scale = (function (TT) {
                 this.set_hole(0, dropped);
                 return true;
             }
-            hole_index = which_hole(event, false);
+            hole_index = this.which_hole(event, false);
             if (hole_index === 0) {
                 if (left_contents) {
                     if (left_contents.drop_on) {
@@ -115,6 +84,24 @@ window.TOONTALK.scale = (function (TT) {
             // hole was empty so fill it
             this.set_hole(hole_index, dropped, event); 
             return true;
+        };
+        new_scale.which_hole = function (point, or_entire_thing) {
+            // if or_entire_thing is true can return -1 meaning the whole scale
+            // otherwise returns closest pan
+            var $frontside_element = $(new_scale.get_frontside_element());
+            var position = $frontside_element.offset();
+            var width = $frontside_element.width();
+            var center = position.left+width/2;
+            var distance_to_center = point.clientX-center;
+            var error = or_entire_thing ? width/10 : 0; // within 1/10 of the width to center
+            if (-distance_to_center > error) {
+                return 0;
+            } else if (distance_to_center > error) {
+                return 1;
+            } else {
+                // at center
+                return -1;
+            }
         };
         new_scale.get_inactive_state = function () {
             return inactive_state;

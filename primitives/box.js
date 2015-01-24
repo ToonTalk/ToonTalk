@@ -464,33 +464,15 @@ window.TOONTALK.box = (function (TT) {
     };
 
     box.widget_dropped_on_me = function (other, other_is_backside, event, robot) {
-        // if horizontal computes boundary seeing if event is left of the boundary
-        // otherwise sees if event is below boundary
-        var horizontal = this.get_horizontal();
-        var frontside_element = this.get_frontside_element();
-        var size = this.get_size();
-        var i, hole, hole_contents, position, increment, boundary;
-        if (size === 0) {
-            return;
-        }
-        position = $(frontside_element).offset();
-        increment = horizontal ? $(frontside_element).width()/size : $(frontside_element).height()/size;
-        boundary = horizontal ? position.left : position.top;
-        if (event) { // not clear how this could be called without an event
-            for (i = 0; i < size; i++) {
-                hole = this.get_hole(i);
-                boundary += increment;
-                if ((horizontal ? (event.pageX <= boundary) :
-                                  (event.pageY <= boundary)) ||
-                    // or is last one
-                    i+1 === size) {
-                    hole_contents = hole.get_contents();
-                    if (hole_contents) {
-                        return other.drop_on(hole_contents, other_is_backside, event, robot);
-                    }
-                    return hole.widget_dropped_on_me(other, other_is_backside, event, robot);  
-                }
-            }
+        var hole_index = this.which_hole(event);
+        var hole_contents, hole;
+        if (hole_index >= 0) {
+            hole = this.get_hole(hole_index);
+            hole_contents = hole.get_contents();
+            if (hole_contents) {
+                return other.drop_on(hole_contents, other_is_backside, event, robot);
+            } 
+            return hole.widget_dropped_on_me(other, other_is_backside, event, robot);  
         }
         TT.UTILITIES.report_internal_error(other + " dropped on " + this + " but no event was provided.");
     };
@@ -542,6 +524,47 @@ window.TOONTALK.box = (function (TT) {
                         path.next = sub_path;
                         return path;
                     }
+                }
+            }
+        }
+    };
+
+    box.element_to_highlight = function (point) {
+        var hole_index = this.which_hole(point, true);
+        var hole, hole_contents;
+        if (hole_index < 0) {
+            // highlight the whole thing
+            return this.get_frontside_element();
+        }
+        hole = this.get_hole(hole_index);
+        hole_contents = hole.get_contents();
+        if (hole_contents) {
+            return hole_contents.get_frontside_element();
+        }
+        return hole.get_frontside_element();
+    };
+
+    box.which_hole = function (point) {
+        // if horizontal computes boundary seeing if event is left of the boundary
+        // otherwise sees if point is below boundary
+        var horizontal = this.get_horizontal();
+        var frontside_element = this.get_frontside_element();
+        var size = this.get_size();
+        var i, position, increment, boundary;
+        if (size === 0) {
+            return;
+        }
+        position = $(frontside_element).offset();
+        increment = horizontal ? $(frontside_element).width()/size : $(frontside_element).height()/size;
+        boundary = horizontal ? position.left : position.top;
+        if (point) { // not clear how this could be called without a point
+            for (i = 0; i < size; i++) {
+                boundary += increment;
+                if ((horizontal ? (event.pageX <= boundary) :
+                                  (event.pageY <= boundary)) ||
+                    // or is last one
+                    i+1 === size) {
+                    return i;
                 }
             }
         }
@@ -700,6 +723,8 @@ window.TOONTALK.box_hole =
                     hole_element.className = "toontalk-box-hole toontalk-frontside toontalk-side";
                     hole_element.toontalk_widget = hole;
                 }
+                // can only receive drops if empty -- rather than add and remove these listeners use box.element_to_highlight
+//              TT.UTILITIES.can_receive_drops(hole_element);
                 return hole_element;
             };
             hole.get_frontside = function (create) {
