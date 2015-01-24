@@ -210,6 +210,10 @@ window.TOONTALK.scale = (function (TT) {
                 this.debug_string = this.toString();
             } 
         };
+        new_scale.render = function () {
+            // do standard behaviour -- not what boxes do
+            TT.DISPLAY_UPDATES.pending_update(this);
+        };
         new_scale.get_type_name = function () {
             return 'scale';
         };
