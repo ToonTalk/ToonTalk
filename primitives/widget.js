@@ -1060,7 +1060,7 @@ window.TOONTALK.widget = (function (TT) {
         rerender: function () {
             // state has changed so needs to be rendered again (if visible)
             if (this.visible()) {
-                TT.DISPLAY_UPDATES.pending_update(this);
+                this.render();
             }
         },
         

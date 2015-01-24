@@ -309,6 +309,15 @@ window.TOONTALK.box = (function (TT) {
     TT.creators_from_json['box'] = function (json, additional_info) {
         return box.create(json.size, json.horizontal, TT.UTILITIES.create_array_from_json(json.contents, additional_info), json.description);
     };
+
+    box.render = function () {
+        // boxes inside boxes display a bit different so re-render the containing box
+        var frontside_parent = this.get_parent_of_frontside();
+        if (frontside_parent && frontside_parent.is_of_type('empty hole')) {
+            frontside_parent.get_parent_of_frontside().render();
+        }
+        TT.DISPLAY_UPDATES.pending_update(this);
+    };
     
     box.update_display = function () {
         var frontside = this.get_frontside(true);
@@ -383,7 +392,11 @@ window.TOONTALK.box = (function (TT) {
                 var $box_hole_elements = $(frontside_element).children(".toontalk-box-hole");
                 if ($box_hole_elements.length === size) {
                     $box_hole_elements.each(function (index, hole_element) {
-                        update_hole(hole_element, this.get_hole(index), index);
+                        var hole = this.get_hole(index);
+                        if (hole) {
+                            // might be undefined if the box's size has been decreased while rendering
+                            update_hole(hole_element, hole, index);
+                        }
                     }.bind(this));
                 } else {
                     // has wrong number of holes so rebuild it
@@ -392,7 +405,7 @@ window.TOONTALK.box = (function (TT) {
                         hole_element = hole.get_element();
                         $(hole_element).addClass("toontalk-hole-number-" + index);
                         update_hole(hole_element, hole, index);
-                        frontside_element.appendChild(hole_element);                       
+                        frontside_element.appendChild(hole_element);
                     });
                 };
             }.bind(this);
