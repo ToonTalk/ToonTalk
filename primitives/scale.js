@@ -61,7 +61,8 @@ window.TOONTALK.scale = (function (TT) {
                 this.set_hole(1, dropped);
                 return true;
             }
-            if (!left_contents && right_contents) {
+            if (!left_contents && (right_contents || !event)) {
+                // if a robot drops a scale on a scale with empty pans it goes in left pan
                 this.set_hole(0, dropped);
                 return true;
             }
