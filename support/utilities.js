@@ -1436,16 +1436,18 @@ window.TOONTALK.UTILITIES =
             }
             // only one element can be highlighted
             // first remove old highlighting (if any)
-            TT.UTILITIES.remove_highlight(); 
-            widget = TT.UTILITIES.widget_of_element(element);
-            if (!widget) {
-                return;
-            }
-            if (widget.element_to_highlight && point) {
-                element = widget.element_to_highlight(point);
-                if (!element) {
+            TT.UTILITIES.remove_highlight();
+            if (!($(element).is(".toontalk-backside"))) {
+                widget = TT.UTILITIES.widget_of_element(element);
+                if (!widget) {
                     return;
-                }      
+                }
+                if (widget.element_to_highlight && point) {
+                    element = widget.element_to_highlight(point);
+                    if (!element) {
+                        return;
+                    }      
+                }
             }
             if ($(element).is(".toontalk-highlight")) {
                 return; // already highlighted
