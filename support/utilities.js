@@ -22,7 +22,6 @@ window.TOONTALK.UTILITIES =
     var div_json   = "<div class='toontalk-json'>";
     var div_hidden = "<div style='display:none;'>"; // don't use a class since CSS might not be loaded
     var div_close  = "</div>";
-    var backside_widgets_left;
     var extract_json_from_div_string = function (div_string) {
         // expecting div_string to begin with div_open and end with div_close
         // but users may be dragging something different
@@ -544,26 +543,7 @@ window.TOONTALK.UTILITIES =
                 console.log(error);
             }
         });
-        // nicer looking tool tips
-        // customization to crude talk balloons thanks to http://jsfiddle.net/pragneshkaria/Qv6L2/49/
-        $(document).tooltip(
-            {position: {
-                 my: "center bottom-20",
-                 at: "center top",
-                 using: function (position, feedback) {
-                     $(this).css(position);
-                     $("<div>").addClass("toontalk-arrow")
-                               .addClass(feedback.vertical)
-                               .addClass(feedback.horizontal)
-                               .appendTo(this);
-                 }},
-            open: function (event, ui) {
-                      setTimeout(function () {
-                                     $(ui.tooltip).hide();
-                      }, 
-                      ui.tooltip.get(0).innerText.length * (TT.MAXIMUM_TOOLTIP_DURATION_PER_CHARACTER || 100));
-                  }
-           });
+        use_custom_tooltip($(document));
         TT.TRANSLATION_ENABLED = TT.UTILITIES.get_current_url_boolean_parameter("translate", false);
         if (TT.TRANSLATION_ENABLED) {
             $("a").each(function (index, element) {
@@ -581,6 +561,28 @@ window.TOONTALK.UTILITIES =
             $("#google_translate_element").remove();
         }
         TT.UTILITIES.add_test_all_button();
+    };
+    var use_custom_tooltip = function ($element) {
+        // nicer looking tool tips
+        // customization to crude talk balloons thanks to http://jsfiddle.net/pragneshkaria/Qv6L2/49/
+        $element.tooltip(
+            {position: {
+                 my: "center bottom-20",
+                 at: "center top",
+                 using: function (position, feedback) {
+                     $(this).css(position);
+                     $("<div>").addClass("toontalk-arrow")
+                               .addClass(feedback.vertical)
+                               .addClass(feedback.horizontal)
+                               .appendTo(this);
+                 }},
+            open: function (event, ui) {
+                      setTimeout(function () {
+                                     $(ui.tooltip).hide();
+                      }, 
+                      ui.tooltip.get(0).innerText.length * (TT.MAXIMUM_TOOLTIP_DURATION_PER_CHARACTER || 100));
+                  }
+           });
     };
     var load_script = function (url) {
         var script = document.createElement('script');
@@ -611,6 +613,8 @@ window.TOONTALK.UTILITIES =
     // for implementing zero_timeout
     var timeouts = [];
     var timeout_message_name = "zero-timeout-message";
+    var messages_displayed = [];
+    var backside_widgets_left;
     window.addEventListener("message", 
                             function (event) {
                                 if (event.source === window && event.data === timeout_message_name) {
@@ -1529,6 +1533,12 @@ window.TOONTALK.UTILITIES =
             $(container).buttonset();
             return container;
         },
+
+        create_alert_element: function (text) {
+            var alert_element = TT.UTILITIES.create_text_element(text);
+            $(alert_element).addClass("toontalk-alert-element");
+            return alert_element;
+        },
         
         create_text_element: function (text) {
             var div = document.createElement("div");
@@ -2027,9 +2037,26 @@ window.TOONTALK.UTILITIES =
             return animation && animation.indexOf("none") !== 0;
         },
 
+        display_message_if_new: function (message) {
+            if (messages_displayed.indexOf(message) < 0) {
+                TT.UTILITIES.display_message(message);
+                messages_displayed.push(message);
+            }
+        },
+
         display_message: function (message) {
-            console.error(message);
-            alert(message); // for now
+            var alert_element = TT.UTILITIES.create_alert_element(message);
+            console.log(message);
+            document.body.insertBefore(alert_element, document.body.firstChild);
+            setTimeout(function () {
+                           $(alert_element).remove();
+                       },
+                       Math.max(2000, message.length * (TT.MAXIMUM_TOOLTIP_DURATION_PER_CHARACTER || 100)));
+        },
+
+        display_tooltip: function ($element) {
+            use_custom_tooltip($element);
+            $element.tooltip('open');
         },
 
         report_internal_error: function (message) {

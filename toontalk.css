@@ -940,6 +940,10 @@ body {
 .toontalk-hidden {
 	display: none;
 }
+.toontalk-alert-element {
+	background-color: yellow;
+	font-size: 16px;
+}
 .toontalk-frontside {
     position: absolute;
 }
