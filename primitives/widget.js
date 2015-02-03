@@ -333,6 +333,9 @@ window.TOONTALK.widget = (function (TT) {
                             title = description;   
                         }
                     }
+                    if (this.get_erased()) {
+                        return this.get_title_of_erased_widget();
+                    }
                     if (this.get_custom_title_prefix) {
                         title = this.get_custom_title_prefix() + " " + title;
                     }
@@ -345,6 +348,15 @@ window.TOONTALK.widget = (function (TT) {
                 };
             }
             return widget;
+        },
+
+        get_title_of_erased_widget: function () {
+            var frontside_element = this.get_frontside_element();
+            var type_name = this.get_type_name();
+            if (frontside_element && $(frontside_element).closest(".toontalk-conditions-contents-container").is("*")) {
+                return "This " + type_name + " has been erased so that it matches with any " + type_name + ".";
+            }
+            return "This " + type_name + " has been erased. Dusty the Vacuum can restore the " + type_name + " to normal.";
         },
         
         has_parent: function (widget) {

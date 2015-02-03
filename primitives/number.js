@@ -791,14 +791,6 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     };
 
     number.get_custom_title_prefix = function () {
-        var frontside_element;
-        if (this.get_erased()) {
-            frontside_element = this.get_frontside_element();
-            if (frontside_element && $(frontside_element).closest(".toontalk-conditions-contents-container").is("*")) {
-                return "This number has been erased so that it matches with any number.";
-            }
-            return "This number has been erased. Dusty the Vacuum can restore the number to normal.";
-        }
         return "Drop another number on me and I'll add it to my value (unless it has been changed so that I'll subtract, multiply, or divide instead).";
     };
     
