@@ -118,16 +118,16 @@ window.TOONTALK.UTILITIES =
         var insert_widget_in_editable_text = function (json_object, event) {
             var widget = TT.UTILITIES.create_from_json(json_object);
             var top_level_element = document.createElement('div');
-            var json_object_frontside_element = widget.get_frontside_element(true);
+            var json_object_element = json_object.view.backside ? widget.get_backside_element(true) : widget.get_frontside_element(true);
             var $current_editable_text = $(element).closest(".toontalk-edit");
             var editable_text = TT.published_support.create_editable_text();
             var child_target = event.target;
             $(top_level_element).addClass("toontalk-json toontalk-top-level-resource toontalk-top-level-resource-container");
-            $(json_object_frontside_element).addClass("toontalk-top-level-resource")
+            $(json_object_element).addClass("toontalk-top-level-resource")
                                             .css({position: 'relative'});
-            json_object_frontside_element.toontalk_widget = widget;
+            json_object_element.toontalk_widget = widget;
             top_level_element.toontalk_widget             = widget;
-            top_level_element.appendChild(json_object_frontside_element);
+            top_level_element.appendChild(json_object_element);
             $(top_level_element).insertAfter($current_editable_text);
             while (child_target.nextSibling) {
                 $(editable_text).children(".froala-element").get(0).appendChild(child_target.nextSibling);
