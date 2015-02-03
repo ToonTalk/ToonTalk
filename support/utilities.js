@@ -2253,6 +2253,11 @@ window.TOONTALK.UTILITIES =
                                                 file_id);
         },
 
+        touch_available: function () {
+            // see for example http://stackoverflow.com/questions/3974827/detecting-touch-screen-devices-with-javascript
+            return "ontouchstart" in window || navigator.msMaxTouchPoints;
+        },
+
         enable_touch_events: function (element, maximum_click_duration) {
             var original_element = element;
             var touch_start_handler = function (event) {

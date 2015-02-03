@@ -12,6 +12,7 @@ window.TOONTALK.published_support = (function (TT) {
 var editable_contents = [];
 var widgets_json = [];
 var editor_enabled = false;
+var inline_mode = !TT.UTILITIES.get_current_url_boolean_parameter('edit', false);
 
 var message_handler =
     function (event) {
@@ -78,7 +79,7 @@ return {
             return;
         }
         editor_enabled = true;
-        $(".toontalk-edit").editable({inlineMode: true,
+        $(".toontalk-edit").editable({inlineMode: inline_mode,
                                       imageUpload: false, 
                                       crossDomain: true});
         $elements = $(".toontalk-backside-of-top-level, .toontalk-top-level-resource-container");
@@ -114,7 +115,7 @@ return {
         TT.published_support.send_edit_updates(saving_window, saving_window_URL, file_id);
     },
     create_editable_text: function () {
-        var editable_text = $("<div class='toontalk-edit'>Edit this</div>").editable({inlineMode: true, imageUpload: false}).get(0);
+        var editable_text = $("<div class='toontalk-edit'>Edit this</div>").editable({inlineMode: inline_mode, imageUpload: false}).get(0);
          TT.UTILITIES.can_receive_drops($(editable_text).children(".froala-element").get(0));
          return editable_text;
     },
