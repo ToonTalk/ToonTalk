@@ -132,6 +132,7 @@ window.TOONTALK.SETTINGS =
                                                           "toontalk-publish-button", 
                                                           "Click to publish your program by generating a Google Drive URL.", 
                                                           function () {
+                                                              TT.UTILITIES.display_message("Creating your web page...");
                                                               widget.publish(display_published,false); // as_workspace.button.checked);
                                                           });
 //           var as_workspace   = TT.UTILITIES.create_check_box(widget.get_setting('publish_as_workspace'), 
@@ -141,6 +142,7 @@ window.TOONTALK.SETTINGS =
           var display_published = function (google_file, extra_info) {
               // currently extra_info is the JSON of the current widgets if previously published
               var link_to_publication = create_connection_to_google_file(google_file, "Published: ", extra_info);
+              TT.UTILITIES.display_message("Your web page is ready for you to edit. Just click on the link.");
               $(program_name.container).children("tr").append(TT.UTILITIES.create_table_entry(link_to_publication));
           };
           var create_connection_to_google_file = function (google_file, prefix, extra_info) {
