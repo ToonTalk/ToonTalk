@@ -885,7 +885,7 @@ window.TOONTALK.UTILITIES =
         },
         
         get_json: function (widget, json_history) {
-            var index, widget_json;
+            var index, widget_json, is_backside;
             if (TT.debugging && !json_history) {
                 TT.UTILITIES.report_internal_error("no json_history");
             }
@@ -901,8 +901,11 @@ window.TOONTALK.UTILITIES =
             }
             // need to keep track of the index rather than push json_of_widgets_encountered to keep them aligned properly
             index = json_history.widgets_encountered.push(widget)-1;
+            is_backside = widget.is_backside();
+            widget = widget.get_widget(); // ignore which side it was
             widget_json = widget.get_json(json_history);
             widget_json = widget.add_to_json(widget_json, json_history);
+            widget_json.view.backside = is_backside;
             // need to push the widget on the list before computing the backside widget's jSON in case there is a cycle
             json_history.json_of_widgets_encountered[index] = widget_json;
             if (widget.add_backside_widgets_to_json) {
