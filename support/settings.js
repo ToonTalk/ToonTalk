@@ -132,12 +132,12 @@ window.TOONTALK.SETTINGS =
                                                           "toontalk-publish-button", 
                                                           "Click to publish your program by generating a Google Drive URL.", 
                                                           function () {
-                                                              widget.publish(display_published, as_workspace.button.checked);
+                                                              widget.publish(display_published,false); // as_workspace.button.checked);
                                                           });
-          var as_workspace   = TT.UTILITIES.create_check_box(widget.get_setting('publish_as_workspace'), 
-                                                             "toontalk-publish-setting",
-                                                             "As a workspace",
-                                                             "Check this if you want to publish the workspace and its widgets. Uncheck it you wish to publish just the widgets.");
+//           var as_workspace   = TT.UTILITIES.create_check_box(widget.get_setting('publish_as_workspace'), 
+//                                                              "toontalk-publish-setting",
+//                                                              "As a workspace",
+//                                                              "Check this if you want to publish the workspace and its widgets. Uncheck it you wish to publish just the widgets.");
           var display_published = function (google_file, extra_info) {
               // currently extra_info is the JSON of the current widgets if previously published
               var link_to_publication = create_connection_to_google_file(google_file, "Published: ", extra_info);
@@ -157,7 +157,7 @@ window.TOONTALK.SETTINGS =
           var contents_div = document.createElement('div');
           var google_status = TT.google_drive && typeof gapi !== 'undefined' ? TT.google_drive.get_status() : "Google Drive API not loaded";
           var cloud_available = true; // unless discovered otherwise below
-          var publish_and_as_workspace = TT.UTILITIES.create_vertical_table(publish, as_workspace.container);
+//           var publish_and_as_workspace = TT.UTILITIES.create_vertical_table(publish, as_workspace.container);
           $(settings_panel).addClass("toontalk-settings-panel")
                            .css({width:  $(widget_element).width() +29,
                                  height: $(widget_element).height()+50,
@@ -216,10 +216,10 @@ window.TOONTALK.SETTINGS =
                                                         $(save_now_local).show();
                                                     }
                                                 });
-          as_workspace.button.addEventListener('click', 
-                                                function (event) {
-                                                    widget.set_setting('publish_as_workspace', as_workspace.button.checked);
-                                                });
+//           as_workspace.button.addEventListener('click', 
+//                                                 function (event) {
+//                                                     widget.set_setting('publish_as_workspace', as_workspace.button.checked);
+//                                                 });
           settings_panel.appendChild(contents_div);
           $(heading).css({"font-weight": 'bold',
                           "font-size": 24,
@@ -254,7 +254,7 @@ window.TOONTALK.SETTINGS =
                          },
                          1);
           }
-          $(program_name.container).children("tr").append(TT.UTILITIES.create_table_entry(publish_and_as_workspace));
+          $(program_name.container).children("tr").append(TT.UTILITIES.create_table_entry(publish)); // _and_as_workspace
           add_files_tabs(widget, cloud_available, settings_panel);
           widget_element.appendChild(settings_panel);                  
       }
