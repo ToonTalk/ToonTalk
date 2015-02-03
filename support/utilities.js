@@ -1238,11 +1238,11 @@ window.TOONTALK.UTILITIES =
                                             }
                                         } catch (error) {
                                             message = "Error reading previous state. Error message is " + error;
-                                                if (TT.UTILITIES.is_internet_explorer()) {
+                                            if (TT.UTILITIES.is_internet_explorer()) {
                                                 // TODO: determine if there still is a problem with IE11 and local storage
                                                 console.error(message);
                                             } else {
-                                                TT.UTILITIES.display_message();
+                                                TT.UTILITIES.display_message(message);
                                             }
                                         }
                                     }
