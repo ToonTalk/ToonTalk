@@ -114,10 +114,31 @@ window.TOONTALK.UTILITIES =
         event.stopPropagation();
     };
     var drop_handler = function (event, element) {
+        var json_object = TT.UTILITIES.data_transfer_json_object(event);
+        var insert_widget_in_editable_text = function (json_object, event) {
+            var widget = TT.UTILITIES.create_from_json(json_object);
+            var top_level_element = document.createElement('div');
+            var json_object_frontside_element = widget.get_frontside_element(true);
+            var $current_editable_text = $(element).closest(".toontalk-edit");
+            var editable_text = TT.published_support.create_editable_text();
+            var child_target = event.target;
+            $(top_level_element).addClass("toontalk-json toontalk-top-level-resource toontalk-top-level-resource-container");
+            $(json_object_frontside_element).addClass("toontalk-top-level-resource")
+                                            .css({position: 'relative'});
+            json_object_frontside_element.toontalk_widget = widget;
+            top_level_element.toontalk_widget             = widget;
+            top_level_element.appendChild(json_object_frontside_element);
+            $(top_level_element).insertAfter($current_editable_text);
+            while (child_target.nextSibling) {
+                $(editable_text).children(".froala-element").get(0).appendChild(child_target.nextSibling);
+            }
+            $(editable_text).insertAfter(top_level_element);
+            widget.update_display();
+            // TODO: trigger save of this page?
+        };
         var $source, source_widget, $target, target_widget, drag_x_offset, drag_y_offset, target_position, 
             new_target, source_is_backside, $container, container, width, height, i, page_x, page_y;
-        var json_object = TT.UTILITIES.data_transfer_json_object(event);
-        if (!json_object) {
+        if (!json_object && dragee) {
             json_object = dragee.data("json");
         }
         if (dragee) {
@@ -159,6 +180,10 @@ window.TOONTALK.UTILITIES =
             }
         } else if ($(event.target).is(".toontalk-drop-area")) {
             $target = $(event.target);
+       } else if (json_object && $(event.currentTarget).is(".froala-element")) {
+            // dropped a widget on editable text - insert it after that
+            insert_widget_in_editable_text(json_object, event);
+            return;
         } else {
             // closest includes 'self'
             $target = $(element).closest(".toontalk-side");
@@ -297,7 +322,8 @@ window.TOONTALK.UTILITIES =
     var $toontalk_side_underneath = function (element) {
         var $target = $(element).closest(".toontalk-side");
         var dragee = TT.UTILITIES.get_dragee();
-        if (!$target.is(".toontalk-top-level-backside") && 
+        if ($target.is("*") &&
+            !$target.is(".toontalk-top-level-backside") && 
             !$target.closest(".toontalk-top-level-resource").is("*") &&
             !$target.is(".toontalk-being-dragged") && // is dragee.get(0) === $target.get(0) a better way to express this?
             !(dragee && has_ancestor_element($target.get(0), dragee.get(0)))) {

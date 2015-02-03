@@ -1,5 +1,5 @@
  /**
- * Implements creating an editable published page with a widget inside
+ * Implements the creation of editable published pages with widgets inside
  * Authors: Ken Kahn
  * License: New BSD
  */
