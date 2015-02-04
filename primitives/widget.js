@@ -336,7 +336,8 @@ window.TOONTALK.widget = (function (TT) {
                     if (this.get_erased()) {
                         return this.get_title_of_erased_widget();
                     }
-                    if (this.get_custom_title_prefix) {
+                    if (this.get_custom_title_prefix && !$(frontside_element).is(".toontalk-top-level-resource")) {
+                        // top-level resources must be dragged to work area so don't add custom description
                         title = this.get_custom_title_prefix() + " " + title;
                     }
                     title = title.trim();
