@@ -264,7 +264,7 @@ window.TOONTALK.UTILITIES =
                         if ($container.is(".toontalk-backside")) {
                             container.remove_backside_widget(source_widget, source_is_backside, true);
                         } else {
-                            container.removed_from_container(source_widget, source_is_backside, event);
+                            container.removed_from_container(source_widget, source_is_backside, event, undefined, true);
                             if (source_widget.restore_dimensions) {
                                 source_widget.restore_dimensions();
                             }
@@ -2075,6 +2075,7 @@ window.TOONTALK.UTILITIES =
 
         display_message: function (message) {
             var alert_element = TT.UTILITIES.create_alert_element(message);
+            $(".toontalk-alert-element").remove(); // remove any pre-existing alerts
             console.log(message);
             document.body.insertBefore(alert_element, document.body.firstChild);
             setTimeout(function () {
