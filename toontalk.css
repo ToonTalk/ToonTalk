@@ -1363,7 +1363,8 @@ body {
 }
 .toontalk-backside {
 	position: absolute;
-	background-color: rgba(245, 240, 240, 0.94);
+/* 	was not full opaque - 0.94 */
+	background-color: rgba(245, 240, 240); 
     cursor: move;
 	border-style: solid;
 	border-width: 2px;
@@ -1381,13 +1382,13 @@ body {
 	border-color: white;
 }
 .toontalk-backside-of-number {
-	background-color: rgba(220, 255, 236, .94);
+	background-color: rgba(220, 255, 236);
 }
 .toontalk-backside-of-box {
-	background-color: rgba(212, 241, 247, 0.94);
+	background-color: rgba(212, 241, 247);
 }
 .toontalk-backside-of-robot {
-	background-color: rgba(230, 230, 255, .94);
+	background-color: rgba(230, 230, 255);
 	width: 480px;
 }
 .toontalk-top-level-backside {
@@ -1822,7 +1823,7 @@ body {
 .toontalk-settings-panel {
 	background-color: rgb(245, 222, 245);
 	position: absolute;
-	opacity: .94;
+/* 	opacity: .94; */
 	border-radius: 10px;
 	border: 2px solid navy;
 /* 	Need enough width for interface and links to published pages */
