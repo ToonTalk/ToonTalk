@@ -1818,39 +1818,43 @@ window.TOONTALK.UTILITIES =
         },
 
         create_file_data_table: function (files_data, in_cloud, button_class) {
-            var table = document.createElement('table');
-            $(table).DataTable({
-               data: files_data,
-               columns: [{data: 'title', 
-                          title: "Name",
-                          render: function (data, type, full, meta) {
-                                        var name = in_cloud ? data.substring(0, data.length-5) : data;
-                                        var url = in_cloud ? TT.google_drive.google_drive_url(full.id) : "Click to load this program.";
-                                        // fileId becomes fileid in Chrome (and maybe other browsers)
-                                        if (button_class) {
-                                            return "<div class='" + button_class + "' title='" + url + "'id='" + full.id + "'>" + name + "</div>";
-                                        } else {
-                                            // is just an ordinarly link now
-                                            if (TT.TRANSLATION_ENABLED) {
-                                                url = TT.UTILITIES.add_URL_parameter(url, "translate", "1");
+            var $table = $('<table cellpadding="0" cellspacing="0" border="0" class="display" id="example"></table>'); 
+            // setTimeout is necessary -- otherwise missing multiple page support and other data table features
+            setTimeout(function () {
+                $table.DataTable({
+                   data: files_data,
+                   pagingType: "full_numbers",
+                   columns: [{data: 'title', 
+                              title: "Name",
+                              render: function (data, type, full, meta) {
+                                            var name = in_cloud ? data.substring(0, data.length-5) : data;
+                                            var url = in_cloud ? TT.google_drive.google_drive_url(full.id) : "Click to load this program.";
+                                            // fileId becomes fileid in Chrome (and maybe other browsers)
+                                            if (button_class) {
+                                                return "<div class='" + button_class + "' title='" + url + "'id='" + full.id + "'>" + name + "</div>";
+                                            } else {
+                                                // is just an ordinarly link now
+                                                if (TT.TRANSLATION_ENABLED) {
+                                                    url = TT.UTILITIES.add_URL_parameter(url, "translate", "1");
+                                                }
+                                                return "<a href='" + url + "'target='_blank' title='Click to open published page.'>" + name + "</a>";
                                             }
-                                            return "<a href='" + url + "'target='_blank' title='Click to open published page.'>" + name + "</a>";
-                                        }
-                          }}, 
-                         {data: 'modifiedDate', 
-                          title: "Modified",
-                          render: function (data, type, full, meta) {
-                                      return new Date(data).toUTCString();
-                          }},
-                         {data: 'createdDate', 
-                          title: "Created",
-                          render: function (data, type, full, meta) {
-                                      return new Date(data).toUTCString();
-                          }},
-                         {data: 'fileSize', 
-                          title: "Size"}]});
-            $(table).addClass("toontalk-file-table");
-            return table;
+                              }}, 
+                             {data: 'modifiedDate', 
+                              title: "Modified",
+                              render: function (data, type, full, meta) {
+                                          return new Date(data).toUTCString();
+                              }},
+                             {data: 'createdDate', 
+                              title: "Created",
+                              render: function (data, type, full, meta) {
+                                          return new Date(data).toUTCString();
+                              }},
+                             {data: 'fileSize', 
+                              title: "Size"}]});
+                 });
+            $table.addClass("toontalk-file-table");
+            return $table.get(0);
         },
 
         create_local_files_table: function (widget) {
