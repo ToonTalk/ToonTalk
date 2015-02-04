@@ -26,18 +26,18 @@ window.TOONTALK.DISPLAY_UPDATES =
         },
         
         update_display: function () {
-            var updates = pending_updates;
-            var ensure_childen_have_higer_z_index = function (element, z_index) {
+            var updates, ensure_childen_have_higer_z_index;
+            if (pending_updates.length === 0) {
+                return;
+            }
+            updates = pending_updates;
+            ensure_childen_have_higer_z_index = function (element, z_index) {
                 $(element).children().each(function (index, child_element) {
                         $(child_element).css({"z-index": z_index+1});
                         ensure_childen_have_higer_z_index(child_element, z_index+1);
                 });
             }
             pending_updates = [];
-            if (updates.length === 0) {
-                // does this save the work of creating the closure in the forEach?
-                return;
-            }
             updates.forEach(function (pending_update) {
                 var frontside_element = pending_update.get_frontside_element && pending_update.get_frontside_element();
                 var $parent_side_element, z_index, parent_z_index;
@@ -77,13 +77,8 @@ window.TOONTALK.DISPLAY_UPDATES =
         },
         
         run_cycle_is_over: function () {
-            var now = Date.now();
-            if (now-time_of_last_update >= 20) {
-                // every 20ms but rather than use setInterval this way
-                // updates don't happen while a robot is running
-                this.update_display();
-                time_of_last_update = now;
-            }  
+            // note that this will not be called less often than TT.queue.maximum_run milliseconds
+            this.update_display(); 
         }
     };
 }(window.TOONTALK));
