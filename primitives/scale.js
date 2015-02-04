@@ -329,8 +329,17 @@ window.TOONTALK.scale = (function (TT) {
             var left_contents  = this.get_hole_contents(0);
             var right_contents = this.get_hole_contents(1);
             if (typeof state === 'undefined') {
+                if (left_contents && right_contents) {
+                    return "I can't compare " + left_contents + " and " + right_contents + ".";
+                }
                 return "Use me to compare two things. Drop them in my pans.";
             } else {
+                if (!left_contents) {
+                    left_contents = "empty pan";
+                }
+                if (!right_contents) {
+                    right_contents = "empty pan";
+                }
                 return ["The " + right_contents + " is greater than the " + left_contents + ".",
                         "The " + right_contents + " is equal to the " + left_contents + ".",
                         "The " + right_contents + " is less than the " + left_contents + "."][state+1];
