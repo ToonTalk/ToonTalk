@@ -29,7 +29,7 @@ window.TOONTALK.frontside =
                     widget.set_running(!widget.get_running());
                 } else if (widget.get_running()) {
                     if (TT.debugging) {
-                        console.log("Ignoring click on running widget.");
+                        TT.UTILITIES.display_message("Clicks on running widgets are ignored. If you wish to see its backside then stop it and click again.");
                     }
                 } else {
                     widget.open_backside();
