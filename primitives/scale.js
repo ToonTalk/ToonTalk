@@ -31,8 +31,14 @@ window.TOONTALK.scale = (function (TT) {
         box_copy = new_scale.copy;
         box_get_path_to = new_scale.get_path_to;
         new_scale.copy = function (parameters) {
-            var copy_as_box = box_copy.call(this, parameters);
-            var copy = TT.scale.create(undefined, undefined, copy_as_box, parameters && this.get_state());
+            var copy_as_box, copy;
+            if (!parameters) {
+                // as a container it may contain birds and nests that need the parameters object
+                // to maintain the correct relationships between birds and nests in the copy
+                parameters = {};
+            }
+            copy_as_box = box_copy.call(this, parameters);
+            copy = TT.scale.create(undefined, undefined, copy_as_box, parameters.just_value && this.get_state());
             return new_scale.add_to_copy(copy, parameters);
         };
         new_scale.get_json = function (json_history) {

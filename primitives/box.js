@@ -102,13 +102,19 @@ window.TOONTALK.box = (function (TT) {
             return true;
         };
         new_box.copy = function (parameters) {
-            var holes_copied = holes.map(function (hole) {
+            var holes_copied, copy;
+            if (!parameters) {
+                // as a container it may contain birds and nests that need the parameters object
+                // to maintain the correct relationships between birds and nests in the copy
+                parameters = {};
+            }
+            holes_copied = holes.map(function (hole) {
                 var content = hole.get_contents();
                 if (content)
                     return content.copy(parameters);
                 }
             );
-            var copy = box.create(size, horizontal, holes_copied, this.get_description());
+            copy = box.create(size, horizontal, holes_copied, this.get_description());
             return this.add_to_copy(copy, parameters);
         };
         new_box = new_box.add_standard_widget_functionality(new_box);

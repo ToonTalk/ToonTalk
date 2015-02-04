@@ -71,7 +71,7 @@ window.TOONTALK.sensor = (function (TT) {
         }.bind(this);
         new_sensor.copy = function (parameters) {
             var copy;
-            if (parameters.just_value && this.has_contents()) {
+            if (parameters && parameters.just_value && this.has_contents()) {
                 return nest_copy.call(this, parameters);
             }
             // note that widget is not copied since there can be multiple sensors of the same widget
