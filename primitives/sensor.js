@@ -71,7 +71,7 @@ window.TOONTALK.sensor = (function (TT) {
         }.bind(this);
         new_sensor.copy = function (parameters) {
             var copy;
-            if (parameters.just_value && this.has_contents()) {
+            if (parameters && parameters.just_value && this.has_contents()) {
                 return nest_copy.call(this, parameters);
             }
             // note that widget is not copied since there can be multiple sensors of the same widget
@@ -110,7 +110,7 @@ window.TOONTALK.sensor = (function (TT) {
             return "docs/manual/sensors.html";
         };
         new_sensor.toString = function () {
-            return "a sensor of " + attribute + " for " + event_name + " sensors";
+            return "a sensor of '" + attribute + "'' for " + event_name + " events";
         };
         new_sensor.get_active = function () {
             return active;

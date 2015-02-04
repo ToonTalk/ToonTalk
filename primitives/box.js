@@ -102,13 +102,19 @@ window.TOONTALK.box = (function (TT) {
             return true;
         };
         new_box.copy = function (parameters) {
-            var holes_copied = holes.map(function (hole) {
+            var holes_copied, copy;
+            if (!parameters) {
+                // as a container it may contain birds and nests that need the parameters object
+                // to maintain the correct relationships between birds and nests in the copy
+                parameters = {};
+            }
+            holes_copied = holes.map(function (hole) {
                 var content = hole.get_contents();
                 if (content)
                     return content.copy(parameters);
                 }
             );
-            var copy = box.create(size, horizontal, holes_copied, this.get_description());
+            copy = box.create(size, horizontal, holes_copied, this.get_description());
             return this.add_to_copy(copy, parameters);
         };
         new_box = new_box.add_standard_widget_functionality(new_box);
@@ -309,6 +315,15 @@ window.TOONTALK.box = (function (TT) {
     TT.creators_from_json['box'] = function (json, additional_info) {
         return box.create(json.size, json.horizontal, TT.UTILITIES.create_array_from_json(json.contents, additional_info), json.description);
     };
+
+    box.render = function () {
+        // boxes inside boxes display a bit different so re-render the containing box
+        var frontside_parent = this.get_parent_of_frontside();
+        if (frontside_parent && frontside_parent.is_of_type('empty hole')) {
+            frontside_parent.get_parent_of_frontside().render();
+        }
+        TT.DISPLAY_UPDATES.pending_update(this);
+    };
     
     box.update_display = function () {
         var frontside = this.get_frontside(true);
@@ -316,30 +331,47 @@ window.TOONTALK.box = (function (TT) {
         var size = this.get_size();
         var update_hole = function (hole_element, hole, index) {
             var content_frontside_element = hole.get_frontside_element(true);
-            var left, top, content_frontside_element;
+            var left, top, content_frontside_element, new_width, new_height;
             if (horizontal) {
-                left = hole_width*index;
+                top = 0;
+                if ($(hole_element).parents(".toontalk-box-hole").length > 0) {
+                    new_width  = hole_width -2*border_size/size;
+                    new_height = hole_height-2*border_size;
+                } else {
+                    new_width  = hole_width;
+                    new_height = hole_height;
+                }
+                left = new_width*index;
                 if (index > 1) {
                     left += border_size*(index-1);
                 }
-                top = 0;
             } else {
                 left = 0;
-                top = hole_height*index;
+                if ($(hole_element).parents(".toontalk-box-hole").length > 0) {
+                    new_width  = hole_width -2*border_size;
+                    new_height = hole_height-2*border_size/size;
+                } else {
+                    new_width  = hole_width;
+                    new_height = hole_height;
+                }
+                top = new_height*index;
                 if (index > 1) {
                     top += border_size*(index-1);
                 }
             }
             $(hole_element).css({left:   left,
                                  top:    top,
-                                 width:  hole_width,
-                                 height: hole_height});
+                                 width:  new_width,
+                                 height: new_height});
+//             if (content_frontside_element.parentElement === hole_element) {
+//                 return;
+//             }
             if (hole_element !== content_frontside_element) {
                 // not an empty hole
                 // save dimensions first?
                 $(content_frontside_element).css({left:  0,
                                                   top:   0,
-                                                  width: '',
+                                                  width:  '',
                                                   height: ''});
                 hole_element.appendChild(content_frontside_element);
             }                                          
@@ -366,7 +398,11 @@ window.TOONTALK.box = (function (TT) {
                 var $box_hole_elements = $(frontside_element).children(".toontalk-box-hole");
                 if ($box_hole_elements.length === size) {
                     $box_hole_elements.each(function (index, hole_element) {
-                        update_hole(hole_element, this.get_hole(index), index);
+                        var hole = this.get_hole(index);
+                        if (hole) {
+                            // might be undefined if the box's size has been decreased while rendering
+                            update_hole(hole_element, hole, index);
+                        }
                     }.bind(this));
                 } else {
                     // has wrong number of holes so rebuild it
@@ -375,7 +411,7 @@ window.TOONTALK.box = (function (TT) {
                         hole_element = hole.get_element();
                         $(hole_element).addClass("toontalk-hole-number-" + index);
                         update_hole(hole_element, hole, index);
-                        frontside_element.appendChild(hole_element);                       
+                        frontside_element.appendChild(hole_element);
                     });
                 };
             }.bind(this);
@@ -416,7 +452,7 @@ window.TOONTALK.box = (function (TT) {
         }
         // recompute hole dimensions taking into account border width
         if (horizontal) {
-            hole_width =  hole_width- ((size-1)*border_size)/size;
+            hole_width  = hole_width -((size-1)*border_size)/size;
         } else {
             hole_height = hole_height-((size-1)*border_size)/size;      
         }
@@ -464,33 +500,15 @@ window.TOONTALK.box = (function (TT) {
     };
 
     box.widget_dropped_on_me = function (other, other_is_backside, event, robot) {
-        // if horizontal computes boundary seeing if event is left of the boundary
-        // otherwise sees if event is below boundary
-        var horizontal = this.get_horizontal();
-        var frontside_element = this.get_frontside_element();
-        var size = this.get_size();
-        var i, hole, hole_contents, position, increment, boundary;
-        if (size === 0) {
-            return;
-        }
-        position = $(frontside_element).offset();
-        increment = horizontal ? $(frontside_element).width()/size : $(frontside_element).height()/size;
-        boundary = horizontal ? position.left : position.top;
-        if (event) { // not clear how this could be called without an event
-            for (i = 0; i < size; i++) {
-                hole = this.get_hole(i);
-                boundary += increment;
-                if ((horizontal ? (event.pageX <= boundary) :
-                                  (event.pageY <= boundary)) ||
-                    // or is last one
-                    i+1 === size) {
-                    hole_contents = hole.get_contents();
-                    if (hole_contents) {
-                        return other.drop_on(hole_contents, other_is_backside, event, robot);
-                    }
-                    return hole.widget_dropped_on_me(other, other_is_backside, event, robot);  
-                }
-            }
+        var hole_index = this.which_hole(event);
+        var hole_contents, hole;
+        if (hole_index >= 0) {
+            hole = this.get_hole(hole_index);
+            hole_contents = hole.get_contents();
+            if (hole_contents) {
+                return other.drop_on(hole_contents, other_is_backside, event, robot);
+            } 
+            return hole.widget_dropped_on_me(other, other_is_backside, event, robot);  
         }
         TT.UTILITIES.report_internal_error(other + " dropped on " + this + " but no event was provided.");
     };
@@ -527,6 +545,9 @@ window.TOONTALK.box = (function (TT) {
                 return sub_path;
             }
             path = this.get_path_to(parent_box);
+            if (!path) {
+                return;
+            }
             path.next = sub_path;
             return path;
         }
@@ -542,6 +563,47 @@ window.TOONTALK.box = (function (TT) {
                         path.next = sub_path;
                         return path;
                     }
+                }
+            }
+        }
+    };
+
+    box.element_to_highlight = function (point) {
+        var hole_index = this.which_hole(point, true);
+        var hole, hole_contents;
+        if (hole_index < 0) {
+            // highlight the whole thing
+            return this.get_frontside_element();
+        }
+        hole = this.get_hole(hole_index);
+        hole_contents = hole.get_contents();
+        if (hole_contents) {
+            return hole_contents.get_frontside_element();
+        }
+        return hole.get_frontside_element();
+    };
+
+    box.which_hole = function (point) {
+        // if horizontal computes boundary seeing if event is left of the boundary
+        // otherwise sees if point is below boundary
+        var horizontal = this.get_horizontal();
+        var frontside_element = this.get_frontside_element();
+        var size = this.get_size();
+        var i, position, increment, boundary;
+        if (size === 0) {
+            return;
+        }
+        position = $(frontside_element).offset();
+        increment = horizontal ? $(frontside_element).width()/size : $(frontside_element).height()/size;
+        boundary = horizontal ? position.left : position.top;
+        if (point) { // not clear how this could be called without a point
+            for (i = 0; i < size; i++) {
+                boundary += increment;
+                if ((horizontal ? (event.pageX <= boundary) :
+                                  (event.pageY <= boundary)) ||
+                    // or is last one
+                    i+1 === size) {
+                    return i;
                 }
             }
         }
@@ -700,6 +762,8 @@ window.TOONTALK.box_hole =
                     hole_element.className = "toontalk-box-hole toontalk-frontside toontalk-side";
                     hole_element.toontalk_widget = hole;
                 }
+                // can only receive drops if empty -- rather than add and remove these listeners use box.element_to_highlight
+//              TT.UTILITIES.can_receive_drops(hole_element);
                 return hole_element;
             };
             hole.get_frontside = function (create) {

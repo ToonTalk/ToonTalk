@@ -398,11 +398,11 @@ window.TOONTALK.backside =
 //                 event.stopPropagation();
 //             });
             backside_element.addEventListener("mouseenter", function (event) {
-               var frontside = widget.get_frontside();
-               var parent_of_backside = widget.get_parent_of_backside();
-               if (frontside && (!parent_of_backside || parent_of_backside.get_widget().is_of_type('top-level'))) {
-                   TT.UTILITIES.highlight_element(frontside.get_element(), event);
-               }
+                var frontside = widget.get_frontside();
+                var parent_of_backside = widget.get_parent_of_backside();
+                if (frontside && (!parent_of_backside || parent_of_backside.get_widget().is_of_type('top-level'))) {
+                    TT.UTILITIES.highlight_element(frontside.get_element());
+                }
             });
             backside_element.addEventListener("mouseleave", function (event) {
                if (!widget.is_of_type('top-level')) {
@@ -598,6 +598,7 @@ window.TOONTALK.backside =
                 });
             };
             var parent_of_backside = widget.get_parent_of_backside();
+            var container_widget;
             TT.UTILITIES.remove_highlight();
             if (parent_of_backside) {
                 if (parent_of_backside.is_backside()) {
@@ -618,10 +619,13 @@ window.TOONTALK.backside =
                     $(frontside_element).css({left:  backside_position.left,
                                                top:  backside_position.top});
                 }
-                // needs to added to backside_widgets of top_level and parent links updated
-                TT.UTILITIES.widget_from_jquery($backside_container).add_backside_widget(widget);
-                $backside_container.append(frontside_element);
-                widget.render();
+                // frontside needs to be added to backside container
+                container_widget = TT.UTILITIES.widget_from_jquery($backside_container);
+                if (container_widget) {
+                    container_widget.add_backside_widget(widget);
+                    $backside_container.append(frontside_element);
+                    widget.render();
+                }
             }
             if (widget.backside_widgets) {
                 widget.backside_widgets.forEach(function (widget_side) {

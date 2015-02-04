@@ -333,7 +333,11 @@ window.TOONTALK.widget = (function (TT) {
                             title = description;   
                         }
                     }
-                    if (this.get_custom_title_prefix) {
+                    if (this.get_erased()) {
+                        return this.get_title_of_erased_widget();
+                    }
+                    if (this.get_custom_title_prefix && !$(frontside_element).is(".toontalk-top-level-resource")) {
+                        // top-level resources must be dragged to work area so don't add custom description
                         title = this.get_custom_title_prefix() + " " + title;
                     }
                     title = title.trim();
@@ -345,6 +349,15 @@ window.TOONTALK.widget = (function (TT) {
                 };
             }
             return widget;
+        },
+
+        get_title_of_erased_widget: function () {
+            var frontside_element = this.get_frontside_element();
+            var type_name = this.get_type_name();
+            if (frontside_element && $(frontside_element).closest(".toontalk-conditions-contents-container").is("*")) {
+                return "This " + type_name + " has been erased so that it matches with any " + type_name + ".";
+            }
+            return "This " + type_name + " has been erased. Dusty the Vacuum can restore the " + type_name + " to normal.";
         },
         
         has_parent: function (widget) {
@@ -538,8 +551,8 @@ window.TOONTALK.widget = (function (TT) {
                     } else {
                         backside_of_parent = parent_of_backside.get_backside();
                     }
-                    if (backside_of_parent.get_widget().removed_from_container) {
-                        backside_of_parent.get_widget().removed_from_container(this, true, event);
+                    if (backside_of_parent.removed_from_container) {
+                        backside_of_parent.removed_from_container(this, true, event);
                     }
                 }  
             }
@@ -829,7 +842,7 @@ window.TOONTALK.widget = (function (TT) {
                 }
                 copy.set_erased(this.get_erased());
             }
-            if (!parameters) {
+            if (!parameters || !parameters.just_value) {
                 backside_widgets = this.get_backside_widgets();
                 if (backside_widgets.length > 0) {
                     copy.set_backside_widget_sides(TT.UTILITIES.copy_widget_sides(backside_widgets, parameters), this.get_backside_widgets_json_views());
@@ -850,7 +863,7 @@ window.TOONTALK.widget = (function (TT) {
         
         add_copy_to_container: function (widget_copy, x_offset, y_offset) {
             if (!widget_copy) {
-                widget_copy = this.copy({});
+                widget_copy = this.copy();
             }
             var frontside_element = this.get_frontside_element();
             var frontside_element_copy = widget_copy.get_frontside_element();  
@@ -1060,7 +1073,7 @@ window.TOONTALK.widget = (function (TT) {
         rerender: function () {
             // state has changed so needs to be rendered again (if visible)
             if (this.visible()) {
-                TT.DISPLAY_UPDATES.pending_update(this);
+                this.render();
             }
         },
         
@@ -1197,7 +1210,12 @@ window.TOONTALK.widget = (function (TT) {
                         TT.google_drive.upload_file(this.get_setting('program_name'), "json", JSON.stringify(json), callback);
                         callback = undefined;
                     } else if (TT.google_drive.connection_to_google_drive_possible()) {
-                        console.log("Unable to save to Google Drive because: " + google_drive_status);
+                        if (google_drive_status === 'Need to authorize') {
+                            TT.UTILITIES.display_message_if_new("Unable to save to your Google Drive because you need to log in. Click on the settings icon to log in.");
+                            TT.UTILITIES.display_tooltip($(".toontalk-settings-button"));
+                        } else {
+                            console.log("Unable to save to Google Drive because: " + google_drive_status);
+                        }
                     }
                 }
                 if (parameters.local_storage) {

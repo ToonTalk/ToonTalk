@@ -1,5 +1,5 @@
  /**
- * Implements creating an editable published page with a widget inside
+ * Implements the creation of editable published pages with widgets inside
  * Authors: Ken Kahn
  * License: New BSD
  */
@@ -85,7 +85,8 @@ var static_contents_end =
                             return;
                         }
                         json = TT.UTILITIES.get_json_top_level(widget);
-                        widgets_json.push(TT.UTILITIES.toontalk_json_div(json, widget));
+                        // following ignores which side of the widget we have
+                        widgets_json.push(TT.UTILITIES.toontalk_json_div(json, widget.get_widget()));
                         if (index > 1) {
                             editable_contents[index] = editable_contents[1]; // repeat it as many times as needed
                         }

@@ -571,7 +571,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             }
         }
         attribute_widget.copy = function (parameters) {
-            if (parameters.just_value) {
+            if (parameters && parameters.just_value) {
                 // just copy as a number
                 return TT.number.copy.call(this, parameters);
             }

@@ -68,7 +68,7 @@ window.TOONTALK.tool = (function (TT) {
                     }
                 }
                 highlighted_element = new_highlighted_element;
-                TT.UTILITIES.highlight_element(highlighted_element, point);
+                TT.UTILITIES.highlight_element(highlighted_element);
             };
 
             var mouse_up = function (event) {

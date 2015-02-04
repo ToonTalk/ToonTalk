@@ -66,7 +66,7 @@ window.TOONTALK.frontside =
             frontside_element.addEventListener("mouseenter", function (event) {
                 var backside = widget.get_backside();
                 if (backside) {
-                    TT.UTILITIES.highlight_element(backside.get_element(), event);
+                    TT.UTILITIES.highlight_element(backside.get_element());
                 }
             });
             frontside_element.addEventListener("mouseleave", function (event) {

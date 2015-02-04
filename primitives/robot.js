@@ -334,7 +334,7 @@ window.TOONTALK.robot = (function (TT) {
         if (is_resource) {
             new_widget = widget; // this widget was just created
             // robot needs a copy of the resource to avoid sharing it with training widget
-            widget_copy = widget.copy({});
+            widget_copy = widget.copy();
             path = TT.path.get_path_to_resource(widget_copy);
         } else {
             path = TT.path.get_path_to(widget, this);

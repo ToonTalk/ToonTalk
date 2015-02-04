@@ -287,7 +287,9 @@ window.TOONTALK.bird = (function (TT) {
             // if a bird and its nest are copied as part of a widget (e.g. a box) 
             // then a new pair is created and linked
             var copy, new_nest, i;
-            if (parameters.just_value) {
+            if (!parameters) {
+                copy = this.create(nest, this.get_description());
+            } else if (parameters.just_value) {
                 copy = this.create(undefined, this.get_description());
             } else {
                 if (parameters.nests_copied && parameters.nests_copied[nest]) {
@@ -687,14 +689,16 @@ window.TOONTALK.nest = (function (TT) {
             // notice that bird/nest semantics is that the nest is shared not copied
             // unless the nest is copied along with one of its birds
             var contents_copy, copy, new_original_nest;
-            if (parameters.just_value) {
+            if (parameters && parameters.just_value) {
                 if (contents.length > 0) {
                     return contents[0].get_widget().copy(parameters);
                 }
                 return TT.nest.create(this.get_description(), [], [], "in a robot's condition");
             }
             contents_copy = TT.UTILITIES.copy_widget_sides(contents, parameters);
-            if (parameters.fresh_copy) {
+            if (!parameters) {
+                copy = TT.nest.create(this.get_description(), contents_copy, [], guid, (original_nest || this));
+            } else if (parameters.fresh_copy) {
                 // e.g. could be a resource that shouldn't be linked to its copy
                 // don't give the copy a GUID if master doesn't have one (e.g. still has egg in nest)
                 copy = TT.nest.create(this.get_description(), contents_copy, [], guid && TT.UTILITIES.generate_unique_id());
@@ -704,7 +708,7 @@ window.TOONTALK.nest = (function (TT) {
                     if (parameters.nests_copied && parameters.nests_copied[new_original_nest]) {
                         // this nest has already been copied
                         // so make copies use this fresh copy as its original_nest
-                        copy = parameters.nests_copied[nest][0].copy({});
+                        copy = parameters.nests_copied[nest][0].copy();
                         parameters.nests_copied[new_original_nest].forEach(function (nest_copy) {
                             update_nest.call(nest_copy, copy);
                         });                    
