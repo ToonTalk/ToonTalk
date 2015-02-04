@@ -319,7 +319,16 @@ window.TOONTALK.scale = (function (TT) {
             new_scale.get_hole_contents(1).add_listener('value_changed', contents_listener);
         }
         new_scale.get_custom_title_prefix = function () {
-            return "Use me to compare two things.";
+            var state = this.get_state();
+            var left_contents  = this.get_hole_contents(0);
+            var right_contents = this.get_hole_contents(1);
+            if (typeof state === 'undefined') {
+                return "Use me to compare two things. Drop them in my pans.";
+            } else {
+                return ["The " + right_contents + " is greater than the " + left_contents + ".",
+                        "The " + right_contents + " is equal to the " + left_contents + ".",
+                        "The " + right_contents + " is less than the " + left_contents + "."][state+1];
+            }            
         };
         return new_scale;
     };
