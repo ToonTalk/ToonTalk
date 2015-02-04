@@ -452,7 +452,7 @@ window.TOONTALK.widget = (function (TT) {
                          // !event because if a robot is doing this no warning if already removed
                          parent_of_frontside.remove_backside_widget(this, false, !event);
                      } else if (parent_of_frontside.removed_from_container) {
-                         parent_of_frontside.removed_from_container(this, false, event);
+                         parent_of_frontside.removed_from_container(this, false, event, undefined, true);
                      }
                  }
             };
@@ -552,7 +552,7 @@ window.TOONTALK.widget = (function (TT) {
                         backside_of_parent = parent_of_backside.get_backside();
                     }
                     if (backside_of_parent.removed_from_container) {
-                        backside_of_parent.removed_from_container(this, true, event);
+                        backside_of_parent.removed_from_container(this, true, event, undefined, true);
                     }
                 }  
             }
