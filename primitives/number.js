@@ -675,8 +675,12 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     };
 
     number.toString = function () {
+        var operator_string;
+        if (this.get_erased()) {
+            return "erased number";
+        }
         // addition is implicit so don't display it
-        var operator_string = this.get_operator() === '+' ? '' : this.get_operator();
+        operator_string = this.get_operator() === '+' ? '' : this.get_operator();
         return operator_string + bigrat.str(this.get_value());
     };
     
