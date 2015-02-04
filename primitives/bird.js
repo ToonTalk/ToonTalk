@@ -704,7 +704,7 @@ window.TOONTALK.nest = (function (TT) {
                     if (parameters.nests_copied && parameters.nests_copied[new_original_nest]) {
                         // this nest has already been copied
                         // so make copies use this fresh copy as its original_nest
-                        copy = parameters.nests_copied[nest][0].copy({});
+                        copy = parameters.nests_copied[nest][0].copy();
                         parameters.nests_copied[new_original_nest].forEach(function (nest_copy) {
                             update_nest.call(nest_copy, copy);
                         });                    

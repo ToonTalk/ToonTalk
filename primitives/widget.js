@@ -842,7 +842,7 @@ window.TOONTALK.widget = (function (TT) {
                 }
                 copy.set_erased(this.get_erased());
             }
-            if (!parameters) {
+            if (!parameters || !parameters.just_value) {
                 backside_widgets = this.get_backside_widgets();
                 if (backside_widgets.length > 0) {
                     copy.set_backside_widget_sides(TT.UTILITIES.copy_widget_sides(backside_widgets, parameters), this.get_backside_widgets_json_views());
@@ -863,7 +863,7 @@ window.TOONTALK.widget = (function (TT) {
         
         add_copy_to_container: function (widget_copy, x_offset, y_offset) {
             if (!widget_copy) {
-                widget_copy = this.copy({});
+                widget_copy = this.copy();
             }
             var frontside_element = this.get_frontside_element();
             var frontside_element_copy = widget_copy.get_frontside_element();  

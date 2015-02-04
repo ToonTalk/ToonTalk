@@ -248,7 +248,7 @@ window.TOONTALK.UTILITIES =
                 if (container) {
                     if (!source_is_backside && source_widget.get_infinite_stack && source_widget.get_infinite_stack()) {
                         // leave the source there but create a copy
-                        source_widget = source_widget.copy({});
+                        source_widget = source_widget.copy();
                         width  = $source.width();
                         height = $source.height();
                         $source = $(source_widget.get_frontside_element(true));
@@ -2301,12 +2301,12 @@ window.TOONTALK.UTILITIES =
                             drag_started = true;
                             widget = TT.UTILITIES.widget_of_element(element);
                             if (widget && widget.get_infinite_stack()) {
-                                widget_copy = widget.copy({});
+                                widget_copy = widget.copy();
                                 widget.add_copy_to_container(widget_copy, 0, 0);
                                 widget.set_infinite_stack(false);
                                 widget_copy.set_infinite_stack(true);
                             } else if ($(element).is(".toontalk-top-level-resource")) {
-                                widget_copy = widget.copy({});
+                                widget_copy = widget.copy();
                                 widget.add_copy_to_container(widget_copy, 0, 0);
                                 // need to capture the position of the original
                                 element_position = $(element).offset();
