@@ -220,7 +220,11 @@ window.TOONTALK.path =
                         }
                     },
                     toString: function () {
-                        return "the " + type_name + " on the back of what he's working on";
+                        var string = "the " + type_name + " on the back of what he's working on";
+                        if (this.removing_widget) {
+                            return "what is on " + string;
+                        }
+                        return string;
                     },
                     get_json: function () {
                         return {type: "path.to_backside_widget_of_context",
