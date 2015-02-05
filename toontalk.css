@@ -1364,7 +1364,7 @@ body {
 .toontalk-backside {
 	position: absolute;
 /* 	was not full opaque - 0.94 */
-	background-color: rgba(245, 240, 240); 
+	background-color: rgb(245, 240, 240); 
     cursor: move;
 	border-style: solid;
 	border-width: 2px;
@@ -1382,13 +1382,13 @@ body {
 	border-color: white;
 }
 .toontalk-backside-of-number {
-	background-color: rgba(220, 255, 236);
+	background-color: rgb(220, 255, 236);
 }
 .toontalk-backside-of-box {
-	background-color: rgba(212, 241, 247);
+	background-color: rgb(212, 241, 247);
 }
 .toontalk-backside-of-robot {
-	background-color: rgba(230, 230, 255);
+	background-color: rgb(230, 230, 255);
 	width: 480px;
 }
 .toontalk-top-level-backside {
