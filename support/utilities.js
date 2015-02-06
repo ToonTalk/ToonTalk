@@ -606,7 +606,7 @@ window.TOONTALK.UTILITIES =
                       setTimeout(function () {
                                      $(ui.tooltip).hide();
                       }, 
-                      ui.tooltip.get(0).innerText.length * (TT.MAXIMUM_TOOLTIP_DURATION_PER_CHARACTER || 100));
+                      ui.tooltip.get(0).textContent.length * (TT.MAXIMUM_TOOLTIP_DURATION_PER_CHARACTER || 100));
                   }
            });
     };
