@@ -418,12 +418,12 @@ window.TOONTALK.robot = (function (TT) {
         // need to compute index now since parent may have changed by the time this runs
         // or perhaps not and a different bug was making it appear to be so
         var index = container.get_index_of && part.get_parent_of_frontside() && container.get_index_of(part);
-        var do_removal = function () { 
-                if (index >= 0) {
-                    container.removed_from_container(part, false, true, index);
-                }
-                // otherwise do nothing since part may have already been removed from a nest in another container
-        }
+        var do_removal =
+            function () {
+                // if part has already been removed from a nest in another container
+                // the following will ignore this due to the last argument being false
+                container.removed_from_container(part, false, true, index, false);
+        };
         if (this.get_animating()) {
             // if animating then delay removing it
             // otherwise hole empties before the robot gets there

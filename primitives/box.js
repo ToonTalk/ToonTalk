@@ -518,7 +518,7 @@ window.TOONTALK.box = (function (TT) {
         return part.get_parent_of_frontside().get_index();
     };
     
-    box.removed_from_container = function (part, backside_removed, event, index) {
+    box.removed_from_container = function (part, backside_removed, event, index, report_error_if_no_index) {
         var update_display = !!event;
         var hole, part_frontside_element;
         if (typeof index === 'undefined') {
@@ -530,7 +530,7 @@ window.TOONTALK.box = (function (TT) {
                 this.rerender();
                 part.restore_dimensions();
             }
-        } else {
+        } else if (report_error_if_no_index) {
             TT.UTILITIES.report_internal_error("Attempted to remove " + part + " from " + this + " but not found.");
         }
     };
@@ -898,7 +898,7 @@ window.TOONTALK.box_hole =
                     contents.set_running(new_value);
                 }
             };
-            hole.removed_from_container = function (part, backside_removed, event) {
+            hole.removed_from_container = function (part, backside_removed, event, index, report_error) {
                 if (contents) {
                     if (event) {
                         contents.restore_dimensions();
@@ -907,7 +907,7 @@ window.TOONTALK.box_hole =
                     if (event) {
                         this.get_parent_of_frontside().render();
                     }
-                } else {
+                } else if (report_error) {
                     TT.UTILITIES.report_internal_error("Holes can't be removed from containers.");
                 }
             };

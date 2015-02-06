@@ -68,7 +68,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             return html;
         };
         new_element.get_text = function () {
-            return this.get_frontside_element().innerText;
+            return this.get_frontside_element().textContent;
         };
         new_element.set_HTML = function (new_value) {
             var frontside_element = this.get_frontside_element();
@@ -995,7 +995,7 @@ window.TOONTALK.element_backside =
             var getter = edit_HTML ? "get_HTML" : "get_text";
             var generic_backside_update = backside.update_display;
             var text, html_input, update_html;
-            // need to ensure that it 'knows' its innerText, etc.
+            // need to ensure that it 'knows' its textContent, etc.
             element_widget.update_display();
             text = element_widget[getter]().trim();
             if (text.length > 0) {

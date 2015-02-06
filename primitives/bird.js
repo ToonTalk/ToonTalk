@@ -606,7 +606,7 @@ window.TOONTALK.nest = (function (TT) {
                 this.to_run_when_unlocked = [listener];
             }
         };
-        new_nest.removed_from_container = function (part, backside_removed, event) {
+        new_nest.removed_from_container = function (part, backside_removed, event, index, report_error_if_nothing_removed) {
             var removed = contents.shift();
             if (this.visible()) {
                 if (removed) {
@@ -616,7 +616,7 @@ window.TOONTALK.nest = (function (TT) {
                     } else {
                         removed.get_widget().set_parent_of_frontside(undefined);
                     }
-                } else {
+                } else if (report_error_if_nothing_removed) {
                     TT.UTILITIES.report_internal_error("Nothing removed from nest!");
                 }
                 if (contents.length > 0) {

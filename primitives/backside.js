@@ -205,7 +205,7 @@ window.TOONTALK.backside =
                 return widget.get_frontside_element();
             };
             if (!widget.removed_from_container) {
-                widget.removed_from_container = function (other, backside_removed, event, ignore_if_not_on_backside) {
+                widget.removed_from_container = function (other, backside_removed, event, index, ignore_if_not_on_backside) {
                     if (!TT.robot.in_training) {
                        // robots in training take care of this (and need to to record things properly)
                        this.remove_backside_widget(other, backside_removed, ignore_if_not_on_backside);
@@ -604,7 +604,7 @@ window.TOONTALK.backside =
                 if (parent_of_backside.is_backside()) {
                     widget.set_parent_of_backside(undefined, true);
                 } else {
-                    parent_of_backside.removed_from_container(widget, true, event, true);
+                    parent_of_backside.removed_from_container(widget, true, event, undefined, true);
                 }
                 // important to run the above before the following since otherwise backsides won't be there to remove
                 if (widget.forget_backside) {

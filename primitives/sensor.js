@@ -110,7 +110,7 @@ window.TOONTALK.sensor = (function (TT) {
             return "docs/manual/sensors.html";
         };
         new_sensor.toString = function () {
-            return "a sensor of '" + attribute + "'' for " + event_name + " events";
+            return "a sensor that receives the '" + attribute + "' attribute of " + event_name + " events";
         };
         new_sensor.get_active = function () {
             return active;

@@ -72,7 +72,7 @@ window.TOONTALK.SETTINGS =
                 $(settings_panel).remove();
             };
             var saved_callback = function () {
-                widget.set_setting('program_name', event.target.innerText);
+                widget.set_setting('program_name', event.target.textContent);
                 // TODO: when in the cloud use this.title or the like to directly load the Google file
                 widget.load(in_the_cloud, callback);
             }.bind(this);
