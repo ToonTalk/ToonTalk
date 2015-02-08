@@ -30,9 +30,10 @@ var add_save_edits_iframe = function () {
     var file_id       = window.location.href.substring(file_id_start+1, file_id_end);
     var iframe        = document.createElement("iframe");
     iframe.className  = "toontalk-saver-iframe";
-    iframe.src        = "https://dl.dropboxusercontent.com/u/51973316/ToonTalk/support/save_page_dropbox.html?id=" + file_id;
+//     iframe.src        = "https://dl.dropboxusercontent.com/u/51973316/ToonTalk/support/save_page_dropbox.html?id=" + file_id;
     // using GitHub caused problems with editor fonts not loading
-    //     iframe.src        = "https://toontalk.github.io/ToonTalk/support/save_page.html?id=" + file_id;
+    // testing GitHub again
+    iframe.src        = "https://toontalk.github.io/ToonTalk/support/save_page.html?id=" + file_id;
     document.body.appendChild(iframe);
 };
 if (window.location.href.index("googledrive.com/host") >= 0) {
