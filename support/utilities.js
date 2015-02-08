@@ -1873,7 +1873,9 @@ window.TOONTALK.UTILITIES =
                 }
             });
             var table = TT.UTILITIES.create_file_data_table();
-            TT.UTILITIES.become_file_data_table(table, data, false, "toontalk-file-load-button");
+            setTimeout(function () {
+                TT.UTILITIES.become_file_data_table(table, data, false, "toontalk-file-load-button");
+            });
             return table;
         },
         
