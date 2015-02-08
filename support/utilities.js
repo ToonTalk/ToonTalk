@@ -1813,7 +1813,13 @@ window.TOONTALK.UTILITIES =
             elements.forEach(function (element) {
                 tabs.appendChild(element);
             });
-            $(tabs).tabs(); // use JQuery UI widget
+            // use JQuery UI widget for tabs
+            $(tabs).tabs({activate: function(event, ui) {
+                // see https://datatables.net/examples/api/tabs_and_scrolling.html
+                // for why this is needed when a data table is in a tab
+                                        ui.newPanel.DataTable().draw();
+                                    }
+                         });
             return tabs;
         },
 
