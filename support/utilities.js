@@ -1829,6 +1829,7 @@ window.TOONTALK.UTILITIES =
         become_file_data_table: function (table, files_data, in_cloud, button_class) {
             $(table).DataTable({
                    data: files_data,
+                   autoWidth: false,
                    columns: [{data: 'title', 
                               title: "Name",
                               render: function (data, type, full, meta) {
