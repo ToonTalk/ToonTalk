@@ -1823,7 +1823,6 @@ window.TOONTALK.UTILITIES =
             setTimeout(function () {
                 $table.DataTable({
                    data: files_data,
-                   pagingType: "full_numbers",
                    columns: [{data: 'title', 
                               title: "Name",
                               render: function (data, type, full, meta) {
