@@ -1814,20 +1814,20 @@ window.TOONTALK.UTILITIES =
                 tabs.appendChild(element);
             });
             // use JQuery UI widget for tabs
-            $(tabs).tabs({activate: function(event, ui) {
-                // see https://datatables.net/examples/api/tabs_and_scrolling.html
-                // for why this is needed when a data table is in a tab
-                                        ui.newPanel.DataTable().draw();
-                                    }
-                         });
+            $(tabs).tabs();
             return tabs;
         },
 
-        create_file_data_table: function (files_data, in_cloud, button_class) {
-            var $table = $('<table cellpadding="0" cellspacing="0" border="0" class="display" id="example"></table>'); 
-            // setTimeout is necessary -- otherwise missing multiple page support and other data table features
-            setTimeout(function () {
-                $table.DataTable({
+        create_file_data_table: function (extra_classes) {
+            var $table = $('<table cellpadding="0" cellspacing="0" border="0"></table>');
+            if (extra_classes) {
+                $table.addClass(extra_classes);
+            }
+            return $table.get(0);
+        },
+
+        become_file_data_table: function (table, files_data, in_cloud, button_class) {
+            $(table).DataTable({
                    data: files_data,
                    columns: [{data: 'title', 
                               title: "Name",
@@ -1857,9 +1857,7 @@ window.TOONTALK.UTILITIES =
                               }},
                              {data: 'fileSize', 
                               title: "Size"}]});
-                 });
-            $table.addClass("toontalk-file-table");
-            return $table.get(0);
+            $(table).addClass("toontalk-file-table");
         },
 
         create_local_files_table: function (widget) {
@@ -1874,7 +1872,9 @@ window.TOONTALK.UTILITIES =
                             };
                 }
             });
-            return TT.UTILITIES.create_file_data_table(data, false, "toontalk-file-load-button");
+            var table = TT.UTILITIES.create_file_data_table();
+            TT.UTILITIES.become_file_data_table(table, data, false, "toontalk-file-load-button");
+            return table;
         },
         
         get_dragee: function () {

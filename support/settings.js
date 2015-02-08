@@ -12,34 +12,57 @@ window.TOONTALK.SETTINGS =
     var add_files_tabs = function (widget, cloud_available, settings_panel) {
         var labels = [];
         var tables = [];
-        var local_files_tab_index = cloud_available ? 1: 0; // so cloud version is first if available
-        var cloud_files_index = 0;
+        var local_files_tab_index = 0; // cloud_available ? 1: 0; // so cloud version is first if available
+        var cloud_files_index = 1;
         var cloud_pages_index = 2;
         var local_files_table = TT.UTILITIES.create_local_files_table(widget);
+        var tab_activated_handler = function(event, ui) {
+            var become_cloud_files_table_callback = function (table) {
+                if (!table) {
+                    ui.newPanel.appendChild(TT.UTILITIES.create_text_element("Error connecting to cloud"));
+                }
+            };
+            var initialised = ui.newPanel.is(".dataTable");
+            // DataTables seems to have a bug with pagination elements and tabs
+            // so info from other tabs is displayed
+            // first hide them all and then show only the correct ones
+            $(".dataTables_info").hide();
+            $(".dataTables_wrapper").hide();
+            if (ui.newPanel.is(".toontalk-programs-in-cloud-table")) {
+                if (initialised) {
+                    $("#tab-" + cloud_files_index + "_info").show();
+                    $("#tab-" + cloud_files_index + "_wrapper").show();
+                } else {
+                    // is not yet a data table but is just an empty table so make it into a data table    
+                    become_cloud_files_table(ui.newPanel, 'program', widget, settings_panel, become_cloud_files_table_callback);
+                }
+            } else if (ui.newPanel.is(".toontalk-pages-in-cloud-table")) {
+                if (initialised) {
+                    $("#tab-" + cloud_pages_index + "_info").show();
+                    $("#tab-" + cloud_pages_index + "_wrapper").show();
+                } else {
+                    become_cloud_files_table(ui.newPanel, 'page'   , widget, settings_panel, become_cloud_files_table_callback);
+                }
+            }
+        };
+        var tabs;
         labels[local_files_tab_index] = "Programs stored in browser";
         add_click_listeners(widget, local_files_table, false, settings_panel);
         tables[local_files_tab_index] = local_files_table;
         if (cloud_available) {
-            create_cloud_files_table('program', widget, settings_panel, function (table) {
-                labels[cloud_files_index] = "Programs in cloud";
-                tables[cloud_files_index] = table || TT.UTILITIES.create_text_element("Error connecting");
-                if (tables[cloud_pages_index]) {
-                    settings_panel.appendChild(TT.UTILITIES.create_tabs(labels, tables));
-                }
-            });
-            create_cloud_files_table('page', widget, settings_panel, function (table) {
-                labels[cloud_pages_index] = "Published pages";
-                tables[cloud_pages_index] = table || TT.UTILITIES.create_text_element("Error connecting");
-                if (tables[cloud_files_index]) {
-                    settings_panel.appendChild(TT.UTILITIES.create_tabs(labels, tables));
-                }
-            });
+            labels[cloud_files_index] = "Programs in cloud";
+            tables[cloud_files_index] = TT.UTILITIES.create_file_data_table("toontalk-programs-in-cloud-table");
+            labels[cloud_pages_index] = "Published pages";
+            tables[cloud_pages_index] = TT.UTILITIES.create_file_data_table("toontalk-pages-in-cloud-table");
+            tabs = TT.UTILITIES.create_tabs(labels, tables);
+            settings_panel.appendChild(tabs);
+            $(tabs).on("tabsactivate", tab_activated_handler);
         } else {
             // no network responses to wait for
             settings_panel.appendChild(TT.UTILITIES.create_tabs(labels, tables));
         }
     };
-    var create_cloud_files_table = function (toontalk_type, widget, settings_panel, callback) {
+    var become_cloud_files_table = function ($table, toontalk_type, widget, settings_panel, callback) {
         var full_callback = function (response) {
             var error, table, class_name;
             if (typeof response === 'string') {
@@ -59,9 +82,9 @@ window.TOONTALK.SETTINGS =
             }
             // published pages don't have a button class -- they are now ordinary links
             class_name = (toontalk_type === 'program') && "toontalk-file-load-button"; 
-            table = TT.UTILITIES.create_file_data_table(response.items, true, class_name);
-            add_click_listeners(widget, table, true, settings_panel);
-            callback(table);
+            TT.UTILITIES.become_file_data_table($table, response.items, true, class_name);
+            add_click_listeners(widget, $table.get(0), true, settings_panel);
+            callback($table.get(0));
         };
         TT.google_drive.get_toontalk_files(false, toontalk_type, full_callback);
     };
