@@ -12,7 +12,7 @@ window.TOONTALK.SETTINGS =
     var add_files_tabs = function (widget, cloud_available, settings_panel) {
         var labels = [];
         var tables = [];
-        var local_files_tab_index = 0; // cloud_available ? 1: 0; // so cloud version is first if available
+        var local_files_index = 0; // cloud_available ? 1: 0; // so cloud version is first if available
         var cloud_files_index = 1;
         var cloud_pages_index = 2;
         var local_files_table = TT.UTILITIES.create_local_files_table(widget);
@@ -43,12 +43,15 @@ window.TOONTALK.SETTINGS =
                 } else {
                     become_cloud_files_table(ui.newPanel, 'page'   , widget, settings_panel, become_cloud_files_table_callback);
                 }
+            } else {
+                $("#tab-" + local_files_index + "_info").show();
+                $("#tab-" + local_files_index + "_wrapper").show();
             }
         };
         var tabs;
-        labels[local_files_tab_index] = "Programs stored in browser";
+        labels[local_files_index] = "Programs stored in browser";
         add_click_listeners(widget, local_files_table, false, settings_panel);
-        tables[local_files_tab_index] = local_files_table;
+        tables[local_files_index] = local_files_table;
         if (cloud_available) {
             labels[cloud_files_index] = "Programs in cloud";
             tables[cloud_files_index] = TT.UTILITIES.create_file_data_table("toontalk-programs-in-cloud-table");
