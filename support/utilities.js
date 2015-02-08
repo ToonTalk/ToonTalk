@@ -1861,9 +1861,9 @@ window.TOONTALK.UTILITIES =
             $(table).addClass("toontalk-file-table");
         },
 
-        create_local_files_table: function (widget) {
+        get_local_files_data: function () {
             var all_program_names = TT.UTILITIES.get_all_locally_stored_program_names();
-            var data = all_program_names.map(function (program_name) {
+            return all_program_names.map(function (program_name) {
                 var meta_data = TT.UTILITIES.get_local_storage_meta_data(program_name);
                 if (meta_data) {
                     return {title: program_name,
@@ -1872,7 +1872,11 @@ window.TOONTALK.UTILITIES =
                             fileSize:     meta_data.file_size
                             };
                 }
-            });
+                                        });
+        },
+
+        create_local_files_table: function () {
+            var data = TT.UTILITIES.get_local_files_data();
             var table = TT.UTILITIES.create_file_data_table();
             setTimeout(function () {
                 TT.UTILITIES.become_file_data_table(table, data, false, "toontalk-file-load-button");

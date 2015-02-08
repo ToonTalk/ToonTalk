@@ -9,13 +9,14 @@
 window.TOONTALK.SETTINGS = 
 (function (TT) {
     "use strict";
+    var tables = [];
+    // following changed since the local storage doesn't require a network response - the others are computed on demand
+    var local_files_index = 0; // cloud_available ? 1: 0; // so cloud version is first if available
+    var cloud_files_index = 1;
+    var cloud_pages_index = 2;
     var add_files_tabs = function (widget, cloud_available, settings_panel) {
         var labels = [];
-        var tables = [];
-        var local_files_index = 0; // cloud_available ? 1: 0; // so cloud version is first if available
-        var cloud_files_index = 1;
-        var cloud_pages_index = 2;
-        var local_files_table = TT.UTILITIES.create_local_files_table(widget);
+        var local_files_table = TT.UTILITIES.create_local_files_table();
         var tab_activated_handler = function(event, ui) {
             var become_cloud_files_table_callback = function (table) {
                 if (!table) {
@@ -91,7 +92,10 @@ window.TOONTALK.SETTINGS =
         };
         TT.google_drive.get_toontalk_files(false, toontalk_type, full_callback);
     };
-    
+    var close_settings = function (widget) {
+        $(".toontalk-settings-panel").remove();
+        TT.UTILITIES.display_message("Your program was copied and the new copy's name is " + widget.get_setting('program_name') + ".");
+    };
     var add_click_listeners = function (widget, table, in_the_cloud, settings_panel) {
         var program_click_handler = function (event) {
             var callback = function () {
@@ -185,6 +189,35 @@ window.TOONTALK.SETTINGS =
           var contents_div = document.createElement('div');
           var google_status = TT.google_drive && typeof gapi !== 'undefined' ? TT.google_drive.get_status() : "Google Drive API not loaded";
           var cloud_available = true; // unless discovered otherwise below
+          var program_name_changed = 
+              function () {
+                  var new_program_name = program_name.button.value.trim();
+                  var saved_callback;
+                  if (current_program_name !== new_program_name) {
+                      saved_callback = 
+                          function () {
+                              var loaded_callback =
+                                  function () {
+                                      // delay this since newly added widgets have yet to update their display (and z-index)
+                                      setTimeout(function () {
+                                                     $(settings_panel).css({"z-index": TT.UTILITIES.next_z_index()});
+                                                 },
+                                                 500);  
+                                  };
+                              var nothing_to_load_callback = function () {
+                                  // save with the new name and then close settings
+                                  widget.save(true, undefined, function () {
+                                                                   close_settings(widget);
+                                                               });
+                              };
+                              current_program_name = new_program_name;
+                              widget.set_setting('program_name', new_program_name);
+                              widget.load(true, loaded_callback, nothing_to_load_callback); // use Google Drive first
+                       };
+                       // save in case current program has changed
+                       widget.save(true, undefined, saved_callback);
+                  }
+             };
 //           var publish_and_as_workspace = TT.UTILITIES.create_vertical_table(publish, as_workspace.container);
           $(settings_panel).addClass("toontalk-settings-panel")
                            .css({width:  $(widget_element).width() +29,
@@ -193,29 +226,7 @@ window.TOONTALK.SETTINGS =
                                  top:  -25,
                                 "z-index": TT.UTILITIES.next_z_index()});
           settings_panel.appendChild(close_button);
-          program_name.button .addEventListener('change', 
-                                                function () {
-                                                    var new_program_name = program_name.button.value.trim();
-                                                    var saved_callback;
-                                                    if (current_program_name !== new_program_name) {
-                                                        saved_callback = 
-                                                            function () {
-                                                                var callback =
-                                                                    function () {
-                                                                        // delay this since newly added widgets have yet to update their display (and z-index)
-                                                                        setTimeout(function () {
-                                                                                       $(settings_panel).css({"z-index": TT.UTILITIES.next_z_index()});
-                                                                                   },
-                                                                                   500);  
-                                                                    }
-                                                                current_program_name = new_program_name;
-                                                                widget.set_setting('program_name', new_program_name);
-                                                                widget.load(true, callback); // use Google Drive first
-                                                         };
-                                                         // save in case current program has changed
-                                                         widget.save(true, undefined, saved_callback);
-                                                    }
-                                               });
+          program_name.button.addEventListener('change', program_name_changed);
           google_drive.button .addEventListener('click', 
                                                 function (event) {
                                                     // if turnning off auto-saving save one last time
