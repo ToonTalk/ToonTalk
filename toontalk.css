@@ -1417,8 +1417,11 @@ body {
 	display: none;
 }
 .toontalk-alert-element {
+	display: inline;
 	background-color: yellow;
-	font-size: 16px;
+	font-size: 24px;
+}
+.toontalk-alert-element span {
 }
 .toontalk-frontside {
     position: absolute;
