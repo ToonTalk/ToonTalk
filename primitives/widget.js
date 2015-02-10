@@ -1203,7 +1203,7 @@ window.TOONTALK.widget = (function (TT) {
                                100);
                     return;
                 }
-                if (parameters.google_drive) {
+                if (parameters.google_drive && !this.get_setting('google_drive_unavailable')) {
                     json = TT.UTILITIES.get_json_top_level(this);
                     google_drive_status = TT.google_drive.get_status();
                     if (google_drive_status === "Ready") {

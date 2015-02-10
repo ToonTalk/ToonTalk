@@ -507,7 +507,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         attribute_widget.set_value_from_decimal(attribute_value);
         attribute_widget.set_format('decimal');
         attribute_widget.attribute = attribute_name; // TODO: rename? use accessors?
-        attribute_widget.get_type_name = function () {
+        attribute_widget.get_type_name = function (plural) {
+            if (plural) {
+                return "element attributes";
+            }
             return "element attribute";
         };
         number_to_string = attribute_widget.toString;
@@ -687,7 +690,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         return description;
     };
     
-    element.get_type_name = function () {
+    element.get_type_name = function (plural) {
+        if (plural) {
+            return "elements";
+        }
         return "element";
     };
 

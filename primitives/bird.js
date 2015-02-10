@@ -17,7 +17,7 @@ window.TOONTALK.bird = (function (TT) {
     "use strict";
     var bird = Object.create(TT.widget);
     
-    bird.create = function (nest, description) { // image_url removed
+    bird.create = function (nest, description) {
         var new_bird = Object.create(bird);
         var waiting_robots = [];
         bird_set_nest = function (new_value) {
@@ -331,6 +331,11 @@ window.TOONTALK.bird = (function (TT) {
         }
         return new_bird;
     };
+
+    bird.create_function = function (type_name, description) {
+        // default function adds its arguments and gives result to bird
+        return bird.create(TT.nest.create_function(type_name, TT[type_name].function.sum), description);
+    };
     
     bird.create_backside = function () {
         return TT.bird_backside.create(this);
@@ -413,7 +418,10 @@ window.TOONTALK.bird = (function (TT) {
         return "a bird"; // good enough for now
     };
     
-    bird.get_type_name = function () {
+    bird.get_type_name = function (plural) {
+        if (plural) {
+            return "birds";
+        }
         return "bird";
     };
     
@@ -1018,6 +1026,25 @@ window.TOONTALK.nest = (function (TT) {
         }
         return new_nest;
     };
+
+    nest.create_function = function (type_name, function_object) {
+        var return_false = function () {
+            return false;
+        };
+        // message by convention is a box whose first widget should be a bird
+        // and whose other widgets are arguments to the function
+        return {get_function_type: function () {
+                    return type_name;
+                },
+                get_function_object: function () {
+                    return function_object;
+                },
+                add_to_contents: function_object.respond_to_message,
+                // following needed for bird to just pass along the contents
+                has_ancestor:            return_false,
+                visible:                 return_false,
+                any_nest_copies_visible: return_false};
+    };
     
     nest.create_backside = function () {
         return TT.nest_backside.create(this);
@@ -1044,7 +1071,10 @@ window.TOONTALK.nest = (function (TT) {
         return "docs/manual/birds-nests.html";
     };
     
-    nest.get_type_name = function () {
+    nest.get_type_name = function  (plural) {
+        if (plural) {
+            return "nests";
+        }
         return "nest";
     };
     

@@ -143,7 +143,7 @@ window.TOONTALK.backside =
                                      });
                 help_button.innerHTML = 'i'; // like tourist info -- alternatively could use a question mark
                 help_button.translate = false; // should not be translated
-                help_button.title = "Click to learn more about " + widget.get_type_name() + ".";
+                help_button.title = "Click to learn more about " + widget.get_type_name(true) + ".";
                 close_help_button = document.createElement("div");
                 $(close_help_button).addClass("toontalk-close-help-frame-button")
                                     .button()
@@ -502,7 +502,8 @@ window.TOONTALK.backside =
                                                                       "toontalk-description-input", 
                                                                       "This&nbsp;" + type_name + "&nbsp;",
                                                                       "Type here to provide additional information about this " + type_name + ".");
-            var $create_sensor_button = $("<button>Make a sensor</button>").button();
+            var $create_sensor_button = $("<button>Make a sensor</button>") .button();
+            var $get_function_button  = $("<button>Get a function</button>").button();
             var description_change = function () {
                     var description = description_text_area.button.value.trim();
                     if (widget.set_description(description, true) && TT.robot.in_training) {
@@ -527,8 +528,17 @@ window.TOONTALK.backside =
                     TT.UTILITIES.set_absolute_position($(sensor_frontside_element), initial_location);
             });
             $create_sensor_button.attr('title', "Click to create a nest which receives messages when events happen to this " + widget.get_type_name() + ".");
+            $get_function_button.click(function (event) {
+                    var function_bird = TT.bird.create_function(type_name);
+                    var function_bird_frontside_element = function_bird.get_frontside_element(true);
+                    var initial_location = $create_sensor_button.offset();
+                    widget.add_to_top_level_backside(function_bird, true);
+                    initial_location.left -= 120; // to the left of the button
+                    TT.UTILITIES.set_absolute_position($(function_bird_frontside_element), initial_location);
+            });
+            $get_function_button.attr('title', "Click to get a bird that flies to functions of " + widget.get_type_name(true) + ".");
             settings.appendChild(TT.UTILITIES.create_row(description_text_area.container));
-            settings.appendChild(TT.UTILITIES.create_row($create_sensor_button.get(0), check_box.container));
+            settings.appendChild(TT.UTILITIES.create_row($create_sensor_button.get(0), $get_function_button.get(0), check_box.container));
             backside_element.appendChild(settings);
             if (always_show_advanced_settings) {
                 $(backside_element).find(".toontalk-settings-backside-button").remove();

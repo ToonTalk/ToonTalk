@@ -275,7 +275,10 @@ window.TOONTALK.box = (function (TT) {
         return extra_text + "[" + contents.replace(extra_text, "") + ']';
     };
     
-    box.get_type_name = function () {
+    box.get_type_name = function  (plural) {
+        if (plural) {
+            return "boxes";
+        }
         return "box";
     };
 
@@ -821,9 +824,12 @@ window.TOONTALK.box_hole =
             hole.match = function () {
                 return "matched";
             };
-            hole.get_type_name = function () {
+            hole.get_type_name = function (plural) {
                 if (contents) {
-                    return contents.get_type_name();
+                    return contents.get_type_name(plural);
+                }
+                if (plural) {
+                    return "empty holes";
                 }
                 return "empty hole";
             };

@@ -282,12 +282,13 @@ window.TOONTALK.SETTINGS =
               google_drive.container.appendChild(authorize);
           } else if (google_status !== 'Authorized' && google_status !== 'Ready' && google_status !== 'Authorized but not yet ready') {
               cloud_available = false;
+              widget.set_setting('google_drive_unavailable', true);
               // delayed because JQuery otherwise complains that the buttons haven't been initialised
               setTimeout(function () {
                              google_drive.button.disabled = true; // is a checkbox
                              $(publish)            .button("option", "disabled", true);
                              $(save_now_google)    .button("option", "disabled", true);
-                             google_drive.container.title = "Inactived because attempt to connect to Google Drive returned: " + google_status;
+                             google_drive.container.title = "Inactivated because attempt to connect to Google Drive returned: " + google_status;
                              publish.title                = google_drive.container.title;
                              save_now_google.title        = google_drive.container.title;          
                          },

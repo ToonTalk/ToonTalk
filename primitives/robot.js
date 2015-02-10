@@ -626,7 +626,10 @@ window.TOONTALK.robot = (function (TT) {
         return robot_description;
     };
     
-    robot.get_type_name = function () {
+    robot.get_type_name = function (plural) {
+        if (plural) {
+            return "robots";
+        }
         return "robot";
     };
 

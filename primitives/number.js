@@ -280,11 +280,11 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     };
 
     number.ONE = function () {
-        return this.create(1);
+        return TT.number.create(1);
     };
 
     number.ZERO = function () {
-        return this.create(0);
+        return TT.number.create(0);
     };
 
     number.copy = function (parameters) {
@@ -688,7 +688,10 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         return bigrat.toDecimal(this.get_value());
     };
     
-    number.get_type_name = function () {
+    number.get_type_name = function (plural) {
+        if (plural) {
+            return "numbers";
+        }
         return "number";
     };
 
@@ -949,4 +952,50 @@ window.TOONTALK.number_backside =
         }
 
     };
+}(window.TOONTALK));
+
+window.TOONTALK.number.function = 
+(function (TT) {
+    "use strict";
+    var n_ary_function = function (message, zero_ary_value_function, binary_operation) {
+        var box_size, bird, result, index, next_widget;
+        if (!message.is_of_type('box')) {
+            TT.UTILITIES.display_message("Function birds can only respond to boxes. One was given " + TT.UTILITIES.add_a_or_an(message.get_type_name()));
+            return;
+        }
+        box_size = message.get_size();
+        if (box_size < 1) {
+            TT.UTILITIES.display_message("Function birds can only respond to boxes with holes.");
+            return;
+        }
+        bird = message.get_hole_contents(0);
+        if (!bird) {
+            TT.UTILITIES.display_message("Function birds can only respond to boxes with something in the first hole.");
+            return;
+        }
+        if (!bird.is_of_type('bird')) {
+            TT.UTILITIES.display_message("Function birds can only respond to boxes with a bird in the first hole. The first hole contains " + TT.UTILITIES.add_a_or_an(bird.get_type_name()));
+            return;
+        }
+        result = zero_ary_value_function();
+        index = 1;
+        while (index < box_size) {
+            next_widget = message.get_hole_contents(index);
+            if (!next_widget.is_of_type('number')) {
+                TT.UTILITIES.display_message("Function birds for numbers can only respond to boxes with a number in the " + TT.UTILITIES.cardinal(index) + " hole. The " + TT.UTILITIES.cardinal(index) + "hole contains " + TT.UTILITIES.add_a_or_an(next_widget.get_type_name()));
+                return;
+            }
+            binary_operation.call(result, next_widget);
+            index++;
+        }
+        // TODO pass event and robot down
+        bird.widget_dropped_on_me(result, false);
+    };
+    return {
+        sum: {respond_to_message: function (message) {
+                  return n_ary_function(message, TT.number.ZERO, TT.number.add);
+              },
+              description: "Gives the bird the sum of what is in the other holes."}
+    };
+
 }(window.TOONTALK));

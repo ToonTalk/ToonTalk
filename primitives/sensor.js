@@ -103,7 +103,10 @@ window.TOONTALK.sensor = (function (TT) {
             }
             $frontside_element.removeClass("toontalk-empty-nest");
         }
-        new_sensor.get_type_name = function () {
+        new_sensor.get_type_name = function (plural) {
+            if (plural) {
+                return "sensors";
+            }
             return 'sensor';
         };
         new_sensor.get_help_URL = function () {
