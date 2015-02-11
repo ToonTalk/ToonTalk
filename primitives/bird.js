@@ -368,7 +368,7 @@ window.TOONTALK.bird = (function (TT) {
 
     bird.create_function = function (type_name, description) {
         // default function adds its arguments and gives result to bird
-        return bird.create(TT.nest.create_function(type_name, TT[type_name].function.sum), description);
+        return bird.create(TT.nest.create_function(description, type_name, 'sum'));
     };
     
     bird.create_backside = function () {
