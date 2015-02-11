@@ -126,7 +126,9 @@ window.TOONTALK.bird = (function (TT) {
                     this.element_to_display_when_flying = element;
                     if (widget_side) {
                         this.update_display();
-                        widget_side.update_display();
+                        setTimeout(function () {
+                            widget_side.update_display();
+                        });     
                     }
                     element.width_before_carry  = element.clientWidth;
                     element.height_before_carry = element.clientHeight;
