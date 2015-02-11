@@ -1,8 +1,8 @@
-/*! jQuery UI - v1.11.2 - 2014-11-20
+/*! jQuery UI - v1.11.2 - 2015-02-10
 * http://jqueryui.com
-* Includes: core.css, resizable.css, selectable.css, accordion.css, button.css, menu.css, tabs.css, tooltip.css, theme.css
+* Includes: core.css, resizable.css, accordion.css, button.css, menu.css, selectmenu.css, tabs.css, tooltip.css, theme.css
 * To view and modify this theme, visit http://jqueryui.com/themeroller/?ffDefault=Segoe%20UI%2CArial%2Csans-serif&fwDefault=bold&fsDefault=1.1em&cornerRadius=8px&bgColorHeader=817865&bgTextureHeader=gloss_wave&bgImgOpacityHeader=45&borderColorHeader=494437&fcHeader=ffffff&iconColorHeader=fadc7a&bgColorContent=feeebd&bgTextureContent=highlight_soft&bgImgOpacityContent=100&borderColorContent=8e846b&fcContent=383838&iconColorContent=d19405&bgColorDefault=fece2f&bgTextureDefault=gloss_wave&bgImgOpacityDefault=60&borderColorDefault=d19405&fcDefault=4c3000&iconColorDefault=3d3d3d&bgColorHover=ffdd57&bgTextureHover=gloss_wave&bgImgOpacityHover=70&borderColorHover=a45b13&fcHover=381f00&iconColorHover=bd7b00&bgColorActive=ffffff&bgTextureActive=inset_soft&bgImgOpacityActive=30&borderColorActive=655e4e&fcActive=0074c7&iconColorActive=eb990f&bgColorHighlight=fff9e5&bgTextureHighlight=gloss_wave&bgImgOpacityHighlight=90&borderColorHighlight=eeb420&fcHighlight=1f1f1f&iconColorHighlight=ed9f26&bgColorError=d34d17&bgTextureError=diagonals_medium&bgImgOpacityError=20&borderColorError=ffb73d&fcError=ffffff&iconColorError=ffe180&bgColorOverlay=5c5c5c&bgTextureOverlay=flat&bgImgOpacityOverlay=50&opacityOverlay=80&bgColorShadow=cccccc&bgTextureShadow=flat&bgImgOpacityShadow=30&opacityShadow=60&thicknessShadow=7px&offsetTopShadow=-7px&offsetLeftShadow=-7px&cornerRadiusShadow=8px
-* Copyright 2014 jQuery Foundation and other contributors; Licensed MIT */
+* Copyright 2015 jQuery Foundation and other contributors; Licensed MIT */
 
 /* Layout helpers
 ----------------------------------*/
@@ -155,15 +155,6 @@
 	height: 9px;
 	right: -5px;
 	top: -5px;
-}
-.ui-selectable {
-	-ms-touch-action: none;
-	touch-action: none;
-}
-.ui-selectable-helper {
-	position: absolute;
-	z-index: 100;
-	border: 1px dotted black;
 }
 .ui-accordion .ui-accordion-header {
 	display: block;
@@ -347,6 +338,55 @@ button.ui-button::-moz-focus-inner {
 .ui-menu .ui-menu-icon {
 	left: auto;
 	right: 0;
+}
+.ui-selectmenu-menu {
+	padding: 0;
+	margin: 0;
+	position: absolute;
+	top: 0;
+	left: 0;
+	display: none;
+}
+.ui-selectmenu-menu .ui-menu {
+	overflow: auto;
+	/* Support: IE7 */
+	overflow-x: hidden;
+	padding-bottom: 1px;
+}
+.ui-selectmenu-menu .ui-menu .ui-selectmenu-optgroup {
+	font-size: 1em;
+	font-weight: bold;
+	line-height: 1.5;
+	padding: 2px 0.4em;
+	margin: 0.5em 0 0 0;
+	height: auto;
+	border: 0;
+}
+.ui-selectmenu-open {
+	display: block;
+}
+.ui-selectmenu-button {
+	display: inline-block;
+	overflow: hidden;
+	position: relative;
+	text-decoration: none;
+	cursor: pointer;
+}
+.ui-selectmenu-button span.ui-icon {
+	right: 0.5em;
+	left: auto;
+	margin-top: -8px;
+	position: absolute;
+	top: 50%;
+}
+.ui-selectmenu-button span.ui-selectmenu-text {
+	text-align: left;
+	padding: 0.4em 2.1em 0.4em 1em;
+	display: block;
+	line-height: 1.4;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 .ui-tabs {
 	position: relative;/* position: relative prevents IE scroll bug (element with position: relative inside container with overflow: auto appear as "fixed") */

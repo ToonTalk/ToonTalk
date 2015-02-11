@@ -161,15 +161,6 @@
 	right: -5px;
 	top: -5px;
 }
-.ui-selectable {
-	-ms-touch-action: none;
-	touch-action: none;
-}
-.ui-selectable-helper {
-	position: absolute;
-	z-index: 100;
-	border: 1px dotted black;
-}
 .ui-accordion .ui-accordion-header {
 	display: block;
 	cursor: pointer;
@@ -352,6 +343,55 @@ button.ui-button::-moz-focus-inner {
 .ui-menu .ui-menu-icon {
 	left: auto;
 	right: 0;
+}
+.ui-selectmenu-menu {
+	padding: 0;
+	margin: 0;
+	position: absolute;
+	top: 0;
+	left: 0;
+	display: none;
+}
+.ui-selectmenu-menu .ui-menu {
+	overflow: auto;
+	/* Support: IE7 */
+	overflow-x: hidden;
+	padding-bottom: 1px;
+}
+.ui-selectmenu-menu .ui-menu .ui-selectmenu-optgroup {
+	font-size: 1em;
+	font-weight: bold;
+	line-height: 1.5;
+	padding: 2px 0.4em;
+	margin: 0.5em 0 0 0;
+	height: auto;
+	border: 0;
+}
+.ui-selectmenu-open {
+	display: block;
+}
+.ui-selectmenu-button {
+	display: inline-block;
+	overflow: hidden;
+	position: relative;
+	text-decoration: none;
+	cursor: pointer;
+}
+.ui-selectmenu-button span.ui-icon {
+	right: 0.5em;
+	left: auto;
+	margin-top: -8px;
+	position: absolute;
+	top: 50%;
+}
+.ui-selectmenu-button span.ui-selectmenu-text {
+	text-align: left;
+	padding: 0.4em 2.1em 0.4em 1em;
+	display: block;
+	line-height: 1.4;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 .ui-tabs {
 	position: relative;/* position: relative prevents IE scroll bug (element with position: relative inside container with overflow: auto appear as "fixed") */
