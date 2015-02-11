@@ -36,7 +36,11 @@ window.TOONTALK.bird = (function (TT) {
                     other.save_dimensions();
                     // doesn't matter if robot is visible or there is a user event -- if either end visible show the delivery
                     frontside_element = this.get_frontside_element();
-                    $(frontside_element).removeClass("toontalk-bird-gimme");
+                    setTimeout(function () {
+                        // delay this since removes geometry until recomputed
+                        $(frontside_element).removeClass("toontalk-bird-gimme");
+                    });
+                    
                     if (robot) {
                         // robot needs to wait until delivery is finished
                         other.robot_waiting_before_next_step = robot;
@@ -63,6 +67,7 @@ window.TOONTALK.bird = (function (TT) {
             var temporary_bird = !!nest_recieving_message;
             var parent = this.get_parent_of_frontside();
             var bird_frontside_element = this.get_frontside_element();
+            var bird_width = $(bird_frontside_element).width();
             var visible_ancestor = this.closest_visible_ancestor_or_frontside();
             var bird_offset = $(visible_ancestor.get_frontside_element()).offset();
             var bird_finished_continuation = function () {
@@ -196,13 +201,13 @@ window.TOONTALK.bird = (function (TT) {
                 bird_offset = {left: starting_left+top_level_backside_element_bounding_box.left,
                                top:  starting_top +top_level_backside_element_bounding_box.top};
             } else if (bird_offset.left === 0 && bird_offset.top === 0) {
-                // don't really know where the bird is to put him offscreen
-                bird_offset = {left: -$top_level_backside_element.width(),
+                // don't really know where the bird is so put him offscreen
+                bird_offset = {left: -2*bird_width,
                                top:   $top_level_backside_element.height()/2};
             }
             if (!target_offset) {
                 // offscreen to the left at vertical center of top-level backside
-                target_offset = {left: -$top_level_backside_element.width(),
+                target_offset = {left: -2*bird_width,
                                  top:   $top_level_backside_element.height()/2};
             }
             // save some state before clobbering it

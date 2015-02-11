@@ -992,7 +992,7 @@ window.TOONTALK.number.function =
         message.remove();
     };
     var get_description = function () {
-        return "When given a box with another bird and some numbers I'll give the other bird the " + this.name + " of the numbers. On my back side you change me to compute other functions.";
+        return "When given a box with another bird and some numbers I'll give the other bird the " + this.name + " of the numbers. On my back side you can change me to compute other functions.";
     };
     var to_string_function = function () {
         return "a " + this.name + " function bird";
