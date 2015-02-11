@@ -464,14 +464,14 @@ window.TOONTALK.bird = (function (TT) {
         return other.get_type_name && other.get_type_name() === this.get_type_name();
     };
     
-    TT.creators_from_json["bird"] = function (json, additional_info) {
-        return TT.bird.create(TT.UTILITIES.create_from_json(json.nest, additional_info), json.description);
-    };
-    
     bird.drop_on = function (other, is_backside, event, robot) {
         if (other.widget_dropped_on_me) {
             return other.widget_dropped_on_me(this, false, event, robot);
         }
+    };
+        
+    TT.creators_from_json["bird"] = function (json, additional_info) {
+        return TT.bird.create(TT.UTILITIES.create_from_json(json.nest, additional_info), json.description);
     };
     
     return bird;
@@ -1053,10 +1053,11 @@ window.TOONTALK.nest = (function (TT) {
         return new_nest;
     };
 
-    nest.create_function = function (type_name, function_object) {
+    nest.create_function = function (description, type_name, function_name) {
         var return_false = function () {
             return false;
         };
+        var function_object = TT[type_name] && TT[type_name].function && TT[type_name].function[function_name];
         // message by convention is a box whose first widget should be a bird
         // and whose other widgets are arguments to the function
         var function_nest =
@@ -1068,9 +1069,6 @@ window.TOONTALK.nest = (function (TT) {
                 function () {
                     return function_object;
                 },
-            // the following is run when the nest receives something
-            // here it does what the particular function_object indicates
-            add_to_contents: function_object.respond_to_message,
             is_function_nest: 
                 function () {
                     return true;
@@ -1085,7 +1083,7 @@ window.TOONTALK.nest = (function (TT) {
                             function_type: type_name,
                             function_name: function_object.name};
                 },
-            add_to_json: TT.widget.add_to_json, //.bind(function_nest),
+            add_to_json: TT.widget.add_to_json,
             get_widget:
                 function () {
                     return this;
@@ -1095,13 +1093,27 @@ window.TOONTALK.nest = (function (TT) {
             visible:                 return_false,
             any_nest_copies_visible: return_false,
             is_backside:             return_false};
-        function_nest = TT.widget.has_parent(function_nest);
-        function_nest = TT.widget.add_sides_functionality(function_nest);
-        if (TT.debugging) {
-            function_nest.debug_id = TT.UTILITIES.generate_unique_id();
-            function_nest.debug_string = "a function nest that " + function_object.get_description();
+        TT.widget.has_parent(function_nest);
+        TT.widget.has_description(function_nest);
+        TT.widget.add_sides_functionality(function_nest);
+        function_nest.set_description(description);
+        if (function_object) {
+            // the following is run when the nest receives something
+            // here it does what the particular function_object indicates
+            function_nest.add_to_contents = function_object.respond_to_message;
+            if (TT.debugging) {
+                function_nest.debug_id = TT.UTILITIES.generate_unique_id();
+                function_nest.debug_string = "a function nest that " + function_object.get_description();
+            }
+        } else {
+            TT.UTILITIES.report_internal_error("Cannot create a function nest because TOONTALK." + type_name + "." + function_name + " is not defined.");
         }
         return function_nest;
+    };
+
+        
+    TT.creators_from_json["function_nest"] = function (json, additional_info) {
+        return TT.nest.create_function(json.description, json.function_type, json.function_name);
     };
     
     nest.create_backside = function () {
