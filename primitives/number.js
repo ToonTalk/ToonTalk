@@ -997,15 +997,29 @@ window.TOONTALK.number.function =
     var to_string_function = function () {
         return "a " + this.name + " function bird";
     };
-    return {
-        sum: {name: 'sum',
-              respond_to_message: 
-                  function (message) {
-                      return n_ary_function(message, TT.number.ZERO, TT.number.add);
-                  },
-              get_description: get_description,
-              toString: to_string_function
-           }
+    var functions = {};
+    var add_function_object = function (name, respond_to_message) {
+        functions[name] = {name: name,
+                           respond_to_message: respond_to_message,
+                           get_description: get_description,
+                           toString: to_string_function};
     };
+    add_function_object('sum', 
+                        function (message) {
+                            return n_ary_function(message, TT.number.ZERO, TT.number.add);
+                        });
+    add_function_object('difference', 
+                        function (message) {
+                             return n_ary_function(message, TT.number.ZERO, TT.number.subtract);
+                        });
+    add_function_object('product', 
+                        function (message) {
+                             return n_ary_function(message, TT.number.ONE, TT.number.multiply);
+                        });
+    add_function_object('division', 
+                        function (message) {
+                             return n_ary_function(message, TT.number.ONE, TT.number.divide);
+                        });
+    return functions;
 
 }(window.TOONTALK));
