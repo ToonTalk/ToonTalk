@@ -344,6 +344,15 @@ window.TOONTALK.bird = (function (TT) {
             }
             return "This bird no longer knows where her nest is. She'll get rid of anything you give her.";
         };
+        new_bird.toString = function () {
+            if (nest) {
+                if (nest.is_function_nest()) {
+                    return nest.get_function_object().toString();
+                }
+                return "a bird";
+            }
+            return "a bird without a nest";
+        };
         new_bird = new_bird.add_standard_widget_functionality(new_bird);
         new_bird.set_description(description);
         if (TT.debugging) {
@@ -437,10 +446,6 @@ window.TOONTALK.bird = (function (TT) {
         // duration is proportional to distance
 //      console.log("Flying to " + target_offset.left + ", " + target_offset.top + " holding " + (this.element_to_display_when_flying && this.element_to_display_when_flying.className));
         this.animate_to_absolute_position(target_offset, full_continuation);
-    };
-    
-    bird.toString = function () {
-        return "a bird"; // good enough for now
     };
     
     bird.get_type_name = function (plural) {
