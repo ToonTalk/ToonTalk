@@ -335,6 +335,15 @@ window.TOONTALK.bird = (function (TT) {
             // typically is a robot waiting for this bird to return to a box hole
             waiting_robots.push(robot_run);
         };
+        new_bird.get_custom_title_prefix = function () {
+            if (nest) {
+                if (nest.is_function_nest()) {
+                    return nest.get_function_object().description;
+                }
+                return "Drop something on me and I'll take it to my nest.";
+            }
+            return "This bird no longer knows where her nest is. She'll get rid of anything you give her.";
+        };
         new_bird = new_bird.add_standard_widget_functionality(new_bird);
         new_bird.set_description(description);
         if (TT.debugging) {
@@ -458,10 +467,6 @@ window.TOONTALK.bird = (function (TT) {
         if (other.widget_dropped_on_me) {
             return other.widget_dropped_on_me(this, false, event, robot);
         }
-    };
-
-    bird.get_custom_title_prefix = function () {
-        return "Drop something on me and I'll take it to my nest.";
     };
     
     return bird;

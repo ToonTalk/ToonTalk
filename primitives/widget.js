@@ -324,7 +324,7 @@ window.TOONTALK.widget = (function (TT) {
                             title = "Drag this " + type_name + " to a work area.";
                         }   
                     } else if (!backside || !backside.get_element() || !$(backside.get_element()).is(":visible")) {
-                        title = "Click to see the back side of this " + type_name;
+                        title = "Click to see my back side.";
                     } else if (!description && !this.get_custom_title_prefix) {
                         title = "This is " + TT.UTILITIES.add_a_or_an(type_name);
                     } else {
