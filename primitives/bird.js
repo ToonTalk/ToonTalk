@@ -1049,7 +1049,8 @@ window.TOONTALK.nest = (function (TT) {
         };
         // message by convention is a box whose first widget should be a bird
         // and whose other widgets are arguments to the function
-        return {get_function_type: function () {
+        var function_nest =
+            {get_function_type: function () {
                     return type_name;
                 },
                 get_function_object: function () {
@@ -1069,6 +1070,11 @@ window.TOONTALK.nest = (function (TT) {
                 has_ancestor:            return_false,
                 visible:                 return_false,
                 any_nest_copies_visible: return_false};
+        if (TT.debugging) {
+            function_nest.debug_id = TT.UTILITIES.generate_unique_id();
+            function_nest.debug_string = "a function nest that " + function_object.description;
+        }
+        return function_nest;
     };
     
     nest.create_backside = function () {
