@@ -536,7 +536,13 @@ window.TOONTALK.backside =
                     initial_location.left -= 120; // to the left of the button
                     TT.UTILITIES.set_absolute_position($(function_bird_frontside_element), initial_location);
             });
-            $get_function_button.attr('title', "Click to get a bird that flies to functions of " + widget.get_type_name(true) + ".");
+            if (widget.is_of_type('number')) {
+                // will implement more functions (e.g. for string elements and boxes)
+                $get_function_button.attr('title', "Click to get a bird that flies to functions of " + widget.get_type_name(true) + ".");
+            } else {
+                $get_function_button.attr('title', "No functions that operate on " + widget.get_type_name(true) + " implemented (yet).");
+                $get_function_button.button("option", "disabled", true);  
+            }
             settings.appendChild(TT.UTILITIES.create_row(description_text_area.container));
             settings.appendChild(TT.UTILITIES.create_row($create_sensor_button.get(0), $get_function_button.get(0), check_box.container));
             backside_element.appendChild(settings);
