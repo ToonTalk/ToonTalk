@@ -16,6 +16,20 @@
 window.TOONTALK.bird = (function (TT) {
     "use strict";
     var bird = Object.create(TT.widget);
+
+    var add_function_choice = function (nest, backside, bird) {
+        var type_name = nest.get_function_type();
+        var function_object = nest.get_function_object();
+        var items = Object.getOwnPropertyNames(TOONTALK.number.function); 
+        var select_menu = TT.UTILITIES.create_select_menu("functions", items, "toontalk-select-function", "Which function should I fly to? ", "Click to select the function that this bird will use when given a box.");
+        var backside_element = backside.get_element();
+        select_menu.menu.addEventListener('change', function (event) {
+                nest.set_function_name(event.target.value);
+                // update the bird's title (and maybe someday more - e.g. t-shirt)
+                bird.rerender();
+            });
+        backside_element.insertBefore(select_menu.container, backside_element.firstChild);
+    };
     
     bird.create = function (nest, description) {
         var new_bird = Object.create(bird);
@@ -340,6 +354,13 @@ window.TOONTALK.bird = (function (TT) {
             // typically is a robot waiting for this bird to return to a box hole
             waiting_robots.push(robot_run);
         };
+        new_bird.create_backside = function () {
+            var backside = TT.bird_backside.create(this);
+            if (nest && nest.is_function_nest()) {
+                add_function_choice(nest, backside, this);
+            }
+            return backside;
+        };
         new_bird.get_custom_title_prefix = function () {
             if (nest) {
                 if (nest.is_function_nest()) {
@@ -374,10 +395,6 @@ window.TOONTALK.bird = (function (TT) {
     bird.create_function = function (type_name, description) {
         // default function adds its arguments and gives result to bird
         return bird.create(TT.nest.create_function(description, type_name, 'sum'));
-    };
-    
-    bird.create_backside = function () {
-        return TT.bird_backside.create(this);
     };
     
     bird.match = function (other) {
@@ -1073,6 +1090,11 @@ window.TOONTALK.nest = (function (TT) {
             get_function_object: 
                 function () {
                     return function_object;
+                },
+            set_function_name:
+                function (new_name) {
+                    function_name = new_name;
+                    function_object = TT[type_name] && TT[type_name].function && TT[type_name].function[function_name];
                 },
             is_function_nest: 
                 function () {

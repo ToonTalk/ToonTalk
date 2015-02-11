@@ -1684,6 +1684,35 @@ window.TOONTALK.UTILITIES =
                     button: input,
                     label: label_element};
         },
+
+        create_select_menu: function (name, items, class_name, label, title) {
+            var container = document.createElement("div");
+            var select = document.createElement("select");
+            var label_element = document.createElement("label");
+            select.className = class_name;
+            select.name = name;
+            select.id = TT.UTILITIES.generate_unique_id();
+            label_element.innerHTML = label;
+            label_element.htmlFor = select.id;
+            container.appendChild(label_element);
+            container.appendChild(select);
+            container.title = title;
+            items.forEach(function (item) {
+                var option = document.createElement('option');
+                option.value = item;
+                option.innerHTML = item;
+                select.appendChild(option);
+            });
+            // following produces a select menu that works when added to document.body but not the backside of a widget
+            // looks OK but nothing pops up when clicked
+//             setTimeout(function () {
+//                 $(select).selectmenu({width: 200});
+//             });
+            $(select).addClass("ui-widget");
+            return {container: container,
+                    menu:      select,
+                    label:     label_element};
+        },
         
         create_check_box: function (value, class_name, label, title) {
             var container = document.createElement("div");

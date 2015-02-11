@@ -540,7 +540,7 @@ window.TOONTALK.backside =
                 // will implement more functions (e.g. for string elements and boxes)
                 $get_function_button.attr('title', "Click to get a bird that flies to functions of " + widget.get_type_name(true) + ".");
             } else {
-                $get_function_button.attr('title', "No functions that operate on " + widget.get_type_name(true) + " implemented (yet).");
+                $get_function_button.attr('title', "There are no functions that operate on " + widget.get_type_name(true) + " (yet).");
                 $get_function_button.button("option", "disabled", true);  
             }
             settings.appendChild(TT.UTILITIES.create_row(description_text_area.container));
