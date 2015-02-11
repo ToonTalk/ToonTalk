@@ -193,11 +193,15 @@ window.TOONTALK.bird = (function (TT) {
             if (starting_left) {
                 bird_offset = {left: starting_left+top_level_backside_element_bounding_box.left,
                                top:  starting_top +top_level_backside_element_bounding_box.top};
+            } else if (bird_offset.left === 0 && bird_offset.top === 0) {
+                // don't really know where the bird is to put him offscreen
+                bird_offset = {left: -$top_level_backside_element.width(),
+                               top:   $top_level_backside_element.height()/2};
             }
             if (!target_offset) {
                 // offscreen to the left at vertical center of top-level backside
                 target_offset = {left: -$top_level_backside_element.width(),
-                                 top:  $top_level_backside_element.height()/2};
+                                 top:   $top_level_backside_element.height()/2};
             }
             // save some state before clobbering it
             parent_element = bird_frontside_element.parentElement;
