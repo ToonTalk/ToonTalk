@@ -946,8 +946,8 @@ window.TOONTALK.box_hole =
                 return false;
             };
             hole.get_widget = function () {
-                // isn't a backside so returns itself
-                return this;
+                // used to return itself but the box is the 'real' widget
+                return this.get_parent_of_frontside();
             };
             if (TT.debugging) {
                 hole.debug_string = "An empty hole";

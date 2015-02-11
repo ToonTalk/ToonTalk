@@ -31,7 +31,7 @@ window.TOONTALK.bird = (function (TT) {
                     TT.UTILITIES.display_message("Bird can't take its nest to its nest!");
                     return false;
                 }
-                if (nest.visible() || nest.any_nest_copies_visible()) {
+                if (nest.visible() || (nest.is_function_nest() && this.visible()) || nest.any_nest_copies_visible()) {
                     // used to include this.visible() || but then when nest was on backside flew off to 0,0
                     other.save_dimensions();
                     // doesn't matter if robot is visible or there is a user event -- if either end visible show the delivery
@@ -170,15 +170,19 @@ window.TOONTALK.bird = (function (TT) {
             }
             message_element = message_side.get_element();
             carry_element(message_element, message_side);
-            target_frontside_element = target_side.get_widget().closest_visible_ancestor().get_widget().get_frontside_element();
             if (!target_side.visible() && !this.visible()) {
                 // neither are visible so just add contents to nest
                 nest_recieving_message.add_to_contents(message_side, this, true);
                 return;
             }
-            target_offset = $(target_frontside_element).offset();
-            $top_level_backside_element = $(nest_recieving_message.get_frontside_element()).closest(".toontalk-top-level-backside");
-            if (!$top_level_backside_element.is("*")) {
+            if (!target_side.is_function_nest()) {
+                // nests of functions are 'virtual'
+                target_frontside_element = target_side.get_widget().closest_visible_ancestor().get_widget().get_frontside_element();
+                target_offset = $(target_frontside_element).offset();
+                $top_level_backside_element = $(nest_recieving_message.get_frontside_element()).closest(".toontalk-top-level-backside");   
+            }
+            if (!$top_level_backside_element || !$top_level_backside_element.is("*")) {
+                // target (e.g. nest) isn't contributing its top-level backside so use this bird's
                 $top_level_backside_element = $(this.get_frontside_element()).closest(".toontalk-top-level-backside");
             }
             top_level_backside_element_bounding_box = $top_level_backside_element.offset();
@@ -189,6 +193,11 @@ window.TOONTALK.bird = (function (TT) {
             if (starting_left) {
                 bird_offset = {left: starting_left+top_level_backside_element_bounding_box.left,
                                top:  starting_top +top_level_backside_element_bounding_box.top};
+            }
+            if (!target_offset) {
+                // offscreen to the left at vertical center of top-level backside
+                target_offset = {left: -$top_level_backside_element.width(),
+                                 top:  $top_level_backside_element.height()/2};
             }
             // save some state before clobbering it
             parent_element = bird_frontside_element.parentElement;
@@ -210,7 +219,8 @@ window.TOONTALK.bird = (function (TT) {
                                            width:  width,
                                            height: height
                                            });
-            nest_contents_frontside_element = nest_recieving_message.get_contents_frontside_element();
+            nest_contents_frontside_element = nest_recieving_message.get_contents_frontside_element &&
+                                              nest_recieving_message.get_contents_frontside_element();
             if (nest_contents_frontside_element && nest_recieving_message.visible() &&
                 (!robot || robot.visible())) {
                 // just fly to nest and return if unwatched robot caused this
@@ -1039,7 +1049,16 @@ window.TOONTALK.nest = (function (TT) {
                 get_function_object: function () {
                     return function_object;
                 },
+                // the following is run when the nest receives something
+                // here it does what the particular function_object indicates
                 add_to_contents: function_object.respond_to_message,
+                is_function_nest: function () {
+                    return true;
+                },
+                animate_bird_delivery:
+                    function (message_side, bird, continuation, robot) {
+                        bird.animate_delivery_to(message_side, this, undefined, undefined, undefined, continuation, robot);
+                },
                 // following needed for bird to just pass along the contents
                 has_ancestor:            return_false,
                 visible:                 return_false,

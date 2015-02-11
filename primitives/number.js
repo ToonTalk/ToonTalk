@@ -988,8 +988,8 @@ window.TOONTALK.number.function =
             binary_operation.call(result, next_widget);
             index++;
         }
-        // TODO pass event and robot down
         bird.widget_dropped_on_me(result, false);
+        message.remove();
     };
     return {
         sum: {respond_to_message: function (message) {

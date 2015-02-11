@@ -56,6 +56,11 @@ window.TOONTALK.widget = (function (TT) {
                     return this.get_type_name() === type_name;
                 };
             }
+            if (!widget.is_function_nest) {
+                widget.is_function_nest = function () {
+                        return false;
+                };
+            }
             widget.is_widget = true;
             return widget;
         },
