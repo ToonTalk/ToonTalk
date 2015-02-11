@@ -338,7 +338,7 @@ window.TOONTALK.bird = (function (TT) {
         new_bird.get_custom_title_prefix = function () {
             if (nest) {
                 if (nest.is_function_nest()) {
-                    return nest.get_function_object().description;
+                    return nest.get_function_object().get_description();
                 }
                 return "Drop something on me and I'll take it to my nest.";
             }
@@ -1055,29 +1055,46 @@ window.TOONTALK.nest = (function (TT) {
         // message by convention is a box whose first widget should be a bird
         // and whose other widgets are arguments to the function
         var function_nest =
-            {get_function_type: function () {
+            {get_function_type: 
+                function () {
                     return type_name;
                 },
-                get_function_object: function () {
+            get_function_object: 
+                function () {
                     return function_object;
                 },
-                // the following is run when the nest receives something
-                // here it does what the particular function_object indicates
-                add_to_contents: function_object.respond_to_message,
-                is_function_nest: function () {
+            // the following is run when the nest receives something
+            // here it does what the particular function_object indicates
+            add_to_contents: function_object.respond_to_message,
+            is_function_nest: 
+                function () {
                     return true;
                 },
-                animate_bird_delivery:
-                    function (message_side, bird, continuation, robot) {
-                        bird.animate_delivery_to(message_side, this, undefined, undefined, undefined, continuation, robot);
+            animate_bird_delivery:
+                function (message_side, bird, continuation, robot) {
+                    bird.animate_delivery_to(message_side, this, undefined, undefined, undefined, continuation, robot);
                 },
-                // following needed for bird to just pass along the contents
-                has_ancestor:            return_false,
-                visible:                 return_false,
-                any_nest_copies_visible: return_false};
+            get_json: 
+                function (json_history) {
+                    return {type: 'function_nest',
+                            function_type: type_name,
+                            function_name: function_object.name};
+                },
+            add_to_json: TT.widget.add_to_json, //.bind(function_nest),
+            get_widget:
+                function () {
+                    return this;
+                },
+            // following needed for bird to just pass along the contents
+            has_ancestor:            return_false,
+            visible:                 return_false,
+            any_nest_copies_visible: return_false,
+            is_backside:             return_false};
+        function_nest = TT.widget.has_parent(function_nest);
+        function_nest = TT.widget.add_sides_functionality(function_nest);
         if (TT.debugging) {
             function_nest.debug_id = TT.UTILITIES.generate_unique_id();
-            function_nest.debug_string = "a function nest that " + function_object.description;
+            function_nest.debug_string = "a function nest that " + function_object.get_description();
         }
         return function_nest;
     };

@@ -991,14 +991,17 @@ window.TOONTALK.number.function =
         bird.widget_dropped_on_me(result, false);
         message.remove();
     };
-    var create_description = function (function_name) {
-        return "When given a box with another bird and some numbers I'll give the other bird the " + function_name + " of the numbers. On my back side you change me to compute other functions."
-    }
     return {
-        sum: {respond_to_message: function (message) {
-                  return n_ary_function(message, TT.number.ZERO, TT.number.add);
-              },
-              description: create_description("sum")}
+        sum: {name: 'sum',
+              respond_to_message: 
+                  function (message) {
+                      return n_ary_function(message, TT.number.ZERO, TT.number.add);
+                  },
+              get_description:
+                  function () {
+                      return "When given a box with another bird and some numbers I'll give the other bird the " + this.name + " of the numbers. On my back side you change me to compute other functions.";
+                  }
+           }
     };
 
 }(window.TOONTALK));

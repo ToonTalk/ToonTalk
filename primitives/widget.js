@@ -597,12 +597,12 @@ window.TOONTALK.widget = (function (TT) {
                 if (json_semantic.view) {
                     // already contains both semantic and view
                     json = json_semantic;
-                    json_view = json_semantic.view;
+                    json_view =     json_semantic.view;
                     json_semantic = json_semantic.semantic;
                 } else {
                     json_view = {};
                     json = {semantic: json_semantic,
-                            view: json_view};
+                            view:     json_view};
                 }
                 json.version = 1;
                 if (this.get_erased && this.get_erased()) {
