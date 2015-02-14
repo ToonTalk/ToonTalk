@@ -614,6 +614,8 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         case '/':
             return this.divide(other_number);
         case '^':
+            // deprecated since this only worked with integer exponents
+            // and there is now a function bird who does this better
             return this.power(other_number);
         default:
             TT.UTILITIES.report_internal_error("Number received a number with unsupported operator: " + other_number.get_operator());
@@ -829,7 +831,7 @@ window.TOONTALK.number_backside =
             var minus = TT.UTILITIES.create_radio_button("operator", "-", "toontalk-minus-radio-button", "&minus;", "Subtract me from what I'm dropped on.");
             var multiply = TT.UTILITIES.create_radio_button("operator", "*", "toontalk-times-radio-button", "&times;", "Multiply me with what I'm dropped on.");
             var divide = TT.UTILITIES.create_radio_button("operator", "/", "toontalk-dividie-radio-button", "&divide;", "Divide me into what I'm dropped on.");
-            var power = TT.UTILITIES.create_radio_button("operator", "^", "toontalk-power-radio-button", "Integer power", "Use me as the number of times to multiply together what I'm dropped on.");
+//             var power = TT.UTILITIES.create_radio_button("operator", "^", "toontalk-power-radio-button", "Integer power", "Use me as the number of times to multiply together what I'm dropped on.");
             var update_value = function (event) {
                 var numerator = numerator_input.button.value.trim();
                 var denominator = denominator_input.button.value.trim();
@@ -868,7 +870,7 @@ window.TOONTALK.number_backside =
                 }
             };
             var update_operator = function () {
-                var selected_button = TT.UTILITIES.selected_radio_button(plus.button, minus.button, multiply.button, divide.button, power.button);
+                var selected_button = TT.UTILITIES.selected_radio_button(plus.button, minus.button, multiply.button, divide.button); // , power.button
                 var operator = selected_button.value;
                 number.set_operator(operator, true);
                 if (TT.robot.in_training) {
@@ -881,7 +883,7 @@ window.TOONTALK.number_backside =
             };
             var number_set = TT.UTILITIES.create_horizontal_table(numerator_input.container, slash, denominator_input.container);
             var format_set = $(TT.UTILITIES.create_horizontal_table(decimal_format.container, mixed_number_format.container, improper_format.container, scientific_format.container)).buttonset().get(0);
-            var operator_set = $(TT.UTILITIES.create_horizontal_table(plus.container, minus.container, multiply.container, divide.container, power.container)).buttonset().get(0);
+            var operator_set = $(TT.UTILITIES.create_horizontal_table(plus.container, minus.container, multiply.container, divide.container)).buttonset().get(0); // , power.container)
             var advanced_settings_button = TT.backside.create_advanced_settings_button(backside, number);
             var generic_backside_update = backside.update_display;
             slash.innerHTML = "/";
@@ -930,15 +932,15 @@ window.TOONTALK.number_backside =
                 case "/":
                 TT.UTILITIES.check_radio_button(divide);
                 break;
-                case "^":
-                TT.UTILITIES.check_radio_button(power);
-                break;
+//                 case "^":
+//                 TT.UTILITIES.check_radio_button(power);
+//                 break;
             }
             plus.button    .addEventListener('change', update_operator);
             minus.button   .addEventListener('change', update_operator);
             multiply.button.addEventListener('change', update_operator);
             divide.button  .addEventListener('change', update_operator);
-            power.button   .addEventListener('change', update_operator);
+//             power.button   .addEventListener('change', update_operator);
             backside.update_display = function () {
                 $(numerator_input.button).val(number.numerator_string());
                 $(denominator_input.button).val(number.denominator_string());
