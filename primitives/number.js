@@ -974,6 +974,7 @@ window.TOONTALK.number_backside =
 window.TOONTALK.number.function = 
 (function (TT) {
     "use strict";
+    var RADIAN = 180/Math.PI; // TODO: make a const when Ecma6 is everywhere
     var process_message = function (message, compute_result) {
         var box_size, bird, result;
         if (!message.is_of_type('box')) {
@@ -1169,14 +1170,29 @@ window.TOONTALK.number.function =
                         "Your bird will return with a random number between 0 and 1.");                       
     add_function_object('sine', 
                         function (message) {
-                            return javascript_function(message, Math.sin, 1, 'sine');
+                            var sin = function (degrees) {
+                                         return Math.sin(degrees/RADIAN);
+                                      };
+                            return javascript_function(message, sin, 1, 'sine');
                         },
-                        "Your bird will return with an approximation of the sine of the number (in radians).");                  
+                        "Your bird will return with an approximation of the sine of the number (in degrees).");                  
     add_function_object('cosine', 
                         function (message) {
-                            return javascript_function(message, Math.cos, 1, 'cosine');
+                            var sin = function (degrees) {
+                                         return Math.cos(degrees/RADIAN);
+                                      };
+                            return javascript_function(message, cos, 1, 'cosine');
                         },
-                        "Your bird will return with an approximation of the cssine of the number (in radians).");
+                        "Your bird will return with an approximation of the cosine of the number (in degrees).");
+    add_function_object('sine (in radians)', 
+                        function (message) {
+                            return javascript_function(message, Math.sin, 1, 'sine (in radians)');
+                        },
+                        "Your bird will return with an approximation of the sine of the number (in radians).");                  
+    add_function_object('cosine (in radians)', 
+                        function (message) {
+                            return javascript_function(message, Math.cos, 1, 'cosine (in radians)');
+                        },
+                        "Your bird will return with an approximation of the cosine of the number (in radians).");
     return functions;
-
 }(window.TOONTALK));
