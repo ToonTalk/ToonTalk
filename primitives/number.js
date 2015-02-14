@@ -957,8 +957,8 @@ window.TOONTALK.number_backside =
 window.TOONTALK.number.function = 
 (function (TT) {
     "use strict";
-    var n_ary_function = function (message, zero_ary_value_function, binary_operation) {
-        var box_size, bird, result, index, next_widget;
+    var process_message = function (message, compute_result) {
+        var box_size, bird, result;
         if (!message.is_of_type('box')) {
             TT.UTILITIES.display_message("Function birds can only respond to boxes. One was given " + TT.UTILITIES.add_a_or_an(message.get_type_name()));
             return;
@@ -977,19 +977,60 @@ window.TOONTALK.number.function =
             TT.UTILITIES.display_message("Function birds can only respond to boxes with a bird in the first hole. The first hole contains " + TT.UTILITIES.add_a_or_an(bird.get_type_name()));
             return;
         }
-        result = zero_ary_value_function();
-        index = 1;
-        while (index < box_size) {
-            next_widget = message.get_hole_contents(index);
-            if (!next_widget.is_of_type('number')) {
-                TT.UTILITIES.display_message("Function birds for numbers can only respond to boxes with a number in the " + TT.UTILITIES.cardinal(index) + " hole. The " + TT.UTILITIES.cardinal(index) + "hole contains " + TT.UTILITIES.add_a_or_an(next_widget.get_type_name()));
+        result = compute_result(bird, box_size);
+        if (result) {
+            bird.widget_dropped_on_me(result, false);
+        }
+    };
+    var number_check = function (widget, function_name, index) {
+        if (widget.is_of_type('number')) {
+            return true;
+        }
+        TT.UTILITIES.display_message("Birds for the " + function_name + " function can only respond to boxes with a number in the " + TT.UTILITIES.cardinal(index) + " hole. The " + TT.UTILITIES.cardinal(index) + "hole contains " + TT.UTILITIES.add_a_or_an(widget.get_type_name()));
+        return false;
+    };
+    var n_ary_function = function (message, zero_ary_value_function, binary_operation, function_name) { 
+        var compute_result = function (bird, box_size) {
+            var result = zero_ary_value_function();
+            var index = 1;
+            var next_widget;
+            while (index < box_size) {
+                next_widget = message.get_hole_contents(index);
+                if (!number_check(next_widget, function_name, index)) {
+                    return;
+                }
+                binary_operation.call(result, next_widget);
+                index++;
+            }
+            return result;
+        };
+        process_message(message, compute_result);
+    };
+    var fixed_arity_function = function (message, operation, arity, function_name) {
+        var compute_result = function (bird, box_size) {
+            if (arity !== box_size-1) {
+                TT.UTILITIES.display_message("Birds for the " + function_name + " function need " + arity + " numbers. Not " + (box_size-1) + ".");
                 return;
             }
-            binary_operation.call(result, next_widget);
-            index++;
-        }
-        bird.widget_dropped_on_me(result, false);
-        message.remove();
+            var args = [];
+            var index = 1; // bird is in 0
+            var first_widget_copy, next_widget;
+            while (index <= arity) {
+                next_widget = message.get_hole_contents(index);
+                if (!number_check(next_widget, function_name, index)) {
+                    return;
+                }
+                if (index === 1) {
+                    first_widget_copy = next_widget.copy({just_value: true});
+                } else {
+                    args.push(next_widget);
+                }
+                index++;
+            }
+            operation.apply(first_widget_copy, args);
+            return first_widget_copy;
+        };
+        process_message(message, compute_result);
     };
     var get_description = function () {
         return "When given a box with another bird and some numbers I'll give the other bird the " + this.name + " of the numbers. On my back side you can change me to compute other functions.";
@@ -1006,20 +1047,25 @@ window.TOONTALK.number.function =
     };
     add_function_object('sum', 
                         function (message) {
-                            return n_ary_function(message, TT.number.ZERO, TT.number.add);
+                            return n_ary_function(message, TT.number.ZERO, TT.number.add, 'sum');
                         });
     add_function_object('difference', 
                         function (message) {
-                             return n_ary_function(message, TT.number.ZERO, TT.number.subtract);
+                             return n_ary_function(message, TT.number.ZERO, TT.number.subtract, 'difference');
                         });
     add_function_object('product', 
                         function (message) {
-                             return n_ary_function(message, TT.number.ONE, TT.number.multiply);
+                             return n_ary_function(message, TT.number.ONE, TT.number.multiply, 'product');
                         });
     add_function_object('division', 
                         function (message) {
-                             return n_ary_function(message, TT.number.ONE, TT.number.divide);
+                             return n_ary_function(message, TT.number.ONE, TT.number.divide, 'division');
                         });
+    add_function_object('absolute value', 
+                        function (message) {
+                             return fixed_arity_function(message, TT.number.absolute_value, 1, 'absolute value');
+                        });
+                        
     return functions;
 
 }(window.TOONTALK));
