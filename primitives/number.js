@@ -1029,6 +1029,19 @@ window.TOONTALK.number.function =
         };
         process_message(message, compute_result);
     };
+    var bigrat_zero_args_function = function (message, operation, function_name) {
+        var compute_result = function (bird, box_size) {
+            var widget, result;
+            if (box_size !== 1) {
+                TT.UTILITIES.display_message("Birds for the " + function_name + " function don't need any numbers. Not " + (box_size-1) + ".");
+                return;
+            }
+            result = TT.number.ZERO();
+            operation(result.get_value());
+            return result;
+        };
+        process_message(message, compute_result);
+    };
     var bigrat_unary_function = function (message, operation, function_name) {
         var compute_result = function (bird, box_size) {
             var widget, result;
@@ -1115,7 +1128,11 @@ window.TOONTALK.number.function =
                                 return bigrat.nthRoot(bigrat_value, to_numerator, bigrat_power[1].valueOf());
                             };
                             return bigrat_binary_function(message, power_function, 'power');
-                        });                        
+                        });
+    add_function_object('random', 
+                        function (message) {
+                             return bigrat_zero_args_function(message, bigrat.fromRandom, 'random');
+                        });                       
                         
     return functions;
 
