@@ -525,6 +525,10 @@ window.TOONTALK.backside =
                     var initial_location = $create_sensor_button.offset();
                     widget.add_to_top_level_backside(sensor, true);
                     initial_location.left -= 120; // to the left of the button
+                    if (initial_location.left < 0) {
+                        // don't go off edge
+                        initial_location.left = 0;
+                    }
                     TT.UTILITIES.set_absolute_position($(sensor_frontside_element), initial_location);
             });
             $create_sensor_button.attr('title', "Click to create a nest which receives messages when events happen to this " + widget.get_type_name() + ".");
@@ -534,6 +538,10 @@ window.TOONTALK.backside =
                     var initial_location = $create_sensor_button.offset();
                     widget.add_to_top_level_backside(function_bird, true);
                     initial_location.left -= 120; // to the left of the button
+                    if (initial_location.left < 0) {
+                        // don't go off edge
+                        initial_location.left = 0;
+                    }
                     TT.UTILITIES.set_absolute_position($(function_bird_frontside_element), initial_location);
             });
             if (widget.is_of_type('number')) {
