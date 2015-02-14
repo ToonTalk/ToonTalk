@@ -161,8 +161,9 @@ window.TOONTALK.widget = (function (TT) {
             }
             if (!widget.set_running) {
                 widget.set_running = function (new_value, top_level_context) {
+                    var unchanged_value = (running === new_value);
                     var backside_widgets, backside_widget, backside_element;
-                    if (running === new_value && running) {
+                    if (unchanged_value && running) {
                         // even if not running some part might be running and should be turned off
                         return;
                     }
@@ -217,7 +218,9 @@ window.TOONTALK.widget = (function (TT) {
 //                             TT.backside.update_run_button($(element));
 //                         });
 //                     }
-                    this.rerender();
+                    if (!unchanged_value) {
+                        this.rerender();
+                    }
                 };
             }
             return widget;
