@@ -881,6 +881,7 @@ window.TOONTALK.number_backside =
                                                          // just use the first className to find this button later
                                                          button_selector: "." + selected_button.className.split(" ", 1)[0]});
                 }
+                number.rerender();
             };
             var update_operator = function () {
                 var selected_button = TT.UTILITIES.selected_radio_button(plus.button, minus.button, multiply.button, divide.button); // , power.button
