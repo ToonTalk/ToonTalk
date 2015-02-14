@@ -1088,40 +1088,48 @@ window.TOONTALK.number.function =
         return "a " + this.name + " function bird";
     };
     var functions = {};
-    var add_function_object = function (name, respond_to_message) {
+    var add_function_object = function (name, respond_to_message, title) {
         functions[name] = {name: name,
                            respond_to_message: respond_to_message,
                            get_description: get_description,
-                           toString: to_string_function};
+                           toString: to_string_function,
+                           title: title};
     };
     add_function_object('sum', 
                         function (message) {
                             return n_ary_function(message, TT.number.ZERO, TT.number.add, 'sum');
-                        });
+                        },
+                        "Your bird will return with the sum of the numbers in the box.");
     add_function_object('difference', 
                         function (message) {
                              return n_ary_function(message, TT.number.ZERO, TT.number.subtract, 'difference');
-                        });
+                        },
+                        "Your bird will return with the result of subtracting the numbers in the box from the first number.");
     add_function_object('product', 
                         function (message) {
                              return n_ary_function(message, TT.number.ONE, TT.number.multiply, 'product');
-                        });
+                        },
+                        "Your bird will return with the product of the numbers in the box.");
     add_function_object('division', 
                         function (message) {
                              return n_ary_function(message, TT.number.ONE, TT.number.divide, 'division');
-                        });
+                        },
+                        "Your bird will return with the result of dividing the numbers into the first number in the box.");
     add_function_object('minimum', 
                         function (message) {
                              return n_ary_function(message, TT.number.ONE, TT.number.minimum, 'minimum');
-                        });
+                        },
+                        "Your bird will return with the smallest of the numbers in the box.");
     add_function_object('maximum', 
                         function (message) {
                              return n_ary_function(message, TT.number.ONE, TT.number.maximum, 'maximum');
-                        });
+                        },
+                        "Your bird will return with the largest of the numbers in the box.");
     add_function_object('absolute value', 
                         function (message) {
                              return bigrat_unary_function(message, bigrat.abs, 'absolute value');
-                        });
+                        },
+                        "Your bird will return with the positive version of the number.");
     add_function_object('power', 
                         function (message) {
                             var power_function = function (bigrat_value, bigrat_base, bigrat_power) {
@@ -1129,11 +1137,13 @@ window.TOONTALK.number.function =
                                 return bigrat.nthRoot(bigrat_value, to_numerator, bigrat_power[1].valueOf());
                             };
                             return bigrat_binary_function(message, power_function, 'power');
-                        });
+                        },
+                        "Your bird will return with the first number to the power of the second number.");
     add_function_object('random', 
                         function (message) {
                              return bigrat_zero_args_function(message, bigrat.fromRandom, 'random');
-                        });                       
+                        },
+                        "Your bird will return with a random number between 0 and 1.");                       
                         
     return functions;
 

@@ -1685,7 +1685,7 @@ window.TOONTALK.UTILITIES =
                     label: label_element};
         },
 
-        create_select_menu: function (name, items, class_name, label, title) {
+        create_select_menu: function (name, items, class_name, label, title, item_titles) {
             var container = document.createElement("div");
             var select = document.createElement("select");
             var label_element = document.createElement("label");
@@ -1697,10 +1697,13 @@ window.TOONTALK.UTILITIES =
             container.appendChild(label_element);
             container.appendChild(select);
             container.title = title;
-            items.forEach(function (item) {
+            items.forEach(function (item, index) {
                 var option = document.createElement('option');
                 option.value = item;
                 option.innerHTML = item;
+                if (item_titles && item_titles[index]) {
+                    option.title = item_titles[index];
+                }
                 select.appendChild(option);
             });
             // following produces a select menu that works when added to document.body but not the backside of a widget

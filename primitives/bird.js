@@ -21,7 +21,15 @@ window.TOONTALK.bird = (function (TT) {
         var type_name = nest.get_function_type();
         var function_object = nest.get_function_object();
         var items = Object.getOwnPropertyNames(TOONTALK.number.function); 
-        var select_menu = TT.UTILITIES.create_select_menu("functions", items, "toontalk-select-function", "Which function should I fly to? ", "Click to select the function that this bird will use when given a box.");
+        var item_titles = items.map(function (item) {
+            return TOONTALK.number.function[item].title;
+        });
+        var select_menu = TT.UTILITIES.create_select_menu("functions",
+                                                          items,
+                                                          "toontalk-select-function",
+                                                          "Which function should I fly to? ",
+                                                          "Click to select the function that this bird will use when given a box.",
+                                                          item_titles);
         var backside_element = backside.get_element();
         select_menu.menu.value = function_object.name;
         select_menu.menu.addEventListener('change', function (event) {
