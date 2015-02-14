@@ -657,7 +657,20 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         return this;
     };
 
+    number.minimum = function (other) {
+        // other is another rational number
+        this.set_value(bigrat.min(bigrat.create(), this.get_value(), other.get_value()));
+        return this;
+    };
+
+    number.maximum = function (other) {
+        // other is another rational number
+        this.set_value(bigrat.max(bigrat.create(), this.get_value(), other.get_value()));
+        return this;
+    };
+
     number.power = function (power) {
+        // deprecated
         // power is any integer (perhaps needs error handling if too large)
         this.set_value(bigrat.power(bigrat.create(), this.get_value(), bigrat.toInteger(power.get_value())));
         return this;
@@ -1082,6 +1095,14 @@ window.TOONTALK.number.function =
     add_function_object('division', 
                         function (message) {
                              return n_ary_function(message, TT.number.ONE, TT.number.divide, 'division');
+                        });
+    add_function_object('minimum', 
+                        function (message) {
+                             return n_ary_function(message, TT.number.ONE, TT.number.minimum, 'minimum');
+                        });
+    add_function_object('maximum', 
+                        function (message) {
+                             return n_ary_function(message, TT.number.ONE, TT.number.maximum, 'maximum');
                         });
     add_function_object('absolute value', 
                         function (message) {
