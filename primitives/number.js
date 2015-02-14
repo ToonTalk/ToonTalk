@@ -231,7 +231,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
                 // e.g. an attribute value
 //                 console.log("set_value_from_decimal " + decimal_string + " " + this.debug_id);
                 if (typeof decimal_string === 'number') {
-                    this.set_value(bigrat.fromInteger(decimal_string));
+                    this.set_value(bigrat.fromDecimal(decimal_string));
                     return;
                 }
                 // else should be a string
@@ -1006,7 +1006,7 @@ window.TOONTALK.number.function =
         TT.UTILITIES.display_message("Birds for the " + function_name + " function can only respond to boxes with a number in the " + TT.UTILITIES.cardinal(index) + " hole. The " + TT.UTILITIES.cardinal(index) + "hole contains " + TT.UTILITIES.add_a_or_an(widget.get_type_name()));
         return false;
     };
-    var n_ary_function = function (message, zero_ary_value_function, binary_operation, function_name) { 
+    var n_ary_widget_function = function (message, zero_ary_value_function, binary_operation, function_name) { 
         var compute_result = function (bird, box_size) {
             var next_widget, index, result;
             if (box_size === 1) {
@@ -1026,6 +1026,29 @@ window.TOONTALK.number.function =
                 binary_operation.call(result, next_widget);
                 index++;
             }
+            return result;
+        };
+        process_message(message, compute_result);
+    };
+    var javascript_function = function (message, operation, arity, function_name) { 
+        var compute_result = function (bird, box_size) {
+            var next_widget, index, args, result;
+            if (box_size !== arity+1) {
+                TT.UTILITIES.display_message("Birds for the " + function_name + " function can only respond to boxes with " + (arity+1) + " holes. Not " + box_size + " holes.");
+                return;
+            }
+            args = [];
+            index = 1;
+            while (index < box_size) {
+                next_widget = message.get_hole_contents(index);
+                if (!number_check(next_widget, function_name, index)) {
+                    return;
+                }
+                args.push(bigrat.toDecimal(next_widget.get_value()));
+                index++;
+            }
+            result = TT.number.ZERO();
+            result.set_value_from_decimal(operation.apply(null, args));
             return result;
         };
         process_message(message, compute_result);
@@ -1097,32 +1120,32 @@ window.TOONTALK.number.function =
     };
     add_function_object('sum', 
                         function (message) {
-                            return n_ary_function(message, TT.number.ZERO, TT.number.add, 'sum');
+                            return n_ary_widget_function(message, TT.number.ZERO, TT.number.add, 'sum');
                         },
                         "Your bird will return with the sum of the numbers in the box.");
     add_function_object('difference', 
                         function (message) {
-                             return n_ary_function(message, TT.number.ZERO, TT.number.subtract, 'difference');
+                             return n_ary_widget_function(message, TT.number.ZERO, TT.number.subtract, 'difference');
                         },
                         "Your bird will return with the result of subtracting the numbers in the box from the first number.");
     add_function_object('product', 
                         function (message) {
-                             return n_ary_function(message, TT.number.ONE, TT.number.multiply, 'product');
+                             return n_ary_widget_function(message, TT.number.ONE, TT.number.multiply, 'product');
                         },
                         "Your bird will return with the product of the numbers in the box.");
     add_function_object('division', 
                         function (message) {
-                             return n_ary_function(message, TT.number.ONE, TT.number.divide, 'division');
+                             return n_ary_widget_function(message, TT.number.ONE, TT.number.divide, 'division');
                         },
                         "Your bird will return with the result of dividing the numbers into the first number in the box.");
     add_function_object('minimum', 
                         function (message) {
-                             return n_ary_function(message, TT.number.ONE, TT.number.minimum, 'minimum');
+                             return n_ary_widget_function(message, TT.number.ONE, TT.number.minimum, 'minimum');
                         },
                         "Your bird will return with the smallest of the numbers in the box.");
     add_function_object('maximum', 
                         function (message) {
-                             return n_ary_function(message, TT.number.ONE, TT.number.maximum, 'maximum');
+                             return n_ary_widget_function(message, TT.number.ONE, TT.number.maximum, 'maximum');
                         },
                         "Your bird will return with the largest of the numbers in the box.");
     add_function_object('absolute value', 
@@ -1144,7 +1167,16 @@ window.TOONTALK.number.function =
                              return bigrat_zero_args_function(message, bigrat.fromRandom, 'random');
                         },
                         "Your bird will return with a random number between 0 and 1.");                       
-                        
+    add_function_object('sine', 
+                        function (message) {
+                            return javascript_function(message, Math.sin, 1, 'sine');
+                        },
+                        "Your bird will return with an approximation of the sine of the number (in radians).");                  
+    add_function_object('cosine', 
+                        function (message) {
+                            return javascript_function(message, Math.cos, 1, 'cosine');
+                        },
+                        "Your bird will return with an approximation of the cssine of the number (in radians).");
     return functions;
 
 }(window.TOONTALK));

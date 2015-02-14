@@ -63,7 +63,7 @@ window.TOONTALK.bird = (function (TT) {
                         // delay this since removes geometry until recomputed
                         $(frontside_element).removeClass("toontalk-bird-gimme");
                     });
-                    
+                    other.set_visible(true); // since nest is
                     if (robot) {
                         // robot needs to wait until delivery is finished
                         other.robot_waiting_before_next_step = robot;
