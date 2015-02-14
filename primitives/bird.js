@@ -23,6 +23,7 @@ window.TOONTALK.bird = (function (TT) {
         var items = Object.getOwnPropertyNames(TOONTALK.number.function); 
         var select_menu = TT.UTILITIES.create_select_menu("functions", items, "toontalk-select-function", "Which function should I fly to? ", "Click to select the function that this bird will use when given a box.");
         var backside_element = backside.get_element();
+        select_menu.menu.value = function_object.name;
         select_menu.menu.addEventListener('change', function (event) {
                 nest.set_function_name(event.target.value);
                 // update the bird's title (and maybe someday more - e.g. t-shirt)
@@ -1095,6 +1096,7 @@ window.TOONTALK.nest = (function (TT) {
                 function (new_name) {
                     function_name = new_name;
                     function_object = TT[type_name] && TT[type_name].function && TT[type_name].function[function_name];
+                    this.add_to_contents = function_object.respond_to_message;
                 },
             is_function_nest: 
                 function () {
