@@ -1006,29 +1006,46 @@ window.TOONTALK.number.function =
         };
         process_message(message, compute_result);
     };
-    var fixed_arity_function = function (message, operation, arity, function_name) {
+//     var fixed_arity_function = function (message, operation, arity, function_name) {
+//         var compute_result = function (bird, box_size) {
+//             if (arity !== box_size-1) {
+//                 TT.UTILITIES.display_message("Birds for the " + function_name + " function need " + arity + " numbers. Not " + (box_size-1) + ".");
+//                 return;
+//             }
+//             var args = [];
+//             var index = 1; // bird is in 0
+//             var first_widget_copy, next_widget;
+//             while (index <= arity) {
+//                 next_widget = message.get_hole_contents(index);
+//                 if (!number_check(next_widget, function_name, index)) {
+//                     return;
+//                 }
+//                 if (index === 1) {
+//                     first_widget_copy = next_widget.copy({just_value: true});
+//                 } else {
+//                     args.push(next_widget);
+//                 }
+//                 index++;
+//             }
+//             operation.apply(first_widget_copy, args);
+//             return first_widget_copy;
+//         };
+//         process_message(message, compute_result);
+//     };
+    var bigrat_unary_function = function (message, operation, function_name) {
         var compute_result = function (bird, box_size) {
-            if (arity !== box_size-1) {
+            var widget, result;
+            if (box_size !== 2) {
                 TT.UTILITIES.display_message("Birds for the " + function_name + " function need " + arity + " numbers. Not " + (box_size-1) + ".");
                 return;
             }
-            var args = [];
-            var index = 1; // bird is in 0
-            var first_widget_copy, next_widget;
-            while (index <= arity) {
-                next_widget = message.get_hole_contents(index);
-                if (!number_check(next_widget, function_name, index)) {
-                    return;
-                }
-                if (index === 1) {
-                    first_widget_copy = next_widget.copy({just_value: true});
-                } else {
-                    args.push(next_widget);
-                }
-                index++;
+            widget = message.get_hole_contents(1);
+            if (!number_check(widget, function_name, 1)) {
+                return;
             }
-            operation.apply(first_widget_copy, args);
-            return first_widget_copy;
+            result = TT.number.ZERO();
+            operation(result.get_value(), widget.get_value());
+            return result;
         };
         process_message(message, compute_result);
     };
@@ -1063,7 +1080,7 @@ window.TOONTALK.number.function =
                         });
     add_function_object('absolute value', 
                         function (message) {
-                             return fixed_arity_function(message, TT.number.absolute_value, 1, 'absolute value');
+                             return bigrat_unary_function(message, bigrat.abs, 'absolute value');
                         });
                         
     return functions;
