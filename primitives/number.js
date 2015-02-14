@@ -853,6 +853,7 @@ window.TOONTALK.number_backside =
                                                          toString: string,
                                                          button_selector: "." + first_class_name});
                 }
+                number.rerender();
             };
             var update_format = function () {
                 var selected_button = TT.UTILITIES.selected_radio_button(decimal_format.button, mixed_number_format.button, improper_format.button, scientific_format.button);
