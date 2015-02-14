@@ -991,9 +991,16 @@ window.TOONTALK.number.function =
     };
     var n_ary_function = function (message, zero_ary_value_function, binary_operation, function_name) { 
         var compute_result = function (bird, box_size) {
-            var result = zero_ary_value_function();
-            var index = 1;
-            var next_widget;
+            var next_widget, index, result;
+            if (box_size === 1) {
+                return zero_ary_value_function();
+            }
+            index = 1;
+            result =  message.get_hole_contents(index);
+            if (!number_check(result, function_name, index)) {
+                return;
+            }
+            index++;
             while (index < box_size) {
                 next_widget = message.get_hole_contents(index);
                 if (!number_check(next_widget, function_name, index)) {
