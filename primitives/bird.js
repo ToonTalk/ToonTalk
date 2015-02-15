@@ -31,7 +31,9 @@ window.TOONTALK.bird = (function (TT) {
                                                           "Click to select the function that this bird will use when given a box.",
                                                           item_titles);
         var backside_element = backside.get_element();
-        select_menu.menu.value = function_object.name;
+        if (function_object) {
+            select_menu.menu.value = function_object.name;
+        }
         select_menu.menu.addEventListener('change', function (event) {
                 nest.set_function_name(event.target.value);
                 // update the bird's title (and maybe someday more - e.g. t-shirt)
@@ -371,9 +373,13 @@ window.TOONTALK.bird = (function (TT) {
             return backside;
         };
         new_bird.get_custom_title_prefix = function () {
+            var function_object;
             if (nest) {
                 if (nest.is_function_nest()) {
-                    return nest.get_function_object().get_description();
+                    function_object = nest.get_function_object();
+                    if (function_object) {
+                        return function_object.get_description();
+                    }
                 }
                 return "Drop something on me and I'll take it to my nest.";
             }
