@@ -13,6 +13,8 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     
     var number = Object.create(TT.widget);
 
+    var ten = bigrat.fromValues(10, 1); // TODO: make this a constant shared by all
+
     // private functions
 
     var shrink_to_fit = function (string, number_of_full_size_characters, font_size, fromLeft) {
@@ -70,27 +72,36 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
                shrink_to_fit(string, characters_on_each_side, font_size, false);
     };
 
-    var generate_decimal_places = function (fraction, number_of_full_size_characters) {
+    var generate_decimal_places = function (bigrat_fraction, number_of_full_size_characters) {
         var result = "";
-        fraction = fraction.absolute_value();
-        return generate_decimal_places_from_numerator_and_denominator(fraction.get_value()[0], fraction.get_value()[1], number_of_full_size_characters);
+        var negative = bigrat.isNegative(bigrat_fraction);
+        if (negative) {
+            bigrat.abs(bigrat_fraction, bigrat_fraction);
+        }
+        return generate_decimal_places_from_numerator_and_denominator(bigrat.fromValues(bigrat_fraction[0], 1), 
+                                                                      bigrat.fromValues(bigrat_fraction[1], 1), 
+                                                                      number_of_full_size_characters,
+                                                                      negative);
     };
 
-    var generate_decimal_places_from_numerator_and_denominator = function (numerator, denominator, number_of_full_size_characters) {
+    var generate_decimal_places_from_numerator_and_denominator = function (numerator, denominator, number_of_full_size_characters, negative) {
+        // numerator and denominator are bigrats with denominators of 1
         var result = "";
-        var ten = new BigInteger(10);
-        var negative = numerator.isNegative();
-        if (negative) {
-            numerator = numerator.abs();
-        }
+        // this is base 10 -- could generalise...
+        var quotient_rational = bigrat.create();
+        var quotient_integer  = bigrat.create();
+        var quotient_fraction = bigrat.create();
+        bigrat.multiply(numerator, numerator, ten);
         while (number_of_full_size_characters > result.length) {
-            numerator = numerator.multiply(ten);
-            if (numerator.compare(denominator) < 0) {
+            if (bigrat.isLessThan(numerator, denominator)) {
                 result += "0";
             } else {
-                result += numerator.divide(denominator).toString();
-                numerator = numerator.remainder(denominator).multiply(ten);
-                if (numerator.isZero()) {
+                bigrat.divide(quotient_rational, numerator, denominator);
+                quotient_integer = bigrat.toBigInteger(quotient_rational);
+                result += quotient_integer.toString();
+                bigrat.subtract(quotient_fraction, quotient_rational, bigrat.fromValues(quotient_integer, 1));
+                bigrat.multiply(numerator, quotient_fraction, denominator); 
+                if (bigrat.equals(numerator, bigrat.ZERO)) {
                     if (negative) {
                         result = '-' + result;
                     }
@@ -98,6 +109,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
                     return result;
                 }
             }
+            bigrat.multiply(numerator, numerator, ten);
         }
         if (negative) {
             result = '-' + result;
@@ -119,7 +131,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     };
     
     var bigrat_from_values = function (numerator, denominator) {
-        // numerator and denominator are integers
+        // numerator and denominator are integers, strings, or TT.numbers
         if (!denominator) {
             denominator = 1;
         }
@@ -506,7 +518,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
                 return this.to_HTML(exponent_area+1, font_size*max_characters/(exponent_area+1), format, top_level, operator, size_unconstrained_by_container);
             }
             max_decimal_places = shrinking_digits_length(compute_number_of_full_size_characters_after_decimal_point(max_characters, exponent_area), font_size); 
-            decimal_digits = generate_decimal_places_from_numerator_and_denominator(significand[0], significand[1], max_decimal_places);      
+            decimal_digits = generate_decimal_places(significand, max_decimal_places);      
             if (negative) { // negative so include sign and first digit
                 integer_digit = decimal_digits.substring(0, 2);
                 decimal_digits = decimal_digits.substring(2);
@@ -773,7 +785,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         var decimal_max_digits = shrinking_digits_length(number_of_full_size_characters_after_decimal_point, font_size);
         var integer_max_digits = Math.min(integer_string.length, number_of_full_size_characters/2);
         // bigger fonts mean more digits can be seen so compute more of them
-        var decimal_places = generate_decimal_places(fractional_part, decimal_max_digits);
+        var decimal_places = generate_decimal_places(fractional_part.get_value(), decimal_max_digits);
         var after_decimal_point;
         if (decimal_places.length < number_of_full_size_characters) {
             // not repeating and not too many decimal digits
