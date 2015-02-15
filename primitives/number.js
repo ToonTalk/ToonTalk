@@ -143,17 +143,15 @@ window.TOONTALK.number = (function () {
 
     var generate_decimal_places = function (bigrat_fraction, number_of_full_size_characters) {
         var result = "";
-        var negative = bigrat.isNegative(bigrat_fraction);
-        if (negative) {
+        if (bigrat.isNegative(bigrat_fraction)) {
             bigrat.abs(bigrat_fraction, bigrat_fraction);
         }
         return generate_decimal_places_from_numerator_and_denominator(bigrat.fromValues(bigrat_fraction[0], 1), 
                                                                       bigrat.fromValues(bigrat_fraction[1], 1), 
-                                                                      number_of_full_size_characters,
-                                                                      negative);
+                                                                      number_of_full_size_characters);
     };
 
-    var generate_decimal_places_from_numerator_and_denominator = function (numerator, denominator, number_of_full_size_characters, negative) {
+    var generate_decimal_places_from_numerator_and_denominator = function (numerator, denominator, number_of_full_size_characters) {
         // numerator and denominator are bigrats with denominators of 1
         var result = "";
         // this is base 10 -- could generalise...
@@ -171,17 +169,11 @@ window.TOONTALK.number = (function () {
                 bigrat.subtract(quotient_fraction, quotient_rational, bigrat.fromValues(quotient_integer, 1));
                 bigrat.multiply(numerator, quotient_fraction, denominator); 
                 if (bigrat.equals(numerator, bigrat.ZERO)) {
-                    if (negative) {
-                        result = '-' + result;
-                    }
                     result = remove_trailing_zeroes(result);
                     return result;
                 }
             }
             bigrat.multiply(numerator, numerator, TEN);
-        }
-        if (negative) {
-            result = '-' + result;
         }
         return result;
     };
@@ -574,7 +566,7 @@ window.TOONTALK.number = (function () {
         if (format === 'scientific_notation') {
             negative = bigrat.isNegative(this.get_value());
             exponent = scientific_notation_exponent(this.get_value());
-            ten_to_exponent = bigrat.power(bigrat.create(), TEN, exponent);
+            ten_to_exponent = bigrat.power(bigrat.create(), TEN, exponent+1);
             significand = bigrat.divide(bigrat.create(), this.get_value(), ten_to_exponent);
             // 6 for integer_digit, space, and '10x' - divide by 2 since superscript font is smaller
             exponent_area = 6+(exponent === 0 ? 1 : Math.ceil(log10(Math.abs(exponent)))/2);
@@ -588,8 +580,8 @@ window.TOONTALK.number = (function () {
             max_decimal_places = shrinking_digits_length(compute_number_of_full_size_characters_after_decimal_point(max_characters, exponent_area), font_size); 
             decimal_digits = generate_decimal_places(significand, max_decimal_places);      
             if (negative) { // negative so include sign and first digit
-                integer_digit = decimal_digits.substring(0, 2);
-                decimal_digits = decimal_digits.substring(2);
+                integer_digit = "-" + decimal_digits.substring(0, 1);
+                decimal_digits = decimal_digits.substring(1);
             } else {
                 integer_digit = decimal_digits.substring(0, 1);
                 decimal_digits = decimal_digits.substring(1);
@@ -1146,39 +1138,8 @@ window.TOONTALK.number.function =
         return function () {
             return TT.number.create_from_bigrat(bigrat_function.apply(null, arguments));
         };
-    };    
-//     var unary_function = function (message, operation, function_name) {
-//         // function should return a widget
-//         var compute_result = function (bird, box_size) {
-//             var widget;
-//             if (box_size !== 2) {
-//                 TT.UTILITIES.display_message("Birds for the " + function_name + " function need 1 number. Not " + (box_size-1) + ".");
-//                 return;
-//             }
-//             widget = message.get_hole_contents(1);
-//             if (!number_check(widget, function_name, 1)) {
-//                 return;
-//             }
-//             return operation(widget.get_value());
-//         };
-//         process_message(message, compute_result);
-//     };
-
-
-// TODO: replace with 0 arity call
-    var bigrat_zero_args_function = function (message, operation, function_name) {
-        var compute_result = function (bird, box_size) {
-            var widget, result;
-            if (box_size !== 1) {
-                TT.UTILITIES.display_message("Birds for the " + function_name + " function don't need any numbers. Not " + (box_size-1) + ".");
-                return;
-            }
-            result = TT.number.ZERO();
-            operation(result.get_value());
-            return result;
-        };
-        process_message(message, compute_result);
     };
+    // TODO: see if the following can be replaced by n_ary_function   
     var bigrat_unary_function = function (message, operation, function_name) {
         var compute_result = function (bird, box_size) {
             var widget, result;
