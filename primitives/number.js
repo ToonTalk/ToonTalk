@@ -13,7 +13,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     
     var number = Object.create(TT.widget);
 
-    var ten = bigrat.fromValues(10, 1); // TODO: make this a constant shared by all
+    var TEN = bigrat.fromInteger(10); // TODO: make this a constant when using ecma6 
 
     // private functions
 
@@ -91,7 +91,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         var quotient_rational = bigrat.create();
         var quotient_integer  = bigrat.create();
         var quotient_fraction = bigrat.create();
-        bigrat.multiply(numerator, numerator, ten);
+        bigrat.multiply(numerator, numerator, TEN);
         while (number_of_full_size_characters > result.length) {
             if (bigrat.isLessThan(numerator, denominator)) {
                 result += "0";
@@ -109,7 +109,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
                     return result;
                 }
             }
-            bigrat.multiply(numerator, numerator, ten);
+            bigrat.multiply(numerator, numerator, TEN);
         }
         if (negative) {
             result = '-' + result;
@@ -188,8 +188,6 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     // Math.log10 not defined in IE11
     var natural_log_of_10 = Math.log(10);
     var log10 = Math.log10 ? Math.log10 : function (x) { return Math.log(x)/natural_log_of_10 };
-
-    var TEN = bigrat.fromInteger(10);
 
     // public methods
     number.create = function (numerator, denominator, operator, format, description) {
