@@ -17,6 +17,7 @@
     var TEN =           bigrat.fromInteger(10); 
     var HALF =          bigrat.fromValues( 1, 2);
     var NEGATIVE_HALF = bigrat.fromValues(-1, 2);
+    var THREE_HUNDRED_AND_SIXTY = bigrat.fromInteger(360);
 
     // Math.log10 not defined in IE11
     var log10 = Math.log10 ? Math.log10 : function (x) { return Math.log(x)/Math.log(10) };
@@ -1123,14 +1124,39 @@ window.TOONTALK.number.function =
         };
         process_message(message, compute_result);
     };
-    var numeric_javascript_function_to_widget_function = function (decimal_function) {
+    // TODO: move this to UTILITIES
+//     var map_arguments = function (args, fun) {
+//         var size = args.length;
+//         var index = 0;
+//         var result = [];
+//         while (index < size) {
+//             result.push(fun(args[index]));
+//             index++;
+//         }
+//         return result;
+//     }
+    var numeric_javascript_function_to_widget_function = function (decimal_function, toDecimal) {
         // takes a function that returns a JavaScript number and
         // returns a function that converts the result into a widget
+        // if toDecimal to provided it should be a function from bigrats to decimals
         return function () {
             var result = TT.number.ZERO();
-            result.set_value_from_decimal(decimal_function.apply(null, arguments.map(bigrat.toDecimal)));
+            var size = arguments.length;
+            var index = 0;
+            var decimal_arguments = [];
+            if (!bigrat.toDecimal) {
+                bigrat.toDecimal = bigrat.toDecimal;
+            }
+            while (index < size) {
+                decimal_arguments.push(toDecimal(arguments[index]));
+                index++;
+            }
+            result.set_value_from_decimal(decimal_function.apply(null, decimal_arguments));
             return result;
         };
+    };
+    var degrees_to_decimal = function (rational_number) {
+        return bigrat.toDecimal(modulo(rational_number, THREE_HUNDRED_AND_SIXTY));
     };
     var bigrat_function_to_widget_function = function (bigrat_function) {
         // takes a function that returns a bigrat and
@@ -1195,9 +1221,15 @@ window.TOONTALK.number.function =
                         "Your bird will return with the positive version of the number.");
     add_function_object('power', 
                         function (message) {
-                            var power_function = function (bigrat_value, bigrat_base, bigrat_power) {
+                            var power_function = function (bigrat_base, bigrat_power) {
                                 var to_numerator = bigrat.power(bigrat.create(), bigrat_base, bigrat_power[0].valueOf());
-                                return bigrat.nthRoot(bigrat_value, to_numerator, bigrat_power[1].valueOf());
+                                var denominator_power = bigrat_power[1].valueOf();
+                                if (denominator_power === 1) {
+                                    // faster and bigrat.nthRoot doesn't respond well to 1
+                                    return to_numerator;
+                                }
+                                // reuse to_numerator since not needed anymore
+                                return bigrat.nthRoot(to_numerator, to_numerator, denominator_power);
                             };
                             return n_ary_function(message, bigrat_function_to_widget_function(power_function), 2, 'power');
                         },
@@ -1227,7 +1259,7 @@ window.TOONTALK.number.function =
                             var sin = function (degrees) {
                                          return Math.sin(degrees/RADIAN);
                                       };
-                            return n_ary_function(message, numeric_javascript_function_to_widget_function(sin), 1, 'sine');
+                            return n_ary_function(message, numeric_javascript_function_to_widget_function(sin, degrees_to_decimal), 1, 'sine');
                         },
                         "Your bird will return with an approximation of the sine of the number (in degrees).");                  
     add_function_object('cosine', 
@@ -1235,7 +1267,7 @@ window.TOONTALK.number.function =
                             var sin = function (degrees) {
                                          return Math.cos(degrees/RADIAN);
                                       };
-                            return n_ary_function(message, numeric_javascript_function_to_widget_function(cos), 1, 'cosine');
+                            return n_ary_function(message, numeric_javascript_function_to_widget_function(cos, degrees_to_decimal), 1, 'cosine');
                         },
                         "Your bird will return with an approximation of the cosine of the number (in degrees).");
     add_function_object('sine (in radians)', 
