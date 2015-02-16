@@ -51,7 +51,6 @@ window.TOONTALK.SETTINGS =
         };
         var tabs;
         labels[local_files_index] = "Programs stored in browser";
-        add_click_listeners(widget, local_files_table, false, settings_panel);
         tables[local_files_index] = local_files_table;
         if (cloud_available) {
             labels[cloud_files_index] = "Programs in cloud";
@@ -65,6 +64,9 @@ window.TOONTALK.SETTINGS =
             // no network responses to wait for
             settings_panel.appendChild(TT.UTILITIES.create_tabs(labels, tables));
         }
+        setTimeout(function () {
+            add_click_listeners(widget, local_files_table, false, settings_panel);
+        });  
     };
     var become_cloud_files_table = function ($table, toontalk_type, widget, settings_panel, callback) {
         var full_callback = function (response) {
@@ -110,7 +112,6 @@ window.TOONTALK.SETTINGS =
             widget.save(true, undefined, saved_callback);
         };
         $(table).find(".toontalk-file-load-button").click(program_click_handler);
-//         $(table).find(".toontalk-published-page-button").click(page_click_handler);
     };
 
     return {
