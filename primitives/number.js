@@ -1139,45 +1139,6 @@ window.TOONTALK.number.function =
             return TT.number.create_from_bigrat(bigrat_function.apply(null, arguments));
         };
     };
-    // TODO: see if the following can be replaced by n_ary_function   
-    var bigrat_unary_function = function (message, operation, function_name) {
-        var compute_result = function (bird, box_size) {
-            var widget, result;
-            if (box_size !== 2) {
-                TT.UTILITIES.display_message("Birds for the " + function_name + " function need 1 number. Not " + (box_size-1) + ".");
-                return;
-            }
-            widget = message.get_hole_contents(1);
-            if (!number_check(widget, function_name, 1)) {
-                return;
-            }
-            result = TT.number.ZERO();
-            operation(result.get_value(), widget.get_value());
-            return result;
-        };
-        process_message(message, compute_result);
-    };
-    var bigrat_binary_function = function (message, operation, function_name) {
-        var compute_result = function (bird, box_size) {
-            var widget_1, widget_2, result;
-            if (box_size !== 3) {
-                TT.UTILITIES.display_message("Birds for the " + function_name + " function need 2 numbers. Not " + (box_size-1) + ".");
-                return;
-            }
-            widget_1 = message.get_hole_contents(1);
-            if (!number_check(widget_1, function_name, 1)) {
-                return;
-            }
-            widget_2 = message.get_hole_contents(2);
-            if (!number_check(widget_2, function_name, 2)) {
-                return;
-            }
-            result = TT.number.ZERO();
-            operation(result.get_value(), widget_1.get_value(), widget_2.get_value());
-            return result;
-        };
-        process_message(message, compute_result);
-    };
     var get_description = function () {
         return "When given a box with another bird and some numbers I'll give the other bird the " + this.name + " of the numbers. On my back side you can change me to compute other functions.";
     };
@@ -1229,7 +1190,7 @@ window.TOONTALK.number.function =
                         "Your bird will return with the largest of the numbers in the box.");
     add_function_object('absolute value', 
                         function (message) {
-                             return bigrat_unary_function(message, bigrat.abs, 'absolute value');
+                            return n_ary_function(message, bigrat_function_to_widget_function(bigrat.abs), 1, 'absolute value');
                         },
                         "Your bird will return with the positive version of the number.");
     add_function_object('power', 
@@ -1238,7 +1199,7 @@ window.TOONTALK.number.function =
                                 var to_numerator = bigrat.power(bigrat.create(), bigrat_base, bigrat_power[0].valueOf());
                                 return bigrat.nthRoot(bigrat_value, to_numerator, bigrat_power[1].valueOf());
                             };
-                            return bigrat_binary_function(message, power_function, 'power');
+                            return n_ary_function(message, bigrat_function_to_widget_function(power_function), 2, 'power');
                         },
                         "Your bird will return with the first number to the power of the second number.");
     add_function_object('round', 
