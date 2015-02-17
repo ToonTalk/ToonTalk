@@ -502,8 +502,8 @@ window.TOONTALK.backside =
                                                                       "toontalk-description-input", 
                                                                       "This&nbsp;" + type_name + "&nbsp;",
                                                                       "Type here to provide additional information about this " + type_name + ".");
-            var $create_sensor_button = $("<button>Make a sensor</button>") .button();
-            var $get_function_button  = $("<button>Get a function</button>").button();
+            var $create_sensor_button = $("<button>Make a sensor nest</button>") .button();
+            var $get_function_button  = $("<button>Make a function bird</button>").button();
             var description_change = function () {
                     var description = description_text_area.button.value.trim();
                     if (widget.set_description(description, true) && TT.robot.in_training) {
