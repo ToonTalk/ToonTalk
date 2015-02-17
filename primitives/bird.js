@@ -20,7 +20,7 @@ window.TOONTALK.bird = (function (TT) {
     var add_function_choice = function (nest, backside, bird) {
         var type_name = nest.get_function_type();
         var function_object = nest.get_function_object();
-        var items = Object.getOwnPropertyNames(TOONTALK.number.function); 
+        var items = Object.keys(TOONTALK.number.function); 
         var item_titles = items.map(function (item) {
             return TOONTALK.number.function[item].title;
         });
@@ -334,7 +334,12 @@ window.TOONTALK.bird = (function (TT) {
             // then a new pair is created and linked
             var copy, new_nest, i;
             if (!parameters) {
-                copy = this.create(nest, this.get_description());
+                if (nest.is_function_nest()) {
+                    // each bird has its own function nest so can be changed independently
+                    copy = this.create(nest.copy(), this.get_description());
+                } else {
+                    copy = this.create(nest, this.get_description());
+                }
             } else if (parameters.just_value) {
                 copy = this.create(undefined, this.get_description());
             } else {
@@ -407,9 +412,9 @@ window.TOONTALK.bird = (function (TT) {
         return new_bird;
     };
 
-    bird.create_function = function (type_name, description) {
+    bird.create_function = function (type_name, description, function_name) {
         // default function adds its arguments and gives result to bird
-        return bird.create(TT.nest.create_function(description, type_name, 'sum'));
+        return bird.create(TT.nest.create_function(description, type_name, function_name || TT.UTILITIES.get_first_property(TT[type_name].function)));
     };
     
     bird.match = function (other) {
@@ -1116,6 +1121,10 @@ window.TOONTALK.nest = (function (TT) {
                 function () {
                     return true;
                 },
+            copy:
+                function () {
+                    return TT.nest.create_function(description, type_name, function_name);
+                },
             animate_bird_delivery:
                 function (message_side, bird, continuation, robot) {
                     bird.animate_delivery_to(message_side, this, undefined, undefined, undefined, continuation, robot);
@@ -1124,7 +1133,8 @@ window.TOONTALK.nest = (function (TT) {
                 function (json_history) {
                     return {type: 'function_nest',
                             function_type: type_name,
-                            function_name: function_object.name};
+                            // default to first function if none known -- shouldn't really happen but better than an error
+                            function_name: function_object ? function_object.name : TT.UTILITIES.get_first_property(TT[type_name].function)};
                 },
             add_to_json: TT.widget.add_to_json,
             get_widget:
