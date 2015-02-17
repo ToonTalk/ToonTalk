@@ -272,16 +272,17 @@ window.TOONTALK.widget = (function (TT) {
                 widget.animate_to_element = function (target_element, continuation, speed, left_offset, top_offset) {
                     var target_absolute_position = $(target_element).offset();
                     var $frontside_element = $(this.get_frontside_element());
+                    var top_level_backside = $(target_element).is(".toontalk-top-level-backside");
                     if (!target_element || !$(target_element).is(":visible")) {
                         // don't know where to go so just start doing the next thing
                         continuation();
                         return;
                     }
-                    if (!left_offset) {
+                    if (!left_offset || top_level_backside) {
                         // pick a random location completely inside the target
                         left_offset = ($(target_element).width()-$frontside_element.width())  * Math.random();
                     }
-                    if (!top_offset) {
+                    if (!top_offset || top_level_backside) {
                         top_offset = ($(target_element).height()-$frontside_element.height()) * Math.random();
                     }
                     if (target_absolute_position) {
