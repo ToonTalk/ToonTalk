@@ -101,6 +101,10 @@ window.TOONTALK.robot = (function (TT) {
                 return;
             }
             thing_in_hand = new_value;
+            if (thing_in_hand && this.visible()) {
+                // update display immediately so thing in hand is in the DOM
+                this.update_display();
+            }
         };
         new_robot.get_next_robot = function () {
             return next_robot;
