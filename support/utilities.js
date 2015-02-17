@@ -1248,6 +1248,7 @@ window.TOONTALK.UTILITIES =
                                     }
                                     if (stored_json_string) {
                                         json = JSON.parse(stored_json_string);
+                                        // re-create the top-level widget with the additional info stored here:
                                         widget = TT.UTILITIES.create_from_json(json);
                                     }
                                 }
@@ -1445,7 +1446,7 @@ window.TOONTALK.UTILITIES =
                     source_element.style.transitionDuration = '';
                 };
                 // if transitionend is over 500ms late then run handler anyway
-                TT.UTILITIES.add_one_shot_event_handler(source_element, "transitionend", duration+500, remove_transition_class);
+                TT.UTILITIES.add_one_shot_event_handler(source_element, "transitionend", duration+501, remove_transition_class);
             }
             TT.UTILITIES.add_one_shot_event_handler(source_element, "transitionend", duration+500, continuation);
         },
