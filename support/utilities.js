@@ -1370,12 +1370,7 @@ window.TOONTALK.UTILITIES =
         
         set_position_is_absolute: function (element, absolute, event) {
             var position, left, top, ancestor;
-            if (event) {
-                // either DOM or JQuery event
-                if (event) {
-                    event = event;
-                }
-            }
+            // if event is a JQuery event then need to get the orginal event (but currently should only be a DOM event)
             if (absolute) {
                 position = $(element).position();
                 left = position.left;
