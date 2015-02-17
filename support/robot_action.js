@@ -92,7 +92,7 @@ window.TOONTALK.robot_action =
              }
              return true;
          },
-         "add new widget to work space": function (widget, context, top_level_context, robot, additional_info) {
+         "add a new widget to work space": function (widget, context, top_level_context, robot, additional_info) {
              robot.add_to_top_level_backside(widget);
              robot.add_newly_created_widget(widget);
          }
@@ -275,7 +275,7 @@ window.TOONTALK.robot_action =
               continuation();
               robot.run_next_step();
          },
-         "add new widget to work space": function (widget, context, top_level_context, robot, continuation) {
+         "add a new widget to work space": function (widget, context, top_level_context, robot, continuation) {
              // TODO: animate the button push that created the widget
              continuation();
              robot.run_next_step();

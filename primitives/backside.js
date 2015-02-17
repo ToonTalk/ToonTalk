@@ -519,7 +519,9 @@ window.TOONTALK.backside =
             $(description_text_area.button).val(widget.get_description());
             description_text_area.button.addEventListener('change',   description_change);
             description_text_area.button.addEventListener('mouseout', description_change);
-            $make_sensor_nest_button.click(function (event) {
+            $make_sensor_nest_button
+                .addClass("toontalk-make-sensor_nest_button")
+                .click(function (event) {
                     var sensor = TT.sensor.create('click', 'which', undefined, undefined, true, widget);
                     var sensor_frontside_element = sensor.get_frontside_element(true);
                     var initial_location = $make_sensor_nest_button.offset();
@@ -530,7 +532,9 @@ window.TOONTALK.backside =
                         initial_location.left = 0;
                     }
                     TT.UTILITIES.set_absolute_position($(sensor_frontside_element), initial_location);
-                    // TODO: train robot
+                    if (TT.robot.in_training) {
+                        TT.robot.in_training.created_widget(sensor, widget, ".toontalk-make-sensor_nest_button");
+                    }
             });
             $make_sensor_nest_button.attr('title', "Click to create a nest which receives messages when events happen to this " + widget.get_type_name() + ".");
             $make_function_bird_button
