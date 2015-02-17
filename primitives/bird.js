@@ -35,9 +35,7 @@ window.TOONTALK.bird = (function (TT) {
             select_menu.menu.value = function_object.name;
         }
         select_menu.menu.addEventListener('change', function (event) {
-                nest.set_function_name(event.target.value);
-                // update the bird's title (and maybe someday more - e.g. t-shirt)
-                bird.rerender();
+                bird.set_function_name(event.target.value);
             });
         backside_element.insertBefore(select_menu.container, backside_element.firstChild);
     };
@@ -398,6 +396,18 @@ window.TOONTALK.bird = (function (TT) {
                 return "a bird";
             }
             return "a bird without a nest";
+        };
+        new_bird.set_function_name = function (new_name) {
+            if (nest && nest.is_function_nest() && nest.set_function_name(new_name)) {
+                // update the bird's title (and maybe someday more - e.g. t-shirt)
+                this.rerender();
+                if (TT.robot.in_training) {
+                    TT.robot.in_training.edited(this, {setter_name: "set_function_name",
+                                                       argument_1:  new_name,
+                                                       toString: "change the function bird to '" + new_name + "'",
+                                                       button_selector: ".toontalk-select-function"});
+                }
+            }
         };
         new_bird = new_bird.add_standard_widget_functionality(new_bird);
         new_bird.set_description(description);
@@ -1113,9 +1123,13 @@ window.TOONTALK.nest = (function (TT) {
                 },
             set_function_name:
                 function (new_name) {
+                    if (function_name === new_name) {
+                        return false; // no change
+                    }
                     function_name = new_name;
                     function_object = TT[type_name] && TT[type_name].function && TT[type_name].function[function_name];
                     this.add_to_contents = function_object.respond_to_message;
+                    return true;
                 },
             is_function_nest: 
                 function () {
