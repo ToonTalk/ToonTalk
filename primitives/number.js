@@ -1210,7 +1210,12 @@ window.TOONTALK.number.function =
                         "Your bird will return with the largest of the numbers in the box.");
     add_function_object('absolute value', 
                         function (message) {
-                            return n_ary_function(message, bigrat_function_to_widget_function(bigrat.abs), 1, 'absolute value');
+                            var absolute_value = function (rational_number) {
+                                var number_widget = TT.number.ZERO();
+                                bigrat.abs(number_widget.get_value(), rational_number);
+                                return number_widget;
+                            }
+                            return n_ary_function(message, absolute_value, 1, 'absolute value');
                         },
                         "Your bird will return with the positive version of the number.");
     add_function_object('power', 
