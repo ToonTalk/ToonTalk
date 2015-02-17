@@ -88,7 +88,7 @@ window.TOONTALK.actions =
             };
             new_actions.dereference = function (index) {
                 if (TT.debugging && !newly_created_widgets[index]) {
-                    TT.UTILITIES.report_internal_error("Expected to find the " + (index+1) + "th newly created widget.");
+                    TT.UTILITIES.report_internal_error("Expected to find the " + TT.UTILITIES.cardinal(index) + " newly created widget.");
                 }
                 return newly_created_widgets[index];
             }
