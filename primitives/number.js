@@ -1125,33 +1125,23 @@ window.TOONTALK.number.function =
         process_message(message, compute_result);
     };
     // TODO: move this to UTILITIES
-//     var map_arguments = function (args, fun) {
-//         var size = args.length;
-//         var index = 0;
-//         var result = [];
-//         while (index < size) {
-//             result.push(fun(args[index]));
-//             index++;
-//         }
-//         return result;
-//     }
+    var map_arguments = function (args, fun) {
+        var size = args.length;
+        var index = 0;
+        var result = [];
+        while (index < size) {
+            result.push(fun(args[index]));
+            index++;
+        }
+        return result;
+    }
     var numeric_javascript_function_to_widget_function = function (decimal_function, toDecimal) {
         // takes a function that returns a JavaScript number and
         // returns a function that converts the result into a widget
         // if toDecimal to provided it should be a function from bigrats to decimals
         return function () {
             var result = TT.number.ZERO();
-            var size = arguments.length;
-            var index = 0;
-            var decimal_arguments = [];
-            if (!bigrat.toDecimal) {
-                bigrat.toDecimal = bigrat.toDecimal;
-            }
-            while (index < size) {
-                decimal_arguments.push(toDecimal(arguments[index]));
-                index++;
-            }
-            result.set_value_from_decimal(decimal_function.apply(null, decimal_arguments));
+            result.set_value_from_decimal(decimal_function.apply(null, map_arguments(arguments, (toDecimal || bigrat.toDecimal))));
             return result;
         };
     };
