@@ -2231,7 +2231,7 @@ window.TOONTALK.UTILITIES =
         },
 
         get_first_property: function (object) {
-            Object.keys(object)[0];
+            return Object.keys(object)[0];
         },
 
         get_all_locally_stored_program_names: function () {
