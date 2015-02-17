@@ -54,42 +54,46 @@ window.TOONTALK.vacuum = (function (TT) {
         };
 
         return {
-            apply_tool: function (widget, event) {
-                var remove_widget = function (widget) {
+            apply_tool: function (widget_side, event) {
+                var remove_widget = function (widget_side) {
+                    if (widget_side.is_backside()) {
+                        widget_side.hide_backside();
+                        return;
+                    }
                     if (TT.robot.in_training && event) {
-                        TT.robot.in_training.removed(widget);
+                        TT.robot.in_training.removed(widget_side);
                     }
-                    if (widget.set_running) {
-                        widget.set_running(false);
+                    if (widget_side.set_running) {
+                        widget_side.set_running(false);
                     }
-                    widget.remove(event);
-                    removed_items.push(widget);
+                    widget_side.remove(event);
+                    removed_items.push(widget_side);
                 };
                 var restoring, initial_location, restored_front_side_element, new_erased, top_level_backside, backside_widgets;
                 if (mode === 'suck') {
-                    if (widget.remove && widget.get_type_name() !== 'top-level') {
-                       remove_widget(widget);
+                    if (widget_side.remove && widget_side.get_type_name() !== 'top-level') {
+                       remove_widget(widget_side);
                      } // else warn??
-                } else if (mode === 'erase' || (mode === 'restore' && widget.get_erased && widget.get_erased())) {
+                } else if (mode === 'erase' || (mode === 'restore' && widget_side.get_erased && widget_side.get_erased())) {
                     // erase mode toggles and restore mode unerases if erased
-                    if (widget.get_type_name() !== 'top-level') {
-                        new_erased = !widget.get_erased();
-                        widget.set_erased(new_erased, true);
+                    if (widget_side.get_type_name() !== 'top-level') {
+                        new_erased = !widget_side.get_erased();
+                        widget_side.set_erased(new_erased, true);
                         if (TT.robot.in_training && event) {
-                            TT.robot.in_training.set_erased(widget, new_erased);
+                            TT.robot.in_training.set_erased(widget_side, new_erased);
                         }
                     }
                 } else if (mode === 'restore') {
-                    // doesn't matter what the widget it
+                    // doesn't matter what the widget is
                     if (removed_items.length > 0) {
                         restoring = removed_items.pop();
-                        restored_front_side_element = widget.add_to_top_level_backside(restoring, true);
+                        restored_front_side_element = widget_side.add_to_top_level_backside(restoring, true);
                         initial_location = $(element).offset();
                         initial_location.left -= $(restored_front_side_element).width(); // left of vacuum
                         TT.UTILITIES.set_absolute_position($(restored_front_side_element), initial_location);
                     }
                 } else if (mode === 'suck_all') {
-                    top_level_backside = widget.top_level_widget();
+                    top_level_backside = widget_side.top_level_widget();
                     // need to copy the list since removing will alter the list
                     backside_widgets = top_level_backside.get_backside_widgets().slice();
                     backside_widgets.forEach(remove_widget);
