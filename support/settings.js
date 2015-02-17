@@ -96,7 +96,7 @@ window.TOONTALK.SETTINGS =
     };
     var close_settings = function (widget) {
         $(".toontalk-settings-panel").remove();
-        TT.UTILITIES.display_message("Your program was copied and the new copy's name is " + widget.get_setting('program_name') + ".");
+        TT.UTILITIES.display_message("Your program was copied and the new copy's name is '" + widget.get_setting('program_name') + "'.");
     };
     var add_click_listeners = function (widget, table, in_the_cloud, settings_panel) {
         var program_click_handler = function (event) {
