@@ -11,21 +11,24 @@ window.TOONTALK.vacuum = (function (TT) {
 
     var vacuum = Object.create(null);
   
-    var titles = {suck:    "Drag this vacuum over the thing you want to remove. Click or type 'e' to switch to erasing. Click twice or type 'r' to restore previously removed or erased things.",
-                  erase:   "Drag this vacuum over the thing you want to erase (or un-erase). Click twice or type 's' to switch to sucking. Click or type 'r' to restore contents.",
-                  restore: "Drag this over the work area. Each time you release it a widget is restored. Click or type 's' to switch to sucking. Click twice or type 'e' to switch to erasing."};
+    var titles = {suck:     "Drag this vacuum over the thing you want to remove. Type 'e' to switch to erasing, type 'r' to swich to restoring, or 'a' for removing all. Or click to switch modes.",
+                  erase:    "Drag this vacuum over the thing you want to erase (or un-erase). Type 's' to switch to sucking, type 'e' to switch to erasing, or 'a' for removing all. Or click to switch modes.",
+                  restore:  "Drag this over the work area. Each time you release it a widget is restored. Type 's' to switch to sucking, type 'r' to swich to restoring, or 'a' for removing all. Or click to switch modes.",
+                  suck_all: "Drag this over the work area and click. Everything will be removed. Type 'r' to switch to restoring, type 'e' to switch to erasing, or type 's' to switch to sucking. Or click to switch modes."};
 
-    var mode_classes = {suck:    "toontalk-vacuum-s",
-                        erase:   "toontalk-vacuum-e",
-                        restore: "toontalk-vacuum-r"};
+    var mode_classes = {suck:     "toontalk-vacuum-s",
+                        erase:    "toontalk-vacuum-e",
+                        restore:  "toontalk-vacuum-r",
+                        suck_all: "toontalk-vacuum-a"};
 
-    var next_mode    = {suck:    'erase',
-                        erase:   'restore',
-                        restore: 'suck'};
+    var next_mode    = {suck:     'erase',
+                        erase:    'restore',
+                        restore:  'suck',
+                        suck_all: 'suck_all'};
 
     vacuum.create = function () {
-        var element;
-        var mode, mode_class; // either 'suck', 'erase', or 'restore'
+        var element, mode_class;
+        var mode; // mode is either 'suck', 'erase', 'restore', or 'suck_all'
         var removed_items = [];
 
         var set_mode = function (new_value) {
@@ -52,17 +55,20 @@ window.TOONTALK.vacuum = (function (TT) {
 
         return {
             apply_tool: function (widget, event) {
-                var restoring, initial_location, restored_front_side_element, new_erased;
+                var remove_widget = function (widget) {
+                    if (TT.robot.in_training && event) {
+                        TT.robot.in_training.removed(widget);
+                    }
+                    if (widget.set_running) {
+                        widget.set_running(false);
+                    }
+                    widget.remove(event);
+                    removed_items.push(widget);
+                };
+                var restoring, initial_location, restored_front_side_element, new_erased, top_level_backside, backside_widgets;
                 if (mode === 'suck') {
                     if (widget.remove && widget.get_type_name() !== 'top-level') {
-                        if (TT.robot.in_training && event) {
-                            TT.robot.in_training.removed(widget);
-                        }
-                        if (widget.set_running) {
-                            widget.set_running(false);
-                        }
-                        widget.remove(event);
-                        removed_items.push(widget);
+                       remove_widget(widget);
                      } // else warn??
                 } else if (mode === 'erase' || (mode === 'restore' && widget.get_erased && widget.get_erased())) {
                     // erase mode toggles and restore mode unerases if erased
@@ -82,6 +88,11 @@ window.TOONTALK.vacuum = (function (TT) {
                         initial_location.left -= $(restored_front_side_element).width(); // left of vacuum
                         TT.UTILITIES.set_absolute_position($(restored_front_side_element), initial_location);
                     }
+                } else if (mode === 'suck_all') {
+                    top_level_backside = widget.top_level_widget();
+                    // need to copy the list since removing will alter the list
+                    backside_widgets = top_level_backside.get_backside_widgets().slice();
+                    backside_widgets.forEach(remove_widget);
                 }
             },
             nothing_under_tool: function () {
@@ -102,6 +113,8 @@ window.TOONTALK.vacuum = (function (TT) {
                             set_mode('erase');
                         } else if (character === 'r' || character === 'R') {
                             set_mode('restore');
+                        } else if (character === 'a' || character === 'A') {
+                            set_mode('suck_all');
                         }
                     });
                     update_title();
