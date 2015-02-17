@@ -346,6 +346,10 @@ window.TOONTALK.robot_action =
                 if (action_name === "add a new widget to the work space") {
                     return action_name.replace("a new widget", TT.path.toString(path));
                 }
+                if (action_name === "add to the top-level backside") {
+                    // is used for internal bookkeepping shouldn't be user visible
+                    return "";
+                }
                 return action_name + " " + TT.path.toString(path);
             };
             new_action.get_json = function (json_history) {
