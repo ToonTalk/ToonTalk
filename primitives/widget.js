@@ -376,14 +376,23 @@ window.TOONTALK.widget = (function (TT) {
                 return parent_of_backside;
             };
             widget.set_parent_of_frontside = function (new_parent, parent_is_backside, backside_widget_already_removed) {
-                if (parent_of_frontside && !backside_widget_already_removed && parent_of_frontside.is_backside()) {
-                    parent_of_frontside.get_widget().remove_backside_widget(this, false, true);
-                }
+                var old_parent_of_frontside = parent_of_frontside;
+                var new_parent_backside;
                 if (!new_parent || !parent_is_backside) {
+                    if (parent_of_frontside === new_parent) {
+                        return; // already knew this
+                    }
                     parent_of_frontside = new_parent;
-                    return; 
+                } else {
+                    new_parent_backside = new_parent.get_backside(true);
+                    if (parent_of_frontside === new_parent_backside) {
+                        return; // already knew this
+                    }
+                    parent_of_frontside = new_parent_backside;
                 }
-                parent_of_frontside = new_parent.get_backside(true);
+                if (old_parent_of_frontside && !backside_widget_already_removed && old_parent_of_frontside.is_backside()) {
+                    old_parent_of_frontside.get_widget().remove_backside_widget(this, false, true);
+                }
             };
             widget.set_parent_of_backside = function (widget, parent_is_backside, already_removed_from_parent_of_backside) {
                 if (parent_of_backside && !already_removed_from_parent_of_backside && parent_of_backside.is_backside()) {
