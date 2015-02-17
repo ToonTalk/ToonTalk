@@ -1180,6 +1180,12 @@ window.TOONTALK.widget = (function (TT) {
             widget = widget.add_sides_functionality(widget);
             widget = widget.runnable(widget);
             widget = widget.has_parent(widget);
+            widget.removed_from_container = function (other, backside_removed, event, index, ignore_if_not_on_backside) {
+                if (!TT.robot.in_training) {
+                   // robots in training take care of this (and need to to record things properly)
+                   this.remove_backside_widget(other, backside_removed, ignore_if_not_on_backside);
+                };
+            };
             widget.get_setting = function (option_name) {
                 if (typeof settings[option_name] === 'undefined') {
                     settings[option_name] = TT.DEFAULT_SETTINGS && TT.DEFAULT_SETTINGS[option_name];     
