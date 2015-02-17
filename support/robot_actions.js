@@ -206,11 +206,17 @@ window.TOONTALK.actions =
         toString: function () {
             var description = "";
             var steps = this.get_steps();
-            steps.forEach(function (step, index) {
-                description += step.toString();
-                if (index === steps.length-2) {
+            var step_descriptions = steps.map(function (step) {
+                return step.toString();
+            });
+            while (step_descriptions[step_descriptions.length-1] === "") {
+                step_descriptions.pop();
+            }
+            step_descriptions.forEach(function (step_description, index) {
+                description += step_description;
+                if (index === step_descriptions.length-2) {
                     description += " and \n";
-                } else if (index < steps.length-2) {
+                } else if (index < step_descriptions.length-2) {
                     description += ", \n";
                 } else {
                     description += ".";
