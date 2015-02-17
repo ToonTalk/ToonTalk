@@ -101,8 +101,9 @@ window.TOONTALK.robot = (function (TT) {
                 return;
             }
             thing_in_hand = new_value;
-            if (thing_in_hand && this.visible()) {
+            if (thing_in_hand && !TT.robot.in_training && this.visible()) {
                 // update display immediately so thing in hand is in the DOM
+                // while training need to wait if resource for it to be copied when dropped
                 this.update_display();
             }
         };
