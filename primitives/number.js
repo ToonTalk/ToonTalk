@@ -1163,7 +1163,7 @@ window.TOONTALK.number.function =
         return "When given a box with another bird and some numbers I'll give the other bird the " + this.name + " of the numbers. On my back side you can change me to compute other functions.";
     };
     var to_string_function = function () {
-        return TT.UTILITIES.add_a_or_an(this.name + " function bird");
+        return TT.UTILITIES.add_a_or_an("'" + this.name + "' function bird");
     };
     var functions = {};
     var add_function_object = function (name, respond_to_message, title) {

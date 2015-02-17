@@ -1946,8 +1946,12 @@ window.TOONTALK.UTILITIES =
         
         add_a_or_an: function (word, upper_case) {
             var first_character = word.charAt(0);
-            if (word.indexOf("the ") === 0) {
-                // don't generate a the box
+            if (first_character === "'" || first_character === '"') {
+                // ignoe quotes -- e.g. an 'advark' widget
+                first_character = word.charAt(1);
+            }
+            if (word.indexOf("the ") === 0 || word.indexOf("a ") === 0 || word.indexOf("an ") === 0) {
+                // don't generate a the box or an a bird
                 return word;
             }
             if ("aeiou".indexOf(first_character) < 0) {

@@ -92,7 +92,7 @@ window.TOONTALK.robot_action =
              }
              return true;
          },
-         "add a new widget to work space": function (widget, context, top_level_context, robot, additional_info) {
+         "add a new widget to the work space": function (widget, context, top_level_context, robot, additional_info) {
              robot.add_to_top_level_backside(widget);
              robot.add_newly_created_widget(widget);
          }
@@ -275,7 +275,7 @@ window.TOONTALK.robot_action =
               continuation();
               robot.run_next_step();
          },
-         "add a new widget to work space": function (widget, context, top_level_context, robot, continuation) {
+         "add a new widget to the work space": function (widget, context, top_level_context, robot, continuation) {
              // TODO: animate the button push that created the widget
              continuation();
              robot.run_next_step();
@@ -343,6 +343,9 @@ window.TOONTALK.robot_action =
             new_action.toString = function () {
                 // following is broken but not clear what the intent was -- perhaps sometimes additional_info has a better action description?
 //                 var action = additional_info && additional_info.toString ? additional_info.toString : action_name;
+                if (action_name === "add a new widget to the work space") {
+                    return action_name.replace("a new widget", TT.path.toString(path));
+                }
                 return action_name + " " + TT.path.toString(path);
             };
             new_action.get_json = function (json_history) {
