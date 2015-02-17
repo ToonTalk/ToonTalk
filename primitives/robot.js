@@ -417,6 +417,12 @@ window.TOONTALK.robot = (function (TT) {
         // no need to update widget.last_action = this.current_action_name;
         this.current_action_name = undefined;
     };
+
+    robot.created_widget = function (new_widget, source_widget, button_selector) {
+        // TODO: store and recreate button push
+        this.add_newly_created_widget(new_widget);
+        this.add_step(TT.robot_action.create(TT.path.get_path_to_resource(new_widget.copy()), "add new widget to work space"));
+    };
     
     robot.remove_from_container = function (part, container) {
         // this is used when running a robot -- not training

@@ -502,8 +502,8 @@ window.TOONTALK.backside =
                                                                       "toontalk-description-input", 
                                                                       "This&nbsp;" + type_name + "&nbsp;",
                                                                       "Type here to provide additional information about this " + type_name + ".");
-            var $create_sensor_button = $("<button>Make a sensor nest</button>") .button();
-            var $get_function_button  = $("<button>Make a function bird</button>").button();
+            var $make_sensor_nest_button    = $("<button>Make a sensor nest</button>")  .button();
+            var $make_function_bird_button  = $("<button>Make a function bird</button>").button();
             var description_change = function () {
                     var description = description_text_area.button.value.trim();
                     if (widget.set_description(description, true) && TT.robot.in_training) {
@@ -519,40 +519,46 @@ window.TOONTALK.backside =
             $(description_text_area.button).val(widget.get_description());
             description_text_area.button.addEventListener('change',   description_change);
             description_text_area.button.addEventListener('mouseout', description_change);
-            $create_sensor_button.click(function (event) {
+            $make_sensor_nest_button.click(function (event) {
                     var sensor = TT.sensor.create('click', 'which', undefined, undefined, true, widget);
                     var sensor_frontside_element = sensor.get_frontside_element(true);
-                    var initial_location = $create_sensor_button.offset();
-                    widget.add_to_top_level_backside(sensor, true);
+                    var initial_location = $make_sensor_nest_button.offset();
+                    widget.add_to_top_level_backside(sensor, false);
                     initial_location.left -= 120; // to the left of the button
                     if (initial_location.left < 0) {
                         // don't go off edge
                         initial_location.left = 0;
                     }
                     TT.UTILITIES.set_absolute_position($(sensor_frontside_element), initial_location);
+                    // TODO: train robot
             });
-            $create_sensor_button.attr('title', "Click to create a nest which receives messages when events happen to this " + widget.get_type_name() + ".");
-            $get_function_button.click(function (event) {
+            $make_sensor_nest_button.attr('title', "Click to create a nest which receives messages when events happen to this " + widget.get_type_name() + ".");
+            $make_function_bird_button
+                .addClass("toontalk-make-function_bird_button")
+                .click(function (event) {
                     var function_bird = TT.bird.create_function(type_name);
                     var function_bird_frontside_element = function_bird.get_frontside_element(true);
-                    var initial_location = $create_sensor_button.offset();
-                    widget.add_to_top_level_backside(function_bird, true);
+                    var initial_location = $make_sensor_nest_button.offset();
+                    widget.add_to_top_level_backside(function_bird, false);
                     initial_location.left -= 120; // to the left of the button
                     if (initial_location.left < 0) {
                         // don't go off edge
                         initial_location.left = 0;
                     }
                     TT.UTILITIES.set_absolute_position($(function_bird_frontside_element), initial_location);
+                    if (TT.robot.in_training) {
+                        TT.robot.in_training.created_widget(function_bird, widget, ".toontalk-make-function_bird_button");
+                    }
             });
             if (widget.is_of_type('number')) {
                 // will implement more functions (e.g. for string elements and boxes)
-                $get_function_button.attr('title', "Click to get a bird that flies to functions of " + widget.get_type_name(true) + ".");
+                $make_function_bird_button.attr('title', "Click to get a bird that flies to functions of " + widget.get_type_name(true) + ".");
             } else {
-                $get_function_button.attr('title', "There are no functions that operate on " + widget.get_type_name(true) + " (yet).");
-                $get_function_button.button("option", "disabled", true);  
+                $make_function_bird_button.attr('title', "There are no functions that operate on " + widget.get_type_name(true) + " (yet).");
+                $make_function_bird_button.button("option", "disabled", true);  
             }
             settings.appendChild(TT.UTILITIES.create_row(description_text_area.container));
-            settings.appendChild(TT.UTILITIES.create_row($create_sensor_button.get(0), $get_function_button.get(0), check_box.container));
+            settings.appendChild(TT.UTILITIES.create_row($make_sensor_nest_button.get(0), $make_function_bird_button.get(0), check_box.container));
             backside_element.appendChild(settings);
             if (always_show_advanced_settings) {
                 $(backside_element).find(".toontalk-settings-backside-button").remove();

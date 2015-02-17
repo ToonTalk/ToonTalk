@@ -48,6 +48,10 @@ window.TOONTALK.path =
                     return TT.element.create_attribute_path(widget, robot);
                 }
                 // if context is undefined something is wrong much earlier
+                if (TT.debugging && !context) {
+                    TT.UTILITIES.report_internal_error("No context to compute the path");
+                    return;
+                }
                 if (context.get_path_to) {
                     sub_path = context.get_path_to(widget, robot);
                     if (sub_path) {

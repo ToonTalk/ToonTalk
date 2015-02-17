@@ -91,6 +91,10 @@ window.TOONTALK.robot_action =
                  widget.animate_to_element(top_level_element);
              }
              return true;
+         },
+         "add new widget to work space": function (widget, context, top_level_context, robot, additional_info) {
+             robot.add_to_top_level_backside(widget);
+             robot.add_newly_created_widget(widget);
          }
     };
     var pick_up_a_copy_animation = function (widget, context, top_level_context, robot, continuation) {
@@ -270,7 +274,12 @@ window.TOONTALK.robot_action =
               // do nothing -- this action is only needed if unwatched
               continuation();
               robot.run_next_step();
-         } 
+         },
+         "add new widget to work space": function (widget, context, top_level_context, robot, continuation) {
+             // TODO: animate the button push that created the widget
+             continuation();
+             robot.run_next_step();
+         }
     };
 
     TT.creators_from_json["robot_action"] = function (json, additional_info) {
