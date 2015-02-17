@@ -299,10 +299,7 @@ window.TOONTALK.widget = (function (TT) {
             }
             if (!widget.animate_to_absolute_position) {
                 widget.animate_to_absolute_position = function (target_absolute_position, continuation, speed) {
-                    var mover_frontside_element;
-//                  this.update_display();
-                    mover_frontside_element = this.get_frontside_element();
-                    TT.UTILITIES.animate_to_absolute_position(mover_frontside_element, target_absolute_position, continuation, speed);
+                    TT.UTILITIES.animate_to_absolute_position(this.get_frontside_element(), target_absolute_position, continuation, speed);
                 };
             }
             return widget;
@@ -1185,6 +1182,12 @@ window.TOONTALK.widget = (function (TT) {
                    // robots in training take care of this (and need to to record things properly)
                    this.remove_backside_widget(other, backside_removed, ignore_if_not_on_backside);
                 };
+            };
+            widget.widget_dropped_on_me = function (other, other_is_backside, event, robot, ignore_training) {
+                return this.get_backside().widget_dropped_on_me(other, other_is_backside, event, robot, ignore_training);
+            };
+            widget.get_element = function () {
+                return this.get_backside().get_element();
             };
             widget.get_setting = function (option_name) {
                 if (typeof settings[option_name] === 'undefined') {
