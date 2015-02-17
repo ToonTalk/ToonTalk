@@ -13,11 +13,12 @@
     // common functions and variables between number, number backside, and number functions
 
     // TODO: make these into 'const' when Ecma6 is everywhere
-    var RADIAN =        180/Math.PI; 
-    var TEN =           bigrat.fromInteger(10); 
-    var HALF =          bigrat.fromValues( 1, 2);
-    var NEGATIVE_HALF = bigrat.fromValues(-1, 2);
+    var RADIAN                  = 180/Math.PI; 
+    var TEN                     = bigrat.fromInteger(10); 
+    var HALF                    = bigrat.fromValues( 1, 2);
+    var NEGATIVE_HALF           = bigrat.fromValues(-1, 2);
     var THREE_HUNDRED_AND_SIXTY = bigrat.fromInteger(360);
+    var TWO_PI                  = bigrat.fromDecimal(2*Math.PI);
 
     // Math.log10 not defined in IE11
     var log10 = Math.log10 ? Math.log10 : function (x) { return Math.log(x)/Math.log(10) };
@@ -1148,6 +1149,9 @@ window.TOONTALK.number.function =
     var degrees_to_decimal = function (rational_number) {
         return bigrat.toDecimal(modulo(rational_number, THREE_HUNDRED_AND_SIXTY));
     };
+    var radians_to_decimal = function (rational_number) {
+        return bigrat.toDecimal(modulo(rational_number, TWO_PI));
+    };
     var bigrat_function_to_widget_function = function (bigrat_function) {
         // takes a function that returns a bigrat and
         // returns a function that converts the result into a widget
@@ -1262,12 +1266,12 @@ window.TOONTALK.number.function =
                         "Your bird will return with an approximation of the cosine of the number (in degrees).");
     add_function_object('sine (in radians)', 
                         function (message) {
-                            return n_ary_function(message, numeric_javascript_function_to_widget_function(Math.sin), 1, 'sine (in radians)');
+                            return n_ary_function(message, numeric_javascript_function_to_widget_function(Math.sin, radians_to_decimal), 1, 'sine (in radians)');
                         },
                         "Your bird will return with an approximation of the sine of the number (in radians).");                  
     add_function_object('cosine (in radians)', 
                         function (message) {
-                            return n_ary_function(message, numeric_javascript_function_to_widget_function(Math.cos), 1, 'cosine (in radians)');
+                            return n_ary_function(message, numeric_javascript_function_to_widget_function(Math.cos, radians_to_decimal), 1, 'cosine (in radians)');
                         },
                         "Your bird will return with an approximation of the cosine of the number (in radians).");
     return functions;
