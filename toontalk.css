@@ -1966,6 +1966,9 @@ body {
 .toontalk-vacuum-e {
 	background-image: url("images/dusty-static-E.png");
 }
+.toontalk-vacuum-a {
+	background-image: url("images/dusty-static-A.png");
+}
 .toontalk-vacuum:hover {
 background-image: url("images/dusty-morph.png");
 	background-repeat: no-repeat;
