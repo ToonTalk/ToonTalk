@@ -234,8 +234,8 @@ window.TOONTALK.scale = (function (TT) {
             return "docs/manual/scales.html";
         };
         new_scale.toString = function () {
-            var left_contents  = this.get_hole(0); 
-            var right_contents = this.get_hole(1);
+            var left_contents  = this.get_hole_contents(0); 
+            var right_contents = this.get_hole_contents(1);
             var description, left_pan, right_pan;
             switch (this.get_state()) {
                 case -1:
