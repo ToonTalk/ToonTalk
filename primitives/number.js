@@ -1071,6 +1071,7 @@ window.TOONTALK.number.function =
         if (result) {
             bird.widget_dropped_on_me(result, false);
         }
+        message.remove();
     };
     var number_check = function (widget, function_name, index) {
         if (widget.is_of_type('number')) {
