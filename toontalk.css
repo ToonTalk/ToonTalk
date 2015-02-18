@@ -1423,6 +1423,18 @@ body {
 .toontalk-backside.toontalk-highlight {
 	border-color: white;
 }
+.toontalk-wiggle {
+  -webkit-animation: wiggle .1s linear 0s infinite alternate;
+     -moz-animation: wiggle .1s linear 0s infinite alternate;
+       -o-animation: wiggle .1s linear 0s infinite alternate;
+          animation: wiggle .1s linear 0s infinite alternate;
+}
+
+@-webkit-keyframes wiggle { from { margin-left:-1px; margin-top:-1px;} to { margin-left:1px; margin-top:1px;}  }
+   @-moz-keyframes wiggle { from { margin-left:-1px; margin-top:-1px;} to { margin-left:1px; margin-top:1px;}  }
+     @-o-keyframes wiggle { from { margin-left:-1px; margin-top:-1px;} to { margin-left:1px; margin-top:1px;}  }
+        @keyframes wiggle { from { margin-left:-1px; margin-top:-1px;} to { margin-left:1px; margin-top:1px;}  }
+
 .toontalk-backside-of-number {
 	background-color: rgb(220, 255, 236);
 }
