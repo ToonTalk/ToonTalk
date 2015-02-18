@@ -94,7 +94,6 @@ window.TOONTALK.robot_action =
          },
          "add a new widget to the work space": function (widget, context, top_level_context, robot, additional_info) {
              robot.add_to_top_level_backside(widget);
-             robot.add_newly_created_widget(widget);
          }
     };
     var pick_up_a_copy_animation = function (widget, context, top_level_context, robot, continuation) {
