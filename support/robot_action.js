@@ -191,22 +191,25 @@ window.TOONTALK.robot_action =
         var backside_element = widget.get_backside_element(true);
         return $(backside_element).find(class_name_selector).get(0);
     };
-    var button_use_animation = function (widget, context, top_level_context, robot, continuation, class_name_selector) {
+    var button_use_animation = function (widget, context, top_level_context, robot, continuation, class_name_selector, additional_info) {
         var button_element = find_backside_element(widget, class_name_selector);
         var robot_frontside_element = robot.get_frontside_element();
         var button_visible = button_element && $(button_element).is(":visible");
         var new_continuation = function () {
             continuation();
             $(button_element).addClass("ui-state-active");
+            if (class_name_selector === ".toontalk-select-function") {
+                button_element.value = additional_info.argument_1;
+            }
             setTimeout(function () {
-                    $(button_element).removeClass("ui-state-active");
-                    if (!button_visible && widget.get_backside()) {
-                        // restore things so button is hidden
-                        widget.get_backside().hide_backside();
-                    }
-                    robot.run_next_step();
-                },
-                500);
+                           $(button_element).removeClass("ui-state-active");
+                           if (!button_visible && widget.get_backside()) {
+                               // restore things so button is hidden
+                               widget.get_backside().hide_backside();
+                           }
+                           robot.run_next_step();
+                      },
+                      500);
         };
         var animation_continuation = function () {
             // robots move at 1/4 pixel per millisecond for clarity
@@ -258,7 +261,7 @@ window.TOONTALK.robot_action =
             }
             continuation();
         };
-        button_use_animation(widget, context, top_level_context, robot, new_continuation, additional_info.button_selector);
+        button_use_animation(widget, context, top_level_context, robot, new_continuation, additional_info.button_selector, additional_info);
     };
     var watched_run_functions = 
         {"copy":                 copy_animation,
