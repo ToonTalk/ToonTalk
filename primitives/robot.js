@@ -444,7 +444,7 @@ window.TOONTALK.robot = (function (TT) {
             do_removal();
         }
         // might be new -- following does nothing if already known
-        this.add_newly_created_widget(part);
+        this.add_newly_created_widget_if_new(part);
     };
     
     robot.add_step = function (step, new_widget) {
