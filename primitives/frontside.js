@@ -66,11 +66,14 @@ window.TOONTALK.frontside =
             frontside_element.addEventListener("mouseenter", function (event) {
                 var backside = widget.get_backside();
                 var wiggling_widget = widget.is_of_type("empty hole") ? wiget.get_parent_of_frontside() : widget;
+                var frontside_element = wiggling_widget.get_frontside_element();
                 if (backside) {
                     TT.UTILITIES.highlight_element(backside.get_element());
                 }
                 $(".toontalk-wiggle").removeClass("toontalk-wiggle");
-                $(wiggling_widget.get_frontside_element()).addClass("toontalk-wiggle");
+                if (!$(frontside_element).is(".toontalk-top-level-resource")) {
+                    $(frontside_element).addClass("toontalk-wiggle");
+                }
                 event.stopPropagation(); 
             });
             frontside_element.addEventListener("mouseleave", function (event) {
