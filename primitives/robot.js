@@ -751,13 +751,18 @@ window.TOONTALK.robot_backside =
         var frontside_condition_widget = robot.get_frontside_conditions();
         var backside_conditions = robot.get_backside_conditions();
         var backside_condition_widget, area_class_name;
-        if (frontside_condition_widget && $(backside_element).find(".toontalk-frontside-conditions-area").length === 0) {
-            // and not already added
-            backside_element.insertBefore(create_conditions_area("Runs only if the widget matches: ", 
-                                                                 frontside_condition_widget, 
-                                                                 robot,
-                                                                 "toontalk-frontside-conditions-area"), 
-                                          backside_element.firstChild);
+        if (frontside_condition_widget) {
+            if (frontside_condition_widget.is_of_type('top-level')) {
+                backside_element.insertBefore(TT.UTILITIES.create_text_element("This robot always runs when the workspace green flag is clicked."),
+                                              backside_element.firstChild);
+            } else if ($(backside_element).find(".toontalk-frontside-conditions-area").length === 0) {
+                // and not already added
+                backside_element.insertBefore(create_conditions_area("Runs only if the widget matches: ", 
+                                                                     frontside_condition_widget, 
+                                                                     robot,
+                                                                     "toontalk-frontside-conditions-area"), 
+                                              backside_element.firstChild);
+            }
             frontside_condition_widget.set_visible(true);
             frontside_condition_widget.render();
         }
