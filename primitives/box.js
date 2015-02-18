@@ -318,15 +318,6 @@ window.TOONTALK.box = (function (TT) {
     TT.creators_from_json['box'] = function (json, additional_info) {
         return box.create(json.size, json.horizontal, TT.UTILITIES.create_array_from_json(json.contents, additional_info), json.description);
     };
-
-    box.render = function () {
-        // boxes inside boxes display a bit different so re-render the containing box
-        var frontside_parent = this.get_parent_of_frontside();
-        if (frontside_parent && frontside_parent.is_of_type('empty hole')) {
-            frontside_parent.get_parent_of_frontside().render();
-        }
-        TT.DISPLAY_UPDATES.pending_update(this);
-    };
     
     box.update_display = function () {
         var frontside = this.get_frontside(true);
@@ -366,9 +357,6 @@ window.TOONTALK.box = (function (TT) {
                                  top:    top,
                                  width:  new_width,
                                  height: new_height});
-//             if (content_frontside_element.parentElement === hole_element) {
-//                 return;
-//             }
             if (hole_element !== content_frontside_element) {
                 // not an empty hole
                 // save dimensions first?
@@ -377,6 +365,7 @@ window.TOONTALK.box = (function (TT) {
                                                   width:  '',
                                                   height: ''});
                 hole_element.appendChild(content_frontside_element);
+                hole.get_contents().update_display();
             }                                          
             if (!TT.UTILITIES.has_animating_image(content_frontside_element)) {
                 // explicit size interferes with animation
@@ -392,7 +381,6 @@ window.TOONTALK.box = (function (TT) {
                 }
                 hole_element.toontalk_border_size = border_size;
             }
-            hole.render();
         };
         var horizontal = this.get_horizontal();
         var first_time = !$(frontside_element).is(".toontalk-box");
