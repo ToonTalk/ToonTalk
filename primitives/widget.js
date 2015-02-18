@@ -288,9 +288,6 @@ window.TOONTALK.widget = (function (TT) {
                     if (target_absolute_position) {
                         target_absolute_position.left += left_offset;
                         target_absolute_position.top  += top_offset;
-                        if (TT.debugging && (target_absolute_position.left < 0 || target_absolute_position.top < 0)) {
-                            console.log("Should this include negative values? " + target_absolute_position);
-                        }
                     } else {
                         // can happen if a user picks up the target while this is running
                         target_absolute_position = {left: 0, top: 0};
