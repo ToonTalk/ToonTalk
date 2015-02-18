@@ -93,7 +93,7 @@ window.TOONTALK.scale = (function (TT) {
                 }
             }
             // hole was empty so fill it
-            this.set_hole(hole_index, dropped, event);
+            this.get_hole(hole_index).widget_dropped_on_me(dropped, is_backside, event, robot); 
             return true;
         };
         new_scale.which_hole = function (point, or_entire_thing) {
