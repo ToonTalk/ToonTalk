@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" media="all" href="../toontalk.css" />
+<script src="../libraries/jquery-2.1.1.min.js"></script>
+<script src="../libraries/jquery-ui-1.11.2.custom/jquery-ui.min.js"></script>
+<script charset="utf8" src="../libraries/DataTables-1.10.4/media/js/jquery.dataTables.js"></script>
+<script src="../libraries/rationaljs.js"></script>
+<script src="../support/initial.js"></script>
+<script src="../primitives/widget.js"></script>
+<script src="../primitives/number.js"></script>
+<script src="../primitives/robot.js"></script>
+<script src="../primitives/box.js"></script>
+<script src="../primitives/element.js"></script>
+<script src="../primitives/bird.js"></script>
+<script src="../primitives/sensor.js"></script>
+<script src="../primitives/scale.js"></script>
+<script src="../primitives/backside.js"></script>
+<script src="../primitives/frontside.js"></script>
+<script src="../tools/tool.js"></script>
+<script src="../tools/wand.js"></script>
+<script src="../tools/vacuum.js"></script>
+<script src="../support/robot_actions.js"></script>
+<script src="../support/robot_action.js"></script>
+<script src="../support/path.js"></script>
+<script src="../support/run_queue.js"></script>
+<script src="../support/settings.js"></script>
+<script src="../support/display_updates.js"></script>
+<script src="../support/utilities.js"></script>
+<title>Tests of ToonTalk Reborn Programs</title>
+<link rel="shortcut icon" href="../favicon.ico" />
+</head>
+<body>
+<p>
+<div id='toontalk-test-all-button'>Test button should appear here</div>
+</p>
+<p>Absolute value of -1:</p>
+<div class='toontalk-json'>
+This will be replaced by a work area containing one thing: a robot.
+<div style='display:none;'>{
+  "semantic": {
+    "type": "top_level",
+    "settings": {
+      "auto_save_to_google_drive": true,
+      "auto_save_to_local_storage": true,
+      "program_name": "temp",
+      "google_drive_unavailable": true
+    },
+    "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "robot",
+            "frontside_conditions": {
+              "type": "top_level"
+            },
+            "body": {
+              "type": "body",
+              "steps": [
+                {
+                  "type": "robot_action",
+                  "action_name": "pick up",
+                  "path": {
+                    "type": "path.to_resource",
+                    "resource": {
+                      "type": "number",
+                      "operator": "+",
+                      "numerator": "1",
+                      "denominator": "1",
+                      "format": "improper_fraction"
+                    }
+                  },
+                  "additional_info": {
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "drop it on",
+                  "path": {
+                    "type": "path.to_entire_context"
+                  },
+                  "additional_info": {
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "edit",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 0
+                  },
+                  "additional_info": {
+                    "setter_name": "set_from_values",
+                    "argument_1": "-1",
+                    "argument_2": "1",
+                    "toString": "change value of the numerator to -1 of the number",
+                    "button_selector": ".toontalk-numerator-input",
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "add a new widget to the work space",
+                  "path": {
+                    "type": "path.to_resource",
+                    "resource": {
+                      "type": "bird",
+                      "nest": {
+                        "semantic": {
+                          "type": "function_nest",
+                          "function_type": "number",
+                          "function_name": "sum"
+                        },
+                        "view": {
+                          "backside": false
+                        },
+                        "version": 1
+                      }
+                    }
+                  },
+                  "additional_info": {
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "edit",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 1
+                  },
+                  "additional_info": {
+                    "setter_name": "set_function_name",
+                    "argument_1": "absolute value",
+                    "toString": "change the function bird to 'absolute value'",
+                    "button_selector": ".toontalk-select-function",
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "pick up",
+                  "path": {
+                    "type": "path.to_resource",
+                    "resource": {
+                      "type": "box",
+                      "size": 2,
+                      "contents": [
+                        null,
+                        null
+                      ],
+                      "horizontal": true
+                    }
+                  },
+                  "additional_info": {
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "drop it on",
+                  "path": {
+                    "type": "path.to_entire_context"
+                  },
+                  "additional_info": {
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "pick up",
+                  "path": {
+                    "type": "path.to_resource",
+                    "resource": {
+                      "type": "scale",
+                      "size": 2,
+                      "contents": [
+                        null,
+                        null
+                      ],
+                      "horizontal": true
+                    }
+                  },
+                  "additional_info": {
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "drop it on",
+                  "path": {
+                    "type": "path.to_entire_context"
+                  },
+                  "additional_info": {
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "pick up",
+                  "path": {
+                    "type": "path.to_resource",
+                    "resource": {
+                      "type": "nest",
+                      "contents": [],
+                      "original_nest": {
+                        "semantic": {
+                          "type": "nest",
+                          "contents": [
+                            {
+                              "widget": {
+                                "semantic": {
+                                  "type": "number",
+                                  "operator": "+",
+                                  "numerator": "1",
+                                  "denominator": "1",
+                                  "format": "improper_fraction"
+                                },
+                                "view": {
+                                  "backside": false
+                                },
+                                "version": 1
+                              }
+                            }
+                          ],
+                          "guid": "toontalk_id_1424240013219",
+                          "waiting_robots": []
+                        },
+                        "view": {
+                          "frontside_width": 116,
+                          "frontside_height": 141,
+                          "frontside_left": 0,
+                          "frontside_top": 0,
+                          "backside": false
+                        },
+                        "version": 1
+                      },
+                      "waiting_robots": []
+                    }
+                  },
+                  "additional_info": {
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "drop it on",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 3,
+                    "next_path": {
+                      "type": "box_path",
+                      "index": 0,
+                      "true_type": "scale"
+                    }
+                  },
+                  "additional_info": {
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "pick up",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 0,
+                    "removing_widget": true
+                  },
+                  "additional_info": {
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "drop it on",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 2,
+                    "next_path": {
+                      "type": "box_path",
+                      "index": 1
+                    }
+                  },
+                  "additional_info": {
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "pick up",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 5,
+                    "removing_widget": true
+                  },
+                  "additional_info": {
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "drop it on",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 2,
+                    "next_path": {
+                      "type": "box_path",
+                      "index": 0
+                    }
+                  },
+                  "additional_info": {
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "pick up",
+                  "path": {
+                    "type": "path.to_resource",
+                    "resource": {
+                      "type": "number",
+                      "operator": "+",
+                      "numerator": "1",
+                      "denominator": "1",
+                      "format": "improper_fraction"
+                    }
+                  },
+                  "additional_info": {
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "drop it on",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 3,
+                    "next_path": {
+                      "type": "box_path",
+                      "index": 1,
+                      "true_type": "scale"
+                    }
+                  },
+                  "additional_info": {
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "pick up",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 2,
+                    "removing_widget": true
+                  },
+                  "additional_info": {
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "drop it on",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 1
+                  },
+                  "additional_info": {
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "remove",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 1,
+                    "removing_widget": true
+                  },
+                  "additional_info": {
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "add to the top-level backside",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 3
+                  },
+                  "additional_info": {
+                    "running_watched": true
+                  }
+                }
+              ]
+            },
+            "run_once": true
+          },
+          "view": {
+            "frontside_width": 66,
+            "frontside_height": 110,
+            "frontside_left": 52,
+            "frontside_top": 18.40625,
+            "backside_geometry": {
+              "x_scale": 1,
+              "y_scale": 1,
+              "original_width": 550,
+              "original_height": 200
+            },
+            "backside": false
+          },
+          "version": 1
+        }
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgb(245, 240, 240)",
+    "backside_width": 672,
+    "backside_height": 178,
+    "backside_left": 8,
+    "backside_top": 181.1875,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1
+    },
+    "backside": true,
+    "drag_x_offset": 368,
+    "drag_y_offset": 88.8125
+  },
+  "version": 1
+}</div></div>
+<p>Sum of 1+1+1:</p>
+<div class='toontalk-json'>
+This will be replaced by a work area containing one thing: a robot.
+<div style='display:none;'>{
+  "semantic": {
+    "type": "top_level",
+    "settings": {
+      "auto_save_to_google_drive": true,
+      "auto_save_to_local_storage": true,
+      "program_name": "temp",
+      "google_drive_unavailable": true
+    },
+    "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "robot",
+            "frontside_conditions": {
+              "type": "top_level"
+            },
+            "body": {
+              "type": "body",
+              "steps": [
+                {
+                  "type": "robot_action",
+                  "action_name": "pick up",
+                  "path": {
+                    "type": "path.to_resource",
+                    "resource": {
+                      "type": "box",
+                      "size": 2,
+                      "contents": [
+                        null,
+                        null
+                      ],
+                      "horizontal": true
+                    }
+                  },
+                  "additional_info": {
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "drop it on",
+                  "path": {
+                    "type": "path.to_entire_context"
+                  },
+                  "additional_info": {
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "edit",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 0
+                  },
+                  "additional_info": {
+                    "setter_name": "set_size",
+                    "argument_1": 3,
+                    "toString": "change the number of holes to 3 of the box",
+                    "button_selector": ".toontalk-box-size-input",
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "edit",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 0
+                  },
+                  "additional_info": {
+                    "setter_name": "set_size",
+                    "argument_1": 4,
+                    "toString": "change the number of holes to 4 of the box",
+                    "button_selector": ".toontalk-box-size-input",
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "pick up",
+                  "path": {
+                    "type": "path.to_resource",
+                    "resource": {
+                      "type": "number",
+                      "operator": "+",
+                      "numerator": "1",
+                      "denominator": "1",
+                      "format": "improper_fraction"
+                    }
+                  },
+                  "additional_info": {
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "drop it on",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 0,
+                    "next_path": {
+                      "type": "box_path",
+                      "index": 1
+                    }
+                  },
+                  "additional_info": {
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "pick up",
+                  "path": {
+                    "type": "path.to_resource",
+                    "resource": {
+                      "type": "number",
+                      "operator": "+",
+                      "numerator": "1",
+                      "denominator": "1",
+                      "format": "improper_fraction"
+                    }
+                  },
+                  "additional_info": {
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "drop it on",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 0,
+                    "next_path": {
+                      "type": "box_path",
+                      "index": 2
+                    }
+                  },
+                  "additional_info": {
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "pick up",
+                  "path": {
+                    "type": "path.to_resource",
+                    "resource": {
+                      "type": "number",
+                      "operator": "+",
+                      "numerator": "1",
+                      "denominator": "1",
+                      "format": "improper_fraction"
+                    }
+                  },
+                  "additional_info": {
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "drop it on",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 0,
+                    "next_path": {
+                      "type": "box_path",
+                      "index": 3
+                    }
+                  },
+                  "additional_info": {
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "add a new widget to the work space",
+                  "path": {
+                    "type": "path.to_resource",
+                    "resource": {
+                      "type": "bird",
+                      "nest": {
+                        "semantic": {
+                          "type": "function_nest",
+                          "function_type": "number",
+                          "function_name": "sum"
+                        },
+                        "view": {
+                          "backside": false
+                        },
+                        "version": 1
+                      }
+                    }
+                  },
+                  "additional_info": {
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "pick up",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 4,
+                    "removing_widget": true
+                  },
+                  "additional_info": {
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "drop it on",
+                  "path": {
+                    "type": "path.to_entire_context"
+                  },
+                  "additional_info": {
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "pick up",
+                  "path": {
+                    "type": "path.to_resource",
+                    "resource": {
+                      "type": "scale",
+                      "size": 2,
+                      "contents": [
+                        null,
+                        null
+                      ],
+                      "horizontal": true
+                    }
+                  },
+                  "additional_info": {
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "drop it on",
+                  "path": {
+                    "type": "path.to_entire_context"
+                  },
+                  "additional_info": {
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "pick up",
+                  "path": {
+                    "type": "path.to_resource",
+                    "resource": {
+                      "type": "nest",
+                      "contents": [],
+                      "original_nest": {
+                        "semantic": {
+                          "type": "nest",
+                          "contents": [
+                            {
+                              "widget": {
+                                "semantic": {
+                                  "type": "number",
+                                  "operator": "+",
+                                  "numerator": "3",
+                                  "denominator": "1",
+                                  "format": "improper_fraction"
+                                },
+                                "view": {
+                                  "backside": false
+                                },
+                                "version": 1
+                              }
+                            }
+                          ],
+                          "guid": "toontalk_id_1424240708854",
+                          "waiting_robots": []
+                        },
+                        "view": {
+                          "saved_width": 116,
+                          "saved_height": 141,
+                          "backside": false
+                        },
+                        "version": 1
+                      },
+                      "waiting_robots": []
+                    }
+                  },
+                  "additional_info": {
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "drop it on",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 5,
+                    "next_path": {
+                      "type": "box_path",
+                      "index": 1,
+                      "true_type": "scale"
+                    }
+                  },
+                  "additional_info": {
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "pick up",
+                  "path": {
+                    "type": "path.to_resource",
+                    "resource": {
+                      "type": "number",
+                      "operator": "+",
+                      "numerator": "1",
+                      "denominator": "1",
+                      "format": "improper_fraction"
+                    }
+                  },
+                  "additional_info": {
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "drop it on",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 5,
+                    "next_path": {
+                      "type": "box_path",
+                      "index": 0,
+                      "true_type": "scale"
+                    }
+                  },
+                  "additional_info": {
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "edit",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 5,
+                    "next_path": {
+                      "type": "box_path",
+                      "index": 0,
+                      "true_type": "scale"
+                    }
+                  },
+                  "additional_info": {
+                    "setter_name": "set_from_values",
+                    "argument_1": "3",
+                    "argument_2": "1",
+                    "toString": "change value of the numerator to 3 of the number",
+                    "button_selector": ".toontalk-numerator-input",
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "pick up",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 7,
+                    "removing_widget": true
+                  },
+                  "additional_info": {
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "drop it on",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 0,
+                    "next_path": {
+                      "type": "box_path",
+                      "index": 0
+                    }
+                  },
+                  "additional_info": {
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "pick up",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 0,
+                    "removing_widget": true
+                  },
+                  "additional_info": {
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "drop it on",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 4
+                  },
+                  "additional_info": {
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "remove",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 4,
+                    "removing_widget": true
+                  },
+                  "additional_info": {
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "add to the top-level backside",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 5
+                  },
+                  "additional_info": {
+                    "running_watched": true
+                  }
+                }
+              ]
+            },
+            "run_once": true
+          },
+          "view": {
+            "frontside_width": 66,
+            "frontside_height": 110,
+            "frontside_left": 40,
+            "frontside_top": 10.8125,
+            "backside_geometry": {
+              "x_scale": 1,
+              "y_scale": 1,
+              "original_width": 550,
+              "original_height": 200
+            },
+            "backside": false
+          },
+          "version": 1
+        }
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgb(245, 240, 240)",
+    "frontside_width": 240,
+    "frontside_height": 60,
+    "frontside_left": 0,
+    "frontside_top": 0,
+    "backside_width": 631,
+    "backside_height": 181,
+    "backside_left": 8,
+    "backside_top": 181.1875,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1
+    },
+    "backside": true,
+    "drag_x_offset": 263,
+    "drag_y_offset": 117.8125
+  },
+  "version": 1
+}</div></div>
+</body>
+</html>
