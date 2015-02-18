@@ -198,7 +198,7 @@ window.TOONTALK.robot_action =
         var new_continuation = function () {
             continuation();
             $(button_element).addClass("ui-state-active");
-            if (class_name_selector === ".toontalk-select-function") {
+            if (class_name_selector === ".toontalk-select-function" || class_name_selector === ".toontalk-box-size-input") {
                 button_element.value = additional_info.argument_1;
             }
             setTimeout(function () {
