@@ -63,6 +63,10 @@ window.TOONTALK.scale = (function (TT) {
             var left_contents  = this.get_hole_contents(0);
             var right_contents = this.get_hole_contents(1); 
             var hole_index;
+            if (dropped.dropped_on_other) {
+                // e.g. so egg can hatch from nest drop
+                dropped.dropped_on_other(this, false, event, robot);
+            }
             if (left_contents && !right_contents) {
                 this.set_hole(1, dropped);
                 return true;
@@ -89,7 +93,7 @@ window.TOONTALK.scale = (function (TT) {
                 }
             }
             // hole was empty so fill it
-            this.set_hole(hole_index, dropped, event); 
+            this.set_hole(hole_index, dropped, event);
             return true;
         };
         new_scale.which_hole = function (point, or_entire_thing) {
