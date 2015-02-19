@@ -569,7 +569,15 @@ window.TOONTALK.UTILITIES =
                 console.log(error);
             }
         });
-        use_custom_tooltip($(document));
+        // add tooltips to widget sides or tools
+        setTimeout(function () {
+                      $(".toontalk-side, .toontalk-json").each(
+                           function () {
+                               if (!$(this).is(".toontalk-top-level-backside")) {
+                                   use_custom_tooltip($(this));
+                               }
+                           });
+                   });
         TT.TRANSLATION_ENABLED = TT.UTILITIES.get_current_url_boolean_parameter("translate", false);
         if (TT.TRANSLATION_ENABLED) {
             $("a").each(function (index, element) {
@@ -591,22 +599,50 @@ window.TOONTALK.UTILITIES =
     var use_custom_tooltip = function ($element) {
         // nicer looking tool tips
         // customization to crude talk balloons thanks to http://jsfiddle.net/pragneshkaria/Qv6L2/49/
+        var maximum_width_if_moved;
         $element.tooltip(
             {position: {
                  my: "center bottom-20",
                  at: "center top",
                  using: function (position, feedback) {
-                     $(this).css(position);
-                     $("<div>").addClass("toontalk-arrow")
-                               .addClass(feedback.vertical)
-                               .addClass(feedback.horizontal)
-                               .appendTo(this);
+                           var element_position;
+                           if (position.top < 0) {
+                               // too much text to fit well so JQuery puts the extra part off the top
+                               // this moves it down but ensures it doesn't overlap with the element whose tooltip is being displayed
+                               position.top = 0;
+                               element_position = $element.offset();
+                               if (element_position.left < $(window).width()/2) {
+                                   // widget is on left half of the window
+                                   position.left = element_position.left+$element.width()+10;
+                                } else {
+                                   position.left = 0;
+                                   maximum_width_if_moved = element_position.left-40; // subtract something for borders and paddings
+                                };
+                           }
+                           $(this).css(position);
+                           $("<div>").addClass("toontalk-arrow")
+                                     .addClass(feedback.vertical)
+                                     .addClass(feedback.horizontal)
+                                     .appendTo(this);
                  }},
             open: function (event, ui) {
+                      var text_length = ui.tooltip.get(0).textContent.length;
+                      var default_capacity = 400;
+                      // replace all new lines with <br> breaks
+                      ui.tooltip.get(0).innerHTML = ui.tooltip.get(0).textContent.replace(/(\r\n|\n|\r)/g, "<br>");
+                      // width is 340 by default but if more than fits then make wider
+                      if (text_length > default_capacity) {
+                          $(ui.tooltip).css({//width: (340 + 340*(text_length-default_capacity)/default_capacity),
+                                             maxWidth: Math.min(800, maximum_width_if_moved || $(window).width()-100)});
+                      }
+//                       if (height_adjustment) {
+//                           $(ui.tooltip).css({maxHeight: $(ui.tooltip).height()+height_adjustment/2});
+//                       }
+                      // auto hide after duration proportional to text_length
                       setTimeout(function () {
                                      $(ui.tooltip).hide();
-                      }, 
-                      ui.tooltip.get(0).textContent.length * (TT.MAXIMUM_TOOLTIP_DURATION_PER_CHARACTER || 100));
+                                 }, 
+                                 text_length*(TT.MAXIMUM_TOOLTIP_DURATION_PER_CHARACTER || 100));
                   }
            });
     };
