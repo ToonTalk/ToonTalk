@@ -922,8 +922,47 @@ window.TOONTALK.number_backside =
                 var numerator = numerator_input.button.value.trim();
                 var denominator = denominator_input.button.value.trim();
                 var string, first_class_name;
+                var valid_integer = function (string, ator, negative_not_allowed) {
+                    var without_sign;
+                    if (string.length < 1) {
+                        return {message: "Empty " + ator + " treated as 1.",
+                                replacement: "1"};
+                    }
+                    if (string.charAt(0) === '-') {
+                        if (negative_not_allowed) {
+                            return {message: "'-' only allowed as the first character of the " + ator + ". Ignoring extra '-'s.",
+                                    replacement: valid_integer(string, ator).replacement};
+                        }
+                        without_sign = valid_integer(string.substring(1, string.length), ator, true);
+                        if (!without_sign.message) {
+                            without_sign.replacement = '-' + without_sign.replacement;
+                        }
+                        return without_sign;
+                    }
+                    if (/^\d+$/.test(string)) {
+                       return {replacement: string};
+                    }
+                    return {message: "The " + ator + " can only contain digits. " + "'" + string + "' doesn't make sense.",
+                            replacement: string.replace(/[^\d]*/g, "")};
+                };
+                var validity;
                 if (numerator === current_numerator && denominator === current_denominator) {
                     return;
+                }
+                validity = valid_integer(numerator, "numerator");
+                if (validity.message) {
+                    TT.UTILITIES.display_message(validity.message);
+                    numerator = validity.replacement;
+                }
+                if (denominator === "0") {
+                    TT.UTILITIES.display_message("It doesn't make sense for a fraction to have a denominator of 0. Resetting it to 1.");
+                    denominator = "1";
+                } else {
+                    validity = valid_integer(denominator, "denominator");
+                    if (validity.message) {
+                        TT.UTILITIES.display_message(validity.message);
+                        denominator = validity.replacement;
+                    }
                 }
                 number.set_from_values(numerator, denominator);
                 current_numerator   = numerator;
