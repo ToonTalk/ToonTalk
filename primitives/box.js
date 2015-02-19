@@ -80,16 +80,18 @@ window.TOONTALK.box = (function (TT) {
             return size;
         };
         new_box.set_size = function (new_size, update_display) {
-            var i;
+            var i, box_visibility;
             if (size === new_size || new_size < 0 || isNaN(new_size)) {
                 // ingore no change, negative or NaN values
                 return false;
             }
+            box_visibility = this.visible();
             holes.length = new_size;
             if (new_size > size) {
                 for (i = size; i < new_size; i++) {
                     holes[i] = TT.box_hole.create(i);
                     holes[i].set_parent_of_frontside(new_box);
+                    holes[i].set_visible(box_visibility);
                 }
             }
             size = new_size;
