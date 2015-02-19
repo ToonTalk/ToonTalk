@@ -468,16 +468,16 @@ window.TOONTALK.box = (function (TT) {
         new_content.rerender();
     };
     
-    box.drop_on = function (other, is_backside, event) {
+    box.drop_on = function (other, is_backside, event, robot) {
         var result;
         if (!other.box_dropped_on_me) {
             if (other.widget_dropped_on_me) {
-                return other.widget_dropped_on_me(this, is_backside, event);
+                return other.widget_dropped_on_me(this, is_backside, event, robot);
             }
             console.log("No handler for drop of " + this + " on " + other);
             return;
         }
-        result = other.box_dropped_on_me(this, event);
+        result = other.box_dropped_on_me(this, event, robot);
         if (event) {
             other.rerender();
         }
