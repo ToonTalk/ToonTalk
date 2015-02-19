@@ -875,6 +875,11 @@ window.TOONTALK.box_hole =
                     contents.set_visible(new_value);
                 }
             };
+            hole.remove = function () {
+                if (contents) {
+                    contents.remove();
+                }
+            };
             hole.render = function () {
                 if (contents) {
                     return contents.render();
