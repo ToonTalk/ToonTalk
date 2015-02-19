@@ -567,7 +567,8 @@ window.TOONTALK.widget = (function (TT) {
             this.set_running(false);
             if (this.walk_children) {
                 this.walk_children(function (child) {
-                                       if (child.remove) {
+                                       if (child.remove && !child.is_of_type('top-level')) {
+                                           // conditions of a robot are children of a robot and may refer to top-level backside
                                            child.remove();
                                        }
                                        return true; // go on to next child
