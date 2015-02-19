@@ -23,8 +23,8 @@ window.TOONTALK.vacuum = (function (TT) {
 
     var next_mode    = {suck:     'erase',
                         erase:    'restore',
-                        restore:  'suck',
-                        suck_all: 'suck_all'};
+                        restore:  'suck_all',
+                        suck_all: 'suck'};
 
     vacuum.create = function () {
         var element, mode_class;
