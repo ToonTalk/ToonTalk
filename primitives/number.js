@@ -887,7 +887,7 @@ window.TOONTALK.number = (function () {
     };
 
     number.get_custom_title_prefix = function () {
-        return "Drop another number on me and I'll add it to my value (unless it has been changed so that I'll subtract, multiply, or divide instead).";
+        return "Drop another number on me and I'll add it to my value.\nUnless its operation has been changed then I'll subtract, multiply, or divide by it instead.";
     };
     
     return number;

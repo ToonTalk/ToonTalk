@@ -341,7 +341,7 @@ window.TOONTALK.widget = (function (TT) {
                     }
                     if (this.get_custom_title_prefix && !$(frontside_element).is(".toontalk-top-level-resource")) {
                         // top-level resources must be dragged to work area so don't add custom description
-                        title = this.get_custom_title_prefix() + " " + title;
+                        title = this.get_custom_title_prefix() + "\n" + title;
                     }
                     title = title.trim();
                     if (".?!".indexOf(title[title.length-1]) < 0) {
