@@ -1392,6 +1392,15 @@ window.TOONTALK.UTILITIES =
                 case 2:
                 return "third";
                 default:
+                if (n%10 === 1) {
+                    return n + "st";
+                }
+                if (n%10 === 2) {
+                    return n + "nd";
+                }
+                if (n%10 === 3) {
+                    return n + "rd";
+                }
                 return n + "th";
             }
         },
