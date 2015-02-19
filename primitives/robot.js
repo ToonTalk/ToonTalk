@@ -329,6 +329,10 @@ window.TOONTALK.robot = (function (TT) {
             // robot picked up its frontside or backside -- so ignore this
             return;
         }
+        if (widget.is_of_type('top-level')) {
+            // doesn't make sense and easy to do by mistake
+            return;
+        }
         // current_action_name is used to distinguish between removing something from its container versus referring to it
         if (widget.get_infinite_stack && widget.get_infinite_stack()) {
             // does this cause an addition to newly created backside widgets?
