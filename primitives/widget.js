@@ -209,7 +209,7 @@ window.TOONTALK.widget = (function (TT) {
                                 if (child.set_running) {
                                     child.set_running(running);
                                 }
-                                return true;
+                                return true; // continue to next child
                         });
                     }
 //                     backside_element = this.get_backside_element();
@@ -557,17 +557,6 @@ window.TOONTALK.widget = (function (TT) {
             var backside_of_parent;
             if (backside) {
                 backside.hide_backside();
-//                 backside.remove_element();
-//                 if (parent_of_backside) {
-//                     if (parent_of_backside.is_backside()) {
-//                         backside_of_parent = parent_of_backside;
-//                     } else {
-//                         backside_of_parent = parent_of_backside.get_backside();
-//                     }
-//                     if (backside_of_parent.removed_from_container) {
-//                         backside_of_parent.removed_from_container(this, true, event, undefined, true);
-//                     }
-//                 }  
             }
             if (frontside) {
                 frontside.remove();
@@ -576,6 +565,14 @@ window.TOONTALK.widget = (function (TT) {
                 }
             }   
             this.set_running(false);
+            if (this.walk_children) {
+                this.walk_children(function (child) {
+                                       if (child.remove) {
+                                           child.remove();
+                                       }
+                                       return true; // go on to next child
+                                   });
+            }
         },
 
         get_frontside_element: get_frontside_element_function,
