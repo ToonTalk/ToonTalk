@@ -571,11 +571,10 @@ window.TOONTALK.UTILITIES =
         });
         // add tooltips to widget sides or tools
         setTimeout(function () {
-                      $(".toontalk-side, .toontalk-json").each(
+                      // delay until DOM settles down
+                      $("[title]").each(
                            function () {
-                               if (!$(this).is(".toontalk-top-level-backside")) {
-                                   use_custom_tooltip($(this));
-                               }
+                               TT.UTILITIES.use_custom_tooltip(this);
                            });
                    });
         TT.TRANSLATION_ENABLED = TT.UTILITIES.get_current_url_boolean_parameter("translate", false);
@@ -595,56 +594,6 @@ window.TOONTALK.UTILITIES =
             $("#google_translate_element").remove();
         }
         TT.UTILITIES.add_test_all_button();
-    };
-    var use_custom_tooltip = function ($element) {
-        // nicer looking tool tips
-        // customization to crude talk balloons thanks to http://jsfiddle.net/pragneshkaria/Qv6L2/49/
-        var maximum_width_if_moved;
-        $element.tooltip(
-            {position: {
-                 my: "center bottom-20",
-                 at: "center top",
-                 using: function (position, feedback) {
-                           var element_position;
-                           if (position.top < 0) {
-                               // too much text to fit well so JQuery puts the extra part off the top
-                               // this moves it down but ensures it doesn't overlap with the element whose tooltip is being displayed
-                               position.top = 0;
-                               element_position = $element.offset();
-                               if (element_position.left < $(window).width()/2) {
-                                   // widget is on left half of the window
-                                   position.left = element_position.left+$element.width()+10;
-                                } else {
-                                   position.left = 0;
-                                   maximum_width_if_moved = element_position.left-40; // subtract something for borders and paddings
-                                };
-                           }
-                           $(this).css(position);
-                           $("<div>").addClass("toontalk-arrow")
-                                     .addClass(feedback.vertical)
-                                     .addClass(feedback.horizontal)
-                                     .appendTo(this);
-                 }},
-            open: function (event, ui) {
-                      var text_length = ui.tooltip.get(0).textContent.length;
-                      var default_capacity = 400;
-                      // replace all new lines with <br> breaks
-                      ui.tooltip.get(0).innerHTML = ui.tooltip.get(0).textContent.replace(/(\r\n|\n|\r)/g, "<br>");
-                      // width is 340 by default but if more than fits then make wider
-                      if (text_length > default_capacity) {
-                          $(ui.tooltip).css({//width: (340 + 340*(text_length-default_capacity)/default_capacity),
-                                             maxWidth: Math.min(800, maximum_width_if_moved || $(window).width()-100)});
-                      }
-//                       if (height_adjustment) {
-//                           $(ui.tooltip).css({maxHeight: $(ui.tooltip).height()+height_adjustment/2});
-//                       }
-                      // auto hide after duration proportional to text_length
-                      setTimeout(function () {
-                                     $(ui.tooltip).hide();
-                                 }, 
-                                 text_length*(TT.MAXIMUM_TOOLTIP_DURATION_PER_CHARACTER || 100));
-                  }
-           });
     };
     var load_script = function (url) {
         var script = document.createElement('script');
@@ -1444,6 +1393,58 @@ window.TOONTALK.UTILITIES =
         on_a_nest_in_a_box: function (frontside_element) {
             return $(frontside_element).closest(".toontalk-nest").is("*") && $(frontside_element).closest(".toontalk-box").is("*");
         },
+
+        use_custom_tooltip: function (element) {
+            // nicer looking tool tips
+            // customization to crude talk balloons thanks to http://jsfiddle.net/pragneshkaria/Qv6L2/49/
+            var $element = $(element);
+            var maximum_width_if_moved;
+            $element.tooltip(
+                {position: {
+                     my: "center bottom-20",
+                     at: "center top",
+                     using: function (position, feedback) {
+                               var element_position;
+                               if (position.top < 0) {
+                                   // too much text to fit well so JQuery puts the extra part off the top
+                                   // this moves it down but ensures it doesn't overlap with the element whose tooltip is being displayed
+                                   position.top = 0;
+                                   element_position = $element.offset();
+                                   if (element_position.left < $(window).width()/2) {
+                                       // widget is on left half of the window
+                                       position.left = element_position.left+$element.width()+10;
+                                    } else {
+                                       position.left = 0;
+                                       maximum_width_if_moved = element_position.left-40; // subtract something for borders and paddings
+                                    };
+                               }
+                               $(this).css(position);
+                               $("<div>").addClass("toontalk-arrow")
+                                         .addClass(feedback.vertical)
+                                         .addClass(feedback.horizontal)
+                                         .appendTo(this);
+                     }},
+                open: function (event, ui) {
+                          var text_length = ui.tooltip.get(0).textContent.length;
+                          var default_capacity = 400;
+                          // replace all new lines with <br> breaks
+                          ui.tooltip.get(0).innerHTML = ui.tooltip.get(0).textContent.replace(/(\r\n|\n|\r)/g, "<br>");
+                          // width is 340 by default but if more than fits then make wider
+                          if (text_length > default_capacity) {
+                              $(ui.tooltip).css({//width: (340 + 340*(text_length-default_capacity)/default_capacity),
+                                                 maxWidth: Math.min(800, maximum_width_if_moved || $(window).width()-100)});
+                          }
+    //                       if (height_adjustment) {
+    //                           $(ui.tooltip).css({maxHeight: $(ui.tooltip).height()+height_adjustment/2});
+    //                       }
+                          // auto hide after duration proportional to text_length
+                          setTimeout(function () {
+                                         $(ui.tooltip).hide();
+                                     }, 
+                                     text_length*(TT.MAXIMUM_TOOLTIP_DURATION_PER_CHARACTER || 100));
+                      }
+               });
+        },
         
         add_one_shot_event_handler: function (element, event_name, maximum_wait, handler) {
             // could replace the first part of this by http://api.jquery.com/one/
@@ -1670,6 +1671,7 @@ window.TOONTALK.UTILITIES =
             text_input.addEventListener('touchstart', function () {
                 $(text_input).select();
             });
+            TT.UTILITIES.use_custom_tooltip(text_input);
             return {container: container,
                     button: text_input};
         },
@@ -1698,6 +1700,7 @@ window.TOONTALK.UTILITIES =
                 $(text_area).select();
             });
             $(label_element).addClass("ui-widget");
+            TT.UTILITIES.use_custom_tooltip(text_area);
             return {container: container,
                     button: text_area};
         },
@@ -1719,6 +1722,7 @@ window.TOONTALK.UTILITIES =
             // the following breaks the change listener
             // used to work with use htmlFor to connect label and input
             $(input).button();
+            TT.UTILITIES.use_custom_tooltip(input);
 //             $(label_element).button();
             return {container: container,
                     button: input,
@@ -1743,6 +1747,7 @@ window.TOONTALK.UTILITIES =
                 option.innerHTML = item;
                 if (item_titles && item_titles[index]) {
                     option.title = item_titles[index];
+                    TT.UTILITIES.use_custom_tooltip(option);
                 }
                 select.appendChild(option);
             });
@@ -1752,6 +1757,7 @@ window.TOONTALK.UTILITIES =
 //                 $(select).selectmenu({width: 200});
 //             });
             $(select).addClass("ui-widget");
+            TT.UTILITIES.use_custom_tooltip(select);
             return {container: container,
                     menu:      select,
                     label:     label_element};
@@ -1771,7 +1777,7 @@ window.TOONTALK.UTILITIES =
             container.appendChild(input);
             container.appendChild(label_element);
             container.title = title;
-//             $(input).button(); // commented out since looked bad
+            TT.UTILITIES.use_custom_tooltip(input);
             return {container: container,
                     button: input,
                     label: label_element};
@@ -2177,7 +2183,7 @@ window.TOONTALK.UTILITIES =
         },
 
         display_tooltip: function ($element) {
-            use_custom_tooltip($element);
+            TT.UTILITIES.use_custom_tooltip($element.get(0));
             $element.tooltip('open');
         },
 

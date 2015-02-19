@@ -129,6 +129,8 @@ window.TOONTALK.backside =
                                  .on('mouseenter', update_green_flag_title);
             backside_element.appendChild(green_flag_element);
             backside_element.appendChild(stop_sign_element);
+            TT.UTILITIES.use_custom_tooltip(green_flag_element);
+            TT.UTILITIES.use_custom_tooltip(stop_sign_element);
             if (help_URL) {
                 help_button = document.createElement("div");
                 // notranslate shouldn't be needed and is the older way of avoiding translation
