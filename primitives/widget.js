@@ -190,6 +190,7 @@ window.TOONTALK.widget = (function (TT) {
                                     backside_widget.run(widget, top_level_context);
                                 } else {
                                     backside_widget.set_stopped(true);
+                                    backside_widget.set_running(false);
                                 }
                                 backside_widget.rerender();
                             }
