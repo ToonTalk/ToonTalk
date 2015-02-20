@@ -968,9 +968,9 @@ window.TOONTALK.number_backside =
                 if (TT.robot.in_training) {
                     first_class_name = event.srcElement.className.split(" ", 1)[0];
                     if (first_class_name === "toontalk-denominator-input") {
-                        string = "change value of the denominator to " + denominator + " of the number";
+                        string = "change value of the denominator to " + denominator;
                     } else {
-                        string = "change value of the numerator to " + numerator + " of the number";
+                        string = "change value of the numerator to " + numerator;
                     }
                     TT.robot.in_training.edited(number, {setter_name: "set_from_values",
                                                          argument_1: numerator,

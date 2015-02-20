@@ -343,8 +343,7 @@ window.TOONTALK.robot_action =
                 watched_run_function(referenced, context, top_level_context, robot, continuation, additional_info);
             };
             new_action.toString = function () {
-                // following is broken but not clear what the intent was -- perhaps sometimes additional_info has a better action description?
-//                 var action = additional_info && additional_info.toString ? additional_info.toString : action_name;
+                var suffix = "";
                 if (action_name === "add a new widget to the work space") {
                     return action_name.replace("a new widget", TT.path.toString(path));
                 }
@@ -352,7 +351,10 @@ window.TOONTALK.robot_action =
                     // is used for internal bookkeepping shouldn't be user visible
                     return "";
                 }
-                return action_name + " " + TT.path.toString(path);
+                if (action_name === 'edit') {
+                    suffix = " (" + additional_info.toString + ")";
+                }
+                return action_name + " " + TT.path.toString(path) + suffix;
             };
             new_action.get_json = function (json_history) {
                 return {type: "robot_action",
