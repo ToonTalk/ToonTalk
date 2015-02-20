@@ -613,6 +613,9 @@ window.TOONTALK.robot = (function (TT) {
         }
         frontside_conditions_string = frontside_conditions.get_full_description();
         if (this.being_trained) {
+            if (body.is_empty()) {
+                return "I'm ready to be trained. Show me what to do and then click on my 'Stop training' button.";
+            }
             prefix = "is being trained.\n";
             postfix = "\n..."; // to indicate still being constructed
         }
