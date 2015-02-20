@@ -57,11 +57,12 @@
             // e.g. round(-2.3) returns -2
             return parts.integer_part;
         }
-        if (bigrat.isGreaterThan(parts.fractional_part, HALF)) {
-            // e.g. round(2.7) returns 3
-            return bigrat.add(parts.integer_part, parts.integer_part, bigrat.ONE);
+        if (bigrat.isLessThan(parts.fractional_part, HALF)) {
+            // e.g. round(2.3) returns 2
+            return parts.integer_part;
         }
-        return parts.integer_part;
+        // e.g. round(2.7) returns 3
+        return bigrat.add(parts.integer_part, parts.integer_part, bigrat.ONE);   
     };
 
     var floor = function (rational_number) {
