@@ -503,6 +503,7 @@ window.TOONTALK.robot = (function (TT) {
         this.being_trained = false;
         this.get_frontside_element().title = this.get_title();
         this.backup_all();
+        TT.robot.in_training = undefined;
     };
     
     robot.update_display = function () {
@@ -873,7 +874,6 @@ window.TOONTALK.robot_backside =
                     robot.training_started();
                 } else {
                     robot.training_finished();
-                    TT.robot.in_training = null;
                 }
                 event.stopPropagation();
             });

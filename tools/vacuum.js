@@ -63,6 +63,12 @@ window.TOONTALK.vacuum = (function (TT) {
                     if (TT.robot.in_training && event) {
                         TT.robot.in_training.removed(widget_side);
                     }
+                    if (widget_side === TT.robot.in_training) {
+                        // vacuuming himself so automatically finish training
+                        widget_side.training_finished();
+                        widget_side.set_run_once(true); // since removes itself can iterate
+                        return;
+                    }
                     if (widget_side.set_running) {
                         widget_side.set_running(false);
                     }
@@ -96,7 +102,11 @@ window.TOONTALK.vacuum = (function (TT) {
                     top_level_backside = widget_side.top_level_widget();
                     // need to copy the list since removing will alter the list
                     backside_widgets = top_level_backside.get_backside_widgets().slice();
-                    backside_widgets.forEach(remove_widget);
+                    backside_widgets.forEach(function (widget_side) {
+                                                 if (widget_side.get_widget() !== TT.robot.in_training) {
+                                                     remove_widget(widget_side);
+                                                 }
+                                             });
                 }
             },
             nothing_under_tool: function () {

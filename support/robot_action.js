@@ -83,7 +83,8 @@ window.TOONTALK.robot_action =
                  widget_frontside_element = widget.get_frontside_element(true);
                  context_frontside_position = $(context.get_frontside_element()).position();
                  // need to test the following rewrite:
-                 top_level_element = $(context.get_frontside_element()).closest(".toontalk-top-level-backside").get(0);
+                 top_level_element = $(context.get_frontside_element()).closest(".toontalk-top-level-backside").get(0) ||
+                                     $(widget_frontside_element).closest(".toontalk-top-level-backside").get(0);
                  $(widget_frontside_element).css({left: context_frontside_position.left,
                                                   top:  context_frontside_position.top});
                  top_level_element.appendChild(widget_frontside_element);

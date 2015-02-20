@@ -120,6 +120,10 @@ window.TOONTALK.actions =
             var frontside_element = robot.get_frontside_element();
             var saved_parent_element = frontside_element.parentElement;
             var restore_after_last_event = function () {
+                if (!robot.get_parent_of_frontside()) {
+                    // can happen if robot vacuumed itself up
+                    return;
+                }
                 $(frontside_element).addClass("toontalk-side-animating");
                 TT.UTILITIES.set_position_relative_to_top_level_backside($(frontside_element), robot_home);
                 // delay so there is some animation of returning 'home'
