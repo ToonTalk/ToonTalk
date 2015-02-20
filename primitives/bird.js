@@ -713,6 +713,13 @@ window.TOONTALK.nest = (function (TT) {
             }
             return removed;
         };
+        new_nest.dereference = function (path, top_level_context, robot) {
+            if (contents) {
+                return contents[0].dereference(path, top_level_context, robot);
+            }
+            TT.UTILITIES.display_message("Robot expected to find a nest something that it could get " + TT.path.toString(path) + ". But the nest is empty.");
+            return this;
+        };
         new_nest.dereference_contents = function (path_to_nest, top_level_context, robot) {
             var widget, nest_offset, $top_level_backside_element, top_level_backside_element_offset, 
                 widget_element, nest_element, nest_width, nest_height;

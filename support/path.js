@@ -109,7 +109,7 @@ window.TOONTALK.path =
             if (path) {
                 if (path.dereference) {
                     dereferenced = path.dereference(context, top_level_context, robot);
-                } else {
+                } else if (context.dereference) {
                     dereferenced = context.dereference(path, top_level_context, robot);
                 }
             } else {
