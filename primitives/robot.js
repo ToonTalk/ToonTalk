@@ -140,13 +140,15 @@ window.TOONTALK.robot = (function (TT) {
             }
         };
         new_robot.walk_children = function (child_action) {
+            var frontside_condition_widget;
             if (next_robot) {
                 if (!child_action(next_robot)) {
                     return;
                 }
             }
-            if (this.get_frontside_conditions()) {
-                if (!child_action(this.get_frontside_conditions())) {
+            frontside_condition_widget = this.get_frontside_conditions();
+            if (frontside_condition_widget && !frontside_condition_widget.is_of_type('top-level')) {
+                if (!child_action(frontside_condition_widget)) {
                     return;
                 }
             }
@@ -597,19 +599,6 @@ window.TOONTALK.robot = (function (TT) {
         }
         return this.toString();
     };
-    
-//     robot.image = function () {
-//         return TT.UTILITIES.create_image(this.get_image_url(), "toontalk-robot-image"); 
-//     };
-    
-//     robot.frontside_conditions_div = function () {
-//         var frontside_conditions = document.createElement("div");
-//         $(frontside_conditions).addClass("toontalk-frontside-conditions");
-//         if (this.match_status === 'not matched') {
-//             $(frontside_conditions).addClass("toontalk-frontside-conditions-not-matched");
-//         }
-//         return frontside_conditions;
-//     };
     
     robot.toString = function () {
         var frontside_conditions = this.get_frontside_conditions();
