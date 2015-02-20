@@ -156,6 +156,23 @@ window.TOONTALK.widget = (function (TT) {
             var running = false;
             if (!widget.get_running) {
                 widget.get_running = function () {
+                    var some_backside_widgets_running = false;
+                    var backside_widgets;
+                    if (running) {
+                        // see if it is really running
+                        backside_widgets = this.get_backside_widgets();
+                        if (backside_widgets.length === 0) {
+                            running = false;
+                        } else {
+                            backside_widgets.some(function (widget_side) {
+                                                      if (widget_side.get_widget().get_running()) {
+                                                          some_backside_widgets_running = true;
+                                                          return true;
+                                                      }
+                            });
+                            running = some_backside_widgets_running;
+                        }
+                    }
                     return running;
                 };
             }
@@ -167,7 +184,7 @@ window.TOONTALK.widget = (function (TT) {
                         // even if not running some part might be running and should be turned off
                         return;
                     }
-                    backside_widgets = this.get_backside_widgets();       
+                    backside_widgets = this.get_backside_widgets();
                     running = new_value;
                     if (this.get_backside()) {
                         this.get_backside().run_status_changed(running);
@@ -213,12 +230,6 @@ window.TOONTALK.widget = (function (TT) {
                                 return true; // continue to next child
                         });
                     }
-//                     backside_element = this.get_backside_element();
-//                     if (backside_element) {
-//                         $(backside_element).find(".toontalk-run-backside-button").each(function (index, element) {
-//                             TT.backside.update_run_button($(element));
-//                         });
-//                     }
                     if (!unchanged_value) {
                         this.rerender();
                     }

@@ -108,7 +108,9 @@ window.TOONTALK.actions =
                     step_number++;
                     // each step needs to call robot.run_next_step
                     step.run_unwatched(context, top_level_context, robot);
-                } else if (!robot.get_run_once()) {
+                } else if (robot.get_run_once()) {
+                    robot.set_running(false);
+                } else {
                     robot.get_first_in_team().run(context, top_level_context, queue);
                 }
             };
@@ -133,7 +135,9 @@ window.TOONTALK.actions =
                         saved_parent_element.appendChild(frontside_element);
                         TT.UTILITIES.set_absolute_position($(frontside_element), robot_home);
                         robot.set_animating(false);
-                        if (!robot.get_run_once()) {
+                        if (robot.get_run_once()) {
+                            robot.set_running(false);
+                        } else {
                             robot.get_first_in_team().run(context, top_level_context, queue);
                         }
                         robot.render();
