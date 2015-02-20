@@ -78,7 +78,7 @@ window.TOONTALK.tool = (function (TT) {
                 if (highlighted_element) { // remove old highlighting
                     TT.UTILITIES.remove_highlight();
                 }
-                if (widget_under_tool && widget_under_tool.add_copy_to_container) {
+                if (widget_under_tool && widget_under_tool.top_level_widget) {
                     // need to determine the top_level_widget first since if tool is vacuum
                     // it will be removed
                     top_level_widget = widget_under_tool.top_level_widget();
