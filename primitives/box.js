@@ -648,9 +648,9 @@ window.TOONTALK.box = (function (TT) {
                 toString: function () {
                     if (this.true_type === 'scale') {
                         if (index === 0) {
-                            return "the left side of the scale ";
+                            return "the left pan ";
                         } else {
-                            return "the right side of the scale ";
+                            return "the right pan ";
                         }
                     }
                     return "the " + TT.UTILITIES.cardinal(index) + " hole ";

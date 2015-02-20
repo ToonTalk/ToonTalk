@@ -236,8 +236,9 @@ window.TOONTALK.scale = (function (TT) {
         new_scale.toString = function () {
             var left_contents  = this.get_hole_contents(0); 
             var right_contents = this.get_hole_contents(1);
+            var state = this.get_state();
             var description, left_pan, right_pan;
-            switch (this.get_state()) {
+            switch (state) {
                 case -1:
                 description = "scale leaning to the right";
                 break;
@@ -249,6 +250,9 @@ window.TOONTALK.scale = (function (TT) {
                 break;
                 default:
                 description = "unbalanced scale";
+                if (!left_pan && !right_pan) {
+                    return description;
+                }
             }
             if (left_contents) {
                 left_pan = "contains " + TT.UTILITIES.add_a_or_an(left_contents.get_full_description());
