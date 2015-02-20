@@ -352,6 +352,10 @@ window.TOONTALK.scale = (function (TT) {
                         "The " + right_contents + " is less than the " + left_contents + "."][state+1];
             }            
         };
+        if (TT.debugging) {
+            new_scale.debug_string = new_scale.toString();
+            new_scale.debug_id = TT.UTILITIES.generate_unique_id();
+        }
         return new_scale;
     };
 
