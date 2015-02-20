@@ -1103,7 +1103,7 @@ window.TOONTALK.number.function =
             return;
         }
         if (!bird.is_of_type('bird')) {
-            TT.UTILITIES.display_message("Function birds can only respond to boxes with a bird in the first hole. The first hole contains " + TT.UTILITIES.add_a_or_an(bird.get_type_name()));
+            TT.UTILITIES.display_message("Function birds can only respond to boxes with a bird in the first hole. The first hole contains " + TT.UTILITIES.add_a_or_an(bird.get_type_name() + "."));
             return;
         }
         result = compute_result(bird, box_size);
@@ -1116,7 +1116,7 @@ window.TOONTALK.number.function =
         if (widget.is_of_type('number')) {
             return true;
         }
-        TT.UTILITIES.display_message("Birds for the " + function_name + " function can only respond to boxes with a number in the " + TT.UTILITIES.cardinal(index) + " hole. The " + TT.UTILITIES.cardinal(index) + "hole contains " + TT.UTILITIES.add_a_or_an(widget.get_type_name()));
+        TT.UTILITIES.display_message("Birds for the " + function_name + " function can only respond to boxes with a number in the " + TT.UTILITIES.cardinal(index) + " hole. The " + TT.UTILITIES.cardinal(index) + "hole contains " + TT.UTILITIES.add_a_or_an(widget.get_type_name() + "."));
         return false;
     };
     var n_ary_widget_function = function (message, zero_ary_value_function, binary_operation, function_name) { 
