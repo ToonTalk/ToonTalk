@@ -289,9 +289,6 @@ window.TOONTALK.number = (function () {
         };
         new_number.get_value =
             function () {
-//                if (this.debug_id === 'toontalk_id_1415038113558') {
-//                     console.log("debug this");
-//                 }
                 return value; 
             };
         new_number.set_value_from_decimal =

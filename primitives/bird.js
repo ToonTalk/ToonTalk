@@ -838,6 +838,11 @@ window.TOONTALK.nest = (function (TT) {
                     // since robot dropped the nest it needs to wait (if watched)
                     this.robot_waiting_before_next_step = robot;
                 }
+                if (TT.robot.in_training && event) {
+                    // robot did this so add bird to a newly created widgets of TT.robot.in_training
+                    // robot should be undefined since it isn't a running robot
+                    TT.robot.in_training.add_newly_created_widget(bird);
+                }
                 this.rerender();
                 frontside_element = this.get_frontside_element(true);
                 TT.UTILITIES.add_animation_class(frontside_element, "toontalk-hatch-egg");
@@ -868,8 +873,6 @@ window.TOONTALK.nest = (function (TT) {
                     $(bird_frontside_element).css({left: nest_position.left,
                                                    top:  nest_position.top});
                     if (TT.robot.in_training && event) {
-                        // bird is a newly created widget
-                        TT.robot.in_training.add_newly_created_widget(bird);
                         // robot should not add steps for the hatching of the bird - hence true argument
                         backside_where_bird_goes.widget_dropped_on_me(bird, false, event, undefined, true);
                     } else {
