@@ -1198,7 +1198,7 @@ window.TOONTALK.number.function =
         };
     };
     var get_description = function () {
-        return "When given a box with another bird and some numbers I'll give the other bird the " + this.name + " of the numbers. On my back side you can change me to compute other functions.";
+        return "If you give me a box with another bird and some numbers then " + TT.UTILITIES.lower_case_first_letter(this.title) + "\nOn my back side you can change me to compute other functions.";
     };
     var to_string_function = function () {
         return TT.UTILITIES.add_a_or_an("'" + this.name + "' function bird");
@@ -1215,37 +1215,37 @@ window.TOONTALK.number.function =
                         function (message) {
                             return n_ary_widget_function(message, TT.number.ZERO, TT.number.add, 'sum');
                         },
-                        "Your bird will return with the sum of the numbers in the box.");
+                        "The bird will return with the sum of the numbers in the box.");
     add_function_object('difference', 
                         function (message) {
                              return n_ary_widget_function(message, TT.number.ZERO, TT.number.subtract, 'difference');
                         },
-                        "Your bird will return with the result of subtracting the numbers in the box from the first number.");
+                        "The bird will return with the result of subtracting the numbers in the box from the first number.");
     add_function_object('product', 
                         function (message) {
                              return n_ary_widget_function(message, TT.number.ONE, TT.number.multiply, 'product');
                         },
-                        "Your bird will return with the product of the numbers in the box.");
+                        "The bird will return with the product of the numbers in the box.");
     add_function_object('division', 
                         function (message) {
                              return n_ary_widget_function(message, TT.number.ONE, TT.number.divide, 'division');
                         },
-                        "Your bird will return with the result of dividing the numbers into the first number in the box.");
+                        "The bird will return with the result of dividing the numbers into the first number in the box.");
     add_function_object('modulo', 
                         function (message) {
                             return n_ary_function(message, bigrat_function_to_widget_function(modulo), 2, 'modulo');
                         },
-                        "Your bird will return with the first number modulo the second number. For positive numbers this is like the remainder after division.");
+                        "The bird will return with the first number modulo the second number. For positive numbers this is like the remainder after division.");
     add_function_object('minimum', 
                         function (message) {
                              return n_ary_widget_function(message, TT.number.ONE, TT.number.minimum, 'minimum');
                         },
-                        "Your bird will return with the smallest of the numbers in the box.");
+                        "The bird will return with the smallest of the numbers in the box.");
     add_function_object('maximum', 
                         function (message) {
                              return n_ary_widget_function(message, TT.number.ONE, TT.number.maximum, 'maximum');
                         },
-                        "Your bird will return with the largest of the numbers in the box.");
+                        "The bird will return with the largest of the numbers in the box.");
     add_function_object('absolute value', 
                         function (message) {
                             var absolute_value = function (rational_number) {
@@ -1255,7 +1255,7 @@ window.TOONTALK.number.function =
                             }
                             return n_ary_function(message, absolute_value, 1, 'absolute value');
                         },
-                        "Your bird will return with the positive version of the number.");
+                        "The bird will return with the positive version of the number.");
     add_function_object('power', 
                         function (message) {
                             var power_function = function (bigrat_base, bigrat_power) {
@@ -1270,27 +1270,27 @@ window.TOONTALK.number.function =
                             };
                             return n_ary_function(message, bigrat_function_to_widget_function(power_function), 2, 'power');
                         },
-                        "Your bird will return with the first number to the power of the second number.");
+                        "The bird will return with the first number to the power of the second number.");
     add_function_object('round', 
                         function (message) {
                              return n_ary_function(message, bigrat_function_to_widget_function(round), 1, 'round');
                         },
-                        "Your bird will return the number rounded to the nearest integer.");
+                        "The bird will return the number rounded to the nearest integer.");
     add_function_object('floor', 
                         function (message) {
                              return n_ary_function(message, bigrat_function_to_widget_function(floor), 1, 'floor');
                         },
-                        "Your bird will return the largest integer less than or equal to the number.");                       
+                        "The bird will return the largest integer less than or equal to the number.");                       
     add_function_object('ceiling', 
                         function (message) {
                              return n_ary_function(message, bigrat_function_to_widget_function(ceiling), 1, 'ceiling');
                         },
-                        "Your bird will return the smallest integer greater than or equal to the number.");
+                        "The bird will return the smallest integer greater than or equal to the number.");
     add_function_object('integer and fraction parts', 
                         function (message) {
                              return n_ary_function(message, box_with_integer_and_fraction, 1, 'integer and fraction parts');
                         },
-                        "Your bird will return with a box ontaining the integer part and the fraction.");
+                        "The bird will return with a box ontaining the integer part and the fraction.");
     add_function_object('sine', 
                         function (message) {
                             var sin = function (degrees) {
@@ -1298,7 +1298,7 @@ window.TOONTALK.number.function =
                                       };
                             return n_ary_function(message, numeric_javascript_function_to_widget_function(sin, degrees_to_decimal), 1, 'sine');
                         },
-                        "Your bird will return with an approximation of the sine of the number (in degrees).");                  
+                        "The bird will return with an approximation of the sine of the number (in degrees).");                  
     add_function_object('cosine', 
                         function (message) {
                             var sin = function (degrees) {
@@ -1306,17 +1306,17 @@ window.TOONTALK.number.function =
                                       };
                             return n_ary_function(message, numeric_javascript_function_to_widget_function(cos, degrees_to_decimal), 1, 'cosine');
                         },
-                        "Your bird will return with an approximation of the cosine of the number (in degrees).");
+                        "The bird will return with an approximation of the cosine of the number (in degrees).");
     add_function_object('sine (in radians)', 
                         function (message) {
                             return n_ary_function(message, numeric_javascript_function_to_widget_function(Math.sin, radians_to_decimal), 1, 'sine (in radians)');
                         },
-                        "Your bird will return with an approximation of the sine of the number (in radians).");                  
+                        "The bird will return with an approximation of the sine of the number (in radians).");                  
     add_function_object('cosine (in radians)', 
                         function (message) {
                             return n_ary_function(message, numeric_javascript_function_to_widget_function(Math.cos, radians_to_decimal), 1, 'cosine (in radians)');
                         },
-                        "Your bird will return with an approximation of the cosine of the number (in radians).");
+                        "The bird will return with an approximation of the cosine of the number (in radians).");
     return functions;
 }());
 

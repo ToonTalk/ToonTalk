@@ -2016,6 +2016,10 @@ window.TOONTALK.UTILITIES =
             }
             return "an " + word;
         },
+
+        lower_case_first_letter: function (string) {
+            return string.charAt(0).toLowerCase() + string.slice(1);
+        },
         
         maximum_string_length: function (string, maximum_length) {
             // replaces middle of string with ... if needed -- doesn't count the ... as part of the length
