@@ -30,6 +30,9 @@ window.TOONTALK.robot_action =
                  thing_in_hand = robot.get_thing_in_hand();
                  if (thing_in_hand) {
                      if (thing_in_hand.drop_on) {
+                         if (TT.debugging && thing_in_hand === target) {
+                             console.error("Dropping something on itself!");
+                         }
                          // TODO: update this when robots can drop backsides as well
                          thing_in_hand.drop_on(target, false, undefined, robot);
                          robot.set_thing_in_hand(undefined);
@@ -148,12 +151,15 @@ window.TOONTALK.robot_action =
             move_robot_animation(widget, context, top_level_context, robot, continuation);
             return;
         }
+        if (TT.debugging && thing_in_hand === widget) {
+            console.error("Dropping something on itself!");
+        }
         $thing_in_hand_frontside_element = $(thing_in_hand.get_frontside_element());
         adjust_dropped_location_continuation = function () {
             var thing_in_hand_position = $thing_in_hand_frontside_element.offset();
             $thing_in_hand_frontside_element.removeClass("toontalk-held-by-robot");
             continuation();
-            if (thing_in_hand.drop_on) {
+            if (thing_in_hand.drop_on && thing_in_hand.robot_waiting_before_next_step !== robot) {
                 // need to see it before actions such as Bammer take place
                 $(robot.get_frontside_element()).closest(".toontalk-top-level-backside").append($thing_in_hand_frontside_element.get(0));
 //                 if (thing_in_hand_position.left === 0 && thing_in_hand_position.top === 0) {
@@ -318,7 +324,13 @@ window.TOONTALK.robot_action =
                     TT.UTILITIES.report_internal_error("Unable to dereference path: " + TT.path.toString(path) + " in context: " + context.toString());
                     return false;
                 }
-//              console.log("running " + this + " of robot#" + robot.debug_id + " on " + referenced.debug_id);
+                if (referenced.wait_until_this_nest_receives_something) {         
+                     referenced.wait_until_this_nest_receives_something.run_when_non_empty(
+                        function () {
+                                        this.run_unwatched(context, top_level_context, robot);
+                                    }.bind(this));
+                    return;
+                }
                 if (unwatched_run_function(referenced, context, top_level_context, robot, additional_info)) {
                     robot.run_next_step();
                 } // else robot will stop due to the error
@@ -338,6 +350,15 @@ window.TOONTALK.robot_action =
                 }
                 if (!referenced) {
                     TT.UTILITIES.report_internal_error("Unable to dereference the path: " + TT.path.toString(path) + " in context: " + context.toString());
+                    return;
+                }
+                if (referenced.wait_until_this_nest_receives_something) {
+                    referenced.wait_until_this_nest_receives_something.run_when_non_empty(
+                        function () {
+                            robot.set_waiting(false);
+                            this.run_watched(context, top_level_context, robot);
+                        }.bind(this));
+                    robot.set_waiting(true);
                     return;
                 }
                 referenced.set_visible(true);

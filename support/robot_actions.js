@@ -76,6 +76,7 @@ window.TOONTALK.actions =
                         path = TT.newly_created_widgets_path.create(index);
                         return true;
                     } else if (newly_created_widget.get_path_to) {
+                        // might be a part of a newly created widget
                         sub_path = newly_created_widget.get_path_to(widget, robot);
                         if (sub_path) {
                             path = TT.newly_created_widgets_path.create(index);

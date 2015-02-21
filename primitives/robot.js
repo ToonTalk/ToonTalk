@@ -285,10 +285,10 @@ window.TOONTALK.robot = (function (TT) {
             }
         }
         if (this.get_first_in_team() === this) {
-            to_run_when_non_empty = {robot: this,
-                                     context: context,
-                                     top_level_context: top_level_context,
-                                     queue: queue};
+            to_run_when_non_empty = function () {
+                 this.set_waiting(false);
+                 this.run(context, top_level_context, queue);
+            }.bind(this);
             this.match_status.forEach(function (sub_match_status) {
                 if (sub_match_status[0]) {
                     // e.g. a nest
@@ -298,9 +298,20 @@ window.TOONTALK.robot = (function (TT) {
                     sub_match_status.run_when_non_empty(to_run_when_non_empty);
                 }
             });
-                TT.UTILITIES.add_animation_class(this.get_frontside_element(), "toontalk-robot-waiting");
+            this.set_waiting(true);
         }
         return this.match_status;                    
+    };
+
+    robot.set_waiting = function (waiting) {
+        var frontside_element = this.get_frontside_element();
+        if (waiting) {
+            TT.UTILITIES.add_animation_class(frontside_element, "toontalk-robot-waiting");
+            frontside_element.title = "This robot is waiting for a bird to deliver something.";
+        } else {
+            $(frontside_element).removeClass("toontalk-robot-waiting");
+            frontside_element.title = this.get_title();
+        }
     };
     
     robot.set_stopped = function (new_value) {
