@@ -960,6 +960,7 @@ window.TOONTALK.UTILITIES =
             var is_backside = json.view.backside;
             var backside_widgets = widget.get_backside_widgets();
             var type_description = widget.get_type_name();
+            var title = widget.get_title && widget.get_title();
             if (type_description === 'top-level') {
                 if (is_backside) {
                     type_description = "a work area containing ";
@@ -992,6 +993,7 @@ window.TOONTALK.UTILITIES =
                 }
             }
             return div_json + "\nThis will be replaced by " + type_description + ".\n" +
+                              (title ? title + "\n" : "") +
                               div_hidden + JSON.stringify(json, null, '  ') + div_close +
                               div_close;
     },
@@ -2195,7 +2197,7 @@ window.TOONTALK.UTILITIES =
             // these are ToonTalk errors not user errors
             console.log(message);
             if (TT.debugging) {
-                TT.UTILITIES.display_message(message);
+                TT.UTILITIES.display_message("Error: " + message);
             }
         },
 
