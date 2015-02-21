@@ -1087,8 +1087,8 @@ window.TOONTALK.number_backside =
 window.TOONTALK.number.function = 
 (function () {
     
-    var process_message = function (message, compute_result) {
-        var box_size, bird, result;
+    var process_message = function (message, compute_response) {
+        var box_size, bird, response;
         if (!message.is_of_type('box')) {
             TT.UTILITIES.display_message("Function birds can only respond to boxes. One was given " + TT.UTILITIES.add_a_or_an(message.get_type_name()));
             return;
@@ -1107,12 +1107,12 @@ window.TOONTALK.number.function =
             TT.UTILITIES.display_message("Function birds can only respond to boxes with a bird in the first hole. The first hole contains " + TT.UTILITIES.add_a_or_an(bird.get_type_name() + "."));
             return;
         }
-        result = compute_result(bird, box_size);
-        if (result) {
-            bird.widget_dropped_on_me(result, false);
+        response = compute_response(bird, box_size);
+        if (response) {
+            bird.widget_dropped_on_me(response, false);
         }
         message.remove();
-        return result;
+        return response;
     };
     var number_check = function (widget, function_name, index) {
         if (widget.is_of_type('number')) {
@@ -1123,14 +1123,14 @@ window.TOONTALK.number.function =
     };
     var n_ary_widget_function = function (message, zero_ary_value_function, binary_operation, function_name) { 
         // binary_operation is a function of two widgets that updates the first
-        var compute_result = function (bird, box_size) {
-            var next_widget, index, result;
+        var compute_response = function (bird, box_size) {
+            var next_widget, index, response;
             if (box_size === 1) {
                 return zero_ary_value_function();
             }
             index = 1;
-            result =  message.get_hole_contents(index);
-            if (!number_check(result, function_name, index)) {
+            response =  message.get_hole_contents(index);
+            if (!number_check(response, function_name, index)) {
                 return;
             }
             index++;
@@ -1139,16 +1139,16 @@ window.TOONTALK.number.function =
                 if (!number_check(next_widget, function_name, index)) {
                     return;
                 }
-                binary_operation.call(result, next_widget);
+                binary_operation.call(response, next_widget);
                 index++;
             }
-            return result;
+            return response;
         };
-        return process_message(message, compute_result);
+        return process_message(message, compute_response);
     };
     var n_ary_function = function (message, operation, arity, function_name, robot) { 
-        var compute_result = function (bird, box_size) {
-            var next_widget, index, args, result;
+        var compute_response = function (bird, box_size) {
+            var next_widget, index, args, response;
             if (box_size !== arity+1) {
                 TT.UTILITIES.display_message("Birds for the " + function_name + " function can only respond to boxes with " + (arity+1) + " holes. Not " + box_size + " holes.");
                 return;
@@ -1165,7 +1165,7 @@ window.TOONTALK.number.function =
             }
             return operation.apply(null, args);
         };
-        return process_message(message, compute_result, robot);
+        return process_message(message, compute_response, robot);
     };
     // TODO: move this to UTILITIES
     var map_arguments = function (args, fun) {
@@ -1180,12 +1180,12 @@ window.TOONTALK.number.function =
     }
     var numeric_javascript_function_to_widget_function = function (decimal_function, toDecimal) {
         // takes a function that returns a JavaScript number and
-        // returns a function that converts the result into a widget
+        // returns a function that converts the response into a widget
         // if toDecimal to provided it should be a function from bigrats to decimals
         return function () {
-            var result = TT.number.ZERO();
-            result.set_value_from_decimal(decimal_function.apply(null, map_arguments(arguments, (toDecimal || bigrat.toDecimal))));
-            return result;
+            var response = TT.number.ZERO();
+            response.set_value_from_decimal(decimal_function.apply(null, map_arguments(arguments, (toDecimal || bigrat.toDecimal))));
+            return response;
         };
     };
     var degrees_to_decimal = function (rational_number) {
@@ -1196,7 +1196,7 @@ window.TOONTALK.number.function =
     };
     var bigrat_function_to_widget_function = function (bigrat_function) {
         // takes a function that returns a bigrat and
-        // returns a function that converts the result into a widget
+        // returns a function that converts the response into a widget
         return function () {
             return TT.number.create_from_bigrat(bigrat_function.apply(null, arguments));
         };
