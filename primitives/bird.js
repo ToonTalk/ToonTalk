@@ -1043,14 +1043,15 @@ window.TOONTALK.nest = (function (TT) {
             }
         };
         new_nest.get_path_to = function (widget, robot) {
-            var path;
+            var widget_on_nest;
             if (contents.length > 0) {
-                if (contents[0].get_widget().get_path_to) {
+                widget_on_nest = contents[0].get_widget();
+                if (widget_on_nest.get_path_to) {
                     // assuming frontside
-                    return contents[0].get_widget().get_path_to(widget, robot);
-                } else if (contents[0].get_widget() === widget) {
+                    return widget_on_nest.get_path_to(widget, robot);
+                } else if (widget_on_nest === widget) {
                     // should dereference the top of the nest
-                    return TT.path.to_entire_context();
+                    return TT.path.to_widget_on_nest();
                 }
             }
         };

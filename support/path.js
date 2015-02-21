@@ -14,6 +14,10 @@ window.TOONTALK.path =
         return TT.path.to_entire_context();
     };
 
+    TT.creators_from_json["path.to_widget_on_nest"] = function () {
+        return TT.path.to_widget_on_nest();
+    };
+    
     TT.creators_from_json["path.top_level_backside"] = function () {
         return TT.path.top_level_backside;
     };
@@ -174,6 +178,18 @@ window.TOONTALK.path =
                         return {type: "path.to_entire_context"};
                     }
             };
+        },
+        to_widget_on_nest: function () {
+           return {dereference: function (context, top_level_context, robot) {
+                        return TT.path.continue_dereferencing_path(this, context, top_level_context, robot);
+                    },
+                    toString: function () {
+                        return "what is on the nest";
+                    },
+                    get_json: function () {
+                        return {type: "path.to_widget_on_nest"};
+                    }
+            }; 
         },
         get_path_to_resource: function (widget, json_history) {
             // ignore the side information and just use the widget
