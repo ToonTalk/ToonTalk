@@ -1370,7 +1370,7 @@ window.TOONTALK.UTILITIES =
             }
         },
         
-        cardinal: function (n) {
+        ordinal: function (n) {
             n++; // switch from zero-indexing to one-indexing
             switch (n) {
                 case 1:

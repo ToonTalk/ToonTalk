@@ -653,7 +653,7 @@ window.TOONTALK.box = (function (TT) {
                             return "the right pan ";
                         }
                     }
-                    return "the " + TT.UTILITIES.cardinal(index) + " hole ";
+                    return "the " + TT.UTILITIES.ordinal(index) + " hole ";
                 },
                 get_json: function (json_history) {
                     return {type: "box_path",

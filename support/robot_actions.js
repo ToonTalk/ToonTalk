@@ -88,7 +88,7 @@ window.TOONTALK.actions =
             };
             new_actions.dereference = function (index) {
                 if (TT.debugging && !newly_created_widgets[index]) {
-                    TT.UTILITIES.report_internal_error("Expected to find the " + TT.UTILITIES.cardinal(index) + " newly created widget.");
+                    TT.UTILITIES.report_internal_error("Expected to find the " + TT.UTILITIES.ordinal(index) + " newly created widget.");
                 }
                 return newly_created_widgets[index];
             }
@@ -263,7 +263,7 @@ window.TOONTALK.newly_created_widgets_path =
                     return widget;
                 },
                 toString: function () {
-                    return "the " + TT.UTILITIES.cardinal(index) + " widget he created";
+                    return "the " + TT.UTILITIES.ordinal(index) + " widget he created";
                 },
                 get_json: function () {
                     return {type: "newly_created_widgets_path",
