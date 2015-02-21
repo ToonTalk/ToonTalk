@@ -1371,12 +1371,13 @@ window.TOONTALK.UTILITIES =
         },
         
         cardinal: function (n) {
+            n++; // switch from zero-indexing to one-indexing
             switch (n) {
-                case 0:
-                return "first";
                 case 1:
-                return "second";
+                return "first";
                 case 2:
+                return "second";
+                case 3:
                 return "third";
                 default:
                 if (n%10 === 1) {
