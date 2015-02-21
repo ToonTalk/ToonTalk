@@ -1210,11 +1210,16 @@ window.TOONTALK.number.function =
     var functions = {};
     var add_function_object = function (name, respond_to_message, title) {
         functions[name] = {name: name,
-                           respond_to_message: function (message, robot) {
-                                                   var result = respond_to_message(message);
-                                                   if (result && robot) {
-                                                       // function created a new widget so robot needs to know about it
-                                                       robot.add_newly_created_widget(result);
+                           respond_to_message: function (message, event, robot) {
+                                                   var response = respond_to_message(message);
+                                                   if (response) {
+                                                       if (robot) {
+                                                           // function created a new widget so robot needs to know about it
+                                                           robot.add_newly_created_widget(response);
+                                                       }
+                                                       if (TT.robot.in_training && event) {
+                                                           TT.robot.in_training.add_newly_created_widget(response);
+                                                       }
                                                    }
                                                },
                            get_description: get_description,
