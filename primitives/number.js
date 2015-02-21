@@ -1318,6 +1318,14 @@ window.TOONTALK.number.function =
                             return n_ary_function(message, numeric_javascript_function_to_widget_function(atan_in_degrees), 1, 'arc tangent');
                         },
                         "The bird will return with an approximation of the arc tangent (in degrees) of the number.");
+    add_function_object('arc tangent of y and x', 
+                        function (message) {
+                            var atan_in_degrees = function (x, y) {
+                                return RADIAN*Math.atan2(x, y);
+                            };
+                            return n_ary_function(message, numeric_javascript_function_to_widget_function(atan_in_degrees), 2, 'arc tangent of y and x');
+                        },
+                        "The bird will return with an approximation of the arc tangent (in degrees) of the point where the first number is the y coordinate and the second one is the x.");
     add_function_object('sine (in radians)', 
                         function (message) {
                             return n_ary_function(message, numeric_javascript_function_to_widget_function(Math.sin, radians_to_decimal), 1, 'sine (in radians)');
@@ -1333,6 +1341,12 @@ window.TOONTALK.number.function =
                             return n_ary_function(message, numeric_javascript_function_to_widget_function(Math.atan), 1, 'arc tangent (in radians)');
                         },
                         "The bird will return with an approximation of the arc tangent (in radians) of the number.");
+    add_function_object('arc tangent of y and x (in radians)', 
+                        function (message) {
+                            return n_ary_function(message, numeric_javascript_function_to_widget_function(Math.atan2), 2, 'arc tangent of y and x (in radians)');
+                        },
+                        "The bird will return with an approximation of the arc tangent (in radians) of the point where the first number is the y coordinate and the second one is the x.");
+
     return functions;
 }());
 
