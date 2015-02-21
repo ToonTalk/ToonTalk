@@ -1301,7 +1301,7 @@ window.TOONTALK.number.function =
                         "The bird will return with an approximation of the sine of the number (in degrees).");                  
     add_function_object('cosine', 
                         function (message) {
-                            var sin = function (degrees) {
+                            var cos = function (degrees) {
                                          return Math.cos(degrees/RADIAN);
                                       };
                             return n_ary_function(message, numeric_javascript_function_to_widget_function(cos, degrees_to_decimal), 1, 'cosine');
