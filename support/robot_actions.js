@@ -263,21 +263,7 @@ window.TOONTALK.newly_created_widgets_path =
                     return widget;
                 },
                 toString: function () {
-                    var ordinal;
-                    switch (index) {
-                        case 0:
-                        ordinal = "first";
-                        break;
-                        case 1:
-                        ordinal = "second";
-                        break;
-                        case 2:
-                        ordinal = "third";
-                        break;
-                        default:
-                        ordinal = (index + 1) + "th";
-                    }
-                    return "the " + ordinal + " widget he created";
+                    return "the " + TT.UTILITIES.cardinal(index) + " widget he created";
                 },
                 get_json: function () {
                     return {type: "newly_created_widgets_path",
