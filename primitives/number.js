@@ -13,15 +13,18 @@
     // common functions and variables between number, number backside, and number functions
 
     // TODO: make these into 'const' when Ecma6 is everywhere
-    var RADIAN                  = 180/Math.PI; 
-    var TEN                     = bigrat.fromInteger(10); 
-    var HALF                    = bigrat.fromValues( 1, 2);
-    var NEGATIVE_HALF           = bigrat.fromValues(-1, 2);
-    var THREE_HUNDRED_AND_SIXTY = bigrat.fromInteger(360);
-    var TWO_PI                  = bigrat.fromDecimal(2*Math.PI);
+    var RADIAN                         = 180/Math.PI;
+    var LOG_10                         = Math.log(10); 
+    var TEN                            = bigrat.fromInteger(10); 
+    var HALF                           = bigrat.fromValues( 1, 2);
+    var NEGATIVE_HALF                  = bigrat.fromValues(-1, 2);
+    var THREE_HUNDRED_AND_SIXTY        = bigrat.fromInteger(360);
+    var TWO_PI                         = bigrat.fromDecimal(2*Math.PI);
+//     var MAX_JAVASCRIPT_NUMBER          = bigrat.fromDecimal(Number.MAX_VALUE);
+//     var NEGATIVE_MAX_JAVASCRIPT_NUMBER = bigrat.opposite(bigrat.create(), MAX_JAVASCRIPT_NUMBER);
 
     // Math.log10 not defined in IE11
-    var log10 = Math.log10 ? Math.log10 : function (x) { return Math.log(x)/Math.log(10) };
+    var log10 = Math.log10 ? Math.log10 : function (x) { return Math.log(x)/LOG_10 };
 
     var integer_and_fraction_parts = function (rational_number) {
         // if rational_number is negative then so are the parts (or zero if integer_part is zero)
@@ -1307,6 +1310,14 @@ window.TOONTALK.number.function =
                             return n_ary_function(message, numeric_javascript_function_to_widget_function(cos, degrees_to_decimal), 1, 'cosine');
                         },
                         "The bird will return with an approximation of the cosine of the number (in degrees).");
+    add_function_object('arc tangent', 
+                        function (message) {
+                            var atan_in_degrees = function (x) {
+                                return RADIAN*Math.atan(x);
+                            };
+                            return n_ary_function(message, numeric_javascript_function_to_widget_function(atan_in_degrees), 1, 'arc tangent');
+                        },
+                        "The bird will return with an approximation of the arc tangent (in degrees) of the number.");
     add_function_object('sine (in radians)', 
                         function (message) {
                             return n_ary_function(message, numeric_javascript_function_to_widget_function(Math.sin, radians_to_decimal), 1, 'sine (in radians)');
@@ -1317,6 +1328,11 @@ window.TOONTALK.number.function =
                             return n_ary_function(message, numeric_javascript_function_to_widget_function(Math.cos, radians_to_decimal), 1, 'cosine (in radians)');
                         },
                         "The bird will return with an approximation of the cosine of the number (in radians).");
+    add_function_object('arc tangent (in radians)', 
+                        function (message) {
+                            return n_ary_function(message, numeric_javascript_function_to_widget_function(Math.atan), 1, 'arc tangent (in radians)');
+                        },
+                        "The bird will return with an approximation of the arc tangent (in radians) of the number.");
     return functions;
 }());
 
