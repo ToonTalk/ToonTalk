@@ -1112,6 +1112,7 @@ window.TOONTALK.number.function =
             bird.widget_dropped_on_me(result, false);
         }
         message.remove();
+        return result;
     };
     var number_check = function (widget, function_name, index) {
         if (widget.is_of_type('number')) {
@@ -1143,9 +1144,9 @@ window.TOONTALK.number.function =
             }
             return result;
         };
-        process_message(message, compute_result);
+        return process_message(message, compute_result);
     };
-    var n_ary_function = function (message, operation, arity, function_name) { 
+    var n_ary_function = function (message, operation, arity, function_name, robot) { 
         var compute_result = function (bird, box_size) {
             var next_widget, index, args, result;
             if (box_size !== arity+1) {
@@ -1164,7 +1165,7 @@ window.TOONTALK.number.function =
             }
             return operation.apply(null, args);
         };
-        process_message(message, compute_result);
+        return process_message(message, compute_result, robot);
     };
     // TODO: move this to UTILITIES
     var map_arguments = function (args, fun) {
@@ -1209,7 +1210,13 @@ window.TOONTALK.number.function =
     var functions = {};
     var add_function_object = function (name, respond_to_message, title) {
         functions[name] = {name: name,
-                           respond_to_message: respond_to_message,
+                           respond_to_message: function (message, robot) {
+                                                   var result = respond_to_message(message);
+                                                   if (result && robot) {
+                                                       // function created a new widget so robot needs to know about it
+                                                       robot.add_newly_created_widget(result);
+                                                   }
+                                               },
                            get_description: get_description,
                            toString: to_string_function,
                            title: title};
