@@ -968,7 +968,7 @@ window.TOONTALK.UTILITIES =
             var is_backside = json.view.backside;
             var backside_widgets = widget.get_backside_widgets();
             var type_description = widget.get_type_name();
-            var title = widget.get_title && widget.get_title();
+            var title = widget.toString();
             if (type_description === 'top-level') {
                 if (is_backside) {
                     type_description = "a work area containing ";
