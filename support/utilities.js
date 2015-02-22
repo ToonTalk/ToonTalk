@@ -1379,6 +1379,20 @@ window.TOONTALK.UTILITIES =
                 return "second";
                 case 3:
                 return "third";
+                case 4:
+                return "fourth";
+                case 5:
+                return "fifth";
+                case 6:
+                return "sixth";
+                case 7:
+                return "seventh";
+                case 8:
+                return "eighth";
+                case 9:
+                return "ninth";
+                case 10:
+                return "tenth";
                 default:
                 if (n%10 === 1) {
                     return n + "st";
@@ -1455,7 +1469,7 @@ window.TOONTALK.UTILITIES =
             var one_shot_handler = function (event) {
                 // could support any number of parameters but not needed
                 handler_run = true;
-                if (handler) {
+                if (handler) { // could it be otherwise?
                     handler();
                 }
                 element.removeEventListener(event_name, one_shot_handler);
@@ -1467,9 +1481,6 @@ window.TOONTALK.UTILITIES =
             setTimeout(
                 function () {
                     if (!handler_run) {
-//                         if (TT.debugging) {
-//                             console.log("Timed out after " + maximum_wait +"ms while waiting for " + event_name);
-//                         }
                         one_shot_handler();
                     }
                 },
