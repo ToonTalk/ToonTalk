@@ -231,10 +231,13 @@ window.TOONTALK.robot_action =
     var tool_use_animation = function (widget, context, top_level_context, robot, continuation, tool_css_class) {
         var robot_frontside_element = robot.get_frontside_element();
         var new_continuation = function () {
-            continuation();
             robot.carrying_tool = undefined;
             robot.update_display(); // to stop displaying tool
-            robot.run_next_step();
+            continuation();
+            setTimeout(function () {
+                           robot.run_next_step();
+                       },
+                       500);    
         };
         robot.carrying_tool = tool_css_class;
         robot.update_display(); // to display tool
