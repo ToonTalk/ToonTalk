@@ -40,11 +40,13 @@ window.TOONTALK.robot_action =
                              target.render();
                          }
                          if (thing_in_hand.robot_waiting_before_next_step === robot) {
-                            // NOTE thing_in_hand needs to call robot.run_next_step();
-                            if (!additional_info || !additional_info.running_watched) {
-                                thing_in_hand.robot_waiting_before_next_step = undefined;
-                            }
-                            return false;
+                             // NOTE thing_in_hand needs to call robot.run_next_step();
+//                              console.log("Expecting " + thing_in_hand + " to run_next_step");
+                             if (!additional_info || !additional_info.running_watched) {
+                                 thing_in_hand.robot_waiting_before_next_step = undefined;
+//                                  console.log("robot_waiting_before_next_step reset for " + thing_in_hand + " in drop it on -- returning false");
+                             }
+                             return false;
                          }
                          return true;
                      }
@@ -171,7 +173,9 @@ window.TOONTALK.robot_action =
                 // and we don't want to see it in the robot's hand
                 if (thing_in_hand.robot_waiting_before_next_step === robot) {
                     // NOTE thing_in_hand needs to call robot.run_next_step();
-                    thing_in_hand.robot_waiting_before_next_step = undefined;
+//                     console.log("Expecting " + thing_in_hand + " to run_next_step");
+//                     thing_in_hand.robot_waiting_before_next_step = undefined;
+//                     console.log("robot_waiting_before_next_step reset for " + thing_in_hand + " in adjust_dropped_location_continuation");
                 } else {
                     // e.g., a nest may take some time because the egg hatches
                     // but the robot is still holding it   
@@ -234,10 +238,7 @@ window.TOONTALK.robot_action =
             robot.carrying_tool = undefined;
             robot.update_display(); // to stop displaying tool
             continuation();
-            setTimeout(function () {
-                           robot.run_next_step();
-                       },
-                       500);    
+            robot.run_next_step();
         };
         robot.carrying_tool = tool_css_class;
         robot.update_display(); // to display tool
