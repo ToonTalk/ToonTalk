@@ -1495,7 +1495,7 @@ window.TOONTALK.UTILITIES =
                     source_element.style.transitionDuration = '';
                 };
                 // if transitionend is over 500ms late then run handler anyway
-                TT.UTILITIES.add_one_shot_event_handler(source_element, "transitionend", duration+501, remove_transition_class);
+                TT.UTILITIES.add_one_shot_event_handler(source_element, "transitionend", duration+500, remove_transition_class);
             }
             TT.UTILITIES.add_one_shot_event_handler(source_element, "transitionend", duration+500, continuation);
         },
