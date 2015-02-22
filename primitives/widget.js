@@ -103,6 +103,7 @@ window.TOONTALK.widget = (function (TT) {
                         this.saved_width =  $(frontside_element).width();
                         this.saved_height = $(frontside_element).height();
                     }
+                    return true;
                 };
                 widget.restore_dimensions = function () {
                     var frontside_element;
