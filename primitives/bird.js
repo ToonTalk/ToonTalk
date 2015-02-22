@@ -54,8 +54,7 @@ window.TOONTALK.bird = (function (TT) {
                     TT.UTILITIES.display_message("Bird can't take its nest to its nest!");
                     return false;
                 }
-                if (nest.visible() || (nest.is_function_nest() && this.visible()) || nest.any_nest_copies_visible()) {
-                    // used to include this.visible() || but then when nest was on backside flew off to 0,0
+                if (nest.visible() || this.visible() || nest.any_nest_copies_visible()) {
                     other.save_dimensions();
                     // doesn't matter if robot is visible or there is a user event -- if either end visible show the delivery
                     frontside_element = this.get_frontside_element();
@@ -220,7 +219,7 @@ window.TOONTALK.bird = (function (TT) {
             }
             if (!target_side.is_function_nest()) {
                 // nests of functions are 'virtual'
-                target_frontside_element = target_side.get_widget().closest_visible_ancestor().get_widget().get_frontside_element();
+                target_frontside_element = target_side.get_widget().closest_visible_ancestor_or_frontside().get_widget().get_frontside_element();
                 target_offset = $(target_frontside_element).offset();
                 $top_level_backside_element = $(nest_recieving_message.get_frontside_element()).closest(".toontalk-top-level-backside");   
             }
