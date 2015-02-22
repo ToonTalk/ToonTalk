@@ -1216,10 +1216,11 @@ window.TOONTALK.number.function =
                                                    if (response) {
                                                        if (robot) {
                                                            // function created a new widget so robot needs to know about it
-                                                           robot.add_newly_created_widget(response);
+                                                           // might be that it reused a widget in the message so isn't new
+                                                           robot.add_newly_created_widget_if_new(response);
                                                        }
                                                        if (TT.robot.in_training && event) {
-                                                           TT.robot.in_training.add_newly_created_widget(response);
+                                                           TT.robot.in_training.add_newly_created_widget_if_new(response);
                                                        }
                                                    }
                                                },
