@@ -186,7 +186,7 @@ window.TOONTALK.UTILITIES =
             return;
         } else {
             // closest includes 'self'
-            $target = $(element).closest(".toontalk-side");
+            $target = $(event.target).closest(".toontalk-side");
         }
         if ($target.length === 0) {
             return;
