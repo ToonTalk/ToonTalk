@@ -347,11 +347,19 @@ window.TOONTALK.number = (function () {
     };
     
     number.create_backside = function () {
-        return TT.number_backside.create(this); //.update_run_button_disabled_attribute();
+        return TT.number_backside.create(this);
     };
         
     number.set_from_values = function (numerator, denominator) {
         return this.set_value(bigrat_from_values(numerator, denominator));
+    };
+
+    number.set_numerator = function (numerator) {
+        return this.set_value(bigrat_from_values(numerator, this.get_value()[1].toString()));
+    };
+
+    number.set_denominator = function (denominator) {
+        return this.set_value(bigrat_from_values(this.get_value()[0].toString(), denominator));
     };
 
     number.ONE = function () {
@@ -971,15 +979,16 @@ window.TOONTALK.number_backside =
                 if (TT.robot.in_training) {
                     first_class_name = event.srcElement.className.split(" ", 1)[0];
                     if (first_class_name === "toontalk-denominator-input") {
-                        string = "change value of the denominator to " + denominator;
+                        TT.robot.in_training.edited(number, {setter_name: "set_denominator",
+                                                             argument_1: denominator,
+                                                             toString: "change value of the denominator to " + denominator,
+                                                             button_selector: "." + first_class_name});
                     } else {
-                        string = "change value of the numerator to " + numerator;
-                    }
-                    TT.robot.in_training.edited(number, {setter_name: "set_from_values",
-                                                         argument_1: numerator,
-                                                         argument_2: denominator,
-                                                         toString: string,
-                                                         button_selector: "." + first_class_name});
+                        TT.robot.in_training.edited(number, {setter_name: "set_numerator",
+                                                             argument_1: numerator,
+                                                             toString: "change value of the numerator to " + numerator,
+                                                             button_selector: "." + first_class_name});
+                    }         
                 }
                 number.rerender();
             };
