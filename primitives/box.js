@@ -483,7 +483,9 @@ window.TOONTALK.box = (function (TT) {
         if (event) {
             other.rerender();
         }
-        this.remove();
+        if (result) {
+            this.remove();
+        }
         return result;
     };
     
