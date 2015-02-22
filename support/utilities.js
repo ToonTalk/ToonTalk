@@ -52,6 +52,9 @@ window.TOONTALK.UTILITIES =
             TT.UTILITIES.report_internal_error("Possible bug that " + dragee + " doesn't have a known owner.");
             dragee = $(element);
         }
+        if (widget.save_dimensions && (!widget.get_parent_of_frontside() || widget.get_parent_of_frontside().get_widget().is_of_type('top-level'))) {
+            widget.save_dimensions();
+        }
         widget.being_dragged = true;
         bounding_rectangle = dragee.get(0).getBoundingClientRect();
         is_resource = dragee.is(".toontalk-top-level-resource");
@@ -137,7 +140,8 @@ window.TOONTALK.UTILITIES =
             // TODO: trigger save of this page?
         };
         var $source, source_widget, $target, target_widget, drag_x_offset, drag_y_offset, target_position, 
-            new_target, source_is_backside, $container, container, width, height, i, page_x, page_y;
+            new_target, source_is_backside, $container, container, width, height, i, page_x, page_y,
+            source_widget_saved_width, source_widget_saved_height;
         if (!json_object && dragee) {
             json_object = dragee.data("json");
         }
@@ -248,7 +252,11 @@ window.TOONTALK.UTILITIES =
                 if (container) {
                     if (!source_is_backside && source_widget.get_infinite_stack && source_widget.get_infinite_stack()) {
                         // leave the source there but create a copy
+                        source_widget_saved_width  = source_widget.saved_width;
+                        source_widget_saved_height = source_widget.saved_height;
                         source_widget = source_widget.copy();
+                        source_widget.saved_width  = source_widget_saved_width;
+                        source_widget.saved_height = source_widget_saved_height;
                         width  = $source.width();
                         height = $source.height();
                         $source = $(source_widget.get_frontside_element(true));

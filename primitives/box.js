@@ -788,7 +788,7 @@ window.TOONTALK.box_hole =
                     TT.robot.in_training.dropped_on(dropped, this);
                 }
                 if (event && dropped.save_dimensions) { // and maybe watched robot too?
-                    dropped.save_dimensions();
+//                     dropped.save_dimensions();
                     if (dropped.set_size_attributes) {
                         $hole_element = $(this.get_element());
                         dropped.set_size_attributes($hole_element.width(), $hole_element.height());
