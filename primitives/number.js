@@ -1156,11 +1156,11 @@ window.TOONTALK.number.function =
         };
         return process_message(message, compute_response, event, robot);
     };
-    var n_ary_function = function (message, operation, arity, function_name, event, robot) { 
+    var n_ary_function = function (message, operation, minimum_arity, function_name, event, robot) { 
         var compute_response = function (bird, box_size) {
             var next_widget, index, args, response;
-            if (box_size !== arity+1) {
-                TT.UTILITIES.display_message("Birds for the " + function_name + " function can only respond to boxes with " + (arity+1) + " holes. Not " + box_size + " holes.");
+            if (box_size < minimum_arity+1) { // one for the bird
+                TT.UTILITIES.display_message("Birds for the " + function_name + " function can only respond to boxes with at least " + (minimum_arity+1) + " holes. Not " + box_size + " holes.");
                 return;
             }
             args = [];
@@ -1264,12 +1264,12 @@ window.TOONTALK.number.function =
                         "The bird will return with the first number modulo the second number. For positive numbers this is like the remainder after division.");
     add_function_object('minimum', 
                         function (message, event, robot) {
-                             return n_ary_widget_function(message, TT.number.ONE, TT.number.minimum, 'minimum', event, robot);
+                            return n_ary_widget_function(message, TT.number.ONE, TT.number.minimum, 'minimum', event, robot);
                         },
                         "The bird will return with the smallest of the numbers in the box.");
     add_function_object('maximum', 
                         function (message, event, robot) {
-                             return n_ary_widget_function(message, TT.number.ONE, TT.number.maximum, 'maximum', event, robot);
+                            return n_ary_widget_function(message, TT.number.ONE, TT.number.maximum, 'maximum', event, robot);
                         },
                         "The bird will return with the largest of the numbers in the box.");
     add_function_object('absolute value', 
@@ -1297,24 +1297,38 @@ window.TOONTALK.number.function =
                             return n_ary_function(message, bigrat_function_to_widget_function(power_function), 2, 'power', event, robot);
                         },
                         "The bird will return with the first number to the power of the second number.");
+    add_function_object('random', 
+                        function (message, event, robot) {
+                            var random = function () {
+                                if (arguments.length === 0) {
+                                    return Math.random();
+                                }
+                                if (arguments.length === 1) {
+                                    return Math.random()*arguments[0];
+                                }
+                                return arguments[0]+Math.random()*arguments[1];
+                            };
+                            return n_ary_function(message, numeric_javascript_function_to_widget_function(random), 0, 'random', event, robot);
+                        },
+                        "The bird will return a random number between the first and second numbers.\nIf the second number isn't provided a number less than the first number is returned.\nIf no numbers are given then the bird returns with a number between 0 and 1.");                    
     add_function_object('round', 
                         function (message, event, robot) {
-                             return n_ary_function(message, bigrat_function_to_widget_function(round), 1, 'round', event, robot);
+                            return n_ary_function(message, bigrat_function_to_widget_function(round), 1, 'round', event, robot);
                         },
                         "The bird will return the number rounded to the nearest integer.");
     add_function_object('floor', 
                         function (message, event, robot) {
-                             return n_ary_function(message, bigrat_function_to_widget_function(floor), 1, 'floor', event, robot);
+                            return n_ary_function(message, bigrat_function_to_widget_function(floor), 1, 'floor', event, robot);
                         },
                         "The bird will return the largest integer less than or equal to the number.");                       
     add_function_object('ceiling', 
                         function (message, event, robot) {
-                             return n_ary_function(message, bigrat_function_to_widget_function(ceiling), 1, 'ceiling', event, robot);
+                            return n_ary_function(message, bigrat_function_to_widget_function(ceiling), 1, 'ceiling', event, robot);
                         },
                         "The bird will return the smallest integer greater than or equal to the number.");
     add_function_object('integer and fraction parts', 
                         function (message, event, robot) {
-                             return n_ary_function(message, box_with_integer_and_fraction, 1, 'integer and fraction parts');
+                            return n_ary_function(message, box_with_integer_and_fraction, 1, 'integer and fraction parts');
                         },
                         "The bird will return with a box containing the integer part and the fraction.");
     add_function_object('sine', 
