@@ -368,7 +368,7 @@ window.TOONTALK.robot_action =
                 referenced.set_visible(true);
                 watched_run_function(referenced, context, top_level_context, robot, continuation, additional_info);
             };
-            new_action.toString = function () {
+            new_action.toString = function (toString_info) {
                 var suffix = "";
                 if (action_name === "add a new widget to the work space") {
                     return action_name.replace("a new widget", TT.path.toString(path));
@@ -380,7 +380,7 @@ window.TOONTALK.robot_action =
                 if (action_name === 'edit') {
                     suffix = " (" + additional_info.toString + ")";
                 }
-                return action_name + " " + TT.path.toString(path) + suffix;
+                return action_name + " " + TT.path.toString(path, toString_info) + suffix;
             };
             new_action.get_json = function (json_history) {
                 return {type: "robot_action",

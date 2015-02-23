@@ -136,16 +136,16 @@ window.TOONTALK.path =
             }
             return referenced;
         },
-        toString: function (a_path) {
+        toString: function (a_path, toString_info) {
             var sub_path_string;
             if (a_path.next) {
                 sub_path_string = TT.path.toString(a_path.next);
                 if (sub_path_string[sub_path_string.length-1] !== ' ') {
                     sub_path_string += ' ';
                 }
-                return TT.path.toString(a_path.next).trim() + " of " + a_path.toString();
+                return TT.path.toString(a_path.next).trim() + " of " + a_path.toString(toString_info);
             } else {
-                return a_path.toString();
+                return a_path.toString(toString_info);
             }
         },
         get_json: function (path, json_history) {
@@ -171,7 +171,10 @@ window.TOONTALK.path =
             return {dereference: function (context, top_level_context, robot) {
                         return TT.path.continue_dereferencing_path(this, context, top_level_context, robot);
                     },
-                    toString: function () {
+                    toString: function (additional_info) {
+                        if (additional_info && additional_info.robot) {
+                            return additional_info.robot.get_top_level_context_description();
+                        }
                         return "what he's working on";
                     },
                     get_json: function () {

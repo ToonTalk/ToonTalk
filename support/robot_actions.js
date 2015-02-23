@@ -212,11 +212,11 @@ window.TOONTALK.actions =
             return true;             
         },
         
-        toString: function () {
+        toString: function (toString_info) {
             var description = "";
             var steps = this.get_steps();
             var step_descriptions = steps.map(function (step) {
-                return step.toString();
+                return step.toString(toString_info);
             });
             while (step_descriptions[step_descriptions.length-1] === "") {
                 step_descriptions.pop();

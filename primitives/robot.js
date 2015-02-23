@@ -632,12 +632,16 @@ window.TOONTALK.robot = (function (TT) {
             postfix = "\n..."; // to indicate still being constructed
         }
         frontside_conditions_string = TT.UTILITIES.add_a_or_an(frontside_conditions_string);
-        robot_description = prefix + "When working on something that matches " + frontside_conditions_string + " he will \n" + body.toString() + postfix;
+        robot_description = prefix + "When working on something that matches " + frontside_conditions_string + 
+                            " he will \n" + body.toString({robot: this}) + postfix;
         if (this.match_status) {
             if (this.match_status.is_widget) {
-                robot_description = "He isn't running because the " + this.match_status + " in his conditions (highlighted in red) doesn't match the corresponding widget. Perhaps editing his conditions will help.\n" + robot_description;
+                robot_description = "He isn't running because the " + this.match_status + 
+                                   " in his conditions (highlighted in red) doesn't match the corresponding widget. Perhaps editing his conditions will help.\n" + 
+                                   robot_description;
             } else if (this.match_status !== 'matched') {
-                robot_description = "He is waiting for something to be delivered to the nest that matches the " + this.match_status[0][1] + "in his conditions (highlighted in yellow).\n" + robot_description;
+                robot_description = "He is waiting for something to be delivered to the nest that matches the " + this.match_status[0][1] +
+                                    "in his conditions (highlighted in yellow).\n" + robot_description;
             }
         }
         if (next_robot) {
@@ -651,6 +655,15 @@ window.TOONTALK.robot = (function (TT) {
             return "robots";
         }
         return "robot";
+    };
+
+    robot.get_top_level_context_description = function () {
+        var frontside_conditions = this.get_frontside_conditions();
+        var type = frontside_conditions.get_type_name();
+        if (type === 'top-level') {
+            return "his workspace";
+        }
+        return "the " + type + " he's working on";
     };
 
     robot.get_help_URL = function () {
