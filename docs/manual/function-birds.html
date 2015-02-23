@@ -20,7 +20,7 @@ Here is the list of numeric functions birds available in this system:
     var table = "<table class='toontalk-function-bird-documentation-table'>";
     function_names.forEach(function (function_name, index) {
         var function_object = TOONTALK.number.function[function_name];
-        table += "<tr><td><b>" + function_name + "</b></td><td class='toontalk-function-bird-title-documentation'>" + 
+        table += "<tr><td class='toontalk-function-bird-name'>" + function_name + "</td><td class='toontalk-function-bird-title-documentation'>" +
                  function_object.title + "</td><td><div id='id_" + index + "'></div></td></tr>";
     });
     table += "</table>";

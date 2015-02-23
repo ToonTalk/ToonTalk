@@ -1763,8 +1763,12 @@ table.toontalk-documentation-table {
 .toontalk-function-bird-documentation-table {
 
 }
+.toontalk-function-bird-name  {
+   vertical-align: top;
+   font-weight: bold;
+}
 .toontalk-function-bird-title-documentation {
-	max-width: 50em;
+	max-width: 50em;	
 }
 .toontalk-element-attribute {
 	position: relative;
