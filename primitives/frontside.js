@@ -27,7 +27,7 @@ window.TOONTALK.frontside =
                 }
                 if ($frontside_element.is(".toontalk-top-level-resource")) {
                     widget.set_running(!widget.get_running());
-                } else if (widget.get_running()) {
+                } else if (widget.get_running() && !TT.robot.in_training) {
                     if (TT.debugging) {
                         TT.UTILITIES.display_message("Clicks on running widgets are ignored. If you wish to see its backside then stop it and click again.");
                     }
@@ -65,15 +65,25 @@ window.TOONTALK.frontside =
             frontside_element.addEventListener('touchstart', click_handler);
             frontside_element.addEventListener("mouseenter", function (event) {
                 var backside = widget.get_backside();
+                var wiggling_widget = widget.is_of_type("empty hole") ? wiget.get_parent_of_frontside() : widget;
+                var frontside_element = wiggling_widget.get_frontside_element();
                 if (backside) {
                     TT.UTILITIES.highlight_element(backside.get_element());
                 }
+                $(".toontalk-wiggle").removeClass("toontalk-wiggle");
+                if (!$(frontside_element).is(".toontalk-top-level-resource")) {
+                    $(frontside_element).addClass("toontalk-wiggle");
+                }
+                event.stopPropagation(); 
             });
             frontside_element.addEventListener("mouseleave", function (event) {
                 var backside = widget.get_backside();
+                var wiggling_widget = widget.is_of_type("empty hole") ? wiget.get_parent_of_frontside() : widget;
+//              console.log("remove " + wiggling_widget.debug_string);
                 if (backside) {
                     TT.UTILITIES.remove_highlight();
                 }
+                $(wiggling_widget.get_frontside_element()).removeClass("toontalk-wiggle");
             });
             if (TT.debugging) {
                 frontside_element.id = widget.debug_id;

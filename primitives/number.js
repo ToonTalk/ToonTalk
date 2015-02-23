@@ -8,12 +8,89 @@
 /*jslint browser: true, devel: true, plusplus: true, vars: true, white: true */
 /*global BigInteger, bigrat */
 
-window.TOONTALK.number = (function (TT) { // TT is for convenience and more legible code
+(function (TT) {  // TT is for convenience and more legible code
     "use strict";
-    
-    var number = Object.create(TT.widget);
+    // common functions and variables between number, number backside, and number functions
 
-    // private functions
+    // TODO: make these into 'const' when Ecma6 is everywhere
+    var RADIAN                         = 180/Math.PI;
+    var LOG_10                         = Math.log(10); 
+    var TEN                            = bigrat.fromInteger(10); 
+    var HALF                           = bigrat.fromValues( 1, 2);
+    var NEGATIVE_HALF                  = bigrat.fromValues(-1, 2);
+    var THREE_HUNDRED_AND_SIXTY        = bigrat.fromInteger(360);
+    var TWO_PI                         = bigrat.fromDecimal(2*Math.PI);
+//     var MAX_JAVASCRIPT_NUMBER          = bigrat.fromDecimal(Number.MAX_VALUE);
+//     var NEGATIVE_MAX_JAVASCRIPT_NUMBER = bigrat.opposite(bigrat.create(), MAX_JAVASCRIPT_NUMBER);
+
+    // Math.log10 not defined in IE11
+    var log10 = Math.log10 ? Math.log10 : function (x) { return Math.log(x)/LOG_10 };
+
+    var integer_and_fraction_parts = function (rational_number) {
+        // if rational_number is negative then so are the parts (or zero if integer_part is zero)
+        var integer_part = bigrat.fromValues(bigrat.toBigInteger(rational_number), 1);
+        var fractional_part = bigrat.subtract(bigrat.create(), rational_number, integer_part);
+        return {integer_part:    integer_part,
+                fractional_part: fractional_part};
+    };
+
+    var box_with_integer_and_fraction = function (rational_number) {
+        var parts = integer_and_fraction_parts(rational_number);
+        var integer_number  = TT.number.ZERO();
+        var fraction_number = TT.number.ZERO();
+        integer_number.set_value(parts.integer_part);
+        fraction_number.set_value(parts.fractional_part);
+        return TT.box.create(2, true, [integer_number, fraction_number], "The integer and fraction parts of " + rational_number.toString().replace(",", "/"));
+    };
+
+    var modulo = function (n, modulus) {
+        var quotient = bigrat.divide(bigrat.create(), n, modulus);
+        var quotient_parts = integer_and_fraction_parts(quotient);
+        // reuse storage of quotient since not needed anymore
+        return bigrat.multiply(quotient, quotient_parts.fractional_part, modulus);
+    };
+
+    var round = function (rational_number) {
+        var parts = integer_and_fraction_parts(rational_number);
+        if (bigrat.isLessThan(parts.fractional_part, NEGATIVE_HALF)) {
+            // e.g. round(-2.7) returns -3
+            return bigrat.subtract(parts.integer_part, parts.integer_part, bigrat.ONE);
+        }
+        if (bigrat.isLessThan(parts.fractional_part, bigrat.ZERO)) {
+            // e.g. round(-2.3) returns -2
+            return parts.integer_part;
+        }
+        if (bigrat.isLessThan(parts.fractional_part, HALF)) {
+            // e.g. round(2.3) returns 2
+            return parts.integer_part;
+        }
+        // e.g. round(2.7) returns 3
+        return bigrat.add(parts.integer_part, parts.integer_part, bigrat.ONE);   
+    };
+
+    var floor = function (rational_number) {
+        var parts = integer_and_fraction_parts(rational_number);
+        if (bigrat.isLessThan(parts.fractional_part, bigrat.ZERO)) {
+            // e.g. floor(-2.3) returns -3
+            return bigrat.subtract(parts.integer_part, parts.integer_part, bigrat.ONE);
+        }
+        return parts.integer_part;
+    };
+
+    var ceiling = function (rational_number) {
+        var parts = integer_and_fraction_parts(rational_number);
+        if (bigrat.isLessThan(parts.fractional_part, bigrat.ZERO)) {
+            // e.g. ceil(-2.3) returns -2
+            return parts.integer_part;
+        }
+        if (bigrat.equals(parts.fractional_part, bigrat.ZERO)) {
+            return parts.integer_part;
+        }
+        return bigrat.add(parts.integer_part, parts.integer_part, bigrat.ONE);
+    };
+
+window.TOONTALK.number = (function () {   
+    var number = Object.create(TT.widget);
 
     var shrink_to_fit = function (string, number_of_full_size_characters, font_size, fromLeft) {
         // after steps iteration the digits should be 1% of the initial size
@@ -70,37 +147,39 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
                shrink_to_fit(string, characters_on_each_side, font_size, false);
     };
 
-    var generate_decimal_places = function (fraction, number_of_full_size_characters) {
+    var generate_decimal_places = function (bigrat_fraction, number_of_full_size_characters) {
         var result = "";
-        fraction = fraction.absolute_value();
-        return generate_decimal_places_from_numerator_and_denominator(fraction.get_value()[0], fraction.get_value()[1], number_of_full_size_characters);
+        if (bigrat.isNegative(bigrat_fraction)) {
+            bigrat.abs(bigrat_fraction, bigrat_fraction);
+        }
+        return generate_decimal_places_from_numerator_and_denominator(bigrat.fromValues(bigrat_fraction[0], 1), 
+                                                                      bigrat.fromValues(bigrat_fraction[1], 1), 
+                                                                      number_of_full_size_characters);
     };
 
     var generate_decimal_places_from_numerator_and_denominator = function (numerator, denominator, number_of_full_size_characters) {
+        // numerator and denominator are bigrats with denominators of 1
         var result = "";
-        var ten = new BigInteger(10);
-        var negative = numerator.isNegative();
-        if (negative) {
-            numerator = numerator.abs();
-        }
+        // this is base 10 -- could generalise...
+        var quotient_rational = bigrat.create();
+        var quotient_integer  = bigrat.create();
+        var quotient_fraction = bigrat.create();
+        bigrat.multiply(numerator, numerator, TEN);
         while (number_of_full_size_characters > result.length) {
-            numerator = numerator.multiply(ten);
-            if (numerator.compare(denominator) < 0) {
+            if (bigrat.isLessThan(numerator, denominator)) {
                 result += "0";
             } else {
-                result += numerator.divide(denominator).toString();
-                numerator = numerator.remainder(denominator).multiply(ten);
-                if (numerator.isZero()) {
-                    if (negative) {
-                        result = '-' + result;
-                    }
+                bigrat.divide(quotient_rational, numerator, denominator);
+                quotient_integer = bigrat.toBigInteger(quotient_rational);
+                result += quotient_integer.toString();
+                bigrat.subtract(quotient_fraction, quotient_rational, bigrat.fromValues(quotient_integer, 1));
+                bigrat.multiply(numerator, quotient_fraction, denominator); 
+                if (bigrat.equals(numerator, bigrat.ZERO)) {
                     result = remove_trailing_zeroes(result);
                     return result;
                 }
             }
-        }
-        if (negative) {
-            result = '-' + result;
+            bigrat.multiply(numerator, numerator, TEN);
         }
         return result;
     };
@@ -119,7 +198,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     };
     
     var bigrat_from_values = function (numerator, denominator) {
-        // numerator and denominator are integers
+        // numerator and denominator are integers, strings, or TT.numbers
         if (!denominator) {
             denominator = 1;
         }
@@ -173,13 +252,6 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         return integer_approximation_as_string.length-1;
     };
 
-    // Math.log10 not defined in IE11
-    var natural_log_of_10 = Math.log(10);
-    var log10 = Math.log10 ? Math.log10 : function (x) { return Math.log(x)/natural_log_of_10 };
-
-    var TEN = bigrat.fromInteger(10);
-
-    // public methods
     number.create = function (numerator, denominator, operator, format, description) {
         var new_number = Object.create(number);
         // value is a private variable closed over below
@@ -221,9 +293,6 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         };
         new_number.get_value =
             function () {
-//                if (this.debug_id === 'toontalk_id_1415038113558') {
-//                     console.log("debug this");
-//                 }
                 return value; 
             };
         new_number.set_value_from_decimal =
@@ -231,7 +300,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
                 // e.g. an attribute value
 //                 console.log("set_value_from_decimal " + decimal_string + " " + this.debug_id);
                 if (typeof decimal_string === 'number') {
-                    this.set_value(bigrat.fromInteger(decimal_string));
+                    this.set_value(bigrat.fromDecimal(decimal_string));
                     return;
                 }
                 // else should be a string
@@ -270,21 +339,35 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         }
         return new_number;
     };
+
+    number.create_from_bigrat = function (bigrat) {
+        var result = TT.number.ZERO();
+        result.set_value(bigrat);
+        return result;
+    };
     
     number.create_backside = function () {
-        return TT.number_backside.create(this); //.update_run_button_disabled_attribute();
+        return TT.number_backside.create(this);
     };
         
     number.set_from_values = function (numerator, denominator) {
         return this.set_value(bigrat_from_values(numerator, denominator));
     };
 
+    number.set_numerator = function (numerator) {
+        return this.set_value(bigrat_from_values(numerator, this.get_value()[1].toString()));
+    };
+
+    number.set_denominator = function (denominator) {
+        return this.set_value(bigrat_from_values(this.get_value()[0].toString(), denominator));
+    };
+
     number.ONE = function () {
-        return this.create(1);
+        return TT.number.create(1);
     };
 
     number.ZERO = function () {
-        return this.create(0);
+        return TT.number.create(0);
     };
 
     number.copy = function (parameters) {
@@ -494,7 +577,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         if (format === 'scientific_notation') {
             negative = bigrat.isNegative(this.get_value());
             exponent = scientific_notation_exponent(this.get_value());
-            ten_to_exponent = bigrat.power(bigrat.create(), TEN, exponent);
+            ten_to_exponent = bigrat.power(bigrat.create(), TEN, exponent+1);
             significand = bigrat.divide(bigrat.create(), this.get_value(), ten_to_exponent);
             // 6 for integer_digit, space, and '10x' - divide by 2 since superscript font is smaller
             exponent_area = 6+(exponent === 0 ? 1 : Math.ceil(log10(Math.abs(exponent)))/2);
@@ -506,10 +589,10 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
                 return this.to_HTML(exponent_area+1, font_size*max_characters/(exponent_area+1), format, top_level, operator, size_unconstrained_by_container);
             }
             max_decimal_places = shrinking_digits_length(compute_number_of_full_size_characters_after_decimal_point(max_characters, exponent_area), font_size); 
-            decimal_digits = generate_decimal_places_from_numerator_and_denominator(significand[0], significand[1], max_decimal_places);      
+            decimal_digits = generate_decimal_places(significand, max_decimal_places);      
             if (negative) { // negative so include sign and first digit
-                integer_digit = decimal_digits.substring(0, 2);
-                decimal_digits = decimal_digits.substring(2);
+                integer_digit = "-" + decimal_digits.substring(0, 1);
+                decimal_digits = decimal_digits.substring(1);
             } else {
                 integer_digit = decimal_digits.substring(0, 1);
                 decimal_digits = decimal_digits.substring(1);
@@ -614,6 +697,8 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         case '/':
             return this.divide(other_number);
         case '^':
+            // deprecated since this only worked with integer exponents
+            // and there is now a function bird who does this better
             return this.power(other_number);
         default:
             TT.UTILITIES.report_internal_error("Number received a number with unsupported operator: " + other_number.get_operator());
@@ -655,7 +740,20 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         return this;
     };
 
+    number.minimum = function (other) {
+        // other is another rational number
+        this.set_value(bigrat.min(bigrat.create(), this.get_value(), other.get_value()));
+        return this;
+    };
+
+    number.maximum = function (other) {
+        // other is another rational number
+        this.set_value(bigrat.max(bigrat.create(), this.get_value(), other.get_value()));
+        return this;
+    };
+
     number.power = function (power) {
+        // deprecated
         // power is any integer (perhaps needs error handling if too large)
         this.set_value(bigrat.power(bigrat.create(), this.get_value(), bigrat.toInteger(power.get_value())));
         return this;
@@ -688,7 +786,10 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         return bigrat.toDecimal(this.get_value());
     };
     
-    number.get_type_name = function () {
+    number.get_type_name = function (plural) {
+        if (plural) {
+            return "numbers";
+        }
         return "number";
     };
 
@@ -755,7 +856,7 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
         var decimal_max_digits = shrinking_digits_length(number_of_full_size_characters_after_decimal_point, font_size);
         var integer_max_digits = Math.min(integer_string.length, number_of_full_size_characters/2);
         // bigger fonts mean more digits can be seen so compute more of them
-        var decimal_places = generate_decimal_places(fractional_part, decimal_max_digits);
+        var decimal_places = generate_decimal_places(fractional_part.get_value(), decimal_max_digits);
         var after_decimal_point;
         if (decimal_places.length < number_of_full_size_characters) {
             // not repeating and not too many decimal digits
@@ -795,15 +896,14 @@ window.TOONTALK.number = (function (TT) { // TT is for convenience and more legi
     };
 
     number.get_custom_title_prefix = function () {
-        return "Drop another number on me and I'll add it to my value (unless it has been changed so that I'll subtract, multiply, or divide instead).";
+        return "Drop another number on me and I'll add it to my value.\nUnless its operation has been changed then I'll subtract, multiply, or divide by it instead.";
     };
     
     return number;
-}(window.TOONTALK));
+}());
 
 window.TOONTALK.number_backside = 
-(function (TT) {
-    "use strict";
+(function () {
     
     return {
         create: function (number) {
@@ -826,13 +926,52 @@ window.TOONTALK.number_backside =
             var minus = TT.UTILITIES.create_radio_button("operator", "-", "toontalk-minus-radio-button", "&minus;", "Subtract me from what I'm dropped on.");
             var multiply = TT.UTILITIES.create_radio_button("operator", "*", "toontalk-times-radio-button", "&times;", "Multiply me with what I'm dropped on.");
             var divide = TT.UTILITIES.create_radio_button("operator", "/", "toontalk-dividie-radio-button", "&divide;", "Divide me into what I'm dropped on.");
-            var power = TT.UTILITIES.create_radio_button("operator", "^", "toontalk-power-radio-button", "Integer power", "Use me as the number of times to multiply together what I'm dropped on.");
+//             var power = TT.UTILITIES.create_radio_button("operator", "^", "toontalk-power-radio-button", "Integer power", "Use me as the number of times to multiply together what I'm dropped on.");
             var update_value = function (event) {
                 var numerator = numerator_input.button.value.trim();
                 var denominator = denominator_input.button.value.trim();
                 var string, first_class_name;
+                var valid_integer = function (string, ator, negative_not_allowed) {
+                    var without_sign;
+                    if (string.length < 1) {
+                        return {message: "Empty " + ator + " treated as 1.",
+                                replacement: "1"};
+                    }
+                    if (string.charAt(0) === '-') {
+                        if (negative_not_allowed) {
+                            return {message: "'-' only allowed as the first character of the " + ator + ". Ignoring extra '-'s.",
+                                    replacement: valid_integer(string, ator).replacement};
+                        }
+                        without_sign = valid_integer(string.substring(1, string.length), ator, true);
+                        if (!without_sign.message) {
+                            without_sign.replacement = '-' + without_sign.replacement;
+                        }
+                        return without_sign;
+                    }
+                    if (/^\d+$/.test(string)) {
+                       return {replacement: string};
+                    }
+                    return {message: "The " + ator + " can only contain digits. " + "'" + string + "' doesn't make sense.",
+                            replacement: string.replace(/[^\d]*/g, "")};
+                };
+                var validity;
                 if (numerator === current_numerator && denominator === current_denominator) {
                     return;
+                }
+                validity = valid_integer(numerator, "numerator");
+                if (validity.message) {
+                    TT.UTILITIES.display_message(validity.message);
+                    numerator = validity.replacement;
+                }
+                if (denominator === "0") {
+                    TT.UTILITIES.display_message("It doesn't make sense for a fraction to have a denominator of 0. Resetting it to 1.");
+                    denominator = "1";
+                } else {
+                    validity = valid_integer(denominator, "denominator");
+                    if (validity.message) {
+                        TT.UTILITIES.display_message(validity.message);
+                        denominator = validity.replacement;
+                    }
                 }
                 number.set_from_values(numerator, denominator);
                 current_numerator   = numerator;
@@ -840,16 +979,18 @@ window.TOONTALK.number_backside =
                 if (TT.robot.in_training) {
                     first_class_name = event.srcElement.className.split(" ", 1)[0];
                     if (first_class_name === "toontalk-denominator-input") {
-                        string = "change value of the denominator to " + denominator + " of the number";
+                        TT.robot.in_training.edited(number, {setter_name: "set_denominator",
+                                                             argument_1: denominator,
+                                                             toString: "change value of the denominator to " + denominator,
+                                                             button_selector: "." + first_class_name});
                     } else {
-                        string = "change value of the numerator to " + numerator + " of the number";
-                    }
-                    TT.robot.in_training.edited(number, {setter_name: "set_from_values",
-                                                         argument_1: numerator,
-                                                         argument_2: denominator,
-                                                         toString: string,
-                                                         button_selector: "." + first_class_name});
+                        TT.robot.in_training.edited(number, {setter_name: "set_numerator",
+                                                             argument_1: numerator,
+                                                             toString: "change value of the numerator to " + numerator,
+                                                             button_selector: "." + first_class_name});
+                    }         
                 }
+                number.rerender();
             };
             var update_format = function () {
                 var selected_button = TT.UTILITIES.selected_radio_button(decimal_format.button, mixed_number_format.button, improper_format.button, scientific_format.button);
@@ -862,9 +1003,10 @@ window.TOONTALK.number_backside =
                                                          // just use the first className to find this button later
                                                          button_selector: "." + selected_button.className.split(" ", 1)[0]});
                 }
+                number.rerender();
             };
             var update_operator = function () {
-                var selected_button = TT.UTILITIES.selected_radio_button(plus.button, minus.button, multiply.button, divide.button, power.button);
+                var selected_button = TT.UTILITIES.selected_radio_button(plus.button, minus.button, multiply.button, divide.button); // , power.button
                 var operator = selected_button.value;
                 number.set_operator(operator, true);
                 if (TT.robot.in_training) {
@@ -877,7 +1019,7 @@ window.TOONTALK.number_backside =
             };
             var number_set = TT.UTILITIES.create_horizontal_table(numerator_input.container, slash, denominator_input.container);
             var format_set = $(TT.UTILITIES.create_horizontal_table(decimal_format.container, mixed_number_format.container, improper_format.container, scientific_format.container)).buttonset().get(0);
-            var operator_set = $(TT.UTILITIES.create_horizontal_table(plus.container, minus.container, multiply.container, divide.container, power.container)).buttonset().get(0);
+            var operator_set = $(TT.UTILITIES.create_horizontal_table(plus.container, minus.container, multiply.container, divide.container)).buttonset().get(0); // , power.container)
             var advanced_settings_button = TT.backside.create_advanced_settings_button(backside, number);
             var generic_backside_update = backside.update_display;
             slash.innerHTML = "/";
@@ -926,15 +1068,15 @@ window.TOONTALK.number_backside =
                 case "/":
                 TT.UTILITIES.check_radio_button(divide);
                 break;
-                case "^":
-                TT.UTILITIES.check_radio_button(power);
-                break;
+//                 case "^":
+//                 TT.UTILITIES.check_radio_button(power);
+//                 break;
             }
             plus.button    .addEventListener('change', update_operator);
             minus.button   .addEventListener('change', update_operator);
             multiply.button.addEventListener('change', update_operator);
             divide.button  .addEventListener('change', update_operator);
-            power.button   .addEventListener('change', update_operator);
+//             power.button   .addEventListener('change', update_operator);
             backside.update_display = function () {
                 $(numerator_input.button).val(number.numerator_string());
                 $(denominator_input.button).val(number.denominator_string());
@@ -949,4 +1091,315 @@ window.TOONTALK.number_backside =
         }
 
     };
+}());
+
+window.TOONTALK.number.function = 
+(function () {
+    
+    var process_message = function (message, compute_response, event, robot) {
+        var box_size, bird, response;
+        if (!message.is_of_type('box')) {
+            TT.UTILITIES.display_message("Function birds can only respond to boxes. One was given " + TT.UTILITIES.add_a_or_an(message.get_type_name()));
+            return;
+        }
+        box_size = message.get_size();
+        if (box_size < 1) {
+            TT.UTILITIES.display_message("Function birds can only respond to boxes with holes.");
+            return;
+        }
+        bird = message.get_hole_contents(0);
+        if (!bird) {
+            TT.UTILITIES.display_message("Function birds can only respond to boxes with something in the first hole.");
+            return;
+        }
+        if (!bird.is_of_type('bird')) {
+            TT.UTILITIES.display_message("Function birds can only respond to boxes with a bird in the first hole. The first hole contains " + TT.UTILITIES.add_a_or_an(bird.get_type_name() + "."));
+            return;
+        }
+        response = compute_response(bird, box_size);
+        if (response) {
+            // following should not pass event through since otherwise it is recorded as if robot being trained did this
+            bird.widget_dropped_on_me(response, false, undefined, robot, true);
+        }
+        message.remove();
+        return response;
+    };
+    var number_check = function (widget, function_name, index) {
+        if (widget.is_of_type('number')) {
+            return true;
+        }
+        TT.UTILITIES.display_message("Birds for the " + function_name + " function can only respond to boxes with a number in the " + TT.UTILITIES.ordinal(index) + " hole. The " + TT.UTILITIES.ordinal(index) + "hole contains " + TT.UTILITIES.add_a_or_an(widget.get_type_name() + "."));
+        return false;
+    };
+    var n_ary_widget_function = function (message, zero_ary_value_function, binary_operation, function_name, event, robot) { 
+        // binary_operation is a function of two widgets that updates the first
+        var compute_response = function (bird, box_size) {
+            var next_widget, index, response;
+            if (box_size === 1) {
+                return zero_ary_value_function();
+            }
+            index = 1;
+            response =  message.get_hole_contents(index);
+            if (!number_check(response, function_name, index)) {
+                return;
+            }
+            index++;
+            while (index < box_size) {
+                next_widget = message.get_hole_contents(index);
+                if (!number_check(next_widget, function_name, index)) {
+                    return;
+                }
+                binary_operation.call(response, next_widget);
+                index++;
+            }
+            return response;
+        };
+        return process_message(message, compute_response, event, robot);
+    };
+    var n_ary_function = function (message, operation, minimum_arity, function_name, event, robot) { 
+        var compute_response = function (bird, box_size) {
+            var next_widget, index, args, response;
+            if (box_size < minimum_arity+1) { // one for the bird
+                TT.UTILITIES.display_message("Birds for the " + function_name + " function can only respond to boxes with at least " + (minimum_arity+1) + " holes. Not " + box_size + " holes.");
+                return;
+            }
+            args = [];
+            index = 1;
+            while (index < box_size) {
+                next_widget = message.get_hole_contents(index);
+                if (!number_check(next_widget, function_name, index)) {
+                    return;
+                }
+                args.push(next_widget.get_value());
+                index++;
+            }
+            return operation.apply(null, args);
+        };
+        return process_message(message, compute_response, event, robot);
+    };
+    // TODO: move this to UTILITIES
+    var map_arguments = function (args, fun) {
+        var size = args.length;
+        var index = 0;
+        var result = [];
+        while (index < size) {
+            result.push(fun(args[index]));
+            index++;
+        }
+        return result;
+    }
+    var numeric_javascript_function_to_widget_function = function (decimal_function, toDecimal) {
+        // takes a function that returns a JavaScript number and
+        // returns a function that converts the response into a widget
+        // if toDecimal to provided it should be a function from bigrats to decimals
+        return function () {
+            var response = TT.number.ZERO();
+            response.set_value_from_decimal(decimal_function.apply(null, map_arguments(arguments, (toDecimal || bigrat.toDecimal))));
+            return response;
+        };
+    };
+    var degrees_to_decimal = function (rational_number) {
+        return bigrat.toDecimal(modulo(rational_number, THREE_HUNDRED_AND_SIXTY));
+    };
+    var radians_to_decimal = function (rational_number) {
+        return bigrat.toDecimal(modulo(rational_number, TWO_PI));
+    };
+    var bigrat_function_to_widget_function = function (bigrat_function) {
+        // takes a function that returns a bigrat and
+        // returns a function that converts the response into a widget
+        return function () {
+            return TT.number.create_from_bigrat(bigrat_function.apply(null, arguments));
+        };
+    };
+    var get_description = function () {
+        return "If you give me a box with another bird and some numbers then " + TT.UTILITIES.lower_case_first_letter(this.title) + "\nOn my back side you can change me to compute other functions.";
+    };
+    var to_string_function = function () {
+        return TT.UTILITIES.add_a_or_an("'" + this.name + "' function bird");
+    };
+    var functions = {};
+    var add_function_object = function (name, respond_to_message, title) {
+        functions[name] = {name: name,
+                           respond_to_message: function (message, event, robot) {
+                                                   var response = respond_to_message(message, event, robot);
+                                                   if (response) {
+                                                       if (robot) {
+                                                           // function created a new widget so robot needs to know about it
+                                                           // might be that it reused a widget in the message so isn't new
+                                                           robot.add_newly_created_widget_if_new(response);
+                                                       }
+                                                       if (TT.robot.in_training && event) {
+                                                           TT.robot.in_training.add_newly_created_widget_if_new(response);
+                                                       }
+                                                   }
+                                               },
+                           get_description: get_description,
+                           toString: to_string_function,
+                           title: title};
+    };
+    add_function_object('sum', 
+                        function (message, event, robot) {
+                            return n_ary_widget_function(message, TT.number.ZERO, TT.number.add, 'sum', event, robot);
+                        },
+                        "The bird will return with the sum of the numbers in the box.");
+    add_function_object('difference', 
+                        function (message, event, robot) {
+                             return n_ary_widget_function(message, TT.number.ZERO, TT.number.subtract, 'difference', event, robot);
+                        },
+                        "The bird will return with the result of subtracting the numbers in the box from the first number.");
+    add_function_object('product', 
+                        function (message, event, robot) {
+                             return n_ary_widget_function(message, TT.number.ONE, TT.number.multiply, 'product', event, robot);
+                        },
+                        "The bird will return with the product of the numbers in the box.");
+    add_function_object('division', 
+                        function (message, event, robot) {
+                             return n_ary_widget_function(message, TT.number.ONE, TT.number.divide, 'division', event, robot);
+                        },
+                        "The bird will return with the result of dividing the numbers into the first number in the box.");
+    add_function_object('modulo', 
+                        function (message, event, robot) {
+                            return n_ary_function(message, bigrat_function_to_widget_function(modulo), 2, 'modulo', event, robot);
+                        },
+                        "The bird will return with the first number modulo the second number. For positive numbers this is like the remainder after division.");
+    add_function_object('minimum', 
+                        function (message, event, robot) {
+                            return n_ary_widget_function(message, TT.number.ONE, TT.number.minimum, 'minimum', event, robot);
+                        },
+                        "The bird will return with the smallest of the numbers in the box.");
+    add_function_object('maximum', 
+                        function (message, event, robot) {
+                            return n_ary_widget_function(message, TT.number.ONE, TT.number.maximum, 'maximum', event, robot);
+                        },
+                        "The bird will return with the largest of the numbers in the box.");
+    add_function_object('absolute value', 
+                        function (message, event, robot) {
+                            var absolute_value = function (rational_number) {
+                                var number_widget = TT.number.ZERO();
+                                bigrat.abs(number_widget.get_value(), rational_number);
+                                return number_widget;
+                            }
+                            return n_ary_function(message, absolute_value, 1, 'absolute value', event, robot);
+                        },
+                        "The bird will return with the positive version of the number.");
+    add_function_object('power', 
+                        function (message, event, robot) {
+                            var power_function = function (bigrat_base, bigrat_power) {
+                                var to_numerator = bigrat.power(bigrat.create(), bigrat_base, bigrat_power[0].valueOf());
+                                var denominator_power = bigrat_power[1].valueOf();
+                                if (denominator_power === 1) {
+                                    // faster and bigrat.nthRoot doesn't respond well to 1
+                                    return to_numerator;
+                                }
+                                // reuse to_numerator since not needed anymore
+                                return bigrat.nthRoot(to_numerator, to_numerator, denominator_power);
+                            };
+                            return n_ary_function(message, bigrat_function_to_widget_function(power_function), 2, 'power', event, robot);
+                        },
+                        "The bird will return with the first number to the power of the second number.");
+    add_function_object('logarithm', 
+                        function (message, event, robot) {
+                            var logarithm = function () {
+                                if (arguments.length === 1) {
+                                    return Math.log(arguments[0]);
+                                }
+                                return Math.log(arguments[0])/Math.log(arguments[1]);
+                            };
+                            return n_ary_function(message, numeric_javascript_function_to_widget_function(logarithm), 1, 'logarithm', event, robot);
+                        },
+                        "The bird will return an approximation of the logarithm number of the first number.\n" +
+                        "If a second number is provided then it is used as the base of the logarithm.\n" +
+                        "If there is no second number the logarithm is natural (the base is e).");                    
+    add_function_object('random', 
+                        function (message, event, robot) {
+                            var random = function () {
+                                if (arguments.length === 0) {
+                                    return Math.random();
+                                }
+                                if (arguments.length === 1) {
+                                    return Math.random()*arguments[0];
+                                }
+                                return arguments[0]+Math.random()*arguments[1];
+                            };
+                            return n_ary_function(message, numeric_javascript_function_to_widget_function(random), 0, 'random', event, robot);
+                        },
+                        "The bird will return a random number between the first and second numbers.\n" +
+                        "If the second number isn't provided a number less than the first number is returned.\n" +
+                        "If no numbers are given then the bird returns with a number between 0 and 1.");           
+    add_function_object('round', 
+                        function (message, event, robot) {
+                            return n_ary_function(message, bigrat_function_to_widget_function(round), 1, 'round', event, robot);
+                        },
+                        "The bird will return the number rounded to the nearest integer.");
+    add_function_object('floor', 
+                        function (message, event, robot) {
+                            return n_ary_function(message, bigrat_function_to_widget_function(floor), 1, 'floor', event, robot);
+                        },
+                        "The bird will return the largest integer less than or equal to the number.");                       
+    add_function_object('ceiling', 
+                        function (message, event, robot) {
+                            return n_ary_function(message, bigrat_function_to_widget_function(ceiling), 1, 'ceiling', event, robot);
+                        },
+                        "The bird will return the smallest integer greater than or equal to the number.");
+    add_function_object('integer and fraction parts', 
+                        function (message, event, robot) {
+                            return n_ary_function(message, box_with_integer_and_fraction, 1, 'integer and fraction parts');
+                        },
+                        "The bird will return with a box containing the integer part and the fraction.");
+    add_function_object('sine', 
+                        function (message, event, robot) {
+                            var sin = function (degrees) {
+                                         return Math.sin(degrees/RADIAN);
+                                      };
+                            return n_ary_function(message, numeric_javascript_function_to_widget_function(sin, degrees_to_decimal), 1, 'sine', event, robot);
+                        },
+                        "The bird will return with an approximation of the sine of the number (in degrees).");                  
+    add_function_object('cosine', 
+                        function (message, event, robot) {
+                            var cos = function (degrees) {
+                                         return Math.cos(degrees/RADIAN);
+                                      };
+                            return n_ary_function(message, numeric_javascript_function_to_widget_function(cos, degrees_to_decimal), 1, 'cosine', event, robot);
+                        },
+                        "The bird will return with an approximation of the cosine of the number (in degrees).");
+    add_function_object('arc tangent', 
+                        function (message, event, robot) {
+                            var atan_in_degrees = function (x) {
+                                return RADIAN*Math.atan(x);
+                            };
+                            return n_ary_function(message, numeric_javascript_function_to_widget_function(atan_in_degrees), 1, 'arc tangent', event, robot);
+                        },
+                        "The bird will return with an approximation of the arc tangent (in degrees) of the number.");
+    add_function_object('arc tangent of y and x', 
+                        function (message, event, robot) {
+                            var atan_in_degrees = function (x, y) {
+                                return RADIAN*Math.atan2(x, y);
+                            };
+                            return n_ary_function(message, numeric_javascript_function_to_widget_function(atan_in_degrees), 2, 'arc tangent of y and x', event, robot);
+                        },
+                        "The bird will return with an approximation of the arc tangent (in degrees) of the point where the first number is the y coordinate and the second one is the x.");
+    add_function_object('sine (in radians)', 
+                        function (message, event, robot) {
+                            return n_ary_function(message, numeric_javascript_function_to_widget_function(Math.sin, radians_to_decimal), 1, 'sine (in radians)', event, robot);
+                        },
+                        "The bird will return with an approximation of the sine of the number (in radians).");                  
+    add_function_object('cosine (in radians)', 
+                        function (message, event, robot) {
+                            return n_ary_function(message, numeric_javascript_function_to_widget_function(Math.cos, radians_to_decimal), 1, 'cosine (in radians)', event, robot);
+                        },
+                        "The bird will return with an approximation of the cosine of the number (in radians).");
+    add_function_object('arc tangent (in radians)', 
+                        function (message, event, robot) {
+                            return n_ary_function(message, numeric_javascript_function_to_widget_function(Math.atan), 1, 'arc tangent (in radians)', event, robot);
+                        },
+                        "The bird will return with an approximation of the arc tangent (in radians) of the number.");
+    add_function_object('arc tangent of y and x (in radians)', 
+                        function (message, event, robot) {
+                            return n_ary_function(message, numeric_javascript_function_to_widget_function(Math.atan2), 2, 'arc tangent of y and x (in radians)', event, robot);
+                        },
+                        "The bird will return with an approximation of the arc tangent (in radians) of the point where the first number is the y coordinate and the second one is the x.");
+
+    return functions;
+}());
+
 }(window.TOONTALK));

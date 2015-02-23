@@ -30,6 +30,9 @@ window.TOONTALK.robot_action =
                  thing_in_hand = robot.get_thing_in_hand();
                  if (thing_in_hand) {
                      if (thing_in_hand.drop_on) {
+                         if (TT.debugging && thing_in_hand === target) {
+                             console.error("Dropping something on itself!");
+                         }
                          // TODO: update this when robots can drop backsides as well
                          thing_in_hand.drop_on(target, false, undefined, robot);
                          robot.set_thing_in_hand(undefined);
@@ -37,11 +40,13 @@ window.TOONTALK.robot_action =
                              target.render();
                          }
                          if (thing_in_hand.robot_waiting_before_next_step === robot) {
-                            // NOTE thing_in_hand needs to call robot.run_next_step();
-                            if (!additional_info || !additional_info.running_watched) {
-                                thing_in_hand.robot_waiting_before_next_step = undefined;
-                            }
-                            return false;
+                             // NOTE thing_in_hand needs to call robot.run_next_step();
+//                              console.log("Expecting " + thing_in_hand + " to run_next_step");
+                             if (!additional_info || !additional_info.running_watched) {
+                                 thing_in_hand.robot_waiting_before_next_step = undefined;
+//                                  console.log("robot_waiting_before_next_step reset for " + thing_in_hand + " in drop it on -- returning false");
+                             }
+                             return false;
                          }
                          return true;
                      }
@@ -83,7 +88,8 @@ window.TOONTALK.robot_action =
                  widget_frontside_element = widget.get_frontside_element(true);
                  context_frontside_position = $(context.get_frontside_element()).position();
                  // need to test the following rewrite:
-                 top_level_element = $(context.get_frontside_element()).closest(".toontalk-top-level-backside").get(0);
+                 top_level_element = $(context.get_frontside_element()).closest(".toontalk-top-level-backside").get(0) ||
+                                     $(widget_frontside_element).closest(".toontalk-top-level-backside").get(0);
                  $(widget_frontside_element).css({left: context_frontside_position.left,
                                                   top:  context_frontside_position.top});
                  top_level_element.appendChild(widget_frontside_element);
@@ -91,6 +97,9 @@ window.TOONTALK.robot_action =
                  widget.animate_to_element(top_level_element);
              }
              return true;
+         },
+         "add a new widget to the work space": function (widget, context, top_level_context, robot, additional_info) {
+             robot.add_to_top_level_backside(widget);
          }
     };
     var pick_up_a_copy_animation = function (widget, context, top_level_context, robot, continuation) {
@@ -144,12 +153,15 @@ window.TOONTALK.robot_action =
             move_robot_animation(widget, context, top_level_context, robot, continuation);
             return;
         }
+        if (TT.debugging && thing_in_hand === widget) {
+            console.error("Dropping something on itself!");
+        }
         $thing_in_hand_frontside_element = $(thing_in_hand.get_frontside_element());
         adjust_dropped_location_continuation = function () {
             var thing_in_hand_position = $thing_in_hand_frontside_element.offset();
             $thing_in_hand_frontside_element.removeClass("toontalk-held-by-robot");
             continuation();
-            if (thing_in_hand.drop_on) {
+            if (thing_in_hand.drop_on) { 
                 // need to see it before actions such as Bammer take place
                 $(robot.get_frontside_element()).closest(".toontalk-top-level-backside").append($thing_in_hand_frontside_element.get(0));
 //                 if (thing_in_hand_position.left === 0 && thing_in_hand_position.top === 0) {
@@ -161,7 +173,9 @@ window.TOONTALK.robot_action =
                 // and we don't want to see it in the robot's hand
                 if (thing_in_hand.robot_waiting_before_next_step === robot) {
                     // NOTE thing_in_hand needs to call robot.run_next_step();
-                    thing_in_hand.robot_waiting_before_next_step = undefined;
+//                     console.log("Expecting " + thing_in_hand + " to run_next_step");
+//                     thing_in_hand.robot_waiting_before_next_step = undefined;
+//                     console.log("robot_waiting_before_next_step reset for " + thing_in_hand + " in adjust_dropped_location_continuation");
                 } else {
                     // e.g., a nest may take some time because the egg hatches
                     // but the robot is still holding it   
@@ -188,22 +202,25 @@ window.TOONTALK.robot_action =
         var backside_element = widget.get_backside_element(true);
         return $(backside_element).find(class_name_selector).get(0);
     };
-    var button_use_animation = function (widget, context, top_level_context, robot, continuation, class_name_selector) {
+    var button_use_animation = function (widget, context, top_level_context, robot, continuation, class_name_selector, additional_info) {
         var button_element = find_backside_element(widget, class_name_selector);
         var robot_frontside_element = robot.get_frontside_element();
         var button_visible = button_element && $(button_element).is(":visible");
         var new_continuation = function () {
             continuation();
             $(button_element).addClass("ui-state-active");
+            if (class_name_selector === ".toontalk-select-function" || class_name_selector === ".toontalk-box-size-input") {
+                button_element.value = additional_info.argument_1;
+            }
             setTimeout(function () {
-                    $(button_element).removeClass("ui-state-active");
-                    if (!button_visible && widget.get_backside()) {
-                        // restore things so button is hidden
-                        widget.get_backside().hide_backside();
-                    }
-                    robot.run_next_step();
-                },
-                500);
+                           $(button_element).removeClass("ui-state-active");
+                           if (!button_visible && widget.get_backside()) {
+                               // restore things so button is hidden
+                               widget.get_backside().hide_backside();
+                           }
+                           robot.run_next_step();
+                      },
+                      500);
         };
         var animation_continuation = function () {
             // robots move at 1/4 pixel per millisecond for clarity
@@ -218,9 +235,9 @@ window.TOONTALK.robot_action =
     var tool_use_animation = function (widget, context, top_level_context, robot, continuation, tool_css_class) {
         var robot_frontside_element = robot.get_frontside_element();
         var new_continuation = function () {
-            continuation();
             robot.carrying_tool = undefined;
             robot.update_display(); // to stop displaying tool
+            continuation();
             robot.run_next_step();
         };
         robot.carrying_tool = tool_css_class;
@@ -255,7 +272,7 @@ window.TOONTALK.robot_action =
             }
             continuation();
         };
-        button_use_animation(widget, context, top_level_context, robot, new_continuation, additional_info.button_selector);
+        button_use_animation(widget, context, top_level_context, robot, new_continuation, additional_info.button_selector, additional_info);
     };
     var watched_run_functions = 
         {"copy":                 copy_animation,
@@ -270,7 +287,12 @@ window.TOONTALK.robot_action =
               // do nothing -- this action is only needed if unwatched
               continuation();
               robot.run_next_step();
-         } 
+         },
+         "add a new widget to the work space": function (widget, context, top_level_context, robot, continuation) {
+             // TODO: animate the button push that created the widget
+             continuation();
+             robot.run_next_step();
+         }
     };
 
     TT.creators_from_json["robot_action"] = function (json, additional_info) {
@@ -306,7 +328,13 @@ window.TOONTALK.robot_action =
                     TT.UTILITIES.report_internal_error("Unable to dereference path: " + TT.path.toString(path) + " in context: " + context.toString());
                     return false;
                 }
-//              console.log("running " + this + " of robot#" + robot.debug_id + " on " + referenced.debug_id);
+                if (referenced.wait_until_this_nest_receives_something) {         
+                     referenced.wait_until_this_nest_receives_something.run_when_non_empty(
+                        function () {
+                                        this.run_unwatched(context, top_level_context, robot);
+                                    }.bind(this));
+                    return;
+                }
                 if (unwatched_run_function(referenced, context, top_level_context, robot, additional_info)) {
                     robot.run_next_step();
                 } // else robot will stop due to the error
@@ -328,13 +356,31 @@ window.TOONTALK.robot_action =
                     TT.UTILITIES.report_internal_error("Unable to dereference the path: " + TT.path.toString(path) + " in context: " + context.toString());
                     return;
                 }
+                if (referenced.wait_until_this_nest_receives_something) {
+                    referenced.wait_until_this_nest_receives_something.run_when_non_empty(
+                        function () {
+                            robot.set_waiting(false);
+                            this.run_watched(context, top_level_context, robot);
+                        }.bind(this));
+                    robot.set_waiting(true);
+                    return;
+                }
                 referenced.set_visible(true);
                 watched_run_function(referenced, context, top_level_context, robot, continuation, additional_info);
             };
-            new_action.toString = function () {
-                // following is broken but not clear what the intent was -- perhaps sometimes additional_info has a better action description?
-//                 var action = additional_info && additional_info.toString ? additional_info.toString : action_name;
-                return action_name + " " + TT.path.toString(path);
+            new_action.toString = function (toString_info) {
+                var suffix = "";
+                if (action_name === "add a new widget to the work space") {
+                    return action_name.replace("a new widget", TT.path.toString(path));
+                }
+                if (action_name === "add to the top-level backside") {
+                    // is used for internal bookkeepping shouldn't be user visible
+                    return "";
+                }
+                if (action_name === 'edit') {
+                    suffix = " (" + additional_info.toString + ")";
+                }
+                return action_name + " " + TT.path.toString(path, toString_info) + suffix;
             };
             new_action.get_json = function (json_history) {
                 return {type: "robot_action",

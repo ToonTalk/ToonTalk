@@ -63,13 +63,17 @@ window.TOONTALK.scale = (function (TT) {
             var left_contents  = this.get_hole_contents(0);
             var right_contents = this.get_hole_contents(1); 
             var hole_index;
+            if (dropped.dropped_on_other) {
+                // e.g. so egg can hatch from nest drop
+                dropped.dropped_on_other(this, false, event, robot);
+            }
             if (left_contents && !right_contents) {
-                this.set_hole(1, dropped);
+                this.get_hole(1).widget_dropped_on_me(dropped, is_backside, event, robot);
                 return true;
             }
             if (!left_contents && (right_contents || !event)) {
                 // if a robot drops a scale on a scale with empty pans it goes in left pan
-                this.set_hole(0, dropped);
+                this.get_hole(0).widget_dropped_on_me(dropped, is_backside, event, robot);
                 return true;
             }
             hole_index = this.which_hole(event, false);
@@ -89,7 +93,7 @@ window.TOONTALK.scale = (function (TT) {
                 }
             }
             // hole was empty so fill it
-            this.set_hole(hole_index, dropped, event); 
+            this.get_hole(hole_index).widget_dropped_on_me(dropped, is_backside, event, robot); 
             return true;
         };
         new_scale.which_hole = function (point, or_entire_thing) {
@@ -220,17 +224,21 @@ window.TOONTALK.scale = (function (TT) {
             // do standard behaviour -- not what boxes do
             TT.DISPLAY_UPDATES.pending_update(this);
         };
-        new_scale.get_type_name = function () {
+        new_scale.get_type_name = function (plural) {
+            if (plural) {
+                return "scales";
+            }
             return 'scale';
         };
         new_scale.get_help_URL = function () {
             return "docs/manual/scales.html";
         };
         new_scale.toString = function () {
-            var left_contents  = this.get_hole(0); 
-            var right_contents = this.get_hole(1);
+            var left_contents  = this.get_hole_contents(0); 
+            var right_contents = this.get_hole_contents(1);
+            var state = this.get_state();
             var description, left_pan, right_pan;
-            switch (this.get_state()) {
+            switch (state) {
                 case -1:
                 description = "scale leaning to the right";
                 break;
@@ -242,6 +250,9 @@ window.TOONTALK.scale = (function (TT) {
                 break;
                 default:
                 description = "unbalanced scale";
+                if (!left_pan && !right_pan) {
+                    return description;
+                }
             }
             if (left_contents) {
                 left_pan = "contains " + TT.UTILITIES.add_a_or_an(left_contents.get_full_description());
@@ -345,6 +356,10 @@ window.TOONTALK.scale = (function (TT) {
                         "The " + right_contents + " is less than the " + left_contents + "."][state+1];
             }            
         };
+        if (TT.debugging) {
+            new_scale.debug_string = new_scale.toString();
+            new_scale.debug_id = TT.UTILITIES.generate_unique_id();
+        }
         return new_scale;
     };
 

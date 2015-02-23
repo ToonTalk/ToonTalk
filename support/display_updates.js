@@ -9,6 +9,7 @@ window.TOONTALK.DISPLAY_UPDATES =
     "use strict";
     // backsides, frontsides, and widgets (typically both sides) can be 'dirty'
     var pending_updates = [];
+//     var current_update;
     var time_of_last_update = 0;
     return {
         pending_update: function (x) {
@@ -19,8 +20,9 @@ window.TOONTALK.DISPLAY_UPDATES =
                 // already scheduled to be rendered
                 return;
             }
-//             if (TT.debugging && x.visible && !x.visible()) {
-//                 TT.UTILITIES.report_internal_error(x + " is invisible and yet is pending a display update");
+//             if (current_update && current_update !== x && x.has_ancestor && x.has_ancestor(current_update)) {
+                // is being called recursively by the display of decendant so ignore it
+//                 return;
 //             }
             pending_updates.push(x);
         },
@@ -41,6 +43,10 @@ window.TOONTALK.DISPLAY_UPDATES =
             updates.forEach(function (pending_update) {
                 var frontside_element = pending_update.get_frontside_element && pending_update.get_frontside_element();
                 var $parent_side_element, z_index, parent_z_index;
+//                 if (!(current_update && pending_update.has_ancestor && pending_update.has_ancestor(current_update))) {
+//                     // current_update is the current TOP-LEVEL widget - this ignores its descendants
+//                     current_update = pending_update;
+//                 }
                 pending_update.update_display();
                 // ensure that children have higher z-index than parent
                 $parent_side_element = $(frontside_element).parent().closest(".toontalk-side");

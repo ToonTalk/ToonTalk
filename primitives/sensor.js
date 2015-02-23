@@ -23,7 +23,7 @@ window.TOONTALK.sensor = (function (TT) {
     
     sensor.create = function (event_name, attribute, description, previous_contents, active, widget) {
         // widget is undefined when the event_name is appropriate to associate with window
-        var new_sensor = TT.nest.create(description, previous_contents, undefined, "sensor");
+        var new_sensor = TT.nest.create(description, previous_contents, "sensor");
         var nest_get_json = new_sensor.get_json;
         var nest_update_display = new_sensor.update_display;
         var nest_copy = new_sensor.copy;
@@ -103,7 +103,10 @@ window.TOONTALK.sensor = (function (TT) {
             }
             $frontside_element.removeClass("toontalk-empty-nest");
         }
-        new_sensor.get_type_name = function () {
+        new_sensor.get_type_name = function (plural) {
+            if (plural) {
+                return "sensors";
+            }
             return 'sensor';
         };
         new_sensor.get_help_URL = function () {

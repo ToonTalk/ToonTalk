@@ -14,6 +14,10 @@ window.TOONTALK.path =
         return TT.path.to_entire_context();
     };
 
+    TT.creators_from_json["path.to_widget_on_nest"] = function () {
+        return TT.path.to_widget_on_nest();
+    };
+    
     TT.creators_from_json["path.top_level_backside"] = function () {
         return TT.path.top_level_backside;
     };
@@ -48,6 +52,10 @@ window.TOONTALK.path =
                     return TT.element.create_attribute_path(widget, robot);
                 }
                 // if context is undefined something is wrong much earlier
+                if (TT.debugging && !context) {
+                    TT.UTILITIES.report_internal_error("No context to compute the path");
+                    return;
+                }
                 if (context.get_path_to) {
                     sub_path = context.get_path_to(widget, robot);
                     if (sub_path) {
@@ -105,7 +113,7 @@ window.TOONTALK.path =
             if (path) {
                 if (path.dereference) {
                     dereferenced = path.dereference(context, top_level_context, robot);
-                } else {
+                } else if (context.dereference) {
                     dereferenced = context.dereference(path, top_level_context, robot);
                 }
             } else {
@@ -128,16 +136,16 @@ window.TOONTALK.path =
             }
             return referenced;
         },
-        toString: function (a_path) {
+        toString: function (a_path, toString_info) {
             var sub_path_string;
             if (a_path.next) {
-                sub_path_string = TT.path.toString(a_path.next);
+                sub_path_string = TT.path.toString(a_path.next, toString_info);
                 if (sub_path_string[sub_path_string.length-1] !== ' ') {
                     sub_path_string += ' ';
                 }
-                return TT.path.toString(a_path.next) + "of " + a_path.toString();
+                return TT.path.toString(a_path.next, toString_info).trim() + " of " + a_path.toString(toString_info);
             } else {
-                return a_path.toString();
+                return a_path.toString(toString_info);
             }
         },
         get_json: function (path, json_history) {
@@ -163,13 +171,28 @@ window.TOONTALK.path =
             return {dereference: function (context, top_level_context, robot) {
                         return TT.path.continue_dereferencing_path(this, context, top_level_context, robot);
                     },
-                    toString: function () {
+                    toString: function (additional_info) {
+                        if (additional_info && additional_info.robot) {
+                            return additional_info.robot.get_top_level_context_description();
+                        }
                         return "what he's working on";
                     },
                     get_json: function () {
                         return {type: "path.to_entire_context"};
                     }
             };
+        },
+        to_widget_on_nest: function () {
+           return {dereference: function (context, top_level_context, robot) {
+                        return TT.path.continue_dereferencing_path(this, context, top_level_context, robot);
+                    },
+                    toString: function () {
+                        return "what is on the nest";
+                    },
+                    get_json: function () {
+                        return {type: "path.to_widget_on_nest"};
+                    }
+            }; 
         },
         get_path_to_resource: function (widget, json_history) {
             // ignore the side information and just use the widget

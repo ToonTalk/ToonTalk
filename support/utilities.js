@@ -52,6 +52,9 @@ window.TOONTALK.UTILITIES =
             TT.UTILITIES.report_internal_error("Possible bug that " + dragee + " doesn't have a known owner.");
             dragee = $(element);
         }
+        if (widget.save_dimensions && (!widget.get_parent_of_frontside() || widget.get_parent_of_frontside().get_widget().is_of_type('top-level'))) {
+            widget.save_dimensions();
+        }
         widget.being_dragged = true;
         bounding_rectangle = dragee.get(0).getBoundingClientRect();
         is_resource = dragee.is(".toontalk-top-level-resource");
@@ -137,7 +140,8 @@ window.TOONTALK.UTILITIES =
             // TODO: trigger save of this page?
         };
         var $source, source_widget, $target, target_widget, drag_x_offset, drag_y_offset, target_position, 
-            new_target, source_is_backside, $container, container, width, height, i, page_x, page_y;
+            new_target, source_is_backside, $container, container, width, height, i, page_x, page_y,
+            source_widget_saved_width, source_widget_saved_height;
         if (!json_object && dragee) {
             json_object = dragee.data("json");
         }
@@ -186,7 +190,7 @@ window.TOONTALK.UTILITIES =
             return;
         } else {
             // closest includes 'self'
-            $target = $(element).closest(".toontalk-side");
+            $target = $(event.target).closest(".toontalk-side");
         }
         if ($target.length === 0) {
             return;
@@ -248,7 +252,11 @@ window.TOONTALK.UTILITIES =
                 if (container) {
                     if (!source_is_backside && source_widget.get_infinite_stack && source_widget.get_infinite_stack()) {
                         // leave the source there but create a copy
+                        source_widget_saved_width  = source_widget.saved_width;
+                        source_widget_saved_height = source_widget.saved_height;
                         source_widget = source_widget.copy();
+                        source_widget.saved_width  = source_widget_saved_width;
+                        source_widget.saved_height = source_widget_saved_height;
                         width  = $source.width();
                         height = $source.height();
                         $source = $(source_widget.get_frontside_element(true));
@@ -569,7 +577,14 @@ window.TOONTALK.UTILITIES =
                 console.log(error);
             }
         });
-        use_custom_tooltip($(document));
+        // add tooltips to widget sides or tools
+        setTimeout(function () {
+                      // delay until DOM settles down
+                      $("[title]").each(
+                           function () {
+                               TT.UTILITIES.use_custom_tooltip(this);
+                           });
+                   });
         TT.TRANSLATION_ENABLED = TT.UTILITIES.get_current_url_boolean_parameter("translate", false);
         if (TT.TRANSLATION_ENABLED) {
             $("a").each(function (index, element) {
@@ -587,28 +602,6 @@ window.TOONTALK.UTILITIES =
             $("#google_translate_element").remove();
         }
         TT.UTILITIES.add_test_all_button();
-    };
-    var use_custom_tooltip = function ($element) {
-        // nicer looking tool tips
-        // customization to crude talk balloons thanks to http://jsfiddle.net/pragneshkaria/Qv6L2/49/
-        $element.tooltip(
-            {position: {
-                 my: "center bottom-20",
-                 at: "center top",
-                 using: function (position, feedback) {
-                     $(this).css(position);
-                     $("<div>").addClass("toontalk-arrow")
-                               .addClass(feedback.vertical)
-                               .addClass(feedback.horizontal)
-                               .appendTo(this);
-                 }},
-            open: function (event, ui) {
-                      setTimeout(function () {
-                                     $(ui.tooltip).hide();
-                      }, 
-                      ui.tooltip.get(0).textContent.length * (TT.MAXIMUM_TOOLTIP_DURATION_PER_CHARACTER || 100));
-                  }
-           });
     };
     var load_script = function (url) {
         var script = document.createElement('script');
@@ -975,6 +968,7 @@ window.TOONTALK.UTILITIES =
             var is_backside = json.view.backside;
             var backside_widgets = widget.get_backside_widgets();
             var type_description = widget.get_type_name();
+            var title = widget.toString();
             if (type_description === 'top-level') {
                 if (is_backside) {
                     type_description = "a work area containing ";
@@ -1007,6 +1001,7 @@ window.TOONTALK.UTILITIES =
                 }
             }
             return div_json + "\nThis will be replaced by " + type_description + ".\n" +
+                              (title ? title + "\n" : "") +
                               div_hidden + JSON.stringify(json, null, '  ') + div_close +
                               div_close;
     },
@@ -1248,6 +1243,7 @@ window.TOONTALK.UTILITIES =
                                     }
                                     if (stored_json_string) {
                                         json = JSON.parse(stored_json_string);
+                                        // re-create the top-level widget with the additional info stored here:
                                         widget = TT.UTILITIES.create_from_json(json);
                                     }
                                 }
@@ -1368,14 +1364,8 @@ window.TOONTALK.UTILITIES =
             return element_found;
         },
         
-        set_position_is_absolute: function (element, absolute, event) {
+        set_position_is_absolute: function (element, absolute) {
             var position, left, top, ancestor;
-            if (event) {
-                // either DOM or JQuery event
-                if (event) {
-                    event = event;
-                }
-            }
             if (absolute) {
                 position = $(element).position();
                 left = position.left;
@@ -1388,21 +1378,97 @@ window.TOONTALK.UTILITIES =
             }
         },
         
-        cardinal: function (n) {
+        ordinal: function (n) {
+            n++; // switch from zero-indexing to one-indexing
             switch (n) {
-                case 0:
-                return "first";
                 case 1:
-                return "second";
+                return "first";
                 case 2:
+                return "second";
+                case 3:
                 return "third";
+                case 4:
+                return "fourth";
+                case 5:
+                return "fifth";
+                case 6:
+                return "sixth";
+                case 7:
+                return "seventh";
+                case 8:
+                return "eighth";
+                case 9:
+                return "ninth";
+                case 10:
+                return "tenth";
                 default:
+                if (n%10 === 1) {
+                    return n + "st";
+                }
+                if (n%10 === 2) {
+                    return n + "nd";
+                }
+                if (n%10 === 3) {
+                    return n + "rd";
+                }
                 return n + "th";
             }
         },
             
         on_a_nest_in_a_box: function (frontside_element) {
             return $(frontside_element).closest(".toontalk-nest").is("*") && $(frontside_element).closest(".toontalk-box").is("*");
+        },
+
+        use_custom_tooltip: function (element) {
+            // nicer looking tool tips
+            // customization to crude talk balloons thanks to http://jsfiddle.net/pragneshkaria/Qv6L2/49/
+            var $element = $(element);
+            var maximum_width_if_moved;
+            $element.tooltip(
+                {position: {
+                     my: "center bottom-20",
+                     at: "center top",
+                     using: function (position, feedback) {
+                               var element_position;
+                               if (position.top < 0) {
+                                   // too much text to fit well so JQuery puts the extra part off the top
+                                   // this moves it down but ensures it doesn't overlap with the element whose tooltip is being displayed
+                                   position.top = 0;
+                                   element_position = $element.offset();
+                                   if (element_position.left < $(window).width()/2) {
+                                       // widget is on left half of the window
+                                       position.left = element_position.left+$element.width()+10;
+                                    } else {
+                                       position.left = 0;
+                                       maximum_width_if_moved = element_position.left-40; // subtract something for borders and paddings
+                                    };
+                               }
+                               $(this).css(position);
+                               $("<div>").addClass("toontalk-arrow")
+                                         .addClass(feedback.vertical)
+                                         .addClass(feedback.horizontal)
+                                         .appendTo(this);
+                     }},
+                open: function (event, ui) {
+                          var text_length = ui.tooltip.get(0).textContent.length;
+                          var default_capacity = 400;
+                          // replace all new lines with <br> breaks
+                          ui.tooltip.get(0).innerHTML = ui.tooltip.get(0).textContent.replace(/(\r\n|\n|\r)/g, "<br>");
+                          // width is 340 by default but if more than fits then make wider
+                          if (text_length > default_capacity) {
+                              $(ui.tooltip).css({//width: (340 + 340*(text_length-default_capacity)/default_capacity),
+                                                 maxWidth: Math.min(800, maximum_width_if_moved || $(window).width()-100)});
+                          }
+    //                       if (height_adjustment) {
+    //                           $(ui.tooltip).css({maxHeight: $(ui.tooltip).height()+height_adjustment/2});
+    //                       }
+                          // auto hide after duration proportional to text_length
+                          setTimeout(function () {
+                                         $(ui.tooltip).hide();
+                                     }, 
+                                     text_length*(TT.MAXIMUM_TOOLTIP_DURATION_PER_CHARACTER || 100));
+                      }
+               });
         },
         
         add_one_shot_event_handler: function (element, event_name, maximum_wait, handler) {
@@ -1411,7 +1477,7 @@ window.TOONTALK.UTILITIES =
             var one_shot_handler = function (event) {
                 // could support any number of parameters but not needed
                 handler_run = true;
-                if (handler) {
+                if (handler) { // could it be otherwise?
                     handler();
                 }
                 element.removeEventListener(event_name, one_shot_handler);
@@ -1423,9 +1489,6 @@ window.TOONTALK.UTILITIES =
             setTimeout(
                 function () {
                     if (!handler_run) {
-//                         if (TT.debugging) {
-//                             console.log("Timed out after " + maximum_wait +"ms while waiting for " + event_name);
-//                         }
                         one_shot_handler();
                     }
                 },
@@ -1630,6 +1693,7 @@ window.TOONTALK.UTILITIES =
             text_input.addEventListener('touchstart', function () {
                 $(text_input).select();
             });
+            TT.UTILITIES.use_custom_tooltip(text_input);
             return {container: container,
                     button: text_input};
         },
@@ -1658,6 +1722,7 @@ window.TOONTALK.UTILITIES =
                 $(text_area).select();
             });
             $(label_element).addClass("ui-widget");
+            TT.UTILITIES.use_custom_tooltip(text_area);
             return {container: container,
                     button: text_area};
         },
@@ -1679,10 +1744,45 @@ window.TOONTALK.UTILITIES =
             // the following breaks the change listener
             // used to work with use htmlFor to connect label and input
             $(input).button();
+            TT.UTILITIES.use_custom_tooltip(input);
 //             $(label_element).button();
             return {container: container,
                     button: input,
                     label: label_element};
+        },
+
+        create_select_menu: function (name, items, class_name, label, title, item_titles) {
+            var container = document.createElement("div");
+            var select = document.createElement("select");
+            var label_element = document.createElement("label");
+            select.className = class_name;
+            select.name = name;
+            select.id = TT.UTILITIES.generate_unique_id();
+            label_element.innerHTML = label;
+            label_element.htmlFor = select.id;
+            container.appendChild(label_element);
+            container.appendChild(select);
+            container.title = title;
+            items.forEach(function (item, index) {
+                var option = document.createElement('option');
+                option.value = item;
+                option.innerHTML = item;
+                if (item_titles && item_titles[index]) {
+                    option.title = item_titles[index];
+                    TT.UTILITIES.use_custom_tooltip(option);
+                }
+                select.appendChild(option);
+            });
+            // following produces a select menu that works when added to document.body but not the backside of a widget
+            // looks OK but nothing pops up when clicked
+//             setTimeout(function () {
+//                 $(select).selectmenu({width: 200});
+//             });
+            $(select).addClass("ui-widget");
+            TT.UTILITIES.use_custom_tooltip(select);
+            return {container: container,
+                    menu:      select,
+                    label:     label_element};
         },
         
         create_check_box: function (value, class_name, label, title) {
@@ -1699,7 +1799,7 @@ window.TOONTALK.UTILITIES =
             container.appendChild(input);
             container.appendChild(label_element);
             container.title = title;
-//             $(input).button(); // commented out since looked bad
+            TT.UTILITIES.use_custom_tooltip(input);
             return {container: container,
                     button: input,
                     label: label_element};
@@ -1813,17 +1913,23 @@ window.TOONTALK.UTILITIES =
             elements.forEach(function (element) {
                 tabs.appendChild(element);
             });
-            $(tabs).tabs(); // use JQuery UI widget
+            // use JQuery UI widget for tabs
+            $(tabs).tabs();
             return tabs;
         },
 
-        create_file_data_table: function (files_data, in_cloud, button_class) {
-            var $table = $('<table cellpadding="0" cellspacing="0" border="0" class="display" id="example"></table>'); 
-            // setTimeout is necessary -- otherwise missing multiple page support and other data table features
-            setTimeout(function () {
-                $table.DataTable({
+        create_file_data_table: function (extra_classes) {
+            var $table = $('<table cellpadding="0" cellspacing="0" border="0"></table>');
+            if (extra_classes) {
+                $table.addClass(extra_classes);
+            }
+            return $table.get(0);
+        },
+
+        become_file_data_table: function (table, files_data, in_cloud, button_class) {
+            $(table).DataTable({
                    data: files_data,
-                   pagingType: "full_numbers",
+                   autoWidth: false,
                    columns: [{data: 'title', 
                               title: "Name",
                               render: function (data, type, full, meta) {
@@ -1852,14 +1958,12 @@ window.TOONTALK.UTILITIES =
                               }},
                              {data: 'fileSize', 
                               title: "Size"}]});
-                 });
-            $table.addClass("toontalk-file-table");
-            return $table.get(0);
+            $(table).addClass("toontalk-file-table");
         },
 
-        create_local_files_table: function (widget) {
+        get_local_files_data: function () {
             var all_program_names = TT.UTILITIES.get_all_locally_stored_program_names();
-            var data = all_program_names.map(function (program_name) {
+            return all_program_names.map(function (program_name) {
                 var meta_data = TT.UTILITIES.get_local_storage_meta_data(program_name);
                 if (meta_data) {
                     return {title: program_name,
@@ -1868,8 +1972,16 @@ window.TOONTALK.UTILITIES =
                             fileSize:     meta_data.file_size
                             };
                 }
+                                        });
+        },
+
+        create_local_files_table: function () {
+            var data = TT.UTILITIES.get_local_files_data();
+            var table = TT.UTILITIES.create_file_data_table();
+            setTimeout(function () {
+                TT.UTILITIES.become_file_data_table(table, data, false, "toontalk-file-load-button");
             });
-            return TT.UTILITIES.create_file_data_table(data, false, "toontalk-file-load-button");
+            return table;
         },
         
         get_dragee: function () {
@@ -1907,8 +2019,12 @@ window.TOONTALK.UTILITIES =
         
         add_a_or_an: function (word, upper_case) {
             var first_character = word.charAt(0);
-            if (word.indexOf("the ") === 0) {
-                // don't generate a the box
+            if (first_character === "'" || first_character === '"') {
+                // ignoe quotes -- e.g. an 'advark' widget
+                first_character = word.charAt(1);
+            }
+            if (word.indexOf("the ") === 0 || word.indexOf("a ") === 0 || word.indexOf("an ") === 0) {
+                // don't generate a the box or an a bird
                 return word;
             }
             if ("aeiou".indexOf(first_character) < 0) {
@@ -1921,6 +2037,10 @@ window.TOONTALK.UTILITIES =
                 return "An " + word;
             }
             return "an " + word;
+        },
+
+        lower_case_first_letter: function (string) {
+            return string.charAt(0).toLowerCase() + string.slice(1);
         },
         
         maximum_string_length: function (string, maximum_length) {
@@ -2089,7 +2209,7 @@ window.TOONTALK.UTILITIES =
         },
 
         display_tooltip: function ($element) {
-            use_custom_tooltip($element);
+            TT.UTILITIES.use_custom_tooltip($element.get(0));
             $element.tooltip('open');
         },
 
@@ -2097,7 +2217,7 @@ window.TOONTALK.UTILITIES =
             // these are ToonTalk errors not user errors
             console.log(message);
             if (TT.debugging) {
-                TT.UTILITIES.display_message(message);
+                TT.UTILITIES.display_message("Error: " + message);
             }
         },
 
@@ -2189,6 +2309,10 @@ window.TOONTALK.UTILITIES =
             } else {
                 setTimeout(delayed, delay);
             }
+        },
+
+        get_first_property: function (object) {
+            return Object.keys(object)[0];
         },
 
         get_all_locally_stored_program_names: function () {

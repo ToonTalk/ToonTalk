@@ -76,6 +76,7 @@ window.TOONTALK.actions =
                         path = TT.newly_created_widgets_path.create(index);
                         return true;
                     } else if (newly_created_widget.get_path_to) {
+                        // might be a part of a newly created widget
                         sub_path = newly_created_widget.get_path_to(widget, robot);
                         if (sub_path) {
                             path = TT.newly_created_widgets_path.create(index);
@@ -88,7 +89,7 @@ window.TOONTALK.actions =
             };
             new_actions.dereference = function (index) {
                 if (TT.debugging && !newly_created_widgets[index]) {
-                    TT.UTILITIES.report_internal_error("Expected to find the " + (index+1) + "th newly created widget.");
+                    TT.UTILITIES.report_internal_error("Expected to find the " + TT.UTILITIES.ordinal(index) + " newly created widget.");
                 }
                 return newly_created_widgets[index];
             }
@@ -108,7 +109,9 @@ window.TOONTALK.actions =
                     step_number++;
                     // each step needs to call robot.run_next_step
                     step.run_unwatched(context, top_level_context, robot);
-                } else if (!robot.get_run_once()) {
+                } else if (robot.get_run_once()) {
+                    robot.set_running(false);
+                } else {
                     robot.get_first_in_team().run(context, top_level_context, queue);
                 }
             };
@@ -120,6 +123,10 @@ window.TOONTALK.actions =
             var frontside_element = robot.get_frontside_element();
             var saved_parent_element = frontside_element.parentElement;
             var restore_after_last_event = function () {
+                if (!robot.get_parent_of_frontside()) {
+                    // can happen if robot vacuumed itself up
+                    return;
+                }
                 $(frontside_element).addClass("toontalk-side-animating");
                 TT.UTILITIES.set_position_relative_to_top_level_backside($(frontside_element), robot_home);
                 // delay so there is some animation of returning 'home'
@@ -129,7 +136,9 @@ window.TOONTALK.actions =
                         saved_parent_element.appendChild(frontside_element);
                         TT.UTILITIES.set_absolute_position($(frontside_element), robot_home);
                         robot.set_animating(false);
-                        if (!robot.get_run_once()) {
+                        if (robot.get_run_once()) {
+                            robot.set_running(false);
+                        } else {
                             robot.get_first_in_team().run(context, top_level_context, queue);
                         }
                         robot.render();
@@ -203,14 +212,20 @@ window.TOONTALK.actions =
             return true;             
         },
         
-        toString: function () {
+        toString: function (toString_info) {
             var description = "";
             var steps = this.get_steps();
-            steps.forEach(function (step, index) {
-                description += step.toString();
-                if (index === steps.length-2) {
+            var step_descriptions = steps.map(function (step) {
+                return step.toString(toString_info);
+            });
+            while (step_descriptions[step_descriptions.length-1] === "") {
+                step_descriptions.pop();
+            }
+            step_descriptions.forEach(function (step_description, index) {
+                description += step_description;
+                if (index === step_descriptions.length-2) {
                     description += " and \n";
-                } else if (index < steps.length-2) {
+                } else if (index < step_descriptions.length-2) {
                     description += ", \n";
                 } else {
                     description += ".";
@@ -242,28 +257,21 @@ window.TOONTALK.newly_created_widgets_path =
             return {
                 dereference: function (context, top_level_context, robot) {
                     var widget = robot.get_body().dereference(index);
+                    var container;
                     if (this.next) {
                         // there is more to the path so compute the part of the widget referenced
                         return TT.path.dereference_path(this.next, widget, top_level_context, robot);
                     }
+                    if (this.removing_widget) {
+                        container = widget.get_parent_of_frontside();
+                        if (container && container.removed_from_container) {
+                            robot.remove_from_container(widget, container);
+                        }
+                    }
                     return widget;
                 },
                 toString: function () {
-                    var ordinal;
-                    switch (index) {
-                        case 0:
-                        ordinal = "first";
-                        break;
-                        case 1:
-                        ordinal = "second";
-                        break;
-                        case 2:
-                        ordinal = "third";
-                        break;
-                        default:
-                        ordinal = (index + 1) + "th";
-                    }
-                    return "the " + ordinal + " widget he created";
+                    return "the " + TT.UTILITIES.ordinal(index) + " widget he created";
                 },
                 get_json: function () {
                     return {type: "newly_created_widgets_path",

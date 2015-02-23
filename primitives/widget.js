@@ -56,6 +56,11 @@ window.TOONTALK.widget = (function (TT) {
                     return this.get_type_name() === type_name;
                 };
             }
+            if (!widget.is_function_nest) {
+                widget.is_function_nest = function () {
+                        return false;
+                };
+            }
             widget.is_widget = true;
             return widget;
         },
@@ -88,16 +93,21 @@ window.TOONTALK.widget = (function (TT) {
                     return frontside;
                 };
                 widget.save_dimensions = function () {
-                    var frontside_element, dimensions;
+                    var dimensions;
                     if (this.get_size_attributes) {
                         dimensions = this.get_size_attributes();
-                        this.saved_width =  dimensions.width;
-                        this.saved_height = dimensions.height;
                     } else {
-                        frontside_element = this.get_frontside_element();
-                        this.saved_width =  $(frontside_element).width();
-                        this.saved_height = $(frontside_element).height();
+                         // elements have clientWidth and clientHeight
+                         // used to use $(...).width() but that returns 0 during a drop
+                         dimensions = this.get_frontside_element();
                     }
+                    if (dimensions.clientWidth > 0) {
+                        this.saved_width  = dimensions.clientWidth;
+                    }
+                    if (dimensions.clientHeight > 0) {
+                        this.saved_height = dimensions.clientHeight;
+                    }
+                    return true;
                 };
                 widget.restore_dimensions = function () {
                     var frontside_element;
@@ -151,17 +161,35 @@ window.TOONTALK.widget = (function (TT) {
             var running = false;
             if (!widget.get_running) {
                 widget.get_running = function () {
+                    var some_backside_widgets_running = false;
+                    var backside_widgets;
+                    if (running) {
+                        // see if it is really running
+                        backside_widgets = this.get_backside_widgets();
+                        if (backside_widgets.length === 0) {
+                            running = false;
+                        } else {
+                            backside_widgets.some(function (widget_side) {
+                                                      if (widget_side.get_widget().get_running()) {
+                                                          some_backside_widgets_running = true;
+                                                          return true;
+                                                      }
+                            });
+                            running = some_backside_widgets_running;
+                        }
+                    }
                     return running;
                 };
             }
             if (!widget.set_running) {
                 widget.set_running = function (new_value, top_level_context) {
+                    var unchanged_value = (running === new_value);
                     var backside_widgets, backside_widget, backside_element;
-                    if (running === new_value && running) {
+                    if (unchanged_value && running) {
                         // even if not running some part might be running and should be turned off
                         return;
                     }
-                    backside_widgets = this.get_backside_widgets();       
+                    backside_widgets = this.get_backside_widgets();
                     running = new_value;
                     if (this.get_backside()) {
                         this.get_backside().run_status_changed(running);
@@ -184,6 +212,7 @@ window.TOONTALK.widget = (function (TT) {
                                     backside_widget.run(widget, top_level_context);
                                 } else {
                                     backside_widget.set_stopped(true);
+                                    backside_widget.set_running(false);
                                 }
                                 backside_widget.rerender();
                             }
@@ -203,16 +232,12 @@ window.TOONTALK.widget = (function (TT) {
                                 if (child.set_running) {
                                     child.set_running(running);
                                 }
-                                return true;
+                                return true; // continue to next child
                         });
                     }
-//                     backside_element = this.get_backside_element();
-//                     if (backside_element) {
-//                         $(backside_element).find(".toontalk-run-backside-button").each(function (index, element) {
-//                             TT.backside.update_run_button($(element));
-//                         });
-//                     }
-                    this.rerender();
+                    if (!unchanged_value) {
+                        this.rerender();
+                    }
                 };
             }
             return widget;
@@ -264,24 +289,22 @@ window.TOONTALK.widget = (function (TT) {
                 widget.animate_to_element = function (target_element, continuation, speed, left_offset, top_offset) {
                     var target_absolute_position = $(target_element).offset();
                     var $frontside_element = $(this.get_frontside_element());
+                    var top_level_backside = $(target_element).is(".toontalk-top-level-backside");
                     if (!target_element || !$(target_element).is(":visible")) {
                         // don't know where to go so just start doing the next thing
                         continuation();
                         return;
                     }
-                    if (!left_offset) {
+                    if (!left_offset || top_level_backside) {
                         // pick a random location completely inside the target
                         left_offset = ($(target_element).width()-$frontside_element.width())  * Math.random();
                     }
-                    if (!top_offset) {
+                    if (!top_offset || top_level_backside) {
                         top_offset = ($(target_element).height()-$frontside_element.height()) * Math.random();
                     }
                     if (target_absolute_position) {
                         target_absolute_position.left += left_offset;
                         target_absolute_position.top  += top_offset;
-                        if (TT.debugging && (target_absolute_position.left < 0 || target_absolute_position.top < 0)) {
-                            console.log("Should this include negative values? " + target_absolute_position);
-                        }
                     } else {
                         // can happen if a user picks up the target while this is running
                         target_absolute_position = {left: 0, top: 0};
@@ -291,10 +314,7 @@ window.TOONTALK.widget = (function (TT) {
             }
             if (!widget.animate_to_absolute_position) {
                 widget.animate_to_absolute_position = function (target_absolute_position, continuation, speed) {
-                    var mover_frontside_element;
-//                  this.update_display();
-                    mover_frontside_element = this.get_frontside_element();
-                    TT.UTILITIES.animate_to_absolute_position(mover_frontside_element, target_absolute_position, continuation, speed);
+                    TT.UTILITIES.animate_to_absolute_position(this.get_frontside_element(), target_absolute_position, continuation, speed);
                 };
             }
             return widget;
@@ -319,7 +339,7 @@ window.TOONTALK.widget = (function (TT) {
                             title = "Drag this " + type_name + " to a work area.";
                         }   
                     } else if (!backside || !backside.get_element() || !$(backside.get_element()).is(":visible")) {
-                        title = "Click to see the back side of this " + type_name;
+                        title = "Click to see my back side.";
                     } else if (!description && !this.get_custom_title_prefix) {
                         title = "This is " + TT.UTILITIES.add_a_or_an(type_name);
                     } else {
@@ -338,7 +358,7 @@ window.TOONTALK.widget = (function (TT) {
                     }
                     if (this.get_custom_title_prefix && !$(frontside_element).is(".toontalk-top-level-resource")) {
                         // top-level resources must be dragged to work area so don't add custom description
-                        title = this.get_custom_title_prefix() + " " + title;
+                        title = this.get_custom_title_prefix() + "\n" + title;
                     }
                     title = title.trim();
                     if (".?!".indexOf(title[title.length-1]) < 0) {
@@ -370,14 +390,23 @@ window.TOONTALK.widget = (function (TT) {
                 return parent_of_backside;
             };
             widget.set_parent_of_frontside = function (new_parent, parent_is_backside, backside_widget_already_removed) {
-                if (parent_of_frontside && !backside_widget_already_removed && parent_of_frontside.is_backside()) {
-                    parent_of_frontside.get_widget().remove_backside_widget(this, false, true);
-                }
+                var old_parent_of_frontside = parent_of_frontside;
+                var new_parent_backside;
                 if (!new_parent || !parent_is_backside) {
+                    if (parent_of_frontside === new_parent) {
+                        return; // already knew this
+                    }
                     parent_of_frontside = new_parent;
-                    return; 
+                } else {
+                    new_parent_backside = new_parent.get_backside(true);
+                    if (parent_of_frontside === new_parent_backside) {
+                        return; // already knew this
+                    }
+                    parent_of_frontside = new_parent_backside;
                 }
-                parent_of_frontside = new_parent.get_backside(true);
+                if (old_parent_of_frontside && !backside_widget_already_removed && old_parent_of_frontside.is_backside()) {
+                    old_parent_of_frontside.get_widget().remove_backside_widget(this, false, true);
+                }
             };
             widget.set_parent_of_backside = function (widget, parent_is_backside, already_removed_from_parent_of_backside) {
                 if (parent_of_backside && !already_removed_from_parent_of_backside && parent_of_backside.is_backside()) {
@@ -544,17 +573,7 @@ window.TOONTALK.widget = (function (TT) {
             var parent_of_backside  = this.get_parent_of_backside();
             var backside_of_parent;
             if (backside) {
-                backside.remove_element();
-                if (parent_of_backside) {
-                    if (parent_of_backside.is_backside()) {
-                        backside_of_parent = parent_of_backside;
-                    } else {
-                        backside_of_parent = parent_of_backside.get_backside();
-                    }
-                    if (backside_of_parent.removed_from_container) {
-                        backside_of_parent.removed_from_container(this, true, event, undefined, true);
-                    }
-                }  
+                backside.hide_backside();
             }
             if (frontside) {
                 frontside.remove();
@@ -563,6 +582,14 @@ window.TOONTALK.widget = (function (TT) {
                 }
             }   
             this.set_running(false);
+            if (this.walk_children) {
+                this.walk_children(function (child) {
+                                       if (child.remove) {
+                                           child.remove();
+                                       }
+                                       return true; // go on to next child
+                                   });
+            }
         },
 
         get_frontside_element: get_frontside_element_function,
@@ -592,12 +619,12 @@ window.TOONTALK.widget = (function (TT) {
                 if (json_semantic.view) {
                     // already contains both semantic and view
                     json = json_semantic;
-                    json_view = json_semantic.view;
+                    json_view =     json_semantic.view;
                     json_semantic = json_semantic.semantic;
                 } else {
                     json_view = {};
                     json = {semantic: json_semantic,
-                            view: json_view};
+                            view:     json_view};
                 }
                 json.version = 1;
                 if (this.get_erased && this.get_erased()) {
@@ -1172,6 +1199,18 @@ window.TOONTALK.widget = (function (TT) {
             widget = widget.add_sides_functionality(widget);
             widget = widget.runnable(widget);
             widget = widget.has_parent(widget);
+            widget.removed_from_container = function (other, backside_removed, event, index, ignore_if_not_on_backside) {
+                if (!TT.robot.in_training) {
+                   // robots in training take care of this (and need to to record things properly)
+                   this.remove_backside_widget(other, backside_removed, ignore_if_not_on_backside);
+                };
+            };
+            widget.widget_dropped_on_me = function (other, other_is_backside, event, robot, ignore_training) {
+                return this.get_backside().widget_dropped_on_me(other, other_is_backside, event, robot, ignore_training);
+            };
+            widget.get_element = function () {
+                return this.get_backside().get_element();
+            };
             widget.get_setting = function (option_name) {
                 if (typeof settings[option_name] === 'undefined') {
                     settings[option_name] = TT.DEFAULT_SETTINGS && TT.DEFAULT_SETTINGS[option_name];     
@@ -1203,7 +1242,7 @@ window.TOONTALK.widget = (function (TT) {
                                100);
                     return;
                 }
-                if (parameters.google_drive) {
+                if (parameters.google_drive && !this.get_setting('google_drive_unavailable')) {
                     json = TT.UTILITIES.get_json_top_level(this);
                     google_drive_status = TT.google_drive.get_status();
                     if (google_drive_status === "Ready") {
@@ -1268,7 +1307,7 @@ window.TOONTALK.widget = (function (TT) {
                     this.last_local_storage_error = message;
                 }
             };
-            widget.load = function (google_drive_first, load_callback) {
+            widget.load = function (google_drive_first, loaded_callback, nothing_to_load_callback) {
                 var program_name = this.get_setting('program_name');
                 var file_name = program_name + ".json";
                 var key = TT.UTILITIES.local_storage_program_key(program_name);
@@ -1279,9 +1318,11 @@ window.TOONTALK.widget = (function (TT) {
                             json = JSON.parse(json_string);
                             widget.remove_all_backside_widgets();
                             TT.UTILITIES.add_backside_widgets_from_json(widget, json.semantic.backside_widgets);
-                            if (load_callback) {
-                                load_callback();
+                            if (loaded_callback) {
+                                loaded_callback();
                             }
+                        } else if (nothing_to_load_callback) {
+                            nothing_to_load_callback();
                         }
                 };
                 var callback = function (google_file) {   
