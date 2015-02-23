@@ -264,7 +264,7 @@ window.TOONTALK.newly_created_widgets_path =
                     }
                     if (this.removing_widget) {
                         container = widget.get_parent_of_frontside();
-                        if (container.removed_from_container) {
+                        if (container && container.removed_from_container) {
                             robot.remove_from_container(widget, container);
                         }
                     }
