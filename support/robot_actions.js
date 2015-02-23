@@ -257,9 +257,16 @@ window.TOONTALK.newly_created_widgets_path =
             return {
                 dereference: function (context, top_level_context, robot) {
                     var widget = robot.get_body().dereference(index);
+                    var container;
                     if (this.next) {
                         // there is more to the path so compute the part of the widget referenced
                         return TT.path.dereference_path(this.next, widget, top_level_context, robot);
+                    }
+                    if (this.removing_widget) {
+                        container = widget.get_parent_of_frontside();
+                        if (container.removed_from_container) {
+                            robot.remove_from_container(widget, container);
+                        }
                     }
                     return widget;
                 },
