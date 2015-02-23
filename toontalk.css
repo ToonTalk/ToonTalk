@@ -1764,11 +1764,19 @@ table.toontalk-documentation-table {
 
 }
 .toontalk-function-bird-name  {
-   vertical-align: top;
+   /* vertical-align: top; */
    font-weight: bold;
+   padding-left: 24px;
+   padding-top: 24px;
+   max-width: 10em;
 }
 .toontalk-function-bird-title-documentation {
-	max-width: 50em;	
+	max-width: 50em;
+	padding-top: 24px;	
+}
+.toontalk-function-bird-documentation-bird {
+	transform-origin: left top;
+	transform: scale(0.3, 0.3);
 }
 .toontalk-element-attribute {
 	position: relative;
@@ -2144,8 +2152,6 @@ background-image: url("images/dusty-morph.png");
 .toontalk-nest-with-egg {
 /* 	display just the first frame */
     width:  116px;
-    
-
     height: 141px;
     background-image: url("images/hatch-egg-strip.png");
 /* 	following causes resource to be tiny and repeated: background-size: contain; */
