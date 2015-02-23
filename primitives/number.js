@@ -1316,7 +1316,7 @@ window.TOONTALK.number.function =
                         function (message, event, robot) {
                              return n_ary_function(message, box_with_integer_and_fraction, 1, 'integer and fraction parts');
                         },
-                        "The bird will return with a box ontaining the integer part and the fraction.");
+                        "The bird will return with a box containing the integer part and the fraction.");
     add_function_object('sine', 
                         function (message, event, robot) {
                             var sin = function (degrees) {
