@@ -1659,7 +1659,7 @@ body {
 	width:  100%;
 	height:  100%;
 }
-.toontalk-digit {  
+a {  
     line-height: 1.4;
 }
 .toontalk-decimal-point {
@@ -1747,8 +1747,24 @@ body {
 	padding: 4px;
 	text-align: center;
 }
-.toontalk-resource-table td {
-/* 	width: 200px; */
+table.toontalk-documentation-table {
+}
+.toontalk-documentation-table td {
+	padding-left:   12px;
+	padding-bottom: 12px;
+}
+/* A failed attempt to fix how nests look since they have empty space above for hatching */
+/* .toontalk-documentation-table tr:nth-child(3){
+	padding-top: -40px;
+} */
+.toontalk-documentation-table div:first-child {
+	margin: auto;
+}
+.toontalk-function-bird-documentation-table {
+
+}
+.toontalk-function-bird-title-documentation {
+	max-width: 50em;
 }
 .toontalk-element-attribute {
 	position: relative;
@@ -2124,6 +2140,8 @@ background-image: url("images/dusty-morph.png");
 .toontalk-nest-with-egg {
 /* 	display just the first frame */
     width:  116px;
+    
+
     height: 141px;
     background-image: url("images/hatch-egg-strip.png");
 /* 	following causes resource to be tiny and repeated: background-size: contain; */

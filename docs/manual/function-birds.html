@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" media="all" href="../../toontalk.css">
+<script src="../../compile/toontalk.js"></script>
+<script src="../../libraries/jquery-ui-1.11.2.custom/jquery-ui.min.js"></script>
+<title>Function Birds in ToonTalk</title>
+<link rel="shortcut icon" href="../../favicon.ico" />
+</head>
+<body>
+A function bird behaves just any other <a href="birds-nests.html">bird</a>.
+The difference is that a function bird behaves as if offscreen robots are waiting for boxes to arrive on her nest.
+These robots expect, by convention, that the delivered box contains another bird and some other widgets.
+The bird is given the result of computing a function of the other widgets.
+<h2>Numeric Function Birds</h2>
+<p>
+Here is the list of numeric functions birds available in this system:
+<script type="text/javascript">
+    var function_names = Object.keys(TOONTALK.number.function);
+    var table = "<table class='toontalk-function-bird-documentation-table'>";
+    function_names.forEach(function (function_name, index) {
+        var function_object = TOONTALK.number.function[function_name];
+        table += "<tr><td><b>" + function_name + "</b></td><td class='toontalk-function-bird-title-documentation'>" + 
+                 function_object.title + "</td><td><div id='id_" + index + "'></div></td></tr>";
+    });
+    table += "</table>";
+    document.write(table);
+    function_names.forEach(function (function_name, index) {
+        var bird = window.TOONTALK.bird.create_function('number', undefined, function_name);
+        bird.update_display();
+        $("#id_" + index).append(bird.get_frontside_element());
+    });
+  </script> 
+</p>
+<br>
+<p>
+You can add a function bird to your work space by dragging one of the birds above or by clicking on a number.
+Click on <b>'>'</b> to see the advanced options and then click on 'Make a function bird'.
+Then click on the bird to choose the function.
+Click the green flag to watch a robot demonstrate this:
+</p>
+<br>
+<div class='toontalk-json'>
+This will be replaced by a work area containing one thing: a robot.
+top level widget
+<div style='display:none;'>{
+  "semantic": {
+    "type": "top_level",
+    "settings": {
+      "auto_save_to_google_drive": true,
+      "auto_save_to_local_storage": true,
+      "program_name": "My first program"
+    },
+    "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "robot",
+            "frontside_conditions": {
+              "type": "top_level"
+            },
+            "body": {
+              "type": "body",
+              "steps": [
+                {
+                  "type": "robot_action",
+                  "action_name": "pick up",
+                  "path": {
+                    "type": "path.to_resource",
+                    "resource": {
+                      "type": "number",
+                      "operator": "+",
+                      "numerator": "1",
+                      "denominator": "1",
+                      "format": "improper_fraction"
+                    }
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "drop it on",
+                  "path": {
+                    "type": "path.to_entire_context"
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "add a new widget to the work space",
+                  "path": {
+                    "type": "path.to_resource",
+                    "resource": {
+                      "type": "bird",
+                      "nest": {
+                        "semantic": {
+                          "type": "function_nest",
+                          "function_type": "number",
+                          "function_name": "sum"
+                        },
+                        "view": {
+                          "backside": false
+                        },
+                        "version": 1
+                      }
+                    }
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "edit",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 1
+                  },
+                  "additional_info": {
+                    "setter_name": "set_function_name",
+                    "argument_1": "integer and fraction parts",
+                    "toString": "change the function bird to 'integer and fraction parts'",
+                    "button_selector": ".toontalk-select-function"
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "pick up",
+                  "path": {
+                    "type": "path.to_resource",
+                    "resource": {
+                      "type": "box",
+                      "size": 2,
+                      "contents": [
+                        null,
+                        null
+                      ],
+                      "horizontal": true
+                    }
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "drop it on",
+                  "path": {
+                    "type": "path.to_entire_context"
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "pick up",
+                  "path": {
+                    "type": "path.to_resource",
+                    "resource": {
+                      "type": "number",
+                      "operator": "+",
+                      "numerator": "1",
+                      "denominator": "1",
+                      "format": "improper_fraction"
+                    }
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "drop it on",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 2,
+                    "next_path": {
+                      "type": "box_path",
+                      "index": 1
+                    }
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "edit",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 2,
+                    "next_path": {
+                      "type": "box_path",
+                      "index": 1
+                    }
+                  },
+                  "additional_info": {
+                    "setter_name": "set_denominator",
+                    "argument_1": "7",
+                    "toString": "change value of the denominator to 7",
+                    "button_selector": ".toontalk-denominator-input"
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "edit",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 2,
+                    "next_path": {
+                      "type": "box_path",
+                      "index": 1
+                    }
+                  },
+                  "additional_info": {
+                    "setter_name": "set_numerator",
+                    "argument_1": "10",
+                    "toString": "change value of the numerator to 10",
+                    "button_selector": ".toontalk-numerator-input"
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "pick up",
+                  "path": {
+                    "type": "path.to_resource",
+                    "resource": {
+                      "type": "nest",
+                      "contents": [],
+                      "original_nest": {
+                        "semantic": {
+                          "type": "nest",
+                          "contents": [
+                            {
+                              "widget": {
+                                "semantic": {
+                                  "type": "box",
+                                  "size": 2,
+                                  "contents": [
+                                    null,
+                                    null
+                                  ],
+                                  "horizontal": true,
+                                  "description": "The integer and fraction parts of 10/7"
+                                },
+                                "view": {
+                                  "backside": false
+                                },
+                                "version": 1
+                              }
+                            }
+                          ],
+                          "guid": "toontalk_id_1424658856264"
+                        },
+                        "view": {
+                          "frontside_width": 116,
+                          "frontside_height": 98,
+                          "frontside_left": 0,
+                          "frontside_top": 0,
+                          "saved_width": 116,
+                          "saved_height": 141,
+                          "backside": false
+                        },
+                        "version": 1
+                      }
+                    }
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "drop it on",
+                  "path": {
+                    "type": "path.to_entire_context"
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "pick up",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 5,
+                    "removing_widget": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "drop it on",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 2,
+                    "next_path": {
+                      "type": "box_path",
+                      "index": 0
+                    }
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "pick up",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 2,
+                    "removing_widget": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "drop it on",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 1
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "pick up",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 4,
+                    "next_path": {
+                      "type": "box_path",
+                      "index": 0,
+                      "removing_widget": true
+                    }
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "drop it on",
+                  "path": {
+                    "type": "path.to_entire_context"
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "pick up",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 4,
+                    "next_path": {
+                      "type": "box_path",
+                      "index": 1,
+                      "removing_widget": true
+                    }
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "drop it on",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 7
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "add to the top-level backside",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 0
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "add to the top-level backside",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 4
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "add to the top-level backside",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 7
+                  }
+                }
+              ]
+            },
+            "run_once": true,
+            "description": "demonstrates function birds. It gets a bird that splits a number into the integer and fraction parts and tests it."
+          },
+          "view": {
+            "frontside_width": 66,
+            "frontside_height": 110,
+            "frontside_left": 322.984375,
+            "frontside_top": 67.984375,
+            "backside_geometry": {
+              "x_scale": 1,
+              "y_scale": 1,
+              "original_width": 550,
+              "original_height": 200
+            },
+            "saved_width": 66,
+            "saved_height": 110,
+            "backside": false
+          },
+          "version": 1
+        }
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgba(245, 240, 240, 0.941176)",
+    "backside_width": 745,
+    "backside_height": 247,
+    "backside_left": 8,
+    "backside_top": 184.1875,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1,
+      "original_width": 484,
+      "original_height": 117
+    },
+    "backside": true,
+    "drag_x_offset": 557,
+    "drag_y_offset": 120.8125
+  },
+  "version": 1
+}</div></div>
+</body>
+</html>
