@@ -1297,6 +1297,19 @@ window.TOONTALK.number.function =
                             return n_ary_function(message, bigrat_function_to_widget_function(power_function), 2, 'power', event, robot);
                         },
                         "The bird will return with the first number to the power of the second number.");
+    add_function_object('logarithm', 
+                        function (message, event, robot) {
+                            var logarithm = function () {
+                                if (arguments.length === 1) {
+                                    return Math.log(arguments[0]);
+                                }
+                                return Math.log(arguments[0])/Math.log(arguments[1]);
+                            };
+                            return n_ary_function(message, numeric_javascript_function_to_widget_function(logarithm), 0, 'logarithm', event, robot);
+                        },
+                        "The bird will return the logarithm number of the first number.\n" +
+                        "If a second number is provided then it is used as the base of the logarithm.\n" +
+                        "If there is no second number the logarithm is natural (the base is e).");                    
     add_function_object('random', 
                         function (message, event, robot) {
                             var random = function () {
@@ -1310,7 +1323,9 @@ window.TOONTALK.number.function =
                             };
                             return n_ary_function(message, numeric_javascript_function_to_widget_function(random), 0, 'random', event, robot);
                         },
-                        "The bird will return a random number between the first and second numbers.\nIf the second number isn't provided a number less than the first number is returned.\nIf no numbers are given then the bird returns with a number between 0 and 1.");                    
+                        "The bird will return a random number between the first and second numbers.\n" +
+                        "If the second number isn't provided a number less than the first number is returned.\n" +
+                        "If no numbers are given then the bird returns with a number between 0 and 1.");           
     add_function_object('round', 
                         function (message, event, robot) {
                             return n_ary_function(message, bigrat_function_to_widget_function(round), 1, 'round', event, robot);
