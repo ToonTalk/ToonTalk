@@ -1305,9 +1305,9 @@ window.TOONTALK.number.function =
                                 }
                                 return Math.log(arguments[0])/Math.log(arguments[1]);
                             };
-                            return n_ary_function(message, numeric_javascript_function_to_widget_function(logarithm), 0, 'logarithm', event, robot);
+                            return n_ary_function(message, numeric_javascript_function_to_widget_function(logarithm), 1, 'logarithm', event, robot);
                         },
-                        "The bird will return the logarithm number of the first number.\n" +
+                        "The bird will return an approximation of the logarithm number of the first number.\n" +
                         "If a second number is provided then it is used as the base of the logarithm.\n" +
                         "If there is no second number the logarithm is natural (the base is e).");                    
     add_function_object('random', 
