@@ -139,11 +139,11 @@ window.TOONTALK.path =
         toString: function (a_path, toString_info) {
             var sub_path_string;
             if (a_path.next) {
-                sub_path_string = TT.path.toString(a_path.next);
+                sub_path_string = TT.path.toString(a_path.next, toString_info);
                 if (sub_path_string[sub_path_string.length-1] !== ' ') {
                     sub_path_string += ' ';
                 }
-                return TT.path.toString(a_path.next).trim() + " of " + a_path.toString(toString_info);
+                return TT.path.toString(a_path.next, toString_info).trim() + " of " + a_path.toString(toString_info);
             } else {
                 return a_path.toString(toString_info);
             }
