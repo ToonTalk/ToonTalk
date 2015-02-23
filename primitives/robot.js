@@ -619,11 +619,16 @@ window.TOONTALK.robot = (function (TT) {
         var postfix = "";
         var frontside_conditions_string;
         var next_robot = this.get_next_robot();
-        var robot_description;
+        var robot_description, robot_conditions_description;
         if (!frontside_conditions) {
             return "has yet to be trained.";
         }
-        frontside_conditions_string = frontside_conditions.get_full_description();
+        if (frontside_conditions.is_of_type('top-level')) {
+            robot_conditions_description = "When the workspace's green flag is pressed";
+        } else {
+            frontside_conditions_string = TT.UTILITIES.add_a_or_an(frontside_conditions.get_full_description());
+            robot_conditions_description = "When working on something that matches " + frontside_conditions_string;
+        }
         if (this.being_trained) {
             if (body.is_empty()) {
                 return "I'm ready to be trained. Show me what to do and then click on my 'Stop training' button.";
@@ -631,8 +636,8 @@ window.TOONTALK.robot = (function (TT) {
             prefix = "is being trained.\n";
             postfix = "\n..."; // to indicate still being constructed
         }
-        frontside_conditions_string = TT.UTILITIES.add_a_or_an(frontside_conditions_string);
-        robot_description = prefix + "When working on something that matches " + frontside_conditions_string + 
+        
+        robot_description = prefix + robot_conditions_description + 
                             " he will \n" + body.toString({robot: this}) + postfix;
         if (this.match_status) {
             if (this.match_status.is_widget) {
