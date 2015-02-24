@@ -29,8 +29,11 @@ Here is the list of numeric functions birds available in this system:
     document.write(table);
     function_names.forEach(function (function_name, index) {
         var bird = window.TOONTALK.bird.create_function('number', undefined, function_name);
+        var bird_frontside_element = bird.get_frontside_element();
         bird.update_display();
-        $("#bird_id_" + index).replaceWith($(bird.get_frontside_element()).addClass("toontalk-function-bird-documentation-bird"));
+        $("#bird_id_" + index).replaceWith($(bird_frontside_element).addClass("toontalk-function-bird-documentation-bird"));
+        // sanitise the id -- id enables links to specific function birds
+        bird_frontside_element.id = encodeURIComponent(function_name);
     });
   </script> 
 </p>

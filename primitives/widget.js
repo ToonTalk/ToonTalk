@@ -129,7 +129,7 @@ window.TOONTALK.widget = (function (TT) {
                 widget.get_backside = function (create) {
                     if (create && !backside) {
                         // backsides are customised by each kind of widget
-                        backside = widget.create_backside();
+                        backside = this.create_backside();
                     }
                     return backside;
                 };

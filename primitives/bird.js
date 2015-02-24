@@ -387,6 +387,15 @@ window.TOONTALK.bird = (function (TT) {
             }
             return backside;
         };
+        new_bird.get_help_URL = function () {
+            if (nest && nest.is_function_nest()) {
+                return "docs/manual/function-birds.html";
+            }
+            return "docs/manual/birds-nests.html";
+        };
+        new_bird.is_function_bird = function () {
+            return nest && nest.is_function_nest();
+        };
         new_bird.get_custom_title_prefix = function () {
             var function_object;
             if (nest) {
@@ -512,15 +521,14 @@ window.TOONTALK.bird = (function (TT) {
         this.animate_to_absolute_position(target_offset, full_continuation);
     };
     
-    bird.get_type_name = function (plural) {
+    bird.get_type_name = function (plural, detailed) {
         if (plural) {
+            if (detailed && this.is_function_bird()) {
+                return "function birds";
+            }
             return "birds";
         }
         return "bird";
-    };
-    
-    bird.get_help_URL = function () {
-        return "docs/manual/birds-nests.html";
     };
 
     bird.matching_resource = function (other) {
