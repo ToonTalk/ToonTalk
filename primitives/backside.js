@@ -145,7 +145,7 @@ window.TOONTALK.backside =
                                      });
                 help_button.innerHTML = 'i'; // like tourist info -- alternatively could use a question mark
                 help_button.translate = false; // should not be translated
-                help_button.title = "Click to learn more about " + widget.get_type_name(true) + ".";
+                help_button.title = "Click to learn more about " + widget.get_type_name(true, true) + ".";
                 close_help_button = document.createElement("div");
                 $(close_help_button).addClass("toontalk-close-help-frame-button")
                                     .button()
