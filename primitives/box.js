@@ -261,14 +261,14 @@ window.TOONTALK.box = (function (TT) {
         return 'matched';
     };
     
-    box.toString = function () {
+    box.toString = function (to_string_info) {
         var contents = "";
         var size = this.get_size();
         var i, hole;
         var extra_text = this.get_type_name() + " that looks like ";
         for (i = 0; i < size; i++) {
             hole = this.get_hole(i);
-            contents += hole.get_full_description();
+            contents += hole.get_full_description(to_string_info);
             if (i < size - 1) {
                 contents += " | ";
             }
@@ -932,9 +932,9 @@ window.TOONTALK.box_hole =
                 }
                 return "_";
             };
-            hole.get_full_description = function () {
+            hole.get_full_description = function (to_string_info) {
                 if (contents) {
-                    return contents.get_full_description();
+                    return contents.get_full_description(to_string_info);
                 }
                 return "_";
             };

@@ -546,13 +546,13 @@ window.TOONTALK.widget = (function (TT) {
             }
         },
         
-        get_full_description: function () {
+        get_full_description: function (to_string_info) {
             var description, string;
             if (this.get_erased && this.get_erased()) {
                 return "erased " + this.get_type_name();
             }
-            description = this.get_description();
-            string = this.toString();
+            description = this.get_description(to_string_info);
+            string = this.toString(to_string_info);
             if (description) {
                 return string + " (" + description + ")";
             }
