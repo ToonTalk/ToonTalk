@@ -202,7 +202,7 @@ window.TOONTALK.robot = (function (TT) {
     };
     
     robot.match = function () {
-        console.log("Robot-to-robot matching could be more sophisticated.");
+        // no need to do more -- any robot matches any other
         return "matched";
     };
     
