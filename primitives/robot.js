@@ -202,7 +202,7 @@ window.TOONTALK.robot = (function (TT) {
     };
     
     robot.match = function () {
-        console.log("Robot-to-robot matching could be more sophisticated.");
+        // no need to do more -- any robot matches any other
         return "matched";
     };
     
@@ -402,6 +402,7 @@ window.TOONTALK.robot = (function (TT) {
     };
     
     robot.removed = function (widget) {
+        var context = this.get_context();
         var path;
         this.current_action_name = "remove";
         path = TT.path.get_path_to(widget, this);
@@ -410,6 +411,12 @@ window.TOONTALK.robot = (function (TT) {
         }
         widget.last_action = this.current_action_name;
         this.current_action_name = undefined;
+        if (context === widget || widget === this) {
+            // robot is vacuum up its context (and itself) or itself
+            // TODO: add some animation to make clearer what is happening
+            this.add_to_top_level_backside(this.copy());
+            this.training_finished();
+        }
     };
     
     robot.edited = function (widget, details) {
@@ -612,21 +619,23 @@ window.TOONTALK.robot = (function (TT) {
         return this.toString();
     };
     
-    robot.toString = function () {
-        var frontside_conditions = this.get_frontside_conditions();
-        var body = this.get_body();
-        var prefix = "";
-        var postfix = "";
-        var frontside_conditions_string;
-        var next_robot = this.get_next_robot();
-        var robot_description, robot_conditions_description;
+    robot.toString = function (to_string_info) {
+        var frontside_conditions, body, prefix, postfix, frontside_conditions_string, next_robot, robot_description, robot_conditions_description;
+        if (to_string_info && to_string_info.role === "conditions") {
+            return "any robot";
+        }
+        frontside_conditions = this.get_frontside_conditions();
         if (!frontside_conditions) {
             return "has yet to be trained.";
         }
+        body = this.get_body();
+        prefix = "";
+        postfix = "";
+        next_robot = this.get_next_robot();
         if (frontside_conditions.is_of_type('top-level')) {
             robot_conditions_description = "When the workspace's green flag is pressed";
         } else {
-            frontside_conditions_string = TT.UTILITIES.add_a_or_an(frontside_conditions.get_full_description());
+            frontside_conditions_string = TT.UTILITIES.add_a_or_an(frontside_conditions.get_full_description({role: "conditions"}));
             robot_conditions_description = "When working on something that matches " + frontside_conditions_string;
         }
         if (this.being_trained) {
@@ -635,8 +644,7 @@ window.TOONTALK.robot = (function (TT) {
             }
             prefix = "is being trained.\n";
             postfix = "\n..."; // to indicate still being constructed
-        }
-        
+        }  
         robot_description = prefix + robot_conditions_description + 
                             " he will \n" + body.toString({robot: this}) + postfix;
         if (this.match_status) {

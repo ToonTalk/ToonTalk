@@ -35,9 +35,15 @@ window.TOONTALK.path =
             var compute_path = function (widget, robot) {
                 var context = robot.get_context();
                 var body = robot.get_body();
-                var path, sub_path, widget_type;
+                var path, sub_path, widget_type, is_backside;
+                if (widget.is_backside()) {
+                    is_backside = true;
+                    widget = widget.get_widget();
+                }
                 if (context === widget) {
-                    return TT.path.to_entire_context();
+                    path = TT.path.to_entire_context();
+                    path.is_backside = is_backside;
+                    return path;
                 }
                 widget_type = widget.get_type_name();
                 if (widget_type === "top-level") {
@@ -45,11 +51,14 @@ window.TOONTALK.path =
                 }
                 path = body.get_path_to(widget, robot);
                 if (path) {
+                    path.is_backside = is_backside;
                     return path;
                 }
                 if (widget_type === "element attribute" && widget.get_original_attribute_widget() === widget) {
                     // if widget.get_parent_of_frontside() then is a copy of the attribute element
-                    return TT.element.create_attribute_path(widget, robot);
+                    path = TT.element.create_attribute_path(widget, robot);
+                    path.is_backside = is_backside;
+                    return path;
                 }
                 // if context is undefined something is wrong much earlier
                 if (TT.debugging && !context) {
@@ -59,6 +68,7 @@ window.TOONTALK.path =
                 if (context.get_path_to) {
                     sub_path = context.get_path_to(widget, robot);
                     if (sub_path) {
+                        sub_path.is_backside = is_backside;
                         path = TT.path.to_entire_context();
                         path.next = sub_path;
                         return path;
@@ -71,12 +81,14 @@ window.TOONTALK.path =
                     if (backside_widget === widget ||
                         (backside_widget.top_contents_is && backside_widget.top_contents_is(widget)) ) {
                         path = TT.path.get_path_to_backside_widget_of_context(backside_widget.get_type_name());
+                        path.is_backside = is_backside;
                         robot.add_to_backside_conditions(backside_widget); // does nothing if already added
                         return true; // stop searching
                     } else if (backside_widget.get_path_to) {
                         // e.g. might be in a box
                         sub_path = backside_widget.get_path_to(widget, robot);
                         if (sub_path) {
+                            sub_path.is_backside = is_backside;
                             path = TT.path.get_path_to_backside_widget_of_context(backside_widget.get_type_name());
                             path.next = sub_path;
                             robot.add_to_backside_conditions(backside_widget);
@@ -85,9 +97,12 @@ window.TOONTALK.path =
                     }
                 });
                 if (path) {
+                    path.is_backside = is_backside;
                     return path;
                 }
-                return TT.path.get_path_to_resource(widget.copy());
+                path = TT.path.get_path_to_resource(widget.copy());
+                path.is_backside = is_backside;
+                return path;
             }
             var path = compute_path(widget, robot);
             if (path && widget.dereference_contents) {
@@ -120,32 +135,52 @@ window.TOONTALK.path =
                 // no path means entire context -- TODO: determine if this is still true
                 dereferenced = context;
             }
+            if (dereferenced && path.is_backside) {
+                return dereferenced.get_backside(true);
+            }
             return dereferenced;
         },
         continue_dereferencing_path: function (path, referenced, top_level_context, robot) {
             // called when (partial) path has produced referenced
+            var new_referenced;
             if (path.next) {
                 if (referenced.dereference_contents && !path.next.not_to_be_dereferenced) {
-                    return referenced.dereference_contents(path.next, top_level_context, robot);
+                    new_referenced = referenced.dereference_contents(path.next, top_level_context, robot);
+                    if (new_referenced && path.is_backside) {
+                        return new_referenced.get_backside(true);
+                    }
+                    return new_referenced;
                 } else {
-                    return referenced.dereference(path.next, top_level_context, robot);
+                    new_referenced = referenced.dereference(path.next, top_level_context, robot);
+                    if (new_referenced && path.next.is_backside) {
+                        return new_referenced.get_backside(true);
+                    }
+                    return new_referenced;
                 }                
             }
             if (referenced.dereference_contents && !path.not_to_be_dereferenced) {
-                return referenced.dereference_contents(path, top_level_context, robot);
+                new_referenced = referenced.dereference_contents(path, top_level_context, robot);
+                if (new_referenced && path.is_backside) {
+                    return new_referenced.get_backside(true);
+                }
+                return new_referenced;
             }
             return referenced;
         },
         toString: function (a_path, toString_info) {
+            var prefix = "";
             var sub_path_string;
+            if (a_path.is_backside) {
+                prefix = "the backside of ";
+            }
             if (a_path.next) {
                 sub_path_string = TT.path.toString(a_path.next, toString_info);
                 if (sub_path_string[sub_path_string.length-1] !== ' ') {
                     sub_path_string += ' ';
                 }
-                return TT.path.toString(a_path.next, toString_info).trim() + " of " + a_path.toString(toString_info);
+                return prefix + TT.path.toString(a_path.next, toString_info).trim() + " of " + a_path.toString(toString_info);
             } else {
-                return a_path.toString(toString_info);
+                return prefix + a_path.toString(toString_info);
             }
         },
         get_json: function (path, json_history) {
@@ -162,6 +197,9 @@ window.TOONTALK.path =
             }
             if (path.not_to_be_dereferenced) {
                 json.not_to_be_dereferenced = true;
+            }
+            if (path.is_backside) {
+                json.is_backside = true;
             }
             return json;
         },
@@ -257,22 +295,17 @@ window.TOONTALK.path =
         },
         create_from_json: function (json, additional_info) {
             var path = TT.UTILITIES.create_from_json(json, additional_info);
-            var next_path;
             if (json.next_path) {
-                next_path = TT.UTILITIES.create_from_json(json.next_path, additional_info);
-                if (json.next_path.removing_widget) {
-                    next_path.removing_widget = true;
-                }
-                if (json.next_path.not_to_be_dereferenced) {
-                    next_path.not_to_be_dereferenced = true;
-                }
-                path.next = next_path;
+                path.next = this.create_from_json(json.next_path, additional_info);
             }
             if (json.removing_widget) {
                 path.removing_widget = true;
             }
             if (json.not_to_be_dereferenced) {
                 path.not_to_be_dereferenced = true;
+            }
+            if (json.is_backside) {
+                path.is_backside = true;
             }
             return path;
         },
