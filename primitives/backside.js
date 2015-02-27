@@ -266,6 +266,9 @@ window.TOONTALK.backside =
                     if (event) {
                         other.get_widget().backup_all();
                     }
+                    if (this.get_widget().is_ok_to_run()) {
+                        this.get_widget().set_running(true);
+                    }
                     return true;
                 };
             backside.add_backside_widget =  
