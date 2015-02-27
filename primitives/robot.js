@@ -402,6 +402,7 @@ window.TOONTALK.robot = (function (TT) {
     };
     
     robot.removed = function (widget) {
+        var context = this.get_context();
         var path;
         this.current_action_name = "remove";
         path = TT.path.get_path_to(widget, this);
@@ -410,6 +411,12 @@ window.TOONTALK.robot = (function (TT) {
         }
         widget.last_action = this.current_action_name;
         this.current_action_name = undefined;
+        if (context === widget || widget === this) {
+            // robot is vacuum up its context (and itself) or itself
+            // TODO: add some animation to make clearer what is happening
+            this.add_to_top_level_backside(this.copy());
+            this.training_finished();
+        }
     };
     
     robot.edited = function (widget, details) {
