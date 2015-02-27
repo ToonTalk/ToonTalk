@@ -218,7 +218,6 @@ window.TOONTALK.backside =
                 function (other, other_is_backside, event, robot, ignore_training) {
                     // event serves 2 functions: info for adjusting for scrolling and whether to update the display
                     // TODO: avoid all this work when not watched
-                    var widget = this.get_widget();
                     var other_side, other_side_element, $other_side_element, backside_of_other;
                     if (other_is_backside) {
                         other_side = other.get_backside(true);
@@ -234,14 +233,11 @@ window.TOONTALK.backside =
                     if (this.is_of_type('top-level')) {
                         if (robot && !robot.visible()) {
                            $other_side_element.addClass("toontalk-widget-added-to-backside-by-unwatched-robot");
-                        }   
-                    } else if (!event) {
-                        // i.e. by a robot -- then animate to backside element
-                        other.animate_to_element(backside_element);
+                        }
                     }
                     TT.UTILITIES.set_position_is_absolute(other_side_element, true, event); // when on the backside
                     if (TT.robot.in_training && !ignore_training && event) {
-                        TT.robot.in_training.dropped_on(other, this.get_widget());
+                        TT.robot.in_training.dropped_on(other, this);
                     }
                     if (other_is_backside && this.get_widget().get_type_name() != 'top-level') {
                         // remove other since its backside is on another backside (other than top-level) 
@@ -253,7 +249,7 @@ window.TOONTALK.backside =
                         other.remove(event);
                         other.set_backside(backside_of_other);
                     }
-                    widget.add_backside_widget(other, other_is_backside);
+                    this.add_backside_widget(other, other_is_backside);
                     if (other.dropped_on_other) {
                         other.dropped_on_other(this.get_widget(), true, event, robot);
                     }
@@ -271,6 +267,10 @@ window.TOONTALK.backside =
                         other.get_widget().backup_all();
                     }
                     return true;
+                };
+            backside.add_backside_widget =  
+                function (widget, is_backside) {
+                        return this.get_widget().add_backside_widget(widget, is_backside);
                 };
             backside.add_backside_widgets = function (backside_widgets, json_array)  {
                 if (backside_widgets.length === 0) {

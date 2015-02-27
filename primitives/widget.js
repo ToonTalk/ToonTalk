@@ -275,7 +275,7 @@ window.TOONTALK.widget = (function (TT) {
             if (!widget.animate_to_widget) {
                 find_widget_element = function (widget) {
                     var widget_element = widget.get_element();
-                    if (!widget_element || !$(widget_element).is(":visible")) {        
+                    if (!widget_element || (!widget.is_backside() && !$(widget_element).is(":visible"))) {        
                         // widget is assumed to be a fresh copy of a resource that has yet to be added to anything
                         widget_element = TT.UTILITIES.find_resource_equal_to_widget(widget);
                     }
@@ -292,7 +292,9 @@ window.TOONTALK.widget = (function (TT) {
                     var top_level_backside = $(target_element).is(".toontalk-top-level-backside");
                     if (!target_element || !$(target_element).is(":visible")) {
                         // don't know where to go so just start doing the next thing
-                        continuation();
+                        if (continuation) {
+                            continuation();
+                        }
                         return;
                     }
                     if (!left_offset || top_level_backside) {
@@ -726,6 +728,7 @@ window.TOONTALK.widget = (function (TT) {
         },
         
         add_backside_widget: function (widget, is_backside) {
+                // TODO: clean this up and just pass a widget_side here
             var backside = this.get_backside();
             var widget_side = is_backside ? widget.get_backside() : widget;
             if (TT.debugging && widget === this) {
@@ -977,14 +980,17 @@ window.TOONTALK.widget = (function (TT) {
         open_backside: function (continuation) {
             // continuation will be run after animation is completed
             var backside = this.get_backside();
+            var new_continuation = continuation && function () {
+                                                      setTimeout(continuation);
+                                                   };
             var animate_backside_appearance = 
                 function (element, final_opacity) {
                     TT.UTILITIES.set_timeout(
                         function ()  {
                             var remove_transition_class = function () {
                                 $(element).removeClass("toontalk-side-appearing");
-                                if (continuation) {
-                                    continuation();
+                                if (new_continuation) {
+                                    new_continuation();
                                 }
                             };
                             $(element).addClass("toontalk-side-appearing");
@@ -1002,12 +1008,15 @@ window.TOONTALK.widget = (function (TT) {
                 backside_element = backside.get_element();
                 if ($(backside_element).is(":visible")) {
                     TT.UTILITIES.highlight_element(backside_element, undefined, 1000);
+                    if (new_continuation) {
+                        new_continuation();
+                    }
                     return backside;
                 }
                 // need to see if on backside is on the backside of another (and that is closed)
                 parent = this.get_parent_of_backside();
                 if (parent && parent.is_backside()) {
-                    return parent.get_widget().open_backside();
+                    return parent.get_widget().open_backside(continuation);
                 }
             }
             frontside_element = this.get_frontside_element();
@@ -1015,6 +1024,9 @@ window.TOONTALK.widget = (function (TT) {
             $frontside_ancestor_that_is_backside_element = $(frontside_element).parent();
             $frontside_ancestor_before_backside_element  = $(frontside_element);
             if ($frontside_ancestor_before_backside_element.is(".toontalk-top-level-resource")) {
+                if (new_continuation) {
+                    new_continuation();
+                }
                 return;
             }
             while ($frontside_ancestor_that_is_backside_element.length > 0 && !$frontside_ancestor_that_is_backside_element.is(".toontalk-backside")) {

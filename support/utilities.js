@@ -2256,6 +2256,16 @@ window.TOONTALK.UTILITIES =
                    TT.UTILITIES.is_browser_of_type("Trident");
         },
 
+        add_position: function (position_1, position_2) {
+            return {left: position_1.left+position_2.left,
+                    top:  position_1.top +position_2.top};
+        },
+
+        subtract_position: function (position_1, position_2) {
+            return {left: position_1.left-position_2.left,
+                    top:  position_1.top -position_2.top};
+        },
+
         remove_z_index: function (html) {
             var $element;
             if (html.length === 0 || html.charAt(0) !== '<') {
