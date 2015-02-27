@@ -11579,5 +11579,657 @@ This will be replaced by a work area containing 2 things: a number, and a bird.
     }
   ]
 }</div></div>
+<p>A robot that adds an 'add 1' (once) robot to the back of a box: (should see [[3] | _]) </p>
+<div class='toontalk-json'>
+This will be replaced by a work area containing 2 things: a box, and the backside of a box.
+top level widget
+<div style='display:none;'>{
+  "semantic": {
+    "type": "top_level",
+    "settings": {
+      "auto_save_to_google_drive": true,
+      "auto_save_to_local_storage": true,
+      "program_name": "My first program"
+    },
+    "backside_widgets": [
+      {
+        "widget": {
+          "shared_widget_index": 0
+        }
+      },
+      {
+        "widget": {
+          "shared_widget_index": 0
+        },
+        "is_backside": true
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgba(245, 240, 240, 0.941176)",
+    "backside_width": 1194,
+    "backside_height": 437,
+    "backside_left": 8,
+    "backside_top": 184.1875,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1
+    },
+    "backside": true,
+    "drag_x_offset": 581,
+    "drag_y_offset": 100.8125
+  },
+  "version": 1,
+  "shared_widgets": [
+    {
+      "semantic": {
+        "type": "box",
+        "size": 2,
+        "contents": [
+          {
+            "semantic": {
+              "type": "box",
+              "size": 1,
+              "contents": [
+                {
+                  "semantic": {
+                    "type": "number",
+                    "operator": "+",
+                    "numerator": "2",
+                    "denominator": "1",
+                    "format": "improper_fraction"
+                  },
+                  "view": {
+                    "saved_width": 76,
+                    "saved_height": 55,
+                    "backside": false
+                  },
+                  "version": 1
+                }
+              ],
+              "horizontal": true
+            },
+            "view": {
+              "backside_geometry": {
+                "x_scale": 1,
+                "y_scale": 1,
+                "original_width": 550,
+                "original_height": 200
+              },
+              "saved_width": 164,
+              "saved_height": 68,
+              "backside": false
+            },
+            "version": 1
+          },
+          {
+            "semantic": {
+              "type": "robot",
+              "frontside_conditions": {
+                "semantic": {
+                  "type": "box",
+                  "size": 1,
+                  "contents": [
+                    {
+                      "semantic": {
+                        "type": "number",
+                        "operator": "+",
+                        "numerator": "1",
+                        "denominator": "1",
+                        "format": "improper_fraction",
+                        "erased": true
+                      },
+                      "view": {
+                        "backside": false
+                      },
+                      "version": 1
+                    }
+                  ],
+                  "horizontal": true
+                },
+                "view": {
+                  "backside": false
+                },
+                "version": 1
+              },
+              "body": {
+                "type": "body",
+                "steps": [
+                  {
+                    "type": "robot_action",
+                    "action_name": "pick up",
+                    "path": {
+                      "type": "path.to_resource",
+                      "resource": {
+                        "type": "number",
+                        "operator": "+",
+                        "numerator": "1",
+                        "denominator": "1",
+                        "format": "improper_fraction",
+                        "is_backside": true
+                      }
+                    }
+                  },
+                  {
+                    "type": "robot_action",
+                    "action_name": "drop it on",
+                    "path": {
+                      "type": "path.to_entire_context",
+                      "next_path": {
+                        "type": "box_path",
+                        "index": 0
+                      }
+                    }
+                  }
+                ]
+              },
+              "run_once": true
+            },
+            "view": {
+              "backside_geometry": {
+                "x_scale": 1,
+                "y_scale": 1,
+                "original_width": 550,
+                "original_height": 200
+              },
+              "backside": false
+            },
+            "version": 1
+          }
+        ],
+        "horizontal": true,
+        "backside_widgets": [
+          {
+            "widget": {
+              "semantic": {
+                "type": "robot",
+                "frontside_conditions": {
+                  "semantic": {
+                    "type": "box",
+                    "size": 2,
+                    "contents": [
+                      {
+                        "semantic": {
+                          "type": "box",
+                          "size": 1,
+                          "contents": [
+                            {
+                              "semantic": {
+                                "type": "number",
+                                "operator": "+",
+                                "numerator": "2",
+                                "denominator": "1",
+                                "format": "improper_fraction",
+                                "erased": true
+                              },
+                              "view": {
+                                "backside": false
+                              },
+                              "version": 1
+                            }
+                          ],
+                          "horizontal": true
+                        },
+                        "view": {
+                          "backside": false
+                        },
+                        "version": 1
+                      },
+                      {
+                        "semantic": {
+                          "type": "robot",
+                          "frontside_conditions": {
+                            "semantic": {
+                              "type": "box",
+                              "size": 1,
+                              "contents": [
+                                {
+                                  "semantic": {
+                                    "type": "number",
+                                    "operator": "+",
+                                    "numerator": "1",
+                                    "denominator": "1",
+                                    "format": "improper_fraction",
+                                    "erased": true
+                                  },
+                                  "view": {
+                                    "backside": false
+                                  },
+                                  "version": 1
+                                }
+                              ],
+                              "horizontal": true
+                            },
+                            "view": {
+                              "backside": false
+                            },
+                            "version": 1
+                          },
+                          "body": {
+                            "type": "body",
+                            "steps": [
+                              {
+                                "type": "robot_action",
+                                "action_name": "pick up",
+                                "path": {
+                                  "type": "path.to_resource",
+                                  "resource": {
+                                    "type": "number",
+                                    "operator": "+",
+                                    "numerator": "1",
+                                    "denominator": "1",
+                                    "format": "improper_fraction",
+                                    "is_backside": true
+                                  }
+                                }
+                              },
+                              {
+                                "type": "robot_action",
+                                "action_name": "drop it on",
+                                "path": {
+                                  "type": "path.to_entire_context",
+                                  "next_path": {
+                                    "type": "box_path",
+                                    "index": 0
+                                  }
+                                }
+                              }
+                            ]
+                          },
+                          "run_once": true
+                        },
+                        "view": {
+                          "backside": false
+                        },
+                        "version": 1
+                      }
+                    ],
+                    "horizontal": true
+                  },
+                  "view": {
+                    "backside": false
+                  },
+                  "version": 1
+                },
+                "body": {
+                  "type": "body",
+                  "steps": [
+                    {
+                      "type": "robot_action",
+                      "action_name": "pick up",
+                      "path": {
+                        "type": "path.to_entire_context",
+                        "next_path": {
+                          "type": "box_path",
+                          "index": 1,
+                          "removing_widget": true
+                        }
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "drop it on",
+                      "path": {
+                        "type": "path.to_entire_context",
+                        "next_path": {
+                          "type": "box_path",
+                          "index": 0,
+                          "is_backside": true
+                        }
+                      }
+                    }
+                  ]
+                },
+                "run_once": true
+              },
+              "view": {
+                "frontside_width": 66,
+                "frontside_height": 110,
+                "frontside_left": 358.6875,
+                "frontside_top": 86.6875,
+                "backside_geometry": {
+                  "x_scale": 1,
+                  "y_scale": 1,
+                  "original_width": 550,
+                  "original_height": 200
+                },
+                "saved_width": 66,
+                "saved_height": 110,
+                "backside": false
+              },
+              "version": 1
+            }
+          }
+        ]
+      },
+      "view": {
+        "frontside_width": 164,
+        "frontside_height": 68,
+        "frontside_left": 132,
+        "frontside_top": 58,
+        "backside_width": 550,
+        "backside_height": 200,
+        "backside_left": 528.3125,
+        "backside_top": 163.3125,
+        "backside_geometry": {
+          "x_scale": 1,
+          "y_scale": 1,
+          "original_width": 171,
+          "original_height": 39
+        },
+        "saved_width": 164,
+        "saved_height": 68,
+        "backside": false
+      },
+      "version": 1
+    }
+  ]
+}</div></div>
+<p>A robot that removes the widget he's working on:</p>
+<div class='toontalk-json'>
+This will be replaced by a work area containing 2 things: a box, and the backside of a box.
+top level widget
+<div style='display:none;'>{
+  "semantic": {
+    "type": "top_level",
+    "settings": {
+      "auto_save_to_google_drive": true,
+      "auto_save_to_local_storage": true,
+      "program_name": "My first program"
+    },
+    "backside_widgets": [
+      {
+        "widget": {
+          "shared_widget_index": 0
+        }
+      },
+      {
+        "widget": {
+          "shared_widget_index": 0
+        },
+        "is_backside": true
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgba(245, 240, 240, 0.941176)",
+    "backside_width": 832,
+    "backside_height": 375,
+    "backside_left": 8,
+    "backside_top": 184.1875,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1,
+      "original_width": 1194,
+      "original_height": 437
+    },
+    "backside": true,
+    "drag_x_offset": 418,
+    "drag_y_offset": 69.8125
+  },
+  "version": 1,
+  "shared_widgets": [
+    {
+      "semantic": {
+        "type": "box",
+        "size": 2,
+        "contents": [
+          null,
+          null
+        ],
+        "horizontal": true,
+        "backside_widgets": [
+          {
+            "widget": {
+              "semantic": {
+                "type": "robot",
+                "frontside_conditions": {
+                  "semantic": {
+                    "type": "box",
+                    "size": 2,
+                    "contents": [
+                      null,
+                      null
+                    ],
+                    "horizontal": true
+                  },
+                  "view": {
+                    "backside": false
+                  },
+                  "version": 1
+                },
+                "body": {
+                  "type": "body",
+                  "steps": [
+                    {
+                      "type": "robot_action",
+                      "action_name": "remove",
+                      "path": {
+                        "type": "path.to_entire_context",
+                        "removing_widget": true
+                      }
+                    }
+                  ]
+                }
+              },
+              "view": {
+                "frontside_width": 66,
+                "frontside_height": 110,
+                "frontside_left": 351.53125,
+                "frontside_top": 63.53125,
+                "saved_width": 66,
+                "saved_height": 110,
+                "backside": false
+              },
+              "version": 1
+            }
+          }
+        ]
+      },
+      "view": {
+        "frontside_width": 164,
+        "frontside_height": 68,
+        "frontside_left": 114,
+        "frontside_top": 25,
+        "backside_width": 550,
+        "backside_height": 200,
+        "backside_left": 115.828125,
+        "backside_top": 152.828125,
+        "backside_geometry": {
+          "x_scale": 1,
+          "y_scale": 1,
+          "original_width": 550,
+          "original_height": 200
+        },
+        "saved_width": 164,
+        "saved_height": 68,
+        "backside": false
+      },
+      "version": 1
+    }
+  ]
+}</div></div>
+<p>A robot that removes himself after adding 1</p>
+<div class='toontalk-json'>
+This will be replaced by a work area containing 2 things: a box, and the backside of a box.
+top level widget
+<div style='display:none;'>{
+  "semantic": {
+    "type": "top_level",
+    "settings": {
+      "auto_save_to_google_drive": true,
+      "auto_save_to_local_storage": true,
+      "program_name": "My first program"
+    },
+    "backside_widgets": [
+      {
+        "widget": {
+          "shared_widget_index": 0
+        }
+      },
+      {
+        "widget": {
+          "shared_widget_index": 0
+        },
+        "is_backside": true
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgba(245, 240, 240, 0.941176)",
+    "backside_width": 923,
+    "backside_height": 293,
+    "backside_left": 8,
+    "backside_top": 184.1875,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1,
+      "original_width": 1194,
+      "original_height": 437
+    },
+    "backside": true,
+    "drag_x_offset": 882,
+    "drag_y_offset": 230.8125
+  },
+  "version": 1,
+  "shared_widgets": [
+    {
+      "semantic": {
+        "type": "box",
+        "size": 1,
+        "contents": [
+          {
+            "semantic": {
+              "type": "number",
+              "operator": "+",
+              "numerator": "2",
+              "denominator": "1",
+              "format": "improper_fraction"
+            },
+            "view": {
+              "saved_width": 76,
+              "saved_height": 55,
+              "backside": false
+            },
+            "version": 1
+          }
+        ],
+        "horizontal": true,
+        "backside_widgets": [
+          {
+            "widget": {
+              "semantic": {
+                "type": "robot",
+                "frontside_conditions": {
+                  "semantic": {
+                    "type": "box",
+                    "size": 1,
+                    "contents": [
+                      {
+                        "semantic": {
+                          "type": "number",
+                          "operator": "+",
+                          "numerator": "1",
+                          "denominator": "1",
+                          "format": "improper_fraction",
+                          "erased": true
+                        },
+                        "view": {
+                          "backside": false
+                        },
+                        "version": 1
+                      }
+                    ],
+                    "horizontal": true
+                  },
+                  "view": {
+                    "backside": false
+                  },
+                  "version": 1
+                },
+                "body": {
+                  "type": "body",
+                  "steps": [
+                    {
+                      "type": "robot_action",
+                      "action_name": "pick up",
+                      "path": {
+                        "type": "path.to_resource",
+                        "resource": {
+                          "type": "number",
+                          "operator": "+",
+                          "numerator": "1",
+                          "denominator": "1",
+                          "format": "improper_fraction",
+                          "is_backside": true
+                        }
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "drop it on",
+                      "path": {
+                        "type": "path.to_entire_context",
+                        "next_path": {
+                          "type": "box_path",
+                          "index": 0
+                        }
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "remove",
+                      "path": {
+                        "type": "path.to_backside_widget_of_context",
+                        "type_name": "robot",
+                        "removing_widget": true
+                      }
+                    }
+                  ]
+                }
+              },
+              "view": {
+                "frontside_width": 66,
+                "frontside_height": 110,
+                "frontside_left": 374.015625,
+                "frontside_top": 71.015625,
+                "backside_geometry": {
+                  "x_scale": 1,
+                  "y_scale": 1,
+                  "original_width": 550,
+                  "original_height": 200
+                },
+                "saved_width": 66,
+                "saved_height": 110,
+                "backside": false
+              },
+              "version": 1
+            }
+          }
+        ]
+      },
+      "view": {
+        "frontside_width": 164,
+        "frontside_height": 68,
+        "frontside_left": 37,
+        "frontside_top": 20,
+        "backside_width": 550,
+        "backside_height": 200,
+        "backside_left": 249,
+        "backside_top": 11,
+        "backside_geometry": {
+          "x_scale": 1,
+          "y_scale": 1,
+          "original_width": 550,
+          "original_height": 200
+        },
+        "saved_width": 164,
+        "saved_height": 68,
+        "backside": false
+      },
+      "version": 1
+    }
+  ]
+}</div></div>
 </body>
 </html>
