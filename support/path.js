@@ -152,7 +152,7 @@ window.TOONTALK.path =
                     return new_referenced;
                 } else {
                     new_referenced = referenced.dereference(path.next, top_level_context, robot);
-                    if (new_referenced && path.is_backside) {
+                    if (new_referenced && path.next.is_backside) {
                         return new_referenced.get_backside(true);
                     }
                     return new_referenced;
