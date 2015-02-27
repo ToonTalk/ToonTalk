@@ -47,6 +47,7 @@ window.TOONTALK.widget = (function (TT) {
             this.has_parent(widget);
             this.has_description(widget);
             this.has_listeners(widget);
+            this.droppable(widget);
             // erasability will eventually will be used for type conversions
             // currently only for conditions
             this.erasable(widget);
@@ -241,6 +242,18 @@ window.TOONTALK.widget = (function (TT) {
                 };
             }
             return widget;
+        },
+
+        droppable: function (widget) {
+            if (!widget.drop_on) {
+                widget.drop_on = function (other, is_backside, event, robot) {
+                    if (other.widget_dropped_on_me) {
+                        return other.widget_dropped_on_me(this, is_backside, event, robot);
+                    }
+                    console.log("No handler for drop of '" + this + "' on '" + other + "'");
+                    return;
+                }
+            }
         },
         
         stackable: function (widget) {
