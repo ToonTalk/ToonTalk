@@ -191,9 +191,14 @@ window.TOONTALK.robot_action =
 //                 TT.UTILITIES.set_absolute_position($thing_in_hand_frontside_element, thing_in_hand_position);
 //             }
         };
-        if (target.is_backside()) {
+        if (target.is_backside() && !$(target.get_element()).is(":visible")) {
             target.get_widget().open_backside(function () {
-                                                  move_robot_animation(target, context, top_level_context, robot, adjust_dropped_location_continuation);
+                                                  var new_continuation = function () {
+                                                      adjust_dropped_location_continuation();
+                                                      // since the robot opened it needs to close when finished
+                                                      target.hide_backside();
+                                                  };
+                                                  move_robot_animation(target, context, top_level_context, robot, new_continuation);
                                               });
         } else {
             move_robot_animation(target, context, top_level_context, robot, adjust_dropped_location_continuation);
