@@ -56,19 +56,6 @@ window.TOONTALK.robot = (function (TT) {
         new_robot.get_body = function () {
             return body;
         };
-//         new_robot.get_image_url = function () {
-//             return image_url;
-//         };
-//         new_robot.set_image_url = function (new_value, update_display) {
-//             if (image_url === new_value) {
-//                 return false;
-//             }
-//             image_url = new_value;
-//             if (update_display) {
-//                 this.rerender();
-//             }
-//             return true;
-//         };
         new_robot.get_animating = function () {
             return animating;
         };

@@ -906,6 +906,31 @@ window.TOONTALK.UTILITIES =
             }
             return widget_json;
         },
+
+        get_json_of_keys: function (object) {
+            var json = {};
+            Object.keys(object).forEach(function (key) {
+                if (object[key].get_json) {
+                    json[key] = {json: object[key].get_json()};
+                } else {
+                    json[key] = object[key];
+                }
+            });
+            return json;
+        },
+
+        create_keys_from_json: function (json, additional_info) {
+            // reconstructs the object jsonified above
+            var object = {};
+            Object.keys(json).forEach(function (key) {
+                if (json[key].json) {
+                    object[key] = TT.UTILITIES.create_from_json(json[key].json, additional_info);
+                } else {
+                    object[key] = json[key];
+                }
+            });
+            return object;
+        },
         
         tree_replace_once: function (object, replace, replacement, get_json_of_widget_from_shared_widget_index) {
             // replaces object's first occurence of replace with replacement

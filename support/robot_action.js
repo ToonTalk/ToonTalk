@@ -294,11 +294,10 @@ window.TOONTALK.robot_action =
     var animate_widget_creation = function (widget, context, top_level_context, robot, continuation, additional_info) {
         var new_continuation = function () {
             continuation();
-             robot.run_next_step();
         };
         var source_widget;
         if (additional_info && additional_info.button_selector) {
-            source_widget = TT.path.dereference_path(additional_info.path_to_source, context, top_level_context, robot),
+            source_widget = TT.path.dereference_path(additional_info.path_to_source, context, top_level_context, robot);
             button_use_animation(source_widget, context, top_level_context, robot, new_continuation, additional_info.button_selector, additional_info);
         } else {
             new_continuation();
@@ -323,7 +322,7 @@ window.TOONTALK.robot_action =
 
     TT.creators_from_json["robot_action"] = function (json, additional_info) {
         if (json.additional_info) {
-            return TT.robot_action.create(TT.path.create_from_json(json.path, additional_info), json.action_name, json.additional_info);
+            return TT.robot_action.create(TT.path.create_from_json(json.path, additional_info), json.action_name, TT.UTILITIES.create_keys_from_json(json.additional_info, additional_info));
         } else {
             return TT.robot_action.create(TT.path.create_from_json(json.path, additional_info), json.action_name);
         }
@@ -412,7 +411,7 @@ window.TOONTALK.robot_action =
                 return {type: "robot_action",
                         action_name: action_name,
                         path: TT.path.get_json(path, json_history),
-                        additional_info: additional_info};        
+                        additional_info: additional_info && TT.UTILITIES.get_json_of_keys(additional_info)};        
             };
             return new_action;  
         }
