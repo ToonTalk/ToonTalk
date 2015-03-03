@@ -731,6 +731,10 @@ window.TOONTALK.nest = (function (TT) {
             return removed;
         };
         new_nest.dereference = function (path, top_level_context, robot) {
+            if (contents.length === 0) {
+                // robot needs to wait until something arrives on this nest
+                return {wait_until_this_nest_receives_something: this};
+            }
             if (contents) {
                 return contents[0].dereference(path, top_level_context, robot);
             }
