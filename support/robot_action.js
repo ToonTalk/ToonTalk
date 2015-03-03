@@ -291,6 +291,19 @@ window.TOONTALK.robot_action =
         };
         button_use_animation(widget, context, top_level_context, robot, new_continuation, additional_info.button_selector, additional_info);
     };
+    var animate_widget_creation = function (widget, context, top_level_context, robot, continuation, additional_info) {
+        var new_continuation = function () {
+            continuation();
+             robot.run_next_step();
+        };
+        var source_widget;
+        if (additional_info && additional_info.button_selector) {
+            source_widget = TT.path.dereference_path(additional_info.path_to_source, context, top_level_context, robot),
+            button_use_animation(source_widget, context, top_level_context, robot, new_continuation, additional_info.button_selector, additional_info);
+        } else {
+            new_continuation();
+        }      
+    };
     var watched_run_functions = 
         {"copy":                 copy_animation,
          "pick up":              pick_up_animation,
@@ -305,11 +318,7 @@ window.TOONTALK.robot_action =
               continuation();
               robot.run_next_step();
          },
-         "add a new widget to the work space": function (widget, context, top_level_context, robot, continuation) {
-             // TODO: animate the button push that created the widget
-             continuation();
-             robot.run_next_step();
-         }
+         "add a new widget to the work space": animate_widget_creation
     };
 
     TT.creators_from_json["robot_action"] = function (json, additional_info) {
