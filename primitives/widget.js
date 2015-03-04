@@ -573,6 +573,9 @@ window.TOONTALK.widget = (function (TT) {
         get_full_description: function (to_string_info) {
             var description, string;
             if (this.get_erased && this.get_erased()) {
+                if (to_string_info && to_string_info.role === "conditions") {
+                    return "any " + this.get_type_name();
+                }
                 return "erased " + this.get_type_name();
             }
             description = this.get_description(to_string_info);
