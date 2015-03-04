@@ -214,7 +214,7 @@ window.TOONTALK.robot_action =
         var backside_element = widget.get_backside_element(true);
         return $(backside_element).find(class_name_selector).get(0);
     };
-    var button_use_animation = function (widget, context, top_level_context, robot, continuation, class_name_selector, additional_info) {
+    var button_use_animation = function (widget, context, top_level_context, robot, continuation, class_name_selector, additional_info, delay_before_closing_backside) {
         var button_element = find_backside_element(widget, class_name_selector);
         var robot_frontside_element = robot.get_frontside_element();
         var button_visible = button_element && $(button_element).is(":visible");
@@ -236,7 +236,7 @@ window.TOONTALK.robot_action =
                            }
                            robot.run_next_step();
                       },
-                      500);
+                      delay_before_closing_backside);
         };
         var animation_continuation = function () {
             // robots move at 1/4 pixel per millisecond for clarity
@@ -289,19 +289,16 @@ window.TOONTALK.robot_action =
             }
             continuation();
         };
-        button_use_animation(widget, context, top_level_context, robot, new_continuation, additional_info.button_selector, additional_info);
+        button_use_animation(widget, context, top_level_context, robot, new_continuation, additional_info.button_selector, additional_info, 1000);
     };
     var animate_widget_creation = function (widget, context, top_level_context, robot, continuation, additional_info) {
-        var new_continuation = function () {
-            setTimeout(continuation, show_button_use ? 3000 : 0); // leave the button visible for a few seconds
-        };
         var show_button_use = additional_info && additional_info.button_selector;
         var source_widget;
         if (show_button_use) {
             source_widget = TT.path.dereference_path(additional_info.path_to_source, context, top_level_context, robot);
-            button_use_animation(source_widget, context, top_level_context, robot, new_continuation, additional_info.button_selector, additional_info);
+            button_use_animation(source_widget, context, top_level_context, robot, continuation, additional_info.button_selector, additional_info, 3000);
         } else {
-            new_continuation();
+            continuation();
         }      
     };
     var watched_run_functions = 
