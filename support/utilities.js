@@ -1336,14 +1336,34 @@ window.TOONTALK.UTILITIES =
             }
         },
         
-        set_position_relative_to_top_level_backside: function ($element, absolute_position) {
-            var top_level_position = $element.closest(".toontalk-top-level-backside").offset();
+        set_position_relative_to_top_level_backside: function ($element, absolute_position, stay_inside_top_level_backside) {
+            var $top_level_element = $element.closest(".toontalk-top-level-backside");
+            var top_level_position = $top_level_element.offset();
+            var left, top, element_width, element_height, top_level_element_width, top_level_element_height;
             if (!top_level_position) {
                 console.log("Unable to find top-level backside. Perhaps is 'visible' but not attached.");
                 top_level_position = {left: 0, top: 0};
             }
-            var left = absolute_position.left-top_level_position.left;
-            var top  = absolute_position.top -top_level_position.top;
+            left = absolute_position.left-top_level_position.left;
+            top  = absolute_position.top -top_level_position.top;
+            if (stay_inside_top_level_backside) {
+                element_width  = $element.width();
+                element_height = $element.height();
+                top_level_element_width  = $top_level_element.width();
+                top_level_element_height = $top_level_element.height();
+                if (left > top_level_element_width-element_width) {
+                    left = top_level_element_width-element_width;
+                }
+                if (left < 0) {
+                    left = 0;
+                }
+                if (top > top_level_element_height-element_height) {
+                    top = top_level_element_height-element_height;
+                }
+                if (top < 0) {
+                    top = 0;
+                }
+            }
             $element.css({left: left,
                           top:  top,
                           position: "absolute"});
