@@ -300,7 +300,11 @@ window.TOONTALK.widget = (function (TT) {
                     return widget_element;
                 };
                 widget.animate_to_widget = function (target_widget, continuation, speed, left_offset, top_offset) {
-                    this.animate_to_element(find_widget_element(target_widget), continuation, speed, left_offset, top_offset);
+                    // delay for DOM to settle down in case target_widget is brand new
+                    setTimeout(function () {
+                                   this.animate_to_element(find_widget_element(target_widget), continuation, speed, left_offset, top_offset);
+                               }.bind(this),
+                               100);            
                 };
             }
             if (!widget.animate_to_element) {
