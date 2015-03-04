@@ -524,7 +524,12 @@ window.TOONTALK.number = (function () {
             }
         }
         if (this.is_integer() && format !== 'scientific_notation') {
-            integer_as_string = bigrat.toBigInteger(this.get_value()).toString();
+            try {
+                integer_as_string = bigrat.toBigInteger(this.get_value()).toString();
+            } catch (e) {
+                console.log("Error converting number to a string: " + e);
+                integer_as_string = "0";
+            }
             digits_needed = integer_as_string.length;
             if (operator_HTML.length > 0) {
                 digits_needed++;
