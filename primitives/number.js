@@ -981,12 +981,12 @@ window.TOONTALK.number_backside =
                     if (first_class_name === "toontalk-denominator-input") {
                         TT.robot.in_training.edited(number, {setter_name: "set_denominator",
                                                              argument_1: denominator,
-                                                             toString: "change value of the denominator to " + denominator,
+                                                             toString: "by changing the value of the denominator to " + denominator,
                                                              button_selector: "." + first_class_name});
                     } else {
                         TT.robot.in_training.edited(number, {setter_name: "set_numerator",
                                                              argument_1: numerator,
-                                                             toString: "change value of the numerator to " + numerator,
+                                                             toString: "by changing the value of the numerator to " + numerator,
                                                              button_selector: "." + first_class_name});
                     }         
                 }
@@ -999,7 +999,7 @@ window.TOONTALK.number_backside =
                 if (TT.robot.in_training) {
                     TT.robot.in_training.edited(number, {setter_name: "set_format",
                                                          argument_1: format,
-                                                         toString: "change the format to " + format + " of the number",
+                                                         toString: "by changing the format to " + format + " of the number",
                                                          // just use the first className to find this button later
                                                          button_selector: "." + selected_button.className.split(" ", 1)[0]});
                 }
@@ -1012,7 +1012,7 @@ window.TOONTALK.number_backside =
                 if (TT.robot.in_training) {
                     TT.robot.in_training.edited(number, {setter_name: "set_operator",
                                                          argument_1: operator,
-                                                         toString: "change the operator to " + operator + " of the number",
+                                                         toString: "by changing the operator to " + operator + " of the number",
                                                          // just use the first className to find this button later
                                                          button_selector: "." + selected_button.className.split(" ", 1)[0]});
                 }

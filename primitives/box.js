@@ -700,7 +700,7 @@ window.TOONTALK.box_backside =
                 if (box.set_size(new_size, true) && TT.robot.in_training) {
                     TT.robot.in_training.edited(box, {setter_name: "set_size",
                                                       argument_1: new_size,
-                                                      toString: "change the number of holes to " + new_size + " of the box",
+                                                      toString: "by changing the number of holes to " + new_size + " of the box",
                                                       button_selector: ".toontalk-box-size-input"});
                 }
             };
@@ -712,7 +712,7 @@ window.TOONTALK.box_backside =
                 if (TT.robot.in_training) {
                     TT.robot.in_training.edited(box, {setter_name: "set_horizontal",
                                                       argument_1: is_horizontal,
-                                                      toString: "change the orientation to " + orientation + " of the box",
+                                                      toString: "by changing the orientation to " + orientation + " of the box",
                                                       // just use the first className to find this button later
                                                       button_selector: "." + selected_button.className.split(" ", 1)[0]});
                 }

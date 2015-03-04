@@ -271,7 +271,7 @@ window.TOONTALK.newly_created_widgets_path =
                     return widget;
                 },
                 toString: function () {
-                    return "the " + TT.UTILITIES.ordinal(index) + " widget he created";
+                    return "the " + TT.UTILITIES.ordinal(index) + " new widget";
                 },
                 get_json: function () {
                     return {type: "newly_created_widgets_path",
