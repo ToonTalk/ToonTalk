@@ -655,12 +655,13 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         }
         if (this.get_erased && this.get_erased()) {
             // could save the current opacity and restore it below
-            $(frontside_element).css({opacity: 0});
+            // hide so doesn't get in the way of selections
+            $(frontside_element).css({opacity: 0}).hide();
             return;
         }
         if (this.get_erased && $(frontside_element).css("opacity") === "0") {
             // was erased but no longer
-            $(frontside_element).css({opacity: 1});
+            $(frontside_element).css({opacity: 1}).show();
         }
         if (frontside_element.children.length === $(frontside_element).children(".ui-resizable-handle").length) {
             // the only children are resize handles so add the HTML
