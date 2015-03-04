@@ -522,7 +522,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 return number_equals.call(this, other);
             };
             return attribute_widget;
-        };
+        }.bind(this);
         var $attribute_input, attribute_widget, original_copies, frontside_element,
             // store some default number functions:
             number_equals, number_update_display, number_to_string;
