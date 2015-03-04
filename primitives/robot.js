@@ -552,20 +552,20 @@ window.TOONTALK.robot = (function (TT) {
                     // tried to add position: absolute to toontalk-held-by-robot CSS but didn't work
                     $(thing_in_hand_frontside_element).addClass("toontalk-held-by-robot");
                     // compute where the thing should be to be centred over the robot
-                    thing_in_hand_width = $(thing_in_hand_frontside_element).width();
+                    thing_in_hand_width  = $(thing_in_hand_frontside_element).width();
                     thing_in_hand_height = $(thing_in_hand_frontside_element).height();
-                    robot_width = $(frontside_element).width();
+                    robot_width  = $(frontside_element).width();
                     robot_height = $(frontside_element).height();
                     if (thing_in_hand_width === 0) {
-                        thing_in_hand_width = robot_width*2;
+                        thing_in_hand_width  = robot_width*2;
                         thing_in_hand_height = robot_height/2;
-                        css['width'] = thing_in_hand_width;
+                        css['width']  = thing_in_hand_width;
                         css['height'] = thing_in_hand_height;
                     }
-                    relative_left = (robot_width - thing_in_hand_width)/2;
-                    relative_top = (robot_height - thing_in_hand_height)/2;
+                    relative_left = (robot_width  - thing_in_hand_width)/2;
+                    relative_top  = robot_height/4;
                     css['left'] = relative_left;
-                    css['top'] = relative_top;
+                    css['top']  = relative_top;
                     $(thing_in_hand_frontside_element).css(css);
                     if (thing_in_hand) {
                         thing_in_hand.render(); // or should it be rerender -- could it be invisible?
