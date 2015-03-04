@@ -493,42 +493,48 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 attribute_widget.set_value_from_decimal(attribute_value);
                 number_update_display.call(attribute_widget);
         }.bind(this);
-        var $attribute_input, attribute_widget, original_copies,
+        var create_numeric_attribute_widget = function (attribute_name, attribute_value) {
+            var attribute_widget = TT.number.create(0, 1);
             // store some default number functions:
-            number_equals, number_update_display, number_to_string, frontside_element;
+            var number_equals, number_update_display, number_to_string;
+            attribute_widget.element_widget = this;
+            attribute_widget.set_value_from_decimal(attribute_value);
+            attribute_widget.set_format('decimal');
+            attribute_widget.attribute = attribute_name; // TODO: rename? use accessors?
+            attribute_widget.get_type_name = function (plural) {
+                if (plural) {
+                    return "element attributes";
+                }
+                return "element attribute";
+            };
+            number_to_string = attribute_widget.toString;
+            attribute_widget.toString = function () {
+                return number_to_string.call(this) + " (" + this.attribute + ")";
+            };
+    //         attribute_widget.get_element = function () {
+    //             if ($attribute_input && $attribute_input.length > 0) {
+    //                 return $attribute_input.get(0);
+    //             }
+    //         };
+            number_equals = attribute_widget.equals;
+            attribute_widget.equals = function (other) {
+                if (attribute_name === other.attribute) {
+                    return this.equals(other.element_widget);
+                }
+                return number_equals.call(this, other);
+            };
+            return attribute_widget;
+        };
+        var $attribute_input, attribute_widget, original_copies, frontside_element;
         if (backside_element) {
             $attribute_input = $(backside_element).find(selector);
             if ($attribute_input.length > 0) {
                 $attribute_input.get(0).toontalk_widget = this;
             }
         }
-        attribute_widget = TT.number.create(0, 1);
-        attribute_widget.element_widget = this;
-        attribute_widget.set_value_from_decimal(attribute_value);
-        attribute_widget.set_format('decimal');
-        attribute_widget.attribute = attribute_name; // TODO: rename? use accessors?
-        attribute_widget.get_type_name = function (plural) {
-            if (plural) {
-                return "element attributes";
-            }
-            return "element attribute";
-        };
-        number_to_string = attribute_widget.toString;
-        attribute_widget.toString = function () {
-            return number_to_string.call(this) + " (" + this.attribute + ")";
-        };
-//         attribute_widget.get_element = function () {
-//             if ($attribute_input && $attribute_input.length > 0) {
-//                 return $attribute_input.get(0);
-//             }
-//         };
-        number_equals = attribute_widget.equals;
-        attribute_widget.equals = function (other) {
-            if (attribute_name === other.attribute) {
-                return this.equals(other.element_widget);
-            }
-            return number_equals.call(this, other);
-        };
+        // TODO: make this conditional on attribute_value being a number
+        // and implement string valued attributes
+        attribute_widget = create_numeric_attribute_widget(attribute_name, attribute_value);
         // a change to any of the copies is instantly reflected in all
         original_copies = this.get_original_copies()[attribute_name];
         if (original_copies) {
