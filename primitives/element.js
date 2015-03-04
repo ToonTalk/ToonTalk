@@ -495,8 +495,6 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         }.bind(this);
         var create_numeric_attribute_widget = function (attribute_name, attribute_value) {
             var attribute_widget = TT.number.create(0, 1);
-            // store some default number functions:
-            var number_equals, number_update_display, number_to_string;
             attribute_widget.element_widget = this;
             attribute_widget.set_value_from_decimal(attribute_value);
             attribute_widget.set_format('decimal');
@@ -525,7 +523,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             };
             return attribute_widget;
         };
-        var $attribute_input, attribute_widget, original_copies, frontside_element;
+        var $attribute_input, attribute_widget, original_copies, frontside_element,
+            // store some default number functions:
+            number_equals, number_update_display, number_to_string;
         if (backside_element) {
             $attribute_input = $(backside_element).find(selector);
             if ($attribute_input.length > 0) {
