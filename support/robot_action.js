@@ -292,15 +292,12 @@ window.TOONTALK.robot_action =
         button_use_animation(widget, context, top_level_context, robot, new_continuation, additional_info.button_selector, additional_info);
     };
     var animate_widget_creation = function (widget, context, top_level_context, robot, continuation, additional_info) {
-        var new_continuation = function () {
-            continuation();
-        };
         var source_widget;
         if (additional_info && additional_info.button_selector) {
             source_widget = TT.path.dereference_path(additional_info.path_to_source, context, top_level_context, robot);
-            button_use_animation(source_widget, context, top_level_context, robot, new_continuation, additional_info.button_selector, additional_info);
+            button_use_animation(source_widget, context, top_level_context, robot, continuation, additional_info.button_selector, additional_info);
         } else {
-            new_continuation();
+            continuation();
         }      
     };
     var watched_run_functions = 
