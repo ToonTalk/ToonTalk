@@ -221,10 +221,6 @@ window.TOONTALK.robot_action =
         var new_continuation = function () {
             continuation();
             $(button_element).addClass("ui-state-active");
-            if (!$(button_element).is(":visible") && backside) {
-                // open advanced settings if button isn't visible
-                backside.set_advanced_settings_showing(true, backside.get_element());
-            }
             if (class_name_selector === ".toontalk-select-function" || class_name_selector === ".toontalk-box-size-input") {
                 button_element.value = additional_info.argument_1;
             }
@@ -239,6 +235,10 @@ window.TOONTALK.robot_action =
                       delay_before_closing_backside);
         };
         var animation_continuation = function () {
+            if (!$(button_element).is(":visible") && backside) {
+                // open advanced settings if button isn't visible
+                backside.set_advanced_settings_showing(true, backside.get_element());
+            }
             // robots move at 1/4 pixel per millisecond for clarity
             robot.animate_to_element(button_element, new_continuation, .25, 0, -$(robot_frontside_element).height());
         }
