@@ -209,12 +209,6 @@ window.TOONTALK.robot_action =
             move_robot_animation(target, context, top_level_context, robot, adjust_dropped_location_continuation);
         }
     };
-    var find_sibling = function (widget, class_name_selector) {
-        // move this to UTILITIES?
-        var frontside_element = widget.get_frontside_element(true);
-        var $container_element = $(frontside_element).closest(".toontalk-backside");
-        return $container_element.find(class_name_selector).get(0);
-    };
     var find_backside_element = function (widget, class_name_selector) {
         var backside_element = widget.get_backside_element(true);
         return $(backside_element).find(class_name_selector).get(0);
