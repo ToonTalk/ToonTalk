@@ -679,7 +679,7 @@ window.TOONTALK.UTILITIES =
             if (json.widget) {
                 // is a context where need to know which side of the widget
                 widget = TT.UTILITIES.create_from_json(json.widget, additional_info);
-                if (json.is_backside) {
+                if (widget && json.is_backside) {
                     return widget.get_backside(true);
                 }
                 return widget;
@@ -725,6 +725,10 @@ window.TOONTALK.UTILITIES =
             }
             json_view = json.view;
             if (json_semantic.shared_widget_index >= 0) {
+                if (!additional_info.json_of_shared_widgets) {
+                    TT.UTILITIES.report_internal_error("JSON refers to shared widgets but they can't be found. Sorry.");
+                    return;
+                }
                 widget = TT.UTILITIES.create_from_json(additional_info.json_of_shared_widgets[json_semantic.shared_widget_index], additional_info, true);
                 return handle_delayed_backside_widgets(widget, additional_info, json_semantic.shared_widget_index);
             } else if (TT.creators_from_json[json_semantic.type]) {
