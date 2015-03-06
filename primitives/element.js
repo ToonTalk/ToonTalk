@@ -203,14 +203,18 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     // can be undefined if all the transforms had a zero value
                     return;
                 }
-                current_width  = pending_css.width;
-                current_height = pending_css.height;
-                // without the following the image remains square since only one of width/height set
-                if (current_width && typeof current_height === 'undefined') {
-                    current_height = frontside_element.clientHeight;
-                } else if (current_height && typeof current_width === 'undefined') {
-                    current_width = frontside_element.clientWidth;
+                if (pending_css.width) {
+                    current_width  = pending_css.width;
                 }
+                if (pending_css.height) {
+                    current_height = pending_css.height;
+                }
+                // without the following the image remains square since only one of width/height set
+//                 if (current_width && typeof current_height === 'undefined') {
+//                     current_height = frontside_element.clientHeight;
+//                 } else if (current_height && typeof current_width === 'undefined') {
+//                     current_width = frontside_element.clientWidth;
+//                 }
                 if (current_width || current_height) {
                     // if it contains an image then change it too (needed only for width and height)
                     // TODO: is the following still needed?
@@ -317,8 +321,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             }
             if (TT.UTILITIES.on_a_nest_in_a_box(frontside_element)) {
                 // need to work around a CSS problem where nested percentage widths don't behave as expected
-                this.set_attribute("width",  $(frontside_element).closest(".toontalk-box-hole").width(),  false);
-                this.set_attribute("height", $(frontside_element).closest(".toontalk-box-hole").height(), false);
+                this.set_attribute('width',  $(frontside_element).closest(".toontalk-box-hole").width(),  false);
+                this.set_attribute('height', $(frontside_element).closest(".toontalk-box-hole").height(), false);
             }
             if (typeof original_width === 'undefined') {
                 // this delays but the following delays more
@@ -1047,7 +1051,7 @@ window.TOONTALK.element_backside =
             // need to ensure that it 'knows' its textContent, etc.
             element_widget.update_display();
             text = element_widget[getter]().trim();
-            if (text.length > 0) {
+            if (text.length > 0 && !element_widget.get_image_element()) {
                 html_input = TT.UTILITIES.create_text_area(text, "toontalk-html-input", "", "Type here to edit the text.");
                 update_html = function (event) {
                     var new_text = html_input.button.value.trim();
