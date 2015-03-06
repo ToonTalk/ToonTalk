@@ -291,11 +291,15 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     };
     
     element.match_with_another_element_widget = function (element_pattern) {
+        var text_pattern;
         if (this.get_HTML() === element_pattern.get_HTML()) {
             return 'matched';
-        } else {
-            return element_pattern;
         }
+        text_pattern = element_pattern.get_text();
+        if (text_pattern !== "" && text_pattern === this.get_text()) {
+            return 'matched';
+        }
+        return element_pattern;
     };
 
     element.compare_with = function (other) {
