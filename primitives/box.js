@@ -335,7 +335,7 @@ window.TOONTALK.box = (function (TT) {
                     new_height /= TT.nest.CONTENTS_HEIGHT_FACTOR;
                 }
             };
-            var left, top, content_frontside_element, new_width, new_height;
+            var left, top, content_frontside_element, new_width, new_height, hole_contents;
             if (horizontal) {
                 top = 0;
                 if ($parents.length > 0) {
@@ -365,10 +365,6 @@ window.TOONTALK.box = (function (TT) {
                     top += border_size*(index-1);
                 }
             }
-            $(hole_element).css({left:   left,
-                                 top:    top,
-                                 width:  new_width,
-                                 height: new_height});
             if (hole_element !== content_frontside_element) {
                 // not an empty hole
                 // save dimensions first?
@@ -376,9 +372,18 @@ window.TOONTALK.box = (function (TT) {
                                                   top:   0,
                                                   width:  '',
                                                   height: ''});
+                if (hole.is_of_type('element')) {
+                    hole_contents = hole.get_contents();
+                    hole_contents.set_size_attributes(new_width, new_height);
+//                     TT.UTILITIES.scale_to_fit(content_frontside_element, hole_element, hole_contents.saved_width, hole_contents.saved_height);
+                }
                 hole_element.appendChild(content_frontside_element);
                 hole.get_contents().update_display();
-            }                                          
+            }
+            $(hole_element).css({left:   left,
+                                 top:    top,
+                                 width:  new_width,
+                                 height: new_height});                                          
             if (!TT.UTILITIES.has_animating_image(content_frontside_element)) {
                 // explicit size interferes with animation
                 if (index > 0) {
@@ -839,6 +844,9 @@ window.TOONTALK.box_hole =
                 return "empty hole";
             };
             hole.is_of_type = function (type_name) {
+                if (contents) {
+                    return contents.is_of_type(type_name);
+                }
                 return type_name === "empty hole";
             };
             hole.get_index = function () {
