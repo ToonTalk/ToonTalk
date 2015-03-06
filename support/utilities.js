@@ -2162,34 +2162,34 @@ window.TOONTALK.UTILITIES =
         },
         
         scale_to_fit: function (this_element, other_element, original_width, original_height, delay) {
+            if ($(other_element).is(".toontalk-backside")) {
+                return TT.UTILITIES.scale_element(this_element, original_width, original_height, original_width, original_height, delay);
+            }
+            return TT.UTILITIES.scale_element(this_element, $(other_element).width(), $(other_element).height(), original_width, original_height, delay);  
+        },
+
+        scale_element: function (element, new_width, new_height, original_width, original_height, delay) {
             var update_css = function () {
-                 $(this_element).css({transform: "scale(" + x_scale + ", " + y_scale + ")",
-                                      "transform-origin": "top left", 
-                                      width:  original_width,
-                                      height: original_height});
+                 $(element).css({transform: "scale(" + x_scale + ", " + y_scale + ")",
+                                 "transform-origin": "top left", 
+                                 width:  original_width,
+                                 height: original_height});
             };
-            var new_width, new_height, x_scale, y_scale;
+            var x_scale, y_scale;
             if (!original_width) {
-                original_width = $(this_element).width();
+                original_width = $(element).width();
             }
             if (!original_height) {
-                original_height = $(this_element).height();
+                original_height = $(element).height();
             }
-            if ($(other_element).is(".toontalk-backside")) {
+            x_scale = new_width/original_width;
+            y_scale = new_height/original_height;
+            // e.g. new_width was 0
+            if (x_scale === 0) {
                 x_scale = 1;
+            }
+            if (y_scale === 0) {
                 y_scale = 1;
-            } else {
-                new_width  = $(other_element).width();
-                new_height = $(other_element).height();
-                x_scale = new_width/original_width;
-                y_scale = new_height/original_height;
-                // e.g. other_element doesn't know it dimensions
-                if (x_scale === 0) {
-                    x_scale = 1;
-                }
-                if (y_scale === 0) {
-                    y_scale = 1;
-                }
             }
             if (delay) {
                 setTimeout(update_css, delay);
@@ -2198,6 +2198,38 @@ window.TOONTALK.UTILITIES =
             }
             return {x_scale: x_scale,
                     y_scale: y_scale};
+        },
+
+        run_when_dimensions_known: function (element, callback) {
+            var check_if_dimensions_known = function (delay_if_not) {
+                if ($(element).width()) {
+                    callback();
+                    return;
+                }
+                setTimeout(function () {
+                               check_if_dimensions_known(delay_if_not*2);
+                           },
+                           delay_if_not)
+            };
+            check_if_dimensions_known(1);
+        },
+
+        original_dimensions: function (widget, set_original_dimensions) {
+            // this relies upon run_when_dimensions_known which keeps trying until it finds out the dimensions of this element
+            // TODO: discover if there is a better way
+            var frontside_element = widget.get_frontside_element(true);
+            var parent = frontside_element.parentElement;
+            var update_original_dimensions_and_restore =
+                function () {
+                    set_original_dimensions($(frontside_element).width(), $(frontside_element).height());
+                    if (parent) {
+                        parent.appendChild(frontside_element);
+                    } else {
+                        $(frontside_element).remove();
+                    }
+                };
+            $(document.body).append(frontside_element);
+            TT.UTILITIES.run_when_dimensions_known(frontside_element, update_original_dimensions_and_restore);
         },
         
         relative_position: function (target_element, reference_element) {

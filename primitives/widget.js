@@ -101,9 +101,9 @@ window.TOONTALK.widget = (function (TT) {
                     if (other.get_size_attributes) {
                         dimensions = other.get_size_attributes();
                     } else {
-                         // elements have clientWidth and clientHeight
-                         // used to use $(...).width() but that returns 0 during a drop
-                         dimensions = other.get_frontside_element();
+                        // elements have clientWidth and clientHeight
+                        // used to use $(...).width() but that returns 0 during a drop
+                        dimensions = other.get_frontside_element();
                     }
                     if (dimensions.clientWidth > 0) {
                         this.saved_width  = dimensions.clientWidth;

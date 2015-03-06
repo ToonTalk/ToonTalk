@@ -23,6 +23,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     
     var value_in_pixels = function (value, attribute) {
         var last_character, number;
+        if (!value) {
+            return 0;
+        }
         if (typeof value === 'number') {
             number = value;
         }
@@ -60,7 +63,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         var widget_drag_started = new_element.drag_started;
         var attribute_widgets = {}; // table relating attribute_name and widget in backside table
         var original_copies   = {}; // table relating attribute_name and all the widget copies for that attribute
-        var pending_css, transform_css, on_update_display_handlers, $image_element;
+        var original_width, original_height, current_width, current_height, pending_css, transform_css, on_update_display_handlers, $image_element;
         if (!style_attributes) {
             style_attributes = [];
         }
@@ -200,20 +203,31 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     // can be undefined if all the transforms had a zero value
                     return;
                 }
+                current_width  = pending_css.width;
+                current_height = pending_css.height;
                 // without the following the image remains square since only one of width/height set
-                if (pending_css.width && typeof pending_css.height === 'undefined') {
-                    pending_css.height = frontside_element.clientHeight;
-                } else if (pending_css.height && typeof pending_css.width === 'undefined') {
-                    pending_css.width = frontside_element.clientWidth;
+                if (current_width && typeof current_height === 'undefined') {
+                    current_height = frontside_element.clientHeight;
+                } else if (current_height && typeof current_width === 'undefined') {
+                    current_width = frontside_element.clientWidth;
+                }
+                if (current_width || current_height) {
+                    // if it contains an image then change it too (needed only for width and height)
+                    // TODO: is the following still needed?
+                    if ($image_element) {
+                        $image_element.css({width:  original_width,
+                                            height: original_height});
+                    }
+                    TT.UTILITIES.run_when_dimensions_known(frontside_element,
+                                                           function () {
+                                                                TT.UTILITIES.scale_element(frontside_element, current_width, current_height, original_width, original_height);
+                                                           });
+                    pending_css.width  = undefined;
+                    pending_css.height = undefined;    
                 }
                 $(frontside_element).css(pending_css);
-                // if it contains an image then change it too (needed only for width and height)
-                if ($image_element && (pending_css.width || pending_css.height)) {
-                    $image_element.css({width:  pending_css.width,
-                                        height: pending_css.height});
-                }
                 pending_css = undefined;
-                });
+                }.bind(this));
         };
         new_element.on_update_display = function (handler) {
             if (!on_update_display_handlers) {
@@ -258,6 +272,89 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             this.drag_x_offset = json.view.drag_x_offset;
             this.drag_y_offset = json.view.drag_y_offset;
             widget_drag_started.call(this, json, is_resource);
+        };
+        new_element.update_display = function () {
+            var frontside_element = this.get_frontside_element();
+            var backside = this.get_backside();
+            var element_description = function (element) {
+                if (this.get_image_element()) {
+                    return "image";
+                }
+                if ($(element).is(".toontalk-plain-text-element")) {
+                    return "text";
+                }
+                return "element";
+            }.bind(this);
+            var rendering, additional_classes;
+            if (this.being_dragged) {
+                return;
+            }
+            if (this.get_erased && this.get_erased()) {
+                // could save the current opacity and restore it below
+                // hide so doesn't get in the way of selections
+                $(frontside_element).css({opacity: 0}).hide();
+                return;
+            }
+            if (this.get_erased && $(frontside_element).css("opacity") === "0") {
+                // was erased but no longer
+                $(frontside_element).css({opacity: 1}).show();
+            }
+            if (frontside_element.children.length === $(frontside_element).children(".ui-resizable-handle").length) {
+                // the only children are resize handles so add the HTML
+                rendering = document.createElement('div');
+                rendering.innerHTML = this.get_HTML();
+                frontside_element.appendChild(rendering);
+                this.set_image_element(rendering, frontside_element);
+                $(frontside_element).addClass("toontalk-element-frontside");
+                if (rendering.innerHTML.substring(0, 1) !== '<') {
+                    // doesn't look like HTML so assume it is raw text and give it a class that will give it a better font and size
+                    additional_classes = this.get_additional_classes();
+                    if (additional_classes) {
+                        $(rendering).addClass(additional_classes);
+                    }
+                    $(frontside_element).addClass("ui-widget toontalk-plain-text-element");
+                }
+            }
+            if (TT.UTILITIES.on_a_nest_in_a_box(frontside_element)) {
+                // need to work around a CSS problem where nested percentage widths don't behave as expected
+                this.set_attribute("width",  $(frontside_element).closest(".toontalk-box-hole").width(),  false);
+                this.set_attribute("height", $(frontside_element).closest(".toontalk-box-hole").height(), false);
+            }
+            if (typeof original_width === 'undefined') {
+                // this delays but the following delays more
+                TT.UTILITIES.original_dimensions(this, function (width, height) {
+                                                           original_width  = width;
+                                                           original_height = height;
+                                                       });
+            }
+            this.apply_css();
+            this.fire_on_update_display_handlers();
+            frontside_element.title = "Click to see the backside where you can place robots or change the style of this " + element_description(frontside_element);
+        };
+        new_element.get_attribute_from_current_css = function (attribute) {
+            var frontside_element, value;
+            if (attribute === 'width') {
+                return current_width || original_width;
+            }
+            if (attribute === 'height') {
+                return current_height || original_height;
+            }
+            frontside_element = this.get_frontside_element();
+            value = frontside_element.style[attribute];
+            if (value === "") {
+                // this caused integer rounding (at least of font-size)
+                // but if the above doesn't find a value seems sometimes this does
+                value = $(frontside_element).css(attribute);
+            }
+            if (!value) {
+                // zero is the default value -- e.g. for transformations such as rotate
+                return 0;
+            }
+            if (typeof value === 'number') {
+                return value;
+            }
+            // should really check that px is at the end the rest is a number
+            return value.replace("px", "");
         };
         new_element.set_description(description);
         if (TT.debugging) {
@@ -333,25 +430,6 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         if (transform_css && transform_css[attribute]) {
             return transform_css[attribute];
         }
-    };
-
-    element.get_attribute_from_current_css = function (attribute) {
-        var frontside_element = this.get_frontside_element();
-        var value = frontside_element.style[attribute];
-        if (value === "") {
-            // this caused integer rounding (at least of font-size)
-            // but if the above doesn't find a value seems sometimes this does
-            value = $(frontside_element).css(attribute);
-        }
-        if (!value) {
-            // zero is the default value -- e.g. for transformations such as rotate
-            return 0;
-        }
-        if (typeof value === 'number') {
-            return value;
-        }
-        // should really check that px is at the end the rest is a number
-        return value.replace("px", "");
     };
     
     element.get_attribute = function (attribute) {
@@ -643,58 +721,6 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
 
     TT.creators_from_json["attribute_number"] = function (json, additional_info) {
         return TT.UTILITIES.create_from_json(json.element, additional_info).create_attribute_widget(json.attribute_name);
-    };
-    
-    element.update_display = function () {
-        var frontside_element = this.get_frontside_element();
-        var backside = this.get_backside();
-        var element_description = function (element) {
-            if (this.get_image_element()) {
-                return "image";
-            }
-            if ($(element).is(".toontalk-plain-text-element")) {
-                return "text";
-            }
-            return "element";
-        }.bind(this);
-        var rendering, additional_classes;
-        if (this.being_dragged) {
-            return;
-        }
-        if (this.get_erased && this.get_erased()) {
-            // could save the current opacity and restore it below
-            // hide so doesn't get in the way of selections
-            $(frontside_element).css({opacity: 0}).hide();
-            return;
-        }
-        if (this.get_erased && $(frontside_element).css("opacity") === "0") {
-            // was erased but no longer
-            $(frontside_element).css({opacity: 1}).show();
-        }
-        if (frontside_element.children.length === $(frontside_element).children(".ui-resizable-handle").length) {
-            // the only children are resize handles so add the HTML
-            rendering = document.createElement('div');
-            rendering.innerHTML = this.get_HTML();
-            frontside_element.appendChild(rendering);
-            this.set_image_element(rendering, frontside_element);
-            $(frontside_element).addClass("toontalk-element-frontside");
-            if (rendering.innerHTML.substring(0, 1) !== '<') {
-                // doesn't look like HTML so assume it is raw text and give it a class that will give it a better font and size
-                additional_classes = this.get_additional_classes();
-                if (additional_classes) {
-                    $(rendering).addClass(additional_classes);
-                }
-                $(frontside_element).addClass("ui-widget toontalk-plain-text-element");
-            }
-        }
-        if (TT.UTILITIES.on_a_nest_in_a_box(frontside_element)) {
-            // need to work around a CSS problem where nested percentage widths don't behave as expected
-            this.set_attribute("width",  $(frontside_element).closest(".toontalk-box-hole").width(),  false);
-            this.set_attribute("height", $(frontside_element).closest(".toontalk-box-hole").height(), false);
-        }
-        this.apply_css();
-        this.fire_on_update_display_handlers();
-        frontside_element.title = "Click to see the backside where you can place robots or change the style of this " + element_description(frontside_element);
     };
         
     element.toString = function (to_string_info) {
