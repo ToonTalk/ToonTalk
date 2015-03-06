@@ -344,7 +344,7 @@ window.TOONTALK.bird = (function (TT) {
             // then a new pair is created and linked
             var copy, new_nest, i;
             if (!parameters) {
-                if (nest.is_function_nest()) {
+                if (nest && nest.is_function_nest()) {
                     // each bird has its own function nest so can be changed independently
                     copy = this.create(nest.copy(), this.get_description());
                 } else {
