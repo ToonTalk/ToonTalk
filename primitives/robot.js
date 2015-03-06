@@ -610,7 +610,8 @@ window.TOONTALK.robot = (function (TT) {
     };
     
     robot.toString = function (to_string_info) {
-        var frontside_conditions, body, prefix, postfix, frontside_conditions_string, next_robot, robot_description, robot_conditions_description;
+        var frontside_conditions, backside_conditions, backside_conditions_defined, body, prefix, postfix,
+            frontside_conditions_string, next_robot, robot_description, robot_conditions_description;
         if (to_string_info && to_string_info.role === "conditions") {
             return "any robot";
         }
@@ -618,6 +619,7 @@ window.TOONTALK.robot = (function (TT) {
         if (!frontside_conditions) {
             return "has yet to be trained.";
         }
+        backside_conditions = this.get_backside_conditions();
         body = this.get_body();
         prefix = "";
         postfix = "";
@@ -627,6 +629,20 @@ window.TOONTALK.robot = (function (TT) {
         } else {
             frontside_conditions_string = TT.UTILITIES.add_a_or_an(frontside_conditions.get_full_description({role: "conditions"}));
             robot_conditions_description = "When working on something that matches " + frontside_conditions_string;
+        }
+        if (backside_conditions) {
+            Object.keys(backside_conditions).forEach(function (key) {
+                var condition = backside_conditions[key];
+                if (condition) {
+                    robot_conditions_description += " and\nif on the back is " + TT.UTILITIES.add_a_or_an(key) +
+                    " that matches " + TT.UTILITIES.add_a_or_an(condition.get_full_description({role: "conditions"}));
+                }
+                backside_conditions_defined = true;
+            });
+            if (backside_conditions_defined) {
+                // need new line before the "he will"
+                robot_conditions_description += "\n";
+            }
         }
         if (this.being_trained) {
             if (body.is_empty()) {
