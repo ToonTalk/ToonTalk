@@ -197,17 +197,17 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     pending_css['transform'] =         transform;
                 }
             };
+            if (pending_css.width) {
+                current_width  = pending_css.width;
+            }
+            if (pending_css.height) {
+                current_height = pending_css.height;
+            }
             // need to delay the following since width and height may not be known yet
             TT.UTILITIES.set_timeout(function () {
                 if (!pending_css) {
                     // can be undefined if all the transforms had a zero value
                     return;
-                }
-                if (pending_css.width) {
-                    current_width  = pending_css.width;
-                }
-                if (pending_css.height) {
-                    current_height = pending_css.height;
                 }
                 // without the following the image remains square since only one of width/height set
 //                 if (current_width && typeof current_height === 'undefined') {
@@ -222,6 +222,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                         $image_element.css({width:  original_width,
                                             height: original_height});
                     }
+                    // tried $(frontside_element).children(".toontalk-element-container").get(0)
+                    $(frontside_element).children(".toontalk-element-container").css({width: '', height: ''});
                     TT.UTILITIES.run_when_dimensions_known(frontside_element,
                                                            function () {
                                                                 TT.UTILITIES.scale_element(frontside_element, current_width, current_height, original_width, original_height);
@@ -306,6 +308,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             if (frontside_element.children.length === $(frontside_element).children(".ui-resizable-handle").length) {
                 // the only children are resize handles so add the HTML
                 rendering = document.createElement('div');
+                $(rendering).addClass("toontalk-element-container");
                 rendering.innerHTML = this.get_HTML();
                 frontside_element.appendChild(rendering);
                 this.set_image_element(rendering, frontside_element);
@@ -359,6 +362,12 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             }
             // should really check that px is at the end the rest is a number
             return value.replace("px", "");
+        };
+        new_element.increment_width = function (delta) {
+            this.set_attribute('width', (current_width  || original_width) + delta);
+        };
+        new_element.increment_height = function (delta) {
+            this.set_attribute('height', (current_height || original_height) + delta);
         };
         new_element.set_description(description);
         if (TT.debugging) {

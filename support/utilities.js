@@ -2110,11 +2110,32 @@ window.TOONTALK.UTILITIES =
         },
         
         make_resizable: function ($element, widget) {
-            $element.resizable({resize: function (event, ui) {
-                                    // following needed for element widgets that are images
-                                    $element.find("img").css({width:  ui.size.width,
-                                                              height: ui.size.height});
-                                    widget.render();
+            var previous_width, previous_height;
+            $element.resizable({start: function () {
+                                           previous_width  = undefined;
+                                           previous_height = undefined;
+                                },
+                                resize: function (event, ui) {
+                                            if ($element.is(".toontalk-element-frontside")) {
+                                                if (ui.size.width != ui.originalSize.width) {
+                                                    if (!previous_width) {
+                                                        previous_width = ui.originalSize.width;
+                                                    }
+                                                    widget.increment_width(ui.size.width-previous_width);
+                                                    previous_width = ui.size.width;                                           
+                                                }
+                                                if (ui.size.height != ui.originalSize.height) {
+                                                    if (!previous_height) {
+                                                        previous_height = ui.originalSize.height;
+                                                    }
+                                                    widget.increment_height(ui.size.height-previous_height);
+                                                    previous_height = ui.size.height;                                                   
+                                                }
+                                            }
+//                                     // following needed for element widgets that are images
+//                                     $element.find("img").css({width:  ui.size.width,
+//                                                               height: ui.size.height});
+                                            widget.rerender();
                                 },
                                // the corner handles looked bad on element widgets
                                // and generally got in the way
@@ -2217,7 +2238,7 @@ window.TOONTALK.UTILITIES =
         original_dimensions: function (widget, set_original_dimensions) {
             // this relies upon run_when_dimensions_known which keeps trying until it finds out the dimensions of this element
             // TODO: discover if there is a better way
-            var frontside_element = widget.get_frontside_element(true);
+            var frontside_element = widget.get_frontside_element();
             var parent = frontside_element.parentElement;
             var update_original_dimensions_and_restore =
                 function () {
