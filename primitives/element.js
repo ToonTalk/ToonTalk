@@ -68,7 +68,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             return html;
         };
         new_element.get_text = function () {
-            return this.get_frontside_element().textContent;
+            var text = this.get_frontside_element().textContent;
+            if (text === "") {
+                return this.get_HTML();
+            }
+            return text;
         };
         new_element.set_HTML = function (new_value) {
             var frontside_element = this.get_frontside_element();
@@ -689,9 +693,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         frontside_element.title = "Click to see the backside where you can place robots or change the style of this " + element_description(frontside_element);
     };
         
-    element.toString = function () {
-        var description = "element whose HTML is '" + TT.UTILITIES.maximum_string_length(this.get_HTML(), 40) + "'";
-        if (TT.debugging) {
+    element.toString = function (to_string_info) {
+        var description = to_string_info && to_string_info.role === "conditions" ?
+                          this.get_text() :
+                          "element whose HTML is '" + TT.UTILITIES.maximum_string_length(this.get_HTML(), 40) + "'" ;
+        if (TT.debugging && !to_string_info || to_string_info.role !== "conditions") {
             description += " (" + this.debug_id + ")";
         }
         return description;
