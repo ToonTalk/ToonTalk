@@ -850,9 +850,14 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 clientHeight: this.get_attribute('height')};
     };
 
-    element.set_size_attributes = function (width, height) {
-        this.set_attribute('width',  width);
-        this.set_attribute('height', height);
+    element.set_size_attributes = function (width, height, update_regardless) {
+        if (update_regardless) {
+            this.add_to_css('width',  width);
+            this.add_to_css('height', height);
+        } else {
+            this.set_attribute('width',  width);
+            this.set_attribute('height', height);
+        }
         TT.UTILITIES.set_timeout(function () {
             this.rerender();
         }.bind(this));        

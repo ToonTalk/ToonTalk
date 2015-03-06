@@ -374,7 +374,7 @@ window.TOONTALK.box = (function (TT) {
                                                   height: ''});
                 if (hole.is_of_type('element')) {
                     hole_contents = hole.get_contents();
-                    hole_contents.set_size_attributes(new_width, new_height);
+                    hole_contents.set_size_attributes(new_width, new_height, true);
 //                     TT.UTILITIES.scale_to_fit(content_frontside_element, hole_element, hole_contents.saved_width, hole_contents.saved_height);
                 }
                 hole_element.appendChild(content_frontside_element);
