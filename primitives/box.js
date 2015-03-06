@@ -357,8 +357,8 @@ window.TOONTALK.box = (function (TT) {
             }
             $(hole_element).css({left:   left,
                                  top:    top,
-                                 width:  new_width,
-                                 height: new_height});
+                                 width:  new_width  || 1,
+                                 height: new_height || 1});
             if (hole_element !== content_frontside_element) {
                 // not an empty hole
                 // save dimensions first?
@@ -408,6 +408,17 @@ window.TOONTALK.box = (function (TT) {
                     });
                 };
             }.bind(this);
+        var update_dimensions = function () {
+            box_width  = $(frontside_element).width();
+            box_height = $(frontside_element).height();
+            if (horizontal) {
+                hole_width  = box_width/size;
+                hole_height = box_height;
+            } else {
+                hole_width  = box_width;
+                hole_height = box_height/size;            
+            }
+        };
         var i, hole, hole_element, box_left, box_width, hole_width, first_hole_width, box_height, hole_height, content_frontside_element, border_class, border_size;
         $(frontside_element).addClass("toontalk-box");
         $(frontside_element).removeClass("toontalk-box-eighth-size-border toontalk-box-quarter-size-border toontalk-box-half-size-border toontalk-box-full-size-border");
@@ -421,15 +432,7 @@ window.TOONTALK.box = (function (TT) {
             return;
         }
         $(frontside_element).removeClass("toontalk-box-erased");
-        box_width = $(frontside_element).width();
-        box_height = $(frontside_element).height();
-        if (horizontal) {
-            hole_width  = box_width/size;
-            hole_height = box_height;
-        } else {
-            hole_width  = box_width;
-            hole_height = box_height/size;            
-        }
+        update_dimensions();
         if (hole_width <= 32 || hole_height <= 32) {
             border_class = "toontalk-box-eighth-size-border";
             border_size = 4;
