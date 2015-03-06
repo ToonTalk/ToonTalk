@@ -94,13 +94,16 @@ window.TOONTALK.widget = (function (TT) {
                     return frontside;
                 };
                 widget.save_dimensions = function () {
+                    return this.save_dimensions_of(this);
+                };
+                widget.save_dimensions_of = function (other) {
                     var dimensions;
-                    if (this.get_size_attributes) {
-                        dimensions = this.get_size_attributes();
+                    if (other.get_size_attributes) {
+                        dimensions = other.get_size_attributes();
                     } else {
                          // elements have clientWidth and clientHeight
                          // used to use $(...).width() but that returns 0 during a drop
-                         dimensions = this.get_frontside_element();
+                         dimensions = other.get_frontside_element();
                     }
                     if (dimensions.clientWidth > 0) {
                         this.saved_width  = dimensions.clientWidth;
@@ -109,7 +112,7 @@ window.TOONTALK.widget = (function (TT) {
                         this.saved_height = dimensions.clientHeight;
                     }
                     return true;
-                };
+                }
                 widget.restore_dimensions = function () {
                     var frontside_element;
                     if (this.saved_width > 0) {
