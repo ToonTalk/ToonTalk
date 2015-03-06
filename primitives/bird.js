@@ -569,11 +569,11 @@ window.TOONTALK.nest = (function (TT) {
     var add_copy_private_key = {}; // any unique object is fine
     // following should be updated if CSS is
     var contents_width = function (width) {
-        return width * 0.8;
+        return width *TT.nest.CONTENTS_WIDTH_FACTOR;
     };
     var contents_height = function (height) {
-        return height * 0.8;
-    };
+        return height*TT.nest.CONTENTS_HEIGHT_FACTOR;
+    };  
 
     // Nests are uniquely identified by their guid
     // the following should really be a weak table so to not interfere with garbage collection of nests
@@ -1018,8 +1018,8 @@ window.TOONTALK.nest = (function (TT) {
                     // timeout needed when loading otherwise something resets the width and height
                     TT.UTILITIES.set_timeout(function () {
                             var border_adjustment = 2*contents_side_element.toontalk_border_size || 0;
-                            var width  = .8*nest_width;
-                            var height = .8*nest_height
+                            var width  = TT.nest.CONTENTS_WIDTH_FACTOR *nest_width;
+                            var height = TT.nest.CONTENTS_HEIGHT_FACTOR*nest_height
                             while (border_adjustment*2 >= width ||
                                    border_adjustment*2 >= height) {
                                 border_adjustment /= 2;
@@ -1277,6 +1277,9 @@ window.TOONTALK.nest = (function (TT) {
         }
         return nest;
     };
+
+    nest.CONTENTS_WIDTH_FACTOR  = 0.8;
+    nest.CONTENTS_HEIGHT_FACTOR = 0.8;
     
     return nest;
 }(window.TOONTALK));

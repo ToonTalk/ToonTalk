@@ -327,29 +327,39 @@ window.TOONTALK.box = (function (TT) {
         var size = this.get_size();
         var update_hole = function (hole_element, hole, index) {
             var content_frontside_element = hole.get_frontside_element(true);
+            var $parents = $(hole_element).parents(".toontalk-box-hole");
+            var adjust_if_on_a_nest = function () {
+                if ($(hole_element).parents(".toontalk-box-hole").children(".toontalk-nest").is("*")) {
+                    // nests display their contents smaller so edges of nest is visible
+                    new_width  /= TT.nest.CONTENTS_WIDTH_FACTOR;
+                    new_height /= TT.nest.CONTENTS_HEIGHT_FACTOR;
+                }
+            };
             var left, top, content_frontside_element, new_width, new_height;
             if (horizontal) {
                 top = 0;
-                if ($(hole_element).parents(".toontalk-box-hole").length > 0) {
+                if ($parents.length > 0) {
                     new_width  = hole_width -2*border_size/size;
                     new_height = hole_height-2*border_size;
                 } else {
                     new_width  = hole_width;
                     new_height = hole_height;
                 }
+                adjust_if_on_a_nest();
                 left = new_width*index;
                 if (index > 1) {
                     left += border_size*(index-1);
                 }
             } else {
                 left = 0;
-                if ($(hole_element).parents(".toontalk-box-hole").length > 0) {
+                if ($parents.length > 0) {
                     new_width  = hole_width -2*border_size;
                     new_height = hole_height-2*border_size/size;
                 } else {
                     new_width  = hole_width;
                     new_height = hole_height;
                 }
+                adjust_if_on_a_nest();
                 top = new_height*index;
                 if (index > 1) {
                     top += border_size*(index-1);
@@ -357,8 +367,8 @@ window.TOONTALK.box = (function (TT) {
             }
             $(hole_element).css({left:   left,
                                  top:    top,
-                                 width:  new_width  || 1,
-                                 height: new_height || 1});
+                                 width:  new_width,
+                                 height: new_height});
             if (hole_element !== content_frontside_element) {
                 // not an empty hole
                 // save dimensions first?
