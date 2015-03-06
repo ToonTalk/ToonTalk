@@ -448,19 +448,19 @@ window.TOONTALK.number = (function () {
                 return;
             }
             if ($dimensions_holder.is(".toontalk-nest")) {
-                // doesn't cover the nest completely -- should put .8 into some parameter
-                client_width  *= .8;
-                client_height *= .8;
+                // doesn't cover the nest completely 
+                client_width  *= TT.nest.CONTENTS_WIDTH_FACTOR;
+                client_height *= TT.nest.CONTENTS_HEIGHT_FACTOR;
             }
         }
         $(frontside_element).removeClass("toontalk-number-eighth-size-border toontalk-number-quarter-size-border toontalk-number-half-size-border toontalk-number-full-size-border");
-        if (client_width <= 32 || client_height <= 32) {
+        if (client_width <= 64 || client_height <= 64) {
             $(frontside_element).addClass("toontalk-number-eighth-size-border");
             frontside_element.toontalk_border_size = 4;
-        } else if (client_width <= 64 || client_height <= 64) {
+        } else if (client_width <= 128 || client_height <= 128) {
             $(frontside_element).addClass("toontalk-number-quarter-size-border");
             frontside_element.toontalk_border_size = 8;
-        } else if (client_width <= 128 || client_height <= 128) {
+        } else if (client_width <= 256 || client_height <= 256) {
             $(frontside_element).addClass("toontalk-number-half-size-border");
             frontside_element.toontalk_border_size = 16;
         } else {
@@ -540,7 +540,7 @@ window.TOONTALK.number = (function () {
                 max_characters = shrinkage;
             }
             return '<div class="toontalk-number toontalk-integer' + extra_class + '" style="font-size: ' + font_size + 'px;">' +
-                      operator_HTML + fit_string_to_length(integer_as_string, max_characters, font_size) + '</div>';
+                   operator_HTML + fit_string_to_length(integer_as_string, max_characters, font_size) + '</div>';
         }
         table_style = ' style="font-size:' + (font_size * 0.4) + 'px;"';
         if (format === 'improper_fraction' || !format) { // default format
