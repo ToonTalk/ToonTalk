@@ -138,7 +138,8 @@ window.TOONTALK.box = (function (TT) {
     };
     
     box.equals = function (other) {
-        return other.equals_box && other.equals_box(this);
+        // could be scale and box so need the type name test
+        return other.equals_box && this.get_type_name() === other.get_type_name() && other.equals_box(this);
     };
     
     box.equals_box = function (other_box) {
