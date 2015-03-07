@@ -2197,8 +2197,16 @@ window.TOONTALK.UTILITIES =
             if (!original_height) {
                 original_height = $(element).height();
             }
-            x_scale = new_width/original_width;
-            y_scale = new_height/original_height;
+            if (new_width) {
+                x_scale = new_width/original_width;
+            } else {
+                x_scale = 1;
+            }
+            if (new_height) {
+                y_scale = new_height/original_height;
+            } else {
+                y_scale = 1;
+            }
             // e.g. new_width was 0
             if (x_scale === 0) {
                 x_scale = 1;
