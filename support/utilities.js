@@ -2111,23 +2111,17 @@ window.TOONTALK.UTILITIES =
         
         make_resizable: function ($element, widget) {
             var previous_width, previous_height;
-            $element.resizable({start: function () {
-                                           previous_width  = undefined;
-                                           previous_height = undefined;
+            $element.resizable({start: function (event, ui) {
+                                           previous_width  = ui.originalSize.width;
+                                           previous_height = ui.originalSize.height;
                                 },
                                 resize: function (event, ui) {
                                             if ($element.is(".toontalk-element-frontside")) {
-                                                if (ui.size.width != ui.originalSize.width) {
-                                                    if (!previous_width) {
-                                                        previous_width = ui.originalSize.width;
-                                                    }
+                                                if (ui.size.width != previous_width) {
                                                     widget.increment_width(ui.size.width-previous_width);
-                                                    previous_width = ui.size.width;                                           
+                                                    previous_width = ui.size.width;                                       
                                                 }
-                                                if (ui.size.height != ui.originalSize.height) {
-                                                    if (!previous_height) {
-                                                        previous_height = ui.originalSize.height;
-                                                    }
+                                                if (ui.size.height != previous_height) {
                                                     widget.increment_height(ui.size.height-previous_height);
                                                     previous_height = ui.size.height;                                                   
                                                 }
