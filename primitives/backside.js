@@ -674,6 +674,9 @@ window.TOONTALK.backside =
                         widget_side.set_visible(false);
                 });
             }
+            if (widget.on_backside_hidden) {
+                widget.on_backside_hidden();
+            }
         },
         
         create_advanced_settings_button: function (backside, widget) {

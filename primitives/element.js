@@ -364,7 +364,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             return value.replace("px", "");
         };
         new_element.increment_width = function (delta) {
-            this.set_attribute('width', (current_width  || original_width) + delta);
+//          console.log("delta: " + delta + " new width: " + ((current_width  || original_width) + delta));
+            this.set_attribute('width',  (current_width  || original_width)  + delta);
         };
         new_element.increment_height = function (delta) {
             this.set_attribute('height', (current_height || original_height) + delta);
@@ -559,9 +560,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         }
     };
 
-    element.get_attribute_widget = function (attribute_name) {
+    element.get_attribute_widget = function (attribute_name, dont_create) {
         var attribute_widget = this.get_attribute_widgets()[attribute_name];
-        if (!attribute_widget) {
+        if (!attribute_widget && !dont_create) {
             attribute_widget = this.create_attribute_widget(attribute_name);
             this.get_attribute_widgets()[attribute_name] = attribute_widget;
         }
@@ -735,7 +736,16 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     TT.creators_from_json["attribute_number"] = function (json, additional_info) {
         return TT.UTILITIES.create_from_json(json.element, additional_info).create_attribute_widget(json.attribute_name);
     };
-        
+
+    element.on_backside_hidden = function () {
+        this.get_style_attributes().forEach(function (attribute) {
+            var attribute_widget = this.get_attribute_widget(attribute, true);
+            if (attribute_widget) {
+                attribute_widget.set_visible(false);
+            }
+        }.bind(this));
+    };
+   
     element.toString = function (to_string_info) {
         var description = to_string_info && to_string_info.role === "conditions" ?
                           this.get_text() :
@@ -1006,7 +1016,7 @@ window.TOONTALK.element_backside =
             td.appendChild(TT.UTILITIES.create_text_element(attribute));
             td = document.createElement("td");
             row.appendChild(td);
-            attribute_widget.set_visible(true); // TODO: turn this off when backside hidden
+            attribute_widget.set_visible(true);
             $(attribute_frontside_element).addClass("toontalk-element-attribute");
             td.appendChild(attribute_frontside_element);
             attribute_widget.render();           
