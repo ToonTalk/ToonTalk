@@ -734,7 +734,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     };
 
     TT.creators_from_json["attribute_number"] = function (json, additional_info) {
-        return TT.UTILITIES.create_from_json(json.element, additional_info).create_attribute_widget(json.attribute_name);
+        return TT.UTILITIES.create_from_json(json.element, additional_info).get_attribute_widget(json.attribute_name);
     };
 
     element.on_backside_hidden = function () {
