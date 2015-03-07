@@ -1402,11 +1402,10 @@ window.TOONTALK.UTILITIES =
         find_resource_equal_to_widget: function (widget) {
             var element_found;
             $(".toontalk-top-level-resource").each(function (index, element) {
-                var $resource_element = $(element).children(":first");
-                var owner = TT.UTILITIES.widget_from_jquery($resource_element);
+                var owner = TT.UTILITIES.widget_from_jquery( $(element));
                 if (owner && ((widget.equals && widget.equals(owner)) ||
                               ((widget.matching_resource && widget.matching_resource(owner))))) {
-                    element_found = $resource_element.get(0);
+                    element_found = element;
                     return false; // stop the 'each'
                 }
             });
