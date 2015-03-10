@@ -110,7 +110,7 @@ window.TOONTALK.bird = (function (TT) {
                     var become_static, current_waiting_robots;
                     if (temporary_bird) {
                         this.remove();
-                    } else {
+                    } else if (this.visible()) {
                         become_static = function () {
                             $(bird_frontside_element).removeClass("toontalk-bird-morph-to-static");
                             $(bird_frontside_element).addClass("toontalk-bird-static");

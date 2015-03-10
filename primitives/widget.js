@@ -612,6 +612,7 @@ window.TOONTALK.widget = (function (TT) {
                 }
             }   
             this.set_running(false);
+            this.set_visible(false); // in case robot vacuumed the widget while it was animating
             if (this.walk_children) {
                 this.walk_children(function (child) {
                                        if (child.remove) {
