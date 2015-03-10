@@ -200,10 +200,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 }
                 if (transform) {
                     pending_css['-webkit-transform'] = transform;
-                    pending_css['-moz-transform'] =    transform;
-                    pending_css['-ms-transform'] =     transform;
-                    pending_css['o-transform'] =       transform;
-                    pending_css['transform'] =         transform;
+                    pending_css['-moz-transform']    = transform;
+                    pending_css['-ms-transform']     = transform;
+                    pending_css['o-transform']       = transform;
+                    pending_css['transform']         = transform;
                 }
             };
             // need to delay the following since width and height may not be known yet

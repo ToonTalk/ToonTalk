@@ -1135,7 +1135,7 @@ window.TOONTALK.number.function =
                                           TT.UTILITIES.ordinal(index) + " hole. The " + TT.UTILITIES.ordinal(index) + " hole is empty.");
             return false;
         }
-        if (widget.is_of_type('number')) {
+        if (widget.is_number()) {
             return true;
         }
         TT.UTILITIES.display_message("Birds for the " + function_name + " function can only respond to boxes with a number in the " + 
