@@ -858,9 +858,6 @@ window.TOONTALK.widget = (function (TT) {
                     backside_widget.set_visible(backside_visible);
                 }.bind(this)); 
             }
-//             if (backside) {
-//                 backside.update_run_button_disabled_attribute();
-//             }
         },
               
         get_backside_widgets_json_views: function (create) {

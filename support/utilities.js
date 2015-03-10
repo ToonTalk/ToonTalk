@@ -785,7 +785,7 @@ window.TOONTALK.UTILITIES =
                     if (delay_backside_widgets) {
                         // caller will call this 
                         widget.finish_create_from_json_continuation = function () {
-                             this.add_backside_widgets_from_json(widget, json_semantic.backside_widgets, additional_info);   
+                             this.add_backside_widgets_from_json(widget, json_semantic.backside_widgets, additional_info);  
                         }.bind(this);
                     } else {
                         this.add_backside_widgets_from_json(widget, json_semantic.backside_widgets, additional_info);

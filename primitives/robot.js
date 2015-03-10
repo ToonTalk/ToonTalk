@@ -736,9 +736,7 @@ window.TOONTALK.robot = (function (TT) {
                     backside_conditions[type] = TT.UTILITIES.create_from_json(json.backside_conditions[type], additional_info);
             });
         }
-        return TT.robot.create(// json_view.image_url,
-                               // bubble for backwards compatibility -- should be able to remove in the future
-                               TT.UTILITIES.create_from_json(json.frontside_conditions || json.bubble, additional_info),
+        return TT.robot.create(TT.UTILITIES.create_from_json(json.frontside_conditions || json.bubble, additional_info),
                                backside_conditions,
                                TT.UTILITIES.create_from_json(json.body, additional_info),
                                json.description,
