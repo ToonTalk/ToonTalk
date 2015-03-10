@@ -45,17 +45,23 @@ window.TOONTALK.robot = (function (TT) {
             }
         };
         new_robot.add_to_backside_conditions = function (widget) {
-            var widget_copy;
+            var widget_copy, widget_type;
             if (this.get_newly_created_widgets().indexOf(widget) >= 0) {
                 // this isn't a condition since robot just added or created it
                 return;
             }
-            widget_copy = widget.copy({just_value: true});
-            if (!backside_conditions) {
+            widget_type = widget.get_type_name();
+            if (backside_conditions) {
+                if (backside_conditions[widget_type]) {
+                    return; // already has one
+                }
+            } else {
                 backside_conditions = {};
             }
-            // note that if widget is a covered nest then the type below is nest but the copy is of the nest contents
-            backside_conditions[widget.get_type_name()] = widget_copy;
+            widget_copy = widget.copy({just_value: true});
+            // note that if widget is a covered nest then the type below is nest but the copy is of the nest contents 
+            // TODO: is this comment still true??
+            backside_conditions[widget_type] = widget_copy;
             TT.widget.erasable(widget_copy);
         };
         new_robot.get_body = function () {
