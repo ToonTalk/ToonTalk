@@ -179,9 +179,6 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 if (!pending_css) {
                     pending_css = {};
                 }
-                need_to_scale = false; // no need since scaling right here
-                transform += 'scale(' + (current_width /(original_width  || $(frontside_element).width()))  + ', ' + 
-                                        (current_height/(original_height || $(frontside_element).height())) + ')';
                 if (transform_css['rotate']) {
                     transform += 'rotate(' + transform_css['rotate'] + 'deg)';
                 }
@@ -194,8 +191,12 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 if (transform_css['transform-origin-x'] || transform_css['transform-origin-y']) {
                     pending_css['transform-origin'] = (transform_css['transform-origin-x'] || 0) + ' ' + (transform_css['transform-origin-y'] || 0);
                 }
+                need_to_scale = false; // no need since scaling right here
+                transform += 'scale(' + (current_width /(original_width  || $(frontside_element).width()))  + ', ' + 
+                                        (current_height/(original_height || $(frontside_element).height())) + ')';
                 if (!pending_css['transform-origin']) {
-                    pending_css['transform-origin'] = "center center"; // or equivalently "50% 50%"
+                    // other origins cause drag and drop to behave strangely
+                    pending_css['transform-origin'] = "left top"; 
                 }
                 if (transform) {
                     pending_css['-webkit-transform'] = transform;
