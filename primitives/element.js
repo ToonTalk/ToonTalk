@@ -211,12 +211,6 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     // can be undefined if all the transforms had a zero value
                     return;
                 }
-                // without the following the image remains square since only one of width/height set
-//                 if (current_width && typeof current_height === 'undefined') {
-//                     current_height = frontside_element.clientHeight;
-//                 } else if (current_height && typeof current_width === 'undefined') {
-//                     current_width = frontside_element.clientWidth;
-//                 }
                 if (current_width || current_height) {
                     // if it contains an image then change it too (needed only for width and height)
                     // TODO: is the following still needed?

@@ -1029,7 +1029,7 @@ window.TOONTALK.widget = (function (TT) {
                 }.bind(this);
             var backside_element, frontside_element, parent, $frontside_ancestor_that_is_backside_element,
                 $frontside_ancestor_before_backside_element, frontside_ancestor_before_backside_element, ancestor_that_owns_backside_element,
-                final_left, final_top, frontside_offset, container_offset;
+                final_left, final_top, frontside_offset, frontside_height, container_offset;
             if (backside) {
                 backside_element = backside.get_element();
                 if ($(backside_element).is(":visible")) {
@@ -1083,7 +1083,13 @@ window.TOONTALK.widget = (function (TT) {
             // put backside under the widget
             final_left = frontside_offset.left-container_offset.left;
             // leave a gap between front and backside -- don't want settings, flag, and stop sign to be overlapped
-            final_top  = (frontside_offset.top-container_offset.top) + frontside_element.offsetHeight + 26, 
+            if (this.get_size_attributes) {
+                // e.g. an element widget
+                frontside_height = this.get_size_attributes().clientHeight;
+            } else {
+                frontside_height = frontside_element.offsetHeight  
+            }
+            final_top  = (frontside_offset.top-container_offset.top) + frontside_height + 26, 
             animate_backside_appearance(backside_element, "inherit");
             backside.render();
             if (this.backside_widgets) {
