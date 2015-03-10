@@ -18,6 +18,7 @@ window.TOONTALK.robot = (function (TT) {
         var new_robot = Object.create(robot);
         var first_in_team; // who should do the 'repeating'
         var animating = false; // true if animating due to being run while watched
+        var original_backside_widgets_of_context;
         if (!body) {
             body = TT.actions.create();
         }
@@ -58,7 +59,18 @@ window.TOONTALK.robot = (function (TT) {
             } else {
                 backside_conditions = {};
             }
-            widget_copy = widget.copy({just_value: true});
+            // the condition is what the widget was like when training started
+            // but no need to consider all backside widgets as backside conditions
+            // only those that are "used"
+            original_backside_widgets_of_context.some(function (widget) {
+                if (widget.is_of_type(widget_type)) {
+                    widget_copy = widget;
+                    return true;
+                }
+            });
+            if (!widget_copy) {
+                return;
+            }
             // note that if widget is a covered nest then the type below is nest but the copy is of the nest contents 
             // TODO: is this comment still true??
             backside_conditions[widget_type] = widget_copy;
@@ -157,6 +169,38 @@ window.TOONTALK.robot = (function (TT) {
         new_robot.set_run_once = function (new_value) {
             run_once = new_value;
         };
+        new_robot.training_started = function () {
+            var context = this.get_context();
+            var backside_element;
+            if (!context) {
+                TT.UTILITIES.report_internal_error("Robot started training but can't find its 'context'.");
+                return;
+            }
+            this.being_trained = true;
+            this.set_frontside_conditions(context.copy({just_value: true}));
+            // use miniature robot image for cursor
+            $("*").css({cursor: 'url(' + TT.UTILITIES.absolute_file_path("images/RB19.32x32.PNG") + '), default'});
+            this.get_frontside_element().title = this.get_title();
+            backside_element = this.get_backside_element();
+            $(backside_element).find(".toontalk-conditions-panel").remove();
+            original_backside_widgets_of_context = TT.UTILITIES.copy_widget_sides(context.get_backside_widgets(), {just_value: true});
+        };
+        new_robot.training_finished = function () {
+            var newly_created_widgets = this.get_body().get_newly_created_widgets();
+            var i, widget;
+            $("*").css({cursor: ''}); // restore cursor
+            for (i = 0; i < newly_created_widgets.length; i++) {
+                widget = newly_created_widgets[i];
+                if (widget.last_action === "drop it on top-level" || widget.last_action === "copy") {
+                    this.add_step(TT.robot_action.create(TT.newly_created_widgets_path.create(i), "add to the top-level backside"));
+                }
+            }
+            this.rerender();
+            this.being_trained = false;
+            this.get_frontside_element().title = this.get_title();
+            this.backup_all();
+            TT.robot.in_training = undefined;
+        };  
         if (next_robot) {
             // this will update first_in_team for subsequent robots
             new_robot.set_next_robot(next_robot);
@@ -494,39 +538,6 @@ window.TOONTALK.robot = (function (TT) {
             }
         }
         return widget;
-    };
-    
-    robot.training_started = function () {
-        var context = this.get_context();
-        var backside_element;
-        if (!context) {
-            TT.UTILITIES.report_internal_error("Robot started training but can't find its 'context'.");
-            return;
-        }
-        this.being_trained = true;
-        this.set_frontside_conditions(context.copy({just_value: true}));
-        // use miniature robot image for cursor
-        $("*").css({cursor: 'url(' + TT.UTILITIES.absolute_file_path("images/RB19.32x32.PNG") + '), default'});
-        this.get_frontside_element().title = this.get_title();
-        backside_element = this.get_backside_element();
-        $(backside_element).find(".toontalk-conditions-panel").remove();
-    };
-    
-    robot.training_finished = function () {
-        var newly_created_widgets = this.get_body().get_newly_created_widgets();
-        var i, widget;
-        $("*").css({cursor: ''}); // restore cursor
-        for (i = 0; i < newly_created_widgets.length; i++) {
-            widget = newly_created_widgets[i];
-            if (widget.last_action === "drop it on top-level" || widget.last_action === "copy") {
-                this.add_step(TT.robot_action.create(TT.newly_created_widgets_path.create(i), "add to the top-level backside"));
-            }
-        }
-        this.rerender();
-        this.being_trained = false;
-        this.get_frontside_element().title = this.get_title();
-        this.backup_all();
-        TT.robot.in_training = undefined;
     };
     
     robot.update_display = function () {
