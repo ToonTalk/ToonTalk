@@ -148,7 +148,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             pending_css[attribute] = value;
         };
         new_element.apply_css = function () {
-            var frontside_element, transform;
+            var transform = "";
+            var frontside_element, need_to_scale;
             if (!pending_css && !transform_css) {
                 return;
             }
@@ -164,32 +165,39 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 100);
                 return;
             }
+            if (pending_css) {
+                if (pending_css.width) {
+                    current_width  = pending_css.width;
+                    need_to_scale = true;
+                }
+                if (pending_css.height) {
+                    current_height = pending_css.height;
+                    need_to_scale = true;
+                }
+            }
             if (transform_css) {
+                if (!pending_css) {
+                    pending_css = {};
+                }
+                need_to_scale = false; // no need since scaling right here
+                transform += 'scale(' + (current_width /(original_width  || $(frontside_element).width()))  + ', ' + 
+                                        (current_height/(original_height || $(frontside_element).height())) + ')';
                 if (transform_css['rotate']) {
-                    transform = 'rotate(' + transform_css['rotate'] + 'deg)';
+                    transform += 'rotate(' + transform_css['rotate'] + 'deg)';
                 }
                 if (transform_css['skewX']) {
-                    if (!transform) {
-                        transform = "";
-                    }
                     transform += 'skewX(' + transform_css['skewX'] + 'deg)';
                 }
                 if (transform_css['skewY']) {
-                    if (!transform) {
-                        transform = "";
-                    }
                     transform += 'skewY(' + transform_css['skewY'] + 'deg)';
                 }
                 if (transform_css['transform-origin-x'] || transform_css['transform-origin-y']) {
-                    if (!pending_css) {
-                        pending_css = {};
-                    }
                     pending_css['transform-origin'] = (transform_css['transform-origin-x'] || 0) + ' ' + (transform_css['transform-origin-y'] || 0);
-                } 
+                }
+                if (!pending_css['transform-origin']) {
+                    pending_css['transform-origin'] = "center center"; // or equivalently "50% 50%"
+                }
                 if (transform) {
-                    if (!pending_css) {
-                        pending_css = {};
-                    }
                     pending_css['-webkit-transform'] = transform;
                     pending_css['-moz-transform'] =    transform;
                     pending_css['-ms-transform'] =     transform;
@@ -197,12 +205,6 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     pending_css['transform'] =         transform;
                 }
             };
-            if (pending_css.width) {
-                current_width  = pending_css.width;
-            }
-            if (pending_css.height) {
-                current_height = pending_css.height;
-            }
             // need to delay the following since width and height may not be known yet
             TT.UTILITIES.set_timeout(function () {
                 if (!pending_css) {
@@ -224,10 +226,12 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     }
                     // tried $(frontside_element).children(".toontalk-element-container").get(0)
                     $(frontside_element).children(".toontalk-element-container").css({width: '', height: ''});
-                    TT.UTILITIES.run_when_dimensions_known(frontside_element,
-                                                           function () {
-                                                                TT.UTILITIES.scale_element(frontside_element, current_width, current_height, original_width, original_height);
-                                                           });
+                    if (need_to_scale) {
+                        TT.UTILITIES.run_when_dimensions_known(frontside_element,
+                                                                   function () {
+                                                                        TT.UTILITIES.scale_element(frontside_element, current_width, current_height, original_width, original_height);
+                                                                   });
+                    }
                     pending_css.width  = undefined;
                     pending_css.height = undefined;    
                 }
