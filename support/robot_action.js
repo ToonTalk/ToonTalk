@@ -105,6 +105,7 @@ window.TOONTALK.robot_action =
 //              robot_location = TT.UTILITIES.position_inside(robot_location, top_level_position);
              widget.update_display(); // so it has width and height for the following
              TT.UTILITIES.set_position_relative_to_top_level_backside($(widget_frontside_element), robot_location, true);
+             return true;
          }
     };
     var pick_up_a_copy_animation = function (widget, context, top_level_context, robot, continuation) {
