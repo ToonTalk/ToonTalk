@@ -45,7 +45,12 @@ window.TOONTALK.robot = (function (TT) {
             }
         };
         new_robot.add_to_backside_conditions = function (widget) {
-            var widget_copy = widget.copy({just_value: true});
+            var widget_copy;
+            if (this.get_newly_created_widgets().indexOf(widget) >= 0) {
+                // this isn't a condition since robot just added or created it
+                return;
+            }
+            widget_copy = widget.copy({just_value: true});
             if (!backside_conditions) {
                 backside_conditions = {};
             }
@@ -437,6 +442,10 @@ window.TOONTALK.robot = (function (TT) {
                                              "add a new widget to the work space",
                                              {button_selector: button_selector,
                                               path_to_source: TT.path.get_path_to(source_widget, this)}));
+    };
+
+    robot.get_newly_created_widgets = function () {
+        return this.get_body().get_newly_created_widgets();
     };
     
     robot.remove_from_container = function (part, container) {
