@@ -353,19 +353,17 @@ window.TOONTALK.robot_action =
                     return false;
                 }
                 if (referenced.wait_until_this_nest_receives_something) {         
-                     referenced.wait_until_this_nest_receives_something.run_when_non_empty(
-                        function () {
-                                        this.run_unwatched(context, top_level_context, robot);
-                                    }.bind(this));
+                        referenced.wait_until_this_nest_receives_something.run_when_non_empty(
+                            function () {
+                                this.run_unwatched(context, top_level_context, robot);
+                                        }.bind(this),
+                            robot);
                     return;
                 }
                 if (unwatched_run_function(referenced, context, top_level_context, robot, additional_info)) {
                     robot.run_next_step();
                 } // else robot will stop due to the error
             };
-//             new_action.do_step = function (referenced, context, top_level_context, robot) {
-//                  return unwatched_run_function(referenced, context, top_level_context, robot, additional_info);
-//             };
             new_action.run_watched = function (context, top_level_context, robot) {
                 var referenced = TT.path.dereference_path(path, context, top_level_context, robot); 
                 var continuation = function () {
@@ -385,7 +383,8 @@ window.TOONTALK.robot_action =
                         function () {
                             robot.set_waiting(false);
                             this.run_watched(context, top_level_context, robot);
-                        }.bind(this));
+                        }.bind(this),
+                        robot);
                     robot.set_waiting(true);
                     return;
                 }

@@ -334,12 +334,12 @@ window.TOONTALK.robot = (function (TT) {
             this.match_status.forEach(function (sub_match_status) {
                 if (sub_match_status[0]) {
                     // e.g. a nest
-                    sub_match_status[0].run_when_non_empty(to_run_when_non_empty);
+                    sub_match_status[0].run_when_non_empty(to_run_when_non_empty, this);
                 } else {
                     // e.g. a bird busy delivering
-                    sub_match_status.run_when_non_empty(to_run_when_non_empty);
+                    sub_match_status.run_when_non_empty(to_run_when_non_empty, this);
                 }
-            });
+            }.bind(this));
             this.set_waiting(true);
         }
         return this.match_status;                    
