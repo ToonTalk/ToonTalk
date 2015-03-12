@@ -299,6 +299,7 @@ window.TOONTALK.robot_action =
             button_use_animation(source_widget, context, top_level_context, robot, continuation, additional_info.button_selector, additional_info, 3000);
         } else {
             continuation();
+            robot.run_next_step();
         }      
     };
     var watched_run_functions = 
