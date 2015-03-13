@@ -589,13 +589,6 @@ window.TOONTALK.widget = (function (TT) {
             return string;
         },
         
-//         get_description: function () {
-//             if (this.get_erased && this.get_erased()) {
-//                 return "erased " + this.get_type_name();
-//             }
-//             return this.toString();
-//         },
-        
         remove: function (event) {
             var backside  = this.get_backside();
             var frontside = this.get_frontside();

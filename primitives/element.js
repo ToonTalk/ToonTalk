@@ -339,10 +339,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         };
         new_element.get_attribute_from_current_css = function (attribute) {
             var frontside_element, value;
-            if (attribute === 'width') {
+            if (attribute === 'width' && (current_width || original_width)) {
                 return current_width || original_width;
             }
-            if (attribute === 'height') {
+            if (attribute === 'height' && (current_height || original_height)) {
                 return current_height || original_height;
             }
             frontside_element = this.get_frontside_element();

@@ -299,10 +299,10 @@ window.TOONTALK.number = (function () {
             function (decimal_string) {
                 // e.g. an attribute value
 //                 console.log("set_value_from_decimal " + decimal_string + " " + this.debug_id);
-                if (decimal_string === undefined) {
-                    // e.g. is an element attribute that isn't known so treat it as zero
-                    decimal_string = 0;
-                }
+//                 if (decimal_string === undefined) {
+//                     // e.g. is an element attribute that isn't known so treat it as zero
+//                     decimal_string = 0;
+//                 }
                 if (typeof decimal_string === 'number') {
                     this.set_value(bigrat.fromDecimal(decimal_string));
                     return;
