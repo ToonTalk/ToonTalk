@@ -1090,12 +1090,13 @@ window.TOONTALK.nest = (function (TT) {
             var widget_on_nest;
             if (contents.length > 0) {
                 widget_on_nest = contents[0].get_widget();
+                if (widget_on_nest === widget) {
+                    // should dereference the top of the nest
+                    return TT.path.to_widget_on_nest();
+                }
                 if (widget_on_nest.get_path_to) {
                     // assuming frontside
                     return widget_on_nest.get_path_to(widget, robot);
-                } else if (widget_on_nest === widget) {
-                    // should dereference the top of the nest
-                    return TT.path.to_widget_on_nest();
                 }
             }
         };
