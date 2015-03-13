@@ -890,8 +890,12 @@ window.TOONTALK.robot_backside =
                 var widget = TT.UTILITIES.widget_from_jquery(dragee);
                 var backside;
                 if (widget && widget.is_of_type('robot')) {
-                    backside = widget.open_backside();
-                    $(backside.get_element()).find(".toontalk-train-backside-button").click();
+                    if (widget.get_body().is_empty()) {
+                        backside = widget.open_backside();
+                        $(backside.get_element()).find(".toontalk-train-backside-button").click();
+                    } else {
+                        robot.set_next_robot(widget);
+                    }
                 }
             });
             backside.update_display = function () {
