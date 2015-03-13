@@ -151,7 +151,7 @@ window.TOONTALK.UTILITIES =
         // should this set the dropEffect? 
         // https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer#dropEffect.28.29 
         // restore events to decendants
-        $(element).find("*").removeClass("toontalk-ignore-events");
+//         $(element).find("*").removeClass("toontalk-ignore-events");
         $source = dragee;
         drag_ended();
         if (!$source && !json_object && !event.dataTransfer.files) {
@@ -345,11 +345,11 @@ window.TOONTALK.UTILITIES =
             TT.UTILITIES.highlight_element($element_underneath.get(0), event);
             // moving over decendants triggers dragleave unless their pointer events are turned off
             // they are restored on dragend
-            if (!$element_underneath.is(".toontalk-backside, .toontalk-drop-area") && TT.UTILITIES.widget_of_element(element).get_type_name() !== 'box') {
-                // this breaks the dropping of elements on empty holes so not supported
-                $element_underneath.find(".toontalk-side").addClass("toontalk-ignore-events");
-                // except for toontalk-sides and their ancestors since they are OK to drop on
-            }
+//             if (!$element_underneath.is(".toontalk-backside, .toontalk-drop-area") && TT.UTILITIES.widget_of_element(element).get_type_name() !== 'box') {
+//                 // this breaks the dropping of elements on empty holes so not supported
+//                 $element_underneath.find(".toontalk-side").addClass("toontalk-ignore-events");
+//                 // except for toontalk-sides and their ancestors since they are OK to drop on
+//             }
             return $element_underneath.get(0); // return highlighted element
         }
     };
@@ -614,7 +614,7 @@ window.TOONTALK.UTILITIES =
         }
         dragee.removeClass("toontalk-being-dragged");
         // restore events to decendants
-        dragee.find("*").removeClass("toontalk-ignore-events");
+//         dragee.find("*").removeClass("toontalk-ignore-events");
         // need delay since there may be other listeners to drop events that need to know this
         // e.g. drop area for next robot
         TT.UTILITIES.set_timeout(function () {
