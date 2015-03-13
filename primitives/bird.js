@@ -414,12 +414,15 @@ window.TOONTALK.bird = (function (TT) {
             }
             return "This bird no longer knows where her nest is. She'll get rid of anything you give her.";
         };
-        new_bird.toString = function () {
+        new_bird.toString = function (to_string_info) {
             if (nest) {
                 if (nest.is_function_nest()) {
                     return nest.get_function_object().toString();
                 }
                 return "a bird";
+            }
+            if (to_string_info && to_string_info.role === "conditions") {
+                return "any bird";
             }
             return "a bird without a nest";
         };
