@@ -323,7 +323,7 @@ window.TOONTALK.robot = (function (TT) {
                     if (this.match_status.indexOf(sub_match_status) < 0) {
                         this.match_status.push(sub_match_status);
                     }
-                });
+                }.bind(this));
             }
         }
         if (this.get_first_in_team() === this) {
