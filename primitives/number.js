@@ -1131,6 +1131,14 @@ window.TOONTALK.number.function =
         }
         response = compute_response(bird, box_size);
         if (response) {
+            if (robot) {
+                // function created a new widget so robot needs to know about it
+                // might be that it reused a widget in the message so isn't new
+                robot.add_newly_created_widget_if_new(response);
+            }
+            if (TT.robot.in_training && event) {
+                TT.robot.in_training.add_newly_created_widget_if_new(response);
+            }
             // following should not pass event through since otherwise it is recorded as if robot being trained did this
             bird.widget_dropped_on_me(response, false, undefined, robot, true);
         }
@@ -1240,19 +1248,7 @@ window.TOONTALK.number.function =
     var functions = {};
     var add_function_object = function (name, respond_to_message, title) {
         functions[name] = {name: name,
-                           respond_to_message: function (message, event, robot) {
-                                                   var response = respond_to_message(message, event, robot);
-                                                   if (response) {
-                                                       if (robot) {
-                                                           // function created a new widget so robot needs to know about it
-                                                           // might be that it reused a widget in the message so isn't new
-                                                           robot.add_newly_created_widget_if_new(response);
-                                                       }
-                                                       if (TT.robot.in_training && event) {
-                                                           TT.robot.in_training.add_newly_created_widget_if_new(response);
-                                                       }
-                                                   }
-                                               },
+                           respond_to_message: respond_to_message,
                            get_description: get_description,
                            toString: to_string_function,
                            title: title};
