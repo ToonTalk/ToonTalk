@@ -152,13 +152,13 @@ window.TOONTALK.bird = (function (TT) {
                         TT.UTILITIES.add_animation_class(bird_frontside_element, "toontalk-bird-morph-to-static");
                         TT.UTILITIES.add_one_shot_event_handler(bird_frontside_element, "animationend", 1000, become_static);
                     }
+                    if (after_delivery_continuation) {
+                        after_delivery_continuation();
+                    }
                 }.bind(this);
             var bird_return_continuation = function () {
                     stop_carrying_element();
                     nest_recieving_message.add_to_contents(message_side, event, robot, this, true);
-                    if (after_delivery_continuation) {
-                        after_delivery_continuation();
-                    }
                     // return to original location
                     TT.UTILITIES.set_timeout(function () {
                             this.fly_to(bird_offset, bird_finished_continuation); 
