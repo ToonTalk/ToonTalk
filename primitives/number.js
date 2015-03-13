@@ -941,6 +941,7 @@ window.TOONTALK.number_backside =
                 var denominator = denominator_input.button.value.trim();
                 var string, first_class_name;
                 var valid_integer = function (string, ator, negative_not_allowed) {
+                    // ator can be numerATOR or denominATOR
                     var without_sign;
                     if (string.length < 1) {
                         return {message: "Empty " + ator + " treated as 1.",
@@ -982,7 +983,10 @@ window.TOONTALK.number_backside =
                         denominator = validity.replacement;
                     }
                 }
-                number.set_from_values(numerator, denominator);
+                if (!number.set_from_values(numerator, denominator)) {
+                    // no change in value so ignore this
+                    return;
+                }
                 current_numerator   = numerator;
                 current_denominator = denominator;
                 if (TT.robot.in_training) {
