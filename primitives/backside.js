@@ -269,7 +269,7 @@ window.TOONTALK.backside =
                     if (this.get_widget().is_ok_to_run() && !this.get_widget().get_running() && !this.is_of_type('top-level')) {
                         // if a robot or widget with robots on the back is dropped on the back of something that has been told to run
                         // (but perhaps had nothing to run)
-                        // the widget who just got a robot or widget on the back
+                        // so run the widget who just got a robot or widget on the back
                         this.get_widget().set_running(true);
                     }
                     return true;
