@@ -749,7 +749,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     element.toString = function (to_string_info) {
         var description = to_string_info && to_string_info.role === "conditions" ?
                           this.get_text() :
-                          "element whose HTML is '" + TT.UTILITIES.maximum_string_length(this.get_HTML(), 40) + "'" ;
+                          "the element " + this.get_HTML() ;
         if (TT.debugging && (!(to_string_info && to_string_info.role === "conditions"))) {
             description += " (" + this.debug_id + ")";
         }
