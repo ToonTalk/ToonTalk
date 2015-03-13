@@ -99,12 +99,15 @@ window.TOONTALK.robot_action =
              return true;
          },
          "add a new widget to the work space": function (widget, context, top_level_context, robot, additional_info) {
-             var widget_frontside_element = robot.add_to_top_level_backside(widget);
-             var robot_location = $(robot.get_frontside_element()).offset();
-//              var top_level_position = $(robot.top_level_widget().get_backside_element()).offset();
-//              robot_location = TT.UTILITIES.position_inside(robot_location, top_level_position);
-             widget.update_display(); // so it has width and height for the following
-             TT.UTILITIES.set_position_relative_to_top_level_backside($(widget_frontside_element), robot_location, true);
+             var widget_frontside_element, robot_location;
+             if (context.is_of_type('top-level')) {
+                 widget_frontside_element = robot.add_to_top_level_backside(widget);
+                 robot_location = $(robot.get_frontside_element()).offset();
+                 widget.update_display(); // so it has width and height for the following
+                 TT.UTILITIES.set_position_relative_to_top_level_backside($(widget_frontside_element), robot_location, true);
+             } else {
+                 widget.drop_on(context.get_backside(), false, undefined, robot, true);
+             }
              return true;
          }
     };
