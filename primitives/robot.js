@@ -18,6 +18,7 @@ window.TOONTALK.robot = (function (TT) {
         var new_robot = Object.create(robot);
         var first_in_team; // who should do the 'repeating'
         var animating = false; // true if animating due to being run while watched
+        var running_or_waiting;
         var original_backside_widgets_of_context;
         if (!body) {
             body = TT.actions.create();
@@ -78,6 +79,12 @@ window.TOONTALK.robot = (function (TT) {
         };
         new_robot.get_body = function () {
             return body;
+        };
+        new_robot.running_or_waiting = function () {
+            return running_or_waiting;
+        };
+        new_robot.set_running_or_waiting = function (new_value) {
+            running_or_waiting = new_value;
         };
         new_robot.get_animating = function () {
             return animating;
@@ -208,7 +215,7 @@ window.TOONTALK.robot = (function (TT) {
         new_robot = new_robot.add_standard_widget_functionality(new_robot);
         new_robot.set_description(description);
         if (TT.debugging) {
-            this.debug_id = TT.UTILITIES.generate_unique_id();
+            new_robot.debug_id = TT.UTILITIES.generate_unique_id();
         }
         return new_robot;
     };
@@ -250,18 +257,18 @@ window.TOONTALK.robot = (function (TT) {
     
     robot.run = function (context, top_level_context, queue) {
         var frontside_condition_widget = this.get_frontside_conditions();
-        var clear_all_mismatch_displays = function (widget) {
+        var backside_conditions, backside_widgets, condition_frontside_element, to_run_when_non_empty, next_robot_match_status, clear_all_mismatch_displays;
+        if (this.being_trained || !frontside_condition_widget || this.get_first_in_team().running_or_waiting()) {
+            // should not run if being trained, has no conditions (TODO: really?), or is already running or waiting to
+            return this;
+        }
+        clear_all_mismatch_displays = function (widget) {
             if (widget.visible()) {
                 $(widget.get_frontside_element()).removeClass("toontalk-conditions-not-matched toontalk-conditions-waiting")
                                                  // clear all the mismatch displays from descendants
                                                  .find(".toontalk-conditions-not-matched, .toontalk-conditions-waiting").removeClass("toontalk-conditions-not-matched toontalk-conditions-waiting");
             }
         };
-        var backside_conditions, backside_widgets, condition_frontside_element, to_run_when_non_empty, next_robot_match_status;
-        if (this.being_trained || !frontside_condition_widget || this.get_animating()) {
-            // should not run if being trained, has no conditions (TODO: really?), or is already running
-            return this;
-        }
         clear_all_mismatch_displays(frontside_condition_widget);
         this.rerender();
 //      console.log("Match is " + TT.UTILITIES.match(frontside_condition_widget, context) + " for condition " + frontside_condition_widget + " with " + context);
@@ -295,6 +302,9 @@ window.TOONTALK.robot = (function (TT) {
                 queue = TT.QUEUE;
             }
             this.get_body().reset_newly_created_widgets();
+            this.get_first_in_team().set_running_or_waiting(true);
+            // TODO: determine if the queue: queue passed in is always the queue who enqueues it
+            console.log("enqueued", this.debug_id);
             queue.enqueue({robot: this, context: context, top_level_context: top_level_context, queue: queue});
             return this.match_status;
         }
@@ -315,6 +325,7 @@ window.TOONTALK.robot = (function (TT) {
         });
         if (this.get_next_robot()) {
             next_robot_match_status = this.get_next_robot().run(context, top_level_context, queue);
+            console.log("next robot status:", next_robot_match_status);
             if (next_robot_match_status === 'matched') {
                 return next_robot_match_status;
             } else if (!next_robot_match_status.is_widget) {
@@ -370,6 +381,7 @@ window.TOONTALK.robot = (function (TT) {
     
     robot.run_actions = function (context, top_level_context, queue) {
         if (this.stopped) { // replace with a method?
+            this.get_first_in_team().set_running_or_waiting(false);
             return false;
         }
         if (this.visible()) {
