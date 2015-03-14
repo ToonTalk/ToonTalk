@@ -46,16 +46,6 @@ window.TOONTALK.queue =
                 }
                 next_robot_run = this.to_run.dequeue();
                 next_robot_run.robot.run_actions(next_robot_run.context, next_robot_run.top_level_context, next_robot_run.queue);
-//                 if (steps_limit) {
-//                     // steps_limit only used for testing
-//                     steps_limit -= 1;
-//                     if (steps_limit === 0) {
-//                         if (run_after_steps_limit) {
-//                             run_after_steps_limit();
-//                         }
-//                         break;
-//                     }
-//                 }
             }
             TT.DISPLAY_UPDATES.run_cycle_is_over();
             // give browser a chance to run
