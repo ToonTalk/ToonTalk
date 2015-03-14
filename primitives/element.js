@@ -686,8 +686,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         };
         if (attributes_needing_updating.indexOf(attribute_name) >= 0) {
             this.on_update_display(function () {
-               attribute_widget.update_display();
-               return true; // don't remove
+                attribute_widget.rerender();
+                return true; // don't remove
             });
             if (attribute_name === 'left' || attribute_name === 'top') {
                 frontside_element = this.get_frontside_element();
@@ -1012,6 +1012,9 @@ window.TOONTALK.element_backside =
     };
     
     var update_style_attributes_table = function (table, element_widget, backside) {
+        if (!backside.visible()) {
+            return;
+        }
         var style_attributes = element_widget.get_style_attributes();
         var frontside_element = element_widget.get_frontside_element();
         $(table).empty();
