@@ -636,7 +636,7 @@ window.TOONTALK.UTILITIES =
     var backside_widgets_left;
     window.addEventListener("message", 
                             function (event) {
-                                if (event.source === window && event.data === timeout_message_name) {
+                                if (event.data === timeout_message_name && event.source === window) {
                                     event.stopPropagation();
                                     if (timeouts.length > 0) {
                                         (timeouts.shift())();
