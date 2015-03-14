@@ -767,11 +767,13 @@ window.TOONTALK.widget = (function (TT) {
             } else {
                 widget.set_parent_of_frontside(this, true);
             }
-            widget_side.set_visible(backside.visible());
+            if (backside.visible()) {
+                widget_side.set_visible(true);
+                widget.render();
+            }
             if (this.get_running()) {
                 widget.set_running(true);
             }
-            widget.render();
         },
 
         remove_all_backside_widgets: function () {
@@ -1377,6 +1379,9 @@ window.TOONTALK.widget = (function (TT) {
             };
             widget.walk_children = function () {
                 // ignore since top-level widgets are currently only used for their backside
+            };
+            widget.render = function () {
+                // ignore
             };
             widget.is_widget = true;
             widget.get_backside(true).set_visible(true); // top-level backsides are always visible (at least for now)
