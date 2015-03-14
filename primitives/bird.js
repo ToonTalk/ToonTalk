@@ -883,6 +883,9 @@ window.TOONTALK.nest = (function (TT) {
                 bird = TT.bird.create(this);
                 if (robot) {
                     robot.add_newly_created_widget(bird);
+                    if (!this.visible()) {
+                        return;
+                    }
                     // since robot dropped the nest it needs to wait (if watched)
                     this.robot_waiting_before_next_step = robot;
 //                     console.log("robot_waiting_before_next_step set for " + this + " in new_bird.dropped_on_other");
