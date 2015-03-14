@@ -22,8 +22,7 @@ window.TOONTALK.queue =
                                                                   })) {
                 // until these kinds of bugs are fixed log this
                 // but TT.UTILITIES.report_internal_error is too annoying
-                console.log("The same robot is being queued twice.");
-                console.log("Robot is " + robot_context_queue.robot);
+                console.log("The same robot is being queued twice.\nRobot is: " + robot_context_queue.robot);
                 return;
             }
             return this.to_run.enqueue(robot_context_queue);
