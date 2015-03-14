@@ -83,7 +83,7 @@ window.TOONTALK.bird = (function (TT) {
                     nest.animate_bird_delivery(message_side, this, run_next_step_continuation, event, robot);
                 } else {
                     nest.add_to_contents(message_side, event, robot);
-                    if (robot === message_side.robot_waiting_before_next_step) {
+                    if (robot && robot === message_side.robot_waiting_before_next_step) {
                         message_side.robot_waiting_before_next_step = undefined;
 //                         console.log("run_next_step in continuation from new_bird.widget_dropped_on_me");
 //                         console.log("bird run_next_step in new_bird.widget_dropped_on_me");
@@ -648,9 +648,11 @@ window.TOONTALK.nest = (function (TT) {
                                                        non_empty_listener();
                                                    });
                 }
+                widget_side.set_visible(this.visible());
             } else {
                 // is under the top widget
                 widget_side.get_widget().hide();
+                widget_side.set_visible(false);
             }
             if (widget_side.is_backside()) {
                 widget_side.get_widget().set_parent_of_backside(this);
