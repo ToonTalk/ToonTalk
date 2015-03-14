@@ -149,7 +149,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         };
         new_element.apply_css = function () {
             var transform = "";
-            var frontside_element, need_to_scale;
+            var frontside_element, need_to_scale, $container, container_width, container_height;
             if (!pending_css && !transform_css) {
                 return;
             }
@@ -229,6 +229,22 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     }
                     pending_css.width  = undefined;
                     pending_css.height = undefined;    
+                }
+                if (pending_css.left || pending_css.top) {
+                    // elements (like turtles) by default wrap -- TODO: make this configurable
+                    if (pending_css.left) {
+                        // if negative after mod add width -- do another mod in case was positive
+                        $container = $(this.get_parent_of_frontside().get_element());
+                        container_width = $container.width();
+                        pending_css.left = ((pending_css.left%container_width)+container_width)%container_width;
+                    }
+                    if (pending_css.top) {
+                        if (!$container) {
+                            $container = $(this.get_parent_of_frontside().get_element());
+                        }
+                        container_height = $container.height();
+                        pending_css.top = ((pending_css.top%container_height)+container_height)%container_height;
+                    }
                 }
                 $(frontside_element).css(pending_css);
                 pending_css = undefined;
