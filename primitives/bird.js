@@ -725,17 +725,18 @@ window.TOONTALK.nest = (function (TT) {
         };
         new_nest.removed_from_container = function (part, backside_removed, event, index, report_error_if_nothing_removed) {
             var removed = contents.shift();
-            if (this.visible()) {
-                if (removed) {
-                    removed.get_widget().restore_dimensions();
-                    if (removed.is_backside()) {
-                        removed.get_widget().set_parent_of_backside(undefined);
-                    } else {
-                        removed.get_widget().set_parent_of_frontside(undefined);
-                    }
-                } else if (report_error_if_nothing_removed) {
-                    TT.UTILITIES.report_internal_error("Nothing removed from nest!");
+            if (removed) {
+                if (removed.is_backside()) {
+                    removed.get_widget().set_parent_of_backside(undefined);
+                } else {
+                    removed.get_widget().set_parent_of_frontside(undefined);
                 }
+            } else if (report_error_if_nothing_removed) {
+                TT.UTILITIES.report_internal_error("Nothing removed from nest!");
+                return;
+            }
+            if (this.visible()) {
+                removed.get_widget().restore_dimensions();
                 if (contents.length > 0) {
                     contents[0].set_visible(true);
                     $(contents[0].get_element()).show();
