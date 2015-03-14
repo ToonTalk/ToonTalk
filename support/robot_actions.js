@@ -109,10 +109,13 @@ window.TOONTALK.actions =
                     step_number++;
                     // each step needs to call robot.run_next_step
                     step.run_unwatched(context, top_level_context, robot);
-                } else if (robot.get_run_once()) {
-                    robot.set_running(false);
                 } else {
-                    robot.get_first_in_team().run(context, top_level_context, queue);
+                    robot.get_first_in_team().set_running_or_waiting(false);
+                    if (robot.get_run_once()) {
+                        robot.set_running(false);
+                    } else {
+                        robot.get_first_in_team().run(context, top_level_context, queue);
+                    }
                 }
             };
             robot.run_next_step(); // do first step             
@@ -121,6 +124,12 @@ window.TOONTALK.actions =
         run_watched: function (context, top_level_context, queue, robot) {
             var steps = this.get_steps();
             var frontside_element = robot.get_frontside_element();
+            if (!robot.get_parent_of_frontside()) {
+                // could be a 'next robot' that hasn't been opened
+                context.get_backside_element().appendChild(frontside_element);
+                context.add_backside_widget(robot);
+                robot.update_display();        
+            }
             var saved_parent_element = frontside_element.parentElement;
             var restore_after_last_event = function () {
                 $(frontside_element).addClass("toontalk-side-animating");
@@ -132,6 +141,7 @@ window.TOONTALK.actions =
                         saved_parent_element.appendChild(frontside_element);
                         TT.UTILITIES.set_absolute_position($(frontside_element), robot_home);
                         robot.set_animating(false);
+                        robot.get_first_in_team().set_running_or_waiting(false);
                         if (robot.get_run_once()) {
                             robot.set_running(false);
                         } else {
