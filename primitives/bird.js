@@ -70,20 +70,20 @@ window.TOONTALK.bird = (function (TT) {
 //                         console.log("robot_waiting_before_next_step set for " + other + " in new_bird.widget_dropped_on_me");
                         // generalise this with backside support too
                         other.remove_from_parent_of_frontside();
-                    }
-                    if (robot && !do_not_run_next_step && robot.run_next_step) {
-//                         console.log("bird run_next_step passed to nest.animate_bird_delivery");
-                        run_next_step_continuation = function () {
-//                             console.log("robot_waiting_before_next_step reset for " + message_side + " in new_bird.widget_dropped_on_me");
-                            message_side.robot_waiting_before_next_step = undefined;
-//                             console.log("run_next_step in continuation from new_bird.widget_dropped_on_me");
-                            robot.run_next_step();
-                        };
+                        if (robot.run_next_step) {
+    //                         console.log("bird run_next_step passed to nest.animate_bird_delivery");
+                            run_next_step_continuation = function () {
+    //                             console.log("robot_waiting_before_next_step reset for " + message_side + " in new_bird.widget_dropped_on_me");
+                                message_side.robot_waiting_before_next_step = undefined;
+    //                             console.log("run_next_step in continuation from new_bird.widget_dropped_on_me");
+                                robot.run_next_step();
+                            };
+                        }
                     }
                     nest.animate_bird_delivery(message_side, this, run_next_step_continuation, event, robot);
                 } else {
                     nest.add_to_contents(message_side, event, robot);
-                    if (robot) {
+                    if (robot === message_side.robot_waiting_before_next_step) {
                         message_side.robot_waiting_before_next_step = undefined;
 //                         console.log("run_next_step in continuation from new_bird.widget_dropped_on_me");
 //                         console.log("bird run_next_step in new_bird.widget_dropped_on_me");
@@ -91,7 +91,7 @@ window.TOONTALK.bird = (function (TT) {
                     }
                 }
             } else {
-                console.log("to do: handle drop on a nestless bird -- just removes other?");
+                console.log("TODO: handle drop on a nestless bird -- just removes other?"); // isn't this handled?
             }
             if (TT.robot.in_training && event) {
                 TT.robot.in_training.dropped_on(other, this);
