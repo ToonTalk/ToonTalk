@@ -304,7 +304,6 @@ window.TOONTALK.robot = (function (TT) {
             this.get_body().reset_newly_created_widgets();
             this.get_first_in_team().set_running_or_waiting(true);
             // TODO: determine if the queue: queue passed in is always the queue who enqueues it
-            console.log("enqueued", this.debug_id);
             queue.enqueue({robot: this, context: context, top_level_context: top_level_context, queue: queue});
             return this.match_status;
         }
@@ -325,7 +324,6 @@ window.TOONTALK.robot = (function (TT) {
         });
         if (this.get_next_robot()) {
             next_robot_match_status = this.get_next_robot().run(context, top_level_context, queue);
-            console.log("next robot status:", next_robot_match_status);
             if (next_robot_match_status === 'matched') {
                 return next_robot_match_status;
             } else if (!next_robot_match_status.is_widget) {
