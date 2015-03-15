@@ -232,7 +232,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 }
                 if (pending_css.left || pending_css.top) {
                     // elements (like turtles) by default wrap -- TODO: make this configurable
-                    if (pending_css.left) {
+                    if (pending_css.left) {      
                         // if negative after mod add width -- do another mod in case was positive
                         $container = $(this.get_parent_of_frontside().get_element());
                         container_width = $container.width();
@@ -659,14 +659,17 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         }
         // another way to implement this would be for the recursive call to add an extra parameter: ignore_copies
         attribute_widget.set_value = function (new_value) {
+            // need to convert new_value into a decimal approximation
+            // since bigrat.toDecimal works by converting the numerator and denominator to JavaScript numbers
+            // so best to approximate -- also should be faster to do arithmetic
             var copies = this_element_widget.get_original_copies()[attribute_name];
-            var return_value;
-            if (this.get_attribute_owner().set_attribute(this.attribute, bigrat.toDecimal(new_value))) {
+            var decimal_value = bigrat.toDecimal(new_value);
+            var return_value, value_approximation;
+            if (this.get_attribute_owner().set_attribute(this.attribute, decimal_value)) {
                 // if the new_value is different from the current value
+                value_approximation = bigrat.fromDecimal(decimal_value);
                 copies.forEach(function (copy, index) {
-//                 var new_value_copy = index === 0 ? new_value : bigrat.copy(bigrat.create(), new_value);
-//                 console.log("copy set value " + new_value + " id is " + copy.debug_id);
-                  return_value = copy.set_value_from_sub_classes(new_value); 
+                  return_value = copy.set_value_from_sub_classes(value_approximation); 
               });
             }
             return return_value;
