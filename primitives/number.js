@@ -266,8 +266,8 @@ window.TOONTALK.number = (function () {
             operator = '+';
         } 
         new_number.set_value =
-            function (new_value) {
-                if (bigrat.equals(value, new_value)) {
+            function (new_value, dont_check_if_new) {
+                if (!dont_check_if_new && bigrat.equals(value, new_value)) {
                     return;
                 }
                 this.fire_value_change_listeners(value, new_value);
@@ -401,7 +401,6 @@ window.TOONTALK.number = (function () {
     };
 
     number.compare_with_number = function (other_number) {
-//         console.log("compare with " + other_number + " id is " + other_number.debug_id);
         if (bigrat.equals(this.get_value(), other_number.get_value())) {
             return 0;
         }
@@ -732,49 +731,49 @@ window.TOONTALK.number = (function () {
 
     number.add = function (other) {
         // other is another rational number
-        this.set_value(bigrat.add(bigrat.create(), this.get_value(), other.get_value()));
+        this.set_value(bigrat.add(this.get_value(), this.get_value(), other.get_value()), true);
         return this;
     };
 
     number.subtract = function (other) {
         // other is another rational number
-        this.set_value(bigrat.subtract(bigrat.create(), this.get_value(), other.get_value()));
+        this.set_value(bigrat.subtract(this.get_value(), this.get_value(), other.get_value()), true);
         return this;
     };
 
     number.multiply = function (other) {
         // other is another rational number
-        this.set_value(bigrat.multiply(bigrat.create(), this.get_value(), other.get_value()));
+        this.set_value(bigrat.multiply(this.get_value(), this.get_value(), other.get_value()), true);
         return this;
     };
 
     number.divide = function (other) {
         // other is another rational number
-        this.set_value(bigrat.divide(bigrat.create(), this.get_value(), other.get_value()));
+        this.set_value(bigrat.divide(this.get_value(), this.get_value(), other.get_value()), true);
         return this;
     };
 
     number.minimum = function (other) {
         // other is another rational number
-        this.set_value(bigrat.min(bigrat.create(), this.get_value(), other.get_value()));
+        this.set_value(bigrat.min(this.get_value(), this.get_value(), other.get_value()), true);
         return this;
     };
 
     number.maximum = function (other) {
         // other is another rational number
-        this.set_value(bigrat.max(bigrat.create(), this.get_value(), other.get_value()));
+        this.set_value(bigrat.max(this.get_value(), this.get_value(), other.get_value()), true);
         return this;
     };
 
     number.power = function (power) {
         // deprecated
         // power is any integer (perhaps needs error handling if too large)
-        this.set_value(bigrat.power(bigrat.create(), this.get_value(), bigrat.toInteger(power.get_value())));
+        this.set_value(bigrat.power(this.get_value(), this.get_value(), bigrat.toInteger(power.get_value())), true);
         return this;
     };
     
     number.absolute_value = function () {
-        this.set_value(bigrat.abs(bigrat.create(), this.get_value()));
+        this.set_value(bigrat.abs(this.get_value(), this.get_value()), true);
         return this;
     };
 
