@@ -56,6 +56,7 @@ window.TOONTALK.vacuum = (function (TT) {
         return {
             apply_tool: function (widget_side, event) {
                 var remove_widget = function (widget_side) {
+                    var copy;
                     if (widget_side.is_backside()) {
                         widget_side.hide_backside();
                         return;
@@ -69,11 +70,14 @@ window.TOONTALK.vacuum = (function (TT) {
                         widget_side.set_run_once(true); // since removes itself can iterate
                         return;
                     }
+                    // save a copy for restoring since the following clobbers the original -- e.g. removing contents from boxes
+                    copy = widget_side.copy();
+                    copy.save_dimensions_of(widget_side);
+                    removed_items.push(copy);
                     if (widget_side.set_running) {
                         widget_side.set_running(false);
                     }
                     widget_side.remove(event);
-                    removed_items.push(widget_side);
                 };
                 var restoring, initial_location, restored_front_side_element, new_erased, top_level_backside, backside_widgets;
                 if (mode === 'suck') {
@@ -93,6 +97,7 @@ window.TOONTALK.vacuum = (function (TT) {
                     // doesn't matter what the widget is
                     if (removed_items.length > 0) {
                         restoring = removed_items.pop();
+                        restoring.restore_dimensions();
                         restored_front_side_element = widget_side.add_to_top_level_backside(restoring, true);
                         initial_location = $(element).offset();
                         initial_location.left -= $(restored_front_side_element).width(); // left of vacuum

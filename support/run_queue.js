@@ -22,8 +22,7 @@ window.TOONTALK.queue =
                                                                   })) {
                 // until these kinds of bugs are fixed log this
                 // but TT.UTILITIES.report_internal_error is too annoying
-                console.log("The same robot is being queued twice.");
-                console.log("Robot is " + robot_context_queue.robot);
+                console.error("The same robot is being queued twice.\nRobot is: " + robot_context_queue.robot.debug_id);
                 return;
             }
             return this.to_run.enqueue(robot_context_queue);
@@ -45,19 +44,8 @@ window.TOONTALK.queue =
                 if (Date.now() >= end_time) {
                     break; 
                 }
-                // TODO: use an efficient implementation of queues (linked lists?)
                 next_robot_run = this.to_run.dequeue();
                 next_robot_run.robot.run_actions(next_robot_run.context, next_robot_run.top_level_context, next_robot_run.queue);
-//                 if (steps_limit) {
-//                     // steps_limit only used for testing
-//                     steps_limit -= 1;
-//                     if (steps_limit === 0) {
-//                         if (run_after_steps_limit) {
-//                             run_after_steps_limit();
-//                         }
-//                         break;
-//                     }
-//                 }
             }
             TT.DISPLAY_UPDATES.run_cycle_is_over();
             // give browser a chance to run

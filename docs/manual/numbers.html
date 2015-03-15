@@ -529,6 +529,112 @@ Try stretching it wider until you see the final one.
   },
   "version": 1
 }</div>
+<h3>Setting a number to the value of another</h3>
+<p>
+You can use the &equals; operator so that that number when dropped on another number gives that number its value.
+This is simpler and faster than the alternative of multiplying the number by zero and then adding the value desired.
+</p>
+<p>
+Try dropping the "=2" on the "1".
+</p>
+<div class='toontalk-json'>
+This will be replaced by a work area containing 3 things: a number, a number, and the backside of a number.
+top level widget
+<div style='display:none;'>{
+  "semantic": {
+    "type": "top_level",
+    "settings": {
+      "auto_save_to_google_drive": true,
+      "auto_save_to_local_storage": true,
+      "program_name": "My first program"
+    },
+    "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "number",
+            "operator": "+",
+            "numerator": "1",
+            "denominator": "1",
+            "format": "improper_fraction"
+          },
+          "view": {
+            "frontside_width": 76,
+            "frontside_height": 55,
+            "frontside_left": 82,
+            "frontside_top": 52,
+            "saved_width": 76,
+            "saved_height": 55,
+            "backside": false
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "shared_widget_index": 0
+        }
+      },
+      {
+        "widget": {
+          "shared_widget_index": 0
+        },
+        "is_backside": true
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgba(245, 240, 240, 0.941176)",
+    "backside_width": 880,
+    "backside_height": 467,
+    "backside_left": 8,
+    "backside_top": 184.1875,
+    "advanced_settings_open": true,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1,
+      "original_width": 1136,
+      "original_height": 467
+    },
+    "backside": true,
+    "drag_x_offset": 497,
+    "drag_y_offset": 74.8125
+  },
+  "version": 1,
+  "shared_widgets": [
+    {
+      "semantic": {
+        "type": "number",
+        "operator": "=",
+        "numerator": "2",
+        "denominator": "1",
+        "format": "improper_fraction"
+      },
+      "view": {
+        "frontside_width": 76,
+        "frontside_height": 55,
+        "frontside_left": 208.3125,
+        "frontside_top": 52.3125,
+        "backside_width": 779,
+        "backside_height": 321,
+        "backside_left": 13.59375,
+        "backside_top": 121.59375,
+        "advanced_settings_open": true,
+        "backside_geometry": {
+          "x_scale": 1,
+          "y_scale": 1,
+          "original_width": 550,
+          "original_height": 200
+        },
+        "saved_width": 76,
+        "saved_height": 55,
+        "backside": false
+      },
+      "version": 1
+    }
+  ]
+}</div></div>
+<h3>Function birds</h3>
 <p>
 You can use <a href="function-birds.html">function birds</a> to do many other mathematical operations on numbers (e.g. modulo, power, trigonometric functions).
 </p>

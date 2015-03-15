@@ -227,7 +227,10 @@ window.TOONTALK.number = (function () {
             return '&times;';
         case '/':
             return '&divide;';
+        case '=':
+            return '&equals;';
         case '^':
+            // deprecated
             return '^';
         default:
             TT.UTILITIES.report_internal_error("Number has an unsupported operator: " + operator);
@@ -263,8 +266,8 @@ window.TOONTALK.number = (function () {
             operator = '+';
         } 
         new_number.set_value =
-            function (new_value) {
-                if (bigrat.equals(value, new_value)) {
+            function (new_value, dont_check_if_new) {
+                if (!dont_check_if_new && bigrat.equals(value, new_value)) {
                     return;
                 }
                 this.fire_value_change_listeners(value, new_value);
@@ -299,6 +302,10 @@ window.TOONTALK.number = (function () {
             function (decimal_string) {
                 // e.g. an attribute value
 //                 console.log("set_value_from_decimal " + decimal_string + " " + this.debug_id);
+//                 if (decimal_string === undefined) {
+//                     // e.g. is an element attribute that isn't known so treat it as zero
+//                     decimal_string = 0;
+//                 }
                 if (typeof decimal_string === 'number') {
                     this.set_value(bigrat.fromDecimal(decimal_string));
                     return;
@@ -394,7 +401,6 @@ window.TOONTALK.number = (function () {
     };
 
     number.compare_with_number = function (other_number) {
-//         console.log("compare with " + other_number + " id is " + other_number.debug_id);
         if (bigrat.equals(this.get_value(), other_number.get_value())) {
             return 0;
         }
@@ -448,19 +454,19 @@ window.TOONTALK.number = (function () {
                 return;
             }
             if ($dimensions_holder.is(".toontalk-nest")) {
-                // doesn't cover the nest completely -- should put .8 into some parameter
-                client_width  *= .8;
-                client_height *= .8;
+                // doesn't cover the nest completely 
+                client_width  *= TT.nest.CONTENTS_WIDTH_FACTOR;
+                client_height *= TT.nest.CONTENTS_HEIGHT_FACTOR;
             }
         }
         $(frontside_element).removeClass("toontalk-number-eighth-size-border toontalk-number-quarter-size-border toontalk-number-half-size-border toontalk-number-full-size-border");
-        if (client_width <= 32 || client_height <= 32) {
+        if (client_width <= 64 || client_height <= 64) {
             $(frontside_element).addClass("toontalk-number-eighth-size-border");
             frontside_element.toontalk_border_size = 4;
-        } else if (client_width <= 64 || client_height <= 64) {
+        } else if (client_width <= 128 || client_height <= 128) {
             $(frontside_element).addClass("toontalk-number-quarter-size-border");
             frontside_element.toontalk_border_size = 8;
-        } else if (client_width <= 128 || client_height <= 128) {
+        } else if (client_width <= 256 || client_height <= 256) {
             $(frontside_element).addClass("toontalk-number-half-size-border");
             frontside_element.toontalk_border_size = 16;
         } else {
@@ -524,7 +530,12 @@ window.TOONTALK.number = (function () {
             }
         }
         if (this.is_integer() && format !== 'scientific_notation') {
-            integer_as_string = bigrat.toBigInteger(this.get_value()).toString();
+            try {
+                integer_as_string = bigrat.toBigInteger(this.get_value()).toString();
+            } catch (e) {
+                console.log("Error converting number to a string: " + e);
+                integer_as_string = "0";
+            }
             digits_needed = integer_as_string.length;
             if (operator_HTML.length > 0) {
                 digits_needed++;
@@ -535,7 +546,7 @@ window.TOONTALK.number = (function () {
                 max_characters = shrinkage;
             }
             return '<div class="toontalk-number toontalk-integer' + extra_class + '" style="font-size: ' + font_size + 'px;">' +
-                      operator_HTML + fit_string_to_length(integer_as_string, max_characters, font_size) + '</div>';
+                   operator_HTML + fit_string_to_length(integer_as_string, max_characters, font_size) + '</div>';
         }
         table_style = ' style="font-size:' + (font_size * 0.4) + 'px;"';
         if (format === 'improper_fraction' || !format) { // default format
@@ -696,6 +707,8 @@ window.TOONTALK.number = (function () {
             return this.multiply(other_number);
         case '/':
             return this.divide(other_number);
+        case '=':
+            return this.set_value(other_number.get_value());
         case '^':
             // deprecated since this only worked with integer exponents
             // and there is now a function bird who does this better
@@ -718,49 +731,49 @@ window.TOONTALK.number = (function () {
 
     number.add = function (other) {
         // other is another rational number
-        this.set_value(bigrat.add(bigrat.create(), this.get_value(), other.get_value()));
+        this.set_value(bigrat.add(this.get_value(), this.get_value(), other.get_value()), true);
         return this;
     };
 
     number.subtract = function (other) {
         // other is another rational number
-        this.set_value(bigrat.subtract(bigrat.create(), this.get_value(), other.get_value()));
+        this.set_value(bigrat.subtract(this.get_value(), this.get_value(), other.get_value()), true);
         return this;
     };
 
     number.multiply = function (other) {
         // other is another rational number
-        this.set_value(bigrat.multiply(bigrat.create(), this.get_value(), other.get_value()));
+        this.set_value(bigrat.multiply(this.get_value(), this.get_value(), other.get_value()), true);
         return this;
     };
 
     number.divide = function (other) {
         // other is another rational number
-        this.set_value(bigrat.divide(bigrat.create(), this.get_value(), other.get_value()));
+        this.set_value(bigrat.divide(this.get_value(), this.get_value(), other.get_value()), true);
         return this;
     };
 
     number.minimum = function (other) {
         // other is another rational number
-        this.set_value(bigrat.min(bigrat.create(), this.get_value(), other.get_value()));
+        this.set_value(bigrat.min(this.get_value(), this.get_value(), other.get_value()), true);
         return this;
     };
 
     number.maximum = function (other) {
         // other is another rational number
-        this.set_value(bigrat.max(bigrat.create(), this.get_value(), other.get_value()));
+        this.set_value(bigrat.max(this.get_value(), this.get_value(), other.get_value()), true);
         return this;
     };
 
     number.power = function (power) {
         // deprecated
         // power is any integer (perhaps needs error handling if too large)
-        this.set_value(bigrat.power(bigrat.create(), this.get_value(), bigrat.toInteger(power.get_value())));
+        this.set_value(bigrat.power(this.get_value(), this.get_value(), bigrat.toInteger(power.get_value())), true);
         return this;
     };
     
     number.absolute_value = function () {
-        this.set_value(bigrat.abs(bigrat.create(), this.get_value()));
+        this.set_value(bigrat.abs(this.get_value(), this.get_value()), true);
         return this;
     };
 
@@ -925,13 +938,15 @@ window.TOONTALK.number_backside =
             var plus = TT.UTILITIES.create_radio_button("operator", "+", "toontalk-plus-radio-button", "+", "Add me to what I'm dropped on."); // no need for &plus; and it doesn't work in IE9
             var minus = TT.UTILITIES.create_radio_button("operator", "-", "toontalk-minus-radio-button", "&minus;", "Subtract me from what I'm dropped on.");
             var multiply = TT.UTILITIES.create_radio_button("operator", "*", "toontalk-times-radio-button", "&times;", "Multiply me with what I'm dropped on.");
-            var divide = TT.UTILITIES.create_radio_button("operator", "/", "toontalk-dividie-radio-button", "&divide;", "Divide me into what I'm dropped on.");
+            var divide = TT.UTILITIES.create_radio_button("operator", "/", "toontalk-divide-radio-button", "&divide;", "Divide me into what I'm dropped on.");
+            var set = TT.UTILITIES.create_radio_button("operator", "=", "toontalk-set-equal-radio-button", "&equals;", "Set what I'm dropped on to my value.");
 //             var power = TT.UTILITIES.create_radio_button("operator", "^", "toontalk-power-radio-button", "Integer power", "Use me as the number of times to multiply together what I'm dropped on.");
             var update_value = function (event) {
                 var numerator = numerator_input.button.value.trim();
                 var denominator = denominator_input.button.value.trim();
                 var string, first_class_name;
                 var valid_integer = function (string, ator, negative_not_allowed) {
+                    // ator can be numerATOR or denominATOR
                     var without_sign;
                     if (string.length < 1) {
                         return {message: "Empty " + ator + " treated as 1.",
@@ -973,7 +988,10 @@ window.TOONTALK.number_backside =
                         denominator = validity.replacement;
                     }
                 }
-                number.set_from_values(numerator, denominator);
+                if (!number.set_from_values(numerator, denominator)) {
+                    // no change in value so ignore this
+                    return;
+                }
                 current_numerator   = numerator;
                 current_denominator = denominator;
                 if (TT.robot.in_training) {
@@ -981,12 +999,12 @@ window.TOONTALK.number_backside =
                     if (first_class_name === "toontalk-denominator-input") {
                         TT.robot.in_training.edited(number, {setter_name: "set_denominator",
                                                              argument_1: denominator,
-                                                             toString: "change value of the denominator to " + denominator,
+                                                             toString: "by changing the value of the denominator to " + denominator,
                                                              button_selector: "." + first_class_name});
                     } else {
                         TT.robot.in_training.edited(number, {setter_name: "set_numerator",
                                                              argument_1: numerator,
-                                                             toString: "change value of the numerator to " + numerator,
+                                                             toString: "by changing the value of the numerator to " + numerator,
                                                              button_selector: "." + first_class_name});
                     }         
                 }
@@ -999,27 +1017,27 @@ window.TOONTALK.number_backside =
                 if (TT.robot.in_training) {
                     TT.robot.in_training.edited(number, {setter_name: "set_format",
                                                          argument_1: format,
-                                                         toString: "change the format to " + format + " of the number",
+                                                         toString: "by changing the format to " + format + " of the number",
                                                          // just use the first className to find this button later
                                                          button_selector: "." + selected_button.className.split(" ", 1)[0]});
                 }
                 number.rerender();
             };
             var update_operator = function () {
-                var selected_button = TT.UTILITIES.selected_radio_button(plus.button, minus.button, multiply.button, divide.button); // , power.button
+                var selected_button = TT.UTILITIES.selected_radio_button(plus.button, minus.button, multiply.button, divide.button, set.button);
                 var operator = selected_button.value;
                 number.set_operator(operator, true);
                 if (TT.robot.in_training) {
                     TT.robot.in_training.edited(number, {setter_name: "set_operator",
                                                          argument_1: operator,
-                                                         toString: "change the operator to " + operator + " of the number",
+                                                         toString: "by changing the operator to " + operator + " of the number",
                                                          // just use the first className to find this button later
                                                          button_selector: "." + selected_button.className.split(" ", 1)[0]});
                 }
             };
             var number_set = TT.UTILITIES.create_horizontal_table(numerator_input.container, slash, denominator_input.container);
             var format_set = $(TT.UTILITIES.create_horizontal_table(decimal_format.container, mixed_number_format.container, improper_format.container, scientific_format.container)).buttonset().get(0);
-            var operator_set = $(TT.UTILITIES.create_horizontal_table(plus.container, minus.container, multiply.container, divide.container)).buttonset().get(0); // , power.container)
+            var operator_set = $(TT.UTILITIES.create_horizontal_table(plus.container, minus.container, multiply.container, divide.container, set.container)).buttonset().get(0);
             var advanced_settings_button = TT.backside.create_advanced_settings_button(backside, number);
             var generic_backside_update = backside.update_display;
             slash.innerHTML = "/";
@@ -1068,15 +1086,15 @@ window.TOONTALK.number_backside =
                 case "/":
                 TT.UTILITIES.check_radio_button(divide);
                 break;
-//                 case "^":
-//                 TT.UTILITIES.check_radio_button(power);
-//                 break;
+                case "=":
+                TT.UTILITIES.check_radio_button(set);
+                break;
             }
             plus.button    .addEventListener('change', update_operator);
             minus.button   .addEventListener('change', update_operator);
             multiply.button.addEventListener('change', update_operator);
             divide.button  .addEventListener('change', update_operator);
-//             power.button   .addEventListener('change', update_operator);
+            set.button     .addEventListener('change', update_operator);
             backside.update_display = function () {
                 $(numerator_input.button).val(number.numerator_string());
                 $(denominator_input.button).val(number.denominator_string());
@@ -1118,6 +1136,14 @@ window.TOONTALK.number.function =
         }
         response = compute_response(bird, box_size);
         if (response) {
+            if (robot) {
+                // function created a new widget so robot needs to know about it
+                // might be that it reused a widget in the message so isn't new
+                robot.add_newly_created_widget_if_new(response);
+            }
+            if (TT.robot.in_training && event) {
+                TT.robot.in_training.add_newly_created_widget_if_new(response);
+            }
             // following should not pass event through since otherwise it is recorded as if robot being trained did this
             bird.widget_dropped_on_me(response, false, undefined, robot, true);
         }
@@ -1125,10 +1151,17 @@ window.TOONTALK.number.function =
         return response;
     };
     var number_check = function (widget, function_name, index) {
-        if (widget.is_of_type('number')) {
+        if (!widget) {
+            TT.UTILITIES.display_message("Birds for the " + function_name + " function can only respond to boxes with a number in the " + 
+                                          TT.UTILITIES.ordinal(index) + " hole. The " + TT.UTILITIES.ordinal(index) + " hole is empty.");
+            return false;
+        }
+        if (widget.is_number && widget.is_number()) {
             return true;
         }
-        TT.UTILITIES.display_message("Birds for the " + function_name + " function can only respond to boxes with a number in the " + TT.UTILITIES.ordinal(index) + " hole. The " + TT.UTILITIES.ordinal(index) + "hole contains " + TT.UTILITIES.add_a_or_an(widget.get_type_name() + "."));
+        TT.UTILITIES.display_message("Birds for the " + function_name + " function can only respond to boxes with a number in the " + 
+                                     TT.UTILITIES.ordinal(index) + " hole. The " + TT.UTILITIES.ordinal(index) + 
+                                     "hole contains " + TT.UTILITIES.add_a_or_an(widget.get_type_name() + "."));
         return false;
     };
     var n_ary_widget_function = function (message, zero_ary_value_function, binary_operation, function_name, event, robot) { 
@@ -1220,19 +1253,7 @@ window.TOONTALK.number.function =
     var functions = {};
     var add_function_object = function (name, respond_to_message, title) {
         functions[name] = {name: name,
-                           respond_to_message: function (message, event, robot) {
-                                                   var response = respond_to_message(message, event, robot);
-                                                   if (response) {
-                                                       if (robot) {
-                                                           // function created a new widget so robot needs to know about it
-                                                           // might be that it reused a widget in the message so isn't new
-                                                           robot.add_newly_created_widget_if_new(response);
-                                                       }
-                                                       if (TT.robot.in_training && event) {
-                                                           TT.robot.in_training.add_newly_created_widget_if_new(response);
-                                                       }
-                                                   }
-                                               },
+                           respond_to_message: respond_to_message,
                            get_description: get_description,
                            toString: to_string_function,
                            title: title};

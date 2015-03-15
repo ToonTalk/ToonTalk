@@ -109,10 +109,13 @@ window.TOONTALK.actions =
                     step_number++;
                     // each step needs to call robot.run_next_step
                     step.run_unwatched(context, top_level_context, robot);
-                } else if (robot.get_run_once()) {
-                    robot.set_running(false);
                 } else {
-                    robot.get_first_in_team().run(context, top_level_context, queue);
+                    robot.get_first_in_team().set_running_or_waiting(false);
+                    if (robot.get_run_once()) {
+                        robot.set_running(false);
+                    } else {
+                        robot.get_first_in_team().run(context, top_level_context, queue);
+                    }
                 }
             };
             robot.run_next_step(); // do first step             
@@ -121,12 +124,14 @@ window.TOONTALK.actions =
         run_watched: function (context, top_level_context, queue, robot) {
             var steps = this.get_steps();
             var frontside_element = robot.get_frontside_element();
+            if (!robot.get_parent_of_frontside()) {
+                // could be a 'next robot' that hasn't been opened
+                context.get_backside_element().appendChild(frontside_element);
+                context.add_backside_widget(robot);
+                robot.update_display();        
+            }
             var saved_parent_element = frontside_element.parentElement;
             var restore_after_last_event = function () {
-                if (!robot.get_parent_of_frontside()) {
-                    // can happen if robot vacuumed itself up
-                    return;
-                }
                 $(frontside_element).addClass("toontalk-side-animating");
                 TT.UTILITIES.set_position_relative_to_top_level_backside($(frontside_element), robot_home);
                 // delay so there is some animation of returning 'home'
@@ -136,6 +141,7 @@ window.TOONTALK.actions =
                         saved_parent_element.appendChild(frontside_element);
                         TT.UTILITIES.set_absolute_position($(frontside_element), robot_home);
                         robot.set_animating(false);
+                        robot.get_first_in_team().set_running_or_waiting(false);
                         if (robot.get_run_once()) {
                             robot.set_running(false);
                         } else {
@@ -271,7 +277,7 @@ window.TOONTALK.newly_created_widgets_path =
                     return widget;
                 },
                 toString: function () {
-                    return "the " + TT.UTILITIES.ordinal(index) + " widget he created";
+                    return "the " + TT.UTILITIES.ordinal(index) + " new widget";
                 },
                 get_json: function () {
                     return {type: "newly_created_widgets_path",

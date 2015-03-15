@@ -269,7 +269,7 @@ window.TOONTALK.backside =
                     if (this.get_widget().is_ok_to_run() && !this.get_widget().get_running() && !this.is_of_type('top-level')) {
                         // if a robot or widget with robots on the back is dropped on the back of something that has been told to run
                         // (but perhaps had nothing to run)
-                        // the widget who just got a robot or widget on the back
+                        // so run the widget who just got a robot or widget on the back
                         this.get_widget().set_running(true);
                     }
                     return true;
@@ -289,7 +289,7 @@ window.TOONTALK.backside =
                         var backside_visible = this.visible();
                         backside_widgets.forEach(function (backside_widget_side, index) {
                             var backside = backside_widget_side.get_widget().get_backside();
-                            widget_side_element = backside_widget_side.get_element(true);
+                            widget_side_element = backside_widget_side.get_element();
                             widget_side_element.toontalk_widget = backside_widget_side.get_widget();
                             if (json_array) {
                                 json_view = json_array[index];
@@ -673,6 +673,9 @@ window.TOONTALK.backside =
                 widget.backside_widgets.forEach(function (widget_side) {
                         widget_side.set_visible(false);
                 });
+            }
+            if (widget.on_backside_hidden) {
+                widget.on_backside_hidden();
             }
         },
         

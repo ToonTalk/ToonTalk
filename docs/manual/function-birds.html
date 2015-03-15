@@ -42,7 +42,9 @@ Here is the list of numeric functions birds available in this system:
 You can add a function bird to your work space by dragging one of the birds above or by clicking on a number.
 Click on <b>'>'</b> to see the advanced options and then click on 'Make a function bird'.
 Then click on the bird to choose the function.
-Click the green flag to watch a robot demonstrate this:
+</p>
+<p>
+Click the green flag to watch the robot demonstrate this:
 </p>
 <br>
 <div class='toontalk-json'>
@@ -77,15 +79,23 @@ top level widget
                       "operator": "+",
                       "numerator": "1",
                       "denominator": "1",
-                      "format": "improper_fraction"
+                      "format": "improper_fraction",
+                      "is_backside": true
                     }
+                  },
+                  "additional_info": {
+                    "running_watched": true
                   }
                 },
                 {
                   "type": "robot_action",
                   "action_name": "drop it on",
                   "path": {
-                    "type": "path.to_entire_context"
+                    "type": "path.to_entire_context",
+                    "is_backside": true
+                  },
+                  "additional_info": {
+                    "running_watched": true
                   }
                 },
                 {
@@ -105,8 +115,19 @@ top level widget
                           "backside": false
                         },
                         "version": 1
-                      }
+                      },
+                      "is_backside": true
                     }
+                  },
+                  "additional_info": {
+                    "button_selector": ".toontalk-make-function_bird_button",
+                    "path_to_source": {
+                      "json": {
+                        "type": "newly_created_widgets_path",
+                        "index": 0
+                      }
+                    },
+                    "running_watched": true
                   }
                 },
                 {
@@ -120,7 +141,8 @@ top level widget
                     "setter_name": "set_function_name",
                     "argument_1": "integer and fraction parts",
                     "toString": "change the function bird to 'integer and fraction parts'",
-                    "button_selector": ".toontalk-select-function"
+                    "button_selector": ".toontalk-select-function",
+                    "running_watched": true
                   }
                 },
                 {
@@ -135,29 +157,35 @@ top level widget
                         null,
                         null
                       ],
-                      "horizontal": true
+                      "horizontal": true,
+                      "is_backside": true
                     }
+                  },
+                  "additional_info": {
+                    "running_watched": true
                   }
                 },
                 {
                   "type": "robot_action",
                   "action_name": "drop it on",
                   "path": {
-                    "type": "path.to_entire_context"
+                    "type": "path.to_entire_context",
+                    "is_backside": true
+                  },
+                  "additional_info": {
+                    "running_watched": true
                   }
                 },
                 {
                   "type": "robot_action",
                   "action_name": "pick up",
                   "path": {
-                    "type": "path.to_resource",
-                    "resource": {
-                      "type": "number",
-                      "operator": "+",
-                      "numerator": "1",
-                      "denominator": "1",
-                      "format": "improper_fraction"
-                    }
+                    "type": "newly_created_widgets_path",
+                    "index": 0,
+                    "removing_widget": true
+                  },
+                  "additional_info": {
+                    "running_watched": true
                   }
                 },
                 {
@@ -170,24 +198,9 @@ top level widget
                       "type": "box_path",
                       "index": 1
                     }
-                  }
-                },
-                {
-                  "type": "robot_action",
-                  "action_name": "edit",
-                  "path": {
-                    "type": "newly_created_widgets_path",
-                    "index": 2,
-                    "next_path": {
-                      "type": "box_path",
-                      "index": 1
-                    }
                   },
                   "additional_info": {
-                    "setter_name": "set_denominator",
-                    "argument_1": "7",
-                    "toString": "change value of the denominator to 7",
-                    "button_selector": ".toontalk-denominator-input"
+                    "running_watched": true
                   }
                 },
                 {
@@ -195,17 +208,29 @@ top level widget
                   "action_name": "edit",
                   "path": {
                     "type": "newly_created_widgets_path",
-                    "index": 2,
-                    "next_path": {
-                      "type": "box_path",
-                      "index": 1
-                    }
+                    "index": 0
                   },
                   "additional_info": {
                     "setter_name": "set_numerator",
                     "argument_1": "10",
                     "toString": "change value of the numerator to 10",
-                    "button_selector": ".toontalk-numerator-input"
+                    "button_selector": ".toontalk-numerator-input",
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "edit",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 0
+                  },
+                  "additional_info": {
+                    "setter_name": "set_denominator",
+                    "argument_1": "7",
+                    "toString": "change value of the denominator to 7",
+                    "button_selector": ".toontalk-denominator-input",
+                    "running_watched": true
                   }
                 },
                 {
@@ -239,7 +264,7 @@ top level widget
                               }
                             }
                           ],
-                          "guid": "toontalk_id_1424658856264"
+                          "guid": "toontalk_id_1425437318239"
                         },
                         "view": {
                           "frontside_width": 116,
@@ -251,15 +276,23 @@ top level widget
                           "backside": false
                         },
                         "version": 1
-                      }
+                      },
+                      "is_backside": true
                     }
+                  },
+                  "additional_info": {
+                    "running_watched": true
                   }
                 },
                 {
                   "type": "robot_action",
                   "action_name": "drop it on",
                   "path": {
-                    "type": "path.to_entire_context"
+                    "type": "path.to_entire_context",
+                    "is_backside": true
+                  },
+                  "additional_info": {
+                    "running_watched": true
                   }
                 },
                 {
@@ -267,8 +300,11 @@ top level widget
                   "action_name": "pick up",
                   "path": {
                     "type": "newly_created_widgets_path",
-                    "index": 5,
+                    "index": 4,
                     "removing_widget": true
+                  },
+                  "additional_info": {
+                    "running_watched": true
                   }
                 },
                 {
@@ -281,6 +317,9 @@ top level widget
                       "type": "box_path",
                       "index": 0
                     }
+                  },
+                  "additional_info": {
+                    "running_watched": true
                   }
                 },
                 {
@@ -290,6 +329,9 @@ top level widget
                     "type": "newly_created_widgets_path",
                     "index": 2,
                     "removing_widget": true
+                  },
+                  "additional_info": {
+                    "running_watched": true
                   }
                 },
                 {
@@ -298,6 +340,9 @@ top level widget
                   "path": {
                     "type": "newly_created_widgets_path",
                     "index": 1
+                  },
+                  "additional_info": {
+                    "running_watched": true
                   }
                 },
                 {
@@ -305,19 +350,26 @@ top level widget
                   "action_name": "pick up",
                   "path": {
                     "type": "newly_created_widgets_path",
-                    "index": 4,
+                    "index": 3,
                     "next_path": {
                       "type": "box_path",
                       "index": 0,
                       "removing_widget": true
                     }
+                  },
+                  "additional_info": {
+                    "running_watched": true
                   }
                 },
                 {
                   "type": "robot_action",
                   "action_name": "drop it on",
                   "path": {
-                    "type": "path.to_entire_context"
+                    "type": "path.to_entire_context",
+                    "is_backside": true
+                  },
+                  "additional_info": {
+                    "running_watched": true
                   }
                 },
                 {
@@ -325,12 +377,15 @@ top level widget
                   "action_name": "pick up",
                   "path": {
                     "type": "newly_created_widgets_path",
-                    "index": 4,
+                    "index": 3,
                     "next_path": {
                       "type": "box_path",
                       "index": 1,
                       "removing_widget": true
                     }
+                  },
+                  "additional_info": {
+                    "running_watched": true
                   }
                 },
                 {
@@ -338,43 +393,21 @@ top level widget
                   "action_name": "drop it on",
                   "path": {
                     "type": "newly_created_widgets_path",
-                    "index": 7
-                  }
-                },
-                {
-                  "type": "robot_action",
-                  "action_name": "add to the top-level backside",
-                  "path": {
-                    "type": "newly_created_widgets_path",
-                    "index": 0
-                  }
-                },
-                {
-                  "type": "robot_action",
-                  "action_name": "add to the top-level backside",
-                  "path": {
-                    "type": "newly_created_widgets_path",
-                    "index": 4
-                  }
-                },
-                {
-                  "type": "robot_action",
-                  "action_name": "add to the top-level backside",
-                  "path": {
-                    "type": "newly_created_widgets_path",
-                    "index": 7
+                    "index": 6
+                  },
+                  "additional_info": {
+                    "running_watched": true
                   }
                 }
               ]
             },
-            "run_once": true,
-            "description": "demonstrates function birds. It gets a bird that splits a number into the integer and fraction parts and tests it."
+            "run_once": true
           },
           "view": {
             "frontside_width": 66,
             "frontside_height": 110,
-            "frontside_left": 322.984375,
-            "frontside_top": 67.984375,
+            "frontside_left": 32.5625,
+            "frontside_top": 5.96875,
             "backside_geometry": {
               "x_scale": 1,
               "y_scale": 1,
@@ -391,22 +424,23 @@ top level widget
     ]
   },
   "view": {
-    "background_color": "rgba(245, 240, 240, 0.941176)",
-    "backside_width": 745,
-    "backside_height": 247,
+    "background_color": "rgb(245, 240, 240)",
+    "backside_width": 751,
+    "backside_height": 266,
     "backside_left": 8,
     "backside_top": 184.1875,
     "backside_geometry": {
       "x_scale": 1,
       "y_scale": 1,
-      "original_width": 484,
-      "original_height": 117
+      "original_width": 1200,
+      "original_height": 475
     },
     "backside": true,
-    "drag_x_offset": 557,
-    "drag_y_offset": 120.8125
+    "drag_x_offset": 481,
+    "drag_y_offset": 191.8125
   },
   "version": 1
 }</div></div>
+
 </body>
 </html>

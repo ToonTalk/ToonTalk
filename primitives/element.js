@@ -23,6 +23,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     
     var value_in_pixels = function (value, attribute) {
         var last_character, number;
+        if (!value) {
+            return 0;
+        }
         if (typeof value === 'number') {
             number = value;
         }
@@ -58,9 +61,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     element.create = function (html, style_attributes, description, additional_classes) {
         var new_element = Object.create(element);
         var widget_drag_started = new_element.drag_started;
-        var attribute_widgets = {}; // table relating attribute_name and widget in backside table
-        var original_copies   = {}; // table relating attribute_name and all the widget copies for that attribute
-        var pending_css, transform_css, on_update_display_handlers, $image_element;
+        var attribute_widgets_in_backside_table = {}; // table relating attribute_name and widget in backside table
+        var original_copies                     = {}; // table relating attribute_name and all the widget copies for that attribute
+        var original_width, original_height, current_width, current_height, pending_css, transform_css, on_update_display_handlers, $image_element;
         if (!style_attributes) {
             style_attributes = [];
         }
@@ -68,7 +71,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             return html;
         };
         new_element.get_text = function () {
-            return this.get_frontside_element().textContent;
+            var text = this.get_frontside_element().textContent;
+            if (text === "") {
+                return this.get_HTML();
+            }
+            return text;
         };
         new_element.set_HTML = function (new_value) {
             var frontside_element = this.get_frontside_element();
@@ -114,8 +121,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         new_element.set_style_attributes = function (new_value) {
             style_attributes = new_value;
         };
-        new_element.get_attribute_widgets = function () {
-            return attribute_widgets;
+        new_element.get_attribute_widgets_in_backside_table = function () {
+            return attribute_widgets_in_backside_table;
         };
         new_element.get_original_copies = function () {
             return original_copies;
@@ -141,7 +148,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             pending_css[attribute] = value;
         };
         new_element.apply_css = function () {
-            var frontside_element, transform;
+            var transform = "";
+            var frontside_element, need_to_scale, $container, container_width, container_height;
             if (!pending_css && !transform_css) {
                 return;
             }
@@ -157,37 +165,45 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 100);
                 return;
             }
+            if (pending_css) {
+                if (pending_css.width) {
+                    current_width  = pending_css.width;
+                    need_to_scale = true;
+                }
+                if (pending_css.height) {
+                    current_height = pending_css.height;
+                    need_to_scale = true;
+                }
+            }
             if (transform_css) {
+                if (!pending_css) {
+                    pending_css = {};
+                }
                 if (transform_css['rotate']) {
-                    transform = 'rotate(' + transform_css['rotate'] + 'deg)';
+                    transform += 'rotate(' + transform_css['rotate'] + 'deg)';
                 }
                 if (transform_css['skewX']) {
-                    if (!transform) {
-                        transform = "";
-                    }
                     transform += 'skewX(' + transform_css['skewX'] + 'deg)';
                 }
                 if (transform_css['skewY']) {
-                    if (!transform) {
-                        transform = "";
-                    }
                     transform += 'skewY(' + transform_css['skewY'] + 'deg)';
                 }
                 if (transform_css['transform-origin-x'] || transform_css['transform-origin-y']) {
-                    if (!pending_css) {
-                        pending_css = {};
-                    }
                     pending_css['transform-origin'] = (transform_css['transform-origin-x'] || 0) + ' ' + (transform_css['transform-origin-y'] || 0);
-                } 
+                }
+                need_to_scale = false; // no need since scaling right here
+                transform += 'scale(' + (current_width /(original_width  || $(frontside_element).width()))  + ', ' + 
+                                        (current_height/(original_height || $(frontside_element).height())) + ')';
+                if (!pending_css['transform-origin']) {
+                    // other origins cause drag and drop to behave strangely
+                    pending_css['transform-origin'] = "left top"; 
+                }
                 if (transform) {
-                    if (!pending_css) {
-                        pending_css = {};
-                    }
                     pending_css['-webkit-transform'] = transform;
-                    pending_css['-moz-transform'] =    transform;
-                    pending_css['-ms-transform'] =     transform;
-                    pending_css['o-transform'] =       transform;
-                    pending_css['transform'] =         transform;
+                    pending_css['-moz-transform']    = transform;
+                    pending_css['-ms-transform']     = transform;
+                    pending_css['o-transform']       = transform;
+                    pending_css['transform']         = transform;
                 }
             };
             // need to delay the following since width and height may not be known yet
@@ -196,20 +212,43 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     // can be undefined if all the transforms had a zero value
                     return;
                 }
-                // without the following the image remains square since only one of width/height set
-                if (pending_css.width && typeof pending_css.height === 'undefined') {
-                    pending_css.height = frontside_element.clientHeight;
-                } else if (pending_css.height && typeof pending_css.width === 'undefined') {
-                    pending_css.width = frontside_element.clientWidth;
+                if (current_width || current_height) {
+                    // if it contains an image then change it too (needed only for width and height)
+                    // TODO: is the following still needed?
+                    if ($image_element) {
+                        $image_element.css({width:  original_width,
+                                            height: original_height});
+                    }
+                    // tried $(frontside_element).children(".toontalk-element-container").get(0)
+                    $(frontside_element).children(".toontalk-element-container").css({width: '', height: ''});
+                    if (need_to_scale) {
+                        TT.UTILITIES.run_when_dimensions_known(frontside_element,
+                                                                   function () {
+                                                                        TT.UTILITIES.scale_element(frontside_element, current_width, current_height, original_width, original_height);
+                                                                   });
+                    }
+                    pending_css.width  = undefined;
+                    pending_css.height = undefined;    
+                }
+                if (pending_css.left || pending_css.top) {
+                    // elements (like turtles) by default wrap -- TODO: make this configurable
+                    if (pending_css.left) {      
+                        // if negative after mod add width -- do another mod in case was positive
+                        $container = $(this.get_parent_of_frontside().get_element());
+                        container_width = $container.width();
+                        pending_css.left = ((pending_css.left%container_width)+container_width)%container_width;
+                    }
+                    if (pending_css.top) {
+                        if (!$container) {
+                            $container = $(this.get_parent_of_frontside().get_element());
+                        }
+                        container_height = $container.height();
+                        pending_css.top = ((pending_css.top%container_height)+container_height)%container_height;
+                    }
                 }
                 $(frontside_element).css(pending_css);
-                // if it contains an image then change it too (needed only for width and height)
-                if ($image_element && (pending_css.width || pending_css.height)) {
-                    $image_element.css({width:  pending_css.width,
-                                        height: pending_css.height});
-                }
                 pending_css = undefined;
-                });
+                }.bind(this));
         };
         new_element.on_update_display = function (handler) {
             if (!on_update_display_handlers) {
@@ -255,6 +294,97 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             this.drag_y_offset = json.view.drag_y_offset;
             widget_drag_started.call(this, json, is_resource);
         };
+        new_element.update_display = function () {
+            var frontside_element = this.get_frontside_element();
+            var backside = this.get_backside();
+            var element_description = function (element) {
+                if (this.get_image_element()) {
+                    return "image";
+                }
+                if ($(element).is(".toontalk-plain-text-element")) {
+                    return "text";
+                }
+                return "element";
+            }.bind(this);
+            var rendering, additional_classes;
+            if (this.being_dragged) {
+                return;
+            }
+            if (this.get_erased && this.get_erased()) {
+                // could save the current opacity and restore it below
+                // hide so doesn't get in the way of selections
+                $(frontside_element).css({opacity: 0}).hide();
+                return;
+            }
+            if (this.get_erased && $(frontside_element).css("opacity") === "0") {
+                // was erased but no longer
+                $(frontside_element).css({opacity: 1}).show();
+            }
+            if (frontside_element.children.length === $(frontside_element).children(".ui-resizable-handle").length) {
+                // the only children are resize handles so add the HTML
+                rendering = document.createElement('div');
+                $(rendering).addClass("toontalk-element-container");
+                rendering.innerHTML = this.get_HTML();
+                frontside_element.appendChild(rendering);
+                this.set_image_element(rendering, frontside_element);
+                $(frontside_element).addClass("toontalk-element-frontside");
+                if (rendering.innerHTML.substring(0, 1) !== '<') {
+                    // doesn't look like HTML so assume it is raw text and give it a class that will give it a better font and size
+                    additional_classes = this.get_additional_classes();
+                    if (additional_classes) {
+                        $(rendering).addClass(additional_classes);
+                    }
+                    $(frontside_element).addClass("ui-widget toontalk-plain-text-element");
+                }
+            }
+            if (TT.UTILITIES.on_a_nest_in_a_box(frontside_element)) {
+                // need to work around a CSS problem where nested percentage widths don't behave as expected
+                this.set_attribute('width',  $(frontside_element).closest(".toontalk-box-hole").width(),  false);
+                this.set_attribute('height', $(frontside_element).closest(".toontalk-box-hole").height(), false);
+            }
+            if (typeof original_width === 'undefined') {
+                // this delays but the following delays more
+                TT.UTILITIES.original_dimensions(this, function (width, height) {
+                                                           original_width  = width;
+                                                           original_height = height;
+                                                       });
+            }
+            this.apply_css();
+            this.fire_on_update_display_handlers();
+            frontside_element.title = "Click to see the backside where you can place robots or change the style of this " + element_description(frontside_element);
+        };
+        new_element.get_attribute_from_current_css = function (attribute) {
+            var frontside_element, value;
+            if (attribute === 'width' && (current_width || original_width)) {
+                return current_width || original_width;
+            }
+            if (attribute === 'height' && (current_height || original_height)) {
+                return current_height || original_height;
+            }
+            frontside_element = this.get_frontside_element();
+            value = frontside_element.style[attribute];
+            if (value === "") {
+                // this caused integer rounding (at least of font-size)
+                // but if the above doesn't find a value seems sometimes this does
+                value = $(frontside_element).css(attribute);
+            }
+            if (!value) {
+                // zero is the default value -- e.g. for transformations such as rotate
+                return 0;
+            }
+            if (typeof value === 'number') {
+                return value;
+            }
+            // should really check that px is at the end the rest is a number
+            return value.replace("px", "");
+        };
+        new_element.increment_width = function (delta) {
+//          console.log("delta: " + delta + " new width: " + ((current_width  || original_width) + delta));
+            this.set_attribute('width',  (current_width  || original_width)  + delta);
+        };
+        new_element.increment_height = function (delta) {
+            this.set_attribute('height', (current_height || original_height) + delta);
+        };
         new_element.set_description(description);
         if (TT.debugging) {
             new_element.debug_string = new_element.toString();
@@ -287,11 +417,15 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     };
     
     element.match_with_another_element_widget = function (element_pattern) {
+        var text_pattern;
         if (this.get_HTML() === element_pattern.get_HTML()) {
             return 'matched';
-        } else {
-            return element_pattern;
         }
+        text_pattern = element_pattern.get_text();
+        if (text_pattern !== "" && text_pattern === this.get_text()) {
+            return 'matched';
+        }
+        return element_pattern;
     };
 
     element.compare_with = function (other) {
@@ -312,7 +446,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     }
     
     element.create_backside = function () {
-        return TT.element_backside.create(this); //.update_run_button_disabled_attribute();
+        return TT.element_backside.create(this);
     };
 
     element.get_attribute_from_pending_css = function (attribute) {
@@ -325,25 +459,6 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         if (transform_css && transform_css[attribute]) {
             return transform_css[attribute];
         }
-    };
-
-    element.get_attribute_from_current_css = function (attribute) {
-        var frontside_element = this.get_frontside_element();
-        var value = frontside_element.style[attribute];
-        if (value === "") {
-            // this caused integer rounding (at least of font-size)
-            // but if the above doesn't find a value seems sometimes this does
-            value = $(frontside_element).css(attribute);
-        }
-        if (!value) {
-            // zero is the default value -- e.g. for transformations such as rotate
-            return 0;
-        }
-        if (typeof value === 'number') {
-            return value;
-        }
-        // should really check that px is at the end the rest is a number
-        return value.replace("px", "");
     };
     
     element.get_attribute = function (attribute) {
@@ -460,11 +575,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         }
     };
 
-    element.get_attribute_widget = function (attribute_name) {
-        var attribute_widget = this.get_attribute_widgets()[attribute_name];
-        if (!attribute_widget) {
+    element.get_attribute_widget_in_backside_table = function (attribute_name, dont_create) {
+        var attribute_widget = this.get_attribute_widgets_in_backside_table()[attribute_name];
+        if (!attribute_widget && !dont_create) {
             attribute_widget = this.create_attribute_widget(attribute_name);
-            this.get_attribute_widgets()[attribute_name] = attribute_widget;
+            this.get_attribute_widgets_in_backside_table()[attribute_name] = attribute_widget;
         }
         return attribute_widget;
     };
@@ -493,42 +608,48 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 attribute_widget.set_value_from_decimal(attribute_value);
                 number_update_display.call(attribute_widget);
         }.bind(this);
-        var $attribute_input, attribute_widget, original_copies,
+        var create_numeric_attribute_widget = function (attribute_name, attribute_value) {
+            var attribute_widget = TT.number.create(0, 1);
+            attribute_widget.element_widget = this;
+            attribute_widget.set_value_from_decimal(attribute_value);
+            attribute_widget.set_format('decimal');
+            attribute_widget.attribute = attribute_name; // TODO: rename? use accessors?
+            attribute_widget.get_type_name = function (plural) {
+                if (plural) {
+                    return "element attributes";
+                }
+                return "element attribute";
+            };
+            number_to_string = attribute_widget.toString;
+            attribute_widget.toString = function () {
+                return number_to_string.call(this) + " (" + this.attribute + ")";
+            };
+    //         attribute_widget.get_element = function () {
+    //             if ($attribute_input && $attribute_input.length > 0) {
+    //                 return $attribute_input.get(0);
+    //             }
+    //         };
+            number_equals = attribute_widget.equals;
+            attribute_widget.equals = function (other) {
+                if (attribute_name === other.attribute) {
+                    return this.equals(other.element_widget);
+                }
+                return number_equals.call(this, other);
+            };
+            return attribute_widget;
+        }.bind(this);
+        var $attribute_input, attribute_widget, original_copies, frontside_element,
             // store some default number functions:
-            number_equals, number_update_display, number_to_string, frontside_element;
+            number_equals, number_update_display, number_to_string;
         if (backside_element) {
             $attribute_input = $(backside_element).find(selector);
             if ($attribute_input.length > 0) {
                 $attribute_input.get(0).toontalk_widget = this;
             }
         }
-        attribute_widget = TT.number.create(0, 1);
-        attribute_widget.element_widget = this;
-        attribute_widget.set_value_from_decimal(attribute_value);
-        attribute_widget.set_format('decimal');
-        attribute_widget.attribute = attribute_name; // TODO: rename? use accessors?
-        attribute_widget.get_type_name = function (plural) {
-            if (plural) {
-                return "element attributes";
-            }
-            return "element attribute";
-        };
-        number_to_string = attribute_widget.toString;
-        attribute_widget.toString = function () {
-            return number_to_string.call(this) + " (" + this.attribute + ")";
-        };
-//         attribute_widget.get_element = function () {
-//             if ($attribute_input && $attribute_input.length > 0) {
-//                 return $attribute_input.get(0);
-//             }
-//         };
-        number_equals = attribute_widget.equals;
-        attribute_widget.equals = function (other) {
-            if (attribute_name === other.attribute) {
-                return this.equals(other.element_widget);
-            }
-            return number_equals.call(this, other);
-        };
+        // TODO: make this conditional on attribute_value being a number
+        // and implement string valued attributes
+        attribute_widget = create_numeric_attribute_widget(attribute_name, attribute_value);
         // a change to any of the copies is instantly reflected in all
         original_copies = this.get_original_copies()[attribute_name];
         if (original_copies) {
@@ -538,14 +659,17 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         }
         // another way to implement this would be for the recursive call to add an extra parameter: ignore_copies
         attribute_widget.set_value = function (new_value) {
+            // need to convert new_value into a decimal approximation
+            // since bigrat.toDecimal works by converting the numerator and denominator to JavaScript numbers
+            // so best to approximate -- also should be faster to do arithmetic
             var copies = this_element_widget.get_original_copies()[attribute_name];
-            var return_value;
-            if (this.get_attribute_owner().set_attribute(this.attribute, bigrat.toDecimal(new_value))) {
+            var decimal_value = bigrat.toDecimal(new_value);
+            var return_value, value_approximation;
+            if (this.get_attribute_owner().set_attribute(this.attribute, decimal_value)) {
                 // if the new_value is different from the current value
+                value_approximation = bigrat.fromDecimal(decimal_value);
                 copies.forEach(function (copy, index) {
-//                 var new_value_copy = index === 0 ? new_value : bigrat.copy(bigrat.create(), new_value);
-//                 console.log("copy set value " + new_value + " id is " + copy.debug_id);
-                  return_value = copy.set_value_from_sub_classes(new_value); 
+                  return_value = copy.set_value_from_sub_classes(value_approximation); 
               });
             }
             return return_value;
@@ -565,8 +689,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         };
         if (attributes_needing_updating.indexOf(attribute_name) >= 0) {
             this.on_update_display(function () {
-               attribute_widget.update_display();
-               return true; // don't remove
+                attribute_widget.rerender();
+                return true; // don't remove
             });
             if (attribute_name === 'left' || attribute_name === 'top') {
                 frontside_element = this.get_frontside_element();
@@ -628,63 +752,24 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     };
 
     TT.creators_from_json["attribute_number"] = function (json, additional_info) {
-        return TT.UTILITIES.create_from_json(json.element, additional_info).create_attribute_widget(json.attribute_name);
+        var element_widget = TT.UTILITIES.create_from_json(json.element, additional_info);
+        return element_widget.create_attribute_widget(json.attribute_name);
     };
-    
-    element.update_display = function () {
-        var frontside_element = this.get_frontside_element();
-        var backside = this.get_backside();
-        var element_description = function (element) {
-            if (this.get_image_element()) {
-                return "image";
+
+    element.on_backside_hidden = function () {
+        this.get_style_attributes().forEach(function (attribute) {
+            var attribute_widget = this.get_attribute_widget_in_backside_table(attribute, true);
+            if (attribute_widget) {
+                attribute_widget.set_visible(false);
             }
-            if ($(element).is(".toontalk-plain-text-element")) {
-                return "text";
-            }
-            return "element";
-        }.bind(this);
-        var rendering, additional_classes;
-        if (this.being_dragged) {
-            return;
-        }
-        if (this.get_erased && this.get_erased()) {
-            // could save the current opacity and restore it below
-            $(frontside_element).css({opacity: 0});
-            return;
-        }
-        if (this.get_erased && $(frontside_element).css("opacity") === "0") {
-            // was erased but no longer
-            $(frontside_element).css({opacity: 1});
-        }
-        if (frontside_element.children.length === $(frontside_element).children(".ui-resizable-handle").length) {
-            // the only children are resize handles so add the HTML
-            rendering = document.createElement('div');
-            rendering.innerHTML = this.get_HTML();
-            frontside_element.appendChild(rendering);
-            this.set_image_element(rendering, frontside_element);
-            $(frontside_element).addClass("toontalk-element-frontside");
-            if (rendering.innerHTML.substring(0, 1) !== '<') {
-                // doesn't look like HTML so assume it is raw text and give it a class that will give it a better font and size
-                additional_classes = this.get_additional_classes();
-                if (additional_classes) {
-                    $(rendering).addClass(additional_classes);
-                }
-                $(frontside_element).addClass("ui-widget toontalk-plain-text-element");
-            }
-        }
-        if (TT.UTILITIES.on_a_nest_in_a_box(frontside_element)) {
-            // need to work around a CSS problem where nested percentage widths don't behave as expected
-            this.set_attribute("width",  $(frontside_element).closest(".toontalk-box-hole").width(),  false);
-            this.set_attribute("height", $(frontside_element).closest(".toontalk-box-hole").height(), false);
-        }
-        this.apply_css();
-        this.fire_on_update_display_handlers();
-        frontside_element.title = "Click to see the backside where you can place robots or change the style of this " + element_description(frontside_element);
+        }.bind(this));
     };
-        
-    element.toString = function () {
-        var description = "element whose HTML is '" + TT.UTILITIES.maximum_string_length(this.get_HTML(), 40) + "'";
-        if (TT.debugging) {
+   
+    element.toString = function (to_string_info) {
+        var description = to_string_info && to_string_info.role === "conditions" ?
+                          this.get_text() :
+                          "the element " + this.get_HTML() ;
+        if (TT.debugging && (!(to_string_info && to_string_info.role === "conditions"))) {
             description += " (" + this.debug_id + ")";
         }
         return description;
@@ -772,7 +857,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 // if the robot is running on the backside of a widget that is on the backside of the top_level_context
                 // then use the top_level_context
                 var element_widget = path_to_element_widget.dereference((top_level_context || context), undefined, robot);
-                return element_widget.get_attribute_widget(attribute_name);
+                return element_widget.get_attribute_widget_in_backside_table(attribute_name);
             },
             toString: function () {
                 return "the '" + attribute_name + "' property of " + path_to_element_widget;
@@ -794,9 +879,14 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 clientHeight: this.get_attribute('height')};
     };
 
-    element.set_size_attributes = function (width, height) {
-        this.set_attribute('width',  width);
-        this.set_attribute('height', height);
+    element.set_size_attributes = function (width, height, update_regardless) {
+        if (update_regardless) {
+            this.add_to_css('width',  width);
+            this.add_to_css('height', height);
+        } else {
+            this.set_attribute('width',  width);
+            this.set_attribute('height', height);
+        }
         TT.UTILITIES.set_timeout(function () {
             this.rerender();
         }.bind(this));        
@@ -925,6 +1015,9 @@ window.TOONTALK.element_backside =
     };
     
     var update_style_attributes_table = function (table, element_widget, backside) {
+        if (!backside.visible()) {
+            return;
+        }
         var style_attributes = element_widget.get_style_attributes();
         var frontside_element = element_widget.get_frontside_element();
         $(table).empty();
@@ -935,8 +1028,8 @@ window.TOONTALK.element_backside =
             };
             var classes = "toontalk-element-attribute-input toontalk-element-" + attribute + "-attribute-input";
             var row = document.createElement("tr");
-            var td = document.createElement("td");
-            var attribute_widget = element_widget.get_attribute_widget(attribute);
+            var td  = document.createElement("td");
+            var attribute_widget = element_widget.get_attribute_widget_in_backside_table(attribute);
             var attribute_frontside_element = attribute_widget.get_frontside_element();
             attribute_widget.set_parent_of_frontside(backside, false, true); // a white lie
             attribute_widget.set_infinite_stack(true);
@@ -945,7 +1038,7 @@ window.TOONTALK.element_backside =
             td.appendChild(TT.UTILITIES.create_text_element(attribute));
             td = document.createElement("td");
             row.appendChild(td);
-            attribute_widget.set_visible(true); // TODO: turn this off when backside hidden
+            attribute_widget.set_visible(true);
             $(attribute_frontside_element).addClass("toontalk-element-attribute");
             td.appendChild(attribute_frontside_element);
             attribute_widget.render();           
@@ -1004,7 +1097,7 @@ window.TOONTALK.element_backside =
             // need to ensure that it 'knows' its textContent, etc.
             element_widget.update_display();
             text = element_widget[getter]().trim();
-            if (text.length > 0) {
+            if (text.length > 0 && !element_widget.get_image_element()) {
                 html_input = TT.UTILITIES.create_text_area(text, "toontalk-html-input", "", "Type here to edit the text.");
                 update_html = function (event) {
                     var new_text = html_input.button.value.trim();

@@ -94,13 +94,16 @@ window.TOONTALK.widget = (function (TT) {
                     return frontside;
                 };
                 widget.save_dimensions = function () {
+                    return this.save_dimensions_of(this);
+                };
+                widget.save_dimensions_of = function (other) {
                     var dimensions;
-                    if (this.get_size_attributes) {
-                        dimensions = this.get_size_attributes();
+                    if (other.get_size_attributes) {
+                        dimensions = other.get_size_attributes();
                     } else {
-                         // elements have clientWidth and clientHeight
-                         // used to use $(...).width() but that returns 0 during a drop
-                         dimensions = this.get_frontside_element();
+                        // elements have clientWidth and clientHeight
+                        // used to use $(...).width() but that returns 0 during a drop
+                        dimensions = other.get_frontside_element();
                     }
                     if (dimensions.clientWidth > 0) {
                         this.saved_width  = dimensions.clientWidth;
@@ -109,7 +112,7 @@ window.TOONTALK.widget = (function (TT) {
                         this.saved_height = dimensions.clientHeight;
                     }
                     return true;
-                };
+                }
                 widget.restore_dimensions = function () {
                     var frontside_element;
                     if (this.saved_width > 0) {
@@ -300,7 +303,11 @@ window.TOONTALK.widget = (function (TT) {
                     return widget_element;
                 };
                 widget.animate_to_widget = function (target_widget, continuation, speed, left_offset, top_offset) {
-                    this.animate_to_element(find_widget_element(target_widget), continuation, speed, left_offset, top_offset);
+                    // delay for DOM to settle down in case target_widget is brand new
+                    setTimeout(function () {
+                                   this.animate_to_element(find_widget_element(target_widget), continuation, speed, left_offset, top_offset);
+                               }.bind(this),
+                               100);            
                 };
             }
             if (!widget.animate_to_element) {
@@ -569,6 +576,9 @@ window.TOONTALK.widget = (function (TT) {
         get_full_description: function (to_string_info) {
             var description, string;
             if (this.get_erased && this.get_erased()) {
+                if (to_string_info && to_string_info.role === "conditions") {
+                    return "any " + this.get_type_name();
+                }
                 return "erased " + this.get_type_name();
             }
             description = this.get_description(to_string_info);
@@ -578,13 +588,6 @@ window.TOONTALK.widget = (function (TT) {
             }
             return string;
         },
-        
-//         get_description: function () {
-//             if (this.get_erased && this.get_erased()) {
-//                 return "erased " + this.get_type_name();
-//             }
-//             return this.toString();
-//         },
         
         remove: function (event) {
             var backside  = this.get_backside();
@@ -602,6 +605,7 @@ window.TOONTALK.widget = (function (TT) {
                 }
             }   
             this.set_running(false);
+            this.set_visible(false); // in case robot vacuumed the widget while it was animating
             if (this.walk_children) {
                 this.walk_children(function (child) {
                                        if (child.remove) {
@@ -763,11 +767,13 @@ window.TOONTALK.widget = (function (TT) {
             } else {
                 widget.set_parent_of_frontside(this, true);
             }
-            widget_side.set_visible(backside.visible());
+            if (backside.visible()) {
+                widget_side.set_visible(true);
+                widget.render();
+            }
             if (this.get_running()) {
                 widget.set_running(true);
             }
-            widget.render();
         },
 
         remove_all_backside_widgets: function () {
@@ -847,9 +853,6 @@ window.TOONTALK.widget = (function (TT) {
                     backside_widget.set_visible(backside_visible);
                 }.bind(this)); 
             }
-//             if (backside) {
-//                 backside.update_run_button_disabled_attribute();
-//             }
         },
               
         get_backside_widgets_json_views: function (create) {
@@ -1021,7 +1024,7 @@ window.TOONTALK.widget = (function (TT) {
                 }.bind(this);
             var backside_element, frontside_element, parent, $frontside_ancestor_that_is_backside_element,
                 $frontside_ancestor_before_backside_element, frontside_ancestor_before_backside_element, ancestor_that_owns_backside_element,
-                final_left, final_top, frontside_offset, container_offset;
+                final_left, final_top, frontside_offset, frontside_height, container_offset;
             if (backside) {
                 backside_element = backside.get_element();
                 if ($(backside_element).is(":visible")) {
@@ -1075,7 +1078,13 @@ window.TOONTALK.widget = (function (TT) {
             // put backside under the widget
             final_left = frontside_offset.left-container_offset.left;
             // leave a gap between front and backside -- don't want settings, flag, and stop sign to be overlapped
-            final_top  = (frontside_offset.top-container_offset.top) + frontside_element.offsetHeight + 26, 
+            if (this.get_size_attributes) {
+                // e.g. an element widget
+                frontside_height = this.get_size_attributes().clientHeight;
+            } else {
+                frontside_height = frontside_element.offsetHeight  
+            }
+            final_top  = (frontside_offset.top-container_offset.top) + frontside_height + 26, 
             animate_backside_appearance(backside_element, "inherit");
             backside.render();
             if (this.backside_widgets) {
@@ -1370,6 +1379,9 @@ window.TOONTALK.widget = (function (TT) {
             };
             widget.walk_children = function () {
                 // ignore since top-level widgets are currently only used for their backside
+            };
+            widget.render = function () {
+                // ignore
             };
             widget.is_widget = true;
             widget.get_backside(true).set_visible(true); // top-level backsides are always visible (at least for now)

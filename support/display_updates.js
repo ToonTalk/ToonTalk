@@ -13,9 +13,9 @@ window.TOONTALK.DISPLAY_UPDATES =
     var time_of_last_update = 0;
     return {
         pending_update: function (x) {
-            if (!x.update_display) {
-                return;
-            }
+//             if (!x.update_display) {
+//                 return;
+//             }
             if (pending_updates.indexOf(x) >= 0) {
                 // already scheduled to be rendered
                 return;

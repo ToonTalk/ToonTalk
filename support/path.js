@@ -232,7 +232,7 @@ window.TOONTALK.path =
                     }
             }; 
         },
-        get_path_to_resource: function (widget, json_history) {
+        get_path_to_resource: function (widget) {
             // ignore the side information and just use the widget
             // revisit this if resources are ever backside resources
             widget = widget.get_widget(); // if widget is really the backside of the widget

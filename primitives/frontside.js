@@ -51,8 +51,12 @@ window.TOONTALK.frontside =
                 return visible;
             };
             frontside.set_visible = function (new_value) {
-                var widget = this.get_widget();
+                var widget;
+                if (visible === new_value) {
+                    return;
+                }
                 visible = new_value;
+                widget = this.get_widget();
                 if (widget.walk_children) {
                     widget.walk_children(function (child_side) {
                                              child_side.set_visible(new_value);
