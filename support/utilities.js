@@ -2184,10 +2184,10 @@ window.TOONTALK.UTILITIES =
 
         scale_element: function (element, new_width, new_height, original_width, original_height, delay) {
             var update_css = function () {
-                 $(element).css({transform: "scale(" + x_scale + ", " + y_scale + ")",
-                                 "transform-origin": "top left", 
-                                 width:  original_width,
-                                 height: original_height});
+                $(element).css({transform: "scale(" + x_scale + ", " + y_scale + ")",
+                                "transform-origin": "top left", 
+                                width:  original_width,
+                                height: original_height});
             };
             var x_scale, y_scale;
             if (!original_width) {

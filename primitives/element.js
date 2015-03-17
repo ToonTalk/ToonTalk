@@ -149,7 +149,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         };
         new_element.apply_css = function () {
             var transform = "";
-            var frontside_element, need_to_scale, x_scale, y_scale, $container, container_width, container_height;
+            var frontside_element, need_to_scale, x_scale, y_scale, child_css, $container, container_width, container_height;
             if (!pending_css && !transform_css) {
                 return;
             }
@@ -176,8 +176,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 }
             }
             if (transform_css) {
-                if (!pending_css) {
-                    pending_css = {};
+                if (!child_css) {
+                    child_css = {};
                 }
                 if (transform_css['rotate']) {
                     transform += 'rotate(' + transform_css['rotate'] + 'deg)';
@@ -191,20 +191,26 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 if (transform_css['transform-origin-x'] || transform_css['transform-origin-y']) {
                     pending_css['transform-origin'] = (transform_css['transform-origin-x'] || 0) + ' ' + (transform_css['transform-origin-y'] || 0);
                 }
-                need_to_scale = false; // no need since scaling right here
-                x_scale =  (current_width /(original_width  || $(frontside_element).width()));
-                y_scale =  (current_height/(original_height || $(frontside_element).height()));
-                transform += 'scale(' + (x_scale || 1) + ', ' + (y_scale || 1) + ')';
-                if (!pending_css['transform-origin']) {
-                    // other origins cause drag and drop to behave strangely
-                    pending_css['transform-origin'] = "left top"; 
+//                 need_to_scale = false; // no need since scaling right here
+//                 x_scale =  (current_width /(original_width  || $(frontside_element).width()));
+//                 y_scale =  (current_height/(original_height || $(frontside_element).height()));
+//                transform += 'scale(' + (x_scale || 1) + ', ' + (y_scale || 1) + ')';
+                if (!pending_css || !pending_css['transform-origin']) {
+//                     if (this === TT.UTILITIES.get_dragee()) {
+//                         // other origins cause drag and drop to behave strangely
+//                         child_css['transform-origin'] = "left top";
+//                     } else {
+                        child_css['transform-origin'] = "center center";
+//                     }
                 }
                 if (transform) {
-                    pending_css['-webkit-transform'] = transform;
-                    pending_css['-moz-transform']    = transform;
-                    pending_css['-ms-transform']     = transform;
-                    pending_css['o-transform']       = transform;
-                    pending_css['transform']         = transform;
+                    child_css['-webkit-transform'] = transform;
+                    child_css['-moz-transform']    = transform;
+                    child_css['-ms-transform']     = transform;
+                    child_css['o-transform']       = transform;
+                    child_css['transform']         = transform;
+                    // transform the child since can't have different transform-origins in the same element transforms
+                    $(frontside_element).children(".toontalk-element-container").css(child_css);
                 }
             };
             // need to delay the following since width and height may not be known yet
