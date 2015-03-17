@@ -2224,7 +2224,7 @@ window.TOONTALK.UTILITIES =
 
         run_when_dimensions_known: function (element, callback) {
             var check_if_dimensions_known = function (delay_if_not) {
-                if ($(element).width()) {
+                if ($(element).width() && !$(element).is(".toontalk-carried-by-bird")) {
                     callback();
                     return;
                 }
