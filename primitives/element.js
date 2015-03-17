@@ -149,7 +149,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         };
         new_element.apply_css = function () {
             var transform = "";
-            var frontside_element, need_to_scale, $container, container_width, container_height;
+            var frontside_element, need_to_scale, x_scale, y_scale, $container, container_width, container_height;
             if (!pending_css && !transform_css) {
                 return;
             }
@@ -192,8 +192,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     pending_css['transform-origin'] = (transform_css['transform-origin-x'] || 0) + ' ' + (transform_css['transform-origin-y'] || 0);
                 }
                 need_to_scale = false; // no need since scaling right here
-                transform += 'scale(' + (current_width /(original_width  || $(frontside_element).width()))  + ', ' + 
-                                        (current_height/(original_height || $(frontside_element).height())) + ')';
+                x_scale =  (current_width /(original_width  || $(frontside_element).width()));
+                y_scale =  (current_height/(original_height || $(frontside_element).height()));
+                transform += 'scale(' + (x_scale || 1) + ', ' + (y_scale || 1) + ')';
                 if (!pending_css['transform-origin']) {
                     // other origins cause drag and drop to behave strangely
                     pending_css['transform-origin'] = "left top"; 
@@ -669,7 +670,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 // if the new_value is different from the current value
                 value_approximation = bigrat.fromDecimal(decimal_value);
                 copies.forEach(function (copy, index) {
-                  return_value = copy.set_value_from_sub_classes(value_approximation); 
+                    return_value = copy.set_value_from_sub_classes(value_approximation, true); 
               });
             }
             return return_value;
