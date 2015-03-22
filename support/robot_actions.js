@@ -132,22 +132,27 @@ window.TOONTALK.actions =
             }
             var saved_parent_element = frontside_element.parentElement;
             var restore_after_last_event = function () {
-                $(frontside_element).addClass("toontalk-side-animating");
-                TT.UTILITIES.set_position_relative_to_top_level_backside($(frontside_element), robot_home);
+                var robot_still_visible = robot.visible();
+                if (robot_still_visible) {
+                    $(frontside_element).addClass("toontalk-side-animating");
+                    TT.UTILITIES.set_position_relative_to_top_level_backside($(frontside_element), robot_home);
+                }
                 // delay so there is some animation of returning 'home'
                 setTimeout(function () {
                         // robot was added to top-level backside so z-index will work as desired (robot on top of everything)
                         // the following restores it
-                        saved_parent_element.appendChild(frontside_element);
-                        TT.UTILITIES.set_absolute_position($(frontside_element), robot_home);
-                        robot.set_animating(false);
+                        if (robot_still_visible) {
+                            saved_parent_element.appendChild(frontside_element);
+                            TT.UTILITIES.set_absolute_position($(frontside_element), robot_home);
+                            robot.set_animating(false);
+                        }
                         robot.get_first_in_team().set_running_or_waiting(false);
                         if (robot.get_run_once()) {
                             robot.set_running(false);
                         } else {
                             robot.get_first_in_team().run(context, top_level_context, queue);
                         }
-                        robot.render();
+                        robot.rerender();
                     },
                     1000);
             };
