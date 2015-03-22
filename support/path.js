@@ -10,6 +10,8 @@ window.TOONTALK.path =
 (function (TT) {
     "use strict";
 
+    var default_top_level_widget; // needed when running without a top-level backside
+
     TT.creators_from_json["path.to_entire_context"] = function () {
         return TT.path.to_entire_context();
     };
@@ -313,7 +315,15 @@ window.TOONTALK.path =
             // this can be shared by all since only used to drop on -- not to pick up
             // if pick up then needs to be a fresh copy like get_path_to_resource
             dereference: function (context, top_level_context, robot) {
-                return context.ancestor_of_type('top-level');
+                var top_level_widget = context.ancestor_of_type('top-level');
+                if (top_level_widget) {
+                    return top_level_widget;
+                }
+                // might be running on a web page without a top-level backside_widget
+                if (!default_top_level_widget) {
+                    default_top_level_widget = TT.widget.create_top_level_widget();
+                }
+                return default_top_level_widget;
             },
             toString: function () {
                 return "the top-level backside";
