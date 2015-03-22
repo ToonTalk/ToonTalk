@@ -18,7 +18,7 @@ window.TOONTALK.robot = (function (TT) {
         var new_robot = Object.create(robot);
         var first_in_team; // who should do the 'repeating'
         var animating = false; // true if animating due to being run while watched
-        var running_or_waiting;
+        var running_or_waiting, stopped;
         var original_backside_widgets_of_context;
         if (!body) {
             body = TT.actions.create();
@@ -85,6 +85,20 @@ window.TOONTALK.robot = (function (TT) {
         };
         new_robot.set_running_or_waiting = function (new_value) {
             running_or_waiting = new_value;
+        };
+        new_robot.stopped = function () {
+            return stopped;
+        };
+        new_robot.set_stopped = function (new_value) {
+            stopped = new_value;
+            if (stopped) {
+                if (this.visible()) {
+                    $(this.get_frontside_element()).removeClass("toontalk-robot-waiting");
+                }
+            }
+            if (this.get_next_robot()) {
+                this.get_next_robot().set_stopped(new_value);
+            }
         };
         new_robot.get_animating = function () {
             return animating;
@@ -365,20 +379,8 @@ window.TOONTALK.robot = (function (TT) {
         }
     };
     
-    robot.set_stopped = function (new_value) {
-        this.stopped = new_value;
-        if (this.stopped) {
-            if (this.visible()) {
-                $(this.get_frontside_element()).removeClass("toontalk-robot-waiting");
-            }
-        }
-        if (this.get_next_robot()) {
-            this.get_next_robot().set_stopped(new_value);
-        }
-    };
-    
     robot.run_actions = function (context, top_level_context, queue) {
-        if (this.stopped) { // replace with a method?
+        if (this.stopped()) { 
             this.get_first_in_team().set_running_or_waiting(false);
             return false;
         }

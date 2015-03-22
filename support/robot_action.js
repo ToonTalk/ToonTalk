@@ -60,6 +60,9 @@ window.TOONTALK.robot_action =
          },
          "remove": function (widget, context, top_level_context, robot) {
              widget.remove();
+             if (widget === robot) {
+                 robot.set_stopped(true);
+             }
              return true;
          },
          "erased_widget": function (widget, context, top_level_context, robot, additional_info) {

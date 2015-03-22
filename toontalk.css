@@ -2134,6 +2134,9 @@ background-image: url("images/dusty-morph.png");
 .toontalk-being-dragged {
 	opacity: 0.6;
 }
+.toontalk-not-observable {
+	margin-left: -10000px;
+}
 /* .toontalk-ignore-events {
 	pointer-events: none;
 } */

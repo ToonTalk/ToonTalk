@@ -2223,16 +2223,43 @@ window.TOONTALK.UTILITIES =
         },
 
         run_when_dimensions_known: function (element, callback) {
-            var check_if_dimensions_known = function (delay_if_not) {
-                if ($(element).width() && !$(element).is(".toontalk-carried-by-bird")) {
-                    callback();
-                    return;
-                }
+            var check_if_dimensions_known, parent;
+            if ($(element).width()) {
+                // already known
+                callback();
+                return;
+            }
+            check_if_dimensions_known = function (delay_if_not) {
+                // add to DOM temporarily so can get dimensions
                 setTimeout(function () {
-                               check_if_dimensions_known(delay_if_not*2);
-                           },
-                           delay_if_not)
-            };
+                               var width = $(element).width();
+                               if (width) { // } && !$(element).is(".toontalk-carried-by-bird")) {
+                                   callback();
+                                   if (element.parentElement === document.body) {
+                                       if (parent) {
+                                           parent.appendChild(element);
+                                       } else {
+                                           $(element).remove();
+                                       }
+                                   }
+                                   $(element).removeClass("toontalk-not-observable");
+                                   return;
+                               }
+                               setTimeout(function () {
+                                              // still not known so wait twice as long and try again
+                                              var widget = TT.UTILITIES.widget_of_element(element);
+                                              if (delay_if_not < 10000) {
+                                                  // might be an anima gadget on the back of something
+                                                  // and back isn't visible in which case no point waiting very long
+                                                  check_if_dimensions_known(delay_if_not*2);
+                                              }
+                                          },
+                                          delay_if_not);
+                }); 
+            }
+            parent = element.parentElement;
+            $(element).addClass("toontalk-not-observable");
+            document.body.appendChild(element);
             check_if_dimensions_known(1);
         },
 
@@ -2240,17 +2267,13 @@ window.TOONTALK.UTILITIES =
             // this relies upon run_when_dimensions_known which keeps trying until it finds out the dimensions of this element
             // TODO: discover if there is a better way
             var frontside_element = widget.get_frontside_element();
-            var parent = frontside_element.parentElement;
             var update_original_dimensions_and_restore =
                 function () {
                     set_original_dimensions($(frontside_element).width(), $(frontside_element).height());
-                    if (parent) {
-                        parent.appendChild(frontside_element);
-                    } else {
-                        $(frontside_element).remove();
-                    }
                 };
-            $(document.body).append(frontside_element);
+            if (frontside_element.parentElement === document.body) {
+                return; // this was called twice -- probably by update_display
+            }
             TT.UTILITIES.run_when_dimensions_known(frontside_element, update_original_dimensions_and_restore);
         },
         

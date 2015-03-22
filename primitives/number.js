@@ -1364,7 +1364,7 @@ window.TOONTALK.number.function =
                         "The bird will return the smallest integer greater than or equal to the number.");
     add_function_object('integer and fraction parts', 
                         function (message, event, robot) {
-                            return n_ary_function(message, box_with_integer_and_fraction, 1, 'integer and fraction parts');
+                            return n_ary_function(message, box_with_integer_and_fraction, 1, 'integer and fraction parts', event, robot);
                         },
                         "The bird will return with a box containing the integer part and the fraction.");
     add_function_object('sine', 

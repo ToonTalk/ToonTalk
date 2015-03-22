@@ -313,7 +313,6 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 }
                 return "element";
             }.bind(this);
-            var rendering, additional_classes;
             if (this.being_dragged) {
                 return;
             }
@@ -327,6 +326,26 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 // was erased but no longer
                 $(frontside_element).css({opacity: 1}).show();
             }
+            this.initialise_element();
+            if (TT.UTILITIES.on_a_nest_in_a_box(frontside_element)) {
+                // need to work around a CSS problem where nested percentage widths don't behave as expected
+                this.set_attribute('width',  $(frontside_element).closest(".toontalk-box-hole").width(),  false);
+                this.set_attribute('height', $(frontside_element).closest(".toontalk-box-hole").height(), false);
+            }
+            if (typeof original_width === 'undefined') {
+                // this delays but the following delays more
+                TT.UTILITIES.original_dimensions(this, function (width, height) {
+                                                           original_width  = width;
+                                                           original_height = height;
+                                                       });
+            }
+            this.apply_css();
+            this.fire_on_update_display_handlers();
+            frontside_element.title = "Click to see the backside where you can place robots or change the style of this " + element_description(frontside_element);
+        };
+        new_element.initialise_element = function () {
+            var frontside_element = this.get_frontside_element();
+            var rendering, additional_classes;
             if (frontside_element.children.length === $(frontside_element).children(".ui-resizable-handle").length) {
                 // the only children are resize handles so add the HTML
                 rendering = document.createElement('div');
@@ -344,21 +363,6 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     $(frontside_element).addClass("ui-widget toontalk-plain-text-element");
                 }
             }
-            if (TT.UTILITIES.on_a_nest_in_a_box(frontside_element)) {
-                // need to work around a CSS problem where nested percentage widths don't behave as expected
-                this.set_attribute('width',  $(frontside_element).closest(".toontalk-box-hole").width(),  false);
-                this.set_attribute('height', $(frontside_element).closest(".toontalk-box-hole").height(), false);
-            }
-            if (typeof original_width === 'undefined') {
-                // this delays but the following delays more
-                TT.UTILITIES.original_dimensions(this, function (width, height) {
-                                                           original_width  = width;
-                                                           original_height = height;
-                                                       });
-            }
-            this.apply_css();
-            this.fire_on_update_display_handlers();
-            frontside_element.title = "Click to see the backside where you can place robots or change the style of this " + element_description(frontside_element);
         };
         new_element.get_attribute_from_current_css = function (attribute) {
             var frontside_element, value;
@@ -1102,7 +1106,7 @@ window.TOONTALK.element_backside =
             var generic_backside_update = backside.update_display;
             var text, html_input, update_html;
             // need to ensure that it 'knows' its textContent, etc.
-            element_widget.update_display();
+            element_widget.initialise_element();
             text = element_widget[getter]().trim();
             if (text.length > 0 && !element_widget.get_image_element()) {
                 html_input = TT.UTILITIES.create_text_area(text, "toontalk-html-input", "", "Type here to edit the text.");
