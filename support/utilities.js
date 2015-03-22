@@ -2248,10 +2248,9 @@ window.TOONTALK.UTILITIES =
                                setTimeout(function () {
                                               // still not known so wait twice as long and try again
                                               var widget = TT.UTILITIES.widget_of_element(element);
-                                              if (widget.get_parent_of_frontside() ||
-                                                  (widget.get_parent_of_backside() && widget.get_parent_of_backside().visible())) {
+                                              if (delay_if_not < 10000) {
                                                   // might be an anima gadget on the back of something
-                                                  // and back isn't visible in which case no point waiting
+                                                  // and back isn't visible in which case no point waiting very long
                                                   check_if_dimensions_known(delay_if_not*2);
                                               }
                                           },
