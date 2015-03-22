@@ -149,7 +149,7 @@ window.TOONTALK.actions =
                         robot.get_first_in_team().set_running_or_waiting(false);
                         if (robot.get_run_once()) {
                             robot.set_running(false);
-                        } else {
+                        } else if (!robot.stopped()) {
                             robot.get_first_in_team().run(context, top_level_context, queue);
                         }
                         robot.rerender();
