@@ -327,7 +327,7 @@ window.TOONTALK.backside =
                     }.bind(this));
             };
             backside.get_backside_dimensions = function () {
-                if (x_scale) {
+                if (x_scale !== 1 || y_scale !== 1) {
                     return {x_scale: x_scale, 
                             y_scale: y_scale, 
                             original_width:  original_width, 
