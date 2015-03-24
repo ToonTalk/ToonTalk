@@ -186,6 +186,9 @@ window.TOONTALK.backside =
                 visible = new_value;
                 backside_widgets.forEach(function (backside_widget) {
                         backside_widget.set_visible(new_value);
+                        if (new_value) {
+                            backside_widget.render();
+                        }
                 });
             };
             if (!widget.get_backside) {
