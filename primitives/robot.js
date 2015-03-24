@@ -830,6 +830,7 @@ window.TOONTALK.robot_backside =
     var add_conditions_area = function (backside_element, robot) {
         var frontside_condition_widget = robot.get_frontside_conditions();
         var backside_conditions = robot.get_backside_conditions();
+        var robot_visible = robot.visible();
         var backside_condition_widget, area_class_name;
         if (frontside_condition_widget) {
             if (frontside_condition_widget.is_of_type('top-level')) {
@@ -843,8 +844,8 @@ window.TOONTALK.robot_backside =
                                                                      "toontalk-frontside-conditions-area"), 
                                               backside_element.firstChild);
             }
-            frontside_condition_widget.set_visible(true);
-            frontside_condition_widget.render();
+            frontside_condition_widget.set_visible(robot_visible);
+            frontside_condition_widget.rerender();
         }
         if (backside_conditions) {
             Object.keys(backside_conditions).forEach(function (type) {
@@ -862,8 +863,8 @@ window.TOONTALK.robot_backside =
                                                                        area_class_name);
                         }
                         backside_element.insertBefore(condition_element, backside_element.firstChild.nextSibling);
-                        backside_condition_widget.set_visible(true);
-                        backside_condition_widget.render();
+                        backside_condition_widget.set_visible(robot_visible);
+                        backside_condition_widget.rerender();
                     }
                 }
             });
