@@ -863,13 +863,14 @@ window.TOONTALK.number = (function () {
             // need -0.ddd
             integer_string = "-" + integer_string;
         }
-        var fractional_part = copy.subtract(integer_part);
+        var fractional_part = copy.get_value(); // will be the fractional remainder after the following
+        bigrat.subtract(fractional_part, fractional_part, integer_part.get_value());
         var number_of_full_size_characters_after_decimal_point = 
             compute_number_of_full_size_characters_after_decimal_point(number_of_full_size_characters, integer_string.length);
         var decimal_max_digits = shrinking_digits_length(number_of_full_size_characters_after_decimal_point, font_size);
         var integer_max_digits = Math.min(integer_string.length, number_of_full_size_characters/2);
         // bigger fonts mean more digits can be seen so compute more of them
-        var decimal_places = generate_decimal_places(fractional_part.get_value(), decimal_max_digits);
+        var decimal_places = generate_decimal_places(fractional_part, decimal_max_digits);
         var after_decimal_point;
         if (decimal_places.length < number_of_full_size_characters) {
             // not repeating and not too many decimal digits
