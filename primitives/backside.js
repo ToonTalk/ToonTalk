@@ -526,6 +526,29 @@ window.TOONTALK.backside =
             };
             var settings = document.createElement("table");
             var backside_element = this.get_element();
+            var add_new_widget_to_backside = function (new_widget, $button) {
+                var parent_backside = widget.get_parent_of_frontside();
+                var widget_frontside_element = new_widget.get_frontside_element(true);
+                var initial_location, parent_backside_element;
+                if (parent_backside && !parent_backside.is_of_type('top-level')) {
+                    // following works for back of a top-level widget but the placement isn't as good
+                    parent_backside.add_backside_widget(new_widget);
+                    parent_backside_element = parent_backside.get_element();
+                    parent_backside_element.appendChild(widget_frontside_element);
+                    initial_location = $(parent_backside_element).offset();
+                    initial_location.top += $(parent_backside_element).height()*.6;
+                } else {
+                    // place the widget near the button
+                    widget.add_to_top_level_backside(new_widget, false);
+                    initial_location = $button.offset();
+                    initial_location.left -= 120; // to the left of the button
+                    if (initial_location.left < 0) {
+                        // don't go off edge
+                        initial_location.left = 0;
+                    }
+                }
+                TT.UTILITIES.set_absolute_position($(widget_frontside_element), initial_location); 
+            };
             $(settings).addClass("toontalk-advanced-setting");
             $(description_text_area.button).val(widget.get_description());
             description_text_area.button.addEventListener('change',   description_change);
@@ -534,15 +557,7 @@ window.TOONTALK.backside =
                 .addClass("toontalk-make-sensor_nest_button")
                 .click(function (event) {
                     var sensor = TT.sensor.create('click', 'which', undefined, undefined, true, widget);
-                    var sensor_frontside_element = sensor.get_frontside_element(true);
-                    var initial_location = $make_sensor_nest_button.offset();
-                    widget.add_to_top_level_backside(sensor, false);
-                    initial_location.left -= 120; // to the left of the button
-                    if (initial_location.left < 0) {
-                        // don't go off edge
-                        initial_location.left = 0;
-                    }
-                    TT.UTILITIES.set_absolute_position($(sensor_frontside_element), initial_location);
+                    add_new_widget_to_backside(sensor, $make_sensor_nest_button);
                     if (TT.robot.in_training) {
                         TT.robot.in_training.created_widget(sensor, widget, ".toontalk-make-sensor_nest_button");
                     }
@@ -552,15 +567,7 @@ window.TOONTALK.backside =
                 .addClass("toontalk-make-function_bird_button")
                 .click(function (event) {
                     var function_bird = TT.bird.create_function(type_name);
-                    var function_bird_frontside_element = function_bird.get_frontside_element(true);
-                    var initial_location = $make_sensor_nest_button.offset();
-                    widget.add_to_top_level_backside(function_bird, false);
-                    initial_location.left -= 120; // to the left of the button
-                    if (initial_location.left < 0) {
-                        // don't go off edge
-                        initial_location.left = 0;
-                    }
-                    TT.UTILITIES.set_absolute_position($(function_bird_frontside_element), initial_location);
+                    add_new_widget_to_backside(function_bird, $make_function_bird_button);
                     if (TT.robot.in_training) {
                         TT.robot.in_training.created_widget(function_bird, widget, ".toontalk-make-function_bird_button");
                     }
