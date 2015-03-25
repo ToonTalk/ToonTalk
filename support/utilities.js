@@ -107,7 +107,7 @@ window.TOONTALK.UTILITIES =
                                 height: json_object.view.frontside_height});
                 }
             } else if (!dragee.parent().is(".toontalk-top-level-resource, .toontalk-drop-area, .toontalk-json") &&
-                       !dragee.is(".toontalk-carried-by-bird, .toontalk-element-attribute") &&
+                       !dragee.is(".toontalk-carried-by-bird, .toontalk-element-attribute, .toontalk-function-bird-documentation-bird") &&
                        !TT.UTILITIES.has_animating_image(dragee.get(0))) {
                 dragee.css({width:  "100%",
                             height: "100%"});
