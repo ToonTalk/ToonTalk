@@ -1250,8 +1250,8 @@ window.TOONTALK.widget = (function (TT) {
             widget.get_element = function () {
                 return this.get_backside().get_element();
             };
-            widget.get_setting = function (option_name) {
-                if (typeof settings[option_name] === 'undefined') {
+            widget.get_setting = function (option_name, dont_use_default) {
+                if (typeof settings[option_name] === 'undefined' && !dont_use_default) {
                     settings[option_name] = TT.DEFAULT_SETTINGS && TT.DEFAULT_SETTINGS[option_name];     
                 }
                 return settings[option_name];
@@ -1263,7 +1263,12 @@ window.TOONTALK.widget = (function (TT) {
                 TT.SETTINGS.open(widget);
             };
             widget.save = function (immediately, parameters, callback) {
+                var program_name = this.get_setting('program_name', true);
                 var json, google_drive_status;
+                if (!program_name) {
+                    // not saving this -- e.g. an example in a documentation page
+                    return;
+                }
                 if (!parameters) {
                     parameters = {};
                 }
@@ -1285,7 +1290,7 @@ window.TOONTALK.widget = (function (TT) {
                     json = TT.UTILITIES.get_json_top_level(this);
                     google_drive_status = TT.google_drive.get_status();
                     if (google_drive_status === "Ready") {
-                        TT.google_drive.upload_file(this.get_setting('program_name'), "json", JSON.stringify(json), callback);
+                        TT.google_drive.upload_file(program_name, "json", JSON.stringify(json), callback);
                         callback = undefined;
                     } else if (TT.google_drive.connection_to_google_drive_possible()) {
                         if (google_drive_status === 'Need to authorize') {
