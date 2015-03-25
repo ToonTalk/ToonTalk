@@ -389,6 +389,12 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             // should really check that px is at the end the rest is a number
             return value.replace("px", "");
         };
+        new_element.get_original_width = function () {
+            return original_width;
+        };
+        new_element.get_original_height = function () {
+            return original_height;
+        };
         new_element.increment_width = function (delta) {
 //          console.log("delta: " + delta + " new width: " + ((current_width  || original_width) + delta));
             this.set_attribute('width',  (current_width  || original_width)  + delta);
@@ -782,12 +788,22 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     };
    
     element.toString = function (to_string_info) {
+       var scale_or_quote_html = function (html) {
+           var style, first_space;
+           if (html.length > 1 && html.charAt(0) === '<') {
+                style = "style='width: 50px; height: 30px;'";
+                first_space = html.indexOf(' ');
+                return html.substring(0, first_space+1) + style + html.substring(first_space);
+           }
+           // else is a plain string so quote it
+           return '"' + html + '"';
+        };
         var description = to_string_info && to_string_info.role === "conditions" ?
-                          this.get_text() :
-                          "the element " + this.get_HTML() ;
-        if (TT.debugging && (!(to_string_info && to_string_info.role === "conditions"))) {
-            description += " (" + this.debug_id + ")";
-        }
+                      this.get_text() :
+                      "the element " + scale_or_quote_html(this.get_HTML());        
+//         if (TT.debugging && (!(to_string_info && to_string_info.role === "conditions"))) {
+//             description += " (" + this.debug_id + ")";
+//         }
         return description;
     };
     
