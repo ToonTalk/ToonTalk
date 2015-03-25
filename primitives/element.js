@@ -502,7 +502,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         if (typeof new_value_number === 'number') {
             if (current_value == new_value_number) {
                 // using == instead of === since want type coercion. current_value might be a string
-                return true;
+                return false;
             }
             // seems we have to live with integer values for width and height
 //             if ((attribute === 'width' || attribute === 'height') &&
