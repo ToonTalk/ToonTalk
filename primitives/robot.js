@@ -26,6 +26,9 @@ window.TOONTALK.robot = (function (TT) {
         if (!first_in_team) {
             first_in_team = new_robot;
         }
+        new_robot.is_robot = function () {
+            return true;
+        };
         new_robot.get_frontside_conditions = function () {
             return frontside_conditions;
         };
@@ -178,7 +181,7 @@ window.TOONTALK.robot = (function (TT) {
                 }
             }
             frontside_condition_widget = this.get_frontside_conditions();
-            if (frontside_condition_widget && !frontside_condition_widget.is_of_type('top-level')) {
+            if (frontside_condition_widget && !frontside_condition_widget.is_top_level()) {
                 if (!child_action(frontside_condition_widget)) {
                     return;
                 }
@@ -396,7 +399,7 @@ window.TOONTALK.robot = (function (TT) {
             // robot picked up its frontside or backside -- so ignore this
             return;
         }
-        if (widget.is_of_type('top-level')) {
+        if (widget.is_top_level()) {
             // doesn't make sense and easy to do by mistake
             return;
         }
@@ -666,7 +669,7 @@ window.TOONTALK.robot = (function (TT) {
         prefix = "";
         postfix = "";
         next_robot = this.get_next_robot();
-        if (frontside_conditions.is_of_type('top-level')) {
+        if (frontside_conditions.is_top_level()) {
             robot_conditions_description = "When the workspace's green flag is pressed";
         } else {
             frontside_conditions_string = TT.UTILITIES.add_a_or_an(frontside_conditions.get_full_description({role: "conditions"}));
@@ -736,7 +739,7 @@ window.TOONTALK.robot = (function (TT) {
         var backside_conditions = this.get_backside_conditions();
         var frontside_conditions_json, backside_conditions_json, next_robot_json;
         if (frontside_conditions) {
-            if (frontside_conditions.is_of_type('top-level')) {
+            if (frontside_conditions.is_top_level()) {
                 frontside_conditions_json = {type: "top_level"};
             } else {
                 frontside_conditions_json = TT.UTILITIES.get_json(frontside_conditions, json_history);
@@ -833,7 +836,7 @@ window.TOONTALK.robot_backside =
         var robot_visible = robot.visible();
         var backside_condition_widget, area_class_name;
         if (frontside_condition_widget) {
-            if (frontside_condition_widget.is_of_type('top-level')) {
+            if (frontside_condition_widget.is_top_level()) {
                 backside_element.insertBefore(TT.UTILITIES.create_text_element("This robot always runs when the workspace green flag is clicked."),
                                               backside_element.firstChild);
             } else if ($(backside_element).find(".toontalk-frontside-conditions-area").length === 0) {
@@ -902,7 +905,7 @@ window.TOONTALK.robot_backside =
                 var dragee = TT.UTILITIES.get_dragee();
                 var widget = TT.UTILITIES.widget_from_jquery(dragee);
                 var backside;
-                if (widget && widget.is_of_type('robot')) {
+                if (widget && widget.is_robot()) {
                     if (widget.get_body().is_empty()) {
                         backside = widget.open_backside();
                         $(backside.get_element()).find(".toontalk-train-backside-button").click();

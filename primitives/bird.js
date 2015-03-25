@@ -47,6 +47,9 @@ window.TOONTALK.bird = (function (TT) {
         bird_set_nest = function (new_value) {
             nest = new_value;
         };
+        new_bird.is_bird = function () {
+            return true;
+        };
         new_bird.widget_dropped_on_me = function (other, other_is_backside, event, robot, do_not_run_next_step) {
             var message_side = other_is_backside ? other.get_backside() : other;
             var frontside_element, fly_continuation, run_next_step_continuation;
@@ -129,7 +132,7 @@ window.TOONTALK.bird = (function (TT) {
                             parent_element.appendChild(bird_frontside_element);
                         }
                         if (parent) {
-                            if (parent.get_widget().is_of_type('top-level')) {
+                            if (parent.get_widget().is_top_level()) {
                                 this.rerender();
                             } else {
                                 parent.get_widget().rerender();
@@ -623,6 +626,9 @@ window.TOONTALK.nest = (function (TT) {
         };
         remove_nest_copy = function (old_copy) {
             this[add_copy_private_key](old_copy, true);
+        };
+        new_nest.is_nest = function () {
+            return true;
         };
         new_nest.matched_by = function (other) {
             if (contents.length > 0) {

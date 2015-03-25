@@ -112,7 +112,7 @@ window.TOONTALK.backside =
                                                 widget.set_running(true);
                                                 update_stop_sign_title();
                                             } else {
-                                                if (widget.is_of_type('top-level')) {
+                                                if (widget.is_top_level()) {
                                                     TT.UTILITIES.display_message("There is nothing to run.");
                                                 } else {
                                                     TT.UTILITIES.display_message("This " + widget.get_type_name() + " has nothing to run. Add some robots on the back.");
@@ -159,7 +159,7 @@ window.TOONTALK.backside =
             if (description_label) {
                 backside_element.appendChild(description_label); 
             }
-            if (widget.is_of_type('top-level')) {
+            if (widget.is_top_level()) {
                 settings_button = document.createElement("div");
                 $(settings_button).addClass("toontalk-settings-button")
                                   .click(function (event) {
@@ -233,7 +233,7 @@ window.TOONTALK.backside =
                     }
                     $other_side_element = $(other_side_element);
                     $backside_element.append($other_side_element);
-                    if (this.is_of_type('top-level')) {
+                    if (this.get_widget().is_top_level()) {
                         if (robot && !robot.visible()) {
                            $other_side_element.addClass("toontalk-widget-added-to-backside-by-unwatched-robot");
                         }
@@ -269,7 +269,7 @@ window.TOONTALK.backside =
                     if (event) {
                         other.get_widget().backup_all();
                     }
-                    if (this.get_widget().is_ok_to_run() && !this.get_widget().get_running() && !this.is_of_type('top-level')) {
+                    if (this.get_widget().is_ok_to_run() && !this.get_widget().get_running() && !this.get_widget().is_top_level()) {
                         // if a robot or widget with robots on the back is dropped on the back of something that has been told to run
                         // (but perhaps had nothing to run)
                         // so run the widget who just got a robot or widget on the back
@@ -411,12 +411,12 @@ window.TOONTALK.backside =
             backside_element.addEventListener("mouseenter", function (event) {
                 var frontside = widget.get_frontside();
                 var parent_of_backside = widget.get_parent_of_backside();
-                if (frontside && (!parent_of_backside || parent_of_backside.get_widget().is_of_type('top-level'))) {
+                if (frontside && (!parent_of_backside || parent_of_backside.get_widget().is_top_level())) {
                     TT.UTILITIES.highlight_element(frontside.get_element());
                 }
             });
             backside_element.addEventListener("mouseleave", function (event) {
-               if (!widget.is_of_type('top-level')) {
+               if (!widget.is_top_level()) {
                    TT.UTILITIES.remove_highlight();
                }
             });
@@ -530,7 +530,7 @@ window.TOONTALK.backside =
                 var parent_backside = widget.get_parent_of_frontside();
                 var widget_frontside_element = new_widget.get_frontside_element(true);
                 var initial_location, parent_backside_element;
-                if (parent_backside && !parent_backside.is_of_type('top-level')) {
+                if (parent_backside && !parent_backside.is_top_level()) {
                     // following works for back of a top-level widget but the placement isn't as good
                     parent_backside.add_backside_widget(new_widget);
                     parent_backside_element = parent_backside.get_element();
@@ -572,7 +572,7 @@ window.TOONTALK.backside =
                         TT.robot.in_training.created_widget(function_bird, widget, ".toontalk-make-function_bird_button");
                     }
             });
-            if (widget.is_of_type('number')) {
+            if (widget.is_number()) {
                 // will implement more functions (e.g. for string elements and boxes)
                 $make_function_bird_button.attr('title', "Click to get a bird that flies to functions of " + widget.get_type_name(true) + ".");
             } else {

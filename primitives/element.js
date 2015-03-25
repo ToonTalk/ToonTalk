@@ -67,6 +67,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         if (!style_attributes) {
             style_attributes = [];
         }
+        new_element.is_element = function () {
+            return true;
+        };
         new_element.get_HTML = function () {
             return html;
         };
@@ -542,7 +545,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             return;
         }
         widget_string = dropped.toString();
-        if (dropped.is_of_type('number')) {
+        if (dropped.is_number()) {
             attribute_value = this.get_attribute(attribute_name);
             if (typeof attribute_value === 'number') {
                 attribute_numerical_value = attribute_value;
@@ -758,13 +761,13 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             if (!backside_ancestor_side) {
                 return this_element_widget;
             }
-            if (!backside_ancestor_side.is_of_type('element')) {
+            if (!backside_ancestor_side.get_widget().is_element()) {
                 return this_element_widget;
             }
             widget = backside_ancestor_side.get_widget();
             widget_parent = widget.get_parent_of_backside();
             while ((widget_parent &&
-                    widget_parent.is_of_type('element'))) {
+                    widget_parent.get_widget().is_element())) {
                 widget = widget_parent.get_widget();
                 widget_parent = widget.get_parent_of_backside();
             }

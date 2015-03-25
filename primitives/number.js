@@ -264,7 +264,10 @@ window.TOONTALK.number = (function () {
         }
         if (!operator) {
             operator = '+';
-        } 
+        }         
+        new_number.is_number = function () {
+            return true;
+        };
         new_number.set_value =
             function (new_value, dont_check_if_new) {
                 if (!dont_check_if_new && bigrat.equals(value, new_value)) {
@@ -379,10 +382,6 @@ window.TOONTALK.number = (function () {
 
     number.copy = function (parameters) {
         return this.add_to_copy(number.create(this.get_value()[0], this.get_value()[1], this.get_operator(), this.get_format(), this.get_description()), parameters);
-    };
-    
-    number.is_number = function () {
-        return true;
     };
     
     number.equals = function (other) {
@@ -1117,7 +1116,7 @@ window.TOONTALK.number.function =
     
     var process_message = function (message, compute_response, event, robot) {
         var box_size, bird, response;
-        if (!message.is_of_type('box')) {
+        if (!message.is_box()) {
             TT.UTILITIES.display_message("Function birds can only respond to boxes. One was given " + TT.UTILITIES.add_a_or_an(message.get_type_name()));
             return;
         }
@@ -1131,7 +1130,7 @@ window.TOONTALK.number.function =
             TT.UTILITIES.display_message("Function birds can only respond to boxes with something in the first hole.");
             return;
         }
-        if (!bird.is_of_type('bird')) {
+        if (!bird.is_bird()) {
             TT.UTILITIES.display_message("Function birds can only respond to boxes with a bird in the first hole. The first hole contains " + TT.UTILITIES.add_a_or_an(bird.get_type_name() + "."));
             return;
         }
@@ -1157,7 +1156,7 @@ window.TOONTALK.number.function =
                                           TT.UTILITIES.ordinal(index) + " hole. The " + TT.UTILITIES.ordinal(index) + " hole is empty.");
             return false;
         }
-        if (widget.is_number && widget.is_number()) {
+        if (widget.is_number()) {
             return true;
         }
         TT.UTILITIES.display_message("Birds for the " + function_name + " function can only respond to boxes with a number in the " + 

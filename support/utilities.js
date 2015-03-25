@@ -52,7 +52,7 @@ window.TOONTALK.UTILITIES =
             TT.UTILITIES.report_internal_error("Possible bug that " + dragee + " doesn't have a known owner.");
             dragee = $(element);
         }
-        if (widget.save_dimensions && (!widget.get_parent_of_frontside() || widget.get_parent_of_frontside().get_widget().is_of_type('top-level'))) {
+        if (widget.save_dimensions && (!widget.get_parent_of_frontside() || widget.get_parent_of_frontside().get_widget().is_top_level())) {
             widget.save_dimensions();
         }
         widget.being_dragged = true;
@@ -363,7 +363,7 @@ window.TOONTALK.UTILITIES =
             left, top, element_here;
         source_widget.set_visible(true);
         if ($target.is(".toontalk-backside")) {
-            if (source_widget.is_of_type('top-level')) {
+            if (source_widget.is_top_level()) {
                // add all top-level backsides contents but not the backside widget itself
                backside_widgets_json = json_object.semantic.backside_widgets;
                shared_widgets = json_object.shared_widgets;
@@ -1253,7 +1253,7 @@ window.TOONTALK.UTILITIES =
                         if (!widget.get_type_name) {
                             // isn't a widget. e.g. a tool
                             element.appendChild(widget.get_element());
-                        } else if (widget.is_of_type('top-level')) {
+                        } else if (widget.is_top_level()) {
                             if (!TT.no_local_storage) {
                                 if (!TT.UTILITIES.get_current_url_boolean_parameter("reset", false)) {
                                     if (json.load_most_recent_program) {

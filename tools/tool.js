@@ -54,7 +54,7 @@ window.TOONTALK.tool = (function (TT) {
                 if (TT.debugging && TT.debugging.indexOf('touch') === 0) {
                     TT.debugging += "\nmouse_move at " + Date.now() + " now at " + element.style.left + ", " + element.style.top;
                 }
-                if (widget_under_tool && widget_under_tool.is_of_type('top-level')) {
+                if (widget_under_tool && widget_under_tool.is_top_level()) {
                     if (highlighted_element) { // remove old highlighting
                         TT.UTILITIES.remove_highlight();
                         highlighted_element = undefined;
