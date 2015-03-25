@@ -635,6 +635,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             attribute_widget.toString = function () {
                 return number_to_string.call(this) + " (" + this.attribute + ")";
             };
+            number_get_custom_title_prefix = attribute_widget.get_custom_title_prefix;
+            attribute_widget.get_custom_title_prefix = function () {
+                return "This is the '" + this.attribute + "' attribute of " + attribute_widget.element_widget + "\n" +
+                    number_get_custom_title_prefix.call(this);
+            };
     //         attribute_widget.get_element = function () {
     //             if ($attribute_input && $attribute_input.length > 0) {
     //                 return $attribute_input.get(0);
@@ -651,7 +656,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         }.bind(this);
         var $attribute_input, attribute_widget, original_copies, frontside_element,
             // store some default number functions:
-            number_equals, number_update_display, number_to_string;
+            number_equals, number_update_display, number_to_string, number_get_custom_title_prefix;
         if (backside_element) {
             $attribute_input = $(backside_element).find(selector);
             if ($attribute_input.length > 0) {
