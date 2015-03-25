@@ -2030,7 +2030,7 @@ window.TOONTALK.UTILITIES =
             var data = TT.UTILITIES.get_local_files_data();
             var table = TT.UTILITIES.create_file_data_table();
             setTimeout(function () {
-                TT.UTILITIES.become_file_data_table(table, data, false, "toontalk-file-load-button");
+                TT.UTILITIES.become_file_data_table(table, data, false, "toontalk-file-load-button toontalk-file-load-button-without-click-handler");
             });
             return table;
         },
