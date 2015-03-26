@@ -776,7 +776,7 @@ window.TOONTALK.widget = (function (TT) {
         },
         
         add_backside_widget: function (widget, is_backside) {
-                // TODO: clean this up and just pass a widget_side here
+            // TODO: clean this up and just pass a widget_side here
             var backside = this.get_backside();
             var widget_side = is_backside ? widget.get_backside() : widget;
             if (TT.debugging && widget === this) {
@@ -803,6 +803,7 @@ window.TOONTALK.widget = (function (TT) {
         },
 
         remove_all_backside_widgets: function () {
+            // this is used to clear a top-level widget before loading new contents
             if (!this.backside_widgets) {
                 return;
             }
