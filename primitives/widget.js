@@ -1400,11 +1400,17 @@ window.TOONTALK.widget = (function (TT) {
                     function (json_string) {
                         var json;
                         if (json_string) {
-                            json = JSON.parse(json_string);
-                            widget.remove_all_backside_widgets();
-                            TT.UTILITIES.add_backside_widgets_from_json(widget, json.semantic.backside_widgets);
-                            if (loaded_callback) {
-                                loaded_callback();
+                            try {
+                                json = JSON.parse(json_string);
+                                widget.remove_all_backside_widgets();
+                                TT.UTILITIES.add_backside_widgets_from_json(widget, json.semantic.backside_widgets, {json_of_shared_widgets: json.shared_widgets,
+                                                                                                                     shared_widgets:         [],
+                                                                                                                     shared_html:            json.shared_html});
+                                if (loaded_callback) {
+                                    loaded_callback();
+                                }
+                            } catch (e) {
+                                TT.UTILITIES.display_message("Error encountered loading " + program_name + " : " + e);
                             }
                         } else if (nothing_to_load_callback) {
                             nothing_to_load_callback();
