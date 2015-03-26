@@ -418,7 +418,7 @@ window.TOONTALK.UTILITIES =
             // $target.get(0).offsetTop did and then it stopped working
             // not sure what is happening or even whey they are different
             // consider also using layerX and layerY
-            if (typeof drag_x_offset === 'undefined') {
+            if (typeof drag_x_offset === 'undefined' && source_widget.is_element()) {
                  drag_x_offset = 0;
                  drag_y_offset = 0;
                 // drag a picture from a non-ToonTalk source so at least Windows displays about about a 90x90 square while dragging
@@ -524,7 +524,7 @@ window.TOONTALK.UTILITIES =
     var handle_drop_from_file_contents = function (file, $target, target_widget, target_position, event) {
         var reader = new FileReader();
         var image_file = file.type.indexOf("image") === 0;
-        var widget, json, element_HTML;
+        var widget, json, element_HTML, json_object;
         reader.onloadend = function () {
             if (image_file) {
                 widget = TT.element.create("<img src='" + reader.result + "' alt='" + file.name + "'/>");
@@ -532,7 +532,8 @@ window.TOONTALK.UTILITIES =
                 json = extract_json_from_div_string(reader.result);
                 if (json) {
                     try {
-                        widget = TT.UTILITIES.create_from_json(JSON.parse(json));
+                        json_object = JSON.parse(json);
+                        widget = TT.UTILITIES.create_from_json(json_object);
                     } catch (e) {
                         // no need to report this it need not contain ToonTalk JSON
                         // console.log("Exception parsing " + json + "\n" + e.toString());
@@ -543,7 +544,7 @@ window.TOONTALK.UTILITIES =
                     widget = TT.element.create(reader.result);
                 }
             }
-            handle_drop($target, $(widget.get_frontside_element(true)), widget, target_widget, target_position, event);
+            handle_drop($target, $(widget.get_frontside_element(true)), widget, target_widget, target_position, event, json_object);
         }
         if (image_file) {
             reader.readAsDataURL(file);
