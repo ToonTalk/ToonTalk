@@ -326,6 +326,8 @@ window.TOONTALK.box = (function (TT) {
     };
     
     box.update_display = function () {
+        var default_width = 164;
+        var default_height = 68;
         var frontside = this.get_frontside(true);
         var frontside_element = frontside.get_element();
         var size = this.get_size();
@@ -428,8 +430,8 @@ window.TOONTALK.box = (function (TT) {
                 };
             }.bind(this);
         var update_dimensions = function () {
-            box_width  = $(frontside_element).width();
-            box_height = $(frontside_element).height();
+            box_width  = $(frontside_element).width()  || default_width;
+            box_height = $(frontside_element).height() || default_height;
             if (horizontal) {
                 hole_width  = box_width/size;
                 hole_height = box_height;
