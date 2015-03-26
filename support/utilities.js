@@ -52,7 +52,7 @@ window.TOONTALK.UTILITIES =
             TT.UTILITIES.report_internal_error("Possible bug that " + dragee + " doesn't have a known owner.");
             dragee = $(element);
         }
-        if (widget.save_dimensions && (!widget.get_parent_of_frontside() || widget.get_parent_of_frontside().get_widget().is_of_type('top-level'))) {
+        if (widget.save_dimensions && (!widget.get_parent_of_frontside() || widget.get_parent_of_frontside().get_widget().is_top_level())) {
             widget.save_dimensions();
         }
         widget.being_dragged = true;
@@ -107,7 +107,7 @@ window.TOONTALK.UTILITIES =
                                 height: json_object.view.frontside_height});
                 }
             } else if (!dragee.parent().is(".toontalk-top-level-resource, .toontalk-drop-area, .toontalk-json") &&
-                       !dragee.is(".toontalk-carried-by-bird, .toontalk-element-attribute") &&
+                       !dragee.is(".toontalk-carried-by-bird, .toontalk-element-attribute, .toontalk-function-bird-documentation-bird") &&
                        !TT.UTILITIES.has_animating_image(dragee.get(0))) {
                 dragee.css({width:  "100%",
                             height: "100%"});
@@ -363,7 +363,7 @@ window.TOONTALK.UTILITIES =
             left, top, element_here;
         source_widget.set_visible(true);
         if ($target.is(".toontalk-backside")) {
-            if (source_widget.is_of_type('top-level')) {
+            if (source_widget.is_top_level()) {
                // add all top-level backsides contents but not the backside widget itself
                backside_widgets_json = json_object.semantic.backside_widgets;
                shared_widgets = json_object.shared_widgets;
@@ -939,10 +939,10 @@ window.TOONTALK.UTILITIES =
         tree_replace_once: function (object, replace, replacement, get_json_of_widget_from_shared_widget_index) {
             // replaces object's first occurence of replace with replacement
             // whereever it occurs in object
+            var keys = Object.keys(object);
             var value;
 //             var messages = [];
-            for (var property in object) {
-                if (object.hasOwnProperty(property)) {
+            keys.forEach(function (property) {
                     value = object[property];
 //                     messages[0] = "Replaced " + JSON.stringify(replace);
 //                     messages[1] = "with " + JSON.stringify(replacement);
@@ -960,7 +960,7 @@ window.TOONTALK.UTILITIES =
                         if (this.tree_replace_once(get_json_of_widget_from_shared_widget_index(value), replace, replacement, get_json_of_widget_from_shared_widget_index)) {
                             return true;
                         }
-                    } else if (["string", "number", "function", "undefined"].indexOf(typeof value) >= 0) {
+                    } else if (["string", "number", "function", "undefined", "boolean"].indexOf(typeof value) >= 0) {
                         // skip atomic objects
                     } else if (this.tree_replace_once(value, replace, replacement, get_json_of_widget_from_shared_widget_index)) {
 //                         messages.forEach(function (message) {
@@ -969,8 +969,7 @@ window.TOONTALK.UTILITIES =
 //                         console.log("Object is now " + JSON.stringify(object));
                         return true;
                     }
-                }
-            }
+            }.bind(this));
             return false;            
         },
 
@@ -1000,6 +999,9 @@ window.TOONTALK.UTILITIES =
             var title = widget.toString();
             if (type_description === 'top-level') {
                 if (is_backside) {
+                    // drag and drop should not preserve current settings
+                    // they are part of the JSON for when saving the current state to the cloud or local storage
+                    json.semantic.settings = undefined;
                     type_description = "a work area containing ";
                     if (backside_widgets.length === 0) {
                         type_description = "an empty work area";
@@ -1251,7 +1253,7 @@ window.TOONTALK.UTILITIES =
                         if (!widget.get_type_name) {
                             // isn't a widget. e.g. a tool
                             element.appendChild(widget.get_element());
-                        } else if (widget.is_of_type('top-level')) {
+                        } else if (widget.is_top_level()) {
                             if (!TT.no_local_storage) {
                                 if (!TT.UTILITIES.get_current_url_boolean_parameter("reset", false)) {
                                     if (json.load_most_recent_program) {
@@ -2027,7 +2029,7 @@ window.TOONTALK.UTILITIES =
             var data = TT.UTILITIES.get_local_files_data();
             var table = TT.UTILITIES.create_file_data_table();
             setTimeout(function () {
-                TT.UTILITIES.become_file_data_table(table, data, false, "toontalk-file-load-button");
+                TT.UTILITIES.become_file_data_table(table, data, false, "toontalk-file-load-button toontalk-file-load-button-without-click-handler");
             });
             return table;
         },

@@ -30,6 +30,9 @@ window.TOONTALK.scale = (function (TT) {
         box_get_json = new_scale.get_json;
         box_copy = new_scale.copy;
         box_get_path_to = new_scale.get_path_to;
+        new_scale.is_scale = function () {
+            return true;
+        };
         new_scale.copy = function (parameters) {
             var copy_as_box, copy;
             if (!parameters) {

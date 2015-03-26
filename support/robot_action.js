@@ -103,7 +103,7 @@ window.TOONTALK.robot_action =
          },
          "add a new widget to the work space": function (widget, context, top_level_context, robot, additional_info) {
              var widget_frontside_element, robot_location;
-             if (context.is_of_type('top-level')) {
+             if (context.is_top_level()) {
                  widget_frontside_element = robot.add_to_top_level_backside(widget);
                  robot_location = $(robot.get_frontside_element()).offset();
                  widget.update_display(); // so it has width and height for the following

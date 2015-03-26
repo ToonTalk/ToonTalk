@@ -39,6 +39,9 @@ window.TOONTALK.widget = (function (TT) {
     return {
         
         add_standard_widget_functionality: function (widget) {
+            var return_false = function () {
+                return false;
+            }
             this.add_sides_functionality(widget);
             this.runnable(widget);
             this.stackable(widget);
@@ -57,11 +60,34 @@ window.TOONTALK.widget = (function (TT) {
                     return this.get_type_name() === type_name;
                 };
             }
-            if (!widget.is_function_nest) {
-                widget.is_function_nest = function () {
-                        return false;
-                };
+            if (!widget.is_number) {
+                widget.is_number = return_false;
             }
+            if (!widget.is_box) {
+                widget.is_box = return_false;
+            }
+            if (!widget.is_empty_hole) {
+               widget.is_empty_hole = return_false;
+            }
+            if (!widget.is_scale) {
+                widget.is_scale = return_false;
+            }
+            if (!widget.is_bird) {
+                widget.is_bird = return_false;
+            }
+            if (!widget.is_nest) {
+                widget.is_nest = return_false;
+            }
+            if (!widget.is_robot) {
+                widget.is_robot = return_false;
+            }
+            if (!widget.is_element) {
+                widget.is_element = return_false;
+            }
+            if (!widget.is_function_nest) {
+                widget.is_function_nest = return_false;
+            }
+            widget.is_top_level = return_false;
             widget.is_widget = true;
             return widget;
         },
@@ -211,7 +237,7 @@ window.TOONTALK.widget = (function (TT) {
                                return;
                            }
                         }
-                        if (backside_widget.is_of_type("robot")) {
+                        if (backside_widget.is_robot()) {
                             // only frontsides of robots run
                             if (!backside_widget_side.is_backside() && (!running || !backside_widget.get_running())) {
                                 // don't run robot if already running
@@ -1108,7 +1134,7 @@ window.TOONTALK.widget = (function (TT) {
         
         top_level_widget: function () {
             var widget, parent;
-            if (this.is_of_type('top-level')) {
+            if (this.is_top_level()) {
                 return this;
             }
             widget = TT.UTILITIES.widget_from_jquery($(this.get_frontside_element()).closest(".toontalk-top-level-backside"));
@@ -1172,9 +1198,24 @@ window.TOONTALK.widget = (function (TT) {
 
         create_top_level_widget: function (settings) {
             var widget = Object.create(TT.widget);
+            var return_false = function () {
+                return false;
+            };
             if (!settings) {
                 settings = {};  
             }
+            widget.is_top_level = function () {
+                 return true;
+            };
+            widget.is_number = return_false;
+            widget.is_box = return_false;
+            widget.is_empty_hole = return_false;
+            widget.is_scale = return_false;
+            widget.is_bird = return_false;
+            widget.is_nest = return_false;
+            widget.is_robot = return_false;
+            widget.is_element = return_false;
+            widget.is_function_nest = return_false;
             widget.get_json = function (json_history) {
                 var backside = this.get_backside(true);
                 var backside_element = backside.get_element();
@@ -1250,8 +1291,8 @@ window.TOONTALK.widget = (function (TT) {
             widget.get_element = function () {
                 return this.get_backside().get_element();
             };
-            widget.get_setting = function (option_name) {
-                if (typeof settings[option_name] === 'undefined') {
+            widget.get_setting = function (option_name, dont_use_default) {
+                if (typeof settings[option_name] === 'undefined' && !dont_use_default) {
                     settings[option_name] = TT.DEFAULT_SETTINGS && TT.DEFAULT_SETTINGS[option_name];     
                 }
                 return settings[option_name];
@@ -1263,7 +1304,12 @@ window.TOONTALK.widget = (function (TT) {
                 TT.SETTINGS.open(widget);
             };
             widget.save = function (immediately, parameters, callback) {
+                var program_name = this.get_setting('program_name', true);
                 var json, google_drive_status;
+                if (!program_name) {
+                    // not saving this -- e.g. an example in a documentation page
+                    return;
+                }
                 if (!parameters) {
                     parameters = {};
                 }
@@ -1285,7 +1331,7 @@ window.TOONTALK.widget = (function (TT) {
                     json = TT.UTILITIES.get_json_top_level(this);
                     google_drive_status = TT.google_drive.get_status();
                     if (google_drive_status === "Ready") {
-                        TT.google_drive.upload_file(this.get_setting('program_name'), "json", JSON.stringify(json), callback);
+                        TT.google_drive.upload_file(program_name, "json", JSON.stringify(json), callback);
                         callback = undefined;
                     } else if (TT.google_drive.connection_to_google_drive_possible()) {
                         if (google_drive_status === 'Need to authorize') {

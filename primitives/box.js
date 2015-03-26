@@ -19,6 +19,9 @@ window.TOONTALK.box = (function (TT) {
             // default is horizontal
             horizontal = true;
         }
+        new_box.is_box = function () {
+            return true;
+        };
         new_box.get_horizontal = function () {
             return horizontal;
         };
@@ -373,7 +376,7 @@ window.TOONTALK.box = (function (TT) {
                                                   top:   0,
                                                   width:  '',
                                                   height: ''});
-                if (hole.is_of_type('element')) {
+                if (hole.is_element()) {
                     hole_contents = hole.get_contents();
                     hole_contents.set_size_attributes(new_width, new_height, true);
 //                     TT.UTILITIES.scale_to_fit(content_frontside_element, hole_element, hole_contents.saved_width, hole_contents.saved_height);
@@ -770,6 +773,9 @@ window.TOONTALK.box_hole =
             // perhaps this should share more code with widget (e.g. done below with widget.has_parent)
             var hole = Object.create(this);
             var contents, visible, hole_element;
+            hole.is_empty_hole = function () {
+                return !contents;
+            };
             hole.get_element = function () {
                 if (!hole_element) {
                     hole_element = document.createElement("div");
@@ -967,6 +973,48 @@ window.TOONTALK.box_hole =
             hole.get_widget = function () {
                 // used to return itself but the box is the 'real' widget
                 return this.get_parent_of_frontside();
+            };
+            hole.is_number = function () {
+                if (contents) {
+                    return contents.is_number();
+                }
+                return false;
+            };
+            hole.is_box = function () {
+                if (contents) {
+                    return contents.is_box();
+                }
+                return false;
+            };
+            hole.is_scale = function () {
+                if (contents) {
+                    return contents.is_scale();
+                }
+                return false;
+            };
+            hole.is_bird = function () {
+                if (contents) {
+                    return contents.is_bird();
+                }
+                return false;
+            };
+            hole.is_nest = function () {
+                if (contents) {
+                    return contents.is_nest();
+                }
+                return false;
+            };
+            hole.is_robot = function () {
+                if (contents) {
+                    return contents.is_robot();
+                }
+                return false;
+            };
+            hole.is_element = function () {
+                if (contents) {
+                    return contents.is_element();
+                }
+                return false;
             };
             if (TT.debugging) {
                 hole.debug_string = "An empty hole";

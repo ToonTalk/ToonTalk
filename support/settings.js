@@ -64,7 +64,7 @@ window.TOONTALK.SETTINGS =
             // no network responses to wait for
             settings_panel.appendChild(TT.UTILITIES.create_tabs(labels, tables));
         }
-        setTimeout(function () {
+        $(local_files_table).on('draw.dt', function () {
             add_click_listeners(widget, local_files_table, false, settings_panel);
         });  
     };
@@ -87,9 +87,11 @@ window.TOONTALK.SETTINGS =
                 return;
             }
             // published pages don't have a button class -- they are now ordinary links
-            class_name = (toontalk_type === 'program') && "toontalk-file-load-button"; 
+            class_name = (toontalk_type === 'program') && "toontalk-file-load-button toontalk-file-load-button-without-click-handler"; 
             TT.UTILITIES.become_file_data_table($table, response.items, true, class_name);
-            add_click_listeners(widget, $table.get(0), true, settings_panel);
+            $table.on('draw.dt', function () {
+                add_click_listeners(widget, $table.get(0), true, settings_panel);
+            });
             callback($table.get(0));
         };
         TT.google_drive.get_toontalk_files(false, toontalk_type, full_callback);
@@ -111,7 +113,8 @@ window.TOONTALK.SETTINGS =
             // save in case current program has changed
             widget.save(true, undefined, saved_callback);
         };
-        $(table).find(".toontalk-file-load-button").click(program_click_handler);
+        $(table).find(".toontalk-file-load-button-without-click-handler").click(program_click_handler)
+                                                                         .removeClass("toontalk-file-load-button-without-click-handler");
     };
 
     return {
