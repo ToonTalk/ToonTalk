@@ -1980,6 +1980,7 @@ window.TOONTALK.UTILITIES =
             $(table).DataTable({
                    data: files_data,
                    autoWidth: false,
+                   order: [[1, 'desc']], // initially sort by modified data with most recent first
                    columns: [{data: 'title', 
                               title: "Name",
                               render: function (data, type, full, meta) {
