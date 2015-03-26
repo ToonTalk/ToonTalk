@@ -446,8 +446,8 @@ window.TOONTALK.UTILITIES =
               },
               50);
             }
-            left = page_x - (target_position.left + drag_x_offset);
-            top  = page_y - (target_position.top  + drag_y_offset);
+            left = page_x - (target_position.left + (drag_x_offset || 0));
+            top  = page_y - (target_position.top  + (drag_y_offset || 0));
             $source.css({left: left,
                          top:  top});
 //             if ($source.is(".toontalk-frontside") && !$source.is('.ui-resizable')) {
