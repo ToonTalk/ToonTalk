@@ -1178,7 +1178,7 @@ window.TOONTALK.element_backside =
                     if (dropped && TT.robot.in_training) {
                         TT.robot.in_training.dropped_on_text_area(dropped, element_widget, {area_selector: ".toontalk-html-input",
                                                                                             setter: 'receive_HTML_from_dropped',
-                                                                                            to_string: "to change the element's text"});
+                                                                                            toString: "for the element's text"});
                     }
                 };
                 html_input = TT.UTILITIES.create_text_area(text, "toontalk-html-input", "", "Type here to edit the text.", drop_handler);

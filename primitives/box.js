@@ -779,6 +779,9 @@ window.TOONTALK.box_hole =
             // perhaps this should share more code with widget (e.g. done below with widget.has_parent)
             var hole = Object.create(this);
             var contents, visible, hole_element;
+            hole.is_hole = function () {
+                return true;
+            }
             hole.is_empty_hole = function () {
                 return !contents;
             };
@@ -1020,6 +1023,9 @@ window.TOONTALK.box_hole =
                 if (contents) {
                     return contents.is_element();
                 }
+                return false;
+            };
+            hole.is_top_level = function () {
                 return false;
             };
             if (TT.debugging) {

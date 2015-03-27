@@ -58,7 +58,7 @@ window.TOONTALK.robot_action =
                 TT.UTILITIES.report_internal_error("The robot that '" + robot.toString() + "' is executing drop_on but doesn't know where to drop what its holding");
              }   
          },
-         "dropped it on the text area": function (target, context, top_level_context, robot, additional_info) {
+         "drop it on the text area": function (target, context, top_level_context, robot, additional_info) {
              var thing_in_hand, thing_in_hand_frontside_element, thing_in_hand_position;
              if (target) {
                  thing_in_hand = robot.get_thing_in_hand();
@@ -147,10 +147,10 @@ window.TOONTALK.robot_action =
         top_offset  = $(widget_frontside_element).height()/2;
         // robots move at 1/4 pixel per millisecond for clarity
         robot.animate_to_widget(side, continuation, .25, left_offset, top_offset);
-        if (thing_in_hand) {
-            // so robot displays what he's holding
-            robot.render();
-        }
+//         if (thing_in_hand) {
+//             // so robot displays what he's holding
+//             robot.render();
+//         }
     };
     var pick_up_animation = function (widget, context, top_level_context, robot, continuation) {
         var frontside_element = widget.get_frontside_element();
@@ -228,6 +228,61 @@ window.TOONTALK.robot_action =
                                               });
         } else {
             move_robot_animation(target, context, top_level_context, robot, adjust_dropped_location_continuation);
+        }
+    };
+    var drop_it_on_text_area_animation = function (target, context, top_level_context, robot, continuation, additional_info) {
+        var thing_in_hand = robot.get_thing_in_hand();
+        var $thing_in_hand_frontside_element, adjust_dropped_location_continuation, find_text_area;
+        if (!thing_in_hand) {
+            TT.UTILITIES.report_internal_error("Expected the robot to be holding something.");
+            console.log("The robot is " + robot);
+            move_robot_animation(target, context, top_level_context, robot, continuation);
+            return;
+        }
+        $thing_in_hand_frontside_element = $(thing_in_hand.get_frontside_element());
+        adjust_dropped_location_continuation = function () {
+            var thing_in_hand_position = $thing_in_hand_frontside_element.offset();
+            var $top_level_element, parent;
+            $thing_in_hand_frontside_element.removeClass("toontalk-held-by-robot");
+            // the following removes dropped which is a small problem if Bammer is added to this since it may be too soon
+            continuation();
+            thing_in_hand.remove();
+            // need to render the modified element and its parent (unless that is the top level)
+            parent = target.get_parent_of_frontside();
+            if (parent.is_hole()) {
+                parent = parent.get_parent_of_frontside();
+            }
+            if (parent.is_top_level()) {
+                target.render();
+            } else {
+                parent.render();
+            }
+//             if (!$thing_in_hand_frontside_element.is(":visible")) {
+//                 // TODO: determine if this can ever happen
+//                 $top_level_element = $(robot.get_frontside_element()).closest(".toontalk-top-level-backside")
+//                 $top_level_element.append($thing_in_hand_frontside_element.get(0));
+//             }
+//             TT.UTILITIES.set_absolute_position($thing_in_hand_frontside_element, thing_in_hand_position);
+//             thing_in_hand.restore_dimensions();
+            robot.set_thing_in_hand(undefined);
+            robot.run_next_step();
+        }
+        find_text_area = function () {
+            // will be called once the backside exists
+            return $(target.get_backside_element()).find(additional_info.area_selector).get(0);
+        };
+        robot.rerender();
+        if (!$(target.get_backside_element()).is(":visible")) {
+            target.open_backside(function () {
+                                     var new_continuation = function () {
+                                         adjust_dropped_location_continuation();
+                                         // since the robot opened it needs to close when finished
+                                         target.get_backside().hide_backside();
+                                     };
+                                     robot.animate_to_element(find_text_area(), new_continuation, .25, 0, 0);
+                                 });
+        } else {
+            robot.animate_to_element(find_text_area(), adjust_dropped_location_continuation, .25, 0, 0);
         }
     };
     var find_backside_element = function (widget, class_name_selector) {
@@ -323,29 +378,15 @@ window.TOONTALK.robot_action =
         }      
     };
     var watched_run_functions = 
-        {"copy":                 copy_animation,
-         "pick up":              pick_up_animation,
-         "pick up a copy of":    pick_up_a_copy_animation,
-         "drop it on":           drop_it_on_animation,
-         "dropped it on the text area": function (target, context, top_level_context, robot, additional_info) {
-             // TODO: animate
-             var thing_in_hand, thing_in_hand_frontside_element, thing_in_hand_position;
-             if (target) {
-                 thing_in_hand = robot.get_thing_in_hand();
-                 if (thing_in_hand) {
-                     robot.set_thing_in_hand(undefined);
-                         // TODO:
-                     return true;
-                 }
-                 TT.UTILITIES.report_internal_error("The robot that '" + robot.toString() + "' is executing dropped_on_text_area but has nothing in its hand.");
-             } else {
-                TT.UTILITIES.report_internal_error("The robot that '" + robot.toString() + "' is executing dropped_on_text_area but doesn't know where to drop what its holding");
-             }   
-         },
+        {"copy":                        copy_animation,
+         "pick up":                     pick_up_animation,
+         "pick up a copy of":           pick_up_a_copy_animation,
+         "drop it on":                  drop_it_on_animation,
+         "drop it on the text area":    drop_it_on_text_area_animation,
          // remove and erase have identical animation but different unwatched semantics
-         "remove":               remove_or_erase_animation,
-         "erased_widget":        remove_or_erase_animation, 
-         "edit":                 edit_animation,
+         "remove":                      remove_or_erase_animation,
+         "erased_widget":               remove_or_erase_animation, 
+         "edit":                        edit_animation,
          "add to the top-level backside": function (widget, context, top_level_context, robot, continuation) {
               // do nothing -- this action is only needed if unwatched
               continuation();
@@ -435,7 +476,7 @@ window.TOONTALK.robot_action =
                     // is used for internal bookkeepping shouldn't be user visible
                     return "";
                 }
-                if (action_name === 'edit') {
+                if (action_name === 'edit' || action_name === 'drop it on the text area') {
                     suffix = " (" + additional_info.toString + ")";
                 }
                 return action_name + " " + TT.path.toString(path, toString_info) + suffix;

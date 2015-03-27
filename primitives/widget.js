@@ -125,7 +125,7 @@ window.TOONTALK.widget = (function (TT) {
                 widget.save_dimensions_of = function (other) {
                     var dimensions;
                     if (other.get_size_attributes) {
-                        if (!this.get_attribute_from_pending_css('width')) {
+                        if (!this.get_original_width()) {
                             return;
                         }
                         dimensions = other.get_size_attributes();
@@ -335,6 +335,7 @@ window.TOONTALK.widget = (function (TT) {
                     // delay for DOM to settle down in case target_widget is brand new
                     setTimeout(function () {
                                    this.animate_to_element(find_widget_element(target_widget), continuation, speed, left_offset, top_offset);
+                                   this.render();
                                }.bind(this),
                                100);            
                 };
