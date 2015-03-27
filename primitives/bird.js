@@ -177,11 +177,11 @@ window.TOONTALK.bird = (function (TT) {
                     }
                     element.width_before_carry  = element.clientWidth;
                     element.height_before_carry = element.clientHeight;
+                    $(this.element_to_display_when_flying).addClass("toontalk-carried-by-bird");
                     // the timeout fixes a problem when a watched robot gives a bird something that
                     // thing carried is displayed displaced to the southeast from where it should be
                     TT.UTILITIES.set_timeout(function () {
-                            $(this.element_to_display_when_flying).addClass("toontalk-carried-by-bird")
-                                                                  .css({left: '',
+                            $(this.element_to_display_when_flying).css({left: '',
                                                                         top:  '',
                                                                         width: '',
                                                                         height: '',

@@ -440,7 +440,7 @@ window.TOONTALK.number = (function () {
             client_width  = 100;
             client_height =  40;
         } else if ($(frontside_element).is(".toontalk-element-attribute")) {
-            // good enough values when carried by a bird
+            // good enough if this number is an element attribute
             client_width  = 200;
             client_height =  32;
         } else {
