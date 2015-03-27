@@ -125,6 +125,9 @@ window.TOONTALK.widget = (function (TT) {
                 widget.save_dimensions_of = function (other) {
                     var dimensions;
                     if (other.get_size_attributes) {
+                        if (!this.get_attribute_from_pending_css('width')) {
+                            return;
+                        }
                         dimensions = other.get_size_attributes();
                     } else {
                         // elements have clientWidth and clientHeight
