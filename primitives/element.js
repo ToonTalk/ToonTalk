@@ -484,6 +484,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
 
     element.widget_dropped_on_me = function (other, other_is_backside, event, robot) {
         // TODO: involve Bammer the Mouse if being watched
+        // TODO: decide if this really is a good idea -- worked pretty well in the Desktop version 
+        // to use erased widgets for type coercion
         if (this.get_erased() && other.get_HTML) {
             this.set_HTML(other.get_HTML());
             this.set_erased(false);
