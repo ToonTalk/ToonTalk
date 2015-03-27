@@ -277,7 +277,7 @@ window.TOONTALK.robot_action =
                                      var new_continuation = function () {
                                          adjust_dropped_location_continuation();
                                          // since the robot opened it needs to close when finished
-                                         target.get_backside().hide_backside();
+                                         $(target.get_backside_element()).remove();
                                      };
                                      robot.animate_to_element(find_text_area(), new_continuation, .25, 0, 0);
                                  });
