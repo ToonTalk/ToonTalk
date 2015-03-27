@@ -1788,8 +1788,8 @@ table.toontalk-documentation-table {
 	background-color: white;
 }
 .toontalk-erased-element {
-	background-color: gray;
-	opacity: .5;
+	background-color: white;
+	opacity: .67;
 	width: 80px;
 	height: 40px;
 }
