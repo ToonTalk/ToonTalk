@@ -319,16 +319,26 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             if (this.being_dragged) {
                 return;
             }
-            if (this.get_erased && this.get_erased()) {
-                // could save the current opacity and restore it below
-                // hide so doesn't get in the way of selections
-                // TODO: determine if using hide and show does this still need opacity
-                $(frontside_element).css({opacity: 0}).hide();
+            if (this.get_erased()) {
+                var width, height;
+                if ($(frontside_element).parent(".toontalk-backside")) {
+                    width = "";
+                    height = "";
+                } else {
+                    width = "100%";
+                    height = "100%";
+                }
+                this.save_dimensions();
+                $(frontside_element).removeClass() // remove them all
+                                    .empty()
+                                    .addClass("toontalk-erased-element toontalk-side")
+                                    .css({width:  width,
+                                          height: height});
                 return;
             }
-            if (this.get_erased && $(frontside_element).css("opacity") === "0") {
+            if ($(frontside_element).is(".toontalk-erased-element")) {
                 // was erased but no longer
-                $(frontside_element).css({opacity: 1}).show();
+                $(frontside_element).removeClass("toontalk-erased-element");
             }
             this.initialise_element();
             if (TT.UTILITIES.on_a_nest_in_a_box(frontside_element)) {
@@ -464,7 +474,17 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             return 1;
         }
         return comparison;
-    }
+    };
+
+    element.widget_dropped_on_me = function (other, other_is_backside, event, robot) {
+        if (this.get_erased() && other.get_HTML) {
+            this.set_HTML(other.get_HTML());
+            this.set_erased(false);
+            other.remove();
+            return true;
+        }
+        console.log("Dropping widgets on un-erased elements does nothing (but may someday)");
+    };
     
     element.create_backside = function () {
         return TT.element_backside.create(this);
