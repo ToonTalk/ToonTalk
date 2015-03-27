@@ -90,7 +90,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             }
             html = new_value;
             // remove children so will be updated
-            $(frontside_element).children(":not(.ui-resizable-handle)").remove(); 
+            $(frontside_element).children(":not(.ui-resizable-handle)").remove();
+            // need to know new dimensions to scale appropriately
+            this.compute_original_dimensions(true);
             this.rerender();
             return true;
         };
@@ -234,7 +236,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     }
                     // tried $(frontside_element).children(".toontalk-element-container").get(0)
                     $(frontside_element).children(".toontalk-element-container").css({width: '', height: ''});
-                    if (need_to_scale) {
+                    if (need_to_scale && !$(frontside_element).is(".toontalk-not-observable")) {
+                        // don't scale if trying to figure out the original dimensions of this element
                         TT.UTILITIES.run_when_dimensions_known(frontside_element,
                                                                    function () {
                                                                         TT.UTILITIES.scale_element(frontside_element, current_width, current_height, original_width, original_height);
@@ -358,10 +361,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             }
             if (typeof original_width === 'undefined') {
                 // this delays but the following delays more
-                TT.UTILITIES.original_dimensions(this, function (width, height) {
-                                                           original_width  = width;
-                                                           original_height = height;
-                                                       });
+                this.compute_original_dimensions();
             }
             this.apply_css();
             this.fire_on_update_display_handlers();
@@ -387,6 +387,14 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     $(frontside_element).addClass("ui-widget toontalk-plain-text-element");
                 }
             }
+        };
+        new_element.compute_original_dimensions = function (recompute) {
+            TT.UTILITIES.original_dimensions(this, 
+                                             function (width, height) {
+                                                 original_width  = width;
+                                                 original_height = height;
+                                             },
+                                             recompute);
         };
         new_element.get_attribute_from_current_css = function (attribute) {
             var frontside_element, value;
