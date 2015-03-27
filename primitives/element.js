@@ -322,6 +322,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             if (this.get_erased && this.get_erased()) {
                 // could save the current opacity and restore it below
                 // hide so doesn't get in the way of selections
+                // TODO: determine if using hide and show does this still need opacity
                 $(frontside_element).css({opacity: 0}).hide();
                 return;
             }
