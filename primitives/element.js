@@ -321,7 +321,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             }
             if (this.get_erased()) {
                 var width, height;
-                if ($(frontside_element).parent(".toontalk-backside")) {
+                if ($(frontside_element).parent(".toontalk-backside").is("*")) {
                     width = "";
                     height = "";
                 } else {
@@ -334,11 +334,17 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                     .addClass("toontalk-erased-element toontalk-side")
                                     .css({width:  width,
                                           height: height});
+                if ($(frontside_element).parent(".toontalk-conditions-contents-container").is("*")) {
+                    frontside_element.title = "This is an element that has been erased. It will match any element.";
+                } else {
+                    frontside_element.title = "This is an erased element. It will replace its HTML with the HTML of the element you drop on it.";            
+                }
                 return;
             }
             if ($(frontside_element).is(".toontalk-erased-element")) {
                 // was erased but no longer
                 $(frontside_element).removeClass("toontalk-erased-element");
+                this.restore_dimensions();
             }
             this.initialise_element();
             if (TT.UTILITIES.on_a_nest_in_a_box(frontside_element)) {
@@ -355,7 +361,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             }
             this.apply_css();
             this.fire_on_update_display_handlers();
-            frontside_element.title = "Click to see the backside where you can place robots or change the style of this " + element_description(frontside_element);
+            frontside_element.title = "Click to see the backside where you can place robots or change the style of this " + element_description(frontside_element) + ".";
         };
         new_element.initialise_element = function () {
             var frontside_element = this.get_frontside_element();
@@ -477,6 +483,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     };
 
     element.widget_dropped_on_me = function (other, other_is_backside, event, robot) {
+        // TODO: involve Bammer the Mouse if being watched
         if (this.get_erased() && other.get_HTML) {
             this.set_HTML(other.get_HTML());
             this.set_erased(false);
