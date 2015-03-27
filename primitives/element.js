@@ -1163,7 +1163,7 @@ window.TOONTALK.element_backside =
             element_widget.initialise_element();
             text = element_widget[getter]().trim();
             if (text.length > 0 && !element_widget.get_image_element()) {
-                html_input = TT.UTILITIES.create_text_area(text, "toontalk-html-input", "", "Type here to edit the text.");
+                html_input = TT.UTILITIES.create_text_area(text, "toontalk-html-input", "", "Type here to edit the text.", TT.UTILITIES.text_area_drop_handler);
                 update_html = function (event) {
                     var new_text = html_input.button.value.trim();
                     var frontside_element = element_widget.get_frontside_element();

@@ -116,7 +116,17 @@ window.TOONTALK.UTILITIES =
         drag_ended();
         event.stopPropagation();
     };
+    var get_dropped_widget = function (event) {
+        // TODO: use this within drop_handler
+        var json_object;
+        if (dragee) {
+            return TT.UTILITIES.widget_from_jquery(dragee);
+        } 
+        json_object = TT.UTILITIES.data_transfer_json_object(event);
+        return TT.UTILITIES.create_from_json(json_object);
+    };
     var drop_handler = function (event, element) {
+        // TODO: event.currentTarget should always be === element so this could simplified
         var json_object = TT.UTILITIES.data_transfer_json_object(event);
         var insert_widget_in_editable_text = function (json_object, event) {
             var widget = TT.UTILITIES.create_from_json(json_object);
@@ -1749,7 +1759,7 @@ window.TOONTALK.UTILITIES =
                     button: text_input};
         },
         
-        create_text_area: function (value, class_name, label, title, type) {
+        create_text_area: function (value, class_name, label, title, drop_handler, type) {
             var text_area = document.createElement("textarea");
             var label_element, container;
             text_area.className = class_name;
@@ -1758,6 +1768,7 @@ window.TOONTALK.UTILITIES =
             // the intent here was to be able to change the default virtual keyboard to numeric
             // but only works for input not textarea elements
             // and because numbers can be so large need textarea
+            // could use type for "small" numbers only
 //             if (type) {
 //                 text_area.type = type;
 //             }
@@ -1772,10 +1783,25 @@ window.TOONTALK.UTILITIES =
             text_area.addEventListener('touchstart', function () {
                 $(text_area).select();
             });
+            // TODO: need touch version of the following
+            if (drop_handler) {
+                text_area.addEventListener('drop', drop_handler);
+            }
             $(label_element).addClass("ui-widget");
             TT.UTILITIES.use_custom_tooltip(text_area);
             return {container: container,
                     button: text_area};
+        },
+
+        text_area_drop_handler: function (event) {
+            var dropped;
+            event.preventDefault();
+            dropped = get_dropped_widget(event);
+            if (dropped && dropped.get_text) {
+                event.currentTarget.value = dropped.get_text();
+                $(event.currentTarget).trigger('change');
+            }
+            event.stopPropagation();
         },
         
         create_radio_button: function (name, value, class_name, label, title) {

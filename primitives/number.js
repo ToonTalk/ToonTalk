@@ -927,9 +927,11 @@ window.TOONTALK.number_backside =
             var current_denominator = number.denominator_string();
             var numerator_input = TT.UTILITIES.create_text_area(current_numerator, "toontalk-numerator-input", "", 
                                                                 "Type here to edit the numerator",
+                                                                undefined, // maybe add drop handler here
                                                                 "number");
             var denominator_input = TT.UTILITIES.create_text_area(current_denominator, "toontalk-denominator-input", "", 
                                                                   "Type here to edit the denominator",
+                                                                  undefined, // maybe add drop handler here
                                                                   "number");
             var decimal_format = TT.UTILITIES.create_radio_button("number_format", "decimal", "toontalk-decimal-radio-button", "Decimal number", "Display number as a decimal.");
             var mixed_number_format = TT.UTILITIES.create_radio_button("number_format", "proper_fraction", "toontalk-proper-fraction-radio-button", "Mixed number", "Display number as an integer part and a proper fraction.");
