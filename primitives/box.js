@@ -428,6 +428,8 @@ window.TOONTALK.box = (function (TT) {
                         frontside_element.appendChild(hole_element);
                     });
                 };
+                $(frontside_element).css({width:  box_width,
+                                          height: box_height});
             }.bind(this);
         var update_dimensions = function () {
             box_width  = $(frontside_element).width()  || default_width;
