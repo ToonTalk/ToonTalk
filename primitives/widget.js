@@ -751,6 +751,10 @@ window.TOONTALK.widget = (function (TT) {
                         json_backside_widget_side = json.semantic.backside_widgets[index];
                         if (json_backside_widget_side.widget.shared_widget_index >= 0) {
                             widget_index = json_history.widgets_encountered.indexOf(json_history.shared_widgets[json_backside_widget_side.widget.shared_widget_index]);
+                            if (!json_history.json_of_widgets_encountered[widget_index]) {
+                               // TODO: determine if this is due to an earlier error
+                               return;
+                            }
                             json_view = json_history.json_of_widgets_encountered[widget_index].view;
                         } else {
                             json_view = json_backside_widget_side.widget.view;
