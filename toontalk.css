@@ -1784,6 +1784,9 @@ table.toontalk-documentation-table {
 	background-color: white;
 	border: solid black 1px;
 }
+.toontalk-plain-text-element {
+	background-color: white;
+}
 .toontalk-attributes-chooser {
 	background-color: white;
     border-style: solid;
