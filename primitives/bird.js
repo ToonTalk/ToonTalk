@@ -168,15 +168,16 @@ window.TOONTALK.bird = (function (TT) {
                         }.bind(this));
                 }.bind(this);
             var carry_element = function (element, widget_side) {
+                    element.width_before_carry  = element.clientWidth;
+                    element.height_before_carry = element.clientHeight;
                     this.element_to_display_when_flying = element;
                     if (widget_side) {
                         this.update_display();
+                        // TODO: determine if the following is still needed
                         setTimeout(function () {
                             widget_side.update_display();
                         });     
                     }
-                    element.width_before_carry  = element.clientWidth;
-                    element.height_before_carry = element.clientHeight;
                     $(this.element_to_display_when_flying).addClass("toontalk-carried-by-bird");
                     // the timeout fixes a problem when a watched robot gives a bird something that
                     // thing carried is displayed displaced to the southeast from where it should be
@@ -197,8 +198,9 @@ window.TOONTALK.bird = (function (TT) {
                     var height = this.element_to_display_when_flying.height_before_carry;
                     $(this.element_to_display_when_flying).removeClass("toontalk-carried-by-bird");
                     if (where_to_leave_it) { 
-                        $(this.element_to_display_when_flying).css({width:  width,
-                                                                    height: height});
+                        $(this.element_to_display_when_flying).css({width:  width  || '',
+                                                                    height: height || '',
+                                                                    "z-index": TT.UTILITIES.next_z_index()});
                         $(bird_frontside_element).closest(".toontalk-top-level-backside").append(this.element_to_display_when_flying);
                         TT.UTILITIES.set_absolute_position($(this.element_to_display_when_flying), where_to_leave_it);
                     } else {
