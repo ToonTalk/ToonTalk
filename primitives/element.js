@@ -336,7 +336,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                     .empty()
                                     .addClass("toontalk-erased-element toontalk-side")
                                     .css({width:  width,
-                                          height: height});
+                                          height: height,
+                                          transform: ''}); // remove any transformations
                 if ($(frontside_element).parent(".toontalk-conditions-contents-container").is("*")) {
                     frontside_element.title = "This is an element that has been erased. It will match any element.";
                 } else {
