@@ -446,6 +446,18 @@ window.TOONTALK.robot = (function (TT) {
         this.current_action_name = undefined;
         this.set_thing_in_hand(undefined);
     };
+
+    robot.dropped_on_text_area = function (source_widget, target_widget, details) {
+        var path;
+        this.current_action_name = "dropped it on the text area";
+        path = TT.path.get_path_to(target_widget, this);
+        if (path) {
+            this.add_step(TT.robot_action.create(path, this.current_action_name, details));
+        }
+        source_widget.last_action = this.current_action_name + " " + target_widget.get_type_name();
+        this.current_action_name = undefined;
+        this.set_thing_in_hand(undefined);
+    };
     
     robot.copied = function (widget, widget_copy, picked_up) {
         var path;

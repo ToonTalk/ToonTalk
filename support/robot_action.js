@@ -58,6 +58,20 @@ window.TOONTALK.robot_action =
                 TT.UTILITIES.report_internal_error("The robot that '" + robot.toString() + "' is executing drop_on but doesn't know where to drop what its holding");
              }   
          },
+         "dropped it on the text area": function (target, context, top_level_context, robot, additional_info) {
+             var thing_in_hand, thing_in_hand_frontside_element, thing_in_hand_position;
+             if (target) {
+                 thing_in_hand = robot.get_thing_in_hand();
+                 if (thing_in_hand) {
+                     robot.set_thing_in_hand(undefined);
+                     target[additional_info.setter](thing_in_hand);
+                     return true;
+                 }
+                 TT.UTILITIES.report_internal_error("The robot that '" + robot.toString() + "' is executing dropped_on_text_area but has nothing in its hand.");
+             } else {
+                TT.UTILITIES.report_internal_error("The robot that '" + robot.toString() + "' is executing dropped_on_text_area but doesn't know where to drop what its holding");
+             }   
+         },
          "remove": function (widget, context, top_level_context, robot) {
              widget.remove();
              if (widget === robot) {
@@ -313,6 +327,21 @@ window.TOONTALK.robot_action =
          "pick up":              pick_up_animation,
          "pick up a copy of":    pick_up_a_copy_animation,
          "drop it on":           drop_it_on_animation,
+         "dropped it on the text area": function (target, context, top_level_context, robot, additional_info) {
+             // TODO: animate
+             var thing_in_hand, thing_in_hand_frontside_element, thing_in_hand_position;
+             if (target) {
+                 thing_in_hand = robot.get_thing_in_hand();
+                 if (thing_in_hand) {
+                     robot.set_thing_in_hand(undefined);
+                         // TODO:
+                     return true;
+                 }
+                 TT.UTILITIES.report_internal_error("The robot that '" + robot.toString() + "' is executing dropped_on_text_area but has nothing in its hand.");
+             } else {
+                TT.UTILITIES.report_internal_error("The robot that '" + robot.toString() + "' is executing dropped_on_text_area but doesn't know where to drop what its holding");
+             }   
+         },
          // remove and erase have identical animation but different unwatched semantics
          "remove":               remove_or_erase_animation,
          "erased_widget":        remove_or_erase_animation, 

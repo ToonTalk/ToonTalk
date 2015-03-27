@@ -112,6 +112,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             if (new_value === frontside_element.textContent) {
                 return false;
             }
+            if ($(frontside_element).is(".toontalk-plain-text-element")) {
+                return this.set_HTML(new_value);
+            }
             set_first_text_node(frontside_element);
             return this.set_HTML(frontside_element.innerHTML);
 //             $(frontside_element).text(new_value);
@@ -961,6 +964,13 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         this.set_attribute('left', left);
         this.set_attribute('top',  top);
     };
+
+    element.receive_HTML_from_dropped = function (dropped) {
+        var new_text = dropped.get_text();
+         if (this.set_HTML(new_text)) {
+             return new_text;
+         }
+    };
     
     return element;
 }(window.TOONTALK));
@@ -1158,12 +1168,20 @@ window.TOONTALK.element_backside =
             var edit_HTML = TT.UTILITIES.get_current_url_boolean_parameter("elementHTML", false);
             var getter = edit_HTML ? "get_HTML" : "get_text";
             var generic_backside_update = backside.update_display;
-            var text, html_input, update_html;
+            var text, html_input, update_html, drop_handler;
             // need to ensure that it 'knows' its textContent, etc.
             element_widget.initialise_element();
             text = element_widget[getter]().trim();
             if (text.length > 0 && !element_widget.get_image_element()) {
-                html_input = TT.UTILITIES.create_text_area(text, "toontalk-html-input", "", "Type here to edit the text.", TT.UTILITIES.text_area_drop_handler);
+                drop_handler = function (event) {
+                    var dropped = TT.UTILITIES.text_area_drop_handler(event, element_widget.receive_HTML_from_dropped.bind(element_widget));
+                    if (dropped && TT.robot.in_training) {
+                        TT.robot.in_training.dropped_on_text_area(dropped, element_widget, {area_selector: ".toontalk-html-input",
+                                                                                            setter: 'receive_HTML_from_dropped',
+                                                                                            to_string: "to change the element's text"});
+                    }
+                };
+                html_input = TT.UTILITIES.create_text_area(text, "toontalk-html-input", "", "Type here to edit the text.", drop_handler);
                 update_html = function (event) {
                     var new_text = html_input.button.value.trim();
                     var frontside_element = element_widget.get_frontside_element();

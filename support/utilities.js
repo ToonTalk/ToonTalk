@@ -1793,15 +1793,22 @@ window.TOONTALK.UTILITIES =
                     button: text_area};
         },
 
-        text_area_drop_handler: function (event) {
-            var dropped;
+        text_area_drop_handler: function (event, setter) {
+            var dropped, target_widget, new_text;
             event.preventDefault();
             dropped = get_dropped_widget(event);
             if (dropped && dropped.get_text) {
-                event.currentTarget.value = dropped.get_text();
-                $(event.currentTarget).trigger('change');
+                new_text = setter(dropped, event);
+                if (new_text) {
+                    $(event.currentTarget).trigger('change');
+                    event.currentTarget.value = new_text;
+                }
+                // at least for robot actions clear the dropped widget should be removed
+                dropped.remove();
             }
             event.stopPropagation();
+            // returns the dropped widget only if it caused a change
+            return new_text && dropped;
         },
         
         create_radio_button: function (name, value, class_name, label, title) {
