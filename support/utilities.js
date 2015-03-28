@@ -2262,7 +2262,8 @@ window.TOONTALK.UTILITIES =
                     pending_css = {};
                 }
                 pending_css.transform = (other_transforms || "") + "scale(" + x_scale + ", " + y_scale + ")";
-//              "transform-origin": "left top", 
+                // without the following elements don't fit in boxes and drops jump when released
+                pending_css["transform-origin"] = "left top"; 
                 pending_css.width =  original_width,
                 pending_css.height = original_height;
                 $(element).css(pending_css);
