@@ -1109,6 +1109,7 @@ window.TOONTALK.UTILITIES =
             return widget_sides.map(function (widget_side) {
                 var widget_copy = widget_side.get_widget().copy(parameters);
                 if (widget_side.is_backside()) {
+                    return widget_copy.get_backside(true);
                 }
                 return widget_copy;
             });
