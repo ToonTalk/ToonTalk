@@ -14,6 +14,14 @@ var is_transformation_option = function (attribute) {
     return (attribute === 'rotate' || attribute === 'skewX' || attribute === 'skewY' || attribute === 'transform-origin-x' || attribute === 'transform-origin-y');
 };
 
+var attribute_type = function (attribute) {
+    if (['background-color', 'color'].indexOf(attribute) >= 0) {
+        return 'string';
+    }
+    // more to come
+    return 'number';
+};
+
 window.TOONTALK.element = (function (TT) { // TT is for convenience and more legible code
     "use strict";
 
@@ -96,6 +104,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             this.rerender();
             return true;
         };
+        // sub classes can call set_HTML_from_sub_classes from within their set_HTML without recurring 
+        // since this closes over value calling super by storing and invoking this.set_HTML doesn't work 
+        // if as in attribute_object.set_HTML it needs to set_HTML of its copies (without each of them doing the same)
+        new_element.set_HTML_from_sub_classes = new_element.set_HTML;
         new_element.set_text = function (new_value) {
             var frontside_element = this.get_frontside_element();
             var set_first_text_node = function (element) {
@@ -651,30 +663,13 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         var backside_element = this.get_backside_element();
         var attribute_value = this.get_attribute(attribute_name);
         var this_element_widget = this;
-        var drag_listener = 
-            function (event) {
-                // ensures numbers are updated as the element is dragged
-                var owner = attribute_widget.get_attribute_owner();
-                var top_level_position, attribute_value;
-                if (event.currentTarget.toontalk_widget !== owner) {
-                    return;
-                }
-                top_level_position = $(owner.get_frontside_element()).closest(".toontalk-top-level-backside").offset();
-                if (!top_level_position) {
-                    console.log("Unable to find top-level backside of an element for its position. Perhaps is 'visible' but not attached.");
-                    top_level_position = {left: 0, top: 0};
-                }
-                attribute_value = attribute_name === 'left' ? 
-                                  event.pageX-top_level_position.left-owner.drag_x_offset :
-                                  event.pageY-top_level_position.top -owner.drag_y_offset;
-                attribute_widget.set_value_from_decimal(attribute_value);
-                number_update_display.call(attribute_widget);
-        }.bind(this);
-        var create_numeric_attribute_widget = function (attribute_name, attribute_value) {
-            var attribute_widget = TT.number.create(0, 1);
+        var add_attribute_widget_functionality = function (attribute_name, attribute_widget) {
+            var widget_to_string               = attribute_widget.toString;
+            var widget_equals                  = attribute_widget.equals;
+            var widget_get_custom_title_prefix = attribute_widget.get_custom_title_prefix;
+            // following needs to be in an outer scope for drag_listener
+            widget_update_display = attribute_widget.update_display;
             attribute_widget.element_widget = this;
-            attribute_widget.set_value_from_decimal(attribute_value);
-            attribute_widget.set_format('decimal');
             attribute_widget.attribute = attribute_name; // TODO: rename? use accessors?
             attribute_widget.get_type_name = function (plural) {
                 if (plural) {
@@ -682,41 +677,172 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 }
                 return "element attribute";
             };
-            number_to_string = attribute_widget.toString;
             attribute_widget.toString = function () {
-                return number_to_string.call(this) + " (" + this.attribute + ")";
+                return widget_to_string.call(this) + " (" + this.attribute + ")";
             };
-            number_get_custom_title_prefix = attribute_widget.get_custom_title_prefix;
             attribute_widget.get_custom_title_prefix = function () {
                 return "This is the '" + this.attribute + "' attribute of " + attribute_widget.element_widget + "\n" +
-                    number_get_custom_title_prefix.call(this);
+                       widget_get_custom_title_prefix.call(this);
             };
-    //         attribute_widget.get_element = function () {
-    //             if ($attribute_input && $attribute_input.length > 0) {
-    //                 return $attribute_input.get(0);
-    //             }
-    //         };
-            number_equals = attribute_widget.equals;
             attribute_widget.equals = function (other) {
                 if (attribute_name === other.attribute) {
                     return this.equals(other.element_widget);
                 }
-                return number_equals.call(this, other);
+                return widget_equals.call(this, other);
+            };
+            attribute_widget.update_display = function () {
+                var attribute_value;
+                if (!this.get_erased()) {
+                    attribute_value = this.get_attribute_owner().get_attribute(this.attribute);
+                    value_setter(attribute_value);
+                }
+                widget_update_display.call(this);
+            };
+            attribute_widget.copy = function (parameters) {
+                if (parameters && parameters.just_value) {
+                    // just copy as a number
+                    return widget_copier(parameters);
+                }
+                return this.add_to_copy(this_element_widget.create_attribute_widget(attribute_name), parameters);
+            };
+            attribute_widget.get_json = function (json_history) {
+                return {type: 'attribute_widget',
+                        attribute_name: attribute_name,
+                        element: TT.UTILITIES.get_json(this_element_widget, json_history)};            
+            };
+            attribute_widget.get_original_attribute_widget = function () {
+                return this_element_widget.get_original_copies()[attribute_name][0];
+            };
+            attribute_widget.get_attribute_owner = function () {
+                // return this_element_widget or backside top ancestor of type element
+                var get_backside_parent = function (widget) {
+                    // follows front side parent until a backside parent is found
+                    var parent = widget.get_parent_of_frontside();
+                    if (parent) {
+                        if (parent.is_backside()) {
+                            return parent;
+                        }
+                        return get_backside_parent(parent.get_widget());
+                    }
+                    // if backside never opened then the attribute_widget may not have a parent
+                    // which is OK since will treat this_element_widget as its owner
+                };
+                // if this is a copy use the original 
+                var original = this.get_original_attribute_widget();
+                if (original !== this) {
+                    return original.get_attribute_owner();
+                }
+                var backside_ancestor_side, widget, widget_parent;
+                backside_ancestor_side = get_backside_parent(this);
+                if (!backside_ancestor_side) {
+                    return this_element_widget;
+                }
+                if (!backside_ancestor_side.get_widget().is_element()) {
+                    return this_element_widget;
+                }
+                widget = backside_ancestor_side.get_widget();
+                widget_parent = widget.get_parent_of_backside();
+                while ((widget_parent &&
+                        widget_parent.get_widget().is_element())) {
+                    widget = widget_parent.get_widget();
+                    widget_parent = widget.get_parent_of_backside();
+                }
+                return widget;
+            };
+        }.bind(this);
+        var create_numeric_attribute_widget = function (attribute_name, attribute_value) {
+            var attribute_widget = TT.number.create(0, 1);
+            add_attribute_widget_functionality(attribute_name, attribute_widget);
+            attribute_widget.set_value_from_decimal(attribute_value);
+            attribute_widget.set_format('decimal');
+            // another way to implement this would be for the recursive call to add an extra parameter: ignore_copies
+            attribute_widget.set_value = function (new_value) {
+                // need to convert new_value into a decimal approximation
+                // since bigrat.toDecimal works by converting the numerator and denominator to JavaScript numbers
+                // so best to approximate -- also should be faster to do arithmetic
+                var copies = this_element_widget.get_original_copies()[attribute_name];
+                var decimal_value = bigrat.toDecimal(new_value);
+                var return_value, value_approximation;
+                if (this.get_attribute_owner().set_attribute(this.attribute, decimal_value)) {
+                    // if the new_value is different from the current value
+                    value_approximation = bigrat.fromDecimal(decimal_value);
+                    copies.forEach(function (copy, index) {
+                        return_value = copy.set_value_from_sub_classes(value_approximation, true); 
+                  });
+                }
+                return return_value;
             };
             return attribute_widget;
         }.bind(this);
-        var $attribute_input, attribute_widget, original_copies, frontside_element,
-            // store some default number functions:
-            number_equals, number_update_display, number_to_string, number_get_custom_title_prefix;
+        var create_string_attribute_widget = function (attribute_name, attribute_value) {
+            var attribute_widget = TT.element.create(attribute_value);
+            add_attribute_widget_functionality(attribute_name, attribute_widget);
+            attribute_widget.set_HTML = function (new_value) {
+                var copies = this_element_widget.get_original_copies()[attribute_name];
+                var return_value;
+                if (this.get_attribute_owner().set_attribute(this.attribute, new_value)) {
+                    // if the new_value is different from the current value
+                    copies.forEach(function (copy, index) {
+                        return_value = copy.set_HTML_from_sub_classes(new_value); 
+                  });
+                }
+                return return_value;
+            };
+            attribute_widget.set_additional_classes("toontalk-string-attribute-widget");
+            return attribute_widget;
+        }.bind(this);
+        var type = attribute_type(attribute_name);
+        var widget_copier;         // how the widget is copied without attribute widget enhancements
+        var value_setter;          // how the widget's value is set
+        var widget_update_display; // how widget updates display without attribute widget enhancements
+        var $attribute_input, attribute_widget, original_copies, frontside_element, drag_listener;
         if (backside_element) {
             $attribute_input = $(backside_element).find(selector);
             if ($attribute_input.length > 0) {
                 $attribute_input.get(0).toontalk_widget = this;
             }
         }
-        // TODO: make this conditional on attribute_value being a number
-        // and implement string valued attributes
-        attribute_widget = create_numeric_attribute_widget(attribute_name, attribute_value);
+        if (type === 'number') {
+            attribute_widget = create_numeric_attribute_widget(attribute_name, attribute_value);
+            value_setter = attribute_widget.set_value_from_decimal.bind(attribute_widget);
+            widget_copier = TT.number.copy.bind(attribute_widget);
+            if (attributes_needing_updating.indexOf(attribute_name) >= 0) {
+                this.on_update_display(function () {
+                    attribute_widget.rerender();
+                    return true; // don't remove
+                });
+                if (attribute_name === 'left' || attribute_name === 'top') {
+                    drag_listener = 
+                        function (event) {
+                            // ensures numbers are updated as the element is dragged
+                            var owner = attribute_widget.get_attribute_owner();
+                            var top_level_position, attribute_value;
+                            if (event.currentTarget.toontalk_widget !== owner) {
+                                return;
+                            }
+                            top_level_position = $(owner.get_frontside_element()).closest(".toontalk-top-level-backside").offset();
+                            if (!top_level_position) {
+                                console.log("Unable to find top-level backside of an element for its position. Perhaps is 'visible' but not attached.");
+                                top_level_position = {left: 0, top: 0};
+                            }
+                            attribute_value = attribute_name === 'left' ? 
+                                              event.pageX-top_level_position.left-owner.drag_x_offset :
+                                              event.pageY-top_level_position.top -owner.drag_y_offset;
+                            attribute_widget.set_value_from_decimal(attribute_value);
+                            widget_update_display.call(attribute_widget);
+                    }.bind(this);
+                    frontside_element = this.get_frontside_element();
+                    frontside_element.addEventListener('drag', drag_listener);
+                }
+            }
+        } else if (type === 'string') {
+            attribute_widget = create_string_attribute_widget(attribute_name, attribute_value);
+            value_setter = attribute_widget.set_HTML.bind(attribute_widget);
+            widget_copier = TT.element.copy.bind(attribute_widget);
+        } else {
+            TT.UTILITIES.report_internal_error("Unrecognized attribute type: " + type + " for " + attribute_name);
+            return;
+        }
         // a change to any of the copies is instantly reflected in all
         original_copies = this.get_original_copies()[attribute_name];
         if (original_copies) {
@@ -724,104 +850,16 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         } else {
             this.get_original_copies()[attribute_name] = [attribute_widget];
         }
-        // another way to implement this would be for the recursive call to add an extra parameter: ignore_copies
-        attribute_widget.set_value = function (new_value) {
-            // need to convert new_value into a decimal approximation
-            // since bigrat.toDecimal works by converting the numerator and denominator to JavaScript numbers
-            // so best to approximate -- also should be faster to do arithmetic
-            var copies = this_element_widget.get_original_copies()[attribute_name];
-            var decimal_value = bigrat.toDecimal(new_value);
-            var return_value, value_approximation;
-            if (this.get_attribute_owner().set_attribute(this.attribute, decimal_value)) {
-                // if the new_value is different from the current value
-                value_approximation = bigrat.fromDecimal(decimal_value);
-                copies.forEach(function (copy, index) {
-                    return_value = copy.set_value_from_sub_classes(value_approximation, true); 
-              });
-            }
-            return return_value;
-        };
-//         attribute_widget.visible = function () {
-//             // TODO: determine if this should work this way or use widget.visible?
-//             return $attribute_input && $attribute_input.is(":visible");
-//         };
-        number_update_display = attribute_widget.update_display;
-        attribute_widget.update_display = function () {
-            var attribute_value;
-            if (!this.get_erased()) {
-                attribute_value = this.get_attribute_owner().get_attribute(this.attribute);
-                attribute_widget.set_value_from_decimal(attribute_value);
-            }
-            number_update_display.call(this);
-        };
-        if (attributes_needing_updating.indexOf(attribute_name) >= 0) {
-            this.on_update_display(function () {
-                attribute_widget.rerender();
-                return true; // don't remove
-            });
-            if (attribute_name === 'left' || attribute_name === 'top') {
-                frontside_element = this.get_frontside_element();
-                frontside_element.addEventListener('drag', drag_listener);
-            }
-        }
-        attribute_widget.copy = function (parameters) {
-            if (parameters && parameters.just_value) {
-                // just copy as a number
-                return TT.number.copy.call(this, parameters);
-            }
-            return this.add_to_copy(this_element_widget.create_attribute_widget(attribute_name), parameters);
-        };
-        attribute_widget.get_json = function (json_history) {
-            return {type: 'attribute_number',
-                    attribute_name: attribute_name,
-                    element: TT.UTILITIES.get_json(this_element_widget, json_history)};            
-        };
-        attribute_widget.get_original_attribute_widget = function () {
-            return this_element_widget.get_original_copies()[attribute_name][0];
-        };
-        attribute_widget.get_attribute_owner = function () {
-            // return this_element_widget or backside top ancestor of type element
-            var get_backside_parent = function (widget) {
-                // follows front side parent until a backside parent is found
-                var parent = widget.get_parent_of_frontside();
-                if (parent) {
-                    if (parent.is_backside()) {
-                        return parent;
-                    }
-                    return get_backside_parent(parent.get_widget());
-                }
-                // if backside never opened then the attribute_widget may not have a parent
-                // which is OK since will treat this_element_widget as its owner
-            };
-            // if this is a copy use the original 
-            var original = this.get_original_attribute_widget();
-            if (original !== this) {
-                return original.get_attribute_owner();
-            }
-            var backside_ancestor_side, widget, widget_parent;
-            backside_ancestor_side = get_backside_parent(this);
-            if (!backside_ancestor_side) {
-                return this_element_widget;
-            }
-            if (!backside_ancestor_side.get_widget().is_element()) {
-                return this_element_widget;
-            }
-            widget = backside_ancestor_side.get_widget();
-            widget_parent = widget.get_parent_of_backside();
-            while ((widget_parent &&
-                    widget_parent.get_widget().is_element())) {
-                widget = widget_parent.get_widget();
-                widget_parent = widget.get_parent_of_backside();
-            }
-            return widget;
-        };
         return attribute_widget;
     };
 
-    TT.creators_from_json["attribute_number"] = function (json, additional_info) {
+    TT.creators_from_json["attribute_widget"] = function (json, additional_info) {
         var element_widget = TT.UTILITIES.create_from_json(json.element, additional_info);
         return element_widget.create_attribute_widget(json.attribute_name);
     };
+
+    // for backwards compatibility:
+    TT.creators_from_json["attribute_number"] = TT.creators_from_json["attribute_widget"];
 
     element.on_backside_hidden = function () {
         this.get_style_attributes().forEach(function (attribute) {

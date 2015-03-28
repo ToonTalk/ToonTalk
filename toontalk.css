@@ -1787,6 +1787,9 @@ table.toontalk-documentation-table {
 .toontalk-plain-text-element {
 	background-color: white;
 }
+.toontalk-string-attribute-widget {
+	background-color: rgb(238, 169, 244);
+}
 .toontalk-erased-element {
 	background-color: white;
 	opacity: .67;
