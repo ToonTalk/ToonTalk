@@ -463,6 +463,12 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     element.copy = function (parameters) {
         // copy has a copy of the attributes array as well
         var copy = element.create(this.get_HTML(), this.get_style_attributes().slice(), this.get_description());
+        if (parameters) {
+            if (!parameters.elements_copied) {
+                parameters.elements_copied = {};
+            }
+            parameters.elements_copied[this] = copy;
+        }
         return this.add_to_copy(copy, parameters);
     };
     
@@ -705,11 +711,17 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 widget_update_display.call(this);
             };
             attribute_widget.copy = function (parameters) {
-                if (parameters && parameters.just_value) {
-                    // just copy as a number
-                    return widget_copier(parameters);
+                var copy_of_this_element_widget;
+                if (parameters)  {
+                    if  (parameters.just_value) {
+                        // just copy as a number
+                        return widget_copier(parameters);
+                    }
+                    if (parameters.elements_copied) {
+                        copy_of_this_element_widget = parameters.elements_copied[this_element_widget];
+                    }
                 }
-                return this.add_to_copy(this_element_widget.create_attribute_widget(attribute_name), parameters);
+                return this.add_to_copy((copy_of_this_element_widget || this_element_widget).create_attribute_widget(attribute_name), parameters);
             };
             attribute_widget.get_json = function (json_history) {
                 return {type: 'attribute_widget',

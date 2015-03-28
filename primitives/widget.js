@@ -952,7 +952,7 @@ window.TOONTALK.widget = (function (TT) {
         
         add_copy_to_container: function (widget_copy, x_offset, y_offset) {
             if (!widget_copy) {
-                widget_copy = this.copy();
+                widget_copy = this.copy({});
             }
             var frontside_element = this.get_frontside_element();
             var frontside_element_copy = widget_copy.get_frontside_element();  
