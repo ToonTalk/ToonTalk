@@ -751,7 +751,11 @@ window.TOONTALK.UTILITIES =
                 } else {
                     json_view = additional_info.json_view;
                 }
-                widget = TT.creators_from_json[json_semantic.type](json_semantic, additional_info);
+                try {
+                    widget = TT.creators_from_json[json_semantic.type](json_semantic, additional_info);
+                } catch (e) {
+                    TT.UTILITIES.report_internal_error("Unable to recreate a " + json_semantic.type + ". Error is " + e); 
+                }
                // following was needed when get_json_top_level wasn't working properly
 //             } else if (json_semantic.shared_widget_index >= 0) {
 //                 widget = additional_info.shared_widgets[json_semantic.shared_widget_index];
@@ -839,14 +843,18 @@ window.TOONTALK.UTILITIES =
             var json = [];
             var widgets_jsonified = [];
             array.forEach(function (widget_side, index) {
-                if (widget_side.is_backside && widget_side.is_backside()) {
-                    json[index] = {widget: TT.UTILITIES.get_json(widget_side.get_widget(), json_history),
-                                   is_backside: true};
-                } else if (widget_side.get_type_name) {
-                    json[index] = {widget: TT.UTILITIES.get_json(widget_side, json_history)};
-                } else {
-                    // isn't a widget -- e.g. is a path
-                    json[index] = widget_side.get_json(json_history);
+                try {
+                    if (widget_side.is_backside && widget_side.is_backside()) {
+                        json[index] = {widget: TT.UTILITIES.get_json(widget_side.get_widget(), json_history),
+                                       is_backside: true};
+                    } else if (widget_side.get_type_name) {
+                        json[index] = {widget: TT.UTILITIES.get_json(widget_side, json_history)};
+                    } else {
+                        // isn't a widget -- e.g. is a path
+                        json[index] = widget_side.get_json(json_history);
+                    }
+                } catch (e) {
+                    TT.UTILITIES.report_internal_error("Error trying to save " + widget_side);
                 }
             });
             return json;
@@ -2212,19 +2220,23 @@ window.TOONTALK.UTILITIES =
             return widget_copy;
         },
         
-        scale_to_fit: function (this_element, other_element, original_width, original_height, delay) {
+        scale_to_fit: function (this_element, other_element, original_width, original_height) {
             if ($(other_element).is(".toontalk-backside")) {
-                return TT.UTILITIES.scale_element(this_element, original_width, original_height, original_width, original_height, delay);
+                return TT.UTILITIES.scale_element(this_element, original_width, original_height, original_width, original_height);
             }
-            return TT.UTILITIES.scale_element(this_element, $(other_element).width(), $(other_element).height(), original_width, original_height, delay);  
+            return TT.UTILITIES.scale_element(this_element, $(other_element).width(), $(other_element).height(), original_width, original_height);  
         },
 
-        scale_element: function (element, new_width, new_height, original_width, original_height, delay) {
+        scale_element: function (element, new_width, new_height, original_width, original_height, other_transforms, pending_css) {
             var update_css = function () {
-                $(element).css({transform: "scale(" + x_scale + ", " + y_scale + ")",
-                                "transform-origin": "top left", 
-                                width:  original_width,
-                                height: original_height});
+                if (!pending_css) {
+                    pending_css = {};
+                }
+                pending_css.transform = (other_transforms || "") + "scale(" + x_scale + ", " + y_scale + ")";
+//              "transform-origin": "left top", 
+                pending_css.width =  original_width,
+                pending_css.height = original_height;
+                $(element).css(pending_css);
             };
             var x_scale, y_scale;
             if (!original_width) {
@@ -2250,11 +2262,7 @@ window.TOONTALK.UTILITIES =
             if (y_scale === 0) {
                 y_scale = 1;
             }
-            if (delay) {
-                setTimeout(update_css, delay);
-            } else {
-                update_css();
-            }
+            update_css();
             return {x_scale: x_scale,
                     y_scale: y_scale};
         },

@@ -169,7 +169,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         };
         new_element.apply_css = function () {
             var transform = "";
-            var frontside_element, need_to_scale, x_scale, y_scale, child_css, $container, container_width, container_height;
+            var frontside_element, need_to_scale, x_scale, y_scale, $container, container_width, container_height;
             if (!pending_css && !transform_css) {
                 return;
             }
@@ -194,11 +194,13 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     current_height = pending_css.height;
                     need_to_scale = true;
                 }
+            } else {
+                pending_css = {};
             }
             if (transform_css) {
-                if (!child_css) {
-                    child_css = {};
-                }
+//                 if (!child_css) {
+//                     child_css = {};
+//                 }
                 if (transform_css['rotate']) {
                     transform += 'rotate(' + transform_css['rotate'] + 'deg)';
                 }
@@ -220,44 +222,27 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
 //                         // other origins cause drag and drop to behave strangely
 //                         child_css['transform-origin'] = "left top";
 //                     } else {
-                        child_css['transform-origin'] = "center center";
+                        pending_css['transform-origin'] = "center center";
 //                     }
                 }
                 if (transform) {
-                    child_css['-webkit-transform'] = transform;
-                    child_css['-moz-transform']    = transform;
-                    child_css['-ms-transform']     = transform;
-                    child_css['o-transform']       = transform;
-                    child_css['transform']         = transform;
+                    pending_css['-webkit-transform'] = transform;
+                    pending_css['-moz-transform']    = transform;
+                    pending_css['-ms-transform']     = transform;
+                    pending_css['o-transform']       = transform;
+                    pending_css['transform']         = transform;
                     // transform the child since can't have different transform-origins in the same element transforms
-                    $(frontside_element).children(".toontalk-element-container").css(child_css);
+//                     $(frontside_element).children(".toontalk-element-container").css(child_css);
+                    $(frontside_element).css(pending_css);
+                    need_to_scale = true;
                 }
             };
             // need to delay the following since width and height may not be known yet
-            TT.UTILITIES.set_timeout(function () {
-                if (!pending_css) {
-                    // can be undefined if all the transforms had a zero value
-                    return;
-                }
-                if (current_width || current_height) {
-                    // if it contains an image then change it too (needed only for width and height)
-                    // TODO: is the following still needed?
-                    if ($image_element) {
-                        $image_element.css({width:  original_width,
-                                            height: original_height});
-                    }
-                    // tried $(frontside_element).children(".toontalk-element-container").get(0)
-                    $(frontside_element).children(".toontalk-element-container").css({width: '', height: ''});
-                    if (need_to_scale && !$(frontside_element).is(".toontalk-not-observable")) {
-                        // don't scale if trying to figure out the original dimensions of this element
-                        TT.UTILITIES.run_when_dimensions_known(frontside_element,
-                                                                   function () {
-                                                                        TT.UTILITIES.scale_element(frontside_element, current_width, current_height, original_width, original_height);
-                                                                   });
-                    }
-                    pending_css.width  = undefined;
-                    pending_css.height = undefined;    
-                }
+//             TT.UTILITIES.set_timeout(function () {
+//                 if (!child_css) {
+//                     // can be undefined if all the transforms had a zero value
+//                     return;
+//                 }
                 if (pending_css.left || pending_css.top) {
                     // elements (like turtles) by default wrap -- TODO: make this configurable
                     if (pending_css.left) {      
@@ -274,9 +259,30 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                         pending_css.top = ((pending_css.top%container_height)+container_height)%container_height;
                     }
                 }
-                $(frontside_element).css(pending_css);
+                if (current_width || current_height) {
+                    // if it contains an image then change it too (needed only for width and height)
+                    // TODO: is the following still needed?
+                    if ($image_element) {
+                        $image_element.css({width:  original_width,
+                                            height: original_height});
+                    }
+                    // tried $(frontside_element).children(".toontalk-element-container").get(0)
+                    $(frontside_element).css({width: '', height: ''});
+//                     $(frontside_element).children(".toontalk-element-container").css({width: '', height: ''});
+                    if (need_to_scale && !$(frontside_element).is(".toontalk-not-observable")) {
+                        // don't scale if trying to figure out the original dimensions of this element
+                        TT.UTILITIES.run_when_dimensions_known(frontside_element,
+                                                               function () {
+                                                                    TT.UTILITIES.scale_element(frontside_element, current_width, current_height, original_width, original_height, transform, pending_css);
+                                                               });
+                    }
+                    pending_css.width  = undefined;
+                    pending_css.height = undefined;    
+                } else {
+                    $(frontside_element).css(pending_css);
+                }
                 pending_css = undefined;
-                }.bind(this));
+//                 }.bind(this));
         };
         new_element.on_update_display = function (handler) {
             if (!on_update_display_handlers) {
@@ -384,17 +390,17 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             var rendering, additional_classes;
             if (frontside_element.children.length === $(frontside_element).children(".ui-resizable-handle").length) {
                 // the only children are resize handles so add the HTML
-                rendering = document.createElement('div');
-                $(rendering).addClass("toontalk-element-container");
-                rendering.innerHTML = this.get_HTML();
-                frontside_element.appendChild(rendering);
+//                 rendering = document.createElement('div');
+//                 $(rendering).addClass("toontalk-element-container");
+                frontside_element.innerHTML = this.get_HTML();
+//                 frontside_element.appendChild(rendering);
                 this.set_image_element(rendering, frontside_element);
                 $(frontside_element).addClass("toontalk-element-frontside");
-                if (rendering.innerHTML.substring(0, 1) !== '<') {
+                if (frontside_element.innerHTML.substring(0, 1) !== '<') {
                     // doesn't look like HTML so assume it is raw text and give it a class that will give it a better font and size
                     additional_classes = this.get_additional_classes();
                     if (additional_classes) {
-                        $(rendering).addClass(additional_classes);
+                        $(frontside_element).addClass(additional_classes);
                     }
                     $(frontside_element).addClass("ui-widget toontalk-plain-text-element");
                 }
