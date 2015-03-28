@@ -891,7 +891,11 @@ window.TOONTALK.UTILITIES =
                     } else {
                         // start searching tree for json_of_widget with the semantic component
                         // because json might === json_of_widget
-                        TT.UTILITIES.tree_replace_once(json.semantic, json_of_widget, {shared_widget_index: widget_index}, get_json_of_widget_from_shared_widget_index);
+                        TT.UTILITIES.tree_replace_once(json.semantic, 
+                                                       json_of_widget,
+                                                       {shared_widget_index: widget_index},
+                                                       get_json_of_widget_from_shared_widget_index,
+                                                       TT.UTILITIES.generate_unique_id());
                         return json_of_widget;
                     }
                 });
@@ -955,14 +959,16 @@ window.TOONTALK.UTILITIES =
             return object;
         },
         
-        tree_replace_once: function (object, replace, replacement, get_json_of_widget_from_shared_widget_index) {
+        tree_replace_once: function (object, replace, replacement, get_json_of_widget_from_shared_widget_index, id) {
             // replaces object's first occurence of replace with replacement
             // whereever it occurs in object
+            // id is unique to this 'task' and is used to ignore cycles
             var keys = Object.keys(object);
             var value;
 //             var messages = [];
             keys.forEach(function (property) {
                     value = object[property];
+//                     console.log("tree_replace_once: " + property + " = " + value);
 //                     messages[0] = "Replaced " + JSON.stringify(replace);
 //                     messages[1] = "with " + JSON.stringify(replacement);
 //                     messages[2] = "in " + JSON.stringify(object);
@@ -976,17 +982,23 @@ window.TOONTALK.UTILITIES =
 //                         console.log("Object is now " + JSON.stringify(object));
                         return true;
                     } else if (property === 'shared_widget_index') {
-                        if (this.tree_replace_once(get_json_of_widget_from_shared_widget_index(value), replace, replacement, get_json_of_widget_from_shared_widget_index)) {
+                        if (this.tree_replace_once(get_json_of_widget_from_shared_widget_index(value), replace, replacement, get_json_of_widget_from_shared_widget_index, id)) {
                             return true;
                         }
                     } else if (["string", "number", "function", "undefined", "boolean"].indexOf(typeof value) >= 0) {
                         // skip atomic objects
-                    } else if (this.tree_replace_once(value, replace, replacement, get_json_of_widget_from_shared_widget_index)) {
-//                         messages.forEach(function (message) {
-//                             console.log(message);
-//                         });
-//                         console.log("Object is now " + JSON.stringify(object));
-                        return true;
+                    } else {
+                        if (object.id_of_tree_replace_once_task !== id) {
+                            object.id_of_tree_replace_once_task = id;
+                            if (this.tree_replace_once(value, replace, replacement, get_json_of_widget_from_shared_widget_index, id)) {
+    //                         messages.forEach(function (message) {
+    //                             console.log(message);
+    //                         });
+    //                         console.log("Object is now " + JSON.stringify(object));
+                                return true;
+                            }
+                        }
+                        // otherwise skip objects previously encountered
                     }
             }.bind(this));
             return false;            
