@@ -963,6 +963,10 @@ window.TOONTALK.UTILITIES =
             // replaces object's first occurence of replace with replacement
             // whereever it occurs in object
             // id is unique to this 'task' and is used to ignore cycles
+            if (object.id_of_tree_replace_once_task === id) {
+                return; // seen this already
+            }
+            object.id_of_tree_replace_once_task = id;
             var keys = Object.keys(object);
             var value;
 //             var messages = [];
@@ -987,18 +991,12 @@ window.TOONTALK.UTILITIES =
                         }
                     } else if (["string", "number", "function", "undefined", "boolean"].indexOf(typeof value) >= 0) {
                         // skip atomic objects
-                    } else {
-                        if (object.id_of_tree_replace_once_task !== id) {
-                            object.id_of_tree_replace_once_task = id;
-                            if (this.tree_replace_once(value, replace, replacement, get_json_of_widget_from_shared_widget_index, id)) {
+                    } else if (this.tree_replace_once(value, replace, replacement, get_json_of_widget_from_shared_widget_index, id)) {
     //                         messages.forEach(function (message) {
     //                             console.log(message);
     //                         });
     //                         console.log("Object is now " + JSON.stringify(object));
-                                return true;
-                            }
-                        }
-                        // otherwise skip objects previously encountered
+                        return true;
                     }
             }.bind(this));
             return false;            
