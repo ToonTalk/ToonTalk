@@ -1026,6 +1026,7 @@ window.TOONTALK.UTILITIES =
             var backside_widgets = widget.get_backside_widgets();
             var type_description = widget.get_type_name();
             var title = widget.toString();
+            var data_image_start, data_image_end;
             if (type_description === 'top-level') {
                 if (is_backside) {
                     // drag and drop should not preserve current settings
@@ -1058,6 +1059,17 @@ window.TOONTALK.UTILITIES =
                 type_description = TT.UTILITIES.add_a_or_an(type_description);
                 if (is_backside) {
                     type_description = "the back of " + type_description;
+                }
+            }
+            if (title) {
+                data_image_start = title.indexOf("data:image/");
+                if (data_image_start > 0) {
+                    // elide data images
+                    data_image_end = title.indexOf("alt=", data_image_start);
+                    if (data_image_end < 0) {
+                        data_image_end = title.indexOf(">", data_image_start);
+                    }
+                    title = title.substring(0, data_image_start+20) + " ... " + title.substring(data_image_end);
                 }
             }
             return div_json + "\nThis will be replaced by " + type_description + ".\n" +
