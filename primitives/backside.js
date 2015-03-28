@@ -739,7 +739,7 @@ window.TOONTALK.backside =
                                       height: ''});
             } else {
                $backside_element.css({transform: "scale(" + scale + ", " + scale + ")",
-                                      "transform-origin": "top left", 
+                                      "transform-origin": "left top", 
                                        width:  original_width *  x_scale / scale,
                                        height: original_height * y_scale / scale});
             }
