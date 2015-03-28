@@ -694,10 +694,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 return "element attribute";
             };
             attribute_widget.toString = function () {
-                return widget_to_string.call(this) + " (" + this.attribute + ")";
+                return widget_to_string.call(this) + " (" + this.attribute + " of " + "this.element_widget" + ")";
             };
             attribute_widget.get_custom_title_prefix = function () {
-                return "This is the '" + this.attribute + "' attribute of " + attribute_widget.element_widget + "\n" +
+                return "This is the '" + this.attribute + "' attribute of " + this.element_widget + "\n" +
                        widget_get_custom_title_prefix.call(this);
             };
             attribute_widget.equals = function (other) {
