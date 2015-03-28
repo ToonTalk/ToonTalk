@@ -110,6 +110,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             html = new_value;
             // remove children so will be updated
             $(frontside_element).children(":not(.ui-resizable-handle)").remove();
+            frontside_element.innerHTML = html; // until re-rendered
             // need to know new dimensions to scale appropriately
             this.compute_original_dimensions(true);
             this.rerender();
@@ -1050,9 +1051,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
 
     element.receive_HTML_from_dropped = function (dropped) {
         var new_text = dropped.get_text();
-         if (this.set_HTML(new_text)) {
-             return new_text;
-         }
+        if (this.set_HTML(new_text)) {
+            return this.get_text();
+        }
     };
     
     return element;
