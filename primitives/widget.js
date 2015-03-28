@@ -1343,7 +1343,7 @@ window.TOONTALK.widget = (function (TT) {
                     json = TT.UTILITIES.get_json_top_level(this);
                     google_drive_status = TT.google_drive.get_status();
                     if (google_drive_status === "Ready") {
-                        TT.google_drive.upload_file(program_name, "json", JSON.stringify(json), callback);
+                        TT.google_drive.upload_file(program_name, "json", JSON.stringify(json, TT.UTILITIES.clean_JSON), callback);
                         callback = undefined;
                     } else if (TT.google_drive.connection_to_google_drive_possible()) {
                         if (google_drive_status === 'Need to authorize') {
@@ -1383,7 +1383,7 @@ window.TOONTALK.widget = (function (TT) {
                         meta_data = {created: time_stamp};
                     }
                     meta_data.last_modified = time_stamp;
-                    json_string = JSON.stringify(json);
+                    json_string = JSON.stringify(json, TT.UTILITIES.clean_json);
                     meta_data.file_size = json_string.length;
                     window.localStorage.setItem(meta_data_key, JSON.stringify(meta_data));
                     window.localStorage.setItem(key, json_string);
@@ -1394,7 +1394,11 @@ window.TOONTALK.widget = (function (TT) {
                         TT.UTILITIES.set_all_locally_stored_program_names(all_program_names);   
                     }
                 } catch (error) {
-                    message = "Failed to save state to local storage since it requires " + JSON.stringify(json).length + " bytes. Error message is " + error;
+                    if (json_string) {
+                        message = "Failed to save state to local storage since it requires " + json_string.length + " bytes. Error message is " + error;
+                    } else {
+                        message = "Error while saving to local storage. Error message is " + error;
+                    }
                     if (TT.UTILITIES.is_internet_explorer()) {
                         console.error(message);
                     } else {

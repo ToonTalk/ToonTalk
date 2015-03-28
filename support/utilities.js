@@ -1074,8 +1074,15 @@ window.TOONTALK.UTILITIES =
             }
             return div_json + "\nThis will be replaced by " + type_description + ".\n" +
                               (title ? title + "\n" : "") +
-                              div_hidden + JSON.stringify(json, null, '  ') + div_close +
-                              div_close;
+                              div_hidden + JSON.stringify(json, TT.UTILITIES.clean_json, '  ') + div_close + 
+                   div_close;
+    },
+
+    clean_json: function (key, value) {
+        if (key === "id_of_tree_replace_once_task") {
+           return undefined;
+        }
+        return value;
     },
         
 //         tree_replace_all: function (object, replace, replacement) {
@@ -2414,6 +2421,7 @@ window.TOONTALK.UTILITIES =
         report_internal_error: function (message) {
             // these are ToonTalk errors not user errors
             console.log(message);
+            console.trace();
             if (TT.debugging) {
                 TT.UTILITIES.display_message("Error: " + message);
             }
