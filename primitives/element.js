@@ -22,6 +22,17 @@ var attribute_type = function (attribute) {
     return 'number';
 };
 
+var documentation_source = function (attribute) {
+    if (attribute === 'transform-origin-x' || attribute === 'transform-origin-y') {
+        // # added so rest is ignored
+        return "https://developer.mozilla.org/en-US/docs/Web/CSS/transform-origin#" + attribute;
+    } else if (is_transformation_option(attribute)) {
+        return "https://developer.mozilla.org/en-US/docs/Web/CSS/transform#" + attribute;
+    } else {
+        return "http://www.w3.org/community/webed/wiki/CSS/Properties/" + attribute;
+    }
+}; 
+
 window.TOONTALK.element = (function (TT) { // TT is for convenience and more legible code
     "use strict";
 
@@ -771,6 +782,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 }
                 return widget;
             };
+            attribute_widget.get_help_URL = function () {
+                return documentation_source(attribute_name);
+            };
         }.bind(this);
         var create_numeric_attribute_widget = function (attribute_name, attribute_value) {
             var attribute_widget = TT.number.create(0, 1);
@@ -1097,22 +1111,12 @@ window.TOONTALK.element_backside =
                update_style_attribute_chooser(attributes_chooser, element_widget, attribute_table);
             }
         };
-        var documentation_source = function (attribute) {
-            if (attribute === 'transform-origin-x' || attribute === 'transform-origin-y') {
-                // # added so rest is ignored
-                return "https://developer.mozilla.org/en-US/docs/Web/CSS/transform-origin#"
-            } else if (is_transformation_option(attribute)) {
-                return "https://developer.mozilla.org/en-US/docs/Web/CSS/transform#";
-            } else {
-                return "http://www.w3.org/community/webed/wiki/CSS/Properties/";
-            }
-        }; 
         var process_menu_item = function (option, menu_list) {
             var style_attributes = element_widget.get_style_attributes();
             var already_added = style_attributes.indexOf(option) >= 0;
             var title = "Click to add or remove the '" + option + "' style attribute from the backside of this element.";
             var check_box = TT.UTILITIES.create_check_box(already_added, "toontalk-style-attribute-check-box", option+"&nbsp;", title);
-            var documentation_link = TT.UTILITIES.create_anchor_element("i", documentation_source(option) + option);
+            var documentation_link = TT.UTILITIES.create_anchor_element("i", documentation_source(option));
             var list_item = document.createElement("li");
             $(documentation_link).addClass("toontalk-help-button notranslate toontalk-attribute-help-button");
             $(documentation_link).css({color: "white"}); // ui-widget-content interferes with this
