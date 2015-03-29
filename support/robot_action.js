@@ -485,7 +485,8 @@ window.TOONTALK.robot_action =
                     suffix = " (" + additional_info.toString + ")";
                 }
                 path_description = TT.path.toString(path, toString_info);
-                if (['pick up', 'edit', 'remove', 'copy', 'change whether erased'].indexOf(action_name) >= 0 && path_description.indexOf("hole of the box") >= 0) {
+                if (['pick up', 'edit', 'remove', 'copy', 'change whether erased', 'pick up a copy of'].indexOf(action_name) >= 0 && 
+                    path_description.indexOf("hole of the box") >= 0) {
                     return action_name + " what is in " + path_description + suffix;
                 }
                 return action_name + " " + path_description + suffix;
