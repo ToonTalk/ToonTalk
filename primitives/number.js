@@ -1156,6 +1156,7 @@ window.TOONTALK.number.function =
         return response;
     };
     var number_check = function (widget, function_name, index) {
+        var top_contents;
         if (!widget) {
             TT.UTILITIES.display_message("Birds for the " + function_name + " function can only respond to boxes with a number in the " + 
                                           TT.UTILITIES.ordinal(index) + " hole. The " + TT.UTILITIES.ordinal(index) + " hole is empty.");
@@ -1164,27 +1165,39 @@ window.TOONTALK.number.function =
         if (widget.is_number()) {
             return true;
         }
+        if (widget.is_nest()) {
+            // OK if covered by a number or empty (assuming a number will come later)
+            top_contents = widget.top_contents();
+            if (top_contents) {
+                return number_check(top_contents, function_name, index);
+            }
+            // return nest so can suspend this until nest is covered
+            return widget;
+        }
         TT.UTILITIES.display_message("Birds for the " + function_name + " function can only respond to boxes with a number in the " + 
                                      TT.UTILITIES.ordinal(index) + " hole. The " + TT.UTILITIES.ordinal(index) + 
-                                     "hole contains " + TT.UTILITIES.add_a_or_an(widget.get_type_name() + "."));
+                                     " hole contains " + TT.UTILITIES.add_a_or_an(widget.get_type_name() + "."));
         return false;
     };
     var n_ary_widget_function = function (message, zero_ary_value_function, binary_operation, function_name, event, robot) { 
         // binary_operation is a function of two widgets that updates the first
         var compute_response = function (bird, box_size) {
             var next_widget, index, response;
+            var is_number_or_nest;
             if (box_size === 1) {
                 return zero_ary_value_function();
             }
             index = 1;
             response =  message.get_hole_contents(index);
-            if (!number_check(response, function_name, index)) {
+            is_number_or_nest = number_check(response, function_name, index);
+            if (!is_number_or_nest) {
                 return;
             }
             index++;
             while (index < box_size) {
                 next_widget = message.get_hole_contents(index);
-                if (!number_check(next_widget, function_name, index)) {
+                is_number_or_nest = number_check(next_widget, function_name, index);
+                if (!is_number_or_nest) {
                     return;
                 }
                 binary_operation.call(response, next_widget);
@@ -1205,7 +1218,8 @@ window.TOONTALK.number.function =
             index = 1;
             while (index < box_size) {
                 next_widget = message.get_hole_contents(index);
-                if (!number_check(next_widget, function_name, index)) {
+                is_number_or_nest = number_check(next_widget, function_name, index);
+                if (!is_number_or_nest) {
                     return;
                 }
                 args.push(next_widget.get_value());
