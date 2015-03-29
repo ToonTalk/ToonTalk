@@ -2283,8 +2283,6 @@ window.TOONTALK.UTILITIES =
                 pending_css.width =  original_width,
                 pending_css.height = original_height;
                 $(element).css(pending_css);
-//                 pending_css.width  = undefined;
-//                 pending_css.height = undefined;
             };
             var x_scale, y_scale;
             if (!original_width) {

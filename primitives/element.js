@@ -231,6 +231,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
 //                         // other origins cause drag and drop to behave strangely
 //                         child_css['transform-origin'] = "left top";
 //                     } else {
+    // TODO: determine if the following is still needed
                         pending_css['transform-origin'] = "center center";
 //                     }
                 }
@@ -240,8 +241,6 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     pending_css['-ms-transform']     = transform;
                     pending_css['o-transform']       = transform;
                     pending_css['transform']         = transform;
-                    // transform the child since can't have different transform-origins in the same element transforms
-//                     $(frontside_element).children(".toontalk-element-container").css(child_css);
                     $(frontside_element).css(pending_css);
                     need_to_scale = true;
                 }
@@ -264,22 +263,22 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             }
             if (current_width || current_height) {
                 // if it contains an image then change it too (needed only for width and height)
-                 // TODO: is the following still needed?
-                 if ($image_element) {
-                     $image_element.css({width:  original_width,
-                                         height: original_height});
-                 }
-                 $(frontside_element).css({width: '', height: ''});
-                 if (need_to_scale && !$(frontside_element).is(".toontalk-not-observable")) {
-                     // don't scale if trying to figure out the original dimensions of this element
-                     TT.UTILITIES.run_when_dimensions_known(frontside_element,
-                                                            function () {
-                                                                TT.UTILITIES.scale_element(frontside_element, current_width, current_height, original_width, original_height, transform, pending_css);
-                                                                pending_css = undefined;
+                // TODO: is the following still needed?
+                if ($image_element) {
+                    $image_element.css({width:  original_width,
+                                        height: original_height});
+                }
+                $(frontside_element).css({width: '', height: ''});
+                if (need_to_scale && !$(frontside_element).is(".toontalk-not-observable")) {
+                    // don't scale if trying to figure out the original dimensions of this element
+                    TT.UTILITIES.run_when_dimensions_known(frontside_element,
+                                                           function () {
+                                                               TT.UTILITIES.scale_element(frontside_element, current_width, current_height, original_width, original_height, transform, pending_css);
+                                                               pending_css = undefined;
                                                            });
-                 }    
+                }
             } else {
-                 $(frontside_element).css(pending_css);
+                $(frontside_element).css(pending_css);
             }
             pending_css = undefined;
         };
@@ -345,10 +344,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             if (this.get_erased()) {
                 var width, height;
                 if ($(frontside_element).parent(".toontalk-backside").is("*")) {
-                    width = "";
+                    width  = "";
                     height = "";
                 } else {
-                    width = "100%";
+                    width  = "100%";
                     height = "100%";
                 }
                 this.save_dimensions();
