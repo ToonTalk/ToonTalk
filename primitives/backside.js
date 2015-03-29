@@ -288,8 +288,8 @@ window.TOONTALK.backside =
                 // too soon to add these widgets so delay slightly
                 TT.UTILITIES.set_timeout(
                     function () {
-                        var widget_side_element, json_view;
                         var backside_visible = this.visible();
+                        var widget_side_element, json_view, css;
                         backside_widgets.forEach(function (backside_widget_side, index) {
                             var backside = backside_widget_side.get_widget().get_backside();
                             widget_side_element = backside_widget_side.get_element();
@@ -298,10 +298,10 @@ window.TOONTALK.backside =
                                 json_view = json_array[index];
                                 if (json_view) {
                                     if (backside_widget_side.is_backside()) {
-                                        $(widget_side_element).css({left:   json_view.backside_left,
-                                                                    top:    json_view.backside_top,
-                                                                    width:  json_view.backside_width,
-                                                                    height: json_view.backside_height});
+                                        css = {left:   json_view.backside_left,
+                                               top:    json_view.backside_top,
+                                               width:  json_view.backside_width,
+                                               height: json_view.backside_height};
                                         backside_widget_side.get_widget().apply_backside_geometry();
                                         if (json_view.advanced_settings_open) {
                                             backside.set_advanced_settings_showing(true, backside.get_element());
@@ -313,11 +313,13 @@ window.TOONTALK.backside =
                                         if (json_view.frontside_height === 0) {
                                             json_view.frontside_height = '';
                                         }                                        
-                                        $(widget_side_element).css({left:   json_view.frontside_left,
-                                                                    top:    json_view.frontside_top,
-                                                                    width:  json_view.frontside_width,
-                                                                    height: json_view.frontside_height});
+                                        css = {left:   json_view.frontside_left,
+                                               top:    json_view.frontside_top,
+                                               width:  json_view.frontside_width,
+                                               height: json_view.frontside_height};
                                     }
+                                    TT.UTILITIES.constrain_css_to_fit_inside(backside_element, css);
+                                    $(widget_side_element).css(css);
                                 }
                             }
                             $backside_element.append(widget_side_element);

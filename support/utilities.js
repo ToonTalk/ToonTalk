@@ -370,7 +370,7 @@ window.TOONTALK.UTILITIES =
         var page_x = TT.UTILITIES.get_mouse_or_first_touch_event_attribute("pageX", event);
         var page_y = TT.UTILITIES.get_mouse_or_first_touch_event_attribute("pageY", event);
         var new_target, backside_widgets_json, shared_widgets, top_level_element, top_level_backside_position, backside_widgets, 
-            left, top, element_here;
+            left, top, element_here, css;
         source_widget.set_visible(true);
         if ($target.is(".toontalk-backside")) {
             if (source_widget.is_top_level()) {
@@ -405,11 +405,12 @@ window.TOONTALK.UTILITIES =
                    target_widget.add_backside_widget(widget, backside_widget_side.is_backside());
                    top_level_element.appendChild(element_of_backside_widget);
                    position = $(element_of_backside_widget).position();
-                   $(element_of_backside_widget).css(
-                       {left: position.left + left_offset,
-                              top:  position.top  + top_offset,
-                              width:  width,
-                              height: height});
+                   css = {left: position.left + left_offset,
+                          top:  position.top  + top_offset,
+                          width:  width,
+                          height: height};
+                   TT.UTILITIES.constrain_css_to_fit_inside(top_level_element, css);
+                   $(element_of_backside_widget).css(css);
                    if (backside_widget_side.is_backside()) {
                        widget.backside_geometry = json_view.backside_geometry;
                        widget.apply_backside_geometry();
@@ -1675,6 +1676,15 @@ window.TOONTALK.UTILITIES =
         inside_rectangle: function (x, y, rectangle) {
             return (x >= rectangle.left && x <= rectangle.right &&
                     y >= rectangle.top  && y <= rectangle.bottom);
+        },
+
+        constrain_css_to_fit_inside: function (element, css) {
+            // updates left and top to fit inside element
+            var container_width  = $(element).width();
+            var container_height = $(element).height();
+            // css is relative to element
+            css.left = Math.min(Math.max(css.left, 0), container_width);
+            css.top  = Math.min(Math.max(css.top,  0), container_height);
         },
         
         next_z_index: function () {
