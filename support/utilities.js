@@ -2277,6 +2277,8 @@ window.TOONTALK.UTILITIES =
                 pending_css.width =  original_width,
                 pending_css.height = original_height;
                 $(element).css(pending_css);
+//                 pending_css.width  = undefined;
+//                 pending_css.height = undefined;
             };
             var x_scale, y_scale;
             if (!original_width) {
@@ -2310,8 +2312,8 @@ window.TOONTALK.UTILITIES =
         run_when_dimensions_known: function (element, callback, recompute) {
             var check_if_dimensions_known, parent;
             if (!recompute && $(element).width()) {
-                // already known
-                callback();
+                // already known -- delaying it fixes problems with elements in box holes not computing the right scaling
+                setTimeout(callback);
                 return;
             }
             check_if_dimensions_known = function (delay_if_not) {
@@ -2319,13 +2321,17 @@ window.TOONTALK.UTILITIES =
                 setTimeout(function () {
                                var width = $(element).width();
                                if (width) { // } && !$(element).is(".toontalk-carried-by-bird")) {
-                                   callback();
                                    if (element.parentElement === document.body) {
+                                       callback();
                                        if (parent) {
                                            parent.appendChild(element);
                                        } else {
                                            $(element).remove();
                                        }
+                                   } else {
+                                       // try again -- probably because in the meanwhile this has been
+                                       // added to some container and its dimensions aren't original
+                                       TT.UTILITIES.run_when_dimensions_known(element, callback, true);
                                    }
                                    $(element).removeClass("toontalk-not-observable");
                                    return;
@@ -2357,14 +2363,14 @@ window.TOONTALK.UTILITIES =
             // this relies upon run_when_dimensions_known which keeps trying until it finds out the dimensions of this element
             // TODO: discover if there is a better way
             var frontside_element = widget.get_frontside_element();
-            var update_original_dimensions_and_restore =
+            var update_original_dimensions =
                 function () {
                     set_original_dimensions($(frontside_element).width(), $(frontside_element).height());
                 };
             if (frontside_element.parentElement === document.body) {
                 return; // this was called twice -- probably by update_display
             }
-            TT.UTILITIES.run_when_dimensions_known(frontside_element, update_original_dimensions_and_restore, recompute);
+            TT.UTILITIES.run_when_dimensions_known(frontside_element, update_original_dimensions, recompute);
         },
         
         relative_position: function (target_element, reference_element) {

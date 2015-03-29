@@ -214,9 +214,6 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 pending_css = {};
             }
             if (transform_css) {
-//                 if (!child_css) {
-//                     child_css = {};
-//                 }
                 if (transform_css['rotate']) {
                     transform += 'rotate(' + transform_css['rotate'] + 'deg)';
                 }
@@ -229,10 +226,6 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 if (transform_css['transform-origin-x'] || transform_css['transform-origin-y']) {
                     pending_css['transform-origin'] = (transform_css['transform-origin-x'] || 0) + ' ' + (transform_css['transform-origin-y'] || 0);
                 }
-//                 need_to_scale = false; // no need since scaling right here
-//                 x_scale =  (current_width /(original_width  || $(frontside_element).width()));
-//                 y_scale =  (current_height/(original_height || $(frontside_element).height()));
-//                transform += 'scale(' + (x_scale || 1) + ', ' + (y_scale || 1) + ')';
                 if (!pending_css || !pending_css['transform-origin']) {
 //                     if (this === TT.UTILITIES.get_dragee()) {
 //                         // other origins cause drag and drop to behave strangely
@@ -253,52 +246,42 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     need_to_scale = true;
                 }
             };
-            // need to delay the following since width and height may not be known yet
-//             TT.UTILITIES.set_timeout(function () {
-//                 if (!child_css) {
-//                     // can be undefined if all the transforms had a zero value
-//                     return;
-//                 }
-                if (pending_css.left || pending_css.top) {
-                    // elements (like turtles) by default wrap -- TODO: make this configurable
-                    if (pending_css.left) {      
-                        // if negative after mod add width -- do another mod in case was positive
+            if (pending_css.left || pending_css.top) {
+                // elements (like turtles) by default wrap -- TODO: make this configurable
+                if (pending_css.left) {      
+                    // if negative after mod add width -- do another mod in case was positive
+                    $container = $(this.get_parent_of_frontside().get_element());
+                    container_width = $container.width();
+                    pending_css.left = ((pending_css.left%container_width)+container_width)%container_width;
+                }
+                if (pending_css.top) {
+                    if (!$container) {
                         $container = $(this.get_parent_of_frontside().get_element());
-                        container_width = $container.width();
-                        pending_css.left = ((pending_css.left%container_width)+container_width)%container_width;
                     }
-                    if (pending_css.top) {
-                        if (!$container) {
-                            $container = $(this.get_parent_of_frontside().get_element());
-                        }
-                        container_height = $container.height();
-                        pending_css.top = ((pending_css.top%container_height)+container_height)%container_height;
-                    }
+                    container_height = $container.height();
+                    pending_css.top = ((pending_css.top%container_height)+container_height)%container_height;
                 }
-                if (current_width || current_height) {
-                    // if it contains an image then change it too (needed only for width and height)
-                    // TODO: is the following still needed?
-                    if ($image_element) {
-                        $image_element.css({width:  original_width,
-                                            height: original_height});
-                    }
-                    // tried $(frontside_element).children(".toontalk-element-container").get(0)
-                    $(frontside_element).css({width: '', height: ''});
-//                     $(frontside_element).children(".toontalk-element-container").css({width: '', height: ''});
-                    if (need_to_scale && !$(frontside_element).is(".toontalk-not-observable")) {
-                        // don't scale if trying to figure out the original dimensions of this element
-                        TT.UTILITIES.run_when_dimensions_known(frontside_element,
-                                                               function () {
-                                                                    TT.UTILITIES.scale_element(frontside_element, current_width, current_height, original_width, original_height, transform, pending_css);
-                                                               });
-                    }
-                    pending_css.width  = undefined;
-                    pending_css.height = undefined;    
-                } else {
-                    $(frontside_element).css(pending_css);
-                }
-                pending_css = undefined;
-//                 }.bind(this));
+            }
+            if (current_width || current_height) {
+                // if it contains an image then change it too (needed only for width and height)
+                 // TODO: is the following still needed?
+                 if ($image_element) {
+                     $image_element.css({width:  original_width,
+                                         height: original_height});
+                 }
+                 $(frontside_element).css({width: '', height: ''});
+                 if (need_to_scale && !$(frontside_element).is(".toontalk-not-observable")) {
+                     // don't scale if trying to figure out the original dimensions of this element
+                     TT.UTILITIES.run_when_dimensions_known(frontside_element,
+                                                            function () {
+                                                                TT.UTILITIES.scale_element(frontside_element, current_width, current_height, original_width, original_height, transform, pending_css);
+                                                                pending_css = undefined;
+                                                           });
+                 }    
+            } else {
+                 $(frontside_element).css(pending_css);
+            }
+            pending_css = undefined;
         };
         new_element.on_update_display = function (handler) {
             if (!on_update_display_handlers) {
@@ -425,9 +408,17 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         new_element.compute_original_dimensions = function (recompute) {
             TT.UTILITIES.original_dimensions(this, 
                                              function (width, height) {
-                                                 original_width  = width;
+                                                 var parent = this.get_parent_of_frontside();
+                                                 original_width =  width;
                                                  original_height = height;
-                                             },
+                                                 if (parent) {
+                                                     if (parent.get_box) {
+                                                         parent.get_box().rerender();
+                                                     } else {
+                                                         parent.rerender();
+                                                     }
+                                                 }
+                                             }.bind(this),
                                              recompute);
         };
         new_element.get_attribute_from_current_css = function (attribute) {

@@ -371,21 +371,6 @@ window.TOONTALK.box = (function (TT) {
                     top += border_size*(index-1);
                 }
             }
-            if (hole_element !== content_frontside_element) {
-                // not an empty hole
-                // save dimensions first?
-                $(content_frontside_element).css({left:  0,
-                                                  top:   0,
-                                                  width:  '',
-                                                  height: ''});
-                if (hole.is_element()) {
-                    hole_contents = hole.get_contents();
-                    hole_contents.set_size_attributes(new_width, new_height, true);
-//                     TT.UTILITIES.scale_to_fit(content_frontside_element, hole_element, hole_contents.saved_width, hole_contents.saved_height);
-                }
-                hole_element.appendChild(content_frontside_element);
-                hole.get_contents().update_display();
-            }
             $(hole_element).css({left:   left,
                                  top:    top,
                                  width:  new_width,
@@ -403,6 +388,20 @@ window.TOONTALK.box = (function (TT) {
                     }
                 }
                 hole_element.toontalk_border_size = border_size;
+            }
+            if (hole_element !== content_frontside_element) {
+                // not an empty hole
+                // save dimensions first?
+                $(content_frontside_element).css({left:  0,
+                                                  top:   0,
+                                                  width:  '',
+                                                  height: ''});
+                hole_element.appendChild(content_frontside_element);
+                hole.get_contents().update_display();
+            }
+            if (hole.is_element()) {
+                hole_contents = hole.get_contents();
+                hole_contents.set_size_attributes(new_width, new_height, true);
             }
         };
         var horizontal = this.get_horizontal();
@@ -441,7 +440,7 @@ window.TOONTALK.box = (function (TT) {
                 hole_height = box_height;
             } else {
                 hole_width  = box_width;
-                hole_height = box_height/size;            
+                hole_height = box_height/size;
             }
         };
         var i, hole, hole_element, box_left, box_width, hole_width, first_hole_width, box_height, hole_height, content_frontside_element, border_class, border_size;
@@ -864,6 +863,9 @@ window.TOONTALK.box_hole =
                     return contents.is_of_type(type_name);
                 }
                 return type_name === "empty hole";
+            };
+            hole.get_box = function () {
+                return this.get_parent_of_frontside();
             };
             hole.dereference = function () {
                 if (contents) {
