@@ -788,7 +788,7 @@ window.TOONTALK.widget = (function (TT) {
         
         add_backside_widget: function (widget, is_backside) {
             // TODO: clean this up and just pass a widget_side here
-            var backside = this.get_backside();
+            var backside = this.get_backside(true);
             var widget_side = is_backside ? widget.get_backside() : widget;
             if (TT.debugging && widget === this) {
                 TT.UTILITIES.report_internal_error("Adding a widget to a list of its backside widgets!");

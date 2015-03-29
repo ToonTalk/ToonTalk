@@ -11,7 +11,7 @@
      // ability to set the nest of a bird is private to this context
      var bird_set_nest;
      // a nest copy needs to be updated when it is discovered that its bird was later copied as well
-     var update_nest, get_guid, add_nest_copy, remove_nest_copy, make_nest_fresh;
+     var update_nest, add_nest_copy, remove_nest_copy, make_nest_fresh;
 
 window.TOONTALK.bird = (function (TT) {
     "use strict";
@@ -43,7 +43,7 @@ window.TOONTALK.bird = (function (TT) {
     bird.create = function (nest, description) {
         var new_bird = Object.create(bird);
         var non_empty_listeners = [];
-        var waiting_robots      = [];
+        var waiting_widgets     = [];
         bird_set_nest = function (new_value) {
             nest = new_value;
         };
@@ -146,7 +146,7 @@ window.TOONTALK.bird = (function (TT) {
                                 // running these continuations may add to non_empty_listeners so save and reset it first
                                 current_non_empty_listeners = non_empty_listeners;
                                 non_empty_listeners = [];
-                                waiting_robots      = [];
+                                waiting_widgets     = [];
                                 current_non_empty_listeners.forEach(function (non_empty_listener) {
                                     non_empty_listener();
                                 });
@@ -353,7 +353,7 @@ window.TOONTALK.bird = (function (TT) {
             // notice that bird/nest semantics is that the nest is shared not copied
             // if a bird and its nest are copied as part of a widget (e.g. a box) 
             // then a new pair is created and linked
-            var copy, new_nest, i;
+            var copy, new_nest, i, nest_guid;
             if (!parameters) {
                 if (nest && nest.is_function_nest()) {
                     // each bird has its own function nest so can be changed independently
@@ -364,13 +364,14 @@ window.TOONTALK.bird = (function (TT) {
             } else if (parameters.just_value) {
                 copy = this.create(undefined, this.get_description());
             } else {
-                if (parameters.nests_copied && parameters.nests_copied[nest]) {
-                    new_nest = parameters.nests_copied[nest][0];
+                nest_guid = nest.get_guid();
+                if (parameters.nests_copied && parameters.nests_copied[nest_guid]) {
+                    new_nest = parameters.nests_copied[nest_guid][0];
                     // turn first copy into a 'fresh' copy
                     make_nest_fresh.call(new_nest);
                     // and make the others treat the fresh copy as their original_nest
-                    for (i = 1; i < parameters.nests_copied[nest].length; i++) {
-                        update_nest.call(parameters.nests_copied[nest][i], new_nest);
+                    for (i = 1; i < parameters.nests_copied[nest_guid].length; i++) {
+                        update_nest.call(parameters.nests_copied[nest_guid][i], new_nest);
                     }
                     copy = this.create(new_nest, this.get_description());
                 } else {
@@ -379,19 +380,19 @@ window.TOONTALK.bird = (function (TT) {
                 if (!parameters.birds_copied) {
                     parameters.birds_copied = {};
                 }
-                if (!parameters.birds_copied[nest]) {
-                    parameters.birds_copied[nest] = [];
+                if (!parameters.birds_copied[nest_guid]) {
+                    parameters.birds_copied[nest_guid] = [];
                 }
                 // add to birds of this nest copied before the nest is (if at all)
-                parameters.birds_copied[nest].push(copy);       
+                parameters.birds_copied[nest_guid].push(copy);       
             }
             return this.add_to_copy(copy, parameters);
         };
-        new_bird.run_when_non_empty = function (non_empty_listener, robot) {
-            // typically is a robot waiting for this bird to return to a box hole
-            if (waiting_robots.indexOf(robot) < 0) {
+        new_bird.run_when_non_empty = function (non_empty_listener, widget) {
+            // widget is a robot waiting for this bird to return to a box hole
+            if (waiting_widgets.indexOf(widget) < 0) {
                 non_empty_listeners.push(non_empty_listener);
-                waiting_robots.push(robot);
+                waiting_widgets.push(widget);
             }
         };
         new_bird.create_backside = function () {
@@ -583,7 +584,10 @@ window.TOONTALK.nest = (function (TT) {
     "use strict";
     var nest = Object.create(TT.widget);
     // following enables nests to invoke private methods of other nests
-    var add_copy_private_key = {}; // any unique object is fine
+    // TODO: use private keys for other things private to nests
+    // and make this not enumerable -- see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Enumerability_and_ownership_of_properties
+    // could define the following here if TT.UTILITIES is defined before TT.nest
+    var add_copy_private_key; // any unique string is fine
     // following should be updated if CSS is
     var contents_width = function (width) {
         return width *TT.nest.CONTENTS_WIDTH_FACTOR;
@@ -600,7 +604,7 @@ window.TOONTALK.nest = (function (TT) {
     nest.create = function (description, contents, guid, original_nest) { 
         var new_nest = Object.create(nest);
         var non_empty_listeners = [];
-        var waiting_robots      = [];
+        var waiting_widgets     = [];
         var nest_copies;
         if (!contents) {
             contents = [];
@@ -610,11 +614,8 @@ window.TOONTALK.nest = (function (TT) {
                 remove_nest_copy.call(original_nest, this);
             }
             original_nest = new_original_nest;
-            guid = get_guid.call(new_original_nest);
+            guid = new_original_nest.get_guid();
             add_nest_copy.call(new_original_nest, this);
-        };
-        get_guid = function () {
-            return guid;
         };
         make_nest_fresh = function () {
             if (original_nest) {
@@ -624,13 +625,22 @@ window.TOONTALK.nest = (function (TT) {
             guid = TT.UTILITIES.generate_unique_id();
         };
         add_nest_copy = function (new_copy) {
+            if (!add_copy_private_key) {
+                add_copy_private_key = TT.UTILITIES.generate_unique_id();
+            }
             this[add_copy_private_key](new_copy);
         };
         remove_nest_copy = function (old_copy) {
+            if (!add_copy_private_key) {
+                add_copy_private_key = TT.UTILITIES.generate_unique_id();
+            }
             this[add_copy_private_key](old_copy, true);
         };
         new_nest.is_nest = function () {
             return true;
+        };
+        new_nest.get_guid = function () {
+            return guid;
         };
         new_nest.matched_by = function (other) {
             if (contents.length > 0) {
@@ -640,11 +650,23 @@ window.TOONTALK.nest = (function (TT) {
                 return [[this, other]];
             }
         };
-        new_nest.run_when_non_empty = function (non_empty_listener, robot) {
-            if (waiting_robots.indexOf(robot) < 0) {
-                // robot isn't already waiting for this nest
+        new_nest.run_when_non_empty = function (non_empty_listener, widget) {
+            if (contents.length > 0) {
+                // is already non-empty so run it now
+                non_empty_listener(contents[0]);
+                return;
+            }
+            if (waiting_widgets.indexOf(widget) < 0) {
+                // widget isn't already waiting for this nest
+                // widget is typically a robot but could be a function bird
                 non_empty_listeners.push(non_empty_listener);
-                waiting_robots.push(robot);
+                waiting_widgets.push(widget);
+            }
+        };
+        new_nest.top_contents = function () {
+            // holder of a nest can do anything with it -- it is birds that need to be restricted
+            if (contents.length > 0) {
+                return contents[0];
             }
         };
         new_nest.add_to_contents = function (widget_side, event, robot, delivery_bird, ignore_copies) {
@@ -655,10 +677,10 @@ window.TOONTALK.nest = (function (TT) {
                     // running these robots may cause new waiting robots so set non_empty_listeners to [] first
                     current_non_empty_listeners = non_empty_listeners;
                     non_empty_listeners = [];
-                    waiting_robots      = [];
+                    waiting_widgets     = [];
                     current_non_empty_listeners.forEach(function (non_empty_listener) {
-                                                       non_empty_listener();
-                                                   });
+                                                            non_empty_listener(widget_side);
+                                                        });
                 }
                 widget_side.set_visible(this.visible());
             } else {
@@ -834,7 +856,7 @@ window.TOONTALK.nest = (function (TT) {
         new_nest.copy = function (parameters) {
             // notice that bird/nest semantics is that the nest is shared not copied
             // unless the nest is copied along with one of its birds
-            var contents_copy, copy, new_original_nest;
+            var contents_copy, copy, new_original_nest, new_original_nest_guid;
             if (parameters && parameters.just_value) {
                 if (contents.length > 0) {
                     return contents[0].get_widget().copy(parameters);
@@ -850,19 +872,20 @@ window.TOONTALK.nest = (function (TT) {
                 copy = TT.nest.create(this.get_description(), contents_copy, guid && TT.UTILITIES.generate_unique_id());
             } else {
                 new_original_nest = (original_nest || this);
-                if (parameters.birds_copied && parameters.birds_copied[this]) {
-                    if (parameters.nests_copied && parameters.nests_copied[new_original_nest]) {
+                if (parameters.birds_copied && parameters.birds_copied[guid]) {
+                    new_original_nest_guid = new_original_nest.get_guid();
+                    if (parameters.nests_copied && parameters.nests_copied[new_original_nest_guid]) {
                         // this nest has already been copied
                         // so make copies use this fresh copy as its original_nest
-                        copy = parameters.nests_copied[nest][0].copy();
-                        parameters.nests_copied[new_original_nest].forEach(function (nest_copy) {
+                        copy = parameters.nests_copied[new_original_nest_guid][0].copy();
+                        parameters.nests_copied[new_original_nest_guid].forEach(function (nest_copy) {
                             update_nest.call(nest_copy, copy);
                         });                    
                     } else {
                         // create a fresh copy of the nest
                         copy = TT.nest.create(this.get_description(), contents_copy, TT.UTILITIES.generate_unique_id());
                     }
-                    parameters.birds_copied[this].forEach(function (bird) {
+                    parameters.birds_copied[guid].forEach(function (bird) {
                         bird_set_nest.call(bird, copy);
                     });
                 } else {
@@ -872,10 +895,10 @@ window.TOONTALK.nest = (function (TT) {
                     parameters.nests_copied = {};
                 }
                 if (parameters.nests_copied[new_original_nest]) {
-                    parameters.nests_copied[new_original_nest].push(copy);  
+                    parameters.nests_copied[new_original_nest_guid].push(copy);  
                 } else {
                     // first of this group of nest copies to be copied
-                    parameters.nests_copied[new_original_nest] = [copy];
+                    parameters.nests_copied[new_original_nest_guid] = [copy];
                 }
             }
             return this.add_to_copy(copy, parameters);
@@ -949,7 +972,7 @@ window.TOONTALK.nest = (function (TT) {
                                         // height while bird was hatching
                                         .css({width:  '',
                                               height: ''});
-                    if (this.get_parent_of_frontside().get_widget().get_type_name() === 'top-level') {
+                    if (this.get_parent_of_frontside().get_widget().is_top_level()) {
                         // due to switch from animation of bird hatching in nest to static nest
                         // position needs adjusting
                         $(frontside_element).css({left: nest_position.left-5,
@@ -1091,6 +1114,9 @@ window.TOONTALK.nest = (function (TT) {
                 backside.rerender();
             }
         };
+        if (!add_copy_private_key) {
+            add_copy_private_key = TT.UTILITIES.generate_unique_id();
+        }
         new_nest[add_copy_private_key] = function (nest_copy, remove_copy) {
             if (!nest_copies) {
                 if (remove_copy) {
@@ -1119,6 +1145,8 @@ window.TOONTALK.nest = (function (TT) {
             }
         };
         new_nest.walk_children = function (child_action) {
+            // walk_children should be private to nests 
+            // maybe use a token instead of the string "walk_children"
             if (contents.length > 0) {
                 return child_action(contents[0]);
             };
@@ -1174,6 +1202,9 @@ window.TOONTALK.nest = (function (TT) {
             }
         }
         if (original_nest && guid) {
+            if (!add_copy_private_key) {
+                add_copy_private_key = TT.UTILITIES.generate_unique_id();
+            }
             original_nest[add_copy_private_key](new_nest);            
         }
         return new_nest;
