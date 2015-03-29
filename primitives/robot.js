@@ -437,6 +437,10 @@ window.TOONTALK.robot = (function (TT) {
             // robot dropped its frontside or backside -- so ignore this
             return;
         }
+        if (this.get_parent_of_frontside().get_widget() === source_widget) {
+            // robot dropped the backside of what it is working on -- so ignore this
+            return;
+        }
         this.current_action_name = "drop it on";
         path = TT.path.get_path_to(target_widget, this);
         if (path) {
