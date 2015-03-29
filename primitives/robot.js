@@ -489,10 +489,14 @@ window.TOONTALK.robot = (function (TT) {
         widget.last_action = this.current_action_name;
         this.current_action_name = undefined;
         if (context === widget || widget === this) {
-            // robot is vacuum up its context (and itself) or itself
+            // robot is vacuuming up its context (and itself) or itself
             // TODO: add some animation to make clearer what is happening
             this.add_to_top_level_backside(this.copy());
             this.training_finished();
+        } else {
+            // needed since removal may require this when running (since removal also applies to taking out of a container)
+            // this way the robot could restore things using the robot
+            this.add_newly_created_widget_if_new(widget);
         }
     };
     
