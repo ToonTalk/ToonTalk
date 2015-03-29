@@ -796,6 +796,14 @@ window.TOONTALK.number = (function () {
         operator_string = this.get_operator() === '+' ? '' : this.get_operator();
         return operator_string + bigrat.str(this.get_value());
     };
+
+    number.get_text = function () {
+        if (this.is_integer() || this.get_format() === 'improper_fraction') {
+            return this.toString();
+        }
+        // can't turn an infinite decimal expansion into a string so approximate it as JavaScript number
+        return bigrat.toDecimal(this.get_value()).toString();
+    };
     
     number.to_float = function () {
         return bigrat.toDecimal(this.get_value());
