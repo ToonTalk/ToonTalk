@@ -16929,5 +16929,156 @@ top level widget
     }
   ]
 }</div></div>
+<p>Toggle whether erased</p>
+<div class='toontalk-json'>
+This will be replaced by a work area containing 2 things: a box, and the backside of a box.
+top level widget
+<div style='display:none;'>{
+  "semantic": {
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "shared_widget_index": 0
+        }
+      },
+      {
+        "widget": {
+          "shared_widget_index": 0
+        },
+        "is_backside": true
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgba(245, 240, 240, 0.941176)",
+    "backside_width": 774,
+    "backside_height": 430,
+    "backside_left": 8,
+    "backside_top": 184.1875,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1,
+      "original_width": 1136,
+      "original_height": 467
+    },
+    "backside": true,
+    "drag_x_offset": 565,
+    "drag_y_offset": 71.8125
+  },
+  "version": 1,
+  "shared_widgets": [
+    {
+      "semantic": {
+        "type": "box",
+        "size": 1,
+        "contents": [
+          {
+            "semantic": {
+              "type": "number",
+              "operator": "+",
+              "numerator": "1",
+              "denominator": "1",
+              "format": "improper_fraction",
+              "erased": true
+            },
+            "view": {
+              "saved_width": 76,
+              "saved_height": 55,
+              "backside": false
+            },
+            "version": 1
+          }
+        ],
+        "horizontal": true,
+        "backside_widgets": [
+          {
+            "widget": {
+              "semantic": {
+                "type": "robot",
+                "frontside_conditions": {
+                  "semantic": {
+                    "type": "box",
+                    "size": 1,
+                    "contents": [
+                      {
+                        "semantic": {
+                          "type": "number",
+                          "operator": "+",
+                          "numerator": "1",
+                          "denominator": "1",
+                          "format": "improper_fraction",
+                          "erased": true
+                        },
+                        "view": {
+                          "backside": false
+                        },
+                        "version": 1
+                      }
+                    ],
+                    "horizontal": true
+                  },
+                  "view": {
+                    "backside": false
+                  },
+                  "version": 1
+                },
+                "body": {
+                  "type": "body",
+                  "steps": [
+                    {
+                      "type": "robot_action",
+                      "action_name": "change whether erased",
+                      "path": {
+                        "type": "path.to_entire_context",
+                        "next_path": {
+                          "type": "box_path",
+                          "index": 0
+                        }
+                      },
+                      "additional_info": {
+                        "running_watched": true
+                      }
+                    }
+                  ]
+                }
+              },
+              "view": {
+                "frontside_width": 66,
+                "frontside_height": 110,
+                "frontside_left": 483,
+                "frontside_top": 23.4375,
+                "saved_width": 66,
+                "saved_height": 110,
+                "backside": false
+              },
+              "version": 1
+            }
+          }
+        ]
+      },
+      "view": {
+        "frontside_width": 164,
+        "frontside_height": 68,
+        "frontside_left": 66.015625,
+        "frontside_top": 40.015625,
+        "backside_width": 550,
+        "backside_height": 200,
+        "backside_left": 66,
+        "backside_top": 159,
+        "backside_geometry": {
+          "x_scale": 1,
+          "y_scale": 1,
+          "original_width": 171,
+          "original_height": 39
+        },
+        "saved_width": 164,
+        "saved_height": 68,
+        "backside": false
+      },
+      "version": 1
+    }
+  ]
+}</div></div>
 </body>
 </html>
