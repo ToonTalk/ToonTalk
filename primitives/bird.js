@@ -166,6 +166,11 @@ window.TOONTALK.bird = (function (TT) {
                         if (nest_or_error.wait_for_nest_to_receive_something) {
                             // e.g. this is a function bird and it received a box with empty nests inside
                             nest_or_error.wait_for_nest_to_receive_something.run_when_non_empty(bird_return_continuation, this);
+                            if (after_delivery_continuation) {
+                                // e.g. a robot is running this and the robot shouldn't wait to run the next step
+                                after_delivery_continuation();
+                                after_delivery_continuation = undefined;
+                            }
                             return;
                         } else {
                             // is an error -- this isn't the place to deal with it
