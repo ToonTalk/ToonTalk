@@ -1167,7 +1167,7 @@ window.TOONTALK.number.function =
         }
         if (widget.is_nest()) {
             // throw empty nest so can suspend this until nest is covered
-            throw widget;
+            throw {wait_for_nest_to_receive_something: widget};
         }
         TT.UTILITIES.display_message("Birds for the " + function_name + " function can only respond to boxes with a number in the " + 
                                      TT.UTILITIES.ordinal(index) + " hole. The " + TT.UTILITIES.ordinal(index) + 
