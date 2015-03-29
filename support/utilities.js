@@ -1808,7 +1808,7 @@ window.TOONTALK.UTILITIES =
         
         create_text_area: function (value, class_name, label, title, drop_handler, type) {
             var text_area = document.createElement("textarea");
-            var label_element, container;
+            var label_element, container, new_drop_handler;
             text_area.className = class_name;
             text_area.value = value;
             text_area.title = title;
@@ -1832,7 +1832,13 @@ window.TOONTALK.UTILITIES =
             });
             // TODO: need touch version of the following
             if (drop_handler) {
-                text_area.addEventListener('drop', drop_handler);
+                new_drop_handler = function (event) {
+                    var dropped = get_dropped_widget(event);
+                    // if drag was from a resource then restore it
+                    TT.UTILITIES.restore_resource(TT.UTILITIES.get_dragee(), dropped);
+                    drop_handler(event);
+                }
+                text_area.addEventListener('drop', new_drop_handler);
             }
             $(label_element).addClass("ui-widget");
             TT.UTILITIES.use_custom_tooltip(text_area);
