@@ -60,6 +60,12 @@ window.TOONTALK.widget = (function (TT) {
                     return this.get_type_name() === type_name;
                 };
             }
+            if (!widget.dereference) {
+                widget.dereference = function () {
+                    // unlike covered nests that dereference to their top element
+                    return this;
+                };
+            }
             if (!widget.is_number) {
                 widget.is_number = return_false;
             }

@@ -663,7 +663,7 @@ window.TOONTALK.nest = (function (TT) {
                 waiting_widgets.push(widget);
             }
         };
-        new_nest.top_contents = function () {
+        new_nest.dereference = function () {
             // holder of a nest can do anything with it -- it is birds that need to be restricted
             if (contents.length > 0) {
                 return contents[0];

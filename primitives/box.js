@@ -865,6 +865,12 @@ window.TOONTALK.box_hole =
                 }
                 return type_name === "empty hole";
             };
+            hole.dereference = function () {
+                if (contents) {
+                    return contents[0].dereference();
+                }
+                return this;
+            };
             hole.get_index = function () {
                 return index;
             };

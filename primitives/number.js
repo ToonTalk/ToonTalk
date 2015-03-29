@@ -1162,17 +1162,12 @@ window.TOONTALK.number.function =
                                           TT.UTILITIES.ordinal(index) + " hole. The " + TT.UTILITIES.ordinal(index) + " hole is empty.");
             return false;
         }
-        if (widget.is_number()) {
+        if (widget.dereference().is_number()) {
             return true;
         }
         if (widget.is_nest()) {
-            // OK if covered by a number or empty (assuming a number will come later)
-            top_contents = widget.top_contents();
-            if (top_contents) {
-                return number_check(top_contents, function_name, index);
-            }
-            // return nest so can suspend this until nest is covered
-            return widget;
+            // throw empty nest so can suspend this until nest is covered
+            throw widget;
         }
         TT.UTILITIES.display_message("Birds for the " + function_name + " function can only respond to boxes with a number in the " + 
                                      TT.UTILITIES.ordinal(index) + " hole. The " + TT.UTILITIES.ordinal(index) + 
@@ -1188,14 +1183,14 @@ window.TOONTALK.number.function =
                 return zero_ary_value_function();
             }
             index = 1;
-            response =  message.get_hole_contents(index);
+            response =  message.get_hole_contents(index).dereference();
             is_number_or_nest = number_check(response, function_name, index);
             if (!is_number_or_nest) {
                 return;
             }
             index++;
             while (index < box_size) {
-                next_widget = message.get_hole_contents(index);
+                next_widget = message.get_hole_contents(index).dereference();
                 is_number_or_nest = number_check(next_widget, function_name, index);
                 if (!is_number_or_nest) {
                     return;
@@ -1217,7 +1212,7 @@ window.TOONTALK.number.function =
             args = [];
             index = 1;
             while (index < box_size) {
-                next_widget = message.get_hole_contents(index);
+                next_widget = message.get_hole_contents(index).dereference();
                 is_number_or_nest = number_check(next_widget, function_name, index);
                 if (!is_number_or_nest) {
                     return;
