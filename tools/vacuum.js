@@ -90,7 +90,7 @@ window.TOONTALK.vacuum = (function (TT) {
                         new_erased = !widget_side.get_erased();
                         widget_side.set_erased(new_erased, true);
                         if (TT.robot.in_training && event) {
-                            TT.robot.in_training.set_erased(widget_side, new_erased);
+                            TT.robot.in_training.erased_widget(widget_side, new_erased);
                         }
                     }
                 } else if (mode === 'restore') {
