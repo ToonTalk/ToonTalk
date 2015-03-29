@@ -79,6 +79,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     
     element.create = function (html, style_attributes, description, additional_classes) {
         var new_element = Object.create(element);
+        var guid = TT.UTILITIES.generate_unique_id(); // needed for copying tables
         var widget_drag_started = new_element.drag_started;
         var attribute_widgets_in_backside_table = {}; // table relating attribute_name and widget in backside table
         var original_copies                     = {}; // table relating attribute_name and all the widget copies for that attribute
@@ -91,6 +92,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         };
         new_element.get_HTML = function () {
             return html;
+        };
+        new_element.get_guid = function () {
+            return guid;
         };
         new_element.get_text = function () {
             var text = this.get_frontside_element().textContent;
@@ -480,7 +484,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             if (!parameters.elements_copied) {
                 parameters.elements_copied = {};
             }
-            parameters.elements_copied[this] = copy;
+            parameters.elements_copied[this.get_guid()] = copy;
         }
         style_attributes.forEach(function (attribute_name) {
                                      copy.set_attribute(attribute_name, this.get_attribute(attribute_name));
@@ -734,7 +738,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                         return widget_copier(parameters);
                     }
                     if (parameters.elements_copied) {
-                        copy_of_this_element_widget = parameters.elements_copied[this_element_widget];
+                        copy_of_this_element_widget = parameters.elements_copied[this_element_widget.get_guid()];
                     }
                 }
                 return this.add_to_copy((copy_of_this_element_widget || this_element_widget).create_attribute_widget(attribute_name), parameters);
