@@ -469,6 +469,7 @@ window.TOONTALK.robot_action =
             };
             new_action.toString = function (toString_info) {
                 var suffix = "";
+                var path_description;
                 if (action_name === "add a new widget to the work space") {
                     return action_name.replace("a new widget", TT.path.toString(path));
                 }
@@ -479,7 +480,11 @@ window.TOONTALK.robot_action =
                 if (action_name === 'edit' || action_name === 'drop it on the text area') {
                     suffix = " (" + additional_info.toString + ")";
                 }
-                return action_name + " " + TT.path.toString(path, toString_info) + suffix;
+                path_description = TT.path.toString(path, toString_info);
+                if (['pick up', 'edit', 'remove'].indexOf(action_name) >= 0 && path_description.indexOf("hole of the box") >= 0) {
+                    return action_name + " what is in " + path_description + suffix;
+                }
+                return action_name + " " + path_description + suffix;
             };
             new_action.get_json = function (json_history) {
                 return {type: "robot_action",
