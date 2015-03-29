@@ -1204,7 +1204,7 @@ window.TOONTALK.number.function =
     };
     var n_ary_function = function (message, operation, minimum_arity, function_name, event, robot) { 
         var compute_response = function (bird, box_size) {
-            var next_widget, index, args, response;
+            var next_widget, index, args, response, is_number_or_nest;
             if (box_size < minimum_arity+1) { // one for the bird
                 TT.UTILITIES.display_message("Birds for the " + function_name + " function can only respond to boxes with at least " + (minimum_arity+1) + " holes. Not " + box_size + " holes.");
                 return;
