@@ -511,13 +511,12 @@ window.TOONTALK.robot = (function (TT) {
         this.current_action_name = undefined;
     };
     
-    robot.erased_widget = function (widget, erased) {
+    robot.erased_widget = function (widget) {
         var path;
-        this.current_action_name = "erase";
+        this.current_action_name = "change whether erased";
         path = TT.path.get_path_to(widget, this);
         if (path) {
-            this.add_step(TT.robot_action.create(path, this.current_action_name, {erased: erased,
-                                                                                  toString: erased ? "erase" : "un-erase"}));
+            this.add_step(TT.robot_action.create(path, this.current_action_name));
         }
         // no need to update widget.last_action = this.current_action_name;
         this.current_action_name = undefined;

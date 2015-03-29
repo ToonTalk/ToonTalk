@@ -79,12 +79,12 @@ window.TOONTALK.robot_action =
              }
              return true;
          },
-         "erase": function (widget, context, top_level_context, robot, additional_info) {
+         "change whether erased": function (widget, context, top_level_context, robot, additional_info) {
              if (!widget.set_erased) {
                  TT.UTILITIES.display_message("Robot is unable to erase " + widget);
                  return;
              }
-             widget.set_erased(additional_info.erased);
+             widget.set_erased(!widget.get_erased());
              return true;
          },
          "edit": function (widget, context, top_level_context, robot, additional_info) {
@@ -389,7 +389,7 @@ window.TOONTALK.robot_action =
          "drop it on the text area":    drop_it_on_text_area_animation,
          // remove and erase have identical animation but different unwatched semantics
          "remove":                      remove_or_erase_animation,
-         "erase":               remove_or_erase_animation, 
+         "change whether erased":                       remove_or_erase_animation, 
          "edit":                        edit_animation,
          "add to the top-level backside": function (widget, context, top_level_context, robot, continuation) {
               // do nothing -- this action is only needed if unwatched
@@ -485,7 +485,7 @@ window.TOONTALK.robot_action =
                     suffix = " (" + additional_info.toString + ")";
                 }
                 path_description = TT.path.toString(path, toString_info);
-                if (['pick up', 'edit', 'remove', 'copy', 'erase'].indexOf(action_name) >= 0 && path_description.indexOf("hole of the box") >= 0) {
+                if (['pick up', 'edit', 'remove', 'copy', 'change whether erased'].indexOf(action_name) >= 0 && path_description.indexOf("hole of the box") >= 0) {
                     return action_name + " what is in " + path_description + suffix;
                 }
                 return action_name + " " + path_description + suffix;
