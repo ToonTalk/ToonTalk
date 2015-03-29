@@ -87,7 +87,7 @@ window.TOONTALK.actions =
                 });
                 return path;
             };
-            new_actions.dereference = function (index) {
+            new_actions.dereference_path = function (index) {
                 if (TT.debugging && !newly_created_widgets[index]) {
                     TT.UTILITIES.report_internal_error("Expected to find the " + TT.UTILITIES.ordinal(index) + " newly created widget.");
                 }
@@ -266,8 +266,8 @@ window.TOONTALK.newly_created_widgets_path =
     return {
         create: function (index) {
             return {
-                dereference: function (context, top_level_context, robot) {
-                    var widget = robot.get_body().dereference(index);
+                dereference_path: function (context, top_level_context, robot) {
+                    var widget = robot.get_body().dereference_path(index);
                     var container;
                     if (this.next) {
                         // there is more to the path so compute the part of the widget referenced

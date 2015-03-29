@@ -128,10 +128,10 @@ window.TOONTALK.path =
         dereference_path: function (path, context, top_level_context, robot) {
             var dereferenced;
             if (path) {
-                if (path.dereference) {
-                    dereferenced = path.dereference(context, top_level_context, robot);
-                } else if (context.dereference) {
-                    dereferenced = context.dereference(path, top_level_context, robot);
+                if (path.dereference_path) {
+                    dereferenced = path.dereference_path(context, top_level_context, robot);
+                } else if (context.dereference_path) {
+                    dereferenced = context.dereference_path(path, top_level_context, robot);
                 }
             } else {
                 // no path means entire context -- TODO: determine if this is still true
@@ -153,7 +153,7 @@ window.TOONTALK.path =
                     }
                     return new_referenced;
                 } else {
-                    new_referenced = referenced.dereference(path.next, top_level_context, robot);
+                    new_referenced = referenced.dereference_path(path.next, top_level_context, robot);
                     if (new_referenced && path.next.is_backside) {
                         return new_referenced.get_backside(true);
                     }
@@ -208,7 +208,7 @@ window.TOONTALK.path =
         to_entire_context: function () {
             // an action that applies to the entire context (i.e. what the robot is working on)
             // need to create fresh ones since if there is a sub-path they shouldn't be sharing
-            return {dereference: function (context, top_level_context, robot) {
+            return {dereference_path: function (context, top_level_context, robot) {
                         return TT.path.continue_dereferencing_path(this, context, top_level_context, robot);
                     },
                     toString: function (additional_info) {
@@ -223,7 +223,7 @@ window.TOONTALK.path =
             };
         },
         to_widget_on_nest: function () {
-           return {dereference: function (context, top_level_context, robot) {
+           return {dereference_path: function (context, top_level_context, robot) {
                         return TT.path.continue_dereferencing_path(this, context, top_level_context, robot);
                     },
                     toString: function () {
@@ -238,7 +238,7 @@ window.TOONTALK.path =
             // ignore the side information and just use the widget
             // revisit this if resources are ever backside resources
             widget = widget.get_widget(); // if widget is really the backside of the widget
-            return {dereference: function (context, top_level_context, robot) {
+            return {dereference_path: function (context, top_level_context, robot) {
                         var widget_copy = widget.copy();
                         var widget_frontside_element, widget_frontside_position, copy_frontside_element;
                         robot.add_newly_created_widget(widget_copy);
@@ -270,7 +270,7 @@ window.TOONTALK.path =
             };
         },
         get_path_to_backside_widget_of_context: function (type_name) {
-             return {dereference: function (context, top_level_context, robot) {
+             return {dereference_path: function (context, top_level_context, robot) {
                         var referenced;
                         context.backside_widgets.some(function (backside_widget_side) {
                             if (backside_widget_side.get_widget().is_of_type(type_name)) {
@@ -314,7 +314,7 @@ window.TOONTALK.path =
         top_level_backside: {
             // this can be shared by all since only used to drop on -- not to pick up
             // if pick up then needs to be a fresh copy like get_path_to_resource
-            dereference: function (context, top_level_context, robot) {
+            dereference_path: function (context, top_level_context, robot) {
                 var top_level_widget = context.ancestor_of_type('top-level');
                 if (top_level_widget) {
                     return top_level_widget;

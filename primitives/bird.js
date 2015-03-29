@@ -781,13 +781,13 @@ window.TOONTALK.nest = (function (TT) {
             }
             return removed;
         };
-        new_nest.dereference = function (path, top_level_context, robot) {
+        new_nest.dereference_path = function (path, top_level_context, robot) {
             if (contents.length === 0) {
                 // robot needs to wait until something arrives on this nest
                 return {wait_until_this_nest_receives_something: this};
             }
             if (contents) {
-                return contents[0].dereference(path, top_level_context, robot);
+                return contents[0].dereference_path(path, top_level_context, robot);
             }
             TT.UTILITIES.display_message("Robot expected to find a nest something that it could get " + TT.path.toString(path) + ". But the nest is empty.");
             return this;
@@ -829,7 +829,7 @@ window.TOONTALK.nest = (function (TT) {
             }
             // act as if the top contents was being dereferenced
             if (path_to_nest.next) {
-                return contents[0].get_widget().dereference(path_to_nest.next, top_level_context, robot);
+                return contents[0].get_widget().dereference_path(path_to_nest.next, top_level_context, robot);
             }
             return contents[0].get_widget();         
         };
