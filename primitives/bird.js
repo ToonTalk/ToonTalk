@@ -160,8 +160,19 @@ window.TOONTALK.bird = (function (TT) {
                     }
                 }.bind(this);
             var bird_return_continuation = function () {
+                    try {
+                        nest_recieving_message.add_to_contents(message_side, event, robot, this, true);
+                    } catch (nest_or_error) {
+                        if (nest_or_error.wait_for_nest_to_receive_something) {
+                            // e.g. this is a function bird and it received a box with empty nests inside
+                            nest_or_error.wait_for_nest_to_receive_something.run_when_non_empty(bird_return_continuation, this);
+                            return;
+                        } else {
+                            // is an error -- this isn't the place to deal with it
+                            throw nest_or_error;
+                        }
+                    }
                     stop_carrying_element();
-                    nest_recieving_message.add_to_contents(message_side, event, robot, this, true);
                     // return to original location
                     TT.UTILITIES.set_timeout(function () {
                             this.fly_to(bird_offset, bird_finished_continuation); 
@@ -668,6 +679,7 @@ window.TOONTALK.nest = (function (TT) {
             if (contents.length > 0) {
                 return contents[0];
             }
+            return this;
         };
         new_nest.add_to_contents = function (widget_side, event, robot, delivery_bird, ignore_copies) {
             var current_non_empty_listeners, widget_side_copy;
