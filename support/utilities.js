@@ -2277,9 +2277,7 @@ window.TOONTALK.UTILITIES =
                 if (!pending_css) {
                     pending_css = {};
                 }
-                TT.UTILITIES.add_transform_to_css((other_transforms || "") + "scale(" + x_scale + ", " + y_scale + ")", pending_css);
-                // without the following elements don't fit in boxes and dropping the widgets jumps when released
-                pending_css["transform-origin"] = "left top"; 
+                TT.UTILITIES.add_transform_to_css((other_transforms || "") + "scale(" + x_scale + ", " + y_scale + ")", pending_css, element);  
                 pending_css.width =  original_width,
                 pending_css.height = original_height;
                 $(element).css(pending_css);
@@ -2313,9 +2311,21 @@ window.TOONTALK.UTILITIES =
                     y_scale: y_scale};
         },
 
-        add_transform_to_css: function (transform, css) {
+        add_transform_to_css: function (transform, css, element) {
             if (!transform) {
                 return;
+            }
+            if (!css) {
+                css = {};
+            }
+            if (!css['transform-origin']) {
+               if ($(element).parent(".toontalk-box-hole").is("*")) {
+                    // without the following elements don't fit in boxes
+                    css["transform-origin"] = "left top";
+                } else {
+                    // default for elements not in boxes is center
+                    css["transform-origin"] = "center center";
+                }
             }
             css['-webkit-transform'] = transform;
             css['-moz-transform']    = transform;

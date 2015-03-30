@@ -147,9 +147,6 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             }
             set_first_text_node(frontside_element);
             return this.set_HTML(frontside_element.innerHTML);
-//             $(frontside_element).text(new_value);
-//             text = this.get_text().trim();
-//             return this.set_HTML(html.replace(text, new_value));
         };
         new_element.get_style_attributes = function () {
             return style_attributes;
@@ -228,15 +225,6 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 if (transform_css['transform-origin-x'] || transform_css['transform-origin-y']) {
                     pending_css['transform-origin'] = (transform_css['transform-origin-x'] || 0) + ' ' + (transform_css['transform-origin-y'] || 0);
                 }
-                if (!pending_css || !pending_css['transform-origin']) {
-//                     if (this === TT.UTILITIES.get_dragee()) {
-//                         // other origins cause drag and drop to behave strangely
-//                         child_css['transform-origin'] = "left top";
-//                     } else {
-                        // TODO: determine if the following is still needed
-                        pending_css['transform-origin'] = "center center";
-//                     }
-                }
             };
             if (pending_css.left || pending_css.top) {
                 // elements (like turtles) by default wrap -- TODO: make this configurable
@@ -262,17 +250,14 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                         height: original_height});
                 }
                 $(frontside_element).css({width: '', height: ''});
-//                 if (need_to_scale) {
-                    // don't scale if trying to figure out the original dimensions of this element
-                    TT.UTILITIES.run_when_dimensions_known(frontside_element,
-                                                           function () {
-                                                               TT.UTILITIES.scale_element(frontside_element, current_width, current_height, original_width, original_height, transform, pending_css);
-                                                               pending_css = undefined;
-                                                           });
-                    return;
-//                 }
+                TT.UTILITIES.run_when_dimensions_known(frontside_element,
+                                                       function () {
+                                                           TT.UTILITIES.scale_element(frontside_element, current_width, current_height, original_width, original_height, transform, pending_css);
+                                                           pending_css = undefined;
+                                                       });
+                return;
             } else {
-                TT.UTILITIES.add_transform_to_css(transform, pending_css);
+                TT.UTILITIES.add_transform_to_css(transform, pending_css, element);
                 $(frontside_element).css(pending_css);
             }
             pending_css = undefined;
