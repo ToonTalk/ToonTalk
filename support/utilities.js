@@ -2272,14 +2272,23 @@ window.TOONTALK.UTILITIES =
             return TT.UTILITIES.scale_element(this_element, $(other_element).width(), $(other_element).height(), original_width, original_height);  
         },
 
-        scale_element: function (element, new_width, new_height, original_width, original_height, other_transforms, pending_css) {
+        scale_element: function (element, new_width, new_height, original_width, original_height, other_transforms, pending_css, original_parent) {
             var update_css = function () {
                 if (!pending_css) {
                     pending_css = {};
                 }
-                TT.UTILITIES.add_transform_to_css((other_transforms || "") + "scale(" + x_scale + ", " + y_scale + ")", pending_css, element);  
+                TT.UTILITIES.add_transform_to_css((other_transforms || "") + "scale(" + x_scale + ", " + y_scale + ")", pending_css, original_parent);  
                 pending_css.width =  original_width,
                 pending_css.height = original_height;
+                if (pending_css["transform-origin"] === "center center") {
+                    // coordinates are no longer in terms of left top corner so adjust them
+                    if (typeof pending_css.left === 'number') {
+                        pending_css.left -= (original_width-new_width)/2;
+                    }
+                    if (typeof pending_css.left === 'number') {
+                        pending_css.top -= (original_height-new_height)/2;
+                    }
+                }
                 $(element).css(pending_css);
             };
             var x_scale, y_scale;
@@ -2311,7 +2320,7 @@ window.TOONTALK.UTILITIES =
                     y_scale: y_scale};
         },
 
-        add_transform_to_css: function (transform, css, element) {
+        add_transform_to_css: function (transform, css, parent_element) {
             if (!transform) {
                 return;
             }
@@ -2319,7 +2328,7 @@ window.TOONTALK.UTILITIES =
                 css = {};
             }
             if (!css['transform-origin']) {
-               if ($(element).parent(".toontalk-box-hole").is("*")) {
+               if (parent_element && parent_element.className.indexOf("toontalk-box-hole") >= 0) {
                     // without the following elements don't fit in boxes
                     css["transform-origin"] = "left top";
                 } else {
@@ -2335,9 +2344,14 @@ window.TOONTALK.UTILITIES =
         },
 
         run_when_dimensions_known: function (element, callback, recompute) {
-            var check_if_dimensions_known, parent;
-            if (!recompute && $(element).width()) {
+            var original_parent = element.parentElement;
+            var not_in_a_hole = function (element) {
+                return element.parentElement.className.indexOf("toontalk-box-hole") < 0;
+            };
+            var check_if_dimensions_known;
+            if (!recompute && $(element).width() && not_in_a_hole(original_parent)) {
                 // already known -- delaying it fixes problems with elements in box holes not computing the right scaling
+                // but size in a box hole is should not count
                 setTimeout(callback);
                 return;
             }
@@ -2346,10 +2360,10 @@ window.TOONTALK.UTILITIES =
                 setTimeout(function () {
                                var width = $(element).width();
                                if (width) { // } && !$(element).is(".toontalk-carried-by-bird")) {
-                                   if (element.parentElement === document.body) {
+                                   if (not_in_a_hole(element)) {
                                        callback();
-                                       if (parent) {
-                                           parent.appendChild(element);
+                                       if (original_parent) {
+                                           original_parent.appendChild(element);
                                        } else {
                                            $(element).remove();
                                        }
@@ -2373,7 +2387,6 @@ window.TOONTALK.UTILITIES =
                                           delay_if_not);
                 }); 
             }
-            parent = element.parentElement;
             $(element).addClass("toontalk-not-observable");
             document.body.appendChild(element);
             if (recompute) {
