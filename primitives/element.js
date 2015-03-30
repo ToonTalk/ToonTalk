@@ -185,12 +185,16 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         };
         new_element.apply_css = function () {
             var transform = "";
-            var frontside_element, need_to_scale, x_scale, y_scale, $container, container_width, container_height;
+            var frontside_element, x_scale, y_scale, $container, container_width, container_height;
             if (!pending_css && !transform_css) {
                 return;
             }
             frontside_element = this.get_frontside_element();
             if (!frontside_element) {
+                return;
+            }
+            if ($(frontside_element).is(".toontalk-not-observable")) {
+                // trying to figure out its original dimensions
                 return;
             }
             if (!$(frontside_element).is(":visible")) {
@@ -204,11 +208,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             if (pending_css) {
                 if (pending_css.width) {
                     current_width  = pending_css.width;
-                    need_to_scale = true;
                 }
                 if (pending_css.height) {
                     current_height = pending_css.height;
-                    need_to_scale = true;
                 }
             } else {
                 pending_css = {};
@@ -231,18 +233,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
 //                         // other origins cause drag and drop to behave strangely
 //                         child_css['transform-origin'] = "left top";
 //                     } else {
-    // TODO: determine if the following is still needed
+                        // TODO: determine if the following is still needed
                         pending_css['transform-origin'] = "center center";
 //                     }
-                }
-                if (transform) {
-                    pending_css['-webkit-transform'] = transform;
-                    pending_css['-moz-transform']    = transform;
-                    pending_css['-ms-transform']     = transform;
-                    pending_css['o-transform']       = transform;
-                    pending_css['transform']         = transform;
-                    $(frontside_element).css(pending_css);
-                    need_to_scale = true;
                 }
             };
             if (pending_css.left || pending_css.top) {
@@ -269,15 +262,17 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                         height: original_height});
                 }
                 $(frontside_element).css({width: '', height: ''});
-                if (need_to_scale && !$(frontside_element).is(".toontalk-not-observable")) {
+//                 if (need_to_scale) {
                     // don't scale if trying to figure out the original dimensions of this element
                     TT.UTILITIES.run_when_dimensions_known(frontside_element,
                                                            function () {
                                                                TT.UTILITIES.scale_element(frontside_element, current_width, current_height, original_width, original_height, transform, pending_css);
                                                                pending_css = undefined;
                                                            });
-                }
+                    return;
+//                 }
             } else {
+                TT.UTILITIES.add_transform_to_css(transform, pending_css);
                 $(frontside_element).css(pending_css);
             }
             pending_css = undefined;
@@ -413,9 +408,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                                  if (parent) {
                                                      if (parent.get_box) {
                                                          parent.get_box().rerender();
-                                                     } else {
-                                                         parent.rerender();
-                                                     }
+                                                     } // else if there is another container that constrains the dimensions of this rerender it too
                                                  }
                                              }.bind(this),
                                              recompute);

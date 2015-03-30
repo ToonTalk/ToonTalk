@@ -2277,8 +2277,8 @@ window.TOONTALK.UTILITIES =
                 if (!pending_css) {
                     pending_css = {};
                 }
-                pending_css.transform = (other_transforms || "") + "scale(" + x_scale + ", " + y_scale + ")";
-                // without the following elements don't fit in boxes and drops jump when released
+                TT.UTILITIES.add_transform_to_css((other_transforms || "") + "scale(" + x_scale + ", " + y_scale + ")", pending_css);
+                // without the following elements don't fit in boxes and dropping the widgets jumps when released
                 pending_css["transform-origin"] = "left top"; 
                 pending_css.width =  original_width,
                 pending_css.height = original_height;
@@ -2311,6 +2311,17 @@ window.TOONTALK.UTILITIES =
             update_css();
             return {x_scale: x_scale,
                     y_scale: y_scale};
+        },
+
+        add_transform_to_css: function (transform, css) {
+            if (!transform) {
+                return;
+            }
+            css['-webkit-transform'] = transform;
+            css['-moz-transform']    = transform;
+            css['-ms-transform']     = transform;
+            css['o-transform']       = transform;
+            css['transform']         = transform;
         },
 
         run_when_dimensions_known: function (element, callback, recompute) {
