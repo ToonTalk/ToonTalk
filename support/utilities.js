@@ -2395,24 +2395,25 @@ window.TOONTALK.UTILITIES =
                                        } else {
                                            $(element).remove();
                                        }
+                                        $(element).removeClass("toontalk-not-observable");
                                    } else {
                                        // try again -- probably because in the meanwhile this has been
                                        // added to some container and its dimensions aren't original
                                        TT.UTILITIES.run_when_dimensions_known(element, callback, true);
                                    }
-                                   $(element).removeClass("toontalk-not-observable");
-                                   return;
+                               } else {
+                                   setTimeout(function () {
+                                                  // still not known so wait twice as long and try again
+                                                  var widget = TT.UTILITIES.widget_of_element(element);
+                                                  if (delay_if_not < 10000) {
+                                                      // might be an anima gadget on the back of something
+                                                      // and back isn't visible in which case no point waiting very long
+                                                      // 10 seconds should be more than long enough for the DOM to be updated
+                                                      check_if_dimensions_known(delay_if_not*2);
+                                                  }
+                                              },
+                                              delay_if_not);
                                }
-                               setTimeout(function () {
-                                              // still not known so wait twice as long and try again
-                                              var widget = TT.UTILITIES.widget_of_element(element);
-                                              if (delay_if_not < 10000) {
-                                                  // might be an anima gadget on the back of something
-                                                  // and back isn't visible in which case no point waiting very long
-                                                  check_if_dimensions_known(delay_if_not*2);
-                                              }
-                                          },
-                                          delay_if_not);
                 }); 
             }
             $(element).addClass("toontalk-not-observable");
