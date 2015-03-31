@@ -16789,5 +16789,147 @@ top level widget
     }
   ]
 }</div></div>
+<p>A growing box:</p>
+<div class='toontalk-json'>
+This will be replaced by a work area containing 2 things: a box, and the backside of a box.
+top level widget
+<div style='display:none;'>{
+  "semantic": {
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "shared_widget_index": 0
+        }
+      },
+      {
+        "widget": {
+          "shared_widget_index": 0
+        },
+        "is_backside": true
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgba(245, 240, 240, 0.941176)",
+    "backside_width": 799,
+    "backside_height": 406,
+    "backside_left": 8,
+    "backside_top": 184.1875,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1,
+      "original_width": 1136,
+      "original_height": 467
+    },
+    "backside": true,
+    "drag_x_offset": 93,
+    "drag_y_offset": 240.8125
+  },
+  "version": 1,
+  "shared_widgets": [
+    {
+      "semantic": {
+        "type": "box",
+        "size": 1,
+        "contents": [
+          null
+        ],
+        "horizontal": true,
+        "backside_widgets": [
+          {
+            "widget": {
+              "semantic": {
+                "type": "robot",
+                "frontside_conditions": {
+                  "semantic": {
+                    "type": "box",
+                    "size": 2,
+                    "contents": [
+                      null,
+                      null
+                    ],
+                    "horizontal": true,
+                    "erased": true
+                  },
+                  "view": {
+                    "backside": false
+                  },
+                  "version": 1
+                },
+                "body": {
+                  "type": "body",
+                  "steps": [
+                    {
+                      "type": "robot_action",
+                      "action_name": "pick up",
+                      "path": {
+                        "type": "path.to_resource",
+                        "resource": {
+                          "type": "number",
+                          "operator": "+",
+                          "numerator": "1",
+                          "denominator": "1",
+                          "format": "improper_fraction",
+                          "is_backside": true
+                        }
+                      },
+                      "additional_info": {
+                        "running_watched": true
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "drop it on the text area",
+                      "path": {
+                        "type": "path.to_entire_context"
+                      },
+                      "additional_info": {
+                        "area_selector": ".toontalk-box-size-input",
+                        "setter": "receive_size_from_dropped",
+                        "toString": "for the box's size",
+                        "running_watched": true
+                      }
+                    }
+                  ]
+                }
+              },
+              "view": {
+                "frontside_width": 66,
+                "frontside_height": 110,
+                "frontside_left": 442.5625,
+                "frontside_top": -19.40625,
+                "saved_width": 66,
+                "saved_height": 110,
+                "backside": false
+              },
+              "version": 1
+            }
+          }
+        ]
+      },
+      "view": {
+        "frontside_width": 669,
+        "frontside_height": 68,
+        "frontside_left": 16.671875,
+        "frontside_top": 19.859375,
+        "backside_width": 550,
+        "backside_height": 200,
+        "backside_left": 157.4375,
+        "backside_top": 163.4375,
+        "backside_geometry": {
+          "x_scale": 1,
+          "y_scale": 1,
+          "original_width": 171,
+          "original_height": 39
+        },
+        "saved_width": 164,
+        "saved_height": 68,
+        "backside": false
+      },
+      "version": 1
+    }
+  ]
+}</div></div>
 </body>
 </html>
