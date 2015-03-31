@@ -73,7 +73,10 @@ window.TOONTALK.widget = (function (TT) {
                 widget.is_box = return_false;
             }
             if (!widget.is_empty_hole) {
-               widget.is_empty_hole = return_false;
+                widget.is_empty_hole = return_false;
+            }
+            if (!widget.is_hole) {
+                widget.is_hole = return_false;
             }
             if (!widget.is_scale) {
                 widget.is_scale = return_false;

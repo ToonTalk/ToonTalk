@@ -251,7 +251,10 @@ window.TOONTALK.robot_action =
             // the following removes dropped which is a small problem if Bammer is added to this since it may be too soon
             continuation();
             $(text_area).trigger('change');
-            text_area.value = target.get_size().toString();
+            // TODO: determine why the above doesn't trigger the following
+            if (target.is_box()) {
+                text_area.value = target.get_size().toString();
+            }
             thing_in_hand.remove();
             // need to render the modified element and its parent (unless that is the top level)
             parent = target.get_parent_of_frontside().get_widget();
