@@ -252,12 +252,13 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 $(frontside_element).css({width: '', height: ''});
                 TT.UTILITIES.run_when_dimensions_known(frontside_element,
                                                        function (original_parent) {
-                                                           TT.UTILITIES.scale_element(frontside_element, current_width, current_height, original_width, original_height, transform, pending_css, frontside_element.parentElement);
+                                                           TT.UTILITIES.scale_element(frontside_element, current_width, current_height, original_width, original_height, transform, pending_css, original_parent);
                                                            pending_css = undefined;
                                                        });
                 return;
             } else {
-                TT.UTILITIES.add_transform_to_css(transform, pending_css, frontside_element.parentElement);
+                // use center center for transform-origin unless in a box hole
+                TT.UTILITIES.add_transform_to_css(transform, "", pending_css, frontside_element.parentElement.className.indexOf("toontalk-box-hole") < 0);
                 $(frontside_element).css(pending_css);
             }
             pending_css = undefined;
