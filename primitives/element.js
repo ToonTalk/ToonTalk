@@ -99,6 +99,12 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         new_element.get_text = function () {
             var text = this.get_frontside_element().textContent;
             if (text === "") {
+                // might have just been created by dragging from elsewhere
+                this.update_display();
+                text = this.get_frontside_element().textContent;
+            }
+            if (text === "") {
+                // e.g. is an image
                 return this.get_HTML();
             }
             return text;
