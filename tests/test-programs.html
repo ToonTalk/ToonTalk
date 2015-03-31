@@ -12582,445 +12582,12 @@ top level widget
 }</div></div>
 <p>First turtle test. Fd 50, right 30, fd 50</p>
 <div class='toontalk-json'>
-This will be replaced by a work area containing 3 things: a robot, an element, and a box.
+This will be replaced by a work area containing 2 things: a box, and an element.
 top level widget
 <div style='display:none;'>{
   "semantic": {
     "type": "top_level",
     "backside_widgets": [
-      {
-        "widget": {
-          "semantic": {
-            "type": "robot",
-            "frontside_conditions": {
-              "semantic": {
-                "type": "element",
-                "html": {
-                  "shared_html_index": 0
-                },
-                "attributes": [
-                  "left",
-                  "top",
-                  "width",
-                  "height",
-                  "rotate"
-                ],
-                "attribute_values": [
-                  0,
-                  0,
-                  273,
-                  393,
-                  0
-                ],
-                "erased": true
-              },
-              "view": {
-                "backside": false
-              },
-              "version": 1
-            },
-            "backside_conditions": {
-              "box": {
-                "semantic": {
-                  "type": "box",
-                  "size": 2,
-                  "contents": [
-                    {
-                      "semantic": {
-                        "type": "box",
-                        "size": 2,
-                        "contents": [
-                          {
-                            "semantic": {
-                              "type": "element",
-                              "html": "%3Cspan%20style%3D%22color%3A%20rgb(255%2C%200%2C%20255)%3B%20font-family%3A%20arial%2C%20sans-serif%3B%20font-size%3A%20xx-large%3B%20font-style%3A%20normal%3B%20font-variant%3A%20normal%3B%20font-weight%3A%20normal%3B%20letter-spacing%3A%20normal%3B%20line-height%3A%20normal%3B%20orphans%3A%20auto%3B%20text-align%3A%20start%3B%20text-indent%3A%200px%3B%20text-transform%3A%20none%3B%20white-space%3A%20normal%3B%20widows%3A%20auto%3B%20word-spacing%3A%200px%3B%20-webkit-text-stroke-width%3A%200px%3B%20display%3A%20inline%20!important%3B%20float%3A%20none%3B%20background-color%3A%20rgb(238%2C%20238%2C%20238)%3B%22%3ETurn%20right%3C%2Fspan%3E",
-                              "attributes": [],
-                              "attribute_values": []
-                            },
-                            "view": {
-                              "backside": false
-                            },
-                            "version": 1
-                          },
-                          {
-                            "semantic": {
-                              "type": "number",
-                              "operator": "+",
-                              "numerator": "11",
-                              "denominator": "1",
-                              "format": "improper_fraction",
-                              "erased": true
-                            },
-                            "view": {
-                              "backside": false
-                            },
-                            "version": 1
-                          }
-                        ],
-                        "horizontal": true
-                      },
-                      "view": {
-                        "backside": false
-                      },
-                      "version": 1
-                    },
-                    {
-                      "semantic": {
-                        "type": "number",
-                        "operator": "*",
-                        "numerator": "120",
-                        "denominator": "1",
-                        "format": "improper_fraction",
-                        "erased": true
-                      },
-                      "view": {
-                        "backside": false
-                      },
-                      "version": 1
-                    }
-                  ],
-                  "horizontal": true
-                },
-                "view": {
-                  "backside": false
-                },
-                "version": 1
-              }
-            },
-            "body": {
-              "type": "body",
-              "steps": [
-                {
-                  "type": "robot_action",
-                  "action_name": "copy",
-                  "path": {
-                    "type": "path.to_backside_widget_of_context",
-                    "type_name": "box",
-                    "next_path": {
-                      "type": "box_path",
-                      "index": 0,
-                      "next": {
-                        "type": "box_path",
-                        "index": 1
-                      },
-                      "next_path": {
-                        "type": "box_path",
-                        "index": 1
-                      }
-                    }
-                  },
-                  "additional_info": {
-                    "running_watched": true
-                  }
-                },
-                {
-                  "type": "robot_action",
-                  "action_name": "pick up",
-                  "path": {
-                    "type": "newly_created_widgets_path",
-                    "index": 0,
-                    "removing_widget": true
-                  },
-                  "additional_info": {
-                    "running_watched": true
-                  }
-                },
-                {
-                  "type": "robot_action",
-                  "action_name": "drop it on",
-                  "path": {
-                    "type": "path_to_style_attribute",
-                    "attribute": "rotate",
-                    "element_widget_path": {
-                      "type": "path.to_entire_context"
-                    }
-                  },
-                  "additional_info": {
-                    "running_watched": true
-                  }
-                },
-                {
-                  "type": "robot_action",
-                  "action_name": "pick up",
-                  "path": {
-                    "type": "path.to_backside_widget_of_context",
-                    "type_name": "box",
-                    "next_path": {
-                      "type": "box_path",
-                      "index": 0,
-                      "next": {
-                        "type": "box_path",
-                        "index": 1
-                      },
-                      "next_path": {
-                        "type": "box_path",
-                        "index": 1,
-                        "removing_widget": true
-                      }
-                    }
-                  },
-                  "additional_info": {
-                    "running_watched": true
-                  }
-                },
-                {
-                  "type": "robot_action",
-                  "action_name": "drop it on",
-                  "path": {
-                    "type": "path.to_backside_widget_of_context",
-                    "type_name": "box",
-                    "next_path": {
-                      "type": "box_path",
-                      "index": 1
-                    }
-                  },
-                  "additional_info": {
-                    "running_watched": true
-                  }
-                },
-                {
-                  "type": "robot_action",
-                  "action_name": "remove",
-                  "path": {
-                    "type": "path.to_backside_widget_of_context",
-                    "type_name": "box",
-                    "next_path": {
-                      "type": "box_path",
-                      "index": 0,
-                      "removing_widget": true
-                    }
-                  },
-                  "additional_info": {
-                    "running_watched": true
-                  }
-                }
-              ]
-            }
-          },
-          "view": {
-            "frontside_width": 66,
-            "frontside_height": 110,
-            "frontside_left": 273.34375,
-            "frontside_top": -1328.84375,
-            "backside_geometry": {
-              "x_scale": 1,
-              "y_scale": 1,
-              "original_width": 550,
-              "original_height": 200
-            },
-            "saved_width": 66,
-            "saved_height": 110,
-            "backside": false
-          },
-          "version": 1
-        }
-      },
-      {
-        "widget": {
-          "semantic": {
-            "type": "element",
-            "html": {
-              "shared_html_index": 0
-            },
-            "attributes": [
-              "left",
-              "top",
-              "width",
-              "height",
-              "rotate"
-            ],
-            "attribute_values": [
-              "172.75",
-              "107.90625",
-              54,
-              78,
-              180
-            ],
-            "backside_widgets": [
-              {
-                "widget": {
-                  "semantic": {
-                    "type": "number",
-                    "operator": "+",
-                    "numerator": "1",
-                    "denominator": "1",
-                    "format": "improper_fraction"
-                  },
-                  "view": {
-                    "backside": false,
-                    "frontside_left": 6,
-                    "frontside_top": 259
-                  },
-                  "version": 1
-                }
-              },
-              {
-                "widget": {
-                  "semantic": {
-                    "type": "number",
-                    "operator": "+",
-                    "numerator": "1",
-                    "denominator": "1",
-                    "format": "improper_fraction"
-                  },
-                  "view": {
-                    "backside": false,
-                    "frontside_left": 6,
-                    "frontside_top": 259
-                  },
-                  "version": 1
-                }
-              },
-              {
-                "widget": {
-                  "semantic": {
-                    "type": "number",
-                    "operator": "+",
-                    "numerator": "1",
-                    "denominator": "1",
-                    "format": "improper_fraction"
-                  },
-                  "view": {
-                    "backside": false,
-                    "frontside_left": 6,
-                    "frontside_top": 259
-                  },
-                  "version": 1
-                }
-              },
-              {
-                "widget": {
-                  "semantic": {
-                    "type": "number",
-                    "operator": "+",
-                    "numerator": "1",
-                    "denominator": "1",
-                    "format": "improper_fraction"
-                  },
-                  "view": {
-                    "backside": false,
-                    "frontside_left": 6,
-                    "frontside_top": 259
-                  },
-                  "version": 1
-                }
-              },
-              {
-                "widget": {
-                  "semantic": {
-                    "type": "number",
-                    "operator": "+",
-                    "numerator": "1",
-                    "denominator": "1",
-                    "format": "improper_fraction"
-                  },
-                  "view": {
-                    "backside": false,
-                    "frontside_left": 6,
-                    "frontside_top": 259
-                  },
-                  "version": 1
-                }
-              },
-              {
-                "widget": {
-                  "semantic": {
-                    "type": "number",
-                    "operator": "+",
-                    "numerator": "1",
-                    "denominator": "1",
-                    "format": "improper_fraction"
-                  },
-                  "view": {
-                    "backside": false,
-                    "frontside_left": 6,
-                    "frontside_top": 259
-                  },
-                  "version": 1
-                }
-              },
-              {
-                "widget": {
-                  "shared_widget_index": 0
-                }
-              },
-              {
-                "widget": {
-                  "semantic": {
-                    "type": "box",
-                    "size": 2,
-                    "contents": [
-                      {
-                        "shared_widget_index": 1
-                      },
-                      {
-                        "semantic": {
-                          "type": "number",
-                          "operator": "+",
-                          "numerator": "-90",
-                          "denominator": "1",
-                          "format": "improper_fraction"
-                        },
-                        "view": {
-                          "backside_geometry": {
-                            "x_scale": 1,
-                            "y_scale": 1,
-                            "original_width": 550,
-                            "original_height": 200
-                          },
-                          "saved_width": 76,
-                          "saved_height": 55,
-                          "backside": false
-                        },
-                        "version": 1
-                      }
-                    ],
-                    "horizontal": true
-                  },
-                  "view": {
-                    "frontside_width": 287,
-                    "frontside_height": 78,
-                    "frontside_left": 368.5625,
-                    "frontside_top": 23.3125,
-                    "backside_geometry": {
-                      "x_scale": 1,
-                      "y_scale": 1,
-                      "original_width": 171,
-                      "original_height": 39
-                    },
-                    "saved_width": 164,
-                    "saved_height": 68,
-                    "backside": false
-                  },
-                  "version": 1
-                }
-              },
-              {
-                "widget": {
-                  "shared_widget_index": 0
-                },
-                "is_backside": true
-              }
-            ]
-          },
-          "view": {
-            "frontside_width": 273,
-            "frontside_height": 393,
-            "frontside_left": 118.75,
-            "frontside_top": 29.90625,
-            "backside_geometry": {
-              "x_scale": 1,
-              "y_scale": 1,
-              "original_width": 550,
-              "original_height": 253
-            },
-            "saved_width": 54,
-            "saved_height": 78,
-            "backside": false
-          },
-          "version": 1
-        }
-      },
       {
         "widget": {
           "semantic": {
@@ -13031,7 +12598,7 @@ top level widget
                 "semantic": {
                   "type": "bird",
                   "nest": {
-                    "shared_widget_index": 1
+                    "shared_widget_index": 0
                   }
                 },
                 "view": {
@@ -13340,8 +12907,8 @@ top level widget
           "view": {
             "frontside_width": 445,
             "frontside_height": 96,
-            "frontside_left": 66.078125,
-            "frontside_top": 225.078125,
+            "frontside_left": 31.3125,
+            "frontside_top": 42.3125,
             "backside_width": 0,
             "backside_height": 0,
             "backside_left": 0,
@@ -13358,27 +12925,248 @@ top level widget
           },
           "version": 1
         }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "element",
+            "html": {
+              "shared_html_index": 0
+            },
+            "attributes": [
+              "left",
+              "top",
+              "width",
+              "height",
+              "rotate"
+            ],
+            "attribute_values": [
+              "141.198776245117",
+              "141.823211669922",
+              54,
+              78,
+              300
+            ],
+            "backside_widgets": [
+              {
+                "widget": {
+                  "semantic": {
+                    "type": "number",
+                    "operator": "+",
+                    "numerator": "1",
+                    "denominator": "1",
+                    "format": "improper_fraction"
+                  },
+                  "view": {
+                    "backside": false,
+                    "frontside_left": 6,
+                    "frontside_top": 259
+                  },
+                  "version": 1
+                }
+              },
+              {
+                "widget": {
+                  "semantic": {
+                    "type": "number",
+                    "operator": "+",
+                    "numerator": "1",
+                    "denominator": "1",
+                    "format": "improper_fraction"
+                  },
+                  "view": {
+                    "backside": false,
+                    "frontside_left": 6,
+                    "frontside_top": 259
+                  },
+                  "version": 1
+                }
+              },
+              {
+                "widget": {
+                  "semantic": {
+                    "type": "number",
+                    "operator": "+",
+                    "numerator": "1",
+                    "denominator": "1",
+                    "format": "improper_fraction"
+                  },
+                  "view": {
+                    "backside": false,
+                    "frontside_left": 6,
+                    "frontside_top": 259
+                  },
+                  "version": 1
+                }
+              },
+              {
+                "widget": {
+                  "semantic": {
+                    "type": "number",
+                    "operator": "+",
+                    "numerator": "1",
+                    "denominator": "1",
+                    "format": "improper_fraction"
+                  },
+                  "view": {
+                    "backside": false,
+                    "frontside_left": 6,
+                    "frontside_top": 259
+                  },
+                  "version": 1
+                }
+              },
+              {
+                "widget": {
+                  "semantic": {
+                    "type": "number",
+                    "operator": "+",
+                    "numerator": "1",
+                    "denominator": "1",
+                    "format": "improper_fraction"
+                  },
+                  "view": {
+                    "backside": false,
+                    "frontside_left": 6,
+                    "frontside_top": 259
+                  },
+                  "version": 1
+                }
+              },
+              {
+                "widget": {
+                  "semantic": {
+                    "type": "number",
+                    "operator": "+",
+                    "numerator": "1",
+                    "denominator": "1",
+                    "format": "improper_fraction"
+                  },
+                  "view": {
+                    "backside": false,
+                    "frontside_left": 6,
+                    "frontside_top": 259
+                  },
+                  "version": 1
+                }
+              },
+              {
+                "widget": {
+                  "shared_widget_index": 1
+                }
+              },
+              {
+                "widget": {
+                  "semantic": {
+                    "type": "box",
+                    "size": 2,
+                    "contents": [
+                      {
+                        "shared_widget_index": 0
+                      },
+                      {
+                        "semantic": {
+                          "type": "number",
+                          "operator": "+",
+                          "numerator": "-2010",
+                          "denominator": "1",
+                          "format": "improper_fraction"
+                        },
+                        "view": {
+                          "backside_geometry": {
+                            "x_scale": 1,
+                            "y_scale": 1,
+                            "original_width": 550,
+                            "original_height": 200
+                          },
+                          "saved_width": 76,
+                          "saved_height": 55,
+                          "backside": false
+                        },
+                        "version": 1
+                      }
+                    ],
+                    "horizontal": true
+                  },
+                  "view": {
+                    "frontside_width": 287,
+                    "frontside_height": 78,
+                    "frontside_left": 368.5625,
+                    "frontside_top": 23.3125,
+                    "backside_geometry": {
+                      "x_scale": 1,
+                      "y_scale": 1,
+                      "original_width": 171,
+                      "original_height": 39
+                    },
+                    "saved_width": 164,
+                    "saved_height": 68,
+                    "backside": false
+                  },
+                  "version": 1
+                }
+              },
+              {
+                "widget": {
+                  "shared_widget_index": 1
+                },
+                "is_backside": true
+              }
+            ]
+          },
+          "view": {
+            "frontside_width": 273,
+            "frontside_height": 393,
+            "frontside_left": 230.41250610351562,
+            "frontside_top": 295.4298095703125,
+            "backside_width": 0,
+            "backside_height": 0,
+            "backside_left": 0,
+            "backside_top": 0,
+            "backside_geometry": {
+              "x_scale": 1,
+              "y_scale": 1,
+              "original_width": 550,
+              "original_height": 253
+            },
+            "saved_width": 54,
+            "saved_height": 78,
+            "backside": false
+          },
+          "version": 1
+        }
       }
     ]
   },
   "view": {
     "background_color": "rgba(245, 240, 240, 0.941176)",
-    "backside_width": 743,
-    "backside_height": 453,
+    "backside_width": 671,
+    "backside_height": 406,
     "backside_left": 8,
     "backside_top": 184.1875,
     "backside_geometry": {
       "x_scale": 1,
       "y_scale": 1,
-      "original_width": 1253,
-      "original_height": 453
+      "original_width": 1136,
+      "original_height": 467
     },
     "backside": true,
-    "drag_x_offset": 568,
-    "drag_y_offset": 144.8125
+    "drag_x_offset": 496,
+    "drag_y_offset": 284.8125
   },
   "version": 1,
   "shared_widgets": [
+    {
+      "semantic": {
+        "type": "nest",
+        "contents": [],
+        "guid": "toontalk_id_1425980655953"
+      },
+      "view": {
+        "backside": false
+      },
+      "version": 1
+    },
     {
       "semantic": {
         "type": "robot",
@@ -13405,6 +13193,10 @@ top level widget
             "erased": true
           },
           "view": {
+            "frontside_width": 100,
+            "frontside_height": 100,
+            "frontside_left": 0,
+            "frontside_top": 0,
             "backside": false
           },
           "version": 1
@@ -14264,17 +14056,6 @@ top level widget
         "frontside_top": 112.8125
       },
       "version": 1
-    },
-    {
-      "semantic": {
-        "type": "nest",
-        "contents": [],
-        "guid": "toontalk_id_1425980655953"
-      },
-      "view": {
-        "backside": false
-      },
-      "version": 1
     }
   ],
   "shared_html": [
@@ -14283,7 +14064,7 @@ top level widget
 }</div></div>
 <p>Repeatedly go in a circle</p>
 <div class='toontalk-json'>
-This will be replaced by a work area containing 3 things: a robot, an element, and a number.
+This will be replaced by a work area containing 2 things: a number, and an element.
 top level widget
 <div style='display:none;'>{
   "semantic": {
@@ -14292,225 +14073,387 @@ top level widget
       {
         "widget": {
           "semantic": {
-            "type": "robot",
-            "frontside_conditions": {
-              "semantic": {
-                "type": "element",
-                "html": {
-                  "shared_html_index": 0
-                },
-                "attributes": [
-                  "left",
-                  "top",
-                  "width",
-                  "height",
-                  "rotate"
-                ],
-                "attribute_values": [
-                  0,
-                  0,
-                  273,
-                  393,
-                  0
-                ],
-                "erased": true
-              },
-              "view": {
-                "backside": false
-              },
-              "version": 1
-            },
-            "backside_conditions": {
-              "box": {
-                "semantic": {
-                  "type": "box",
-                  "size": 2,
-                  "contents": [
-                    {
-                      "semantic": {
-                        "type": "box",
-                        "size": 2,
-                        "contents": [
-                          {
-                            "semantic": {
-                              "type": "element",
-                              "html": "%3Cspan%20style%3D%22color%3A%20rgb(255%2C%200%2C%20255)%3B%20font-family%3A%20arial%2C%20sans-serif%3B%20font-size%3A%20xx-large%3B%20font-style%3A%20normal%3B%20font-variant%3A%20normal%3B%20font-weight%3A%20normal%3B%20letter-spacing%3A%20normal%3B%20line-height%3A%20normal%3B%20orphans%3A%20auto%3B%20text-align%3A%20start%3B%20text-indent%3A%200px%3B%20text-transform%3A%20none%3B%20white-space%3A%20normal%3B%20widows%3A%20auto%3B%20word-spacing%3A%200px%3B%20-webkit-text-stroke-width%3A%200px%3B%20display%3A%20inline%20!important%3B%20float%3A%20none%3B%20background-color%3A%20rgb(238%2C%20238%2C%20238)%3B%22%3ETurn%20right%3C%2Fspan%3E",
-                              "attributes": [],
-                              "attribute_values": []
-                            },
-                            "view": {
-                              "backside": false
-                            },
-                            "version": 1
-                          },
-                          {
-                            "semantic": {
-                              "type": "number",
-                              "operator": "+",
-                              "numerator": "11",
-                              "denominator": "1",
-                              "format": "improper_fraction",
-                              "erased": true
-                            },
-                            "view": {
-                              "backside": false
-                            },
-                            "version": 1
+            "type": "number",
+            "operator": "+",
+            "numerator": "1",
+            "denominator": "1",
+            "format": "improper_fraction",
+            "backside_widgets": [
+              {
+                "widget": {
+                  "semantic": {
+                    "type": "box",
+                    "size": 3,
+                    "contents": [
+                      {
+                        "semantic": {
+                          "type": "bird",
+                          "nest": {
+                            "shared_widget_index": 0
                           }
-                        ],
-                        "horizontal": true
+                        },
+                        "view": {
+                          "saved_width": 138,
+                          "saved_height": 96,
+                          "backside": false
+                        },
+                        "version": 1
                       },
-                      "view": {
-                        "backside": false
+                      {
+                        "semantic": {
+                          "type": "box",
+                          "size": 2,
+                          "contents": [
+                            {
+                              "semantic": {
+                                "type": "element",
+                                "html": "%3Cspan%20style%3D%22color%3A%20rgb(255%2C%200%2C%20255)%3B%20font-family%3A%20arial%2C%20sans-serif%3B%20font-size%3A%20xx-large%3B%20font-style%3A%20normal%3B%20font-variant%3A%20normal%3B%20font-weight%3A%20normal%3B%20letter-spacing%3A%20normal%3B%20line-height%3A%20normal%3B%20orphans%3A%20auto%3B%20text-align%3A%20start%3B%20text-indent%3A%200px%3B%20text-transform%3A%20none%3B%20white-space%3A%20normal%3B%20widows%3A%20auto%3B%20word-spacing%3A%200px%3B%20-webkit-text-stroke-width%3A%200px%3B%20display%3A%20inline%20!important%3B%20float%3A%20none%3B%20background-color%3A%20rgb(238%2C%20238%2C%20238)%3B%22%3ETurn%20right%3C%2Fspan%3E",
+                                "attributes": [],
+                                "attribute_values": []
+                              },
+                              "view": {
+                                "backside": false
+                              },
+                              "version": 1
+                            },
+                            {
+                              "semantic": {
+                                "type": "number",
+                                "operator": "+",
+                                "numerator": "5",
+                                "denominator": "1",
+                                "format": "improper_fraction"
+                              },
+                              "view": {
+                                "backside": false
+                              },
+                              "version": 1
+                            }
+                          ],
+                          "horizontal": true,
+                          "infinite_stack": true
+                        },
+                        "view": {
+                          "backside_geometry": {
+                            "x_scale": 1,
+                            "y_scale": 1,
+                            "original_width": 550,
+                            "original_height": 200
+                          },
+                          "saved_width": 218,
+                          "saved_height": 76,
+                          "backside": false
+                        },
+                        "version": 1
                       },
-                      "version": 1
+                      {
+                        "semantic": {
+                          "type": "box",
+                          "size": 2,
+                          "contents": [
+                            {
+                              "semantic": {
+                                "type": "element",
+                                "html": "%3Cspan%20style%3D%22color%3A%20rgb(255%2C%20229%2C%20153)%3B%20font-family%3A%20arial%2C%20sans-serif%3B%20font-size%3A%20xx-large%3B%20font-style%3A%20normal%3B%20font-variant%3A%20normal%3B%20font-weight%3A%20normal%3B%20letter-spacing%3A%20normal%3B%20line-height%3A%20normal%3B%20orphans%3A%20auto%3B%20text-align%3A%20start%3B%20text-indent%3A%200px%3B%20text-transform%3A%20none%3B%20white-space%3A%20normal%3B%20widows%3A%20auto%3B%20word-spacing%3A%200px%3B%20-webkit-text-stroke-width%3A%200px%3B%20display%3A%20inline%20!important%3B%20float%3A%20none%3B%20background-color%3A%20rgb(153%2C%200%2C%200)%3B%22%3EGo%20Forward%3C%2Fspan%3E",
+                                "attributes": [],
+                                "attribute_values": []
+                              },
+                              "view": {
+                                "backside": false
+                              },
+                              "version": 1
+                            },
+                            {
+                              "semantic": {
+                                "type": "number",
+                                "operator": "+",
+                                "numerator": "5",
+                                "denominator": "1",
+                                "format": "improper_fraction"
+                              },
+                              "view": {
+                                "backside_geometry": {
+                                  "x_scale": 1,
+                                  "y_scale": 1,
+                                  "original_width": 550,
+                                  "original_height": 200
+                                },
+                                "backside": false
+                              },
+                              "version": 1
+                            }
+                          ],
+                          "horizontal": true,
+                          "infinite_stack": true
+                        },
+                        "view": {
+                          "backside_geometry": {
+                            "x_scale": 1,
+                            "y_scale": 1,
+                            "original_width": 550,
+                            "original_height": 200
+                          },
+                          "saved_width": 164,
+                          "saved_height": 67,
+                          "backside": false
+                        },
+                        "version": 1
+                      }
+                    ],
+                    "horizontal": true,
+                    "backside_widgets": [
+                      {
+                        "widget": {
+                          "semantic": {
+                            "type": "robot",
+                            "frontside_conditions": {
+                              "semantic": {
+                                "type": "box",
+                                "size": 3,
+                                "contents": [
+                                  {
+                                    "semantic": {
+                                      "type": "bird"
+                                    },
+                                    "view": {
+                                      "backside": false
+                                    },
+                                    "version": 1
+                                  },
+                                  {
+                                    "semantic": {
+                                      "type": "box",
+                                      "size": 2,
+                                      "contents": [
+                                        {
+                                          "semantic": {
+                                            "type": "element",
+                                            "html": "%3Cspan%20style%3D%22color%3A%20rgb(255%2C%200%2C%20255)%3B%20font-family%3A%20arial%2C%20sans-serif%3B%20font-size%3A%20xx-large%3B%20font-style%3A%20normal%3B%20font-variant%3A%20normal%3B%20font-weight%3A%20normal%3B%20letter-spacing%3A%20normal%3B%20line-height%3A%20normal%3B%20orphans%3A%20auto%3B%20text-align%3A%20start%3B%20text-indent%3A%200px%3B%20text-transform%3A%20none%3B%20white-space%3A%20normal%3B%20widows%3A%20auto%3B%20word-spacing%3A%200px%3B%20-webkit-text-stroke-width%3A%200px%3B%20display%3A%20inline%20!important%3B%20float%3A%20none%3B%20background-color%3A%20rgb(238%2C%20238%2C%20238)%3B%22%3ETurn%20right%3C%2Fspan%3E",
+                                            "attributes": [],
+                                            "attribute_values": []
+                                          },
+                                          "view": {
+                                            "backside": false
+                                          },
+                                          "version": 1
+                                        },
+                                        {
+                                          "semantic": {
+                                            "type": "number",
+                                            "operator": "+",
+                                            "numerator": "30",
+                                            "denominator": "1",
+                                            "format": "improper_fraction",
+                                            "erased": true
+                                          },
+                                          "view": {
+                                            "backside": false
+                                          },
+                                          "version": 1
+                                        }
+                                      ],
+                                      "horizontal": true
+                                    },
+                                    "view": {
+                                      "backside": false
+                                    },
+                                    "version": 1
+                                  },
+                                  {
+                                    "semantic": {
+                                      "type": "box",
+                                      "size": 2,
+                                      "contents": [
+                                        {
+                                          "semantic": {
+                                            "type": "element",
+                                            "html": "%3Cspan%20style%3D%22color%3A%20rgb(255%2C%20229%2C%20153)%3B%20font-family%3A%20arial%2C%20sans-serif%3B%20font-size%3A%20xx-large%3B%20font-style%3A%20normal%3B%20font-variant%3A%20normal%3B%20font-weight%3A%20normal%3B%20letter-spacing%3A%20normal%3B%20line-height%3A%20normal%3B%20orphans%3A%20auto%3B%20text-align%3A%20start%3B%20text-indent%3A%200px%3B%20text-transform%3A%20none%3B%20white-space%3A%20normal%3B%20widows%3A%20auto%3B%20word-spacing%3A%200px%3B%20-webkit-text-stroke-width%3A%200px%3B%20display%3A%20inline%20!important%3B%20float%3A%20none%3B%20background-color%3A%20rgb(153%2C%200%2C%200)%3B%22%3EGo%20Forward%3C%2Fspan%3E",
+                                            "attributes": [],
+                                            "attribute_values": []
+                                          },
+                                          "view": {
+                                            "backside": false
+                                          },
+                                          "version": 1
+                                        },
+                                        {
+                                          "semantic": {
+                                            "type": "number",
+                                            "operator": "+",
+                                            "numerator": "50",
+                                            "denominator": "1",
+                                            "format": "improper_fraction",
+                                            "erased": true
+                                          },
+                                          "view": {
+                                            "backside": false
+                                          },
+                                          "version": 1
+                                        }
+                                      ],
+                                      "horizontal": true
+                                    },
+                                    "view": {
+                                      "backside": false
+                                    },
+                                    "version": 1
+                                  }
+                                ],
+                                "horizontal": true
+                              },
+                              "view": {
+                                "backside": false
+                              },
+                              "version": 1
+                            },
+                            "body": {
+                              "type": "body",
+                              "steps": [
+                                {
+                                  "type": "robot_action",
+                                  "action_name": "pick up a copy of",
+                                  "path": {
+                                    "type": "path.to_entire_context",
+                                    "next_path": {
+                                      "type": "box_path",
+                                      "index": 2
+                                    }
+                                  },
+                                  "additional_info": {
+                                    "running_watched": true
+                                  }
+                                },
+                                {
+                                  "type": "robot_action",
+                                  "action_name": "drop it on",
+                                  "path": {
+                                    "type": "path.to_entire_context",
+                                    "next_path": {
+                                      "type": "box_path",
+                                      "index": 0
+                                    }
+                                  },
+                                  "additional_info": {
+                                    "running_watched": true
+                                  }
+                                },
+                                {
+                                  "type": "robot_action",
+                                  "action_name": "pick up a copy of",
+                                  "path": {
+                                    "type": "path.to_entire_context",
+                                    "next_path": {
+                                      "type": "box_path",
+                                      "index": 1
+                                    }
+                                  },
+                                  "additional_info": {
+                                    "running_watched": true
+                                  }
+                                },
+                                {
+                                  "type": "robot_action",
+                                  "action_name": "drop it on",
+                                  "path": {
+                                    "type": "path.to_entire_context",
+                                    "next_path": {
+                                      "type": "box_path",
+                                      "index": 0
+                                    }
+                                  },
+                                  "additional_info": {
+                                    "running_watched": true
+                                  }
+                                },
+                                {
+                                  "type": "robot_action",
+                                  "action_name": "pick up a copy of",
+                                  "path": {
+                                    "type": "path.to_entire_context",
+                                    "next_path": {
+                                      "type": "box_path",
+                                      "index": 2
+                                    }
+                                  },
+                                  "additional_info": {
+                                    "running_watched": true
+                                  }
+                                },
+                                {
+                                  "type": "robot_action",
+                                  "action_name": "drop it on",
+                                  "path": {
+                                    "type": "path.to_entire_context",
+                                    "next_path": {
+                                      "type": "box_path",
+                                      "index": 0
+                                    }
+                                  },
+                                  "additional_info": {
+                                    "running_watched": true
+                                  }
+                                }
+                              ]
+                            },
+                            "run_once": false
+                          },
+                          "view": {
+                            "frontside_width": 66,
+                            "frontside_height": 110,
+                            "frontside_left": 654.421875,
+                            "frontside_top": 65.015625,
+                            "backside_geometry": {
+                              "x_scale": 1,
+                              "y_scale": 1,
+                              "original_width": 550,
+                              "original_height": 200
+                            },
+                            "saved_width": 66,
+                            "saved_height": 110,
+                            "backside": false
+                          },
+                          "version": 1
+                        }
+                      }
+                    ]
+                  },
+                  "view": {
+                    "frontside_width": 445,
+                    "frontside_height": 96,
+                    "frontside_left": 74.609375,
+                    "frontside_top": 122.609375,
+                    "backside_width": 0,
+                    "backside_height": 0,
+                    "backside_left": 0,
+                    "backside_top": 0,
+                    "backside_geometry": {
+                      "x_scale": 1,
+                      "y_scale": 1,
+                      "original_width": 0,
+                      "original_height": 0
                     },
-                    {
-                      "semantic": {
-                        "type": "number",
-                        "operator": "*",
-                        "numerator": "120",
-                        "denominator": "1",
-                        "format": "improper_fraction",
-                        "erased": true
-                      },
-                      "view": {
-                        "backside": false
-                      },
-                      "version": 1
-                    }
-                  ],
-                  "horizontal": true
-                },
-                "view": {
-                  "backside": false
-                },
-                "version": 1
-              }
-            },
-            "body": {
-              "type": "body",
-              "steps": [
-                {
-                  "type": "robot_action",
-                  "action_name": "copy",
-                  "path": {
-                    "type": "path.to_backside_widget_of_context",
-                    "type_name": "box",
-                    "next_path": {
-                      "type": "box_path",
-                      "index": 0,
-                      "next": {
-                        "type": "box_path",
-                        "index": 1
-                      },
-                      "next_path": {
-                        "type": "box_path",
-                        "index": 1
-                      }
-                    }
+                    "saved_width": 445,
+                    "saved_height": 96,
+                    "backside": false
                   },
-                  "additional_info": {
-                    "running_watched": true
-                  }
-                },
-                {
-                  "type": "robot_action",
-                  "action_name": "pick up",
-                  "path": {
-                    "type": "newly_created_widgets_path",
-                    "index": 0,
-                    "removing_widget": true
-                  },
-                  "additional_info": {
-                    "running_watched": true
-                  }
-                },
-                {
-                  "type": "robot_action",
-                  "action_name": "drop it on",
-                  "path": {
-                    "type": "path_to_style_attribute",
-                    "attribute": "rotate",
-                    "element_widget_path": {
-                      "type": "path.to_entire_context"
-                    }
-                  },
-                  "additional_info": {
-                    "running_watched": true
-                  }
-                },
-                {
-                  "type": "robot_action",
-                  "action_name": "pick up",
-                  "path": {
-                    "type": "path.to_backside_widget_of_context",
-                    "type_name": "box",
-                    "next_path": {
-                      "type": "box_path",
-                      "index": 0,
-                      "next": {
-                        "type": "box_path",
-                        "index": 1
-                      },
-                      "next_path": {
-                        "type": "box_path",
-                        "index": 1,
-                        "removing_widget": true
-                      }
-                    }
-                  },
-                  "additional_info": {
-                    "running_watched": true
-                  }
-                },
-                {
-                  "type": "robot_action",
-                  "action_name": "drop it on",
-                  "path": {
-                    "type": "path.to_backside_widget_of_context",
-                    "type_name": "box",
-                    "next_path": {
-                      "type": "box_path",
-                      "index": 1
-                    }
-                  },
-                  "additional_info": {
-                    "running_watched": true
-                  }
-                },
-                {
-                  "type": "robot_action",
-                  "action_name": "remove",
-                  "path": {
-                    "type": "path.to_backside_widget_of_context",
-                    "type_name": "box",
-                    "next_path": {
-                      "type": "box_path",
-                      "index": 0,
-                      "removing_widget": true
-                    }
-                  },
-                  "additional_info": {
-                    "running_watched": true
-                  }
+                  "version": 1
                 }
-              ]
-            }
+              }
+            ]
           },
           "view": {
-            "frontside_width": 66,
-            "frontside_height": 110,
-            "frontside_left": 273.34375,
-            "frontside_top": -1328.84375,
+            "frontside_width": 76,
+            "frontside_height": 55,
+            "frontside_left": 24.328125,
+            "frontside_top": 19.328125,
             "backside_geometry": {
-              "x_scale": 1,
-              "y_scale": 1,
+              "x_scale": 1.1654545454545446,
+              "y_scale": 1.424999999999999,
               "original_width": 550,
               "original_height": 200
             },
-            "saved_width": 66,
-            "saved_height": 110,
+            "saved_width": 76,
+            "saved_height": 55,
             "backside": false
           },
           "version": 1
@@ -14531,11 +14474,11 @@ top level widget
               "rotate"
             ],
             "attribute_values": [
-              "97.43337059021",
-              "69.0952911376953",
+              "94.4035339355469",
+              "-61.0491333007813",
               54,
               78,
-              165
+              190
             ],
             "backside_widgets": [
               {
@@ -14658,8 +14601,8 @@ top level widget
                           "rotate"
                         ],
                         "attribute_values": [
-                          "inherit",
-                          "auto",
+                          0,
+                          0,
                           273,
                           393,
                           0
@@ -14827,7 +14770,7 @@ top level widget
                                 "semantic": {
                                   "type": "nest",
                                   "contents": [],
-                                  "guid": "toontalk_id_1426243259673"
+                                  "guid": "toontalk_id_1426243259674"
                                 },
                                 "view": {
                                   "saved_width": 116,
@@ -15536,7 +15479,7 @@ top level widget
                         "semantic": {
                           "type": "number",
                           "operator": "+",
-                          "numerator": "-13035",
+                          "numerator": "-13060",
                           "denominator": "1",
                           "format": "improper_fraction"
                         },
@@ -15579,8 +15522,8 @@ top level widget
           "view": {
             "frontside_width": 273,
             "frontside_height": 393,
-            "frontside_left": 25.073997497558594,
-            "frontside_top": -6.2484588623046875,
+            "frontside_left": 197.52853393554688,
+            "frontside_top": 92.35711669921875,
             "backside_width": 0,
             "backside_height": 0,
             "backside_left": 0,
@@ -15595,419 +15538,24 @@ top level widget
           },
           "version": 1
         }
-      },
-      {
-        "widget": {
-          "semantic": {
-            "type": "number",
-            "operator": "+",
-            "numerator": "1",
-            "denominator": "1",
-            "format": "improper_fraction",
-            "backside_widgets": [
-              {
-                "widget": {
-                  "semantic": {
-                    "type": "box",
-                    "size": 3,
-                    "contents": [
-                      {
-                        "semantic": {
-                          "type": "bird",
-                          "nest": {
-                            "shared_widget_index": 0
-                          }
-                        },
-                        "view": {
-                          "saved_width": 138,
-                          "saved_height": 96,
-                          "backside": false
-                        },
-                        "version": 1
-                      },
-                      {
-                        "semantic": {
-                          "type": "box",
-                          "size": 2,
-                          "contents": [
-                            {
-                              "semantic": {
-                                "type": "element",
-                                "html": "%3Cspan%20style%3D%22color%3A%20rgb(255%2C%200%2C%20255)%3B%20font-family%3A%20arial%2C%20sans-serif%3B%20font-size%3A%20xx-large%3B%20font-style%3A%20normal%3B%20font-variant%3A%20normal%3B%20font-weight%3A%20normal%3B%20letter-spacing%3A%20normal%3B%20line-height%3A%20normal%3B%20orphans%3A%20auto%3B%20text-align%3A%20start%3B%20text-indent%3A%200px%3B%20text-transform%3A%20none%3B%20white-space%3A%20normal%3B%20widows%3A%20auto%3B%20word-spacing%3A%200px%3B%20-webkit-text-stroke-width%3A%200px%3B%20display%3A%20inline%20!important%3B%20float%3A%20none%3B%20background-color%3A%20rgb(238%2C%20238%2C%20238)%3B%22%3ETurn%20right%3C%2Fspan%3E",
-                                "attributes": [],
-                                "attribute_values": []
-                              },
-                              "view": {
-                                "backside": false
-                              },
-                              "version": 1
-                            },
-                            {
-                              "semantic": {
-                                "type": "number",
-                                "operator": "+",
-                                "numerator": "1",
-                                "denominator": "1",
-                                "format": "improper_fraction"
-                              },
-                              "view": {
-                                "backside_geometry": {
-                                  "x_scale": 1,
-                                  "y_scale": 1,
-                                  "original_width": 550,
-                                  "original_height": 200
-                                },
-                                "backside": false
-                              },
-                              "version": 1
-                            }
-                          ],
-                          "horizontal": true,
-                          "infinite_stack": true
-                        },
-                        "view": {
-                          "backside_geometry": {
-                            "x_scale": 1,
-                            "y_scale": 1,
-                            "original_width": 550,
-                            "original_height": 200
-                          },
-                          "saved_width": 218,
-                          "saved_height": 76,
-                          "backside": false
-                        },
-                        "version": 1
-                      },
-                      {
-                        "semantic": {
-                          "type": "box",
-                          "size": 2,
-                          "contents": [
-                            {
-                              "semantic": {
-                                "type": "element",
-                                "html": "%3Cspan%20style%3D%22color%3A%20rgb(255%2C%20229%2C%20153)%3B%20font-family%3A%20arial%2C%20sans-serif%3B%20font-size%3A%20xx-large%3B%20font-style%3A%20normal%3B%20font-variant%3A%20normal%3B%20font-weight%3A%20normal%3B%20letter-spacing%3A%20normal%3B%20line-height%3A%20normal%3B%20orphans%3A%20auto%3B%20text-align%3A%20start%3B%20text-indent%3A%200px%3B%20text-transform%3A%20none%3B%20white-space%3A%20normal%3B%20widows%3A%20auto%3B%20word-spacing%3A%200px%3B%20-webkit-text-stroke-width%3A%200px%3B%20display%3A%20inline%20!important%3B%20float%3A%20none%3B%20background-color%3A%20rgb(153%2C%200%2C%200)%3B%22%3EGo%20Forward%3C%2Fspan%3E",
-                                "attributes": [],
-                                "attribute_values": []
-                              },
-                              "view": {
-                                "backside": false
-                              },
-                              "version": 1
-                            },
-                            {
-                              "semantic": {
-                                "type": "number",
-                                "operator": "+",
-                                "numerator": "5",
-                                "denominator": "1",
-                                "format": "improper_fraction"
-                              },
-                              "view": {
-                                "backside_geometry": {
-                                  "x_scale": 1,
-                                  "y_scale": 1,
-                                  "original_width": 550,
-                                  "original_height": 200
-                                },
-                                "backside": false
-                              },
-                              "version": 1
-                            }
-                          ],
-                          "horizontal": true,
-                          "infinite_stack": true
-                        },
-                        "view": {
-                          "backside_geometry": {
-                            "x_scale": 1,
-                            "y_scale": 1,
-                            "original_width": 550,
-                            "original_height": 200
-                          },
-                          "saved_width": 164,
-                          "saved_height": 67,
-                          "backside": false
-                        },
-                        "version": 1
-                      }
-                    ],
-                    "horizontal": true,
-                    "backside_widgets": [
-                      {
-                        "widget": {
-                          "semantic": {
-                            "type": "robot",
-                            "frontside_conditions": {
-                              "semantic": {
-                                "type": "box",
-                                "size": 3,
-                                "contents": [
-                                  {
-                                    "semantic": {
-                                      "type": "bird"
-                                    },
-                                    "view": {
-                                      "backside": false
-                                    },
-                                    "version": 1
-                                  },
-                                  {
-                                    "semantic": {
-                                      "type": "box",
-                                      "size": 2,
-                                      "contents": [
-                                        {
-                                          "semantic": {
-                                            "type": "element",
-                                            "html": "%3Cspan%20style%3D%22color%3A%20rgb(255%2C%200%2C%20255)%3B%20font-family%3A%20arial%2C%20sans-serif%3B%20font-size%3A%20xx-large%3B%20font-style%3A%20normal%3B%20font-variant%3A%20normal%3B%20font-weight%3A%20normal%3B%20letter-spacing%3A%20normal%3B%20line-height%3A%20normal%3B%20orphans%3A%20auto%3B%20text-align%3A%20start%3B%20text-indent%3A%200px%3B%20text-transform%3A%20none%3B%20white-space%3A%20normal%3B%20widows%3A%20auto%3B%20word-spacing%3A%200px%3B%20-webkit-text-stroke-width%3A%200px%3B%20display%3A%20inline%20!important%3B%20float%3A%20none%3B%20background-color%3A%20rgb(238%2C%20238%2C%20238)%3B%22%3ETurn%20right%3C%2Fspan%3E",
-                                            "attributes": [],
-                                            "attribute_values": []
-                                          },
-                                          "view": {
-                                            "backside": false
-                                          },
-                                          "version": 1
-                                        },
-                                        {
-                                          "semantic": {
-                                            "type": "number",
-                                            "operator": "+",
-                                            "numerator": "30",
-                                            "denominator": "1",
-                                            "format": "improper_fraction",
-                                            "erased": true
-                                          },
-                                          "view": {
-                                            "backside": false
-                                          },
-                                          "version": 1
-                                        }
-                                      ],
-                                      "horizontal": true
-                                    },
-                                    "view": {
-                                      "backside": false
-                                    },
-                                    "version": 1
-                                  },
-                                  {
-                                    "semantic": {
-                                      "type": "box",
-                                      "size": 2,
-                                      "contents": [
-                                        {
-                                          "semantic": {
-                                            "type": "element",
-                                            "html": "%3Cspan%20style%3D%22color%3A%20rgb(255%2C%20229%2C%20153)%3B%20font-family%3A%20arial%2C%20sans-serif%3B%20font-size%3A%20xx-large%3B%20font-style%3A%20normal%3B%20font-variant%3A%20normal%3B%20font-weight%3A%20normal%3B%20letter-spacing%3A%20normal%3B%20line-height%3A%20normal%3B%20orphans%3A%20auto%3B%20text-align%3A%20start%3B%20text-indent%3A%200px%3B%20text-transform%3A%20none%3B%20white-space%3A%20normal%3B%20widows%3A%20auto%3B%20word-spacing%3A%200px%3B%20-webkit-text-stroke-width%3A%200px%3B%20display%3A%20inline%20!important%3B%20float%3A%20none%3B%20background-color%3A%20rgb(153%2C%200%2C%200)%3B%22%3EGo%20Forward%3C%2Fspan%3E",
-                                            "attributes": [],
-                                            "attribute_values": []
-                                          },
-                                          "view": {
-                                            "backside": false
-                                          },
-                                          "version": 1
-                                        },
-                                        {
-                                          "semantic": {
-                                            "type": "number",
-                                            "operator": "+",
-                                            "numerator": "50",
-                                            "denominator": "1",
-                                            "format": "improper_fraction",
-                                            "erased": true
-                                          },
-                                          "view": {
-                                            "backside": false
-                                          },
-                                          "version": 1
-                                        }
-                                      ],
-                                      "horizontal": true
-                                    },
-                                    "view": {
-                                      "backside": false
-                                    },
-                                    "version": 1
-                                  }
-                                ],
-                                "horizontal": true
-                              },
-                              "view": {
-                                "backside": false
-                              },
-                              "version": 1
-                            },
-                            "body": {
-                              "type": "body",
-                              "steps": [
-                                {
-                                  "type": "robot_action",
-                                  "action_name": "pick up a copy of",
-                                  "path": {
-                                    "type": "path.to_entire_context",
-                                    "next_path": {
-                                      "type": "box_path",
-                                      "index": 2
-                                    }
-                                  },
-                                  "additional_info": {
-                                    "running_watched": true
-                                  }
-                                },
-                                {
-                                  "type": "robot_action",
-                                  "action_name": "drop it on",
-                                  "path": {
-                                    "type": "path.to_entire_context",
-                                    "next_path": {
-                                      "type": "box_path",
-                                      "index": 0
-                                    }
-                                  },
-                                  "additional_info": {
-                                    "running_watched": true
-                                  }
-                                },
-                                {
-                                  "type": "robot_action",
-                                  "action_name": "pick up a copy of",
-                                  "path": {
-                                    "type": "path.to_entire_context",
-                                    "next_path": {
-                                      "type": "box_path",
-                                      "index": 1
-                                    }
-                                  },
-                                  "additional_info": {
-                                    "running_watched": true
-                                  }
-                                },
-                                {
-                                  "type": "robot_action",
-                                  "action_name": "drop it on",
-                                  "path": {
-                                    "type": "path.to_entire_context",
-                                    "next_path": {
-                                      "type": "box_path",
-                                      "index": 0
-                                    }
-                                  },
-                                  "additional_info": {
-                                    "running_watched": true
-                                  }
-                                },
-                                {
-                                  "type": "robot_action",
-                                  "action_name": "pick up a copy of",
-                                  "path": {
-                                    "type": "path.to_entire_context",
-                                    "next_path": {
-                                      "type": "box_path",
-                                      "index": 2
-                                    }
-                                  },
-                                  "additional_info": {
-                                    "running_watched": true
-                                  }
-                                },
-                                {
-                                  "type": "robot_action",
-                                  "action_name": "drop it on",
-                                  "path": {
-                                    "type": "path.to_entire_context",
-                                    "next_path": {
-                                      "type": "box_path",
-                                      "index": 0
-                                    }
-                                  },
-                                  "additional_info": {
-                                    "running_watched": true
-                                  }
-                                }
-                              ]
-                            },
-                            "run_once": false
-                          },
-                          "view": {
-                            "frontside_width": 66,
-                            "frontside_height": 110,
-                            "frontside_left": 654.421875,
-                            "frontside_top": 65.015625,
-                            "backside_geometry": {
-                              "x_scale": 1,
-                              "y_scale": 1,
-                              "original_width": 550,
-                              "original_height": 200
-                            },
-                            "saved_width": 66,
-                            "saved_height": 110,
-                            "backside": false
-                          },
-                          "version": 1
-                        }
-                      }
-                    ]
-                  },
-                  "view": {
-                    "frontside_width": 445,
-                    "frontside_height": 96,
-                    "frontside_left": 53.65625,
-                    "frontside_top": 83.84375,
-                    "backside_width": 0,
-                    "backside_height": 0,
-                    "backside_left": 0,
-                    "backside_top": 0,
-                    "backside_geometry": {
-                      "x_scale": 1,
-                      "y_scale": 1,
-                      "original_width": 0,
-                      "original_height": 0
-                    },
-                    "saved_width": 445,
-                    "saved_height": 96,
-                    "backside": false
-                  },
-                  "version": 1
-                }
-              }
-            ]
-          },
-          "view": {
-            "frontside_width": 76,
-            "frontside_height": 55,
-            "frontside_left": 220.3125,
-            "frontside_top": 17.3125,
-            "backside_geometry": {
-              "x_scale": 1,
-              "y_scale": 1,
-              "original_width": 550,
-              "original_height": 200
-            },
-            "saved_width": 76,
-            "saved_height": 55,
-            "backside": false
-          },
-          "version": 1
-        }
       }
     ]
   },
   "view": {
     "background_color": "rgba(245, 240, 240, 0.941176)",
-    "backside_width": 668,
-    "backside_height": 291,
+    "backside_width": 671,
+    "backside_height": 406,
     "backside_left": 8,
     "backside_top": 184.1875,
     "backside_geometry": {
       "x_scale": 1,
       "y_scale": 1,
-      "original_width": 1159,
-      "original_height": 453
+      "original_width": 1136,
+      "original_height": 467
     },
     "backside": true,
-    "drag_x_offset": 480,
-    "drag_y_offset": 183.8125
+    "drag_x_offset": 356,
+    "drag_y_offset": 280.8125
   },
   "version": 1,
   "shared_widgets": [
@@ -16015,7 +15563,7 @@ top level widget
       "semantic": {
         "type": "nest",
         "contents": [],
-        "guid": "toontalk_id_1425980655953"
+        "guid": "toontalk_id_1425980655954"
       },
       "view": {
         "backside": false
