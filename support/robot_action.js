@@ -250,11 +250,7 @@ window.TOONTALK.robot_action =
             $thing_in_hand_frontside_element.removeClass("toontalk-held-by-robot");
             // the following removes dropped which is a small problem if Bammer is added to this since it may be too soon
             continuation();
-            $(text_area).trigger('change');
-            // TODO: determine why the above doesn't trigger the following
-            if (target.is_box()) {
-                text_area.value = target.get_size().toString();
-            }
+//             $(text_area).trigger('change');
             thing_in_hand.remove();
             // need to render the modified element and its parent (unless that is the top level)
             parent = target.get_parent_of_frontside().get_widget();

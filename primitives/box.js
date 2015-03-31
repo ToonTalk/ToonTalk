@@ -456,7 +456,7 @@ window.TOONTALK.box = (function (TT) {
                 hole_height = box_height/size;
             }
         };
-        var i, hole, hole_element, box_left, box_width, hole_width, first_hole_width, box_height, hole_height, content_frontside_element, border_class, border_size;
+        var i, hole, hole_element, box_left, box_width, hole_width, first_hole_width, box_height, hole_height, content_frontside_element, border_class, border_size, backside;
         $(frontside_element).addClass("toontalk-box");
         $(frontside_element).removeClass("toontalk-box-eighth-size-border toontalk-box-quarter-size-border toontalk-box-half-size-border toontalk-box-full-size-border");
         frontside_element.title = this.get_title();
@@ -493,6 +493,10 @@ window.TOONTALK.box = (function (TT) {
         frontside_element.toontalk_border_size = border_size;
         // delay it until browser has rendered current elements
         TT.UTILITIES.set_timeout(renderer);
+        backside = this.get_backside();
+        if (backside) {
+            backside.rerender();
+        }
     };
     
     box.update_hole_display = function (index, new_content) {
