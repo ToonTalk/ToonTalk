@@ -573,6 +573,15 @@ window.TOONTALK.widget = (function (TT) {
                     return true;
                 };
             }
+            widget.receive_description_from_dropped = function(dropped) {
+                var new_text;
+                if (dropped.get_text) {
+                    new_text = dropped.get_text();
+                    if (this.set_description(new_text, true)) {
+                        return this.get_description();
+                    }    
+                };
+            }
         },
 
         has_listeners: function (widget) {

@@ -903,7 +903,7 @@ window.TOONTALK.robot_backside =
             var $next_robot_area = TT.UTILITIES.create_drop_area(window.TOONTALK.robot.empty_drop_area_instructions);
             var next_robot = robot.get_next_robot();
             var advanced_settings_button = TT.backside.create_advanced_settings_button(backside, robot);
-            var generic_backside_update = backside.update_display;
+            var generic_backside_update = backside.update_display.bind(backside);
             $next_robot_area.data("drop_area_owner", robot);
             $(run_once_input.button).click(function (event) {
                 var keep_running = run_once_input.button.checked;

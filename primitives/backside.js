@@ -85,7 +85,7 @@ window.TOONTALK.backside =
                                              }
                                              stop_sign_element.title = title;
                                          };
-            var close_title, close_handler;
+            var close_title, close_handler, description_text_area;
             if (TT.TRANSLATION_ENABLED) {
                 help_URL = TT.UTILITIES.add_URL_parameter(help_URL, "translate", "1");
             }
@@ -208,6 +208,12 @@ window.TOONTALK.backside =
             };
             backside.get_frontside_element = function () {
                 return widget.get_frontside_element();
+            };
+            backside.get_description_text_area = function () {
+                return description_text_area;
+            };
+            backside.set_description_text_area = function (new_value) {
+                description_text_area = new_value;
             };
             if (!widget.removed_from_container) {
                 widget.removed_from_container = function (other, backside_removed, event, index, ignore_if_not_on_backside) {
@@ -424,6 +430,14 @@ window.TOONTALK.backside =
             });
             backside.update_display = function () {
                 // default -- some backsides do more and call this
+                var description_text_area = this.get_description_text_area();
+                var description;
+                if (description_text_area) {
+                    description = this.get_widget().get_description();
+                    if (description) {
+                        description_text_area.button.value = description;
+                    }
+                }
                 backside.display_updated();
             };
             backside.display_updated = function () {
@@ -511,10 +525,20 @@ window.TOONTALK.backside =
             var widget = this.get_widget();
             var check_box = this.create_infinite_stack_check_box(this, widget);
             var type_name = widget.get_type_name();
+            var drop_handler = 
+                function (event) {
+                    var dropped = TT.UTILITIES.input_area_drop_handler(event, widget.receive_description_from_dropped.bind(widget));
+                    if (dropped && TT.robot.in_training) {
+                        TT.robot.in_training.dropped_on_text_area(dropped, widget, {area_selector: ".toontalk-description-input",
+                                                                                    setter: 'receive_description_from_dropped',
+                                                                                    toString: "for a widget's description"});
+                    }
+                };
             var description_text_area = TT.UTILITIES.create_text_area(widget.get_description(), 
                                                                       "toontalk-description-input", 
                                                                       "This&nbsp;" + type_name + "&nbsp;",
-                                                                      "Type here to provide additional information about this " + type_name + ".");
+                                                                      "Type here to provide additional information about this " + type_name + ".",
+                                                                      drop_handler);
             var $make_sensor_nest_button    = $("<button>Make a sensor nest</button>")  .button();
             var $make_function_bird_button  = $("<button>Make a function bird</button>").button();
             var description_change = function () {
@@ -555,6 +579,7 @@ window.TOONTALK.backside =
             $(description_text_area.button).val(widget.get_description());
             description_text_area.button.addEventListener('change',   description_change);
             description_text_area.button.addEventListener('mouseout', description_change);
+            this.set_description_text_area(description_text_area);
             $make_sensor_nest_button
                 .addClass("toontalk-make-sensor_nest_button")
                 .click(function (event) {

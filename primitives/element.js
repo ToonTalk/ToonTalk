@@ -1220,7 +1220,7 @@ window.TOONTALK.element_backside =
             // full HTML editing but that is both insecure (should cleanse the HTML) and confusing to non-experts
             var edit_HTML = TT.UTILITIES.get_current_url_boolean_parameter("elementHTML", false);
             var getter = edit_HTML ? "get_HTML" : "get_text";
-            var generic_backside_update = backside.update_display;
+            var generic_backside_update = backside.update_display.bind(backside);
             var text, html_input, update_html, drop_handler;
             // need to ensure that it 'knows' its textContent, etc.
             element_widget.initialise_element();

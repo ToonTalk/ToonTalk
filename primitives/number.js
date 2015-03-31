@@ -1052,7 +1052,7 @@ window.TOONTALK.number_backside =
             var format_set = $(TT.UTILITIES.create_horizontal_table(decimal_format.container, mixed_number_format.container, improper_format.container, scientific_format.container)).buttonset().get(0);
             var operator_set = $(TT.UTILITIES.create_horizontal_table(plus.container, minus.container, multiply.container, divide.container, set.container)).buttonset().get(0);
             var advanced_settings_button = TT.backside.create_advanced_settings_button(backside, number);
-            var generic_backside_update = backside.update_display;
+            var generic_backside_update = backside.update_display.bind(backside);
             slash.innerHTML = "/";
             $(slash).addClass("ui-widget"); // to look nice
             backside_element.appendChild(number_set);
