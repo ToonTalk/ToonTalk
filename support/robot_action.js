@@ -58,7 +58,7 @@ window.TOONTALK.robot_action =
                 TT.UTILITIES.report_internal_error("The robot that '" + robot.toString() + "' is executing drop_on but doesn't know where to drop what its holding");
              }   
          },
-         "drop it on the text area": function (target, context, top_level_context, robot, additional_info) {
+         "drop it on the text area of": function (target, context, top_level_context, robot, additional_info) {
              var thing_in_hand, thing_in_hand_frontside_element, thing_in_hand_position;
              if (target) {
                  thing_in_hand = robot.get_thing_in_hand();
@@ -389,7 +389,7 @@ window.TOONTALK.robot_action =
          "pick up":                     pick_up_animation,
          "pick up a copy of":           pick_up_a_copy_animation,
          "drop it on":                  drop_it_on_animation,
-         "drop it on the text area":    drop_it_on_text_area_animation,
+         "drop it on the text area of":    drop_it_on_text_area_animation,
          // remove and erase have identical animation but different unwatched semantics
          "remove":                      remove_or_erase_animation,
          "change whether erased":                       remove_or_erase_animation, 
@@ -484,11 +484,11 @@ window.TOONTALK.robot_action =
                     // is used for internal bookkeepping shouldn't be user visible
                     return "";
                 }
-                if (action_name === 'edit' || action_name === 'drop it on the text area') {
+                if (action_name === 'edit' || action_name === 'drop it on the text area of') {
                     suffix = " (" + additional_info.toString + ")";
                 }
                 path_description = TT.path.toString(path, toString_info);
-                if (['pick up', 'edit', 'remove', 'copy', 'change whether erased', 'pick up a copy of'].indexOf(action_name) >= 0 && 
+                if (['pick up', 'edit', 'remove', 'copy', 'change whether erased', 'pick up a copy of', 'drop it on the text area of'].indexOf(action_name) >= 0 && 
                     path_description.indexOf("hole of the box") >= 0) {
                     return action_name + " what is in " + path_description + suffix;
                 }

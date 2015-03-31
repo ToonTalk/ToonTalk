@@ -453,7 +453,7 @@ window.TOONTALK.robot = (function (TT) {
 
     robot.dropped_on_text_area = function (source_widget, target_widget, details) {
         var path;
-        this.current_action_name = "drop it on the text area";
+        this.current_action_name = "drop it on the text area of";
         path = TT.path.get_path_to(target_widget, this);
         if (path) {
             this.add_step(TT.robot_action.create(path, this.current_action_name, details));
