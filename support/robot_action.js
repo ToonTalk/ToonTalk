@@ -236,7 +236,7 @@ window.TOONTALK.robot_action =
     };
     var drop_it_on_text_area_animation = function (target, context, top_level_context, robot, continuation, additional_info) {
         var thing_in_hand = robot.get_thing_in_hand();
-        var $thing_in_hand_frontside_element, adjust_dropped_location_continuation, find_text_area;
+        var $thing_in_hand_frontside_element, adjust_dropped_location_continuation, find_text_area, text_area;
         if (!thing_in_hand) {
             TT.UTILITIES.report_internal_error("Expected the robot to be holding something.");
             console.log("The robot is " + robot);
@@ -250,9 +250,11 @@ window.TOONTALK.robot_action =
             $thing_in_hand_frontside_element.removeClass("toontalk-held-by-robot");
             // the following removes dropped which is a small problem if Bammer is added to this since it may be too soon
             continuation();
+            $(text_area).trigger('change');
+            text_area.value = target.get_size().toString();
             thing_in_hand.remove();
             // need to render the modified element and its parent (unless that is the top level)
-            parent = target.get_parent_of_frontside();
+            parent = target.get_parent_of_frontside().get_widget();
             if (parent.is_hole()) {
                 parent = parent.get_parent_of_frontside();
             }
@@ -283,10 +285,12 @@ window.TOONTALK.robot_action =
                                          // since the robot opened it needs to close when finished
                                          $(target.get_backside_element()).remove();
                                      };
-                                     robot.animate_to_element(find_text_area(), new_continuation, .25, 0, 0);
+                                     text_area = find_text_area();
+                                     robot.animate_to_element(text_area, new_continuation, .25, 0, 0);
                                  });
         } else {
-            robot.animate_to_element(find_text_area(), adjust_dropped_location_continuation, .25, 0, 0);
+            text_area = find_text_area();
+            robot.animate_to_element(text_area, adjust_dropped_location_continuation, .25, 0, 0);
         }
     };
     var find_backside_element = function (widget, class_name_selector) {

@@ -335,7 +335,17 @@ window.TOONTALK.UTILITIES =
             return;
         }
         handle_drop($target, $source, source_widget, target_widget, target_position, event, json_object, drag_x_offset, drag_y_offset, source_is_backside);
-
+    };
+    var add_drop_handler_to_input_element = function (input_element, drop_handler) {
+        // TODO: need touch version of the following
+        var new_drop_handler = 
+            function (event) {
+                var dropped = get_dropped_widget(event);
+                // if drag was from a resource then restore it
+                TT.UTILITIES.restore_resource(TT.UTILITIES.get_dragee(), dropped);
+                drop_handler(event);
+            }
+            input_element.addEventListener('drop', new_drop_handler);
     };
     var $toontalk_side_underneath = function (element) {
         var $target = $(element).closest(".toontalk-side");
@@ -1431,7 +1441,7 @@ window.TOONTALK.UTILITIES =
         
         restore_resource: function ($dropped, dropped_widget) {
             var dropped_copy, dropped_element_copy;
-            if ($dropped.is(".toontalk-top-level-resource")) {
+            if ($dropped && $dropped.is(".toontalk-top-level-resource")) {
                 // restore original
                 dropped_copy = dropped_widget.copy({fresh_copy: true}); // nest copies should be fresh - not linked
                 dropped_element_copy = dropped_copy.get_frontside_element();
@@ -1770,7 +1780,7 @@ window.TOONTALK.UTILITIES =
         // and because of a comment about disability software
         // see http://stackoverflow.com/questions/774054/should-i-put-input-tag-inside-label-tag
         
-        create_text_input: function (value, class_name, label, title, documentation_url, type) {
+        create_text_input: function (value, class_name, label, title, documentation_url, type, drop_handler) {
             var text_input = document.createElement("input");
             var label_element, container, documentation_anchor;
             text_input.type = "text";
@@ -1801,6 +1811,9 @@ window.TOONTALK.UTILITIES =
             text_input.addEventListener('touchstart', function () {
                 $(text_input).select();
             });
+            if (drop_handler) {
+                add_drop_handler_to_input_element(text_input, drop_handler);
+            }
             TT.UTILITIES.use_custom_tooltip(text_input);
             return {container: container,
                     button: text_input};
@@ -1830,15 +1843,8 @@ window.TOONTALK.UTILITIES =
             text_area.addEventListener('touchstart', function () {
                 $(text_area).select();
             });
-            // TODO: need touch version of the following
             if (drop_handler) {
-                new_drop_handler = function (event) {
-                    var dropped = get_dropped_widget(event);
-                    // if drag was from a resource then restore it
-                    TT.UTILITIES.restore_resource(TT.UTILITIES.get_dragee(), dropped);
-                    drop_handler(event);
-                }
-                text_area.addEventListener('drop', new_drop_handler);
+                add_drop_handler_to_input_element(text_area, drop_handler);
             }
             $(label_element).addClass("ui-widget");
             TT.UTILITIES.use_custom_tooltip(text_area);
@@ -1846,22 +1852,22 @@ window.TOONTALK.UTILITIES =
                     button: text_area};
         },
 
-        text_area_drop_handler: function (event, setter) {
+        input_area_drop_handler: function (event, setter) {
             var dropped, target_widget, new_text;
             event.preventDefault();
             dropped = get_dropped_widget(event);
-            if (dropped && dropped.get_text) {
+            if (dropped) {
                 new_text = setter(dropped, event);
                 if (new_text) {
                     $(event.currentTarget).trigger('change');
                     event.currentTarget.value = new_text;
                 }
-                // at least for robot actions clear the dropped widget should be removed
+                // at least for robot actions it is clear that the dropped widget should be removed
                 dropped.remove();
             }
             event.stopPropagation();
-            // returns the dropped widget only if it caused a change
-            return new_text && dropped;
+            // returns the dropped widget only if it generated new text
+            return typeof new_text === 'string' && dropped;
         },
         
         create_radio_button: function (name, value, class_name, label, title) {

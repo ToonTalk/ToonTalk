@@ -1221,7 +1221,7 @@ window.TOONTALK.element_backside =
             text = element_widget[getter]().trim();
             if (text.length > 0 && !element_widget.get_image_element()) {
                 drop_handler = function (event) {
-                    var dropped = TT.UTILITIES.text_area_drop_handler(event, element_widget.receive_HTML_from_dropped.bind(element_widget));
+                    var dropped = TT.UTILITIES.input_area_drop_handler(event, element_widget.receive_HTML_from_dropped.bind(element_widget));
                     if (dropped && TT.robot.in_training) {
                         TT.robot.in_training.dropped_on_text_area(dropped, element_widget, {area_selector: ".toontalk-html-input",
                                                                                             setter: 'receive_HTML_from_dropped',

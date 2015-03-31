@@ -1234,6 +1234,7 @@ window.TOONTALK.widget = (function (TT) {
             widget.is_robot = return_false;
             widget.is_element = return_false;
             widget.is_function_nest = return_false;
+            widget.is_hole = return_false;
             widget.get_json = function (json_history) {
                 var backside = this.get_backside(true);
                 var backside_element = backside.get_element();

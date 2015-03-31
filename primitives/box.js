@@ -106,6 +106,19 @@ window.TOONTALK.box = (function (TT) {
             }
             return true;
         };
+        new_box.receive_size_from_dropped = function (dropped, event) {
+            // dropped drop on the size text area
+            // return a string for the new size
+            var size_as_number_widget, new_size;
+            if (dropped.is_number()) {
+                size_as_number_widget = TT.number.create(this.get_size());
+                size_as_number_widget.number_dropped_on_me_semantics(dropped);
+                new_size = (Math.max(0, Math.round(size_as_number_widget.to_float())));
+                // if the following were used a condition for returning then robots would ignore non-size changes - e.g. adding zero
+                this.set_size(new_size);
+                return new_size.toString();
+            }
+        };
         new_box.copy = function (parameters) {
             var holes_copied, copy;
             if (!parameters) {
@@ -719,7 +732,16 @@ window.TOONTALK.box_backside =
     return {
         create: function (box) {
             var backside = TT.backside.create(box);
-            var size_input = TT.UTILITIES.create_text_input(box.get_size().toString(), 'toontalk-box-size-input', "Number of holes", "Type here to edit the number of holes.", undefined, "number");
+            var size_area_drop_handler = 
+                function (event) {
+                    var dropped = TT.UTILITIES.input_area_drop_handler(event, box.receive_size_from_dropped.bind(box));
+                    if (dropped && TT.robot.in_training) {
+                        TT.robot.in_training.dropped_on_text_area(dropped, box, {area_selector: ".toontalk-box-size-input",
+                                                                                 setter: 'receive_size_from_dropped',
+                                                                                 toString: "for the box's size"});
+                    }
+                };
+            var size_input = TT.UTILITIES.create_text_input(box.get_size().toString(), 'toontalk-box-size-input', "Number of holes", "Type here to edit the number of holes.", undefined, "number", size_area_drop_handler);
             var horizontal = TT.UTILITIES.create_radio_button("box_orientation", "horizontal", "toontalk-horizontal-radio-button", "Left to right", "Show box horizontally."); // might be nicer replaced by an icon
             var vertical = TT.UTILITIES.create_radio_button("box_orientation", "vertical", "toontalk-vertical-radio-button", "Top to bottom", "Show box vertically.");
             var update_value = function () {
