@@ -1719,10 +1719,13 @@ window.TOONTALK.UTILITIES =
                     y >= rectangle.top  && y <= rectangle.bottom);
         },
 
-        constrain_css_to_fit_inside: function (element, css) {
+        constrain_css_to_fit_inside: function (container_element, css) {
             // updates left and top to fit inside element
-            var container_width  = $(element).width();
-            var container_height = $(element).height();
+            var container_width  = $(container_element).width();
+            if (container_width === 0) {
+                return;
+            }
+            var container_height = $(container_element).height();
             // css is relative to element
             css.left = Math.min(Math.max(css.left, 0), container_width);
             css.top  = Math.min(Math.max(css.top,  0), container_height);
