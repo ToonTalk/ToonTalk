@@ -500,7 +500,7 @@ window.TOONTALK.bird = (function (TT) {
         var backside = this.get_backside(); 
         var bird_image, frontside_element;
         frontside_element = frontside.get_element();
-        frontside_element.title = this.get_title();
+        TT.UTILITIES.give_tooltip(frontside_element, this.get_title());
 //      console.log("update display " + $(frontside_element).width() + "x" + $(frontside_element).height());
         if (!$(frontside_element).is(".toontalk-bird, .toontalk-side-animating")) {
             $(frontside_element).addClass("toontalk-bird toontalk-bird-static");
@@ -1118,7 +1118,7 @@ window.TOONTALK.nest = (function (TT) {
                     top_contents_widget.set_parent_of_frontside(this);
                 }
             } else {
-                frontside_element.title = this.get_title();
+                TT.UTILITIES.give_tooltip(frontside_element, this.get_title());
                 if (guid) {
                     $(frontside_element).removeClass("toontalk-nest-with-egg");
                     $(frontside_element).addClass("toontalk-empty-nest");

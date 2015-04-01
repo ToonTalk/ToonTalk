@@ -345,9 +345,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                           height: height,
                                           transform: ''}); // remove any transformations
                 if ($(frontside_element).parent(".toontalk-conditions-contents-container").is("*")) {
-                    frontside_element.title = "This is an element that has been erased. It will match any element.";
+                    TT.UTILITIES.give_tooltip(frontside_element, "This is an element that has been erased. It will match any element.");
                 } else {
-                    frontside_element.title = "This is an erased element. It will replace its HTML with the HTML of the element you drop on it.";            
+                    TT.UTILITIES.give_tooltip(frontside_element, "This is an erased element. It will replace its HTML with the HTML of the element you drop on it.");            
                 }
                 return;
             }
@@ -368,7 +368,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             }
             this.apply_css();
             this.fire_on_update_display_handlers();
-            frontside_element.title = "Click to see the backside where you can place robots or change the style of this " + element_description(frontside_element) + ".";
+            TT.UTILITIES.give_tooltip(frontside_element, "Click to see the backside where you can place robots or change the style of this " + element_description(frontside_element) + ".");
         };
         new_element.initialise_element = function () {
             var frontside_element = this.get_frontside_element();
@@ -1194,14 +1194,14 @@ window.TOONTALK.element_backside =
             if ($(attributes_chooser).is(":visible")) {
                 $(attributes_chooser).hide();
                 $show_chooser_button.button("option", "label", show_label);
-                $show_chooser_button.attr("title", show_title);
+                TT.UTILITIES.give_tooltip($show_chooser_button.get(0), show_title);
             } else {
                 $(attributes_chooser).show();
                 $show_chooser_button.button("option", "label", hide_label);
-                $show_chooser_button.attr("title", hide_title);
+                TT.UTILITIES.give_tooltip($show_chooser_button.get(0), hide_title);
             }
         });
-        $show_chooser_button.attr("title", show_title);
+        TT.UTILITIES.give_tooltip($show_chooser_button.get(0), show_title);
         return $show_chooser_button.get(0);
     };
     

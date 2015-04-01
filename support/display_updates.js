@@ -48,6 +48,9 @@ window.TOONTALK.DISPLAY_UPDATES =
 //                     current_update = pending_update;
 //                 }
                 pending_update.update_display();
+                setTimeout(function () {
+                               TT.UTILITIES.use_custom_tooltip(frontside_element);
+                           });
                 // ensure that children have higher z-index than parent
                 $parent_side_element = $(frontside_element).parent().closest(".toontalk-side");
                 if ($parent_side_element.is('*')) {

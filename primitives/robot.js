@@ -204,7 +204,7 @@ window.TOONTALK.robot = (function (TT) {
             this.set_frontside_conditions(context.copy({just_value: true}));
             // use miniature robot image for cursor
             $("*").css({cursor: 'url(' + TT.UTILITIES.absolute_file_path("images/RB19.32x32.PNG") + '), default'});
-            this.get_frontside_element().title = this.get_title();
+            TT.UTILITIES.give_tooltip(this.get_frontside_element(), this.get_title());
             backside_element = this.get_backside_element();
             $(backside_element).find(".toontalk-conditions-panel").remove();
             original_backside_widgets_of_context = TT.UTILITIES.copy_widget_sides(context.get_backside_widgets(), {just_value: true});
@@ -221,7 +221,7 @@ window.TOONTALK.robot = (function (TT) {
             }
             this.rerender();
             this.being_trained = false;
-            this.get_frontside_element().title = this.get_title();
+            TT.UTILITIES.give_tooltip(this.get_frontside_element(), this.get_title());
             this.backup_all();
             TT.robot.in_training = undefined;
         };  
@@ -375,10 +375,10 @@ window.TOONTALK.robot = (function (TT) {
         var frontside_element = this.get_frontside_element();
         if (waiting) {
             TT.UTILITIES.add_animation_class(frontside_element, "toontalk-robot-waiting");
-            frontside_element.title = "This robot is waiting for a bird to deliver something.";
+            TT.UTILITIES.give_tooltip(frontside_element, "This robot is waiting for a bird to deliver something.");
         } else {
             $(frontside_element).removeClass("toontalk-robot-waiting");
-            frontside_element.title = this.get_title();
+            TT.UTILITIES.give_tooltip(frontside_element, this.get_title());
         }
     };
     
@@ -560,7 +560,7 @@ window.TOONTALK.robot = (function (TT) {
     
     robot.add_step = function (step, new_widget) {
         this.get_body().add_step(step, new_widget);
-        this.get_frontside_element().title = this.get_title();
+        TT.UTILITIES.give_tooltip(this.get_frontside_element(), this.get_title());
     };
     
     robot.get_context = function () {
@@ -595,7 +595,7 @@ window.TOONTALK.robot = (function (TT) {
             thing_in_hand_frontside_element = document.createElement("div");
             $(thing_in_hand_frontside_element).addClass(this.carrying_tool);
         }
-        frontside_element.title = this.get_title();
+        TT.UTILITIES.give_tooltip(frontside_element, this.get_title());
         $(frontside_element).addClass("toontalk-robot");
         $(frontside_element).children(".toontalk-side, .toontalk-held-by-robot").remove();
         if (thing_in_hand_frontside_element) {
@@ -936,7 +936,7 @@ window.TOONTALK.robot_backside =
             backside.update_display = function () {
                 var frontside_element = robot.get_frontside_element();
                 if (frontside_element) {
-                    frontside_element.title = robot.get_title();                    
+                    TT.UTILITIES.give_tooltip(frontside_element, robot.get_title());                    
                 }
                 generic_backside_update();
             };
@@ -960,14 +960,14 @@ window.TOONTALK.robot_backside =
             var change_label_and_title = function () {
                 if (training) {
                     $train_button.button("option", "label", "Stop training");
-                    $train_button.attr("title", "Click to stop training this robot.");
+                    TT.UTILITIES.give_tooltip($train_button.get(0), "Click to stop training this robot.");
                 } else {
                     if (robot.get_body().is_empty()) {
                         $train_button.button("option", "label", "Train");
-                        $train_button.attr("title", "Click to start training this robot.");
+                        TT.UTILITIES.give_tooltip($train_button.get(0), "Click to start training this robot.");
                     } else {
                         $train_button.button("option", "label", "Re-train");
-                        $train_button.attr("title", "Click to start training this robot all over again.");
+                        TT.UTILITIES.give_tooltip($train_button.get(0), "Click to start training this robot all over again.");
                     }
                 }
                 if ($(backside_element).is(":visible")) {

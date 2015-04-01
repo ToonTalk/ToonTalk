@@ -218,7 +218,7 @@ window.TOONTALK.scale = (function (TT) {
                         frontside_element.appendChild(hole_element);                       
                     });
             }
-            frontside_element.title = this.get_title();
+            TT.UTILITIES.give_tooltip(frontside_element, this.get_title());
             if (TT.debugging) {
                 this.debug_string = this.toString();
             } 

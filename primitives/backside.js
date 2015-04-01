@@ -72,7 +72,7 @@ window.TOONTALK.backside =
                                               } else {
                                                   title = "There is nothing to run on this.";
                                               }
-                                              green_flag_element.title = title;
+                                              TT.UTILITIES.give_tooltip(green_flag_element, title);
                                           };
             var update_stop_sign_title = function () {
                                              var title;
@@ -83,7 +83,7 @@ window.TOONTALK.backside =
                                              } else {
                                                  title = "There is nothing to run here.";
                                              }
-                                             stop_sign_element.title = title;
+                                             TT.UTILITIES.give_tooltip(stop_sign_element, title);
                                          };
             var close_title, close_handler, description_text_area;
             if (TT.TRANSLATION_ENABLED) {
@@ -145,7 +145,7 @@ window.TOONTALK.backside =
                                      });
                 help_button.innerHTML = 'i'; // like tourist info -- alternatively could use a question mark
                 help_button.translate = false; // should not be translated
-                help_button.title = "Click to learn more about " + widget.get_type_name(true, true) + ".";
+                TT.UTILITIES.give_tooltip(help_button, "Click to learn more about " + widget.get_type_name(true, true) + ".");
                 close_help_button = document.createElement("div");
                 $(close_help_button).addClass("toontalk-close-help-frame-button")
                                     .button()
@@ -165,7 +165,7 @@ window.TOONTALK.backside =
                                   .click(function (event) {
                                           widget.open_settings();
                                   });
-                settings_button.title = "Click to change settings or open a different program.";   
+                TT.UTILITIES.give_tooltip(settings_button, "Click to change settings or open a different program.");   
                 backside_element.appendChild(settings_button);         
             }
             // wait for DOM to settle down
@@ -728,7 +728,7 @@ window.TOONTALK.backside =
                     this.set_advanced_settings_showing(settings_showing, backside.get_element(), $settings_button);
                     event.stopPropagation();
             }.bind(this));
-            $settings_button.attr("title", "Click to see the advanced settings of this " + widget.get_type_name() + ".");
+            TT.UTILITIES.give_tooltip($settings_button.get(0), "Click to see the advanced settings of this " + widget.get_type_name() + ".");
             return $settings_button.get(0);
         },
 
@@ -739,11 +739,11 @@ window.TOONTALK.backside =
             if (show) {
                 $(backside_element).find(".toontalk-advanced-setting").show();
                 $settings_button.html("<");
-                $settings_button.attr("title", "Click to hide the advanced settings.");  
+                TT.UTILITIES.give_tooltip($settings_button.get(0), "Click to hide the advanced settings.");  
             } else {
                 $(backside_element).find(".toontalk-advanced-setting").hide();
                 $settings_button.html(">");
-                $settings_button.attr("title", "Click to show the advanced settings.");    
+                TT.UTILITIES.give_tooltip($settings_button.get(0), "Click to show the advanced settings.");    
             }
         },
         
