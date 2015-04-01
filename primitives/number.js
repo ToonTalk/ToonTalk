@@ -463,16 +463,16 @@ window.TOONTALK.number = (function () {
         }
         $(frontside_element).removeClass("toontalk-number-eighth-size-border toontalk-number-quarter-size-border toontalk-number-half-size-border toontalk-number-full-size-border");
         if (client_width <= 64 || client_height <= 64) {
-            $(frontside_element).addClass("toontalk-number-eighth-size-border");
+            $(frontside_element).addClass("toontalk-number-eighth-size-border toontalk-number");
             frontside_element.toontalk_border_size = 4;
         } else if (client_width <= 128 || client_height <= 128) {
-            $(frontside_element).addClass("toontalk-number-quarter-size-border");
+            $(frontside_element).addClass("toontalk-number-quarter-size-border toontalk-number");
             frontside_element.toontalk_border_size = 8;
         } else if (client_width <= 256 || client_height <= 256) {
-            $(frontside_element).addClass("toontalk-number-half-size-border");
+            $(frontside_element).addClass("toontalk-number-half-size-border toontalk-number");
             frontside_element.toontalk_border_size = 16;
         } else {
-            $(frontside_element).addClass("toontalk-number-full-size-border");
+            $(frontside_element).addClass("toontalk-number-full-size-border toontalk-number");
             frontside_element.toontalk_border_size = 32;
         }
         font_height = (client_height-frontside_element.toontalk_border_size*2);

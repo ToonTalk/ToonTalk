@@ -1557,6 +1557,14 @@ window.TOONTALK.UTILITIES =
                                        maximum_width_if_moved = element_position.left-40; // subtract something for borders and paddings
                                     };
                                }
+                               // TODO: determine why the placement of tool tips for robots and numbers is too lower
+                               // following fixes it - otherwise the tool tip can interfere with selection
+                               if ($element.is(".toontalk-robot")) {
+                                    position.top -= 60;
+                               }
+                                if ($element.is(".toontalk-number")) {
+                                    position.top -= 30;
+                               }  
                                if (position.left < 10) {
                                    position.left = 10;
                                }
