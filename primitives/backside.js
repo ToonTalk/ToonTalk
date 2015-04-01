@@ -517,7 +517,7 @@ window.TOONTALK.backside =
         create_description_label: function (backside, widget) {
             var description = widget.get_description();
             if (description) {
-               return TT.UTILITIES.create_text_element("Back side of a " + widget.get_type_name() + " that " + description);
+               return TT.UTILITIES.create_text_element("I'm the back side of a " + widget.get_type_name() + " that is " + description);
             }
         },
 
@@ -536,7 +536,7 @@ window.TOONTALK.backside =
                 };
             var description_text_area = TT.UTILITIES.create_text_area(widget.get_description(), 
                                                                       "toontalk-description-input", 
-                                                                      "This&nbsp;" + type_name + "&nbsp;",
+                                                                      "I'm ",
                                                                       "Type here to provide additional information about this " + type_name + ".",
                                                                       drop_handler);
             var $make_sensor_nest_button    = $("<button>Make a sensor nest</button>")  .button();

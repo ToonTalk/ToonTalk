@@ -417,7 +417,7 @@ window.TOONTALK.widget = (function (TT) {
 //                         title = "";
                     }
                     if (description) {
-                        description = "I " + description;
+                        description = "I'm " + description;
                         if (title) {
                             title = description + "\n" + title;
                         } else {
@@ -430,8 +430,9 @@ window.TOONTALK.widget = (function (TT) {
                     if (this.get_custom_title_prefix && !$(frontside_element).is(".toontalk-top-level-resource")) {
                         // top-level resources must be dragged to work area so don't add custom description
                         title = this.get_custom_title_prefix() + "\n" + title;
+                    } else {
+                        title = "I'm " + TT.UTILITIES.add_a_or_an(type_name) + ". " + title;
                     }
-                    title = "I'm " + TT.UTILITIES.add_a_or_an(type_name) + ". " + title;
                     title = title.trim();
                     if (".?!".indexOf(title[title.length-1]) < 0) {
                         // doesn't end in punctuation so add a period

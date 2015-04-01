@@ -499,10 +499,6 @@ window.TOONTALK.number = (function () {
         child_element.translate = false;
         $(child_element).addClass("toontalk-widget notranslate");
         TT.UTILITIES.give_tooltip(frontside_element, this.get_title());
-        backside = this.get_backside();
-        if (backside) {
-            backside.rerender();
-        }
     };
     
     number.to_HTML = function (max_characters, font_size, format, top_level, operator, size_unconstrained_by_container) {

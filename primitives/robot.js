@@ -636,9 +636,6 @@ window.TOONTALK.robot = (function (TT) {
                     }
                 }
             });
-        if (backside) {
-            backside.rerender();
-        }
     };
     
     robot.add_newly_created_widget = function (new_widget) {
