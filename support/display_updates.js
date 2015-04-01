@@ -42,12 +42,18 @@ window.TOONTALK.DISPLAY_UPDATES =
             pending_updates = [];
             updates.forEach(function (pending_update) {
                 var frontside_element = pending_update.get_frontside_element && pending_update.get_frontside_element();
-                var $parent_side_element, z_index, parent_z_index;
+                var $parent_side_element, z_index, parent_z_index, backside;
 //                 if (!(current_update && pending_update.has_ancestor && pending_update.has_ancestor(current_update))) {
 //                     // current_update is the current TOP-LEVEL widget - this ignores its descendants
 //                     current_update = pending_update;
 //                 }
                 pending_update.update_display();
+                if (pending_update.get_backside) {
+                    backside = pending_update.get_backside();
+                    if (backside) {
+                        backside.update_display();
+                    }
+                }
                 setTimeout(function () {
                                TT.UTILITIES.use_custom_tooltip(frontside_element);
                            });

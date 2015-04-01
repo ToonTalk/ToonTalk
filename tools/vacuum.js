@@ -11,10 +11,10 @@ window.TOONTALK.vacuum = (function (TT) {
 
     var vacuum = Object.create(null);
   
-    var titles = {suck:     "Drag this vacuum over the thing you want to remove.\nType 'e' to switch to erasing, type 'r' to swich to restoring, or 'a' for removing all.\nOr click to switch modes.",
-                  erase:    "Drag this vacuum over the thing you want to erase (or un-erase).\nType 's' to switch to sucking, type 'r' to switch to restoring, or 'a' for removing all.\nOr click to switch modes.",
-                  restore:  "Drag this over the work area. Each time you release it a widget is restored.\nType 's' to switch to sucking, type 'e' to swich to erasing, or 'a' for removing all.\nOr click to switch modes.",
-                  suck_all: "Drag this over the work area and click. Everything will be removed.\nType 'r' to switch to restoring, type 'e' to switch to erasing, or type 's' to switch to sucking.\nOr click to switch modes."};
+    var titles = {suck:     "I'm a vacuum. Drag me over the thing you want to remove.\nType 'e' to switch to erasing, type 'r' to swich to restoring, or 'a' for removing all.\nOr click to switch modes.",
+                  erase:    "I'm a vacuum. Drag me over the thing you want to erase (or un-erase).\nType 's' to switch to sucking, type 'r' to switch to restoring, or 'a' for removing all.\nOr click to switch modes.",
+                  restore:  "Drag me over the work area. Each time you release me I'll restore a widget.\nType 's' to switch to sucking, type 'e' to swich to erasing, or 'a' for removing all.\nOr click to switch modes.",
+                  suck_all: "Drag me over the work area and click. Everything will be removed.\nType 'r' to switch to restoring, type 'e' to switch to erasing, or type 's' to switch to sucking.\nOr click to switch modes."};
 
     var mode_classes = {suck:     "toontalk-vacuum-s",
                         erase:    "toontalk-vacuum-e",
@@ -47,7 +47,7 @@ window.TOONTALK.vacuum = (function (TT) {
 
         var update_title = function () {
             if (mode === 'restore' && removed_items.length === 0) {
-                TT.UTILITIES.give_tooltip(element, "The vacuum is empty.\nType 's' to switch to sucking, or type 'e' to switch to erasing, or 'a' to remove all.");
+                TT.UTILITIES.give_tooltip(element, "I'm empty.\nType 's' to switch to sucking, or type 'e' to switch to erasing, or 'a' to remove all.");
             } else {
                 TT.UTILITIES.give_tooltip(element, titles[mode]);
             }

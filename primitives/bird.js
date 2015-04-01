@@ -523,9 +523,6 @@ window.TOONTALK.bird = (function (TT) {
         } else {
             $(frontside_element).children(".toontalk-side").remove();
         }
-        if (backside) {
-            backside.rerender();
-        }
     };
         
     bird.fly_to = function (target_offset, continuation, delay) {

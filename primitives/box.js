@@ -493,10 +493,6 @@ window.TOONTALK.box = (function (TT) {
         frontside_element.toontalk_border_size = border_size;
         // delay it until browser has rendered current elements
         TT.UTILITIES.set_timeout(renderer);
-        backside = this.get_backside();
-        if (backside) {
-            backside.rerender();
-        }
     };
     
     box.update_hole_display = function (index, new_content) {
@@ -712,7 +708,7 @@ window.TOONTALK.box = (function (TT) {
     };
 
     box.get_custom_title_prefix = function () {
-        return "Drop things in my holes to keep them together.";
+        return "Drop things in my holes to store them.";
     };
 
     TT.creators_from_json["box_path"] = function (json, additional_info) {

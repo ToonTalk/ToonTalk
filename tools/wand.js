@@ -23,7 +23,7 @@ window.TOONTALK.wand = (function (TT) {
                             if (!element) {
                                 element = document.createElement("div");
                                 $(element).addClass("toontalk-wand");
-                                TT.UTILITIES.give_tooltip(element, "Drag this magic wand over the thing you want to copy.");
+                                TT.UTILITIES.give_tooltip(element, "I'm a magic wand. Drag me over the thing you want me to copy.");
                                 TT.tool.add_listeners(element, this);
                             }
                             return element;

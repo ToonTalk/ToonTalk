@@ -362,8 +362,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 this.set_attribute('width',  $(frontside_element).closest(".toontalk-box-hole").width(),  false);
                 this.set_attribute('height', $(frontside_element).closest(".toontalk-box-hole").height(), false);
             }
-            if (typeof original_width === 'undefined') {
-                // this delays but the following delays more
+            if (typeof original_width === 'undefined' && frontside_element.parentElement) {
+                // if it doesn't have a parentElement it is too early
                 this.compute_original_dimensions();
             }
             this.apply_css();
@@ -400,8 +400,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                                  if (parent) {
                                                      if (parent.get_box) {
                                                          parent.get_box().rerender();
+                                                         return;
                                                      } // else if there is another container that constrains the dimensions of this rerender it too
                                                  }
+                                                 this.rerender();
                                              }.bind(this),
                                              recompute);
         };
@@ -688,8 +690,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 return widget_to_string.call(this) + " (" + this.attribute + " of " + "this.element_widget" + ")";
             };
             attribute_widget.get_custom_title_prefix = function () {
-                return "This is the '" + this.attribute + "' attribute of " + this.element_widget + "\n" +
-                       widget_get_custom_title_prefix.call(this);
+                return "I'm the '" + this.attribute + "' attribute of " + this.element_widget + ".\n" +
+                       "Drop a number on me or edit my back side to change my value. My back side has an info button to learn more.";
             };
             attribute_widget.equals = function (other) {
                 if (attribute_name === other.attribute) {
@@ -1094,7 +1096,7 @@ window.TOONTALK.element_backside =
         var process_menu_item = function (option, menu_list) {
             var style_attributes = element_widget.get_style_attributes();
             var already_added = style_attributes.indexOf(option) >= 0;
-            var title = "Click to add or remove the '" + option + "' style attribute from the backside of this element.";
+            var title = "Click to add or remove the '" + option + "' style attribute from my backside.";
             var check_box = TT.UTILITIES.create_check_box(already_added, "toontalk-style-attribute-check-box", option+"&nbsp;", title);
             var documentation_link = TT.UTILITIES.create_anchor_element("i", documentation_source(option));
             var list_item = document.createElement("li");
@@ -1184,10 +1186,10 @@ window.TOONTALK.element_backside =
     };
     
     var create_show_attributes_chooser = function (attributes_chooser) {
-        var show_label = "Add or remove style attributes";
-        var show_title = "Click to add widgets for reading and writing style attributes of this element.";
-        var hide_label = "Hide style attributes list";
-        var hide_title = "Click to hide the list of attributes that can be added or removed.";
+        var show_label = "Add or remove my style attributes";
+        var show_title = "Click to add widgets for my style attributes.";
+        var hide_label = "Hide my style attributes list";
+        var hide_title = "Click to hide my list of attributes that can be added or removed.";
         var $show_chooser_button = $("<button>" + show_label + "</button>").button();
         $show_chooser_button.addClass("toontalk-show-attributes-chooser-button");
         $show_chooser_button.click(function (event) {

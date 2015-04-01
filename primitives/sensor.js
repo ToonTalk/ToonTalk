@@ -171,7 +171,7 @@ window.TOONTALK.sensor = (function (TT) {
             widget = new_value;
         };
         new_sensor.get_custom_title_prefix = function () {
-            return "Use this nest to receive notices of events.";
+            return "My bird brings me notices of events.";
         };
         return new_sensor;
     };

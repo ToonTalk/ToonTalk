@@ -215,7 +215,7 @@ window.TOONTALK.path =
                         if (additional_info && additional_info.robot) {
                             return additional_info.robot.get_top_level_context_description();
                         }
-                        return "what he's working on";
+                        return "what I'm working on";
                     },
                     get_json: function () {
                         return {type: "path.to_entire_context"};
@@ -283,7 +283,7 @@ window.TOONTALK.path =
                         }
                     },
                     toString: function () {
-                        var string = "the " + type_name + " on the back of what he's working on";
+                        var string = "the " + type_name + " on the back of what I'm working on";
                         if (this.removing_widget) {
                             return "what is on " + string;
                         }

@@ -1557,6 +1557,18 @@ window.TOONTALK.UTILITIES =
                                        maximum_width_if_moved = element_position.left-40; // subtract something for borders and paddings
                                     };
                                }
+                               // TODO: determine why the placement of tool tips for robots, boxes, and numbers is too low
+                               // following fixes it - otherwise the tool tip can interfere with selection
+                               if ($element.is(".toontalk-robot")) {
+                                    position.top  -= 30;
+                                    position.left -= 50;
+                               }
+                               if ($element.is(".toontalk-number")) {
+                                    position.top -= 30;
+                               }
+                               if ($element.is(".toontalk-box")) {
+                                    position.top -= 30;
+                               }  
                                if (position.left < 10) {
                                    position.left = 10;
                                }
@@ -1566,18 +1578,23 @@ window.TOONTALK.UTILITIES =
                      }},
                 open: function (event, ui) {
                           var text_length = ui.tooltip.get(0).textContent.length;
-                          var default_capacity = 200;
+                          var default_capacity = 100;
+                          var tooltip = ui.tooltip.get(0);
+                          var new_width, position;
                           // replace all new lines with <br> breaks
-                          ui.tooltip.get(0).innerHTML = ui.tooltip.get(0).textContent.replace(/(\r\n|\n|\r)/g, "<br>");
+                          tooltip.innerHTML = ui.tooltip.get(0).textContent.replace(/(\r\n|\n|\r)/g, "<br>");
                           // width is 340 by default but if more than fits then make wider
                           if (text_length > default_capacity) {
-                              $(ui.tooltip).css({//width: (340 + 340*(text_length-default_capacity)/default_capacity),
-                                                 maxWidth: Math.min(800, maximum_width_if_moved || $(window).width()-100)});
-//                           } else {
-//                               $(ui.tooltip).css({width: Math.min(600, $(window).width()-100)});
+                              new_width = Math.min(800, maximum_width_if_moved || $(window).width()-100);
+                              position = $(tooltip).position();
+                              // //width: (340 + 340*(text_length-default_capacity)/default_capacity),
+                              // TODO: determine why position above and to the left of where it should be - necessitating the following
+                              ui.tooltip.css({left: Math.max(0, position.left-110),
+                                              top:  position.top+80,
+                                              maxWidth: new_width});
                           }
                           if (element_displaying_tool) {
-                              $(element_displaying_tool).hide();
+                              element_displaying_tool.hide();
                           }
                           // need to add the arrow here since the replacing of the innerHTML above removed the arrow
                           // when it was added earlier
@@ -1593,7 +1610,7 @@ window.TOONTALK.UTILITIES =
                           // auto hide after duration proportional to text_length
                           // TODO: if longer than fits on the screen then autoscroll after some time
                           setTimeout(function () {
-                                         $(ui.tooltip).hide();
+                                         ui.tooltip.hide();
                                          element_displaying_tool = undefined;
                                      }, 
                                      text_length*(TT.MAXIMUM_TOOLTIP_DURATION_PER_CHARACTER || 100));
@@ -1711,10 +1728,13 @@ window.TOONTALK.UTILITIES =
                     y >= rectangle.top  && y <= rectangle.bottom);
         },
 
-        constrain_css_to_fit_inside: function (element, css) {
+        constrain_css_to_fit_inside: function (container_element, css) {
             // updates left and top to fit inside element
-            var container_width  = $(element).width();
-            var container_height = $(element).height();
+            var container_width  = $(container_element).width();
+            if (container_width === 0) {
+                return;
+            }
+            var container_height = $(container_element).height();
             // css is relative to element
             css.left = Math.min(Math.max(css.left, 0), container_width);
             css.top  = Math.min(Math.max(css.top,  0), container_height);
