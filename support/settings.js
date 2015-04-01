@@ -292,7 +292,7 @@ window.TOONTALK.SETTINGS =
                              google_drive.button.disabled = true; // is a checkbox
                              $(publish)            .button("option", "disabled", true);
                              $(save_now_google)    .button("option", "disabled", true);
-                             google_drive.container.title = "Inactivated because attempt to connect to Google Drive returned: " + google_status;
+                             TT.UTILITIES.give_tooltip(google_drive.container, "Inactivated because attempt to connect to Google Drive returned: " + google_status);
                              publish.title                = google_drive.container.title;
                              save_now_google.title        = google_drive.container.title;          
                          },

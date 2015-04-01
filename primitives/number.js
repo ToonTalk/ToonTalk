@@ -278,6 +278,9 @@ window.TOONTALK.number = (function () {
                 this.rerender(); // will update if visible
                 if (TT.debugging) {
                     this.debug_string = this.toString();
+                    if (new_value.toString() === "0,0") {
+                        TT.UTILITIES.report_internal_error("Impossible numeric value -- can be caused by decimal string not being parsable as a number.");
+                    }
                 }
                 return this;
             };
@@ -440,7 +443,7 @@ window.TOONTALK.number = (function () {
             client_width  = 100;
             client_height =  40;
         } else if ($(frontside_element).is(".toontalk-element-attribute")) {
-            // good enough values when carried by a bird
+            // good enough if this number is an element attribute
             client_width  = 200;
             client_height =  32;
         } else {
@@ -495,7 +498,7 @@ window.TOONTALK.number = (function () {
         // numbers looked wrong when translated (extra spaces between digits)
         child_element.translate = false;
         $(child_element).addClass("toontalk-widget notranslate");
-        frontside_element.title = this.get_title();
+        TT.UTILITIES.give_tooltip(frontside_element, this.get_title());
         backside = this.get_backside();
         if (backside) {
             backside.rerender();
@@ -793,6 +796,14 @@ window.TOONTALK.number = (function () {
         operator_string = this.get_operator() === '+' ? '' : this.get_operator();
         return operator_string + bigrat.str(this.get_value());
     };
+
+    number.get_text = function () {
+        if (this.is_integer() || this.get_format() === 'improper_fraction') {
+            return this.toString();
+        }
+        // can't turn an infinite decimal expansion into a string so approximate it as JavaScript number
+        return bigrat.toDecimal(this.get_value()).toString();
+    };
     
     number.to_float = function () {
         return bigrat.toDecimal(this.get_value());
@@ -927,9 +938,11 @@ window.TOONTALK.number_backside =
             var current_denominator = number.denominator_string();
             var numerator_input = TT.UTILITIES.create_text_area(current_numerator, "toontalk-numerator-input", "", 
                                                                 "Type here to edit the numerator",
+                                                                undefined, // maybe add drop handler here
                                                                 "number");
             var denominator_input = TT.UTILITIES.create_text_area(current_denominator, "toontalk-denominator-input", "", 
                                                                   "Type here to edit the denominator",
+                                                                  undefined, // maybe add drop handler here
                                                                   "number");
             var decimal_format = TT.UTILITIES.create_radio_button("number_format", "decimal", "toontalk-decimal-radio-button", "Decimal number", "Display number as a decimal.");
             var mixed_number_format = TT.UTILITIES.create_radio_button("number_format", "proper_fraction", "toontalk-proper-fraction-radio-button", "Mixed number", "Display number as an integer part and a proper fraction.");
@@ -1039,7 +1052,7 @@ window.TOONTALK.number_backside =
             var format_set = $(TT.UTILITIES.create_horizontal_table(decimal_format.container, mixed_number_format.container, improper_format.container, scientific_format.container)).buttonset().get(0);
             var operator_set = $(TT.UTILITIES.create_horizontal_table(plus.container, minus.container, multiply.container, divide.container, set.container)).buttonset().get(0);
             var advanced_settings_button = TT.backside.create_advanced_settings_button(backside, number);
-            var generic_backside_update = backside.update_display;
+            var generic_backside_update = backside.update_display.bind(backside);
             slash.innerHTML = "/";
             $(slash).addClass("ui-widget"); // to look nice
             backside_element.appendChild(number_set);
@@ -1151,35 +1164,43 @@ window.TOONTALK.number.function =
         return response;
     };
     var number_check = function (widget, function_name, index) {
+        var top_contents;
         if (!widget) {
             TT.UTILITIES.display_message("Birds for the " + function_name + " function can only respond to boxes with a number in the " + 
                                           TT.UTILITIES.ordinal(index) + " hole. The " + TT.UTILITIES.ordinal(index) + " hole is empty.");
             return false;
         }
-        if (widget.is_number()) {
+        if (widget.dereference().is_number()) {
             return true;
+        }
+        if (widget.is_nest()) {
+            // throw empty nest so can suspend this until nest is covered
+            throw {wait_for_nest_to_receive_something: widget};
         }
         TT.UTILITIES.display_message("Birds for the " + function_name + " function can only respond to boxes with a number in the " + 
                                      TT.UTILITIES.ordinal(index) + " hole. The " + TT.UTILITIES.ordinal(index) + 
-                                     "hole contains " + TT.UTILITIES.add_a_or_an(widget.get_type_name() + "."));
+                                     " hole contains " + TT.UTILITIES.add_a_or_an(widget.get_type_name() + "."));
         return false;
     };
     var n_ary_widget_function = function (message, zero_ary_value_function, binary_operation, function_name, event, robot) { 
         // binary_operation is a function of two widgets that updates the first
         var compute_response = function (bird, box_size) {
             var next_widget, index, response;
+            var is_number_or_nest;
             if (box_size === 1) {
                 return zero_ary_value_function();
             }
             index = 1;
-            response =  message.get_hole_contents(index);
-            if (!number_check(response, function_name, index)) {
+            response =  message.get_hole_contents(index).dereference();
+            is_number_or_nest = number_check(response, function_name, index);
+            if (!is_number_or_nest) {
                 return;
             }
             index++;
             while (index < box_size) {
-                next_widget = message.get_hole_contents(index);
-                if (!number_check(next_widget, function_name, index)) {
+                next_widget = message.get_hole_contents(index).dereference();
+                is_number_or_nest = number_check(next_widget, function_name, index);
+                if (!is_number_or_nest) {
                     return;
                 }
                 binary_operation.call(response, next_widget);
@@ -1191,7 +1212,7 @@ window.TOONTALK.number.function =
     };
     var n_ary_function = function (message, operation, minimum_arity, function_name, event, robot) { 
         var compute_response = function (bird, box_size) {
-            var next_widget, index, args, response;
+            var next_widget, index, args, response, is_number_or_nest;
             if (box_size < minimum_arity+1) { // one for the bird
                 TT.UTILITIES.display_message("Birds for the " + function_name + " function can only respond to boxes with at least " + (minimum_arity+1) + " holes. Not " + box_size + " holes.");
                 return;
@@ -1199,8 +1220,9 @@ window.TOONTALK.number.function =
             args = [];
             index = 1;
             while (index < box_size) {
-                next_widget = message.get_hole_contents(index);
-                if (!number_check(next_widget, function_name, index)) {
+                next_widget = message.get_hole_contents(index).dereference();
+                is_number_or_nest = number_check(next_widget, function_name, index);
+                if (!is_number_or_nest) {
                     return;
                 }
                 args.push(next_widget.get_value());

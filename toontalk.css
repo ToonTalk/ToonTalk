@@ -1784,6 +1784,18 @@ table.toontalk-documentation-table {
 	background-color: white;
 	border: solid black 1px;
 }
+.toontalk-plain-text-element {
+	background-color: white;
+}
+.toontalk-string-attribute-widget {
+	background-color: rgb(238, 169, 244);
+}
+.toontalk-erased-element {
+	background-color: white;
+	opacity: .67;
+	width: 80px;
+	height: 40px;
+}
 .toontalk-attributes-chooser {
 	background-color: white;
     border-style: solid;

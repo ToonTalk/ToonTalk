@@ -60,6 +60,12 @@ window.TOONTALK.widget = (function (TT) {
                     return this.get_type_name() === type_name;
                 };
             }
+            if (!widget.dereference) {
+                widget.dereference = function () {
+                    // unlike covered nests that dereference to their top element
+                    return this;
+                };
+            }
             if (!widget.is_number) {
                 widget.is_number = return_false;
             }
@@ -67,7 +73,10 @@ window.TOONTALK.widget = (function (TT) {
                 widget.is_box = return_false;
             }
             if (!widget.is_empty_hole) {
-               widget.is_empty_hole = return_false;
+                widget.is_empty_hole = return_false;
+            }
+            if (!widget.is_hole) {
+                widget.is_hole = return_false;
             }
             if (!widget.is_scale) {
                 widget.is_scale = return_false;
@@ -125,6 +134,9 @@ window.TOONTALK.widget = (function (TT) {
                 widget.save_dimensions_of = function (other) {
                     var dimensions;
                     if (other.get_size_attributes) {
+                        if (!this.get_original_width()) {
+                            return;
+                        }
                         dimensions = other.get_size_attributes();
                     } else {
                         // elements have clientWidth and clientHeight
@@ -332,6 +344,7 @@ window.TOONTALK.widget = (function (TT) {
                     // delay for DOM to settle down in case target_widget is brand new
                     setTimeout(function () {
                                    this.animate_to_element(find_widget_element(target_widget), continuation, speed, left_offset, top_offset);
+                                   this.render();
                                }.bind(this),
                                100);            
                 };
@@ -560,6 +573,15 @@ window.TOONTALK.widget = (function (TT) {
                     return true;
                 };
             }
+            widget.receive_description_from_dropped = function(dropped) {
+                var new_text;
+                if (dropped.get_text) {
+                    new_text = dropped.get_text();
+                    if (this.set_description(new_text, true)) {
+                        return this.get_description();
+                    }    
+                };
+            }
         },
 
         has_listeners: function (widget) {
@@ -749,8 +771,15 @@ window.TOONTALK.widget = (function (TT) {
                     backside_widgets_json_views.forEach(function (backside_widget_view, index) {
                         var json_view, widget_index;
                         json_backside_widget_side = json.semantic.backside_widgets[index];
+                        if (!json_backside_widget_side) {
+                            return;
+                        }
                         if (json_backside_widget_side.widget.shared_widget_index >= 0) {
                             widget_index = json_history.widgets_encountered.indexOf(json_history.shared_widgets[json_backside_widget_side.widget.shared_widget_index]);
+                            if (!json_history.json_of_widgets_encountered[widget_index]) {
+                               // TODO: determine if this is due to an earlier error
+                               return;
+                            }
                             json_view = json_history.json_of_widgets_encountered[widget_index].view;
                         } else {
                             json_view = json_backside_widget_side.widget.view;
@@ -776,8 +805,8 @@ window.TOONTALK.widget = (function (TT) {
         },
         
         add_backside_widget: function (widget, is_backside) {
-                // TODO: clean this up and just pass a widget_side here
-            var backside = this.get_backside();
+            // TODO: clean this up and just pass a widget_side here
+            var backside = this.get_backside(true);
             var widget_side = is_backside ? widget.get_backside() : widget;
             if (TT.debugging && widget === this) {
                 TT.UTILITIES.report_internal_error("Adding a widget to a list of its backside widgets!");
@@ -803,6 +832,7 @@ window.TOONTALK.widget = (function (TT) {
         },
 
         remove_all_backside_widgets: function () {
+            // this is used to clear a top-level widget before loading new contents
             if (!this.backside_widgets) {
                 return;
             }
@@ -940,7 +970,7 @@ window.TOONTALK.widget = (function (TT) {
         
         add_copy_to_container: function (widget_copy, x_offset, y_offset) {
             if (!widget_copy) {
-                widget_copy = this.copy();
+                widget_copy = this.copy({});
             }
             var frontside_element = this.get_frontside_element();
             var frontside_element_copy = widget_copy.get_frontside_element();  
@@ -1216,6 +1246,7 @@ window.TOONTALK.widget = (function (TT) {
             widget.is_robot = return_false;
             widget.is_element = return_false;
             widget.is_function_nest = return_false;
+            widget.is_hole = return_false;
             widget.get_json = function (json_history) {
                 var backside = this.get_backside(true);
                 var backside_element = backside.get_element();
@@ -1331,7 +1362,7 @@ window.TOONTALK.widget = (function (TT) {
                     json = TT.UTILITIES.get_json_top_level(this);
                     google_drive_status = TT.google_drive.get_status();
                     if (google_drive_status === "Ready") {
-                        TT.google_drive.upload_file(program_name, "json", JSON.stringify(json), callback);
+                        TT.google_drive.upload_file(program_name, "json", JSON.stringify(json, TT.UTILITIES.clean_JSON), callback);
                         callback = undefined;
                     } else if (TT.google_drive.connection_to_google_drive_possible()) {
                         if (google_drive_status === 'Need to authorize') {
@@ -1371,7 +1402,7 @@ window.TOONTALK.widget = (function (TT) {
                         meta_data = {created: time_stamp};
                     }
                     meta_data.last_modified = time_stamp;
-                    json_string = JSON.stringify(json);
+                    json_string = JSON.stringify(json, TT.UTILITIES.clean_json);
                     meta_data.file_size = json_string.length;
                     window.localStorage.setItem(meta_data_key, JSON.stringify(meta_data));
                     window.localStorage.setItem(key, json_string);
@@ -1382,7 +1413,11 @@ window.TOONTALK.widget = (function (TT) {
                         TT.UTILITIES.set_all_locally_stored_program_names(all_program_names);   
                     }
                 } catch (error) {
-                    message = "Failed to save state to local storage since it requires " + JSON.stringify(json).length + " bytes. Error message is " + error;
+                    if (json_string) {
+                        message = "Failed to save state to local storage since it requires " + json_string.length + " bytes. Error message is " + error;
+                    } else {
+                        message = "Error while saving to local storage. Error message is " + error;
+                    }
                     if (TT.UTILITIES.is_internet_explorer()) {
                         console.error(message);
                     } else {
@@ -1400,11 +1435,17 @@ window.TOONTALK.widget = (function (TT) {
                     function (json_string) {
                         var json;
                         if (json_string) {
-                            json = JSON.parse(json_string);
-                            widget.remove_all_backside_widgets();
-                            TT.UTILITIES.add_backside_widgets_from_json(widget, json.semantic.backside_widgets);
-                            if (loaded_callback) {
-                                loaded_callback();
+                            try {
+                                json = JSON.parse(json_string);
+                                widget.remove_all_backside_widgets();
+                                TT.UTILITIES.add_backside_widgets_from_json(widget, json.semantic.backside_widgets, {json_of_shared_widgets: json.shared_widgets,
+                                                                                                                     shared_widgets:         [],
+                                                                                                                     shared_html:            json.shared_html});
+                                if (loaded_callback) {
+                                    loaded_callback();
+                                }
+                            } catch (e) {
+                                TT.UTILITIES.display_message("Error encountered loading " + program_name + " : " + e);
                             }
                         } else if (nothing_to_load_callback) {
                             nothing_to_load_callback();

@@ -47,9 +47,9 @@ window.TOONTALK.vacuum = (function (TT) {
 
         var update_title = function () {
             if (mode === 'restore' && removed_items.length === 0) {
-                element.title = "The vacuum is empty.\nType 's' to switch to sucking, or type 'e' to switch to erasing, or 'a' to remove all.";
+                TT.UTILITIES.give_tooltip(element, "The vacuum is empty.\nType 's' to switch to sucking, or type 'e' to switch to erasing, or 'a' to remove all.");
             } else {
-                element.title = titles[mode];
+                TT.UTILITIES.give_tooltip(element, titles[mode]);
             }
         };
 
@@ -90,7 +90,7 @@ window.TOONTALK.vacuum = (function (TT) {
                         new_erased = !widget_side.get_erased();
                         widget_side.set_erased(new_erased, true);
                         if (TT.robot.in_training && event) {
-                            TT.robot.in_training.set_erased(widget_side, new_erased);
+                            TT.robot.in_training.erased_widget(widget_side, new_erased);
                         }
                     }
                 } else if (mode === 'restore') {

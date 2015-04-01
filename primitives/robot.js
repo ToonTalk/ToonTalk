@@ -204,7 +204,7 @@ window.TOONTALK.robot = (function (TT) {
             this.set_frontside_conditions(context.copy({just_value: true}));
             // use miniature robot image for cursor
             $("*").css({cursor: 'url(' + TT.UTILITIES.absolute_file_path("images/RB19.32x32.PNG") + '), default'});
-            this.get_frontside_element().title = this.get_title();
+            TT.UTILITIES.give_tooltip(this.get_frontside_element(), this.get_title());
             backside_element = this.get_backside_element();
             $(backside_element).find(".toontalk-conditions-panel").remove();
             original_backside_widgets_of_context = TT.UTILITIES.copy_widget_sides(context.get_backside_widgets(), {just_value: true});
@@ -221,7 +221,7 @@ window.TOONTALK.robot = (function (TT) {
             }
             this.rerender();
             this.being_trained = false;
-            this.get_frontside_element().title = this.get_title();
+            TT.UTILITIES.give_tooltip(this.get_frontside_element(), this.get_title());
             this.backup_all();
             TT.robot.in_training = undefined;
         };  
@@ -375,10 +375,10 @@ window.TOONTALK.robot = (function (TT) {
         var frontside_element = this.get_frontside_element();
         if (waiting) {
             TT.UTILITIES.add_animation_class(frontside_element, "toontalk-robot-waiting");
-            frontside_element.title = "This robot is waiting for a bird to deliver something.";
+            TT.UTILITIES.give_tooltip(frontside_element, "This robot is waiting for a bird to deliver something.");
         } else {
             $(frontside_element).removeClass("toontalk-robot-waiting");
-            frontside_element.title = this.get_title();
+            TT.UTILITIES.give_tooltip(frontside_element, this.get_title());
         }
     };
     
@@ -437,10 +437,26 @@ window.TOONTALK.robot = (function (TT) {
             // robot dropped its frontside or backside -- so ignore this
             return;
         }
+        if (this.get_parent_of_frontside().get_widget() === source_widget) {
+            // robot dropped the backside of what it is working on -- so ignore this
+            return;
+        }
         this.current_action_name = "drop it on";
         path = TT.path.get_path_to(target_widget, this);
         if (path) {
             this.add_step(TT.robot_action.create(path, this.current_action_name));
+        }
+        source_widget.last_action = this.current_action_name + " " + target_widget.get_type_name();
+        this.current_action_name = undefined;
+        this.set_thing_in_hand(undefined);
+    };
+
+    robot.dropped_on_text_area = function (source_widget, target_widget, details) {
+        var path;
+        this.current_action_name = "drop it on the text area of";
+        path = TT.path.get_path_to(target_widget, this);
+        if (path) {
+            this.add_step(TT.robot_action.create(path, this.current_action_name, details));
         }
         source_widget.last_action = this.current_action_name + " " + target_widget.get_type_name();
         this.current_action_name = undefined;
@@ -473,10 +489,14 @@ window.TOONTALK.robot = (function (TT) {
         widget.last_action = this.current_action_name;
         this.current_action_name = undefined;
         if (context === widget || widget === this) {
-            // robot is vacuum up its context (and itself) or itself
+            // robot is vacuuming up its context (and itself) or itself
             // TODO: add some animation to make clearer what is happening
             this.add_to_top_level_backside(this.copy());
             this.training_finished();
+        } else {
+            // needed since removal may require this when running (since removal also applies to taking out of a container)
+            // this way the robot could restore things using the robot
+            this.add_newly_created_widget_if_new(widget);
         }
     };
     
@@ -491,13 +511,12 @@ window.TOONTALK.robot = (function (TT) {
         this.current_action_name = undefined;
     };
     
-    robot.erased_widget = function (widget, erased) {
+    robot.erased_widget = function (widget) {
         var path;
-        this.current_action_name = "erased_widget";
+        this.current_action_name = "change whether erased";
         path = TT.path.get_path_to(widget, this);
         if (path) {
-            this.add_step(TT.robot_action.create(path, this.current_action_name, {erased: erased,
-                                                                                  toString: erased ? "erase" : "un-erase"}));
+            this.add_step(TT.robot_action.create(path, this.current_action_name));
         }
         // no need to update widget.last_action = this.current_action_name;
         this.current_action_name = undefined;
@@ -541,7 +560,7 @@ window.TOONTALK.robot = (function (TT) {
     
     robot.add_step = function (step, new_widget) {
         this.get_body().add_step(step, new_widget);
-        this.get_frontside_element().title = this.get_title();
+        TT.UTILITIES.give_tooltip(this.get_frontside_element(), this.get_title());
     };
     
     robot.get_context = function () {
@@ -576,7 +595,7 @@ window.TOONTALK.robot = (function (TT) {
             thing_in_hand_frontside_element = document.createElement("div");
             $(thing_in_hand_frontside_element).addClass(this.carrying_tool);
         }
-        frontside_element.title = this.get_title();
+        TT.UTILITIES.give_tooltip(frontside_element, this.get_title());
         $(frontside_element).addClass("toontalk-robot");
         $(frontside_element).children(".toontalk-side, .toontalk-held-by-robot").remove();
         if (thing_in_hand_frontside_element) {
@@ -884,7 +903,7 @@ window.TOONTALK.robot_backside =
             var $next_robot_area = TT.UTILITIES.create_drop_area(window.TOONTALK.robot.empty_drop_area_instructions);
             var next_robot = robot.get_next_robot();
             var advanced_settings_button = TT.backside.create_advanced_settings_button(backside, robot);
-            var generic_backside_update = backside.update_display;
+            var generic_backside_update = backside.update_display.bind(backside);
             $next_robot_area.data("drop_area_owner", robot);
             $(run_once_input.button).click(function (event) {
                 var keep_running = run_once_input.button.checked;
@@ -917,7 +936,7 @@ window.TOONTALK.robot_backside =
             backside.update_display = function () {
                 var frontside_element = robot.get_frontside_element();
                 if (frontside_element) {
-                    frontside_element.title = robot.get_title();                    
+                    TT.UTILITIES.give_tooltip(frontside_element, robot.get_title());                    
                 }
                 generic_backside_update();
             };
@@ -941,14 +960,14 @@ window.TOONTALK.robot_backside =
             var change_label_and_title = function () {
                 if (training) {
                     $train_button.button("option", "label", "Stop training");
-                    $train_button.attr("title", "Click to stop training this robot.");
+                    TT.UTILITIES.give_tooltip($train_button.get(0), "Click to stop training this robot.");
                 } else {
                     if (robot.get_body().is_empty()) {
                         $train_button.button("option", "label", "Train");
-                        $train_button.attr("title", "Click to start training this robot.");
+                        TT.UTILITIES.give_tooltip($train_button.get(0), "Click to start training this robot.");
                     } else {
                         $train_button.button("option", "label", "Re-train");
-                        $train_button.attr("title", "Click to start training this robot all over again.");
+                        TT.UTILITIES.give_tooltip($train_button.get(0), "Click to start training this robot all over again.");
                     }
                 }
                 if ($(backside_element).is(":visible")) {
