@@ -797,6 +797,19 @@ window.TOONTALK.number = (function () {
         return operator_string + bigrat.str(this.get_value());
     };
 
+    number.operator_word = function (subject) {
+        switch (this.get_operator()) {
+        case "+":
+            return "add " + subject + " to";
+        case "-":
+            return "subtract " + subject + " from";
+        case "*":
+            return "multiply " + subject + " with";
+        case "/":
+           return "divide " + subject + " into";
+        }
+    };
+
     number.get_text = function () {
         if (this.is_integer() || this.get_format() === 'improper_fraction') {
             return this.toString();
@@ -920,7 +933,10 @@ window.TOONTALK.number = (function () {
     };
 
     number.get_custom_title_prefix = function () {
-        return "Drop another number on me and I'll add it to my value.\nUnless its operation has been changed then I'll subtract, multiply, or divide by it instead.";
+        if (this.get_operator() === '=') {
+            return "Drop me on another number I'll give him my value.";
+        }
+        return "Drop me on another number and I'll " + this.operator_word("myself") + " him.";
     };
     
     return number;

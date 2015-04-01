@@ -393,26 +393,31 @@ window.TOONTALK.widget = (function (TT) {
                     var backside = this.get_backside();
                     var frontside_element = this.get_frontside_element();
                     var description = this.get_description();
-                    var title;
+                    var title = "";
                     if ($(frontside_element).is(".toontalk-top-level-resource")) {
                         if (this.can_run && this.can_run()) {
                             if (this.get_running()) {
-                                title = "Click elsewhere to stop this from running. Click on it to start it up again.";
+                                title = "Click elsewhere to stop me from running. Click on it to start me up again.";
                             } else {
-                                title = "Click to start this running. Click elsewhere to stop it.";
+                                title = "Click to start me running. Click elsewhere to stop me.";
                             }
                         } else {
-                            title = "Drag this " + type_name + " to a work area.";
+                            title = "Drag me to a work area.";
                         }   
                     } else if (!backside || !backside.get_element() || !$(backside.get_element()).is(":visible")) {
-                        title = "Click to see my back side.";
-                    } else if (!description && !this.get_custom_title_prefix) {
-                        title = "This is " + TT.UTILITIES.add_a_or_an(type_name);
-                    } else {
-                        title = "";
+                        if (this.can_run && this.can_run()) {
+                            title = "There are robots are on my back." + 
+                                    "\nTo see them in action click to open my back side and then click the green flag.";
+                        } else {
+                            title = "Click to see my back side.";
+                        }
+//                     } else if (!description && !this.get_custom_title_prefix) {
+//                         title = "I'm " + TT.UTILITIES.add_a_or_an(type_name) + ".";
+//                     } else {
+//                         title = "";
                     }
                     if (description) {
-                        description = "This " + type_name + " " + description;
+                        description = "I " + description;
                         if (title) {
                             title = description + "\n" + title;
                         } else {
@@ -426,6 +431,7 @@ window.TOONTALK.widget = (function (TT) {
                         // top-level resources must be dragged to work area so don't add custom description
                         title = this.get_custom_title_prefix() + "\n" + title;
                     }
+                    title = "I'm " + TT.UTILITIES.add_a_or_an(type_name) + ". " + title;
                     title = title.trim();
                     if (".?!".indexOf(title[title.length-1]) < 0) {
                         // doesn't end in punctuation so add a period
@@ -441,9 +447,9 @@ window.TOONTALK.widget = (function (TT) {
             var frontside_element = this.get_frontside_element();
             var type_name = this.get_type_name();
             if (frontside_element && $(frontside_element).closest(".toontalk-conditions-contents-container").is("*")) {
-                return "This " + type_name + " has been erased so that it matches with any " + type_name + ".";
+                return "I'm an erased " + type_name + ".\nI'll match with any other " + type_name + ".";
             }
-            return "This " + type_name + " has been erased. Dusty the Vacuum can restore the " + type_name + " to normal.";
+            return "I'm an erased " + type_name + ".\nDusty the Vacuum can restore me to normal.";
         },
         
         has_parent: function (widget) {

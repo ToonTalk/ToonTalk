@@ -716,15 +716,15 @@ window.TOONTALK.robot = (function (TT) {
             postfix = "\n..."; // to indicate still being constructed
         }  
         robot_description = prefix + robot_conditions_description + 
-                            " he will \n" + body.toString({robot: this}) + postfix;
+                            " I will \n" + body.toString({robot: this}) + postfix;
         if (this.match_status) {
             if (this.match_status.is_widget) {
-                robot_description = "He isn't running because the " + this.match_status + 
-                                   " in his conditions (highlighted in red) doesn't match the corresponding widget. Perhaps editing his conditions will help.\n" + 
+                robot_description = "I'm not running because the " + this.match_status + 
+                                   " in my conditions (highlighted in red) doesn't match the corresponding widget. Perhaps editing my conditions will help.\n" + 
                                    robot_description;
             } else if (this.match_status !== 'matched') {
-                robot_description = "He is waiting for something to be delivered to the nest that matches the " + this.match_status[0][1] +
-                                    "in his conditions (highlighted in yellow).\n" + robot_description;
+                robot_description = "I'm waiting for something to be delivered to the nest that matches the " + this.match_status[0][1] +
+                                    "in my conditions (highlighted in yellow).\n" + robot_description;
             }
         }
         if (next_robot) {
@@ -746,7 +746,7 @@ window.TOONTALK.robot = (function (TT) {
         if (type === 'top-level') {
             return "his workspace";
         }
-        return "the " + type + " he's working on";
+        return "the " + type + " I'm working on";
     };
 
     robot.get_help_URL = function () {
