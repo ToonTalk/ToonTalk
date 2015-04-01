@@ -362,8 +362,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 this.set_attribute('width',  $(frontside_element).closest(".toontalk-box-hole").width(),  false);
                 this.set_attribute('height', $(frontside_element).closest(".toontalk-box-hole").height(), false);
             }
-            if (typeof original_width === 'undefined') {
-                // this delays but the following delays more
+            if (typeof original_width === 'undefined' && frontside_element.parentElement) {
+                // if it doesn't have a parentElement it is too early
                 this.compute_original_dimensions();
             }
             this.apply_css();
@@ -400,8 +400,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                                  if (parent) {
                                                      if (parent.get_box) {
                                                          parent.get_box().rerender();
+                                                         return;
                                                      } // else if there is another container that constrains the dimensions of this rerender it too
                                                  }
+                                                 this.rerender();
                                              }.bind(this),
                                              recompute);
         };
