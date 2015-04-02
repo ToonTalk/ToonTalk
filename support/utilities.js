@@ -1562,13 +1562,14 @@ window.TOONTALK.UTILITIES =
                                if ($element.is(".toontalk-robot")) {
                                     position.top  -= 30;
                                     position.left -= 50;
-                               }
-                               if ($element.is(".toontalk-number")) {
+                               } else if ($element.is(".toontalk-number")) {
                                     position.top -= 30;
-                               }
-                               if ($element.is(".toontalk-box")) {
+                               } else if ($element.is(".toontalk-box")) {
                                     position.top -= 30;
-                               }  
+                               } else {
+                                   // can be too close to widget (or button) and interferes with clicks etc
+                                   position.top -= 20;
+                               }
                                if (position.left < 10) {
                                    position.left = 10;
                                }
@@ -1599,10 +1600,11 @@ window.TOONTALK.UTILITIES =
                           // need to add the arrow here since the replacing of the innerHTML above removed the arrow
                           // when it was added earlier
                           // TODO: position it better
-                          $("<div>").addClass("toontalk-arrow")
-                                    .addClass(feedback_vertical)
-                                    .addClass(feedback_horizontal)
-                                    .appendTo(ui.tooltip);
+                          // until it is positioned reliably better to not have it
+//                           $("<div>").addClass("toontalk-arrow")
+//                                     .addClass(feedback_vertical)
+//                                     .addClass(feedback_horizontal)
+//                                     .appendTo(ui.tooltip);
                           element_displaying_tool = ui.tooltip;
     //                       if (height_adjustment) {
     //                           $(ui.tooltip).css({maxHeight: $(ui.tooltip).height()+height_adjustment/2});
