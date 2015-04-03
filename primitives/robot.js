@@ -430,9 +430,9 @@ window.TOONTALK.robot = (function (TT) {
         this.set_thing_in_hand(widget);
     };
     
-    robot.dropped_on = function (source_widget, target_widget) {
+    robot.dropped_on = function (source_widget, target_widget_side, event) {
         // need to support dropping on backside of a widget as well as which side of a box 
-        var path;
+        var path, additional_info, $target_element, target_location, target_width, target_height;
         if (this === source_widget) {
             // robot dropped its frontside or backside -- so ignore this
             return;
@@ -442,11 +442,20 @@ window.TOONTALK.robot = (function (TT) {
             return;
         }
         this.current_action_name = "drop it on";
-        path = TT.path.get_path_to(target_widget, this);
+        path = TT.path.get_path_to(target_widget_side, this);
         if (path) {
-            this.add_step(TT.robot_action.create(path, this.current_action_name));
+            if (target_widget_side.is_backside()) {
+                $target_element = $(target_widget_side.get_element());
+                target_location = $target_element.offset();
+                target_width    = $target_element.width();
+                target_height   = $target_element.height();
+                // store the drop location as a fraction of width and height of target so does something sensible when run on different size target
+                additional_info = {left_offset_fraction: (event.pageX-target_location.left)/target_width,
+                                   top_offset_fraction:  (event.pageY-target_location.top)/target_height};
+            }
+            this.add_step(TT.robot_action.create(path, this.current_action_name, additional_info));
         }
-        source_widget.last_action = this.current_action_name + " " + target_widget.get_type_name();
+        source_widget.last_action = this.current_action_name + " " + target_widget_side.get_type_name();
         this.current_action_name = undefined;
         this.set_thing_in_hand(undefined);
     };

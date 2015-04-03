@@ -361,11 +361,15 @@ window.TOONTALK.widget = (function (TT) {
                         }
                         return;
                     }
-                    if (!left_offset || target_is_backside) {
+                    if (typeof target_element.animation_left_offset === 'number') {
+                        left_offset = target_element.animation_left_offset;
+                    } else if (!left_offset || target_is_backside) {
                         // pick a random location completely inside the target
                         left_offset = ($(target_element).width()-$frontside_element.width())  * Math.random();
                     }
-                    if (!top_offset || target_is_backside) {
+                    if (typeof target_element.animation_top_offset  === 'number') {
+                        top_offset  = target_element.animation_top_offset;
+                    } else  if (!top_offset || target_is_backside) {
                         top_offset = ($(target_element).height()-$frontside_element.height()) * Math.random();
                     }
                     if (target_absolute_position) {

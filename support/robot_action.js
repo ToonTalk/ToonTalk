@@ -142,13 +142,20 @@ window.TOONTALK.robot_action =
         };
         move_robot_animation(widget, context, top_level_context, robot, new_continuation);
     };
-    var move_robot_animation = function (side, context, top_level_context, robot, continuation) {
+    var move_robot_animation = function (side, context, top_level_context, robot, continuation, additional_info) {
         var thing_in_hand = robot.get_thing_in_hand();
         var robot_frontside_element = robot.get_frontside_element();
-        var widget_frontside_element = side.get_element(); 
+        var widget_element = side.get_element();
+        var widget_width  = $(widget_element).width();
+        var widget_height = $(widget_element).height();
         var left_offset, top_offset;
-        left_offset = $(widget_frontside_element).width()/2;
-        top_offset  = $(widget_frontside_element).height()/2;
+        if (additional_info && additional_info.left_offset_fraction) {
+            widget_element.animation_left_offset = additional_info.left_offset_fraction*widget_width;
+            widget_element.animation_top_offset  = additional_info.top_offset_fraction*widget_height;
+        } else {
+            left_offset = widget_width/2;
+            top_offset  = widget_height/2;
+        }
         // robots move at 1/4 pixel per millisecond for clarity
         robot.animate_to_widget(side, continuation, .25, left_offset, top_offset);
 //         if (thing_in_hand) {
@@ -174,7 +181,7 @@ window.TOONTALK.robot_action =
             new_continuation();
         }
     };
-    var drop_it_on_animation = function (target, context, top_level_context, robot, continuation) {
+    var drop_it_on_animation = function (target, context, top_level_context, robot, continuation, additional_info) {
         var thing_in_hand = robot.get_thing_in_hand();
         var $thing_in_hand_frontside_element, adjust_dropped_location_continuation;
         if (!thing_in_hand) {
@@ -228,10 +235,10 @@ window.TOONTALK.robot_action =
                                                       // since the robot opened it needs to close when finished
                                                       target.hide_backside();
                                                   };
-                                                  move_robot_animation(target, context, top_level_context, robot, new_continuation);
+                                                  move_robot_animation(target, context, top_level_context, robot, new_continuation, additional_info);
                                               });
         } else {
-            move_robot_animation(target, context, top_level_context, robot, adjust_dropped_location_continuation);
+            move_robot_animation(target, context, top_level_context, robot, adjust_dropped_location_continuation, additional_info);
         }
     };
     var drop_it_on_text_area_animation = function (target, context, top_level_context, robot, continuation, additional_info) {
@@ -385,15 +392,15 @@ window.TOONTALK.robot_action =
         }      
     };
     var watched_run_functions = 
-        {"copy":                        copy_animation,
-         "pick up":                     pick_up_animation,
-         "pick up a copy of":           pick_up_a_copy_animation,
-         "drop it on":                  drop_it_on_animation,
+        {"copy":                           copy_animation,
+         "pick up":                        pick_up_animation,
+         "pick up a copy of":              pick_up_a_copy_animation,
+         "drop it on":                     drop_it_on_animation,
          "drop it on the text area of":    drop_it_on_text_area_animation,
          // remove and erase have identical animation but different unwatched semantics
-         "remove":                      remove_or_erase_animation,
-         "change whether erased":                       remove_or_erase_animation, 
-         "edit":                        edit_animation,
+         "remove":                         remove_or_erase_animation,
+         "change whether erased":          remove_or_erase_animation, 
+         "edit":                           edit_animation,
          "add to the top-level backside": function (widget, context, top_level_context, robot, continuation) {
               // do nothing -- this action is only needed if unwatched
               continuation();

@@ -246,7 +246,7 @@ window.TOONTALK.backside =
                     }
                     TT.UTILITIES.set_position_is_absolute(other_side_element, true, event); // when on the backside
                     if (TT.robot.in_training && !ignore_training && event) {
-                        TT.robot.in_training.dropped_on(other, this);
+                        TT.robot.in_training.dropped_on(other, this, event);
                     }
                     if (other_is_backside && this.get_widget().get_type_name() != 'top-level') {
                         // remove other since its backside is on another backside (other than top-level) 
