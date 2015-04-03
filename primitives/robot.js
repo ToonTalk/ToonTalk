@@ -53,10 +53,14 @@ window.TOONTALK.robot = (function (TT) {
         };
         new_robot.set_frontside_conditions = function (new_value) {
             frontside_conditions = new_value;
+            frontside_conditions.set_parent_of_frontside(this);
+        };
+        if (frontside_conditions) {
+            frontside_conditions.set_parent_of_frontside(this);
         };
         new_robot.get_backside_conditions = function () {
             return backside_conditions;
-        };
+        }; 
         new_robot.set_backside_conditions = function (new_value) {
             backside_conditions = new_value;
             if (backside_conditions) {
@@ -64,10 +68,15 @@ window.TOONTALK.robot = (function (TT) {
                 TT.UTILITIES.available_types.forEach(function (type) {
                     if (backside_conditions[type]) {
                         TT.widget.erasable(backside_conditions[type]);
+                        backside_conditions[type].set_parent_of_frontside(this);
                     }
-                }); 
+                }.bind(this)); 
             }
         };
+        // TODO: get this working
+//         if (backside_conditions) {
+//             this.set_backside_conditions(backside_conditions);
+//         }
         new_robot.add_to_backside_conditions = function (widget) {
             var widget_copy, widget_type;
             if (this.get_newly_created_widgets().indexOf(widget) >= 0) {
@@ -883,6 +892,61 @@ window.TOONTALK.robot = (function (TT) {
                                json.run_once,
                                next_robot);
     };
+
+    robot.find_conditions_path = function (widget, robot_with_widget_in_conditions, robot) {
+         var frontside_conditions = robot_with_widget_in_conditions.get_frontside_conditions();
+         var path_within_conditions = frontside_conditions === widget ? 'entire_condition' : frontside_conditions.get_path_to(widget, robot);
+         var path_to_robot = TT.path.get_path_to(robot_with_widget_in_conditions, robot);
+         var backside_conditions, backside_conditions_type;
+         if (!path_within_conditions) {
+             backside_conditions = robot_with_widget_in_conditions.get_backside_conditions();
+             TT.UTILITIES.available_types.some(function (type) {
+                                                   if (backside_conditions[type]) {
+                                                       path_within_conditions = backside_conditions[type].get_path_to(widget, robot);
+                                                       if (path_within_conditions) {
+                                                           backside_conditions_type = type;
+                                                           return;
+                                                       }
+                                                   }
+                                               });
+         }
+         if (!path_within_conditions) {
+             TT.UTILITIES.report_internal_error("Robot has widget in its conditions but unable to construct the path.");
+             return;
+         }
+         return TT.robot.create_conditions_path (path_within_conditions, path_to_robot, backside_conditions_type);
+    };
+
+    robot.create_conditions_path = function (path_within_conditions, path_to_robot, backside_conditions_type) {
+         return {dereference_path: function (context, top_level_context, robot) {
+                     var robot_with_widget_in_conditions = TT.path.dereference_path(path_to_robot, context, top_level_context, robot);
+                     if (backside_conditions_type) {
+                         return TT.path.dereference_path(path_within_conditions, robot_with_widget_in_conditions.get_backside_conditions()[backside_conditions_type], top_level_context, robot);
+                     }
+                     return TT.path.dereference_path(path_within_conditions, robot_with_widget_in_conditions.get_frontside_conditions(), top_level_context, robot);
+                 },
+                 toString: function () {
+                     var path_to_condition_description = (path_within_conditions === 'entire_condition') ?
+                                                         "the " : TT.path.toString(path_within_conditions) + " of the ";
+                                                         
+                     if (backside_conditions_type) {
+                         return path_to_condition_description + backside_conditions_type + " backside condition of " + TT.path.toString(path_to_robot);
+                     }
+                     return path_to_condition_description + " front side condition of " + TT.path.toString(path_to_robot);
+                 },
+                 get_json: function () {
+                     return {type: "path_to_robot_conditions",
+                             backside_conditions_type: backside_conditions_type,
+                             path_to_robot: path_to_robot.get_json(),
+                             path_within_conditions: (path_within_conditions === 'entire_condition') ? 'entire_condition' : path_within_conditions.get_json()};
+                 }};
+    };
+
+    TT.creators_from_json["path_to_robot_conditions"] = function (json) {
+            var path_to_robot = TT.UTILITIES.create_from_json(json.path_to_robot);
+            var path_within_conditions = TT.UTILITIES.create_from_json(json.path_within_conditions);
+            return TT.robot.create_conditions_path(path_within_conditions, path_to_robot, json.backside_conditions_type);
+    };
     
     return robot;
 }(window.TOONTALK));
@@ -1067,6 +1131,7 @@ window.TOONTALK.robot_backside =
         
     };
 }(window.TOONTALK));
+
 
 window.TOONTALK.robot.empty_drop_area_instructions = "Drop a robot here who will try to run when this robot can't run."
 

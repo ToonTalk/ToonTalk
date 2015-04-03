@@ -37,7 +37,7 @@ window.TOONTALK.path =
             var compute_path = function (widget, robot) {
                 var context = robot.get_context();
                 var body = robot.get_body();
-                var path, sub_path, widget_type, is_backside;
+                var path, sub_path, widget_type, is_backside, robot_ancestor;
                 if (widget.is_backside()) {
                     is_backside = true;
                     widget = widget.get_widget();
@@ -101,6 +101,11 @@ window.TOONTALK.path =
                 if (path) {
                     path.is_backside = is_backside;
                     return path;
+                }
+                robot_ancestor = widget.ancestor_of_type('robot');
+                if (robot_ancestor) {
+                    // is a condition of a robot
+                    return TT.robot.find_conditions_path(widget, robot_ancestor, robot);
                 }
                 path = TT.path.get_path_to_resource(widget.copy());
                 path.is_backside = is_backside;
