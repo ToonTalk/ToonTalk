@@ -148,20 +148,51 @@ window.TOONTALK.robot_action =
         var widget_element = side.get_element();
         var widget_width  = $(widget_element).width();
         var widget_height = $(widget_element).height();
-        var left_offset, top_offset;
+        var left_offset, top_offset, animation_left_offset, animation_top_offset, thing_in_hand_element, thing_in_hand_width, thing_in_hand_height;
         if (additional_info && additional_info.left_offset_fraction) {
-            widget_element.animation_left_offset = additional_info.left_offset_fraction*widget_width;
-            widget_element.animation_top_offset  = additional_info.top_offset_fraction*widget_height;
+            if (!robot.original_animation_left_offset) {
+                robot.original_animation_left_offset = [];
+            }
+            if (!robot.original_animation_top_offset) {
+                robot.original_animation_top_offset = [];
+            }
+            animation_left_offset = additional_info.left_offset_fraction*widget_width;
+            animation_top_offset  = additional_info.top_offset_fraction*widget_height;
+            thing_in_hand_element = thing_in_hand.get_element();
+            if (thing_in_hand && 
+                robot.original_animation_left_offset.indexOf(animation_left_offset) >= 0 && 
+                robot.original_animation_top_offset.indexOf(animation_top_offset) >= 0) {
+                // robot has already dropped something here
+                animation_left_offset = robot.animation_left_offset+robot.last_thing_in_hand_width;
+                animation_top_offset  = robot.animation_top_offset;
+                if (animation_left_offset >= widget_width) {
+                    animation_left_offset = 0;
+                    animation_top_offset += robot.max_thing_in_hand_height;
+                    if (animation_top_offset >= widget_height) {
+                        animation_top_offset = 0;
+                    }
+                }
+                robot.last_thing_in_hand_width = $(thing_in_hand_element).width();
+                if (typeof robot.max_thing_in_hand_height === 'undefined') {
+                    robot.max_thing_in_hand_height = 0;
+                }
+                robot.max_thing_in_hand_height = Math.max(robot.max_thing_in_hand_height, $(thing_in_hand_element).height());
+            } else {
+                robot.original_animation_left_offset.push(animation_left_offset);
+                robot.original_animation_top_offset.push(animation_top_offset);
+                robot.last_thing_in_hand_width = $(thing_in_hand_element).width();
+                robot.max_thing_in_hand_height = $(thing_in_hand_element).height();
+            }
+            widget_element.animation_left_offset = animation_left_offset;
+            widget_element.animation_top_offset  = animation_top_offset;
+            robot.animation_left_offset = animation_left_offset;
+            robot.animation_top_offset  = animation_top_offset;
         } else {
             left_offset = widget_width/2;
             top_offset  = widget_height/2;
         }
         // robots move at 1/4 pixel per millisecond for clarity
         robot.animate_to_widget(side, continuation, .25, left_offset, top_offset);
-//         if (thing_in_hand) {
-//             // so robot displays what he's holding
-//             robot.render();
-//         }
     };
     var pick_up_animation = function (widget, context, top_level_context, robot, continuation) {
         var frontside_element = widget.get_frontside_element();
