@@ -920,10 +920,16 @@ window.TOONTALK.robot = (function (TT) {
     robot.create_conditions_path = function (path_within_conditions, path_to_robot, backside_conditions_type) {
          return {dereference_path: function (context, top_level_context, robot) {
                      var robot_with_widget_in_conditions = TT.path.dereference_path(path_to_robot, context, top_level_context, robot);
+                     var conditions;
                      if (backside_conditions_type) {
-                         return TT.path.dereference_path(path_within_conditions, robot_with_widget_in_conditions.get_backside_conditions()[backside_conditions_type], top_level_context, robot);
+                         conditions = robot_with_widget_in_conditions.get_backside_conditions()[backside_conditions_type];
+                     } else {
+                         conditions = robot_with_widget_in_conditions.get_frontside_conditions();
                      }
-                     return TT.path.dereference_path(path_within_conditions, robot_with_widget_in_conditions.get_frontside_conditions(), top_level_context, robot);
+                     if (path_within_conditions === 'entire_condition') {
+                         return conditions;
+                     }
+                     return TT.path.dereference_path(path_within_conditions, conditions, top_level_context, robot);
                  },
                  toString: function () {
                      var path_to_condition_description = (path_within_conditions === 'entire_condition') ?
@@ -944,7 +950,8 @@ window.TOONTALK.robot = (function (TT) {
 
     TT.creators_from_json["path_to_robot_conditions"] = function (json) {
             var path_to_robot = TT.UTILITIES.create_from_json(json.path_to_robot);
-            var path_within_conditions = TT.UTILITIES.create_from_json(json.path_within_conditions);
+            var path_within_conditions = (json.path_within_conditions === 'entire_condition') ? 
+                                         json.path_within_conditions : TT.UTILITIES.create_from_json(json.path_within_conditions);
             return TT.robot.create_conditions_path(path_within_conditions, path_to_robot, json.backside_conditions_type);
     };
     
