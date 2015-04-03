@@ -205,15 +205,18 @@ window.TOONTALK.path =
             }
             return json;
         },
-        to_entire_context: function () {
+        to_entire_context: function (toString_info) {
             // an action that applies to the entire context (i.e. what the robot is working on)
             // need to create fresh ones since if there is a sub-path they shouldn't be sharing
             return {dereference_path: function (context, top_level_context, robot) {
                         return TT.path.continue_dereferencing_path(this, context, top_level_context, robot);
                     },
-                    toString: function (additional_info) {
-                        if (additional_info && additional_info.robot) {
-                            return additional_info.robot.get_top_level_context_description();
+                    toString: function (toString_info) {
+                        if (toString_info && toString_info.robot) {
+                            return toString_info.robot.get_top_level_context_description(toString_info);
+                        }
+                        if (toString_info && toString_info.person === "third") {
+                            return "what he's working on";
                         }
                         return "what I'm working on";
                     },

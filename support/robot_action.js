@@ -131,6 +131,10 @@ window.TOONTALK.robot_action =
              }
              return true;
          },
+         "start training": function (trained_robot, context, top_level_context, robot, additional_info) {
+             trained_robot.training_started(robot);
+             return true;
+         },
          "stop training": function (trained_robot, context, top_level_context, robot, additional_info) {
              trained_robot.training_finished();
              return true;
@@ -446,8 +450,16 @@ window.TOONTALK.robot_action =
               robot.run_next_step();
          },
          "add a new widget to the work space": animate_widget_creation,
-         "stop training": function (widget, context, top_level_context, robot, continuation) {
+         "start training": function (robot_to_train, context, top_level_context, robot, continuation) {
+              // TODO: animate
+              continuation();
+              robot.run_next_step();
+         },
+         "stop training": function (trained_robot, context, top_level_context, robot, continuation) {
               // TODO: animate button push
+              setTimeout(function () {
+                  $(trained_robot.get_backside_element()).find(".toontalk-train-backside-button").button("option", "label", "Re-train");
+              });
               continuation();
               robot.run_next_step();
          },
@@ -532,6 +544,7 @@ window.TOONTALK.robot_action =
             };
             new_action.toString = function (toString_info) {
                 var suffix = "";
+                var prefix = "";
                 var path_description;
                 if (action_name === "add a new widget to the work space") {
                     return action_name.replace("a new widget", TT.path.toString(path));
@@ -540,17 +553,30 @@ window.TOONTALK.robot_action =
                     // is used for internal bookkeepping shouldn't be user visible
                     return "";
                 }
+                path_description = TT.path.toString(path, toString_info);
                 if (action_name === 'edit' || action_name === 'drop it on the text area of') {
                     suffix = " (" + additional_info.toString + ")";
                 } else if (action_name === 'train') {
-                    suffix = " to " + additional_info.step;
-                }
-                path_description = TT.path.toString(path, toString_info);
+                    // the actions of the robot should use he or she but not I
+                    suffix = " to " + additional_info.step.toString({person: "third"});
+                    // indent actions trained 
+                    prefix = "&nbsp;&nbsp;&nbsp;&nbsp;";
+                    if (toString_info && toString_info.robot_being_trained_description) {
+                        path_description = toString_info.robot_being_trained_description;
+                    }
+                } else if (action_name === 'start training') {
+                    if (toString_info) {
+                        toString_info.robot_being_trained_description = "it"; // him?
+                    }
+                } else if (action_name === 'stop training') {
+                    path_description = toString_info.robot_being_trained_description;
+                    toString_info.robot_being_trained_description = undefined;
+                } 
                 if (['pick up', 'edit', 'remove', 'copy', 'change whether erased', 'pick up a copy of', 'drop it on the text area of'].indexOf(action_name) >= 0 && 
                     path_description.indexOf("hole of the box") >= 0) {
-                    return action_name + " what is in " + path_description + suffix;
+                    return prefix + action_name + " what is in " + path_description + suffix;
                 }
-                return action_name + " " + path_description + suffix;
+                return prefix + action_name + " " + path_description + suffix;
             };
             new_action.get_json = function (json_history) {
                 return {type: "robot_action",
