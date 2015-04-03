@@ -212,7 +212,7 @@ window.TOONTALK.robot = (function (TT) {
         new_robot.set_run_once = function (new_value) {
             run_once = new_value;
         };
-        new_robot.training_started = function () {
+        new_robot.training_started = function (robot_training_this_robot) {
             var context = this.get_context();
             var backside_element;
             if (!context) {
@@ -221,17 +221,21 @@ window.TOONTALK.robot = (function (TT) {
             }
             this.being_trained = true;
             this.set_frontside_conditions(context.copy({just_value: true}));
-            // use miniature robot image for cursor
-            $("*").css({cursor: 'url(' + TT.UTILITIES.absolute_file_path("images/RB19.32x32.PNG") + '), default'});
+            if (!robot_training_this_robot) {
+                // use miniature robot image for cursor
+                $("*").css({cursor: 'url(' + TT.UTILITIES.absolute_file_path("images/RB19.32x32.PNG") + '), default'});
+            }
             TT.UTILITIES.give_tooltip(this.get_frontside_element(), this.get_title());
             backside_element = this.get_backside_element();
             $(backside_element).find(".toontalk-conditions-panel").remove();
             original_backside_widgets_of_context = TT.UTILITIES.copy_widget_sides(context.get_backside_widgets(), {just_value: true});
+            if (TT.robot.robot_training_this_robot()) {
+                TT.robot.robot_training_this_robot().started_training_another(this);
+            }
         };
         new_robot.training_finished = function () {
             var newly_created_widgets = this.get_body().get_newly_created_widgets();
             var i, widget;
-            $("*").css({cursor: ''}); // restore cursor
             for (i = 0; i < newly_created_widgets.length; i++) {
                 widget = newly_created_widgets[i];
                 if (widget.last_action === "drop it on top-level" || widget.last_action === "copy") {
@@ -246,6 +250,8 @@ window.TOONTALK.robot = (function (TT) {
             if (TT.robot.in_training()) {
                 // robot finished training a robot
                 TT.robot.in_training().finished_training_another(this);
+            } else {
+                $("*").css({cursor: ''}); // restore cursor
             }
         };  
         if (next_robot) {
@@ -571,6 +577,16 @@ window.TOONTALK.robot = (function (TT) {
                                               path_to_source: TT.path.get_path_to(source_widget, this)}));
     };
 
+    robot.started_training_another = function (robot_to_train) {
+        var path;
+        this.current_action_name = "start training";
+        path = TT.path.get_path_to(robot_to_train, this);
+        if (path) {
+            this.add_step(TT.robot_action.create(path, this.current_action_name));
+        }
+        this.current_action_name = undefined;
+    };
+
     robot.finished_training_another = function (trained_robot) {
         var path;
         this.current_action_name = "stop training";
@@ -796,11 +812,14 @@ window.TOONTALK.robot = (function (TT) {
         return "robot";
     };
 
-    robot.get_top_level_context_description = function () {
+    robot.get_top_level_context_description = function (toString_info) {
         var frontside_conditions = this.get_frontside_conditions();
         var type = frontside_conditions.get_type_name();
         if (type === 'top-level') {
             return "his workspace";
+        }
+        if (toString_info && toString_info.person === "third") {
+            return "the " + type + " he's working on";
         }
         return "the " + type + " I'm working on";
     };

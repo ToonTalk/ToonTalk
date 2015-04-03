@@ -262,7 +262,7 @@ window.TOONTALK.backside =
                     if (other.dropped_on_other) {
                         other.dropped_on_other(this.get_widget(), true, event, robot);
                     }
-                    if (other.get_body && other.get_body().is_empty() && !other.being_trained) {
+                    if (event && other.get_body && other.get_body().is_empty() && !other.being_trained) {
                         // automate the start of training
                         // delayed so position settles down (needed for touch events)
                         setTimeout(function () {
