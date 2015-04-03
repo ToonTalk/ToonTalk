@@ -130,7 +130,15 @@ window.TOONTALK.robot_action =
                  widget.drop_on(context.get_backside(), false, undefined, robot, true);
              }
              return true;
+         },
+         "stop training": function (trained_robot, context, top_level_context, robot, additional_info) {
+             trained_robot.training_finished();
+             return true;
+         },
+         "train": function (robot_in_training, context, top_level_context, robot, additional_info) {
+             robot_in_training.add_step(additional_info.step);
          }
+
     };
     var pick_up_a_copy_animation = function (widget, context, top_level_context, robot, continuation) {
         var new_continuation = function () {
@@ -437,7 +445,17 @@ window.TOONTALK.robot_action =
               continuation();
               robot.run_next_step();
          },
-         "add a new widget to the work space": animate_widget_creation
+         "add a new widget to the work space": animate_widget_creation,
+         "stop training": function (widget, context, top_level_context, robot, continuation) {
+              // TODO: animate button push
+              continuation();
+              robot.run_next_step();
+         },
+         "train": function (widget, context, top_level_context, robot, continuation) {
+              // TODO: animate?
+              continuation();
+              robot.run_next_step();
+         }
     };
 
     TT.creators_from_json["robot_action"] = function (json, additional_info) {
