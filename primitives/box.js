@@ -735,8 +735,8 @@ window.TOONTALK.box_backside =
             var size_area_drop_handler = 
                 function (event) {
                     var dropped = TT.UTILITIES.input_area_drop_handler(event, box.receive_size_from_dropped.bind(box));
-                    if (dropped && TT.robot.in_training) {
-                        TT.robot.in_training.dropped_on_text_area(dropped, box, {area_selector: ".toontalk-box-size-input",
+                    if (dropped && TT.robot.in_training()) {
+                        TT.robot.in_training().dropped_on_text_area(dropped, box, {area_selector: ".toontalk-box-size-input",
                                                                                  setter: 'receive_size_from_dropped',
                                                                                  toString: "for the box's size"});
                     }
@@ -746,8 +746,8 @@ window.TOONTALK.box_backside =
             var vertical = TT.UTILITIES.create_radio_button("box_orientation", "vertical", "toontalk-vertical-radio-button", "Top to bottom", "Show box vertically.");
             var update_value = function () {
                 var new_size = parseInt(size_input.button.value.trim(), 10);
-                if (box.set_size(new_size, true) && TT.robot.in_training) {
-                    TT.robot.in_training.edited(box, {setter_name: "set_size",
+                if (box.set_size(new_size, true) && TT.robot.in_training()) {
+                    TT.robot.in_training().edited(box, {setter_name: "set_size",
                                                       argument_1: new_size,
                                                       toString: "by changing the number of holes to " + new_size + " of the box",
                                                       button_selector: ".toontalk-box-size-input"});
@@ -758,8 +758,8 @@ window.TOONTALK.box_backside =
                 var orientation = selected_button.value;
                 var is_horizontal = (orientation === "horizontal");
                 box.set_horizontal(is_horizontal, true);
-                if (TT.robot.in_training) {
-                    TT.robot.in_training.edited(box, {setter_name: "set_horizontal",
+                if (TT.robot.in_training()) {
+                    TT.robot.in_training().edited(box, {setter_name: "set_horizontal",
                                                       argument_1: is_horizontal,
                                                       toString: "by changing the orientation to " + orientation + " of the box",
                                                       // just use the first className to find this button later
@@ -839,8 +839,8 @@ window.TOONTALK.box_hole =
             hole.widget_dropped_on_me = function (dropped, is_backside, event, robot) {
                 var box = this.get_parent_of_frontside();
                 var $hole_element;
-                if (TT.robot.in_training && event) {
-                    TT.robot.in_training.dropped_on(dropped, this);
+                if (TT.robot.in_training() && event) {
+                    TT.robot.in_training().dropped_on(dropped, this);
                 }
                 if (event && dropped.save_dimensions) { // and maybe watched robot too?
 //                     dropped.save_dimensions();

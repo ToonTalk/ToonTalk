@@ -6,10 +6,23 @@
  
  /*jslint browser: true, devel: true, plusplus: true, vars: true, white: true */
 
-window.TOONTALK.robot = (function (TT) {
+
+(function () {
     "use strict";
+    // for robots to train robot need a stack of robots
+    // this in the scope where both robots and their backsides have access
+    var stack_of_robots_in_training = [];
+
+window.TOONTALK.robot = (function (TT) {
+   
     var robot = Object.create(TT.widget);
-    
+
+    robot.in_training = function () {
+        if (stack_of_robots_in_training.length > 0) {
+            return stack_of_robots_in_training[stack_of_robots_in_training.length-1];
+        }
+    };
+ 
     robot.create = function (frontside_conditions, backside_conditions, body, description, thing_in_hand, run_once, next_robot) {
         // frontside_conditions holds a widget that needs to be matched against the frontside of the widget to run
         // backside_conditions holds an object whose keys are type_names of required widgets on the backside
@@ -135,7 +148,7 @@ window.TOONTALK.robot = (function (TT) {
                 return;
             }
             thing_in_hand = new_value;
-            if (thing_in_hand && !TT.robot.in_training && this.visible()) {
+            if (thing_in_hand && !TT.robot.in_training() && this.visible()) {
                 // update display immediately so thing in hand is in the DOM
                 // while training need to wait if resource for it to be copied when dropped
                 this.update_display();
@@ -223,7 +236,7 @@ window.TOONTALK.robot = (function (TT) {
             this.being_trained = false;
             TT.UTILITIES.give_tooltip(this.get_frontside_element(), this.get_title());
             this.backup_all();
-            TT.robot.in_training = undefined;
+            stack_of_robots_in_training.pop();
         };  
         if (next_robot) {
             // this will update first_in_team for subsequent robots
@@ -914,11 +927,11 @@ window.TOONTALK.robot_backside =
             $(run_once_input.button).click(function (event) {
                 var keep_running = run_once_input.button.checked;
                 robot.set_run_once(!keep_running);
-                if (TT.robot.in_training) {
-                    TT.robot.in_training.edited(robot, {setter_name: "set_run_once",
-                                                        argument_1: !keep_running,
-                                                        toString: "change to " + (keep_running ? "run again" : "run once") + " of the robot",
-                                                        button_selector: ".toontalk-run-once-check-box"});
+                if (TT.robot.in_training()) {
+                    TT.robot.in_training().edited(robot, {setter_name: "set_run_once",
+                                                          argument_1: !keep_running,
+                                                          toString: "change to " + (keep_running ? "run again" : "run once") + " of the robot",
+                                                          button_selector: ".toontalk-run-once-check-box"});
                 }
                 event.stopPropagation();
             });
@@ -986,7 +999,7 @@ window.TOONTALK.robot_backside =
                 change_label_and_title();
                 if (training) {
                     robot.get_body().reset_steps();
-                    TT.robot.in_training = robot;
+                    stack_of_robots_in_training.push(robot);
                     robot.training_started();
                 } else {
                     robot.training_finished();
@@ -1000,3 +1013,5 @@ window.TOONTALK.robot_backside =
 }(window.TOONTALK));
 
 window.TOONTALK.robot.empty_drop_area_instructions = "Drop a robot here who will try to run when this robot can't run."
+
+}());

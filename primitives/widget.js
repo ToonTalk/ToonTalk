@@ -1007,8 +1007,8 @@ window.TOONTALK.widget = (function (TT) {
                 container_widget.add_backside_widget(widget_copy);
 //              console.log("Added the copy " + widget_copy + " (" + widget_copy.debug_id + ") to " + container_widget + " (" + container_widget.debug_id + ")");
             }
-            if (TT.robot.in_training) {
-                TT.robot.in_training.copied(this, widget_copy, false);
+            if (TT.robot.in_training()) {
+                TT.robot.in_training().copied(this, widget_copy, false);
             }
             return widget_copy;
         },
@@ -1040,8 +1040,8 @@ window.TOONTALK.widget = (function (TT) {
         drag_started: function (json, is_resource) {
             // by default records this if robot is being trained
             // widgets may override this behaviour
-            if (TT.robot.in_training) {
-                TT.robot.in_training.picked_up(this, json, is_resource);
+            if (TT.robot.in_training()) {
+                TT.robot.in_training().picked_up(this, json, is_resource);
             }
         },
         
@@ -1231,8 +1231,8 @@ window.TOONTALK.widget = (function (TT) {
             top_level_widget.add_backside_widget(widget);
             top_level_widget.get_backside_element().appendChild(widget_frontside_element);
             widget.render();
-            if (train && TT.robot.in_training) {
-                TT.robot.in_training.dropped_on(widget, top_level_widget);
+            if (train && TT.robot.in_training()) {
+                TT.robot.in_training().dropped_on(widget, top_level_widget);
             }
             return widget_frontside_element;
         },
@@ -1322,7 +1322,7 @@ window.TOONTALK.widget = (function (TT) {
             widget = widget.runnable(widget);
             widget = widget.has_parent(widget);
             widget.removed_from_container = function (other, backside_removed, event, index, ignore_if_not_on_backside) {
-                if (!TT.robot.in_training) {
+                if (!TT.robot.in_training()) {
                    // robots in training take care of this (and need to to record things properly)
                    this.remove_backside_widget(other, backside_removed, ignore_if_not_on_backside);
                 };

@@ -244,8 +244,8 @@ window.TOONTALK.sensor_backside =
             $(activate_switch.button).click(function (event) {
                 var active = activate_switch.button.checked;
                 sensor.set_active(active);
-                if (TT.robot.in_training) {
-                    TT.robot.in_training.edited(robot, {setter_name: "set_active",
+                if (TT.robot.in_training()) {
+                    TT.robot.in_training().edited(robot, {setter_name: "set_active",
                                                         argument_1: active,
                                                         toString: "change to " + (active ? "active" : "inactive") + " of the " + sensor,
                                                         button_selector: ".toontalk-sensor-active-check-box"});
