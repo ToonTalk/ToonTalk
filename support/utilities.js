@@ -1653,15 +1653,24 @@ window.TOONTALK.UTILITIES =
             var source_absolute_position = $(source_element).offset();
             var source_relative_position = $(source_element).position();
             var distance = TT.UTILITIES.distance(target_absolute_position, source_absolute_position);
-            var remove_transition_class, duration;
+            var left, top, remove_transition_class, duration;
             if (!speed) {
                 speed = .5; // a half a pixel per millisecond -- so roughly two seconds to cross a screen
             }
             duration = Math.round(distance/speed);
             $(source_element).addClass("toontalk-side-animating");
             source_element.style.transitionDuration = duration+"ms";
-            source_element.style.left = (source_relative_position.left + (target_absolute_position.left - source_absolute_position.left)) + "px";
-            source_element.style.top =  (source_relative_position.top  + (target_absolute_position.top -  source_absolute_position.top )) + "px";
+            left = source_relative_position.left + (target_absolute_position.left - source_absolute_position.left);
+            top  = source_relative_position.top  + (target_absolute_position.top -  source_absolute_position.top);
+            source_element.style.left = left + "px";
+            source_element.style.top =  top  + "px";
+            if (source_element.toontalk_followed_by) {
+                target_absolute_position.left += source_element.toontalk_followed_by.left_offset;
+                target_absolute_position.top  += source_element.toontalk_followed_by.top_offset;
+                TT.UTILITIES.animate_to_absolute_position(source_element.toontalk_followed_by.element, target_absolute_position, undefined, speed, more_animation_follows);
+//                 source_element.toontalk_followed_by.element.style.left = (left+source_element.toontalk_followed_by.left_offset) + "px";
+//                 source_element.toontalk_followed_by.element.style.top  = (top +source_element.toontalk_followed_by.top_offset)  + "px";
+            }
             if (!more_animation_follows) {
                 remove_transition_class = function () {
                     $(source_element).removeClass("toontalk-side-animating");

@@ -467,17 +467,23 @@ window.TOONTALK.robot_action =
          "add a new widget to the work space": animate_widget_creation,
          "start training": function (robot_to_train, context, top_level_context, robot, continuation) {
               var backside_of_other = robot_to_train.open_backside();
+              var robot_to_train_frontside_element = robot_to_train.get_frontside_element();
               if (backside_of_other) {
                   $(backside_of_other.get_element()).find(".toontalk-train-backside-button").click();
               } 
               continuation();
-              $(robot_to_train.get_frontside_element()).addClass("toontalk-robot-animating toontalk-robot-being-trained-by-robot");
+              $(robot_to_train_frontside_element).addClass("toontalk-robot-animating toontalk-robot-being-trained-by-robot");
+              robot_to_train_frontside_element.toontalk_followed_by = {element: robot.get_frontside_element(),
+                                                                       left_offset: 30,
+                                                                       top_offset: -20};
               robot.run_next_step();
          },
          "stop training": function (trained_robot, context, top_level_context, robot, continuation, additional_info) {
               var new_continuation = function () {
-                  $(trained_robot.get_backside_element()).find(".toontalk-train-backside-button").button("option", "label", "Re-train");
-                  $(trained_robot.get_frontside_element()).removeClass("toontalk-robot-animating toontalk-robot-being-trained-by-robot");
+                  var trained_robot_frontside_element = trained_robot.get_backside_element();
+                  $(trained_robot_frontside_element).find(".toontalk-train-backside-button").button("option", "label", "Re-train");
+                  $(trained_robot_frontside_element).removeClass("toontalk-robot-animating toontalk-robot-being-trained-by-robot");
+                  trained_robot_frontside_element.toontalk_followed_by = undefined;
                   continuation();
               };
               button_use_animation(trained_robot, context, top_level_context, robot, new_continuation, ".toontalk-train-backside-button", additional_info, 1000);
