@@ -79,9 +79,9 @@ window.TOONTALK.sensor = (function (TT) {
             // so TT.UTILITIES.copy_widget_sides(contents) not appropriate
             // so perhaps this should be in the same expression as nest to share privately...
             if (parameters) {
-                copy = TT.sensor.create(event_name, attribute, description, undefined, (parameters.copying_resource || active), parameters.widget);
+                copy = TT.sensor.create(event_name, attribute, description, undefined, (parameters.copying_resource || active), widget);
             } else {
-                copy = TT.sensor.create(event_name, attribute, description, undefined, active, parameters ? undefined : widget);
+                copy = TT.sensor.create(event_name, attribute, description, undefined, active, widget);
             }
             return new_sensor.add_to_copy(copy, parameters);
         };
