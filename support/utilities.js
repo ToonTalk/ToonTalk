@@ -1654,6 +1654,7 @@ window.TOONTALK.UTILITIES =
             var source_relative_position = $(source_element).position();
             var distance = TT.UTILITIES.distance(target_absolute_position, source_absolute_position);
             var left, top, remove_transition_class, duration;
+            $(source_element).css({"z-index": TT.UTILITIES.next_z_index()});
             if (!speed) {
                 speed = .5; // a half a pixel per millisecond -- so roughly two seconds to cross a screen
             }
@@ -1668,8 +1669,6 @@ window.TOONTALK.UTILITIES =
                 target_absolute_position.left += source_element.toontalk_followed_by.left_offset;
                 target_absolute_position.top  += source_element.toontalk_followed_by.top_offset;
                 TT.UTILITIES.animate_to_absolute_position(source_element.toontalk_followed_by.element, target_absolute_position, undefined, speed, more_animation_follows);
-//                 source_element.toontalk_followed_by.element.style.left = (left+source_element.toontalk_followed_by.left_offset) + "px";
-//                 source_element.toontalk_followed_by.element.style.top  = (top +source_element.toontalk_followed_by.top_offset)  + "px";
             }
             if (!more_animation_follows) {
                 remove_transition_class = function () {

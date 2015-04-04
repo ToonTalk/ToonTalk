@@ -391,6 +391,7 @@ window.TOONTALK.robot_action =
                 backside.set_advanced_settings_showing(true, backside.get_element());
             }
             // robots move at 1/4 pixel per millisecond for clarity
+            robot.animate_to_element(button_element, new_continuation, .25, 0, 0);
         }
         var backside;
         if (!button_visible && widget.open_backside) {
