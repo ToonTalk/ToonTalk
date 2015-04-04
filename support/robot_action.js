@@ -497,6 +497,12 @@ window.TOONTALK.robot_action =
     };
     var open_backside_animation = function (widget, context, top_level_context, robot, continuation) {
         widget.open_backside(function () {
+                                 // restore things at cycle end in case the robot wasn't trained to close backsides
+                                 robot.add_body_finished_listener(function () {
+                                     if (widget.get_backside()) {
+                                         widget.get_backside().hide_backside();
+                                     }
+                                 });
                                  continuation();
                                  robot.run_next_step();
                              });
