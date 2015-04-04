@@ -440,6 +440,15 @@ window.TOONTALK.robot_action =
             robot.run_next_step();
         }      
     };
+    var animate_training_step = function (action, robot_being_trained, context, top_level_context, robot, continuation) {
+        var watched_step = action.run_watched;
+        if (!watched_step) {
+            continuation();
+            return;
+        }
+        robot_being_trained.run_next_step = continuation;
+        watched_step(robot_being_trained.get_parent_of_frontside().get_widget(), top_level_context, robot_being_trained);
+    };
     var watched_run_functions = 
         {"copy":                           copy_animation,
          "pick up":                        pick_up_animation,
@@ -471,10 +480,12 @@ window.TOONTALK.robot_action =
               };
               button_use_animation(trained_robot, context, top_level_context, robot, new_continuation, ".toontalk-train-backside-button", additional_info, 1000);
          },
-         "train": function (widget, context, top_level_context, robot, continuation) {
-              // TODO: animate?
-              continuation();
-              robot.run_next_step();
+         "train": function (robot_being_trained, context, top_level_context, robot, continuation, additional_info) {
+             var new_continuation = function () {
+                  continuation();
+                  robot.run_next_step();
+             }
+             animate_training_step(additional_info.step, robot_being_trained, context, top_level_context, robot, new_continuation);
          }
     };
 
