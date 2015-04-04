@@ -238,6 +238,10 @@ window.TOONTALK.actions =
                 step_descriptions.pop();
             }
             step_descriptions.forEach(function (step_description, index) {
+                if (!step_description) {
+                    // e.g. an empty string -- ignore it
+                    return;
+                }
                 description += step_description;
                 if (index === step_descriptions.length-2) {
                     description += " and \n";

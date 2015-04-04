@@ -601,6 +601,10 @@ window.TOONTALK.robot_action =
                 var suffix = "";
                 var prefix = "";
                 var path_description;
+                if (action_name === "open the backside" || action_name === "close the backside") {
+                    // not interesting enough
+                    return "";
+                }
                 if (action_name === "add a new widget to the work space") {
                     return action_name.replace("a new widget", TT.path.toString(path));
                 }

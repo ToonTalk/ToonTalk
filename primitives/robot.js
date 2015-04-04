@@ -589,12 +589,12 @@ window.TOONTALK.robot = (function (TT) {
     };
 
     robot.backside_opened = function (widget) {
-        var action_name = "open backside";
+        var action_name = "open the backside";
         add_step_to_robot(widget, action_name, this);
     };
 
     robot.backside_closed = function (widget) {
-        var action_name = "close backside";
+        var action_name = "close the backside";
         add_step_to_robot(widget, action_name, this);
     };
    
