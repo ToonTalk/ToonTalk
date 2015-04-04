@@ -256,8 +256,11 @@ window.TOONTALK.robot = (function (TT) {
             }
         };
         new_robot.training_finished = function () {
-            var newly_created_widgets = this.get_body().get_newly_created_widgets();
-            var i, widget;
+            if (!this.being_trained) {
+                return; // already finished -- perhaps a watched robot was training another
+            }
+            var newly_created_widgets, i, widget;
+            newly_created_widgets = this.get_body().get_newly_created_widgets();
             for (i = 0; i < newly_created_widgets.length; i++) {
                 widget = newly_created_widgets[i];
                 if (widget.last_action === "drop it on top-level" || widget.last_action === "copy") {
@@ -1124,8 +1127,8 @@ window.TOONTALK.robot_backside =
             var $train_button = $("<button>Train</button>").button();
             $train_button.addClass("toontalk-train-backside-button");
             var training = false;
-            var change_label_and_title = function () {
-                if (training) {
+            backside.change_label_and_title_of_train_button = function (training_started) {
+                if (training_started) {
                     $train_button.button("option", "label", "Stop training");
                     TT.UTILITIES.give_tooltip($train_button.get(0), "Click to stop training this robot.");
                 } else {
@@ -1135,16 +1138,16 @@ window.TOONTALK.robot_backside =
                     } else {
                         $train_button.button("option", "label", "Re-train");
                         TT.UTILITIES.give_tooltip($train_button.get(0), "Click to start training this robot all over again.");
-                    }
+                    }  
                 }
                 if ($(backside_element).is(":visible")) {
                     add_conditions_area(backside_element, robot);
                 }
             };
-            change_label_and_title();
+            backside.change_label_and_title_of_train_button(training);
             $train_button.click(function (event) {
                 training = !training;
-                change_label_and_title();
+                backside.change_label_and_title_of_train_button(training);
                 if (training) {
                     robot.get_body().reset_steps();
                     stack_of_robots_in_training.push(robot);
