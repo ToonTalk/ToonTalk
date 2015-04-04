@@ -16931,5 +16931,224 @@ top level widget
     }
   ]
 }</div></div>
+<p>A robot training a robot to add 1:</p>
+<div class='toontalk-json'>
+This will be replaced by a work area containing one thing: a robot.
+top level widget
+<div style='display:none;'>{
+  "semantic": {
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "robot",
+            "frontside_conditions": {
+              "type": "top_level"
+            },
+            "body": {
+              "type": "body",
+              "steps": [
+                {
+                  "type": "robot_action",
+                  "action_name": "pick up",
+                  "path": {
+                    "type": "path.to_resource",
+                    "resource": {
+                      "type": "number",
+                      "operator": "+",
+                      "numerator": "1",
+                      "denominator": "1",
+                      "format": "improper_fraction",
+                      "is_backside": true
+                    }
+                  },
+                  "additional_info": {
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "drop it on",
+                  "path": {
+                    "type": "path.to_entire_context",
+                    "is_backside": true
+                  },
+                  "additional_info": {
+                    "left_offset_fraction": 0.02158894645941278,
+                    "top_offset_fraction": 0.025240384615384616,
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "open the backside",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 0
+                  },
+                  "additional_info": {
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "pick up",
+                  "path": {
+                    "type": "path.to_resource",
+                    "resource": {
+                      "type": "robot",
+                      "body": {
+                        "type": "body",
+                        "steps": []
+                      },
+                      "is_backside": true
+                    }
+                  },
+                  "additional_info": {
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "drop it on",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 0,
+                    "is_backside": true
+                  },
+                  "additional_info": {
+                    "left_offset_fraction": 0.5021306818181818,
+                    "top_offset_fraction": 0.299921875,
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "start training",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 1
+                  },
+                  "additional_info": {
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "train",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 1
+                  },
+                  "additional_info": {
+                    "step": {
+                      "json": {
+                        "type": "robot_action",
+                        "action_name": "pick up",
+                        "path": {
+                          "type": "path.to_resource",
+                          "resource": {
+                            "type": "number",
+                            "operator": "+",
+                            "numerator": "1",
+                            "denominator": "1",
+                            "format": "improper_fraction",
+                            "is_backside": true
+                          }
+                        },
+                        "additional_info": {
+                          "running_watched": true
+                        }
+                      }
+                    },
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "train",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 1
+                  },
+                  "additional_info": {
+                    "step": {
+                      "json": {
+                        "type": "robot_action",
+                        "action_name": "drop it on",
+                        "path": {
+                          "type": "path.to_entire_context"
+                        },
+                        "additional_info": {
+                          "running_watched": true
+                        }
+                      }
+                    },
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "stop training",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 1
+                  },
+                  "additional_info": {
+                    "running_watched": true
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "change whether erased",
+                  "path": {
+                    "type": "path_to_robot_conditions",
+                    "path_to_robot": {
+                      "type": "newly_created_widgets_path",
+                      "index": 1
+                    },
+                    "path_within_conditions": "entire_condition"
+                  },
+                  "additional_info": {
+                    "running_watched": true
+                  }
+                }
+              ]
+            },
+            "run_once": true
+          },
+          "view": {
+            "frontside_width": 66,
+            "frontside_height": 110,
+            "frontside_left": 630.65625,
+            "frontside_top": 37.46875,
+            "saved_width": 66,
+            "saved_height": 110,
+            "backside": false
+          },
+          "version": 1
+        }
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgba(245, 240, 240, 0.941176)",
+    "backside_width": 749,
+    "backside_height": 278,
+    "backside_left": 8,
+    "backside_top": 184.1875,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1,
+      "original_width": 1136,
+      "original_height": 467
+    },
+    "backside": true,
+    "drag_x_offset": 217,
+    "drag_y_offset": 144.8125
+  },
+  "version": 1
+}</div></div>
 </body>
 </html>
