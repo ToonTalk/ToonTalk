@@ -318,9 +318,12 @@ window.TOONTALK.robot = (function (TT) {
         return this.add_to_copy(copy, parameters);
     };
     
-    robot.match = function () {
+    robot.match = function (other) {
         // no need to do more -- any robot matches any other
-        return "matched";
+        if (other.is_robot()) {
+            return "matched";
+        }
+        return this;
     };
     
     robot.run = function (context, top_level_context, queue) {
@@ -361,8 +364,6 @@ window.TOONTALK.robot = (function (TT) {
                     }.bind(this));
                 }
             }
-//         } else if (!this.match_status) {
-//             this.match_status = 'not matched';
         }
 //      console.log("robot#" + this.debug_id + " match_status is " + this.match_status);
         if (this.match_status === 'matched') {
