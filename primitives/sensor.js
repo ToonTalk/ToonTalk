@@ -78,7 +78,11 @@ window.TOONTALK.sensor = (function (TT) {
             // there is an issue about sensor having access to nest's contents
             // so TT.UTILITIES.copy_widget_sides(contents) not appropriate
             // so perhaps this should be in the same expression as nest to share privately...
-            copy = TT.sensor.create(event_name, attribute, description, undefined, active, parameters ? undefined : widget);
+            if (parameters) {
+                copy = TT.sensor.create(event_name, attribute, description, undefined, (parameters.copying_resource || active), parameters.widget);
+            } else {
+                copy = TT.sensor.create(event_name, attribute, description, undefined, active, parameters ? undefined : widget);
+            }
             return new_sensor.add_to_copy(copy, parameters);
         };
         new_sensor.get_json = function (json_history) {

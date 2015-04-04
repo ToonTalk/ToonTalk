@@ -247,7 +247,7 @@ window.TOONTALK.path =
             // revisit this if resources are ever backside resources
             widget = widget.get_widget(); // if widget is really the backside of the widget
             return {dereference_path: function (context, top_level_context, robot) {
-                        var widget_copy = widget.copy();
+                        var widget_copy = widget.copy({copying_resource: true});
                         var widget_frontside_element, widget_frontside_position, copy_frontside_element;
                         robot.add_newly_created_widget(widget_copy);
                         if (robot.visible() && !widget.visible()) {
