@@ -1467,7 +1467,8 @@ window.TOONTALK.UTILITIES =
             $(".toontalk-top-level-resource.toontalk-side").each(function (index, element) {
                 var owner = TT.UTILITIES.widget_from_jquery( $(element));
                 if (owner && ((widget.equals && widget.equals(owner)) ||
-                              ((widget.matching_resource && widget.matching_resource(owner))))) {
+                              (widget.matching_resource && widget.matching_resource(owner)) ||
+                              (widget.match(owner) === 'matched'))) {
                     element_found = element;
                     return false; // stop the 'each'
                 }
