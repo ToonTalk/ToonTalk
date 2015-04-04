@@ -821,6 +821,13 @@ window.TOONTALK.robot = (function (TT) {
         return "robot";
     };
 
+    robot.matching_resource = function (other) {
+        // untrained robots match each other
+        return other.is_robot() &&
+               !this .get_frontside_conditions() &&
+               !other.get_frontside_conditions();
+    };
+
     robot.get_top_level_context_description = function (toString_info) {
         var frontside_conditions = this.get_frontside_conditions();
         var type = frontside_conditions.get_type_name();
