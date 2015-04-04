@@ -457,7 +457,10 @@ window.TOONTALK.robot_action =
          },
          "add a new widget to the work space": animate_widget_creation,
          "start training": function (robot_to_train, context, top_level_context, robot, continuation) {
-              // TODO: animate
+             var backside_of_other = robot_to_train.open_backside();
+             if (backside_of_other) {
+                 $(backside_of_other.get_element()).find(".toontalk-train-backside-button").click();
+              } 
               continuation();
               robot.run_next_step();
          },
