@@ -381,7 +381,8 @@ window.TOONTALK.bird = (function (TT) {
                 copy = this.create(undefined, this.get_description());
             } else {
                 nest_guid = nest.get_guid();
-                if (parameters.nests_copied && parameters.nests_copied[nest_guid]) {
+                if (nest_guid && parameters.nests_copied && parameters.nests_copied[nest_guid]) {
+                    // function nests don't have guids
                     new_nest = parameters.nests_copied[nest_guid][0];
                     // turn first copy into a 'fresh' copy
                     make_nest_fresh.call(new_nest);
@@ -396,11 +397,13 @@ window.TOONTALK.bird = (function (TT) {
                 if (!parameters.birds_copied) {
                     parameters.birds_copied = {};
                 }
-                if (!parameters.birds_copied[nest_guid]) {
-                    parameters.birds_copied[nest_guid] = [];
-                }
-                // add to birds of this nest copied before the nest is (if at all)
-                parameters.birds_copied[nest_guid].push(copy);       
+                if (nest_guid) {
+                    if (!parameters.birds_copied[nest_guid]) {
+                        parameters.birds_copied[nest_guid] = [];
+                    }
+                    // add to birds of this nest copied before the nest is (if at all)
+                    parameters.birds_copied[nest_guid].push(copy);
+                } 
             }
             return this.add_to_copy(copy, parameters);
         };
@@ -1273,6 +1276,11 @@ window.TOONTALK.nest = (function (TT) {
             get_widget:
                 function () {
                     return this;
+                },
+            get_guid: 
+                function () {
+                    // doesn't have a guid since function nests are stateless and can be shared
+                    return;
                 },
             // following needed for bird to just pass along the contents
             has_ancestor:            return_false,
