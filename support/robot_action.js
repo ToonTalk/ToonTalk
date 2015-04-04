@@ -348,7 +348,7 @@ window.TOONTALK.robot_action =
         var backside_element = widget.get_backside_element(true);
         return $(backside_element).find(class_name_selector).get(0);
     };
-    var button_use_animation = function (widget, context, top_level_context, robot, continuation, class_name_selector, additional_info, delay_before_closing_backside) {
+    var button_use_animation = function (widget, context, top_level_context, robot, continuation, class_name_selector, additional_info, delay) {
         var button_element = find_backside_element(widget, class_name_selector);
         var robot_frontside_element = robot.get_frontside_element();
         var button_visible = button_element && $(button_element).is(":visible");
@@ -370,7 +370,7 @@ window.TOONTALK.robot_action =
                            }
                            robot.run_next_step();
                       },
-                      delay_before_closing_backside);
+                      delay);
         };
         var animation_continuation = function () {
             if (!$(button_element).is(":visible") && backside) {
@@ -464,13 +464,12 @@ window.TOONTALK.robot_action =
               continuation();
               robot.run_next_step();
          },
-         "stop training": function (trained_robot, context, top_level_context, robot, continuation) {
-              // TODO: animate button push
-              setTimeout(function () {
+         "stop training": function (trained_robot, context, top_level_context, robot, continuation, additional_info) {
+              var new_continuation = function () {
                   $(trained_robot.get_backside_element()).find(".toontalk-train-backside-button").button("option", "label", "Re-train");
-              });
-              continuation();
-              robot.run_next_step();
+                  continuation();
+              };
+              button_use_animation(trained_robot, context, top_level_context, robot, new_continuation, ".toontalk-train-backside-button", additional_info, 1000);
          },
          "train": function (widget, context, top_level_context, robot, continuation) {
               // TODO: animate?
