@@ -1462,7 +1462,9 @@ window.TOONTALK.UTILITIES =
         
         find_resource_equal_to_widget: function (widget) {
             var element_found;
-            $(".toontalk-top-level-resource").each(function (index, element) {
+            // toontalk-top-level-resource is used for a DIV and its child -- TODO rationalise this
+            // here only consider the child ones
+            $(".toontalk-top-level-resource.toontalk-side").each(function (index, element) {
                 var owner = TT.UTILITIES.widget_from_jquery( $(element));
                 if (owner && ((widget.equals && widget.equals(owner)) ||
                               ((widget.matching_resource && widget.matching_resource(owner))))) {
