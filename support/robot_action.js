@@ -149,6 +149,10 @@ window.TOONTALK.robot_action =
          "close the backside": function () {
              // no need to do this if unwatched
              return true;
+         },
+         "click the button": function () {
+             // no need to do this if unwatched
+             return true;
          }
     };
     var pick_up_a_copy_animation = function (widget, context, top_level_context, robot, continuation) {
@@ -362,7 +366,7 @@ window.TOONTALK.robot_action =
         var robot_frontside_element = robot.get_frontside_element();
         var button_visible = button_element && $(button_element).is(":visible");
         var new_continuation = function () {
-            continuation();
+            continuation(button_element);
             $(button_element).addClass("ui-state-active");
             if (class_name_selector === ".toontalk-select-function" || class_name_selector === ".toontalk-box-size-input") {
                 button_element.value = additional_info.argument_1;
@@ -502,6 +506,13 @@ window.TOONTALK.robot_action =
         continuation();
         robot.run_next_step();
     };
+    var click_button_animation = function (widget, context, top_level_context, robot, continuation, additional_info) {
+        var new_continuation = function (button_element) {
+            $(button_element).click();
+            continuation();
+        };
+        button_use_animation(widget, context, top_level_context, robot, new_continuation, additional_info.button_selector);
+    };
     var watched_run_functions = 
         {"copy":                              copy_animation,
          "pick up":                           pick_up_animation,
@@ -522,7 +533,8 @@ window.TOONTALK.robot_action =
          "stop training":                      stop_training_animation,
          "train":                              train_another_animation,
          "open the backside":                  open_backside_animation,
-         "close the backside":                 close_backside
+         "close the backside":                 close_backside,
+         "click the button":                   click_button_animation
     };
 
     TT.creators_from_json["robot_action"] = function (json, additional_info) {
@@ -601,7 +613,9 @@ window.TOONTALK.robot_action =
                 var suffix = "";
                 var prefix = "";
                 var path_description;
-                if (action_name === "open the backside" || action_name === "close the backside") {
+                if (action_name === "open the backside" || 
+                    action_name === "close the backside" ||
+                    action_name === "click the button") {
                     // not interesting enough
                     return "";
                 }

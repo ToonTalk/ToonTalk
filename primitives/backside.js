@@ -730,6 +730,9 @@ window.TOONTALK.backside =
                     settings_showing = !settings_showing;
                     this.set_advanced_settings_showing(settings_showing, backside.get_element(), $settings_button);
                     event.stopPropagation();
+                    if (TT.robot.in_training()) {
+                        TT.robot.in_training().button_clicked(".toontalk-settings-backside-button", backside);   
+                    }
             }.bind(this));
             TT.UTILITIES.give_tooltip($settings_button.get(0), "Click to see the advanced settings of this " + widget.get_type_name() + ".");
             return $settings_button.get(0);

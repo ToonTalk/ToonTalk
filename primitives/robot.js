@@ -597,6 +597,11 @@ window.TOONTALK.robot = (function (TT) {
         var action_name = "close the backside";
         add_step_to_robot(widget, action_name, this);
     };
+
+    robot.button_clicked = function (selector, widget_side) {
+        var action_name = "click the button";
+        add_step_to_robot(widget_side.get_widget(), action_name, this, {button_selector: selector});
+    };
    
     robot.created_widget = function (new_widget, source_widget, button_selector) {
         this.add_newly_created_widget(new_widget);
