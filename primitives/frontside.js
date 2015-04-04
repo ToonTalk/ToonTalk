@@ -33,6 +33,9 @@ window.TOONTALK.frontside =
                     }
                 } else {
                     widget.open_backside();
+                    if (TT.robot.in_training()) {
+                        TT.robot.in_training().backside_opened(widget);
+                    }
                 }
                 event.stopPropagation();
             };

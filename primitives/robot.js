@@ -14,6 +14,17 @@
     var stack_of_robots_in_training = [];
 
 window.TOONTALK.robot = (function (TT) {
+
+    var add_step_to_robot = function (widget, action_name, robot, additional_info, new_widget) {
+        var path;
+        robot.current_action_name = action_name;
+        // following relies on current_action_name being set
+        path = TT.path.get_path_to(widget, robot);
+        if (path) {
+            robot.add_step(TT.robot_action.create(path, action_name, additional_info), new_widget);
+        }
+        robot.current_action_name = undefined;
+    };
    
     var robot = Object.create(TT.widget);
 
@@ -523,43 +534,23 @@ window.TOONTALK.robot = (function (TT) {
         }
     };
 
-    robot.dropped_on_text_area = function (source_widget, target_widget, details) {
-        var path;
-        this.current_action_name = "drop it on the text area of";
-        path = TT.path.get_path_to(target_widget, this);
-        if (path) {
-            this.add_step(TT.robot_action.create(path, this.current_action_name, details));
-        }
-        source_widget.last_action = this.current_action_name + " " + target_widget.get_type_name();
-        this.current_action_name = undefined;
+    robot.dropped_on_text_area = function (widget, target_widget, details) {
+        var action_name = "drop it on the text area of";
+        add_step_to_robot(widget, action_name, this, details);
+        widget.last_action = action_name + " " + target_widget.get_type_name();
         this.set_thing_in_hand(undefined);
     };
     
     robot.copied = function (widget, widget_copy, picked_up) {
-        var path;
-        if (picked_up) {
-            this.current_action_name = "pick up a copy of";
-        } else {
-            this.current_action_name = "copy";
-        }
-        path = TT.path.get_path_to(widget, this);
-        if (path) {
-            this.add_step(TT.robot_action.create(path, this.current_action_name), widget_copy);
-        }
-        widget_copy.last_action = this.current_action_name;
-        this.current_action_name = undefined;
+        var action_name = picked_up ? "pick up a copy of" : "copy";
+        add_step_to_robot(widget, action_name, this, undefined, widget_copy);
+        widget_copy.last_action = action_name;
     };
     
     robot.removed = function (widget) {
-        var context = this.get_context();
-        var path;
-        this.current_action_name = "remove";
-        path = TT.path.get_path_to(widget, this);
-        if (path) {
-            this.add_step(TT.robot_action.create(path, this.current_action_name));
-        }
-        widget.last_action = this.current_action_name;
-        this.current_action_name = undefined;
+        var action_name = "remove";
+        add_step_to_robot(widget, action_name, this);
+        widget.last_action = action_name;
         if (context === widget || widget === this) {
             // robot is vacuuming up its context (and itself) or itself
             // TODO: add some animation to make clearer what is happening
@@ -573,27 +564,40 @@ window.TOONTALK.robot = (function (TT) {
     };
     
     robot.edited = function (widget, details) {
-        var path;
-        this.current_action_name = "edit";
-        path = TT.path.get_path_to(widget, this);
-        if (path) {
-            this.add_step(TT.robot_action.create(path, this.current_action_name, details));
-        }
-        // no need to update widget.last_action = this.current_action_name;
-        this.current_action_name = undefined;
+        var action_name = "edit";
+        add_step_to_robot(widget, action_name, this, details);
     };
     
     robot.erased_widget = function (widget) {
-        var path;
-        this.current_action_name = "change whether erased";
-        path = TT.path.get_path_to(widget, this);
-        if (path) {
-            this.add_step(TT.robot_action.create(path, this.current_action_name));
-        }
-        // no need to update widget.last_action = this.current_action_name;
-        this.current_action_name = undefined;
+        var action_name = "change whether erased";
+        add_step_to_robot(widget, action_name, this);
     };
 
+    robot.started_training_another = function (robot_to_train) {
+        var action_name = "start training";
+        add_step_to_robot(robot_to_train, action_name, this);
+    };
+
+    robot.finished_training_another = function (trained_robot) {
+        var action_name = "stop training";
+        add_step_to_robot(trained_robot, action_name, this);
+    };
+
+    robot.trained = function (robot_in_training, step_trained) {
+        var action_name = "stop training";
+        add_step_to_robot(robot_in_training, action_name, this, {step: step_trained});  
+    };
+
+    robot.backside_opened = function (widget) {
+        var action_name = "open backside";
+        add_step_to_robot(widget, action_name, this);
+    };
+
+    robot.backside_closed = function (widget) {
+        var action_name = "close backside";
+        add_step_to_robot(widget, action_name, this);
+    };
+   
     robot.created_widget = function (new_widget, source_widget, button_selector) {
         this.add_newly_created_widget(new_widget);
         this.add_to_top_level_backside(new_widget, false);
@@ -601,36 +605,6 @@ window.TOONTALK.robot = (function (TT) {
                                              "add a new widget to the work space",
                                              {button_selector: button_selector,
                                               path_to_source: TT.path.get_path_to(source_widget, this)}));
-    };
-
-    robot.started_training_another = function (robot_to_train) {
-        var path;
-        this.current_action_name = "start training";
-        path = TT.path.get_path_to(robot_to_train, this);
-        if (path) {
-            this.add_step(TT.robot_action.create(path, this.current_action_name));
-        }
-        this.current_action_name = undefined;
-    };
-
-    robot.finished_training_another = function (trained_robot) {
-        var path;
-        this.current_action_name = "stop training";
-        path = TT.path.get_path_to(trained_robot, this);
-        if (path) {
-            this.add_step(TT.robot_action.create(path, this.current_action_name));
-        }
-        this.current_action_name = undefined;
-    };
-
-    robot.trained = function (robot_in_training, step_trained) {
-        var path;
-        this.current_action_name = "train";
-        path = TT.path.get_path_to(robot_in_training, this);
-        if (path) {
-            this.add_step(TT.robot_action.create(path, this.current_action_name, {step: step_trained}));
-        }
-        this.current_action_name = undefined;   
     };
 
     robot.get_newly_created_widgets = function () {

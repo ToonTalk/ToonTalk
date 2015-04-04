@@ -1163,6 +1163,13 @@ window.TOONTALK.widget = (function (TT) {
             return backside;
         },
                 
+        hide_backside: function () {
+            var backside = this.get_backside()
+            if (backside) {
+                backside.hide_backside();
+            }
+        },
+                
         apply_backside_geometry: function () {
             var backside = this.get_backside(true);
             var backside_element = backside.get_element();

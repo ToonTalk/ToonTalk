@@ -93,6 +93,9 @@ window.TOONTALK.backside =
                 close_handler = function (event) {
                                     backside.hide_backside(event);
                                     event.stopPropagation();
+                                    if (TT.robot.in_training()) {
+                                        TT.robot.in_training().backside_closed(widget);
+                                    }
                 };
                 // title should be re-computed on mouseenter
                 close_title = widget.get_description();
