@@ -361,8 +361,12 @@ window.TOONTALK.robot_action =
             setTimeout(function () {
                            $(button_element).removeClass("ui-state-active");
                            if (!button_visible && widget.get_backside()) {
-                               // restore things so button is hidden
-                               widget.get_backside().hide_backside();
+                               // restore things at cycle end
+                               robot.add_body_finished_listener(function () {
+                                   if (widget.get_backside()) {
+                                       widget.get_backside().hide_backside();
+                                   }
+                               });         
                            }
                            robot.run_next_step();
                       },

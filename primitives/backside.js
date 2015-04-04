@@ -635,7 +635,7 @@ window.TOONTALK.backside =
                             $element.remove();
                         };
                     if (!$element.is(":visible")) {
-                        // not sure how this happens -- perhaps only caused by a bug
+                        // robot may have opened the backside and then removed the widget itself
                         return;
                     }
                     $element.addClass("toontalk-side-appearing");
