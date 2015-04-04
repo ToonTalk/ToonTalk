@@ -584,7 +584,7 @@ window.TOONTALK.robot = (function (TT) {
     };
 
     robot.trained = function (robot_in_training, step_trained) {
-        var action_name = "stop training";
+        var action_name = "train";
         add_step_to_robot(robot_in_training, action_name, this, {step: step_trained});  
     };
 
