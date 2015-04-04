@@ -35,8 +35,12 @@ window.TOONTALK.robot = (function (TT) {
         // and whose values are widgets that need to match backside widgets of that type
         // body holds the actions the robot does when it runs
         var new_robot = Object.create(robot);
-        var first_in_team; // who should do the 'repeating'
-        var animating = false; // true if animating due to being run while watched
+        // who should do the 'repeating'
+        var first_in_team;
+         // true if animating due to being run while watched
+        var animating = false;
+        // callbacks to run at the end of each cycle
+        var body_finished_listeners = []; 
         var running_or_waiting, stopped;
         var original_backside_widgets_of_context;
         if (!body) {
@@ -153,6 +157,15 @@ window.TOONTALK.robot = (function (TT) {
             } else {
                 $(frontside_element).removeClass("toontalk-robot-animating toontalk-side-animating");
             }
+        };
+        new_robot.add_body_finished_listener = function (listener) {
+            body_finished_listeners.push(listener);
+        };
+        new_robot.run_body_finished_listeners = function () {
+            body_finished_listeners.forEach(function (listener) {
+                listener();
+            });
+            body_finished_listeners = [];
         };
         new_robot.get_thing_in_hand = function () {
             return thing_in_hand;
