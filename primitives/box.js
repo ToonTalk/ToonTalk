@@ -339,8 +339,6 @@ window.TOONTALK.box = (function (TT) {
     };
     
     box.update_display = function () {
-        var default_width = 93;
-        var default_height = 74;
         var frontside = this.get_frontside(true);
         var frontside_element = frontside.get_element();
         var size = this.get_size();
@@ -446,8 +444,8 @@ window.TOONTALK.box = (function (TT) {
                 }
             }.bind(this);
         var update_dimensions = function () {
-            box_width  = $(frontside_element).width()  || default_width;
-            box_height = $(frontside_element).height() || default_height;
+            box_width  = $(frontside_element).width()  || TT.box.get_default_width();
+            box_height = $(frontside_element).height() || TT.box.get_default_height();
             if (horizontal) {
                 hole_width  = box_width/size;
                 hole_height = box_height;
@@ -493,6 +491,15 @@ window.TOONTALK.box = (function (TT) {
         frontside_element.toontalk_border_size = border_size;
         // delay it until browser has rendered current elements
         TT.UTILITIES.set_timeout(renderer);
+    };
+
+    box.get_default_width = function () {
+        // width of 2 hole horizontal box not including borders
+        return 164;
+    };
+
+    box.get_default_height = function () {
+        return 68;
     };
     
     box.update_hole_display = function (index, new_content) {

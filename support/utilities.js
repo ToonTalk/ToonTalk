@@ -579,7 +579,8 @@ window.TOONTALK.UTILITIES =
 //                                TT.UTILITIES.use_custom_tooltip(this);
 //                            });
 //     };
-    var initialise = function () {
+    var initialize = function () {
+        var $robot_element_for_determining_dimensions = $("<div class='toontalk-robot'>");
         var translation_div;
         TT.debugging = TT.UTILITIES.get_current_url_parameter('debugging');
         TT.UTILITIES.process_json_elements();
@@ -624,6 +625,18 @@ window.TOONTALK.UTILITIES =
             $("#google_translate_element").remove();
         }
         TT.UTILITIES.add_test_all_button();
+        // compute the default dimensions of robots
+        TT.UTILITIES.run_when_dimensions_known($robot_element_for_determining_dimensions.get(0), 
+                                               function () {
+                                                   var default_width  = $robot_element_for_determining_dimensions.width();
+                                                   var default_height = $robot_element_for_determining_dimensions.height();
+                                                   TT.robot.get_default_width = function () {
+                                                       return default_width;
+                                                   };
+                                                   TT.robot.get_default_height = function () {
+                                                        return default_height;
+                                                   };
+                                               });
     };
     var load_script = function (url) {
         var script = document.createElement('script');
@@ -670,7 +683,7 @@ window.TOONTALK.UTILITIES =
                                 }
                             },
                             false); // don't capture events
-    $(document).ready(initialise);
+    $(document).ready(initialize);
     return {
         create_from_json: function (json, additional_info, delay_backside_widgets) {
             var handle_delayed_backside_widgets = function (widget, additional_info, shared_widget_index) {
@@ -2457,7 +2470,7 @@ window.TOONTALK.UTILITIES =
                                        } else {
                                            $(element).remove();
                                        }
-                                        $(element).removeClass("toontalk-not-observable");
+                                       $(element).removeClass("toontalk-not-observable");
                                    } else {
                                        // try again -- probably because in the meanwhile this has been
                                        // added to some container and its dimensions aren't original
@@ -2992,7 +3005,7 @@ items are added to the end of the queue and removed from the front.
 Edited by Ken Kahn for better integration with the rest of the ToonTalk code
  */
 
-          // initialise the queue and offset
+          // initialize the queue and offset
           var queue  = [];
           var offset = 0;
 

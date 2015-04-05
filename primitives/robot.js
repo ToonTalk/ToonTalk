@@ -704,15 +704,23 @@ window.TOONTALK.robot = (function (TT) {
                     robot_width  = $(frontside_element).width();
                     robot_height = $(frontside_element).height();
                     if (thing_in_hand_width === 0) {
-                        thing_in_hand_width  = robot_width*2;
-                        thing_in_hand_height = robot_height/2;
-                        css['width']  = thing_in_hand_width;
-                        css['height'] = thing_in_hand_height;
+                        if (thing_in_hand.get_default_width) {
+                            thing_in_hand_width = thing_in_hand.get_default_width();
+                        } else {
+                            thing_in_hand_width  = robot_width*2;
+                        }
+                        if (thing_in_hand.get_default_height) {
+                            thing_in_hand_height = thing_in_hand.get_default_height();
+                        } else {
+                            thing_in_hand_height = robot_height/2;
+                        }
+                        css.width  = thing_in_hand_width;
+                        css.height = thing_in_hand_height;
                     }
-                    relative_left = (robot_width  - thing_in_hand_width)/2;
+                    relative_left = (robot_width-thing_in_hand_width)/2;
                     relative_top  = robot_height/4;
-                    css['left'] = relative_left;
-                    css['top']  = relative_top;
+                    css.left = relative_left;
+                    css.top  = relative_top;
                     $(thing_in_hand_frontside_element).css(css);
                     if (thing_in_hand) {
                         thing_in_hand.render(); // or should it be rerender -- could it be invisible?
