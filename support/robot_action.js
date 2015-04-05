@@ -171,7 +171,15 @@ window.TOONTALK.robot_action =
         var widget_element = side.get_element();
         var widget_width  = $(widget_element).width();
         var widget_height = $(widget_element).height();
-        var left_offset, top_offset, animation_left_offset, animation_top_offset, thing_in_hand_element, thing_in_hand_width, thing_in_hand_height;
+        var left_offset,
+            top_offset,
+            animation_left_offset,
+            animation_top_offset,
+            thing_in_hand_element,
+            thing_in_hand_width,
+            thing_in_hand_height,
+            robot_location,
+            thing_in_hand_location;
         if (additional_info && additional_info.left_offset_fraction) {
             if (!robot.original_animation_left_offset) {
                 robot.original_animation_left_offset = [];
@@ -201,6 +209,10 @@ window.TOONTALK.robot_action =
                 }
                 robot.max_thing_in_hand_height = Math.max(robot.max_thing_in_hand_height, $(thing_in_hand_element).height());
             } else {
+                thing_in_hand_location = $(thing_in_hand_element).offset();
+                robot_location       = $(robot_frontside_element).offset();
+                animation_left_offset -= thing_in_hand_location.left-robot_location.left;
+                animation_top_offset  -= thing_in_hand_location.top -robot_location.top;
                 robot.original_animation_left_offset.push(animation_left_offset);
                 robot.original_animation_top_offset.push(animation_top_offset);
                 robot.last_thing_in_hand_width = $(thing_in_hand_element).width();
