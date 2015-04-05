@@ -431,6 +431,7 @@ window.TOONTALK.robot_action =
             robot.carrying_tool = undefined;
             robot.update_display(); // to stop displaying tool
             continuation();
+//          $(robot.get_frontside_element()).css({"z-index": TT.UTILITIES.next_z_index()});
             robot.run_next_step();
         };
         robot.carrying_tool = tool_held_by_robot_css_class;
@@ -677,7 +678,7 @@ window.TOONTALK.robot_action =
                     toString_info.robot_being_trained_description = undefined;
                 } 
                 if (['pick up', 'edit', 'remove', 'copy', 'change whether erased', 'pick up a copy of', 'drop it on the text area of'].indexOf(action_name) >= 0 && 
-                    path_description.indexOf("hole of the box") >= 0) {
+                    path_description.indexOf("hole of") >= 0) {
                     return prefix + action_name + " what is in " + path_description + suffix;
                 }
                 return prefix + action_name + " " + path_description + suffix;
