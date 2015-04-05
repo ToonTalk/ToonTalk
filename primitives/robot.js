@@ -552,6 +552,7 @@ window.TOONTALK.robot = (function (TT) {
     
     robot.removed = function (widget) {
         var action_name = "remove";
+        var context = this.get_parent_of_frontside().get_widget();
         add_step_to_robot(widget, action_name, this);
         widget.last_action = action_name;
         if (context === widget || widget === this) {
