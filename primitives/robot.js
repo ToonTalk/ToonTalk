@@ -252,6 +252,10 @@ window.TOONTALK.robot = (function (TT) {
                 TT.UTILITIES.report_internal_error("Robot started training but can't find its 'context'.");
                 return;
             }
+            if (this.being_trained) {
+                // could be robot is training this robot and both called this and clicked the button
+                return;
+            }
             this.being_trained = true;
             this.set_frontside_conditions(context.copy({just_value: true}));
             if (!robot_training_this_robot) {

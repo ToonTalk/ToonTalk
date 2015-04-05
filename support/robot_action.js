@@ -482,10 +482,10 @@ window.TOONTALK.robot_action =
     var start_training_animation = function (robot_to_train, context, top_level_context, robot, continuation) {
         var backside_of_other = robot_to_train.open_backside();
         var robot_to_train_frontside_element = robot_to_train.get_frontside_element();
+        continuation();
         if (backside_of_other) {
             $(backside_of_other.get_element()).find(".toontalk-train-backside-button").click();
         } 
-        continuation();
         $(robot_to_train_frontside_element).addClass("toontalk-robot-animating toontalk-robot-being-trained-by-robot");
         robot_to_train_frontside_element.toontalk_followed_by = {element: robot.get_frontside_element(),
                                                                  left_offset: 30,
