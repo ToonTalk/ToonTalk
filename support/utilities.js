@@ -39,6 +39,8 @@ window.TOONTALK.UTILITIES =
         var client_y = TT.UTILITIES.get_mouse_or_first_touch_event_attribute("clientY", event);
         var bounding_rectangle, json_object, json_div, widget, is_resource;
         $(".ui-tooltip").remove();
+        // stop animating it if grabbed
+        $(".ui-tooltip").removeClass("toontalk-side-animating");
         // was using text/plain but IE complained
         // see http://stackoverflow.com/questions/18065840/html5-drag-and-drop-not-working-on-ie11
         if (event.dataTransfer && event.dataTransfer.getData("text") && event.dataTransfer.getData("text").length > 0) {
