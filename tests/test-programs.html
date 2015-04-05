@@ -17150,6 +17150,257 @@ top level widget
   },
   "version": 1
 }</div></div>
+<p>Robot that trains another robot to double:</p>
+<div class='toontalk-json'>
+This will be replaced by a work area containing one thing: a robot.
+top level widget
+<div style='display:none;'>{
+  "semantic": {
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "robot",
+            "frontside_conditions": {
+              "type": "top_level"
+            },
+            "body": {
+              "type": "body",
+              "steps": [
+                {
+                  "type": "robot_action",
+                  "action_name": "pick up",
+                  "path": {
+                    "type": "path.to_resource",
+                    "resource": {
+                      "type": "box",
+                      "size": 2,
+                      "contents": [
+                        null,
+                        null
+                      ],
+                      "horizontal": true,
+                      "is_backside": true
+                    }
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "drop it on",
+                  "path": {
+                    "type": "path.to_entire_context",
+                    "is_backside": true
+                  },
+                  "additional_info": {
+                    "left_offset_fraction": 0.12371946414499606,
+                    "top_offset_fraction": 0.0611353711790393
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "pick up",
+                  "path": {
+                    "type": "path.to_resource",
+                    "resource": {
+                      "type": "number",
+                      "operator": "+",
+                      "numerator": "1",
+                      "denominator": "1",
+                      "format": "improper_fraction",
+                      "is_backside": true
+                    }
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "drop it on",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 0,
+                    "next_path": {
+                      "type": "box_path",
+                      "index": 0
+                    }
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "open the backside",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 0
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "pick up",
+                  "path": {
+                    "type": "path.to_resource",
+                    "resource": {
+                      "type": "robot",
+                      "body": {
+                        "type": "body",
+                        "steps": []
+                      },
+                      "is_backside": true
+                    }
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "drop it on",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 0,
+                    "is_backside": true
+                  },
+                  "additional_info": {
+                    "left_offset_fraction": 0.6418181818181818,
+                    "top_offset_fraction": 0.415
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "start training",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 2
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "start training",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 2
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "train",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 2
+                  },
+                  "additional_info": {
+                    "step": {
+                      "json": {
+                        "type": "robot_action",
+                        "action_name": "copy",
+                        "path": {
+                          "type": "path.to_entire_context",
+                          "next_path": {
+                            "type": "box_path",
+                            "index": 0
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "train",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 2
+                  },
+                  "additional_info": {
+                    "step": {
+                      "json": {
+                        "type": "robot_action",
+                        "action_name": "pick up",
+                        "path": {
+                          "type": "newly_created_widgets_path",
+                          "index": 0,
+                          "removing_widget": true
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "train",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 2
+                  },
+                  "additional_info": {
+                    "step": {
+                      "json": {
+                        "type": "robot_action",
+                        "action_name": "drop it on",
+                        "path": {
+                          "type": "path.to_entire_context",
+                          "next_path": {
+                            "type": "box_path",
+                            "index": 0
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "stop training",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 2
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "change whether erased",
+                  "path": {
+                    "type": "path_to_robot_conditions",
+                    "path_to_robot": {
+                      "type": "newly_created_widgets_path",
+                      "index": 2
+                    },
+                    "path_within_conditions": {
+                      "type": "box_path",
+                      "index": 0
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "view": {
+            "frontside_width": 66,
+            "frontside_height": 110,
+            "frontside_left": 473.359375,
+            "frontside_top": 35.171875,
+            "saved_width": 66,
+            "saved_height": 110,
+            "backside": false
+          },
+          "version": 1
+        }
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgba(245, 240, 240, 0.941176)",
+    "backside_width": 684,
+    "backside_height": 362,
+    "backside_left": 8,
+    "backside_top": 184.1875,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1,
+      "original_width": 1136,
+      "original_height": 467
+    },
+    "backside": true,
+    "drag_x_offset": 576,
+    "drag_y_offset": 304.8125
+  },
+  "version": 1
+}</div></div>
 <p>Animating tool use:</p>
 <div class='toontalk-json'>
 This will be replaced by a work area containing one thing: a robot.
