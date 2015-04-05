@@ -1457,6 +1457,11 @@ window.TOONTALK.UTILITIES =
                 // animation doesn't work with JQuery css
                 $element.get(0).style.left = left+"px";
                 $element.get(0).style.top  = top +"px";
+                // remove animating CSS when transition is over
+                TT.UTILITIES.add_one_shot_event_handler($element.get(0), "transitionend", 2000, function () {
+                    $element.removeClass("toontalk-side-animating");
+                    $element.get(0).style.transitionDuration = '';
+                });
             }
         },
         
