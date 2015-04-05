@@ -228,8 +228,10 @@ window.TOONTALK.robot_action =
             return;
         }
         if (widget.save_dimensions()) {
-            $(frontside_element).css({width:  frontside_element.offsetWidth  + "px",
-                                      height: frontside_element.offsetHeight + "px"});
+            if (frontside_element.offsetWidth) {
+                $(frontside_element).css({width:  frontside_element.offsetWidth  + "px",
+                                          height: frontside_element.offsetHeight + "px"});
+            }
             move_robot_animation(widget, robot, new_continuation);
         } else {
             new_continuation();

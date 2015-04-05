@@ -339,8 +339,8 @@ window.TOONTALK.box = (function (TT) {
     };
     
     box.update_display = function () {
-        var default_width = 164;
-        var default_height = 68;
+        var default_width = 93;
+        var default_height = 74;
         var frontside = this.get_frontside(true);
         var frontside_element = frontside.get_element();
         var size = this.get_size();

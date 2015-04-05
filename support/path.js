@@ -250,18 +250,19 @@ window.TOONTALK.path =
                         var widget_copy = widget.copy({copying_resource: true});
                         var widget_frontside_element, widget_frontside_position, copy_frontside_element;
                         robot.add_newly_created_widget(widget_copy);
-                        if (robot.visible() && !widget.visible()) {
+                        if (robot.visible()) {//} && !widget.visible()) {
                             // picking up a copy of a resource
                             // but robot isn't referring to the resource itself just the 'value'
                             widget_frontside_element = TT.UTILITIES.find_resource_equal_to_widget(widget);
                             if (widget_frontside_element) {
+                                widget_copy.save_dimensions_of(TT.UTILITIES.widget_of_element(widget_frontside_element));
                                 copy_frontside_element = widget_copy.get_frontside_element();
                                 widget_frontside_position = $(widget_frontside_element).position();
                                 TT.UTILITIES.set_timeout(function ()  {
                                     $(copy_frontside_element).css({left:   widget_frontside_position.left,
                                                                    top:    widget_frontside_position.top,
-                                                                   width:  widget_frontside_element.offsetWidth,
-                                                                   height: widget_frontside_element.offsetHeight});
+                                                                   width:  $(widget_frontside_element).width(),
+                                                                   height: $(widget_frontside_element).height()});
                                     });
                             }
                         }

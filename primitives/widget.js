@@ -132,22 +132,27 @@ window.TOONTALK.widget = (function (TT) {
                     return this.save_dimensions_of(this);
                 };
                 widget.save_dimensions_of = function (other) {
-                    var dimensions;
-                    if (other.get_size_attributes) {
+                    var width,
+                        height, 
+                        other_frontside_element;
+                    if (other.is_element()) {
                         if (!this.get_original_width()) {
                             return;
                         }
-                        dimensions = other.get_size_attributes();
+                        width  = other.get_attribute('width');
+                        height = other.get_attribute('height');
                     } else {
                         // elements have clientWidth and clientHeight
                         // used to use $(...).width() but that returns 0 during a drop
-                        dimensions = other.get_frontside_element();
+                        other_frontside_element = other.get_frontside_element();
+                        width  = $(other_frontside_element).width();
+                        height = $(other_frontside_element).height();
                     }
-                    if (dimensions.clientWidth > 0) {
-                        this.saved_width  = dimensions.clientWidth;
+                    if (width > 0) {
+                        this.saved_width  = width;
                     }
-                    if (dimensions.clientHeight > 0) {
-                        this.saved_height = dimensions.clientHeight;
+                    if (height > 0) {
+                        this.saved_height =height;
                     }
                     return true;
                 }
@@ -1145,11 +1150,10 @@ window.TOONTALK.widget = (function (TT) {
             // put backside under the widget
             final_left = frontside_offset.left-container_offset.left;
             // leave a gap between front and backside -- don't want settings, flag, and stop sign to be overlapped
-            if (this.get_size_attributes) {
-                // e.g. an element widget
-                frontside_height = this.get_size_attributes().clientHeight;
+            if (this.is_element()) {
+                frontside_height = this.get_attribute('height');
             } else {
-                frontside_height = frontside_element.offsetHeight  
+                frontside_height = $(frontside_element).height();  
             }
             final_top  = (frontside_offset.top-container_offset.top) + frontside_height + 26, 
             animate_backside_appearance(backside_element, "inherit");

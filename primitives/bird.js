@@ -184,8 +184,8 @@ window.TOONTALK.bird = (function (TT) {
                         }.bind(this));
                 }.bind(this);
             var carry_element = function (element, widget_side) {
-                    element.width_before_carry  = element.clientWidth;
-                    element.height_before_carry = element.clientHeight;
+                    element.width_before_carry  = $(element).width();
+                    element.height_before_carry = $(element).height();
                     this.element_to_display_when_flying = element;
                     if (widget_side) {
                         this.update_display();

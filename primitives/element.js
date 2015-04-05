@@ -1007,11 +1007,6 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         return element.extend_attribute_path(element_widget_path, json.attribute);
     };
 
-    element.get_size_attributes = function () {
-        return {clientWidth:  this.get_attribute('width'),
-                clientHeight: this.get_attribute('height')};
-    };
-
     element.set_size_attributes = function (width, height, update_regardless) {
         if (update_regardless) {
             this.add_to_css('width',  width);
