@@ -675,7 +675,7 @@ window.TOONTALK.robot_action =
                 return {type: "robot_action",
                         action_name: action_name,
                         path: TT.path.get_json(path, json_history),
-                        additional_info: additional_info && TT.UTILITIES.get_json_of_keys(additional_info)};        
+                        additional_info: additional_info && TT.UTILITIES.get_json_of_keys(additional_info, ["running_watched"])};        
             };
             return new_action;  
         }

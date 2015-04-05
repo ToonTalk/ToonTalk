@@ -958,13 +958,21 @@ window.TOONTALK.UTILITIES =
             return widget_json;
         },
 
-        get_json_of_keys: function (object) {
-            var json = {};
+        get_json_of_keys: function (object, exceptions) {
+            var json;
+            if (!exceptions) {
+                exceptions = [];
+            }
             Object.keys(object).forEach(function (key) {
-                if (object[key].get_json) {
-                    json[key] = {json: object[key].get_json()};
-                } else {
-                    json[key] = object[key];
+                if (exceptions.indexOf(key) < 0) {
+                    if (!json) {
+                        json = {};
+                    }
+                    if (object[key].get_json) {
+                        json[key] = {json: object[key].get_json()};
+                    } else {
+                        json[key] = object[key];
+                    }
                 }
             });
             return json;
