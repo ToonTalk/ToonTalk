@@ -1096,7 +1096,9 @@ window.TOONTALK.widget = (function (TT) {
                 }.bind(this);
             var backside_element, frontside_element, parent, $frontside_ancestor_that_is_backside_element,
                 $frontside_ancestor_before_backside_element, frontside_ancestor_before_backside_element, ancestor_that_owns_backside_element,
-                final_left, final_top, frontside_offset, frontside_height, container_offset;
+                final_left, final_top, 
+                frontside_offset, backside_width, frontside_height, 
+                container_offset, container_width;
             if (backside) {
                 backside_element = backside.get_element();
                 if ($(backside_element).is(":visible")) {
@@ -1133,27 +1135,32 @@ window.TOONTALK.widget = (function (TT) {
             // start on the frontside (same upper left corner as frontside)
             frontside_offset = $(frontside_element).offset();
             container_offset = $frontside_ancestor_that_is_backside_element.offset();
+            container_width  = $frontside_ancestor_that_is_backside_element.width();
             if (!container_offset) {
                 container_offset = {left: 0, 
                                     top:  0};
             }
-            $(backside_element).css({
-                left: frontside_offset.left-container_offset.left,
-                top:  frontside_offset.top -container_offset.top,
-                opacity: .01
+            $(backside_element).css({left: frontside_offset.left-container_offset.left,
+                                     top:  frontside_offset.top -container_offset.top,
+                                     opacity: .01
             });
             $frontside_ancestor_that_is_backside_element.append(backside_element);
             ancestor_that_owns_backside_element = TT.UTILITIES.widget_from_jquery($frontside_ancestor_that_is_backside_element);
             if (ancestor_that_owns_backside_element) {
                 ancestor_that_owns_backside_element.add_backside_widget(this, true);
             }
-            // put backside under the widget
-            final_left = frontside_offset.left-container_offset.left;
             // leave a gap between front and backside -- don't want settings, flag, and stop sign to be overlapped
             if (this.is_element()) {
                 frontside_height = this.get_attribute('height');
             } else {
-                frontside_height = $(frontside_element).height();  
+                frontside_height = $(frontside_element).height();
+            }
+            backside_width = $(backside_element).width();
+            // put backside under the widget
+            final_left = frontside_offset.left-container_offset.left;
+            if (final_left+backside_width > container_width) {
+                    // goes off the edge of the container
+                final_left = Math.max(0, container_width-backside_width);
             }
             final_top  = (frontside_offset.top-container_offset.top) + frontside_height + 26, 
             animate_backside_appearance(backside_element, "inherit");
