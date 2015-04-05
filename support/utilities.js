@@ -1589,6 +1589,9 @@ window.TOONTALK.UTILITIES =
                                if (position.left < 10) {
                                    position.left = 10;
                                }
+                               if (position.top < 10) {
+                                   position.top = 10;
+                               }
                                $(this).css(position);
                                feedback_horizontal = feedback.horizontal;
                                feedback_vertical   = feedback.vertical;
