@@ -596,6 +596,9 @@ window.TOONTALK.robot_action =
             if (!unwatched_run_function) {
                 TT.UTILITIES.report_internal_error("no run_function for " + action_name);
             }
+            new_action.get_action_name = function () {
+                return action_name;
+            };
             new_action.run_unwatched = function (context, top_level_context, robot) {
                 var referenced = TT.path.dereference_path(path, context, top_level_context, robot);
                 if (!referenced) {

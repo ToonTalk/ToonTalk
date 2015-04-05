@@ -495,9 +495,6 @@ window.TOONTALK.robot = (function (TT) {
         widget.last_action = this.current_action_name;
         this.current_action_name = undefined;
         this.set_thing_in_hand(widget);
-        if (TT.robot.robot_training_this_robot()) {
-            TT.robot.robot_training_this_robot().trained(this, step);
-        }
     };
     
     robot.dropped_on = function (source_widget, target_widget_side, event) {
@@ -532,9 +529,6 @@ window.TOONTALK.robot = (function (TT) {
         source_widget.last_action = this.current_action_name + " " + target_widget_side.get_type_name();
         this.current_action_name = undefined;
         this.set_thing_in_hand(undefined);
-         if (TT.robot.robot_training_this_robot()) {
-            TT.robot.robot_training_this_robot().trained(this, step);
-        }
     };
 
     robot.dropped_on_text_area = function (widget, target_widget, details) {
@@ -645,6 +639,10 @@ window.TOONTALK.robot = (function (TT) {
     robot.add_step = function (step, new_widget) {
         this.get_body().add_step(step, new_widget);
         TT.UTILITIES.give_tooltip(this.get_frontside_element(), this.get_title());
+        if (step.get_action_name() !== 'train' && step.get_action_name() !== 'start training' && TT.robot.robot_training_this_robot()) {
+            // this limits training to two levels -- could have more but must limit it
+            TT.robot.robot_training_this_robot().trained(this, step);
+        }
     };
     
     robot.get_context = function () {
