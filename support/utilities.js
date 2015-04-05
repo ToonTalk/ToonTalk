@@ -1694,15 +1694,19 @@ window.TOONTALK.UTILITIES =
                 target_absolute_position.top  += source_element.toontalk_followed_by.top_offset;
                 TT.UTILITIES.animate_to_absolute_position(source_element.toontalk_followed_by.element, target_absolute_position, undefined, speed, more_animation_follows);
             }
+            // replaced add_one_shot_event_handler with time outs because transition end can be triggered by changes in the frontside_element
+            // e.g. when a robot is holding a tool
             if (!more_animation_follows) {
                 remove_transition_class = function () {
                     $(source_element).removeClass("toontalk-side-animating");
                     source_element.style.transitionDuration = '';
                 };
+                setTimeout(remove_transition_class, duration);
                 // if transitionend is over 500ms late then run handler anyway
-                TT.UTILITIES.add_one_shot_event_handler(source_element, "transitionend", duration+500, remove_transition_class);
+//                 TT.UTILITIES.add_one_shot_event_handler(source_element, "transitionend", duration+500, remove_transition_class);
             }
-            TT.UTILITIES.add_one_shot_event_handler(source_element, "transitionend", duration+500, continuation);
+            setTimeout(continuation, duration);
+//             TT.UTILITIES.add_one_shot_event_handler(source_element, "transitionend", duration+500, continuation);
         },
         
         distance: function (position_1, position_2) {

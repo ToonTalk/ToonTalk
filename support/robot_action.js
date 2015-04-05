@@ -414,7 +414,18 @@ window.TOONTALK.robot_action =
             animation_continuation();
         }
     };
-    var tool_use_animation = function (widget, context, top_level_context, robot, continuation, tool_css_class) {
+    var move_to_tool_and_use_animation = function (widget, context, top_level_context, robot, continuation, tool_held_by_robot_css_class, resource_tool_css_class) {
+        var tool_element = $("." + resource_tool_css_class).get(0);
+        var new_continuation = function () {
+            tool_use_animation(widget, context, top_level_context, robot, continuation, tool_held_by_robot_css_class);
+        };
+        if (tool_element) {
+            robot.animate_to_element(tool_element, new_continuation, .5, 0, 0, true);
+        } else {
+            new_continuation();
+        }
+    };
+    var tool_use_animation = function (widget, context, top_level_context, robot, continuation, tool_held_by_robot_css_class) {
         var robot_frontside_element = robot.get_frontside_element();
         var new_continuation = function () {
             robot.carrying_tool = undefined;
@@ -422,17 +433,17 @@ window.TOONTALK.robot_action =
             continuation();
             robot.run_next_step();
         };
-        robot.carrying_tool = tool_css_class;
+        robot.carrying_tool = tool_held_by_robot_css_class;
         robot.update_display(); // to display tool
         // robots move at 1/4 pixel per millisecond for clarity
-        robot.animate_to_element(widget.get_frontside_element(), new_continuation, .25, 0, 0);
+        robot.animate_to_element(widget.get_frontside_element(), new_continuation, .25, 0, 0, true);
     };
     var copy_animation = function (widget, context, top_level_context, robot, continuation) {
         var new_continuation = function () {
             continuation();
             widget.add_copy_to_container(robot.get_recently_created_widget());
         };
-        tool_use_animation(widget, context, top_level_context, robot, new_continuation, "toontalk-wand-small");
+        move_to_tool_and_use_animation(widget, context, top_level_context, robot, new_continuation, "toontalk-wand-small", "toontalk-wand");
     };
     var remove_or_erase_animation = function (widget, context, top_level_context, robot, continuation) {
         var parent = widget.get_parent_of_frontside();
@@ -443,7 +454,7 @@ window.TOONTALK.robot_action =
             }
             widget.render(); // if wasn't removed
         };
-        tool_use_animation(widget, context, top_level_context, robot, new_continuation, "toontalk-vacuum-ready-small");
+        move_to_tool_and_use_animation(widget, context, top_level_context, robot, new_continuation, "toontalk-vacuum-ready-small", "toontalk-vacuum");
     };
     var edit_animation = function (widget, context, top_level_context, robot, continuation, additional_info) {
         var new_continuation = function () {
