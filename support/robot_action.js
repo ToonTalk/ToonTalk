@@ -187,9 +187,13 @@ window.TOONTALK.robot_action =
             if (!robot.original_animation_top_offset) {
                 robot.original_animation_top_offset = [];
             }
+            thing_in_hand_element = thing_in_hand.get_element();
             animation_left_offset = additional_info.left_offset_fraction*widget_width;
             animation_top_offset  = additional_info.top_offset_fraction*widget_height;
-            thing_in_hand_element = thing_in_hand.get_element();
+            thing_in_hand_location = $(thing_in_hand_element).offset();
+            robot_location       = $(robot_frontside_element).offset();
+            animation_left_offset -= thing_in_hand_location.left-robot_location.left;
+            animation_top_offset  -= thing_in_hand_location.top -robot_location.top;
             if (thing_in_hand && 
                 robot.original_animation_left_offset.indexOf(animation_left_offset) >= 0 && 
                 robot.original_animation_top_offset.indexOf(animation_top_offset) >= 0) {
@@ -209,10 +213,6 @@ window.TOONTALK.robot_action =
                 }
                 robot.max_thing_in_hand_height = Math.max(robot.max_thing_in_hand_height, $(thing_in_hand_element).height());
             } else {
-                thing_in_hand_location = $(thing_in_hand_element).offset();
-                robot_location       = $(robot_frontside_element).offset();
-                animation_left_offset -= thing_in_hand_location.left-robot_location.left;
-                animation_top_offset  -= thing_in_hand_location.top -robot_location.top;
                 robot.original_animation_left_offset.push(animation_left_offset);
                 robot.original_animation_top_offset.push(animation_top_offset);
                 robot.last_thing_in_hand_width = $(thing_in_hand_element).width();
