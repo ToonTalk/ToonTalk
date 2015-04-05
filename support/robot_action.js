@@ -420,7 +420,7 @@ window.TOONTALK.robot_action =
             tool_use_animation(widget, context, top_level_context, robot, continuation, tool_held_by_robot_css_class);
         };
         if (tool_element) {
-            robot.animate_to_element(tool_element, new_continuation, .5, 0, 0, true);
+            robot.animate_to_element(tool_element, new_continuation, .5, 0, 0);
         } else {
             new_continuation();
         }
@@ -437,7 +437,7 @@ window.TOONTALK.robot_action =
         robot.carrying_tool = tool_held_by_robot_css_class;
         robot.update_display(); // to display tool
         // robots move at 1/4 pixel per millisecond for clarity
-        robot.animate_to_element(widget.get_frontside_element(), new_continuation, .25, 0, 0, true);
+        robot.animate_to_element(widget.get_frontside_element(), new_continuation, .25, 0, 0);
     };
     var copy_animation = function (widget, context, top_level_context, robot, continuation) {
         var new_continuation = function () {
