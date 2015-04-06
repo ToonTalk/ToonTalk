@@ -41,7 +41,8 @@ window.TOONTALK.widget = (function (TT) {
         add_standard_widget_functionality: function (widget) {
             var return_false = function () {
                 return false;
-            }
+            };
+            var top_level_widget;
             this.add_sides_functionality(widget);
             this.runnable(widget);
             this.stackable(widget);
@@ -54,6 +55,37 @@ window.TOONTALK.widget = (function (TT) {
             // erasability will eventually will be used for type conversions
             // currently only for conditions
             this.erasable(widget);
+            widget.top_level_widget = function () {
+                var parent, $top_level_backsides;
+                if (top_level_widget) {
+                    return top_level_widget;
+                }
+                if (this.is_top_level()) {
+                    return this;
+                }
+                top_level_widget = TT.UTILITIES.widget_from_jquery($(this.get_frontside_element()).closest(".toontalk-top-level-backside"));
+                if (top_level_widget) {
+                    return top_level_widget;
+                }
+                // TODO: revisit this -- may end up mixing up front and backsides
+                // but only used to find top-level widget if DOM doesn't provide it
+                parent = this.get_parent_of_frontside() || this.get_parent_of_backside();
+                if (parent) {
+                    top_level_widget = parent.get_widget().top_level_widget();
+                    return top_level_widget;
+                }
+                $top_level_backsides = $(".toontalk-top-level-backside");
+                if ($top_level_backsides.length > 0) {
+                    if ($top_level_backsides.length > 1) {
+                       console.log("Cannot find the top-level widget of " + this + " but found " + $top_level_backsides.length + " top-level backsides so picked one.");
+                    }
+                    top_level_widget = TT.UTILITIES.widget_from_jquery($top_level_backsides);
+                    return top_level_widget;
+                }
+                console.log("Could not find top_level_widget of " + this + ". Created one instead");
+                top_level_widget = this.create_top_level_widget();
+                return top_level_widget;
+            };
             if (!widget.is_of_type) {
                 // may be overridden by a sub-class
                 widget.is_of_type = function (type_name) {
@@ -1192,32 +1224,6 @@ window.TOONTALK.widget = (function (TT) {
                 // backside needs to know its scales when shown again or when creating JSON
                 backside.set_dimensions(this.backside_geometry);
             }
-        },
-        
-        top_level_widget: function () {
-            var widget, parent, $top_level_backsides;
-            if (this.is_top_level()) {
-                return this;
-            }
-            widget = TT.UTILITIES.widget_from_jquery($(this.get_frontside_element()).closest(".toontalk-top-level-backside"));
-            if (widget) {
-                return widget;
-            }
-            // TODO: revisit this -- may end up mixing up front and backsides
-            // but only used to find top-level widget if DOM doesn't provide it
-            parent = this.get_parent_of_frontside() || this.get_parent_of_backside();
-            if (parent) {
-                return parent.get_widget().top_level_widget();
-            }
-            $top_level_backsides = $(".toontalk-top-level-backside");
-            if ($top_level_backsides.length > 0) {
-                if ($top_level_backsides.length > 1) {
-                   console.log("Cannot find the top-level widget of " + this + " but found " + $top_level_backsides.length + " top-level backsides so picked one.");
-                }
-                return TT.UTILITIES.widget_from_jquery($top_level_backsides);
-            }
-            console.log("Could not find top_level_widget of " + this + ". Created one instead");
-            return this.create_top_level_widget();
         },
 
         robot_in_training: function () {
