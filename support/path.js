@@ -142,7 +142,7 @@ window.TOONTALK.path =
                 // no path means entire context -- TODO: determine if this is still true
                 dereferenced = context;
             }
-            if (dereferenced && path.is_backside) {
+            if (dereferenced && path && path.is_backside) {
                 return dereferenced.get_backside(true);
             }
             return dereferenced;
