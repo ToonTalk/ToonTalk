@@ -48,7 +48,7 @@ window.TOONTALK.actions =
             new_actions.add_step = function (step, new_widget) {
                 steps.push(step);
                 if (new_widget) {
-                    this.add_newly_created_widget(new_widget);
+                    this.add_newly_created_widget_if_new(new_widget);
                 }
             };
             new_actions.add_newly_created_widget_if_new = function (new_widget) {
