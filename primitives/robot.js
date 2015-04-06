@@ -220,6 +220,7 @@ window.TOONTALK.robot = (function (TT) {
                     return;
                 }
             }
+            // TODO: backside conditions too -- but not clear this makes sense for all purposes
         };
         new_robot.get_run_once = function () {
             return run_once;
@@ -227,6 +228,11 @@ window.TOONTALK.robot = (function (TT) {
         new_robot.set_run_once = function (new_value) {
             run_once = new_value;
             this.update_title();
+        };
+        new_robot.can_run = function () {
+            // can run if just runs on top-level backside 
+            return (this.get_frontside_conditions() && this.get_frontside_conditions().is_top_level()) ||
+                    TT.widget.can_run.call(this);
         };
         new_robot.training_started = function (robot_training_this_robot) {
             var context = this.get_context();
