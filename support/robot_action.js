@@ -661,8 +661,11 @@ window.TOONTALK.robot_action =
                     case ".toontalk-green-flag":
                         action_description = "click the green flag of";
                         break;
+                    case ".toontalk-stop-sign":
+                        action_description = "click the stop sign of";
+                        break;
                     default:
-                        return;
+                        return "";
                     }
                 }
                 if (action_name === "add a new widget to the work space") {

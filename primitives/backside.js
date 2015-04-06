@@ -123,14 +123,17 @@ window.TOONTALK.backside =
                                             }
                                             if (TT.robot.in_training()) {
                                                 TT.robot.in_training().button_clicked(".toontalk-green-flag", widget);
-                                            }                                                                      
+                                            }                                                                    
                                         })
                                  .on('mouseenter', update_stop_sign_title);
             $(stop_sign_element) .addClass("toontalk-stop-sign toontalk-stop-sign-active")
                                  .click(function (event) {
                                             update_flag_and_stop_sign_classes(false);
                                             widget.set_running(false);
-                                            update_green_flag_title();                                                                         
+                                            update_green_flag_title();
+                                            if (TT.robot.in_training()) {
+                                                TT.robot.in_training().button_clicked(".toontalk-stop-sign", widget);
+                                            }                                                                       
                                         })
                                  .on('mouseenter', update_green_flag_title);
             backside_element.appendChild(green_flag_element);
