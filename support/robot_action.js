@@ -689,7 +689,7 @@ window.TOONTALK.robot_action =
                     }
                     suffix = " to " + trained_action;
                     // indent actions trained 
-                    prefix = "&nbsp;&nbsp;&nbsp;&nbsp;";
+                    prefix = "- ";
                     if (toString_info && toString_info.robot_being_trained_description) {
                         path_description = toString_info.robot_being_trained_description;
                     }

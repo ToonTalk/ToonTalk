@@ -1105,7 +1105,6 @@ window.TOONTALK.UTILITIES =
                     }
                     title = title.substring(0, data_image_start+20) + " ... " + title.substring(data_image_end);
                 }
-                title = title.replace(/&nbsp;/g, " ");
             }
             return div_json + "\nThis will be replaced by " + type_description + ".\n" +
                               (title ? title + "\n" : "") +
