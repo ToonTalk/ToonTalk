@@ -584,8 +584,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
 //             }
             new_value = new_value_number;
         }
-        if (handle_training && TT.robot.in_training()) {
-            TT.robot.in_training().edited(this, {setter_name: "set_attribute",
+        if (handle_training && this.robot_in_training()) {
+            this.robot_in_training().edited(this, {setter_name: "set_attribute",
                                                argument_1: attribute,
                                                argument_2: new_value,
                                                toString: "change the '" + attribute + "' style to " + new_value + " of",
@@ -653,8 +653,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         if (!dropped.get_infinite_stack()) {
             dropped.remove();
         }
-        if (TT.robot.in_training() && event) {
-            TT.robot.in_training().dropped_on(dropped, this.create_attribute_widget(attribute_name));
+        if (event && this.robot_in_training()) {
+            this.robot_in_training().dropped_on(dropped, this.create_attribute_widget(attribute_name));
         }
     };
 
@@ -1225,8 +1225,8 @@ window.TOONTALK.element_backside =
             if (text.length > 0 && !element_widget.get_image_element()) {
                 drop_handler = function (event) {
                     var dropped = TT.UTILITIES.input_area_drop_handler(event, element_widget.receive_HTML_from_dropped.bind(element_widget));
-                    if (dropped && TT.robot.in_training()) {
-                        TT.robot.in_training().dropped_on_text_area(dropped, element_widget, {area_selector: ".toontalk-html-input",
+                    if (dropped && element_widget.robot_in_training()) {
+                        element_widget.robot_in_training().dropped_on_text_area(dropped, element_widget, {area_selector: ".toontalk-html-input",
                                                                                             setter: 'receive_HTML_from_dropped',
                                                                                             toString: "for the element's text"});
                     }
@@ -1236,8 +1236,8 @@ window.TOONTALK.element_backside =
                     var new_text = html_input.button.value.trim();
                     var frontside_element = element_widget.get_frontside_element();
                     var setter = edit_HTML ? "set_HTML" : "set_text";
-                    if (element_widget[setter](new_text) && TT.robot.in_training()) {
-                        TT.robot.in_training().edited(element_widget, {setter_name: setter,
+                    if (element_widget[setter](new_text) && element_widget.robot_in_training()) {
+                        element_widget.robot_in_training().edited(element_widget, {setter_name: setter,
                                                                      argument_1: new_text,
                                                                      toString: "change the text to " + new_text + " of",
                                                                      button_selector: ".toontalk-html-input"});

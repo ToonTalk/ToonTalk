@@ -450,6 +450,9 @@ window.TOONTALK.widget = (function (TT) {
                     return title;
                 };
             }
+            widget.update_title = function () {
+                TT.UTILITIES.give_tooltip(this.get_frontside_element(), this.get_title());
+            };
             return widget;
         },
 
@@ -1012,8 +1015,8 @@ window.TOONTALK.widget = (function (TT) {
                 container_widget.add_backside_widget(widget_copy);
 //              console.log("Added the copy " + widget_copy + " (" + widget_copy.debug_id + ") to " + container_widget + " (" + container_widget.debug_id + ")");
             }
-            if (TT.robot.in_training()) {
-                TT.robot.in_training().copied(this, widget_copy, false);
+            if (this.robot_in_training()) {
+                this.robot_in_training().copied(this, widget_copy, false);
             }
             return widget_copy;
         },
@@ -1045,8 +1048,8 @@ window.TOONTALK.widget = (function (TT) {
         drag_started: function (json, is_resource) {
             // by default records this if robot is being trained
             // widgets may override this behaviour
-            if (TT.robot.in_training()) {
-                TT.robot.in_training().picked_up(this, json, is_resource);
+            if (this.robot_in_training()) {
+                this.robot_in_training().picked_up(this, json, is_resource);
             }
         },
         
@@ -1192,7 +1195,7 @@ window.TOONTALK.widget = (function (TT) {
         },
         
         top_level_widget: function () {
-            var widget, parent;
+            var widget, parent, $top_level_backsides;
             if (this.is_top_level()) {
                 return this;
             }
@@ -1206,7 +1209,31 @@ window.TOONTALK.widget = (function (TT) {
             if (parent) {
                 return parent.get_widget().top_level_widget();
             }
+            $top_level_backsides = $(".toontalk-top-level-backside");
+            if ($top_level_backsides.length > 0) {
+                if ($top_level_backsides.length > 1) {
+                   console.log("Cannot find the top-level widget of " + this + " but found " + $top_level_backsides.length + " top-level backsides so picked one.");
+                }
+                return TT.UTILITIES.widget_from_jquery($top_level_backsides);
+            }
+            console.log("Could not find top_level_widget of " + this + ". Created one instead");
             return this.create_top_level_widget();
+        },
+
+        robot_in_training: function () {
+            return this.top_level_widget().robot_in_training();
+        },
+
+        robot_training_this_robot: function () {
+            return this.top_level_widget().robot_training_this_robot();
+        },
+
+        robot_started_training: function (robot) {
+             this.top_level_widget().robot_started_training(robot);
+        },
+
+        robot_finished_training: function () {
+             this.top_level_widget().robot_finished_training();
         },
 
         backup_all: function (immediately) {
@@ -1249,14 +1276,15 @@ window.TOONTALK.widget = (function (TT) {
             top_level_widget.add_backside_widget(widget);
             top_level_widget.get_backside_element().appendChild(widget_frontside_element);
             widget.render();
-            if (train && TT.robot.in_training()) {
-                TT.robot.in_training().dropped_on(widget, top_level_widget);
+            if (train && this.robot_in_training()) {
+                this.robot_in_training().dropped_on(widget, top_level_widget);
             }
             return widget_frontside_element;
         },
 
         create_top_level_widget: function (settings) {
             var widget = Object.create(TT.widget);
+            var stack_of_robots_in_training = [];
             var return_false = function () {
                 return false;
             };
@@ -1340,7 +1368,7 @@ window.TOONTALK.widget = (function (TT) {
             widget = widget.runnable(widget);
             widget = widget.has_parent(widget);
             widget.removed_from_container = function (other, backside_removed, event, index, ignore_if_not_on_backside) {
-                if (!TT.robot.in_training()) {
+                if (!this.robot_in_training()) {
                    // robots in training take care of this (and need to to record things properly)
                    this.remove_backside_widget(other, backside_removed, ignore_if_not_on_backside);
                 };
@@ -1362,6 +1390,23 @@ window.TOONTALK.widget = (function (TT) {
             };
             widget.open_settings = function () {
                 TT.SETTINGS.open(widget);
+            };
+            widget.robot_in_training = function () {
+                // for robots to train robot need a stack of robots
+                if (stack_of_robots_in_training.length > 0) {
+                    return stack_of_robots_in_training[stack_of_robots_in_training.length-1];
+                }
+            };
+            widget.robot_training_this_robot = function () {
+                if (stack_of_robots_in_training.length > 1) {
+                    return stack_of_robots_in_training[stack_of_robots_in_training.length-2];
+                }
+            };
+            widget.robot_started_training = function (robot) {
+                 stack_of_robots_in_training.push(robot);  
+            };
+            widget.robot_finished_training = function () {
+                 stack_of_robots_in_training.pop();  
             };
             widget.save = function (immediately, parameters, callback) {
                 var program_name = this.get_setting('program_name', true);

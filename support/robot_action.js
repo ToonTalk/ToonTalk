@@ -497,14 +497,17 @@ window.TOONTALK.robot_action =
         var trained_robot_frontside_element = trained_robot.get_frontside_element();
         var new_continuation = function () {
             var robot_returned_continuation = function () {
-//                 var $button = $(trained_robot_frontside_element).find(".toontalk-train-backside-button");
                 trained_robot_frontside_element.toontalk_return_to = undefined;
                 trained_robot.get_backside().change_label_and_title_of_train_button(false);
                 $(trained_robot_frontside_element).removeClass("toontalk-robot-animating toontalk-robot-being-trained-by-robot");
                 trained_robot_frontside_element.toontalk_followed_by = undefined;
                 setTimeout(continuation, 1500);                      
             };
-            TT.UTILITIES.animate_to_absolute_position(trained_robot_frontside_element, trained_robot_frontside_element.toontalk_return_to, robot_returned_continuation);
+            if (trained_robot_frontside_element.toontalk_return_to) {
+                TT.UTILITIES.animate_to_absolute_position(trained_robot_frontside_element, trained_robot_frontside_element.toontalk_return_to, robot_returned_continuation);
+            } else {
+                robot_returned_continuation();
+            }
          };
          button_use_animation(trained_robot, context, top_level_context, robot, new_continuation, ".toontalk-train-backside-button", additional_info, 1000);
     };
@@ -650,7 +653,7 @@ window.TOONTALK.robot_action =
                 var suffix = "";
                 var prefix = "";
                 var action_description = action_name; // default description is its name
-                var path_description;
+                var path_description, trained_action;
                 if (action_name === "open the backside" || 
                     action_name === "close the backside") {
                     // not interesting enough
@@ -680,7 +683,11 @@ window.TOONTALK.robot_action =
                     suffix = " (" + additional_info.toString + ")";
                 } else if (action_name === 'train') {
                     // the actions of the robot should use he or she but not I
-                    suffix = " to " + additional_info.step.toString({person: "third"});
+                    trained_action = additional_info.step.toString({person: "third"});
+                    if (trained_action === "") {
+                        return trained_action;
+                    }
+                    suffix = " to " + trained_action;
                     // indent actions trained 
                     prefix = "&nbsp;&nbsp;&nbsp;&nbsp;";
                     if (toString_info && toString_info.robot_being_trained_description) {

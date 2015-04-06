@@ -692,8 +692,8 @@ window.TOONTALK.number = (function () {
      };
 
     number.number_dropped_on_me_semantics = function (other_number, event, robot) { 
-        if (TT.robot.in_training() && event) {
-            TT.robot.in_training().dropped_on(other_number, this);
+        if (event && this.robot_in_training()) {
+            this.robot_in_training().dropped_on(other_number, this);
         }
         other_number.remove();
         switch (other_number.get_operator()) {
@@ -1019,15 +1019,15 @@ window.TOONTALK.number_backside =
                 }
                 current_numerator   = numerator;
                 current_denominator = denominator;
-                if (TT.robot.in_training()) {
+                if (number.robot_in_training()) {
                     first_class_name = event.srcElement.className.split(" ", 1)[0];
                     if (first_class_name === "toontalk-denominator-input") {
-                        TT.robot.in_training().edited(number, {setter_name: "set_denominator",
+                        number.robot_in_training().edited(number, {setter_name: "set_denominator",
                                                                argument_1: denominator,
                                                                toString: "by changing the value of the denominator to " + denominator,
                                                                button_selector: "." + first_class_name});
                     } else {
-                        TT.robot.in_training().edited(number, {setter_name: "set_numerator",
+                        number.robot_in_training().edited(number, {setter_name: "set_numerator",
                                                                argument_1: numerator,
                                                                toString: "by changing the value of the numerator to " + numerator,
                                                                button_selector: "." + first_class_name});
@@ -1039,8 +1039,8 @@ window.TOONTALK.number_backside =
                 var selected_button = TT.UTILITIES.selected_radio_button(decimal_format.button, mixed_number_format.button, improper_format.button, scientific_format.button);
                 var format = selected_button.value;
                 number.set_format(format, true);
-                if (TT.robot.in_training()) {
-                    TT.robot.in_training().edited(number, {setter_name: "set_format",
+                if (number.robot_in_training()) {
+                    number.robot_in_training().edited(number, {setter_name: "set_format",
                                                            argument_1: format,
                                                            toString: "by changing the format to " + format + " of the number",
                                                            // just use the first className to find this button later
@@ -1052,8 +1052,8 @@ window.TOONTALK.number_backside =
                 var selected_button = TT.UTILITIES.selected_radio_button(plus.button, minus.button, multiply.button, divide.button, set.button);
                 var operator = selected_button.value;
                 number.set_operator(operator, true);
-                if (TT.robot.in_training()) {
-                    TT.robot.in_training().edited(number, {setter_name: "set_operator",
+                if (number.robot_in_training()) {
+                    number.robot_in_training().edited(number, {setter_name: "set_operator",
                                                            argument_1: operator,
                                                            toString: "by changing the operator to " + operator + " of the number",
                                                            // just use the first className to find this button later
@@ -1166,8 +1166,9 @@ window.TOONTALK.number.function =
                 // might be that it reused a widget in the message so isn't new
                 robot.add_newly_created_widget_if_new(response);
             }
-            if (TT.robot.in_training() && event) {
-                TT.robot.in_training().add_newly_created_widget_if_new(response);
+            // TODO: be sure that message "knows" its top_level_widget
+            if (event && message.robot_in_training()) {
+                message.robot_in_training().add_newly_created_widget_if_new(response);
             }
             // following should not pass event through since otherwise it is recorded as if robot being trained did this
             bird.widget_dropped_on_me(response, false, undefined, robot, true);

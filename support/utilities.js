@@ -293,10 +293,10 @@ window.TOONTALK.UTILITIES =
                 } else {
                     TT.UTILITIES.restore_resource($source, source_widget);
                 }
-                if (TT.robot.in_training()) {
+                if (source_widget.robot_in_training()) {
                     // maybe have been copied
                     // or removed from a container (and not 'seen' before)
-                    TT.robot.in_training().add_newly_created_widget_if_new(source_widget);
+                    source_widget.robot_in_training().add_newly_created_widget_if_new(source_widget);
                 }
             }
         } else {
@@ -2376,7 +2376,7 @@ window.TOONTALK.UTILITIES =
                 // for things to fit in box holes or for scales to be placed as other widgets 
                 // need them to use left top instead of center center as the transform-origin
                 var parent_element = (original_parent && original_parent !== document.body) ? original_parent : element.parentElement;
-                var transform_origin_center = (parent_element.className.indexOf("toontalk-box-hole") < 0) && // not in a hole
+                var transform_origin_center = (parent_element && parent_element.className.indexOf("toontalk-box-hole") < 0) && // not in a hole
                                               (element.className.indexOf("toontalk-scale") < 0);             // and not a scale
                 var translate = "";
                 if (!pending_css) {

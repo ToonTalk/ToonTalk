@@ -9,9 +9,6 @@
 
 (function () {
     "use strict";
-    // for robots to train robot need a stack of robots
-    // this in the scope where both robots and their backsides have access
-    var stack_of_robots_in_training = [];
 
 window.TOONTALK.robot = (function (TT) {
 
@@ -29,18 +26,6 @@ window.TOONTALK.robot = (function (TT) {
     };
    
     var robot = Object.create(TT.widget);
-
-    robot.in_training = function () {
-        if (stack_of_robots_in_training.length > 0) {
-            return stack_of_robots_in_training[stack_of_robots_in_training.length-1];
-        }
-    };
-
-    robot.robot_training_this_robot = function () {
-        if (stack_of_robots_in_training.length > 1) {
-            return stack_of_robots_in_training[stack_of_robots_in_training.length-2];
-        }
-    };
  
     robot.create = function (frontside_conditions, backside_conditions, body, description, thing_in_hand, run_once, next_robot) {
         // frontside_conditions holds a widget that needs to be matched against the frontside of the widget to run
@@ -189,11 +174,6 @@ window.TOONTALK.robot = (function (TT) {
                 return;
             }
             thing_in_hand = new_value;
-            if (thing_in_hand && !TT.robot.in_training() && this.visible()) {
-                // update display immediately so thing in hand is in the DOM
-                // while training need to wait if resource for it to be copied when dropped
-                this.update_display();
-            }
         };
         new_robot.get_next_robot = function () {
             return next_robot;
@@ -246,6 +226,7 @@ window.TOONTALK.robot = (function (TT) {
         };
         new_robot.set_run_once = function (new_value) {
             run_once = new_value;
+            this.update_title();
         };
         new_robot.training_started = function (robot_training_this_robot) {
             var context = this.get_context();
@@ -264,12 +245,12 @@ window.TOONTALK.robot = (function (TT) {
                 // use miniature robot image for cursor
                 $("*").css({cursor: 'url(' + TT.UTILITIES.absolute_file_path("images/RB19.32x32.PNG") + '), default'});
             }
-            TT.UTILITIES.give_tooltip(this.get_frontside_element(), this.get_title());
+            this.update_title();
             backside_element = this.get_backside_element();
             $(backside_element).find(".toontalk-conditions-panel").remove();
             original_backside_widgets_of_context = TT.UTILITIES.copy_widget_sides(context.get_backside_widgets(), {just_value: true});
-            if (TT.robot.robot_training_this_robot()) {
-                TT.robot.robot_training_this_robot().started_training_another(this);
+            if (this.robot_training_this_robot()) {
+                this.robot_training_this_robot().started_training_another(this);
             }
         };
         new_robot.training_finished = function () {
@@ -286,12 +267,12 @@ window.TOONTALK.robot = (function (TT) {
             }
             this.rerender();
             this.being_trained = false;
-            TT.UTILITIES.give_tooltip(this.get_frontside_element(), this.get_title());
+            this.update_title();
             this.backup_all();
-            stack_of_robots_in_training.pop();
-            if (TT.robot.in_training()) {
+            this.robot_finished_training();
+            if (this.robot_in_training()) {
                 // robot finished training a robot
-                TT.robot.in_training().finished_training_another(this);
+                this.robot_in_training().finished_training_another(this);
             } else {
                 $("*").css({cursor: ''}); // restore cursor
             }
@@ -647,10 +628,10 @@ window.TOONTALK.robot = (function (TT) {
     
     robot.add_step = function (step, new_widget) {
         this.get_body().add_step(step, new_widget);
-        TT.UTILITIES.give_tooltip(this.get_frontside_element(), this.get_title());
-        if (step.get_action_name() !== 'train' && step.get_action_name() !== 'start training' && TT.robot.robot_training_this_robot()) {
+        this.update_title();
+        if (step.get_action_name() !== 'train' && step.get_action_name() !== 'start training' && this.robot_training_this_robot()) {
             // this limits training to two levels -- could have more but must limit it
-            TT.robot.robot_training_this_robot().trained(this, step);
+            this.robot_training_this_robot().trained(this, step);
         }
     };
     
@@ -812,7 +793,8 @@ window.TOONTALK.robot = (function (TT) {
             postfix = "\n..."; // to indicate still being constructed
         }  
         robot_description = prefix + robot_conditions_description + 
-                            " I will \n" + body.toString({robot: this}) + postfix;
+                            " I will " + (this.get_run_once() ? "" : "repeatedly ") +
+                            "\n" + body.toString({robot: this}) + postfix;
         if (this.match_status) {
             if (this.match_status.is_widget) {
                 robot_description = "I'm not running because the " + this.match_status + 
@@ -847,7 +829,10 @@ window.TOONTALK.robot = (function (TT) {
         var frontside_conditions = this.get_frontside_conditions();
         var type = frontside_conditions.get_type_name();
         if (type === 'top-level') {
-            return "his workspace";
+            if (toString_info && toString_info.person === "third") {
+                return "his workspace";
+            }
+            return "my workspace";
         }
         if (toString_info && toString_info.person === "third") {
             return "the " + type + " he's working on";
@@ -1079,8 +1064,8 @@ window.TOONTALK.robot_backside =
             $(run_once_input.button).click(function (event) {
                 var keep_running = run_once_input.button.checked;
                 robot.set_run_once(!keep_running);
-                if (TT.robot.in_training()) {
-                    TT.robot.in_training().edited(robot, {setter_name: "set_run_once",
+                if (robot.robot_in_training()) {
+                    robot.robot_in_training().edited(robot, {setter_name: "set_run_once",
                                                           argument_1: !keep_running,
                                                           toString: "change to " + (keep_running ? "run again" : "run once") + " of the robot",
                                                           button_selector: ".toontalk-run-once-check-box"});
@@ -1151,7 +1136,7 @@ window.TOONTALK.robot_backside =
                 backside.change_label_and_title_of_train_button(training);
                 if (training) {
                     robot.get_body().reset_steps();
-                    stack_of_robots_in_training.push(robot);
+                    robot.robot_started_training(robot);
                     robot.training_started();
                 } else {
                     robot.training_finished();
