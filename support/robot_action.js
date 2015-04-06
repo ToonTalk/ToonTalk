@@ -150,7 +150,7 @@ window.TOONTALK.robot_action =
              // no need to do this if unwatched
              return true;
          },
-         "click the button": function () {
+         "click the button of": function () {
              // no need to do this if unwatched
              return true;
          }
@@ -566,7 +566,7 @@ window.TOONTALK.robot_action =
          "train":                              train_another_animation,
          "open the backside":                  open_backside_animation,
          "close the backside":                 close_backside,
-         "click the button":                   click_button_animation
+         "click the button of":                click_button_animation
     };
 
     TT.creators_from_json["robot_action"] = function (json, additional_info) {
@@ -581,14 +581,16 @@ window.TOONTALK.robot_action =
         create: function (path, action_name, additional_info) {
             var new_action = Object.create(this);
             var unwatched_run_function = unwatched_run_functions[action_name];
-            var watched_run_function = watched_run_functions[action_name];
+            var watched_run_function   = watched_run_functions[action_name];
             if (!watched_run_function) {
-                watched_run_function = function (referenced, context, top_level_context, robot, additional_info) {
-                    setTimeout(function () {
-                        continuation(referenced);
-                        },
-                        3000);
-                };
+                TT.UTILITIES.report_internal_error("No watched function for " + action_name);
+                return;
+//                 watched_run_function = function (referenced, context, top_level_context, robot, additional_info) {
+//                     setTimeout(function () {
+//                         continuation(referenced);
+//                         },
+//                         3000);
+//                 };
             }
             if (!path) {
                 TT.UTILITIES.report_internal_error("path undefined in " + action_name + " action");
@@ -647,12 +649,21 @@ window.TOONTALK.robot_action =
             new_action.toString = function (toString_info) {
                 var suffix = "";
                 var prefix = "";
+                var action_description = action_name; // default description is its name
                 var path_description;
                 if (action_name === "open the backside" || 
-                    action_name === "close the backside" ||
-                    action_name === "click the button") {
+                    action_name === "close the backside") {
                     // not interesting enough
                     return "";
+                }
+                if (action_name === "click the button of") {
+                    switch (additional_info.button_selector) {
+                    case ".toontalk-green-flag":
+                        action_description = "click the green flag of";
+                        break;
+                    default:
+                        return;
+                    }
                 }
                 if (action_name === "add a new widget to the work space") {
                     return action_name.replace("a new widget", TT.path.toString(path));
@@ -682,9 +693,9 @@ window.TOONTALK.robot_action =
                 } 
                 if (['pick up', 'edit', 'remove', 'copy', 'change whether erased', 'pick up a copy of', 'drop it on the text area of'].indexOf(action_name) >= 0 && 
                     path_description.indexOf("hole of") >= 0) {
-                    return prefix + action_name + " what is in " + path_description + suffix;
+                    return prefix + action_description + " what is in " + path_description + suffix;
                 }
-                return prefix + action_name + " " + path_description + suffix;
+                return prefix + action_description + " " + path_description + suffix;
             };
             new_action.get_json = function (json_history) {
                 return {type: "robot_action",

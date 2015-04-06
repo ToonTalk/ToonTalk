@@ -120,7 +120,10 @@ window.TOONTALK.backside =
                                                 } else {
                                                     TT.UTILITIES.display_message("This " + widget.get_type_name() + " has nothing to run. Add some robots on the back.");
                                                 }
-                                            }                                                                       
+                                            }
+                                            if (TT.robot.in_training()) {
+                                                TT.robot.in_training().button_clicked(".toontalk-green-flag", widget);
+                                            }                                                                      
                                         })
                                  .on('mouseenter', update_stop_sign_title);
             $(stop_sign_element) .addClass("toontalk-stop-sign toontalk-stop-sign-active")

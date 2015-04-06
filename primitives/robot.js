@@ -22,6 +22,8 @@ window.TOONTALK.robot = (function (TT) {
         path = TT.path.get_path_to(widget, robot);
         if (path) {
             robot.add_step(TT.robot_action.create(path, action_name, additional_info), new_widget);
+        } else {
+            console.log("No path found for " + action_name);
         }
         robot.current_action_name = undefined;
     };
@@ -604,7 +606,7 @@ window.TOONTALK.robot = (function (TT) {
     };
 
     robot.button_clicked = function (selector, widget_side) {
-        var action_name = "click the button";
+        var action_name = "click the button of";
         add_step_to_robot(widget_side.get_widget(), action_name, this, {button_selector: selector});
     };
    
