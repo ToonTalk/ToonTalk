@@ -39,6 +39,8 @@ window.TOONTALK.UTILITIES =
         var client_y = TT.UTILITIES.get_mouse_or_first_touch_event_attribute("clientY", event);
         var bounding_rectangle, json_object, json_div, widget, is_resource;
         $(".ui-tooltip").remove();
+        // stop animating it if grabbed
+        $(".ui-tooltip").removeClass("toontalk-side-animating");
         // was using text/plain but IE complained
         // see http://stackoverflow.com/questions/18065840/html5-drag-and-drop-not-working-on-ie11
         if (event.dataTransfer && event.dataTransfer.getData("text") && event.dataTransfer.getData("text").length > 0) {
@@ -291,10 +293,10 @@ window.TOONTALK.UTILITIES =
                 } else {
                     TT.UTILITIES.restore_resource($source, source_widget);
                 }
-                if (TT.robot.in_training) {
+                if (source_widget.robot_in_training()) {
                     // maybe have been copied
                     // or removed from a container (and not 'seen' before)
-                    TT.robot.in_training.add_newly_created_widget_if_new(source_widget);
+                    source_widget.robot_in_training().add_newly_created_widget_if_new(source_widget);
                 }
             }
         } else {
@@ -579,7 +581,8 @@ window.TOONTALK.UTILITIES =
 //                                TT.UTILITIES.use_custom_tooltip(this);
 //                            });
 //     };
-    var initialise = function () {
+    var initialize = function () {
+        var $robot_element_for_determining_dimensions = $("<div class='toontalk-robot'>");
         var translation_div;
         TT.debugging = TT.UTILITIES.get_current_url_parameter('debugging');
         TT.UTILITIES.process_json_elements();
@@ -624,6 +627,18 @@ window.TOONTALK.UTILITIES =
             $("#google_translate_element").remove();
         }
         TT.UTILITIES.add_test_all_button();
+        // compute the default dimensions of robots
+        TT.UTILITIES.run_when_dimensions_known($robot_element_for_determining_dimensions.get(0), 
+                                               function () {
+                                                   var default_width  = $robot_element_for_determining_dimensions.width();
+                                                   var default_height = $robot_element_for_determining_dimensions.height();
+                                                   TT.robot.get_default_width = function () {
+                                                       return default_width;
+                                                   };
+                                                   TT.robot.get_default_height = function () {
+                                                        return default_height;
+                                                   };
+                                               });
     };
     var load_script = function (url) {
         var script = document.createElement('script');
@@ -670,7 +685,7 @@ window.TOONTALK.UTILITIES =
                                 }
                             },
                             false); // don't capture events
-    $(document).ready(initialise);
+    $(document).ready(initialize);
     return {
         create_from_json: function (json, additional_info, delay_backside_widgets) {
             var handle_delayed_backside_widgets = function (widget, additional_info, shared_widget_index) {
@@ -945,13 +960,21 @@ window.TOONTALK.UTILITIES =
             return widget_json;
         },
 
-        get_json_of_keys: function (object) {
-            var json = {};
+        get_json_of_keys: function (object, exceptions) {
+            var json;
+            if (!exceptions) {
+                exceptions = [];
+            }
             Object.keys(object).forEach(function (key) {
-                if (object[key].get_json) {
-                    json[key] = {json: object[key].get_json()};
-                } else {
-                    json[key] = object[key];
+                if (exceptions.indexOf(key) < 0) {
+                    if (!json) {
+                        json = {};
+                    }
+                    if (object[key].get_json) {
+                        json[key] = {json: object[key].get_json()};
+                    } else {
+                        json[key] = object[key];
+                    }
                 }
             });
             return json;
@@ -1436,6 +1459,11 @@ window.TOONTALK.UTILITIES =
                 // animation doesn't work with JQuery css
                 $element.get(0).style.left = left+"px";
                 $element.get(0).style.top  = top +"px";
+                // remove animating CSS when transition is over
+                TT.UTILITIES.add_one_shot_event_handler($element.get(0), "transitionend", 2000, function () {
+                    $element.removeClass("toontalk-side-animating");
+                    $element.get(0).style.transitionDuration = '';
+                });
             }
         },
         
@@ -1462,10 +1490,13 @@ window.TOONTALK.UTILITIES =
         
         find_resource_equal_to_widget: function (widget) {
             var element_found;
-            $(".toontalk-top-level-resource").each(function (index, element) {
+            // toontalk-top-level-resource is used for a DIV and its child -- TODO rationalise this
+            // here only consider the child ones
+            $(".toontalk-top-level-resource.toontalk-side").each(function (index, element) {
                 var owner = TT.UTILITIES.widget_from_jquery( $(element));
                 if (owner && ((widget.equals && widget.equals(owner)) ||
-                              ((widget.matching_resource && widget.matching_resource(owner))))) {
+                              (widget.matching_resource && widget.matching_resource(owner)) ||
+                              (widget.match(owner) === 'matched'))) {
                     element_found = element;
                     return false; // stop the 'each'
                 }
@@ -1562,15 +1593,19 @@ window.TOONTALK.UTILITIES =
                                if ($element.is(".toontalk-robot")) {
                                     position.top  -= 30;
                                     position.left -= 50;
-                               }
-                               if ($element.is(".toontalk-number")) {
+                               } else if ($element.is(".toontalk-number")) {
                                     position.top -= 30;
-                               }
-                               if ($element.is(".toontalk-box")) {
+                               } else if ($element.is(".toontalk-box")) {
                                     position.top -= 30;
-                               }  
+                               } else {
+                                   // can be too close to widget (or button) and interferes with clicks etc
+                                   position.top -= 20;
+                               }
                                if (position.left < 10) {
                                    position.left = 10;
+                               }
+                               if (position.top < 10) {
+                                   position.top = 10;
                                }
                                $(this).css(position);
                                feedback_horizontal = feedback.horizontal;
@@ -1599,10 +1634,11 @@ window.TOONTALK.UTILITIES =
                           // need to add the arrow here since the replacing of the innerHTML above removed the arrow
                           // when it was added earlier
                           // TODO: position it better
-                          $("<div>").addClass("toontalk-arrow")
-                                    .addClass(feedback_vertical)
-                                    .addClass(feedback_horizontal)
-                                    .appendTo(ui.tooltip);
+                          // until it is positioned reliably better to not have it
+//                           $("<div>").addClass("toontalk-arrow")
+//                                     .addClass(feedback_vertical)
+//                                     .addClass(feedback_horizontal)
+//                                     .appendTo(ui.tooltip);
                           element_displaying_tool = ui.tooltip;
     //                       if (height_adjustment) {
     //                           $(ui.tooltip).css({maxHeight: $(ui.tooltip).height()+height_adjustment/2});
@@ -1648,24 +1684,36 @@ window.TOONTALK.UTILITIES =
             var source_absolute_position = $(source_element).offset();
             var source_relative_position = $(source_element).position();
             var distance = TT.UTILITIES.distance(target_absolute_position, source_absolute_position);
-            var remove_transition_class, duration;
+            var left, top, remove_transition_class, duration;
+            $(source_element).css({"z-index": TT.UTILITIES.next_z_index()});
             if (!speed) {
                 speed = .5; // a half a pixel per millisecond -- so roughly two seconds to cross a screen
             }
             duration = Math.round(distance/speed);
             $(source_element).addClass("toontalk-side-animating");
             source_element.style.transitionDuration = duration+"ms";
-            source_element.style.left = (source_relative_position.left + (target_absolute_position.left - source_absolute_position.left)) + "px";
-            source_element.style.top =  (source_relative_position.top  + (target_absolute_position.top -  source_absolute_position.top )) + "px";
+            left = source_relative_position.left + (target_absolute_position.left - source_absolute_position.left);
+            top  = source_relative_position.top  + (target_absolute_position.top -  source_absolute_position.top);
+            source_element.style.left = left + "px";
+            source_element.style.top =  top  + "px";
+            if (source_element.toontalk_followed_by) {
+                target_absolute_position.left += source_element.toontalk_followed_by.left_offset;
+                target_absolute_position.top  += source_element.toontalk_followed_by.top_offset;
+                TT.UTILITIES.animate_to_absolute_position(source_element.toontalk_followed_by.element, target_absolute_position, undefined, speed, more_animation_follows);
+            }
+            // replaced add_one_shot_event_handler with time outs because transition end can be triggered by changes in the frontside_element
+            // e.g. when a robot is holding a tool
             if (!more_animation_follows) {
                 remove_transition_class = function () {
                     $(source_element).removeClass("toontalk-side-animating");
                     source_element.style.transitionDuration = '';
                 };
+                setTimeout(remove_transition_class, duration);
                 // if transitionend is over 500ms late then run handler anyway
-                TT.UTILITIES.add_one_shot_event_handler(source_element, "transitionend", duration+500, remove_transition_class);
+//                 TT.UTILITIES.add_one_shot_event_handler(source_element, "transitionend", duration+500, remove_transition_class);
             }
-            TT.UTILITIES.add_one_shot_event_handler(source_element, "transitionend", duration+500, continuation);
+            setTimeout(continuation, duration);
+//             TT.UTILITIES.add_one_shot_event_handler(source_element, "transitionend", duration+500, continuation);
         },
         
         distance: function (position_1, position_2) {
@@ -2327,7 +2375,7 @@ window.TOONTALK.UTILITIES =
                 // for things to fit in box holes or for scales to be placed as other widgets 
                 // need them to use left top instead of center center as the transform-origin
                 var parent_element = (original_parent && original_parent !== document.body) ? original_parent : element.parentElement;
-                var transform_origin_center = (parent_element.className.indexOf("toontalk-box-hole") < 0) && // not in a hole
+                var transform_origin_center = (parent_element && parent_element.className.indexOf("toontalk-box-hole") < 0) && // not in a hole
                                               (element.className.indexOf("toontalk-scale") < 0);             // and not a scale
                 var translate = "";
                 if (!pending_css) {
@@ -2444,7 +2492,7 @@ window.TOONTALK.UTILITIES =
                                        } else {
                                            $(element).remove();
                                        }
-                                        $(element).removeClass("toontalk-not-observable");
+                                       $(element).removeClass("toontalk-not-observable");
                                    } else {
                                        // try again -- probably because in the meanwhile this has been
                                        // added to some container and its dimensions aren't original
@@ -2979,7 +3027,7 @@ items are added to the end of the queue and removed from the front.
 Edited by Ken Kahn for better integration with the rest of the ToonTalk code
  */
 
-          // initialise the queue and offset
+          // initialize the queue and offset
           var queue  = [];
           var offset = 0;
 

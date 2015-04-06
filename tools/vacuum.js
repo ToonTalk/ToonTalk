@@ -55,16 +55,17 @@ window.TOONTALK.vacuum = (function (TT) {
 
         return {
             apply_tool: function (widget_side, event) {
-                var remove_widget = function (widget_side) {
+                var widget = widget_side.get_widget();
+                var remove_widget = function (widget_side) {  
                     var copy;
                     if (widget_side.is_backside()) {
                         widget_side.hide_backside();
                         return;
                     }
-                    if (TT.robot.in_training && event) {
-                        TT.robot.in_training.removed(widget_side);
+                    if (event && widget.robot_in_training()) {
+                        widget.robot_in_training().removed(widget_side);
                     }
-                    if (widget_side === TT.robot.in_training) {
+                    if (widget_side === widget.robot_in_training()) {
                         // vacuuming himself so automatically finish training
                         widget_side.training_finished();
                         widget_side.set_run_once(true); // since removes itself can iterate
@@ -89,8 +90,8 @@ window.TOONTALK.vacuum = (function (TT) {
                     if (widget_side.get_type_name() !== 'top-level') {
                         new_erased = !widget_side.get_erased();
                         widget_side.set_erased(new_erased, true);
-                        if (TT.robot.in_training && event) {
-                            TT.robot.in_training.erased_widget(widget_side, new_erased);
+                        if (event && widget.robot_in_training()) {
+                            widget.robot_in_training().erased_widget(widget_side, new_erased);
                         }
                     }
                 } else if (mode === 'restore') {
@@ -108,7 +109,7 @@ window.TOONTALK.vacuum = (function (TT) {
                     // need to copy the list since removing will alter the list
                     backside_widgets = top_level_backside.get_backside_widgets().slice();
                     backside_widgets.forEach(function (widget_side) {
-                                                 if (widget_side.get_widget() !== TT.robot.in_training) {
+                                                 if (widget !== widget.robot_in_training()) {
                                                      remove_widget(widget_side);
                                                  }
                                              });

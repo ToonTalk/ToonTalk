@@ -37,7 +37,7 @@ window.TOONTALK.path =
             var compute_path = function (widget, robot) {
                 var context = robot.get_context();
                 var body = robot.get_body();
-                var path, sub_path, widget_type, is_backside;
+                var path, sub_path, widget_type, is_backside, robot_ancestor;
                 if (widget.is_backside()) {
                     is_backside = true;
                     widget = widget.get_widget();
@@ -102,6 +102,11 @@ window.TOONTALK.path =
                     path.is_backside = is_backside;
                     return path;
                 }
+                robot_ancestor = widget.ancestor_of_type('robot');
+                if (robot_ancestor) {
+                    // is a condition of a robot
+                    return TT.robot.find_conditions_path(widget, robot_ancestor, robot);
+                }
                 path = TT.path.get_path_to_resource(widget.copy());
                 path.is_backside = is_backside;
                 return path;
@@ -137,7 +142,7 @@ window.TOONTALK.path =
                 // no path means entire context -- TODO: determine if this is still true
                 dereferenced = context;
             }
-            if (dereferenced && path.is_backside) {
+            if (dereferenced && path && path.is_backside) {
                 return dereferenced.get_backside(true);
             }
             return dereferenced;
@@ -205,15 +210,18 @@ window.TOONTALK.path =
             }
             return json;
         },
-        to_entire_context: function () {
+        to_entire_context: function (toString_info) {
             // an action that applies to the entire context (i.e. what the robot is working on)
             // need to create fresh ones since if there is a sub-path they shouldn't be sharing
             return {dereference_path: function (context, top_level_context, robot) {
                         return TT.path.continue_dereferencing_path(this, context, top_level_context, robot);
                     },
-                    toString: function (additional_info) {
-                        if (additional_info && additional_info.robot) {
-                            return additional_info.robot.get_top_level_context_description();
+                    toString: function (toString_info) {
+                        if (toString_info && toString_info.robot) {
+                            return toString_info.robot.get_top_level_context_description(toString_info);
+                        }
+                        if (toString_info && toString_info.person === "third") {
+                            return "what he's working on";
                         }
                         return "what I'm working on";
                     },
@@ -239,21 +247,22 @@ window.TOONTALK.path =
             // revisit this if resources are ever backside resources
             widget = widget.get_widget(); // if widget is really the backside of the widget
             return {dereference_path: function (context, top_level_context, robot) {
-                        var widget_copy = widget.copy();
+                        var widget_copy = widget.copy({copying_resource: true});
                         var widget_frontside_element, widget_frontside_position, copy_frontside_element;
                         robot.add_newly_created_widget(widget_copy);
-                        if (robot.visible() && !widget.visible()) {
+                        if (robot.visible()) {//} && !widget.visible()) {
                             // picking up a copy of a resource
                             // but robot isn't referring to the resource itself just the 'value'
                             widget_frontside_element = TT.UTILITIES.find_resource_equal_to_widget(widget);
                             if (widget_frontside_element) {
+                                widget_copy.save_dimensions_of(TT.UTILITIES.widget_of_element(widget_frontside_element));
                                 copy_frontside_element = widget_copy.get_frontside_element();
                                 widget_frontside_position = $(widget_frontside_element).position();
                                 TT.UTILITIES.set_timeout(function ()  {
                                     $(copy_frontside_element).css({left:   widget_frontside_position.left,
                                                                    top:    widget_frontside_position.top,
-                                                                   width:  widget_frontside_element.offsetWidth,
-                                                                   height: widget_frontside_element.offsetHeight});
+                                                                   width:  $(widget_frontside_element).width(),
+                                                                   height: $(widget_frontside_element).height()});
                                     });
                             }
                         }

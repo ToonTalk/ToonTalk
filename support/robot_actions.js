@@ -48,7 +48,7 @@ window.TOONTALK.actions =
             new_actions.add_step = function (step, new_widget) {
                 steps.push(step);
                 if (new_widget) {
-                    this.add_newly_created_widget(new_widget);
+                    this.add_newly_created_widget_if_new(new_widget);
                 }
             };
             new_actions.add_newly_created_widget_if_new = function (new_widget) {
@@ -110,6 +110,9 @@ window.TOONTALK.actions =
                     // each step needs to call robot.run_next_step
                     step.run_unwatched(context, top_level_context, robot);
                 } else {
+                    // currently only watched robots use these listeners
+                    // if that is always the case no need calling the following
+                    robot.run_body_finished_listeners();
                     robot.get_first_in_team().set_running_or_waiting(false);
                     if (robot.get_run_once()) {
                         robot.set_running(false);
@@ -195,10 +198,12 @@ window.TOONTALK.actions =
                                 step_number++;
                                 step.run_watched(context, top_level_context, robot);
                                 if (robot.get_thing_in_hand()) {
+                                    // TODO: move this elsewhere
                                     robot.get_thing_in_hand().save_dimensions();
                                     robot.render();
                                 }
                             } else {
+                                robot.run_body_finished_listeners();
                                 // restore position
                                 restore_after_last_event();        
                             }
@@ -233,6 +238,10 @@ window.TOONTALK.actions =
                 step_descriptions.pop();
             }
             step_descriptions.forEach(function (step_description, index) {
+                if (!step_description) {
+                    // e.g. an empty string -- ignore it
+                    return;
+                }
                 description += step_description;
                 if (index === step_descriptions.length-2) {
                     description += " and \n";

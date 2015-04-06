@@ -96,8 +96,8 @@ window.TOONTALK.bird = (function (TT) {
             } else {
                 console.log("TODO: handle drop on a nestless bird -- just removes other?"); // isn't this handled?
             }
-            if (TT.robot.in_training && event) {
-                TT.robot.in_training.dropped_on(other, this);
+            if (event && this.robot_in_training()) {
+                this.robot_in_training().dropped_on(other, this);
             }
             return true;
         };
@@ -184,8 +184,8 @@ window.TOONTALK.bird = (function (TT) {
                         }.bind(this));
                 }.bind(this);
             var carry_element = function (element, widget_side) {
-                    element.width_before_carry  = element.clientWidth;
-                    element.height_before_carry = element.clientHeight;
+                    element.width_before_carry  = $(element).width();
+                    element.height_before_carry = $(element).height();
                     this.element_to_display_when_flying = element;
                     if (widget_side) {
                         this.update_display();
@@ -381,7 +381,8 @@ window.TOONTALK.bird = (function (TT) {
                 copy = this.create(undefined, this.get_description());
             } else {
                 nest_guid = nest.get_guid();
-                if (parameters.nests_copied && parameters.nests_copied[nest_guid]) {
+                if (nest_guid && parameters.nests_copied && parameters.nests_copied[nest_guid]) {
+                    // function nests don't have guids
                     new_nest = parameters.nests_copied[nest_guid][0];
                     // turn first copy into a 'fresh' copy
                     make_nest_fresh.call(new_nest);
@@ -396,11 +397,13 @@ window.TOONTALK.bird = (function (TT) {
                 if (!parameters.birds_copied) {
                     parameters.birds_copied = {};
                 }
-                if (!parameters.birds_copied[nest_guid]) {
-                    parameters.birds_copied[nest_guid] = [];
-                }
-                // add to birds of this nest copied before the nest is (if at all)
-                parameters.birds_copied[nest_guid].push(copy);       
+                if (nest_guid) {
+                    if (!parameters.birds_copied[nest_guid]) {
+                        parameters.birds_copied[nest_guid] = [];
+                    }
+                    // add to birds of this nest copied before the nest is (if at all)
+                    parameters.birds_copied[nest_guid].push(copy);
+                } 
             }
             return this.add_to_copy(copy, parameters);
         };
@@ -456,8 +459,8 @@ window.TOONTALK.bird = (function (TT) {
             if (nest && nest.is_function_nest() && nest.set_function_name(new_name)) {
                 // update the bird's title (and maybe someday more - e.g. t-shirt)
                 this.rerender();
-                if (TT.robot.in_training) {
-                    TT.robot.in_training.edited(this, {setter_name: "set_function_name",
+                if (this.robot_in_training()) {
+                    this.robot_in_training().edited(this, {setter_name: "set_function_name",
                                                        argument_1:  new_name,
                                                        toString: "change the function bird to '" + new_name + "'",
                                                        button_selector: ".toontalk-select-function"});
@@ -939,10 +942,10 @@ window.TOONTALK.nest = (function (TT) {
                     this.robot_waiting_before_next_step = robot;
 //                     console.log("robot_waiting_before_next_step set for " + this + " in new_bird.dropped_on_other");
                 }
-                if (TT.robot.in_training && event) {
-                    // robot did this so add bird to a newly created widgets of TT.robot.in_training
+                if (event && this.robot_in_training()) {
+                    // robot did this so add bird to a newly created widgets of this.robot_in_training()
                     // robot should be undefined since it isn't a running robot
-                    TT.robot.in_training.add_newly_created_widget(bird);
+                    this.robot_in_training().add_newly_created_widget(bird);
                 }
                 this.rerender();
                 frontside_element = this.get_frontside_element(true);
@@ -973,7 +976,7 @@ window.TOONTALK.nest = (function (TT) {
                     nest_position = TT.UTILITIES.relative_position(frontside_element, top_level_backside_element);
                     $(bird_frontside_element).css({left: nest_position.left,
                                                    top:  nest_position.top});
-                    if (TT.robot.in_training && event) {
+                    if (event && this.robot_in_training()) {
                         // robot should not add steps for the hatching of the bird - hence true argument
                         backside_where_bird_goes.widget_dropped_on_me(bird, false, event, undefined, true);
                     } else {
@@ -1042,8 +1045,8 @@ window.TOONTALK.nest = (function (TT) {
                 if (other.dropped_on_other) {
                     // e.g. so egg can hatch from nest drop
                     other.dropped_on_other(this, other_is_backside, event, robot);
-                } else if (TT.robot.in_training && event) {
-                    TT.robot.in_training.dropped_on(other, this);
+                } else if (event && this.robot_in_training()) {
+                    this.robot_in_training().dropped_on(other, this);
                 }
             } else {
                 other.drop_on(contents[0].get_widget(), other_is_backside, event, robot)
@@ -1273,6 +1276,11 @@ window.TOONTALK.nest = (function (TT) {
             get_widget:
                 function () {
                     return this;
+                },
+            get_guid: 
+                function () {
+                    // doesn't have a guid since function nests are stateless and can be shared
+                    return;
                 },
             // following needed for bird to just pass along the contents
             has_ancestor:            return_false,

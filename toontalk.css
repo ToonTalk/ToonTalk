@@ -1370,6 +1370,10 @@ body {
 	width:  66px;
 	height: 110px;
 }
+.toontalk-robot-being-trained-by-robot {
+	transform-origin: left top;
+	transform: scale(0.5, 0.5);
+}
 .toontalk-robot-animating {
 	opacity: .8;
 	background-image: url("images/robot-working.png");

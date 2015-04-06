@@ -78,7 +78,11 @@ window.TOONTALK.sensor = (function (TT) {
             // there is an issue about sensor having access to nest's contents
             // so TT.UTILITIES.copy_widget_sides(contents) not appropriate
             // so perhaps this should be in the same expression as nest to share privately...
-            copy = TT.sensor.create(event_name, attribute, description, undefined, active, parameters ? undefined : widget);
+            if (parameters) {
+                copy = TT.sensor.create(event_name, attribute, description, undefined, (parameters.copying_resource || active), widget);
+            } else {
+                copy = TT.sensor.create(event_name, attribute, description, undefined, active, widget);
+            }
             return new_sensor.add_to_copy(copy, parameters);
         };
         new_sensor.get_json = function (json_history) {
@@ -244,8 +248,8 @@ window.TOONTALK.sensor_backside =
             $(activate_switch.button).click(function (event) {
                 var active = activate_switch.button.checked;
                 sensor.set_active(active);
-                if (TT.robot.in_training) {
-                    TT.robot.in_training.edited(robot, {setter_name: "set_active",
+                if (sensor.robot_in_training()) {
+                    sensor.robot_in_training().edited(robot, {setter_name: "set_active",
                                                         argument_1: active,
                                                         toString: "change to " + (active ? "active" : "inactive") + " of the " + sensor,
                                                         button_selector: ".toontalk-sensor-active-check-box"});
