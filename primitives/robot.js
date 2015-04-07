@@ -759,7 +759,7 @@ window.TOONTALK.robot = (function (TT) {
         var description = this.get_description();
         var frontside_element;
         if (description) {
-            description = "This robot " + description;
+            description = "I'm " + description;
             if (description.lastIndexOf('.') < 0) {
                 description = description + ".";
             }
