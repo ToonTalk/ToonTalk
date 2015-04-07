@@ -845,26 +845,45 @@ window.TOONTALK.box_hole =
             };
             hole.widget_dropped_on_me = function (dropped, is_backside, event, robot) {
                 var box = this.get_parent_of_frontside();
-                var $hole_element;
-                if (event && TT.sounds) {
-                    TT.sounds.fall_inside.play();
-                }
-                if (event && box.robot_in_training()) {
-                    box.robot_in_training().dropped_on(dropped, this);
-                }
-                if (event && dropped.save_dimensions) { // and maybe watched robot too?
-//                     dropped.save_dimensions();
-                    if (dropped.set_size_attributes) {
-                        $hole_element = $(this.get_element());
-                        dropped.set_size_attributes($hole_element.width(), $hole_element.height());
+                var hole_element, hole_position, parent_position, dropped_element;
+                if (event) {
+                    if (TT.sounds) {
+                        TT.sounds.fall_inside.play();
                     }
+                    hole_element = this.get_element();
+                    dropped_element = dropped.get_element();
+                    $(dropped_element).css({"z-index": TT.UTILITIES.next_z_index()});  
+                    parent_position = $(dropped_element.parentElement).offset();
+                    hole_position   = $(hole_element).offset(); 
+                    dropped_element.style.left = (event.pageX-parent_position.left)+"px";
+                    dropped_element.style.top  = (event.pageY-parent_position.top) +"px";
+                    $(dropped_element).addClass("toontalk-side-appearing");
+                    dropped_element.style.width  = hole_element.style.width;
+                    dropped_element.style.height = hole_element.style.height;
+                    dropped_element.style.left = (hole_position.left-parent_position.left)+"px";
+                    dropped_element.style.top  = (hole_position.top -parent_position.top) +"px";
+                    setTimeout(function () {
+                                   $(dropped_element).removeClass("toontalk-side-appearing");
+                                   box.render();
+                                   this.set_contents(dropped);
+                              }.bind(this),
+                              1200);
+                    if (box.robot_in_training()) {
+                        box.robot_in_training().dropped_on(dropped, this);
+                    }
+                    if (dropped.save_dimensions) { // and maybe watched robot too?
+                        if (dropped.set_size_attributes) {
+                            dropped.set_size_attributes($(hole_element).width(), $(hole_element).height());
+                        }
+                    }
+                } else {
+                    box.render();
+                    this.set_contents(dropped);
                 }
-                this.set_contents(dropped);
                 if (dropped.dropped_on_other) {
                     // e.g. so egg can hatch from nest drop
                     dropped.dropped_on_other(this, false, event, robot);
                 }
-                box.render();
                 return true;
             };
             hole.get_json = function () {
@@ -980,9 +999,9 @@ window.TOONTALK.box_hole =
             };
             hole.removed_from_container = function (part, backside_removed, event, index, report_error) {
                 if (contents) {
-                    if (event) {
-                        contents.restore_dimensions();
-                    }
+//                     if (event) {
+//                         contents.restore_dimensions();
+//                     }
                     this.set_contents(undefined);
                     if (event) {
                         this.get_parent_of_frontside().render();

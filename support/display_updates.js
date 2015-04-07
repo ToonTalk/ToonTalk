@@ -57,9 +57,9 @@ window.TOONTALK.DISPLAY_UPDATES =
                 setTimeout(function () {
                                TT.UTILITIES.use_custom_tooltip(frontside_element);
                            });
-                // ensure that children have higher z-index than parent
+                // ensure that children have higher z-index than parent (unless some children are animating)
                 $parent_side_element = $(frontside_element).parent().closest(".toontalk-side");
-                if ($parent_side_element.is('*')) {
+                if ($parent_side_element.is('*') && $parent_side_element.find(".toontalk-side-animating, .toontalk-side-appearing").length === 0) {
                     z_index = TT.UTILITIES.get_style_numeric_property(frontside_element, 'z-index');
                     parent_z_index = TT.UTILITIES.get_style_numeric_property($parent_side_element.get(0), "z-index");
                     if (!parent_z_index) {
