@@ -749,6 +749,10 @@ window.TOONTALK.robot = (function (TT) {
             return this.get_body().add_newly_created_widget_if_new(new_widget);
         }
     };
+
+    robot.is_newly_created = function (widget) {
+        return this.get_body().is_newly_created(widget);
+    };
     
     robot.get_recently_created_widget = function () {
         var newly_created_widgets = this.get_body().get_newly_created_widgets();

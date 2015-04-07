@@ -282,7 +282,10 @@ window.TOONTALK.path =
              return {dereference_path: function (context, top_level_context, robot) {
                         var referenced;
                         context.backside_widgets.some(function (backside_widget_side) {
-                            if (backside_widget_side.get_widget().is_of_type(type_name)) {
+                            if (backside_widget_side.get_widget().is_of_type(type_name) &&
+                                // should be a widget that was there when robot matched backside conditions
+                                // not one that was created subsequently
+                                !robot.is_newly_created(backside_widget_side.get_widget())) {
                                 referenced = backside_widget_side.get_widget();
                                 return true; // stop searching
                             }
