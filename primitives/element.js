@@ -77,13 +77,13 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         return value;
     };
     
-    element.create = function (html, style_attributes, description, additional_classes) {
+    element.create = function (original_html, style_attributes, description, additional_classes) {
         var new_element = Object.create(element);
         var guid = TT.UTILITIES.generate_unique_id(); // needed for copying tables
         var widget_drag_started = new_element.drag_started;
         var attribute_widgets_in_backside_table = {}; // table relating attribute_name and widget in backside table
         var original_copies                     = {}; // table relating attribute_name and all the widget copies for that attribute
-        var original_width, original_height, current_width, current_height, pending_css, transform_css, on_update_display_handlers, $image_element;
+        var html, original_width, original_height, current_width, current_height, pending_css, transform_css, on_update_display_handlers, $image_element;
         if (!style_attributes) {
             style_attributes = [];
         }
@@ -111,13 +111,26 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         };
         new_element.set_HTML = function (new_value) {
             var frontside_element = this.get_frontside_element();
+            var transform_HTML = function (html) {
+                // maybe more to come but now adds target='_blank' to anchors
+                var anchor_start = 0;
+                while (true) {
+                    anchor_start = html.indexOf("<a ", anchor_start);
+                    if (anchor_start < 0) {
+                        break;
+                    }
+                    anchor_start += 3;
+                    html = html.substring(0, anchor_start) + "target='_blank' " + html.substring(anchor_start);
+                }
+                return html;
+            };
             if (!frontside_element) {
                 return false;
             }
             if (html === new_value) {
                 return false;
             }
-            html = new_value;
+            html = transform_HTML(new_value);
             // remove children so will be updated
             $(frontside_element).children(":not(.ui-resizable-handle)").remove();
             frontside_element.innerHTML = html; // until re-rendered
@@ -445,6 +458,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         new_element.increment_height = function (delta) {
             this.set_attribute('height', (current_height || original_height) + delta);
         };
+        new_element.set_HTML(original_html);
         new_element.set_description(description);
         if (TT.debugging) {
             new_element.debug_string = new_element.toString();

@@ -851,6 +851,7 @@ window.TOONTALK.box_hole =
                         TT.sounds.fall_inside.play();
                     }
                     hole_element = this.get_element();
+                    // TODO: abstract this and use it elsewhere
                     dropped_element = dropped.get_element();
                     $(dropped_element).css({"z-index": TT.UTILITIES.next_z_index()});  
                     parent_position = $(dropped_element.parentElement).offset();
