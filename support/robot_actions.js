@@ -137,8 +137,7 @@ window.TOONTALK.actions =
             var restore_after_last_event = function () {
                 var robot_still_visible = robot.visible();
                 if (robot_still_visible) {
-                    $(frontside_element).addClass("toontalk-side-animating");
-                    TT.UTILITIES.set_position_relative_to_top_level_backside($(frontside_element), robot_home);
+                     TT.UTILITIES.animate_to_absolute_position(frontside_element, robot_home);
                 }
                 // delay so there is some animation of returning 'home'
                 setTimeout(function () {
