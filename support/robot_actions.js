@@ -207,7 +207,7 @@ window.TOONTALK.actions =
                                 restore_after_last_event();        
                             }
                         },
-                        500);
+                        50);
                 } else {
                    // e.g. user hid the robot while running
                    // first restore robot to its 'home'
