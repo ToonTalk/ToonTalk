@@ -13,11 +13,17 @@
 window.TOONTALK.robot = (function (TT) {
 
     var add_step_to_robot = function (widget, action_name, robot, additional_info, new_widget) {
-        var path;
+        var path, now;
         robot.current_action_name = action_name;
         // following relies on current_action_name being set
         path = TT.path.get_path_to(widget, robot);
         if (path) {
+            if (!additional_info) {
+                additional_info = {};
+            }
+            now = Date.now();
+            additional_info.time = now-robot.time_of_last_step;
+            robot.time_of_last_step = now;
             robot.add_step(TT.robot_action.create(path, action_name, additional_info), new_widget);
         } else {
             console.log("No path found for " + action_name);
@@ -258,6 +264,7 @@ window.TOONTALK.robot = (function (TT) {
             if (this.robot_training_this_robot()) {
                 this.robot_training_this_robot().started_training_another(this);
             }
+            this.time_of_last_step = Date.now();
         };
         new_robot.training_finished = function () {
             if (!this.being_trained) {
@@ -453,7 +460,7 @@ window.TOONTALK.robot = (function (TT) {
     };
     
     robot.picked_up = function (widget, json, is_resource) {
-        var path, step, action_name, widget_copy, new_widget;
+        var path, step, action_name, widget_copy, new_widget, additional_info, now;
         if (this === widget) {
             // robot picked up its frontside or backside -- so ignore this
             return;
@@ -482,7 +489,13 @@ window.TOONTALK.robot = (function (TT) {
             path = TT.path.get_path_to(widget, this);
         }
         if (path) {
-            step = TT.robot_action.create(path, this.current_action_name);
+            now = Date.now();
+            if (!additional_info) {
+                additional_info = {};
+            }
+            additional_info = {time: now-robot.time_of_last_step};
+            robot.time_of_last_step = now;
+            step = TT.robot_action.create(path, this.current_action_name, additional_info);
             this.add_step(step, new_widget);
         }
         widget.last_action = this.current_action_name;
@@ -494,7 +507,8 @@ window.TOONTALK.robot = (function (TT) {
         // need to support dropping on backside of a widget as well as which side of a box 
         var path, step, additional_info, $target_element,
             target_location, source_location,
-            target_width, target_height;
+            target_width, target_height,
+            now;
         if (this === source_widget) {
             // robot dropped its frontside or backside -- so ignore this
             return;
@@ -515,7 +529,12 @@ window.TOONTALK.robot = (function (TT) {
                 // store the drop location as a fraction of width and height of target so does something sensible when run on different size target
                 additional_info = {left_offset_fraction: (source_location.left-target_location.left)/target_width,
                                    top_offset_fraction:  (source_location.top -target_location.top) /target_height};
+            } else if (!additional_info) {
+                additional_info = {};
             }
+            now = Date.now();
+            additional_info.time = now-robot.time_of_last_step;
+            robot.time_of_last_step = now;
             step = TT.robot_action.create(path, this.current_action_name, additional_info);
             this.add_step(step);
         }
