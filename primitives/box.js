@@ -846,6 +846,9 @@ window.TOONTALK.box_hole =
             hole.widget_dropped_on_me = function (dropped, is_backside, event, robot) {
                 var box = this.get_parent_of_frontside();
                 var $hole_element;
+                if (event && TT.sounds) {
+                    TT.sounds.fall_inside.play();
+                }
                 if (event && box.robot_in_training()) {
                     box.robot_in_training().dropped_on(dropped, this);
                 }

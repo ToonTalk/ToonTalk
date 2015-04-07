@@ -16,6 +16,9 @@ window.TOONTALK.wand = (function (TT) {
         return  {
             apply_tool: function (widget) {
                             if (widget.get_type_name() !== 'top-level') {
+                                if (TT.sounds) {
+                                    TT.sounds.magic.play();
+                                }
                                 widget.add_copy_to_container();
                             }
                         },

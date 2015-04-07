@@ -83,12 +83,22 @@ window.TOONTALK.vacuum = (function (TT) {
                 var restoring, initial_location, restored_front_side_element, new_erased, top_level_backside, backside_widgets;
                 if (mode === 'suck') {
                     if (widget_side.remove && widget_side.get_type_name() !== 'top-level') {
-                       remove_widget(widget_side);
+                        remove_widget(widget_side);
+                        if (TT.sounds) {
+                            TT.sounds.vacuum_suck.play();
+                        }
                      } // else warn??
                 } else if (mode === 'erase' || (mode === 'restore' && widget_side.get_erased && widget_side.get_erased())) {
                     // erase mode toggles and restore mode unerases if erased
                     if (widget_side.get_type_name() !== 'top-level') {
                         new_erased = !widget_side.get_erased();
+                        if (TT.sounds) {
+                            if (new_erased) {
+                                TT.sounds.vacuum_suck.play();
+                            } else {
+                                TT.sounds.vacuum_spit.play();
+                            }
+                        }
                         widget_side.set_erased(new_erased, true);
                         if (event && widget.robot_in_training()) {
                             widget.robot_in_training().erased_widget(widget_side, new_erased);
@@ -103,11 +113,17 @@ window.TOONTALK.vacuum = (function (TT) {
                         initial_location = $(element).offset();
                         initial_location.left -= $(restored_front_side_element).width(); // left of vacuum
                         TT.UTILITIES.set_absolute_position($(restored_front_side_element), initial_location);
+                        if (TT.sounds) {
+                            TT.sounds.vacuum_spit.play();
+                        }
                     }
                 } else if (mode === 'suck_all') {
                     top_level_backside = widget_side.top_level_widget();
                     // need to copy the list since removing will alter the list
                     backside_widgets = top_level_backside.get_backside_widgets().slice();
+                    if (backside_widgets.length > 0 && TT.sounds) {
+                        TT.sounds.vacuum_suck.play();
+                    }
                     backside_widgets.forEach(function (widget_side) {
                                                  if (widget !== widget.robot_in_training()) {
                                                      remove_widget(widget_side);

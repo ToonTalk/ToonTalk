@@ -237,6 +237,9 @@ window.TOONTALK.backside =
                     // event serves 2 functions: info for adjusting for scrolling and whether to update the display
                     // TODO: avoid all this work when not watched
                     var other_side, other_side_element, $other_side_element, backside_of_other;
+                    if (TT.sounds) {
+                        TT.sounds.drop.play();
+                    }
                     if (other_is_backside) {
                         other_side = other.get_backside(true);
                         other_side_element = other_side.get_element();

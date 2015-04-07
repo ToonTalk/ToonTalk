@@ -116,6 +116,9 @@ window.TOONTALK.bird = (function (TT) {
                         this.remove();
                     } else if (this.visible()) {
                         become_static = function () {
+                            if (TT.sounds) {
+                                TT.sounds.bird_fly.pause();
+                            }
                             $(bird_frontside_element).removeClass("toontalk-bird-morph-to-static");
                             $(bird_frontside_element).addClass("toontalk-bird-static");
                             if (parent) {
@@ -230,6 +233,9 @@ window.TOONTALK.bird = (function (TT) {
                 $top_level_backside_element, top_level_backside_element_offset, continuation, delivery_continuation, restore_contents,
                 nest_contents_frontside_element, nest_width, nest_height, nest_offset, message_element, 
                 top_level_widget, top_level_backside_element_bounding_box;
+            if (TT.sounds) {
+                TT.sounds.bird_fly.play();
+            }
             if (!nest_recieving_message) {
                 nest_recieving_message = nest;
             }
@@ -946,6 +952,12 @@ window.TOONTALK.nest = (function (TT) {
                     // robot did this so add bird to a newly created widgets of this.robot_in_training()
                     // robot should be undefined since it isn't a running robot
                     this.robot_in_training().add_newly_created_widget(bird);
+                }
+                if (TT.sounds) {               
+                    setTimeout(function () {
+                                   TT.sounds.hatching.play();
+                               },
+                               1000);
                 }
                 this.rerender();
                 frontside_element = this.get_frontside_element(true);

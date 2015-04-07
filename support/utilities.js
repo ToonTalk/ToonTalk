@@ -576,17 +576,14 @@ window.TOONTALK.UTILITIES =
             reader.readAsText(file);
         }
     };
-//     var custom_tooltips_for_all_titles = function () {
-//         // delay until DOM settles down
-//          $("[title]").each(function () {
-//                                TT.UTILITIES.use_custom_tooltip(this);
-//                            });
-//     };
     var initialize = function () {
         var $robot_element_for_determining_dimensions = $("<div class='toontalk-robot'>");
-        var translation_div;
+        var translation_div, volume;
         TT.debugging = TT.UTILITIES.get_current_url_parameter('debugging');
-        TT.sounds = TT.UTILITIES.get_current_url_boolean_parameter('sounds', true);
+        volume = TT.UTILITIES.get_current_url_numeric_parameter('volume', 10); // 10% volume default
+        if (volume > 0) {
+            initialize_sounds(volume/100);
+        }
         TT.UTILITIES.process_json_elements();
         // for top-level resources since they are not on the backside 'work space' we need a way to turn them off
         // clicking on a running widget may not work since its HTML may be changing constantly
@@ -641,6 +638,23 @@ window.TOONTALK.UTILITIES =
                                                         return default_height;
                                                    };
                                                });
+    };
+    var initialize_sounds = function (volume) {
+        var sounds_path = TT.UTILITIES.get_path_to_toontalk_folder() + "sounds/";
+        var create_sound = function (file_name) {
+            var sound = new Audio(sounds_path + file_name);
+            sound.volume = volume;
+            return sound;
+        }
+        TT.sounds = {hatching:      create_sound("SPARROW.WAV"),
+                     bird_fly:      create_sound("PIGEON.WAV"),
+                     bammer_hammer: create_sound("POP.WAV"),
+                     vacuum_spit:   create_sound("SPIT.WAV"),
+                     vacuum_suck:   create_sound("DUSTBUST.WAV"),
+                     drop:          create_sound("BOOK_DROP.WAV"),
+                     magic:         create_sound("MAGIC.WAV"),
+                     fall_inside:   create_sound("FALL_INSIDE.WAV")};
+        TT.sounds.bird_fly.loop = true;
     };
     var load_script = function (url) {
         var script = document.createElement('script');
@@ -2222,12 +2236,6 @@ window.TOONTALK.UTILITIES =
             });
             return table;
         },
-
-        play_sound: function (file_name) {
-            if (TT.sounds) {
-                new Audio(TT.UTILITIES.get_path_to_toontalk_folder() + "sounds/" + file_name).play();
-            }
-        },
         
         get_dragee: function () {
             return dragee;
@@ -2635,6 +2643,19 @@ window.TOONTALK.UTILITIES =
             }
             // any value other than 1 is false
             return false;
+        },
+
+        get_current_url_numeric_parameter: function (parameter, default_value) {
+            var string_value = TT.UTILITIES.get_current_url_parameter(parameter);
+            if (typeof string_value === 'undefined') {
+                return default_value;
+            }
+            try {
+                return parseInt(string_value, 10);
+            } catch (e) {
+                // any other value is 0
+                return 0;
+            }
         },
 
         get_current_url_parameter: function (parameter, default_value) {
