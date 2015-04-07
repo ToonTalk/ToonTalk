@@ -251,6 +251,7 @@ window.TOONTALK.robot = (function (TT) {
                 // could be robot is training this robot and both called this and clicked the button
                 return;
             }
+            this.time_of_last_step = Date.now();
             this.being_trained = true;
             this.set_frontside_conditions(context.copy({just_value: true}));
             if (!robot_training_this_robot) {
@@ -264,7 +265,6 @@ window.TOONTALK.robot = (function (TT) {
             if (this.robot_training_this_robot()) {
                 this.robot_training_this_robot().started_training_another(this);
             }
-            this.time_of_last_step = Date.now();
         };
         new_robot.training_finished = function () {
             if (!this.being_trained) {
@@ -490,11 +490,8 @@ window.TOONTALK.robot = (function (TT) {
         }
         if (path) {
             now = Date.now();
-            if (!additional_info) {
-                additional_info = {};
-            }
-            additional_info = {time: now-robot.time_of_last_step};
-            robot.time_of_last_step = now;
+            additional_info = {time: now-this.time_of_last_step};
+            this.time_of_last_step = now;
             step = TT.robot_action.create(path, this.current_action_name, additional_info);
             this.add_step(step, new_widget);
         }
@@ -533,8 +530,8 @@ window.TOONTALK.robot = (function (TT) {
                 additional_info = {};
             }
             now = Date.now();
-            additional_info.time = now-robot.time_of_last_step;
-            robot.time_of_last_step = now;
+            additional_info.time = now-this.time_of_last_step;
+            this.time_of_last_step = now;
             step = TT.robot_action.create(path, this.current_action_name, additional_info);
             this.add_step(step);
         }

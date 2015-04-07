@@ -1680,16 +1680,17 @@ window.TOONTALK.UTILITIES =
                 maximum_wait);
         },
         
-        animate_to_absolute_position: function (source_element, target_absolute_position, continuation, speed, more_animation_follows) {
+        animate_to_absolute_position: function (source_element, target_absolute_position, continuation, speed, more_animation_follows, duration) {
             var source_absolute_position = $(source_element).offset();
             var source_relative_position = $(source_element).position();
             var distance = TT.UTILITIES.distance(target_absolute_position, source_absolute_position);
-            var left, top, duration;
+            var left, top;
+            // ensure that the animated element is "on top"
             $(source_element).css({"z-index": TT.UTILITIES.next_z_index()});
-            if (!speed) {
-                speed = .5; // a half a pixel per millisecond -- so roughly two seconds to cross a screen
+            if (!duration) {
+                // default is a half a pixel per millisecond -- so roughly two seconds to cross a screen
+                duration = Math.round(distance/(speed || .5));
             }
-            duration = Math.round(distance/speed);
             $(source_element).addClass("toontalk-side-animating");
             source_element.style.transitionDuration = duration+"ms";
             left = source_relative_position.left + (target_absolute_position.left - source_absolute_position.left);

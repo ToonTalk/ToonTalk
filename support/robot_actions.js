@@ -136,27 +136,27 @@ window.TOONTALK.actions =
             var saved_parent_element = frontside_element.parentElement;
             var restore_after_last_event = function () {
                 var robot_still_visible = robot.visible();
+                var continuation = function () {
+                    // robot was added to top-level backside so z-index will work as desired (robot on top of everything)
+                    // the following restores it
+                    if (robot_still_visible) {
+                        saved_parent_element.appendChild(frontside_element);
+                        TT.UTILITIES.set_absolute_position($(frontside_element), robot_home);
+                        robot.set_animating(false);
+                    }
+                    robot.get_first_in_team().set_running_or_waiting(false);
+                    if (robot.get_run_once()) {
+                        robot.set_running(false);
+                    } else if (!robot.stopped()) {
+                        robot.get_first_in_team().run(context, top_level_context, queue);
+                    }
+                    robot.rerender();
+                };
                 if (robot_still_visible) {
-                     TT.UTILITIES.animate_to_absolute_position(frontside_element, robot_home);
+                     TT.UTILITIES.animate_to_absolute_position(frontside_element, robot_home, continuation);
+                } else {
+                    continuation();
                 }
-                // delay so there is some animation of returning 'home'
-                setTimeout(function () {
-                        // robot was added to top-level backside so z-index will work as desired (robot on top of everything)
-                        // the following restores it
-                        if (robot_still_visible) {
-                            saved_parent_element.appendChild(frontside_element);
-                            TT.UTILITIES.set_absolute_position($(frontside_element), robot_home);
-                            robot.set_animating(false);
-                        }
-                        robot.get_first_in_team().set_running_or_waiting(false);
-                        if (robot.get_run_once()) {
-                            robot.set_running(false);
-                        } else if (!robot.stopped()) {
-                            robot.get_first_in_team().run(context, top_level_context, queue);
-                        }
-                        robot.rerender();
-                    },
-                    1000);
             };
             var step_number = 0;
             var robot_home = $(frontside_element).offset();
@@ -231,7 +231,7 @@ window.TOONTALK.actions =
             var description = "";
             var steps = this.get_steps();
             var step_descriptions = steps.map(function (step) {
-                return step.toString(toString_info);
+                return step && step.toString(toString_info);
             });
             while (step_descriptions[step_descriptions.length-1] === "") {
                 step_descriptions.pop();

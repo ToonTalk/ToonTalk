@@ -389,17 +389,17 @@ window.TOONTALK.widget = (function (TT) {
                     }
                     return widget_element;
                 };
-                widget.animate_to_widget = function (target_widget, continuation, speed, left_offset, top_offset, more_animation_follows) {
+                widget.animate_to_widget = function (target_widget, continuation, speed, left_offset, top_offset, more_animation_follows, duration) {
                     // delay for DOM to settle down in case target_widget is brand new
                     setTimeout(function () {
-                                   this.animate_to_element(find_widget_element(target_widget), continuation, speed, left_offset, top_offset, more_animation_follows);
+                                   this.animate_to_element(find_widget_element(target_widget), continuation, speed, left_offset, top_offset, more_animation_follows, duration);
                                    this.render();
                                }.bind(this),
                                100);            
                 };
             }
             if (!widget.animate_to_element) {
-                widget.animate_to_element = function (target_element, continuation, speed, left_offset, top_offset, more_animation_follows) {
+                widget.animate_to_element = function (target_element, continuation, speed, left_offset, top_offset, more_animation_follows, duration) {
                     var target_absolute_position = $(target_element).offset();
                     var $frontside_element = $(this.get_frontside_element());
                     var target_is_backside = $(target_element).is(".toontalk-backside");
@@ -428,12 +428,12 @@ window.TOONTALK.widget = (function (TT) {
                         // can happen if a user picks up the target while this is running
                         target_absolute_position = {left: 0, top: 0};
                     }
-                    this.animate_to_absolute_position(target_absolute_position, continuation, speed, more_animation_follows);
+                    this.animate_to_absolute_position(target_absolute_position, continuation, speed, more_animation_follows, duration);
                 };
             }
             if (!widget.animate_to_absolute_position) {
-                widget.animate_to_absolute_position = function (target_absolute_position, continuation, speed, more_animation_follows) {
-                    TT.UTILITIES.animate_to_absolute_position(this.get_frontside_element(), target_absolute_position, continuation, speed, more_animation_follows);
+                widget.animate_to_absolute_position = function (target_absolute_position, continuation, speed, more_animation_follows, duration) {
+                    TT.UTILITIES.animate_to_absolute_position(this.get_frontside_element(), target_absolute_position, continuation, speed, more_animation_follows, duration);
                 };
             }
             return widget;
