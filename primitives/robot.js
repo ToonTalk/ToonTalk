@@ -1074,10 +1074,17 @@ window.TOONTALK.robot_backside =
         create: function (robot) {
             var backside = TT.backside.create(robot);
             var backside_element = backside.get_element();
+            var run_once_title = function (run_once) {
+                if (run_once) {
+                    return "Check this if you want the robot to start over again after finishing what he was trained to do.";
+                } else {
+                    return "Uncheck this if you want the robot to stop after finishing what he was trained to do.";
+                }
+            }
             var run_once_input = TT.UTILITIES.create_check_box(!robot.get_run_once(),
                                                                "toontalk-run-once-check-box",
                                                                "When finished start again",
-                                                               "Check this if you want the robot to start over again after finishing what he was trained to do.");
+                                                               run_once_title(robot.get_run_once()));
             var $next_robot_area = TT.UTILITIES.create_drop_area(window.TOONTALK.robot.empty_drop_area_instructions);
             var next_robot = robot.get_next_robot();
             var advanced_settings_button = TT.backside.create_advanced_settings_button(backside, robot);
@@ -1086,6 +1093,7 @@ window.TOONTALK.robot_backside =
             $(run_once_input.button).click(function (event) {
                 var keep_running = run_once_input.button.checked;
                 robot.set_run_once(!keep_running);
+                TT.UTILITIES.give_tooltip(run_once_input.container, run_once_title(!keep_running));
                 if (robot.robot_in_training()) {
                     robot.robot_in_training().edited(robot, {setter_name: "set_run_once",
                                                           argument_1: !keep_running,
