@@ -22,6 +22,7 @@ window.TOONTALK.UTILITIES =
     var div_json   = "<div class='toontalk-json'>";
     var div_hidden = "<div style='display:none;'>"; // don't use a class since CSS might not be loaded
     var div_close  = "</div>";
+    var path_to_toontalk_folder;
     var extract_json_from_div_string = function (div_string) {
         // expecting div_string to begin with div_open and end with div_close
         // but users may be dragging something different
@@ -585,6 +586,7 @@ window.TOONTALK.UTILITIES =
         var $robot_element_for_determining_dimensions = $("<div class='toontalk-robot'>");
         var translation_div;
         TT.debugging = TT.UTILITIES.get_current_url_parameter('debugging');
+        TT.sounds = TT.UTILITIES.get_current_url_boolean_parameter('sounds', true);
         TT.UTILITIES.process_json_elements();
         // for top-level resources since they are not on the backside 'work space' we need a way to turn them off
         // clicking on a running widget may not work since its HTML may be changing constantly
@@ -2220,6 +2222,12 @@ window.TOONTALK.UTILITIES =
             });
             return table;
         },
+
+        play_sound: function (file_name) {
+            if (TT.sounds) {
+                new Audio(TT.UTILITIES.get_path_to_toontalk_folder() + "sounds/" + file_name).play();
+            }
+        },
         
         get_dragee: function () {
             return dragee;
@@ -2629,19 +2637,41 @@ window.TOONTALK.UTILITIES =
             return false;
         },
 
-         get_current_url_parameter: function (parameter, default_value) {
-             var parameter_start = window.location.href.indexOf(parameter+"=");
-             var parameter_end, next_parameter_start;
-             if (parameter_start < 0) {
-                 return default_value;
-             }
-             parameter_end = parameter_start+parameter.length+1;
-             next_parameter_start = window.location.href.indexOf("&", parameter_end);
-             if (next_parameter_start < 0) {
-                 next_parameter_start = window.location.href.length;
-             }
-             return window.location.href.substring(parameter_end, next_parameter_start);             
-         },
+        get_current_url_parameter: function (parameter, default_value) {
+            var parameter_start = window.location.href.indexOf(parameter+"=");
+            var parameter_end, next_parameter_start;
+            if (parameter_start < 0) {
+                return default_value;
+            }
+            parameter_end = parameter_start+parameter.length+1;
+            next_parameter_start = window.location.href.indexOf("&", parameter_end);
+            if (next_parameter_start < 0) {
+                next_parameter_start = window.location.href.length;
+            }
+            return window.location.href.substring(parameter_end, next_parameter_start);             
+        },
+
+        get_path_to_toontalk_folder: function () {
+            var toontalk_start, next_slash;
+            if (typeof path_to_toontalk_folder === 'string') {
+                return path_to_toontalk_folder;
+            }
+            path_to_toontalk_folder = "";
+            toontalk_start = window.location.href.indexOf("/ToonTalk/");
+            if (toontalk_start < 0) {
+                // give up
+                return path_to_toontalk_folder;
+            } else {
+                next_slash = toontalk_start+"/ToonTalk".length;
+            }
+            while (true) {
+                next_slash = window.location.href.indexOf("/", next_slash+1);
+                if (next_slash < 0) {
+                    return path_to_toontalk_folder;
+                }
+                path_to_toontalk_folder += "../";
+            };
+        },
 
         is_browser_of_type: function (type) {
             // type can be "MSIE", "Firefox", "Safari", "Chrome", "Opera"

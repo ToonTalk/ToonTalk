@@ -658,9 +658,10 @@ window.TOONTALK.number = (function () {
              target_absolute_position.left += $(this_frontside_element).width() *0.5+$(bammer_element).width() *0.1; 
              target_absolute_position.top  -= $(this_frontside_element).height()*0.5+$(bammer_element).height()*0.4;
              hit_number_continuation = function () {
+                 TT.UTILITIES.play_sound("POP.WAV");
                  if (this.number_dropped_on_me_semantics(other_number, event, robot) && robot) {
                      // will stop if drop signaled an error
-                    robot.run_next_step();
+                     robot.run_next_step();
                  }
                  if (event) {
                      this.backup_all();
