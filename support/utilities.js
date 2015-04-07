@@ -1608,7 +1608,6 @@ window.TOONTALK.UTILITIES =
                                // following fixes it - otherwise the tool tip can interfere with selection
                                if ($element.is(".toontalk-robot")) {
                                     position.top  -= 30;
-//                                     position.left -= 50;
                                } else if ($element.is(".toontalk-number")) {
                                     position.top -= 30;
                                } else if ($element.is(".toontalk-box")) {
@@ -1706,6 +1705,10 @@ window.TOONTALK.UTILITIES =
             if (!duration) {
                 // default is a half a pixel per millisecond -- so roughly two seconds to cross a screen
                 duration = Math.round(distance/(speed || .5));
+            }
+            if (TT.debugging && duration > 2000) {
+                // TODO: remove this once there is an option
+                duration = 2000;
             }
             $(source_element).addClass("toontalk-side-animating");
             source_element.style.transitionDuration = duration+"ms";

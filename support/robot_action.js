@@ -31,7 +31,7 @@ window.TOONTALK.robot_action =
                  if (thing_in_hand) {
                      if (thing_in_hand.drop_on) {
                          if (TT.debugging && thing_in_hand === target) {
-                             console.error("Dropping something on itself!");
+                            TT.UTILITIES.report_internal_error("Dropping something on itself!");
                          }
                          // TODO: update this when robots can drop backsides as well
                          thing_in_hand.drop_on(target, false, undefined, robot);
@@ -269,7 +269,7 @@ window.TOONTALK.robot_action =
             return;
         }
         if (TT.debugging && thing_in_hand === target) {
-            console.error("Dropping something on itself!");
+            TT.UTILITIES.report_internal_error("Dropping something on itself!");
         }
         $thing_in_hand_frontside_element = $(thing_in_hand.get_frontside_element());
         new_continuation = function () {
