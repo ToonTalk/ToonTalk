@@ -1608,7 +1608,7 @@ window.TOONTALK.UTILITIES =
                                // following fixes it - otherwise the tool tip can interfere with selection
                                if ($element.is(".toontalk-robot")) {
                                     position.top  -= 30;
-                                    position.left -= 50;
+//                                     position.left -= 50;
                                } else if ($element.is(".toontalk-number")) {
                                     position.top -= 30;
                                } else if ($element.is(".toontalk-box")) {
@@ -1640,7 +1640,7 @@ window.TOONTALK.UTILITIES =
                               position = $(tooltip).position();
                               // //width: (340 + 340*(text_length-default_capacity)/default_capacity),
                               // TODO: determine why position above and to the left of where it should be - necessitating the following
-                              ui.tooltip.css({left: Math.max(0, position.left-110),
+                              ui.tooltip.css({left: position.left,
                                               top:  position.top+80,
                                               maxWidth: new_width});
                           }
