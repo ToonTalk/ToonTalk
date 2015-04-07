@@ -363,6 +363,7 @@ window.TOONTALK.robot = (function (TT) {
             if (backside_conditions) {
                 backside_widgets = context.get_backside_widgets();
                 if (backside_widgets) {
+                    // check that widgets on the back match the conditions
                     backside_widgets.some(function (backside_widget_side) {
                         var backside_condition_widget_of_type = !backside_widget_side.is_backside() && backside_conditions[backside_widget_side.get_widget().get_type_name()];
                         var sub_match_status;
@@ -372,6 +373,24 @@ window.TOONTALK.robot = (function (TT) {
                             if (sub_match_status !== 'matched') {
                                 this.match_status = sub_match_status;
                                 // stop going through backside_widgets
+                                return true;
+                            }
+                        }
+                    }.bind(this));
+                }
+                if (this.match_status === 'matched') {
+                    // need to check conditions that no expected backside widgets are missing
+                    Object.keys(backside_conditions).some(function (type) {
+                        var found_one;
+                        if (backside_conditions[type]) {
+                            backside_widgets.some(function (backside_widget_side) {
+                                if (backside_widget_side.get_widget().is_of_type(type)) {
+                                    found_one = true;
+                                    return true;
+                                }
+                            });
+                            if (!found_one) {
+                                this.match_status = backside_conditions[type];
                                 return true;
                             }
                         }
