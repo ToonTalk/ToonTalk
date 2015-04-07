@@ -2351,17 +2351,25 @@ window.TOONTALK.UTILITIES =
             var widget_copy = side.get_widget().copy(parameters);
             var frontside_element, copy_frontside_element;
             if (dimensions_too) {
-                frontside_element = side.get_widget().get_frontside_element();
-                if (frontside_element) {
-                    copy_frontside_element = widget_copy.get_frontside_element(true);
-                    $(copy_frontside_element).css({width:  $(frontside_element).width(),
-                                                   height: $(frontside_element).height()});
-                }
+                // TODO: make this work for backsides as well
+                TT.UTILITIES.copy_frontside_dimensions(side.get_widget(), widget_copy);
             }
             if (side.is_backside()) {
                 return widget_copy.get_backside();
             }
             return widget_copy;
+        },
+
+        copy_frontside_dimensions: function (from_widget, to_widget) {
+            var from_frontside_element = from_widget.get_widget().get_frontside_element();
+            var to_frontside_element;
+            if (from_frontside_element) {
+                to_frontside_element = to_widget.get_frontside_element(true);
+                if (to_frontside_element) {
+                    $(to_frontside_element).css({width:  $(from_frontside_element).width(),
+                                                 height: $(from_frontside_element).height()});
+                }
+            }
         },
         
         scale_to_fit: function (this_element, other_element, original_width, original_height) {

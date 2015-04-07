@@ -157,9 +157,12 @@ window.TOONTALK.robot_action =
     };
     var pick_up_a_copy_animation = function (widget, context, top_level_context, robot, continuation, additional_info) {
         var new_continuation = function () {
+            var copy;
             continuation();
+            copy = robot.get_recently_created_widget();
             // ensure that newly created copy is visible
-            robot.get_recently_created_widget().set_visible(true);
+            copy.set_visible(true);
+            TT.UTILITIES.copy_frontside_dimensions(widget, copy);
             robot.update_display();
             robot.run_next_step();
         };
