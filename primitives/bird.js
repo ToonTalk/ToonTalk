@@ -302,7 +302,7 @@ window.TOONTALK.bird = (function (TT) {
             nest_contents_frontside_element = nest_recieving_message.get_contents_frontside_element &&
                                               nest_recieving_message.get_contents_frontside_element();
             if (nest_contents_frontside_element && nest_recieving_message.visible() &&
-                (!robot || robot.visible())) {
+                (!robot || robot.animate_consequences_of_actions())) {
                 // just fly to nest and return if unwatched robot caused this
                 // head near the nest (southeast) to set down message,
                 // move nest contents,
@@ -791,8 +791,10 @@ window.TOONTALK.nest = (function (TT) {
                 } else {
                     removed.get_widget().set_parent_of_frontside(undefined);
                 }
-            } else if (report_error_if_nothing_removed) {
-                TT.UTILITIES.report_internal_error("Nothing removed from nest!");
+            } else {
+                if (report_error_if_nothing_removed) {
+                    TT.UTILITIES.report_internal_error("Nothing removed from nest!");
+                }
                 return;
             }
             if (this.visible()) {
