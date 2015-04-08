@@ -764,7 +764,9 @@ window.TOONTALK.robot = (function (TT) {
                     thing_in_hand_height = $(thing_in_hand_frontside_element).height();
                     robot_width  = $(frontside_element).width();
                     robot_height = $(frontside_element).height();
-                    if (thing_in_hand_width === 0) {
+                    if (thing_in_hand && thing_in_hand_width === 0) {
+                        // could be holding a tool so thing_in_hand is undefined but 
+                        // thing_in_hand_frontside_element is the tool's element
                         if (thing_in_hand.get_default_width) {
                             thing_in_hand_width = thing_in_hand.get_default_width();
                         } else {
