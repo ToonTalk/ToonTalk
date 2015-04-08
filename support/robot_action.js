@@ -559,7 +559,8 @@ window.TOONTALK.robot_action =
                              });
     };
     var close_backside = function (widget, context, top_level_context, robot, continuation) {
-        widget.hide_backside();
+//         widget.hide_backside();
+        $(widget.get_backside_element()).find(".toontalk-close-button").click();
         continuation();
         robot.run_next_step();
     };
