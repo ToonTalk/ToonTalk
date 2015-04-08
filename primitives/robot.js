@@ -885,7 +885,7 @@ window.TOONTALK.robot = (function (TT) {
                                    robot_description;
             } else if (this.match_status !== 'matched') {
                 robot_description = "I'm waiting for something to be delivered to the nest that matches the " + this.match_status[0][1] +
-                                    "in my conditions (highlighted in yellow).\n" + robot_description;
+                                    " in my conditions (highlighted in yellow).\n" + robot_description;
             }
         }
         if (next_robot) {
