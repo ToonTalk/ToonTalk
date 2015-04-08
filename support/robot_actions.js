@@ -214,8 +214,8 @@ window.TOONTALK.actions =
                         },
                         robot.transform_step_duration(50));
                 } else {
-                    // TODO: remove this after lots of testing
-                   console.error("This should no longer happen");
+                   if (TT.debugging && context) {
+                   }
                    // e.g. user hid the robot while running
                    // first restore robot to its 'home'
                    robot.set_animating(false);
