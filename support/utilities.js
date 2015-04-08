@@ -1700,6 +1700,13 @@ window.TOONTALK.UTILITIES =
             var source_relative_position = $(source_element).position();
             var distance = TT.UTILITIES.distance(target_absolute_position, source_absolute_position);
             var left, top;
+            if (duration === 0) {
+                TT.UTILITIES.set_absolute_position($(source_element), target_absolute_position);
+                if (continuation) {
+                    continuation();
+                }
+                return;
+            }
             // ensure that the animated element is "on top"
             $(source_element).css({"z-index": TT.UTILITIES.next_z_index()});
             if (!duration) {
@@ -2498,7 +2505,7 @@ window.TOONTALK.UTILITIES =
         run_when_dimensions_known: function (element, callback, recompute) {
             var original_parent = element.parentElement;
             var not_in_a_hole = function (parent_element) {
-                return parent_element.className.indexOf("toontalk-box-hole") < 0;
+                return parent_element && parent_element.className.indexOf("toontalk-box-hole") < 0;
             };
             var check_if_dimensions_known;
             if (!recompute && $(element).width() && not_in_a_hole(original_parent)) {

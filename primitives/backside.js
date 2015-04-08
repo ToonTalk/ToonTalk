@@ -90,12 +90,39 @@ window.TOONTALK.backside =
                 help_URL = TT.UTILITIES.add_URL_parameter(help_URL, "translate", "1");
             }
             if (widget.close_button_ok(backside_element)) {
-                close_handler = function (event) {
-                                    backside.hide_backside(event);
-                                    event.stopPropagation();
-                                    if (widget.robot_in_training()) {
-                                        widget.robot_in_training().backside_closed(widget);
-                                    }
+                close_handler =
+                    function (event) {
+                        var do_after_closing = 
+                            function () {
+                                backside.hide_backside(event);   
+                                if (widget.robot_in_training()) {
+                                    widget.robot_in_training().backside_closed(widget);
+                                }    
+                            };
+                        var backside_widgets, robot_found;
+                        if (widget.get_running()) {
+                            backside_widgets = widget.get_backside_widgets();
+                            backside_widgets.some(function (backside_widget_side) {
+                                // there should only be one robot running on the back
+                                var backside_widget = backside_widget_side.get_widget();
+                                if (backside_widget.is_robot()) {
+                                   backside_widget.finish_cycle_immediately(do_after_closing);
+                                   robot_found = true;
+                                   return true;
+                                }
+                            });
+                            if (!robot_found) {
+                                console.log("Expected to find a robot on back of " + widget);
+                                do_after_closing();
+                            }
+                            $backside_element.css({opacity: 1});
+                            $backside_element.addClass("toontalk-animating-element");
+                            $backside_element.css({opacity: 0});
+                            // to do restore this
+                        } else {
+                            do_after_closing();
+                        }
+                        event.stopPropagation();
                 };
                 // title should be re-computed on mouseenter
                 close_title = widget.get_description();
@@ -123,7 +150,8 @@ window.TOONTALK.backside =
                                             }
                                             if (widget.robot_in_training()) {
                                                 widget.robot_in_training().button_clicked(".toontalk-green-flag", widget);
-                                            }                                                                    
+                                            }
+                                            event.stopPropagation();                                                                   
                                         })
                                  .on('mouseenter', update_stop_sign_title);
             $(stop_sign_element) .addClass("toontalk-stop-sign toontalk-stop-sign-active")
@@ -133,7 +161,8 @@ window.TOONTALK.backside =
                                             update_green_flag_title();
                                             if (widget.robot_in_training()) {
                                                 widget.robot_in_training().button_clicked(".toontalk-stop-sign", widget);
-                                            }                                                                       
+                                            }  
+                                            event.stopPropagation();                                                                     
                                         })
                                  .on('mouseenter', update_green_flag_title);
             backside_element.appendChild(green_flag_element);
@@ -151,6 +180,7 @@ window.TOONTALK.backside =
                                          help_frame.src = help_URL;
                                          document.body.appendChild(close_help_button);
                                          document.body.appendChild(help_frame);
+                                         event.stopPropagation();
                                      });
                 help_button.innerHTML = 'i'; // like tourist info -- alternatively could use a question mark
                 help_button.translate = false; // should not be translated
@@ -161,6 +191,7 @@ window.TOONTALK.backside =
                                     .click(function (event) {
                                                $(help_frame).remove();
                                                $(close_help_button).remove();
+                                               event.stopPropagation();
                                            });
                 close_help_button.innerHTML = "Return to ToonTalk";
                 backside_element.appendChild(help_button);
@@ -173,6 +204,7 @@ window.TOONTALK.backside =
                 $(settings_button).addClass("toontalk-settings-button")
                                   .click(function (event) {
                                           widget.open_settings();
+                                          event.stopPropagation();
                                   });
                 TT.UTILITIES.give_tooltip(settings_button, "Click to change settings or open a different program.");   
                 backside_element.appendChild(settings_button);         
@@ -603,6 +635,7 @@ window.TOONTALK.backside =
                     if (widget.robot_in_training()) {
                         widget.robot_in_training().created_widget(sensor, widget, ".toontalk-make-sensor_nest_button");
                     }
+                    event.stopPropagation();
             });
             $make_sensor_nest_button.attr('title', "Click to create a nest which receives messages when events happen to this " + widget.get_type_name() + ".");
             $make_function_bird_button
@@ -613,6 +646,7 @@ window.TOONTALK.backside =
                     if (widget.robot_in_training()) {
                         widget.robot_in_training().created_widget(function_bird, widget, ".toontalk-make-function_bird_button");
                     }
+                    event.stopPropagation();
             });
             if (widget.is_number()) {
                 // will implement more functions (e.g. for string elements and boxes)
@@ -653,14 +687,21 @@ window.TOONTALK.backside =
                         // robot may have opened the backside and then removed the widget itself
                         return;
                     }
+                    if ($element.css('opacity') === "0") {
+                        // could be caused by closing while robots were running so
+                        // became fully transparent
+                        $element.removeClass("toontalk-animating-element");
+                        $element.remove();
+                        return;
+                    }
                     $element.addClass("toontalk-side-appearing");
                     TT.UTILITIES.add_one_shot_event_handler($element.get(0), 'transitionend', 2500, remove_element);
                     if (!container_position) {
                         container_position = {left: 0, 
                                                top: 0};
                     }
-                    $element.css({left: frontside_offset.left - container_position.left,
-                                  top:  frontside_offset.top  - container_position.top,
+                    $element.css({left: frontside_offset.left-container_position.left,
+                                  top:  frontside_offset.top -container_position.top,
                                   opacity: .1});                   
             };
             var record_backside_widget_positions = function () {

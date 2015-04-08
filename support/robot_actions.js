@@ -138,13 +138,13 @@ window.TOONTALK.actions =
             }
             var saved_parent_element = frontside_element.parentElement;
             var restore_after_last_event = function () {
-                var robot_still_visible = robot.visible();
+                var robot_still_visible = robot.visible() && robot.get_maximum_step_duration() !== 0;
                 var continuation = function () {
                     // robot was added to top-level backside so z-index will work as desired (robot on top of everything)
                     // the following restores it
+                    TT.UTILITIES.set_absolute_position($(frontside_element), robot_home);
                     if (robot_still_visible) {
-                        saved_parent_element.appendChild(frontside_element);
-                        TT.UTILITIES.set_absolute_position($(frontside_element), robot_home);
+                        saved_parent_element.appendChild(frontside_element);          
                         robot.set_animating(false);
                     }
                     robot.get_first_in_team().set_running_or_waiting(false);
@@ -156,7 +156,7 @@ window.TOONTALK.actions =
                     robot.rerender();
                 };
                 if (robot_still_visible) {
-                     TT.UTILITIES.animate_to_absolute_position(frontside_element, robot_home, continuation);
+                    TT.UTILITIES.animate_to_absolute_position(frontside_element, robot_home, continuation);
                 } else {
                     continuation();
                 }
@@ -205,13 +205,17 @@ window.TOONTALK.actions =
                                     robot.render();
                                 }
                             } else {
-                                robot.run_body_finished_listeners();
                                 // restore position
-                                restore_after_last_event();        
+                                restore_after_last_event();
+                                // following may finally close backside if close during cycle
+                                // so best to restore position first
+                                robot.run_body_finished_listeners();     
                             }
                         },
-                        50);
+                        robot.transform_step_duration(50));
                 } else {
+                    // TODO: remove this after lots of testing
+                   console.error("This should no longer happen");
                    // e.g. user hid the robot while running
                    // first restore robot to its 'home'
                    robot.set_animating(false);

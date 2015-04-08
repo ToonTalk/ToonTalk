@@ -858,13 +858,13 @@ window.TOONTALK.box_hole =
                     hole_position   = $(hole_element).offset(); 
                     dropped_element.style.left = (event.pageX-parent_position.left)+"px";
                     dropped_element.style.top  = (event.pageY-parent_position.top) +"px";
-                    $(dropped_element).addClass("toontalk-side-appearing");
+                    $(dropped_element).addClass("toontalk-animating-element");
                     dropped_element.style.width  = hole_element.style.width;
                     dropped_element.style.height = hole_element.style.height;
                     dropped_element.style.left = (hole_position.left-parent_position.left)+"px";
                     dropped_element.style.top  = (hole_position.top -parent_position.top) +"px";
                     setTimeout(function () {
-                                   $(dropped_element).removeClass("toontalk-side-appearing");
+                                   $(dropped_element).removeClass("toontalk-animating-element");
                                    box.render();
                                    this.set_contents(dropped);
                               }.bind(this),

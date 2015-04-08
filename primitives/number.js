@@ -637,10 +637,13 @@ window.TOONTALK.number = (function () {
     number.number_dropped_on_me = function (other_number, other_is_backside, event, robot) {
          var bammer_element, $top_level_backside_element, target_absolute_position, 
              this_frontside_element, hit_number_continuation, bammer_gone_continuation;
-         if (other_number.visible() && 
-              (event || (robot && robot.visible()))) {
+         if (other_number.visible() && (event || robot)) {
              // do this if number is visible and user did the drop or a visible robot did it
              if (robot) {
+                 if (!robot.animate_consequences_of_actions()) {
+                     other_number.remove();
+                     return this.number_dropped_on_me_semantics(other_number, event, robot);
+                 }
                  // robot should wait for this
                  other_number.robot_waiting_before_next_step = robot;
              }

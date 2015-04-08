@@ -43,6 +43,8 @@ window.TOONTALK.robot = (function (TT) {
         var first_in_team;
          // true if animating due to being run while watched
         var animating = false;
+        // if set specifies the maximum duration of any watched step
+        var maximum_step_duration;
         // callbacks to run at the end of each cycle
         var body_finished_listeners = []; 
         var running_or_waiting, stopped;
@@ -119,6 +121,9 @@ window.TOONTALK.robot = (function (TT) {
         new_robot.get_body = function () {
             return body;
         };
+        new_robot.get_running = function () {
+            return running_or_waiting;
+        };
         new_robot.running_or_waiting = function () {
             return running_or_waiting;
         };
@@ -138,6 +143,32 @@ window.TOONTALK.robot = (function (TT) {
             if (this.get_next_robot()) {
                 this.get_next_robot().set_stopped(new_value);
             }
+        };
+        new_robot.finish_cycle_immediately = function (do_at_end_of_cycle) {
+            var stored_maximum_step_duration = maximum_step_duration;
+            var continuation = function () {
+                maximum_step_duration = stored_maximum_step_duration;
+                this.set_visible(false);
+                do_at_end_of_cycle();
+            }.bind(this);
+            maximum_step_duration = 0;
+            this.add_body_finished_listener(continuation);
+        };
+        new_robot.get_maximum_step_duration = function () {
+            return maximum_step_duration;
+        };
+        new_robot.animate_consequences_of_actions = function () {
+            return this.visible() && maximum_step_duration !== 0;
+        };
+        new_robot.transform_step_duration = function (duration) {
+            // other transforms to come -- e.g. running at X normal speed
+            if (duration === undefined && maximum_step_duration === 0) {
+                return 0;
+            }
+            if (typeof maximum_step_duration === 'number') {
+                return Math.min(duration, maximum_step_duration);
+            }
+            return duration;
         };
         new_robot.get_animating = function () {
             return animating;
