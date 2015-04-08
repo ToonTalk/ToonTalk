@@ -1214,7 +1214,12 @@ window.TOONTALK.widget = (function (TT) {
                     // goes off the edge of the container
                 final_left = Math.max(0, container_width-backside_width);
             }
-            final_top  = (frontside_offset.top-container_offset.top) + frontside_height + 26, 
+            final_top = (frontside_offset.top-container_offset.top) + frontside_height + 34;
+            if (this.is_box()) {
+                // frontside_height doesn't include boxes borders
+                // TODO: figure out a better way of dealing with this
+                final_top += 28;
+            } 
             animate_backside_appearance(backside_element, "inherit");
             backside.render();
             if (this.backside_widgets) {
