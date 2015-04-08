@@ -195,9 +195,12 @@ window.TOONTALK.actions =
             // store this so that if the backside is closed while it is running its position is restored
             robot.start_position = robot_start_position;
             robot.run_next_step = function () {
-                if (context_backside && context_backside.visible()) {
+                if (context_backside && (context_backside.visible() || $(context_backside.get_element()).is(":visible"))) {
+                    // TODO: determine how context_backside.visible() can be false and
+                    // $(context_backside.get_element()).is(":visible") true (test-programs.html has an example)
                     // pause between steps and give the previous step a chance to update the DOM     
                     setTimeout(function () {
+                            robot.run_watched_step_end_listeners();
                             if (step_number < steps.length) {
                                 var step = steps[step_number];
                                 step_number++;

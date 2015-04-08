@@ -41,12 +41,12 @@ window.TOONTALK.robot = (function (TT) {
         var new_robot = Object.create(robot);
         // who should do the 'repeating'
         var first_in_team;
-         // true if animating due to being run while watched
-        var animating = false;
         // if set specifies the maximum duration of any watched step
         var maximum_step_duration;
         // callbacks to run at the end of each cycle
-        var body_finished_listeners = []; 
+        var body_finished_listeners = [];
+        // when running watched runs these after each step
+        var watched_step_end_listeners = [];
         var running_or_waiting, stopped;
         var original_backside_widgets_of_context;
         if (!body) {
@@ -170,13 +170,9 @@ window.TOONTALK.robot = (function (TT) {
             }
             return duration;
         };
-        new_robot.get_animating = function () {
-            return animating;
-        };
-        new_robot.set_animating = function (new_value, robot_position) {
+        new_robot.set_animating = function (animating, robot_position) {
             var frontside_element = this.get_frontside_element();
             var robot_position;
-            animating = new_value;
             if (animating) {
                 if (!robot_position) {
                     robot_position = $(frontside_element).offset();
@@ -201,6 +197,15 @@ window.TOONTALK.robot = (function (TT) {
                 listener();
             });
             body_finished_listeners = [];
+        };
+        new_robot.add_watched_step_end_listeners = function (listener) {
+            watched_step_end_listeners.push(listener);
+        };
+        new_robot.run_watched_step_end_listeners = function () {
+            watched_step_end_listeners.forEach(function (listener) {
+                listener();
+            });
+            watched_step_end_listeners = [];
         };
         new_robot.get_thing_in_hand = function () {
             return thing_in_hand;
@@ -687,10 +692,11 @@ window.TOONTALK.robot = (function (TT) {
                 // the following will ignore this due to the last argument being false
                 container.removed_from_container(part, false, true, index, false);
         };
-        if (this.get_animating() && this.animate_consequences_of_actions()) {
+        if (this.animate_consequences_of_actions()) {
             // if animating then delay removing it
             // otherwise hole empties before the robot gets there
-            TT.UTILITIES.add_one_shot_event_handler(this.get_frontside_element(), "transitionend", 2500, do_removal);
+            this.add_watched_step_end_listeners(do_removal);
+//             TT.UTILITIES.add_one_shot_event_handler(this.get_frontside_element(), "transitionend", 2500, do_removal);
         } else {
             do_removal();
         }
