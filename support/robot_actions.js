@@ -119,7 +119,7 @@ window.TOONTALK.actions =
                     // currently only watched robots use these listeners
                     // if that is always the case no need calling the following
                     robot.run_body_finished_listeners();
-                    robot.get_first_in_team().set_running_or_waiting(false);
+                    robot.get_first_in_team().set_running(false);
                     if (robot.get_run_once()) {
                         robot.set_running(false);
                     } else {
@@ -150,7 +150,7 @@ window.TOONTALK.actions =
                         saved_parent_element.appendChild(frontside_element);          
                         robot.set_animating(false);
                     }
-                    robot.get_first_in_team().set_running_or_waiting(false);
+                    robot.get_first_in_team().set_running(false);
                     if (robot.get_run_once()) {
                         robot.set_running(false);
                     } else if (!robot.stopped()) {

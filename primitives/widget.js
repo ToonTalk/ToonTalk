@@ -250,15 +250,16 @@ window.TOONTALK.widget = (function (TT) {
                             running = false;
                         } else {
                             backside_widgets.some(function (widget_side) {
-                                                      if (widget_side.get_widget().get_running()) {
+                                                      var widget = widget_side.get_widget();
+                                                      if (widget.get_running() || (widget.is_robot() && widget.get_running())) {
                                                           some_backside_widgets_running = true;
                                                           return true;
                                                       }
                             });
-                            running = some_backside_widgets_running;
+//                          running = some_backside_widgets_running;
                         }
                     }
-                    return running;
+                    return some_backside_widgets_running;
                 };
                 widget.is_ok_to_run = function () {
                     return ok_to_run;
