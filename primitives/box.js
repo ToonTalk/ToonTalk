@@ -557,7 +557,7 @@ window.TOONTALK.box = (function (TT) {
     
     box.get_index_of = function (part) {
         // parent should be a hole
-        return part.get_parent_of_frontside().get_index();
+        return part.get_parent_of_frontside() && part.get_parent_of_frontside().get_index && part.get_parent_of_frontside().get_index();
     };
     
     box.removed_from_container = function (part, backside_removed, event, index, report_error_if_no_index) {

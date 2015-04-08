@@ -215,6 +215,7 @@ window.TOONTALK.actions =
                         robot.transform_step_duration(50));
                 } else {
                    if (TT.debugging && context) {
+                       console.error("There no longer is a switch from watched to unwatched in the middle of a cycle.");
                    }
                    // e.g. user hid the robot while running
                    // first restore robot to its 'home'
