@@ -256,6 +256,7 @@ window.TOONTALK.widget = (function (TT) {
                                                           return true;
                                                       }
                             });
+                            // TODO: see why caching this if false didn't work
 //                          running = some_backside_widgets_running;
                         }
                     }

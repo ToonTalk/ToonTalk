@@ -17586,5 +17586,1895 @@ top level widget
   },
   "version": 1
 }</div></div>
+<p>An example of spawning two processes (a sequence generator and its partial sums).</p>
+<div class='toontalk-json'>
+This will be replaced by a work area containing 3 things: a box, the backside of a box, and a nest.
+top level widget
+<div style='display:none;'>{
+  "semantic": {
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "shared_widget_index": 0
+        }
+      },
+      {
+        "widget": {
+          "shared_widget_index": 0
+        },
+        "is_backside": true
+      },
+      {
+        "widget": {
+          "shared_widget_index": 1
+        }
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgb(245, 240, 240)",
+    "backside_width": 1053,
+    "backside_height": 410,
+    "backside_left": 8,
+    "backside_top": 184.1875,
+    "backside": true,
+    "drag_x_offset": 796,
+    "drag_y_offset": 77.8125
+  },
+  "version": 1,
+  "shared_widgets": [
+    {
+      "semantic": {
+        "type": "box",
+        "size": 3,
+        "contents": [
+          {
+            "semantic": {
+              "type": "number",
+              "operator": "+",
+              "numerator": "1",
+              "denominator": "1",
+              "format": "improper_fraction"
+            },
+            "view": {
+              "saved_width": 76,
+              "saved_height": 55,
+              "backside": false
+            },
+            "version": 1
+          },
+          {
+            "semantic": {
+              "type": "number",
+              "operator": "/",
+              "numerator": "2",
+              "denominator": "1",
+              "format": "improper_fraction"
+            },
+            "view": {
+              "saved_width": 76,
+              "saved_height": 55,
+              "backside": false
+            },
+            "version": 1
+          },
+          {
+            "semantic": {
+              "type": "bird",
+              "nest": {
+                "semantic": {
+                  "type": "nest",
+                  "contents": [],
+                  "guid": "toontalk_id_1428403612841"
+                },
+                "view": {
+                  "frontside_width": 116,
+                  "frontside_height": 98,
+                  "frontside_left": 463.984375,
+                  "frontside_top": 25.984375,
+                  "saved_width": 116,
+                  "saved_height": 98,
+                  "backside": false
+                },
+                "version": 1
+              }
+            },
+            "view": {
+              "saved_width": 70,
+              "saved_height": 102,
+              "backside": false
+            },
+            "version": 1
+          }
+        ],
+        "horizontal": true,
+        "backside_widgets": [
+          {
+            "widget": {
+              "semantic": {
+                "type": "robot",
+                "frontside_conditions": {
+                  "semantic": {
+                    "type": "box",
+                    "size": 3,
+                    "contents": [
+                      {
+                        "semantic": {
+                          "type": "number",
+                          "operator": "+",
+                          "numerator": "1",
+                          "denominator": "1",
+                          "format": "improper_fraction",
+                          "erased": true
+                        },
+                        "view": {
+                          "backside": false
+                        },
+                        "version": 1
+                      },
+                      {
+                        "semantic": {
+                          "type": "number",
+                          "operator": "*",
+                          "numerator": "1",
+                          "denominator": "2",
+                          "format": "improper_fraction",
+                          "erased": true
+                        },
+                        "view": {
+                          "backside": false
+                        },
+                        "version": 1
+                      },
+                      {
+                        "semantic": {
+                          "type": "bird"
+                        },
+                        "view": {
+                          "backside": false
+                        },
+                        "version": 1
+                      }
+                    ],
+                    "horizontal": true
+                  },
+                  "view": {
+                    "backside": false
+                  },
+                  "version": 1
+                },
+                "backside_conditions": {
+                  "box": {
+                    "semantic": {
+                      "type": "box",
+                      "size": 2,
+                      "contents": [
+                        {
+                          "semantic": {
+                            "type": "robot",
+                            "frontside_conditions": {
+                              "semantic": {
+                                "type": "box",
+                                "size": 3,
+                                "contents": [
+                                  {
+                                    "semantic": {
+                                      "type": "number",
+                                      "operator": "+",
+                                      "numerator": "1",
+                                      "denominator": "1",
+                                      "format": "improper_fraction",
+                                      "erased": true
+                                    },
+                                    "view": {
+                                      "backside": false
+                                    },
+                                    "version": 1
+                                  },
+                                  {
+                                    "semantic": {
+                                      "type": "number",
+                                      "operator": "*",
+                                      "numerator": "1",
+                                      "denominator": "2",
+                                      "format": "improper_fraction",
+                                      "erased": true
+                                    },
+                                    "view": {
+                                      "backside": false
+                                    },
+                                    "version": 1
+                                  },
+                                  {
+                                    "semantic": {
+                                      "type": "bird"
+                                    },
+                                    "view": {
+                                      "backside": false
+                                    },
+                                    "version": 1
+                                  }
+                                ],
+                                "horizontal": true
+                              },
+                              "view": {
+                                "backside": false
+                              },
+                              "version": 1
+                            },
+                            "body": {
+                              "type": "body",
+                              "steps": [
+                                {
+                                  "type": "robot_action",
+                                  "action_name": "pick up a copy of",
+                                  "path": {
+                                    "type": "path.to_entire_context",
+                                    "next_path": {
+                                      "type": "box_path",
+                                      "index": 1
+                                    }
+                                  }
+                                },
+                                {
+                                  "type": "robot_action",
+                                  "action_name": "drop it on",
+                                  "path": {
+                                    "type": "path.to_entire_context",
+                                    "next_path": {
+                                      "type": "box_path",
+                                      "index": 0
+                                    }
+                                  }
+                                },
+                                {
+                                  "type": "robot_action",
+                                  "action_name": "copy",
+                                  "path": {
+                                    "type": "path.to_entire_context",
+                                    "next_path": {
+                                      "type": "box_path",
+                                      "index": 0
+                                    }
+                                  }
+                                },
+                                {
+                                  "type": "robot_action",
+                                  "action_name": "pick up",
+                                  "path": {
+                                    "type": "newly_created_widgets_path",
+                                    "index": 1,
+                                    "removing_widget": true
+                                  }
+                                },
+                                {
+                                  "type": "robot_action",
+                                  "action_name": "drop it on",
+                                  "path": {
+                                    "type": "path.to_entire_context",
+                                    "next_path": {
+                                      "type": "box_path",
+                                      "index": 2
+                                    }
+                                  }
+                                }
+                              ]
+                            },
+                            "description": "a producer of geometric sequences of numbers."
+                          },
+                          "view": {
+                            "backside": false
+                          },
+                          "version": 1
+                        },
+                        {
+                          "semantic": {
+                            "type": "robot",
+                            "frontside_conditions": {
+                              "semantic": {
+                                "type": "box",
+                                "size": 2,
+                                "contents": [
+                                  {
+                                    "semantic": {
+                                      "type": "number",
+                                      "operator": "+",
+                                      "numerator": "1",
+                                      "denominator": "2",
+                                      "format": "improper_fraction",
+                                      "erased": true
+                                    },
+                                    "view": {
+                                      "backside": false
+                                    },
+                                    "version": 1
+                                  },
+                                  {
+                                    "semantic": {
+                                      "type": "number",
+                                      "operator": "+",
+                                      "numerator": "0",
+                                      "denominator": "1",
+                                      "format": "improper_fraction",
+                                      "erased": true
+                                    },
+                                    "view": {
+                                      "backside": false
+                                    },
+                                    "version": 1
+                                  }
+                                ],
+                                "horizontal": true
+                              },
+                              "view": {
+                                "backside": false
+                              },
+                              "version": 1
+                            },
+                            "body": {
+                              "type": "body",
+                              "steps": [
+                                {
+                                  "type": "robot_action",
+                                  "action_name": "pick up",
+                                  "path": {
+                                    "type": "path.to_entire_context",
+                                    "next_path": {
+                                      "type": "box_path",
+                                      "index": 0,
+                                      "removing_widget": true
+                                    }
+                                  }
+                                },
+                                {
+                                  "type": "robot_action",
+                                  "action_name": "drop it on",
+                                  "path": {
+                                    "type": "path.to_entire_context",
+                                    "next_path": {
+                                      "type": "box_path",
+                                      "index": 1
+                                    }
+                                  }
+                                }
+                              ]
+                            },
+                            "description": "a producer of partial sums of the incoming sequence"
+                          },
+                          "view": {
+                            "backside": false
+                          },
+                          "version": 1
+                        }
+                      ],
+                      "horizontal": true
+                    },
+                    "view": {
+                      "backside": false
+                    },
+                    "version": 1
+                  }
+                },
+                "body": {
+                  "type": "body",
+                  "steps": [
+                    {
+                      "type": "robot_action",
+                      "action_name": "pick up",
+                      "path": {
+                        "type": "path.to_resource",
+                        "resource": {
+                          "type": "box",
+                          "size": 2,
+                          "contents": [
+                            null,
+                            null
+                          ],
+                          "horizontal": true,
+                          "is_backside": true
+                        }
+                      },
+                      "additional_info": {
+                        "time": 5333
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "drop it on",
+                      "path": {
+                        "type": "path.to_entire_context",
+                        "is_backside": true
+                      },
+                      "additional_info": {
+                        "left_offset_fraction": 0.6119136530398323,
+                        "top_offset_fraction": 0.07137617370892019,
+                        "time": 1534
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "copy",
+                      "path": {
+                        "type": "path.to_entire_context",
+                        "next_path": {
+                          "type": "box_path",
+                          "index": 0
+                        }
+                      },
+                      "additional_info": {
+                        "time": 4975
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "pick up",
+                      "path": {
+                        "type": "newly_created_widgets_path",
+                        "index": 1,
+                        "removing_widget": true
+                      },
+                      "additional_info": {
+                        "time": 1266
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "drop it on",
+                      "path": {
+                        "type": "newly_created_widgets_path",
+                        "index": 0,
+                        "next_path": {
+                          "type": "box_path",
+                          "index": 0
+                        }
+                      },
+                      "additional_info": {
+                        "time": 1008
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "copy",
+                      "path": {
+                        "type": "path.to_entire_context",
+                        "next_path": {
+                          "type": "box_path",
+                          "index": 1
+                        }
+                      },
+                      "additional_info": {
+                        "time": 7540
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "pick up",
+                      "path": {
+                        "type": "newly_created_widgets_path",
+                        "index": 2,
+                        "removing_widget": true
+                      },
+                      "additional_info": {
+                        "time": 15415
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "drop it on",
+                      "path": {
+                        "type": "newly_created_widgets_path",
+                        "index": 0,
+                        "next_path": {
+                          "type": "box_path",
+                          "index": 1
+                        }
+                      },
+                      "additional_info": {
+                        "time": 1672
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "open the backside",
+                      "path": {
+                        "type": "newly_created_widgets_path",
+                        "index": 0,
+                        "next_path": {
+                          "type": "box_path",
+                          "index": 1
+                        }
+                      },
+                      "additional_info": {
+                        "time": 4819
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "click the button of",
+                      "path": {
+                        "type": "newly_created_widgets_path",
+                        "index": 0,
+                        "next_path": {
+                          "type": "box_path",
+                          "index": 1
+                        }
+                      },
+                      "additional_info": {
+                        "button_selector": ".toontalk-settings-backside-button",
+                        "time": 2755
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "edit",
+                      "path": {
+                        "type": "newly_created_widgets_path",
+                        "index": 0,
+                        "next_path": {
+                          "type": "box_path",
+                          "index": 1
+                        }
+                      },
+                      "additional_info": {
+                        "setter_name": "set_infinite_stack",
+                        "argument_1": true,
+                        "toString": "change dragging to make a copy of ",
+                        "button_selector": ".toontalk-infinite-stack-check-box",
+                        "time": 3811
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "close the backside",
+                      "path": {
+                        "type": "newly_created_widgets_path",
+                        "index": 0,
+                        "next_path": {
+                          "type": "box_path",
+                          "index": 1
+                        }
+                      },
+                      "additional_info": {
+                        "time": 2148
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "open the backside",
+                      "path": {
+                        "type": "newly_created_widgets_path",
+                        "index": 0
+                      },
+                      "additional_info": {
+                        "time": 3314
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "edit",
+                      "path": {
+                        "type": "newly_created_widgets_path",
+                        "index": 0
+                      },
+                      "additional_info": {
+                        "setter_name": "set_size",
+                        "argument_1": 3,
+                        "toString": "by changing the number of holes to 3 of the box",
+                        "button_selector": ".toontalk-box-size-input",
+                        "time": 2842
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "close the backside",
+                      "path": {
+                        "type": "newly_created_widgets_path",
+                        "index": 0
+                      },
+                      "additional_info": {
+                        "time": 1834
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "pick up",
+                      "path": {
+                        "type": "path.to_resource",
+                        "resource": {
+                          "type": "box",
+                          "size": 2,
+                          "contents": [
+                            null,
+                            null
+                          ],
+                          "horizontal": true,
+                          "is_backside": true
+                        }
+                      },
+                      "additional_info": {
+                        "time": 2439
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "drop it on",
+                      "path": {
+                        "type": "path.to_entire_context",
+                        "is_backside": true
+                      },
+                      "additional_info": {
+                        "left_offset_fraction": 0.6045761268343816,
+                        "top_offset_fraction": 0.5033010563380281,
+                        "time": 2286
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "open the backside",
+                      "path": {
+                        "type": "newly_created_widgets_path",
+                        "index": 3
+                      },
+                      "additional_info": {
+                        "time": 1590
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "edit",
+                      "path": {
+                        "type": "newly_created_widgets_path",
+                        "index": 3
+                      },
+                      "additional_info": {
+                        "setter_name": "set_size",
+                        "argument_1": 3,
+                        "toString": "by changing the number of holes to 3 of the box",
+                        "button_selector": ".toontalk-box-size-input",
+                        "time": 2187
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "close the backside",
+                      "path": {
+                        "type": "newly_created_widgets_path",
+                        "index": 3
+                      },
+                      "additional_info": {
+                        "time": 2942
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "pick up",
+                      "path": {
+                        "type": "path.to_resource",
+                        "resource": {
+                          "type": "nest",
+                          "contents": [],
+                          "original_nest": {
+                            "semantic": {
+                              "type": "nest",
+                              "contents": [
+                                {
+                                  "widget": {
+                                    "semantic": {
+                                      "type": "number",
+                                      "operator": "+",
+                                      "numerator": "1",
+                                      "denominator": "4096",
+                                      "format": "improper_fraction"
+                                    },
+                                    "view": {
+                                      "backside": false
+                                    },
+                                    "version": 1
+                                  }
+                                },
+                                {
+                                  "widget": {
+                                    "semantic": {
+                                      "type": "number",
+                                      "operator": "+",
+                                      "numerator": "1",
+                                      "denominator": "8192",
+                                      "format": "improper_fraction"
+                                    },
+                                    "view": {
+                                      "backside": false
+                                    },
+                                    "version": 1
+                                  }
+                                },
+                                {
+                                  "widget": {
+                                    "semantic": {
+                                      "type": "number",
+                                      "operator": "+",
+                                      "numerator": "1",
+                                      "denominator": "16384",
+                                      "format": "improper_fraction"
+                                    },
+                                    "view": {
+                                      "backside": false
+                                    },
+                                    "version": 1
+                                  }
+                                },
+                                {
+                                  "widget": {
+                                    "semantic": {
+                                      "type": "number",
+                                      "operator": "+",
+                                      "numerator": "1",
+                                      "denominator": "32768",
+                                      "format": "improper_fraction"
+                                    },
+                                    "view": {
+                                      "backside": false
+                                    },
+                                    "version": 1
+                                  }
+                                },
+                                {
+                                  "widget": {
+                                    "semantic": {
+                                      "type": "number",
+                                      "operator": "+",
+                                      "numerator": "1",
+                                      "denominator": "65536",
+                                      "format": "improper_fraction"
+                                    },
+                                    "view": {
+                                      "backside": false
+                                    },
+                                    "version": 1
+                                  }
+                                },
+                                {
+                                  "widget": {
+                                    "semantic": {
+                                      "type": "number",
+                                      "operator": "+",
+                                      "numerator": "1",
+                                      "denominator": "131072",
+                                      "format": "improper_fraction"
+                                    },
+                                    "view": {
+                                      "backside": false
+                                    },
+                                    "version": 1
+                                  }
+                                },
+                                {
+                                  "widget": {
+                                    "semantic": {
+                                      "type": "number",
+                                      "operator": "+",
+                                      "numerator": "1",
+                                      "denominator": "262144",
+                                      "format": "improper_fraction"
+                                    },
+                                    "view": {
+                                      "backside": false
+                                    },
+                                    "version": 1
+                                  }
+                                },
+                                {
+                                  "widget": {
+                                    "semantic": {
+                                      "type": "number",
+                                      "operator": "+",
+                                      "numerator": "1",
+                                      "denominator": "524288",
+                                      "format": "improper_fraction"
+                                    },
+                                    "view": {
+                                      "backside": false
+                                    },
+                                    "version": 1
+                                  }
+                                },
+                                {
+                                  "widget": {
+                                    "semantic": {
+                                      "type": "number",
+                                      "operator": "+",
+                                      "numerator": "1",
+                                      "denominator": "1048576",
+                                      "format": "improper_fraction"
+                                    },
+                                    "view": {
+                                      "backside": false
+                                    },
+                                    "version": 1
+                                  }
+                                },
+                                {
+                                  "widget": {
+                                    "semantic": {
+                                      "type": "number",
+                                      "operator": "+",
+                                      "numerator": "1",
+                                      "denominator": "2097152",
+                                      "format": "improper_fraction"
+                                    },
+                                    "view": {
+                                      "backside": false
+                                    },
+                                    "version": 1
+                                  }
+                                },
+                                {
+                                  "widget": {
+                                    "semantic": {
+                                      "type": "number",
+                                      "operator": "+",
+                                      "numerator": "1",
+                                      "denominator": "4194304",
+                                      "format": "improper_fraction"
+                                    },
+                                    "view": {
+                                      "backside": false
+                                    },
+                                    "version": 1
+                                  }
+                                },
+                                {
+                                  "widget": {
+                                    "semantic": {
+                                      "type": "number",
+                                      "operator": "+",
+                                      "numerator": "1",
+                                      "denominator": "8388608",
+                                      "format": "improper_fraction"
+                                    },
+                                    "view": {
+                                      "backside": false
+                                    },
+                                    "version": 1
+                                  }
+                                },
+                                {
+                                  "widget": {
+                                    "semantic": {
+                                      "type": "number",
+                                      "operator": "+",
+                                      "numerator": "1",
+                                      "denominator": "16777216",
+                                      "format": "improper_fraction"
+                                    },
+                                    "view": {
+                                      "backside": false
+                                    },
+                                    "version": 1
+                                  }
+                                },
+                                {
+                                  "widget": {
+                                    "semantic": {
+                                      "type": "number",
+                                      "operator": "+",
+                                      "numerator": "1",
+                                      "denominator": "33554432",
+                                      "format": "improper_fraction"
+                                    },
+                                    "view": {
+                                      "backside": false
+                                    },
+                                    "version": 1
+                                  }
+                                },
+                                {
+                                  "widget": {
+                                    "semantic": {
+                                      "type": "number",
+                                      "operator": "+",
+                                      "numerator": "1",
+                                      "denominator": "67108864",
+                                      "format": "improper_fraction"
+                                    },
+                                    "view": {
+                                      "backside": false
+                                    },
+                                    "version": 1
+                                  }
+                                },
+                                {
+                                  "widget": {
+                                    "semantic": {
+                                      "type": "number",
+                                      "operator": "+",
+                                      "numerator": "1",
+                                      "denominator": "134217728",
+                                      "format": "improper_fraction"
+                                    },
+                                    "view": {
+                                      "backside": false
+                                    },
+                                    "version": 1
+                                  }
+                                },
+                                {
+                                  "widget": {
+                                    "semantic": {
+                                      "type": "number",
+                                      "operator": "+",
+                                      "numerator": "1",
+                                      "denominator": "268435456",
+                                      "format": "improper_fraction"
+                                    },
+                                    "view": {
+                                      "backside": false
+                                    },
+                                    "version": 1
+                                  }
+                                },
+                                {
+                                  "widget": {
+                                    "semantic": {
+                                      "type": "number",
+                                      "operator": "+",
+                                      "numerator": "1",
+                                      "denominator": "536870912",
+                                      "format": "improper_fraction"
+                                    },
+                                    "view": {
+                                      "backside": false
+                                    },
+                                    "version": 1
+                                  }
+                                },
+                                {
+                                  "widget": {
+                                    "semantic": {
+                                      "type": "number",
+                                      "operator": "+",
+                                      "numerator": "1",
+                                      "denominator": "1073741824",
+                                      "format": "improper_fraction"
+                                    },
+                                    "view": {
+                                      "backside": false
+                                    },
+                                    "version": 1
+                                  }
+                                },
+                                {
+                                  "widget": {
+                                    "semantic": {
+                                      "type": "number",
+                                      "operator": "+",
+                                      "numerator": "1",
+                                      "denominator": "2147483648",
+                                      "format": "improper_fraction"
+                                    },
+                                    "view": {
+                                      "backside": false
+                                    },
+                                    "version": 1
+                                  }
+                                },
+                                {
+                                  "widget": {
+                                    "semantic": {
+                                      "type": "number",
+                                      "operator": "+",
+                                      "numerator": "1",
+                                      "denominator": "4294967296",
+                                      "format": "improper_fraction"
+                                    },
+                                    "view": {
+                                      "backside": false
+                                    },
+                                    "version": 1
+                                  }
+                                },
+                                {
+                                  "widget": {
+                                    "semantic": {
+                                      "type": "number",
+                                      "operator": "+",
+                                      "numerator": "1",
+                                      "denominator": "8589934592",
+                                      "format": "improper_fraction"
+                                    },
+                                    "view": {
+                                      "backside": false
+                                    },
+                                    "version": 1
+                                  }
+                                },
+                                {
+                                  "widget": {
+                                    "semantic": {
+                                      "type": "number",
+                                      "operator": "+",
+                                      "numerator": "1",
+                                      "denominator": "17179869184",
+                                      "format": "improper_fraction"
+                                    },
+                                    "view": {
+                                      "backside": false
+                                    },
+                                    "version": 1
+                                  }
+                                },
+                                {
+                                  "widget": {
+                                    "semantic": {
+                                      "type": "number",
+                                      "operator": "+",
+                                      "numerator": "1",
+                                      "denominator": "34359738368",
+                                      "format": "improper_fraction"
+                                    },
+                                    "view": {
+                                      "backside": false
+                                    },
+                                    "version": 1
+                                  }
+                                },
+                                {
+                                  "widget": {
+                                    "semantic": {
+                                      "type": "number",
+                                      "operator": "+",
+                                      "numerator": "1",
+                                      "denominator": "68719476736",
+                                      "format": "improper_fraction"
+                                    },
+                                    "view": {
+                                      "backside": false
+                                    },
+                                    "version": 1
+                                  }
+                                },
+                                {
+                                  "widget": {
+                                    "semantic": {
+                                      "type": "number",
+                                      "operator": "+",
+                                      "numerator": "1",
+                                      "denominator": "137438953472",
+                                      "format": "improper_fraction"
+                                    },
+                                    "view": {
+                                      "backside": false
+                                    },
+                                    "version": 1
+                                  }
+                                },
+                                {
+                                  "widget": {
+                                    "semantic": {
+                                      "type": "number",
+                                      "operator": "+",
+                                      "numerator": "1",
+                                      "denominator": "274877906944",
+                                      "format": "improper_fraction"
+                                    },
+                                    "view": {
+                                      "backside": false
+                                    },
+                                    "version": 1
+                                  }
+                                },
+                                {
+                                  "widget": {
+                                    "semantic": {
+                                      "type": "number",
+                                      "operator": "+",
+                                      "numerator": "1",
+                                      "denominator": "549755813888",
+                                      "format": "improper_fraction"
+                                    },
+                                    "view": {
+                                      "backside": false
+                                    },
+                                    "version": 1
+                                  }
+                                },
+                                {
+                                  "widget": {
+                                    "semantic": {
+                                      "type": "number",
+                                      "operator": "+",
+                                      "numerator": "1",
+                                      "denominator": "1099511627776",
+                                      "format": "improper_fraction"
+                                    },
+                                    "view": {
+                                      "backside": false
+                                    },
+                                    "version": 1
+                                  }
+                                },
+                                {
+                                  "widget": {
+                                    "semantic": {
+                                      "type": "number",
+                                      "operator": "+",
+                                      "numerator": "1",
+                                      "denominator": "2199023255552",
+                                      "format": "improper_fraction"
+                                    },
+                                    "view": {
+                                      "backside": false
+                                    },
+                                    "version": 1
+                                  }
+                                },
+                                {
+                                  "widget": {
+                                    "semantic": {
+                                      "type": "number",
+                                      "operator": "+",
+                                      "numerator": "1",
+                                      "denominator": "4398046511104",
+                                      "format": "improper_fraction"
+                                    },
+                                    "view": {
+                                      "backside": false
+                                    },
+                                    "version": 1
+                                  }
+                                },
+                                {
+                                  "widget": {
+                                    "semantic": {
+                                      "type": "number",
+                                      "operator": "+",
+                                      "numerator": "1",
+                                      "denominator": "8796093022208",
+                                      "format": "improper_fraction"
+                                    },
+                                    "view": {
+                                      "backside": false
+                                    },
+                                    "version": 1
+                                  }
+                                },
+                                {
+                                  "widget": {
+                                    "semantic": {
+                                      "type": "number",
+                                      "operator": "+",
+                                      "numerator": "1",
+                                      "denominator": "17592186044416",
+                                      "format": "improper_fraction"
+                                    },
+                                    "view": {
+                                      "backside": false
+                                    },
+                                    "version": 1
+                                  }
+                                }
+                              ],
+                              "guid": "toontalk_id_1428402724547"
+                            },
+                            "view": {
+                              "saved_width": 116,
+                              "saved_height": 141,
+                              "backside": false
+                            },
+                            "version": 1
+                          },
+                          "is_backside": true
+                        }
+                      },
+                      "additional_info": {
+                        "time": 6932
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "drop it on",
+                      "path": {
+                        "type": "newly_created_widgets_path",
+                        "index": 3,
+                        "next_path": {
+                          "type": "box_path",
+                          "index": 0
+                        }
+                      },
+                      "additional_info": {
+                        "time": 1810
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "pick up",
+                      "path": {
+                        "type": "newly_created_widgets_path",
+                        "index": 5,
+                        "removing_widget": true
+                      },
+                      "additional_info": {
+                        "time": 6297
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "drop it on",
+                      "path": {
+                        "type": "newly_created_widgets_path",
+                        "index": 0,
+                        "next_path": {
+                          "type": "box_path",
+                          "index": 2
+                        }
+                      },
+                      "additional_info": {
+                        "time": 2256
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "pick up",
+                      "path": {
+                        "type": "path.to_resource",
+                        "resource": {
+                          "type": "number",
+                          "operator": "+",
+                          "numerator": "1",
+                          "denominator": "1",
+                          "format": "improper_fraction",
+                          "is_backside": true
+                        }
+                      },
+                      "additional_info": {
+                        "time": 18776
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "drop it on",
+                      "path": {
+                        "type": "newly_created_widgets_path",
+                        "index": 3,
+                        "next_path": {
+                          "type": "box_path",
+                          "index": 1
+                        }
+                      },
+                      "additional_info": {
+                        "time": 1448
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "open the backside",
+                      "path": {
+                        "type": "newly_created_widgets_path",
+                        "index": 3,
+                        "next_path": {
+                          "type": "box_path",
+                          "index": 1
+                        }
+                      },
+                      "additional_info": {
+                        "time": 2002
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "edit",
+                      "path": {
+                        "type": "newly_created_widgets_path",
+                        "index": 3,
+                        "next_path": {
+                          "type": "box_path",
+                          "index": 1
+                        }
+                      },
+                      "additional_info": {
+                        "setter_name": "set_numerator",
+                        "argument_1": "0",
+                        "toString": "by changing the value of the numerator to 0",
+                        "button_selector": ".toontalk-numerator-input",
+                        "time": 4334
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "close the backside",
+                      "path": {
+                        "type": "newly_created_widgets_path",
+                        "index": 3,
+                        "next_path": {
+                          "type": "box_path",
+                          "index": 1
+                        }
+                      },
+                      "additional_info": {
+                        "time": 2153
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "copy",
+                      "path": {
+                        "type": "path.to_entire_context",
+                        "next_path": {
+                          "type": "box_path",
+                          "index": 2
+                        }
+                      },
+                      "additional_info": {
+                        "time": 10201
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "pick up",
+                      "path": {
+                        "type": "newly_created_widgets_path",
+                        "index": 7,
+                        "removing_widget": true
+                      },
+                      "additional_info": {
+                        "time": 1531
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "drop it on",
+                      "path": {
+                        "type": "newly_created_widgets_path",
+                        "index": 3,
+                        "next_path": {
+                          "type": "box_path",
+                          "index": 2
+                        }
+                      },
+                      "additional_info": {
+                        "time": 1669
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "open the backside",
+                      "path": {
+                        "type": "newly_created_widgets_path",
+                        "index": 0,
+                        "next_path": {
+                          "type": "box_path",
+                          "index": 0
+                        }
+                      },
+                      "additional_info": {
+                        "time": 21894
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "close the backside",
+                      "path": {
+                        "type": "newly_created_widgets_path",
+                        "index": 0,
+                        "next_path": {
+                          "type": "box_path",
+                          "index": 0
+                        }
+                      },
+                      "additional_info": {
+                        "time": 3683
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "open the backside",
+                      "path": {
+                        "type": "newly_created_widgets_path",
+                        "index": 0
+                      },
+                      "additional_info": {
+                        "time": 11532
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "copy",
+                      "path": {
+                        "type": "path.to_backside_widget_of_context",
+                        "type_name": "box",
+                        "next_path": {
+                          "type": "box_path",
+                          "index": 0
+                        }
+                      },
+                      "additional_info": {
+                        "time": 14270
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "pick up",
+                      "path": {
+                        "type": "newly_created_widgets_path",
+                        "index": 8,
+                        "removing_widget": true
+                      },
+                      "additional_info": {
+                        "time": 2248
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "drop it on",
+                      "path": {
+                        "type": "newly_created_widgets_path",
+                        "index": 0,
+                        "is_backside": true
+                      },
+                      "additional_info": {
+                        "left_offset_fraction": 0.6464488636363637,
+                        "top_offset_fraction": 0.435,
+                        "time": 1069
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "close the backside",
+                      "path": {
+                        "type": "newly_created_widgets_path",
+                        "index": 0
+                      },
+                      "additional_info": {
+                        "time": 1960
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "open the backside",
+                      "path": {
+                        "type": "newly_created_widgets_path",
+                        "index": 3
+                      },
+                      "additional_info": {
+                        "time": 2509
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "copy",
+                      "path": {
+                        "type": "path.to_backside_widget_of_context",
+                        "type_name": "box",
+                        "next_path": {
+                          "type": "box_path",
+                          "index": 1
+                        }
+                      },
+                      "additional_info": {
+                        "time": 6992
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "pick up",
+                      "path": {
+                        "type": "newly_created_widgets_path",
+                        "index": 9,
+                        "removing_widget": true
+                      },
+                      "additional_info": {
+                        "time": 2103
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "drop it on",
+                      "path": {
+                        "type": "newly_created_widgets_path",
+                        "index": 3,
+                        "is_backside": true
+                      },
+                      "additional_info": {
+                        "left_offset_fraction": 0.6640056818181819,
+                        "top_offset_fraction": 0.480859375,
+                        "time": 980
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "click the button of",
+                      "path": {
+                        "type": "newly_created_widgets_path",
+                        "index": 3
+                      },
+                      "additional_info": {
+                        "button_selector": ".toontalk-green-flag",
+                        "time": 10749
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "close the backside",
+                      "path": {
+                        "type": "newly_created_widgets_path",
+                        "index": 3
+                      },
+                      "additional_info": {
+                        "time": 1773
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "open the backside",
+                      "path": {
+                        "type": "newly_created_widgets_path",
+                        "index": 0
+                      },
+                      "additional_info": {
+                        "time": 22335
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "click the button of",
+                      "path": {
+                        "type": "newly_created_widgets_path",
+                        "index": 0
+                      },
+                      "additional_info": {
+                        "button_selector": ".toontalk-green-flag",
+                        "time": 11460
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "close the backside",
+                      "path": {
+                        "type": "newly_created_widgets_path",
+                        "index": 0
+                      },
+                      "additional_info": {
+                        "time": 8570
+                      }
+                    }
+                  ]
+                },
+                "run_once": true
+              },
+              "view": {
+                "frontside_width": 73,
+                "frontside_height": 101,
+                "frontside_left": 353.15625,
+                "frontside_top": 93.875,
+                "saved_width": 66,
+                "saved_height": 110,
+                "backside": false
+              },
+              "version": 1
+            }
+          },
+          {
+            "widget": {
+              "semantic": {
+                "type": "box",
+                "size": 2,
+                "contents": [
+                  {
+                    "semantic": {
+                      "type": "robot",
+                      "frontside_conditions": {
+                        "semantic": {
+                          "type": "box",
+                          "size": 3,
+                          "contents": [
+                            {
+                              "semantic": {
+                                "type": "number",
+                                "operator": "+",
+                                "numerator": "1",
+                                "denominator": "1",
+                                "format": "improper_fraction",
+                                "erased": true
+                              },
+                              "view": {
+                                "backside": false
+                              },
+                              "version": 1
+                            },
+                            {
+                              "semantic": {
+                                "type": "number",
+                                "operator": "*",
+                                "numerator": "1",
+                                "denominator": "2",
+                                "format": "improper_fraction",
+                                "erased": true
+                              },
+                              "view": {
+                                "backside": false
+                              },
+                              "version": 1
+                            },
+                            {
+                              "semantic": {
+                                "type": "bird"
+                              },
+                              "view": {
+                                "backside": false
+                              },
+                              "version": 1
+                            }
+                          ],
+                          "horizontal": true
+                        },
+                        "view": {
+                          "backside": false
+                        },
+                        "version": 1
+                      },
+                      "body": {
+                        "type": "body",
+                        "steps": [
+                          {
+                            "type": "robot_action",
+                            "action_name": "pick up a copy of",
+                            "path": {
+                              "type": "path.to_entire_context",
+                              "next_path": {
+                                "type": "box_path",
+                                "index": 1
+                              }
+                            }
+                          },
+                          {
+                            "type": "robot_action",
+                            "action_name": "drop it on",
+                            "path": {
+                              "type": "path.to_entire_context",
+                              "next_path": {
+                                "type": "box_path",
+                                "index": 0
+                              }
+                            }
+                          },
+                          {
+                            "type": "robot_action",
+                            "action_name": "copy",
+                            "path": {
+                              "type": "path.to_entire_context",
+                              "next_path": {
+                                "type": "box_path",
+                                "index": 0
+                              }
+                            }
+                          },
+                          {
+                            "type": "robot_action",
+                            "action_name": "pick up",
+                            "path": {
+                              "type": "newly_created_widgets_path",
+                              "index": 1,
+                              "removing_widget": true
+                            }
+                          },
+                          {
+                            "type": "robot_action",
+                            "action_name": "drop it on",
+                            "path": {
+                              "type": "path.to_entire_context",
+                              "next_path": {
+                                "type": "box_path",
+                                "index": 2
+                              }
+                            }
+                          }
+                        ]
+                      },
+                      "description": "a producer of geometric sequences of numbers."
+                    },
+                    "view": {
+                      "backside": false
+                    },
+                    "version": 1
+                  },
+                  {
+                    "semantic": {
+                      "type": "robot",
+                      "frontside_conditions": {
+                        "semantic": {
+                          "type": "box",
+                          "size": 3,
+                          "contents": [
+                            {
+                              "semantic": {
+                                "type": "number",
+                                "operator": "+",
+                                "numerator": "1",
+                                "denominator": "1",
+                                "format": "improper_fraction",
+                                "erased": true
+                              },
+                              "view": {
+                                "backside": false
+                              },
+                              "version": 1
+                            },
+                            {
+                              "semantic": {
+                                "type": "number",
+                                "operator": "+",
+                                "numerator": "0",
+                                "denominator": "1",
+                                "format": "improper_fraction",
+                                "erased": true
+                              },
+                              "view": {
+                                "backside": false
+                              },
+                              "version": 1
+                            },
+                            {
+                              "semantic": {
+                                "type": "bird"
+                              },
+                              "view": {
+                                "backside": false
+                              },
+                              "version": 1
+                            }
+                          ],
+                          "horizontal": true
+                        },
+                        "view": {
+                          "backside": false
+                        },
+                        "version": 1
+                      },
+                      "body": {
+                        "type": "body",
+                        "steps": [
+                          {
+                            "type": "robot_action",
+                            "action_name": "pick up",
+                            "path": {
+                              "type": "path.to_entire_context",
+                              "next_path": {
+                                "type": "box_path",
+                                "index": 0,
+                                "removing_widget": true
+                              }
+                            },
+                            "additional_info": {
+                              "time": 3423
+                            }
+                          },
+                          {
+                            "type": "robot_action",
+                            "action_name": "drop it on",
+                            "path": {
+                              "type": "path.to_entire_context",
+                              "next_path": {
+                                "type": "box_path",
+                                "index": 1
+                              }
+                            },
+                            "additional_info": {
+                              "time": 2122
+                            }
+                          },
+                          {
+                            "type": "robot_action",
+                            "action_name": "copy",
+                            "path": {
+                              "type": "path.to_entire_context",
+                              "next_path": {
+                                "type": "box_path",
+                                "index": 1
+                              }
+                            },
+                            "additional_info": {
+                              "time": 5923
+                            }
+                          },
+                          {
+                            "type": "robot_action",
+                            "action_name": "pick up",
+                            "path": {
+                              "type": "newly_created_widgets_path",
+                              "index": 1,
+                              "removing_widget": true
+                            },
+                            "additional_info": {
+                              "time": 1491
+                            }
+                          },
+                          {
+                            "type": "robot_action",
+                            "action_name": "drop it on",
+                            "path": {
+                              "type": "path.to_entire_context",
+                              "next_path": {
+                                "type": "box_path",
+                                "index": 2
+                              }
+                            },
+                            "additional_info": {
+                              "time": 862
+                            }
+                          }
+                        ]
+                      },
+                      "description": "a producer of partial sums of the incoming sequence."
+                    },
+                    "view": {
+                      "saved_width": 66,
+                      "saved_height": 110,
+                      "backside": false
+                    },
+                    "version": 1
+                  }
+                ],
+                "horizontal": true
+              },
+              "view": {
+                "frontside_width": 164,
+                "frontside_height": 68,
+                "frontside_left": 64.328125,
+                "frontside_top": 109.703125,
+                "backside_geometry": {
+                  "x_scale": 1,
+                  "y_scale": 1,
+                  "original_width": 171,
+                  "original_height": 39
+                },
+                "saved_width": 164,
+                "saved_height": 68,
+                "backside": false
+              },
+              "version": 1
+            }
+          }
+        ]
+      },
+      "view": {
+        "frontside_width": 164,
+        "frontside_height": 68,
+        "frontside_left": 28.453125,
+        "frontside_top": 16.453125,
+        "backside_width": 968,
+        "backside_height": 200,
+        "backside_left": 28,
+        "backside_top": 145,
+        "backside_geometry": {
+          "x_scale": 5.662260990684228,
+          "y_scale": 1.5147405000000012,
+          "original_width": 171,
+          "original_height": 39
+        },
+        "saved_width": 164,
+        "saved_height": 68,
+        "backside": false
+      },
+      "version": 1
+    },
+    {
+      "semantic": {
+        "type": "nest",
+        "contents": [],
+        "guid": "toontalk_id_1428403612841"
+      },
+      "view": {
+        "frontside_width": 116,
+        "frontside_height": 98,
+        "frontside_left": 463.984375,
+        "frontside_top": 25.984375,
+        "saved_width": 116,
+        "saved_height": 98,
+        "backside": false
+      },
+      "version": 1
+    }
+  ]
+}</div></div>
 </body>
 </html>
