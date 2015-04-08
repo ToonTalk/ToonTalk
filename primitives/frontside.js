@@ -28,9 +28,9 @@ window.TOONTALK.frontside =
                 if ($frontside_element.is(".toontalk-top-level-resource")) {
                     widget.set_running(!widget.get_running());
                 } else if (widget.get_running() && !widget.robot_in_training()) {
-                    if (TT.debugging) {
-                        TT.UTILITIES.display_message("Clicks on running widgets are ignored. If you wish to see its backside then stop it and click again.");
-                    }
+//                     if (TT.debugging) {
+//                         TT.UTILITIES.display_message("Clicks on running widgets are ignored. If you wish to see its backside then stop it and click again.");
+//                     }
                 } else {
                     widget.open_backside();
                     if (widget.robot_in_training()) {
