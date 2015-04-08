@@ -391,11 +391,16 @@ window.TOONTALK.widget = (function (TT) {
                 };
                 widget.animate_to_widget = function (target_widget, continuation, speed, left_offset, top_offset, more_animation_follows, duration) {
                     // delay for DOM to settle down in case target_widget is brand new
-                    setTimeout(function () {
-                                   this.animate_to_element(find_widget_element(target_widget), continuation, speed, left_offset, top_offset, more_animation_follows, duration && Math.max(0, duration-100));
-                                   this.render();
-                               }.bind(this),
-                               100);            
+                    var continuation = 
+                        function () {
+                             this.animate_to_element(find_widget_element(target_widget), continuation, speed, left_offset, top_offset, more_animation_follows, duration && Math.max(0, duration-100));
+                             this.render();
+                         }.bind(this);
+                    if (duration === 0) {
+                        continuation();
+                    } else {
+                        setTimeout(continuation, 100);
+                    }           
                 };
             }
             if (!widget.animate_to_element) {
