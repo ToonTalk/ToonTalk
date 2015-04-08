@@ -687,7 +687,7 @@ window.TOONTALK.robot = (function (TT) {
                 // the following will ignore this due to the last argument being false
                 container.removed_from_container(part, false, true, index, false);
         };
-        if (this.get_animating()) {
+        if (this.get_animating() && this.animate_consequences_of_actions()) {
             // if animating then delay removing it
             // otherwise hole empties before the robot gets there
             TT.UTILITIES.add_one_shot_event_handler(this.get_frontside_element(), "transitionend", 2500, do_removal);
