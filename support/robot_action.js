@@ -632,12 +632,17 @@ window.TOONTALK.robot_action =
                     TT.UTILITIES.report_internal_error("Unable to dereference path: " + TT.path.toString(path) + " in context: " + context.toString());
                     return false;
                 }
+                if (TT.debugging === 'log') {
+                    console.log("   " + referenced + " (" + TT.path.toString(path) + " " + 
+                                (referenced.debug_id || (referenced.get_parent_of_frontside() && referenced.get_parent_of_frontside().debug_id) || "") + 
+                                ") by unwatched robot " + (robot.get_description() || robot.debug_id));
+                }
                 if (referenced.wait_until_this_nest_receives_something) {         
-                        referenced.wait_until_this_nest_receives_something.run_when_non_empty(
-                            function () {
-                                this.run_unwatched(context, top_level_context, robot);
-                                        }.bind(this),
-                            robot);
+                    referenced.wait_until_this_nest_receives_something.run_when_non_empty(
+                        function () {
+                            this.run_unwatched(context, top_level_context, robot);
+                                    }.bind(this),
+                        robot);
                     return;
                 }
                 if (unwatched_run_function(referenced, context, top_level_context, robot, additional_info)) {
@@ -657,6 +662,11 @@ window.TOONTALK.robot_action =
                 if (!referenced) {
                     TT.UTILITIES.report_internal_error("Unable to dereference the path: " + TT.path.toString(path) + " in context: " + context.toString());
                     return;
+                }
+                if (TT.debugging === 'log') {
+                    console.log("   " + referenced + " (" + TT.path.toString(path) + " " + 
+                                (referenced.debug_id || (referenced.get_parent_of_frontside() && referenced.get_parent_of_frontside().debug_id) || "") + 
+                                ") by watched robot " + (robot.get_description() || robot.debug_id) + (robot.animate_consequences_of_actions() ? "" : " finishing instantly"));
                 }
                 if (referenced.wait_until_this_nest_receives_something) {
                     referenced.wait_until_this_nest_receives_something.run_when_non_empty(

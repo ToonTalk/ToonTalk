@@ -110,6 +110,9 @@ window.TOONTALK.actions =
                 if (step_number < steps.length) {
                     var step = steps[step_number];
                     step_number++;
+                    if (TT.debugging === 'log') {           
+                        console.log(step.get_action_name() + " (unwatched)");
+                    }
                     // each step needs to call robot.run_next_step
                     step.run_unwatched(context, top_level_context, robot);
                 } else {
@@ -198,6 +201,9 @@ window.TOONTALK.actions =
                             if (step_number < steps.length) {
                                 var step = steps[step_number];
                                 step_number++;
+                                if (TT.debugging === 'log') {           
+                                    console.log(step.get_action_name() + " (watched)");
+                                }
                                 step.run_watched(context, top_level_context, robot);
                                 if (robot.get_thing_in_hand()) {
                                     // TODO: move this elsewhere
