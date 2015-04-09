@@ -2202,6 +2202,18 @@ background-image: url("images/dusty-morph.png");
 /* 	to have room for green flag and stop sign */
 	padding-top: 25px;
 }
+/* .toontalk-empty-nest-overlay {
+	background-image: url("images/empty-nest-mask.png");
+	width: 116px;
+	height: 98px;
+	background-blend-mode: color;
+	background-size: cover;
+    background-blend-mode: exclusion;
+    mix-blend-mode: hard-light;
+	color: blue; 
+	background-repeat: no-repeat;
+	background-size: contain;
+} */
 .toontalk-empty-nest {
 /* 	Perhaps should be renamed since it really for eggless nest but might have stuff on top */
 /* 	tried 	content: url("images/empty-nest.png");  but couldn't drag it */
@@ -2284,8 +2296,7 @@ background-image: url("images/dusty-morph.png");
 	text-align: center;
 }
 .toontalk-backside-of-bird {
-    background-color: rgb(230, 230, 240);
-	
+    background-color: rgb(230, 230, 240);	
 }
 .toontalk-bird-gimme {
     width:  103px;
