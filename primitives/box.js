@@ -343,7 +343,8 @@ window.TOONTALK.box = (function (TT) {
         var frontside_element = frontside.get_element();
         var size = this.get_size();
         var update_hole = function (hole_element, hole, index) {
-            var content_frontside_element = hole.get_frontside_element(true);
+            var contents = hole.get_contents();
+            var content_frontside_element = (contents || hole).get_frontside_element(true);
             var $parents = $(hole_element).parents(".toontalk-box-hole");
             var adjust_if_on_a_nest = function () {
                 if ($(hole_element).parents(".toontalk-box-hole").children(".toontalk-nest").is("*")) {
@@ -837,9 +838,8 @@ window.TOONTALK.box_hole =
             };
             // there is no backside of an empty hole
             hole.get_frontside_element = function (update) {
-                if (contents) {
-                    return contents.get_frontside_element(update);
-                }
+                // this once returned the element of its contents
+                // but then birds didn't know where to fly from and to
                 return this.get_element();
             };
             hole.get_frontside = function () {
