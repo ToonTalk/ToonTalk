@@ -301,6 +301,12 @@ window.TOONTALK.bird = (function (TT) {
                                            width:  width,
                                            height: height
                                            });
+            if (TT.debugging && TT.debugging.indexOf('bird') >= 0) {
+                console.log(this.to_debug_string() + " from " + 
+                           (starting_left || bird_offset.left-top_level_backside_element_bounding_box.left) + ", " + 
+                           (starting_top  || bird_offset.top -top_level_backside_element_bounding_box.top) + 
+                            " to " + target_offset.left + ", " + target_offset.top);
+            }
             nest_contents_frontside_element = nest_recieving_message.get_contents_frontside_element &&
                                               nest_recieving_message.get_contents_frontside_element();
             if (nest_contents_frontside_element && nest_recieving_message.visible() &&
