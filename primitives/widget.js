@@ -592,7 +592,7 @@ window.TOONTALK.widget = (function (TT) {
                 // differs from closest_visible_ancestor in that if a backside has no parent then continues with frontside
                 var ancestor = this;
                 var previous_ancestor;
-                while (ancestor && !ancestor.visible()) {
+                while (ancestor && !$(ancestor.get_frontside_element()).is(":visible")) {
                     previous_ancestor = ancestor;
                     if (ancestor.is_backside()) {
                         ancestor = ancestor.get_parent_of_backside();
