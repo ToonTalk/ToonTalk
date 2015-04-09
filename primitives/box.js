@@ -1094,10 +1094,11 @@ window.TOONTALK.box_hole =
             if (TT.debugging) {
                 hole.debug_string = "An empty hole";
                 hole.to_debug_string = function () {
+                    var info =  "the " + TT.UTILITIES.ordinal(index) + " hole of the " + this.get_parent_of_frontside().to_debug_string();
                     if (contents) {
-                        return "the " + index + " hole of " + this.get_parent_of_frontside().to_debug_string() + " which contains " + contents.to_debug_string();
+                        return info + " which contains " + contents.to_debug_string();
                     }
-                    return "the " + index + " hole of " + this.get_parent_of_frontside().to_debug_string() + " which is empty";
+                    return info + " which is empty";
                 };
             }
             TT.widget.has_parent(hole);

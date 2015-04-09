@@ -132,6 +132,12 @@ window.TOONTALK.widget = (function (TT) {
                 widget.to_debug_string = function () {
                     var parent = this.get_parent_of_frontside();
                     var id = this.debug_id;
+                    var description = this.get_description();
+                    if (description) {
+                        description += " ";
+                    } else {
+                        description = "";
+                    }
                     if (!id) {
                        // might be a hole or top-level widget
                        if (parent && parent.id) {
@@ -140,7 +146,7 @@ window.TOONTALK.widget = (function (TT) {
                           id = "";
                        }
                     } 
-                    return this + " (" + (this.get_description() || "") + " " + id + ")";
+                    return this + " (" + description + " " + id + ")";
                 };
             }
             widget.is_top_level = return_false;
