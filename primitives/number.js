@@ -425,7 +425,8 @@ window.TOONTALK.number = (function () {
         };
         var border_size = 28;
         var frontside_element, $dimensions_holder, client_width, client_height, 
-            font_height, font_width, max_decimal_places, new_HTML, backside, size_unconstrained_by_container, child_element;
+            font_height, font_width, max_decimal_places, new_HTML, backside, 
+            size_unconstrained_by_container, parent_widget, child_element;
         if (TT.debugging && TT.debugging.indexOf('display') >= 0) {
             console.log("Updating display of " + this.to_debug_string());
         }
@@ -440,6 +441,16 @@ window.TOONTALK.number = (function () {
             $dimensions_holder = $(frontside_element);
         } else {
             $dimensions_holder = $(frontside_element).parent();
+        }
+        if ($dimensions_holder.length === 0) {
+            // before giving up see if the widgets know about the container
+            parent_widget = this.get_parent_of_frontside();
+            if (parent_widget) {
+                if (parent_widget.is_hole()) {
+                    parent_widget = parent_widget.get_parent_of_frontside();
+                }
+                $dimensions_holder = $(parent_widget.get_frontside_element());
+            }
         }
         if ($(frontside_element).is(".toontalk-carried-by-bird")) {
             // good enough values when carried by a bird
