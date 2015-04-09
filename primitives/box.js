@@ -455,6 +455,9 @@ window.TOONTALK.box = (function (TT) {
             }
         };
         var i, hole, hole_element, box_left, box_width, hole_width, first_hole_width, box_height, hole_height, content_frontside_element, border_class, border_size, backside;
+        if (TT.debugging && TT.debugging.indexOf('display') >= 0) {
+            console.log("Updating display of " + this.to_debug_string());
+        }
         $(frontside_element).addClass("toontalk-box");
         $(frontside_element).removeClass("toontalk-box-eighth-size-border toontalk-box-quarter-size-border toontalk-box-half-size-border toontalk-box-full-size-border");
         TT.UTILITIES.give_tooltip(frontside_element, this.get_title());
@@ -1090,6 +1093,12 @@ window.TOONTALK.box_hole =
             };
             if (TT.debugging) {
                 hole.debug_string = "An empty hole";
+                hole.to_debug_string = function () {
+                    if (contents) {
+                        return "the " + index + " hole of " + this.get_parent_of_frontside().to_debug_string() + " which contains " + contents.to_debug_string();
+                    }
+                    return "the " + index + " hole of " + this.get_parent_of_frontside().to_debug_string() + " which is empty";
+                };
             }
             TT.widget.has_parent(hole);
             TT.widget.has_listeners(hole);

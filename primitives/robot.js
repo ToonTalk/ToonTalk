@@ -322,7 +322,12 @@ window.TOONTALK.robot = (function (TT) {
             } else {
                 $("*").css({cursor: ''}); // restore cursor
             }
-        };  
+        };
+        if (TT.debugging) {
+            new_robot.to_debug_string = function () {
+                return " (" + (this.get_description() || "") + " " + this.debug_id + ")";
+            };
+        }
         if (next_robot) {
             // this will update first_in_team for subsequent robots
             new_robot.set_next_robot(next_robot);

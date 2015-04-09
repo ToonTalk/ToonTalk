@@ -408,6 +408,11 @@ window.TOONTALK.backside =
             backside.run_status_changed = function (running) {
                 update_flag_and_stop_sign_classes(running);
             };
+            if (TT.debugging) {
+                backside.to_debug_string = function () {
+                    return "backside of " + this.get_widget().to_debug_string();
+                };
+            }
             backside_element.toontalk_widget = widget;
             TT.UTILITIES.drag_and_drop(backside_element);
             $backside_element.resizable(

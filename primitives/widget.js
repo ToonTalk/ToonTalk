@@ -128,6 +128,21 @@ window.TOONTALK.widget = (function (TT) {
             if (!widget.is_function_nest) {
                 widget.is_function_nest = return_false;
             }
+            if (TT.debugging && !widget.to_debug_string) {
+                widget.to_debug_string = function () {
+                    var parent = this.get_parent_of_frontside();
+                    var id = this.debug_id;
+                    if (!id) {
+                       // might be a hole or top-level widget
+                       if (parent && parent.id) {
+                          id = "id of parent is " + parent.id;
+                       } else {
+                          id = "";
+                       }
+                    } 
+                    return this + " (" + (this.get_description() || "") + " " + id + ")";
+                };
+            }
             widget.is_top_level = return_false;
             widget.is_widget = true;
             return widget;
@@ -1394,6 +1409,12 @@ window.TOONTALK.widget = (function (TT) {
             widget.top_level_widget = function () {
                 return this;
             };
+            if (TT.debugging) {
+                widget.to_debug_string = function () {
+                    var location = $(this.get_backside_element()).offset();
+                    return "top-level widget at " + Math.round(location.left) + ", " + Math.round(location.top);
+                };
+            }
             widget = widget.add_sides_functionality(widget);
             widget = widget.runnable(widget);
             widget = widget.has_parent(widget);

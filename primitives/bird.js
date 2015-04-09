@@ -59,7 +59,9 @@ window.TOONTALK.bird = (function (TT) {
                     return false;
                 }
                 if ((nest.visible() || this.visible() || nest.any_nest_copies_visible()) &&
-                    (!robot || !robot.visible() || robot.animate_consequences_of_actions())){
+                    (!robot || !robot.visible() || robot.animate_consequences_of_actions())) {
+                    // if !robot.animate_consequences_of_actions() then finishing watched cycle after context closed
+                    // so do it immediately
                     other.save_dimensions();
                     // doesn't matter if robot is visible or there is a user event -- if either end visible show the delivery
                     frontside_element = this.get_frontside_element();

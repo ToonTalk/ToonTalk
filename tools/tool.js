@@ -29,7 +29,7 @@ window.TOONTALK.tool = (function (TT) {
                 if (TT.debugging && TT.debugging.indexOf('touch') === 0) {
                     TT.debugging += "\nmouse_down at " + Date.now();
                 }
-                // not sure why the tool tip doesn't got away but force it here
+                // not sure why the tool tip doesn't go away but force it here
                 $(".ui-tooltip").each(function () {
                                           $(this).hide();
                                       });

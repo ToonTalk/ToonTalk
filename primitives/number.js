@@ -426,6 +426,9 @@ window.TOONTALK.number = (function () {
         var border_size = 28;
         var frontside_element, $dimensions_holder, client_width, client_height, 
             font_height, font_width, max_decimal_places, new_HTML, backside, size_unconstrained_by_container, child_element;
+        if (TT.debugging && TT.debugging.indexOf('display') >= 0) {
+            console.log("Updating display of " + this.to_debug_string());
+        }
         frontside_element = frontside.get_element();
         if ($(frontside_element).is(".toontalk-conditions-contents")) {
             $dimensions_holder = $(frontside_element);
@@ -448,11 +451,17 @@ window.TOONTALK.number = (function () {
             client_height =  32;
         } else {
             if (!$dimensions_holder.is(":visible")) {
+                if (TT.debugging && TT.debugging.indexOf('display') >= 0) {
+                    console.log("Container not visible so no display of " + this.to_debug_string());
+                }
                 return;
             }
             client_width =  $dimensions_holder.width();
             client_height = $dimensions_holder.height();
             if (client_width === 0 || client_height === 0) {
+                if (TT.debugging && TT.debugging.indexOf('display') >= 0) {
+                    console.log("Container has zero dimensions so no display of " + this.to_debug_string());
+                }
                 return;
             }
             if ($dimensions_holder.is(".toontalk-nest")) {
