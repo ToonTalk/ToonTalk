@@ -47,7 +47,7 @@ window.TOONTALK.robot = (function (TT) {
         var body_finished_listeners = [];
         // when running watched runs these after each step
         var watched_step_end_listeners = [];
-        var running, stopped;
+        var in_run_queue, stopped;
         var original_backside_widgets_of_context;
         if (!body) {
             body = TT.actions.create();
@@ -122,11 +122,17 @@ window.TOONTALK.robot = (function (TT) {
             return body;
         };
         new_robot.get_running = function () {
-            return running;
+            return in_run_queue;
         };
-        new_robot.set_running = function (new_value) {
-            running = new_value;
+        new_robot.get_in_run_queue = function () {
+            return in_run_queue;
         };
+        new_robot.set_in_run_queue = function (new_value) {
+            in_run_queue = new_value;
+        };
+//         new_robot.set_running = function (new_value) {
+//             running = new_value;
+//         };
         new_robot.stopped = function () {
             return stopped;
         };
@@ -595,7 +601,7 @@ window.TOONTALK.robot = (function (TT) {
                 // store the drop location as a fraction of width and height of target so does something sensible when run on different size target
                 additional_info = {left_offset_fraction: (source_location.left-target_location.left)/target_width,
                                    top_offset_fraction:  (source_location.top -target_location.top) /target_height};
-            } else if (!additional_info) {
+            } else {
                 additional_info = {};
             }
             now = Date.now();

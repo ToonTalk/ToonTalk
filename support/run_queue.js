@@ -17,14 +17,19 @@ window.TOONTALK.queue =
         
         enqueue: function (robot_context_queue) {
 //          console.log("enqueued robot#" + robot_context_queue.robot.debug_id);
-            if (TT.debugging && this.to_run.does_any_item_satisfy(function (item) {
-                                                                      return item.robot === robot_context_queue.robot;
-                                                                  })) {
-                // until these kinds of bugs are fixed log this
-                // but TT.UTILITIES.report_internal_error is too annoying
-                console.error("The same robot is being queued twice.\nRobot is: " + robot_context_queue.robot.debug_id);
+//             if (TT.debugging && this.to_run.does_any_item_satisfy(function (item) {
+//                                                                       return item.robot === robot_context_queue.robot;
+//                                                                   })) {
+//                 // until these kinds of bugs are fixed log this
+//                 // but TT.UTILITIES.report_internal_error is too annoying
+//                 console.error("The same robot is being queued twice.\nRobot is: " + robot_context_queue.robot.debug_id);
+//                 return;
+//             }
+            if (robot_context_queue.robot.get_in_run_queue()) {
+                // already queued 
                 return;
             }
+            robot_context_queue.robot.set_in_run_queue(true);
             return this.to_run.enqueue(robot_context_queue);
         },
         
@@ -45,6 +50,7 @@ window.TOONTALK.queue =
                     break; 
                 }
                 next_robot_run = this.to_run.dequeue();
+                next_robot_run.robot.set_in_run_queue(false);
                 next_robot_run.robot.run_actions(next_robot_run.context, next_robot_run.top_level_context, next_robot_run.queue);
             }
             TT.DISPLAY_UPDATES.run_cycle_is_over();

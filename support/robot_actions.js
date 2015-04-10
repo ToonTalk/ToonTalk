@@ -150,9 +150,8 @@ window.TOONTALK.actions =
                         saved_parent_element.appendChild(frontside_element);          
                         robot.set_animating(false);
                     }
-                    robot.get_first_in_team().set_running(false);
                     if (robot.get_run_once()) {
-                        robot.set_running(false);
+                        robot.get_first_in_team().set_running(false);
                     } else if (!robot.stopped()) {
                         robot.get_first_in_team().run(context, top_level_context, queue);
                     }

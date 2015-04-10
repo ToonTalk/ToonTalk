@@ -351,7 +351,7 @@ window.TOONTALK.widget = (function (TT) {
                                 this.run(widget.get_parent_of_backside().get_widget(), top_level_context);
                             }
                         } else {
-                             this.set_stopped(true);
+                            this.set_stopped(true);
                         }
                     }
                     if (!unchanged_value) {
