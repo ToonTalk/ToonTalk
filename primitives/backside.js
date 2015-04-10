@@ -322,12 +322,12 @@ window.TOONTALK.backside =
                     if (event) {
                         other.get_widget().backup_all();
                     }
-                    if (this.get_widget().is_ok_to_run() && !this.get_widget().get_running() && !this.get_widget().is_top_level()) {
-                        // if a robot or widget with robots on the back is dropped on the back of something that has been told to run
-                        // (but perhaps had nothing to run)
-                        // so run the widget who just got a robot or widget on the back
-                        this.get_widget().set_running(true);
-                    }
+//                     if (this.get_widget().is_ok_to_run() && !this.get_widget().get_running() && !this.get_widget().is_top_level()) {
+//                         // if a robot or widget with robots on the back is dropped on the back of something that has been told to run
+//                         // (but perhaps had nothing to run)
+//                         // so run the widget who just got a robot or widget on the back
+//                         this.get_widget().set_running(true);
+//                     }
                     return true;
                 };
             backside.add_backside_widget =  

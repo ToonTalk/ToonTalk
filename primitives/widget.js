@@ -917,9 +917,9 @@ window.TOONTALK.widget = (function (TT) {
                 widget_side.set_visible(true);
                 widget.render();
             }
-            if (this.get_running()) {
-                widget.set_running(true);
-            }
+//             if (this.get_running()) {
+//                 widget.set_running(true);
+//             }
         },
 
         remove_all_backside_widgets: function () {
