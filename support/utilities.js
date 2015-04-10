@@ -2525,7 +2525,7 @@ window.TOONTALK.UTILITIES =
                                        callback(original_parent);
                                        if (original_parent) {
                                            original_parent.appendChild(element);
-                                       } else {
+                                       } else if (element.parentElement === document.body) {
                                            $(element).remove();
                                        }
                                        $(element).removeClass("toontalk-not-observable");
