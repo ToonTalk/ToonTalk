@@ -446,7 +446,7 @@ window.TOONTALK.number = (function () {
             // before giving up see if the widgets know about the container
             parent_widget = this.get_parent_of_frontside();
             if (parent_widget) {
-                if (parent_widget.is_hole()) {
+                if (parent_widget.get_widget().is_hole()) {
                     parent_widget = parent_widget.get_parent_of_frontside();
                 }
                 $dimensions_holder = $(parent_widget.get_frontside_element());
