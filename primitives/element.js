@@ -233,16 +233,16 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 pending_css = {};
             }
             if (transform_css) {
-                if (transform_css['rotate']) {
+                if (typeof transform_css['rotate'] === 'number') {
                     transform += 'rotate(' + transform_css['rotate'] + 'deg)';
                 }
-                if (transform_css['skewX']) {
+                if (typeof transform_css['skewX'] === 'number') {
                     transform += 'skewX(' + transform_css['skewX'] + 'deg)';
                 }
-                if (transform_css['skewY']) {
+                if (typeof transform_css['skewY'] === 'number') {
                     transform += 'skewY(' + transform_css['skewY'] + 'deg)';
                 }
-                if (transform_css['transform-origin-x'] || transform_css['transform-origin-y']) {
+                if (typeof transform_css['transform-origin-x']  === 'number'|| typeof transform_css['transform-origin-y'] === 'number') {
                     pending_css['transform-origin'] = (transform_css['transform-origin-x'] || 0) + ' ' + (transform_css['transform-origin-y'] || 0);
                 }
             };

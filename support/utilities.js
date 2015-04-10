@@ -835,7 +835,7 @@ window.TOONTALK.UTILITIES =
                 }
                 if (json_view && json_view.frontside_width) {
                     side_element = json_view.backside ? widget.get_backside(true).get_element() : widget.get_frontside_element();
-                    size_css = {width: json_view.frontside_width,
+                    size_css = {width:  json_view.frontside_width,
                                 height: json_view.frontside_height};
                     if (json_semantic.type === 'element') {
                         // delay until updated
