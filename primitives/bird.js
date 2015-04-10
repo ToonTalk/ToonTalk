@@ -115,13 +115,13 @@ window.TOONTALK.bird = (function (TT) {
             var bird_finished_continuation = function () {
                     var parent_offset = $(parent_element).offset();
                     var become_static, current_non_empty_listeners;
+                    if (TT.sounds) {
+                        TT.sounds.bird_fly.pause();
+                    }
                     if (temporary_bird) {
                         this.remove();
                     } else if (this.visible()) {
                         become_static = function () {
-                            if (TT.sounds) {
-                                TT.sounds.bird_fly.pause();
-                            }
                             $(bird_frontside_element).removeClass("toontalk-bird-morph-to-static");
                             $(bird_frontside_element).addClass("toontalk-bird-static");
                             if (parent) {
