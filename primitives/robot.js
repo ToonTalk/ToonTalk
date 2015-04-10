@@ -66,7 +66,7 @@ window.TOONTALK.robot = (function (TT) {
             frontside_conditions.set_parent_of_frontside(this);
         };
         if (frontside_conditions) {
-            frontside_conditions.set_parent_of_frontside(this);
+            frontside_conditions.set_parent_of_frontside(new_robot);
         };
         new_robot.get_backside_conditions = function () {
             return backside_conditions;
