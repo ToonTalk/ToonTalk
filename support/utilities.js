@@ -321,8 +321,8 @@ window.TOONTALK.UTILITIES =
                 return;
             }
             if (source_widget.robot_in_training()) {
-                // dropped something from a different window/tab so treat it (almost) like the robot picked it up
-                source_widget.robot_in_training().picked_up(source_widget, json_object, 'data transfer');
+                // dropped something from a different window/tab so treat it like the robot picked it up
+                source_widget.robot_in_training().drop_from_data_transfer(source_widget);
             }
             source_is_backside = json_object.view.backside;
             if (source_is_backside) {
@@ -395,9 +395,12 @@ window.TOONTALK.UTILITIES =
                backside_widgets_json = json_object.semantic.backside_widgets;
                shared_widgets = json_object.shared_widgets;
                top_level_element = $target.get(0);
+               robot_in_training = target_widget.robot_in_training();
+               if (robot_in_training) {
+                   robot_in_training.drop_from_data_transfer(source_widget, target_widget);  
+               }
                // need to copy the array because the function in the forEach updates the list
                backside_widgets = source_widget.get_backside_widgets().slice();
-               robot_in_training = target_widget.robot_in_training();
                backside_widgets.forEach(function (backside_widget_side, index) {
                    var widget = backside_widget_side.get_widget();
                    var json_view, element_of_backside_widget, left_offset, top_offset, width, height, position;
@@ -432,15 +435,6 @@ window.TOONTALK.UTILITIES =
                    if (backside_widget_side.is_backside()) {
                        widget.backside_geometry = json_view.backside_geometry;
                        widget.apply_backside_geometry();
-                   }
-                   if (robot_in_training) {
-                       // wait for geometry to settle down before treating this as a series of pick up and drops
-                       setTimeout(function () {
-                           robot_in_training.picked_up(widget, undefined, true);
-                           robot_in_training.time_of_last_step -= 1000; // let a second elapse between each step
-                           robot_in_training.dropped_on(widget, target_widget.get_backside());
-                           robot_in_training.time_of_last_step -= 1000;                           
-                       });
                    }
                }.bind(this));
                return;
@@ -580,6 +574,9 @@ window.TOONTALK.UTILITIES =
                 if (!widget) {
                     // just use the text as the HTML
                     widget = TT.element.create(reader.result);
+                }
+                if (widget && widget.robot_in_training()) {
+                    widget.robot_in_training().drop_from_data_transfer(widget, target_widget);
                 }
             }
             handle_drop($target, $(widget.get_frontside_element(true)), widget, target_widget, target_position, event, json_object);

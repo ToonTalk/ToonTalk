@@ -521,6 +521,26 @@ window.TOONTALK.robot = (function (TT) {
         }
         return this.get_body().run_unwatched(context, top_level_context, queue, this);
     };
+
+    robot.drop_from_data_transfer = function (data_transferred_widget, target_widget) {
+        var backside_widgets;
+        if (data_transferred_widget.is_top_level && data_transferred_widget.is_top_level()) {
+            // wait for geometry to settle down before treating this as a series of pick up and drops
+            // need to get a copy of the list before other processing clobbes it
+            backside_widgets = data_transferred_widget.get_backside_widgets().slice();
+            setTimeout(function () {
+                backside_widgets.forEach(function (widget) {    
+                    this.picked_up(widget, undefined, true);
+                    this.time_of_last_step -= 1000; // let a second elapse between each step
+                    this.dropped_on(widget, target_widget.get_backside());
+                    this.time_of_last_step -= 1000;                           
+                }.bind(this));
+            }.bind(this));
+        } else {
+            // delay this until drop when location is known
+            this.data_transfer = data_transferred_widget;
+        }
+    };
     
     robot.picked_up = function (widget, json, is_resource) {
         var path, step, action_name, widget_copy, new_widget, additional_info, now;
@@ -534,11 +554,6 @@ window.TOONTALK.robot = (function (TT) {
         }
         if (json && json.view.backside) {
             // at least for now ignore picking up of the backside of a widget
-            return;
-        }
-        if (is_resource === 'data transfer') {
-            // delay this until drop so location is known
-            this.data_transfer = widget;
             return;
         }
         // current_action_name is used to distinguish between removing something from its container versus referring to it
