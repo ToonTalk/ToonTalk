@@ -369,7 +369,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 $(frontside_element).removeClass("toontalk-erased-element");
                 this.restore_dimensions();
             }
-            this.initialise_element();
+            this.initialize_element();
             if (TT.UTILITIES.on_a_nest_in_a_box(frontside_element)) {
                 // need to work around a CSS problem where nested percentage widths don't behave as expected
                 this.set_attribute('width',  $(frontside_element).closest(".toontalk-box-hole").width(),  false);
@@ -383,10 +383,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             this.fire_on_update_display_handlers();
             TT.UTILITIES.give_tooltip(frontside_element, "Click to see the backside where you can place robots or change the style of this " + element_description(frontside_element) + ".");
         };
-        new_element.initialise_element = function () {
+        new_element.initialize_element = function () {
             var frontside_element = this.get_frontside_element();
+            var resize_handles = $(frontside_element).children(".ui-resizable-handle");
             var rendering, additional_classes;
-            if (frontside_element.children.length === $(frontside_element).children(".ui-resizable-handle").length) {
+            if (frontside_element.children.length === resize_handles.length || resize_handles.length === 0) {
                 // the only children are resize handles so add the HTML
 //                 rendering = document.createElement('div');
 //                 $(rendering).addClass("toontalk-element-container");
@@ -1234,7 +1235,7 @@ window.TOONTALK.element_backside =
             var generic_backside_update = backside.update_display.bind(backside);
             var text, html_input, update_html, drop_handler;
             // need to ensure that it 'knows' its textContent, etc.
-            element_widget.initialise_element();
+            element_widget.initialize_element();
             text = element_widget[getter]().trim();
             if (text.length > 0 && !element_widget.get_image_element()) {
                 drop_handler = function (event) {
