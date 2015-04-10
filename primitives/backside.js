@@ -408,7 +408,7 @@ window.TOONTALK.backside =
             backside.run_status_changed = function (running) {
                 update_flag_and_stop_sign_classes(running);
             };
-            if (TT.debugging) {
+            if (TT.debugging || TT.logging) {
                 backside.to_debug_string = function () {
                     return "backside of " + this.get_widget().to_debug_string();
                 };

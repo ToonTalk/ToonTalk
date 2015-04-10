@@ -277,7 +277,7 @@ window.TOONTALK.number = (function () {
                 value = new_value;
                 this.rerender(); // will update if visible
                 if (TT.debugging) {
-                    this.debug_string = this.toString();
+                    this.debug_string = this.to_debug_string();
                     if (new_value.toString() === "0,0") {
                         TT.UTILITIES.report_internal_error("Impossible numeric value -- can be caused by decimal string not being parsable as a number.");
                     }

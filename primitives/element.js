@@ -461,8 +461,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         new_element.set_HTML(original_html);
         new_element.set_description(description);
         if (TT.debugging) {
-            new_element.debug_string = new_element.toString();
             new_element.debug_id = TT.UTILITIES.generate_unique_id();
+            new_element.debug_string = new_element.to_debug_string();
         }
         return new_element;
     };

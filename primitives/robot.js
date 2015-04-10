@@ -323,7 +323,7 @@ window.TOONTALK.robot = (function (TT) {
                 $("*").css({cursor: ''}); // restore cursor
             }
         };
-        if (TT.debugging) {
+        if (TT.debugging || TT.logging) {
             new_robot.to_debug_string = function () {
                 return " (" + (this.get_description() || "") + " " + this.debug_id + ")";
             };
@@ -736,7 +736,7 @@ window.TOONTALK.robot = (function (TT) {
         var frontside_element, thing_in_hand_frontside_element;
         if (TT.debugging) {
             // this can't be done during robot creation since robot actions references to newly_created_widgets is premature
-            this.debug_string = this.toString();
+            this.debug_string = this.to_debug_string();
         }
         frontside_element = frontside.get_element();
         if (thing_in_hand) {

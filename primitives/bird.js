@@ -476,9 +476,9 @@ window.TOONTALK.bird = (function (TT) {
                 this.rerender();
                 if (this.robot_in_training()) {
                     this.robot_in_training().edited(this, {setter_name: "set_function_name",
-                                                       argument_1:  new_name,
-                                                       toString: "change the function bird to '" + new_name + "'",
-                                                       button_selector: ".toontalk-select-function"});
+                                                           argument_1:  new_name,
+                                                           toString: "change the function bird to '" + new_name + "'",
+                                                           button_selector: ".toontalk-select-function"});
                 }
             }
         };
@@ -486,11 +486,7 @@ window.TOONTALK.bird = (function (TT) {
         new_bird.set_description(description);
         if (TT.debugging) {
             new_bird.debug_id = TT.UTILITIES.generate_unique_id();
-            if (nest) {
-                new_bird.debug_string = "a bird with " + nest.debug_string;
-            } else {
-                new_bird.debug_string = "a bird without a nest";
-            }
+            new_bird.debug_string = new_bird.to_debug_string();
         }
         return new_bird;
     };
@@ -950,7 +946,7 @@ window.TOONTALK.nest = (function (TT) {
             if (!guid) {
                 guid = TT.UTILITIES.generate_unique_id();
                 if (TT.debugging) {
-                    new_nest.debug_string = "A nest with " + guid;
+                    this.debug_string = this.to_debug_string();
                 }                
                 // create bird now so robot knows about it
                 bird = TT.bird.create(this);
@@ -1239,11 +1235,7 @@ window.TOONTALK.nest = (function (TT) {
         new_nest.set_description(description);
         if (TT.debugging) {
             new_nest.debug_id = TT.UTILITIES.generate_unique_id();
-            if (guid) {
-                new_nest.debug_string = "A nest with " + guid;
-            } else {
-                new_nest.debug_string = "A nest with an egg";
-            }
+            new_nest.debug_string = new_nest.to_debug_string();
         }
         if (original_nest && guid) {
             if (!add_copy_private_key) {
@@ -1324,7 +1316,7 @@ window.TOONTALK.nest = (function (TT) {
             function_nest.add_to_contents = function_object.respond_to_message;
             if (TT.debugging) {
                 function_nest.debug_id = TT.UTILITIES.generate_unique_id();
-                function_nest.debug_string = "a function nest that " + function_object.get_description();
+                function_nest.debug_string = "a function nest that " + function_object.toString();
             }
         } else {
             TT.UTILITIES.report_internal_error("Cannot create a function nest because TOONTALK." + type_name + "." + function_name + " is not defined.");

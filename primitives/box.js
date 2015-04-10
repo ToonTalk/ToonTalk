@@ -49,7 +49,7 @@ window.TOONTALK.box = (function (TT) {
             }
             this.rerender();
             if (TT.debugging) {
-                this.debug_string = this.toString();
+                this.debug_string = this.to_debug_string();
             }
         };
         new_box.get_holes = function () {
@@ -102,7 +102,7 @@ window.TOONTALK.box = (function (TT) {
                 this.rerender();
             }
             if (TT.debugging) {
-                this.debug_string = this.toString();
+                this.debug_string = this.to_debug_string();
             }
             return true;
         };
@@ -143,8 +143,8 @@ window.TOONTALK.box = (function (TT) {
         new_box.set_description(description);
         new_box.set_contents(initial_contents);
         if (TT.debugging) {
-            new_box.debug_string = new_box.toString();
             new_box.debug_id = TT.UTILITIES.generate_unique_id();
+            new_box.debug_string = new_box.to_debug_string();
         }
         return new_box;
     };
@@ -962,11 +962,11 @@ window.TOONTALK.box_hole =
                 if (contents) {
                     contents.set_parent_of_frontside(this);
                     if (TT.debugging) {
-                        hole.debug_string = "A hole containing " + contents;
+                        this.debug_string = "A hole containing " + contents.to_debug_string();
                     }
                     contents.set_visible(visible);
                 } else if (TT.debugging) {
-                    hole.debug_string = "An empty hole";
+                    this.debug_string = this.to_debug_string();
                 }
             };
             hole.visible = function () {
@@ -1091,18 +1091,19 @@ window.TOONTALK.box_hole =
             hole.is_top_level = function () {
                 return false;
             };
-            if (TT.debugging) {
-                hole.debug_string = "An empty hole";
+            TT.widget.has_parent(hole);
+            TT.widget.has_listeners(hole);
+            if (TT.debugging || TT.logging) {
                 hole.to_debug_string = function () {
-                    var info =  "the " + TT.UTILITIES.ordinal(index) + " hole of the " + this.get_parent_of_frontside().to_debug_string();
+                    var info =  "the " + TT.UTILITIES.ordinal(index) + " hole of the " +
+                                (this.get_parent_of_frontside() ? this.get_parent_of_frontside().to_debug_string() : "not-yet-defined box");
                     if (contents) {
                         return info + " which contains " + contents.to_debug_string();
                     }
                     return info + " which is empty";
                 };
+                hole.debug_string = hole.to_debug_string();
             }
-            TT.widget.has_parent(hole);
-            TT.widget.has_listeners(hole);
             return hole;
         }
     };

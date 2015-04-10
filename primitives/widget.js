@@ -128,7 +128,7 @@ window.TOONTALK.widget = (function (TT) {
             if (!widget.is_function_nest) {
                 widget.is_function_nest = return_false;
             }
-            if (TT.debugging && !widget.to_debug_string) {
+            if ((TT.debugging  || TT.logging) && !widget.to_debug_string) {
                 widget.to_debug_string = function () {
                     var parent = this.get_parent_of_frontside();
                     var id = this.debug_id;
@@ -1415,7 +1415,7 @@ window.TOONTALK.widget = (function (TT) {
             widget.top_level_widget = function () {
                 return this;
             };
-            if (TT.debugging) {
+            if (TT.debugging || TT.logging) {
                 widget.to_debug_string = function () {
                     var location = $(this.get_backside_element()).offset();
                     return "top-level widget at " + Math.round(location.left) + ", " + Math.round(location.top);
