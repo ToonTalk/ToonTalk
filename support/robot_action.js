@@ -611,12 +611,6 @@ window.TOONTALK.robot_action =
             if (!watched_run_function) {
                 TT.UTILITIES.report_internal_error("No watched function for " + action_name);
                 return;
-//                 watched_run_function = function (referenced, context, top_level_context, robot, additional_info) {
-//                     setTimeout(function () {
-//                         continuation(referenced);
-//                         },
-//                         3000);
-//                 };
             }
             if (!path) {
                 TT.UTILITIES.report_internal_error("path undefined in " + action_name + " action");
@@ -626,6 +620,9 @@ window.TOONTALK.robot_action =
             }
             new_action.get_action_name = function () {
                 return action_name;
+            };
+            new_action.get_additional_info = function () {
+                return additional_info;
             };
             new_action.run_unwatched = function (context, top_level_context, robot) {
                 var referenced = TT.path.dereference_path(path, context, top_level_context, robot);
