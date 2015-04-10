@@ -26,7 +26,7 @@ window.TOONTALK.tool = (function (TT) {
                 document.addEventListener('mouseup',    mouse_up);
                 document.addEventListener('touchend',   mouse_up);
                 // rewrite using startsWith in ECMAScript version 6
-                if (TT.debugging && TT.debugging.indexOf('touch') === 0) {
+                if (TT.logging && TT.logging.indexOf('touch') === 0) {
                     TT.debugging += "\nmouse_down at " + Date.now();
                 }
                 // not sure why the tool tip doesn't go away but force it here
@@ -51,7 +51,7 @@ window.TOONTALK.tool = (function (TT) {
                 element.style.left = point.clientX + "px";
                 element.style.top  = point.clientY + "px";
                 // rewrite using startsWith in ECMAScript version 6
-                if (TT.debugging && TT.debugging.indexOf('touch') === 0) {
+                if (TT.logging && TT.logging.indexOf('touch') === 0) {
                     TT.debugging += "\nmouse_move at " + Date.now() + " now at " + element.style.left + ", " + element.style.top;
                 }
                 if (widget_under_tool && widget_under_tool.is_top_level()) {
@@ -106,7 +106,7 @@ window.TOONTALK.tool = (function (TT) {
                 document.removeEventListener('mouseup',      mouse_up);
                 document.removeEventListener('touchend',     mouse_up);
                 // rewrite using startsWith in ECMAScript version 6
-                if (TT.debugging && TT.debugging.indexOf('touch') === 0) {
+                if (TT.logging && TT.logging.indexOf('touch') === 0) {
                     TT.debugging += "\nmouse_up at " + Date.now();
                     alert(TT.debugging);
                     TT.debugging = 'touch';

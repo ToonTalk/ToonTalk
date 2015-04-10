@@ -633,7 +633,7 @@ window.TOONTALK.robot_action =
                     TT.UTILITIES.report_internal_error("Unable to dereference path: " + TT.path.toString(path) + " in context: " + context.toString());
                     return false;
                 }
-                if (TT.debugging && TT.debugging.indexOf('event') >= 0) {
+                if (TT.logging && TT.logging.indexOf('event') >= 0) {
                     console.log("   " + referenced + " (" + TT.path.toString(path) + " " + referenced.to_debug_string() + 
                                 " by unwatched " + robot.to_debug_string());
                 }
@@ -663,7 +663,7 @@ window.TOONTALK.robot_action =
                     TT.UTILITIES.report_internal_error("Unable to dereference the path: " + TT.path.toString(path) + " in context: " + context.toString());
                     return;
                 }
-                if (TT.debugging && TT.debugging.indexOf('event') >= 0) {
+                if (TT.logging && TT.logging.indexOf('event') >= 0) {
                     console.log("   " + referenced + " (" + TT.path.toString(path) + " " +  referenced.to_debug_string() + 
                                 " by watched " + robot.to_debug_string() + (robot.animate_consequences_of_actions() ? "" : " finishing instantly"));
                 }

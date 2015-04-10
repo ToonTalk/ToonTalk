@@ -301,7 +301,7 @@ window.TOONTALK.bird = (function (TT) {
                                            width:  width,
                                            height: height
                                            });
-            if (TT.debugging && TT.debugging.indexOf('bird') >= 0) {
+            if (TT.logging && TT.logging.indexOf('bird') >= 0) {
                 console.log(this.to_debug_string() + " from " + 
                            (starting_left || bird_offset.left-top_level_backside_element_bounding_box.left) + ", " + 
                            (starting_top  || bird_offset.top -top_level_backside_element_bounding_box.top) + 
