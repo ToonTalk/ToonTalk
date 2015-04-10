@@ -550,7 +550,9 @@ window.TOONTALK.robot_action =
         // restore things at cycle end in case the robot wasn't trained to close backsides
         robot.add_body_finished_listener(
             function () {
-                widget.get_backside().hide_backside();
+                if (widget.get_backside()) {
+                    widget.get_backside().hide_backside();
+                } // else might have been removed subsequently
             });
     };
     var close_backside = function (widget, context, top_level_context, robot, continuation) {
