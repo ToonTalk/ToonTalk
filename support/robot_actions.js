@@ -119,9 +119,8 @@ window.TOONTALK.actions =
                     // currently only watched robots use these listeners
                     // if that is always the case no need calling the following
                     robot.run_body_finished_listeners();
-                    robot.get_first_in_team().set_running(false);
                     if (robot.get_run_once()) {
-                        robot.set_running(false);
+                        robot.get_first_in_team().set_running(false);
                     } else {
                         robot.get_first_in_team().run(context, top_level_context, queue);
                     }
@@ -225,10 +224,7 @@ window.TOONTALK.actions =
                         },
                         robot.transform_step_duration(50));
                 } else {
-                   if (TT.debugging && context) {
-                       console.error("There no longer is a switch from watched to unwatched in the middle of a cycle.");
-                   }
-                   // e.g. user hid the robot while running
+                   // e.g. user hid the robot while running the final step
                    // first restore robot to its 'home'
                    robot.set_animating(false);
                    // since not visible using set_absolute_position to robot_home doesn't work
