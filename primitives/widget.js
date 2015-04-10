@@ -849,11 +849,11 @@ window.TOONTALK.widget = (function (TT) {
                 if (!json_view.backside_geometry && this.backside_geometry) {
                     // backside is closed but this was saved when it was hidden
                     json_view.backside_geometry = this.backside_geometry;
-                } 
+                }
+                json_semantic.description = this.get_description && this.get_description();
                 // following are typically undefined unless in a container
                 json_view.saved_width  = this.saved_width;
-                json_view.saved_height = this.saved_height;
-                json_semantic.description = this.get_description && this.get_description();
+                json_view.saved_height = this.saved_height;  
                 return json;
             }
             console.log("get_json not defined");

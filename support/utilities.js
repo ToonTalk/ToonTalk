@@ -2301,8 +2301,10 @@ window.TOONTALK.UTILITIES =
                 // ignoe quotes -- e.g. an 'advark' widget
                 first_character = word.charAt(1);
             }
-            if (word.indexOf("the ") === 0 || word.indexOf("a ") === 0 || word.indexOf("an ") === 0 || word.indexOf("any ") === 0) {
+            if (word.indexOf("the ") === 0 || word.indexOf("a ") === 0 || word.indexOf("an ") === 0 || word.indexOf("any ") === 0 ||
+                word.indexOf('"the ') === 0 || word.indexOf('"a ') === 0 || word.indexOf('"an ') === 0 || word.indexOf('"any ') === 0) {
                 // don't generate a the box, an a bird, an any bird
+                // or any of them quoted
                 return word;
             }
             if ("aeiou".indexOf(first_character) < 0) {

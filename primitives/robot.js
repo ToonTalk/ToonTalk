@@ -870,7 +870,7 @@ window.TOONTALK.robot = (function (TT) {
     
     robot.toString = function (to_string_info) {
         var frontside_conditions, backside_conditions, backside_conditions_defined, body, prefix, postfix,
-            frontside_conditions_string, next_robot, robot_description, robot_conditions_description;
+            frontside_conditions_string, next_robot, robot_description, robot_conditions_description, original_person;
         if (to_string_info && to_string_info.role === "conditions") {
             return "any robot";
         }
@@ -878,16 +878,27 @@ window.TOONTALK.robot = (function (TT) {
         if (!frontside_conditions) {
             return "an untrained robot";
         }
+        if (!to_string_info) {
+            to_string_info = {};
+        }
+        original_person = to_string_info.person;
+        if (to_string_info && to_string_info.resource) {
+            if (this.get_description()) {
+                return '"' + this.get_description() + '"';
+            }
+            // a robot manipulating another robot so switch person              
+            to_string_info.person = 'third';
+        }
         backside_conditions = this.get_backside_conditions();
         body = this.get_body();
         prefix = "";
         postfix = "";
         next_robot = this.get_next_robot();
         if (frontside_conditions.is_top_level()) {
-            robot_conditions_description = "When the workspace's green flag is pressed";
+            robot_conditions_description = "A robot who when the workspace's green flag is pressed";
         } else {
             frontside_conditions_string = TT.UTILITIES.add_a_or_an(frontside_conditions.get_full_description({role: "conditions"}));
-            robot_conditions_description = "When working on something that matches " + frontside_conditions_string;
+            robot_conditions_description = "A robot who when working on something that matches " + frontside_conditions_string;
         }
         if (backside_conditions) {
             Object.keys(backside_conditions).forEach(function (key) {
@@ -911,8 +922,14 @@ window.TOONTALK.robot = (function (TT) {
             postfix = "\n..."; // to indicate still being constructed
         }  
         robot_description = prefix + robot_conditions_description + 
-                            " I will " + (this.get_run_once() ? "" : "repeatedly ") +
+                            (to_string_info && to_string_info.person === 'third' ? " he will " : " I will ") + 
+                            (this.get_run_once() ? "" : "repeatedly ") +
                             "\n" + body.toString({robot: this}) + postfix;
+        if (to_string_info && to_string_info.resource) {
+            // restore "person"
+            to_string_info.person = original_person;
+            return robot_description.replace(/\n/g, " ");
+        }
         if (this.match_status) {
             if (this.match_status.is_widget) {
                 robot_description = "I'm not running because the " + this.match_status + 
@@ -943,16 +960,16 @@ window.TOONTALK.robot = (function (TT) {
                !other.get_frontside_conditions();
     };
 
-    robot.get_top_level_context_description = function (toString_info) {
+    robot.get_top_level_context_description = function (to_string_info) {
         var frontside_conditions = this.get_frontside_conditions();
         var type = frontside_conditions.get_type_name();
         if (type === 'top-level') {
-            if (toString_info && toString_info.person === "third") {
+            if (to_string_info && to_string_info.person === "third") {
                 return "his workspace";
             }
             return "my workspace";
         }
-        if (toString_info && toString_info.person === "third") {
+        if (to_string_info && to_string_info.person === "third") {
             return "the " + type + " he's working on";
         }
         return "the " + type + " I'm working on";

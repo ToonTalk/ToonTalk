@@ -674,7 +674,7 @@ window.TOONTALK.robot_action =
                 referenced.set_visible(true);
                 watched_run_function(referenced, context, top_level_context, robot, continuation, additional_info);
             };
-            new_action.toString = function (toString_info) {
+            new_action.toString = function (to_string_info) {
                 var suffix = "";
                 var prefix = "";
                 var action_description = action_name; // default description is its name
@@ -703,7 +703,10 @@ window.TOONTALK.robot_action =
                     // is used for internal bookkeepping shouldn't be user visible
                     return "";
                 }
-                path_description = TT.path.toString(path, toString_info);
+                if (!to_string_info) {
+                    to_string_info = {};
+                }
+                path_description = TT.path.toString(path, to_string_info);
                 if (action_name === 'edit' || action_name === 'drop it on the text area of') {
                     suffix = " (" + additional_info.toString + ")";
                 } else if (action_name === 'train') {
@@ -715,16 +718,16 @@ window.TOONTALK.robot_action =
                     suffix = " to " + trained_action;
                     // indent actions trained 
                     prefix = "- ";
-                    if (toString_info && toString_info.robot_being_trained_description) {
-                        path_description = toString_info.robot_being_trained_description;
+                    if (to_string_info && to_string_info.robot_being_trained_description) {
+                        path_description = to_string_info.robot_being_trained_description;
                     }
                 } else if (action_name === 'start training') {
-                    if (toString_info) {
-                        toString_info.robot_being_trained_description = "it"; // him?
+                    if (to_string_info) {
+                        to_string_info.robot_being_trained_description = "it"; // him?
                     }
                 } else if (action_name === 'stop training') {
-                    path_description = toString_info.robot_being_trained_description;
-                    toString_info.robot_being_trained_description = undefined;
+                    path_description = to_string_info.robot_being_trained_description;
+                    to_string_info.robot_being_trained_description = undefined;
                 } 
                 if (['pick up', 'edit', 'remove', 'copy', 'change whether erased', 'pick up a copy of', 'drop it on the text area of'].indexOf(action_name) >= 0 && 
                     path_description.indexOf("hole of") >= 0) {
