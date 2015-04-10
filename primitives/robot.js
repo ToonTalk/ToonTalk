@@ -526,8 +526,13 @@ window.TOONTALK.robot = (function (TT) {
             // doesn't make sense and easy to do by mistake
             return;
         }
-        if (json.view.backside) {
+        if (json && json.view.backside) {
             // at least for now ignore picking up of the backside of a widget
+            return;
+        }
+        if (is_resource === 'data transfer') {
+            // delay this until drop so location is known
+            this.data_transfer = widget;
             return;
         }
         // current_action_name is used to distinguish between removing something from its container versus referring to it
@@ -555,6 +560,7 @@ window.TOONTALK.robot = (function (TT) {
         widget.last_action = this.current_action_name;
         this.current_action_name = undefined;
         this.set_thing_in_hand(widget);
+        return step;
     };
     
     robot.dropped_on = function (source_widget, target_widget_side, event) {
@@ -570,6 +576,12 @@ window.TOONTALK.robot = (function (TT) {
         if (this.get_parent_of_frontside().get_widget() === source_widget) {
             // robot dropped the backside of what it is working on -- so ignore this
             return;
+        }
+        if (this.data_transfer) {
+            // the drop is from outside this tab/window
+            this.picked_up(this.data_transfer, undefined, true);
+            this.data_transfer = undefined;
+            this.time_of_last_step -= 1000; // let a second elapse between receiving it and dropping it
         }
         this.current_action_name = "drop it on";
         path = TT.path.get_path_to(target_widget_side, this);

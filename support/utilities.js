@@ -320,6 +320,10 @@ window.TOONTALK.UTILITIES =
                 event.stopPropagation();
                 return;
             }
+            if (source_widget.robot_in_training()) {
+                // dropped something from a different window/tab so treat it (almost) like the robot picked it up
+                source_widget.robot_in_training().picked_up(source_widget, json_object, 'data transfer');
+            }
             source_is_backside = json_object.view.backside;
             if (source_is_backside) {
                 $source = $(source_widget.get_backside_element());
