@@ -438,10 +438,9 @@ window.TOONTALK.UTILITIES =
                        setTimeout(function () {
                            robot_in_training.picked_up(widget, undefined, true);
                            robot_in_training.time_of_last_step -= 1000; // let a second elapse between each step
-                           robot_in_training.dropped_on(widget, target_widget);
+                           robot_in_training.dropped_on(widget, target_widget.get_backside());
                            robot_in_training.time_of_last_step -= 1000;                           
-                       },
-                       100);
+                       });
                    }
                }.bind(this));
                return;
