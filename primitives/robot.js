@@ -563,7 +563,7 @@ window.TOONTALK.robot = (function (TT) {
         return step;
     };
     
-    robot.dropped_on = function (source_widget, target_widget_side, event) {
+    robot.dropped_on = function (source_widget, target_widget_side) {
         // need to support dropping on backside of a widget as well as which side of a box 
         var path, step, additional_info, $target_element,
             target_location, source_location,

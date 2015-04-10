@@ -387,7 +387,7 @@ window.TOONTALK.UTILITIES =
         var page_x = TT.UTILITIES.get_mouse_or_first_touch_event_attribute("pageX", event);
         var page_y = TT.UTILITIES.get_mouse_or_first_touch_event_attribute("pageY", event);
         var new_target, backside_widgets_json, shared_widgets, top_level_element, top_level_backside_position, backside_widgets, 
-            left, top, element_here, css;
+            left, top, element_here, css, robot_in_training;
         source_widget.set_visible(true);
         if ($target.is(".toontalk-backside")) {
             if (source_widget.is_top_level()) {
@@ -397,6 +397,7 @@ window.TOONTALK.UTILITIES =
                top_level_element = $target.get(0);
                // need to copy the array because the function in the forEach updates the list
                backside_widgets = source_widget.get_backside_widgets().slice();
+               robot_in_training = target_widget.robot_in_training();
                backside_widgets.forEach(function (backside_widget_side, index) {
                    var widget = backside_widget_side.get_widget();
                    var json_view, element_of_backside_widget, left_offset, top_offset, width, height, position;
@@ -431,6 +432,16 @@ window.TOONTALK.UTILITIES =
                    if (backside_widget_side.is_backside()) {
                        widget.backside_geometry = json_view.backside_geometry;
                        widget.apply_backside_geometry();
+                   }
+                   if (robot_in_training) {
+                       // wait for geometry to settle down before treating this as a series of pick up and drops
+                       setTimeout(function () {
+                           robot_in_training.picked_up(widget, undefined, true);
+                           robot_in_training.time_of_last_step -= 1000; // let a second elapse between each step
+                           robot_in_training.dropped_on(widget, target_widget);
+                           robot_in_training.time_of_last_step -= 1000;                           
+                       },
+                       100);
                    }
                }.bind(this));
                return;
