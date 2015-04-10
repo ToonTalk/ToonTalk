@@ -129,7 +129,8 @@ window.TOONTALK.scale = (function (TT) {
             var scale_width  = $(container_element).width();
             var scale_height = $(container_element).height();
             var update_hole = function (hole_element, hole, index) {
-                var content_frontside_element = hole.get_frontside_element(true);
+                var contents = hole.get_contents();
+                var content_frontside_element = (contents || hole).get_frontside_element(true);
                 var content_frontside_element;
                 var left = index*scale_width*0.5;
                 var top = 0;
