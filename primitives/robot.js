@@ -448,7 +448,7 @@ window.TOONTALK.robot = (function (TT) {
                 queue = TT.QUEUE;
             }
             this.get_body().reset_newly_created_widgets();
-            this.get_first_in_team().set_running(true);
+//             this.get_first_in_team().set_running(true);
             // TODO: determine if the queue: queue passed in is always the queue who enqueues it
             queue.enqueue({robot: this, context: context, top_level_context: top_level_context, queue: queue});
             return this.match_status;

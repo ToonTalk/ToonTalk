@@ -350,10 +350,10 @@ window.TOONTALK.widget = (function (TT) {
                                 return true; // continue to next child
                         });
                     }
-                    if (this.is_robot() && (!new_value || !this.get_running())) {
+                    if (this.is_robot()) {
                         // this is here to support clicking on the green flag of a robot that works on the top-level backside
                         // this way one can run just those robots on the backside one wants rather than use the backside's green flag
-                        if (new_value) {
+                        if (running) {
                             if (widget.get_parent_of_backside()) {
                                 this.set_stopped(false);
                                 this.run(widget.get_parent_of_backside().get_widget(), top_level_context);
