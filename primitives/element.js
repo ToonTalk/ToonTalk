@@ -83,7 +83,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         var widget_drag_started = new_element.drag_started;
         var attribute_widgets_in_backside_table = {}; // table relating attribute_name and widget in backside table
         var original_copies                     = {}; // table relating attribute_name and all the widget copies for that attribute
-        var html, original_width, original_height, current_width, current_height, pending_css, transform_css, on_update_display_handlers, $image_element;
+        var html, initialized, original_width, original_height, current_width, current_height, 
+            pending_css, transform_css, on_update_display_handlers, $image_element;
         if (!style_attributes) {
             style_attributes = [];
         }
@@ -387,12 +388,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             var frontside_element = this.get_frontside_element();
             var resize_handles = $(frontside_element).children(".ui-resizable-handle");
             var rendering, additional_classes;
-            if (frontside_element.children.length === resize_handles.length || resize_handles.length === 0) {
-                // the only children are resize handles so add the HTML
-//                 rendering = document.createElement('div');
-//                 $(rendering).addClass("toontalk-element-container");
+            if (!initialized) {
                 frontside_element.innerHTML = this.get_HTML();
-//                 frontside_element.appendChild(rendering);
                 this.set_image_element(rendering, frontside_element);
                 $(frontside_element).addClass("toontalk-element-frontside");
                 if (frontside_element.innerHTML.substring(0, 1) !== '<') {
@@ -403,6 +400,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     }
                     $(frontside_element).addClass("ui-widget toontalk-plain-text-element");
                 }
+                initialized = true;
             }
         };
         new_element.compute_original_dimensions = function (recompute) {
