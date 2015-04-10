@@ -272,7 +272,7 @@ window.TOONTALK.widget = (function (TT) {
                         } else {
                             backside_widgets.some(function (widget_side) {
                                                       var widget = widget_side.get_widget();
-                                                      if (widget.get_running() || (widget.is_robot() && widget.get_running())) {
+                                                      if (widget.get_running()) {
                                                           some_backside_widgets_running = true;
                                                           return true;
                                                       }
@@ -283,8 +283,15 @@ window.TOONTALK.widget = (function (TT) {
                     }
                     return some_backside_widgets_running;
                 };
+            }
+            if (!widget.is_ok_to_run) {
+                // perhaps this should have a better name
+                // it really whether it has been "told" to run whether or not it could
                 widget.is_ok_to_run = function () {
                     return ok_to_run;
+                };
+                widget.set_ok_to_run = function (new_value) {
+                    ok_to_run = new_value;
                 };
             }
             if (!widget.set_running) {
@@ -292,10 +299,10 @@ window.TOONTALK.widget = (function (TT) {
                     var unchanged_value = (running === new_value);
                     var backside_widgets, backside_widget, backside_element;
                     ok_to_run = new_value;
-                    if (unchanged_value && running) {
-                        // even if not running some part might be running and should be turned off
-                        return;
-                    }
+//                     if (unchanged_value && running) {
+//                         // even if not running some part might be running and should be turned off
+//                         return;
+//                     }
                     backside_widgets = this.get_backside_widgets();
                     running = new_value;
                     if (this.get_backside()) {
@@ -317,6 +324,7 @@ window.TOONTALK.widget = (function (TT) {
                                 if (running) {
                                     backside_widget.set_stopped(false);
                                     backside_widget.run(widget, top_level_context);
+                                    backside_widget.set_ok_to_run(true);
                                 } else {
                                     backside_widget.set_stopped(true);
                                     backside_widget.set_running(false);

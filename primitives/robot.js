@@ -122,9 +122,9 @@ window.TOONTALK.robot = (function (TT) {
             return body;
         };
         new_robot.get_running = function () {
-            return in_run_queue;
+            return in_run_queue || this.is_ok_to_run();
         };
-        new_robot.get_in_run_queue = function () {
+        new_robot.in_run_queue = function () {
             return in_run_queue;
         };
         new_robot.set_in_run_queue = function (new_value) {
@@ -387,8 +387,8 @@ window.TOONTALK.robot = (function (TT) {
     robot.run = function (context, top_level_context, queue) {
         var frontside_condition_widget = this.get_frontside_conditions();
         var backside_conditions, backside_widgets, condition_frontside_element, to_run_when_non_empty, next_robot_match_status, clear_all_mismatch_displays;
-        if (this.being_trained || !frontside_condition_widget || this.get_first_in_team().get_running()) {
-            // should not run if being trained, has no conditions (TODO: really?), or is already running
+        if (this.being_trained || this.in_run_queue()) {
+            // should not run if being trained or already scheduled to run
             return this;
         }
         clear_all_mismatch_displays = function (widget) {

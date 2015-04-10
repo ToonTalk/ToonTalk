@@ -375,16 +375,8 @@ window.TOONTALK.robot_action =
     var click_and_open_backside = function (widget, robot, continuation, additional_info) {
         // assumes widget's backside isn't being displayed
         var open_backside_continuation = function () {
-            widget.open_backside(function () {
-                                     continuation();
-                                     // restore things at cycle end
-                                     robot.add_body_finished_listener(function () {
-                                         if (widget.get_backside()) {
-                                             widget.get_backside().hide_backside();
-                                         }
-                                     });
-                                 });
-
+            widget.open_backside(continuation);
+            close_backside_when_finished(widget, robot);
         };
         move_robot_animation(widget, robot, open_backside_continuation, additional_info);
     };
@@ -425,8 +417,9 @@ window.TOONTALK.robot_action =
             robot.animate_to_element(button_element, new_continuation, .25, 0, 0, true);
         }
         var backside;
-        if (!button_visible && widget.open_backside) {
+        if (!button_visible && widget.open_backside && robot.animate_consequences_of_actions()) {
             widget.open_backside(animation_continuation);
+            close_backside_when_finished(widget, robot);
         } else {
             animation_continuation();
         }
@@ -548,15 +541,17 @@ window.TOONTALK.robot_action =
     };
     var open_backside_animation = function (widget, context, top_level_context, robot, continuation) {
         widget.open_backside(function () {
-                                 // restore things at cycle end in case the robot wasn't trained to close backsides
-                                 robot.add_body_finished_listener(function () {
-                                     if (widget.get_backside()) {
-                                         widget.get_backside().hide_backside();
-                                     }
-                                 });
                                  continuation();
                                  robot.run_next_step();
                              });
+        close_backside_when_finished(widget, robot);
+    };
+    var close_backside_when_finished = function (widget, robot) {
+        // restore things at cycle end in case the robot wasn't trained to close backsides
+        robot.add_body_finished_listener(
+            function () {
+                widget.get_backside().hide_backside();
+            });
     };
     var close_backside = function (widget, context, top_level_context, robot, continuation) {
 //         widget.hide_backside();

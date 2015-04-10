@@ -25,7 +25,7 @@ window.TOONTALK.queue =
 //                 console.error("The same robot is being queued twice.\nRobot is: " + robot_context_queue.robot.debug_id);
 //                 return;
 //             }
-            if (robot_context_queue.robot.get_in_run_queue()) {
+            if (robot_context_queue.robot.in_run_queue()) {
                 // already queued 
                 return;
             }
