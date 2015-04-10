@@ -1452,6 +1452,7 @@ body {
 .toontalk-top-level-backside {
     width: 1000px;
 	height: 300px;
+    /* background-blend-mode: normal; */
     background-image: url("images/floor-tile.png");
     background-repeat: round;
     position: relative;
@@ -2202,6 +2203,8 @@ background-image: url("images/dusty-morph.png");
 /* 	to have room for green flag and stop sign */
 	padding-top: 25px;
 }
+/*  following partially works when before toontalk-empty-nest in class list but
+    loses the texture of the next */
 /* .toontalk-empty-nest-overlay {
 	background-image: url("images/empty-nest-mask.png");
 	width: 116px;
