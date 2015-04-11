@@ -496,10 +496,13 @@ window.TOONTALK.widget = (function (TT) {
                     } else if (!backside || !backside.get_element() || !$(backside.get_element()).is(":visible")) {
                         if (this.can_run && this.can_run()) {
                             if (this.get_running()) {
-                                title = "Robots on my back are running (or waiting to run).\nTo see them click the stop sign and then click on me.";
+                                title = "Robots on my back are running (or waiting to run).\nTo see them click the stop sign " +
+                                        TT.UTILITIES.encode_HTML_for_title("<span class='toontalk-stop-sign-icon'></span>") +
+                                        " and then click on me.";
                             } else {
                                 title = "There are robots on my back." + 
-                                        "\nTo see them in action click me to open my back side and then click the green flag.";
+                                        "\nTo see them in action click me to open my back side and then click the green flag " +
+                                        TT.UTILITIES.encode_HTML_for_title("<span class='toontalk-green-flag-icon'></span>") + ".";
                             }
                         } else {
                             title = "Click to see my back side.";

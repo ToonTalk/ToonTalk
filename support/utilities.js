@@ -1645,9 +1645,33 @@ window.TOONTALK.UTILITIES =
                           var text_length = ui.tooltip.get(0).textContent.length;
                           var default_capacity = 100;
                           var tooltip = ui.tooltip.get(0);
+                          var decode = function (s) {
+                              var decoded = "";
+                              var cursor = 0;
+                              var token = "decodeURIComponent";
+                              var encoding_token_start = s.indexOf(token);
+                              var encoding_start, encoding_end;
+                              if (encoding_token_start < 0) {
+                                  // no need to call substring if there are encodings
+                                  return s;
+                              }
+                              while (encoding_token_start >= 0) {
+                                  encoding_start = encoding_token_start+token.length;
+                                  encoding_end = s.indexOf(token,encoding_start);
+                                  if (encoding_end < 0) {
+                                      TT.UTILITIES.report_internal_error("Expected title to have an even number of occurrences of " + token);
+                                      return s;
+                                  }
+                                  decoded += s.substring(cursor, encoding_token_start) + decodeURIComponent(s.substring(encoding_start, encoding_end));
+                                  cursor = encoding_end+token.length;
+                                  encoding_token_start = s.indexOf(token, cursor);
+                              }
+                              decoded += s.substring(cursor);
+                              return decoded;
+                          }
                           var new_width, position;
                           // replace all new lines with <br> breaks
-                          tooltip.innerHTML = ui.tooltip.get(0).textContent.replace(/(\r\n|\n|\r)/g, "<br>");
+                          tooltip.innerHTML = decode(ui.tooltip.get(0).textContent.replace(/(\r\n|\n|\r)/g, "<br>"));
                           // width is 340 by default but if more than fits then make wider
                           if (text_length > default_capacity) {
                               new_width = Math.min(800, maximum_width_if_moved || $(window).width()-100);
@@ -1684,6 +1708,10 @@ window.TOONTALK.UTILITIES =
                close: function () {
                           element_displaying_tool = undefined;
                }});
+        },
+
+        encode_HTML_for_title: function (html) {
+            return encodeURIComponent("decodeURIComponent" + html + "decodeURIComponent"); 
         },
         
         add_one_shot_event_handler: function (element, event_name, maximum_wait, handler) {
