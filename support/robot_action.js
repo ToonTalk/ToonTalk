@@ -171,9 +171,9 @@ window.TOONTALK.robot_action =
     var move_robot_animation = function (side, robot, continuation, additional_info) {
         var thing_in_hand = robot.get_thing_in_hand();
         var robot_frontside_element = robot.get_frontside_element();
-        var widget_element = side.get_element();
-        var widget_width  = $(widget_element).width();
-        var widget_height = $(widget_element).height();
+        var widget_element  = side.get_element();
+        var widget_width    = $(widget_element).width();
+        var widget_height   = $(widget_element).height();
         var left_offset,
             top_offset,
             animation_left_offset,
@@ -203,7 +203,7 @@ window.TOONTALK.robot_action =
             }
             if (thing_in_hand && 
                 robot.original_animation_left_offset.indexOf(animation_left_offset) >= 0 && 
-                robot.original_animation_top_offset.indexOf(animation_top_offset) >= 0) {
+                robot.original_animation_top_offset .indexOf(animation_top_offset)  >= 0) {
                 // robot has already dropped something here
                 animation_left_offset = robot.animation_left_offset+robot.last_thing_in_hand_width;
                 animation_top_offset  = robot.animation_top_offset;
@@ -221,7 +221,7 @@ window.TOONTALK.robot_action =
                 robot.max_thing_in_hand_height = Math.max(robot.max_thing_in_hand_height, $(thing_in_hand_element).height());
             } else {
                 robot.original_animation_left_offset.push(animation_left_offset);
-                robot.original_animation_top_offset.push(animation_top_offset);
+                robot.original_animation_top_offset .push(animation_top_offset);
                 robot.last_thing_in_hand_width = $(thing_in_hand_element).width();
                 robot.max_thing_in_hand_height = $(thing_in_hand_element).height();
             }
