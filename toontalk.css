@@ -2776,7 +2776,9 @@ background-image: url("images/dusty-morph.png");
    from { background-position:    0px; }
      to { background-position: -1010px; }
 }
-
+.toontalk-ghost_robot {
+	opacity: .3;
+}
 .toontalk-robot-waiting {
     width:  103px;
     height: 139px;
