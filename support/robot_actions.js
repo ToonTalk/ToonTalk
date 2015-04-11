@@ -145,7 +145,7 @@ window.TOONTALK.actions =
                     // robot was added to top-level backside so z-index will work as desired (robot on top of everything)
                     // the following restores it
                     if (robot_still_visible) {
-                        saved_parent_element.appendChild(frontside_element);          
+                        saved_parent_element.appendChild(frontside_element);
                         robot.set_animating(false);
                     }
                     if (robot.get_run_once()) {
@@ -159,6 +159,7 @@ window.TOONTALK.actions =
                 if (robot_still_visible) {
                     TT.UTILITIES.animate_to_absolute_position(frontside_element, robot_home, continuation);
                 } else {
+                    robot.set_animating(false);
                     continuation();
                 }
             };
