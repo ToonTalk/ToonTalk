@@ -495,8 +495,12 @@ window.TOONTALK.widget = (function (TT) {
                         }   
                     } else if (!backside || !backside.get_element() || !$(backside.get_element()).is(":visible")) {
                         if (this.can_run && this.can_run()) {
-                            title = "There are robots are on my back." + 
-                                    "\nTo see them in action click to open my back side and then click the green flag.";
+                            if (this.get_running()) {
+                                title = "Robots on my back are running (or waiting to run).\nTo see them click the stop sign and then click on me.";
+                            } else {
+                                title = "There are robots on my back." + 
+                                        "\nTo see them in action click me to open my back side and then click the green flag.";
+                            }
                         } else {
                             title = "Click to see my back side.";
                         }

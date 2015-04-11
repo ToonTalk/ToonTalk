@@ -275,7 +275,9 @@ window.TOONTALK.robot = (function (TT) {
             this.update_title();
         };
         new_robot.can_run = function () {
-            // can run if just runs on top-level backside 
+            // can run if just runs on top-level backside
+            // perhaps this should check the match_status since if unable to match can't run
+            // but some callers mean capable of running in general not just now
             return (this.get_frontside_conditions() && this.get_frontside_conditions().is_top_level()) ||
                     TT.widget.can_run.call(this);
         };
