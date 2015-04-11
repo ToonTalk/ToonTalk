@@ -740,6 +740,8 @@ window.TOONTALK.backside =
             var parent_of_backside = widget.get_parent_of_backside();
             var container_widget;
             TT.UTILITIES.remove_highlight();
+            record_backside_widget_positions();
+            widget.backside_geometry = this.get_backside_dimensions();
             if (parent_of_backside) {
                 if (parent_of_backside.is_backside()) {
                     widget.set_parent_of_backside(undefined, true);
@@ -751,8 +753,6 @@ window.TOONTALK.backside =
                     widget.forget_backside();
                 }
             }
-            record_backside_widget_positions();
-            widget.backside_geometry = this.get_backside_dimensions();
             animate_disappearance($backside_element)
             if (!$(frontside_element).is(":visible")) {
                 if (backside_position) {
