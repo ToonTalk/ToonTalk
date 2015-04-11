@@ -1910,6 +1910,15 @@ table.toontalk-documentation-table {
 	position: absolute;
 	top:   -25px;
 }
+.toontalk-stop-sign-icon {
+	content: url("images/stop-sign-active.png");
+}
+.toontalk-green-flag-icon {
+	content: url("images/green-flag-active.png");
+}
+.toontalk-settings-icon {
+	content: url("images/settings-gear.png");
+}
 .toontalk-settings-button {
 	background-image: url("images/settings-gear.png");
 	background-repeat: no-repeat;
@@ -2217,13 +2226,54 @@ background-image: url("images/dusty-morph.png");
 	background-repeat: no-repeat;
 	background-size: contain;
 } */
+.toontalk-empty-nest-red {
+	background-image: url("images/empty-nest-red-transparent.png"), url("images/empty-nest.png");
+	background-repeat: no-repeat;
+	background-size: contain;
+	width: 116px;
+	height: 98px;
+}
+.toontalk-empty-nest-green {
+	background-image: url("images/empty-nest-green-transparent.png"), url("images/empty-nest.png");
+	background-repeat: no-repeat;
+	background-size: contain;
+	width: 116px;
+	height: 98px;
+}
+.toontalk-empty-nest-blue {
+	background-image: url("images/empty-nest-blue-transparent.png"), url("images/empty-nest.png");
+	background-repeat: no-repeat;
+	background-size: contain;
+	width: 116px;
+	height: 98px;
+}
+.toontalk-empty-nest-cyan {
+	background-image: url("images/empty-nest-cyan-transparent.png"), url("images/empty-nest.png");
+    background-repeat: no-repeat;
+	background-size: contain;
+	width: 116px;
+	height: 98px;
+}
+.toontalk-empty-nest-yellow {
+	background-image: url("images/empty-nest-yellow-transparent.png"), url("images/empty-nest.png");
+	background-repeat: no-repeat;
+	background-size: contain;
+	width: 116px;
+	height: 98px;
+}
+.toontalk-empty-nest-magenta {
+	background-image: url("images/empty-nest-magenta-transparent.png"), url("images/empty-nest.png");
+	background-repeat: no-repeat;
+	background-size: contain;
+	width: 116px;
+	height: 98px;
+}
 .toontalk-empty-nest {
 /* 	Perhaps should be renamed since it really for eggless nest but might have stuff on top */
 /* 	tried 	content: url("images/empty-nest.png");  but couldn't drag it */
 	background-image: url("images/empty-nest.png");
 	background-repeat: no-repeat;
 	background-size: contain;
-	/* margin-top: 43px; */
 	width: 116px;
 	height: 98px;
 /* 	display just the last frame */
@@ -2334,11 +2384,52 @@ background-image: url("images/dusty-morph.png");
      to { background-position: -615px; }
 }
 .toontalk-bird-static {
-    width:  70px;
-    height: 102px;
     background-image: url("images/bird-static.png");
     background-repeat: no-repeat;
 	background-size: contain;
+	width:  70px;
+    height: 102px;
+}
+.toontalk-bird-static-red {
+    background-image: url("images/bird-static-red-transparent.png"), url("images/bird-static.png");
+    background-repeat: no-repeat;
+	background-size: contain;
+	width:  70px;
+    height: 102px;
+}.toontalk-bird-static-green {
+    background-image: url("images/bird-static-green-transparent.png"), url("images/bird-static.png");
+    background-repeat: no-repeat;
+	background-size: contain;
+	width:  70px;
+    height: 102px;
+}
+.toontalk-bird-static-blue {
+    background-image: url("images/bird-static-blue-transparent.png"), url("images/bird-static.png");
+    background-repeat: no-repeat;
+	background-size: contain;
+	width:  70px;
+    height: 102px;
+}
+.toontalk-bird-static-cyan {
+    background-image: url("images/bird-static-cyan-transparent.png"), url("images/bird-static.png");
+    background-repeat: no-repeat;
+	background-size: contain;
+	width:  70px;
+    height: 102px;
+}
+.toontalk-bird-static-magenta {
+    background-image: url("images/bird-static-magenta-transparent.png"), url("images/bird-static.png");
+    background-repeat: no-repeat;
+	background-size: contain;
+	width:  70px;
+    height: 102px;
+}
+.toontalk-bird-static-yellow {
+    background-image: url("images/bird-static-yellow-transparent.png"), url("images/bird-static.png");
+    background-repeat: no-repeat;
+	background-size: contain;
+	width:  70px;
+    height: 102px;
 }
 
 /* Couldn't get the following to work -- tried to define new bird-morph-from-static keyframes but didn't help */
