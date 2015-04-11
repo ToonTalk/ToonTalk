@@ -1022,8 +1022,12 @@ window.TOONTALK.robot = (function (TT) {
         }
         if (json.backside_conditions) {
             backside_conditions = {};
-            TT.UTILITIES.available_types.forEach(function (type) {
-                    backside_conditions[type] = TT.UTILITIES.create_from_json(json.backside_conditions[type], additional_info);
+            TT.UTILITIES.available_types.forEach(
+                function (type) {
+                    var condition = TT.UTILITIES.create_from_json(json.backside_conditions[type], additional_info);
+                    if (condition) {
+                        backside_conditions[type] = condition;
+                    }
             });
         }
         return TT.robot.create(TT.UTILITIES.create_from_json(json.frontside_conditions || json.bubble, additional_info),
