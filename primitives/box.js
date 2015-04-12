@@ -745,11 +745,11 @@ window.TOONTALK.box_backside =
             var backside = TT.backside.create(box);
             var size_area_drop_handler = 
                 function (event) {
-                    var dropped = TT.UTILITIES.input_area_drop_handler(event, box.receive_size_from_dropped.bind(box));
+                    var dropped = TT.UTILITIES.input_area_drop_handler(event, box.receive_size_from_dropped.bind(box), box);
                     if (dropped && box.robot_in_training()) {
                         box.robot_in_training().dropped_on_text_area(dropped, box, {area_selector: ".toontalk-box-size-input",
-                                                                                 setter: 'receive_size_from_dropped',
-                                                                                 toString: "for the box's size"});
+                                                                                    setter: 'receive_size_from_dropped',
+                                                                                    toString: "for the box's size"});
                     }
                 };
             var size_input = TT.UTILITIES.create_text_input(box.get_size().toString(), 'toontalk-box-size-input', "Number of holes", "Type here to edit the number of holes.", undefined, "number", size_area_drop_handler);
@@ -759,9 +759,9 @@ window.TOONTALK.box_backside =
                 var new_size = parseInt(size_input.button.value.trim(), 10);
                 if (box.set_size(new_size, true) && box.robot_in_training()) {
                     box.robot_in_training().edited(box, {setter_name: "set_size",
-                                                      argument_1: new_size,
-                                                      toString: "by changing the number of holes to " + new_size + " of the box",
-                                                      button_selector: ".toontalk-box-size-input"});
+                                                         argument_1: new_size,
+                                                         toString: "by changing the number of holes to " + new_size + " of the box",
+                                                         button_selector: ".toontalk-box-size-input"});
                 }
             };
             var update_orientation = function () {

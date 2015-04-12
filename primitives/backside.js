@@ -589,7 +589,7 @@ window.TOONTALK.backside =
             var type_name = widget.get_type_name();
             var description_drop_handler = 
                 function (event) {
-                    var dropped = TT.UTILITIES.input_area_drop_handler(event, widget.receive_description_from_dropped.bind(widget));
+                    var dropped = TT.UTILITIES.input_area_drop_handler(event, widget.receive_description_from_dropped.bind(widget), widget);
                     if (dropped && widget.robot_in_training()) {
                         widget.robot_in_training().dropped_on_text_area(dropped, widget, {area_selector: ".toontalk-description-input",
                                                                                           setter: 'receive_description_from_dropped',
@@ -642,7 +642,7 @@ window.TOONTALK.backside =
             if (widget.set_name) {
                 name_drop_handler = 
                         function (event) {
-                            var dropped = TT.UTILITIES.input_area_drop_handler(event, widget.receive_name_from_dropped.bind(widget));
+                            var dropped = TT.UTILITIES.input_area_drop_handler(event, widget.receive_name_from_dropped.bind(widget), widget);
                             if (dropped && widget.robot_in_training()) {
                                 widget.robot_in_training().dropped_on_text_area(dropped, widget, {area_selector: ".toontalk-name-input",
                                                                                                   setter: 'receive_name_from_dropped',

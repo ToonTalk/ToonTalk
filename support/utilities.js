@@ -2014,20 +2014,21 @@ window.TOONTALK.UTILITIES =
                     button: text_area};
         },
 
-        input_area_drop_handler: function (event, setter) {
+        input_area_drop_handler: function (event, setter, receiver) {
             var dropped, target_widget, new_text;
             event.preventDefault();
             dropped = get_dropped_widget(event);
-            if (dropped) {
+            // ignore when dropped === receiver since that is dropping backside on one of its drop zones
+            if (dropped && dropped !== receiver) {
                 new_text = setter(dropped, event);
                 if (new_text) {
                     $(event.currentTarget).trigger('change');
                     event.currentTarget.value = new_text;
+                    // at least for robot actions it is clear that the dropped widget should be removed
+                    dropped.remove();
+                    event.stopPropagation();
                 }
-                // at least for robot actions it is clear that the dropped widget should be removed
-                dropped.remove();
             }
-            event.stopPropagation();
             // returns the dropped widget only if it generated new text
             return typeof new_text === 'string' && dropped;
         },
