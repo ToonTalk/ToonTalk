@@ -642,7 +642,7 @@ window.TOONTALK.backside =
             if (widget.set_name) {
                 name_drop_handler = 
                         function (event) {
-                            var dropped = TT.UTILITIES.input_area_drop_handler(event, widget.receive_name_from_dropped.bind(widget), widget);
+                            var dropped = widget.receive_name_from_dropped && TT.UTILITIES.input_area_drop_handler(event, widget.receive_name_from_dropped.bind(widget), widget);
                             if (dropped && widget.robot_in_training()) {
                                 widget.robot_in_training().dropped_on_text_area(dropped, widget, {area_selector: ".toontalk-name-input",
                                                                                                   setter: 'receive_name_from_dropped',
@@ -651,8 +651,9 @@ window.TOONTALK.backside =
                         };
                 name_text_input = TT.UTILITIES.create_text_input(widget.get_name(), 
                                                                  "toontalk-name-input", 
-                                                                 "My name is ",
-                                                                 "Edit the name of this " + type_name + ". There is not much room so keep it short.",
+                                                                 widget.get_name_input_label ? widget.get_name_input_label() : "My name is ",
+                                                                 widget.get_name_input_title ? widget.get_name_input_title() : 
+                                                                                               "Edit the name of this " + type_name + ". There is not much room so keep it short.",
                                                                  undefined,
                                                                  'string',
                                                                  name_drop_handler);

@@ -11,7 +11,7 @@ window.TOONTALK.box = (function (TT) {
 
     var box = Object.create(TT.widget);
 
-    box.create = function (size, horizontal, initial_contents, description) {
+    box.create = function (size, horizontal, initial_contents, description, labels) {
         var new_box = Object.create(box);
         var holes = [];
         var i;
@@ -132,10 +132,23 @@ window.TOONTALK.box = (function (TT) {
                     return content.copy(parameters);
                 }
             );
-            copy = box.create(size, horizontal, holes_copied, this.get_description());
+            copy = box.create(size, horizontal, holes_copied, this.get_description(), this.get_name());
             return this.add_to_copy(copy, parameters);
         };
-        new_box = new_box.add_standard_widget_functionality(new_box);
+        new_box.generate_name = function () {
+            // are the names (or labels) of each hole
+            // each is separated by a ;
+            var name = "";
+            var size = this.get_size();
+            while (size > 0) {
+                name += ";";
+                size--;
+            }
+            return name;
+        }
+        new_box.add_standard_widget_functionality(new_box);
+        new_box.has_name(new_box);
+        new_box.set_name(labels);
         for (i = 0; i < size; i++) {
             holes[i] = TT.box_hole.create(i);
             holes[i].set_parent_of_frontside(new_box);
@@ -319,7 +332,8 @@ window.TOONTALK.box = (function (TT) {
         return {type: "box",
                 size: size,
                 contents: contents_json,
-                horizontal: this.get_horizontal()
+                horizontal: this.get_horizontal(),
+                name: this.get_name()
                };
     };
 
@@ -335,7 +349,7 @@ window.TOONTALK.box = (function (TT) {
     };
     
     TT.creators_from_json['box'] = function (json, additional_info) {
-        return box.create(json.size, json.horizontal, TT.UTILITIES.create_array_from_json(json.contents, additional_info), json.description);
+        return box.create(json.size, json.horizontal, TT.UTILITIES.create_array_from_json(json.contents, additional_info), json.description, json.name);
     };
     
     box.update_display = function () {
@@ -386,7 +400,10 @@ window.TOONTALK.box = (function (TT) {
             $(hole_element).css({left:   left,
                                  top:    top,
                                  width:  new_width,
-                                 height: new_height});                                          
+                                 height: new_height});
+            if (hole_labels[index]) {
+                hole_element.setAttribute("toontalk_name", hole_labels[index]);
+            }                                         
             if (!TT.UTILITIES.has_animating_image(content_frontside_element)) {
                 // explicit size interferes with animation
                 if (index > 0) {
@@ -455,7 +472,9 @@ window.TOONTALK.box = (function (TT) {
                 hole_height = box_height/size;
             }
         };
-        var i, hole, hole_element, box_left, box_width, hole_width, first_hole_width, box_height, hole_height, content_frontside_element, border_class, border_size, backside;
+        var hole_labels = this.get_name().split(";");
+        var i, hole, hole_element, box_left, box_width, hole_width, first_hole_width, box_height, hole_height,
+            content_frontside_element, border_class, border_size, backside;
         if (TT.logging && TT.logging.indexOf('display') >= 0) {
             console.log("Updating display of " + this.to_debug_string());
         }
@@ -504,6 +523,14 @@ window.TOONTALK.box = (function (TT) {
 
     box.get_default_height = function () {
         return 68;
+    };
+
+    box.get_name_input_label = function () {
+        return "The labels of my holes are";
+    };
+
+    box.get_name_input_title = function () {
+        return "Each hole label is followed by a ';'. Yoou may enter as many hole labels as there are holes.";
     };
     
     box.update_hole_display = function (index, new_content) {

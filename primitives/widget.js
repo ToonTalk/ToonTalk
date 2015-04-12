@@ -42,6 +42,7 @@ window.TOONTALK.widget = (function (TT) {
             var return_false = function () {
                 return false;
             };
+            // TODO: simplify this since widget and this should be the same -- always??
             var top_level_widget;
             this.add_sides_functionality(widget);
             this.runnable(widget);

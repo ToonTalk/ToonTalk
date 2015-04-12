@@ -1597,6 +1597,19 @@ body {
 	height: 100%;
     background-image: url("images/hole-tile-quarter-size.png");
     background-repeat: round;
+    text-align: center;
+}
+.toontalk-box-hole::after {
+ 	content: attr(toontalk_name);
+ 	position: relative;	
+    top: 90%;
+ 	color: rgb(246, 237, 237);
+ 	background-color: rgb(67, 67, 211);
+    font-size: 11pt;
+	border-radius: 5px;
+/* 	padding looked nice but was there even when there was no toontalk_name */
+ 	/* padding-left: 4px; */	
+ 	/* padding-right: 4px; */
 }
 .toontalk-box-hole > .toontalk-side {
 	width:  100%;
@@ -2217,7 +2230,6 @@ background-image: url("images/dusty-morph.png");
  	content: attr(toontalk_name);
  	position: relative;	
     top: 30%;
-    
  	color: white;
     font-size: 18pt;
 }
