@@ -1258,8 +1258,24 @@ window.TOONTALK.nest = (function (TT) {
         new_nest.get_name = function () {
             return name;
         };
-        new_nest.set_name = function (new_value) {
+        new_nest.set_name = function (new_value, update_display) {
+            var old_name;
+            if (name === new_value) {
+                return false;
+            }
+            old_name = name;
             name = new_value;
+            if (update_display) {
+                this.rerender();
+                // also re-render any birds
+                $(".toontalk-bird").each(function () {
+                    if (this.getAttribute('toontalk_name') === old_name) {
+                        // if some happen to have the same name (e.g. are in different backsides)
+                        // then just some time wasted re-rendering them
+                        TT.UTILITIES.widget_of_element(this).rerender();
+                    }
+                });
+            }
         };   
         new_nest.compare_with_box   = new_nest.compare_with_number;
         new_nest.compare_with_scale = new_nest.compare_with_number;
