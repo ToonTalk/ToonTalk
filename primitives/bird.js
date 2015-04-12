@@ -518,6 +518,7 @@ window.TOONTALK.bird = (function (TT) {
             if (nest && nest.get_class_name_with_color) {
                 return nest.get_class_name_with_color(base_class_name);
             }
+            return base_class_name;
         }; 
         new_bird.get_name = function () {
             return nest.get_name();

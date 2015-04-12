@@ -198,7 +198,7 @@ window.TOONTALK.sensor = (function (TT) {
                                       json.description, 
                                       previous_contents,
                                       false,
-                                      undefined,
+                                      undefined, // defined below
                                       json.name); // will be (re)set below
                                       // following postponed because of circularity of sensors and their widgets
         if (json.sensor_of) {
