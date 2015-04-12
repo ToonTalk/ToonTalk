@@ -714,7 +714,7 @@ window.TOONTALK.widget = (function (TT) {
             }
             if (!widget.set_name) {
                 widget.set_name = function (new_value, update_display) {
-                    if (name === new_value) {
+                    if (name === new_value || typeof new_value !== 'string') {
                         return false;
                     }
                     name = new_value;

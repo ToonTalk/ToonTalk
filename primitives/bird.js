@@ -902,7 +902,7 @@ window.TOONTALK.nest = (function (TT) {
                     guid: guid,
                     original_nest: original_nest && TT.UTILITIES.get_json(original_nest, json_history),
                     serial_number: serial_number,
-                    name: name
+                    name: this.get_name()
 //                     non_empty_listeners: non_empty_listeners_json
                     // nest_copies are generated as those nests are created
 //                  nest_copies: nest_copies && TT.UTILITIES.get_json_of_array(nest_copies, json_history)
@@ -916,11 +916,11 @@ window.TOONTALK.nest = (function (TT) {
                 if (contents.length > 0) {
                     return contents[0].get_widget().copy(parameters);
                 }
-                return TT.nest.create(this.get_description(), [], "in a robot's condition", undefined, serial_number, name);
+                return TT.nest.create(this.get_description(), [], "in a robot's condition", undefined, serial_number, this.get_name());
             }
             contents_copy = TT.UTILITIES.copy_widget_sides(contents, parameters);
             if (!parameters) {
-                copy = TT.nest.create(this.get_description(), contents_copy, guid, (original_nest || this), serial_number, name);
+                copy = TT.nest.create(this.get_description(), contents_copy, guid, (original_nest || this), serial_number, this.get_name());
             } else if (parameters.fresh_copy) {
                 // e.g. could be a resource that shouldn't be linked to its copy
                 // don't give the copy a GUID if master doesn't have one (e.g. still has egg in nest)
@@ -944,7 +944,7 @@ window.TOONTALK.nest = (function (TT) {
                         bird_set_nest.call(bird, copy);
                     });
                 } else {
-                    copy = TT.nest.create(this.get_description(), contents_copy, guid, new_original_nest, serial_number, name);
+                    copy = TT.nest.create(this.get_description(), contents_copy, guid, new_original_nest, serial_number, this.get_name());
                 }
                 if (!parameters.nests_copied) {
                     parameters.nests_copied = {};
@@ -1279,7 +1279,8 @@ window.TOONTALK.nest = (function (TT) {
                     }
                 });
             }
-        }; 
+        };
+        new_nest.set_name(name);
         new_nest.compare_with_box   = new_nest.compare_with_number;
         new_nest.compare_with_scale = new_nest.compare_with_number;
         new_nest.add_standard_widget_functionality(new_nest);

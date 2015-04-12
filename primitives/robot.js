@@ -347,6 +347,7 @@ window.TOONTALK.robot = (function (TT) {
         }
         new_robot = new_robot.add_standard_widget_functionality(new_robot);
         new_robot.has_name(new_robot);
+        new_robot.set_name(name);
         new_robot.set_description(description);
         if (TT.debugging) {
             new_robot.debug_id = TT.UTILITIES.generate_unique_id();
