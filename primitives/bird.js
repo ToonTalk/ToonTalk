@@ -632,12 +632,7 @@ window.TOONTALK.nest = (function (TT) {
     };
     var contents_height = function (height) {
         return height*TT.nest.CONTENTS_HEIGHT_FACTOR;
-    };  
-
-    // Nests are uniquely identified by their guid
-    // the following should really be a weak table so to not interfere with garbage collection of nests
-    // used only when loading JSON
-    var guid_to_nest_table = {};
+    };
 
     var next_color = function () {
                          var color = ["", "-magenta", "-yellow"][color_index%3];
@@ -1426,7 +1421,7 @@ window.TOONTALK.nest = (function (TT) {
     
     TT.creators_from_json["nest"] = function (json, additional_info) {
         // don't share the nest if this is a copy
-        var nest = !json.original_nest && json.guid && guid_to_nest_table[json.guid];
+        var nest = !json.original_nest && json.guid && additional_info && additional_info.guid_to_nest_table && additional_info.guid_to_nest_table[json.guid];
         if (!nest) {
             nest = TT.nest.create(json.description, 
                                   TT.UTILITIES.create_array_from_json(json.contents, additional_info), 
@@ -1434,7 +1429,7 @@ window.TOONTALK.nest = (function (TT) {
                                   json.original_nest && TT.UTILITIES.create_from_json(json.original_nest, additional_info),
                                   json.class_color,
                                   json.name);
-            guid_to_nest_table[json.guid] = nest;                 
+            additional_info.guid_to_nest_table[json.guid] = nest;                 
         }
         return nest;
     };

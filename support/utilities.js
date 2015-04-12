@@ -734,6 +734,10 @@ window.TOONTALK.UTILITIES =
             if (!additional_info) {
                 additional_info = {};
             }
+            if (!additional_info.guid_to_nest_table) {
+                // Nests are uniquely identified by their guid
+                additional_info.guid_to_nest_table = {};
+            }
             if (json.shared_widgets) {
                 additional_info.json_of_shared_widgets = json.shared_widgets;
                 additional_info.shared_widgets = [];
