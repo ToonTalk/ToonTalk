@@ -1371,12 +1371,12 @@ body {
 	height: 110px;
 	text-align: center;
 }
- .toontalk-robot::after {
+.toontalk-robot::after {
  	content: attr(toontalk_name);
  	position: relative;	
     top: 45px;
     color: rgb(240, 240, 117);
- }
+}
 .toontalk-robot-being-trained-by-robot {
 	transform-origin: left top;
 	transform: scale(0.5, 0.5);
@@ -2191,34 +2191,6 @@ background-image: url("images/dusty-morph.png");
     width:  116px;
     height:  98px;
 }
-.toontalk-nest-with-egg-red {
-	background-image: url("images/empty-nest-red-transparent.png"), url("images/nest-with-egg.png");
-	background-repeat: no-repeat;
-	background-size: contain;
-	width: 116px;
-	height: 98px;
-}
-.toontalk-nest-with-egg-green {
-	background-image: url("images/empty-nest-green-transparent.png"), url("images/nest-with-egg.png");
-	background-repeat: no-repeat;
-	background-size: contain;
-	width: 116px;
-	height: 98px;
-}
-.toontalk-nest-with-egg-blue {
-	background-image: url("images/empty-nest-blue-transparent.png"), url("images/nest-with-egg.png");
-	background-repeat: no-repeat;
-	background-size: contain;
-	width: 116px;
-	height: 98px;
-}
-.toontalk-nest-with-egg-cyan {
-	background-image: url("images/empty-nest-cyan-transparent.png"), url("images/nest-with-egg.png");
-    background-repeat: no-repeat;
-	background-size: contain;
-	width: 116px;
-	height: 98px;
-}
 .toontalk-nest-with-egg-yellow {
 	background-image: url("images/empty-nest-yellow-transparent.png"), url("images/nest-with-egg.png");
 	background-repeat: no-repeat;
@@ -2271,48 +2243,6 @@ background-image: url("images/dusty-morph.png");
 	background-repeat: no-repeat;
 	background-size: contain;
 } */
-.toontalk-empty-nest-red {
-	background-image: url("images/empty-nest-red-transparent.png"), url("images/empty-nest.png");
-	background-repeat: no-repeat;
-	background-size: contain;
-	width: 116px;
-	height: 98px;
-}
-.toontalk-empty-nest-green {
-	background-image: url("images/empty-nest-green-transparent.png"), url("images/empty-nest.png");
-	background-repeat: no-repeat;
-	background-size: contain;
-	width: 116px;
-	height: 98px;
-}
-.toontalk-empty-nest-blue {
-	background-image: url("images/empty-nest-blue-transparent.png"), url("images/empty-nest.png");
-	background-repeat: no-repeat;
-	background-size: contain;
-	width: 116px;
-	height: 98px;
-}
-.toontalk-empty-nest-cyan {
-	background-image: url("images/empty-nest-cyan-transparent.png"), url("images/empty-nest.png");
-    background-repeat: no-repeat;
-	background-size: contain;
-	width: 116px;
-	height: 98px;
-}
-.toontalk-empty-nest-yellow {
-	background-image: url("images/empty-nest-yellow-transparent.png"), url("images/empty-nest.png");
-	background-repeat: no-repeat;
-	background-size: contain;
-	width: 116px;
-	height: 98px;
-}
-.toontalk-empty-nest-magenta {
-	background-image: url("images/empty-nest-magenta-transparent.png"), url("images/empty-nest.png");
-	background-repeat: no-repeat;
-	background-size: contain;
-	width: 116px;
-	height: 98px;
-}
 .toontalk-empty-nest {
 /* 	Perhaps should be renamed since it really for eggless nest but might have stuff on top */
 /* 	tried 	content: url("images/empty-nest.png");  but couldn't drag it */
@@ -2321,11 +2251,44 @@ background-image: url("images/dusty-morph.png");
 	background-size: contain;
 	width: 116px;
 	height: 98px;
-/* 	display just the last frame */
-/*  width:  116px;
-    height: 141px;
-    background-image: url("images/hatch-egg-strip.png");
-	background-position: -1628px; */
+	text-align: center;
+}
+.toontalk-empty-nest-yellow {
+	background-image: url("images/empty-nest-yellow-transparent.png"), url("images/empty-nest.png");
+	background-repeat: no-repeat;
+	background-size: contain;
+	width: 116px;
+	height: 98px;
+	text-align: center;
+}
+.toontalk-empty-nest-magenta {
+	background-image: url("images/empty-nest-magenta-transparent.png"), url("images/empty-nest.png");
+	background-repeat: no-repeat;
+	background-size: contain;
+	width: 116px;
+	height: 98px;
+	text-align: center;
+}
+.toontalk-empty-nest::after {
+ 	content: attr(toontalk_name);
+ 	position: relative;	
+    top: 30%;
+    color: navyblue;
+    font-size: 18pt;
+}
+.toontalk-empty-nest-yellow::after {
+ 	content: attr(toontalk_name);
+ 	position: relative;	
+    top: 30%;
+    color: navyblue;
+    font-size: 18pt;
+}
+.toontalk-empty-nest-magenta::after {
+ 	content: attr(toontalk_name);
+ 	position: relative;	
+    top: 30%;
+    color: navyblue;
+    font-size: 18pt;
 }
 /* could make this 14 steps and change -1744 to 1628 */
 .toontalk-hatch-egg {
@@ -2434,33 +2397,7 @@ background-image: url("images/dusty-morph.png");
 	background-size: contain;
 	width:  70px;
     height: 102px;
-}
-.toontalk-bird-static-red {
-    background-image: url("images/bird-static-red-transparent.png"), url("images/bird-static.png");
-    background-repeat: no-repeat;
-	background-size: contain;
-	width:  70px;
-    height: 102px;
-}.toontalk-bird-static-green {
-    background-image: url("images/bird-static-green-transparent.png"), url("images/bird-static.png");
-    background-repeat: no-repeat;
-	background-size: contain;
-	width:  70px;
-    height: 102px;
-}
-.toontalk-bird-static-blue {
-    background-image: url("images/bird-static-blue-transparent.png"), url("images/bird-static.png");
-    background-repeat: no-repeat;
-	background-size: contain;
-	width:  70px;
-    height: 102px;
-}
-.toontalk-bird-static-cyan {
-    background-image: url("images/bird-static-cyan-transparent.png"), url("images/bird-static.png");
-    background-repeat: no-repeat;
-	background-size: contain;
-	width:  70px;
-    height: 102px;
+    text-align: center;
 }
 .toontalk-bird-static-magenta {
     background-image: url("images/bird-static-magenta-transparent.png"), url("images/bird-static.png");
@@ -2468,6 +2405,7 @@ background-image: url("images/dusty-morph.png");
 	background-size: contain;
 	width:  70px;
     height: 102px;
+    text-align: center;
 }
 .toontalk-bird-static-yellow {
     background-image: url("images/bird-static-yellow-transparent.png"), url("images/bird-static.png");
@@ -2475,8 +2413,29 @@ background-image: url("images/dusty-morph.png");
 	background-size: contain;
 	width:  70px;
     height: 102px;
+    text-align: center;
 }
-
+.toontalk-bird-static::after {
+ 	content: attr(toontalk_name);
+ 	position: relative;	
+    top: 50%;
+    color: black;
+    font-size: 12pt;
+}
+.toontalk-bird-static-yellow::after {
+ 	content: attr(toontalk_name);
+ 	position: relative;	
+    top: 50%;
+    color: black;
+    font-size: 12pt;
+}
+.toontalk-bird-static-magenta::after {
+ 	content: attr(toontalk_name);
+ 	position: relative;	
+    top: 50%;
+    color: black;
+    font-size: 12pt;
+}
 /* Couldn't get the following to work -- tried to define new bird-morph-from-static keyframes but didn't help */
 /* .toontalk-bird-morph-from-static {
     width:  88px;

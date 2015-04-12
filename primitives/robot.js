@@ -57,7 +57,7 @@ window.TOONTALK.robot = (function (TT) {
         if (!first_in_team) {
             first_in_team = new_robot;
         }
-        if (!name) {
+        if (typeof name !== 'string') {
             name_counter++;
             name = "#" + name_counter.toString();
         }

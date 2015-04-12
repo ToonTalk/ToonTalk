@@ -470,6 +470,38 @@ window.TOONTALK.bird = (function (TT) {
             }
             return "a bird without a nest";
         };
+        new_bird.update_display = function () {
+            var frontside = this.get_frontside(true);
+            var backside = this.get_backside(); 
+            var bird_image, frontside_element;
+            frontside_element = frontside.get_element();
+            if (nest) {
+                frontside_element.setAttribute('toontalk_name', nest.get_name());
+            }
+            TT.UTILITIES.give_tooltip(frontside_element, this.get_title());
+    //      console.log("update display " + $(frontside_element).width() + "x" + $(frontside_element).height());
+            if (!$(frontside_element).is(".toontalk-bird, .toontalk-side-animating")) {
+                $(frontside_element).addClass("toontalk-bird toontalk-bird-static" + this.get_class_color());
+                frontside_element.addEventListener("dragover", function (event) {
+                    if (frontside_element.className.indexOf(".toontalk-bird-static") >= 0) {
+                        $(frontside_element).removeClass("toontalk-bird-static" + this.get_class_color());
+                        TT.UTILITIES.add_animation_class(frontside_element, "toontalk-bird-gimme");
+                    }
+                });
+                frontside_element.addEventListener("dragleave", function (event) {
+                    if ($(frontside_element).is(".toontalk-bird-gimme")) {
+                        $(frontside_element)
+                            .addClass("toontalk-bird-static" + this.get_class_color())
+                            .removeClass("toontalk-bird-gimme");
+                    }
+                });
+            }
+            if (this.element_to_display_when_flying) {
+                frontside_element.appendChild(this.element_to_display_when_flying);
+            } else {
+                $(frontside_element).children(".toontalk-side").remove();
+            }
+        };
         new_bird.set_function_name = function (new_name) {
             if (nest && nest.is_function_nest() && nest.set_function_name(new_name)) {
                 // update the bird's title (and maybe someday more - e.g. t-shirt)
@@ -483,8 +515,8 @@ window.TOONTALK.bird = (function (TT) {
             }
         };
         new_bird.get_class_color = function () {
-            return  nest ? nest.get_class_color() : "";
-        };
+            return nest ? nest.get_class_color() : "";
+        };     
         new_bird = new_bird.add_standard_widget_functionality(new_bird);
         new_bird.set_description(description);
         if (TT.debugging) {
@@ -511,37 +543,7 @@ window.TOONTALK.bird = (function (TT) {
     bird.match_with_any_bird = function () {
         return "matched";
     };
-    
-    bird.update_display = function () {
-        var frontside = this.get_frontside(true);
-        var backside = this.get_backside(); 
-        var bird_image, frontside_element;
-        frontside_element = frontside.get_element();
-        TT.UTILITIES.give_tooltip(frontside_element, this.get_title());
-//      console.log("update display " + $(frontside_element).width() + "x" + $(frontside_element).height());
-        if (!$(frontside_element).is(".toontalk-bird, .toontalk-side-animating")) {
-            $(frontside_element).addClass("toontalk-bird toontalk-bird-static" + this.get_class_color());
-            frontside_element.addEventListener("dragover", function (event) {
-                if (frontside_element.className.indexOf(".toontalk-bird-static") >= 0) {
-                    $(frontside_element).removeClass("toontalk-bird-static" + this.get_class_color());
-                    TT.UTILITIES.add_animation_class(frontside_element, "toontalk-bird-gimme");
-                }
-            });
-            frontside_element.addEventListener("dragleave", function (event) {
-                if ($(frontside_element).is(".toontalk-bird-gimme")) {
-                    $(frontside_element)
-                        .addClass("toontalk-bird-static" + this.get_class_color())
-                        .removeClass("toontalk-bird-gimme");
-                }
-            });
-        }
-        if (this.element_to_display_when_flying) {
-            frontside_element.appendChild(this.element_to_display_when_flying);
-        } else {
-            $(frontside_element).children(".toontalk-side").remove();
-        }
-    };
-        
+
     bird.fly_to = function (target_offset, continuation, delay) {
         // target_offset is page relative coordinates
         // delay if undefined (or zero) means the continuation is run immediately upon reaching the target_offset
@@ -632,13 +634,14 @@ window.TOONTALK.nest = (function (TT) {
     var guid_to_nest_table = {};
 
     var next_color = function () {
-                         var color = ["", "-red", "-green", "-blue", "-cyan", "-magenta", "-yellow"][color_index%7];
+                         var color = ["", "-magenta", "-yellow"][color_index%3];
                          color_index++;
                          return color;
                      };
     var color_index = 0;
+    var name_counter = 0;
 
-    nest.create = function (description, contents, guid, original_nest, class_color) { 
+    nest.create = function (description, contents, guid, original_nest, class_color, name) { 
         var new_nest = Object.create(nest);
         var non_empty_listeners = [];
         var waiting_widgets     = [];
@@ -648,6 +651,10 @@ window.TOONTALK.nest = (function (TT) {
         }
         if (typeof class_color !== 'string') {
             class_color = next_color();
+        }
+        if (typeof name !== 'string') {
+            name_counter++;
+            name = "#" + name_counter.toString();
         }
         update_nest = function (new_original_nest) {
             if (original_nest) {
@@ -895,7 +902,8 @@ window.TOONTALK.nest = (function (TT) {
                     contents: TT.UTILITIES.get_json_of_array(contents, json_history),
                     guid: guid,
                     original_nest: original_nest && TT.UTILITIES.get_json(original_nest, json_history),
-                    class_color: class_color
+                    class_color: class_color,
+                    name: name
 //                     non_empty_listeners: non_empty_listeners_json
                     // nest_copies are generated as those nests are created
 //                  nest_copies: nest_copies && TT.UTILITIES.get_json_of_array(nest_copies, json_history)
@@ -909,11 +917,11 @@ window.TOONTALK.nest = (function (TT) {
                 if (contents.length > 0) {
                     return contents[0].get_widget().copy(parameters);
                 }
-                return TT.nest.create(this.get_description(), [], "in a robot's condition", undefined, class_color);
+                return TT.nest.create(this.get_description(), [], "in a robot's condition", undefined, class_color, name);
             }
             contents_copy = TT.UTILITIES.copy_widget_sides(contents, parameters);
             if (!parameters) {
-                copy = TT.nest.create(this.get_description(), contents_copy, guid, (original_nest || this), class_color);
+                copy = TT.nest.create(this.get_description(), contents_copy, guid, (original_nest || this), class_color, name);
             } else if (parameters.fresh_copy) {
                 // e.g. could be a resource that shouldn't be linked to its copy
                 // don't give the copy a GUID if master doesn't have one (e.g. still has egg in nest)
@@ -931,13 +939,13 @@ window.TOONTALK.nest = (function (TT) {
                         });                    
                     } else {
                         // create a fresh copy of the nest
-                        copy = TT.nest.create(this.get_description(), contents_copy, TT.UTILITIES.generate_unique_id(), undefined, class_color);
+                        copy = TT.nest.create(this.get_description(), contents_copy, TT.UTILITIES.generate_unique_id());
                     }
                     parameters.birds_copied[guid].forEach(function (bird) {
                         bird_set_nest.call(bird, copy);
                     });
                 } else {
-                    copy = TT.nest.create(this.get_description(), contents_copy, guid, new_original_nest, class_color);
+                    copy = TT.nest.create(this.get_description(), contents_copy, guid, new_original_nest, class_color, name);
                 }
                 if (!parameters.nests_copied) {
                     parameters.nests_copied = {};
@@ -1108,6 +1116,7 @@ window.TOONTALK.nest = (function (TT) {
             var backside = this.get_backside(); 
             var frontside_element, top_contents_widget, nest_width, nest_height, contents_backside, contents_side_element;
             frontside_element = frontside.get_element();
+            frontside_element.setAttribute('toontalk_name', this.get_name());
             if (contents.length > 0) {
                 top_contents_widget = contents[0].get_widget();
                 if (contents[0].is_backside()) {
@@ -1245,7 +1254,13 @@ window.TOONTALK.nest = (function (TT) {
         };
         new_nest.get_class_color = function () {
             return class_color;
-        }
+        };
+        new_nest.get_name = function () {
+            return name;
+        };
+        new_nest.set_name = function (new_value) {
+            name = new_value;
+        };   
         new_nest.compare_with_box   = new_nest.compare_with_number;
         new_nest.compare_with_scale = new_nest.compare_with_number;
         new_nest = new_nest.add_standard_widget_functionality(new_nest);
@@ -1395,7 +1410,8 @@ window.TOONTALK.nest = (function (TT) {
                                   TT.UTILITIES.create_array_from_json(json.contents, additional_info), 
                                   json.guid,
                                   json.original_nest && TT.UTILITIES.create_from_json(json.original_nest, additional_info),
-                                  json.class_color);
+                                  json.class_color,
+                                  json.name);
             guid_to_nest_table[json.guid] = nest;                 
         }
         return nest;
