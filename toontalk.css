@@ -1369,7 +1369,15 @@ body {
 	background-size: contain;
 	width:  66px;
 	height: 110px;
+	text-align: center;
 }
+ .toontalk-robot::after {
+ 	content: attr(toontalk_name);
+ 	position: relative;	
+ 	/* left: 14px; */
+    top: 45px;
+    color: rgb(240, 240, 117);
+ }
 .toontalk-robot-being-trained-by-robot {
 	transform-origin: left top;
 	transform: scale(0.5, 0.5);

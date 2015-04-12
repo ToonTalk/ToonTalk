@@ -32,8 +32,10 @@ window.TOONTALK.robot = (function (TT) {
     };
    
     var robot = Object.create(TT.widget);
+
+    var name_counter = 0;
  
-    robot.create = function (frontside_conditions, backside_conditions, body, description, thing_in_hand, run_once, next_robot) {
+    robot.create = function (frontside_conditions, backside_conditions, body, description, thing_in_hand, run_once, next_robot, name) {
         // frontside_conditions holds a widget that needs to be matched against the frontside of the widget to run
         // backside_conditions holds an object whose keys are type_names of required widgets on the backside
         // and whose values are widgets that need to match backside widgets of that type
@@ -54,6 +56,10 @@ window.TOONTALK.robot = (function (TT) {
         }
         if (!first_in_team) {
             first_in_team = new_robot;
+        }
+        if (!name) {
+            name_counter++;
+            name = "#" + name_counter.toString();
         }
         new_robot.is_robot = function () {
             return true;
@@ -334,6 +340,12 @@ window.TOONTALK.robot = (function (TT) {
                 $("*").css({cursor: ''}); // restore cursor
             }
         };
+        new_robot.get_name = function () {
+            return name;
+        };
+        new_robot.set_name = function (new_value) {
+            name = new_value;
+        };
         if (TT.debugging || TT.logging) {
             new_robot.to_debug_string = function () {
                 return " (" + (this.get_description() || "") + " " + this.debug_id + ")";
@@ -370,14 +382,14 @@ window.TOONTALK.robot = (function (TT) {
                 }
             });
         }
-        var copy = this.create(// this.get_image_url(), 
-                               frontside_conditions_copy,
+        var copy = this.create(frontside_conditions_copy,
                                backside_conditions_copy,
                                this.get_body().copy(),
                                this.get_description(),
                                this.get_thing_in_hand(),
                                this.get_run_once(),
-                               next_robot_copy);
+                               next_robot_copy,
+                               this.get_name());
         return this.add_to_copy(copy, parameters);
     };
     
@@ -798,6 +810,7 @@ window.TOONTALK.robot = (function (TT) {
                 $(frontside_element).removeClass("toontalk-robot-not-matched");
             }
         }
+        frontside_element.setAttribute('toontalk_name', this.get_name());     
         TT.UTILITIES.set_timeout( // wait for layout to settle down
             function () {
                 var relative_left, relative_top, thing_in_hand_width, thing_in_hand_height, robot_width, robot_height, css;
@@ -1014,7 +1027,8 @@ window.TOONTALK.robot = (function (TT) {
                 backside_conditions: backside_conditions_json,
                 body: this.get_body().get_json(json_history),
                 run_once: this.get_run_once(),
-                next_robot: next_robot_json
+                next_robot: next_robot_json,
+                name: this.get_name()
                };
     };
     
@@ -1042,7 +1056,8 @@ window.TOONTALK.robot = (function (TT) {
                                json.description,
                                thing_in_hand,
                                json.run_once,
-                               next_robot);
+                               next_robot,
+                               json.name);
     };
 
     robot.find_conditions_path = function (widget, robot_with_widget_in_conditions, robot) {
