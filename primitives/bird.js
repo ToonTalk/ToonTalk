@@ -483,18 +483,18 @@ window.TOONTALK.bird = (function (TT) {
             if (!$(frontside_element).is(".toontalk-bird, .toontalk-side-animating")) {
                 $(frontside_element).addClass(this.get_class_name_with_color("toontalk-bird toontalk-bird-static"));
                 frontside_element.addEventListener("dragover", function (event) {
-                    if (frontside_element.className.indexOf(".toontalk-bird-static") >= 0) {
+                    if (frontside_element.className.indexOf("toontalk-bird-static") >= 0) {
                         $(frontside_element).removeClass(this.get_class_name_with_color("toontalk-bird-static"));
                         TT.UTILITIES.add_animation_class(frontside_element, "toontalk-bird-gimme");
                     }
-                });
+                }.bind(this));
                 frontside_element.addEventListener("dragleave", function (event) {
                     if ($(frontside_element).is(".toontalk-bird-gimme")) {
                         $(frontside_element)
                             .addClass(this.get_class_name_with_color("toontalk-bird-static"))
                             .removeClass("toontalk-bird-gimme");
                     }
-                });
+                }.bind(this));
             }
             if (this.element_to_display_when_flying) {
                 frontside_element.appendChild(this.element_to_display_when_flying);
