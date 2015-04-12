@@ -1265,7 +1265,7 @@ window.TOONTALK.nest = (function (TT) {
         new_nest.has_name(new_nest);
         generic_set_name = new_nest.set_name;
         new_nest.set_name = function (new_value, update_display) {
-            var old_name = name;
+            var old_name = this.get_name();
             if (!generic_set_name.call(this, new_value, update_display)) {
                 return false;
             }
