@@ -2185,15 +2185,53 @@ background-image: url("images/dusty-morph.png");
 	height: 100%;
 }
 .toontalk-nest-with-egg {
-/* 	display just the first frame */
+    background-image: url("images/nest-with-egg.png");
+    background-repeat: no-repeat;
+    background-size: contain;
     width:  116px;
-    height: 141px;
-    background-image: url("images/hatch-egg-strip.png");
-/* 	following causes resource to be tiny and repeated: background-size: contain; */
+    height:  98px;
 }
-.toontalk-nest-with-egg.toontalk-top-level-resource {
-/* 	otherwise extra white space appears in the resource area */
-    margin-top: -43px;
+.toontalk-nest-with-egg-red {
+	background-image: url("images/empty-nest-red-transparent.png"), url("images/nest-with-egg.png");
+	background-repeat: no-repeat;
+	background-size: contain;
+	width: 116px;
+	height: 98px;
+}
+.toontalk-nest-with-egg-green {
+	background-image: url("images/empty-nest-green-transparent.png"), url("images/nest-with-egg.png");
+	background-repeat: no-repeat;
+	background-size: contain;
+	width: 116px;
+	height: 98px;
+}
+.toontalk-nest-with-egg-blue {
+	background-image: url("images/empty-nest-blue-transparent.png"), url("images/nest-with-egg.png");
+	background-repeat: no-repeat;
+	background-size: contain;
+	width: 116px;
+	height: 98px;
+}
+.toontalk-nest-with-egg-cyan {
+	background-image: url("images/empty-nest-cyan-transparent.png"), url("images/nest-with-egg.png");
+    background-repeat: no-repeat;
+	background-size: contain;
+	width: 116px;
+	height: 98px;
+}
+.toontalk-nest-with-egg-yellow {
+	background-image: url("images/empty-nest-yellow-transparent.png"), url("images/nest-with-egg.png");
+	background-repeat: no-repeat;
+	background-size: contain;
+	width: 116px;
+	height: 98px;
+}
+.toontalk-nest-with-egg-magenta {
+	background-image: url("images/empty-nest-magenta-transparent.png"), url("images/nest-with-egg.png");
+	background-repeat: no-repeat;
+	background-size: contain;
+	width: 116px;
+	height: 98px;
 }
 .toontalk-sensor-nest {
     background-image: url("images/sensor-nest.png");

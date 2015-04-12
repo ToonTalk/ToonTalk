@@ -917,7 +917,7 @@ window.TOONTALK.nest = (function (TT) {
             } else if (parameters.fresh_copy) {
                 // e.g. could be a resource that shouldn't be linked to its copy
                 // don't give the copy a GUID if master doesn't have one (e.g. still has egg in nest)
-                copy = TT.nest.create(this.get_description(), contents_copy, guid && TT.UTILITIES.generate_unique_id(), undefined, class_color);
+                copy = TT.nest.create(this.get_description(), contents_copy, guid && TT.UTILITIES.generate_unique_id());
             } else {
                 new_original_nest = (original_nest || this);
                 if (parameters.birds_copied && parameters.birds_copied[guid]) {
@@ -1157,10 +1157,10 @@ window.TOONTALK.nest = (function (TT) {
             } else {
                 TT.UTILITIES.give_tooltip(frontside_element, this.get_title());
                 if (guid) {
-                    $(frontside_element).removeClass("toontalk-nest-with-egg");
+                    $(frontside_element).removeClass("toontalk-nest-with-egg" + class_color);
                     $(frontside_element).addClass("toontalk-empty-nest" + class_color);
                 } else {
-                    TT.UTILITIES.add_animation_class(frontside_element, "toontalk-nest-with-egg");
+                    TT.UTILITIES.add_animation_class(frontside_element, "toontalk-nest-with-egg" + class_color);
                 }
             }
             $(frontside_element).addClass("toontalk-nest");
