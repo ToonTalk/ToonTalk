@@ -122,6 +122,9 @@ window.TOONTALK.sensor = (function (TT) {
         new_sensor.get_active = function () {
             return active;
         };
+        new_sensor.get_class_name_with_color = function (base_class_name) {
+            return base_class_name;
+        };
         new_sensor.set_active = function (new_value, initialising) {
             if (active === new_value && !initialising) {
                 return;
@@ -176,6 +179,9 @@ window.TOONTALK.sensor = (function (TT) {
         };
         new_sensor.get_custom_title_prefix = function () {
             return "My bird brings me notices of events.";
+        };
+        new_sensor.generate_name = function () {
+            return "sensor";
         };
         return new_sensor;
     };
@@ -250,9 +256,9 @@ window.TOONTALK.sensor_backside =
                 sensor.set_active(active);
                 if (sensor.robot_in_training()) {
                     sensor.robot_in_training().edited(robot, {setter_name: "set_active",
-                                                        argument_1: active,
-                                                        toString: "change to " + (active ? "active" : "inactive") + " of the " + sensor,
-                                                        button_selector: ".toontalk-sensor-active-check-box"});
+                                                              argument_1: active,
+                                                              toString: "change to " + (active ? "active" : "inactive") + " of the " + sensor,
+                                                              button_selector: ".toontalk-sensor-active-check-box"});
                 }
                 sensor.render();
                 event.stopPropagation();

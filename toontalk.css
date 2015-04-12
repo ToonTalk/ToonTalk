@@ -2211,6 +2211,15 @@ background-image: url("images/dusty-morph.png");
 	background-size: contain;
 	width: 116px;
 	height: 98px;
+	text-align: center;
+}
+.toontalk-sensor-nest::after {
+ 	content: attr(toontalk_name);
+ 	position: relative;	
+    top: 30%;
+    
+ 	color: white;
+    font-size: 18pt;
 }
 .toontalk-sensor-inactive-nest {
     background-image: url("images/sensor-nest-inactive.png");
@@ -2218,6 +2227,14 @@ background-image: url("images/dusty-morph.png");
 	background-size: contain;
 	width: 116px;
 	height: 98px;
+	text-align: center;
+}
+.toontalk-sensor-inactive-nest::after {
+ 	content: attr(toontalk_name);
+ 	position: relative;	
+    top: 30%;
+    color: white;
+    font-size: 18pt;
 }
 .toontalk-backside-of-sensor {
 	background-color: rgb(248, 228, 210);
@@ -2273,21 +2290,21 @@ background-image: url("images/dusty-morph.png");
  	content: attr(toontalk_name);
  	position: relative;	
     top: 30%;
-    color: navyblue;
+    color: navy;
     font-size: 18pt;
 }
 .toontalk-empty-nest-yellow::after {
  	content: attr(toontalk_name);
  	position: relative;	
     top: 30%;
-    color: navyblue;
+    color: navy;
     font-size: 18pt;
 }
 .toontalk-empty-nest-magenta::after {
  	content: attr(toontalk_name);
  	position: relative;	
     top: 30%;
-    color: navyblue;
+    color: navy;
     font-size: 18pt;
 }
 /* could make this 14 steps and change -1744 to 1628 */
