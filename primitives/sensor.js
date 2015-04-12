@@ -21,9 +21,9 @@ window.TOONTALK.sensor = (function (TT) {
         }
     };
     
-    sensor.create = function (event_name, attribute, description, previous_contents, active, widget) {
+    sensor.create = function (event_name, attribute, description, previous_contents, active, widget, name) {
         // widget is undefined when the event_name is appropriate to associate with window
-        var new_sensor = TT.nest.create(description, previous_contents, "sensor");
+        var new_sensor = TT.nest.create(description, previous_contents, "sensor", undefined, undefined, name || "sensor");
         var nest_get_json = new_sensor.get_json;
         var nest_update_display = new_sensor.update_display;
         var nest_copy = new_sensor.copy;
@@ -79,9 +79,9 @@ window.TOONTALK.sensor = (function (TT) {
             // so TT.UTILITIES.copy_widget_sides(contents) not appropriate
             // so perhaps this should be in the same expression as nest to share privately...
             if (parameters) {
-                copy = TT.sensor.create(event_name, attribute, description, undefined, (parameters.copying_resource || active), widget);
+                copy = TT.sensor.create(event_name, attribute, description, undefined, (parameters.copying_resource || active), widget, this.get_name());
             } else {
-                copy = TT.sensor.create(event_name, attribute, description, undefined, active, widget);
+                copy = TT.sensor.create(event_name, attribute, description, undefined, active, widget, this.get_name());
             }
             return new_sensor.add_to_copy(copy, parameters);
         };
@@ -188,9 +188,6 @@ window.TOONTALK.sensor = (function (TT) {
             }
             return title;
         };
-        new_sensor.generate_name = function () {
-            return "sensor";
-        };
         return new_sensor;
     };
     
@@ -200,7 +197,9 @@ window.TOONTALK.sensor = (function (TT) {
                                       json.attribute,
                                       json.description, 
                                       previous_contents,
-                                      false); // will be (re)set below
+                                      false,
+                                      undefined,
+                                      json.name); // will be (re)set below
                                       // following postponed because of circularity of sensors and their widgets
         if (json.sensor_of) {
             // delay this due to the circularity of sensors and their widgets
