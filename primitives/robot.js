@@ -343,8 +343,15 @@ window.TOONTALK.robot = (function (TT) {
         new_robot.get_name = function () {
             return name;
         };
-        new_robot.set_name = function (new_value) {
+        new_robot.set_name = function (new_value, update_display) {
+            if (name === new_value) {
+                return false;
+            }
             name = new_value;
+            if (update_display) {
+                this.rerender();
+            }
+            return true;
         };
         if (TT.debugging || TT.logging) {
             new_robot.to_debug_string = function () {
@@ -364,7 +371,7 @@ window.TOONTALK.robot = (function (TT) {
     };
     
     robot.create_backside = function () {
-        return TT.robot_backside.create(this); //.update_run_button_disabled_attribute();
+        return TT.robot_backside.create(this);
     };
     
     robot.copy = function (parameters) {
@@ -389,7 +396,7 @@ window.TOONTALK.robot = (function (TT) {
                                this.get_thing_in_hand(),
                                this.get_run_once(),
                                next_robot_copy,
-                               this.get_name());
+                               (!parameters || !parameters.fresh_copy) && this.get_name());
         return this.add_to_copy(copy, parameters);
     };
     
@@ -583,7 +590,7 @@ window.TOONTALK.robot = (function (TT) {
         if (is_resource) {
             new_widget = widget; // this widget was just created
             // robot needs a copy of the resource to avoid sharing it with training widget
-            widget_copy = widget.copy();
+            widget_copy = widget.copy({fresh_copy: true});
             path = TT.path.get_path_to_resource(widget_copy);
         } else {
             path = TT.path.get_path_to(widget, this);

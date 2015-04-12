@@ -352,7 +352,7 @@ window.TOONTALK.UTILITIES =
                 TT.UTILITIES.restore_resource(TT.UTILITIES.get_dragee(), dropped);
                 drop_handler(event);
             }
-            input_element.addEventListener('drop', new_drop_handler);
+        input_element.addEventListener('drop', new_drop_handler);
     };
     var $toontalk_side_underneath = function (element) {
         var $target = $(element).closest(".toontalk-side");

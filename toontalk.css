@@ -1374,7 +1374,6 @@ body {
  .toontalk-robot::after {
  	content: attr(toontalk_name);
  	position: relative;	
- 	/* left: 14px; */
     top: 45px;
     color: rgb(240, 240, 117);
  }

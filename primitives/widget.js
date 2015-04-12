@@ -128,6 +128,18 @@ window.TOONTALK.widget = (function (TT) {
             if (!widget.is_function_nest) {
                 widget.is_function_nest = return_false;
             }
+            if (widget.set_name) {
+                widget.receive_name_from_dropped = 
+                    function (dropped) {
+                        var new_text;
+                        if (dropped.get_text) {
+                            new_text = dropped.get_text();
+                            if (this.set_name(new_text, true)) {
+                                return this.get_name();
+                            }    
+                        };
+                    };
+            }
             if ((TT.debugging  || TT.logging) && !widget.to_debug_string) {
                 widget.to_debug_string = function () {
                     var parent = this.get_parent_of_frontside();
@@ -679,7 +691,7 @@ window.TOONTALK.widget = (function (TT) {
                     return true;
                 };
             }
-            widget.receive_description_from_dropped = function(dropped) {
+            widget.receive_description_from_dropped = function (dropped) {
                 var new_text;
                 if (dropped.get_text) {
                     new_text = dropped.get_text();
