@@ -1374,7 +1374,7 @@ body {
 .toontalk-robot::after {
  	content: attr(toontalk_name);
  	position: relative;	
-    top: 45px;
+    top: 40%;
     color: rgb(240, 240, 117);
 }
 .toontalk-robot-being-trained-by-robot {
