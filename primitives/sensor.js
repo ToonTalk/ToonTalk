@@ -178,7 +178,15 @@ window.TOONTALK.sensor = (function (TT) {
             widget = new_value;
         };
         new_sensor.get_custom_title_prefix = function () {
-            return "My bird brings me notices of events.";
+            var title = "When a '" + event_name + "' event occurs my bird will bring me the '" + attribute + "' attribute of the event.";
+            if (active) {
+                if (!this.get_backside()) {
+                    title += " On my back you can change which kind of events and attributes I receive.";
+                }
+            } else {
+                title += " But I'm deactivated and can't receive anything until the 'Listening to events' check box on my back is ticked.";
+            }
+            return title;
         };
         new_sensor.generate_name = function () {
             return "sensor";
