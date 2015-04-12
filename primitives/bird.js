@@ -516,7 +516,13 @@ window.TOONTALK.bird = (function (TT) {
         };
         new_bird.get_class_color = function () {
             return nest ? nest.get_class_color() : "";
-        };     
+        };  
+        new_bird.get_name = function () {
+            return nest.get_name();
+        };
+        new_bird.set_name = function (new_value, update_display) {
+            return nest.set_name(new_value, update_display);
+        };    
         new_bird = new_bird.add_standard_widget_functionality(new_bird);
         new_bird.set_description(description);
         if (TT.debugging) {
@@ -1276,7 +1282,7 @@ window.TOONTALK.nest = (function (TT) {
                     }
                 });
             }
-        };   
+        }; 
         new_nest.compare_with_box   = new_nest.compare_with_number;
         new_nest.compare_with_scale = new_nest.compare_with_number;
         new_nest = new_nest.add_standard_widget_functionality(new_nest);
