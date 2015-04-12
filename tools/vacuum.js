@@ -71,6 +71,11 @@ window.TOONTALK.vacuum = (function (TT) {
                         widget_side.set_run_once(true); // since removes itself can iterate
                         return;
                     }
+                    if (widget.is_bird() && TT.sounds) {
+                        // if it was flying stop making the flying sounds
+                        // TODO: introduce a removed listener and use that instead
+                        TT.sounds.bird_fly.pause();
+                    }
                     // save a copy for restoring since the following clobbers the original -- e.g. removing contents from boxes
                     copy = widget_side.copy();
                     copy.save_dimensions_of(widget_side);
