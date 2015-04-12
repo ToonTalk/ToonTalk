@@ -515,14 +515,17 @@ window.TOONTALK.bird = (function (TT) {
             }
         };
         new_bird.get_class_color = function () {
-            return nest ? nest.get_class_color() : "";
+            return (nest && nest.get_class_color) ? nest.get_class_color() : "";
         };  
         new_bird.get_name = function () {
             return nest.get_name();
         };
-        new_bird.set_name = function (new_value, update_display) {
-            return nest.set_name(new_value, update_display);
-        };    
+        if (nest.set_name) {
+            // function nest names are read-only
+            new_bird.set_name = function (new_value, update_display) {
+                return nest.set_name(new_value, update_display);
+            };
+        }   
         new_bird = new_bird.add_standard_widget_functionality(new_bird);
         new_bird.set_description(description);
         if (TT.debugging) {
@@ -1349,6 +1352,10 @@ window.TOONTALK.nest = (function (TT) {
                 function () {
                     // doesn't have a guid since function nests are stateless and can be shared
                     return;
+                },
+            get_name:
+                function () {
+                    return function_object.short_name;
                 },
             // following needed for bird to just pass along the contents
             has_ancestor:            return_false,

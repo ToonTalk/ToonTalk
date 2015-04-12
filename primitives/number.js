@@ -1312,8 +1312,9 @@ window.TOONTALK.number.function =
         return TT.UTILITIES.add_a_or_an("'" + this.name + "' function bird");
     };
     var functions = {};
-    var add_function_object = function (name, respond_to_message, title) {
+    var add_function_object = function (name, respond_to_message, title, short_name) {
         functions[name] = {name: name,
+                           short_name: short_name || name,
                            respond_to_message: respond_to_message,
                            get_description: get_description,
                            toString: to_string_function,
@@ -1323,37 +1324,44 @@ window.TOONTALK.number.function =
                         function (message, event, robot) {
                             return n_ary_widget_function(message, TT.number.ZERO, TT.number.add, 'sum', event, robot);
                         },
-                        "The bird will return with the sum of the numbers in the box.");
+                        "The bird will return with the sum of the numbers in the box.",
+                        "+");
     add_function_object('difference', 
                         function (message, event, robot) {
                              return n_ary_widget_function(message, TT.number.ZERO, TT.number.subtract, 'difference', event, robot);
                         },
-                        "The bird will return with the result of subtracting the numbers in the box from the first number.");
+                        "The bird will return with the result of subtracting the numbers in the box from the first number.",
+                        "-");
     add_function_object('product', 
                         function (message, event, robot) {
                              return n_ary_widget_function(message, TT.number.ONE, TT.number.multiply, 'product', event, robot);
                         },
-                        "The bird will return with the product of the numbers in the box.");
+                        "The bird will return with the product of the numbers in the box.",
+                        "×");
     add_function_object('division', 
                         function (message, event, robot) {
                              return n_ary_widget_function(message, TT.number.ONE, TT.number.divide, 'division', event, robot);
                         },
-                        "The bird will return with the result of dividing the numbers into the first number in the box.");
+                        "The bird will return with the result of dividing the numbers into the first number in the box.",
+                        "÷"); // CSS can't contain HTML -- see http://www.evotech.net/blog/2007/04/named-html-entities-in-numeric-order/
     add_function_object('modulo', 
                         function (message, event, robot) {
                             return n_ary_function(message, bigrat_function_to_widget_function(modulo), 2, 'modulo', event, robot);
                         },
-                        "The bird will return with the first number modulo the second number. For positive numbers this is like the remainder after division.");
+                        "The bird will return with the first number modulo the second number. For positive numbers this is like the remainder after division.",
+                        "mod");
     add_function_object('minimum', 
                         function (message, event, robot) {
                             return n_ary_widget_function(message, TT.number.ONE, TT.number.minimum, 'minimum', event, robot);
                         },
-                        "The bird will return with the smallest of the numbers in the box.");
+                        "The bird will return with the smallest of the numbers in the box.",
+                        "min");
     add_function_object('maximum', 
                         function (message, event, robot) {
                             return n_ary_widget_function(message, TT.number.ONE, TT.number.maximum, 'maximum', event, robot);
                         },
-                        "The bird will return with the largest of the numbers in the box.");
+                        "The bird will return with the largest of the numbers in the box.",
+                        "max");
     add_function_object('absolute value', 
                         function (message, event, robot) {
                             var absolute_value = function (rational_number) {
@@ -1363,7 +1371,8 @@ window.TOONTALK.number.function =
                             }
                             return n_ary_function(message, absolute_value, 1, 'absolute value', event, robot);
                         },
-                        "The bird will return with the positive version of the number.");
+                        "The bird will return with the positive version of the number.",
+                        "abs");
     add_function_object('power', 
                         function (message, event, robot) {
                             var power_function = function (bigrat_base, bigrat_power) {
@@ -1391,7 +1400,8 @@ window.TOONTALK.number.function =
                         },
                         "The bird will return an approximation of the logarithm number of the first number.\n" +
                         "If a second number is provided then it is used as the base of the logarithm.\n" +
-                        "If there is no second number the logarithm is natural (the base is e).");                    
+                        "If there is no second number the logarithm is natural (the base is e).",
+                        "log");                    
     add_function_object('random', 
                         function (message, event, robot) {
                             var random = function () {
@@ -1407,7 +1417,8 @@ window.TOONTALK.number.function =
                         },
                         "The bird will return a random number between the first and second numbers.\n" +
                         "If the second number isn't provided a number less than the first number is returned.\n" +
-                        "If no numbers are given then the bird returns with a number between 0 and 1.");           
+                        "If no numbers are given then the bird returns with a number between 0 and 1.",
+                        "rand");           
     add_function_object('round', 
                         function (message, event, robot) {
                             return n_ary_function(message, bigrat_function_to_widget_function(round), 1, 'round', event, robot);
@@ -1422,12 +1433,14 @@ window.TOONTALK.number.function =
                         function (message, event, robot) {
                             return n_ary_function(message, bigrat_function_to_widget_function(ceiling), 1, 'ceiling', event, robot);
                         },
-                        "The bird will return the smallest integer greater than or equal to the number.");
+                        "The bird will return the smallest integer greater than or equal to the number.",
+                        "ceil");
     add_function_object('integer and fraction parts', 
                         function (message, event, robot) {
                             return n_ary_function(message, box_with_integer_and_fraction, 1, 'integer and fraction parts', event, robot);
                         },
-                        "The bird will return with a box containing the integer part and the fraction.");
+                        "The bird will return with a box containing the integer part and the fraction.",
+                        "parts");
     add_function_object('sine', 
                         function (message, event, robot) {
                             var sin = function (degrees) {
@@ -1435,7 +1448,8 @@ window.TOONTALK.number.function =
                                       };
                             return n_ary_function(message, numeric_javascript_function_to_widget_function(sin, degrees_to_decimal), 1, 'sine', event, robot);
                         },
-                        "The bird will return with an approximation of the sine of the number (in degrees).");                  
+                        "The bird will return with an approximation of the sine of the number (in degrees).",
+                        "sin");                  
     add_function_object('cosine', 
                         function (message, event, robot) {
                             var cos = function (degrees) {
@@ -1443,7 +1457,8 @@ window.TOONTALK.number.function =
                                       };
                             return n_ary_function(message, numeric_javascript_function_to_widget_function(cos, degrees_to_decimal), 1, 'cosine', event, robot);
                         },
-                        "The bird will return with an approximation of the cosine of the number (in degrees).");
+                        "The bird will return with an approximation of the cosine of the number (in degrees).",
+                        "cos");
     add_function_object('arc tangent', 
                         function (message, event, robot) {
                             var atan_in_degrees = function (x) {
@@ -1451,7 +1466,8 @@ window.TOONTALK.number.function =
                             };
                             return n_ary_function(message, numeric_javascript_function_to_widget_function(atan_in_degrees), 1, 'arc tangent', event, robot);
                         },
-                        "The bird will return with an approximation of the arc tangent (in degrees) of the number.");
+                        "The bird will return with an approximation of the arc tangent (in degrees) of the number.",
+                        "atan");
     add_function_object('arc tangent of y and x', 
                         function (message, event, robot) {
                             var atan_in_degrees = function (x, y) {
@@ -1459,28 +1475,32 @@ window.TOONTALK.number.function =
                             };
                             return n_ary_function(message, numeric_javascript_function_to_widget_function(atan_in_degrees), 2, 'arc tangent of y and x', event, robot);
                         },
-                        "The bird will return with an approximation of the arc tangent (in degrees) of the point where the first number is the y coordinate and the second one is the x.");
+                        "The bird will return with an approximation of the arc tangent (in degrees) of the point where the first number is the y coordinate and the second one is the x.",
+                        "atan2");
     add_function_object('sine (in radians)', 
                         function (message, event, robot) {
                             return n_ary_function(message, numeric_javascript_function_to_widget_function(Math.sin, radians_to_decimal), 1, 'sine (in radians)', event, robot);
                         },
-                        "The bird will return with an approximation of the sine of the number (in radians).");                  
+                        "The bird will return with an approximation of the sine of the number (in radians).",
+                        "sin rad");                  
     add_function_object('cosine (in radians)', 
                         function (message, event, robot) {
                             return n_ary_function(message, numeric_javascript_function_to_widget_function(Math.cos, radians_to_decimal), 1, 'cosine (in radians)', event, robot);
                         },
-                        "The bird will return with an approximation of the cosine of the number (in radians).");
+                        "The bird will return with an approximation of the cosine of the number (in radians).",
+                        "cos rad");
     add_function_object('arc tangent (in radians)', 
                         function (message, event, robot) {
                             return n_ary_function(message, numeric_javascript_function_to_widget_function(Math.atan), 1, 'arc tangent (in radians)', event, robot);
                         },
-                        "The bird will return with an approximation of the arc tangent (in radians) of the number.");
+                        "The bird will return with an approximation of the arc tangent (in radians) of the number.",
+                        "atan rad");
     add_function_object('arc tangent of y and x (in radians)', 
                         function (message, event, robot) {
                             return n_ary_function(message, numeric_javascript_function_to_widget_function(Math.atan2), 2, 'arc tangent of y and x (in radians)', event, robot);
                         },
-                        "The bird will return with an approximation of the arc tangent (in radians) of the point where the first number is the y coordinate and the second one is the x.");
-
+                        "The bird will return with an approximation of the arc tangent (in radians) of the point where the first number is the y coordinate and the second one is the x.",
+                        "atan2 rad");
     return functions;
 }());
 
