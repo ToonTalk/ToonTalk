@@ -568,10 +568,11 @@ window.TOONTALK.bird = (function (TT) {
                          "toontalk-fly-east", "toontalk-fly-southeast", "toontalk-fly-south", "toontalk-fly-southwest"][region];
         var bird_position = $(frontside_element).position();
         TT.UTILITIES.add_animation_class(frontside_element, direction);
+        $(frontside_element).removeClass($(frontside_element).removeClass(this.get_class_name_with_color("toontalk-bird-static")))
         var full_continuation = function () {
             $(frontside_element).removeClass(direction);
             if (delay) {
-                $(frontside_element).addClass(this.get_class_name_with_color("toontalk-bird-static")); // should be bird-waiting
+//                 $(frontside_element).addClass(this.get_class_name_with_color("toontalk-bird-static")); // should be bird-waiting
                 setTimeout(continuation, delay);
             } else {
                 continuation();
@@ -1042,6 +1043,7 @@ window.TOONTALK.nest = (function (TT) {
                         $(bird_frontside_element).removeClass("toontalk-fly-southwest");
                         TT.UTILITIES.set_timeout(function () {
                                 TT.UTILITIES.add_animation_class(bird_frontside_element, "toontalk-fly-down");
+                                $(bird_frontside_element).removeClass(this.get_class_name_with_color("toontalk-bird-static"));
                                 fly_down_finished_handler = function () {
                                     var become_static = function () {
                                         $(bird_frontside_element)
