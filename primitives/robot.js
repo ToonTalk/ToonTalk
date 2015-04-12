@@ -57,10 +57,6 @@ window.TOONTALK.robot = (function (TT) {
         if (!first_in_team) {
             first_in_team = new_robot;
         }
-        if (typeof name !== 'string') {
-            name_counter++;
-            name = "#" + name_counter.toString();
-        }
         new_robot.is_robot = function () {
             return true;
         };
@@ -339,20 +335,7 @@ window.TOONTALK.robot = (function (TT) {
             } else {
                 $("*").css({cursor: ''}); // restore cursor
             }
-        };
-        new_robot.get_name = function () {
-            return name;
-        };
-        new_robot.set_name = function (new_value, update_display) {
-            if (name === new_value) {
-                return false;
-            }
-            name = new_value;
-            if (update_display) {
-                this.rerender();
-            }
-            return true;
-        };
+        };      
         if (TT.debugging || TT.logging) {
             new_robot.to_debug_string = function () {
                 return " (" + (this.get_description() || "") + " " + this.debug_id + ")";
@@ -363,6 +346,7 @@ window.TOONTALK.robot = (function (TT) {
             new_robot.set_next_robot(next_robot);
         }
         new_robot = new_robot.add_standard_widget_functionality(new_robot);
+        new_robot.has_name(new_robot);
         new_robot.set_description(description);
         if (TT.debugging) {
             new_robot.debug_id = TT.UTILITIES.generate_unique_id();
@@ -406,6 +390,11 @@ window.TOONTALK.robot = (function (TT) {
             return "matched";
         }
         return this;
+    };
+
+    robot.generate_name = function () {
+        name_counter++;
+        return "#" + name_counter.toString();
     };
     
     robot.run = function (context, top_level_context, queue) {

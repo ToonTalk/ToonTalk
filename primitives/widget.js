@@ -702,6 +702,30 @@ window.TOONTALK.widget = (function (TT) {
             }
         },
 
+        has_name: function (widget) {
+            var name;
+            if (!widget.get_name) {
+                  widget.get_name = function () {
+                    if (typeof name !== 'string' && widget.generate_name) {
+                        name = widget.generate_name();
+                    }
+                    return name;
+                };
+            }
+            if (!widget.set_name) {
+                widget.set_name = function (new_value, update_display) {
+                    if (name === new_value) {
+                        return false;
+                    }
+                    name = new_value;
+                    if (update_display) {
+                        this.rerender();
+                    }
+                    return true;
+                };         
+            }
+        },
+
         has_listeners: function (widget) {
             var listeners = {};
             if (!widget.add_listener) {
@@ -1057,7 +1081,7 @@ window.TOONTALK.widget = (function (TT) {
             });
             return can_run;
         },
-        
+
         add_to_copy: function (copy, parameters) {
             var backside_widgets;
             if (this.get_erased && this.get_erased()) {

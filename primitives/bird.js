@@ -647,7 +647,7 @@ window.TOONTALK.nest = (function (TT) {
         var new_nest = Object.create(nest);
         var non_empty_listeners = [];
         var waiting_widgets     = [];
-        var nest_copies;
+        var nest_copies, generic_set_name;
         if (!contents) {
             contents = [];
         }
@@ -1258,25 +1258,18 @@ window.TOONTALK.nest = (function (TT) {
             }
             return base_class_name + ["", "-magenta", "-yellow"][serial_number%3];
         };
-        new_nest.get_name = function () {
-            if (typeof name !== 'string') {
-                name = this.generate_name();
-            }
-            return name;
-        };
         new_nest.generate_name = function () {
             name_counter++;
             return "#" + name_counter.toString();
         };
+        new_nest.has_name(new_nest);
+        generic_set_name = new_nest.set_name;
         new_nest.set_name = function (new_value, update_display) {
-            var old_name;
-            if (name === new_value) {
+            var old_name = name;
+            if (!generic_set_name.call(this, new_value, update_display)) {
                 return false;
             }
-            old_name = name;
-            name = new_value;
             if (update_display) {
-                this.rerender();
                 // also re-render any birds
                 $(".toontalk-bird").each(function () {
                     if (this.getAttribute('toontalk_name') === old_name) {
@@ -1289,7 +1282,7 @@ window.TOONTALK.nest = (function (TT) {
         }; 
         new_nest.compare_with_box   = new_nest.compare_with_number;
         new_nest.compare_with_scale = new_nest.compare_with_number;
-        new_nest = new_nest.add_standard_widget_functionality(new_nest);
+        new_nest.add_standard_widget_functionality(new_nest);
         new_nest.set_description(description);
         if (TT.debugging) {
             new_nest.debug_id = TT.UTILITIES.generate_unique_id();
