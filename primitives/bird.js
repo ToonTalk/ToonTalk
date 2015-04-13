@@ -521,7 +521,7 @@ window.TOONTALK.bird = (function (TT) {
             return base_class_name;
         }; 
         new_bird.get_name = function () {
-            return nest.get_name();
+            return nest && nest.get_name();
         };
         if (nest && nest.set_name) {
             // function nest names are read-only
