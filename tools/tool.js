@@ -12,14 +12,11 @@ window.TOONTALK.tool = (function (TT) {
         add_listeners: function (element, tool) {
             var home_position, drag_x_offset, drag_y_offset, tool_height, highlighted_element;
 
-            var mouse_down = function (event) {
-                // should this check which mouse button? (event.button)
+            var pick_up = function () {
                 var bounding_rect = element.getBoundingClientRect();
                 if (tool.set_held) {
                     tool.set_held(true);
                 }
-                drag_x_offset = TT.UTILITIES.get_mouse_or_first_touch_event_attribute('clientX', event) - bounding_rect.left;
-                drag_y_offset = TT.UTILITIES.get_mouse_or_first_touch_event_attribute('clientY', event) - bounding_rect.top;
                 tool_height = bounding_rect.height;
                 event.preventDefault();
                 $(element).addClass("toontalk-tool-held");
@@ -32,10 +29,22 @@ window.TOONTALK.tool = (function (TT) {
                 if (TT.logging && TT.logging.indexOf('touch') === 0) {
                     TT.debugging += "\nmouse_down at " + Date.now();
                 }
+                // might be picked up by control key or button so need the set offsets
+                // but mouse down will reset them
+                drag_x_offset = 0;
+                drag_y_offset = 0;
                 // not sure why the tool tip doesn't go away but force it here
                 $(".ui-tooltip").each(function () {
                                           $(this).hide();
-                                      });
+                                      }); 
+            };
+
+            var mouse_down = function (event) {
+                // should this check which mouse button? (event.button)
+                var bounding_rect = element.getBoundingClientRect();
+                pick_up();
+                drag_x_offset = TT.UTILITIES.get_mouse_or_first_touch_event_attribute('clientX', event) - bounding_rect.left;
+                drag_y_offset = TT.UTILITIES.get_mouse_or_first_touch_event_attribute('clientY', event) - bounding_rect.top;
             };
 
             var mouse_move = function (event) {
@@ -140,6 +149,8 @@ window.TOONTALK.tool = (function (TT) {
             
             element.addEventListener('mousedown',  mouse_down);
             element.addEventListener('touchstart', mouse_down);
+
+            return pick_up;
        }
     };
 

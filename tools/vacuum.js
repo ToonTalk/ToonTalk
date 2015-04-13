@@ -28,6 +28,8 @@ window.TOONTALK.vacuum = (function (TT) {
 
     var held = false;
 
+    var pick_me_up;
+
     vacuum.create = function () {
         var element, mode_class;
         var mode; // mode is either 'suck', 'erase', 'restore', or 'suck_all'
@@ -146,10 +148,14 @@ window.TOONTALK.vacuum = (function (TT) {
                 if (!element) {
                     element = document.createElement("div");
                     $(element).addClass("toontalk-vacuum");
-                    TT.tool.add_listeners(element, this);
+                    pick_me_up = TT.tool.add_listeners(element, this);
                     set_mode('suck');
                     document.addEventListener('keyup', function (event) {
                         var character = String.fromCharCode(event.keyCode);
+                        // control keys are used by browser
+                        if (event.altKey) {
+                            pick_me_up();
+                        }
                         if (!this.held()) {
                             return;
                         }
