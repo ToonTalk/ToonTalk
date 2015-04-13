@@ -1549,7 +1549,9 @@ window.TOONTALK.widget = (function (TT) {
                         callback = undefined;
                     } else if (TT.google_drive.connection_to_google_drive_possible()) {
                         if (google_drive_status === 'Need to authorize') {
-                            TT.UTILITIES.display_message_if_new("Unable to save to your Google Drive because you need to log in. Click on the settings icon to log in.");
+                            TT.UTILITIES.display_message_if_new("Unable to save to your Google Drive because you need to log in. Click on the settings icon " +
+                                                                TT.UTILITIES.encode_HTML_for_title("<span class='toontalk-settings-icon'></span>") +
+                                                                " to log in.");
                             TT.UTILITIES.display_tooltip($(".toontalk-settings-button"));
                         } else {
                             console.log("Unable to save to Google Drive because: " + google_drive_status);
