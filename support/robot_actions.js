@@ -132,19 +132,40 @@ window.TOONTALK.actions =
         run_watched: function (context, top_level_context, queue, robot) {
             var steps = this.get_steps();
             var frontside_element = robot.get_frontside_element();
+            var original_parent_element, previous_robot, previous_robot_backside_element;
             if (!robot.get_parent_of_frontside()) {
                 // could be a 'next robot' that hasn't been opened
+                previous_robot = robot.get_previous_robot();
+                previous_robot.open_backside();
+                previous_robot.get_backside().set_advanced_settings_showing(true);
+                original_parent_element = frontside_element.parentElement;
+                if (!original_parent_element) {
+                    // if no original_parent_element then find where it should be
+                    original_parent_element = $(previous_robot.get_backside_element()).find(".toontalk-drop-area").get(0);
+                }
                 context.get_backside_element().appendChild(frontside_element);
                 context.add_backside_widget(robot);
-                robot.update_display();        
+                robot.update_display();
+                // put the robot back when finished
+                robot.add_body_finished_listener(function () {
+                                                      if (original_parent_element) {
+                                                          original_parent_element.appendChild(frontside_element);
+                                                      }
+                                                      // was temporarily added the backside of the context
+                                                      context.remove_backside_widget(robot);
+                                                      // above will have made the robot not visible
+                                                      robot.set_visible(true);
+                                                 }) ;    
             }
             var saved_parent_element = frontside_element.parentElement;
             var restore_after_last_event = function () {
-                var robot_still_visible = robot.visible() && robot.get_maximum_step_duration() !== 0;
+                var first_robot_still_visible = robot.visible() && 
+                                          robot.get_maximum_step_duration() !== 0 &&
+                                          robot.get_first_in_team() === robot;
                 var continuation = function () {
                     // robot was added to top-level backside so z-index will work as desired (robot on top of everything)
                     // the following restores it
-                    if (robot_still_visible) {
+                    if (first_robot_still_visible) {
                         saved_parent_element.appendChild(frontside_element);
                         robot.set_animating(false);
                     }
@@ -153,10 +174,12 @@ window.TOONTALK.actions =
                     } else if (!robot.stopped()) {
                         robot.get_first_in_team().run(context, top_level_context, queue);
                     }
-                    TT.UTILITIES.set_absolute_position($(frontside_element), robot_home);
+                    if (robot.get_first_in_team() === robot) {
+                        TT.UTILITIES.set_absolute_position($(frontside_element), robot_home);
+                    }
                     robot.rerender();
                 };
-                if (robot_still_visible) {
+                if (first_robot_still_visible) {
                     TT.UTILITIES.animate_to_absolute_position(frontside_element, robot_home, continuation);
                 } else {
                     robot.set_animating(false);

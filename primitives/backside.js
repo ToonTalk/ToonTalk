@@ -846,6 +846,10 @@ window.TOONTALK.backside =
         },
 
         set_advanced_settings_showing: function (show, backside_element, $settings_button) {
+            // TODO: determine if backside_element is needed since should be this.get_backside_element()
+            if (!backside_element) {
+                backside_element = this.get_element();
+            }
             if (!$settings_button) {
                 $settings_button = $(backside_element).find(".toontalk-settings-backside-button");  
             } 
