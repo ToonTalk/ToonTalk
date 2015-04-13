@@ -19476,5 +19476,307 @@ top level widget
     }
   ]
 }</div></div>
+<p>A team of 3 that each adds 1 to 1</p>
+<div class='toontalk-json'>
+This will be replaced by a work area containing 2 things: a number, and the backside of a number.
+top level widget
+<div style='display:none;'>{
+  "semantic": {
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "shared_widget_index": 3
+        }
+      },
+      {
+        "widget": {
+          "shared_widget_index": 3
+        },
+        "is_backside": true
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgb(245, 240, 240)",
+    "backside_width": 1200,
+    "backside_height": 475,
+    "backside_left": 8,
+    "backside_top": 184.1875,
+    "backside": true,
+    "drag_x_offset": 899,
+    "drag_y_offset": 124.8125
+  },
+  "version": 1,
+  "shared_widgets": [
+    {
+      "semantic": {
+        "type": "robot",
+        "frontside_conditions": {
+          "semantic": {
+            "type": "number",
+            "operator": "+",
+            "numerator": "3",
+            "denominator": "1",
+            "format": "improper_fraction"
+          },
+          "view": {
+            "backside": false
+          },
+          "version": 1
+        },
+        "body": {
+          "type": "body",
+          "steps": [
+            {
+              "type": "robot_action",
+              "action_name": "pick up",
+              "path": {
+                "type": "path.to_resource",
+                "resource": {
+                  "type": "number",
+                  "operator": "+",
+                  "numerator": "1",
+                  "denominator": "1",
+                  "format": "improper_fraction",
+                  "is_backside": true
+                }
+              },
+              "additional_info": {
+                "time": 4435
+              }
+            },
+            {
+              "type": "robot_action",
+              "action_name": "drop it on",
+              "path": {
+                "type": "path.to_entire_context"
+              },
+              "additional_info": {
+                "time": 2287
+              }
+            }
+          ]
+        },
+        "name": "last"
+      },
+      "view": {
+        "frontside_width": 66,
+        "frontside_height": 110,
+        "frontside_left": 8,
+        "frontside_top": 229,
+        "backside_width": 550,
+        "backside_height": 411,
+        "backside_left": 0,
+        "backside_top": 244.65625,
+        "advanced_settings_open": true,
+        "saved_width": 66,
+        "saved_height": 110,
+        "backside": false
+      },
+      "version": 1
+    },
+    {
+      "semantic": {
+        "type": "robot",
+        "frontside_conditions": {
+          "semantic": {
+            "type": "number",
+            "operator": "+",
+            "numerator": "2",
+            "denominator": "1",
+            "format": "improper_fraction"
+          },
+          "view": {
+            "backside": false
+          },
+          "version": 1
+        },
+        "body": {
+          "type": "body",
+          "steps": [
+            {
+              "type": "robot_action",
+              "action_name": "pick up",
+              "path": {
+                "type": "path.to_resource",
+                "resource": {
+                  "type": "number",
+                  "operator": "+",
+                  "numerator": "1",
+                  "denominator": "1",
+                  "format": "improper_fraction",
+                  "is_backside": true
+                }
+              },
+              "additional_info": {
+                "time": 4158
+              }
+            },
+            {
+              "type": "robot_action",
+              "action_name": "drop it on",
+              "path": {
+                "type": "path.to_entire_context"
+              },
+              "additional_info": {
+                "time": 2407
+              }
+            }
+          ]
+        },
+        "next_robot": {
+          "shared_widget_index": 0
+        },
+        "name": "#2",
+        "backside_widgets": [
+          {
+            "widget": {
+              "shared_widget_index": 0
+            },
+            "is_backside": true
+          }
+        ]
+      },
+      "view": {
+        "frontside_width": 66,
+        "frontside_height": 110,
+        "frontside_left": 8,
+        "frontside_top": 203,
+        "backside_width": 550,
+        "backside_height": 385,
+        "backside_left": 10.640625,
+        "backside_top": 349.640625,
+        "advanced_settings_open": true,
+        "saved_width": 31.6666660308838,
+        "saved_height": 32.6666660308838,
+        "backside": false
+      },
+      "version": 1
+    },
+    {
+      "semantic": {
+        "type": "robot",
+        "frontside_conditions": {
+          "semantic": {
+            "type": "number",
+            "operator": "+",
+            "numerator": "1",
+            "denominator": "1",
+            "format": "improper_fraction"
+          },
+          "view": {
+            "backside": false
+          },
+          "version": 1
+        },
+        "body": {
+          "type": "body",
+          "steps": [
+            {
+              "type": "robot_action",
+              "action_name": "pick up",
+              "path": {
+                "type": "path.to_resource",
+                "resource": {
+                  "type": "number",
+                  "operator": "+",
+                  "numerator": "1",
+                  "denominator": "1",
+                  "format": "improper_fraction",
+                  "is_backside": true
+                }
+              },
+              "additional_info": {
+                "time": 2063
+              }
+            },
+            {
+              "type": "robot_action",
+              "action_name": "drop it on",
+              "path": {
+                "type": "path.to_entire_context"
+              },
+              "additional_info": {
+                "time": 1808
+              }
+            }
+          ]
+        },
+        "next_robot": {
+          "shared_widget_index": 1
+        },
+        "name": "#1",
+        "running": true,
+        "backside_widgets": [
+          {
+            "widget": {
+              "shared_widget_index": 1
+            },
+            "is_backside": true
+          }
+        ]
+      },
+      "view": {
+        "frontside_width": 66,
+        "frontside_height": 110,
+        "frontside_left": 257.234375,
+        "frontside_top": 71.640625,
+        "backside_width": 649,
+        "backside_height": 535,
+        "backside_left": 0,
+        "backside_top": 212.046875,
+        "advanced_settings_open": true,
+        "backside_geometry": {
+          "x_scale": 1.1799999999999993,
+          "y_scale": 1.3896103896103897,
+          "original_width": 550,
+          "original_height": 385
+        },
+        "saved_width": 66,
+        "saved_height": 110,
+        "backside": false
+      },
+      "version": 1
+    },
+    {
+      "semantic": {
+        "type": "number",
+        "operator": "+",
+        "numerator": "1",
+        "denominator": "1",
+        "format": "improper_fraction",
+        "running": true,
+        "backside_widgets": [
+          {
+            "widget": {
+              "shared_widget_index": 2
+            }
+          },
+          {
+            "widget": {
+              "shared_widget_index": 2
+            },
+            "is_backside": true
+          }
+        ]
+      },
+      "view": {
+        "frontside_width": 76,
+        "frontside_height": 55,
+        "frontside_left": 23.921875,
+        "frontside_top": 24.921875,
+        "backside_width": 550,
+        "backside_height": 200,
+        "backside_left": 177.671875,
+        "backside_top": 12.671875,
+        "saved_width": 76,
+        "saved_height": 55,
+        "backside": false
+      },
+      "version": 1
+    }
+  ]
+}</div></div>
 </body>
 </html>
