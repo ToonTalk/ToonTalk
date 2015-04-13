@@ -26,6 +26,8 @@ window.TOONTALK.vacuum = (function (TT) {
                         restore:  'suck_all',
                         suck_all: 'suck'};
 
+    var held = false;
+
     vacuum.create = function () {
         var element, mode_class;
         var mode; // mode is either 'suck', 'erase', 'restore', or 'suck_all'
@@ -148,6 +150,9 @@ window.TOONTALK.vacuum = (function (TT) {
                     set_mode('suck');
                     document.addEventListener('keyup', function (event) {
                         var character = String.fromCharCode(event.keyCode);
+                        if (!this.held()) {
+                            return;
+                        }
                         if (character === 's' || character === 'S') {
                             set_mode('suck');
                         } else if (character === 'e' || character === 'E') {
@@ -156,11 +161,27 @@ window.TOONTALK.vacuum = (function (TT) {
                             set_mode('restore');
                         } else if (character === 'a' || character === 'A') {
                             set_mode('suck_all');
+                        } else if (TT.sounds) {
+                            TT.sounds.event_ignored.play();
                         }
-                    });
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }.bind(this));
+                    document.addEventListener('keydown', function (event) {
+                        if (this.held()) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                    }.bind(this));
                     update_title();
                 }      
                 return element;
+            },
+            held: function () {
+                return held;
+            },
+            set_held: function(new_value) {
+                held = new_value;
             }
         };
     };

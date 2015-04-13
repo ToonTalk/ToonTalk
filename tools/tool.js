@@ -15,6 +15,9 @@ window.TOONTALK.tool = (function (TT) {
             var mouse_down = function (event) {
                 // should this check which mouse button? (event.button)
                 var bounding_rect = element.getBoundingClientRect();
+                if (tool.set_held) {
+                    tool.set_held(true);
+                }
                 drag_x_offset = TT.UTILITIES.get_mouse_or_first_touch_event_attribute('clientX', event) - bounding_rect.left;
                 drag_y_offset = TT.UTILITIES.get_mouse_or_first_touch_event_attribute('clientY', event) - bounding_rect.top;
                 tool_height = bounding_rect.height;
@@ -75,6 +78,9 @@ window.TOONTALK.tool = (function (TT) {
                 var widget_under_tool = TT.UTILITIES.find_widget_on_page(event, element, drag_x_offset, drag_y_offset-tool_height/2);
                 var top_level_widget;
                 event.preventDefault();
+                if (tool.set_held) {
+                    tool.set_held(false);
+                }
                 if (highlighted_element) { // remove old highlighting
                     TT.UTILITIES.remove_highlight();
                 }
