@@ -1282,14 +1282,14 @@ window.TOONTALK.robot_backside =
             var training = false;
             backside.change_label_and_title_of_train_button = function (training_started) {
                 if (training_started) {
-                    $train_button.button("option", "label", "Stop training");
+                    $train_button.button("option", "label", "Stop training " + robot.get_name());
                     TT.UTILITIES.give_tooltip($train_button.get(0), "Click to stop training this robot.");
                 } else {
                     if (robot.get_body().is_empty()) {
                         $train_button.button("option", "label", "Train");
                         TT.UTILITIES.give_tooltip($train_button.get(0), "Click to start training this robot.");
                     } else {
-                        $train_button.button("option", "label", "Re-train");
+                        $train_button.button("option", "label", "Re-train " + robot.get_name());
                         TT.UTILITIES.give_tooltip($train_button.get(0), "Click to start training this robot all over again.");
                     }  
                 }
