@@ -1240,12 +1240,21 @@ window.TOONTALK.robot_backside =
             var advanced_settings_button = TT.backside.create_advanced_settings_button(backside, robot);
             var generic_backside_update = backside.update_display.bind(backside);
             var add_to_drop_area = function (widget, drop_area) {
-                var frontside_element = widget.get_frontside_element(true);
-                if (widget.get_default_width) {
-                    $(frontside_element).css({width:  widget.get_default_width(),
-                                              height: widget.get_default_height});
-                }
-                drop_area.appendChild(frontside_element);
+                // delay for dimensions to be known in the DOM
+                setTimeout(function () {
+                    var frontside_element = widget.get_frontside_element(true);
+                    var default_width, default_height;
+                    if (widget.get_default_width) {
+                        default_width  = widget.get_default_width();
+                        default_height = widget.get_default_height();
+                        // top left of drop area with default dimensions
+                        $(frontside_element).css({left: "",
+                                                  top:  "", 
+                                                  width:  default_width,
+                                                  height: default_height});
+                    }
+                    drop_area.appendChild(frontside_element);
+                });
             };
             $next_robot_area.data("drop_area_owner", robot);
             $(run_once_input.button).click(function (event) {

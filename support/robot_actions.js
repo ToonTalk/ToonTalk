@@ -155,6 +155,9 @@ window.TOONTALK.actions =
                                                       context.remove_backside_widget(robot);
                                                       // above will have made the robot not visible
                                                       robot.set_visible(true);
+                                                      // top left of drop area
+                                                      $(frontside_element).css({left: "",
+                                                                                top:  ""});
                                                  }) ;    
             }
             var saved_parent_element = frontside_element.parentElement;
