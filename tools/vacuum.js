@@ -9,32 +9,25 @@
 window.TOONTALK.vacuum = (function (TT) {
     "use strict";
 
-    var vacuum = Object.create(null);
-  
+    var vacuum = Object.create(null); 
     var titles = {suck:     "I'm a vacuum. Drag me over the thing you want to remove.\nType 'e' to switch to erasing, type 'r' to swich to restoring, or 'a' for removing all.\nOr click to switch modes.",
                   erase:    "I'm a vacuum. Drag me over the thing you want to erase (or un-erase).\nType 's' to switch to sucking, type 'r' to switch to restoring, or 'a' for removing all.\nOr click to switch modes.",
                   restore:  "Drag me over the work area. Each time you release me I'll restore a widget.\nType 's' to switch to sucking, type 'e' to swich to erasing, or 'a' for removing all.\nOr click to switch modes.",
                   suck_all: "Drag me over the work area and click. Everything will be removed.\nType 'r' to switch to restoring, type 'e' to switch to erasing, or type 's' to switch to sucking.\nOr click to switch modes."};
-
     var mode_classes = {suck:     "toontalk-vacuum-s",
                         erase:    "toontalk-vacuum-e",
                         restore:  "toontalk-vacuum-r",
                         suck_all: "toontalk-vacuum-a"};
-
     var next_mode    = {suck:     'erase',
                         erase:    'restore',
                         restore:  'suck_all',
                         suck_all: 'suck'};
-
     var held = false;
-
     var pick_me_up;
-
     vacuum.create = function () {
         var element, mode_class;
         var mode; // mode is either 'suck', 'erase', 'restore', or 'suck_all'
         var removed_items = [];
-
         var set_mode = function (new_value) {
             if (mode !== new_value) {
                 mode = new_value;
@@ -44,11 +37,9 @@ window.TOONTALK.vacuum = (function (TT) {
                 update_title();
             }
         };
-
         var get_next_mode = function () {
             return next_mode[mode];
         };
-
         var update_title = function () {
             if (mode === 'restore' && removed_items.length === 0) {
                 TT.UTILITIES.give_tooltip(element, "I'm empty.\nType 's' to switch to sucking, or type 'e' to switch to erasing, or 'a' to remove all.");
@@ -57,8 +48,44 @@ window.TOONTALK.vacuum = (function (TT) {
             }
         };
 
-        return {
-            apply_tool: function (widget_side, event) {
+        document.addEventListener('keyup', function (event) {
+            var character = String.fromCharCode(event.keyCode);
+            // control keys are used by browser
+            if (event.altKey) {
+                if (!element) {
+                    vacuum.the_vacuum.get_element(); // this sets element since should only be one vacuum
+                    $(element).css({left: TT.tool.pageX,
+                                    top:  TT.tool.pageY});
+                    document.body.appendChild(element);
+                }
+                pick_me_up();
+            }
+            if (!vacuum.the_vacuum.held()) {
+                return;
+            }
+            if (character === 's' || character === 'S') {
+                set_mode('suck');
+            } else if (character === 'e' || character === 'E') {
+                set_mode('erase');
+            } else if (character === 'r' || character === 'R') {
+                 set_mode('restore');
+            } else if (character === 'a' || character === 'A') {
+                 set_mode('suck_all');
+            } else if (TT.sounds) {
+                 TT.sounds.event_ignored.play();
+            }
+            event.preventDefault();
+            event.stopPropagation();
+       });
+       document.addEventListener('keydown', function (event) {
+            if (vacuum.the_vacuum.held()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+       });
+       // so initialisation can access the vacuum
+       TT.vacuum.the_vacuum = 
+           {apply_tool: function (widget_side, event) {
                 var widget = widget_side.get_widget();
                 var remove_widget = function (widget_side) {  
                     var copy;
@@ -150,35 +177,6 @@ window.TOONTALK.vacuum = (function (TT) {
                     $(element).addClass("toontalk-vacuum");
                     pick_me_up = TT.tool.add_listeners(element, this);
                     set_mode('suck');
-                    document.addEventListener('keyup', function (event) {
-                        var character = String.fromCharCode(event.keyCode);
-                        // control keys are used by browser
-                        if (event.altKey) {
-                            pick_me_up();
-                        }
-                        if (!this.held()) {
-                            return;
-                        }
-                        if (character === 's' || character === 'S') {
-                            set_mode('suck');
-                        } else if (character === 'e' || character === 'E') {
-                            set_mode('erase');
-                        } else if (character === 'r' || character === 'R') {
-                            set_mode('restore');
-                        } else if (character === 'a' || character === 'A') {
-                            set_mode('suck_all');
-                        } else if (TT.sounds) {
-                            TT.sounds.event_ignored.play();
-                        }
-                        event.preventDefault();
-                        event.stopPropagation();
-                    }.bind(this));
-                    document.addEventListener('keydown', function (event) {
-                        if (this.held()) {
-                            event.preventDefault();
-                            event.stopPropagation();
-                        }
-                    }.bind(this));
                     update_title();
                 }      
                 return element;
@@ -190,6 +188,7 @@ window.TOONTALK.vacuum = (function (TT) {
                 held = new_value;
             }
         };
+        return TT.vacuum.the_vacuum;
     };
 
     TT.creators_from_json["vacuum"] = function (json, additional_info) {

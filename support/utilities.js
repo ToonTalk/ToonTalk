@@ -621,6 +621,9 @@ window.TOONTALK.UTILITIES =
         } else {
             $("#google_translate_element").remove();
         }
+        if (!TT.vacuum.the_vacuum) {
+            TT.vacuum.create();
+        }
         TT.UTILITIES.add_test_all_button();
         // compute the default dimensions of robots
         TT.UTILITIES.run_when_dimensions_known($robot_element_for_determining_dimensions.get(0), 

@@ -8,6 +8,12 @@
 
 window.TOONTALK.tool = (function (TT) {
     "use strict";
+    // tools need to know mouse location if they are called via keyboard
+    document.addEventListener('mousemove', function (event) {
+        TT.tool.pageX = event.pageX;
+        TT.tool.pageY = event.pageY;
+    });
+
     return {
         add_listeners: function (element, tool) {
             var home_position, drag_x_offset, drag_y_offset, tool_height, highlighted_element;
@@ -42,7 +48,9 @@ window.TOONTALK.tool = (function (TT) {
             var mouse_down = function (event) {
                 // should this check which mouse button? (event.button)
                 var bounding_rect = element.getBoundingClientRect();
-                pick_up();
+                if (!tool.held || !tool.held()) {
+                    pick_up();
+                }
                 drag_x_offset = TT.UTILITIES.get_mouse_or_first_touch_event_attribute('clientX', event) - bounding_rect.left;
                 drag_y_offset = TT.UTILITIES.get_mouse_or_first_touch_event_attribute('clientY', event) - bounding_rect.top;
             };
