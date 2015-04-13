@@ -729,9 +729,23 @@ window.TOONTALK.robot_action =
                     path_description = to_string_info.robot_being_trained_description;
                     to_string_info.robot_being_trained_description = undefined;
                 } 
-                if (['pick up', 'edit', 'remove', 'copy', 'change whether erased', 'pick up a copy of', 'drop it on the text area of'].indexOf(action_name) >= 0 && 
-                    path_description.indexOf("hole of") >= 0) {
-                    return prefix + action_description + " what is in " + path_description + suffix;
+                if (['pick up', 'edit', 'remove', 'copy', 'change whether erased', 'pick up a copy of', 'drop it on the text area of'].indexOf(action_name) >= 0) {
+                    if (path_description.indexOf("hole of") >= 0) {
+                        return prefix + action_description + " what is in " + path_description + suffix;
+                    }
+                    if (path_description.indexOf("a When") === 0) { // startsWith in ECMAScript 6
+                        // 'a when' occurs because robot's titles are best just jumping in saying  "When ..." but then when 
+                        // the robot itself is being manipulated then an indefinite article is added
+                        path_description = path_description.substring(3);
+                        path_description = TT.UTILITIES.remove_encoded_HTML(path_description);
+                        // might be long so elide it
+                        path_description = TT.UTILITIES.elide(path_description, 80, 1);
+                        if (path_description[path_description.length-1] === ".") {
+                            // remove period from robot's description
+                            path_description = path_description.substring(0, path_description.length-1);
+                        }
+                        return prefix + action_description + " a robot who w" + path_description + suffix + "\n";
+                    }
                 }
                 return prefix + action_description + " " + path_description + suffix;
             };

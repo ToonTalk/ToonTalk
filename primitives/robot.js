@@ -911,10 +911,12 @@ window.TOONTALK.robot = (function (TT) {
         postfix = "";
         next_robot = this.get_next_robot();
         if (frontside_conditions.is_top_level()) {
-            robot_conditions_description = "A robot who when the workspace's green flag is pressed";
+            robot_conditions_description = "When the workspace's green flag " + 
+                                           TT.UTILITIES.encode_HTML_for_title("<span class='toontalk-green-flag-icon'></span>") +
+                                           " is pressed";
         } else {
             frontside_conditions_string = TT.UTILITIES.add_a_or_an(frontside_conditions.get_full_description({role: "conditions"}));
-            robot_conditions_description = "A robot who when working on something that matches " + frontside_conditions_string;
+            robot_conditions_description = "When working on something that matches " + frontside_conditions_string;
         }
         if (backside_conditions) {
             Object.keys(backside_conditions).forEach(function (key) {

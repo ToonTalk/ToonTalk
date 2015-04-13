@@ -694,6 +694,30 @@ window.TOONTALK.UTILITIES =
             return has_ancestor_element(element.parentNode, possible_ancestor);
         }
     };
+    var process_encoded_HTML = function (s, encoded_HTML_function) {
+        var cursor = 0;
+        var token = "decodeURIComponent";
+        var encoding_token_start = s.indexOf(token);
+        var decoded = "";
+        var encoding_start, encoding_end;
+        if (encoding_token_start < 0) {
+            // no need to call substring if there are no encodings
+            return s;
+        }
+        while (encoding_token_start >= 0) {
+            encoding_start = encoding_token_start+token.length;
+            encoding_end = s.indexOf(token,encoding_start);
+            if (encoding_end < 0) {
+                TT.UTILITIES.report_internal_error("Expected title to have an even number of occurrences of " + token);
+                return s;
+            }
+            decoded += s.substring(cursor, encoding_token_start) + encoded_HTML_function(s.substring(encoding_start, encoding_end));
+            cursor = encoding_end+token.length;
+            encoding_token_start = s.indexOf(token, cursor);
+        }
+        decoded += s.substring(cursor);
+        return decoded; 
+    };
     // for implementing zero_timeout
     var timeouts = [];
     var timeout_message_name = "zero-timeout-message";
@@ -1142,6 +1166,20 @@ window.TOONTALK.UTILITIES =
                               (title ? title + "\n" : "") +
                               div_hidden + JSON.stringify(json, TT.UTILITIES.clean_json, '  ') + div_close + 
                    div_close;
+    },
+
+    elide: function (s, length, fraction_in_first_part) {
+        var first_part = Math.round(length*fraction_in_first_part);
+        var last_part;
+        var next_space;
+        if (s.length <= length) {
+            return s;
+        }
+        // break at word boundary -- could use regular expression
+        first_part = Math.max(first_part, s.indexOf(" ", first_part));
+        last_part = s.length-(length-first_part);
+        last_part = Math.max(last_part, s.indexOf(" ", last_part)+1);
+        return s.substring(0, first_part) + " ... " + s.substring(last_part, s.length);
     },
 
     clean_json: function (key, value) {
@@ -1649,33 +1687,9 @@ window.TOONTALK.UTILITIES =
                           var text_length = ui.tooltip.get(0).textContent.length;
                           var default_capacity = 100;
                           var tooltip = ui.tooltip.get(0);
-                          var decode = function (s) {
-                              var decoded = "";
-                              var cursor = 0;
-                              var token = "decodeURIComponent";
-                              var encoding_token_start = s.indexOf(token);
-                              var encoding_start, encoding_end;
-                              if (encoding_token_start < 0) {
-                                  // no need to call substring if there are encodings
-                                  return s;
-                              }
-                              while (encoding_token_start >= 0) {
-                                  encoding_start = encoding_token_start+token.length;
-                                  encoding_end = s.indexOf(token,encoding_start);
-                                  if (encoding_end < 0) {
-                                      TT.UTILITIES.report_internal_error("Expected title to have an even number of occurrences of " + token);
-                                      return s;
-                                  }
-                                  decoded += s.substring(cursor, encoding_token_start) + decodeURIComponent(s.substring(encoding_start, encoding_end));
-                                  cursor = encoding_end+token.length;
-                                  encoding_token_start = s.indexOf(token, cursor);
-                              }
-                              decoded += s.substring(cursor);
-                              return decoded;
-                          }
                           var new_width, position;
                           // replace all new lines with <br> breaks
-                          tooltip.innerHTML = decode(ui.tooltip.get(0).textContent.replace(/(\r\n|\n|\r)/g, "<br>"));
+                          tooltip.innerHTML = process_encoded_HTML(ui.tooltip.get(0).textContent.replace(/(\r\n|\n|\r)/g, "<br>"), decodeURIComponent);
                           // width is 340 by default but if more than fits then make wider
                           if (text_length > default_capacity) {
                               new_width = Math.min(800, maximum_width_if_moved || $(window).width()-100);
@@ -1716,6 +1730,13 @@ window.TOONTALK.UTILITIES =
 
         encode_HTML_for_title: function (html) {
             return encodeURIComponent("decodeURIComponent" + html + "decodeURIComponent"); 
+        },
+
+        remove_encoded_HTML: function (s) {
+            return process_encoded_HTML(s, 
+                                        function () {
+                                            return ""; // replace encodings with the empty string
+                                        });
         },
         
         add_one_shot_event_handler: function (element, event_name, maximum_wait, handler) {
