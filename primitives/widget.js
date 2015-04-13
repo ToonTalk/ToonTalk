@@ -331,8 +331,7 @@ window.TOONTALK.widget = (function (TT) {
                         }
                         if (backside_widget.is_robot()) {
                             // only frontsides of robots run
-                            if (!backside_widget_side.is_backside() && (!running || !backside_widget.get_running())) {
-                                // don't run robot if already running
+                            if (!backside_widget_side.is_backside()) {
                                 // could this set_stopped stuff be combined with set_running?
                                 if (running) {
                                     backside_widget.set_stopped(false);
