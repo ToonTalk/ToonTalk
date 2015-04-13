@@ -1728,7 +1728,6 @@ a {
 .toontalk-conditions-contents {
 	width:  100%;
 	height: 100%;
-	/* position: absolute; */
 }
 .toontalk-conditions-contents-container {
 /* 	Can't add the border to toontalk-conditions-contents because erased elements have 0 opacity */
@@ -1746,12 +1745,10 @@ a {
 }
 .toontalk-drop-area {
 	background-color: rgb(187, 246, 248);
-	min-height: 35%;
 	border: solid rgb(126, 148, 206) 2px;
 	border-radius: 6px;
 	width:  95%;
 	padding-top: 10px;
-	/* display:  inline; */
 }
 .toontalk-drop-area-instructions {
 	opacity: .4;
