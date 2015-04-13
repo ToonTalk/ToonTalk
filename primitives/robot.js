@@ -1169,7 +1169,7 @@ window.TOONTALK.robot_backside =
         var backside_condition_widget, area_class_name;
         if (frontside_condition_widget) {
             if (frontside_condition_widget.is_top_level()) {
-                if (backside_element.firstChild.textContent !== green_flag_message) {
+                if (backside_element.firstChild.textContent.indexOf("This robot always runs when the workspace green flag") < 0) {
                     backside_element.insertBefore(TT.UTILITIES.create_text_element(green_flag_message),
                                                   backside_element.firstChild);
                 }
