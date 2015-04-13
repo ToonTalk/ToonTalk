@@ -942,7 +942,7 @@ window.TOONTALK.robot = (function (TT) {
         robot_description = prefix + robot_conditions_description + 
                             (to_string_info && to_string_info.person === 'third' ? " he will " : " I will ") + 
                             (this.get_run_once() ? "" : "repeatedly ") +
-                            "\n" + body.toString({robot: this}) + postfix;
+                            "\n" + (body.toString({robot: this}) || "do nothing") + postfix;
         if (to_string_info && to_string_info.resource) {
             // restore "person"
             to_string_info.person = original_person;
