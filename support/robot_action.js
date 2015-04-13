@@ -687,10 +687,14 @@ window.TOONTALK.robot_action =
                 if (action_name === "click the button of") {
                     switch (additional_info.button_selector) {
                     case ".toontalk-green-flag":
-                        action_description = "click the green flag of";
+                        action_description = "click the green flag " +
+                                              TT.UTILITIES.encode_HTML_for_title("<span class='toontalk-green-flag-icon'></span>") + 
+                                              " of";
                         break;
                     case ".toontalk-stop-sign":
-                        action_description = "click the stop sign of";
+                        action_description = "click the stop sign " +
+                                             TT.UTILITIES.encode_HTML_for_title("<span class='toontalk-stop-sign-icon'></span>") + 
+                                             " of";
                         break;
                     default:
                         return "";

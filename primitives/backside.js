@@ -66,7 +66,8 @@ window.TOONTALK.backside =
             var update_green_flag_title = function () {
                                               var title;
                                               if (widget.get_running()) {
-                                                  title = "To stop this click on the stop sign.";
+                                                  title = "To stop this click on the stop sign " + 
+                                                          TT.UTILITIES.encode_HTML_for_title("<span class='toontalk-stop-sign-icon'></span>");
                                               } else if (widget.can_run()) {
                                                   title = "Click this to start this running."; 
                                               } else {
@@ -79,7 +80,9 @@ window.TOONTALK.backside =
                                              if (widget.get_running()) {
                                                  title = "Click to stop this from running.";
                                              } else if (widget.can_run()) {
-                                                 title = "This has stopped. Click on the flag to start running it."; 
+                                                 title = "This has stopped. Click on the flag " +
+                                                         TT.UTILITIES.encode_HTML_for_title("<span class='toontalk-green-flag-icon'></span>") + 
+                                                         " to start running it."; 
                                              } else {
                                                  title = "There is nothing to run here.";
                                              }
