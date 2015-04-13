@@ -1939,7 +1939,7 @@ window.TOONTALK.UTILITIES =
         
         create_text_element: function (text) {
             var div = document.createElement("div");
-            div.textContent = text;
+            div.innerHTML = text;
             $(div).addClass('ui-widget');
             return div;
         },
