@@ -1165,7 +1165,7 @@ window.TOONTALK.robot_backside =
         var frontside_condition_widget = robot.get_frontside_conditions();
         var backside_conditions = robot.get_backside_conditions();
         var robot_visible = robot.visible();
-        var green_flag_message = "This robot always runs when the workspace green flag is clicked.";
+        var green_flag_message = "This robot always runs when the workspace green flag <span class='toontalk-green-flag-icon'></span> is clicked.";
         var backside_condition_widget, area_class_name;
         if (frontside_condition_widget) {
             if (frontside_condition_widget.is_top_level()) {
