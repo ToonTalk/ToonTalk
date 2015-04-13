@@ -482,14 +482,9 @@ window.TOONTALK.UTILITIES =
             top  = page_y - (target_position.top  + (drag_y_offset || 0));
             $source.css({left: left,
                          top:  top});
-//             if ($source.is(".toontalk-frontside") && !$source.is('.ui-resizable')) {
-//                 // without the setTimeout the following prevents dragging components (e.g. widgets in boxes)
-//                 setTimeout(function () {
-//         TT.UTILITIES.make_resizable($source, source_widget);
-//         },
-//         0);
-//             }
-            if (json_object && json_object.semantic.running) {
+            if (json_object && json_object.semantic.running && !TT.UTILITIES.get_dragee()) {
+                // JSON was dropped here from outside so if was running before should be here
+                // but not if just a local move
                 source_widget.set_running(true);
             }
         } else if ($target.is(".toontalk-drop-area")) {
@@ -536,22 +531,11 @@ window.TOONTALK.UTILITIES =
                     target_widget = TT.UTILITIES.widget_from_jquery(new_target);
                     if (target_widget) {
                         target_widget.get_backside().widget_dropped_on_me(source_widget, source_is_backside, event);
-            // place it directly underneath the original target
-//             $source.css({
-//                 left: $target.position().left,
-//                 top:  $target.position().top + $target.height()
-//             });
                     }
                 }
             }
         }
         TT.UTILITIES.remove_highlight();
-//         if (target_widget && !drop_handled) {
-//             // is the obsolete? If so is drop_handled?
-//             if (target_widget.widget_dropped_on_me) {
-//                 target_widget.widget_dropped_on_me(source_widget, source_is_backside, event);
-//             }
-//         }
     };
     var handle_drop_from_file_contents = function (file, $target, target_widget, target_position, event) {
         var reader = new FileReader();
@@ -665,7 +649,8 @@ window.TOONTALK.UTILITIES =
                      vacuum_suck:   create_sound("DUSTBUST.WAV"),
                      drop:          create_sound("BOOK_DROP.WAV"),
                      magic:         create_sound("MAGIC.WAV"),
-                     fall_inside:   create_sound("FALL_INSIDE.WAV")};
+                     fall_inside:   create_sound("FALL_INSIDE.WAV"),
+                     event_ignored: create_sound("PLOP.WAV")};
         TT.sounds.bird_fly.loop = true;
     };
     var load_script = function (url) {
