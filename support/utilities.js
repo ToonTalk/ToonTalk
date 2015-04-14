@@ -2413,6 +2413,11 @@ window.TOONTALK.UTILITIES =
 //                                                               height: ui.size.height});
                                             widget.rerender();
                                 },
+                                stop: function (event, ui) {
+                                    if (widget.robot_in_training()) {
+                                        
+                                    }
+                                },
                                // the corner handles looked bad on element widgets
                                // and generally got in the way
                                handles: "n,e,s,w"

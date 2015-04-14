@@ -603,10 +603,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         }
         if (handle_training && this.robot_in_training()) {
             this.robot_in_training().edited(this, {setter_name: "set_attribute",
-                                               argument_1: attribute,
-                                               argument_2: new_value,
-                                               toString: "change the '" + attribute + "' style to " + new_value + " of",
-                                               button_selector: ".toontalk-element-" + attribute + "-attribute-input"});
+                                                   argument_1: attribute,
+                                                   argument_2: new_value,
+                                                   toString: "change the '" + attribute + "' style to " + new_value + " of",
+                                                   button_selector: ".toontalk-element-" + attribute + "-attribute-input"});
         }
         this.add_to_css(attribute, new_value);
         if (add_to_style_attributes) {

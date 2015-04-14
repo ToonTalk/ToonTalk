@@ -570,9 +570,9 @@ window.TOONTALK.backside =
                         action_string = "change dragging back to moving for ";
                     }
                     widget.robot_in_training().edited(widget, {setter_name: "set_infinite_stack",
-                                                         argument_1: infinite_stack,
-                                                         toString: action_string,
-                                                         button_selector: ".toontalk-infinite-stack-check-box"});
+                                                               argument_1: infinite_stack,
+                                                               toString: action_string,
+                                                               button_selector: ".toontalk-infinite-stack-check-box"});
                 }
                 event.stopPropagation();
             });

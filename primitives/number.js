@@ -1049,14 +1049,14 @@ window.TOONTALK.number_backside =
                     first_class_name = event.srcElement.className.split(" ", 1)[0];
                     if (first_class_name === "toontalk-denominator-input") {
                         number.robot_in_training().edited(number, {setter_name: "set_denominator",
-                                                               argument_1: denominator,
-                                                               toString: "by changing the value of the denominator to " + denominator,
-                                                               button_selector: "." + first_class_name});
+                                                                   argument_1: denominator,
+                                                                   toString: "by changing the value of the denominator to " + denominator,
+                                                                   button_selector: "." + first_class_name});
                     } else {
                         number.robot_in_training().edited(number, {setter_name: "set_numerator",
-                                                               argument_1: numerator,
-                                                               toString: "by changing the value of the numerator to " + numerator,
-                                                               button_selector: "." + first_class_name});
+                                                                   argument_1: numerator,
+                                                                   toString: "by changing the value of the numerator to " + numerator,
+                                                                   button_selector: "." + first_class_name});
                     }         
                 }
                 number.rerender();
@@ -1067,10 +1067,10 @@ window.TOONTALK.number_backside =
                 number.set_format(format, true);
                 if (number.robot_in_training()) {
                     number.robot_in_training().edited(number, {setter_name: "set_format",
-                                                           argument_1: format,
-                                                           toString: "by changing the format to " + format + " of the number",
-                                                           // just use the first className to find this button later
-                                                           button_selector: "." + selected_button.className.split(" ", 1)[0]});
+                                                               argument_1: format,
+                                                               toString: "by changing the format to " + format + " of the number",
+                                                               // just use the first className to find this button later
+                                                               button_selector: "." + selected_button.className.split(" ", 1)[0]});
                 }
                 number.rerender();
             };
@@ -1080,10 +1080,10 @@ window.TOONTALK.number_backside =
                 number.set_operator(operator, true);
                 if (number.robot_in_training()) {
                     number.robot_in_training().edited(number, {setter_name: "set_operator",
-                                                           argument_1: operator,
-                                                           toString: "by changing the operator to " + operator + " of the number",
-                                                           // just use the first className to find this button later
-                                                           button_selector: "." + selected_button.className.split(" ", 1)[0]});
+                                                               argument_1: operator,
+                                                               toString: "by changing the operator to " + operator + " of the number",
+                                                               // just use the first className to find this button later
+                                                               button_selector: "." + selected_button.className.split(" ", 1)[0]});
                 }
             };
             var number_set = TT.UTILITIES.create_horizontal_table(numerator_input.container, slash, denominator_input.container);
