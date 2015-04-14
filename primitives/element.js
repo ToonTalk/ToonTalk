@@ -84,6 +84,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         var attribute_widgets_in_backside_table = {}; // table relating attribute_name and widget in backside table
         var original_copies                     = {}; // table relating attribute_name and all the widget copies for that attribute
         var sound_effect;
+        var source_URL;
         var html, initialized, original_width, original_height, current_width, current_height,
             pending_css, transform_css, on_update_display_handlers, $image_element;
         if (!style_attributes) {
@@ -336,6 +337,12 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         new_element.get_sound_effect = function () {
             return sound_effect;
         };
+        new_element.get_source_URL = function () {
+            return source_URL;
+        };
+        new_element.set_source_URL = function (new_value) {
+            source_URL = new_value;
+        };
         new_element = new_element.add_standard_widget_functionality(new_element);
         new_element.drag_started = function (json, is_resource) {
             this.drag_x_offset = json.view.drag_x_offset;
@@ -397,7 +404,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             }
             this.apply_css();
             this.fire_on_update_display_handlers();
-            TT.UTILITIES.give_tooltip(frontside_element, "Click to see the backside where you can place robots or change the style of this " + element_description(frontside_element) + ".");
+            TT.UTILITIES.give_tooltip(frontside_element,
+                                      "Click to see the backside where you can place robots or change the style of this " + 
+                                      element_description(frontside_element) + ".");
         };
         new_element.initialize_element = function () {
             var frontside_element = this.get_frontside_element();
