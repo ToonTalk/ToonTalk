@@ -1721,6 +1721,9 @@ a {
 }
 .toontalk-hide-backside-button {
 }
+.toontalk-play-sound-effect-button {
+	margin-right:  6px;
+}
 .toontalk-description-input {
 	width: 24em;
 	text-align: inherit;
