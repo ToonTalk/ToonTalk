@@ -173,7 +173,7 @@ window.TOONTALK.UTILITIES =
 //         $(element).find("*").removeClass("toontalk-ignore-events");
         $source = dragee;
         drag_ended();
-        if (!$source && !json_object && !event.dataTransfer.files) {
+        if (!$source && !json_object && !event.dataTransfer.files && !event.dataTransfer.getData("text/uri-list")) {
             if (!event.dataTransfer) {
                 TT.UTILITIES.report_internal_error("Drop failed since there is no event.dataTransfer");
             } else {
@@ -551,6 +551,7 @@ window.TOONTALK.UTILITIES =
         var reader = new FileReader();
         var image_file = file.type.indexOf("image") === 0;
         var audio_file = file.type.indexOf("audio") === 0;
+        var video_file = file.type.indexOf("video") === 0;
         var widget, json, element_HTML, json_object;
         reader.onloadend = function () {
             if (image_file) {
@@ -558,6 +559,8 @@ window.TOONTALK.UTILITIES =
             } else if (audio_file) {
                  widget = TT.element.create(file.name + " sound");
                  widget.set_sound_effect(new Audio(reader.result));
+            } else if (video_file) {
+                widget = TT.element.create("<video src='" + reader.result + "' alt='" + file.name + "'/>");
             } else {
                 json = extract_json_from_div_string(reader.result);
                 if (json) {
@@ -579,7 +582,7 @@ window.TOONTALK.UTILITIES =
             }
             handle_drop($target, $(widget.get_frontside_element(true)), widget, target_widget, target_position, event, json_object);
         }
-        if (image_file || audio_file) {
+        if (image_file || audio_file || video_file) {
             reader.readAsDataURL(file);
         } else {
             reader.readAsText(file);
@@ -601,7 +604,7 @@ window.TOONTALK.UTILITIES =
                     request.removeEventListener('readystatechange', response_handler);
                     handle_drop($target, $(widget.get_frontside_element(true)), widget, target_widget, target_position, event);
                 };
-                TT.UTILITIES.create_widget_from_URL(widget_callback, error_handler);               
+                TT.UTILITIES.create_widget_from_URL(uri, widget_callback, error_handler);               
         };
         uri_list.split(/\r?\n/).forEach(function (uri) {
             if (uri[0] !== "#") {
@@ -1233,6 +1236,8 @@ window.TOONTALK.UTILITIES =
                     widget.set_sound_effect(new Audio(url));
                 } else if (type.indexOf("image") === 0) {
                     widget = TT.element.create("<img src='" + url + "'>");
+                } else if (type.indexOf("video") === 0) {
+                    widget = TT.element.create("<video src='" + url + " ' width='320' height='240'>");
                 } else if (type.indexOf("text") === 0 && type.indexOf("text/html") < 0) {
                     // is text but not HTML
                     if (this.responseText) {
@@ -1335,6 +1340,10 @@ window.TOONTALK.UTILITIES =
             if (!event.dataTransfer) {
                 // not really an error -- could be a drag of an image into ToonTalk
 //              console.log("no dataTransfer in drop event");
+                return;
+            }
+            if (event.dataTransfer.files.length > 0 || event.dataTransfer.getData("text/uri-list").length > 0) {
+                // these create element widgets without going through JSON
                 return;
             }
             // following code could be simplified by using event.dataTransfer.types

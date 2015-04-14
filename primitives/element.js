@@ -1277,7 +1277,7 @@ window.TOONTALK.element_backside =
             var edit_HTML = TT.UTILITIES.get_current_url_boolean_parameter("elementHTML", false);
             var getter = edit_HTML ? "get_HTML" : "get_text";
             var generic_backside_update = backside.update_display.bind(backside);
-            var text, html_input, update_html, drop_handler, $play_sound_effect_button;
+            var text, html_input, update_html, drop_handler, $play_sound_effect_button, $play_video_button;
             // need to ensure that it 'knows' its textContent, etc.
             element_widget.initialize_element();
             text = element_widget[getter]().trim();
@@ -1321,7 +1321,17 @@ window.TOONTALK.element_backside =
                                                          element_widget.robot_in_training().button_clicked(".toontalk-play-sound-effect-button", element_widget);
                                                      }                                            
                                                  });
-                backside_element.appendChild($play_sound_effect_button.get(0));                
+                backside_element.appendChild($play_sound_effect_button.get(0));
+            } else if ($(element_widget.get_frontside_element()).find("video").is("*")) {
+                $play_video_button = $("<button>Play video</button>").button();
+                $play_video_button.addClass("toontalk-play-video-button");
+                $play_video_button.click(function (event) {
+                                             $(element_widget.get_frontside_element()).find("video").get(0).play();
+                                             if (element_widget.robot_in_training()) {
+                                                 element_widget.robot_in_training().button_clicked(".toontalk-play-video-button", element_widget);
+                                             }                                            
+                                         });
+                backside_element.appendChild($play_video_button.get(0));
             }
             update_style_attribute_chooser(attributes_chooser, element_widget, attribute_table);
             update_style_attributes_table(attribute_table, element_widget, backside);

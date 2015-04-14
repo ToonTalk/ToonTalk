@@ -1724,7 +1724,7 @@ a {
 }
 .toontalk-hide-backside-button {
 }
-.toontalk-play-sound-effect-button {
+.toontalk-play-sound-effect-button, .toontalk-play-video-button {
 	margin-right:  6px;
 }
 .toontalk-description-input {
