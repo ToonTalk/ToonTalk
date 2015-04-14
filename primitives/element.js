@@ -1291,7 +1291,9 @@ window.TOONTALK.element_backside =
                 $play_sound_effect_button.addClass("toontalk-play-sound-effect-button");
                 $play_sound_effect_button.click(function (event) {
                                                      element_widget.get_sound_effect().play();
-                                                     // train robot                                              
+                                                     if (element_widget.robot_in_training()) {
+                                                         element_widget.robot_in_training().button_clicked(".toontalk-play-sound-effect-button", element_widget);
+                                                     }                                            
                                                  });
                 backside_element.appendChild($play_sound_effect_button.get(0));                
             }
