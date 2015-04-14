@@ -573,9 +573,9 @@ window.TOONTALK.UTILITIES =
                     // just use the text as the HTML
                     widget = TT.element.create(reader.result);
                 }
-                if (widget && widget.robot_in_training()) {
-                    widget.robot_in_training().drop_from_data_transfer(widget, target_widget);
-                }
+            }
+            if (widget && widget.robot_in_training()) {
+                widget.robot_in_training().drop_from_data_transfer(widget, target_widget);
             }
             handle_drop($target, $(widget.get_frontside_element(true)), widget, target_widget, target_position, event, json_object);
         }
