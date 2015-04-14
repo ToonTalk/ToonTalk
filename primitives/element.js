@@ -498,6 +498,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         // copy has a copy of the attributes array as well
         var style_attributes = this.get_style_attributes();
         var copy = element.create(this.get_HTML(), style_attributes.slice(), this.get_description(), this.get_sound_effect());
+        copy.set_source_URL(this.get_source_URL());
         if (parameters) {
             if (!parameters.elements_copied) {
                 parameters.elements_copied = {};
@@ -994,7 +995,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 attributes: json_attributes,
                 attribute_values: json_attributes.map(this.get_attribute.bind(this)),
                 additional_classes: this.get_additional_classes(),
-                sound_effect: this.get_sound_effect() && this.get_sound_effect().src
+                sound_effect: this.get_sound_effect() && this.get_sound_effect().src,
+                source_URL: this.get_source_URL()
                 };
     };
     
@@ -1018,12 +1020,27 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         if (json.additional_classes) {
             reconstructed_element.set_additional_classes(json.additional_classes);
         }
+        if (json.source_URL) {
+            reconstructed_element.set_source_URL(json.source_URL);
+            reconstructed_element.refresh();
+        }
         return reconstructed_element;
     };
     
     element.create_attribute_path = function (attribute_widget, robot) {
         var path_to_element_widget = TT.path.get_path_to(attribute_widget.element_widget, robot);
         return this.extend_attribute_path(path_to_element_widget, attribute_widget.attribute);
+    };
+
+    element.refresh = function () {
+        if (this.get_source_URL()) {
+            TT.UTILITIES.create_widget_from_URL(this.get_source_URL(),
+                                                function (up_to_date_element) {
+                                                    if (up_to_date_element) {
+                                                        this.set_HTML(up_to_date_element.get_HTML());
+                                                    }
+                                                }.bind(this));
+        }
     };
     
     element.extend_attribute_path = function (path_to_element_widget, attribute_name) {

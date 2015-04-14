@@ -596,7 +596,12 @@ window.TOONTALK.UTILITIES =
                         handle_drop($target, $(widget.get_frontside_element(true)), widget, target_widget, target_position, event);
                     }
                 };
-                TT.UTILITIES.create_widget_from_URL(widget_callback);               
+                var error_handler = function (response_event) {
+                    var widget = TT.element.create("<div class='toontalk-iframe-container'><iframe src='" + url + "' width='320' height='240'></div>");
+                    request.removeEventListener('readystatechange', response_handler);
+                    handle_drop($target, $(widget.get_frontside_element(true)), widget, target_widget, target_position, event);
+                };
+                TT.UTILITIES.create_widget_from_URL(widget_callback, error_handler);               
         };
         uri_list.split(/\r?\n/).forEach(function (uri) {
             if (uri[0] !== "#") {
@@ -1217,47 +1222,44 @@ window.TOONTALK.UTILITIES =
 
     create_widget_from_URL:  function (url, widget_callback, error_callback) {
         var response_handler = function (response_event) {
-        try {
-            var type = this.getResponseHeader('content-type');
-            var widget;
-            if (!type) {
-                 return;
-            }
-            if (type.indexOf("audio") === 0) {
-                widget = TT.element.create(url);
-                widget.set_sound_effect(new Audio(url));
-            } else if (type.indexOf("image") === 0) {
-                widget = TT.element.create("<img src='" + url + "'>");
-            } else if (type.indexOf("text") === 0 && type.indexOf("text/html") < 0) {
-                // is text but not HTML
-                if (this.responseText) {
-                    widget = TT.element.create(this.responseText);
-                    idget.set_source_URL(url);
+            try {
+                var type = this.getResponseHeader('content-type');
+                var widget;
+                if (!type) {
+                     return;
                 }
-           } else {  
-              widget = TT.element.create("<div class='toontalk-iframe-container'><iframe src='" + url + "' width='320' height='240'></div>");     
-           }
-           if (widget) {
-               request.removeEventListener('readystatechange', response_handler);
-               widget_callback(widget);
-           }
-        } catch (e) {
-           TT.UTILITIES.display_message("Error: " + e + ". When trying to fetch " + url);
-           if (error_callback) {
-               error_callback(e);
-           }
-           widget_callback();
-        }
-        var error_handler = function (response_event) {
-            var widget = TT.element.create("<div class='toontalk-iframe-container'><iframe src='" + url + "' width='320' height='240'></div>");
-            request.removeEventListener('readystatechange', response_handler);
-            handle_drop($target, $(widget.get_frontside_element(true)), widget, target_widget, target_position, event);
-        };
-        var request = new XMLHttpRequest();
-        request.addEventListener('readystatechange', response_handler);
-        request.addEventListener('error', error_handler);
-        request.open('GET', url, true);
-        request.send();
+                if (type.indexOf("audio") === 0) {
+                    widget = TT.element.create(url);
+                    widget.set_sound_effect(new Audio(url));
+                } else if (type.indexOf("image") === 0) {
+                    widget = TT.element.create("<img src='" + url + "'>");
+                } else if (type.indexOf("text") === 0 && type.indexOf("text/html") < 0) {
+                    // is text but not HTML
+                    if (this.responseText) {
+                        widget = TT.element.create(this.responseText);
+                        widget.set_source_URL(url);
+                    }
+               } else {  
+                  widget = TT.element.create("<div class='toontalk-iframe-container'><iframe src='" + url + "' width='320' height='240'></div>");     
+               }
+               if (widget) {
+                   request.removeEventListener('readystatechange', response_handler);
+                   widget_callback(widget);
+               }
+            } catch (e) {
+               TT.UTILITIES.display_message("Error: " + e + ". When trying to fetch " + url);
+               if (error_callback) {
+                   // TODO: deterine if it makes sense to conflate this error and error event listener
+                   error_callback(e);
+               }
+               widget_callback();
+            }
+       };
+       var request = new XMLHttpRequest();
+       request.addEventListener('readystatechange', response_handler);
+       request.addEventListener('error', error_callback);
+       request.open('GET', url, true);
+       request.send();
     },
         
 //         tree_replace_all: function (object, replace, replacement) {
