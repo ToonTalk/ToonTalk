@@ -488,16 +488,24 @@ window.TOONTALK.robot_action =
         button_use_animation(widget, context, top_level_context, robot, new_continuation, additional_info.button_selector, additional_info, 1000);
     };
     var change_size_animation = function (widget, context, top_level_context, robot, continuation, additional_info) {
-        var frontside_element = widget.get_frontside_element();
-        var width  = $(frontside_element).width();
-        var height = $(frontside_element).height();
-        var new_width  = width *additional_info.x_factor;
-        var new_height = height*additional_info.y_factor;
-        // TODO: animate this
-        $(frontside_element).css({width:  new_width,
-                                  height: new_height});
-        continuation();
-        robot.run_next_step();
+       var frontside_element = widget.get_frontside_element();
+       var new_continuation = function () {
+            var width  = $(frontside_element).width();
+            var height = $(frontside_element).height();
+            var new_width  = width *additional_info.x_factor;
+            var new_height = height*additional_info.y_factor;
+            var duration = robot.transform_step_duration(1000);
+            $(frontside_element).addClass("toontalk-animating-element");
+            frontside_element.style.transitionDuration = duration+"ms";
+            frontside_element.style.width  = new_width +"px";
+            frontside_element.style.height = new_height+"px";
+            setTimeout(function () {
+                           continuation();
+                            robot.run_next_step();
+                       },
+                       duration);
+        }
+        robot.animate_to_element(frontside_element, new_continuation, .5, 0, 0, true);
     };
     var animate_widget_creation = function (widget, context, top_level_context, robot, continuation, additional_info) {
         var show_button_use = additional_info && additional_info.button_selector;
