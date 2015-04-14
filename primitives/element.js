@@ -1294,7 +1294,7 @@ window.TOONTALK.element_backside =
                 update_html = function (event) {
                     var new_text = html_input.button.value.trim();
                     var frontside_element = element_widget.get_frontside_element();
-                    var setter = edit_HTML ? "set_HTML" : "set_text";
+                    var setter = "set_HTML"; // edit_HTML ? "set_HTML" : "set_text";
                     if (element_widget[setter](new_text) && element_widget.robot_in_training()) {
                         element_widget.robot_in_training().edited(element_widget, {setter_name: setter,
                                                                                    argument_1: new_text,
