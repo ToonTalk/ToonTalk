@@ -614,6 +614,9 @@ window.TOONTALK.UTILITIES =
                             widget = TT.element.create("<div class='toontalk-iframe-container'><iframe src='" + uri + "' width='320' height='240'></div>");     
                         }
                         if (widget) {
+                            if (widget && widget.robot_in_training()) {
+                                widget.robot_in_training().drop_from_data_transfer(widget, target_widget);
+                            }
                             handle_drop($target, $(widget.get_frontside_element(true)), widget, target_widget, target_position, event);
                         }
                     } catch (e) {
