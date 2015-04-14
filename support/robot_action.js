@@ -99,6 +99,10 @@ window.TOONTALK.robot_action =
              }
              return true;
          },
+         "change size of": function (widget, context, top_level_context, robot, additional_info) {
+             // nothing to do if unwatched
+             return true;
+         },
          "add to the top-level backside": function (widget, context, top_level_context, robot, additional_info) {
              var context_frontside_position, widget_frontside_element, top_level_element;
              if (!robot.visible()) {
@@ -483,6 +487,18 @@ window.TOONTALK.robot_action =
         };
         button_use_animation(widget, context, top_level_context, robot, new_continuation, additional_info.button_selector, additional_info, 1000);
     };
+    var change_size_animation = function (widget, context, top_level_context, robot, continuation, additional_info) {
+        var frontside_element = widget.get_frontside_element();
+        var width  = $(frontside_element).width();
+        var height = $(frontside_element).height();
+        var new_width  = width *additional_info.x_factor;
+        var new_height = height*additional_info.y_factor;
+        // TODO: animate this
+        $(frontside_element).css({width:  new_width,
+                                  height: new_height});
+        continuation();
+        robot.run_next_step();
+    };
     var animate_widget_creation = function (widget, context, top_level_context, robot, continuation, additional_info) {
         var show_button_use = additional_info && additional_info.button_selector;
         var source_widget;
@@ -578,6 +594,7 @@ window.TOONTALK.robot_action =
          "remove":                            remove_or_erase_animation,
          "change whether erased":             remove_or_erase_animation, 
          "edit":                              edit_animation,
+         "change size of":                    change_size_animation,
          "add to the top-level backside": function (widget, context, top_level_context, robot, continuation) {
               // do nothing -- this action is only needed if unwatched
               continuation();

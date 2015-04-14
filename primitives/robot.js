@@ -701,6 +701,18 @@ window.TOONTALK.robot = (function (TT) {
         add_step_to_robot(widget, action_name, this);
     };
 
+    robot.resized_widget = function (widget, previous_width, previous_height, new_width, new_height) {
+        var action_name = "change size of";
+        var x_factor, y_factor;
+        if (previous_width === new_width && previous_height === new_height) {
+            return;
+        }
+        x_factor = new_width /previous_width;
+        y_factor = new_height/previous_height;
+        add_step_to_robot(widget, action_name, this, {x_factor: x_factor,
+                                                      y_factor: y_factor});
+    };
+
     robot.started_training_another = function (robot_to_train) {
         var action_name = "start training";
         add_step_to_robot(robot_to_train, action_name, this);

@@ -2415,7 +2415,7 @@ window.TOONTALK.UTILITIES =
                                 },
                                 stop: function (event, ui) {
                                     if (widget.robot_in_training()) {
-                                        
+                                        widget.robot_in_training().resized_widget(widget, previous_width, previous_height, ui.size.width, ui.size.height);
                                     }
                                 },
                                // the corner handles looked bad on element widgets
