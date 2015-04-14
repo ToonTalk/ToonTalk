@@ -615,7 +615,7 @@ window.TOONTALK.robot = (function (TT) {
         // need to support dropping on backside of a widget as well as which side of a box 
         var path, step, additional_info, $target_element,
             target_location, source_location,
-            target_width, target_height,
+            target_width, target_height, left_offset_fraction, top_offset_fraction,
             now;
         if (this === source_widget) {
             // robot dropped its frontside or backside -- so ignore this
@@ -641,9 +641,15 @@ window.TOONTALK.robot = (function (TT) {
                 target_width    = $target_element.width();
                 target_height   = $target_element.height();
                 source_location = $(source_widget.get_frontside_element()).offset();
+                left_offset_fraction = (source_location.left-target_location.left)/target_width;
+                top_offset_fraction  = (source_location.top -target_location.top) /target_height;
+                // ensure that the fractions are between 0 and 1
+                // can be out of range if waiting for a IMG element to load
+                left_offset_fraction = Math.max(0, Math.min(1, left_offset_fraction));
+                top_offset_fraction  = Math.max(0, Math.min(1, top_offset_fraction));
                 // store the drop location as a fraction of width and height of target so does something sensible when run on different size target
-                additional_info = {left_offset_fraction: (source_location.left-target_location.left)/target_width,
-                                   top_offset_fraction:  (source_location.top -target_location.top) /target_height};
+                additional_info = {left_offset_fraction: left_offset_fraction,
+                                   top_offset_fraction:  top_offset_fraction};
             } else {
                 additional_info = {};
             }
