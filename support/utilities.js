@@ -546,10 +546,14 @@ window.TOONTALK.UTILITIES =
     var handle_drop_from_file_contents = function (file, $target, target_widget, target_position, event) {
         var reader = new FileReader();
         var image_file = file.type.indexOf("image") === 0;
+        var audio_file = file.type.indexOf("audio") === 0;
         var widget, json, element_HTML, json_object;
         reader.onloadend = function () {
             if (image_file) {
                 widget = TT.element.create("<img src='" + reader.result + "' alt='" + file.name + "'/>");
+            } else if (audio_file) {
+                 widget = TT.element.create(file.name + " sound");
+                 widget.set_sound_effect(new Audio(reader.result));
             } else {
                 json = extract_json_from_div_string(reader.result);
                 if (json) {
@@ -571,7 +575,7 @@ window.TOONTALK.UTILITIES =
             }
             handle_drop($target, $(widget.get_frontside_element(true)), widget, target_widget, target_position, event, json_object);
         }
-        if (image_file) {
+        if (image_file || audio_file) {
             reader.readAsDataURL(file);
         } else {
             reader.readAsText(file);
@@ -1313,6 +1317,7 @@ window.TOONTALK.UTILITIES =
             $(element).attr("draggable", true);
             // JQuery UI's draggable causes dataTransfer to be null
             // rewrote after noticing that this works fine: http://jsfiddle.net/KWut6/
+            // TODO: simplify the following since the event has a reference back to the element
             element.addEventListener('dragstart', 
                                      function (event) {
                                          drag_start_handler(event, element);

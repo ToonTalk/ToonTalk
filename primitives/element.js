@@ -77,16 +77,25 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         return value;
     };
     
-    element.create = function (original_html, style_attributes, description, additional_classes) {
+    element.create = function (original_html, style_attributes, description, sound_effect_or_sound_effect_file_name, additional_classes) {
         var new_element = Object.create(element);
         var guid = TT.UTILITIES.generate_unique_id(); // needed for copying tables
         var widget_drag_started = new_element.drag_started;
         var attribute_widgets_in_backside_table = {}; // table relating attribute_name and widget in backside table
         var original_copies                     = {}; // table relating attribute_name and all the widget copies for that attribute
+        var sound_effect;
         var html, initialized, original_width, original_height, current_width, current_height,
             pending_css, transform_css, on_update_display_handlers, $image_element;
         if (!style_attributes) {
             style_attributes = [];
+        }
+        if (sound_effect_or_sound_effect_file_name) {
+            // by supporting both the sound effect and the file name we can get sharing of audio objects between copies of the same element
+            if (typeof sound_effect_or_sound_effect_file_name === 'string') { 
+                sound_effect = new Audio(sound_effect_or_sound_effect_file_name);
+            } else {
+                sound_effect = sound_effect_or_sound_effect_file_name;
+            }
         }
         new_element.is_element = function () {
             return true;
@@ -321,6 +330,12 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         new_element.set_additional_classes = function (new_value) {
             additional_classes = new_value;
         };
+        new_element.set_sound_effect = function (new_value) {
+            sound_effect = new_value;
+        };
+        new_element.get_sound_effect = function () {
+            return sound_effect;
+        };
         new_element = new_element.add_standard_widget_functionality(new_element);
         new_element.drag_started = function (json, is_resource) {
             this.drag_x_offset = json.view.drag_x_offset;
@@ -473,7 +488,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     element.copy = function (parameters) {
         // copy has a copy of the attributes array as well
         var style_attributes = this.get_style_attributes();
-        var copy = element.create(this.get_HTML(), style_attributes.slice(), this.get_description());
+        var copy = element.create(this.get_HTML(), style_attributes.slice(), this.get_description(), this.get_sound_effect());
         if (parameters) {
             if (!parameters.elements_copied) {
                 parameters.elements_copied = {};
@@ -969,13 +984,14 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 html: html_encoded_or_shared, 
                 attributes: json_attributes,
                 attribute_values: json_attributes.map(this.get_attribute.bind(this)),
-                additional_classes: this.get_additional_classes()
+                additional_classes: this.get_additional_classes(),
+                sound_effect: this.get_sound_effect() && this.get_sound_effect().src
                 };
     };
     
     TT.creators_from_json["element"] = function (json, additional_info) {
         var html = decodeURIComponent(typeof json.html === 'string' ? json.html : additional_info.shared_html[json.html.shared_html_index]); 
-        var reconstructed_element = element.create(html, json.attributes, json.description);
+        var reconstructed_element = element.create(html, json.attributes, json.description, json.sound_effect);
         var ignore_attributes;
         if (additional_info && additional_info.event) {
             // perhaps should check that event is a drop event
@@ -1235,7 +1251,7 @@ window.TOONTALK.element_backside =
             var edit_HTML = TT.UTILITIES.get_current_url_boolean_parameter("elementHTML", false);
             var getter = edit_HTML ? "get_HTML" : "get_text";
             var generic_backside_update = backside.update_display.bind(backside);
-            var text, html_input, update_html, drop_handler;
+            var text, html_input, update_html, drop_handler, $play_sound_effect_button;
             // need to ensure that it 'knows' its textContent, etc.
             element_widget.initialize_element();
             text = element_widget[getter]().trim();
@@ -1244,8 +1260,8 @@ window.TOONTALK.element_backside =
                     var dropped = TT.UTILITIES.input_area_drop_handler(event, element_widget.receive_HTML_from_dropped.bind(element_widget), element_widget);
                     if (dropped && element_widget.robot_in_training()) {
                         element_widget.robot_in_training().dropped_on_text_area(dropped, element_widget, {area_selector: ".toontalk-html-input",
-                                                                                            setter: 'receive_HTML_from_dropped',
-                                                                                            toString: "for the element's text"});
+                                                                                                          setter: 'receive_HTML_from_dropped',
+                                                                                                          toString: "for the element's text"});
                     }
                 };
                 html_input = TT.UTILITIES.create_text_area(text, "toontalk-html-input", "", "Type here to edit the text.", drop_handler);
@@ -1255,9 +1271,9 @@ window.TOONTALK.element_backside =
                     var setter = edit_HTML ? "set_HTML" : "set_text";
                     if (element_widget[setter](new_text) && element_widget.robot_in_training()) {
                         element_widget.robot_in_training().edited(element_widget, {setter_name: setter,
-                                                                     argument_1: new_text,
-                                                                     toString: "change the text to " + new_text + " of",
-                                                                     button_selector: ".toontalk-html-input"});
+                                                                                   argument_1: new_text,
+                                                                                   toString: "change the text to " + new_text + " of",
+                                                                                   button_selector: ".toontalk-html-input"});
                     }
                 };
                 $(html_input.container).resizable();
@@ -1270,6 +1286,15 @@ window.TOONTALK.element_backside =
             backside.get_attributes_chooser = function () {
                 return attributes_chooser;
             };
+            if (element_widget.get_sound_effect()) {
+                $play_sound_effect_button = $("<button>Play sound</button>").button();
+                $play_sound_effect_button.addClass("toontalk-play-sound-effect-button");
+                $play_sound_effect_button.click(function (event) {
+                                                     element_widget.get_sound_effect().play();
+                                                     // train robot                                              
+                                                 });
+                backside_element.appendChild($play_sound_effect_button.get(0));                
+            }
             update_style_attribute_chooser(attributes_chooser, element_widget, attribute_table);
             update_style_attributes_table(attribute_table, element_widget, backside);
             backside_element.appendChild(attributes_chooser);
