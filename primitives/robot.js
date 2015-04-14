@@ -103,6 +103,7 @@ window.TOONTALK.robot = (function (TT) {
                     this.add_to_backside_conditions(widget_side);
                 } else {
                     widget_side.walk_children(function (child_side) {
+                        if (child_side.is_nest() && !child_side.is_hole() && child_side.dereference() !== child_side) {
                             // is a covered nest inside of something
                             this.add_to_backside_conditions(widget_side);
                             return false; // stop
