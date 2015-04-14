@@ -87,10 +87,9 @@ window.TOONTALK.robot = (function (TT) {
                 }.bind(this)); 
             }
         };
-        // TODO: get this working
-//         if (backside_conditions) {
-//             this.set_backside_conditions(backside_conditions);
-//         }
+        if (backside_conditions) {
+            new_robot.set_backside_conditions(backside_conditions);
+        }
         new_robot.add_to_backside_conditions = function (widget) {
             var widget_copy, widget_type;
             if (this.get_newly_created_widgets().indexOf(widget) >= 0) {
