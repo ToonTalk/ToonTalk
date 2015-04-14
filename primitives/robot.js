@@ -90,6 +90,28 @@ window.TOONTALK.robot = (function (TT) {
         if (backside_conditions) {
             new_robot.set_backside_conditions(backside_conditions);
         }
+        new_robot.initialize_backside_conditions = function () {
+//          Any covered nests should be used as a condition
+            var context = this.get_context();
+            original_backside_widgets_of_context = TT.UTILITIES.copy_widget_sides(context.get_backside_widgets(), {just_value: true,
+                                                                                                                   copy_covered_nests: true});
+            context.get_backside_widgets().forEach(function (widget_side) {
+                if (widget_side.is_backside()) {
+                    return;
+                }
+                if (widget_side.is_nest() && widget_side.dereference() !== widget_side) {
+                    this.add_to_backside_conditions(widget_side);
+                } else {
+                    widget_side.walk_children(function (child_side) {
+                            // is a covered nest inside of something
+                            this.add_to_backside_conditions(widget_side);
+                            return false; // stop
+                        }
+                        return true;
+                    }.bind(this));
+                }
+            }.bind(this));
+        };
         new_robot.add_to_backside_conditions = function (widget) {
             var widget_copy, widget_type;
             if (this.get_newly_created_widgets().indexOf(widget) >= 0) {
@@ -308,6 +330,7 @@ window.TOONTALK.robot = (function (TT) {
             this.time_of_last_step = Date.now();
             this.being_trained = true;
             this.set_frontside_conditions(context.copy({just_value: true}));
+            this.initialize_backside_conditions();
             if (!robot_training_this_robot) {
                 // use miniature robot image for cursor
                 $("*").css({cursor: 'url(' + TT.UTILITIES.absolute_file_path("images/RB19.32x32.PNG") + '), default'});
@@ -317,8 +340,7 @@ window.TOONTALK.robot = (function (TT) {
             this.update_title();
             backside_element = this.get_backside_element();
             $(backside_element).find(".toontalk-conditions-panel").remove();
-            original_backside_widgets_of_context = TT.UTILITIES.copy_widget_sides(context.get_backside_widgets(), {just_value: true});
-            if (this.robot_training_this_robot()) {
+           if (this.robot_training_this_robot()) {
                 this.robot_training_this_robot().started_training_another(this);
             }
         };

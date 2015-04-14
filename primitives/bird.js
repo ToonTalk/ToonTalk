@@ -913,7 +913,7 @@ window.TOONTALK.nest = (function (TT) {
             // notice that bird/nest semantics is that the nest is shared not copied
             // unless the nest is copied along with one of its birds
             var contents_copy, copy, new_original_nest, new_original_nest_guid;
-            if (parameters && parameters.just_value) {
+            if (parameters && parameters.just_value && !parameters.copy_covered_nests) {
                 if (contents.length > 0) {
                     return contents[0].get_widget().copy(parameters);
                 }
