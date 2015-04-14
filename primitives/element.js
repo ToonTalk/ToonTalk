@@ -83,7 +83,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         var widget_drag_started = new_element.drag_started;
         var attribute_widgets_in_backside_table = {}; // table relating attribute_name and widget in backside table
         var original_copies                     = {}; // table relating attribute_name and all the widget copies for that attribute
-        var html, initialized, original_width, original_height, current_width, current_height, 
+        var html, initialized, original_width, original_height, current_width, current_height,
             pending_css, transform_css, on_update_display_handlers, $image_element;
         if (!style_attributes) {
             style_attributes = [];
@@ -392,7 +392,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 frontside_element.innerHTML = this.get_HTML();
                 this.set_image_element(rendering, frontside_element);
                 $(frontside_element).addClass("toontalk-element-frontside");
-                if (frontside_element.innerHTML.substring(0, 1) !== '<') {
+                if (frontside_element.innerHTML && frontside_element.innerHTML[0] !== '<') {
                     // doesn't look like HTML so assume it is raw text and give it a class that will give it a better font and size
                     additional_classes = this.get_additional_classes();
                     if (additional_classes) {
@@ -402,6 +402,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 }
                 initialized = true;
             }
+        };
+        new_element.is_plain_text_element = function () {
+            var html = this.get_HTML();
+            return html && html[0] !== '<';
         };
         new_element.compute_original_dimensions = function (recompute) {
             TT.UTILITIES.original_dimensions(this, 

@@ -129,6 +129,9 @@ window.TOONTALK.widget = (function (TT) {
             if (!widget.is_function_nest) {
                 widget.is_function_nest = return_false;
             }
+            if (!widget.is_plain_text_element) {
+               widget.is_plain_text_element = return_false;
+            }
             if (widget.set_name) {
                 widget.receive_name_from_dropped = 
                     function (dropped) {
@@ -1406,6 +1409,7 @@ window.TOONTALK.widget = (function (TT) {
             widget.is_element = return_false;
             widget.is_function_nest = return_false;
             widget.is_hole = return_false;
+            widget.is_plain_text_element = return_false;
             widget.get_json = function (json_history) {
                 var backside = this.get_backside(true);
                 var backside_element = backside.get_element();

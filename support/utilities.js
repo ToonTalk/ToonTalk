@@ -848,15 +848,18 @@ window.TOONTALK.UTILITIES =
                 }
                 if (json_view && json_view.frontside_width) {
                     side_element = json_view.backside ? widget.get_backside(true).get_element() : widget.get_frontside_element();
-                    size_css = {width:  json_view.frontside_width,
-                                height: json_view.frontside_height};
-                    if (json_semantic.type === 'element') {
-                        // delay until updated
-                        widget.on_update_display(function () {
-                                                     $(side_element).css(size_css);
-                                                 });
-                    } else {
-                        $(side_element).css(size_css);
+                    if (!widget.is_plain_text_element()) {
+                        // plain text elements don't need explicit width or height
+                        size_css = {width:  json_view.frontside_width,
+                                    height: json_view.frontside_height};
+                        if (json_semantic.type === 'element') {
+                            // delay until updated
+                            widget.on_update_display(function () {
+                                                         $(side_element).css(size_css);
+                                                     });
+                        } else {
+                            $(side_element).css(size_css);
+                        }
                     }
                 }
                 if (json_view && json_view.saved_width) {

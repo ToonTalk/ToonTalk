@@ -80,6 +80,7 @@ window.TOONTALK.DISPLAY_UPDATES =
                     // need to delay in order for the DOM to settle down with the changes caused by update_display
                     TT.UTILITIES.set_timeout(function () {
                                                  if ($parent_side_element.is('.toontalk-box-hole')) {
+                                                     // not resizable while in a box hole
                                                      if ($(frontside_element).is(".ui-resizable")) {
                                                          $(frontside_element).resizable('destroy');
                                                      }
@@ -92,7 +93,7 @@ window.TOONTALK.DISPLAY_UPDATES =
         },
         
         run_cycle_is_over: function () {
-            // note that this will not be called less often than TT.queue.maximum_run milliseconds
+            // note that this will not be called more frequently than TT.queue.maximum_run milliseconds
             this.update_display(); 
         }
     };
