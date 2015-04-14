@@ -21,15 +21,21 @@ window.TOONTALK.UTILITIES =
     var id_counter = new Date().getTime();
     var div_json   = "<div class='toontalk-json'>";
     var div_hidden = "<div style='display:none;'>"; // don't use a class since CSS might not be loaded
+    var div_hidden_and_json_start = div_hidden + "{";
     var div_close  = "</div>";
     var path_to_toontalk_folder;
     var extract_json_from_div_string = function (div_string) {
         // expecting div_string to begin with div_open and end with div_close
         // but users may be dragging something different
-        var json_start = div_string.indexOf('{');
+        // but checking first for div_hidden_and_json_start because div_string might include a { as part of its textual comment
+        var json_start = div_string.indexOf(div_hidden_and_json_start);
+        if (json_start < 0) {
+            json_start = div_string.indexOf('{');
+        } else {
+            json_start += div_hidden.length;
+        }
         var json_end = div_string.lastIndexOf('}');
         if (json_start < 0 || json_end < 0) {
-//          console.log("Paste missing JSON encoding.");
             return;
         }
         return div_string.substring(json_start, json_end+1);
@@ -140,9 +146,9 @@ window.TOONTALK.UTILITIES =
             var child_target = event.target;
             $(top_level_element).addClass("toontalk-json toontalk-top-level-resource toontalk-top-level-resource-container");
             $(json_object_element).addClass("toontalk-top-level-resource")
-                                            .css({position: 'relative'});
+                                  .css({position: 'relative'});
             json_object_element.toontalk_widget = widget;
-            top_level_element.toontalk_widget             = widget;
+            top_level_element.toontalk_widget   = widget;
             top_level_element.appendChild(json_object_element);
             $(top_level_element).insertAfter($current_editable_text);
             while (child_target.nextSibling) {
