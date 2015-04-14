@@ -314,6 +314,10 @@ window.TOONTALK.UTILITIES =
                 };
                 event.stopPropagation();
                 return;
+            } else if (event.dataTransfer.getData("text/uri-list")) {
+                handle_drop_from_uri_list(event.dataTransfer.getData("text/uri-list"), $target, target_widget, target_position, event);
+                event.stopPropagation();
+                return;
             } else {
                 source_widget = TT.UTILITIES.create_from_json(json_object, {event: event});
             }
@@ -580,6 +584,60 @@ window.TOONTALK.UTILITIES =
         } else {
             reader.readAsText(file);
         }
+    };
+    var handle_drop_from_uri_list = function (uri_list, $target, target_widget, target_position, event) {
+        var handle_drop_from_uri = 
+            function (uri, $target, target_widget, target_position, event) {          
+                // based upon http://stackoverflow.com/questions/4907876/get-the-response-content-type-header-from-xhr
+                var response_handler = function (response_event) {
+                    try {
+                        var type = this.getResponseHeader('content-type');
+                        var widget;
+                        if (!type) {
+                            return;
+                        }
+                        if (type.indexOf("audio") === 0) {
+                            request.removeEventListener('readystatechange', response_handler);
+                            widget = TT.element.create(uri);
+                            widget.set_sound_effect(new Audio(uri));
+                        } else if (type.indexOf("image") === 0) {
+                            request.removeEventListener('readystatechange', response_handler);
+                            widget = TT.element.create("<img src='" + uri + "'>");
+                        } else if (type.indexOf("text") === 0 && type.indexOf("text/html") < 0) {
+                            // is text but not HTML
+                            if (this.responseText) {
+                                request.removeEventListener('readystatechange', response_handler);
+                                widget = TT.element.create(this.responseText); 
+                            }
+                        } else {
+                            request.removeEventListener('readystatechange', response_handler);
+                            widget = TT.element.create("<div class='toontalk-iframe-container'><iframe src='" + uri + "' width='320' height='240'></div>");     
+                        }
+                        if (widget) {
+                            handle_drop($target, $(widget.get_frontside_element(true)), widget, target_widget, target_position, event);
+                        }
+                    } catch (e) {
+                        TT.UTILITIES.display_message("Error: " + e + ". When trying to fetch " + uri);
+                    }
+                };
+                var error_handler = function (response_event) {
+                    var widget = TT.element.create("<div class='toontalk-iframe-container'><iframe src='" + uri + "' width='320' height='240'></div>");
+                    request.removeEventListener('readystatechange', response_handler);
+                    handle_drop($target, $(widget.get_frontside_element(true)), widget, target_widget, target_position, event);
+                };
+                var request = new XMLHttpRequest();
+                request.addEventListener('readystatechange', response_handler);
+                request.addEventListener('error', error_handler);
+                request.open('GET', uri, true);
+                request.send();
+        };
+        uri_list.split(/\r?\n/).forEach(function (uri) {
+            if (uri[0] !== "#") {
+                // is not a comment
+                // see https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Recommended_Drag_Types
+                handle_drop_from_uri(uri, $target, target_widget, target_position, event);
+            }
+        });
     };
     var initialize = function () {
         var $robot_element_for_determining_dimensions = $("<div class='toontalk-robot'>");

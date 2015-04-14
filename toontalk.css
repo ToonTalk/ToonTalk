@@ -1414,6 +1414,9 @@ body {
    from { background-position:    0px; }
      to { background-position: -662px; }
 }
+.toontalk-iframe-container {
+	border-top: 20px solid blue;
+}
 .toontalk-backside {
 	position: absolute;
 /* 	was not full opaque - 0.94 */
