@@ -64,7 +64,9 @@ window.TOONTALK.actions =
                      return;
                 }
                 newly_created_widgets.push(new_widget);
-//              console.log("Added " + new_widget.to_debug_string() + " to list of newly_created_widgets. Length is " + newly_created_widgets.length);
+                if (TT.logging && TT.logging.indexOf("newly-created") >= 0) {
+                    console.log("Added " + new_widget.to_debug_string() + " to list of newly_created_widgets. Length is " + newly_created_widgets.length);
+                }
             };
             new_actions.is_newly_created = function (widget) {
                 return newly_created_widgets.indexOf(widget) >= 0;
