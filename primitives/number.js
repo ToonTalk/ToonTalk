@@ -904,8 +904,8 @@ window.TOONTALK.number = (function () {
         if (this.is_integer()) {
             return this.numerator_string();
         }
-        // if this is a subclass of number we don't care -- just using the copy for convenience of calculation here
-        var copy = number.copy.call(this);
+        var value = this.get_value();
+        var copy = number.create(value[0], value[1]);
         var integer_part = copy.integer_part();
         var integer_string = integer_part.toString();
         if (integer_string === "0" && this.is_negative()) {
