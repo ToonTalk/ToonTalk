@@ -1035,9 +1035,9 @@ window.TOONTALK.box_hole =
             };
             hole.removed_from_container = function (part, backside_removed, event, index, report_error) {
                 if (contents) {
-//                     if (event) {
-//                         contents.restore_dimensions();
-//                     }
+                    if (event) {
+                        contents.restore_dimensions();
+                    }
                     this.set_contents(undefined);
                     if (event) {
                         this.get_parent_of_frontside().render();
