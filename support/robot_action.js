@@ -653,8 +653,15 @@ window.TOONTALK.robot_action =
                     return false;
                 }
                 if (TT.logging && TT.logging.indexOf('event') >= 0) {
-                    console.log("   " + referenced + " (" + TT.path.toString(path) + " " + referenced.to_debug_string() + 
-                                " by unwatched " + robot.to_debug_string());
+                    if (referenced.wait_until_this_nest_receives_something) { 
+                        console.log("   wait_until_this_nest_receives_something " + 
+                                    referenced.wait_until_this_nest_receives_something.to_debug_string() + 
+                                    "(" + TT.path.toString(path) + 
+                                    ") by unwatched " + robot.to_debug_string());
+                    } else {
+                        console.log("   " + referenced + " (" + TT.path.toString(path) + " " + referenced.to_debug_string() + 
+                                    " by unwatched " + robot.to_debug_string());
+                    }
                 }
                 if (referenced.wait_until_this_nest_receives_something) {         
                     referenced.wait_until_this_nest_receives_something.run_when_non_empty(
