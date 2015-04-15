@@ -1420,6 +1420,7 @@ window.TOONTALK.widget = (function (TT) {
             widget.is_function_nest = return_false;
             widget.is_hole = return_false;
             widget.is_plain_text_element = return_false;
+            widget.ok_to_set_dimensions = return_false;
             widget.get_json = function (json_history) {
                 var backside = this.get_backside(true);
                 var backside_element = backside.get_element();
