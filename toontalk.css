@@ -1615,6 +1615,7 @@ body {
  	/* padding-right: 4px; */
 }
 .toontalk-box-hole > .toontalk-side {
+/* 	sides inside of box holes fit exactly */
 	width:  100%;
 	height: 100%;
 	box-sizing: border-box;
@@ -1814,6 +1815,10 @@ table.toontalk-documentation-table {
 }
 .toontalk-plain-text-element {
 	background-color: white;
+}
+.toontalk-box-hole > .toontalk-plain-text-element {
+/* 	looks better with a smaller font when scaled to fit in a hole */
+	font-size: .8em;
 }
 .toontalk-string-attribute-widget {
 	background-color: rgb(238, 169, 244);
