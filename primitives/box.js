@@ -875,20 +875,23 @@ window.TOONTALK.box_hole =
             };
             hole.widget_dropped_on_me = function (dropped, is_backside, event, robot) {
                 var box = this.get_parent_of_frontside();
-                var hole_element, hole_position, parent_position, dropped_element, finished_animating;
+                var hole_element, hole_position, parent_position, dropped_element, finished_animating, is_plain_text;
                 if (event) {
                     if (TT.sounds) {
                         TT.sounds.fall_inside.play();
                     }
                     hole_element = this.get_element();
                     // TODO: abstract this and use it elsewhere
+                    is_plain_text = dropped.is_plain_text_element();
                     dropped_element = dropped.get_element();
                     $(dropped_element).css({"z-index": TT.UTILITIES.next_z_index()});  
                     parent_position = $(dropped_element.parentElement).offset();
                     hole_position   = $(hole_element).offset(); 
-                    dropped_element.style.left = (event.pageX-parent_position.left)+"px";
-                    dropped_element.style.top  = (event.pageY-parent_position.top) +"px";
-                    $(dropped_element).addClass("toontalk-animating-element");
+                    if (!is_plain_text) {
+                        dropped_element.style.left = (event.pageX-parent_position.left)+"px";
+                        dropped_element.style.top  = (event.pageY-parent_position.top) +"px";
+                        $(dropped_element).addClass("toontalk-animating-element");
+                    }
                     dropped_element.style.width  = hole_element.style.width;
                     dropped_element.style.height = hole_element.style.height;
                     dropped_element.style.left = (hole_position.left-parent_position.left)+"px";
@@ -898,12 +901,7 @@ window.TOONTALK.box_hole =
                         box.render();
                         this.set_contents(dropped);
                     }.bind(this);
-                    if (dropped.is_plain_text_element()) {
-                        // TODO: figure out why plain text animation is so poor
-                        finished_animating();
-                    } else {
-                        setTimeout(finished_animating, 1200);
-                    }
+                    setTimeout(finished_animating, is_plain_text ? 0 : 1200);
                     if (box.robot_in_training()) {
                         box.robot_in_training().dropped_on(dropped, this);
                     }
