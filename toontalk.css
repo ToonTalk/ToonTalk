@@ -1642,6 +1642,9 @@ body {
 	text-align: center;
 	display: inline-block;
 }
+.toontalk-approximate-number {
+	background-color: rgb(242, 242, 141);
+}
 .toontalk-number-full-size-border {
     border: 32px solid transparent;
     -moz-border-image: url("images/number-border.png") 32 32 round repeat;
