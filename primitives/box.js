@@ -875,7 +875,7 @@ window.TOONTALK.box_hole =
             };
             hole.widget_dropped_on_me = function (dropped, is_backside, event, robot) {
                 var box = this.get_parent_of_frontside();
-                var hole_element, hole_position, parent_position, dropped_element;
+                var hole_element, hole_position, parent_position, dropped_element, finished_animating;
                 if (event) {
                     if (TT.sounds) {
                         TT.sounds.fall_inside.play();
@@ -893,12 +893,17 @@ window.TOONTALK.box_hole =
                     dropped_element.style.height = hole_element.style.height;
                     dropped_element.style.left = (hole_position.left-parent_position.left)+"px";
                     dropped_element.style.top  = (hole_position.top -parent_position.top) +"px";
-                    setTimeout(function () {
-                                   $(dropped_element).removeClass("toontalk-animating-element");
-                                   box.render();
-                                   this.set_contents(dropped);
-                              }.bind(this),
-                              1200);
+                    finished_animating = function () {
+                        $(dropped_element).removeClass("toontalk-animating-element");
+                        box.render();
+                        this.set_contents(dropped);
+                    }.bind(this);
+                    if (dropped.is_plain_text_element()) {
+                        // TODO: figure out why plain text animation is so poor
+                        finished_animating();
+                    } else {
+                        setTimeout(finished_animating, 1200);
+                    }
                     if (box.robot_in_training()) {
                         box.robot_in_training().dropped_on(dropped, this);
                     }
