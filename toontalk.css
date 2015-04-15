@@ -1376,6 +1376,7 @@ body {
  	position: relative;	
     top: 40%;
     color: rgb(240, 240, 117);
+    text-shadow: 1px 1px 2px yellow;
 }
 .toontalk-robot-being-trained-by-robot {
 	transform-origin: left top;
@@ -1607,6 +1608,7 @@ body {
  	position: relative;	
     top: 90%;
  	color: rgb(246, 237, 237);
+ 	text-shadow: 1px 1px 2px red;
  	background-color: rgb(67, 67, 211);
     font-size: 11pt;
 	border-radius: 5px;
@@ -2239,6 +2241,7 @@ background-image: url("images/dusty-morph.png");
  	position: relative;	
     top: 30%;
  	color: white;
+ 	text-shadow: 1px 1px 2px black;
     font-size: 18pt;
 }
 .toontalk-sensor-inactive-nest {
@@ -2254,6 +2257,7 @@ background-image: url("images/dusty-morph.png");
  	position: relative;	
     top: 30%;
     color: white;
+    text-shadow: 1px 1px 2px black;
     font-size: 18pt;
 }
 .toontalk-backside-of-sensor {
@@ -2311,6 +2315,7 @@ background-image: url("images/dusty-morph.png");
  	position: relative;	
     top: 30%;
     color: navy;
+    text-shadow: 1px 1px 2px white;
     font-size: 18pt;
 }
 .toontalk-empty-nest-yellow::after {
@@ -2318,6 +2323,7 @@ background-image: url("images/dusty-morph.png");
  	position: relative;	
     top: 30%;
     color: navy;
+    text-shadow: 1px 1px 2px white;
     font-size: 18pt;
 }
 .toontalk-empty-nest-magenta::after {
@@ -2325,6 +2331,7 @@ background-image: url("images/dusty-morph.png");
  	position: relative;	
     top: 30%;
     color: navy;
+    text-shadow: 1px 1px 2px white;
     font-size: 18pt;
 }
 /* could make this 14 steps and change -1744 to 1628 */
@@ -2457,6 +2464,7 @@ background-image: url("images/dusty-morph.png");
  	position: relative;	
     top: 50%;
     color: black;
+    text-shadow: 1px 1px 2px white;
     font-size: 12pt;
 }
 .toontalk-bird-static-yellow::after {
@@ -2464,6 +2472,7 @@ background-image: url("images/dusty-morph.png");
  	position: relative;	
     top: 50%;
     color: black;
+    text-shadow: 1px 1px 2px white;
     font-size: 12pt;
 }
 .toontalk-bird-static-magenta::after {
@@ -2471,6 +2480,7 @@ background-image: url("images/dusty-morph.png");
  	position: relative;	
     top: 50%;
     color: black;
+    text-shadow: 1px 1px 2px white;
     font-size: 12pt;
 }
 /* Couldn't get the following to work -- tried to define new bird-morph-from-static keyframes but didn't help */
