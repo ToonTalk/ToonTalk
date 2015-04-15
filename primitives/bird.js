@@ -772,7 +772,7 @@ window.TOONTALK.nest = (function (TT) {
                     var bird_copy, bird_frontside_element;
                     if (!nest_copy.has_ancestor(message_side.get_widget())) {
                         // ignore if nest_copy is inside message
-                        if (!nest_copy.visible() && !visible) {
+                        if (!start_position || (!nest_copy.visible() && !visible)) {
                             // neither are visible so just add contents to nest
                             nest_copy.add_to_contents(message_copy, undefined, robot);
                         } else {
