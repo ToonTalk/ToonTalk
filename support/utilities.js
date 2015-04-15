@@ -891,7 +891,7 @@ window.TOONTALK.UTILITIES =
                 }
                 if (json_view && json_view.frontside_width) {
                     side_element = json_view.backside ? widget.get_backside(true).get_element() : widget.get_frontside_element();
-                    if (!widget.is_plain_text_element()) {
+                    if (widget.ok_to_set_dimensions()) {
                         // plain text elements don't need explicit width or height
                         size_css = {width:  json_view.frontside_width,
                                     height: json_view.frontside_height};
@@ -2570,8 +2570,9 @@ window.TOONTALK.UTILITIES =
                 // for things to fit in box holes or for scales to be placed as other widgets 
                 // need them to use left top instead of center center as the transform-origin
                 var parent_element = (original_parent && original_parent !== document.body) ? original_parent : element.parentElement;
-                var transform_origin_center = (parent_element && parent_element.className.indexOf("toontalk-box-hole") < 0) && // not in a hole
-                                              (element.className.indexOf("toontalk-scale") < 0);             // and not a scale
+                // use center if not in a hole and not a scale
+                var transform_origin_center = (parent_element && parent_element.className.indexOf("toontalk-box-hole") < 0) && 
+                                              (element.className.indexOf("toontalk-scale") < 0);
                 var translate = "";
                 if (!pending_css) {
                     pending_css = {};

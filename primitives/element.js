@@ -134,7 +134,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     html = html.substring(0, anchor_start) + "target='_blank' " + html.substring(anchor_start);
                 }
                 return html;
-            };
+            }.bind(this);
             if (!frontside_element) {
                 return false;
             }
@@ -144,7 +144,14 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             html = transform_HTML(new_value);
             // remove children so will be updated
             $(frontside_element).children(":not(.ui-resizable-handle)").remove();
-            frontside_element.innerHTML = html; // until re-rendered
+            if (this.is_plain_text_element()) {
+                // the following is necessary so that when placed in boxes
+                // and is scaled to fit it doesn't change its line breaks
+                // not that don't want to set the html instance variable
+                frontside_element.innerHTML = html.replace(/ /g, "&nbsp;");
+            } else {
+                frontside_element.innerHTML = html; // until re-rendered
+            }
             // need to know new dimensions to scale appropriately
             this.compute_original_dimensions(true);
             this.rerender();
@@ -411,13 +418,20 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         new_element.initialize_element = function () {
             var frontside_element = this.get_frontside_element();
             var resize_handles = $(frontside_element).children(".ui-resizable-handle");
-            var rendering, additional_classes;
+            var rendering, additional_classes, plain_text, htmnl;
             if (!initialized) {
-                frontside_element.innerHTML = this.get_HTML();
+                html =  this.get_HTML();
+                plain_text = this.is_plain_text_element();
+                if (plain_text) {
+                    // the following is necessary so that when placed in boxes
+                    // and is scaled to fit it doesn't change its line breaks
+                    html = html.replace(/ /g, "&nbsp;");
+                }
+                frontside_element.innerHTML = html;
                 this.set_image_element(rendering, frontside_element);
                 $(frontside_element).addClass("toontalk-element-frontside");
-                if (frontside_element.innerHTML && frontside_element.innerHTML[0] !== '<') {
-                    // doesn't look like HTML so assume it is raw text and give it a class that will give it a better font and size
+                if (plain_text) {
+                    //  give it a class that will give it a better font and size
                     additional_classes = this.get_additional_classes();
                     if (additional_classes) {
                         $(frontside_element).addClass(additional_classes);
@@ -429,7 +443,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         };
         new_element.is_plain_text_element = function () {
             var html = this.get_HTML();
-            return html && html[0] !== '<';
+            return html && html[0] !== '<' && html[html.length-1] !== '>';
         };
         new_element.compute_original_dimensions = function (recompute) {
             TT.UTILITIES.original_dimensions(this, 

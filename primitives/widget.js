@@ -132,6 +132,14 @@ window.TOONTALK.widget = (function (TT) {
             if (!widget.is_plain_text_element) {
                widget.is_plain_text_element = return_false;
             }
+            widget.ok_to_set_dimensions = function () {
+                return !this.is_plain_text_element();
+                // OK unless is plain text element widget that isn't in a container (e.g. a box hole)
+//                 if (!this.is_plain_text_element()) {
+//                     return true;
+//                 }
+//                 return !this.get_parent_of_frontside() || !this.get_parent_of_frontside().is_backside();
+            }
             if (widget.set_name) {
                 widget.receive_name_from_dropped = 
                     function (dropped) {
@@ -1120,7 +1128,7 @@ window.TOONTALK.widget = (function (TT) {
             var frontside_element = this.get_frontside_element();
             var frontside_element_copy = widget_copy.get_frontside_element();  
             var $container_element = $(frontside_element).closest(".toontalk-backside");
-            var plain_text = widget_copy.is_plain_text_element();
+            var ok_to_set_dimensions = widget_copy.ok_to_set_dimensions();
             var position, container_widget;
             if ($container_element.length === 0) {
                 $container_element = $(".toontalk-backside");  
@@ -1134,8 +1142,8 @@ window.TOONTALK.widget = (function (TT) {
             position = TT.UTILITIES.relative_position(frontside_element, $container_element.get(0));
             container_widget = TT.UTILITIES.widget_from_jquery($container_element);
             // plain text should not have its dimensions set
-            $(frontside_element_copy).css({width:  plain_text ? '' : $(frontside_element).width(),
-                                           height: plain_text ? '' : $(frontside_element).height(),
+            $(frontside_element_copy).css({width:  ok_to_set_dimensions ? $(frontside_element).width()  : "",
+                                           height: ok_to_set_dimensions ? $(frontside_element).height() : "",
                                            left: position.left+x_offset,
                                            top:  position.top+y_offset});
             $container_element.get(0).appendChild(frontside_element_copy);
