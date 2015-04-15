@@ -234,15 +234,21 @@ window.TOONTALK.widget = (function (TT) {
                     return true;
                 }
                 widget.restore_dimensions = function () {
-                    var frontside_element;
+                    var frontside_element, css;
                     if (this.saved_width > 0) {
-                        if (this.set_size_attributes) {
+                       frontside_element = this.get_frontside_element();
+                       if (!this.ok_to_set_dimensions()) {
+                           css = {width:  '',
+                                  height: ''};
+                           // remove transforms as well
+                           TT.UTILITIES.set_css_transform(css, '');
+                           $(frontside_element).css(css);                          
+                        } else if (this.set_size_attributes) {
                             // e.g. element widgets need to update their attributes
                             this.set_size_attributes(this.saved_width, this.saved_height);
                         } else {
-                            frontside_element = this.get_frontside_element();
                             $(frontside_element).css({width:  this.saved_width,
-                                                      height: this.saved_height});
+                                                      height: this.saved_height});                                 
                         }
                         this.saved_width =  undefined;
                         this.saved_height = undefined;

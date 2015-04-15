@@ -2655,6 +2655,10 @@ window.TOONTALK.UTILITIES =
                 }
             }
             transform += translate;
+            TT.UTILITIES.set_css_transform(css, transform);
+        },
+
+        set_css_transform: function (css, transform) {
             css['-webkit-transform'] = transform;
             css['-moz-transform']    = transform;
             css['-ms-transform']     = transform;
