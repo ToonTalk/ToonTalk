@@ -101,7 +101,7 @@ window.TOONTALK.robot = (function (TT) {
                 }
                 if (widget_side.is_nest() && widget_side.dereference() !== widget_side) {
                     this.add_to_backside_conditions(widget_side);
-                } else {
+                } else if (widget_side.walk_children) {
                     widget_side.walk_children(function (child_side) {
                         if (child_side.is_nest() && !child_side.is_hole() && child_side.dereference() !== child_side) {
                             // is a covered nest inside of something
