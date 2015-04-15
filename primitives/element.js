@@ -846,6 +846,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 }
                 return return_value;
             };
+            attribute_widget.is_attribute_widget = function () {
+                return true;
+            };
             return attribute_widget;
         }.bind(this);
         var create_string_attribute_widget = function (attribute_name, attribute_value) {

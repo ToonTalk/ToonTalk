@@ -542,7 +542,9 @@ window.TOONTALK.number = (function () {
             // following needed for scientific notation
             exponent, ten_to_exponent, exponent_area, significand, max_decimal_places, decimal_digits, integer_digit, negative, decimal_part;
         var extra_class = (top_level !== false) ? ' toontalk-top-level-number' : '';
-        if (this.get_approximate()) {
+        if (this.is_attribute_widget && this.is_attribute_widget()) {
+             extra_class += " toontalk-attribute-number";
+        } else if (this.get_approximate()) {
             extra_class += " toontalk-approximate-number";
         }
         if (size_unconstrained_by_container) {
