@@ -1164,9 +1164,9 @@ window.TOONTALK.number_backside =
 
 window.TOONTALK.number.function = 
 (function () {
-    
-    var process_message = function (message, compute_response, event, robot) {
-        var box_size, bird, response;
+
+    var check_message = function (message) {
+        var box_size, bird;
         if (!message.is_box()) {
             TT.UTILITIES.display_message("Function birds can only respond to boxes. One was given " + TT.UTILITIES.add_a_or_an(message.get_type_name()));
             return;
@@ -1185,21 +1185,35 @@ window.TOONTALK.number.function =
             TT.UTILITIES.display_message("Function birds can only respond to boxes with a bird in the first hole. The first hole contains " + TT.UTILITIES.add_a_or_an(bird.get_type_name() + "."));
             return;
         }
-        response = compute_response(bird, box_size);
+        return {box_size: box_size,
+                bird:     bird};
+    };
+
+    var process_response = function (response, bird, message, event, robot) {
         if (response) {
             if (robot) {
-                // function created a new widget so robot needs to know about it
-                // might be that it reused a widget in the message so isn't new
-                robot.add_newly_created_widget_if_new(response);
+               // function created a new widget so robot needs to know about it
+               // might be that it reused a widget in the message so isn't new
+               robot.add_newly_created_widget_if_new(response);
             }
             // TODO: be sure that message "knows" its top_level_widget
             if (event && message.robot_in_training()) {
-                message.robot_in_training().add_newly_created_widget_if_new(response);
+                 message.robot_in_training().add_newly_created_widget_if_new(response);
             }
             // following should not pass event through since otherwise it is recorded as if robot being trained did this
             bird.widget_dropped_on_me(response, false, undefined, robot, true);
         }
         message.remove();
+    };
+    
+    var process_message = function (message, compute_response, event, robot) {
+        var response;
+        var box_size_and_bird = check_message(message);
+        if (!box_size_and_bird) {
+            return;
+        }
+        response = compute_response(box_size_and_bird.bird, box_size_and_bird.box_size);
+        process_response(response, box_size_and_bird.bird, message, event, robot);
         return response;
     };
     var number_check = function (widget, function_name, index) {
@@ -1320,6 +1334,27 @@ window.TOONTALK.number.function =
                            toString: to_string_function,
                            title: title};
     };
+    var delay_function = function (message, event, robot) {
+        // delays by the amount in the second hole in seconds and give the bird the number of seconds since receiving the box 
+        var start = Date.now();
+        var box_size_and_bird = check_message(message);
+        var delay;
+        if (!box_size_and_bird) {
+            return;
+        }
+        if (box_size_and_bird.size < 2) {
+            TT.UTILITIES.display_message("Delay function birds need a number in the second hole.");
+            return;
+        }
+        delay = message.get_hole_contents(1).to_float();
+        setTimeout(function () {     
+                       var response = TT.number.ZERO();
+                       response.set_value_from_decimal((Date.now()-start)/1000);
+                       process_response(response, box_size_and_bird.bird, message, event, robot);
+                   },
+                   delay*1000);
+        return true;                 
+    };
     add_function_object('sum', 
                         function (message, event, robot) {
                             return n_ary_widget_function(message, TT.number.ZERO, TT.number.add, 'sum', event, robot);
@@ -1435,6 +1470,9 @@ window.TOONTALK.number.function =
                         },
                         "The bird will return the smallest integer greater than or equal to the number.",
                         "ceil");
+    add_function_object('delay',
+                        delay_function,
+                        "The bird will return after waiting the number of seconds in the second hole. She will return with the exact amoutn of time since she received the box.");  
     add_function_object('integer and fraction parts', 
                         function (message, event, robot) {
                             return n_ary_function(message, box_with_integer_and_fraction, 1, 'integer and fraction parts', event, robot);
