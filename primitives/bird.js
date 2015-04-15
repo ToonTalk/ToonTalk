@@ -719,6 +719,9 @@ window.TOONTALK.nest = (function (TT) {
         };
         new_nest.add_to_contents = function (widget_side, event, robot, delivery_bird, ignore_copies) {
             var current_non_empty_listeners, widget_side_copy;
+            if (TT.logging && TT.logging.indexOf("nest") >= 0) {
+                console.log(this.to_debug_string() + " added " + widget_side.to_debug_string() + " nest now contains " + (1+contents.length) + " widgets.");
+            }
             if (contents.push(widget_side) === 1) {
                 if (non_empty_listeners.length > 0) {
                     // is the first content and some robots are waiting for this nest to be filled
@@ -809,6 +812,9 @@ window.TOONTALK.nest = (function (TT) {
         };
         new_nest.removed_from_container = function (part, backside_removed, event, index, report_error_if_nothing_removed) {
             var removed = contents.shift();
+            if (TT.logging && TT.logging.indexOf("nest") >= 0) {
+                console.log(this.to_debug_string() + " removed " + removed.to_debug_string() + " remaining widgets is " + contents.length);
+            }
             if (removed) {
                 if (removed.is_backside()) {
                     removed.get_widget().set_parent_of_backside(undefined);
