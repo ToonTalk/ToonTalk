@@ -28,7 +28,7 @@
 
     var integer_and_fraction_parts = function (rational_number) {
         // if rational_number is negative then so are the parts (or zero if integer_part is zero)
-        var integer_part = bigrat.fromValues(bigrat.toBigInteger(rational_number), 1);
+        var integer_part    = bigrat.fromValues(bigrat.toBigInteger(rational_number), 1);
         var fractional_part = bigrat.subtract(bigrat.create(), rational_number, integer_part);
         return {integer_part:    integer_part,
                 fractional_part: fractional_part};
@@ -36,8 +36,8 @@
 
     var box_with_integer_and_fraction = function (rational_number) {
         var parts = integer_and_fraction_parts(rational_number);
-        var integer_number  = TT.number.ZERO();
-        var fraction_number = TT.number.ZERO();
+        var integer_number  = TT.number.ZERO(TT.number.function_bird_results_default_format);
+        var fraction_number = TT.number.ZERO(TT.number.function_bird_results_default_format);
         integer_number.set_value(parts.integer_part);
         fraction_number.set_value(parts.fractional_part);
         return TT.box.create(2, true, [integer_number, fraction_number], "The integer and fraction parts of " + rational_number.toString().replace(",", "/"));
@@ -255,13 +255,16 @@ window.TOONTALK.number = (function () {
         return integer_approximation_as_string.length-1;
     };
 
+    number.default_format                       = "mixed_number";
+    number.function_bird_results_default_format = "decimal";
+
     number.create = function (numerator, denominator, operator, format, description) {
         var new_number = Object.create(number);
         // value is a private variable closed over below
         var value = bigrat_from_values(numerator, denominator);
-        if (!format) {
-            format = "improper_fraction";
-        }
+//         if (!format) {
+//             format = number.default_format;
+//         }
         if (!operator) {
             operator = '+';
         }         
@@ -319,9 +322,14 @@ window.TOONTALK.number = (function () {
                 // else should be a string
                 this.set_value(bigrat.fromDecimal(decimal_string));
             };
+        new_number.copy = function (parameters) {
+            // this does not use this.get_format() etc because should not pass along default values
+            // also this is presumably faster
+            return this.add_to_copy(number.create(value[0], value[1], operator, format, description), parameters);
+        };
         new_number.get_format =
             function () { 
-                return format; 
+                return format || number.default_format; 
             };
         new_number.set_format =
             function (new_value, update_now) { 
@@ -379,12 +387,8 @@ window.TOONTALK.number = (function () {
         return TT.number.create(1);
     };
 
-    number.ZERO = function () {
-        return TT.number.create(0);
-    };
-
-    number.copy = function (parameters) {
-        return this.add_to_copy(number.create(this.get_value()[0], this.get_value()[1], this.get_operator(), this.get_format(), this.get_description()), parameters);
+    number.ZERO = function (format) {
+        return TT.number.create(0, undefined, undefined, format);
     };
     
     number.equals = function (other) {
@@ -1301,7 +1305,7 @@ window.TOONTALK.number.function =
         // returns a function that converts the response into a widget
         // if toDecimal to provided it should be a function from bigrats to decimals
         return function () {
-            var response = TT.number.ZERO();
+            var response = TT.number.ZERO(TT.number.function_bird_results_default_format);
             response.set_value_from_decimal(decimal_function.apply(null, map_arguments(arguments, (toDecimal || bigrat.toDecimal))));
             return response;
         };
@@ -1348,7 +1352,7 @@ window.TOONTALK.number.function =
         }
         delay = message.get_hole_contents(1).to_float();
         setTimeout(function () {     
-                       var response = TT.number.ZERO();
+                       var response = TT.number.ZERO(TT.number.function_bird_results_default_format);
                        response.set_value_from_decimal((Date.now()-start)/1000);
                        process_response(response, box_size_and_bird.bird, message, event, robot);
                    },
@@ -1400,7 +1404,7 @@ window.TOONTALK.number.function =
     add_function_object('absolute value', 
                         function (message, event, robot) {
                             var absolute_value = function (rational_number) {
-                                var number_widget = TT.number.ZERO();
+                                var number_widget = TT.number.ZERO(number_widget.get_format());
                                 bigrat.abs(number_widget.get_value(), rational_number);
                                 return number_widget;
                             }
