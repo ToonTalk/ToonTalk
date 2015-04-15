@@ -159,6 +159,7 @@ window.TOONTALK.vacuum = (function (TT) {
                     backside_widgets = top_level_backside.get_backside_widgets().slice();
                     if (backside_widgets.length > 0 && TT.sounds) {
                         TT.sounds.vacuum_suck.play();
+                        TT.sounds.bird_fly.pause(); // just in case
                     }
                     backside_widgets.forEach(function (widget_side) {
                                                  if (widget !== widget.robot_in_training()) {
