@@ -622,7 +622,7 @@ window.TOONTALK.backside =
                 var parent_backside = widget.get_parent_of_frontside();
                 var widget_frontside_element = new_widget.get_frontside_element(true);
                 var initial_location, parent_backside_element;
-                if (parent_backside && !parent_backside.get_widget().is_top_level()) {
+                if (parent_backside && parent_backside.add_backside_widget && !parent_backside.get_widget().is_top_level()) {
                     // following works for back of a top-level widget but the placement isn't as good
                     parent_backside.add_backside_widget(new_widget);
                     parent_backside_element = parent_backside.get_element();
