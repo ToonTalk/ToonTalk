@@ -501,7 +501,8 @@ window.TOONTALK.robot_action =
             frontside_element.style.height = new_height+"px";
             setTimeout(function () {
                            continuation();
-                            robot.run_next_step();
+                           widget.render();
+                           robot.run_next_step();
                        },
                        duration);
         }
