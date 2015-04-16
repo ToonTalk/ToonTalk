@@ -19895,5 +19895,162 @@ top level widget
     "%3Cimg%20src%3D'data%3Aimage%2Fpng%3Bbase64%2CiVBORw0KGgoAAAANSUhEUgAAAHQAAABiCAYAAACBFfehAAAABmJLR0QA%2FwD%2FAP%2BgvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3wQKAgwmyL1cYQAAApVJREFUeNrtnctygzAMRYHxfxu%2BnC46yaSpg3kEWbo%2Bd9d20aDjK0uCmDHnPFhpXpb1z885j4OI3q%2Ft39%2BNrjV5CUJEuDWILa5ttHLo3ovfE5B5WVarIF353N059EpQH79TStvdAD0M%2BwWypZsBalV8dQR1IkkBFAH0d1%2BjgBHcQ0stCBiEiqIt134TtpdJjsxgwVOT723hUhQBM34fGsmdLdN305S7NeV5DANIs0GA9lTdWoKdgKl1vWPLG9wUSIGBAtMG9mQBCZh2iz7d%2BY8AeS5mV5yaAKmlyUOaQEZAj1ofuO330uTpw6ByHI8YKwEynmO3AFf30D2rA5hCRRECKLqSfisZE6A9OpSn9Ui5CKAIoBREJ%2FdQ%2BkwcigCKaFvQaYcCVTDlAtW%2F0lY1C8CADn2eJvLhpBFallga12EAmNBwAaBicAEqBhegPbctCKAIoAigCKCqlS5AxZQIQbxe8%2Flz4fsvODQS0MLNk3fIU4k8iuvc6XnQE1AlVDwFhVtmMfbQ3UABGw8kfaggzE2guDMWSFKuIMzqYOH9hTaE2r8OPZdLayMEFJcqAmUI4Xr%2FrBZFODYWzMtAAesL5tcGC6RgP%2FFjUiQEE6C9V7mkXd%2FuxKGC4pkiAVfi0JZAb27xcKiIM3EoVS6VboSY4FADmPJvJ6QAAijpFqAURbKrtqeUe8v7Q%2FeeSNbLfVTLRdz8pepjJyexdDFYmHPu5lgdq2zUzKG9PrYiO5w%2F%2FCpLngvWcWgJZESHWyzI5B1mLTjewVpnlUQwtBT%2Bfuic8%2BjNpS0X4tQMQuWiI7rTw2duOlj4tKeeCcydLt3ztUovC9AFUE997WuxVRtZPtK9p2wCULFCjNtnDBY0XKraEnX3GKd6b%2FsDP0SOhuSTXq8AAAAASUVORK5CYII%3D'%20alt%3D'empty-nest-red.png'%2F%3E"
   ]
 }</div></div>
+<p>Resizing the decimal form of 1/49:</p>
+<div class='toontalk-json'>
+This will be replaced by a work area containing one thing: a robot.
+top level widget
+<div style='display:none;'>{
+  "semantic": {
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "robot",
+            "frontside_conditions": {
+              "type": "top_level"
+            },
+            "body": {
+              "type": "body",
+              "steps": [
+                {
+                  "type": "robot_action",
+                  "action_name": "pick up",
+                  "path": {
+                    "type": "path.to_resource",
+                    "resource": {
+                      "type": "number",
+                      "operator": "+",
+                      "numerator": "1",
+                      "denominator": "1",
+                      "format": "mixed_number",
+                      "is_backside": true
+                    }
+                  },
+                  "additional_info": {
+                    "time": 1540
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "drop it on",
+                  "path": {
+                    "type": "path.to_entire_context",
+                    "is_backside": true
+                  },
+                  "additional_info": {
+                    "left_offset_fraction": 0.13110307414104883,
+                    "top_offset_fraction": 0.2544642857142857,
+                    "time": 526
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "open the backside",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 0
+                  },
+                  "additional_info": {
+                    "time": 621
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "edit",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 0
+                  },
+                  "additional_info": {
+                    "setter_name": "set_denominator",
+                    "argument_1": "49",
+                    "toString": "by changing the value of the denominator to 49",
+                    "button_selector": ".toontalk-denominator-input",
+                    "time": 4634
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "click the button of",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 0
+                  },
+                  "additional_info": {
+                    "button_selector": ".toontalk-settings-backside-button",
+                    "time": 1549
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "edit",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 0
+                  },
+                  "additional_info": {
+                    "setter_name": "set_format",
+                    "argument_1": "decimal",
+                    "toString": "by changing the format to decimal of the number",
+                    "button_selector": ".toontalk-decimal-radio-button",
+                    "time": 2252
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "close the backside",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 0
+                  },
+                  "additional_info": {
+                    "time": 2428
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "change size of",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 0
+                  },
+                  "additional_info": {
+                    "x_factor": 6.144736842105263,
+                    "y_factor": 1,
+                    "time": 3545
+                  }
+                }
+              ]
+            },
+            "run_once": true,
+            "name": "#1"
+          },
+          "view": {
+            "frontside_width": 66,
+            "frontside_height": 110,
+            "frontside_left": 622.109375,
+            "frontside_top": 47.546875,
+            "saved_width": 66,
+            "saved_height": 110,
+            "backside": false
+          },
+          "version": 1
+        }
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgb(245, 240, 240)",
+    "backside_width": 732,
+    "backside_height": 236,
+    "backside_left": 8,
+    "backside_top": 184.1875,
+    "backside": true,
+    "drag_x_offset": 339,
+    "drag_y_offset": 142.8125
+  },
+  "version": 1
+}</div></div>
 </body>
 </html>
