@@ -906,7 +906,8 @@ window.TOONTALK.robot = (function (TT) {
     };
     
     robot.add_newly_created_widget_if_new = function (new_widget) {
-        if (new_widget !== this.get_context()) {
+        if (new_widget !== this.get_context() && this !== new_widget) {
+            // ignore manipulations of the context or the robot
             return this.get_body().add_newly_created_widget_if_new(new_widget);
         }
     };
