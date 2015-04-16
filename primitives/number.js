@@ -1224,15 +1224,8 @@ window.TOONTALK.number.function =
 
     var process_response = function (response, bird, message, event, robot) {
         if (response) {
-            if (robot) {
-               // function created a new widget so robot needs to know about it
-               // might be that it reused a widget in the message so isn't new
-               robot.add_newly_created_widget_if_new(response);
-            }
-            // TODO: be sure that message "knows" its top_level_widget
-            if (event && message.robot_in_training()) {
-                 message.robot_in_training().add_newly_created_widget_if_new(response);
-            }
+            // it used to be that this also called add_newly_created_widget
+            // this wasn't necessary and for the delay function bird meant this could happen at the wrong step
             // following should not pass event through since otherwise it is recorded as if robot being trained did this
             bird.widget_dropped_on_me(response, false, undefined, robot, true);
         }
