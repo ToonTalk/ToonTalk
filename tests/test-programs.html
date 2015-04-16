@@ -20170,7 +20170,7 @@ top level widget
   },
   "version": 1
 }</div></div>
-<p>Added and play a URL sound:</p>
+<p>Add and play a URL sound:</p>
 <div class='toontalk-json'>
 This will be replaced by a work area containing one thing: a robot.
 top level widget
@@ -20311,6 +20311,86 @@ top level widget
     "backside": true,
     "drag_x_offset": 75,
     "drag_y_offset": 96.8125
+  },
+  "version": 1
+}</div></div>
+<p>Add the contents of a URL:</p>
+<div class='toontalk-json'>
+This will be replaced by a work area containing one thing: a robot.
+top level widget
+<div style='display:none;'>{
+  "semantic": {
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "robot",
+            "frontside_conditions": {
+              "type": "top_level"
+            },
+            "body": {
+              "type": "body",
+              "steps": [
+                {
+                  "type": "robot_action",
+                  "action_name": "pick up",
+                  "path": {
+                    "type": "path.to_resource",
+                    "resource": {
+                      "type": "element",
+                      "html": "Since%26nbsp%3BI%26nbsp%3Bsee%26nbsp%3B%3Ci%3Ethis%3C%2Fi%3E%26nbsp%3Bit%26nbsp%3Bworked!",
+                      "attributes": [],
+                      "attribute_values": [],
+                      "source_URL": "https://dl.dropboxusercontent.com/u/51973316/ToonTalk/testing-file-drop.txt",
+                      "is_backside": true
+                    }
+                  },
+                  "additional_info": {
+                    "time": 8813
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "drop it on",
+                  "path": {
+                    "type": "path.to_entire_context",
+                    "is_backside": true
+                  },
+                  "additional_info": {
+                    "left_offset_fraction": 0.2637729549248748,
+                    "top_offset_fraction": 0.190673828125,
+                    "time": 1000
+                  }
+                }
+              ]
+            },
+            "run_once": true,
+            "name": "#5"
+          },
+          "view": {
+            "frontside_width": 66,
+            "frontside_height": 110,
+            "frontside_left": 512,
+            "frontside_top": 49.40625,
+            "saved_width": 66,
+            "saved_height": 110,
+            "backside": false
+          },
+          "version": 1
+        }
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgb(245, 240, 240)",
+    "backside_width": 633,
+    "backside_height": 211,
+    "backside_left": 8,
+    "backside_top": 184.1875,
+    "backside": true,
+    "drag_x_offset": 245,
+    "drag_y_offset": 111.8125
   },
   "version": 1
 }</div></div>
