@@ -1051,6 +1051,7 @@ window.TOONTALK.nest = (function (TT) {
                         $(frontside_element).css({left: nest_position.left-5,
                                                   top:  nest_position.top+45});
                     }
+                    this.get_parent_of_frontside().render();
                     bird_fly_continuation = function () {
                         $(bird_frontside_element).removeClass("toontalk-fly-southwest");
                         TT.UTILITIES.set_timeout(function () {

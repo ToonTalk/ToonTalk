@@ -6,10 +6,10 @@
 
 /*jslint browser: true, devel: true, plusplus: true, vars: true, white: true */
 
-window.TOONTALK.box = (function (TT) {
-    "use strict";
 
-    var box = Object.create(TT.widget);
+(function (TT) {
+    "use strict";
+    // functions shared by boxes and their holes
 
     var update_css_of_hole_contents = function (widget, content_frontside_element, new_width, new_height) {
         var default_width, default_height, correct_width, correct_height, css;
@@ -38,6 +38,10 @@ window.TOONTALK.box = (function (TT) {
         }
         $(content_frontside_element).css(css);
     };
+
+window.TOONTALK.box = (function (TT) {
+
+    var box = Object.create(TT.widget);
 
     box.create = function (size, horizontal, initial_contents, description, labels) {
         var new_box = Object.create(box);
@@ -68,12 +72,23 @@ window.TOONTALK.box = (function (TT) {
             return holes[index].get_contents();
         };
         new_box.set_hole = function (index, new_value, update_display) {
+            var frontside_element, $hole_element, content_frontside_element, hole_dimensions;
             holes[index].set_contents(new_value);
             if (update_display) {
                 if (new_value) {
                     new_value.save_dimensions();
                 }
-                this.update_hole_display(index, new_value);
+                frontside_element = this.get_frontside_element();
+                $hole_element = $(frontside_element).children(".toontalk-hole-number-" + index);
+                $hole_element.empty();
+                if (!new_content) {
+                    return;
+                }
+                hole_dimensions = this.get_hole_dimensions();
+                content_frontside_element = new_content.get_frontside_element(true);
+                $hole_element.append(content_frontside_element);
+                update_css_of_hole_contents(new_content, content_frontside_element, hole_dimensions.width, hole_dimensions.height);
+                new_content.rerender();
             }
             this.rerender();
             if (TT.debugging) {
@@ -134,6 +149,19 @@ window.TOONTALK.box = (function (TT) {
             }
             return true;
         };
+        new_box.get_hole_dimensions = function () {
+            // if parent is a hole does this need to adjust for its borders?
+            var frontside_element = this.get_frontside_element();
+            var box_width  = $(frontside_element).width()  || TT.box.get_default_width();
+            var box_height = $(frontside_element).height() || TT.box.get_default_height();
+            if (horizontal) {
+                return {width: box_width/size,
+                       height: box_height};
+            } else {
+                return {width: box_width,
+                       height: box_height/size};
+            }
+        };           
         new_box.receive_size_from_dropped = function (dropped, event) {
             // dropped drop on the size text area
             // return a string for the new size
@@ -558,20 +586,6 @@ window.TOONTALK.box = (function (TT) {
         return "Each hole label is followed by a ';'. Yoou may enter as many hole labels as there are holes.";
     };
     
-    box.update_hole_display = function (index, new_content) {
-        var frontside_element = this.get_frontside_element();
-        var $hole_element = $(frontside_element).children(".toontalk-hole-number-" + index);
-        var content_frontside_element;
-        $hole_element.empty();
-        if (!new_content) {
-            return;
-        }
-        content_frontside_element = new_content.get_frontside_element(true);
-        $hole_element.append(content_frontside_element);
-        update_css_of_hole_contents(new_content, content_frontside_element)
-        new_content.rerender();
-    };
-    
     box.drop_on = function (other, is_backside, event, robot) {
         var result;
         if (!other.box_dropped_on_me) {
@@ -789,7 +803,6 @@ window.TOONTALK.box = (function (TT) {
 
 window.TOONTALK.box_backside = 
 (function (TT) {
-    "use strict";
     
     return {
         create: function (box) {
@@ -856,7 +869,7 @@ window.TOONTALK.box_backside =
 // a hole is either empty or contains a widget
 window.TOONTALK.box_hole = 
 (function (TT) {
-    "use strict";
+
     return {
         create: function (index) {
             // perhaps this should share more code with widget (e.g. done below with widget.has_parent)
@@ -976,6 +989,13 @@ window.TOONTALK.box_hole =
             hole.get_box = function () {
                 return this.get_parent_of_frontside();
             };
+            hole.update_display = function () {
+                var hole_element;
+                if (contents) {
+                    hole_element = this.get_frontside_element();
+                    update_css_of_hole_contents(contents, contents.get_frontside_element(), $(hole_element).width(), $(hole_element).height());
+                }
+            };
             hole.dereference = function () {
                 if (contents) {
                     return contents[0].dereference();
@@ -1040,13 +1060,13 @@ window.TOONTALK.box_hole =
             };
             hole.render = function () {
                 if (contents) {
-                    return contents.render();
+                    TT.DISPLAY_UPDATES.pending_update(this);
                 }
                 // otherwise nothing to do
             };
             hole.rerender = function () {
-                if (contents) {
-                    return contents.rerender();
+                if (contents.visible()) {
+                    return this.rerender();
                 }
                 // otherwise nothing to do
             };
@@ -1162,5 +1182,7 @@ window.TOONTALK.box_hole =
         }
     };
     
+}(window.TOONTALK));
+
 }(window.TOONTALK));
 
