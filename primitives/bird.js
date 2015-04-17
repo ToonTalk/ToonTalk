@@ -923,12 +923,19 @@ window.TOONTALK.nest = (function (TT) {
         new_nest.copy = function (parameters) {
             // notice that bird/nest semantics is that the nest is shared not copied
             // unless the nest is copied along with one of its birds
-            var contents_copy, copy, new_original_nest, new_original_nest_guid;
-            if (parameters && parameters.just_value && !parameters.copy_covered_nests) {
+            var contents_copy, copy, top_content_copy, new_original_nest, new_original_nest_guid;
+            if (parameters && parameters.just_value) {
                 if (contents.length > 0) {
-                    return contents[0].get_widget().copy(parameters);
+                    top_content_copy = contents[0].get_widget().copy(parameters);
+                    if (!parameters.copy_covered_nests) {
+                        return top_content_copy;
+                    }
                 }
-                return TT.nest.create(this.get_description(), [], "in a robot's condition", undefined, serial_number, this.get_name());
+                copy = TT.nest.create(this.get_description(), [], "in a robot's condition", undefined, serial_number, this.get_name());
+                if (top_content_copy) {
+                    copy.add_to_contents(top_content_copy);
+                }
+                return copy;
             }
             contents_copy = TT.UTILITIES.copy_widget_sides(contents, parameters);
             if (!parameters) {
