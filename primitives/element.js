@@ -504,8 +504,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         new_element.set_HTML(original_html);
         new_element.set_description(description);
         if (TT.debugging) {
-            new_element.debug_id = TT.UTILITIES.generate_unique_id();
-            new_element.debug_string = new_element.to_debug_string();
+            new_element._debug_id = TT.UTILITIES.generate_unique_id();
+            new_element._debug_string = new_element.to_debug_string();
         }
         return new_element;
     };
@@ -616,7 +616,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         var css = {};
         var current_value, new_value_number;
         var style_attributes;
-//      console.log(attribute + " of " + this.debug_id + " is " + new_value);
+//      console.log(attribute + " of " + this._debug_id + " is " + new_value);
         if (!frontside_element) {
             return false;
         }
@@ -964,7 +964,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                       this.get_text() :
                       "the element " + scale_or_quote_html(this.get_HTML());        
 //         if (TT.debugging && (!(to_string_info && to_string_info.role === "conditions"))) {
-//             description += " (" + this.debug_id + ")";
+//             description += " (" + this._debug_id + ")";
 //         }
         return description;
     };

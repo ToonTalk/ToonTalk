@@ -158,7 +158,7 @@ window.TOONTALK.widget = (function (TT) {
             if ((TT.debugging  || TT.logging) && !widget.to_debug_string) {
                 widget.to_debug_string = function () {
                     var parent = this.get_parent_of_frontside();
-                    var id = this.debug_id;
+                    var id = this._debug_id;
                     var description = this.get_description();
                     if (description) {
                         description += " ";
@@ -1023,7 +1023,7 @@ window.TOONTALK.widget = (function (TT) {
                         console.log("Warning: Probable redundant call to remove_backside_widget");
                     }
                 } else {
-                    TT.UTILITIES.report_internal_error("Couldn't find a widget to remove it from backside widgets. " + widget_side.get_widget() + " (" + widget_side.get_widget().debug_id + ")"); 
+                    TT.UTILITIES.report_internal_error("Couldn't find a widget to remove it from backside widgets. " + widget_side.get_widget() + " (" + widget_side.get_widget()._debug_id + ")"); 
                 }
                 return;                        
             }
@@ -1044,7 +1044,7 @@ window.TOONTALK.widget = (function (TT) {
                 }       
             }
             widget_side.set_visible(false);
-//          console.log("Removed " + widget + " (" + widget.debug_id + ") from list of backside widgets of " + this + ". Length is now " +  this.backside_widgets.length);
+//          console.log("Removed " + widget + " (" + widget._debug_id + ") from list of backside widgets of " + this + ". Length is now " +  this.backside_widgets.length);
 //             if (backside) {
 //                 backside.update_run_button_disabled_attribute();
 //             }
@@ -1161,7 +1161,7 @@ window.TOONTALK.widget = (function (TT) {
             $container_element.get(0).appendChild(frontside_element_copy);
             if (container_widget) {
                 container_widget.add_backside_widget(widget_copy);
-//              console.log("Added the copy " + widget_copy + " (" + widget_copy.debug_id + ") to " + container_widget + " (" + container_widget.debug_id + ")");
+//              console.log("Added the copy " + widget_copy + " (" + widget_copy._debug_id + ") to " + container_widget + " (" + container_widget._debug_id + ")");
             }
             if (this.robot_in_training()) {
                 this.robot_in_training().copied(this, widget_copy, false);
@@ -1684,7 +1684,7 @@ window.TOONTALK.widget = (function (TT) {
             widget.is_widget = true;
             widget.get_backside(true).set_visible(true); // top-level backsides are always visible (at least for now)
             if (TT.debugging) {
-                widget.debug_id = TT.UTILITIES.generate_unique_id();
+                widget._debug_id = TT.UTILITIES.generate_unique_id();
                 widget.debug_string = "Top-level widget"; 
             }
             return widget;

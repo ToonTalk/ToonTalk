@@ -221,7 +221,7 @@ window.TOONTALK.scale = (function (TT) {
             }
             TT.UTILITIES.give_tooltip(frontside_element, this.get_title());
             if (TT.debugging) {
-                this.debug_string = this.to_debug_string();
+                this._debug_string = this.to_debug_string();
             } 
         };
         new_scale.render = function () {
@@ -361,8 +361,8 @@ window.TOONTALK.scale = (function (TT) {
             }            
         };
         if (TT.debugging) {
-            new_scale.debug_id = TT.UTILITIES.generate_unique_id();
-            new_scale.debug_string = new_scale.to_debug_string();
+            new_scale._debug_id = TT.UTILITIES.generate_unique_id();
+            new_scale._debug_string = new_scale.to_debug_string();
         }
         return new_scale;
     };

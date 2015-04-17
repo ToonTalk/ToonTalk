@@ -532,8 +532,8 @@ window.TOONTALK.bird = (function (TT) {
         new_bird = new_bird.add_standard_widget_functionality(new_bird);
         new_bird.set_description(description);
         if (TT.debugging) {
-            new_bird.debug_id = TT.UTILITIES.generate_unique_id();
-            new_bird.debug_string = new_bird.to_debug_string();
+            new_bird._debug_id = TT.UTILITIES.generate_unique_id();
+            new_bird._debug_string = new_bird.to_debug_string();
         }
         return new_bird;
     };
@@ -998,7 +998,7 @@ window.TOONTALK.nest = (function (TT) {
             if (!guid) {
                 guid = TT.UTILITIES.generate_unique_id();
                 if (TT.debugging) {
-                    this.debug_string = this.to_debug_string();
+                    this._debug_string = this.to_debug_string();
                 }                
                 // create bird now so robot knows about it
                 bird = TT.bird.create(this);
@@ -1318,8 +1318,8 @@ window.TOONTALK.nest = (function (TT) {
         new_nest.add_standard_widget_functionality(new_nest);
         new_nest.set_description(description);
         if (TT.debugging) {
-            new_nest.debug_id = TT.UTILITIES.generate_unique_id();
-            new_nest.debug_string = new_nest.to_debug_string();
+            new_nest._debug_id = TT.UTILITIES.generate_unique_id();
+            new_nest._debug_string = new_nest.to_debug_string();
         }
         if (original_nest && guid) {
             if (!add_copy_private_key) {
@@ -1403,8 +1403,8 @@ window.TOONTALK.nest = (function (TT) {
             // here it does what the particular function_object indicates
             function_nest.add_to_contents = function_object.respond_to_message;
             if (TT.debugging) {
-                function_nest.debug_id = TT.UTILITIES.generate_unique_id();
-                function_nest.debug_string = "a function nest that " + function_object.toString();
+                function_nest._debug_id = TT.UTILITIES.generate_unique_id();
+                function_nest._debug_string = "a function nest that " + function_object.toString();
             }
         } else {
             TT.UTILITIES.report_internal_error("Cannot create a function nest because TOONTALK." + type_name + "." + function_name + " is not defined.");

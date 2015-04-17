@@ -92,7 +92,7 @@ window.TOONTALK.box = (function (TT) {
             }
             this.rerender();
             if (TT.debugging) {
-                this.debug_string = this.to_debug_string();
+                this._debug_string = this.to_debug_string();
             }
         };
         new_box.get_holes = function () {
@@ -145,7 +145,7 @@ window.TOONTALK.box = (function (TT) {
                 this.rerender();
             }
             if (TT.debugging) {
-                this.debug_string = this.to_debug_string();
+                this._debug_string = this.to_debug_string();
             }
             return true;
         };
@@ -212,8 +212,8 @@ window.TOONTALK.box = (function (TT) {
         new_box.set_description(description);
         new_box.set_contents(initial_contents);
         if (TT.debugging) {
-            new_box.debug_id = TT.UTILITIES.generate_unique_id();
-            new_box.debug_string = new_box.to_debug_string();
+            new_box._debug_id = TT.UTILITIES.generate_unique_id();
+            new_box._debug_string = new_box.to_debug_string();
         }
         return new_box;
     };
@@ -535,7 +535,7 @@ window.TOONTALK.box = (function (TT) {
         $(frontside_element).removeClass("toontalk-box-eighth-size-border toontalk-box-quarter-size-border toontalk-box-half-size-border toontalk-box-full-size-border");
         TT.UTILITIES.give_tooltip(frontside_element, this.get_title());
         if (TT.debugging) {
-            this.debug_string = this.to_debug_string();
+            this._debug_string = this.to_debug_string();
         }
         if (this.get_erased()) {
             $(frontside_element).addClass("toontalk-box-erased");
@@ -1035,11 +1035,11 @@ window.TOONTALK.box_hole =
                 if (contents) {
                     contents.set_parent_of_frontside(this);
                     if (TT.debugging) {
-                        this.debug_string = "A hole containing " + contents.to_debug_string();
+                        this._debug_string = "A hole containing " + contents.to_debug_string();
                     }
                     contents.set_visible(visible);
                 } else if (TT.debugging) {
-                    this.debug_string = this.to_debug_string();
+                    this._debug_string = this.to_debug_string();
                 }
             };
             hole.visible = function () {
@@ -1175,7 +1175,7 @@ window.TOONTALK.box_hole =
                     }
                     return info + " which is empty";
                 };
-                hole.debug_string = hole.to_debug_string();
+                hole._debug_string = hole.to_debug_string();
             }
             return hole;
         }

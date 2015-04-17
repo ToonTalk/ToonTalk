@@ -280,7 +280,7 @@ window.TOONTALK.number = (function () {
                 value = new_value;
                 this.rerender(); // will update if visible
                 if (TT.debugging) {
-                    this.debug_string = this.to_debug_string();
+                    this._debug_string = this.to_debug_string();
                     if (new_value.toString() === "0,0") {
                         TT.UTILITIES.report_internal_error("Impossible numeric value -- can be caused by decimal string not being parsable as a number.");
                     }
@@ -310,7 +310,7 @@ window.TOONTALK.number = (function () {
         new_number.set_value_from_decimal =
             function (decimal_string) {
                 // e.g. an attribute value
-//                 console.log("set_value_from_decimal " + decimal_string + " " + this.debug_id);
+//                 console.log("set_value_from_decimal " + decimal_string + " " + this._debug_id);
 //                 if (decimal_string === undefined) {
 //                     // e.g. is an element attribute that isn't known so treat it as zero
 //                     decimal_string = 0;
@@ -366,9 +366,9 @@ window.TOONTALK.number = (function () {
         new_number = number.add_standard_widget_functionality(new_number);
         new_number.set_description(description);
         if (TT.debugging) {
-            new_number.debug_string = new_number.toString();
-            new_number.debug_id = TT.UTILITIES.generate_unique_id();
-            value.debug_id_new = new_number.debug_id; // for debugging
+            new_number._debug_string = new_number.toString();
+            new_number._debug_id = TT.UTILITIES.generate_unique_id();
+            value._debug_id_new = new_number._debug_id; // for debugging
         }
         return new_number;
     };

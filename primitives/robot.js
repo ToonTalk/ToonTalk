@@ -384,8 +384,8 @@ window.TOONTALK.robot = (function (TT) {
         new_robot.set_name(name);
         new_robot.set_description(description);
         if (TT.debugging) {
-            new_robot.debug_id = TT.UTILITIES.generate_unique_id();
-            new_robot.debug_string = new_robot.to_debug_string();
+            new_robot._debug_id = TT.UTILITIES.generate_unique_id();
+            new_robot._debug_string = new_robot.to_debug_string();
         }
         return new_robot;
     };
@@ -491,7 +491,7 @@ window.TOONTALK.robot = (function (TT) {
                 }
             }
         }
-//      console.log("robot#" + this.debug_id + " match_status is " + this.match_status);
+//      console.log("robot#" + this._debug_id + " match_status is " + this.match_status);
         if (this.match_status === 'matched') {
             if (!queue) {
                 queue = TT.QUEUE;
@@ -837,7 +837,7 @@ window.TOONTALK.robot = (function (TT) {
         var frontside_element, thing_in_hand_frontside_element;
         if (TT.debugging) {
             // this can't be done during robot creation since robot actions references to newly_created_widgets is premature
-            this.debug_string = this.to_debug_string();
+            this._debug_string = this.to_debug_string();
         }
         frontside_element = frontside.get_element();
         if (thing_in_hand) {
