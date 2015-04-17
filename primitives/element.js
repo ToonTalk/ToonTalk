@@ -418,19 +418,15 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         new_element.initialize_element = function () {
             var frontside_element = this.get_frontside_element();
             var resize_handles = $(frontside_element).children(".ui-resizable-handle");
-            var rendering, additional_classes, plain_text, htmnl;
+            var rendering, additional_classes, is_plain_text, htmnl;
             if (!initialized) {
                 html =  this.get_HTML();
-                plain_text = this.is_plain_text_element();
-                if (plain_text) {
-                    // the following is necessary so that when placed in boxes
-                    // and is scaled to fit it doesn't change its line breaks
-                    html = html.replace(/ /g, "&nbsp;");
-                }
-                frontside_element.innerHTML = html;
+                is_plain_text = this.is_plain_text_element();
+                // the following is necessary so that when placed in boxes
+                frontside_element.innerHTML = is_plain_text ? html.replace(/ /g, "&nbsp;") : html;
                 this.set_image_element(rendering, frontside_element);
                 $(frontside_element).addClass("toontalk-element-frontside");
-                if (plain_text) {
+                if (is_plain_text) {
                     //  give it a class that will give it a better font and size
                     additional_classes = this.get_additional_classes();
                     if (additional_classes) {
