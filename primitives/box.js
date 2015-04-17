@@ -71,12 +71,12 @@ window.TOONTALK.box = (function (TT) {
         new_box.get_hole_contents = function (index) {
             return holes[index].get_contents();
         };
-        new_box.set_hole = function (index, new_value, update_display) {
+        new_box.set_hole = function (index, new_content, update_display) {
             var frontside_element, $hole_element, content_frontside_element, hole_dimensions;
-            holes[index].set_contents(new_value);
+            holes[index].set_contents(new_content);
             if (update_display) {
-                if (new_value) {
-                    new_value.save_dimensions();
+                if (new_content) {
+                    new_content.save_dimensions();
                 }
                 frontside_element = this.get_frontside_element();
                 $hole_element = $(frontside_element).children(".toontalk-hole-number-" + index);
@@ -1065,7 +1065,7 @@ window.TOONTALK.box_hole =
             };
             hole.rerender = function () {
                 if (contents.visible()) {
-                    return this.rerender();
+                    return this.render();
                 }
                 // otherwise nothing to do
             };
