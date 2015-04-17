@@ -667,11 +667,11 @@ window.TOONTALK.UTILITIES =
             TT.vacuum.create();
         }
         TT.UTILITIES.add_test_all_button();
-        // compute the default dimensions of robots, birds, nests, and scales
+        // compute the default dimensions of robots, birds, nests, and scales (not really needed for scales and causes a bug in test-programs.html)
         discover_default_dimensions('toontalk-robot',       TT.robot);
         discover_default_dimensions('toontalk-empty-nest',  TT.nest);
         discover_default_dimensions('toontalk-bird-static', TT.bird);
-        discover_default_dimensions('toontalk-scale',       TT.scale);
+//         discover_default_dimensions('toontalk-scale',       TT.scale);
     };
     var discover_default_dimensions = function (class_name, toontalk_module) {
         var $element_for_determining_dimensions = $("<div class='" + class_name + "'>");
@@ -683,7 +683,7 @@ window.TOONTALK.UTILITIES =
                                                        return default_width;
                                                    };
                                                    toontalk_module.get_default_height = function () {
-                                                        return default_height;
+                                                       return default_height;
                                                    };
                                                });
     };
