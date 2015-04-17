@@ -1312,7 +1312,7 @@ window.TOONTALK.element_backside =
                     if (element_widget[setter](new_text) && element_widget.robot_in_training()) {
                         element_widget.robot_in_training().edited(element_widget, {setter_name: setter,
                                                                                    argument_1: new_text,
-                                                                                   toString: "change the text to " + new_text + " of",
+                                                                                   toString: 'change the text to "' + new_text + '"',
                                                                                    button_selector: ".toontalk-html-input"});
                     }
                 };

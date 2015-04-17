@@ -730,9 +730,11 @@ window.TOONTALK.robot_action =
                                              " of";
                         break;
                     case ".toontalk-play-sound-effect-button":
-                        return "click the 'Play Sound' button";
+                        action_description = "click the 'Play Sound' button of";
+                        break;
                     default:
-                        return "click a button";
+                        action_description = "click a button of";
+                        break;
                     }
                 }
                 if (action_name === "add a new widget to the work space") {
