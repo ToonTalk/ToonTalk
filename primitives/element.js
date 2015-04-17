@@ -1345,6 +1345,7 @@ window.TOONTALK.element_backside =
                                                                                                               setter: 'receive_URL_from_dropped',
                                                                                                               toString: "for the URL source of the text"});
                         }
+                        event.stopPropagation();
                     };
                     update_URL = function (event) {
                         var new_text = URL_input.button.value.trim().replace(/\xA0/g," ");
@@ -1360,6 +1361,8 @@ window.TOONTALK.element_backside =
                                                                "toontalk-URL-input",
                                                                "",
                                                                "Edit the URL where this text comes from.",
+                                                               undefined,
+                                                               undefined,
                                                                URL_drop_handler);
 //                     $(URL_input.container).css({width: "100%"});
 //                     $(URL_input.button).css({width: "100%"});
