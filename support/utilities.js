@@ -1257,7 +1257,7 @@ window.TOONTALK.UTILITIES =
                         widget.set_source_URL(url);
                     }
                } else {  
-                  widget = TT.element.create("<div class='toontalk-iframe-container'><iframe src='" + url + "' width='320' height='240'></div>");     
+                   widget = TT.element.create("<div class='toontalk-iframe-container'><iframe src='" + url + "' width='320' height='240'></div>");     
                }
                if (widget) {
                    request.removeEventListener('readystatechange', response_handler);

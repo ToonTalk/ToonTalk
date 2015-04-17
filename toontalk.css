@@ -1725,6 +1725,9 @@ a {
 }
 .toontalk-denominator-input {
 }
+.toontalk-URL-input  {
+	width: 93%;
+}
 .toontalk-three-dots-in-number {
 	font-size: 30%;
 	font-family: 'Lucida serif'; /* really want to ignore the monospace */

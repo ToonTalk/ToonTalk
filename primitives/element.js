@@ -348,7 +348,13 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             return source_URL;
         };
         new_element.set_source_URL = function (new_value) {
+            var old_value = source_URL;
+            if (old_value === new_value) {
+                return;
+            }
             source_URL = new_value;
+            this.refresh();
+            return true;
         };
         new_element = new_element.add_standard_widget_functionality(new_element);
         new_element.drag_started = function (json, is_resource) {
@@ -1103,6 +1109,13 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             return this.get_text();
         }
     };
+
+    element.receive_URL_from_dropped = function (dropped) {
+        var new_text = dropped.get_text();
+        if (this.set_source_URL(new_text)) {
+            return this.get_source_URL();
+        }
+    };
     
     return element;
 }(window.TOONTALK));
@@ -1290,7 +1303,9 @@ window.TOONTALK.element_backside =
             var edit_HTML = TT.UTILITIES.get_current_url_boolean_parameter("elementHTML", false);
             var getter = edit_HTML ? "get_HTML" : "get_text";
             var generic_backside_update = backside.update_display.bind(backside);
-            var text, html_input, update_html, drop_handler, $play_sound_effect_button, $play_video_button;
+            var text, html_input, update_html, drop_handler, 
+                URL_input, update_URL, URL_drop_handler,
+                $play_sound_effect_button, $play_video_button;
             // need to ensure that it 'knows' its textContent, etc.
             element_widget.initialize_element();
             text = element_widget[getter]().trim();
@@ -1322,6 +1337,36 @@ window.TOONTALK.element_backside =
                 html_input.button.addEventListener('change',   update_html);
                 html_input.button.addEventListener('mouseout', update_html);
                 backside_element.appendChild(html_input.container);
+                if (element_widget.get_source_URL()) {
+                    URL_drop_handler = function (event) {
+                        var dropped = TT.UTILITIES.input_area_drop_handler(event, element_widget.receive_URL_from_dropped.bind(element_widget), element_widget);
+                        if (dropped && element_widget.robot_in_training()) {
+                            element_widget.robot_in_training().dropped_on_text_area(dropped, element_widget, {area_selector: ".toontalk-URL-input",
+                                                                                                              setter: 'receive_URL_from_dropped',
+                                                                                                              toString: "for the URL source of the text"});
+                        }
+                    };
+                    update_URL = function (event) {
+                        var new_text = URL_input.button.value.trim().replace(/\xA0/g," ");
+                        var frontside_element = element_widget.get_frontside_element();
+                        if (element_widget.set_source_URL(new_text) && element_widget.robot_in_training()) {
+                            element_widget.robot_in_training().edited(element_widget, {setter_name: "set_source_URL",
+                                                                                       argument_1: new_text,
+                                                                                       toString: 'change the source URL to "' + new_text + '"',
+                                                                                       button_selector: ".toontalk-URL-input"});
+                        }
+                    };
+                    URL_input = TT.UTILITIES.create_text_input(element_widget.get_source_URL(), 
+                                                               "toontalk-URL-input",
+                                                               "",
+                                                               "Edit the URL where this text comes from.",
+                                                               URL_drop_handler);
+//                     $(URL_input.container).css({width: "100%"});
+//                     $(URL_input.button).css({width: "100%"});
+                    URL_input.button.addEventListener('change',   update_URL);
+                    URL_input.button.addEventListener('mouseout', update_URL);
+                    backside_element.appendChild(URL_input.container);
+                }
             }
             backside.get_attributes_chooser = function () {
                 return attributes_chooser;
