@@ -729,8 +729,10 @@ window.TOONTALK.robot_action =
                                              TT.UTILITIES.encode_HTML_for_title("<span class='toontalk-stop-sign-icon'></span>") + 
                                              " of";
                         break;
+                    case ".toontalk-play-sound-effect-button":
+                        return "click the 'Play Sound' button";
                     default:
-                        return "";
+                        return "click a button";
                     }
                 }
                 if (action_name === "add a new widget to the work space") {
