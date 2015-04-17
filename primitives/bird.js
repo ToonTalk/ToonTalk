@@ -288,8 +288,8 @@ window.TOONTALK.bird = (function (TT) {
             bird_style_position = bird_frontside_element.style.position;
             bird_frontside_element.style.position = 'absolute';
             top_level_widget = this.top_level_widget();
-            if (parent && parent.get_widget().temporarily_remove_contents) {
-                restore_contents = parent.get_widget().temporarily_remove_contents(this, true);
+            if (parent && parent.temporarily_remove_contents) {
+                restore_contents = parent.temporarily_remove_contents(this, true);
                 if (restore_contents) {
                     // if it really did remove the contents
                     top_level_widget.add_to_top_level_backside(this);
