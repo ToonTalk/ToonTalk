@@ -615,8 +615,7 @@ window.TOONTALK.UTILITIES =
         });
     };
     var initialize = function () {
-        var $robot_element_for_determining_dimensions = $("<div class='toontalk-robot'>");
-        var translation_div, volume;
+       var translation_div, volume;
         TT.debugging = TT.UTILITIES.get_current_url_parameter('debugging');
         TT.logging   = TT.UTILITIES.get_current_url_parameter('log');
         volume = TT.UTILITIES.get_current_url_numeric_parameter('volume', 10); // 10% volume default
@@ -668,15 +667,22 @@ window.TOONTALK.UTILITIES =
             TT.vacuum.create();
         }
         TT.UTILITIES.add_test_all_button();
-        // compute the default dimensions of robots
-        TT.UTILITIES.run_when_dimensions_known($robot_element_for_determining_dimensions.get(0), 
+        // compute the default dimensions of robots, birds, nests, and scales
+        discover_default_dimensions('toontalk-robot',       TT.robot);
+        discover_default_dimensions('toontalk-empty-nest',  TT.nest);
+        discover_default_dimensions('toontalk-bird-static', TT.bird);
+        discover_default_dimensions('toontalk-scale',       TT.scale);
+    };
+    var discover_default_dimensions = function (class_name, toontalk_module) {
+        var $element_for_determining_dimensions = $("<div class='" + class_name + "'>");
+        TT.UTILITIES.run_when_dimensions_known($element_for_determining_dimensions.get(0), 
                                                function () {
-                                                   var default_width  = $robot_element_for_determining_dimensions.width();
-                                                   var default_height = $robot_element_for_determining_dimensions.height();
-                                                   TT.robot.get_default_width = function () {
+                                                   var default_width  = $element_for_determining_dimensions.width();
+                                                   var default_height = $element_for_determining_dimensions.height();
+                                                   toontalk_module.get_default_width = function () {
                                                        return default_width;
                                                    };
-                                                   TT.robot.get_default_height = function () {
+                                                   toontalk_module.get_default_height = function () {
                                                         return default_height;
                                                    };
                                                });
@@ -2677,14 +2683,15 @@ window.TOONTALK.UTILITIES =
                 // but size in a box hole is should not count
                 setTimeout(function () {
                                callback(original_parent);
-                               });
+                           });
                 return;
             }
             check_if_dimensions_known = function (delay_if_not) {
                 // add to DOM temporarily so can get dimensions
                 setTimeout(function () {
-                               var width = $(element).width();
-                               if (width) { // } && !$(element).is(".toontalk-carried-by-bird")) {
+                               var width  = $(element).width();
+                               var height = $(element).height();
+                               if (width && height) { // } && !$(element).is(".toontalk-carried-by-bird")) {
                                    if (not_in_a_hole(element.parentElement)) {
                                        callback(original_parent);
                                        if (original_parent) {

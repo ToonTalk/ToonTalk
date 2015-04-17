@@ -594,6 +594,11 @@ window.TOONTALK.bird = (function (TT) {
         return "bird";
     };
 
+    bird.maintain_proportional_dimensions = function () {
+        // should not be stretched in only one dimension
+        return true;
+    };
+
     bird.matching_resource = function (other) {
         // should only be one bird resource since bird identity is an issue
         return other.get_type_name && other.get_type_name() === this.get_type_name();
@@ -1422,6 +1427,11 @@ window.TOONTALK.nest = (function (TT) {
             return "nests";
         }
         return "nest";
+    };
+
+    nest.maintain_proportional_dimensions = function () {
+        // should not be stretched in only one dimension
+        return true;
     };
     
     nest.matching_resource = function (other) {

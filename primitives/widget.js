@@ -132,6 +132,9 @@ window.TOONTALK.widget = (function (TT) {
             if (!widget.is_plain_text_element) {
                widget.is_plain_text_element = return_false;
             }
+            if (!widget.maintain_proportional_dimensions) {
+               widget.maintain_proportional_dimensions = return_false;
+            }
             widget.ok_to_set_dimensions = function () {
                 return !this.is_plain_text_element();
                 // OK unless is plain text element widget that isn't in a container (e.g. a box hole)

@@ -1024,6 +1024,11 @@ window.TOONTALK.robot = (function (TT) {
         }
         return "robot";
     };
+    
+    robot.maintain_proportional_dimensions = function () {
+        // should not be stretched in only one dimension
+        return true;
+    };
 
     robot.matching_resource = function (other) {
         // untrained robots match each other

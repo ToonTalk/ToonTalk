@@ -11,6 +11,34 @@ window.TOONTALK.box = (function (TT) {
 
     var box = Object.create(TT.widget);
 
+    var update_css_of_hole_contents = function (widget, content_frontside_element, new_width, new_height) {
+        var default_width, default_height, correct_width, correct_height, css;
+        if (widget && new_width >= 0 && widget.maintain_proportional_dimensions() && widget.get_default_width) {
+            // only set the "smaller" of the two dimensions
+            default_width  = widget.get_default_width();
+            default_height = widget.get_default_height();
+            if (new_width/default_width >= new_height/default_height) {
+                // hole is wider than necessary
+                // center it in the hole
+                correct_width = (default_width*new_height)/default_height;
+                css = {left:   (new_width-correct_width)/2,
+                       top:    0,
+                       width:  correct_width,
+                       height: new_height};
+            } else {
+                correct_height = (default_height*new_width)/default_width;
+                css = {left:   0,
+                       top:    (new_height-correct_height)/2,
+                       width:  new_width,
+                       height: correct_height};
+            }           
+        } else {
+            css = {left: 0,
+                   top:  0};
+        }
+        $(content_frontside_element).css(css);
+    };
+
     box.create = function (size, horizontal, initial_contents, description, labels) {
         var new_box = Object.create(box);
         var holes = [];
@@ -421,10 +449,7 @@ window.TOONTALK.box = (function (TT) {
             if (hole_element !== content_frontside_element) {
                 // not an empty hole
                 // save dimensions first?
-                $(content_frontside_element).css({left:  0,
-                                                  top:   0,
-                                                  width:  '',
-                                                  height: ''});
+                update_css_of_hole_contents(contents, content_frontside_element, new_width, new_height);
                 hole_element.appendChild(content_frontside_element);
                 hole.get_contents().update_display();
             }
@@ -543,8 +568,7 @@ window.TOONTALK.box = (function (TT) {
         }
         content_frontside_element = new_content.get_frontside_element(true);
         $hole_element.append(content_frontside_element);
-        $(content_frontside_element).css({left: 0,
-                                          top:  0});
+        update_css_of_hole_contents(new_content, content_frontside_element)
         new_content.rerender();
     };
     
