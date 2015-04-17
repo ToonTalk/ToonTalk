@@ -722,6 +722,18 @@ window.TOONTALK.nest = (function (TT) {
             }
             return this;
         };
+        new_nest.match = function (other) {
+            // the semantics of matching an uncovered nest is that the other must be a nest (covered or not)
+            // paths should be to the entire nest so that a robot can pick up a nest and manipulate it
+            if (contents) {
+                // backside conditions can be nests with something on top
+                return contents[0].match(other);
+            }
+            if (other.match_nest_with_nest) {
+                return other.match_nest_with_nest(this);
+            }
+            return other;
+        };
         new_nest.add_to_contents = function (widget_side, event, robot, delivery_bird, ignore_copies) {
             var current_non_empty_listeners, widget_side_copy;
             if (TT.logging && TT.logging.indexOf("nest") >= 0) {
@@ -1407,15 +1419,6 @@ window.TOONTALK.nest = (function (TT) {
     
     nest.create_backside = function () {
         return TT.nest_backside.create(this);
-    };
-    
-    nest.match = function (other) {
-        // the semantics of matching an uncovered nest is that the other must be a nest (covered or not)
-        // paths should be to the entire nest so that a robot can pick up a nest and manipulate it
-        if (other.match_nest_with_nest) {
-            return other.match_nest_with_nest(this);
-        }
-        return other;
     };
 
     nest.match_nest_with_nest = function (other_nest) {
