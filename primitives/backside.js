@@ -356,6 +356,9 @@ window.TOONTALK.backside =
                         var backside_visible = this.visible();
                         var widget_side_element, json_view, css;
                         backside_widgets.forEach(function (backside_widget_side, index) {
+                            if (!backside_widget_side) {
+                                return;
+                            }
                             var backside = backside_widget_side.get_widget().get_backside();
                             widget_side_element = backside_widget_side.get_element();
                             widget_side_element.toontalk_widget = backside_widget_side.get_widget();

@@ -1063,6 +1063,9 @@ window.TOONTALK.widget = (function (TT) {
                     this.backside_widgets_json_views = json_views;
                 }
                 backside_widgets.forEach(function (backside_widget) {
+                    if (!backside_widget) {
+                        return;
+                    }
                     if (backside_widget.is_backside()) {
                         backside_widget.get_widget().set_parent_of_backside(this, true);
                     } else {
@@ -1459,7 +1462,7 @@ window.TOONTALK.widget = (function (TT) {
             widget.update_display = function () {
                 if (this.backside_widgets) {
                     this.backside_widgets.forEach(function (widget_side) {
-                        if (widget_side.visible()) {
+                        if (widget_side && widget_side.visible()) {
                             widget_side.update_display();
                         }    
                     });
