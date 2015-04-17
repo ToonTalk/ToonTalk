@@ -1305,7 +1305,8 @@ window.TOONTALK.element_backside =
                 };
                 html_input = TT.UTILITIES.create_text_area(text, "toontalk-html-input", "", "Type here to edit the text.", drop_handler);
                 update_html = function (event) {
-                    var new_text = html_input.button.value.trim();
+                    // replace character code 160 with ordinary space (32)
+                    var new_text = html_input.button.value.trim().replace(/\xA0/g," ");
                     var frontside_element = element_widget.get_frontside_element();
                     var setter = "set_HTML"; // edit_HTML ? "set_HTML" : "set_text";
                     if (element_widget[setter](new_text) && element_widget.robot_in_training()) {
