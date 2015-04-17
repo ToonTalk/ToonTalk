@@ -725,7 +725,7 @@ window.TOONTALK.nest = (function (TT) {
         new_nest.match = function (other) {
             // the semantics of matching an uncovered nest is that the other must be a nest (covered or not)
             // paths should be to the entire nest so that a robot can pick up a nest and manipulate it
-            if (contents) {
+            if (contents.length > 0) {
                 // backside conditions can be nests with something on top
                 return contents[0].match(other);
             }
