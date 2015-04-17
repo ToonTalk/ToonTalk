@@ -913,12 +913,15 @@ window.TOONTALK.box_hole =
             hole.widget_dropped_on_me = function (dropped, is_backside, event, robot) {
                 var box = this.get_parent_of_frontside();
                 var hole_element, hole_position, parent_position, dropped_element, finished_animating, is_plain_text;
+                if (dropped.dropped_on_other) {
+                    // e.g. so egg can hatch from nest drop
+                    dropped.dropped_on_other(this, false, event, robot);
+                }
                 if (event) {
                     if (TT.sounds) {
                         TT.sounds.fall_inside.play();
                     }
                     hole_element = this.get_element();
-                    // TODO: abstract this and use it elsewhere
                     is_plain_text = dropped.is_plain_text_element();
                     dropped_element = dropped.get_element();
                     $(dropped_element).css({"z-index": TT.UTILITIES.next_z_index()});  
@@ -938,7 +941,7 @@ window.TOONTALK.box_hole =
                         box.render();
                         this.set_contents(dropped);
                     }.bind(this);
-                    setTimeout(finished_animating, is_plain_text ? 0 : 1200);
+                    setTimeout(finished_animating, (is_plain_text || TT.UTILITIES.has_animating_image(dropped_element)) ? 0 : 1200);
                     if (box.robot_in_training()) {
                         box.robot_in_training().dropped_on(dropped, this);
                     }
@@ -950,10 +953,6 @@ window.TOONTALK.box_hole =
                 } else {
                     box.render();
                     this.set_contents(dropped);
-                }
-                if (dropped.dropped_on_other) {
-                    // e.g. so egg can hatch from nest drop
-                    dropped.dropped_on_other(this, false, event, robot);
                 }
                 return true;
             };
