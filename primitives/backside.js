@@ -219,6 +219,9 @@ window.TOONTALK.backside =
             backside.get_element = function () {
                 return backside_element;
             };
+            backside.get_backside_element = function () {
+                return backside_element; 
+            };
             backside.get_widget = function () {
                 return widget;
             };
