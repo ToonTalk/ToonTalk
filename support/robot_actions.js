@@ -185,7 +185,10 @@ window.TOONTALK.actions =
                     robot.rerender();
                 };
                 if (first_robot_still_visible) {
-                    TT.UTILITIES.animate_to_absolute_position(frontside_element, robot_home, continuation);
+                    TT.UTILITIES.animate_to_absolute_position(frontside_element,
+                                                              robot_home,
+                                                              continuation,
+                                                              robot && robot.transform_animation_speed(TT.UTILITIES.default_animation_speed));
                 } else {
                     robot.set_animating(false);
                     continuation();

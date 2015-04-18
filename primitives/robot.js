@@ -192,14 +192,30 @@ window.TOONTALK.robot = (function (TT) {
             return this.visible() && maximum_step_duration !== 0;
         };
         new_robot.transform_step_duration = function (duration) {
-            // other transforms to come -- e.g. running at X normal speed
             if (duration === undefined && maximum_step_duration === 0) {
                 return 0;
             }
+            if (watched_speed && duration) {
+                return duration/watched_speed;
+            }
+            // TODO: decide if maximum_step_duration is obsolete
             if (typeof maximum_step_duration === 'number') {
                 return Math.min(duration, maximum_step_duration);
             }
             return duration;
+        };
+        new_robot.transform_original_step_duration = function (duration) {
+            // no watched speed means the original durations (if known)
+            // when duration isn't available the speed will be used
+            if (!watched_speed) {
+                return duration;
+            }
+        }
+        new_robot.transform_animation_speed = function (speed) {
+            if (watched_speed) {
+                return speed*watched_speed;
+            }
+            return speed;
         };
         new_robot.set_animating = function (animating, robot_position) {
             var frontside_element = this.get_frontside_element();
@@ -1295,7 +1311,7 @@ window.TOONTALK.robot_backside =
                                                                "When finished start again",
                                                                run_once_title(robot.get_run_once()));
             var speed_names  = ["normal", "original", "double", "half", "very fast", "very slow"];
-            var speed_values = [ 1,        undefined,  2,       .5,      10,         .1];
+            var speed_values = [ 1,        undefined,  2,       .5,      10,         .25];
             var speed_value_to_name = function (value) {
                 var index = value ? speed_values.indexOf(value) : 1;
                 return speed_names[index];
@@ -1314,7 +1330,7 @@ window.TOONTALK.robot_backside =
                                                               "Double the normal speed",
                                                               "Half the normal speed",
                                                               "Ten times normal speed",
-                                                              "One-tenth of normal speed"]);
+                                                              "One-fourth of normal speed"]);
             var $next_robot_area = TT.UTILITIES.create_drop_area(window.TOONTALK.robot.empty_drop_area_instructions);
             var next_robot = robot.get_next_robot();
             var advanced_settings_button = TT.backside.create_advanced_settings_button(backside, robot);

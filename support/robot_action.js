@@ -238,7 +238,12 @@ window.TOONTALK.robot_action =
             top_offset  = widget_height/2;
         }
         // robots move at 1/4 pixel per millisecond for clarity
-        robot.animate_to_widget(side, continuation, .25, left_offset, top_offset, true, robot.transform_step_duration(additional_info && additional_info.time));
+        robot.animate_to_widget(side,
+                                continuation,
+                                robot.transform_animation_speed(.25),
+                                left_offset, top_offset,
+                                true,
+                                robot.transform_original_step_duration(additional_info && additional_info.time));
     };
     var pick_up_animation = function (widget, context, top_level_context, robot, continuation, additional_info) {
         var frontside_element = widget.get_frontside_element();

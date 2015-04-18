@@ -724,11 +724,17 @@ window.TOONTALK.number = (function () {
                          bammer_gone_continuation = function () {
                              $(bammer_element).remove();
                          };
-                         TT.UTILITIES.animate_to_absolute_position(bammer_element, target_absolute_position, bammer_gone_continuation); 
+                         TT.UTILITIES.animate_to_absolute_position(bammer_element,
+                                                                   target_absolute_position,
+                                                                   bammer_gone_continuation,
+                                                                   robot && robot.transform_animation_speed(TT.UTILITIES.default_animation_speed)); 
                          $(bammer_element).css({opacity: 0.01});
                      });
              }.bind(this);
-             TT.UTILITIES.animate_to_absolute_position(bammer_element, target_absolute_position, hit_number_continuation);
+             TT.UTILITIES.animate_to_absolute_position(bammer_element,
+                                                       target_absolute_position,
+                                                       hit_number_continuation,
+                                                       robot && robot.transform_animation_speed(TT.UTILITIES.default_animation_speed));
              $(bammer_element).css({opacity: 1.0,
                                     // ensure that Bammer is on top of everything
                                     "z-index": TT.UTILITIES.next_z_index()+100});
