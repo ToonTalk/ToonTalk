@@ -967,8 +967,6 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
            return '"' + html + '"';
         };
         var description = to_string_info && to_string_info.role === "conditions" ?
-                      this.get_text() :
-                      "the element " + scale_or_quote_html(this.get_HTML());        
 //         if (TT.debugging && (!(to_string_info && to_string_info.role === "conditions"))) {
 //             description += " (" + this._debug_id + ")";
 //         }
