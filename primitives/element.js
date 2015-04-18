@@ -967,10 +967,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
            return '"' + html + '"';
         };
         var description = to_string_info && to_string_info.role === "conditions" ?
-//         if (TT.debugging && (!(to_string_info && to_string_info.role === "conditions"))) {
-//             description += " (" + this._debug_id + ")";
-//         }
-        return description;
+                          '"' + this.get_text() + '"':
+                          scale_or_quote_html(this.get_HTML());
+        return "the element " + description;
     };
     
     element.get_type_name = function (plural) {
