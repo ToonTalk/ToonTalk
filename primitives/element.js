@@ -629,6 +629,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         }
         if (typeof current_value === 'undefined') {
             current_value = this.get_attribute_from_current_css(attribute);
+            if (current_value === new_value) {
+                return false;
+            }
         }      
         // need to use a number for JQuery's css otherwise treats "100" as "auto"
         new_value_number = value_in_pixels(new_value, attribute);
