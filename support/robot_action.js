@@ -373,12 +373,12 @@ window.TOONTALK.robot_action =
                                     robot,
                                     function () {
                                          text_area = find_text_area();
-                                         robot.animate_to_element(text_area, adjust_dropped_location_continuation, .25, 0, 0, true);
+                                         robot.animate_to_element(text_area, adjust_dropped_location_continuation, robot.transform_animation_speed(TT.UTILITIES.default_animation_speed/2), 0, 0, true);
                                     },
                                     additional_info);
         } else {
             text_area = find_text_area();
-            robot.animate_to_element(text_area, adjust_dropped_location_continuation, .25, 0, 0, true);
+            robot.animate_to_element(text_area, adjust_dropped_location_continuation, robot.transform_animation_speed(TT.UTILITIES.default_animation_speed/2), 0, 0, true);
         }
     };
     var click_and_open_backside = function (widget, robot, continuation, additional_info) {
@@ -423,7 +423,7 @@ window.TOONTALK.robot_action =
                 backside.set_advanced_settings_showing(true, backside.get_element());
             }
             // robots move at 1/4 pixel per millisecond for clarity
-            robot.animate_to_element(button_element, new_continuation, .25, 0, 0, true);
+            robot.animate_to_element(button_element, new_continuation, robot.transform_animation_speed(TT.UTILITIES.default_animation_speed/2), 0, 0, true);
         }
         var backside;
         if (!button_visible && widget.open_backside && robot.animate_consequences_of_actions()) {
@@ -439,7 +439,7 @@ window.TOONTALK.robot_action =
             tool_use_animation(widget, context, top_level_context, robot, continuation, tool_held_by_robot_css_class);
         };
         if (tool_element && robot.animate_consequences_of_actions()) {
-            robot.animate_to_element(tool_element, new_continuation, .5, 0, 0, true);
+            robot.animate_to_element(tool_element, new_continuation, robot.transform_animation_speed(TT.UTILITIES.default_animation_speed), 0, 0, true);
         } else {
             new_continuation();
         }
@@ -461,7 +461,7 @@ window.TOONTALK.robot_action =
         robot.carrying_tool = tool_held_by_robot_css_class;
         robot.update_display(); // to display tool
         // robots move at 1/4 pixel per millisecond for clarity
-        robot.animate_to_element(widget.get_frontside_element(), new_continuation, .25, 0, 0, true);
+        robot.animate_to_element(widget.get_frontside_element(), new_continuation, robot.transform_animation_speed(TT.UTILITIES.default_animation_speed/2), 0, 0, true);
     };
     var copy_animation = function (widget, context, top_level_context, robot, continuation) {
         var new_continuation = function () {
@@ -511,7 +511,7 @@ window.TOONTALK.robot_action =
                        },
                        duration);
         }
-        robot.animate_to_element(frontside_element, new_continuation, .5, 0, 0, true);
+        robot.animate_to_element(frontside_element, new_continuation, robot.transform_animation_speed(TT.UTILITIES.default_animation_speed), 0, 0, true);
     };
     var animate_widget_creation = function (widget, context, top_level_context, robot, continuation, additional_info) {
         var show_button_use = additional_info && additional_info.button_selector;
