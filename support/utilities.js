@@ -177,7 +177,7 @@ window.TOONTALK.UTILITIES =
 //         $(element).find("*").removeClass("toontalk-ignore-events");
         $source = dragee;
         drag_ended();
-        if (!$source && !json_object && !event.dataTransfer.files && !event.dataTransfer.getData("text/uri-list")) {
+        if (!$source && !json_object && !event.dataTransfer.files && !non_data_URL_in_data_transfer(event)) {
             if (!event.dataTransfer) {
                 utilities.report_internal_error("Drop failed since there is no event.dataTransfer");
             } else {
@@ -318,7 +318,7 @@ window.TOONTALK.UTILITIES =
                 };
                 event.stopPropagation();
                 return;
-            } else if (event.dataTransfer.getData("text/uri-list")) {
+            } else if (non_data_URL_in_data_transfer(event)) {
                 handle_drop_from_uri_list(event.dataTransfer.getData("text/uri-list"), $target, target_widget, target_position, event);
                 event.stopPropagation();
                 return;
@@ -758,6 +758,11 @@ window.TOONTALK.UTILITIES =
         }
         decoded += s.substring(cursor);
         return decoded; 
+    };
+    var non_data_URL_in_data_transfer = function (event) {
+        var urls = event.dataTransfer && event.dataTransfer.getData("text/uri-list");
+        // not clear what to do if some URLs are data and some not -- can that happen?
+        return urls && urls.length > 0 && urls.indexOf("data:") < 0;
     };
     // for implementing zero_timeout
     var timeouts = [];
@@ -1241,7 +1246,7 @@ window.TOONTALK.UTILITIES =
                 var type = this.getResponseHeader('content-type');
                 var widget;
                 if (!type) {
-                     return;
+                    return;
                 }
                 if (type.indexOf("audio") === 0) {
                     widget = TT.element.create(url);
@@ -1354,7 +1359,7 @@ window.TOONTALK.UTILITIES =
 //              console.log("no dataTransfer in drop event");
                 return;
             }
-            if (event.dataTransfer.files.length > 0 || event.dataTransfer.getData("text/uri-list").length > 0) {
+            if (event.dataTransfer.files.length > 0 || non_data_URL_in_data_transfer(event)) {
                 // these create element widgets without going through JSON
                 return;
             }
