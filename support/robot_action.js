@@ -732,6 +732,12 @@ window.TOONTALK.robot_action =
                     case ".toontalk-play-sound-effect-button":
                         action_description = "click the 'Play Sound' button of";
                         break;
+                    case ".toontalk-settings-backside-button":
+                        action_description = "open the advanced settings of";
+                        break;
+                    case ".toontalk-show-attributes-chooser-button":
+                        action_description = "click the button to add or remove attributes of ";
+                        break;
                     default:
                         action_description = "click a button of";
                         break;
