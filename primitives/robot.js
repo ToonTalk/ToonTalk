@@ -35,11 +35,13 @@ window.TOONTALK.robot = (function (TT) {
 
     var name_counter = 0;
  
-    robot.create = function (frontside_conditions, backside_conditions, body, description, thing_in_hand, run_once, next_robot, name) {
+    robot.create = function (frontside_conditions, backside_conditions, body, description, thing_in_hand, run_once, next_robot, name, watched_speed) {
         // frontside_conditions holds a widget that needs to be matched against the frontside of the widget to run
         // backside_conditions holds an object whose keys are type_names of required widgets on the backside
         // and whose values are widgets that need to match backside widgets of that type
         // body holds the actions the robot does when it runs
+        // if watched_speed is undefined then runs at original speed
+        // otherwise is a positive time which is the multiplier of the normal default speed for each step
         var new_robot = Object.create(robot);
         // who should do the 'repeating'
         var first_in_team;
@@ -309,6 +311,14 @@ window.TOONTALK.robot = (function (TT) {
         new_robot.set_run_once = function (new_value) {
             run_once = new_value;
             this.update_title();
+            return true;
+        };
+        new_robot.get_watched_speed = function () {
+            return watched_speed;
+        };
+         new_robot.set_watched_speed = function (new_value) {
+            watched_speed = new_value;
+            return true;
         };
         new_robot.can_run = function () {
             // can run if just runs on top-level backside
@@ -416,7 +426,8 @@ window.TOONTALK.robot = (function (TT) {
                                this.get_thing_in_hand(),
                                this.get_run_once(),
                                next_robot_copy,
-                               (!parameters || !parameters.fresh_copy) && this.get_name());
+                               (!parameters || !parameters.fresh_copy) && this.get_name(),
+                               this.get_watched_speed());
         return this.add_to_copy(copy, parameters);
     };
     
@@ -1086,7 +1097,8 @@ window.TOONTALK.robot = (function (TT) {
                 body: this.get_body().get_json(json_history),
                 run_once: this.get_run_once(),
                 next_robot: next_robot_json,
-                name: this.get_name()
+                name: this.get_name(),
+                watched_speed: this.get_watched_speed()
                };
     };
     
@@ -1115,7 +1127,8 @@ window.TOONTALK.robot = (function (TT) {
                                thing_in_hand,
                                json.run_once,
                                next_robot,
-                               json.name);
+                               json.name,
+                               json.speed);
     };
 
     robot.find_conditions_path = function (widget, robot_with_widget_in_conditions, robot) {
@@ -1281,6 +1294,27 @@ window.TOONTALK.robot_backside =
                                                                "toontalk-run-once-check-box",
                                                                "When finished start again",
                                                                run_once_title(robot.get_run_once()));
+            var speed_names  = ["normal", "original", "double", "half", "very fast", "very slow"];
+            var speed_values = [ 1,        undefined,  2,       .5,      10,         .1];
+            var speed_value_to_name = function (value) {
+                var index = value ? speed_values.indexOf(value) : 1;
+                return speed_names[index];
+            };
+            var speed_name_to_value = function (name) {
+                var index = speed_names.indexOf(name);
+                return speed_values[index];
+            };
+            var speed_menu = TT.UTILITIES.create_select_menu("robot_speed",
+                                                             speed_names,
+                                                             "toontalk-select-function",
+                                                             "  What speed should I run at? ",
+                                                             "Click to select the speed I'll run when watched.",
+                                                             ["The normal speed for each step", 
+                                                              "The original delay between steps when I was trained",
+                                                              "Double the normal speed",
+                                                              "Half the normal speed",
+                                                              "Ten times normal speed",
+                                                              "One-tenth of normal speed"]);
             var $next_robot_area = TT.UTILITIES.create_drop_area(window.TOONTALK.robot.empty_drop_area_instructions);
             var next_robot = robot.get_next_robot();
             var advanced_settings_button = TT.backside.create_advanced_settings_button(backside, robot);
@@ -1315,6 +1349,10 @@ window.TOONTALK.robot_backside =
                 }
                 event.stopPropagation();
             });
+            speed_menu.menu.value = speed_value_to_name(robot.get_watched_speed());
+            speed_menu.menu.addEventListener('change', function (event) {
+                robot.set_watched_speed(speed_name_to_value(event.target.value));
+            });
             if (next_robot) {
                 add_to_drop_area(next_robot, $next_robot_area.get(0));
             }
@@ -1343,8 +1381,10 @@ window.TOONTALK.robot_backside =
             backside_element.appendChild(this.create_train_button(backside, robot));
             backside_element.appendChild(advanced_settings_button);
             $(run_once_input.container).addClass("toontalk-advanced-setting");
+            $((speed_menu.container))  .addClass("toontalk-advanced-setting");
             $next_robot_area           .addClass("toontalk-advanced-setting");
             backside_element.appendChild(run_once_input.container);
+            backside_element.appendChild(speed_menu.container);
             backside_element.appendChild($next_robot_area.get(0));
             add_conditions_area(backside_element, robot);
             backside.add_advanced_settings();
@@ -1394,6 +1434,6 @@ window.TOONTALK.robot_backside =
 }(window.TOONTALK));
 
 
-window.TOONTALK.robot.empty_drop_area_instructions = "Drop a robot here who will try to run when this robot can't run."
+window.TOONTALK.robot.empty_drop_area_instructions = "Drop a robot here who will try to run when I can't."
 
 }());
