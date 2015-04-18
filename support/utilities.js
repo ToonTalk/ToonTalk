@@ -1433,9 +1433,9 @@ window.TOONTALK.UTILITIES =
                     event.stopPropagation();
             };
             var current_highlighted_element;
+            // following makes drag of widgets work but not quite sure why
             element.addEventListener('dragover',
                                      function (event) {
-                                         highlight_element(event); // for drop feedback
                                          event.preventDefault();
                                          return false;
                                      });
@@ -1455,6 +1455,7 @@ window.TOONTALK.UTILITIES =
                                                  current_highlighted_element = undefined;
                                              }
                                          }
+                                         // TODO: determine if the following is good
                                          event.stopPropagation();
                                      });
             // following attempt to use JQuery UI draggable but it provides mouseevents rather than dragstart and the like

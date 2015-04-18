@@ -481,7 +481,7 @@ window.TOONTALK.bird = (function (TT) {
             TT.UTILITIES.give_tooltip(frontside_element, this.get_title());
             if (!$(frontside_element).is(".toontalk-bird, .toontalk-side-animating")) {
                 $(frontside_element).addClass(this.get_class_name_with_color("toontalk-bird toontalk-bird-static"));
-                frontside_element.addEventListener("dragover", function (event) {
+                frontside_element.addEventListener("dragenter", function (event) {
                     if (frontside_element.className.indexOf("toontalk-bird-static") >= 0) {
                         $(frontside_element).removeClass(this.get_class_name_with_color("toontalk-bird-static"));
                         TT.UTILITIES.add_animation_class(frontside_element, "toontalk-bird-gimme");
@@ -492,6 +492,8 @@ window.TOONTALK.bird = (function (TT) {
                         $(frontside_element)
                             .addClass(this.get_class_name_with_color("toontalk-bird-static"))
                             .removeClass("toontalk-bird-gimme");
+                       // if in a container restore dimensions
+                       this.get_parent_of_frontside().render();
                     }
                 }.bind(this));
             }
