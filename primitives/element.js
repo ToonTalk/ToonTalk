@@ -424,13 +424,14 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         new_element.initialize_element = function () {
             var frontside_element = this.get_frontside_element();
             var resize_handles = $(frontside_element).children(".ui-resizable-handle");
-            var rendering, additional_classes, is_plain_text, htmnl;
+            var additional_classes, is_plain_text, htmnl;
             if (!initialized) {
                 html =  this.get_HTML();
                 is_plain_text = this.is_plain_text_element();
-                // the following is necessary so that when placed in boxes
+                // the introduction of non-breaking spaces is necessary for plain text elements
+                // so that when placed in boxes they don't change shape
                 frontside_element.innerHTML = is_plain_text ? html.replace(/ /g, "&nbsp;") : html;
-                this.set_image_element(rendering, frontside_element);
+//                 this.set_image_element(rendering, frontside_element);
                 $(frontside_element).addClass("toontalk-element-frontside");
                 if (is_plain_text) {
                     //  give it a class that will give it a better font and size
