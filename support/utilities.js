@@ -2211,6 +2211,7 @@ window.TOONTALK.UTILITIES =
 //                 $(select).selectmenu({width: 200});
 //             });
             $(select).addClass("ui-widget");
+            $(label_element).addClass("ui-widget");
             utilities.use_custom_tooltip(select);
             return {container: container,
                     menu:      select,
@@ -2358,7 +2359,7 @@ window.TOONTALK.UTILITIES =
             return $table.get(0);
         };
 
-        utilities.ecome_file_data_table = function (table, files_data, in_cloud, button_class) {
+        utilities.become_file_data_table = function (table, files_data, in_cloud, button_class) {
             $(table).DataTable({
                    data: files_data,
                    autoWidth: false,
