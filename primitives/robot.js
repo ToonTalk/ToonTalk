@@ -1114,7 +1114,7 @@ window.TOONTALK.robot = (function (TT) {
                 run_once: this.get_run_once(),
                 next_robot: next_robot_json,
                 name: this.get_name(),
-                watched_speed: this.get_watched_speed()
+                speed: this.get_watched_speed()
                };
     };
     
