@@ -152,9 +152,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             } else {
                 frontside_element.innerHTML = html; // until re-rendered
             }
-            // need to know new dimensions to scale appropriately
-            this.compute_original_dimensions(true);
-            this.rerender();
+            if (initialized) {
+                // need to know new dimensions to scale appropriately
+                this.compute_original_dimensions(true);
+                this.rerender();
+            }
             return true;
         };
         // sub classes can call set_HTML_from_sub_classes from within their set_HTML without recurring 
