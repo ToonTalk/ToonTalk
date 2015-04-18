@@ -1637,6 +1637,11 @@ body {
     width:  100%;
 	height: 100%;
 }
+.toontalk-box-hole > .toontalk-top-level-number {
+	/* 	numbers inside of box holes fit exactly */
+    width:  100%;
+	height: 100%;
+}
 .toontalk-box-hole > .toontalk-box {
 /* 	boxes inside of box holes fit exactly */
     width:  100%;

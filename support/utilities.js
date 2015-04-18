@@ -71,11 +71,6 @@ window.TOONTALK.UTILITIES =
         widget.being_dragged = true;
         bounding_rectangle = dragee.get(0).getBoundingClientRect();
         is_resource = dragee.is(".toontalk-top-level-resource");
-//         if (dragee.is(".toontalk-frontside")) {
-//             // save the current dimension so size doesn't change while being dragged
-//             dragee.css({width:  bounding_rectangle.width,
-//                         height: bounding_rectangle.height});
-//         }
         if (widget.get_json) {
             json_object = utilities.get_json_top_level(widget);
             json_object.view.drag_x_offset = client_x - bounding_rectangle.left;
@@ -790,7 +785,7 @@ window.TOONTALK.UTILITIES =
     utilities.create_from_json = function (json, additional_info, delay_backside_widgets) {
             var handle_delayed_backside_widgets = function (widget, additional_info, shared_widget_index) {
                 additional_info.shared_widgets[shared_widget_index] = widget;
-                if (widget.finish_create_from_json_continuation) {
+                if (widget && widget.finish_create_from_json_continuation) {
                     // this part of the work was postponed so that shared_widgets could be set above
                     // this prevents infinite recursion when processing self-referential JSON, e.g. element with attribute_object on back
                     widget.finish_create_from_json_continuation();
@@ -2514,9 +2509,6 @@ window.TOONTALK.UTILITIES =
                                                     previous_height = ui.size.height;                                                   
                                                 }
                                             }
-//                                     // following needed for element widgets that are images
-//                                     $element.find("img").css({width:  ui.size.width,
-//                                                               height: ui.size.height});
                                             widget.rerender();
                                 },
                                 stop: function (event, ui) {

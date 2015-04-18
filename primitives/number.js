@@ -534,6 +534,10 @@ window.TOONTALK.number = (function () {
         // numbers looked wrong when translated (extra spaces between digits)
         child_element.translate = false;
         $(child_element).addClass("toontalk-widget notranslate");
+        if ($dimensions_holder.is(".toontalk-box-hole")) {
+            $(frontside_element).css({width: '',
+                                      height: ''});
+        }
         TT.UTILITIES.give_tooltip(frontside_element, this.get_title());
     };
     
