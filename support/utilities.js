@@ -525,6 +525,9 @@ window.TOONTALK.UTILITIES =
                 }
                 target_widget = utilities.widget_of_element(top_level_element).get_backside();
             }
+            if (!top_level_element) {
+                return; // give up
+            }
             top_level_element.appendChild($source.get(0));
             top_level_backside_position = $(top_level_element).offset();
             $source.css({
@@ -1859,6 +1862,7 @@ window.TOONTALK.UTILITIES =
                 maximum_wait);
         };
 
+        // default is a half a pixel per millisecond -- so roughly two seconds to cross a screen
         utilities.default_animation_speed = .5;
         
         utilities.animate_to_absolute_position = function (source_element, target_absolute_position, continuation, speed, more_animation_follows, duration) {
@@ -1876,10 +1880,6 @@ window.TOONTALK.UTILITIES =
             // ensure that the animated element is "on top"
             $(source_element).css({"z-index": utilities.next_z_index()});
             if (!duration) {
-                // default is a half a pixel per millisecond -- so roughly two seconds to cross a screen
-                if (!speed) {
-                    console.log("the default of .5 needs to be adjusted if by a robot");
-                }
                 duration = Math.round(distance/(speed || utilities.default_animation_speed));
             }
             $(source_element).addClass("toontalk-side-animating");
