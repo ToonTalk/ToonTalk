@@ -479,7 +479,6 @@ window.TOONTALK.bird = (function (TT) {
                 frontside_element.setAttribute('toontalk_name', nest.get_name());
             }
             TT.UTILITIES.give_tooltip(frontside_element, this.get_title());
-    //      console.log("update display " + $(frontside_element).width() + "x" + $(frontside_element).height());
             if (!$(frontside_element).is(".toontalk-bird, .toontalk-side-animating")) {
                 $(frontside_element).addClass(this.get_class_name_with_color("toontalk-bird toontalk-bird-static"));
                 frontside_element.addEventListener("dragover", function (event) {
@@ -504,7 +503,6 @@ window.TOONTALK.bird = (function (TT) {
         };
         new_bird.set_function_name = function (new_name) {
             if (nest && nest.is_function_nest() && nest.set_function_name(new_name)) {
-                // update the bird's title (and maybe someday more - e.g. t-shirt)
                 this.rerender();
                 if (this.robot_in_training()) {
                     this.robot_in_training().edited(this, {setter_name: "set_function_name",
