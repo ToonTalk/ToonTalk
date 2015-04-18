@@ -1880,7 +1880,6 @@ window.TOONTALK.UTILITIES =
             }
             // ensure that the animated element is "on top"
             $(source_element).css({"z-index": utilities.next_z_index()});
-            console.log("Speed is " + speed + " and duration is " + duration);
             if (!duration) {
                 // default is a half a pixel per millisecond -- so roughly two seconds to cross a screen
                 if (!speed) {

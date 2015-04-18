@@ -117,7 +117,7 @@ window.TOONTALK.robot_action =
                                                   top:  context_frontside_position.top});
                  top_level_element.appendChild(widget_frontside_element);
                  top_level_element.toontalk_widget.add_backside_widget(widget);
-                 widget.animate_to_element(top_level_element);
+                 widget.animate_to_element(top_level_element, undefined, robot.transform_animation_speed(TT.UTILITIES.default_animation_speed));
              }
              return true;
          },
@@ -549,7 +549,10 @@ window.TOONTALK.robot_action =
                 setTimeout(continuation, 1500);                      
             };
             if (trained_robot_frontside_element.toontalk_return_to) {
-                TT.UTILITIES.animate_to_absolute_position(trained_robot_frontside_element, trained_robot_frontside_element.toontalk_return_to, robot_returned_continuation);
+                TT.UTILITIES.animate_to_absolute_position(trained_robot_frontside_element,
+                                                          trained_robot_frontside_element.toontalk_return_to,
+                                                          robot_returned_continuation,
+                                                          robot.transform_animation_speed(TT.UTILITIES.default_animation_speed));
             } else {
                 robot_returned_continuation();
             }
