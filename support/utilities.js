@@ -1762,21 +1762,25 @@ window.TOONTALK.UTILITIES =
                                }
                                // TODO: determine why the placement of tool tips for robots, boxes, and numbers is too low
                                // following fixes it - otherwise the tool tip can interfere with selection
-                               if ($element.is(".toontalk-robot")) {
-                                    position.top  -= 30;
-                               } else if ($element.is(".toontalk-number")) {
-                                    position.top -= 30;
-                               } else if ($element.is(".toontalk-box")) {
-                                    position.top -= 30;
+                               if (feedback.vertical === 'bottom') {
+                                   if ($element.is(".toontalk-robot")) {
+                                        position.top  -= 30;
+                                   } else if ($element.is(".toontalk-number")) {
+                                        position.top -= 30;
+                                   } else if ($element.is(".toontalk-box")) {
+                                        position.top -= 30;
+                                   } else {
+                                       // can be too close to widget (or button) and interferes with clicks etc
+                                       position.top -= 20;
+                                   }
+                                   if (position.left < 10) {
+                                       position.left = 10+window.scrollX;
+                                   }
+                                   if (position.top < 10) {
+                                       position.top = 10+window.scrollY;
+                                   }
                                } else {
-                                   // can be too close to widget (or button) and interferes with clicks etc
-                                   position.top -= 20;
-                               }
-                               if (position.left < 10) {
-                                   position.left = 10;
-                               }
-                               if (position.top < 10) {
-                                   position.top = 10;
+                                    position.top += 20;
                                }
                                $(this).css(position);
                                feedback_horizontal = feedback.horizontal;
@@ -1794,10 +1798,7 @@ window.TOONTALK.UTILITIES =
                               new_width = Math.min(800, maximum_width_if_moved || $(window).width()-100);
                               position = $(tooltip).position();
                               // //width: (340 + 340*(text_length-default_capacity)/default_capacity),
-                              // TODO: determine why position above and to the left of where it should be - necessitating the following
-                              ui.tooltip.css({left: position.left,
-                                              top:  position.top+80,
-                                              maxWidth: new_width});
+                              ui.tooltip.css({maxWidth: new_width});
                           }
                           if (element_displaying_tool) {
                               element_displaying_tool.hide();
