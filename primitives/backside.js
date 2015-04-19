@@ -88,7 +88,7 @@ window.TOONTALK.backside =
                                              }
                                              TT.UTILITIES.give_tooltip(stop_sign_element, title);
                                          };
-            var close_title, close_handler, description_text_area, name_text_input;
+            var close_title, close_handler, description_text_area, name_text_input, relative_URL;
             if (TT.TRANSLATION_ENABLED) {
                 help_URL = TT.UTILITIES.add_URL_parameter(help_URL, "translate", "1");
             }
@@ -173,17 +173,26 @@ window.TOONTALK.backside =
             TT.UTILITIES.use_custom_tooltip(green_flag_element);
             TT.UTILITIES.use_custom_tooltip(stop_sign_element);
             if (help_URL) {
-                help_button = document.createElement("div");
+                relative_URL = help_URL.indexOf("://") < 0;
+                help_button = document.createElement(relative_URL ? "div" : "a");
                 // notranslate shouldn't be needed and is the older way of avoiding translation
                 // see http://www.w3.org/International/questions/qa-translate-flag
                 $(help_button).addClass("toontalk-help-button notranslate toontalk-widget-help-button")
                               .click(function (event) {
-                                         help_frame = document.createElement("iframe");
-                                         $(help_frame).addClass("toontalk-help-frame");
-                                         help_frame.src = help_URL;
-                                         document.body.appendChild(close_help_button);
-                                         document.body.appendChild(help_frame);
-                                         event.stopPropagation();
+                                         if (relative_URL) {
+                                             // is a relative path so no problem with iframes
+                                             help_frame = document.createElement("iframe");
+                                             $(help_frame).addClass("toontalk-help-frame");
+                                             help_frame.src = help_URL;
+                                             document.body.appendChild(close_help_button);
+                                             document.body.appendChild(help_frame);
+                                             event.stopPropagation();
+                                         } else {
+                                             // need to work around:
+                                             // Refused to display 'https://developer.mozilla.org/en-US/docs/Web/CSS/transform#rotate' in a frame because it set 'X-Frame-Options' to 'DENY'.
+                                             help_button.href = help_URL;
+                                             help_button.target = '_blank';
+                                         }
                                      });
                 help_button.innerHTML = 'i'; // like tourist info -- alternatively could use a question mark
                 help_button.translate = false; // should not be translated
