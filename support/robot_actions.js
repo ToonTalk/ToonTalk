@@ -141,8 +141,8 @@ window.TOONTALK.actions =
             var saved_parent_element = frontside_element.parentElement;
             var restore_after_last_event = function () {
                 var first_robot_still_visible = robot.visible() && 
-                                          robot.get_maximum_step_duration() !== 0 &&
-                                          robot.get_first_in_team() === robot;
+                                                robot.get_maximum_step_duration() !== 0 &&
+                                                robot.get_first_in_team() === robot;
                 var continuation = function () {
                     // robot was added to top-level backside so z-index will work as desired (robot on top of everything)
                     // the following restores it

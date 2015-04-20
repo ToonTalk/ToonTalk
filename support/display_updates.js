@@ -9,21 +9,17 @@ window.TOONTALK.DISPLAY_UPDATES =
     "use strict";
     // backsides, frontsides, and widgets (typically both sides) can be 'dirty'
     var pending_updates = [];
-//     var current_update;
     var time_of_last_update = 0;
     return {
         pending_update: function (x) {
-//             if (!x.update_display) {
-//                 return;
-//             }
             if (pending_updates.indexOf(x) >= 0) {
                 // already scheduled to be rendered
                 return;
             }
-//             if (current_update && current_update !== x && x.has_ancestor && x.has_ancestor(current_update)) {
+//          if (current_update && current_update !== x && x.has_ancestor && x.has_ancestor(current_update)) {
                 // is being called recursively by the display of decendant so ignore it
-//                 return;
-//             }
+//              return;
+//          }
             pending_updates.push(x);
         },
         
