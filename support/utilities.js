@@ -1790,8 +1790,9 @@ window.TOONTALK.UTILITIES =
                                        position.left = 10+window.scrollX;
                                    }
                                    if (position.top < 10) {
-                                       position.top = 10+window.scrollY;
+                                       position.top = 10;
                                    }
+                                   position.top = 10+window.scrollY;
                                } else {
                                     position.top += 20;
                                }
