@@ -104,6 +104,9 @@ window.TOONTALK.actions =
         run_unwatched: function (context, top_level_context, queue, robot, step_number) {
             var steps = this.get_steps();
             var step;
+            if (TT.logging && TT.logging.indexOf('run') >= 0) {           
+                console.log(robot.to_debug_string() + " running unwatched");
+            }
             if (!step_number) {
                 // step_number may already be bound if called when a watched robot was hidden while running
                 step_number = 0;
@@ -135,33 +138,6 @@ window.TOONTALK.actions =
             var steps = this.get_steps();
             var frontside_element = robot.get_frontside_element();
             var original_parent_element, previous_robot, previous_robot_backside_element;
-            if (!robot.get_parent_of_frontside()) {
-                // could be a 'next robot' that hasn't been opened
-                previous_robot = robot.get_previous_robot();
-                previous_robot.open_backside();
-                previous_robot.get_backside().set_advanced_settings_showing(true);
-                original_parent_element = frontside_element.parentElement;
-                if (!original_parent_element) {
-                    // if no original_parent_element then find where it should be
-                    original_parent_element = $(previous_robot.get_backside_element()).find(".toontalk-drop-area").get(0);
-                }
-                context.get_backside_element().appendChild(frontside_element);
-                context.add_backside_widget(robot);
-                robot.update_display();
-                // put the robot back when finished
-                robot.add_body_finished_listener(function () {
-                                                      if (original_parent_element) {
-                                                          original_parent_element.appendChild(frontside_element);
-                                                      }
-                                                      // was temporarily added the backside of the context
-                                                      context.remove_backside_widget(robot);
-                                                      // above will have made the robot not visible
-                                                      robot.set_visible(true);
-                                                      // top left of drop area
-                                                      $(frontside_element).css({left: "",
-                                                                                top:  ""});
-                                                 }) ;    
-            }
             var saved_parent_element = frontside_element.parentElement;
             var restore_after_last_event = function () {
                 var first_robot_still_visible = robot.visible() && 
@@ -203,6 +179,36 @@ window.TOONTALK.actions =
             var top_level_position = $(frontside_element).closest(".toontalk-top-level-backside").offset();
             var context_backside = context.get_backside();
             var backside_rectangle;
+            if (TT.logging && TT.logging.indexOf('run') >= 0) {           
+                console.log(robot.to_debug_string() + " running watched");
+            }
+            if (!robot.get_parent_of_frontside()) {
+                // could be a 'next robot' that hasn't been opened
+                previous_robot = robot.get_previous_robot();
+                previous_robot.open_backside();
+                previous_robot.get_backside().set_advanced_settings_showing(true);
+                original_parent_element = frontside_element.parentElement;
+                if (!original_parent_element) {
+                    // if no original_parent_element then find where it should be
+                    original_parent_element = $(previous_robot.get_backside_element()).find(".toontalk-drop-area").get(0);
+                }
+                context.get_backside_element().appendChild(frontside_element);
+                context.add_backside_widget(robot);
+                robot.update_display();
+                // put the robot back when finished
+                robot.add_body_finished_listener(function () {
+                                                      if (original_parent_element) {
+                                                          original_parent_element.appendChild(frontside_element);
+                                                      }
+                                                      // was temporarily added the backside of the context
+                                                      context.remove_backside_widget(robot);
+                                                      // above will have made the robot not visible
+                                                      robot.set_visible(true);
+                                                      // top left of drop area
+                                                      $(frontside_element).css({left: "",
+                                                                                top:  ""});
+                                                 });    
+            }
             if (robot_width === 0) {
                 $(frontside_element).css({width:  '',
                                           height: ''});
