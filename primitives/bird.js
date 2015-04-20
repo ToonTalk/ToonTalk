@@ -73,29 +73,23 @@ window.TOONTALK.bird = (function (TT) {
                     if (robot && !do_not_run_next_step) {
                         // robot needs to wait until delivery is finished
                         other.robot_waiting_before_next_step = robot;
-//                         console.log("robot_waiting_before_next_step set for " + other + " in new_bird.widget_dropped_on_me");
                         // generalise this with backside support too
                         other.remove_from_parent_of_frontside();
                         if (robot.run_next_step) {
-    //                         console.log("bird run_next_step passed to nest.animate_bird_delivery");
                             run_next_step_continuation = function () {
-    //                             console.log("robot_waiting_before_next_step reset for " + message_side + " in new_bird.widget_dropped_on_me");
                                 message_side.robot_waiting_before_next_step = undefined;
-    //                             console.log("run_next_step in continuation from new_bird.widget_dropped_on_me");
                                 robot.run_next_step();
                             };
                         }
                     }
                     nest.animate_bird_delivery(message_side, this, run_next_step_continuation, event, robot);
-                } else {
-                    nest.add_to_contents(message_side, event, robot);
+                } else { 
+                    nest.add_to_contents(message_side, event, robot);    
                     if (robot && robot === message_side.robot_waiting_before_next_step) {
                         message_side.robot_waiting_before_next_step = undefined;
-//                         console.log("run_next_step in continuation from new_bird.widget_dropped_on_me");
-//                         console.log("bird run_next_step in new_bird.widget_dropped_on_me");
                         robot.run_next_step();
                     }
-                }
+               }
             } else {
                 console.log("TODO: handle drop on a nestless bird -- just removes other?"); // isn't this handled?
             }
@@ -645,13 +639,15 @@ window.TOONTALK.nest = (function (TT) {
     var contents_height = function (height) {
         return height*TT.nest.CONTENTS_HEIGHT_FACTOR;
     };
-
     var next_serial_number = 0;
     var name_counter = 0;
-
+    // nest capacity - enforced only for unwatched robots
+    nest.default_maximum_capacity = 10;
+    nest.maximum_capacity = nest.default_maximum_capacity;
     nest.create = function (description, contents, guid, original_nest, serial_number, name) { 
         var new_nest = Object.create(nest);
         var non_empty_listeners = [];
+        var nest_under_capacity_listeners = [];
         var waiting_widgets     = [];
         var nest_copies, generic_set_name;
         if (!contents) {
@@ -736,10 +732,28 @@ window.TOONTALK.nest = (function (TT) {
         };
         new_nest.add_to_contents = function (widget_side, event, robot, delivery_bird, ignore_copies) {
             var current_non_empty_listeners, widget_side_copy;
-            if (TT.logging && TT.logging.indexOf("nest") >= 0) {
-                console.log(this.to_debug_string() + " added " + widget_side.to_debug_string() + " nest now contains " + (1+contents.length) + " widgets.");
+            var stack_size = contents.push(widget_side);
+            if (stack_size > nest.maximum_capacity && !robot.visible() && !this.visible()) {
+                // if robot or nest is visible let it keep running even if nest goes over capactity
+                if (TT.logging && TT.logging.indexOf("nest") >= 0) {
+                    console.log(this.to_debug_string() + " postponing addition of " + widget_side.to_debug_string() +
+                                " by " + robot.to_debug_string() + ". Stack is " + contents.length + " long. " +
+                                nest_under_capacity_listeners.length + " previously postponed.");
+                }
+                // stop the robot at the end of this cycle
+                // and let him run again when the nest isn't so full
+                robot.add_body_finished_listener(function (context, top_level_context, queue) {
+                    robot.set_stopped(true);
+                    nest_under_capacity_listeners.push(function () {
+                        robot.set_stopped(false);
+                        robot.run_actions(context, top_level_context, queue);
+                    });
+                })
             }
-            if (contents.push(widget_side) === 1) {
+            if (TT.logging && TT.logging.indexOf("nest") >= 0) {
+                console.log(this.to_debug_string() + " added " + widget_side.to_debug_string() + " nest now contains " + contents.length + " widgets.");
+            }
+            if (stack_size === 1) {
                 if (non_empty_listeners.length > 0) {
                     // is the first content and some robots are waiting for this nest to be filled
                     // running these robots may cause new waiting robots so set non_empty_listeners to [] first
@@ -851,6 +865,19 @@ window.TOONTALK.nest = (function (TT) {
                     $(contents[0].get_element()).show();
                 }
                 this.render();
+            }
+            if (contents.length < nest.maximum_capacity && nest_under_capacity_listeners.length > 0) {
+                // remove the limit while running the listeners
+                if (TT.logging && TT.logging.indexOf("nest") >= 0) {
+                    console.log(this.to_debug_string() + " running " + nest_under_capacity_listeners.length + " postponed additions. Stack is " + contents.length + " long.");
+                }
+                nest.maximum_capacity = Number.MAX_VALUE;
+                nest_under_capacity_listeners.forEach(function (listener) {
+                    listener();
+                });
+                // restore the default limit
+                nest.maximum_capacity = nest.default_maximum_capacity;
+                nest_under_capacity_listeners = [];
             }
             return removed;
         };

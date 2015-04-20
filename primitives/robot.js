@@ -239,9 +239,9 @@ window.TOONTALK.robot = (function (TT) {
         new_robot.add_body_finished_listener = function (listener) {
             body_finished_listeners.push(listener);
         };
-        new_robot.run_body_finished_listeners = function () {
+        new_robot.run_body_finished_listeners = function (context, top_level_context, queue) {
             body_finished_listeners.forEach(function (listener) {
-                listener();
+                listener(context, top_level_context, queue);
             });
             body_finished_listeners = [];
         };

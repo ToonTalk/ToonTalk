@@ -668,7 +668,7 @@ window.TOONTALK.robot_action =
                                     "(" + TT.path.toString(path) + 
                                     ") by unwatched " + robot.to_debug_string());
                     } else {
-                        console.log("   " + referenced + " (" + TT.path.toString(path) + " " + referenced.to_debug_string() + 
+                        console.log("   " + referenced.to_debug_string() + " (" + TT.path.toString(path) + " " + referenced.to_debug_string() + 
                                     " by unwatched " + robot.to_debug_string());
                     }
                 }

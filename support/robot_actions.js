@@ -123,7 +123,7 @@ window.TOONTALK.actions =
                 } else {
                     // currently only watched robots use these listeners
                     // if that is always the case no need calling the following
-                    robot.run_body_finished_listeners();
+                    robot.run_body_finished_listeners(context, top_level_context, queue);
                     if (robot.get_run_once()) {
                         robot.get_first_in_team().set_running(false);
                     } else {
