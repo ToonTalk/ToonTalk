@@ -479,9 +479,9 @@ window.TOONTALK.box = (function (TT) {
                 // save dimensions first?
                 update_css_of_hole_contents(contents, content_frontside_element, new_width, new_height);
                 hole_element.appendChild(content_frontside_element);
-                setTimeout(function () {
-                               hole.get_contents().update_display();
-                           });
+                // tried to delay the following until the changes to this box in the DOM have settled down
+                // but the hole's contents may have changed
+                hole.get_contents().update_display();
             }
             if (hole.is_element()) {
                 hole_contents = hole.get_contents();
