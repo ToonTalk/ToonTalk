@@ -1338,7 +1338,7 @@ window.TOONTALK.robot_backside =
             var add_to_drop_area = function (widget, drop_area) {
                 // delay for dimensions to be known in the DOM
                 setTimeout(function () {
-                    var frontside_element = widget.get_frontside_element(true);
+                    var frontside_element = widget.get_frontside_element(robot.visible());
                     var default_width, default_height;
                     if (widget.get_default_width) {
                         default_width  = widget.get_default_width();
