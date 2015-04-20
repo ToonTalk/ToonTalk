@@ -868,7 +868,7 @@ window.TOONTALK.box_backside =
             backside_element.appendChild($(TT.UTILITIES.create_horizontal_table(horizontal.container, vertical.container)).buttonset().get(0));
             backside_element.appendChild(advanced_settings_button);
             backside.add_advanced_settings();
-            backside.render();
+            backside.rerender();
             return backside;
         }};
 }(window.TOONTALK));
