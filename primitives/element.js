@@ -966,7 +966,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
            // else is a plain string so quote it
            return '"' + html + '"';
         };
-        var description = to_string_info && to_string_info.role === "conditions" ?
+        var description = to_string_info && (to_string_info.role === "conditions" || to_string_info.plain_text) ?
                           '"' + this.get_text() + '"':
                           scale_or_quote_html(this.get_HTML());
         return "the element " + description;

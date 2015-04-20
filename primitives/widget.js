@@ -173,7 +173,7 @@ window.TOONTALK.widget = (function (TT) {
                           id = "";
                        }
                     } 
-                    return this + " (" + description + " " + ((this.get_name && (this.get_name() + " ")) || "") + id + ")";
+                    return this.toString({plain_text: true}) + " (" + description + " " + ((this.get_name && (this.get_name() + " ")) || "") + id + ")";
                 };
             }
             widget.is_top_level = return_false;
