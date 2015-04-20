@@ -1339,7 +1339,8 @@ window.TOONTALK.element_backside =
                                                                                    button_selector: ".toontalk-html-input"});
                     }
                 };
-                $(html_input.container).resizable();
+                // commented out the following since the resize handles for backside end up only applying to the HTML input element
+//              $(html_input.container).resizable();
                 $(html_input.container).css({width: "100%"});
                 $(html_input.button).css({width: "100%"});
                 html_input.button.addEventListener('change',   update_html);
