@@ -601,12 +601,21 @@ window.TOONTALK.UTILITIES =
                         handle_drop($target, $(widget.get_frontside_element(true)), widget, target_widget, target_position, event);
                     }
                 };
-                var error_handler = function (response_event) {
-                    var widget = TT.element.create("<div class='toontalk-iframe-container'><iframe src='" + url + "' width='320' height='240'></div>");
-                    request.removeEventListener('readystatechange', response_handler);
-                    handle_drop($target, $(widget.get_frontside_element(true)), widget, target_widget, target_position, event);
-                };
-                utilities.create_widget_from_URL(uri, widget_callback, error_handler);               
+//                 var error_handler = function (response_event) {
+//                     // if can't make a widget from the URL then make an iframe of it
+//                     var widget = TT.element.create("<div class='toontalk-iframe-container'><iframe src='" + uri + "' width='480' height='320'></iframe></div>");
+//                     var frontside_element, iframe;
+//                     frontside_element = widget.get_frontside_element(true);
+//                     iframe = frontside_element.firstChild.firstChild;
+//                     $(iframe).ready(function (event) {
+//                         console.log(event);
+//                     });
+//                     handle_drop($target, $(frontside_element), widget, target_widget, target_position, event);
+//                     iframe.addEventListener('load', function (event) {
+//                         console.log(event);
+//                     });
+//                 };
+                utilities.create_widget_from_URL(uri, widget_callback);               
         };
         uri_list.split(/\r?\n/).forEach(function (uri) {
             if (uri[0] !== "#") {
@@ -1260,10 +1269,13 @@ window.TOONTALK.UTILITIES =
                         widget.set_source_URL(url);
                     }
                } else {  
-                   widget = TT.element.create("<div class='toontalk-iframe-container'><iframe src='" + url + "' width='320' height='240'></div>");     
+                   widget = TT.element.create("<div class='toontalk-iframe-container'><iframe src='" + url + "' width='480' height='320'></iframe></div>");
+                   // tried various ways to find out if the loading was successful but failed 
+                   // maybe try to follow the ideas in http://siderite.blogspot.com/2013/04/detecting-if-url-can-be-loaded-in-iframe.html                     
+//                    iframe_frontside_element = widget.get_frontside_element(true);
+//                    iframe = iframe_frontside_element.firstChild.firstChild;
                }
                if (widget) {
-                   request.removeEventListener('readystatechange', response_handler);
                    widget_callback(widget);
                }
             } catch (e) {
@@ -1274,6 +1286,7 @@ window.TOONTALK.UTILITIES =
                }
                widget_callback();
             }
+            request.removeEventListener('readystatechange', response_handler);
        };
        var request = new XMLHttpRequest();
        request.addEventListener('readystatechange', response_handler);
@@ -2513,7 +2526,8 @@ window.TOONTALK.UTILITIES =
                                             widget.rerender();
                                 },
                                 stop: function (event, ui) {
-                                    if (widget.robot_in_training()) {
+                                    if (widget.robot_in_training && widget.robot_in_training()) {
+                                        // backsides don't define robot_in_training -- might reconsider this someday
                                         widget.robot_in_training().resized_widget(widget, previous_width, previous_height, ui.size.width, ui.size.height);
                                     }
                                 },
