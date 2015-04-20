@@ -1787,15 +1787,16 @@ window.TOONTALK.UTILITIES =
                                        position.top -= 20;
                                    }
                                    if (position.left < 10) {
-                                       position.left = 10+window.scrollX;
+                                       position.left = 10;
                                    }
                                    if (position.top < 10) {
                                        position.top = 10;
                                    }
-                                   position.top = 10+window.scrollY;
                                } else {
                                     position.top += 20;
                                }
+                               position.left = Math.max(position.left, window.scrollX);
+                               position.top  = Math.max(position.top,  window.scrollY);
                                $(this).css(position);
                                feedback_horizontal = feedback.horizontal;
                                feedback_vertical   = feedback.vertical;
