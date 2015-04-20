@@ -1187,6 +1187,7 @@ window.TOONTALK.nest = (function (TT) {
                 } else {
                     top_contents_widget.render();
                     contents_side_element = contents[0].get_element();
+                    $(contents_side_element).show();
                 }
                 nest_width = $(frontside_element).width();
                 nest_height = $(frontside_element).height();
