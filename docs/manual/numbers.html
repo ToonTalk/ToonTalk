@@ -131,7 +131,10 @@ Click on it to see advanced options.
 <p>
 You should see something like this:
 <p>
-<div class='toontalk-json'>{
+<div class='toontalk-json'>
+This will be replaced by a work area containing 3 things: a number, a number, and the backside of a number.
+top level widget
+<div style='display:none;'>{
   "semantic": {
     "type": "top_level",
     "backside_widgets": [
@@ -152,8 +155,9 @@ You should see something like this:
           "view": {
             "frontside_width": 339,
             "frontside_height": 55,
-            "frontside_left": 63,
-            "frontside_top": 201
+            "frontside_left": 69,
+            "frontside_top": 207,
+            "backside": false
           },
           "version": 1
         }
@@ -167,23 +171,15 @@ You should see something like this:
     ]
   },
   "view": {
-    "background_color": "rgba(245, 240, 240, 0.941176)",
-    "frontside_width": 0,
-    "frontside_height": 0,
-    "backside_width": 924,
-    "backside_height": 381,
+    "background_color": "rgb(245, 240, 240)",
+    "backside_width": 1093,
+    "backside_height": 420,
     "backside_left": 8,
-    "backside_top": 352.15625,
+    "backside_top": 184.1875,
     "advanced_settings_open": true,
-    "backside_geometry": {
-      "x_scale": 1,
-      "y_scale": 1,
-      "original_width": 595,
-      "original_height": 381
-    },
-    "drag_x_offset": 189,
-    "drag_y_offset": 348.84375,
-    "backside": true
+    "backside": true,
+    "drag_x_offset": 416,
+    "drag_y_offset": 404.8125
   },
   "version": 1,
   "shared_widgets": [
@@ -199,24 +195,27 @@ You should see something like this:
       "view": {
         "frontside_width": 444,
         "frontside_height": 55,
-        "frontside_left": 46,
-        "frontside_top": 46,
-        "backside_width": 595,
-        "backside_height": 321,
-        "backside_left": 506,
-        "backside_top": 46,
+        "frontside_left": 52,
+        "frontside_top": 52,
+        "backside_width": 550,
+        "backside_height": 362,
+        "backside_left": 522.65625,
+        "backside_top": 21.65625,
         "advanced_settings_open": true,
         "backside_geometry": {
           "x_scale": 1,
-          "y_scale": 1,
+          "y_scale": 1.8099999999999983,
           "original_width": 550,
           "original_height": 200
-        }
+        },
+        "saved_width": 444,
+        "saved_height": 55,
+        "backside": false
       },
       "version": 1
     }
   ]
-}</div>
+}</div></div>
 <p>
 Try clicking on <b>Mixed number</b>.
 </p>
@@ -639,6 +638,18 @@ This number is over 300,000 digits long.
 With a normal font it would go on for 79 pages.
 You can click on the numerator area on the backside of the number, type control-a to select all the digits, control-c to copy them,
 and then paste (control-v) into some other document to see all the digits. 
+</p>
+<h3>How do ToonTalk numbers compare to numbers in other programming languages?</h3>
+<p>
+ToonTalk is nearly unique in using exact arithmetic that is limited only by the amount of memory your browser can use.
+Other programming language rely upon <a href="http://en.wikipedia.org/wiki/Floating_point">floating point numbers</a> which,
+while faster and require less memory, are approximate and limited.
+</p>
+<p>
+For more details read <a href="http://www.toontalk.com/Papers/idc04.pdf">The Child-Engineering of Arithmetic in ToonTalk</a>.
+</p>
+<p>
+<a href="index.html">Return to ToonTalk manual home page</a>
 </p>
 </body>
 </html>

@@ -9,7 +9,6 @@
 </head>
 <body>
 <h2>Robots</h2>
-<p>
 <div class='toontalk-json'>{
   "semantic": {
     "type": "robot",
@@ -27,7 +26,8 @@
     "drag_y_offset": 59.8125
   },
   "version": 1
-}</div>Robots can be trained to work on the back of things.
+}</div>
+<p>Robots can be trained to work on the back of things.
 To train a robot click on the thing to see its back side and drop the robot there.
 The robot will remember what you do until you click on the <i>Stop training</i> button.
 If you then click on the green flag - <img src='../../images/green-flag-inactive.png' alt='an image of a green flag' /> - 
@@ -118,5 +118,259 @@ You can stretch the doubling number to see it better.
 </p>
 <p>
 Robot can be trained to millions of different things. <a href='examples.html'>Explore a few examples.</a>
+</p>
+<h3>Running over and over again</h3>
+<p>
+When a robot does what he was trained to do he'll do it all over again so long as what he's working on still matches his conditions.
+You can make a robot run just once by unchecking "When finished start again" on his back side advanced options area.
+</p>
+<h3>Making teams of robots</h3>
+<p>
+You can make a team of robots by dropping a robot on the back side of another robot where there is an area that says
+"Drop a robot here who will try to run when I can't".
+You can see this by clicking on the robot to see its back side and then the <b>></b> to see the advanced settings.
+The first robot will let the next robot run if what he's working on doesn't match his conditions.
+</p>
+<h3>Controlling the speed that robots run</h3>
+<p>
+On the advanced settings part of a robot's back side is a pop-up menu after the question "What speed should I run at?".
+"Original" will cause the robot to take as long for each step as it took when he was trained.
+"Normal" is the default speed for taking steps.
+You can also choose "slow", "very slow", "fast", or "very fast" to alter the default speed.
+</p>
+<p>
+Unwatched robots running on the back side of something ignore this setting and always run as fast as they can.
+</p>
+<h3>Giving robots names</h3>
+You can click on a robot and then on the <b>></b> to see the advanced settings.
+You can edit his generated name but keep it short -- there isn't much room.
+You can give a longer description that will be displayed when the mouse hovers over the robot.
+</p>
+<br>
+<div class='toontalk-json'>
+This will be replaced by a work area containing 3 things: a number, the backside of a number, and the backside of a robot.
+top level widget
+<div style='display:none;'>{
+  "semantic": {
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "shared_widget_index": 0
+        }
+      },
+      {
+        "widget": {
+          "shared_widget_index": 0
+        },
+        "is_backside": true
+      },
+      {
+        "widget": {
+          "shared_widget_index": 1
+        },
+        "is_backside": true
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgb(245, 240, 240)",
+    "backside_width": 1289,
+    "backside_height": 496,
+    "backside_left": 8,
+    "backside_top": 184.1875,
+    "backside": true,
+    "drag_x_offset": 532,
+    "drag_y_offset": 410.8125
+  },
+  "version": 1,
+  "shared_widgets": [
+    {
+      "semantic": {
+        "type": "number",
+        "operator": "+",
+        "numerator": "2",
+        "denominator": "1",
+        "format": "mixed_number",
+        "backside_widgets": [
+          {
+            "widget": {
+              "semantic": {
+                "type": "robot",
+                "frontside_conditions": {
+                  "semantic": {
+                    "type": "number",
+                    "operator": "+",
+                    "numerator": "1",
+                    "denominator": "1",
+                    "format": "mixed_number",
+                    "erased": true
+                  },
+                  "view": {
+                    "backside": false
+                  },
+                  "version": 1
+                },
+                "body": {
+                  "type": "body",
+                  "steps": [
+                    {
+                      "type": "robot_action",
+                      "action_name": "pick up",
+                      "path": {
+                        "type": "path.to_resource",
+                        "resource": {
+                          "type": "number",
+                          "operator": "+",
+                          "numerator": "1",
+                          "denominator": "1",
+                          "format": "mixed_number",
+                          "is_backside": true
+                        }
+                      },
+                      "additional_info": {
+                        "time": 2994
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "drop it on",
+                      "path": {
+                        "type": "path.to_entire_context"
+                      },
+                      "additional_info": {
+                        "time": 1775
+                      }
+                    }
+                  ]
+                },
+                "name": "Add 1",
+                "description": "a robot that counts."
+              },
+              "view": {
+                "frontside_width": 66,
+                "frontside_height": 110,
+                "frontside_left": 29,
+                "frontside_top": 77,
+                "backside_width": 550,
+                "backside_height": 441,
+                "backside_left": 667,
+                "backside_top": 28.6875,
+                "advanced_settings_open": true,
+                "saved_width": 66,
+                "saved_height": 110,
+                "backside": false
+              },
+              "version": 1
+            }
+          }
+        ]
+      },
+      "view": {
+        "frontside_width": 76,
+        "frontside_height": 55,
+        "frontside_left": 38,
+        "frontside_top": 19,
+        "backside_width": 550,
+        "backside_height": 200,
+        "backside_left": 40,
+        "backside_top": 110,
+        "saved_width": 76,
+        "saved_height": 55,
+        "backside": false
+      },
+      "version": 1
+    },
+    {
+      "semantic": {
+        "type": "robot",
+        "frontside_conditions": {
+          "semantic": {
+            "type": "number",
+            "operator": "+",
+            "numerator": "1",
+            "denominator": "1",
+            "format": "mixed_number",
+            "erased": true
+          },
+          "view": {
+            "backside": false
+          },
+          "version": 1
+        },
+        "body": {
+          "type": "body",
+          "steps": [
+            {
+              "type": "robot_action",
+              "action_name": "pick up",
+              "path": {
+                "type": "path.to_resource",
+                "resource": {
+                  "type": "number",
+                  "operator": "+",
+                  "numerator": "1",
+                  "denominator": "1",
+                  "format": "mixed_number",
+                  "is_backside": true
+                }
+              },
+              "additional_info": {
+                "time": 2994
+              }
+            },
+            {
+              "type": "robot_action",
+              "action_name": "drop it on",
+              "path": {
+                "type": "path.to_entire_context"
+              },
+              "additional_info": {
+                "time": 1775
+              }
+            }
+          ]
+        },
+        "name": "Add 1",
+        "description": "a robot that counts."
+      },
+      "view": {
+        "frontside_width": 66,
+        "frontside_height": 110,
+        "frontside_left": 29,
+        "frontside_top": 77,
+        "backside_width": 550,
+        "backside_height": 441,
+        "backside_left": 667,
+        "backside_top": 28.6875,
+        "advanced_settings_open": true,
+        "saved_width": 66,
+        "saved_height": 110,
+        "backside": false
+      },
+      "version": 1
+    }
+  ]
+}</div></div>
+<h3>What are robots a metaphor for?</h3>
+<p>
+Robots are pieces of programs.
+They correspond to a conventional program that is roughly like this:
+<pre>
+repeat-forever
+   if context matches conditions
+      do recorded actions
+   else if there is a next robot and context matches conditions of the next robot
+      do recorded actions of next robot
+   else if the reason the context doesn't match the conditions is because of an empty nest
+      wait until a bird brings something to that nest.
+</pre>
+Every robot team is always doing this at the same time.
+Or more accurately ToonTalk creates the illusion that they all are running at the same time
+by switching between them in a small fraction of a second.
+</p>
+<p>
+<a href="index.html">Return to ToonTalk manual home page</a>
+</p>
 </body>
 </html>

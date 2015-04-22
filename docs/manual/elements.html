@@ -16,7 +16,38 @@ You can drag image files to ToonTalk as well.
 </p>
 <p>
 Try it:
-<div class='toontalk-json'>{
+</p>
+<div class='toontalk-json'>
+This will be replaced by an empty work area.
+top level widget
+<div style='display:none;'>{
+  "semantic": {
+    "type": "top_level"
+  },
+  "view": {
+    "background_color": "rgb(245, 240, 240)",
+    "backside_width": 649,
+    "backside_height": 371,
+    "backside_left": 8,
+    "backside_top": 184.1875,
+    "backside": true,
+    "drag_x_offset": 233,
+    "drag_y_offset": 321.8125
+  },
+  "version": 1
+}</div></div>
+<h3>Editing textual element</h3>
+<p>
+Text elements can be edited.
+Click on the text to open its backside and edit its text.
+Try it:
+</p>
+<br>
+<br>
+<div class='toontalk-json'>
+This will be replaced by a work area containing one thing: an element.
+top level widget
+<div style='display:none;'>{
   "semantic": {
     "type": "top_level",
     "backside_widgets": [
@@ -26,18 +57,14 @@ Try it:
             "type": "element",
             "html": "Some%20text%20to%20edit.",
             "attributes": [],
-            "attribute_values": [],
-            "erased": true
+            "attribute_values": []
           },
           "view": {
-            "frontside_left": 57,
-            "frontside_top": 33.8125,
-            "backside_geometry": {
-              "x_scale": 1,
-              "y_scale": 1,
-              "original_width": 550,
-              "original_height": 200
-            }
+            "frontside_left": 49.65625,
+            "frontside_top": 39.46875,
+            "saved_width": 151,
+            "saved_height": 26,
+            "backside": false
           },
           "version": 1
         }
@@ -45,31 +72,18 @@ Try it:
     ]
   },
   "view": {
-    "background_color": "rgba(245, 240, 240, 0.941176)",
-    "frontside_width": 0,
-    "frontside_height": 0,
-    "backside_width": 778,
-    "backside_height": 320,
+    "background_color": "rgb(245, 240, 240)",
+    "backside_width": 649,
+    "backside_height": 371,
     "backside_left": 8,
-    "backside_top": 185.1875,
-    "backside_geometry": {
-      "x_scale": 1,
-      "y_scale": 1,
-      "original_width": 1200,
-      "original_height": 475
-    },
-    "drag_x_offset": 213,
-    "drag_y_offset": 120.8125,
-    "backside": true
+    "backside_top": 184.1875,
+    "backside": true,
+    "drag_x_offset": 322,
+    "drag_y_offset": 188.8125
   },
   "version": 1
-}</div>
-</p>
-<p>
-Text elements can be edited.
-Click on the text to open its backside and edit its text.
-Try it:
-</p>
+}</div></div>
+<h3>Changing the style of element widgets</h3>
 <p>
 You can add controllers for style attributes of elements.
 Open the backside and click on <b>Add or remove style attributes</b>.
@@ -77,7 +91,11 @@ Add <i>top</i>, <i>left</i>, and a few others.
 Notice that as you move the widget around the numbers change.
 Try changing the numbers.
 </p>
-<div class='toontalk-json'>{
+<br>
+<div class='toontalk-json'>
+This will be replaced by a work area containing one thing: an element.
+top level widget
+<div style='display:none;'>{
   "semantic": {
     "type": "top_level",
     "backside_widgets": [
@@ -85,35 +103,14 @@ Try changing the numbers.
         "widget": {
           "semantic": {
             "type": "element",
-            "html": "Some%20text%20to%20edit.",
-            "attributes": [],
-            "attribute_values": [],
-            "erased": true
-          },
-          "view": {
-            "frontside_left": 57,
-            "frontside_top": 33.8125,
-            "backside_geometry": {
-              "x_scale": 1,
-              "y_scale": 1,
-              "original_width": 550,
-              "original_height": 200
-            }
-          },
-          "version": 1
-        }
-      },
-      {
-        "widget": {
-          "semantic": {
-            "type": "element",
-            "html": "Edit%20me",
+            "html": "Try%20changing%20my%20attributes.",
             "attributes": [],
             "attribute_values": []
           },
           "view": {
-            "frontside_left": 46,
-            "frontside_top": 42.8125
+            "frontside_left": 56,
+            "frontside_top": 45.8125,
+            "backside": false
           },
           "version": 1
         }
@@ -121,36 +118,105 @@ Try changing the numbers.
     ]
   },
   "view": {
-    "background_color": "rgba(245, 240, 240, 0.941176)",
-    "frontside_width": 0,
-    "frontside_height": 0,
-    "backside_width": 778,
-    "backside_height": 320,
+    "background_color": "rgb(245, 240, 240)",
+    "backside_width": 649,
+    "backside_height": 371,
     "backside_left": 8,
-    "backside_top": 185.1875,
-    "backside_geometry": {
-      "x_scale": 1,
-      "y_scale": 1,
-      "original_width": 1200,
-      "original_height": 475
-    },
-    "drag_x_offset": 131,
-    "drag_y_offset": 197.8125,
-    "backside": true
+    "backside_top": 184.1875,
+    "backside": true,
+    "drag_x_offset": 164,
+    "drag_y_offset": 285.8125
   },
   "version": 1
-}</div>
-<p>
-The <i>width</i> and <i>height</i> attributes for text elements can be confusing.
-They don't make the text change size, just the size of element.
-The attribute <i>font-size</i> will change the size of the text.
-If you set the <i>background-color</i> attributes
-and then change the <i>width</i> or <i>height</i> you'll see the size change.
-</p>
+}</div></div>
 <p>
 Here's an example:
 </p>
-<div class='toontalk-json'>{
+<br>
+<div class='toontalk-json'>
+This will be replaced by a work area containing 2 things: an element, and the backside of an element.
+top level widget
+<div style='display:none;'>{
+  "semantic": {
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "shared_widget_index": 0
+        }
+      },
+      {
+        "widget": {
+          "shared_widget_index": 0
+        },
+        "is_backside": true
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgb(245, 240, 240)",
+    "backside_width": 1066,
+    "backside_height": 371,
+    "backside_left": 8,
+    "backside_top": 184.1875,
+    "backside": true,
+    "drag_x_offset": 1016,
+    "drag_y_offset": 293.8125
+  },
+  "version": 1,
+  "shared_widgets": [
+    {
+      "semantic": {
+        "type": "element",
+        "html": "Play%20with%20me",
+        "attributes": [
+          "width",
+          "height",
+          "color",
+          "background-color"
+        ],
+        "attribute_values": [
+          200,
+          56,
+          "rgb(255, 128, 0)",
+          "rgb(250, 200, 200)"
+        ]
+      },
+      "view": {
+        "frontside_left": 58.1851806640625,
+        "frontside_top": 57.12019348144531,
+        "backside_width": 550,
+        "backside_height": 259,
+        "backside_left": 421.8125,
+        "backside_top": 27.625,
+        "saved_width": 175,
+        "saved_height": 56,
+        "backside": false
+      },
+      "version": 1
+    }
+  ]
+}</div></div>
+<h3>Creating elements from URLs</h3>
+<p>
+You can drag and drop URLs from another browser window into ToonTalk.
+If the URL is an image, sound, or video then the corresponding element widget is created.
+If the URL contains plain text then a plain text element widget is created that will contain the text that is contained in the web page when it is loaded.
+Otherwise ToonTalk will make an <a href="https://developer.mozilla.org/en/docs/Web/HTML/Element/iframe">iframe</a> of the URL.
+</p>
+<h3>Robots can give life to elements</h3>
+<p>
+<a href='robots.html'>Robots</a> can be trained to change the values of element attributes.
+They can make pictures and text move around, rotate, change size or colour, and more.
+</p>
+<p>
+Here's a simple example of a spinning image. Click the green flag <span class='toontalk-green-flag-icon'></span> to get it started.
+</p>
+<br>
+<div class='toontalk-json'>
+This will be replaced by a work area containing one thing: an element.
+top level widget
+<div style='display:none;'>{
   "semantic": {
     "type": "top_level",
     "backside_widgets": [
@@ -158,27 +224,446 @@ Here's an example:
         "widget": {
           "semantic": {
             "type": "element",
-            "html": "Edit%20me",
+            "html": {
+              "shared_html_index": 0
+            },
             "attributes": [
-              "width",
-              "height",
-              "background-color"
+              "rotate"
             ],
             "attribute_values": [
-              "265",
-              "226",
-              "rgba(255, 0, 0, 0.498039)"
+              12.74
+            ],
+            "backside_widgets": [
+              {
+                "widget": {
+                  "semantic": {
+                    "type": "box",
+                    "size": 3,
+                    "contents": [
+                      {
+                        "semantic": {
+                          "type": "number",
+                          "operator": "+",
+                          "numerator": "50",
+                          "denominator": "1",
+                          "format": "mixed_number",
+                          "infinite_stack": true
+                        },
+                        "view": {
+                          "backside": false
+                        },
+                        "version": 1
+                      },
+                      {
+                        "shared_widget_index": 0
+                      },
+                      {
+                        "semantic": {
+                          "type": "box",
+                          "size": 2,
+                          "contents": [
+                            {
+                              "semantic": {
+                                "type": "bird",
+                                "nest": {
+                                  "shared_widget_index": 0
+                                }
+                              },
+                              "view": {
+                                "saved_width": 70,
+                                "saved_height": 102,
+                                "backside": false
+                              },
+                              "version": 1
+                            },
+                            {
+                              "semantic": {
+                                "type": "number",
+                                "operator": "+",
+                                "numerator": "1",
+                                "denominator": "20",
+                                "format": "mixed_number"
+                              },
+                              "view": {
+                                "saved_width": 76,
+                                "saved_height": 55,
+                                "backside": false
+                              },
+                              "version": 1
+                            }
+                          ],
+                          "horizontal": true,
+                          "name": ";;",
+                          "infinite_stack": true
+                        },
+                        "view": {
+                          "backside": false
+                        },
+                        "version": 1
+                      }
+                    ],
+                    "horizontal": true,
+                    "name": "speed;elapsed;delay"
+                  },
+                  "view": {
+                    "frontside_width": 379,
+                    "frontside_height": 106,
+                    "frontside_left": 181.8125,
+                    "frontside_top": 75.703125,
+                    "saved_width": 379,
+                    "saved_height": 106,
+                    "backside": false
+                  },
+                  "version": 1
+                }
+              },
+              {
+                "widget": {
+                  "semantic": {
+                    "type": "bird",
+                    "nest": {
+                      "semantic": {
+                        "type": "function_nest",
+                        "function_type": "number",
+                        "function_name": "delay"
+                      },
+                      "view": {
+                        "backside": false
+                      },
+                      "version": 1
+                    }
+                  },
+                  "view": {
+                    "frontside_width": 70,
+                    "frontside_height": 102,
+                    "frontside_left": 655.3125,
+                    "frontside_top": 98.109375,
+                    "saved_width": 70,
+                    "saved_height": 102,
+                    "backside": false
+                  },
+                  "version": 1
+                }
+              },
+              {
+                "widget": {
+                  "semantic": {
+                    "type": "robot",
+                    "frontside_conditions": {
+                      "semantic": {
+                        "type": "element",
+                        "html": {
+                          "shared_html_index": 0
+                        },
+                        "attributes": [
+                          "rotate"
+                        ],
+                        "attribute_values": [
+                          0
+                        ],
+                        "erased": true
+                      },
+                      "view": {
+                        "saved_width": 116,
+                        "saved_height": 102,
+                        "backside": false
+                      },
+                      "version": 1
+                    },
+                    "backside_conditions": {
+                      "box": {
+                        "semantic": {
+                          "type": "box",
+                          "size": 3,
+                          "contents": [
+                            {
+                              "semantic": {
+                                "type": "number",
+                                "operator": "+",
+                                "numerator": "1",
+                                "denominator": "1",
+                                "format": "mixed_number",
+                                "erased": true
+                              },
+                              "view": {
+                                "saved_width": 76,
+                                "saved_height": 55,
+                                "backside": false
+                              },
+                              "version": 1
+                            },
+                            {
+                              "semantic": {
+                                "type": "nest",
+                                "contents": [
+                                  {
+                                    "widget": {
+                                      "semantic": {
+                                        "type": "number",
+                                        "operator": "+",
+                                        "numerator": "51",
+                                        "denominator": "1000",
+                                        "format": "decimal",
+                                        "approximate": true,
+                                        "erased": true
+                                      },
+                                      "view": {
+                                        "saved_width": 85,
+                                        "saved_height": 71,
+                                        "backside": false
+                                      },
+                                      "version": 1
+                                    }
+                                  }
+                                ],
+                                "guid": "toontalk_id_1429089883667",
+                                "serial_number": 3,
+                                "name": "#8"
+                              },
+                              "view": {
+                                "saved_width": 116,
+                                "saved_height": 98,
+                                "backside": false
+                              },
+                              "version": 1
+                            },
+                            {
+                              "semantic": {
+                                "type": "box",
+                                "size": 2,
+                                "contents": [
+                                  {
+                                    "semantic": {
+                                      "type": "bird"
+                                    },
+                                    "view": {
+                                      "backside": false
+                                    },
+                                    "version": 1
+                                  },
+                                  {
+                                    "semantic": {
+                                      "type": "number",
+                                      "operator": "+",
+                                      "numerator": "1",
+                                      "denominator": "20",
+                                      "format": "mixed_number",
+                                      "erased": true
+                                    },
+                                    "view": {
+                                      "backside": false
+                                    },
+                                    "version": 1
+                                  }
+                                ],
+                                "horizontal": true,
+                                "name": ";;"
+                              },
+                              "view": {
+                                "backside": false
+                              },
+                              "version": 1
+                            }
+                          ],
+                          "horizontal": true,
+                          "name": "speed;elapsed;delay"
+                        },
+                        "view": {
+                          "backside": false
+                        },
+                        "version": 1
+                      }
+                    },
+                    "body": {
+                      "type": "body",
+                      "steps": [
+                        {
+                          "type": "robot_action",
+                          "action_name": "pick up a copy of",
+                          "path": {
+                            "type": "path.to_backside_widget_of_context",
+                            "type_name": "box",
+                            "next_path": {
+                              "type": "box_path",
+                              "index": 0
+                            }
+                          },
+                          "additional_info": {
+                            "time": 1920
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "drop it on",
+                          "path": {
+                            "type": "path.to_entire_context",
+                            "is_backside": true
+                          },
+                          "additional_info": {
+                            "left_offset_fraction": 0.821672245108136,
+                            "top_offset_fraction": 0.4210425204918033,
+                            "time": 1709
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "open the backside",
+                          "path": {
+                            "type": "path.to_backside_widget_of_context",
+                            "type_name": "box",
+                            "next_path": {
+                              "type": "box_path",
+                              "index": 1
+                            }
+                          },
+                          "additional_info": {
+                            "time": 1023
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "click the button of",
+                          "path": {
+                            "type": "path.to_backside_widget_of_context",
+                            "type_name": "box",
+                            "next_path": {
+                              "type": "box_path",
+                              "index": 1
+                            }
+                          },
+                          "additional_info": {
+                            "button_selector": ".toontalk-settings-backside-button",
+                            "time": 3065
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "edit",
+                          "path": {
+                            "type": "path.to_backside_widget_of_context",
+                            "type_name": "box",
+                            "next_path": {
+                              "type": "box_path",
+                              "index": 1
+                            }
+                          },
+                          "additional_info": {
+                            "setter_name": "set_operator",
+                            "argument_1": "*",
+                            "toString": "by changing the operator to * of the number",
+                            "button_selector": ".toontalk-times-radio-button",
+                            "time": 2532
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "pick up",
+                          "path": {
+                            "type": "path.to_backside_widget_of_context",
+                            "type_name": "box",
+                            "next_path": {
+                              "type": "box_path",
+                              "index": 1,
+                              "removing_widget": true
+                            }
+                          },
+                          "additional_info": {
+                            "time": 1481
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "drop it on",
+                          "path": {
+                            "type": "newly_created_widgets_path",
+                            "index": 0
+                          },
+                          "additional_info": {
+                            "time": 3213
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "pick up",
+                          "path": {
+                            "type": "newly_created_widgets_path",
+                            "index": 0,
+                            "removing_widget": true
+                          },
+                          "additional_info": {
+                            "time": 1588
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "drop it on",
+                          "path": {
+                            "type": "path_to_style_attribute",
+                            "attribute": "rotate",
+                            "element_widget_path": {
+                              "type": "path.to_entire_context"
+                            }
+                          },
+                          "additional_info": {
+                            "time": 4253
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "pick up a copy of",
+                          "path": {
+                            "type": "path.to_backside_widget_of_context",
+                            "type_name": "box",
+                            "next_path": {
+                              "type": "box_path",
+                              "index": 2
+                            }
+                          },
+                          "additional_info": {
+                            "time": 8284
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "drop it on",
+                          "path": {
+                            "type": "path.to_backside_widget_of_context",
+                            "type_name": "bird"
+                          },
+                          "additional_info": {
+                            "time": 2497
+                          }
+                        }
+                      ]
+                    },
+                    "name": "#1"
+                  },
+                  "view": {
+                    "frontside_width": 66,
+                    "frontside_height": 110,
+                    "frontside_left": 51.515625,
+                    "frontside_top": 69.703125,
+                    "saved_width": 66,
+                    "saved_height": 110,
+                    "backside": false
+                  },
+                  "version": 1
+                }
+              }
             ]
           },
           "view": {
-            "frontside_left": 46,
-            "frontside_top": 42.8125,
-            "backside_geometry": {
-              "x_scale": 1,
-              "y_scale": 1,
-              "original_width": 550,
-              "original_height": 200
-            }
+            "frontside_width": 116,
+            "frontside_height": 102,
+            "frontside_left": 50.368526458740234,
+            "frontside_top": 15.90234375,
+            "backside_width": 0,
+            "backside_height": 0,
+            "backside_left": 0,
+            "backside_top": 0,
+            "saved_width": 116,
+            "saved_height": 102,
+            "backside": false
           },
           "version": 1
         }
@@ -186,28 +671,56 @@ Here's an example:
     ]
   },
   "view": {
-    "background_color": "rgba(245, 240, 240, 0.941176)",
-    "frontside_width": 0,
-    "frontside_height": 0,
-    "backside_width": 778,
-    "backside_height": 320,
+    "background_color": "rgb(245, 240, 240)",
+    "backside_width": 586,
+    "backside_height": 245,
     "backside_left": 8,
-    "backside_top": 185.1875,
-    "backside_geometry": {
-      "x_scale": 1,
-      "y_scale": 1,
-      "original_width": 1200,
-      "original_height": 475
-    },
-    "drag_x_offset": 436,
-    "drag_y_offset": 167.8125,
-    "backside": true
+    "backside_top": 17981.21875,
+    "backside": true,
+    "drag_x_offset": 295,
+    "drag_y_offset": 165.78125
   },
-  "version": 1
-}</div>
+  "version": 1,
+  "shared_widgets": [
+    {
+      "semantic": {
+        "type": "nest",
+        "contents": [
+          {
+            "widget": {
+              "semantic": {
+                "type": "number",
+                "operator": "+",
+                "numerator": "13",
+                "denominator": "250",
+                "format": "decimal",
+                "approximate": true
+              },
+              "view": {
+                "backside": false
+              },
+              "version": 1
+            }
+          }
+        ],
+        "guid": "toontalk_id_1429081045432",
+        "serial_number": 1,
+        "name": "#1"
+      },
+      "view": {
+        "saved_width": 116,
+        "saved_height": 98,
+        "backside": false
+      },
+      "version": 1
+    }
+  ],
+  "shared_html": [
+    "%3Cimg%20src%3D'data%3Aimage%2Fpng%3Bbase64%2CiVBORw0KGgoAAAANSUhEUgAAAHQAAABiCAYAAACBFfehAAAABmJLR0QA%2FwD%2FAP%2BgvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3wQKAgwmyL1cYQAAApVJREFUeNrtnctygzAMRYHxfxu%2BnC46yaSpg3kEWbo%2Bd9d20aDjK0uCmDHnPFhpXpb1z885j4OI3q%2Ft39%2BNrjV5CUJEuDWILa5ttHLo3ovfE5B5WVarIF353N059EpQH79TStvdAD0M%2BwWypZsBalV8dQR1IkkBFAH0d1%2BjgBHcQ0stCBiEiqIt134TtpdJjsxgwVOT723hUhQBM34fGsmdLdN305S7NeV5DANIs0GA9lTdWoKdgKl1vWPLG9wUSIGBAtMG9mQBCZh2iz7d%2BY8AeS5mV5yaAKmlyUOaQEZAj1ofuO330uTpw6ByHI8YKwEynmO3AFf30D2rA5hCRRECKLqSfisZE6A9OpSn9Ui5CKAIoBREJ%2FdQ%2BkwcigCKaFvQaYcCVTDlAtW%2F0lY1C8CADn2eJvLhpBFallga12EAmNBwAaBicAEqBhegPbctCKAIoAigCKCqlS5AxZQIQbxe8%2Flz4fsvODQS0MLNk3fIU4k8iuvc6XnQE1AlVDwFhVtmMfbQ3UABGw8kfaggzE2guDMWSFKuIMzqYOH9hTaE2r8OPZdLayMEFJcqAmUI4Xr%2FrBZFODYWzMtAAesL5tcGC6RgP%2FFjUiQEE6C9V7mkXd%2FuxKGC4pkiAVfi0JZAb27xcKiIM3EoVS6VboSY4FADmPJvJ6QAAijpFqAURbKrtqeUe8v7Q%2FeeSNbLfVTLRdz8pepjJyexdDFYmHPu5lgdq2zUzKG9PrYiO5w%2F%2FCpLngvWcWgJZESHWyzI5B1mLTjewVpnlUQwtBT%2Bfuic8%2BjNpS0X4tQMQuWiI7rTw2duOlj4tKeeCcydLt3ztUovC9AFUE997WuxVRtZPtK9p2wCULFCjNtnDBY0XKraEnX3GKd6b%2FsDP0SOhuSTXq8AAAAASUVORK5CYII%3D'%20alt%3D'empty-nest-red.png'%2F%3E"
+  ]
+}</div></div>
 <p>
-<a href='robots.html'>Robots</a> can be trained to change the values of element attributes.
-They can make pictures and text move around, rotate, change size or colour, and more.
+<a href="index.html">Return to ToonTalk manual home page</a>
 </p>
 </body>
 </html>

@@ -9,7 +9,6 @@
 </head>
 <body>
 <h2>Boxes</h2>
-<p>
 <div class='toontalk-json'>{
   "semantic": {
     "type": "box",
@@ -37,6 +36,7 @@
   },
   "version": 1
 }</div>
+<p>
 Boxes are good for putting things in.
 You or a <a href='robots.html'>robot</a> can drop <a href='index.html'>things</a> in the holes of a box
 and later take them out again.
@@ -244,6 +244,7 @@ Try it out here:
   ]
 }</div>
 </p>
+<h3>Changing the number of holes in a box</h3>
 <p>
 You can change the number of holes that a box has.
 Just open its backside by clicking on the box.
@@ -305,71 +306,193 @@ Try it:
   "version": 1
 }</div>
 <p>
+Robots can also change the number of holes of a box by
+either editing the number of holes or dropping a number in the text input area for the number of holes.
+</p>
+<h3>Changing the size of a box</h3>
+<p>
 You can change the size of a box by dragging the edges.
 </p>
+<h3>Changing the "direction" of the box</h3>
 <p>
 You can change a box from one whose holes are horizontal (left or right of each other)
 to boxes that are vertical (holes are above or below each other).
 Just click on the box to open it and click the <b>Left to right</b> or <b>Top to bottom</b> button.
 </p>
 <br>
-<div class='toontalk-json'>{
+<div class='toontalk-json'>
+This will be replaced by a work area containing 2 things: a box, and the backside of a box.
+top level widget
+<div style='display:none;'>{
   "semantic": {
     "type": "top_level",
     "backside_widgets": [
       {
         "widget": {
-          "semantic": {
-            "type": "box",
-            "size": 2,
-            "contents": [
-              null,
-              null
-            ],
-            "horizontal": false
-          },
-          "view": {
-            "frontside_width": 164,
-            "frontside_height": 262,
-            "frontside_left": 39,
-            "frontside_top": 36,
-            "backside_geometry": {
-              "x_scale": 1,
-              "y_scale": 1,
-              "original_width": 171,
-              "original_height": 39
-            }
-          },
-          "version": 1
+          "shared_widget_index": 0
         }
+      },
+      {
+        "widget": {
+          "shared_widget_index": 0
+        },
+        "is_backside": true
       }
     ]
   },
   "view": {
-    "background_color": "rgba(245, 240, 240, 0.941176)",
-    "frontside_width": 0,
-    "frontside_height": 0,
-    "backside_width": 705,
-    "backside_height": 395,
+    "background_color": "rgb(245, 240, 240)",
+    "backside_width": 691,
+    "backside_height": 251,
     "backside_left": 8,
-    "backside_top": 564.59375,
-    "backside_geometry": {
-      "x_scale": 1,
-      "y_scale": 1
-    },
-    "drag_x_offset": 416,
-    "drag_y_offset": 240.40625,
-    "backside": true
+    "backside_top": 184.1875,
+    "backside": true,
+    "drag_x_offset": 522,
+    "drag_y_offset": 232.8125
   },
-  "version": 1
-}</div>
+  "version": 1,
+  "shared_widgets": [
+    {
+      "semantic": {
+        "type": "box",
+        "size": 3,
+        "contents": [
+          null,
+          null,
+          null
+        ],
+        "horizontal": false,
+        "name": ";;"
+      },
+      "view": {
+        "frontside_width": 164,
+        "frontside_height": 166,
+        "frontside_left": 29.609375,
+        "frontside_top": 22.171875,
+        "backside_width": 550,
+        "backside_height": 200,
+        "backside_left": 248,
+        "backside_top": 33,
+        "backside_geometry": {
+          "x_scale": 0.7492297520661152,
+          "y_scale": 1.0399999999999998,
+          "original_width": 171,
+          "original_height": 39
+        },
+        "saved_width": 164,
+        "saved_height": 166,
+        "backside": false
+      },
+      "version": 1
+    }
+  ]
+}</div></div>
 <p>
 When a <a href='robots.html'>robot</a> uses a box he remembers which hole was involved by counting from the left
 (or the top if a vertical box).
 </p>
+<h3>Labelling the holes of a box</h3>
+<p>
+You can add labels to holes to tell others (and yourself if you forget) what each hole is for.
+Each label ends with ';'.
+<br>
+<div class='toontalk-json'>
+This will be replaced by a work area containing 2 things: a box, and the backside of a box.
+top level widget
+<div style='display:none;'>{
+  "semantic": {
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "shared_widget_index": 0
+        }
+      },
+      {
+        "widget": {
+          "shared_widget_index": 0
+        },
+        "is_backside": true
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgb(245, 240, 240)",
+    "backside_width": 979,
+    "backside_height": 351,
+    "backside_left": 8,
+    "backside_top": 184.1875,
+    "advanced_settings_open": true,
+    "backside": true,
+    "drag_x_offset": 240,
+    "drag_y_offset": 249.8125
+  },
+  "version": 1,
+  "shared_widgets": [
+    {
+      "semantic": {
+        "type": "box",
+        "size": 2,
+        "contents": [
+          {
+            "semantic": {
+              "type": "nest",
+              "contents": [],
+              "guid": "toontalk_id_1429691369045",
+              "serial_number": 4,
+              "name": "Msgs"
+            },
+            "view": {
+              "saved_width": 116,
+              "saved_height": 98,
+              "backside": false
+            },
+            "version": 1
+          },
+          {
+            "semantic": {
+              "type": "number",
+              "operator": "+",
+              "numerator": "42",
+              "denominator": "1",
+              "format": "mixed_number"
+            },
+            "view": {
+              "saved_width": 76,
+              "saved_height": 55,
+              "backside": false
+            },
+            "version": 1
+          }
+        ],
+        "horizontal": true,
+        "name": "Incoming;data;",
+        "description": "a box that demonstrates labels."
+      },
+      "view": {
+        "frontside_width": 273,
+        "frontside_height": 68,
+        "frontside_left": 44,
+        "frontside_top": 27,
+        "backside_width": 550,
+        "backside_height": 306,
+        "backside_left": 367,
+        "backside_top": 23,
+        "advanced_settings_open": true,
+        "saved_width": 164,
+        "saved_height": 68,
+        "backside": false
+      },
+      "version": 1
+    }
+  ]
+}</div></div>
+</p>
+<h3>What are boxes a metaphor for?</h3>
 <p>
 Boxes are similar to <a href='http://en.wikipedia.org/wiki/Array_data_structure' target='_blank'>arrays</a> or vectors
 in other programming languages.
+They are the main data structure of ToonTalk because they can hold any number of other widgets including other boxes.
 </p>
 </body>
 </html>

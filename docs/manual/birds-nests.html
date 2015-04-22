@@ -121,6 +121,90 @@ Try this by picking up the wand and letting it go when the tip is over the bird.
 If a nest is copied then a bird will bring a copy of what it is given to the nest copy.
 Try it by copying the empty nest and giving the bird a number.
 </p>
+<h3>Giving birds and nests names</h3>
+<p>
+You can give a name to a bird or nest and all copies change their name.
+There isn't much room for long names. 
+You can give them long descriptions that will show up when you hover over one.
+</p>
+<br>
+<div class='toontalk-json'>
+This will be replaced by a work area containing 3 things: a nest, a bird, and the backside of a nest.
+top level widget
+<div style='display:none;'>{
+  "semantic": {
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "shared_widget_index": 0
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "bird",
+            "nest": {
+              "shared_widget_index": 0
+            }
+          },
+          "view": {
+            "frontside_width": 70,
+            "frontside_height": 102,
+            "frontside_left": 46.65625,
+            "frontside_top": 15.65625,
+            "saved_width": 70,
+            "saved_height": 102,
+            "backside": false
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "shared_widget_index": 0
+        },
+        "is_backside": true
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgb(245, 240, 240)",
+    "backside_width": 691,
+    "backside_height": 395,
+    "backside_left": 8,
+    "backside_top": 184.1875,
+    "backside": true,
+    "drag_x_offset": 599,
+    "drag_y_offset": 80.8125
+  },
+  "version": 1,
+  "shared_widgets": [
+    {
+      "semantic": {
+        "type": "nest",
+        "contents": [],
+        "guid": "toontalk_id_1429691369009",
+        "serial_number": 3,
+        "name": "Sam"
+      },
+      "view": {
+        "frontside_width": 116,
+        "frontside_height": 98,
+        "frontside_left": 299.984375,
+        "frontside_top": 20.984375,
+        "backside_width": 550,
+        "backside_height": 200,
+        "backside_left": 31.96875,
+        "backside_top": 146.96875,
+        "saved_width": 116,
+        "saved_height": 98,
+        "backside": false
+      },
+      "version": 1
+    }
+  ]
+}</div></div>
 <h3>
 Built-in Birds and Nests
 </h3>
@@ -131,12 +215,28 @@ There are birds that are built into ToonTalk that can be used to <a href="functi
 There are nests that are built into ToonTalk that can be used to <a href="sensors.html">sense what is happening</a>. You use them just like any other nest.
 </p>
 <h3>
-Robots can use birds and nests to communicate and synchronise
+Robots can use birds and nests to communicate and synchronize
 </h3>
 <p>
 <a href="robots.html">Robots</a> can also do all these things for you. If a robot is expecting a nest or a bird then any nest or bird will do.
 If a robot is expecting something and that something is is on the top of a nest then the robot is happy.
 If the nest is empty then the robot will wait for a bird to deliver something and then decide if he's happy or not.
+</p>
+<h3>What are birds and nests metaphors of?</h3>
+<p>
+A bird-nest pair is a <a href="http://en.wikipedia.org/wiki/Channel_%28communications%29">communication channel</a>.
+If neither the bird nor nest have been copied it is a <i>one-to-one</i> communication channel from the bird to the nest.
+If the bird has been copied it is a <i>many-to-one</i> channel.
+If the nest has been copied it is a <i>one-to-many</i> channel.
+And if both have been copied it is a <i>many-to-many</i> channel.
+</p>
+<p>
+Two-way communication can be accomplished by giving a bird a box that contains a <i>reply</i> bird.
+The recipient after some computing will give the reply bird a return message.
+This is similar to a <i>function call</i> in other programming languages.
+</p>
+<p>
+<a href="index.html">Return to ToonTalk manual home page</a>
 </p>
 </body>
 </html>
