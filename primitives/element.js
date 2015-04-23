@@ -77,15 +77,26 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         return value;
     };
     
-    element.create = function (html, style_attributes, description, additional_classes) {
+    element.create = function (original_html, style_attributes, description, sound_effect_or_sound_effect_file_name, additional_classes) {
         var new_element = Object.create(element);
         var guid = TT.UTILITIES.generate_unique_id(); // needed for copying tables
         var widget_drag_started = new_element.drag_started;
         var attribute_widgets_in_backside_table = {}; // table relating attribute_name and widget in backside table
         var original_copies                     = {}; // table relating attribute_name and all the widget copies for that attribute
-        var original_width, original_height, current_width, current_height, pending_css, transform_css, on_update_display_handlers, $image_element;
+        var sound_effect;
+        var source_URL;
+        var html, initialized, original_width, original_height, current_width, current_height,
+            pending_css, transform_css, on_update_display_handlers, $image_element;
         if (!style_attributes) {
             style_attributes = [];
+        }
+        if (sound_effect_or_sound_effect_file_name) {
+            // by supporting both the sound effect and the file name we can get sharing of audio objects between copies of the same element
+            if (typeof sound_effect_or_sound_effect_file_name === 'string') { 
+                sound_effect = new Audio(sound_effect_or_sound_effect_file_name);
+            } else {
+                sound_effect = sound_effect_or_sound_effect_file_name;
+            }
         }
         new_element.is_element = function () {
             return true;
@@ -111,19 +122,41 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         };
         new_element.set_HTML = function (new_value) {
             var frontside_element = this.get_frontside_element();
+            var transform_HTML = function (html) {
+                // maybe more to come but now adds target='_blank' to anchors
+                var anchor_start = 0;
+                while (true) {
+                    anchor_start = html.indexOf("<a ", anchor_start);
+                    if (anchor_start < 0) {
+                        break;
+                    }
+                    anchor_start += 3;
+                    html = html.substring(0, anchor_start) + "target='_blank' " + html.substring(anchor_start);
+                }
+                return html;
+            }.bind(this);
             if (!frontside_element) {
                 return false;
             }
             if (html === new_value) {
                 return false;
             }
-            html = new_value;
+            html = transform_HTML(new_value);
             // remove children so will be updated
             $(frontside_element).children(":not(.ui-resizable-handle)").remove();
-            frontside_element.innerHTML = html; // until re-rendered
-            // need to know new dimensions to scale appropriately
-            this.compute_original_dimensions(true);
-            this.rerender();
+            if (this.is_plain_text_element()) {
+                // the following is necessary so that when placed in boxes
+                // and is scaled to fit it doesn't change its line breaks
+                // not that don't want to set the html instance variable
+                frontside_element.innerHTML = html.replace(/ /g, "&nbsp;");
+            } else {
+                frontside_element.innerHTML = html; // until re-rendered
+            }
+            if (initialized) {
+                // need to know new dimensions to scale appropriately
+                this.compute_original_dimensions(true);
+                this.rerender();
+            }
             return true;
         };
         // sub classes can call set_HTML_from_sub_classes from within their set_HTML without recurring 
@@ -219,16 +252,16 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 pending_css = {};
             }
             if (transform_css) {
-                if (transform_css['rotate']) {
+                if (typeof transform_css['rotate'] === 'number') {
                     transform += 'rotate(' + transform_css['rotate'] + 'deg)';
                 }
-                if (transform_css['skewX']) {
+                if (typeof transform_css['skewX'] === 'number') {
                     transform += 'skewX(' + transform_css['skewX'] + 'deg)';
                 }
-                if (transform_css['skewY']) {
+                if (typeof transform_css['skewY'] === 'number') {
                     transform += 'skewY(' + transform_css['skewY'] + 'deg)';
                 }
-                if (transform_css['transform-origin-x'] || transform_css['transform-origin-y']) {
+                if (typeof transform_css['transform-origin-x']  === 'number'|| typeof transform_css['transform-origin-y'] === 'number') {
                     pending_css['transform-origin'] = (transform_css['transform-origin-x'] || 0) + ' ' + (transform_css['transform-origin-y'] || 0);
                 }
             };
@@ -307,6 +340,24 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         new_element.set_additional_classes = function (new_value) {
             additional_classes = new_value;
         };
+        new_element.set_sound_effect = function (new_value) {
+            sound_effect = new_value;
+        };
+        new_element.get_sound_effect = function () {
+            return sound_effect;
+        };
+        new_element.get_source_URL = function () {
+            return source_URL;
+        };
+        new_element.set_source_URL = function (new_value) {
+            var old_value = source_URL;
+            if (old_value === new_value) {
+                return;
+            }
+            source_URL = new_value;
+            this.refresh();
+            return true;
+        };
         new_element = new_element.add_standard_widget_functionality(new_element);
         new_element.drag_started = function (json, is_resource) {
             this.drag_x_offset = json.view.drag_x_offset;
@@ -356,7 +407,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 $(frontside_element).removeClass("toontalk-erased-element");
                 this.restore_dimensions();
             }
-            this.initialise_element();
+            this.initialize_element();
             if (TT.UTILITIES.on_a_nest_in_a_box(frontside_element)) {
                 // need to work around a CSS problem where nested percentage widths don't behave as expected
                 this.set_attribute('width',  $(frontside_element).closest(".toontalk-box-hole").width(),  false);
@@ -368,28 +419,36 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             }
             this.apply_css();
             this.fire_on_update_display_handlers();
-            TT.UTILITIES.give_tooltip(frontside_element, "Click to see the backside where you can place robots or change the style of this " + element_description(frontside_element) + ".");
+            TT.UTILITIES.give_tooltip(frontside_element,
+                                      "Click to see the backside where you can place robots or change the style of this " + 
+                                      element_description(frontside_element) + ".");
         };
-        new_element.initialise_element = function () {
+        new_element.initialize_element = function () {
             var frontside_element = this.get_frontside_element();
-            var rendering, additional_classes;
-            if (frontside_element.children.length === $(frontside_element).children(".ui-resizable-handle").length) {
-                // the only children are resize handles so add the HTML
-//                 rendering = document.createElement('div');
-//                 $(rendering).addClass("toontalk-element-container");
-                frontside_element.innerHTML = this.get_HTML();
-//                 frontside_element.appendChild(rendering);
-                this.set_image_element(rendering, frontside_element);
+            var resize_handles = $(frontside_element).children(".ui-resizable-handle");
+            var additional_classes, is_plain_text, htmnl;
+            if (!initialized) {
+                html =  this.get_HTML();
+                is_plain_text = this.is_plain_text_element();
+                // the introduction of non-breaking spaces is necessary for plain text elements
+                // so that when placed in boxes they don't change shape
+                frontside_element.innerHTML = is_plain_text ? html.replace(/ /g, "&nbsp;") : html;
+//                 this.set_image_element(rendering, frontside_element);
                 $(frontside_element).addClass("toontalk-element-frontside");
-                if (frontside_element.innerHTML.substring(0, 1) !== '<') {
-                    // doesn't look like HTML so assume it is raw text and give it a class that will give it a better font and size
+                if (is_plain_text) {
+                    //  give it a class that will give it a better font and size
                     additional_classes = this.get_additional_classes();
                     if (additional_classes) {
                         $(frontside_element).addClass(additional_classes);
                     }
                     $(frontside_element).addClass("ui-widget toontalk-plain-text-element");
                 }
+                initialized = true;
             }
+        };
+        new_element.is_plain_text_element = function () {
+            var html = this.get_HTML();
+            return html && html[0] !== '<' && html[html.length-1] !== '>';
         };
         new_element.compute_original_dimensions = function (recompute) {
             TT.UTILITIES.original_dimensions(this, 
@@ -445,10 +504,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         new_element.increment_height = function (delta) {
             this.set_attribute('height', (current_height || original_height) + delta);
         };
+        new_element.set_HTML(original_html.toString());
         new_element.set_description(description);
         if (TT.debugging) {
-            new_element.debug_string = new_element.toString();
-            new_element.debug_id = TT.UTILITIES.generate_unique_id();
+            new_element._debug_id = TT.UTILITIES.generate_unique_id();
+            new_element._debug_string = new_element.to_debug_string();
         }
         return new_element;
     };
@@ -456,7 +516,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     element.copy = function (parameters) {
         // copy has a copy of the attributes array as well
         var style_attributes = this.get_style_attributes();
-        var copy = element.create(this.get_HTML(), style_attributes.slice(), this.get_description());
+        var copy = element.create(this.get_HTML(), style_attributes.slice(), this.get_description(), this.get_sound_effect());
+        copy.set_source_URL(this.get_source_URL());
         if (parameters) {
             if (!parameters.elements_copied) {
                 parameters.elements_copied = {};
@@ -558,7 +619,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         var css = {};
         var current_value, new_value_number;
         var style_attributes;
-//      console.log(attribute + " of " + this.debug_id + " is " + new_value);
+//      console.log(attribute + " of " + this._debug_id + " is " + new_value);
         if (!frontside_element) {
             return false;
         }
@@ -568,6 +629,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         }
         if (typeof current_value === 'undefined') {
             current_value = this.get_attribute_from_current_css(attribute);
+            if (current_value === new_value) {
+                return false;
+            }
         }      
         // need to use a number for JQuery's css otherwise treats "100" as "auto"
         new_value_number = value_in_pixels(new_value, attribute);
@@ -586,10 +650,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         }
         if (handle_training && this.robot_in_training()) {
             this.robot_in_training().edited(this, {setter_name: "set_attribute",
-                                               argument_1: attribute,
-                                               argument_2: new_value,
-                                               toString: "change the '" + attribute + "' style to " + new_value + " of",
-                                               button_selector: ".toontalk-element-" + attribute + "-attribute-input"});
+                                                   argument_1: attribute,
+                                                   argument_2: new_value,
+                                                   toString: "change the '" + attribute + "' style to " + new_value + " of",
+                                                   button_selector: ".toontalk-element-" + attribute + "-attribute-input"});
         }
         this.add_to_css(attribute, new_value);
         if (add_to_style_attributes) {
@@ -790,6 +854,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 }
                 return return_value;
             };
+            attribute_widget.is_attribute_widget = function () {
+                return true;
+            };
             return attribute_widget;
         }.bind(this);
         var create_string_attribute_widget = function (attribute_name, attribute_value) {
@@ -899,13 +966,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
            // else is a plain string so quote it
            return '"' + html + '"';
         };
-        var description = to_string_info && to_string_info.role === "conditions" ?
-                      this.get_text() :
-                      "the element " + scale_or_quote_html(this.get_HTML());        
-//         if (TT.debugging && (!(to_string_info && to_string_info.role === "conditions"))) {
-//             description += " (" + this.debug_id + ")";
-//         }
-        return description;
+        var description = to_string_info && (to_string_info.role === "conditions" || to_string_info.plain_text) ?
+                          '"' + this.get_text() + '"':
+                          scale_or_quote_html(this.get_HTML());
+        return "the element " + description;
     };
     
     element.get_type_name = function (plural) {
@@ -952,13 +1016,15 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 html: html_encoded_or_shared, 
                 attributes: json_attributes,
                 attribute_values: json_attributes.map(this.get_attribute.bind(this)),
-                additional_classes: this.get_additional_classes()
+                additional_classes: this.get_additional_classes(),
+                sound_effect: this.get_sound_effect() && this.get_sound_effect().src,
+                source_URL: this.get_source_URL()
                 };
     };
     
     TT.creators_from_json["element"] = function (json, additional_info) {
         var html = decodeURIComponent(typeof json.html === 'string' ? json.html : additional_info.shared_html[json.html.shared_html_index]); 
-        var reconstructed_element = element.create(html, json.attributes, json.description);
+        var reconstructed_element = element.create(html, json.attributes, json.description, json.sound_effect);
         var ignore_attributes;
         if (additional_info && additional_info.event) {
             // perhaps should check that event is a drop event
@@ -976,12 +1042,27 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         if (json.additional_classes) {
             reconstructed_element.set_additional_classes(json.additional_classes);
         }
+        if (json.source_URL) {
+            reconstructed_element.set_source_URL(json.source_URL);
+            reconstructed_element.refresh();
+        }
         return reconstructed_element;
     };
     
     element.create_attribute_path = function (attribute_widget, robot) {
         var path_to_element_widget = TT.path.get_path_to(attribute_widget.element_widget, robot);
         return this.extend_attribute_path(path_to_element_widget, attribute_widget.attribute);
+    };
+
+    element.refresh = function () {
+        if (this.get_source_URL()) {
+            TT.UTILITIES.create_widget_from_URL(this.get_source_URL(),
+                                                function (up_to_date_element) {
+                                                    if (up_to_date_element) {
+                                                        this.set_HTML(up_to_date_element.get_HTML());
+                                                    }
+                                                }.bind(this));
+        }
     };
     
     element.extend_attribute_path = function (path_to_element_widget, attribute_name) {
@@ -1026,10 +1107,56 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     };
 
     element.receive_HTML_from_dropped = function (dropped) {
-        var new_text = dropped.get_text();
+        var new_text = dropped.get_text && dropped.get_text();
         if (this.set_HTML(new_text)) {
             return this.get_text();
         }
+    };
+
+    element.receive_URL_from_dropped = function (dropped) {
+        var new_text = dropped.get_text();
+        if (this.set_source_URL(new_text)) {
+            return this.get_source_URL();
+        }
+    };
+
+    element.add_style_attribute = function (attribute) {
+        var style_attributes = this.get_style_attributes();
+        var frontside_element;
+        if (style_attributes.indexOf(attribute) < 0) {
+           style_attributes.push(attribute);
+           // update the backside during drag if 'left' or 'top' are attributes
+           if (attribute === 'left') {
+               frontside_element = this.get_frontside_element();
+               $(frontside_element).on('drag', function (event) {
+                   var backside_element  = this.get_backside_element();
+                   var frontside_element = this.get_frontside_element();
+                   if (backside_element && frontside_element) {
+                       $(backside_element).find(".toontalk-element-left-attribute-input").val(event.originalEvent.clientX);
+                   }
+
+               });
+           } else if (attribute === 'top') {
+               frontside_element = this.get_frontside_element();
+               $(frontside_element).on('drag', function (event) {
+                   var backside_element  = this.get_backside_element();
+                   var frontside_element = this.get_frontside_element();
+                   if (backside_element && frontside_element) {
+                       $(backside_element).find(".toontalk-element-top-attribute-input").val(event.originalEvent.clientY);
+                   }
+               });
+           }
+        }
+        return true; // so robot knows this succeeded
+    };
+    element.remove_style_attribute = function (attribute) {
+        var style_attributes = this.get_style_attributes();
+        var index = style_attributes.indexOf(attribute);
+        if (index >= 0) {
+            style_attributes.splice(index, 1);
+            update_style_attribute_chooser(attributes_chooser, this, attribute_table);
+        }
+        return true; // so robot knows this succeeded
     };
     
     return element;
@@ -1052,47 +1179,12 @@ window.TOONTALK.element_backside =
                         sub_menus: ["display", "visibility"]},
                        {label: "Transformations",
                         sub_menus: ["rotate", "skewX", "skewY", "transform-origin-x", "transform-origin-y"]}];
-        var add_style_attribute = function (attribute) {
-            var style_attributes = element_widget.get_style_attributes();
-            var frontside_element;
-            if (style_attributes.indexOf(attribute) < 0) {
-               style_attributes.push(attribute);
-               // update the backside during drag if 'left' or 'top' are attributes
-               if (attribute === 'left') {
-                   frontside_element = element_widget.get_frontside_element();
-                   $(frontside_element).on('drag', function (event) {
-                       var backside_element  = element_widget.get_backside_element();
-                       var frontside_element = element_widget.get_frontside_element();
-                       if (backside_element && frontside_element) {
-                           $(backside_element).find(".toontalk-element-left-attribute-input").val(event.originalEvent.clientX);
-                       }
-
-                   });
-               } else if (attribute === 'top') {
-                   frontside_element = element_widget.get_frontside_element();
-                   $(frontside_element).on('drag', function (event) {
-                       var backside_element  = element_widget.get_backside_element();
-                       var frontside_element = element_widget.get_frontside_element();
-                       if (backside_element && frontside_element) {
-                           $(backside_element).find(".toontalk-element-top-attribute-input").val(event.originalEvent.clientY);
-                       }
-                   });
-               }
-            }
-        };
-        var remove_style_attribute = function (attribute) {
-            var style_attributes = element_widget.get_style_attributes();
-            var index = style_attributes.indexOf(attribute);
-            if (index >= 0) {
-               style_attributes.splice(index, 1);
-               update_style_attribute_chooser(attributes_chooser, element_widget, attribute_table);
-            }
-        };
-        var process_menu_item = function (option, menu_list) {
+        var process_menu_item = function (option, menu_list, element_widget) {
             var style_attributes = element_widget.get_style_attributes();
             var already_added = style_attributes.indexOf(option) >= 0;
             var title = "Click to add or remove the '" + option + "' style attribute from my backside.";
             var check_box = TT.UTILITIES.create_check_box(already_added, "toontalk-style-attribute-check-box", option+"&nbsp;", title);
+            var additional_class = "toontalk-style-attribute-check-box-for-" + option;
             var documentation_link = TT.UTILITIES.create_anchor_element("i", documentation_source(option));
             var list_item = document.createElement("li");
             $(documentation_link).addClass("toontalk-help-button notranslate toontalk-attribute-help-button");
@@ -1100,32 +1192,40 @@ window.TOONTALK.element_backside =
             documentation_link.translate = false; // should not be translated
             documentation_link.lang      = "en";
             check_box.container.appendChild(documentation_link);
+            $(check_box.button).addClass(additional_class);
             check_box.button.addEventListener('click', function (event) {
                 if (check_box.button.checked) {
-                    add_style_attribute(option);
+                    element_widget.add_style_attribute(option);
                 } else {
-                    remove_style_attribute(option);
+                    element_widget.remove_style_attribute(option);
                 }
                 update_style_attributes_table(attribute_table, element_widget, element_widget.get_backside());
+                if (element_widget.robot_in_training()) {
+                    element_widget.robot_in_training().edited(element_widget, 
+                                                               {setter_name: (check_box.button.checked ? "add_style_attribute" : "remove_style_attribute"),
+                                                                argument_1: option,
+                                                                toString: (check_box.button.checked ? "add" : "remove") + " a widget for the " + option + " attribute of",
+                                                                button_selector: "." + additional_class});
+                }
             });
             list_item.appendChild(check_box.container);
             menu_list.appendChild(list_item);
          };
-        var process_options = function (sub_tree, menu_list) {
+        var process_options = function (sub_tree, menu_list, element_widget) {
             var category_header, sub_menu_list;
             if (typeof sub_tree === 'string') {
-                process_menu_item(sub_tree, menu_list);
+                process_menu_item(sub_tree, menu_list, element_widget);
             } else if (sub_tree.label) {
                 category_header = document.createElement("h3");
                 category_header.textContent = sub_tree.label;
                 sub_menu_list = document.createElement("ul");
                 menu_list.appendChild(category_header);
                 menu_list.appendChild(sub_menu_list);   
-                process_options(sub_tree.sub_menus, sub_menu_list);
+                process_options(sub_tree.sub_menus, sub_menu_list, element_widget);
             } else {
                 // is an array
                 sub_tree.forEach(function (sub_sub_tree) {
-                    process_options(sub_sub_tree, menu_list);
+                    process_options(sub_sub_tree, menu_list, element_widget);
                 });               
             }
         };
@@ -1133,7 +1233,7 @@ window.TOONTALK.element_backside =
             $(attributes_chooser).accordion('destroy');
         }
         $(attributes_chooser).empty();
-        process_options(options, attributes_chooser);
+        process_options(options, attributes_chooser, element_widget);
         $(attributes_chooser).accordion({active: 0,
                                          heightStyle: "content"});
         return attributes_chooser;
@@ -1167,20 +1267,10 @@ window.TOONTALK.element_backside =
             $(attribute_frontside_element).addClass("toontalk-element-attribute");
             td.appendChild(attribute_frontside_element);
             attribute_widget.render();           
-            // TODO: add title like the following
-//             attribute_value_editor = TT.UTILITIES.create_text_input(value,
-//                                                                     classes,
-//                                                                     undefined,
-//                                                                     "Click here to edit the '" + attribute + "' style attribute of this element.");
-//             attribute_value_editor.button.name = attribute;
-//             attribute_value_editor.button.addEventListener('input', update_value);
-//             TT.UTILITIES.can_receive_drops(attribute_value_editor.container);
-//             td.appendChild(attribute_value_editor.container);
         });
-//         return table;
     };
     
-    var create_show_attributes_chooser = function (attributes_chooser) {
+    var create_show_attributes_chooser = function (attributes_chooser, element_widget) {
         var show_label = "Add or remove my style attributes";
         var show_title = "Click to add widgets for my style attributes.";
         var hide_label = "Hide my style attributes list";
@@ -1197,6 +1287,9 @@ window.TOONTALK.element_backside =
                 $show_chooser_button.button("option", "label", hide_label);
                 TT.UTILITIES.give_tooltip($show_chooser_button.get(0), hide_title);
             }
+            if (element_widget.robot_in_training()) {
+                element_widget.robot_in_training().button_clicked(".toontalk-show-attributes-chooser-button", element_widget);
+            }
         });
         TT.UTILITIES.give_tooltip($show_chooser_button.get(0), show_title);
         return $show_chooser_button.get(0);
@@ -1210,49 +1303,107 @@ window.TOONTALK.element_backside =
             var html = element_widget.get_HTML();
             var attribute_table = document.createElement("table");
             var attributes_chooser = document.createElement("div");
-            var show_attributes_chooser = create_show_attributes_chooser(attributes_chooser);
+            var show_attributes_chooser = create_show_attributes_chooser(attributes_chooser, element_widget);
             var advanced_settings_button = TT.backside.create_advanced_settings_button(backside, element_widget);
             // conditional on URL parameter whether HTML or plain text
             // default is plain text (displayed and edited) (if there is any -- could be an image or something else)
-            // full HTML editing but that is both insecure (should cleanse the HTML) and confusing to non-experts
+            // full HTML editing but that is both insecure (could cleanse the HTML) and confusing to non-experts
             var edit_HTML = TT.UTILITIES.get_current_url_boolean_parameter("elementHTML", false);
             var getter = edit_HTML ? "get_HTML" : "get_text";
             var generic_backside_update = backside.update_display.bind(backside);
-            var text, html_input, update_html, drop_handler;
+            var text, html_input, update_html, drop_handler, 
+                URL_input, update_URL, URL_drop_handler,
+                $play_sound_effect_button, $play_video_button;
             // need to ensure that it 'knows' its textContent, etc.
-            element_widget.initialise_element();
+            element_widget.initialize_element();
             text = element_widget[getter]().trim();
             if (text.length > 0 && !element_widget.get_image_element()) {
                 drop_handler = function (event) {
-                    var dropped = TT.UTILITIES.input_area_drop_handler(event, element_widget.receive_HTML_from_dropped.bind(element_widget));
+                    var dropped = TT.UTILITIES.input_area_drop_handler(event, element_widget.receive_HTML_from_dropped.bind(element_widget), element_widget);
                     if (dropped && element_widget.robot_in_training()) {
                         element_widget.robot_in_training().dropped_on_text_area(dropped, element_widget, {area_selector: ".toontalk-html-input",
-                                                                                            setter: 'receive_HTML_from_dropped',
-                                                                                            toString: "for the element's text"});
+                                                                                                          setter: 'receive_HTML_from_dropped',
+                                                                                                          toString: "for the element's text"});
                     }
                 };
                 html_input = TT.UTILITIES.create_text_area(text, "toontalk-html-input", "", "Type here to edit the text.", drop_handler);
                 update_html = function (event) {
-                    var new_text = html_input.button.value.trim();
+                    // replace character code 160 with ordinary space (32)
+                    var new_text = html_input.button.value.trim().replace(/\xA0/g," ");
                     var frontside_element = element_widget.get_frontside_element();
-                    var setter = edit_HTML ? "set_HTML" : "set_text";
+                    var setter = "set_HTML"; // edit_HTML ? "set_HTML" : "set_text";
                     if (element_widget[setter](new_text) && element_widget.robot_in_training()) {
                         element_widget.robot_in_training().edited(element_widget, {setter_name: setter,
-                                                                     argument_1: new_text,
-                                                                     toString: "change the text to " + new_text + " of",
-                                                                     button_selector: ".toontalk-html-input"});
+                                                                                   argument_1: new_text,
+                                                                                   toString: 'change the text to "' + new_text + '"',
+                                                                                   button_selector: ".toontalk-html-input"});
                     }
                 };
-                $(html_input.container).resizable();
+                // commented out the following since the resize handles for backside end up only applying to the HTML input element
+//              $(html_input.container).resizable();
                 $(html_input.container).css({width: "100%"});
                 $(html_input.button).css({width: "100%"});
                 html_input.button.addEventListener('change',   update_html);
                 html_input.button.addEventListener('mouseout', update_html);
                 backside_element.appendChild(html_input.container);
+                if (element_widget.get_source_URL()) {
+                    URL_drop_handler = function (event) {
+                        var dropped = TT.UTILITIES.input_area_drop_handler(event, element_widget.receive_URL_from_dropped.bind(element_widget), element_widget);
+                        if (dropped && element_widget.robot_in_training()) {
+                            element_widget.robot_in_training().dropped_on_text_area(dropped, element_widget, {area_selector: ".toontalk-URL-input",
+                                                                                                              setter: 'receive_URL_from_dropped',
+                                                                                                              toString: "for the URL source of the text"});
+                        }
+                        event.stopPropagation();
+                    };
+                    update_URL = function (event) {
+                        var new_text = URL_input.button.value.trim().replace(/\xA0/g," ");
+                        var frontside_element = element_widget.get_frontside_element();
+                        if (element_widget.set_source_URL(new_text) && element_widget.robot_in_training()) {
+                            element_widget.robot_in_training().edited(element_widget, {setter_name: "set_source_URL",
+                                                                                       argument_1: new_text,
+                                                                                       toString: 'change the source URL to "' + new_text + '"',
+                                                                                       button_selector: ".toontalk-URL-input"});
+                        }
+                    };
+                    URL_input = TT.UTILITIES.create_text_input(element_widget.get_source_URL(), 
+                                                               "toontalk-URL-input",
+                                                               "",
+                                                               "Edit the URL where this text comes from.",
+                                                               undefined,
+                                                               undefined,
+                                                               URL_drop_handler);
+//                     $(URL_input.container).css({width: "100%"});
+//                     $(URL_input.button).css({width: "100%"});
+                    URL_input.button.addEventListener('change',   update_URL);
+                    URL_input.button.addEventListener('mouseout', update_URL);
+                    backside_element.appendChild(URL_input.container);
+                }
             }
             backside.get_attributes_chooser = function () {
                 return attributes_chooser;
             };
+            if (element_widget.get_sound_effect()) {
+                $play_sound_effect_button = $("<button>Play sound</button>").button();
+                $play_sound_effect_button.addClass("toontalk-play-sound-effect-button");
+                $play_sound_effect_button.click(function (event) {
+                                                     element_widget.get_sound_effect().play();
+                                                     if (element_widget.robot_in_training()) {
+                                                         element_widget.robot_in_training().button_clicked(".toontalk-play-sound-effect-button", element_widget);
+                                                     }                                            
+                                                 });
+                backside_element.appendChild($play_sound_effect_button.get(0));
+            } else if ($(element_widget.get_frontside_element()).find("video").is("*")) {
+                $play_video_button = $("<button>Play video</button>").button();
+                $play_video_button.addClass("toontalk-play-video-button");
+                $play_video_button.click(function (event) {
+                                             $(element_widget.get_frontside_element()).find("video").get(0).play();
+                                             if (element_widget.robot_in_training()) {
+                                                 element_widget.robot_in_training().button_clicked(".toontalk-play-video-button", element_widget);
+                                             }                                            
+                                         });
+                backside_element.appendChild($play_video_button.get(0));
+            }
             update_style_attribute_chooser(attributes_chooser, element_widget, attribute_table);
             update_style_attributes_table(attribute_table, element_widget, backside);
             backside_element.appendChild(attributes_chooser);

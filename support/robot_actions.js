@@ -64,7 +64,12 @@ window.TOONTALK.actions =
                      return;
                 }
                 newly_created_widgets.push(new_widget);
-//              console.log("Added " + new_widget + " (" + new_widget.debug_id + ") to list of newly_created_widgets. Length is " + newly_created_widgets.length);
+                if (TT.logging && TT.logging.indexOf("newly-created") >= 0) {
+                    console.log("Added " + new_widget.to_debug_string() + " to list of newly_created_widgets. Length is " + newly_created_widgets.length);
+                }
+            };
+            new_actions.is_newly_created = function (widget) {
+                return newly_created_widgets.indexOf(widget) >= 0;
             };
             new_actions.get_newly_created_widgets = function () {
                 return newly_created_widgets;
@@ -99,6 +104,9 @@ window.TOONTALK.actions =
         run_unwatched: function (context, top_level_context, queue, robot, step_number) {
             var steps = this.get_steps();
             var step;
+            if (TT.logging && TT.logging.indexOf('run') >= 0) {           
+                console.log(robot.to_debug_string() + " running unwatched");
+            }
             if (!step_number) {
                 // step_number may already be bound if called when a watched robot was hidden while running
                 step_number = 0;
@@ -107,15 +115,17 @@ window.TOONTALK.actions =
                 if (step_number < steps.length) {
                     var step = steps[step_number];
                     step_number++;
+                    if (TT.logging && TT.logging.indexOf('event') >= 0) {           
+                        console.log(step.get_action_name() + " (unwatched)");
+                    }
                     // each step needs to call robot.run_next_step
                     step.run_unwatched(context, top_level_context, robot);
                 } else {
                     // currently only watched robots use these listeners
                     // if that is always the case no need calling the following
-                    robot.run_body_finished_listeners();
-                    robot.get_first_in_team().set_running_or_waiting(false);
+                    robot.run_body_finished_listeners(context, top_level_context, queue);
                     if (robot.get_run_once()) {
-                        robot.set_running(false);
+                        robot.get_first_in_team().set_running(false);
                     } else {
                         robot.get_first_in_team().run(context, top_level_context, queue);
                     }
@@ -127,37 +137,38 @@ window.TOONTALK.actions =
         run_watched: function (context, top_level_context, queue, robot) {
             var steps = this.get_steps();
             var frontside_element = robot.get_frontside_element();
-            if (!robot.get_parent_of_frontside()) {
-                // could be a 'next robot' that hasn't been opened
-                context.get_backside_element().appendChild(frontside_element);
-                context.add_backside_widget(robot);
-                robot.update_display();        
-            }
+            var original_parent_element, previous_robot, previous_robot_backside_element;
             var saved_parent_element = frontside_element.parentElement;
             var restore_after_last_event = function () {
-                var robot_still_visible = robot.visible();
-                if (robot_still_visible) {
-                    $(frontside_element).addClass("toontalk-side-animating");
-                    TT.UTILITIES.set_position_relative_to_top_level_backside($(frontside_element), robot_home);
+                var first_robot_still_visible = robot.visible() && 
+                                                robot.get_maximum_step_duration() !== 0 &&
+                                                robot.get_first_in_team() === robot;
+                var continuation = function () {
+                    // robot was added to top-level backside so z-index will work as desired (robot on top of everything)
+                    // the following restores it
+                    if (first_robot_still_visible) {
+                        saved_parent_element.appendChild(frontside_element);
+                        robot.set_animating(false);
+                    }
+                    if (robot.get_run_once()) {
+                        robot.get_first_in_team().set_running(false);
+                    } else if (!robot.stopped()) {
+                        robot.get_first_in_team().run(context, top_level_context, queue);
+                    }
+                    if (robot.get_first_in_team() === robot) {
+                        TT.UTILITIES.set_absolute_position($(frontside_element), robot_home);
+                    }
+                    robot.rerender();
+                };
+                if (first_robot_still_visible) {
+                    TT.UTILITIES.animate_to_absolute_position(frontside_element,
+                                                              robot_home,
+                                                              continuation,
+                                                              robot && robot.transform_animation_speed(TT.UTILITIES.default_animation_speed));
+                } else {
+                    robot.set_animating(false);
+                    continuation();
                 }
-                // delay so there is some animation of returning 'home'
-                setTimeout(function () {
-                        // robot was added to top-level backside so z-index will work as desired (robot on top of everything)
-                        // the following restores it
-                        if (robot_still_visible) {
-                            saved_parent_element.appendChild(frontside_element);
-                            TT.UTILITIES.set_absolute_position($(frontside_element), robot_home);
-                            robot.set_animating(false);
-                        }
-                        robot.get_first_in_team().set_running_or_waiting(false);
-                        if (robot.get_run_once()) {
-                            robot.set_running(false);
-                        } else if (!robot.stopped()) {
-                            robot.get_first_in_team().run(context, top_level_context, queue);
-                        }
-                        robot.rerender();
-                    },
-                    1000);
             };
             var step_number = 0;
             var robot_home = $(frontside_element).offset();
@@ -165,9 +176,39 @@ window.TOONTALK.actions =
             var robot_width  = $(frontside_element).width();
             var robot_height = $(frontside_element).height();
             var $backside_element = $(frontside_element).closest(".toontalk-backside");
-            var backside_rectangle = $backside_element.get(0).getBoundingClientRect();
             var top_level_position = $(frontside_element).closest(".toontalk-top-level-backside").offset();
             var context_backside = context.get_backside();
+            var backside_rectangle;
+            if (TT.logging && TT.logging.indexOf('run') >= 0) {           
+                console.log(robot.to_debug_string() + " running watched");
+            }
+            if (!robot.get_parent_of_frontside()) {
+                // could be a 'next robot' that hasn't been opened
+                previous_robot = robot.get_previous_robot();
+                previous_robot.open_backside();
+                previous_robot.get_backside().set_advanced_settings_showing(true);
+                original_parent_element = frontside_element.parentElement;
+                if (!original_parent_element) {
+                    // if no original_parent_element then find where it should be
+                    original_parent_element = $(previous_robot.get_backside_element()).find(".toontalk-drop-area").get(0);
+                }
+                context.get_backside_element().appendChild(frontside_element);
+                context.add_backside_widget(robot);
+                robot.update_display();
+                // put the robot back when finished
+                robot.add_body_finished_listener(function () {
+                                                      if (original_parent_element) {
+                                                          original_parent_element.appendChild(frontside_element);
+                                                      }
+                                                      // was temporarily added the backside of the context
+                                                      context.remove_backside_widget(robot);
+                                                      // above will have made the robot not visible
+                                                      robot.set_visible(true);
+                                                      // top left of drop area
+                                                      $(frontside_element).css({left: "",
+                                                                                top:  ""});
+                                                 });    
+            }
             if (robot_width === 0) {
                 $(frontside_element).css({width:  '',
                                           height: ''});
@@ -178,24 +219,33 @@ window.TOONTALK.actions =
                 console.log("Unable to find top-level backside. Perhaps is 'visible' but not attached.");
                 top_level_position = {left: 0, top: 0};
             }
-            if (robot_home.left < backside_rectangle.left-top_level_position.left ||
-                robot_home.top  < backside_rectangle.top -top_level_position.top  ||
-                robot_home.left+robot_width  > backside_rectangle.right +top_level_position.left ||
-                robot_home.top +robot_height > backside_rectangle.bottom+top_level_position.top) {
-                // robot isn't within the backside so reset its home to bottom centre of backside parent
-                robot_home = $backside_element.offset();
-                robot_home.left += $backside_element.width()/2;
-                robot_home.top  += $backside_element.height()-robot_height;
+            if ($backside_element.length > 0) {
+                backside_rectangle = $backside_element.get(0).getBoundingClientRect();
+                if (robot_home.left < backside_rectangle.left-top_level_position.left ||
+                    robot_home.top  < backside_rectangle.top -top_level_position.top  ||
+                    robot_home.left+robot_width  > backside_rectangle.right +top_level_position.left ||
+                    robot_home.top +robot_height > backside_rectangle.bottom+top_level_position.top) {
+                    // robot isn't within the backside so reset its home to bottom centre of backside parent
+                    robot_home = $backside_element.offset();
+                    robot_home.left += $backside_element.width()/2;
+                    robot_home.top  += $backside_element.height()-robot_height;
+                }
             }
             // store this so that if the backside is closed while it is running its position is restored
             robot.start_position = robot_start_position;
             robot.run_next_step = function () {
-                if (context_backside && context_backside.visible()) {
+                if (context_backside && (context_backside.visible() || $(context_backside.get_element()).is(":visible"))) {
+                    // TODO: determine how context_backside.visible() can be false and
+                    // $(context_backside.get_element()).is(":visible") true (test-programs.html has an example)
                     // pause between steps and give the previous step a chance to update the DOM     
                     setTimeout(function () {
+                            robot.run_watched_step_end_listeners();
                             if (step_number < steps.length) {
                                 var step = steps[step_number];
                                 step_number++;
+                                if (TT.logging && TT.logging.indexOf('event') >= 0) {           
+                                    console.log(step.get_action_name() + " (watched)");
+                                }
                                 step.run_watched(context, top_level_context, robot);
                                 if (robot.get_thing_in_hand()) {
                                     // TODO: move this elsewhere
@@ -203,14 +253,16 @@ window.TOONTALK.actions =
                                     robot.render();
                                 }
                             } else {
-                                robot.run_body_finished_listeners();
                                 // restore position
-                                restore_after_last_event();        
+                                restore_after_last_event();
+                                // following may finally close backside if close during cycle
+                                // so best to restore position first
+                                robot.run_body_finished_listeners();     
                             }
                         },
-                        500);
+                        robot.transform_step_duration(50));
                 } else {
-                   // e.g. user hid the robot while running
+                   // e.g. user hid the robot while running the final step
                    // first restore robot to its 'home'
                    robot.set_animating(false);
                    // since not visible using set_absolute_position to robot_home doesn't work
@@ -228,11 +280,11 @@ window.TOONTALK.actions =
             return true;             
         },
         
-        toString: function (toString_info) {
+        toString: function (to_string_info) {
             var description = "";
             var steps = this.get_steps();
             var step_descriptions = steps.map(function (step) {
-                return step.toString(toString_info);
+                return step && step.toString(to_string_info);
             });
             while (step_descriptions[step_descriptions.length-1] === "") {
                 step_descriptions.pop();

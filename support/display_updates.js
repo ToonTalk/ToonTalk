@@ -9,21 +9,17 @@ window.TOONTALK.DISPLAY_UPDATES =
     "use strict";
     // backsides, frontsides, and widgets (typically both sides) can be 'dirty'
     var pending_updates = [];
-//     var current_update;
     var time_of_last_update = 0;
     return {
         pending_update: function (x) {
-//             if (!x.update_display) {
-//                 return;
-//             }
             if (pending_updates.indexOf(x) >= 0) {
                 // already scheduled to be rendered
                 return;
             }
-//             if (current_update && current_update !== x && x.has_ancestor && x.has_ancestor(current_update)) {
+//          if (current_update && current_update !== x && x.has_ancestor && x.has_ancestor(current_update)) {
                 // is being called recursively by the display of decendant so ignore it
-//                 return;
-//             }
+//              return;
+//          }
             pending_updates.push(x);
         },
         
@@ -57,9 +53,9 @@ window.TOONTALK.DISPLAY_UPDATES =
                 setTimeout(function () {
                                TT.UTILITIES.use_custom_tooltip(frontside_element);
                            });
-                // ensure that children have higher z-index than parent
+                // ensure that children have higher z-index than parent (unless some children are animating)
                 $parent_side_element = $(frontside_element).parent().closest(".toontalk-side");
-                if ($parent_side_element.is('*')) {
+                if ($parent_side_element.is('*') && $parent_side_element.find(".toontalk-side-animating, .toontalk-side-appearing").length === 0) {
                     z_index = TT.UTILITIES.get_style_numeric_property(frontside_element, 'z-index');
                     parent_z_index = TT.UTILITIES.get_style_numeric_property($parent_side_element.get(0), "z-index");
                     if (!parent_z_index) {
@@ -80,6 +76,7 @@ window.TOONTALK.DISPLAY_UPDATES =
                     // need to delay in order for the DOM to settle down with the changes caused by update_display
                     TT.UTILITIES.set_timeout(function () {
                                                  if ($parent_side_element.is('.toontalk-box-hole')) {
+                                                     // not resizable while in a box hole
                                                      if ($(frontside_element).is(".ui-resizable")) {
                                                          $(frontside_element).resizable('destroy');
                                                      }
@@ -92,7 +89,7 @@ window.TOONTALK.DISPLAY_UPDATES =
         },
         
         run_cycle_is_over: function () {
-            // note that this will not be called less often than TT.queue.maximum_run milliseconds
+            // note that this will not be called more frequently than TT.queue.maximum_run milliseconds
             this.update_display(); 
         }
     };

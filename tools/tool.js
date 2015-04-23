@@ -8,15 +8,21 @@
 
 window.TOONTALK.tool = (function (TT) {
     "use strict";
+    // tools need to know mouse location if they are called via keyboard
+    document.addEventListener('mousemove', function (event) {
+        TT.tool.pageX = event.pageX;
+        TT.tool.pageY = event.pageY;
+    });
+
     return {
         add_listeners: function (element, tool) {
             var home_position, drag_x_offset, drag_y_offset, tool_height, highlighted_element;
 
-            var mouse_down = function (event) {
-                // should this check which mouse button? (event.button)
+            var pick_up = function () {
                 var bounding_rect = element.getBoundingClientRect();
-                drag_x_offset = TT.UTILITIES.get_mouse_or_first_touch_event_attribute('clientX', event) - bounding_rect.left;
-                drag_y_offset = TT.UTILITIES.get_mouse_or_first_touch_event_attribute('clientY', event) - bounding_rect.top;
+                if (tool.set_held) {
+                    tool.set_held(true);
+                }
                 tool_height = bounding_rect.height;
                 event.preventDefault();
                 $(element).addClass("toontalk-tool-held");
@@ -26,13 +32,27 @@ window.TOONTALK.tool = (function (TT) {
                 document.addEventListener('mouseup',    mouse_up);
                 document.addEventListener('touchend',   mouse_up);
                 // rewrite using startsWith in ECMAScript version 6
-                if (TT.debugging && TT.debugging.indexOf('touch') === 0) {
+                if (TT.logging && TT.logging.indexOf('touch') === 0) {
                     TT.debugging += "\nmouse_down at " + Date.now();
                 }
-                // not sure why the tool tip doesn't got away but force it here
+                // might be picked up by control key or button so need the set offsets
+                // but mouse down will reset them
+                drag_x_offset = 0;
+                drag_y_offset = 0;
+                // not sure why the tool tip doesn't go away but force it here
                 $(".ui-tooltip").each(function () {
                                           $(this).hide();
-                                      });
+                                      }); 
+            };
+
+            var mouse_down = function (event) {
+                // should this check which mouse button? (event.button)
+                var bounding_rect = element.getBoundingClientRect();
+                if (!tool.held || !tool.held()) {
+                    pick_up();
+                }
+                drag_x_offset = TT.UTILITIES.get_mouse_or_first_touch_event_attribute('clientX', event) - bounding_rect.left;
+                drag_y_offset = TT.UTILITIES.get_mouse_or_first_touch_event_attribute('clientY', event) - bounding_rect.top;
             };
 
             var mouse_move = function (event) {
@@ -51,7 +71,7 @@ window.TOONTALK.tool = (function (TT) {
                 element.style.left = point.clientX + "px";
                 element.style.top  = point.clientY + "px";
                 // rewrite using startsWith in ECMAScript version 6
-                if (TT.debugging && TT.debugging.indexOf('touch') === 0) {
+                if (TT.logging && TT.logging.indexOf('touch') === 0) {
                     TT.debugging += "\nmouse_move at " + Date.now() + " now at " + element.style.left + ", " + element.style.top;
                 }
                 if (widget_under_tool && widget_under_tool.is_top_level()) {
@@ -75,6 +95,9 @@ window.TOONTALK.tool = (function (TT) {
                 var widget_under_tool = TT.UTILITIES.find_widget_on_page(event, element, drag_x_offset, drag_y_offset-tool_height/2);
                 var top_level_widget;
                 event.preventDefault();
+                if (tool.set_held) {
+                    tool.set_held(false);
+                }
                 if (highlighted_element) { // remove old highlighting
                     TT.UTILITIES.remove_highlight();
                 }
@@ -106,7 +129,7 @@ window.TOONTALK.tool = (function (TT) {
                 document.removeEventListener('mouseup',      mouse_up);
                 document.removeEventListener('touchend',     mouse_up);
                 // rewrite using startsWith in ECMAScript version 6
-                if (TT.debugging && TT.debugging.indexOf('touch') === 0) {
+                if (TT.logging && TT.logging.indexOf('touch') === 0) {
                     TT.debugging += "\nmouse_up at " + Date.now();
                     alert(TT.debugging);
                     TT.debugging = 'touch';
@@ -134,6 +157,8 @@ window.TOONTALK.tool = (function (TT) {
             
             element.addEventListener('mousedown',  mouse_down);
             element.addEventListener('touchstart', mouse_down);
+
+            return pick_up;
        }
     };
 
