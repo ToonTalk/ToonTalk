@@ -771,7 +771,7 @@ window.TOONTALK.backside =
                     }
                     $element.css({left: frontside_offset.left-container_position.left,
                                   top:  frontside_offset.top -container_position.top,
-                                  opacity: .1});                   
+                                  opacity: .1});               
             };
             var record_backside_widget_positions = function () {
                 var backside_widgets = widget.get_backside_widgets();
@@ -817,7 +817,8 @@ window.TOONTALK.backside =
                     widget.forget_backside();
                 }
             }
-            animate_disappearance($backside_element)
+            animate_disappearance($backside_element);
+            this.set_visible(false); // semantic side of things needs to know this backside isn't being watched any more
             if (!$(frontside_element).is(":visible")) {
                 if (backside_position) {
                     $(frontside_element).css({left:  backside_position.left,

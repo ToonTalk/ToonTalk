@@ -586,6 +586,8 @@ window.TOONTALK.robot_action =
                 if (widget.get_backside()) {
                     widget.get_backside().hide_backside();
                 } // else might have been removed subsequently
+                $(robot.get_frontside_element()).remove();
+                widget.add_backside_widget(robot);
             });
     };
     var close_backside = function (widget, context, top_level_context, robot, continuation) {

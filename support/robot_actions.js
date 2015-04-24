@@ -168,6 +168,9 @@ window.TOONTALK.actions =
                 } else {
                     robot.set_animating(false);
                     continuation();
+                    // put robot back on the backside of the context
+                    context.add_backside_widget(robot);
+                    $(robot.get_frontside_element()).remove();
                 }
             };
             var step_number = 0;

@@ -59,9 +59,6 @@ window.TOONTALK.frontside =
                     return;
                 }
                 visible = new_value;
-//                 if (!visible) {
-//                     $(this.get_element()).remove();
-//                 }
                 widget = this.get_widget();
                 if (widget.walk_children) {
                     widget.walk_children(function (child_side) {
