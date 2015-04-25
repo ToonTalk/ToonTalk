@@ -156,6 +156,8 @@ window.TOONTALK.robot = (function (TT) {
             return in_run_queue;
         };
         new_robot.set_in_run_queue = function (new_value) {
+            // is now in run queue or currently running
+            // TODO: rename for clarity
             in_run_queue = new_value;
         };
 //         new_robot.set_running = function (new_value) {
@@ -258,9 +260,14 @@ window.TOONTALK.robot = (function (TT) {
             return thing_in_hand;
         };
         new_robot.set_thing_in_hand = function (new_value) {
-            if (TT.debugging && new_value && new_value.get_type_name() === 'empty hole') {
-                TT.UTILITIES.report_internal_error("Robot trying to pick up an empty hole.");
-                return;
+            if (TT.debugging) {
+                if (new_value && new_value.get_type_name() === 'empty hole') {
+                    TT.UTILITIES.report_internal_error("Robot trying to pick up an empty hole.");
+                    return;
+                }
+                if (TT.logging && TT.logging.indexOf("thing_in_hand") >= 0) {
+                    console.log(this.to_debug_string() + " now has in his hand " + (new_value ? new_value.to_debug_string() : "nothing"));
+                }
             }
             thing_in_hand = new_value;
         };
