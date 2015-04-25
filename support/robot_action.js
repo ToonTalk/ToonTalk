@@ -591,11 +591,11 @@ window.TOONTALK.robot_action =
     var close_backside = function (widget, context, top_level_context, robot, continuation, additional_info) {
         var delay = robot.transform_original_step_duration(additional_info && additional_info.time);
         setTimeout(function () {
-                       $(widget.get_backside_element()).find(".toontalk-close-button").click();
+                       $(widget.get_backside_element()).children(".toontalk-close-button").click();
                        continuation();
                        robot.run_next_step();
-                       },
-                   delay);        
+                   },
+                   delay);     
     };
     var click_button_animation = function (widget, context, top_level_context, robot, continuation, additional_info) {
         var new_continuation = function (button_element) {
