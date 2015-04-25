@@ -53,7 +53,7 @@ window.TOONTALK.robot = (function (TT) {
         var body_finished_listeners = [];
         // when running watched runs these after each step
         var watched_step_end_listeners = [];
-        var in_run_queue, stopped;
+        var running_or_in_run_queue, stopped;
         var original_backside_widgets_of_context;
         if (!body) {
             body = TT.actions.create();
@@ -150,15 +150,13 @@ window.TOONTALK.robot = (function (TT) {
             return body;
         };
         new_robot.get_running = function () {
-            return in_run_queue || this.is_ok_to_run();
+            return running_or_in_run_queue || this.is_ok_to_run();
         };
-        new_robot.in_run_queue = function () {
-            return in_run_queue;
+        new_robot.running_or_in_run_queue = function () {
+            return running_or_in_run_queue;
         };
-        new_robot.set_in_run_queue = function (new_value) {
-            // is now in run queue or currently running
-            // TODO: rename for clarity
-            in_run_queue = new_value;
+        new_robot.set_running_or_in_run_queue = function (new_value) {
+            running_or_in_run_queue = new_value;
         };
 //         new_robot.set_running = function (new_value) {
 //             running = new_value;
@@ -172,6 +170,7 @@ window.TOONTALK.robot = (function (TT) {
                 if (this.visible()) {
                     $(this.get_frontside_element()).removeClass("toontalk-robot-waiting");
                 }
+                running_or_in_run_queue = false;
             }
             if (this.get_next_robot()) {
                 this.get_next_robot().set_stopped(new_value);
@@ -470,7 +469,7 @@ window.TOONTALK.robot = (function (TT) {
     robot.run = function (context, top_level_context, queue) {
         var frontside_condition_widget = this.get_frontside_conditions();
         var backside_conditions, backside_widgets, condition_frontside_element, to_run_when_non_empty, next_robot_match_status, clear_all_mismatch_displays;
-        if (this.being_trained || this.in_run_queue()) {
+        if (this.being_trained || this.running_or_in_run_queue()) {
             // should not run if being trained or already scheduled to run
             return this;
         }
