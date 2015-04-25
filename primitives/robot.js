@@ -454,9 +454,14 @@ window.TOONTALK.robot = (function (TT) {
     };
     
     robot.match = function (other) {
-        // no need to do more -- any robot matches any other
+        // no need to do more -- any trained robot matches any other and any untrained matches any untrained
+        var this_body_empty, other_body_empty;
         if (other.is_robot()) {
-            return "matched";
+            this_body_empty  = this .get_body().is_empty();
+            other_body_empty = other.get_body().is_empty()
+            if (this_body_empty === other_body_empty) {
+                return "matched";
+            }
         }
         return this;
     };
@@ -1067,7 +1072,9 @@ window.TOONTALK.robot = (function (TT) {
         // untrained robots match each other
         return other.is_robot() &&
                !this .get_frontside_conditions() &&
-               !other.get_frontside_conditions();
+               !other.get_frontside_conditions() &&
+               this .get_body().is_empty() &&
+               other.get_body().is_empty();
     };
 
     robot.get_top_level_context_description = function (to_string_info) {
