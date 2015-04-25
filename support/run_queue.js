@@ -50,7 +50,6 @@ window.TOONTALK.queue =
                     break; 
                 }
                 next_robot_run = this.to_run.dequeue();
-                next_robot_run.robot.set_in_run_queue(false);
                 next_robot_run.robot.run_actions(next_robot_run.context, next_robot_run.top_level_context, next_robot_run.queue);
             }
             TT.DISPLAY_UPDATES.run_cycle_is_over();

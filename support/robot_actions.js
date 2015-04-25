@@ -123,6 +123,7 @@ window.TOONTALK.actions =
                 } else {
                     // currently only watched robots use these listeners
                     // if that is always the case no need calling the following
+                    robot.set_in_run_queue(false);
                     robot.run_body_finished_listeners(context, top_level_context, queue);
                     if (robot.get_run_once()) {
                         robot.get_first_in_team().set_running(false);
@@ -256,6 +257,7 @@ window.TOONTALK.actions =
                                     robot.render();
                                 }
                             } else {
+                                robot.set_in_run_queue(false);
                                 // restore position
                                 restore_after_last_event();
                                 // following may finally close backside if close during cycle
