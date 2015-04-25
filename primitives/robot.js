@@ -53,7 +53,7 @@ window.TOONTALK.robot = (function (TT) {
         var body_finished_listeners = [];
         // when running watched runs these after each step
         var watched_step_end_listeners = [];
-        var in_run_queue, stopped;
+        var running_or_in_run_queue, stopped;
         var original_backside_widgets_of_context;
         if (!body) {
             body = TT.actions.create();
@@ -150,13 +150,13 @@ window.TOONTALK.robot = (function (TT) {
             return body;
         };
         new_robot.get_running = function () {
-            return in_run_queue || this.is_ok_to_run();
+            return running_or_in_run_queue || this.is_ok_to_run();
         };
-        new_robot.in_run_queue = function () {
-            return in_run_queue;
+        new_robot.running_or_in_run_queue = function () {
+            return running_or_in_run_queue;
         };
-        new_robot.set_in_run_queue = function (new_value) {
-            in_run_queue = new_value;
+        new_robot.set_running_or_in_run_queue = function (new_value) {
+            running_or_in_run_queue = new_value;
         };
 //         new_robot.set_running = function (new_value) {
 //             running = new_value;
@@ -170,6 +170,7 @@ window.TOONTALK.robot = (function (TT) {
                 if (this.visible()) {
                     $(this.get_frontside_element()).removeClass("toontalk-robot-waiting");
                 }
+                running_or_in_run_queue = false;
             }
             if (this.get_next_robot()) {
                 this.get_next_robot().set_stopped(new_value);
@@ -258,9 +259,14 @@ window.TOONTALK.robot = (function (TT) {
             return thing_in_hand;
         };
         new_robot.set_thing_in_hand = function (new_value) {
-            if (TT.debugging && new_value && new_value.get_type_name() === 'empty hole') {
-                TT.UTILITIES.report_internal_error("Robot trying to pick up an empty hole.");
-                return;
+            if (TT.debugging) {
+                if (new_value && new_value.get_type_name() === 'empty hole') {
+                    TT.UTILITIES.report_internal_error("Robot trying to pick up an empty hole.");
+                    return;
+                }
+                if (TT.logging && TT.logging.indexOf("thing_in_hand") >= 0) {
+                    console.log(this.to_debug_string() + " now has in his hand " + (new_value ? new_value.to_debug_string() : "nothing"));
+                }
             }
             thing_in_hand = new_value;
         };
@@ -448,9 +454,14 @@ window.TOONTALK.robot = (function (TT) {
     };
     
     robot.match = function (other) {
-        // no need to do more -- any robot matches any other
+        // no need to do more -- any trained robot matches any other and any untrained matches any untrained
+        var this_body_empty, other_body_empty;
         if (other.is_robot()) {
-            return "matched";
+            this_body_empty  = this .get_body().is_empty();
+            other_body_empty = other.get_body().is_empty()
+            if (this_body_empty === other_body_empty) {
+                return "matched";
+            }
         }
         return this;
     };
@@ -463,7 +474,7 @@ window.TOONTALK.robot = (function (TT) {
     robot.run = function (context, top_level_context, queue) {
         var frontside_condition_widget = this.get_frontside_conditions();
         var backside_conditions, backside_widgets, condition_frontside_element, to_run_when_non_empty, next_robot_match_status, clear_all_mismatch_displays;
-        if (this.being_trained || this.in_run_queue()) {
+        if (this.being_trained || this.running_or_in_run_queue()) {
             // should not run if being trained or already scheduled to run
             return this;
         }
@@ -1061,7 +1072,9 @@ window.TOONTALK.robot = (function (TT) {
         // untrained robots match each other
         return other.is_robot() &&
                !this .get_frontside_conditions() &&
-               !other.get_frontside_conditions();
+               !other.get_frontside_conditions() &&
+               this .get_body().is_empty() &&
+               other.get_body().is_empty();
     };
 
     robot.get_top_level_context_description = function (to_string_info) {

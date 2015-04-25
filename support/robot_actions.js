@@ -123,6 +123,7 @@ window.TOONTALK.actions =
                 } else {
                     // currently only watched robots use these listeners
                     // if that is always the case no need calling the following
+                    robot.set_running_or_in_run_queue(false);
                     robot.run_body_finished_listeners(context, top_level_context, queue);
                     if (robot.get_run_once()) {
                         robot.get_first_in_team().set_running(false);
@@ -168,6 +169,9 @@ window.TOONTALK.actions =
                 } else {
                     robot.set_animating(false);
                     continuation();
+                    // put robot back on the backside of the context
+                    context.add_backside_widget(robot);
+                    $(robot.get_frontside_element()).remove();
                 }
             };
             var step_number = 0;
@@ -253,6 +257,7 @@ window.TOONTALK.actions =
                                     robot.render();
                                 }
                             } else {
+                                robot.set_running_or_in_run_queue(false);
                                 // restore position
                                 restore_after_last_event();
                                 // following may finally close backside if close during cycle
@@ -263,6 +268,7 @@ window.TOONTALK.actions =
                         robot.transform_step_duration(50));
                 } else {
                    // e.g. user hid the robot while running the final step
+                   robot.set_running_or_in_run_queue(false);
                    // first restore robot to its 'home'
                    robot.set_animating(false);
                    // since not visible using set_absolute_position to robot_home doesn't work
