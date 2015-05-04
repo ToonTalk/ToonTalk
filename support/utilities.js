@@ -314,7 +314,8 @@ window.TOONTALK.UTILITIES =
                 event.stopPropagation();
                 return;
             } else if (non_data_URL_in_data_transfer(event)) {
-                handle_drop_from_uri_list(event.dataTransfer.getData("text/uri-list"), $target, target_widget, target_position, event);
+                // using URL instead of text/uri-list to be compatible with IE -- see http://www.developerfusion.com/article/144828/the-html5-drag-and-drop-api/
+                handle_drop_from_uri_list(event.dataTransfer.getData("URL"), $target, target_widget, target_position, event);
                 event.stopPropagation();
                 return;
             } else {
@@ -767,7 +768,8 @@ window.TOONTALK.UTILITIES =
         return decoded; 
     };
     var non_data_URL_in_data_transfer = function (event) {
-        var urls = event.dataTransfer && event.dataTransfer.getData("text/uri-list");
+        var urls = event.dataTransfer && event.dataTransfer.getData("URL");
+        // using URL instead of text/uri-list to be compatible with IE -- see http://www.developerfusion.com/article/144828/the-html5-drag-and-drop-api/
         // not clear what to do if some URLs are data and some not -- can that happen?
         return urls && urls.length > 0 && urls.indexOf("data:") < 0;
     };
