@@ -18,7 +18,7 @@ window.TOONTALK.tool = (function (TT) {
         add_listeners: function (element, tool) {
             var home_position, drag_x_offset, drag_y_offset, tool_height, highlighted_element;
 
-            var pick_up = function () {
+            var pick_up = function (event) {
                 var bounding_rect = element.getBoundingClientRect();
                 if (tool.set_held) {
                     tool.set_held(true);
@@ -49,7 +49,7 @@ window.TOONTALK.tool = (function (TT) {
                 // should this check which mouse button? (event.button)
                 var bounding_rect = element.getBoundingClientRect();
                 if (!tool.held || !tool.held()) {
-                    pick_up();
+                    pick_up(event);
                 }
                 drag_x_offset = TT.UTILITIES.get_mouse_or_first_touch_event_attribute('clientX', event) - bounding_rect.left;
                 drag_y_offset = TT.UTILITIES.get_mouse_or_first_touch_event_attribute('clientY', event) - bounding_rect.top;
