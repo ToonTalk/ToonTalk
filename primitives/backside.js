@@ -673,7 +673,7 @@ window.TOONTALK.backside =
                                                                  widget.get_name_input_title ? widget.get_name_input_title() : 
                                                                                                "Edit the name of this " + type_name + ". There is not much room so keep it short.",
                                                                  undefined,
-                                                                 'string',
+                                                                 'text',
                                                                  name_drop_handler);
                 name_change = function () {
                     var name = name_text_input.button.value.trim();
