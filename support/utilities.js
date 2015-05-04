@@ -1681,7 +1681,7 @@ window.TOONTALK.UTILITIES =
                 if (owner && ((widget.equals && widget.equals(owner)) ||
                               (widget.matching_resource && widget.matching_resource(owner)) ||
                               (widget.match(owner) === 'matched'))) {
-                    if (owner.get_backside_widgets().length === widget.get_backside_widgets().length) {
+                        owner.get_backside_widgets().length === widget.get_backside_widgets().length) {
                         // TODO: make sure the backside widgets are equivalent...
                         element_found = element;
                         return false; // stop the 'each'
