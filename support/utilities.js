@@ -647,9 +647,9 @@ window.TOONTALK.UTILITIES =
             });
         });
         // frontside's click handler will run the top-level resource widgets if clicked
-        TT.QUEUE = window.TOONTALK.queue.create();
+        TT.DEFAULT_QUEUE = window.TOONTALK.queue.create();
         // might want two queues: so new entries end up in the 'next queue'
-        TT.QUEUE.run();
+        TT.DEFAULT_QUEUE.run();
         window.addEventListener('beforeunload', function (event) {
             try {
                 utilities.backup_all_top_level_widgets(true);
