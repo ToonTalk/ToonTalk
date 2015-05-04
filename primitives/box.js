@@ -686,8 +686,8 @@ window.TOONTALK.box = (function (TT) {
         }
     };
 
-    box.element_to_highlight = function (point) {
-        var hole_index = this.which_hole(point, true);
+    box.element_to_highlight = function (event) {
+        var hole_index = this.which_hole(event, true);
         var hole, hole_contents;
         if (hole_index < 0) {
             // highlight the whole thing
@@ -701,9 +701,9 @@ window.TOONTALK.box = (function (TT) {
         return hole.get_frontside_element();
     };
 
-    box.which_hole = function (point) {
-        // if horizontal computes boundary seeing if event is left of the boundary
-        // otherwise sees if point is below boundary
+    box.which_hole = function (event) {
+        // if horizontal computes boundary seeing if event pageX is left of the boundary
+        // otherwise sees if event pageY is below boundary
         var horizontal = this.get_horizontal();
         var frontside_element = this.get_frontside_element();
         var size = this.get_size();
@@ -714,7 +714,7 @@ window.TOONTALK.box = (function (TT) {
         position = $(frontside_element).offset();
         increment = horizontal ? $(frontside_element).width()/size : $(frontside_element).height()/size;
         boundary = horizontal ? position.left : position.top;
-        if (point) { // not clear how this could be called without a point
+        if (event) { // not clear how this could be called without event
             for (i = 0; i < size; i++) {
                 boundary += increment;
                 if ((horizontal ? (event.pageX <= boundary) :

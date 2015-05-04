@@ -1931,7 +1931,7 @@ window.TOONTALK.UTILITIES =
             return Math.sqrt(delta_x*delta_x+delta_y*delta_y);
         };
         
-        utilities.highlight_element = function (element, point, duration) {
+        utilities.highlight_element = function (element, event, duration) {
             var widget, frontside_element;
             if (!element) {
                 return;
@@ -1944,8 +1944,8 @@ window.TOONTALK.UTILITIES =
                 if (!widget) {
                     return;
                 }
-                if (widget.element_to_highlight && point) {
-                    element = widget.element_to_highlight(point);
+                if (widget.element_to_highlight && event) {
+                    element = widget.element_to_highlight(event);
                     if (!element) {
                         return;
                     }      
@@ -2329,10 +2329,6 @@ window.TOONTALK.UTILITIES =
             var tabs = document.createElement('div');
             var ul   = document.createElement('ul');
             var id;
-//             if (elements.length === 1) {
-//                 // no point making a tab of one thing
-//                 return elements[0];
-//             }
             if (labels.length !== elements.length) {
                 console.error("UTILITIES.create_tabs called with different length lists.");
                 return tabs;  
