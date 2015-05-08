@@ -602,6 +602,16 @@ window.TOONTALK.UTILITIES =
                         handle_drop($target, $(widget.get_frontside_element(true)), widget, target_widget, target_position, event);
                     }
                 };
+                var error_handler = function (response_event) {
+                    var text =  event.dataTransfer.getData("text/html") || event.dataTransfer.getData("text");
+                    if (text) {
+                        widget_callback(TT.element.create(text));
+                    } else {
+                        utilities.display_message("Error: " + e + ". When trying to fetch " + url);
+                        console.log(e);
+                    }
+                    // is there more than be done if not text?
+                };
 //                 var error_handler = function (response_event) {
 //                     // if can't make a widget from the URL then make an iframe of it
 //                     var widget = TT.element.create("<div class='toontalk-iframe-container'><iframe src='" + uri + "' width='480' height='320'></iframe></div>");
@@ -616,7 +626,7 @@ window.TOONTALK.UTILITIES =
 //                         console.log(event);
 //                     });
 //                 };
-                utilities.create_widget_from_URL(uri, widget_callback);               
+                utilities.create_widget_from_URL(uri, widget_callback, error_handler);               
         };
         uri_list.split(/\r?\n/).forEach(function (uri) {
             if (uri[0] !== "#") {
@@ -1281,7 +1291,6 @@ window.TOONTALK.UTILITIES =
                    widget_callback(widget);
                }
             } catch (e) {
-               utilities.display_message("Error: " + e + ". When trying to fetch " + url);
                if (error_callback) {
                    // TODO: deterine if it makes sense to conflate this error and error event listener
                    error_callback(e);
@@ -1292,9 +1301,18 @@ window.TOONTALK.UTILITIES =
        };
        var request = new XMLHttpRequest();
        request.addEventListener('readystatechange', response_handler);
-       request.addEventListener('error', error_callback);
+//        request.addEventListener('error', error_callback);
        request.open('GET', url, true);
-       request.send();
+       try {
+           request.send();
+       } catch (e) {
+           if (error_callback) {
+               error_callback(e);
+           } else {
+               utilities.display_message("Error trying to GET " + url + " " + e);
+               console.trace();
+           }
+       }
     };
         
 //         tree_replace_all = function (object, replace, replacement) {
@@ -1681,6 +1699,7 @@ window.TOONTALK.UTILITIES =
                 if (owner && ((widget.equals && widget.equals(owner)) ||
                               (widget.matching_resource && widget.matching_resource(owner)) ||
                               (widget.match(owner) === 'matched'))) {
+                    if (widget.is_hole() ||
                         owner.get_backside_widgets().length === widget.get_backside_widgets().length) {
                         // TODO: make sure the backside widgets are equivalent...
                         element_found = element;
