@@ -603,7 +603,7 @@ window.TOONTALK.backside =
             }
         },
 
-        add_advanced_settings: function (always_show_advanced_settings, extra_element) {
+        add_advanced_settings: function (always_show_advanced_settings) {
             var widget = this.get_widget();
             var check_box = this.create_infinite_stack_check_box(this, widget);
             var type_name = widget.get_type_name();
@@ -658,7 +658,7 @@ window.TOONTALK.backside =
                 }
                 TT.UTILITIES.set_absolute_position($(widget_frontside_element), initial_location); 
             };
-            var name_text_input, name_drop_handler, name_change;
+            var name_text_input, name_drop_handler, name_change, i;
             if (widget.set_name) {
                 name_drop_handler = 
                         function (event) {
@@ -724,8 +724,10 @@ window.TOONTALK.backside =
                 $make_function_bird_button.button("option", "disabled", true);  
             }
             settings.appendChild(TT.UTILITIES.create_row(description_text_area.container));
-            if (extra_element) {
-                settings.appendChild(extra_element); 
+            if (arguments.length > 1) {
+                for (i = 1; i < arguments.length; i++) {
+                    settings.appendChild(arguments[i]);
+                }
             }
             if (name_text_input) {
                 settings.appendChild(TT.UTILITIES.create_row(name_text_input.container));
