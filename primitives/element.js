@@ -124,14 +124,24 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             var frontside_element = this.get_frontside_element();
             var transform_HTML = function (html) {
                 // maybe more to come but now adds target='_blank' to anchors
+                // TOOD: determine if there are situations where this isn't wanted and the current page should be replaced
                 var anchor_start = 0;
+                var target_blank = "target='_blank'"; // TODO: make constant after ECMA version 5
+                var anchor_end, target_blank_start;
                 while (true) {
                     anchor_start = html.indexOf("<a ", anchor_start);
                     if (anchor_start < 0) {
                         break;
                     }
+                    anchor_end = html.indexOf('>', anchor_start);
+                    if (anchor_end < 0) {
+                        brak;
+                    }
                     anchor_start += 3;
-                    html = html.substring(0, anchor_start) + "target='_blank' " + html.substring(anchor_start);
+                    target_blank_start = html.indexOf(target_blank, anchor_start);
+                    if (target_blank_start < 0 || target_blank_start > anchor_end) {
+                        html = html.substring(0, anchor_start) + target_blank + html.substring(anchor_start);
+                    }
                 }
                 return html;
             }.bind(this);
