@@ -241,9 +241,11 @@ window.TOONTALK.backside =
                 var backside_widgets = this.get_widget().get_backside_widgets();
                 visible = new_value;
                 backside_widgets.forEach(function (backside_widget) {
-                        backside_widget.set_visible(new_value);
-                        if (new_value) {
-                            backside_widget.render();
+                        if (backside_widget) {
+                            backside_widget.set_visible(new_value);
+                            if (new_value) {
+                                backside_widget.render();
+                            }
                         }
                 });
             };
