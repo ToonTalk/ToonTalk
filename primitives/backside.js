@@ -604,6 +604,7 @@ window.TOONTALK.backside =
         },
 
         add_advanced_settings: function (always_show_advanced_settings) {
+            // any additional arguments are considered elements to be added after the description
             var widget = this.get_widget();
             var check_box = this.create_infinite_stack_check_box(this, widget);
             var type_name = widget.get_type_name();

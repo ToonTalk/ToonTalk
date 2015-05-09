@@ -77,7 +77,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         return value;
     };
     
-    element.create = function (original_html, style_attributes, description, sound_effect_or_sound_effect_file_name, additional_classes) {
+    element.create = function (original_html, style_attributes, description, sound_effect_or_sound_effect_file_name, ignore_pointer_events, additional_classes) {
         var new_element = Object.create(element);
         var guid = TT.UTILITIES.generate_unique_id(); // needed for copying tables
         var widget_drag_started = new_element.drag_started;
@@ -356,6 +356,14 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         new_element.get_sound_effect = function () {
             return sound_effect;
         };
+        new_element.get_ignore_pointer_events = function () {
+            return ignore_pointer_events;
+        };
+        new_element.set_ignore_pointer_events = function (new_value) {
+            ignore_pointer_events = new_value;
+             $(this.get_frontside_element()).find(":not(ui-resizable-handle)")
+                                            .css({"pointer-events": new_value ? "none" : "auto"});
+        };
         new_element.get_source_URL = function () {
             return source_URL;
         };
@@ -454,6 +462,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             TT.UTILITIES.give_tooltip(frontside_element,
                                       "Click to see the backside where you can place robots or change the style of this " + 
                                       element_description(frontside_element) + ".");
+            // will enable/disable as appropriate
+            this.set_ignore_pointer_events(this.get_ignore_pointer_events());
         };
         new_element.initialize_element = function () {
             var frontside_element = this.get_frontside_element();
@@ -548,7 +558,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     element.copy = function (parameters) {
         // copy has a copy of the attributes array as well
         var style_attributes = this.get_style_attributes();
-        var copy = element.create(this.get_HTML(), style_attributes.slice(), this.get_description(), this.get_sound_effect());
+        var copy = element.create(this.get_HTML(), style_attributes.slice(), this.get_description(), this.get_sound_effect(), this.get_ignore_pointer_events());
         copy.set_source_URL(this.get_source_URL());
         if (parameters) {
             if (!parameters.elements_copied) {
@@ -1061,13 +1071,14 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                                           }.bind(this)),
                 additional_classes: this.get_additional_classes(),
                 sound_effect: this.get_sound_effect() && this.get_sound_effect().src,
+                ignore_pointer_events: this.get_ignore_pointer_events() ? true : undefined, // undefined means no attribute value pair saving space
                 source_URL: this.get_source_URL()
                 };
     };
     
     TT.creators_from_json["element"] = function (json, additional_info) {
         var html = decodeURIComponent(typeof json.html === 'string' ? json.html : additional_info.shared_html[json.html.shared_html_index]); 
-        var reconstructed_element = element.create(html, json.attributes, json.description, json.sound_effect);
+        var reconstructed_element = element.create(html, json.attributes, json.description, json.sound_effect, json.ignore_pointer_events);
         var ignore_attributes;
         if (additional_info && additional_info.event) {
             // perhaps should check that event is a drop event
@@ -1354,6 +1365,10 @@ window.TOONTALK.element_backside =
             var attributes_chooser = document.createElement("div");
             var show_attributes_chooser = create_show_attributes_chooser(attributes_chooser, element_widget);
             var advanced_settings_button = TT.backside.create_advanced_settings_button(backside, element_widget);
+            var react_to_pointer_checkbox = TT.UTILITIES.create_check_box(true,
+                                                                          "toontalk-react-to-pointer-check-box",
+                                                                          "Normal response to mouse",
+                                                                          "Uncheck this if you don't want the usual browser action to occur when clicked.");
             // conditional on URL parameter whether HTML or plain text
             // default is plain text (displayed and edited) (if there is any -- could be an image or something else)
             // full HTML editing but that is both insecure (could cleanse the HTML) and confusing to non-experts
@@ -1478,10 +1493,14 @@ window.TOONTALK.element_backside =
             $(backside_element).find(".toontalk-hide-backside-button").click(function (event) {
                 $(attributes_chooser).hide();
             });
+            react_to_pointer_checkbox.button.checked = !element_widget.get_ignore_pointer_events();
+            react_to_pointer_checkbox.button.addEventListener('click', function (event) {
+                element_widget.set_ignore_pointer_events(!react_to_pointer_checkbox.button.checked);
+            });
             if (!element_widget.is_plain_text_element()) {
-                backside.add_advanced_settings(false, html_input.container);
+                backside.add_advanced_settings(false, html_input.container, react_to_pointer_checkbox.container);
             } else {
-                backside.add_advanced_settings();
+                backside.add_advanced_settings(false, react_to_pointer_checkbox.container);
             }
             return backside;
     }};
