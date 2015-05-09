@@ -995,6 +995,9 @@ window.TOONTALK.UTILITIES =
             var json = [];
             var widgets_jsonified = [];
             array.forEach(function (widget_side, index) {
+                if (!widget_side) {
+                    return; // leave it undefined
+                }
                 try {
                     if (widget_side.is_backside && widget_side.is_backside()) {
                         json[index] = {widget: utilities.get_json(widget_side.get_widget(), json_history),

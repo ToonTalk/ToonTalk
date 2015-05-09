@@ -1037,6 +1037,12 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 html: html_encoded_or_shared, 
                 attributes: json_attributes,
                 attribute_values: json_attributes.map(this.get_attribute.bind(this)),
+                attributes_backsides: json_attributes.map(function (attribute_name) {
+                                                               var backside_widget = this.get_attribute_widget_in_backside_table(attribute_name, true);
+                                                               if (backside_widget) {
+                                                                   return TT.UTILITIES.get_json_of_array(backside_widget.get_backside_widgets(), json_history)
+                                                               }
+                                                          }.bind(this)),
                 additional_classes: this.get_additional_classes(),
                 sound_effect: this.get_sound_effect() && this.get_sound_effect().src,
                 source_URL: this.get_source_URL()
@@ -1056,10 +1062,16 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         }
         json.attribute_values.forEach(function (value, index) {
             var attribute_name = json.attributes[index];
+            var backside_widgets_of_attribute_json = json.attributes_backsides && json.attributes_backsides[index];
+            var attribute_widget;
             if (ignore_attributes.indexOf(attribute_name) < 0) {
                 reconstructed_element.add_to_css(attribute_name, value_in_pixels(value) || value);
             }
-        });
+            if (backside_widgets_of_attribute_json) {
+                attribute_widget = reconstructed_element.get_attribute_widget_in_backside_table(attribute_name);
+                TT.UTILITIES.add_backside_widgets_from_json(attribute_widget, backside_widgets_of_attribute_json, additional_info);
+            }
+        }.bind(this));
         if (json.additional_classes) {
             reconstructed_element.set_additional_classes(json.additional_classes);
         }
