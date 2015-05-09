@@ -86,7 +86,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         var sound_effect;
         var source_URL;
         var html, initialized, original_width, original_height, current_width, current_height,
-            pending_css, transform_css, on_update_display_handlers, $image_element;
+            pending_css, transform_css, on_update_display_handlers, $image_element, widget_set_running, widget_can_run;
         if (!style_attributes) {
             style_attributes = [];
         }
@@ -359,6 +359,28 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             return true;
         };
         new_element = new_element.add_standard_widget_functionality(new_element);
+        widget_set_running = new_element.set_running.bind(new_element);
+        new_element.set_running = function (new_value, top_level_context) {
+            widget_set_running(new_value, top_level_context);
+            // and also any attribute value widgets
+            Object.keys(attribute_widgets_in_backside_table).forEach(function (attribute_name) {
+                attribute_widgets_in_backside_table[attribute_name].set_running(new_value, top_level_context);
+            });
+        };
+        widget_can_run = new_element.can_run.bind(new_element);
+        new_element.can_run = function () {
+            var result;
+            if (widget_can_run()) {
+                return true;
+            }
+            Object.keys(attribute_widgets_in_backside_table).some(function (attribute_name) {
+                if (attribute_widgets_in_backside_table[attribute_name].can_run()) {
+                    result = true;
+                    return true;
+                }
+            });
+            return result;
+        }
         new_element.drag_started = function (json, is_resource) {
             this.drag_x_offset = json.view.drag_x_offset;
             this.drag_y_offset = json.view.drag_y_offset;
