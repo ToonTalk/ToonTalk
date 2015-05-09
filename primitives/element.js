@@ -1378,7 +1378,8 @@ window.TOONTALK.element_backside =
             var generic_backside_update = backside.update_display.bind(backside);
             var text, html_input, update_html, drop_handler, 
                 URL_input, update_URL, URL_drop_handler,
-                $play_sound_effect_button, $play_video_button;
+                $play_sound_effect_button, $play_video_button,
+                sound_effect, audio_label_and_title;
             // need to ensure that it 'knows' its textContent, etc.
             element_widget.initialize_element();
             text = element_widget[getter]().trim();
@@ -1451,14 +1452,31 @@ window.TOONTALK.element_backside =
                 return attributes_chooser;
             };
             if (element_widget.get_sound_effect()) {
+                sound_effect = element_widget.get_sound_effect();
+                audio_label_and_title = function () {
+                    if (sound_effect.paused) {
+                        TT.UTILITIES.give_tooltip($play_sound_effect_button.get(0), "Click to begin playing this sound.");
+                        $play_sound_effect_button.button("option", "label", "Play sound");
+                    } else {
+                        TT.UTILITIES.give_tooltip($play_sound_effect_button.get(0), "Click to pause the playing this sound.");
+                        $play_sound_effect_button.button("option", "label", "Pause sound");
+                    }
+                };
                 $play_sound_effect_button = $("<button>Play sound</button>").button();
                 $play_sound_effect_button.addClass("toontalk-play-sound-effect-button");
                 $play_sound_effect_button.click(function (event) {
-                                                     element_widget.get_sound_effect().play();
-                                                     if (element_widget.robot_in_training()) {
-                                                         element_widget.robot_in_training().button_clicked(".toontalk-play-sound-effect-button", element_widget);
-                                                     }                                            
-                                                 });
+                    if (sound_effect.paused) {
+                        sound_effect.play();
+                        sound_effect.addEventListener('ended', audio_label_and_title);
+                    } else {
+                        sound_effect.pause();            
+                    }
+                    audio_label_and_title();
+                    if (element_widget.robot_in_training()) {
+                        element_widget.robot_in_training().button_clicked(".toontalk-play-sound-effect-button", element_widget);
+                    }                                            
+                });
+                audio_label_and_title();
                 backside_element.appendChild($play_sound_effect_button.get(0));
             } else if ($(element_widget.get_frontside_element()).find("video").is("*")) {
                 $play_video_button = $("<button>Play video</button>").button();
