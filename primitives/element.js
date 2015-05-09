@@ -1129,7 +1129,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
            if (attribute === 'left') {
                frontside_element = this.get_frontside_element();
                $(frontside_element).on('drag', function (event) {
-                   var backside_element  = this.get_backside_element();
+                   var backside_element  = this.get_backside_element(true);
                    var frontside_element = this.get_frontside_element();
                    if (backside_element && frontside_element) {
                        $(backside_element).find(".toontalk-element-left-attribute-input").val(event.originalEvent.clientX);
@@ -1139,7 +1139,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
            } else if (attribute === 'top') {
                frontside_element = this.get_frontside_element();
                $(frontside_element).on('drag', function (event) {
-                   var backside_element  = this.get_backside_element();
+                   var backside_element  = this.get_backside_element(true);
                    var frontside_element = this.get_frontside_element();
                    if (backside_element && frontside_element) {
                        $(backside_element).find(".toontalk-element-top-attribute-input").val(event.originalEvent.clientY);
@@ -1308,7 +1308,8 @@ window.TOONTALK.element_backside =
             // conditional on URL parameter whether HTML or plain text
             // default is plain text (displayed and edited) (if there is any -- could be an image or something else)
             // full HTML editing but that is both insecure (could cleanse the HTML) and confusing to non-experts
-            var edit_HTML = TT.UTILITIES.get_current_url_boolean_parameter("elementHTML", false);
+            // but removing HTML is also confusing -- e.g. drop a link and then open it -- so default changed to true
+            var edit_HTML = TT.UTILITIES.get_current_url_boolean_parameter("elementHTML", true);
             var getter = edit_HTML ? "get_HTML" : "get_text";
             var generic_backside_update = backside.update_display.bind(backside);
             var text, html_input, update_html, drop_handler, 
