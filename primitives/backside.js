@@ -601,7 +601,7 @@ window.TOONTALK.backside =
             }
         },
 
-        add_advanced_settings: function (always_show_advanced_settings) {
+        add_advanced_settings: function (always_show_advanced_settings, extra_element) {
             var widget = this.get_widget();
             var check_box = this.create_infinite_stack_check_box(this, widget);
             var type_name = widget.get_type_name();
@@ -722,6 +722,9 @@ window.TOONTALK.backside =
                 $make_function_bird_button.button("option", "disabled", true);  
             }
             settings.appendChild(TT.UTILITIES.create_row(description_text_area.container));
+            if (extra_element) {
+                settings.appendChild(extra_element); 
+            }
             if (name_text_input) {
                 settings.appendChild(TT.UTILITIES.create_row(name_text_input.container));
             }

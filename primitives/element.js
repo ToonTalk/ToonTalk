@@ -1332,7 +1332,7 @@ window.TOONTALK.element_backside =
                     // replace character code 160 with ordinary space (32)
                     var new_text = html_input.button.value.trim().replace(/\xA0/g," ");
                     var frontside_element = element_widget.get_frontside_element();
-                    var setter = "set_HTML"; // edit_HTML ? "set_HTML" : "set_text";
+                    var setter = edit_HTML ? "set_HTML" : "set_text";
                     if (element_widget[setter](new_text) && element_widget.robot_in_training()) {
                         element_widget.robot_in_training().edited(element_widget, {setter_name: setter,
                                                                                    argument_1: new_text,
@@ -1346,7 +1346,9 @@ window.TOONTALK.element_backside =
                 $(html_input.button).css({width: "100%"});
                 html_input.button.addEventListener('change',   update_html);
                 html_input.button.addEventListener('mouseout', update_html);
-                backside_element.appendChild(html_input.container);
+                if (element_widget.is_plain_text_element()) {
+                    backside_element.appendChild(html_input.container);
+                }
                 if (element_widget.get_source_URL()) {
                     URL_drop_handler = function (event) {
                         var dropped = TT.UTILITIES.input_area_drop_handler(event, element_widget.receive_URL_from_dropped.bind(element_widget), element_widget);
@@ -1427,7 +1429,11 @@ window.TOONTALK.element_backside =
             $(backside_element).find(".toontalk-hide-backside-button").click(function (event) {
                 $(attributes_chooser).hide();
             });
-            backside.add_advanced_settings();
+            if (!element_widget.is_plain_text_element()) {
+                backside.add_advanced_settings(false, html_input.container);
+            } else {
+                backside.add_advanced_settings();
+            }
             return backside;
     }};
 }(window.TOONTALK));
