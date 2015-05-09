@@ -135,7 +135,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     }
                     anchor_end = html.indexOf('>', anchor_start);
                     if (anchor_end < 0) {
-                        brak;
+                        break;
                     }
                     anchor_start += 3;
                     target_blank_start = html.indexOf(target_blank, anchor_start);
