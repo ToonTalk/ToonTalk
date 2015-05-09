@@ -923,7 +923,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                         function (event) {
                             // ensures numbers are updated as the element is dragged
                             var owner = attribute_widget.get_attribute_owner();
-                            var top_level_position, attribute_value;
+                            var top_level_position, attribute_value, left, top;
                             if (event.currentTarget.toontalk_widget !== owner) {
                                 return;
                             }
@@ -932,10 +932,14 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                 console.log("Unable to find top-level backside of an element for its position. Perhaps is 'visible' but not attached.");
                                 top_level_position = {left: 0, top: 0};
                             }
+                            left = event.pageX-top_level_position.left-(owner.drag_x_offset || 0);
+                            top  = event.pageY-top_level_position.top -(owner.drag_y_offset || 0);
                             if (attribute_name === 'left') {
-                                attribute_value = event.pageX-top_level_position.left-(owner.drag_x_offset || 0);
+                                attribute_value = left;
+                                this.set_attribute('top', top);
                             } else {
-                                attribute_value = event.pageY-top_level_position.top -(owner.drag_y_offset || 0);
+                                attribute_value = top;
+                                this.set_attribute('left', left);
                             }
                             attribute_widget.set_value_from_decimal(attribute_value);
                             widget_update_display.call(attribute_widget);
