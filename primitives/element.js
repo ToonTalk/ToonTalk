@@ -771,6 +771,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 }
                 widget_update_display.call(this);
             };
+            widget_copier = attribute_widget.copy.bind(attribute_widget);
             attribute_widget.copy = function (parameters) {
                 var copy_of_this_element_widget;
                 if (parameters)  {
@@ -890,7 +891,6 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         if (type === 'number') {
             attribute_widget = create_numeric_attribute_widget(attribute_name, attribute_value);
             value_setter = attribute_widget.set_value_from_decimal.bind(attribute_widget);
-            widget_copier = TT.number.copy.bind(attribute_widget);
             if (attributes_needing_updating.indexOf(attribute_name) >= 0) {
                 this.on_update_display(function () {
                     attribute_widget.rerender();
@@ -923,7 +923,6 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         } else if (type === 'string') {
             attribute_widget = create_string_attribute_widget(attribute_name, attribute_value);
             value_setter = attribute_widget.set_HTML.bind(attribute_widget);
-            widget_copier = TT.element.copy.bind(attribute_widget);
         } else {
             TT.UTILITIES.report_internal_error("Unrecognized attribute type: " + type + " for " + attribute_name);
             return;
