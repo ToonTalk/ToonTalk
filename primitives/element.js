@@ -932,9 +932,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                 console.log("Unable to find top-level backside of an element for its position. Perhaps is 'visible' but not attached.");
                                 top_level_position = {left: 0, top: 0};
                             }
-                            attribute_value = attribute_name === 'left' ? 
-                                              event.pageX-top_level_position.left-owner.drag_x_offset :
-                                              event.pageY-top_level_position.top -owner.drag_y_offset;
+                            if (attribute_name === 'left') {
+                                attribute_value = event.pageX-top_level_position.left-(owner.drag_x_offset || 0);
+                            } else {
+                                attribute_value = event.pageY-top_level_position.top -(owner.drag_y_offset || 0);
+                            }
                             attribute_widget.set_value_from_decimal(attribute_value);
                             widget_update_display.call(attribute_widget);
                     }.bind(this);
@@ -1168,7 +1170,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                        $(backside_element).find(".toontalk-element-left-attribute-input").val(event.originalEvent.clientX);
                    }
 
-               });
+               }.bind(this));
            } else if (attribute === 'top') {
                frontside_element = this.get_frontside_element();
                $(frontside_element).on('drag', function (event) {
@@ -1177,7 +1179,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                    if (backside_element && frontside_element) {
                        $(backside_element).find(".toontalk-element-top-attribute-input").val(event.originalEvent.clientY);
                    }
-               });
+               }.bind(this));
            }
         }
         return true; // so robot knows this succeeded
