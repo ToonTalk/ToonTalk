@@ -1462,6 +1462,9 @@ window.TOONTALK.element_backside =
             if (element_widget.get_sound_effect()) {
                 sound_effect = element_widget.get_sound_effect();
                 audio_label_and_title = function () {
+                    if (!backside.visible()) {
+                        return;
+                    }
                     if (sound_effect.paused) {
                         TT.UTILITIES.give_tooltip($play_sound_effect_button.get(0), "Click to begin playing this sound.");
                         $play_sound_effect_button.button("option", "label", "Play sound");
