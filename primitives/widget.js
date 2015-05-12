@@ -605,7 +605,7 @@ window.TOONTALK.widget = (function (TT) {
                     }
                     parent_of_frontside = new_parent_backside;
                 }
-                if (old_parent_of_frontside && !backside_widget_already_removed && old_parent_of_frontside.is_backside()) {
+                if (old_parent_of_frontside && !backside_widget_already_removed && !parent_is_backside && old_parent_of_frontside.is_backside()) {
                     old_parent_of_frontside.get_widget().remove_backside_widget(this, false, true);
                 }
             };
@@ -664,15 +664,22 @@ window.TOONTALK.widget = (function (TT) {
             };
             widget.has_ancestor = function (other) {
                 var ancestor = this;
+                var new_ancestor;
                 while (ancestor) {
                     if (other === ancestor) {
                         return true;
                     }
                     if (ancestor.is_backside()) {
-                        ancestor = ancestor.get_widget().get_parent_of_backside();    
+                        new_ancestor = ancestor.get_widget().get_parent_of_backside();
+                            
                     } else {
-                        ancestor = ancestor.get_parent_of_frontside();
+                        new_ancestor = ancestor.get_parent_of_frontside();
                     }
+//                     if (new_ancestor && new_ancestor.get_widget() === ancestor.get_widget()) {
+//                         // skip a generation to avoid infinite loop
+//                          ancestor = new_ancestor.get_widget().get_parent_of_frontside();
+//                     }
+                    ancestor = new_ancestor;
                 }
                 return false;
             };
@@ -1087,6 +1094,9 @@ window.TOONTALK.widget = (function (TT) {
             var can_run = false;
             var backside_widget;
             backside_widgets.some(function (backside_widget_side) {
+                if (!backside_widget_side) {
+                    return false;
+                };
                 backside_widget = backside_widget_side.get_widget();
                 // probably following should be handled by robot
                 // but need to be careful to not confuse running the robot and running the widgets on the back of a robot
@@ -1320,9 +1330,14 @@ window.TOONTALK.widget = (function (TT) {
             backside.render();
             if (this.backside_widgets) {
                 this.backside_widgets.forEach(function (widget_side) {
-                        widget_side.render();
-                        widget_side.set_visible(true);
-                });
+                        if (widget_side.is_backside() && this.backside_widgets.indexOf(widget_side.get_widget()) >= 0) {
+                            // hide backside if front side also on the back
+                            widget_side.hide_backside();
+                        } else { 
+                            widget_side.render();
+                            widget_side.set_visible(true);
+                        }
+                }.bind(this));
             }
             return backside;
         },

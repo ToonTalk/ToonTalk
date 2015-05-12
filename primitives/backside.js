@@ -241,9 +241,11 @@ window.TOONTALK.backside =
                 var backside_widgets = this.get_widget().get_backside_widgets();
                 visible = new_value;
                 backside_widgets.forEach(function (backside_widget) {
-                        backside_widget.set_visible(new_value);
-                        if (new_value) {
-                            backside_widget.render();
+                        if (backside_widget) {
+                            backside_widget.set_visible(new_value);
+                            if (new_value) {
+                                backside_widget.render();
+                            }
                         }
                 });
             };
@@ -602,6 +604,7 @@ window.TOONTALK.backside =
         },
 
         add_advanced_settings: function (always_show_advanced_settings) {
+            // any additional arguments are considered elements to be added after the description
             var widget = this.get_widget();
             var check_box = this.create_infinite_stack_check_box(this, widget);
             var type_name = widget.get_type_name();
@@ -656,7 +659,7 @@ window.TOONTALK.backside =
                 }
                 TT.UTILITIES.set_absolute_position($(widget_frontside_element), initial_location); 
             };
-            var name_text_input, name_drop_handler, name_change;
+            var name_text_input, name_drop_handler, name_change, i;
             if (widget.set_name) {
                 name_drop_handler = 
                         function (event) {
@@ -673,7 +676,7 @@ window.TOONTALK.backside =
                                                                  widget.get_name_input_title ? widget.get_name_input_title() : 
                                                                                                "Edit the name of this " + type_name + ". There is not much room so keep it short.",
                                                                  undefined,
-                                                                 'string',
+                                                                 'text',
                                                                  name_drop_handler);
                 name_change = function () {
                     var name = name_text_input.button.value.trim();
@@ -707,7 +710,8 @@ window.TOONTALK.backside =
             $make_function_bird_button
                 .addClass("toontalk-make-function_bird_button")
                 .click(function (event) {
-                           var function_bird = TT.bird.create_function(type_name);
+                           var function_type = widget.get_function_type && widget.get_function_type();
+                           var function_bird = TT.bird.create_function(function_type || type_name);
                            add_new_widget_to_backside(function_bird, $make_function_bird_button);
                            if (widget.robot_in_training()) {
                                widget.robot_in_training().created_widget(function_bird, widget, ".toontalk-make-function_bird_button");
@@ -722,6 +726,11 @@ window.TOONTALK.backside =
                 $make_function_bird_button.button("option", "disabled", true);  
             }
             settings.appendChild(TT.UTILITIES.create_row(description_text_area.container));
+            if (arguments.length > 1) {
+                for (i = 1; i < arguments.length; i++) {
+                    settings.appendChild(arguments[i]);
+                }
+            }
             if (name_text_input) {
                 settings.appendChild(TT.UTILITIES.create_row(name_text_input.container));
             }

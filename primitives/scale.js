@@ -99,14 +99,14 @@ window.TOONTALK.scale = (function (TT) {
             this.get_hole(hole_index).widget_dropped_on_me(dropped, is_backside, event, robot); 
             return true;
         };
-        new_scale.which_hole = function (point, or_entire_thing) {
+        new_scale.which_hole = function (event, or_entire_thing) {
             // if or_entire_thing is true can return -1 meaning the whole scale
             // otherwise returns closest pan
             var $frontside_element = $(new_scale.get_frontside_element());
             var position = $frontside_element.offset();
             var width = $frontside_element.width();
             var center = position.left+width/2;
-            var distance_to_center = point.clientX-center;
+            var distance_to_center = event.clientX-center;
             var error = or_entire_thing ? width/10 : 0; // within 1/10 of the width to center
             if (-distance_to_center > error) {
                 return 0;

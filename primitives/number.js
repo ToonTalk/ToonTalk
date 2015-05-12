@@ -310,17 +310,10 @@ window.TOONTALK.number = (function () {
         new_number.set_value_from_decimal =
             function (decimal_string) {
                 // e.g. an attribute value
-//                 console.log("set_value_from_decimal " + decimal_string + " " + this._debug_id);
-//                 if (decimal_string === undefined) {
-//                     // e.g. is an element attribute that isn't known so treat it as zero
-//                     decimal_string = 0;
-//                 }
-                if (typeof decimal_string === 'number') {
-                    this.set_value(bigrat.fromDecimal(decimal_string));
-                    return;
-                }
-                // else should be a string
                 this.set_value(bigrat.fromDecimal(decimal_string));
+                if (TT.debugging && this.get_value().toString() === "0,0") {
+                    TT.UTILITIES.report_internal_error("Number being set to 0/0 from " + decimal_string);
+                }
             };
         new_number.copy = function (parameters) {
             // this does not use this.get_format() etc because should not pass along default values
@@ -576,7 +569,7 @@ window.TOONTALK.number = (function () {
             try {
                 integer_as_string = bigrat.toBigInteger(this.get_value()).toString();
             } catch (e) {
-                console.log("Error converting number to a string: " + e);
+                TT.UTILITIES.report_internal_error("Error converting number to a string: " + e);
                 integer_as_string = "0";
             }
             digits_needed = integer_as_string.length;
@@ -1492,7 +1485,10 @@ window.TOONTALK.number.function =
                                 if (arguments.length === 1) {
                                     return Math.random()*arguments[0];
                                 }
-                                return arguments[0]+Math.random()*arguments[1];
+                                if (arguments[0] < arguments[1]) {
+                                    return Math.random()*(arguments[1]-arguments[0])+arguments[0];
+                                }
+                                return Math.random()*(arguments[0]-arguments[1])+arguments[1];
                             };
                             return n_ary_function(message, numeric_javascript_function_to_widget_function(random), 0, 'random', event, robot);
                         },

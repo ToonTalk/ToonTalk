@@ -314,7 +314,8 @@ window.TOONTALK.UTILITIES =
                 event.stopPropagation();
                 return;
             } else if (non_data_URL_in_data_transfer(event)) {
-                handle_drop_from_uri_list(event.dataTransfer.getData("text/uri-list"), $target, target_widget, target_position, event);
+                // using URL instead of text/uri-list to be compatible with IE -- see http://www.developerfusion.com/article/144828/the-html5-drag-and-drop-api/
+                handle_drop_from_uri_list(event.dataTransfer.getData("URL"), $target, target_widget, target_position, event);
                 event.stopPropagation();
                 return;
             } else {
@@ -601,6 +602,16 @@ window.TOONTALK.UTILITIES =
                         handle_drop($target, $(widget.get_frontside_element(true)), widget, target_widget, target_position, event);
                     }
                 };
+                var error_handler = function (response_event) {
+                    var text =  event.dataTransfer.getData("text/html") || event.dataTransfer.getData("text");
+                    if (text) {
+                        widget_callback(TT.element.create(text));
+                    } else {
+                        utilities.display_message("Error: " + e + ". When trying to fetch " + url);
+                        console.log(e);
+                    }
+                    // is there more than be done if not text?
+                };
 //                 var error_handler = function (response_event) {
 //                     // if can't make a widget from the URL then make an iframe of it
 //                     var widget = TT.element.create("<div class='toontalk-iframe-container'><iframe src='" + uri + "' width='480' height='320'></iframe></div>");
@@ -615,7 +626,7 @@ window.TOONTALK.UTILITIES =
 //                         console.log(event);
 //                     });
 //                 };
-                utilities.create_widget_from_URL(uri, widget_callback);               
+                utilities.create_widget_from_URL(uri, widget_callback, error_handler);               
         };
         uri_list.split(/\r?\n/).forEach(function (uri) {
             if (uri[0] !== "#") {
@@ -646,9 +657,9 @@ window.TOONTALK.UTILITIES =
             });
         });
         // frontside's click handler will run the top-level resource widgets if clicked
-        TT.QUEUE = window.TOONTALK.queue.create();
+        TT.DEFAULT_QUEUE = window.TOONTALK.queue.create();
         // might want two queues: so new entries end up in the 'next queue'
-        TT.QUEUE.run();
+        TT.DEFAULT_QUEUE.run();
         window.addEventListener('beforeunload', function (event) {
             try {
                 utilities.backup_all_top_level_widgets(true);
@@ -767,7 +778,8 @@ window.TOONTALK.UTILITIES =
         return decoded; 
     };
     var non_data_URL_in_data_transfer = function (event) {
-        var urls = event.dataTransfer && event.dataTransfer.getData("text/uri-list");
+        var urls = event.dataTransfer && event.dataTransfer.getData("URL");
+        // using URL instead of text/uri-list to be compatible with IE -- see http://www.developerfusion.com/article/144828/the-html5-drag-and-drop-api/
         // not clear what to do if some URLs are data and some not -- can that happen?
         return urls && urls.length > 0 && urls.indexOf("data:") < 0;
     };
@@ -983,6 +995,9 @@ window.TOONTALK.UTILITIES =
             var json = [];
             var widgets_jsonified = [];
             array.forEach(function (widget_side, index) {
+                if (!widget_side) {
+                    return; // leave it undefined
+                }
                 try {
                     if (widget_side.is_backside && widget_side.is_backside()) {
                         json[index] = {widget: utilities.get_json(widget_side.get_widget(), json_history),
@@ -1279,7 +1294,6 @@ window.TOONTALK.UTILITIES =
                    widget_callback(widget);
                }
             } catch (e) {
-               utilities.display_message("Error: " + e + ". When trying to fetch " + url);
                if (error_callback) {
                    // TODO: deterine if it makes sense to conflate this error and error event listener
                    error_callback(e);
@@ -1290,9 +1304,18 @@ window.TOONTALK.UTILITIES =
        };
        var request = new XMLHttpRequest();
        request.addEventListener('readystatechange', response_handler);
-       request.addEventListener('error', error_callback);
+//        request.addEventListener('error', error_callback);
        request.open('GET', url, true);
-       request.send();
+       try {
+           request.send();
+       } catch (e) {
+           if (error_callback) {
+               error_callback(e);
+           } else {
+               utilities.display_message("Error trying to GET " + url + " " + e);
+               console.trace();
+           }
+       }
     };
         
 //         tree_replace_all = function (object, replace, replacement) {
@@ -1679,7 +1702,8 @@ window.TOONTALK.UTILITIES =
                 if (owner && ((widget.equals && widget.equals(owner)) ||
                               (widget.matching_resource && widget.matching_resource(owner)) ||
                               (widget.match(owner) === 'matched'))) {
-                    if (owner.get_backside_widgets().length === widget.get_backside_widgets().length) {
+                    if (widget.is_hole() ||
+                        owner.get_backside_widgets().length === widget.get_backside_widgets().length) {
                         // TODO: make sure the backside widgets are equivalent...
                         element_found = element;
                         return false; // stop the 'each'
@@ -1931,7 +1955,7 @@ window.TOONTALK.UTILITIES =
             return Math.sqrt(delta_x*delta_x+delta_y*delta_y);
         };
         
-        utilities.highlight_element = function (element, point, duration) {
+        utilities.highlight_element = function (element, event, duration) {
             var widget, frontside_element;
             if (!element) {
                 return;
@@ -1944,8 +1968,8 @@ window.TOONTALK.UTILITIES =
                 if (!widget) {
                     return;
                 }
-                if (widget.element_to_highlight && point) {
-                    element = widget.element_to_highlight(point);
+                if (widget.element_to_highlight && event) {
+                    element = widget.element_to_highlight(event);
                     if (!element) {
                         return;
                     }      
@@ -2329,10 +2353,6 @@ window.TOONTALK.UTILITIES =
             var tabs = document.createElement('div');
             var ul   = document.createElement('ul');
             var id;
-//             if (elements.length === 1) {
-//                 // no point making a tab of one thing
-//                 return elements[0];
-//             }
             if (labels.length !== elements.length) {
                 console.error("UTILITIES.create_tabs called with different length lists.");
                 return tabs;  
