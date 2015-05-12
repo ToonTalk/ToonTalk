@@ -664,15 +664,22 @@ window.TOONTALK.widget = (function (TT) {
             };
             widget.has_ancestor = function (other) {
                 var ancestor = this;
+                var new_ancestor;
                 while (ancestor) {
                     if (other === ancestor) {
                         return true;
                     }
                     if (ancestor.is_backside()) {
-                        ancestor = ancestor.get_widget().get_parent_of_backside();    
+                        new_ancestor = ancestor.get_widget().get_parent_of_backside();
+                            
                     } else {
-                        ancestor = ancestor.get_parent_of_frontside();
+                        new_ancestor = ancestor.get_parent_of_frontside();
                     }
+//                     if (new_ancestor && new_ancestor.get_widget() === ancestor.get_widget()) {
+//                         // skip a generation to avoid infinite loop
+//                          ancestor = new_ancestor.get_widget().get_parent_of_frontside();
+//                     }
+                    ancestor = new_ancestor;
                 }
                 return false;
             };
@@ -1087,6 +1094,9 @@ window.TOONTALK.widget = (function (TT) {
             var can_run = false;
             var backside_widget;
             backside_widgets.some(function (backside_widget_side) {
+                if (!backside_widget_side) {
+                    return false;
+                };
                 backside_widget = backside_widget_side.get_widget();
                 // probably following should be handled by robot
                 // but need to be careful to not confuse running the robot and running the widgets on the back of a robot

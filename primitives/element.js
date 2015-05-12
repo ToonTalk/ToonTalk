@@ -900,6 +900,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             attribute_widget.is_attribute_widget = function () {
                 return true;
             };
+            attribute_widget.get_function_type = function () {
+                // function birds are ordinary numeric ones
+                return 'number';
+            };
             return attribute_widget;
         }.bind(this);
         var create_string_attribute_widget = function (attribute_name, attribute_value) {
@@ -915,6 +919,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                   });
                 }
                 return return_value;
+            };
+            attribute_widget.get_function_type = function () {
+                // function birds are like those for elements (not yet implemented)
+                return 'element';
             };
             attribute_widget.set_additional_classes("toontalk-string-attribute-widget");
             return attribute_widget;

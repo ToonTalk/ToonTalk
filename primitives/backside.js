@@ -710,7 +710,8 @@ window.TOONTALK.backside =
             $make_function_bird_button
                 .addClass("toontalk-make-function_bird_button")
                 .click(function (event) {
-                           var function_bird = TT.bird.create_function(type_name);
+                           var function_type = widget.get_function_type && widget.get_function_type();
+                           var function_bird = TT.bird.create_function(function_type || type_name);
                            add_new_widget_to_backside(function_bird, $make_function_bird_button);
                            if (widget.robot_in_training()) {
                                widget.robot_in_training().created_widget(function_bird, widget, ".toontalk-make-function_bird_button");
