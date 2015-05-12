@@ -1485,7 +1485,10 @@ window.TOONTALK.number.function =
                                 if (arguments.length === 1) {
                                     return Math.random()*arguments[0];
                                 }
-                                return arguments[0]+Math.random()*arguments[1];
+                                if (arguments[0] < arguments[1]) {
+                                    return Math.random()*(arguments[1]-arguments[0])+arguments[0];
+                                }
+                                return Math.random()*(arguments[0]-arguments[1])+arguments[1];
                             };
                             return n_ary_function(message, numeric_javascript_function_to_widget_function(random), 0, 'random', event, robot);
                         },
