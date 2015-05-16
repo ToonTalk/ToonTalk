@@ -36,7 +36,7 @@
             css = {left: 0,
                    top:  0};
         }
-        $(content_frontside_element).css(css);
+        TT.UTILITIES.set_css(content_frontside_element, css);
     };
 
 window.TOONTALK.box = (function (TT) {
@@ -453,10 +453,11 @@ window.TOONTALK.box = (function (TT) {
                     top += border_size*(index-1);
                 }
             }
-            $(hole_element).css({left:   left,
-                                 top:    top,
-                                 width:  new_width,
-                                 height: new_height});
+            TT.UTILITIES.set_css(hole_element,
+                                 {left:   left,
+                                  top:    top,
+                                  width:  new_width,
+                                  height: new_height});
             if (hole_labels[index]) {
                 hole_element.setAttribute("toontalk_name", hole_labels[index]);
             }                                         
@@ -513,11 +514,13 @@ window.TOONTALK.box = (function (TT) {
                 };
                 if (!$(frontside_element).parent(".toontalk-conditions-contents-container").is("*")) {
                     if ($(frontside_element).parent(".toontalk-box-hole").is("*")) {
-                        $(frontside_element).css({width:  '',
-                                                  height: ''});
+                        TT.UTILITIES.set_css(frontside_element,
+                                             {width:  '',
+                                              height: ''});
                     } else {
-                        $(frontside_element).css({width:  box_width,
-                                                  height: box_height});
+                        TT.UTILITIES.set_css(frontside_element,
+                                             {width:  box_width,
+                                              height: box_height});
                     }
                 }
             }.bind(this);
@@ -534,7 +537,6 @@ window.TOONTALK.box = (function (TT) {
         };
         var hole_labels = this.get_name().split(";");
         var i, hole, hole_element, box_left, box_width, hole_width, first_hole_width, box_height, hole_height,
-            content_frontside_element, border_class, border_size, backside;
         if (TT.logging && TT.logging.indexOf('display') >= 0) {
             console.log("Updating display of " + this.to_debug_string());
         }

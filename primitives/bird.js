@@ -128,7 +128,7 @@ window.TOONTALK.bird = (function (TT) {
                             bird_offset.left -= parent_offset.left;
                             bird_offset.top  -= parent_offset.top;
                         }
-                        $(bird_frontside_element).css(bird_offset);
+                        TT.UTILITIES.set_css(bird_frontside_element, bird_offset);
                         if (parent_element) {
                             parent_element.appendChild(bird_frontside_element);
                         }
@@ -201,11 +201,12 @@ window.TOONTALK.bird = (function (TT) {
                     // the timeout fixes a problem when a watched robot gives a bird something that
                     // thing carried is displayed displaced to the southeast from where it should be
                     TT.UTILITIES.set_timeout(function () {
-                            $(this.element_to_display_when_flying).css({left: '',
-                                                                        top:  '',
-                                                                        width: '',
-                                                                        height: '',
-                                                                        position: ''});
+                            TT.UTILITIES.set_css(this.element_to_display_when_flying,
+                                                 {left: '',
+                                                  top:  '',
+                                                  width: '',
+                                                  height: '',
+                                                  position: ''});
                             this.update_display();
                         }.bind(this));
                 }.bind(this);
@@ -216,11 +217,13 @@ window.TOONTALK.bird = (function (TT) {
                     }
                     $(this.element_to_display_when_flying).removeClass("toontalk-carried-by-bird");
                     if (where_to_leave_it) { 
-                        $(this.element_to_display_when_flying).css({width:  this.element_to_display_when_flying.width_before_carry  || '',
-                                                                    height: this.element_to_display_when_flying.height_before_carry || '',
-                                                                    "z-index": TT.UTILITIES.next_z_index()});
+                        TT.UTILITIES.set_css(this.element_to_display_when_flying,
+                                             {width:  this.element_to_display_when_flying.width_before_carry  || '',
+                                              height: this.element_to_display_when_flying.height_before_carry || '',
+                                              "z-index": TT.UTILITIES.next_z_index()});
                         $(bird_frontside_element).closest(".toontalk-top-level-backside").append(this.element_to_display_when_flying);
                         TT.UTILITIES.set_absolute_position($(this.element_to_display_when_flying), where_to_leave_it);
+                        message_side.rerender();
                     } else {
                         $(this.element_to_display_when_flying).remove();
                     }
@@ -292,11 +295,11 @@ window.TOONTALK.bird = (function (TT) {
                 }
             }
             $top_level_backside_element.append(bird_frontside_element); // while flying            
-            $(bird_frontside_element).css({left:   starting_left || bird_offset.left-top_level_backside_element_bounding_box.left,
-                                           top:    starting_top  || bird_offset.top -top_level_backside_element_bounding_box.top,
-                                           width:  width,
-                                           height: height
-                                           });
+            TT.UTILITIES.set_css(bird_frontside_element,
+                                 {left:   starting_left || bird_offset.left-top_level_backside_element_bounding_box.left,
+                                  top:    starting_top  || bird_offset.top -top_level_backside_element_bounding_box.top,
+                                  width:  width,
+                                  height: height});
             if (TT.logging && TT.logging.indexOf('bird') >= 0) {
                 console.log(this.to_debug_string() + " from " + 
                            (starting_left || bird_offset.left-top_level_backside_element_bounding_box.left) + ", " + 
@@ -332,7 +335,6 @@ window.TOONTALK.bird = (function (TT) {
                             this.fly_to(nest_offset, move_nest_contents_continuation, robot, delay_between_steps);
                         }.bind(this);
                         stop_carrying_element(message_offset);
-                        message_side.rerender();
                         if (nest_recieving_message.get_locked()) {
                             // another bird is delivering
                             nest_recieving_message.run_when_unlocked(fly_to_nest_continuation);
@@ -926,10 +928,11 @@ window.TOONTALK.nest = (function (TT) {
                     nest_width =  $(nest_element).width();
                     nest_height = $(nest_element).height();
                     // left and top are 10%
-                    $(widget_element).css({left:   nest_width  * .1 + nest_offset.left - top_level_backside_element_offset.left,
-                                           top:    nest_height * .1 + nest_offset.top -  top_level_backside_element_offset.top,
-                                           width:  contents_width(nest_width),
-                                           height: contents_height(nest_height)});
+                    TT.UTILITIES.set_css(widget_element,
+                                         {left:   nest_width  * .1 + nest_offset.left - top_level_backside_element_offset.left,
+                                          top:    nest_height * .1 + nest_offset.top -  top_level_backside_element_offset.top,
+                                          width:  contents_width(nest_width),
+                                          height: contents_height(nest_height)});
                     $top_level_backside_element.append(widget_element);
                 }
                 return widget;
@@ -1079,8 +1082,9 @@ window.TOONTALK.nest = (function (TT) {
                     $(bird_frontside_element).removeClass(this.get_class_name_with_color("toontalk-bird-static"));
                     TT.UTILITIES.add_animation_class(bird_frontside_element, "toontalk-fly-southwest");
                     nest_position = TT.UTILITIES.relative_position(frontside_element, top_level_backside_element);
-                    $(bird_frontside_element).css({left: nest_position.left,
-                                                   top:  nest_position.top});
+                    TT.UTILITIES.set_css(bird_frontside_element,
+                                         {left: nest_position.left,
+                                          top:  nest_position.top});
                     if (event && this.robot_in_training()) {
                         // robot should not add steps for the hatching of the bird - hence true argument
                         backside_where_bird_goes.widget_dropped_on_me(bird, false, event, undefined, true);
@@ -1097,8 +1101,9 @@ window.TOONTALK.nest = (function (TT) {
                     if (this.get_parent_of_frontside().get_widget().is_top_level()) {
                         // due to switch from animation of bird hatching in nest to static nest
                         // position needs adjusting
-                        $(frontside_element).css({left: nest_position.left-5,
-                                                  top:  nest_position.top+45});
+                        TT.UTILITIES.set_css(frontside_element,
+                                             {left: nest_position.left-5,
+                                              top:  nest_position.top+45});
                     }
                     this.get_parent_of_frontside().render();
                     bird_fly_continuation = function () {
@@ -1208,11 +1213,12 @@ window.TOONTALK.nest = (function (TT) {
                             }
                             width  -= border_adjustment;
                             height -= border_adjustment;
-                            $(contents_side_element).css({width:  width,
-                                                          height: height,
-                                                          // offset by 10% -- tried left: 10% but that only worked in first box hole
-                                                          left: nest_width*0.1,
-                                                          top:  nest_height*0.1});
+                            TT.UTILITIES.set_css(contents_side_element,
+                                                 {width:  width,
+                                                  height: height,
+                                                  // offset by 10% -- tried left: 10% but that only worked in first box hole
+                                                  left: nest_width*0.1,
+                                                  top:  nest_height*0.1});
                             if (top_contents_widget.set_size_attributes) {
                                 // e.g. element widgets need to update their attributes
                                 top_contents_widget.set_size_attributes(width, height);

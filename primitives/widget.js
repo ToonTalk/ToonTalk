@@ -245,13 +245,14 @@ window.TOONTALK.widget = (function (TT) {
                                   height: ''};
                            // remove transforms as well
                            TT.UTILITIES.set_css_transform(css, '');
-                           $(frontside_element).css(css);                          
+                           TT.UTILITIES.set_css(frontside_element, css);                          
                         } else if (this.set_size_attributes) {
                             // e.g. element widgets need to update their attributes
                             this.set_size_attributes(this.saved_width, this.saved_height);
                         } else {
-                            $(frontside_element).css({width:  this.saved_width,
-                                                      height: this.saved_height});                                 
+                            TT.UTILITIES.set_css(frontside_element,
+                                                 {width:  this.saved_width,
+                                                  height: this.saved_height});                                 
                         }
                         this.saved_width =  undefined;
                         this.saved_height = undefined;
@@ -1161,10 +1162,11 @@ window.TOONTALK.widget = (function (TT) {
             position = TT.UTILITIES.relative_position(frontside_element, $container_element.get(0));
             container_widget = TT.UTILITIES.widget_from_jquery($container_element);
             // plain text should not have its dimensions set
-            $(frontside_element_copy).css({width:  ok_to_set_dimensions ? $(frontside_element).width()  : "",
-                                           height: ok_to_set_dimensions ? $(frontside_element).height() : "",
-                                           left: position.left+x_offset,
-                                           top:  position.top+y_offset});
+            TT.UTILITIES.set_css(frontside_element_copy,
+                                 {width:  ok_to_set_dimensions ? $(frontside_element).width()  : "",
+                                  height: ok_to_set_dimensions ? $(frontside_element).height() : "",
+                                  left:   position.left+x_offset,
+                                  top:    position.top+y_offset});
             $container_element.get(0).appendChild(frontside_element_copy);
             if (container_widget) {
                 container_widget.add_backside_widget(widget_copy);
@@ -1246,9 +1248,10 @@ window.TOONTALK.widget = (function (TT) {
                             };
                             $(element).addClass("toontalk-side-appearing");
                             TT.UTILITIES.add_one_shot_event_handler(element, "transitionend", 2500, remove_transition_class);
-                            $(element).css({left: final_left,
-                                            top:  final_top,
-                                            opacity: final_opacity});
+                            TT.UTILITIES.set_css(element,
+                                                 {left:    final_left,
+                                                  top:     final_top,
+                                                  opacity: final_opacity});
                             this.apply_backside_geometry();
                         }.bind(this));
                 }.bind(this);
@@ -1298,9 +1301,10 @@ window.TOONTALK.widget = (function (TT) {
                 container_offset = {left: 0, 
                                     top:  0};
             }
-            $(backside_element).css({left: frontside_offset.left-container_offset.left,
-                                     top:  frontside_offset.top -container_offset.top,
-                                     opacity: .01
+            TT.UTILITIES.set_css(backside_element,
+                                 {left: frontside_offset.left-container_offset.left,
+                                  top:  frontside_offset.top -container_offset.top,
+                                  opacity: .01
             });
             $frontside_ancestor_that_is_backside_element.append(backside_element);
             ancestor_that_owns_backside_element = TT.UTILITIES.widget_from_jquery($frontside_ancestor_that_is_backside_element);
