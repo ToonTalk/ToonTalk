@@ -1682,8 +1682,10 @@ window.TOONTALK.UTILITIES =
                                              height: $dropped.height()});
                 $dropped.parent().removeClass("toontalk-top-level-resource toontalk-top-level-resource-container");
                 $dropped.removeClass("toontalk-top-level-resource toontalk-top-level-resource-container");
+                // elements are relative only when outside of ToonTalk (e.g. a resource on the page)
                 $(dropped_element_copy).addClass("toontalk-top-level-resource toontalk-top-level-resource-container")
                                        .css({position: 'relative'});
+                $dropped.css({position: 'absolute'});
                 $dropped.get(0).parentElement.appendChild(dropped_element_copy);
                 TT.DISPLAY_UPDATES.pending_update(dropped_copy);
                 if (dropped_widget.set_active) {
