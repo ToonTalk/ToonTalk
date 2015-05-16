@@ -212,6 +212,7 @@ window.TOONTALK.bird = (function (TT) {
                 }.bind(this);
             var stop_carrying_element = 
                 function (where_to_leave_it) {
+                    var parent;
                     if (!this.element_to_display_when_flying) {
                         return;
                     }
@@ -223,7 +224,12 @@ window.TOONTALK.bird = (function (TT) {
                                               "z-index": TT.UTILITIES.next_z_index()});
                         $(bird_frontside_element).closest(".toontalk-top-level-backside").append(this.element_to_display_when_flying);
                         TT.UTILITIES.set_absolute_position($(this.element_to_display_when_flying), where_to_leave_it);
-                        message_side.rerender();
+                        parent = message_side.get_parent_of_frontside();
+                        if (parent && !parent.is_backside()) {
+                            parent.rerender();
+                        } else {
+                            message_side.rerender();
+                        }
                     } else {
                         $(this.element_to_display_when_flying).remove();
                     }
@@ -356,7 +362,9 @@ window.TOONTALK.bird = (function (TT) {
                         this.fly_to(nest_offset, deliver_message_continuation, robot, delay_between_steps);
                     }.bind(this);
                 var deliver_message_continuation = function () {
+                        var message_dimensions = nest.get_contents_dimensions();
                         stop_carrying_element(nest_offset);
+                        TT.UTILITIES.set_css(message_side.get_frontside_element(), message_dimensions);
                         this.fly_to(contents_offset, move_contents_back_continuation, robot, delay_between_steps);
                     }.bind(this);
                 var move_contents_back_continuation = function () {
@@ -1197,34 +1205,25 @@ window.TOONTALK.nest = (function (TT) {
                     contents_side_element = contents[0].get_element();
                     $(contents_side_element).show();
                 }
-                nest_width = $(frontside_element).width();
+                nest_width  = $(frontside_element).width();
                 nest_height = $(frontside_element).height();
                 if (nest_width > 0 && nest_height > 0) {
                     // tried to have a CSS class toontalk-widget-on-nest that specified width and height as 80%
                     // but it didn't work well - especially in FireFox
                     // timeout needed when loading otherwise something resets the width and height
                     TT.UTILITIES.set_timeout(function () {
-                            var width  = TT.nest.CONTENTS_WIDTH_FACTOR *nest_width;
-                            var height = TT.nest.CONTENTS_HEIGHT_FACTOR*nest_height;
-                            // loggically border_adjustment should be twice the border_size since there are two borders
-                            // but once looks better for boxes
-                            // the underlying problem is that the border width depends upon the size which in turn depends upon the border-width
-                            // tried to use JQuery's outerWidth but it didn't help
-                            var border_factor = top_contents_widget.is_box() ? 1 : 2;
-                            var border_adjustment = top_contents_widget.get_border_size ? border_factor*top_contents_widget.get_border_size(width, height) : 0;
-                            width  -= border_adjustment;
-                            height -= border_adjustment;
+                            var contents_dimension = this.get_contents_dimensions();
                             TT.UTILITIES.set_css(contents_side_element,
-                                                 {width:  width,
-                                                  height: height,
+                                                 {width:  contents_dimension.width,
+                                                  height: contents_dimension.height,
                                                   // offset by 10% -- tried left: 10% but that only worked in first box hole
                                                   left: nest_width*0.1,
                                                   top:  nest_height*0.1});
                             if (top_contents_widget.set_size_attributes) {
                                 // e.g. element widgets need to update their attributes
-                                top_contents_widget.set_size_attributes(width, height);
+                                top_contents_widget.set_size_attributes(contents_dimension.width, contents_dimension.height);
                             }
-                        },
+                        }.bind(this),
                         2); // TODO: see if 0 works here
                 }
                 frontside_element.appendChild(contents_side_element);
@@ -1263,6 +1262,24 @@ window.TOONTALK.nest = (function (TT) {
             } else {
                 nest_copies.push(nest_copy);
             }
+        };
+        new_nest.get_contents_dimensions = function () {
+            var frontside_element = this.get_frontside_element();
+            var nest_width = $(frontside_element).width();
+            var nest_height = $(frontside_element).height();
+            var width  = TT.nest.CONTENTS_WIDTH_FACTOR *nest_width;
+            var height = TT.nest.CONTENTS_HEIGHT_FACTOR*nest_height;
+            var top_contents_widget = contents[0];
+            // loggically border_adjustment should be twice the border_size since there are two borders
+            // but once looks better for boxes
+            // the underlying problem is that the border width depends upon the size which in turn depends upon the border-width
+            // tried to use JQuery's outerWidth but it didn't help
+            var border_factor = top_contents_widget.is_box() ? 1 : 2;
+            var border_adjustment = top_contents_widget.get_border_size ? border_factor*top_contents_widget.get_border_size(width, height) : 0;
+            width  -= border_adjustment;
+            height -= border_adjustment;
+            return {width:  width,
+                    height: height};
         };
         new_nest.get_path_to = function (widget, robot) {
             var widget_on_nest;
