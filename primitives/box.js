@@ -537,6 +537,7 @@ window.TOONTALK.box = (function (TT) {
         };
         var hole_labels = this.get_name().split(";");
         var i, hole, hole_element, box_left, box_width, hole_width, first_hole_width, box_height, hole_height,
+            content_frontside_element, border_class, border_size, backside;
         if (TT.logging && TT.logging.indexOf('display') >= 0) {
             console.log("Updating display of " + this.to_debug_string());
         }
