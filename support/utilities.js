@@ -3277,9 +3277,6 @@ window.TOONTALK.UTILITIES =
        utilities.set_css = function (element, css) {
            // this is mostly useful debugging computed CSS problems since can break here
            $(element).css(css);
-           if (css.width) {
-               console.log(css);
-           }
        };
 
 //         enable_touch_events = function (maximum_click_duration) {
