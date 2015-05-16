@@ -77,13 +77,13 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         return value;
     };
     
-    element.create = function (original_html, style_attributes, description, sound_effect_or_sound_effect_file_name, ignore_pointer_events, additional_classes) {
+    element.create = function (original_html, style_attributes, description, sound_effect_or_sound_effect_file_name, video_object_or_video_file_name, ignore_pointer_events, additional_classes) {
         var new_element = Object.create(element);
         var guid = TT.UTILITIES.generate_unique_id(); // needed for copying tables
         var widget_drag_started = new_element.drag_started;
         var attribute_widgets_in_backside_table = {}; // table relating attribute_name and widget in backside table
         var original_copies                     = {}; // table relating attribute_name and all the widget copies for that attribute
-        var sound_effect;
+        var sound_effect, video_object;
         var source_URL;
         var html, initialized, original_width, original_height, current_width, current_height,
             pending_css, transform_css, on_update_display_handlers, $image_element, widget_set_running, widget_can_run;
@@ -96,6 +96,14 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 sound_effect = new Audio(sound_effect_or_sound_effect_file_name);
             } else {
                 sound_effect = sound_effect_or_sound_effect_file_name;
+            }
+        }
+        if (video_object_or_video_file_name) {
+            // by supporting both the video object and the file name we can get sharing of video objects between copies of the same element
+            if (typeof video_object_or_video_file_name === 'string') {
+                orginal_HTML = "<video src='" + video_object_or_video_file_name + "' alt='" + video_object_or_video_file_name + "'/>"
+            } else {
+                video_object = video_object_or_video_file_name;
             }
         }
         new_element.is_element = function () {
@@ -360,6 +368,15 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         new_element.get_sound_effect = function () {
             return sound_effect;
         };
+        new_element.get_video_object = function () {
+            if (!video_object) {
+                video_object = this.get_frontside_element().getElementsByTagName('video')[0];
+            }
+            return video_object;
+        };
+         new_element.set_video_object = function (new_value) {
+            video_object = new_value;
+        };
         new_element.get_ignore_pointer_events = function () {
             return ignore_pointer_events;
         };
@@ -562,7 +579,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     element.copy = function (parameters) {
         // copy has a copy of the attributes array as well
         var style_attributes = this.get_style_attributes();
-        var copy = element.create(this.get_HTML(), style_attributes.slice(), this.get_description(), this.get_sound_effect(), this.get_ignore_pointer_events());
+        var copy = element.create(this.get_HTML(), style_attributes.slice(), this.get_description(), this.get_sound_effect(), this.get_video_object(), this.get_ignore_pointer_events());
         copy.set_source_URL(this.get_source_URL());
         if (parameters) {
             if (!parameters.elements_copied) {
@@ -1083,6 +1100,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                                           }.bind(this)),
                 additional_classes: this.get_additional_classes(),
                 sound_effect: this.get_sound_effect() && this.get_sound_effect().src,
+                video:        this.get_video_object() && this.get_video_object().src,
                 ignore_pointer_events: this.get_ignore_pointer_events() ? true : undefined, // undefined means no attribute value pair saving space
                 source_URL: this.get_source_URL()
                 };
@@ -1090,7 +1108,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     
     TT.creators_from_json["element"] = function (json, additional_info) {
         var html = decodeURIComponent(typeof json.html === 'string' ? json.html : additional_info.shared_html[json.html.shared_html_index]); 
-        var reconstructed_element = element.create(html, json.attributes, json.description, json.sound_effect, json.ignore_pointer_events);
+        var reconstructed_element = element.create(html, json.attributes, json.description, json.sound_effect, json.video, json.ignore_pointer_events);
         var ignore_attributes;
         if (additional_info && additional_info.event) {
             // perhaps should check that event is a drop event
@@ -1391,7 +1409,8 @@ window.TOONTALK.element_backside =
             var text, html_input, update_html, drop_handler, 
                 URL_input, update_URL, URL_drop_handler,
                 $play_sound_effect_button, $play_video_button,
-                sound_effect, audio_label_and_title;
+                sound_effect, audio_label_and_title,
+                video_object, video_label_and_title;
             // need to ensure that it 'knows' its textContent, etc.
             element_widget.initialize_element();
             text = element_widget[getter]().trim();
@@ -1473,7 +1492,7 @@ window.TOONTALK.element_backside =
                         TT.UTILITIES.give_tooltip($play_sound_effect_button.get(0), "Click to begin playing this sound.");
                         $play_sound_effect_button.button("option", "label", "Play sound");
                     } else {
-                        TT.UTILITIES.give_tooltip($play_sound_effect_button.get(0), "Click to pause the playing this sound.");
+                        TT.UTILITIES.give_tooltip($play_sound_effect_button.get(0), "Click to pause this sound.");
                         $play_sound_effect_button.button("option", "label", "Pause sound");
                     }
                 };
@@ -1494,14 +1513,34 @@ window.TOONTALK.element_backside =
                 audio_label_and_title();
                 backside_element.appendChild($play_sound_effect_button.get(0));
             } else if ($(element_widget.get_frontside_element()).find("video").is("*")) {
+                video_object = element_widget.get_video_object();
+                video_label_and_title = function () {
+                    if (!backside.visible()) {
+                        return;
+                    }
+                    if (video_object.paused) {
+                        TT.UTILITIES.give_tooltip($play_video_button.get(0), "Click to begin playing this video.");
+                        $play_video_button.button("option", "label", "Play video");
+                    } else {
+                        TT.UTILITIES.give_tooltip($play_video_button.get(0), "Click to pause this video.");
+                        $play_video_button.button("option", "label", "Pause video");
+                    }
+                };
                 $play_video_button = $("<button>Play video</button>").button();
                 $play_video_button.addClass("toontalk-play-video-button");
                 $play_video_button.click(function (event) {
-                                             $(element_widget.get_frontside_element()).find("video").get(0).play();
+                                             if (video_object.paused) {
+                                                 video_object.play();
+                                                 video_object.addEventListener('ended', video_label_and_title);
+                                             } else {
+                                                 video_object.pause();            
+                                             }
+                                             video_label_and_title();
                                              if (element_widget.robot_in_training()) {
                                                  element_widget.robot_in_training().button_clicked(".toontalk-play-video-button", element_widget);
                                              }                                            
                                          });
+                video_label_and_title();
                 backside_element.appendChild($play_video_button.get(0));
             }
             update_style_attribute_chooser(attributes_chooser, element_widget, attribute_table);
