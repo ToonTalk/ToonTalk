@@ -2659,9 +2659,9 @@ window.TOONTALK.UTILITIES =
                     }
                 }
                 utilities.add_transform_to_css((other_transforms || "") + " scale(" + x_scale + ", " + y_scale + ")",
-                                                  translate,
-                                                  pending_css,
-                                                  transform_origin_center);  
+                                               translate,
+                                               pending_css,
+                                               transform_origin_center);  
                 pending_css.width =  original_width,
                 pending_css.height = original_height;
 //                 if (pending_css["transform-origin"] === "center center") {
@@ -2718,7 +2718,7 @@ window.TOONTALK.UTILITIES =
                    css["transform-origin"] = "left top";
                 }
             }
-            transform += translate;
+            transform = translate+transform;
             utilities.set_css_transform(css, transform);
         };
 
