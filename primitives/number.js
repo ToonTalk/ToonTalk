@@ -433,7 +433,7 @@ window.TOONTALK.number = (function () {
             return html;
         };
         var border_size = 28;
-        var frontside_element, $dimensions_holder, client_width, client_height, 
+        var frontside_element, $dimensions_holder, client_width, client_height, border_size,
             font_height, font_width, max_decimal_places, new_HTML, backside, 
             size_unconstrained_by_container, parent_widget, child_element;
         if (TT.logging && TT.logging.indexOf('display') >= 0) {
@@ -491,20 +491,17 @@ window.TOONTALK.number = (function () {
             }
         }
         $(frontside_element).removeClass("toontalk-number-eighth-size-border toontalk-number-quarter-size-border toontalk-number-half-size-border toontalk-number-full-size-border");
-        if (client_width <= 64 || client_height <= 64) {
+        border_size = this.get_border_size(client_width, client_height);
+        if (border_size === 4) {
             $(frontside_element).addClass("toontalk-number-eighth-size-border toontalk-number");
-            frontside_element.toontalk_border_size = 4;
-        } else if (client_width <= 128 || client_height <= 128) {
+        } else if (border_size === 8) {
             $(frontside_element).addClass("toontalk-number-quarter-size-border toontalk-number");
-            frontside_element.toontalk_border_size = 8;
-        } else if (client_width <= 256 || client_height <= 256) {
+        } else if (border_size === 16) {
             $(frontside_element).addClass("toontalk-number-half-size-border toontalk-number");
-            frontside_element.toontalk_border_size = 16;
         } else {
             $(frontside_element).addClass("toontalk-number-full-size-border toontalk-number");
-            frontside_element.toontalk_border_size = 32;
         }
-        font_height = (client_height-frontside_element.toontalk_border_size*2);
+        font_height = (client_height-border_size*2);
 //      font_size = TT.UTILITIES.get_style_numeric_property(frontside, "font-size");
         // according to http://www.webspaceworks.com/resources/fonts-web-typography/43/
         // the aspect ratio of monospace fonts varies from .43 to .55
@@ -532,6 +529,18 @@ window.TOONTALK.number = (function () {
                                       height: ''});
         }
         TT.UTILITIES.give_tooltip(frontside_element, this.get_title());
+    };
+
+    number.get_border_size = function (width, height) {
+         if (width <= 64 || height <= 64) {
+            return 4;
+        } else if (width <= 128 || height <= 128) {
+            return 8;
+        } else if (width <= 256 || height <= 256) {
+            return 16;
+        } else {
+            return 32;
+        }
     };
     
     number.to_HTML = function (max_characters, font_size, format, top_level, operator, size_unconstrained_by_container) {

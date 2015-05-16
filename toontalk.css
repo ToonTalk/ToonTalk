@@ -2229,9 +2229,6 @@ background-image: url("images/dusty-morph.png");
 } */
 .toontalk-carried-by-bird {
     position: static;
-}
-.toontalk-carried-by-bird > .toontalk-number {
-/* 	only numbers need to scale when carried */
     transform: scale(0.8, 0.4);
     width: 100%;	
     height: 100%;

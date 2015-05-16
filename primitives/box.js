@@ -473,7 +473,6 @@ window.TOONTALK.box = (function (TT) {
                         $(hole_element).addClass(border_class + "-top");                        
                     }
                 }
-                hole_element.toontalk_border_size = border_size;
             }
             if (hole_element !== content_frontside_element) {
                 // not an empty hole
@@ -554,18 +553,16 @@ window.TOONTALK.box = (function (TT) {
         }
         $(frontside_element).removeClass("toontalk-box-erased");
         update_dimensions();
-        if (hole_width <= 32 || hole_height <= 32) {
+        // hole width or box width???
+        border_size = this.get_border_size(hole_width, hole_height);
+        if (border_size === 4) {
             border_class = "toontalk-box-eighth-size-border";
-            border_size = 4;
-        } else if (hole_width <= 64 || hole_height <= 64) {
+        } else if (border_size === 8) {
             border_class = "toontalk-box-quarter-size-border";
-            border_size = 8;
-        } else if (hole_width <= 128 || hole_height <= 128) {
+        } else if (border_size === 16) {
             border_class = "toontalk-box-half-size-border";
-            border_size = 16;
         } else {
             border_class = "toontalk-box-full-size-border";
-            border_size = 32;
         }
         // recompute hole dimensions taking into account border width
         if (horizontal) {
@@ -574,7 +571,6 @@ window.TOONTALK.box = (function (TT) {
             hole_height = hole_height-((size-1)*border_size)/size;      
         }
         $(frontside_element).addClass(border_class);
-        frontside_element.toontalk_border_size = border_size;
         // delay it until browser has rendered current elements
         TT.UTILITIES.set_timeout(renderer);
     };
@@ -586,6 +582,24 @@ window.TOONTALK.box = (function (TT) {
 
     box.get_default_height = function () {
         return 68;
+    };
+
+    box.get_border_size = function (width, height) {
+        if (!width) {
+            width  = $(this.get_frontside_element()).width();
+        }
+        if (!height) {
+            height = $(this.get_frontside_element()).height();
+        }
+        if (width <= 32 || height <= 32) {
+            return 4;
+        } else if (width <= 64 || height <= 64) {
+            return 8;
+        } else if (width <= 128 || height <= 128) {
+            return 16;
+        } else {
+            return 32;
+        }
     };
 
     box.get_name_input_label = function () {

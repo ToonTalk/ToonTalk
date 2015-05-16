@@ -1204,13 +1204,14 @@ window.TOONTALK.nest = (function (TT) {
                     // but it didn't work well - especially in FireFox
                     // timeout needed when loading otherwise something resets the width and height
                     TT.UTILITIES.set_timeout(function () {
-                            var border_adjustment = 2*contents_side_element.toontalk_border_size || 0;
                             var width  = TT.nest.CONTENTS_WIDTH_FACTOR *nest_width;
-                            var height = TT.nest.CONTENTS_HEIGHT_FACTOR*nest_height
-                            while (border_adjustment*2 >= width ||
-                                   border_adjustment*2 >= height) {
-                                border_adjustment /= 2;
-                            }
+                            var height = TT.nest.CONTENTS_HEIGHT_FACTOR*nest_height;
+                            // loggically border_adjustment should be twice the border_size since there are two borders
+                            // but once looks better for boxes
+                            // the underlying problem is that the border width depends upon the size which in turn depends upon the border-width
+                            // tried to use JQuery's outerWidth but it didn't help
+                            var border_factor = top_contents_widget.is_box() ? 1 : 2;
+                            var border_adjustment = top_contents_widget.get_border_size ? border_factor*top_contents_widget.get_border_size(width, height) : 0;
                             width  -= border_adjustment;
                             height -= border_adjustment;
                             TT.UTILITIES.set_css(contents_side_element,
