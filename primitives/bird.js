@@ -106,7 +106,8 @@ window.TOONTALK.bird = (function (TT) {
             var bird_width = $(bird_frontside_element).width();
             var visible_ancestor = this.closest_visible_ancestor_or_frontside();
             var bird_offset = $(visible_ancestor.get_frontside_element()).offset();
-            var bird_finished_continuation = function () {
+            var bird_finished_continuation = 
+                function () {
                     var parent_offset = $(parent_element).offset();
                     var become_static, current_non_empty_listeners;
                     if (TT.sounds) {
@@ -159,7 +160,8 @@ window.TOONTALK.bird = (function (TT) {
                         after_delivery_continuation();
                     }
                 }.bind(this);
-            var bird_return_continuation = function () {
+            var bird_return_continuation = 
+                function () {
                     try {
                         nest_recieving_message.add_to_contents(message_side, event, robot, this, true);
                     } catch (nest_or_error) {
@@ -177,13 +179,14 @@ window.TOONTALK.bird = (function (TT) {
                             throw nest_or_error;
                         }
                     }
-                    stop_carrying_element();
+                    stop_carrying_element($(bird_frontside_element).offset());
                     // return to original location
                     TT.UTILITIES.set_timeout(function () {
                             this.fly_to(bird_offset, bird_finished_continuation, robot); 
                         }.bind(this));
                 }.bind(this);
-            var carry_element = function (element, widget_side) {
+            var carry_element = 
+                function (element, widget_side) {
                     element.width_before_carry  = $(element).width();
                     element.height_before_carry = $(element).height();
                     this.element_to_display_when_flying = element;
@@ -206,16 +209,15 @@ window.TOONTALK.bird = (function (TT) {
                             this.update_display();
                         }.bind(this));
                 }.bind(this);
-            var stop_carrying_element = function (where_to_leave_it) {
+            var stop_carrying_element = 
+                function (where_to_leave_it) {
                     if (!this.element_to_display_when_flying) {
                         return;
                     }
-                    var width  = this.element_to_display_when_flying.width_before_carry;
-                    var height = this.element_to_display_when_flying.height_before_carry;
                     $(this.element_to_display_when_flying).removeClass("toontalk-carried-by-bird");
                     if (where_to_leave_it) { 
-                        $(this.element_to_display_when_flying).css({width:  width  || '',
-                                                                    height: height || '',
+                        $(this.element_to_display_when_flying).css({width:  this.element_to_display_when_flying.width_before_carry  || '',
+                                                                    height: this.element_to_display_when_flying.height_before_carry || '',
                                                                     "z-index": TT.UTILITIES.next_z_index()});
                         $(bird_frontside_element).closest(".toontalk-top-level-backside").append(this.element_to_display_when_flying);
                         TT.UTILITIES.set_absolute_position($(this.element_to_display_when_flying), where_to_leave_it);
@@ -330,6 +332,7 @@ window.TOONTALK.bird = (function (TT) {
                             this.fly_to(nest_offset, move_nest_contents_continuation, robot, delay_between_steps);
                         }.bind(this);
                         stop_carrying_element(message_offset);
+                        message_side.rerender();
                         if (nest_recieving_message.get_locked()) {
                             // another bird is delivering
                             nest_recieving_message.run_when_unlocked(fly_to_nest_continuation);
