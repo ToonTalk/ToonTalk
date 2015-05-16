@@ -165,6 +165,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             if (initialized) {
                 // need to know new dimensions to scale appropriately
                 this.compute_original_dimensions(true);
+                // reapply CSS attribute values
+                style_attributes.forEach(function (attribute_name) {
+                                     this.add_to_css(attribute_name, this.get_attribute(attribute_name));
+                                 }.bind(this));
                 this.rerender();
             }
             return true;
