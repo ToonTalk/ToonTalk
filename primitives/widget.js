@@ -1025,9 +1025,12 @@ window.TOONTALK.widget = (function (TT) {
             var backside = this.get_backside();
             var widget_side = is_backside ? widget.get_backside(true) : widget;
             var widget_index, parent_of_backside, parent_of_frontside;
-            if (TT.debugging && !this.backside_widgets) {
+            if (!this.backside_widgets) {
+                // can occur when vacuuming away a robot's condition
                 if (ignore_if_not_on_backside) {
-                    console.log("remove_backside_widget called and there are no backside_widgets");
+                    if (TT.debugging) {
+                        console.log("remove_backside_widget called and there are no backside_widgets");
+                    }
                 } else {
                     TT.UTILITIES.report_internal_error("Couldn't remove a widget from backside widgets.");
                 }
