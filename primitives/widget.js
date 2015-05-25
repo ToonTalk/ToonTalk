@@ -56,6 +56,15 @@ window.TOONTALK.widget = (function (TT) {
             // erasability will eventually will be used for type conversions
             // currently only for conditions
             this.erasable(widget);
+            widget.this_and_walk_children = function (action) {
+                // convenient to apply action to this and its descendants
+                if (!action(widget)) {
+                    return;
+                }
+                if (widget.walk_children) {
+                    widget.walk_children(action);
+                }
+            };
             widget.top_level_widget = function () {
                 var parent, $top_level_backsides;
                 if (top_level_widget) {
@@ -125,6 +134,9 @@ window.TOONTALK.widget = (function (TT) {
             }
             if (!widget.is_element) {
                 widget.is_element = return_false;
+            }
+            if (!widget.is_sensor) {
+                widget.is_sensor = return_false;
             }
             if (!widget.is_function_nest) {
                 widget.is_function_nest = return_false;
@@ -1445,6 +1457,7 @@ window.TOONTALK.widget = (function (TT) {
             widget.is_nest = return_false;
             widget.is_robot = return_false;
             widget.is_element = return_false;
+            widget.is_sensor = return_false;
             widget.is_function_nest = return_false;
             widget.is_hole = return_false;
             widget.is_plain_text_element = return_false;

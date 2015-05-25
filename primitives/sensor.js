@@ -28,6 +28,9 @@ window.TOONTALK.sensor = (function (TT) {
         var nest_update_display = new_sensor.update_display;
         var nest_copy = new_sensor.copy;
         var event_listener = function (event) {
+            if (!new_sensor.get_active()) {
+                return;
+            }
             var value = event[attribute];
             var visible = new_sensor.visible();
             var $top_level_backside = $(new_sensor.get_frontside_element()).closest(".toontalk-top-level-backside");
@@ -48,7 +51,7 @@ window.TOONTALK.sensor = (function (TT) {
                 value_widget = TT.number.create(Math.round(value), 1); // integers for now
                 break;
                 case 'string':
-                value_widget = TT.element.create(value          , undefined, undefined, undefined, undefined, undefined, "toontalk-string-value-from-sensor");
+                value_widget = TT.element.create(value           , undefined, undefined, undefined, undefined, undefined, "toontalk-string-value-from-sensor");
                 style_contents(value_widget, new_sensor);
                 break;
                 case 'boolean':
@@ -69,6 +72,9 @@ window.TOONTALK.sensor = (function (TT) {
                 new_sensor.add_to_contents(value_widget);
             }
         }.bind(this);
+        new_sensor.is_sensor = function () {
+            return true;
+        };
         new_sensor.copy = function (parameters) {
             var copy;
             if (parameters && parameters.just_value && this.has_contents()) {
@@ -119,17 +125,23 @@ window.TOONTALK.sensor = (function (TT) {
         new_sensor.toString = function () {
             return "a sensor that receives the '" + attribute + "' attribute of " + event_name + " events";
         };
-        new_sensor.get_active = function () {
-            return active;
-        };
         new_sensor.get_class_name_with_color = function (base_class_name) {
             return base_class_name;
+        };
+        new_sensor.get_active = function () {
+            // can also be 'temporarily false'
+            return active === true;
+        };
+        new_sensor.restore_active = function () {
+            if (active === 'temporarily false') {
+                this.set_active(true);
+            }
         };
         new_sensor.set_active = function (new_value, initialising) {
             if (active === new_value && !initialising) {
                 return;
             }
-            if (new_value) {
+            if (new_value === true) { // not 'temporarily false'
                if (widget) {
                     widget.get_frontside_element().addEventListener(event_name, event_listener);
                 } else {
