@@ -65,6 +65,9 @@ window.TOONTALK.UTILITIES =
             utilities.report_internal_error("Possible bug that " + dragee + " doesn't have a known owner.");
             dragee = $(element);
         }
+        if (widget.set_stopped) {
+            widget.set_stopped(true);
+        }
         if (widget.save_dimensions && (!widget.get_parent_of_frontside() || widget.get_parent_of_frontside().get_widget().is_top_level())) {
             widget.save_dimensions();
         }
