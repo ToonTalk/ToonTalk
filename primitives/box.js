@@ -1185,6 +1185,12 @@ window.TOONTALK.box_hole =
                 }
                 return false;
             };
+            hole.is_sensor = function () {
+                if (contents) {
+                    return contents.is_sensor();
+                }
+                return false;
+            };
             hole.is_top_level = function () {
                 return false;
             };
