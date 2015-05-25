@@ -48,12 +48,12 @@ window.TOONTALK.sensor = (function (TT) {
                 value_widget = TT.number.create(Math.round(value), 1); // integers for now
                 break;
                 case 'string':
-                value_widget = TT.element.create(value          , undefined, undefined, undefined, "toontalk-string-value-from-sensor");
+                value_widget = TT.element.create(value          , undefined, undefined, undefined, undefined, undefined, "toontalk-string-value-from-sensor");
                 style_contents(value_widget, new_sensor);
                 break;
                 case 'boolean':
                 // for now
-                value_widget = TT.element.create(value.toString(), undefined, undefined, undefined, "toontalk-string-value-from-sensor");
+                value_widget = TT.element.create(value.toString(), undefined, undefined, undefined, undefined, undefined, "toontalk-string-value-from-sensor");
                 style_contents(value_widget, new_sensor);
                 break;
                 case 'undefined':

@@ -101,7 +101,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         if (video_object_or_video_file_name) {
             // by supporting both the video object and the file name we can get sharing of video objects between copies of the same element
             if (typeof video_object_or_video_file_name === 'string') {
-                original_HTML = "<video src='" + video_object_or_video_file_name + "' alt='" + video_object_or_video_file_name + "'/>"
+                original_html = "<video src='" + video_object_or_video_file_name + "' alt='" + video_object_or_video_file_name + "'/>"
             } else {
                 video_object = video_object_or_video_file_name;
             }
