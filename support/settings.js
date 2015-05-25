@@ -64,6 +64,8 @@ window.TOONTALK.SETTINGS =
             // no network responses to wait for
             settings_panel.appendChild(TT.UTILITIES.create_tabs(labels, tables));
         }
+        add_click_listeners(widget, local_files_table, true, settings_panel);
+        // and add them if the table is redrawn since it may be showing other files 
         $(local_files_table).on('draw.dt', function () {
             add_click_listeners(widget, local_files_table, false, settings_panel);
         });  
