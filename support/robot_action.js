@@ -164,9 +164,11 @@ window.TOONTALK.robot_action =
             if (robot.animate_consequences_of_actions()) {
                 copy = robot.get_recently_created_widget();
                 // ensure that newly created copy is visible
-                copy.set_visible(true);
-                TT.UTILITIES.copy_frontside_dimensions(widget, copy);
-                robot.update_display();
+                if (copy) {
+                    copy.set_visible(true);
+                    TT.UTILITIES.copy_frontside_dimensions(widget, copy);
+                    robot.update_display();
+                }
             }
             robot.run_next_step();
         };
