@@ -490,7 +490,7 @@ window.TOONTALK.robot = (function (TT) {
             return this;
         }
         clear_all_mismatch_displays = function (widget) {
-            if (widget.visible()) {
+            if (widget && widget.visible()) {
                 $(widget.get_frontside_element()).removeClass("toontalk-conditions-not-matched toontalk-conditions-waiting")
                                                  // clear all the mismatch displays from descendants
                                                  .find(".toontalk-conditions-not-matched, .toontalk-conditions-waiting").removeClass("toontalk-conditions-not-matched toontalk-conditions-waiting");
