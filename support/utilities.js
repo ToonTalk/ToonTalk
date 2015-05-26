@@ -500,8 +500,8 @@ window.TOONTALK.UTILITIES =
             left = page_x - (target_position.left + (drag_x_offset || 0));
             top  = page_y - (target_position.top  + (drag_y_offset || 0));
             utilities.set_css($source,
-                              {left: left,
-                               top:  top});
+                              {left: TT.UTILITIES.left_as_percent(left, $source.get(0)),
+                               top:  TT.UTILITIES.top_as_percent (top,  $source.get(0))});
             if (json_object && json_object.semantic.running && !utilities.get_dragee()) {
                 // JSON was dropped here from outside so if was running before should be here
                 // but not if just a local move
@@ -1730,18 +1730,30 @@ window.TOONTALK.UTILITIES =
         };
         
         utilities.set_position_is_absolute = function (element, absolute) {
-            var position, left, top, ancestor;
+            // this computes left and top as percentages since the parent may be scaled
+            // note that if scaled the upper left corner for drops is preserved
+            var left, top, parent_rectangle;
             if (absolute) {
-                position = $(element).position();
-                left = position.left;
-                top = position.top;
+                parent_rectangle = element.parentElement.getBoundingClientRect();
+                left = utilities.get_style_numeric_property(element, 'left');
+                top  = utilities.get_style_numeric_property(element, 'top');
                 utilities.set_css(element,
-                                  {left: left,
-                                   top: top,
+                                  {left: utilities.left_as_percent(left, element),
+                                   top:  utilities.top_as_percent (top,  element),
                                    position: "absolute"});
             } else {
                 element.style.position = "static";
             }
+        };
+
+        utilities.left_as_percent = function (left, element) {
+            var parent_rectangle = element.parentElement.getBoundingClientRect();
+            return 100*($(element.parentElement).offset().left+left-parent_rectangle.left)/parent_rectangle.width  + "%";
+        };
+
+        utilities.top_as_percent = function (top, element) {
+            var parent_rectangle = element.parentElement.getBoundingClientRect();
+            return 100*($(element.parentElement).offset().top+top-parent_rectangle.top)/parent_rectangle.height + "%";
         };
         
         utilities.ordinal = function (n) {

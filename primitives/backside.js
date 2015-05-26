@@ -786,6 +786,9 @@ window.TOONTALK.backside =
             var record_backside_widget_positions = function () {
                 var backside_widgets = widget.get_backside_widgets();
                 var backside_widgets_json_views = widget.get_backside_widgets_json_views(true);
+                var backside_dimensions = this.get_backside_dimensions();
+                var x_scale = backside_dimensions ? backside_dimensions.x_scale : 1;
+                var y_scale = backside_dimensions ? backside_dimensions.y_scale : 1;
                 var backside_widget_side_element;
                 backside_widgets.forEach(function (backside_widget_side, index) {
                     var backside_widget = backside_widget_side.get_widget();
@@ -802,15 +805,15 @@ window.TOONTALK.backside =
                             position = $(backside_widget_side_element).position();
                         }
                         if (backside_widget_side.is_backside()) {
-                            backside_widgets_json_views[index].backside_left = position.left;
-                            backside_widgets_json_views[index].backside_top  = position.top;
+                            backside_widgets_json_views[index].backside_left = TT.UTILITIES.left_as_percent(position.left, backside_widget_side_element);
+                            backside_widgets_json_views[index].backside_top  = TT.UTILITIES.top_as_percent (position.top,  backside_widget_side_element);
                         } else {
-                            backside_widgets_json_views[index].frontside_left = position.left;
-                            backside_widgets_json_views[index].frontside_top  = position.top;                               
+                            backside_widgets_json_views[index].frontside_left = TT.UTILITIES.left_as_percent(position.left, backside_widget_side_element);
+                            backside_widgets_json_views[index].frontside_top  = TT.UTILITIES.top_as_percent (position.top,  backside_widget_side_element);                             
                         }
                     }
                 });
-            };
+            }.bind(this);
             var parent_of_backside = widget.get_parent_of_backside();
             var container_widget;
             TT.UTILITIES.remove_highlight();
