@@ -1752,15 +1752,16 @@ window.TOONTALK.UTILITIES =
                 return left;
             }
             parent_rectangle = element.parentElement.getBoundingClientRect();
-            return 100*($(element.parentElement).offset().left+left-parent_rectangle.left)/parent_rectangle.width  + "%";
+            return 100*($(element.parentElement).offset().left-window.scrollX+left-parent_rectangle.left)/parent_rectangle.width  + "%";
         };
 
         utilities.top_as_percent = function (top, element) {
             var parent_rectangle;
             if (!element.parentElement) {
                 return top;
-            }parent_rectangle = element.parentElement.getBoundingClientRect();
-            return 100*($(element.parentElement).offset().top+top-parent_rectangle.top)/parent_rectangle.height + "%";
+            }
+            parent_rectangle = element.parentElement.getBoundingClientRect();
+            return 100*($(element.parentElement).offset().top+-window.scrollY+top-parent_rectangle.top)/parent_rectangle.height + "%";
         };
         
         utilities.ordinal = function (n) {
