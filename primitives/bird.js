@@ -1213,6 +1213,9 @@ window.TOONTALK.nest = (function (TT) {
                     // timeout needed when loading otherwise something resets the width and height
                     TT.UTILITIES.set_timeout(function () {
                             var contents_dimension = this.get_contents_dimensions();
+                            if (!contents_dimension) {
+                                return;
+                            }
                             TT.UTILITIES.set_css(contents_side_element,
                                                  {width:  contents_dimension.width,
                                                   height: contents_dimension.height,
@@ -1270,6 +1273,9 @@ window.TOONTALK.nest = (function (TT) {
             var width  = TT.nest.CONTENTS_WIDTH_FACTOR *nest_width;
             var height = TT.nest.CONTENTS_HEIGHT_FACTOR*nest_height;
             var top_contents_widget = contents[0];
+            if (!top_contents_widget) {
+                return;
+            }
             // loggically border_adjustment should be twice the border_size since there are two borders
             // but once looks better for boxes
             // the underlying problem is that the border width depends upon the size which in turn depends upon the border-width
