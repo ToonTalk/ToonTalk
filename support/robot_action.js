@@ -690,6 +690,9 @@ window.TOONTALK.robot_action =
             new_action.run_watched = function (context, top_level_context, robot) {
                 var referenced = TT.path.dereference_path(path, context, top_level_context, robot); 
                 var continuation = function () {
+                    if (robot.stopped()) {
+                        return;
+                    }
                     if (!additional_info) {
                         additional_info = {};
                     }
