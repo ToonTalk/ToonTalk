@@ -283,7 +283,7 @@ window.TOONTALK.bird = (function (TT) {
             }
             if (!target_offset) {
                 // offscreen to the left at vertical center of top-level backside
-                target_offset = {left: -message_element.clientWidth,
+                target_offset = {left: -2*message_element.clientWidth,
                                  top:  top_level_backside_element_bounding_box.top+$top_level_backside_element.height()/2};
             }
             // save some state before clobbering it
