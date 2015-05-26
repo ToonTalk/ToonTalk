@@ -24,7 +24,9 @@ window.TOONTALK.tool = (function (TT) {
                     tool.set_held(true);
                 }
                 tool_height = bounding_rect.height;
-                event.preventDefault();
+                if (event) {
+                    event.preventDefault();
+                }
                 $(element).addClass("toontalk-tool-held");
                 home_position = $(element).offset();
                 document.addEventListener('mousemove',  mouse_move);
