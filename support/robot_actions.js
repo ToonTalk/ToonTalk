@@ -244,7 +244,7 @@ window.TOONTALK.actions =
                     // pause between steps and give the previous step a chance to update the DOM     
                     setTimeout(function () {
                             robot.run_watched_step_end_listeners();
-                            if (step_number < steps.length) {
+                            if (step_number < steps.length && !robot.stopped()) {
                                 var step = steps[step_number];
                                 step_number++;
                                 if (TT.logging && TT.logging.indexOf('event') >= 0) {           

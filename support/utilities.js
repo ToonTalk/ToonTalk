@@ -65,6 +65,9 @@ window.TOONTALK.UTILITIES =
             utilities.report_internal_error("Possible bug that " + dragee + " doesn't have a known owner.");
             dragee = $(element);
         }
+        if (widget.set_stopped) {
+            widget.set_stopped(true);
+        }
         if (widget.save_dimensions && (!widget.get_parent_of_frontside() || widget.get_parent_of_frontside().get_widget().is_top_level())) {
             widget.save_dimensions();
         }
@@ -111,14 +114,16 @@ window.TOONTALK.UTILITIES =
                 // restore ordinary size styles
                 var json_object = dragee.data("json");
                 if (json_object) {
-                    dragee.css({width:  json_object.view.frontside_width,
-                                height: json_object.view.frontside_height});
+                    utilities.set_css(dragee,
+                                      {width:  json_object.view.frontside_width,
+                                       height: json_object.view.frontside_height});
                 }
             } else if (!dragee.parent().is(".toontalk-top-level-resource, .toontalk-drop-area, .toontalk-json") &&
                        !dragee.is(".toontalk-carried-by-bird, .toontalk-element-attribute, .toontalk-function-bird-documentation-bird") &&
                        !utilities.has_animating_image(dragee.get(0))) {
-                dragee.css({width:  "100%",
-                            height: "100%"});
+                utilities.set_css(dragee,
+                                  {width:  "100%",
+                                   height: "100%"});
             }
         }
         drag_ended();
@@ -254,8 +259,9 @@ window.TOONTALK.UTILITIES =
                 // dropped of itself or dropped on a part of itself
                 // just moved it a little bit
                 // only called now that elementFromPoint is used to find another target when dropped on part of itself
-                $source.css({left: $source.get(0).offsetLeft + (event.layerX - drag_x_offset),
-                              top: $source.get(0).offsetTop  + (event.layerY - drag_y_offset)});
+                utilities.set_css($source,
+                                  {left: $source.get(0).offsetLeft + (event.layerX - drag_x_offset),
+                                   top: $source.get(0).offsetTop  + (event.layerY - drag_y_offset)});
                 event.stopPropagation();
                 return;
             }
@@ -281,8 +287,9 @@ window.TOONTALK.UTILITIES =
                         if ($target.is(".toontalk-backside")) {
                             // if original dimensions available via json_object.view use it
                             // otherwise copy size of infinite_stack
-                            $source.css({width:  json_object.view.frontside_width  || width,
-                                         height: json_object.view.frontside_height || height});
+                            utilities.set_css($source,
+                                              {width:  json_object.view.frontside_width  || width,
+                                               height: json_object.view.frontside_height || height});
                         }
                     } else if (container.removed_from_container) {
                         // can be undefined if container is a robot holding something
@@ -337,11 +344,12 @@ window.TOONTALK.UTILITIES =
             source_is_backside = json_object.view.backside;
             if (source_is_backside) {
                 $source = $(source_widget.get_backside_element());
-                $source.css({width: json_object.view.backside_width,
-                             height: json_object.view.backside_height,
-                             // color may be undefined
-                             "background-color": json_object.view.background_color,
-                             "border-width": json_object.view.border_width});
+                utilities.set_css($source,
+                                  {width: json_object.view.backside_width,
+                                   height: json_object.view.backside_height,
+                                   // color may be undefined
+                                   "background-color": json_object.view.background_color,
+                                   "border-width": json_object.view.border_width});
                 source_widget.apply_backside_geometry();
             } else {
                 $source = $(source_widget.get_frontside_element());
@@ -441,7 +449,7 @@ window.TOONTALK.UTILITIES =
                           width:  width,
                           height: height};
                    utilities.constrain_css_to_fit_inside(top_level_element, css);
-                   $(element_of_backside_widget).css(css);
+                   utilities.set_css(element_of_backside_widget, css);
                    if (backside_widget_side.is_backside()) {
                        widget.backside_geometry = json_view.backside_geometry;
                        widget.apply_backside_geometry();
@@ -483,15 +491,17 @@ window.TOONTALK.UTILITIES =
                        x_offset = Math.min(60, width/2);
                        y_offset = Math.min(30, height/2);  
                    }
-                   $source.css({left: left-x_offset,
-                                top:  top -y_offset}); 
+                   utilities.set_css($source,
+                                     {left: left-x_offset,
+                                      top:  top -y_offset}); 
               },
               50);
             }
             left = page_x - (target_position.left + (drag_x_offset || 0));
             top  = page_y - (target_position.top  + (drag_y_offset || 0));
-            $source.css({left: left,
-                         top:  top});
+            utilities.set_css($source,
+                              {left: TT.UTILITIES.left_as_percent(left, $source.get(0)),
+                               top:  TT.UTILITIES.top_as_percent (top,  $source.get(0))});
             if (json_object && json_object.semantic.running && !utilities.get_dragee()) {
                 // JSON was dropped here from outside so if was running before should be here
                 // but not if just a local move
@@ -531,9 +541,9 @@ window.TOONTALK.UTILITIES =
             }
             top_level_element.appendChild($source.get(0));
             top_level_backside_position = $(top_level_element).offset();
-            $source.css({
-                left: page_x - (top_level_backside_position.left + drag_x_offset),
-                top:  page_y - (top_level_backside_position.top  + drag_y_offset)}
+            utilities.set_css($source,
+                              {left: page_x - (top_level_backside_position.left + drag_x_offset),
+                               top:  page_y - (top_level_backside_position.top  + drag_y_offset)}
             );
             if (source_widget.drop_on && source_widget.drop_on(target_widget, source_is_backside, event)) {
             } else if (target_widget.widget_dropped_on_me && target_widget.widget_dropped_on_me(source_widget, source_is_backside, event)) {
@@ -934,10 +944,10 @@ window.TOONTALK.UTILITIES =
                         if (json_semantic.type === 'element') {
                             // delay until updated
                             widget.on_update_display(function () {
-                                                         $(side_element).css(size_css);
+                                                         utilities.set_css(side_element, size_css);
                                                      });
                         } else {
-                            $(side_element).css(size_css);
+                            utilities.set_css(side_element, size_css);;
                         }
                     }
                 }
@@ -1569,13 +1579,14 @@ window.TOONTALK.UTILITIES =
                             backside = widget.get_backside(true);
                             backside_element = backside.get_element();
                             $(element).replaceWith(backside_element);
-                            $(backside_element).css({width: json.view.backside_width,
-                                                     height: json.view.backside_height,
-                                                     // color may be undefined
-                                                     // do the following in a more general manner
-                                                     // perhaps using additional classes?
-                                                     "background-color": json.view.background_color,
-                                                     "border-width": json.view.border_width});
+                            utilities.set_css(backside_element,
+                                              {width:  json.view.backside_width,
+                                               height: json.view.backside_height,
+                                               // color may be undefined
+                                               // do the following in a more general manner
+                                               // perhaps using additional classes?
+                                               "background-color": json.view.background_color,
+                                               "border-width":     json.view.border_width});
                         } else {
                             // TODO: determine why both levels have the same class here
                             $(element).addClass("toontalk-top-level-resource toontalk-top-level-resource-container");
@@ -1619,9 +1630,10 @@ window.TOONTALK.UTILITIES =
                 top  -= ancestor_position.top;
                 $ancestor = $ancestor.parent();
             }
-            $element.css({left: left,
-                          top:  top,
-                          position: "absolute"});
+            utilities.set_css($element,
+                              {left: left,
+                               top:  top,
+                               position: "absolute"});
             if ($element.is(".toontalk-side-animating")) {
                 // animation doesn't work with JQuery css
                 $element.get(0).style.left = left+"px";
@@ -1657,9 +1669,10 @@ window.TOONTALK.UTILITIES =
                     top = 0;
                 }
             }
-            $element.css({left: left,
-                          top:  top,
-                          position: "absolute"});
+            utilities.set_css($element,
+                              {left: left,
+                               top:  top,
+                               position: "absolute"});
             if ($element.is(".toontalk-side-animating")) {
                 // animation doesn't work with JQuery css
                 $element.get(0).style.left = left+"px";
@@ -1678,12 +1691,15 @@ window.TOONTALK.UTILITIES =
                 // restore original
                 dropped_copy = dropped_widget.copy({fresh_copy: true}); // nest copies should be fresh - not linked
                 dropped_element_copy = dropped_copy.get_frontside_element();
-                $(dropped_element_copy).css({width:  $dropped.width(),
-                                             height: $dropped.height()});
+                utilities.set_css(dropped_element_copy,
+                                  {width:  $dropped.width(),
+                                   height: $dropped.height()});
                 $dropped.parent().removeClass("toontalk-top-level-resource toontalk-top-level-resource-container");
                 $dropped.removeClass("toontalk-top-level-resource toontalk-top-level-resource-container");
+                // elements are relative only when outside of ToonTalk (e.g. a resource on the page)
                 $(dropped_element_copy).addClass("toontalk-top-level-resource toontalk-top-level-resource-container")
                                        .css({position: 'relative'});
+                $dropped.css({position: 'absolute'});
                 $dropped.get(0).parentElement.appendChild(dropped_element_copy);
                 TT.DISPLAY_UPDATES.pending_update(dropped_copy);
                 if (dropped_widget.set_active) {
@@ -1714,17 +1730,38 @@ window.TOONTALK.UTILITIES =
         };
         
         utilities.set_position_is_absolute = function (element, absolute) {
-            var position, left, top, ancestor;
+            // this computes left and top as percentages since the parent may be scaled
+            // note that if scaled the upper left corner for drops is preserved
+            var left, top, parent_rectangle;
             if (absolute) {
-                position = $(element).position();
-                left = position.left;
-                top = position.top;
-                $(element).css({left: left,
-                                 top: top,
-                                 position: "absolute"});
+                parent_rectangle = element.parentElement.getBoundingClientRect();
+                left = utilities.get_style_numeric_property(element, 'left');
+                top  = utilities.get_style_numeric_property(element, 'top');
+                utilities.set_css(element,
+                                  {left: utilities.left_as_percent(left, element),
+                                   top:  utilities.top_as_percent (top,  element),
+                                   position: "absolute"});
             } else {
                 element.style.position = "static";
             }
+        };
+
+        utilities.left_as_percent = function (left, element) {
+            var parent_rectangle;
+            if (!element.parentElement) {
+                return left;
+            }
+            parent_rectangle = element.parentElement.getBoundingClientRect();
+            return 100*($(element.parentElement).offset().left-window.scrollX+left-parent_rectangle.left)/parent_rectangle.width  + "%";
+        };
+
+        utilities.top_as_percent = function (top, element) {
+            var parent_rectangle;
+            if (!element.parentElement) {
+                return top;
+            }
+            parent_rectangle = element.parentElement.getBoundingClientRect();
+            return 100*($(element.parentElement).offset().top+-window.scrollY+top-parent_rectangle.top)/parent_rectangle.height + "%";
         };
         
         utilities.ordinal = function (n) {
@@ -1821,7 +1858,7 @@ window.TOONTALK.UTILITIES =
                                }
                                position.left = Math.max(position.left, window.scrollX);
                                position.top  = Math.max(position.top,  window.scrollY);
-                               $(this).css(position);
+                               utilities.set_css(this, position);
                                feedback_horizontal = feedback.horizontal;
                                feedback_vertical   = feedback.vertical;
                      }},
@@ -2600,8 +2637,9 @@ window.TOONTALK.UTILITIES =
             if (from_frontside_element) {
                 to_frontside_element = to_widget.get_frontside_element(true);
                 if (to_frontside_element) {
-                    $(to_frontside_element).css({width:  $(from_frontside_element).width(),
-                                                 height: $(from_frontside_element).height()});
+                    utilities.set_css(to_frontside_element,
+                                      {width:  $(from_frontside_element).width(),
+                                       height: $(from_frontside_element).height()});
                 }
             }
         };
@@ -2644,9 +2682,9 @@ window.TOONTALK.UTILITIES =
                     }
                 }
                 utilities.add_transform_to_css((other_transforms || "") + " scale(" + x_scale + ", " + y_scale + ")",
-                                                  translate,
-                                                  pending_css,
-                                                  transform_origin_center);  
+                                               translate,
+                                               pending_css,
+                                               transform_origin_center);  
                 pending_css.width =  original_width,
                 pending_css.height = original_height;
 //                 if (pending_css["transform-origin"] === "center center") {
@@ -2658,7 +2696,7 @@ window.TOONTALK.UTILITIES =
 //                         pending_css.top -= (original_height-new_height)/2;
 //                     }
 //                 }
-                $(element).css(pending_css);
+                utilities.set_css(element, pending_css);
             };
             var x_scale, y_scale;
             if (!original_width) {
@@ -2703,7 +2741,7 @@ window.TOONTALK.UTILITIES =
                    css["transform-origin"] = "left top";
                 }
             }
-            transform += translate;
+            transform = translate+transform;
             utilities.set_css_transform(css, transform);
         };
 
@@ -2766,9 +2804,10 @@ window.TOONTALK.UTILITIES =
             $(element).addClass("toontalk-not-observable");
             document.body.appendChild(element);
             if (recompute) {
-                $(element).css({width:     '',
-                                height:    '',
-                                transform: ''});
+                utilities.set_css(element,
+                                  {width:     '',
+                                   height:    '',
+                                   transform: ''});
             }
             check_if_dimensions_known(1);
         };
@@ -2800,9 +2839,10 @@ window.TOONTALK.UTILITIES =
         
         utilities.add_animation_class = function (element, class_name) {
             // if any code set the size explicitly then the animation won't display correctly
-            $(element).css({width:  '',
-                            height: ''})
-                      .addClass(class_name);
+            utilities.set_css(element,
+                               {width:  '',
+                                height: ''});
+            $(element).addClass(class_name);
         };
         
         utilities.widget_from_jquery = function ($element) {
@@ -3255,6 +3295,11 @@ window.TOONTALK.UTILITIES =
                }
            });
            return utilities.widget_of_element(best_so_far);
+       };
+
+       utilities.set_css = function (element, css) {
+           // this is mostly useful debugging computed CSS problems since can break here
+           $(element).css(css);
        };
 
 //         enable_touch_events = function (maximum_click_duration) {

@@ -110,10 +110,23 @@ window.TOONTALK.vacuum = (function (TT) {
                     // save a copy for restoring since the following clobbers the original -- e.g. removing contents from boxes
                     copy = widget_side.copy();
                     copy.save_dimensions_of(widget_side);
+                    // inactive any active sensors but need to re-activate if restored
+                    copy.this_and_walk_children(function (child) {
+                        if (child.is_sensor() && child.get_active()) {
+                            child.set_active('temporarily false');
+                        }
+                        return true;
+                    });
                     removed_items.push(copy);
                     if (widget_side.set_running) {
                         widget_side.set_running(false);
                     }
+                    widget_side.this_and_walk_children(function (child) {
+                        if (child.is_sensor() && child.get_active()) {
+                            child.set_active(false);
+                        }
+                        return true;
+                    });
                     widget_side.remove(event);
                 };
                 var restoring, initial_location, restored_front_side_element, new_erased, top_level_backside, backside_widgets;
@@ -149,6 +162,12 @@ window.TOONTALK.vacuum = (function (TT) {
                         initial_location = $(element).offset();
                         initial_location.left -= $(restored_front_side_element).width(); // left of vacuum
                         TT.UTILITIES.set_absolute_position($(restored_front_side_element), initial_location);
+                        restoring.this_and_walk_children(function (child) {
+                            if (child.is_sensor()) {
+                                child.restore_active();
+                            }
+                            return true;
+                        });
                         if (TT.sounds) {
                             TT.sounds.vacuum_spit.play();
                         }

@@ -50,10 +50,10 @@ window.TOONTALK.robot_action =
                      }
                      TT.UTILITIES.report_internal_error("Thing in robot's hand (" + thing_in_hand + ") doesn't handle 'drop_on'. Robot that " + robot);
                  } else {
-                    TT.UTILITIES.report_internal_error("The robot that '" + robot.toString() + "' is executing drop_on but has nothing in its hand.");
+                     TT.UTILITIES.report_internal_error("The robot that '" + robot.toString() + "' is executing drop_on but has nothing in its hand.");
                  }
              } else {
-                TT.UTILITIES.report_internal_error("The robot that '" + robot.toString() + "' is executing drop_on but doesn't know where to drop what its holding");
+                 TT.UTILITIES.report_internal_error("The robot that '" + robot.toString() + "' is executing drop_on but doesn't know where to drop what its holding");
              }
          },
          "drop it on the text area of": function (target, context, top_level_context, robot, additional_info) {
@@ -164,9 +164,11 @@ window.TOONTALK.robot_action =
             if (robot.animate_consequences_of_actions()) {
                 copy = robot.get_recently_created_widget();
                 // ensure that newly created copy is visible
-                copy.set_visible(true);
-                TT.UTILITIES.copy_frontside_dimensions(widget, copy);
-                robot.update_display();
+                if (copy) {
+                    copy.set_visible(true);
+                    TT.UTILITIES.copy_frontside_dimensions(widget, copy);
+                    robot.update_display();
+                }
             }
             robot.run_next_step();
         };
@@ -690,6 +692,9 @@ window.TOONTALK.robot_action =
             new_action.run_watched = function (context, top_level_context, robot) {
                 var referenced = TT.path.dereference_path(path, context, top_level_context, robot); 
                 var continuation = function () {
+                    if (robot.stopped()) {
+                        return;
+                    }
                     if (!additional_info) {
                         additional_info = {};
                     }
