@@ -628,7 +628,7 @@ window.TOONTALK.number = (function () {
                 font_size *= Math.max(1, max_characters) / 4;
                 max_characters = 4;
             }
-            return '<div class="toontalk-number toontalk-decimal' + extra_class + '" style="font-size: ' + font_size + 'px;">' + operator_HTML + this.decimal_string(max_characters, font_size) + '</div>';
+            return '<div class="toontalk-number toontalk-decimal toontalk-top-level-decimal' + extra_class + '" style="font-size: ' + font_size + 'px;">' + operator_HTML + this.decimal_string(max_characters, font_size) + '</div>';
         }
         if (format === 'scientific_notation') {
             negative = bigrat.isNegative(this.get_value());
@@ -659,7 +659,8 @@ window.TOONTALK.number = (function () {
             }
             return '<table class="toontalk-number toontalk-scientific_notation' + extra_class + '"' + table_style + '>' +
                    '<tr><td class="toontalk-number toontalk-significand-of-scientific-notation">' +
-                   '<div class="toontalk-number toontalk-decimal' + extra_class + '" style="font-size: ' + font_size + 'px;">' +
+                   // mulitply by .9 since otherwise the number obscures some of the number border
+                   '<div class="toontalk-number toontalk-decimal' + extra_class + '" style="font-size: ' + font_size*.9 + 'px;">' +
                    operator_HTML + integer_digit + decimal_part +
                    '</td><td class="toontalk-number toontalk-exponent-of-scientific-notation">' +
                    '<div style="font-size: ' + font_size + 'px;">' +
