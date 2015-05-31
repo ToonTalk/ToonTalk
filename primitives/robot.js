@@ -415,7 +415,7 @@ window.TOONTALK.robot = (function (TT) {
         };      
         if (TT.debugging || TT.logging) {
             new_robot.to_debug_string = function () {
-                return " (" + (this.get_description() || "") + " " + this.get_name() + ")";
+                return "Robot (" + (this.get_description() || "") + " " + this.get_name() + ") runs if " + this.get_frontside_conditions();
             };
         }
         if (next_robot) {
