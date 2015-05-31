@@ -734,6 +734,7 @@ window.TOONTALK.UTILITIES =
                      drop:          create_sound("BOOK_DROP.WAV"),
                      magic:         create_sound("MAGIC.WAV"),
                      fall_inside:   create_sound("FALL_INSIDE.WAV"),
+                     click:         create_sound("TYPE.WAV"),
                      event_ignored: create_sound("PLOP.WAV")};
         TT.sounds.bird_fly.loop = true;
     };

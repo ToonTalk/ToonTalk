@@ -31,6 +31,9 @@ window.TOONTALK.vacuum = (function (TT) {
         var set_mode = function (new_value) {
             if (mode !== new_value) {
                 mode = new_value;
+                if (TT.sounds) {
+                    TT.sounds.click.play();
+                }
                 $(element).removeClass(mode_class);
                 mode_class = mode_classes[mode];
                 $(element).addClass(mode_class);
