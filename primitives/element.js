@@ -151,6 +151,14 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                         html = html.substring(0, anchor_start) + target_blank + html.substring(anchor_start);
                     }
                 }
+                if (html.indexOf("data:image") === 0) {
+                    html = "<image src='" + html + "'>";
+                } else if (html.indexOf("data:audio") === 0) {
+                    html = "<audio src='" + html + "'>";
+                } else if (html.indexOf("data:video") === 0) {
+                    html = "<video src='" + html + "'>";
+                }
+                // TODO: support data: text, uuencoded text, and HTML
                 return html;
             }.bind(this);
             if (!frontside_element) {
