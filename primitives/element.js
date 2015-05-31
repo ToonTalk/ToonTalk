@@ -173,7 +173,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             if (this.is_plain_text_element()) {
                 // the following is necessary so that when placed in boxes
                 // and is scaled to fit it doesn't change its line breaks
-                // not that don't want to set the html instance variable
+                // note that don't want to set the html instance variable
                 frontside_element.innerHTML = html.replace(/ /g, "&nbsp;");
             } else {
                 frontside_element.innerHTML = html; // until re-rendered
@@ -519,7 +519,12 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         };
         new_element.is_plain_text_element = function () {
             var html = this.get_HTML();
-            return html && html[0] !== '<' && html[html.length-1] !== '>';
+            var element_start;
+            // is not plain text if it contains <x ... where x is a character
+            if (!html) {
+                return;
+            }
+            return !html.match(/<\w/);
         };
         new_element.compute_original_dimensions = function (recompute) {
             TT.UTILITIES.original_dimensions(this, 
