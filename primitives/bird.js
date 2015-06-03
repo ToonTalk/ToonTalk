@@ -746,7 +746,7 @@ window.TOONTALK.nest = (function (TT) {
         new_nest.add_to_contents = function (widget_side, event, robot, delivery_bird, ignore_copies) {
             var current_non_empty_listeners, widget_side_copy;
             var stack_size = contents.push(widget_side);
-            if (stack_size > nest.maximum_capacity && !robot.visible() && !this.visible()) {
+            if (stack_size > nest.maximum_capacity && robot && !robot.visible() && !this.visible()) {
                 // if robot or nest is visible let it keep running even if nest goes over capactity
                 if (TT.logging && TT.logging.indexOf("nest") >= 0) {
                     console.log(this.to_debug_string() + " postponing addition of " + widget_side.to_debug_string() +
