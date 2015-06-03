@@ -914,6 +914,7 @@ window.TOONTALK.UTILITIES =
                 try {
                     widget = TT.creators_from_json[json_semantic.type](json_semantic, additional_info);
                 } catch (e) {
+                    console.error(e.stack);
                     utilities.report_internal_error("Unable to recreate a " + json_semantic.type + ". Error is " + e); 
                 }
                // following was needed when get_json_top_level wasn't working properly
