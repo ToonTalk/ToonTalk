@@ -101,6 +101,7 @@ window.TOONTALK.sensor = (function (TT) {
             if (visible) {
                 delivery_bird = TT.bird.create(new_sensor);
                 new_sensor.add_to_top_level_backside(delivery_bird);
+                value_widget.render();
                 // comes from the bottom center
                 delivery_bird.animate_delivery_to(value_widget, new_sensor, new_sensor, $top_level_backside.width()/2, $top_level_backside.height());
             } else {
