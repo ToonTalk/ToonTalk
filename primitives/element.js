@@ -1055,9 +1055,17 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
            // else is a plain string so quote it
            return '"' + html + '"';
         };
-        var description = to_string_info && (to_string_info.role === "conditions" || to_string_info.plain_text) ?
-                          '"' + this.get_text() + '"':
-                          scale_or_quote_html(this.get_HTML());
+        var description;
+        if (to_string_info) {
+            if (to_string_info.role === "conditions" || to_string_info.plain_text) {
+               description =  '"' + this.get_text() + '"';
+            } else if (to_string_info.for_json_div) {
+                // don't risk confusing things with a comment based upon an HTML element
+               return "";
+            }
+        } else {
+            description = scale_or_quote_html(this.get_HTML());
+        }            
         return "the element " + description;
     };
     
