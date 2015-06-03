@@ -81,7 +81,7 @@ window.TOONTALK.sensor = (function (TT) {
             var describe_attributes = function () {
                 return attributes.map(function (attribute, index) {
                                           if (index === attributes.length-2) {
-                                              return attribute + ", and ";
+                                              return attribute + " and ";
                                           } else if (index === attributes.length-1) {
                                               return attribute;
                                           }
