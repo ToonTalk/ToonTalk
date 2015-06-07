@@ -192,6 +192,9 @@ window.TOONTALK.sensor = (function (TT) {
             }
             active = new_value;
         };
+        new_sensor.set_running = function (new_value) {
+            this.set_active(new_value);
+        };
         new_sensor.set_active(active, true);
         new_sensor.create_backside = function () {
             return TT.sensor_backside.create(this);
