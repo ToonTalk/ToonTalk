@@ -3301,6 +3301,9 @@ window.TOONTALK.UTILITIES =
 
        utilities.set_css = function (element, css) {
            // this is mostly useful debugging computed CSS problems since can break here
+           if (!css) {
+               return;
+           }
            $(element).css(css);
        };
 
