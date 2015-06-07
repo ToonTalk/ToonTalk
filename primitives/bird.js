@@ -337,6 +337,15 @@ window.TOONTALK.bird = (function (TT) {
                 var set_down_message_continuation = function () {
                         var fly_to_nest_continuation = function () {
                             // no other bird should do this once this one begins to fly to the nest to move its contents
+                            if (!nest.visible()) {
+                                // been hidden since this bird started delivery
+                                nest_recieving_message.add_to_contents(message_side, event, robot, this, true);
+                                if (after_delivery_continuation) {
+                                    after_delivery_continuation();
+                                    after_delivery_continuation = undefined;
+                                }
+                                return;
+                            }
                             nest_recieving_message.set_locked(true);
                             this.fly_to(nest_offset, move_nest_contents_continuation, robot, delay_between_steps);
                         }.bind(this);
@@ -662,7 +671,7 @@ window.TOONTALK.nest = (function (TT) {
         var non_empty_listeners = [];
         var nest_under_capacity_listeners = [];
         var waiting_widgets     = [];
-        var nest_copies, generic_set_name;
+        var nest_copies, generic_set_name, generic_set_visible;
         if (!contents) {
             contents = [];
         }
@@ -1381,6 +1390,13 @@ window.TOONTALK.nest = (function (TT) {
         new_nest.compare_with_box   = new_nest.compare_with_number;
         new_nest.compare_with_scale = new_nest.compare_with_number;
         new_nest.add_standard_widget_functionality(new_nest);
+        generic_set_visible = new_nest.set_visible;
+        new_nest.set_visible = function (new_value) {
+            generic_set_visible.call(this, new_value);
+            if (!new_value) {
+                this.set_locked(false);
+            }
+        };
         new_nest.set_description(description);
         if (TT.debugging) {
             new_nest._debug_id = TT.UTILITIES.generate_unique_id();
