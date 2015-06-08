@@ -2879,6 +2879,7 @@ window.TOONTALK.UTILITIES =
             var alert_element = utilities.create_alert_element(message);
             $(".toontalk-alert-element").remove(); // remove any pre-existing alerts
             console.log(message);
+            console.trace();
             document.body.insertBefore(alert_element, document.body.firstChild);
             setTimeout(function () {
                            $(alert_element).remove();
