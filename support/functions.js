@@ -52,24 +52,31 @@ window.TOONTALK.create_function_table =
         this.process_response(response, box_size_and_bird.bird, message, event, robot);
         return response;
     },
-    number_check: function (widget, function_name, index) {
+    type_check: function (type, widget, function_name, index) {
         var top_contents;
+        if (!type) {
+            // any type is fine
+            return true;
+        }
         if (!widget) {
-            TT.UTILITIES.display_message("Birds for the " + function_name + " function can only respond to boxes with a number in the " + 
+            TT.UTILITIES.display_message("Birds for the " + function_name + " function can only respond to boxes with " + TT.UTILITIES.add_a_or_an(type) + " in the " + 
                                           TT.UTILITIES.ordinal(index) + " hole. The " + TT.UTILITIES.ordinal(index) + " hole is empty.");
             return false;
         }
-        if (widget.dereference().is_number()) {
+        if (widget.dereference().is_of_type(type)) {
             return true;
         }
         if (widget.is_nest()) {
             // throw empty nest so can suspend this until nest is covered
             throw {wait_for_nest_to_receive_something: widget};
         }
-        TT.UTILITIES.display_message("Birds for the " + function_name + " function can only respond to boxes with a number in the " + 
+        TT.UTILITIES.display_message("Birds for the " + function_name + " function can only respond to boxes with " + TT.UTILITIES.add_a_or_an(type) + " in the " + 
                                      TT.UTILITIES.ordinal(index) + " hole. The " + TT.UTILITIES.ordinal(index) + 
                                      " hole contains " + TT.UTILITIES.add_a_or_an(widget.get_type_name() + "."));
         return false;
+    },
+    number_check: function (widget, function_name, index) {
+        return type_check('number', widget, function_name, index);
     },
     n_ary_widget_function: function (message, zero_ary_value_function, binary_operation, function_name, event, robot) { 
         // binary_operation is a function of two widgets that updates the first
@@ -121,6 +128,28 @@ window.TOONTALK.create_function_table =
         }.bind(this);
         return this.process_message(message, compute_response, event, robot);
     },
+    fixed_arity_function: function (message, bird_function, types, function_name, event, robot) { 
+        var compute_response = function (bird, box_size) {
+            var arity = types.length;
+            var next_widget, index, args, response;
+            if (box_size != arity+1) { // one for the bird
+                TT.UTILITIES.display_message("Birds for the " + function_name + " function can only respond to boxes with " + (minimum_arity+1) + " holes. Not " + box_size + " holes.");
+                return;
+            }
+            args = [];
+            index = 1;
+            while (index < box_size) {
+                next_widget = message.get_hole_contents(index).dereference();
+                if (!this.type_check(types[index-1], next_widget, function_name, index)) {
+                    return;
+                }
+                args.push(next_widget);
+                index++;
+            }
+            return bird_function.apply(null, args);
+        }.bind(this);
+        return this.process_message(message, compute_response, event, robot);
+    },
     numeric_javascript_function_to_widget_function: function (decimal_function, approximate, toDecimal) {
         // takes a function that returns a JavaScript number and
         // returns a function that converts the response into a widget
@@ -145,12 +174,21 @@ window.TOONTALK.create_function_table =
             return result;
         };
     },
-    add_function_object: function (name, respond_to_message, title, short_name) {
-        var get_description = function () {
-            return "If you give me a box with another bird and some numbers then " + 
-                   TT.UTILITIES.lower_case_first_letter(this.title) + 
-                   "\nOn my back side you can change me to compute other functions.";
-        };
+    add_function_object: function (name, respond_to_message, title, short_name, types) {
+        var get_description;
+        if (types) {
+            get_description = function () {
+                return "If you give me a box with another bird, " + TT.UTILITIES.conjunction(types, true) + " then " + 
+                       TT.UTILITIES.lower_case_first_letter(this.title) + 
+                       "\nOn my back side you can change me to compute other functions.";
+            };
+        } else {
+            get_description = function () {
+                return "If you give me a box with another bird and some numbers then " + 
+                       TT.UTILITIES.lower_case_first_letter(this.title) + 
+                       "\nOn my back side you can change me to compute other functions.";
+            };
+        }
         var to_string_function = function () {
             return TT.UTILITIES.add_a_or_an("'" + this.name + "' function bird");
         };

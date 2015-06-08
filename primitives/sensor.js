@@ -77,17 +77,7 @@ window.TOONTALK.sensor = (function (TT) {
             }
             var values = attribute_values(event);
             var visible = new_sensor.visible();
-            var $top_level_backside = $(new_sensor.get_frontside_element()).closest(".toontalk-top-level-backside");
-            var describe_attributes = function () {
-                return attributes.map(function (attribute, index) {
-                                          if (index === attributes.length-2) {
-                                              return attribute + " and ";
-                                          } else if (index === attributes.length-1) {
-                                              return attribute;
-                                          }
-                                          return attribute + ", ";
-                                      }).join("");
-            }
+            var $top_level_backside = $(new_sensor.get_frontside_element()).closest(".toontalk-top-level-backside");        
             var value_widget, frontside_element, delivery_bird;
             if (values.length === 1) {
                 value_widget = attribute_widget(values[0]);
@@ -95,7 +85,7 @@ window.TOONTALK.sensor = (function (TT) {
                 value_widget = TT.box.create(values.length,
                                              true,
                                              values.map(attribute_widget),
-                                             "the values of the " + describe_attributes() + " attributes of " + TT.UTILITIES.add_a_or_an(event_name) + " event.",
+                                             "the values of the " + TT.UTILITIES.conjunction(attributes) + " attributes of " + TT.UTILITIES.add_a_or_an(event_name) + " event.",
                                              attributes.join(";"));
             }     
             if (visible) {

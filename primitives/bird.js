@@ -20,9 +20,9 @@ window.TOONTALK.bird = (function (TT) {
     var add_function_choice = function (nest, backside, bird) {
         var type_name = nest.get_function_type();
         var function_object = nest.get_function_object();
-        var items = Object.keys(TOONTALK.number.function); 
+        var items = Object.keys(TOONTALK[type_name]['function']); 
         var item_titles = items.map(function (item) {
-            return TOONTALK.number.function[item].title;
+            return TOONTALK[type_name]['function'][item].title;
         });
         var select_menu = TT.UTILITIES.create_select_menu("functions",
                                                           items,

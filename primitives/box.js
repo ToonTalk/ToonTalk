@@ -1215,9 +1215,28 @@ window.TOONTALK.box_hole =
 
 window.TOONTALK.box.function = 
 (function () {
-    var functions = {};
-
-    return functions;
+    var functions = TT.create_function_table();
+    functions.add_function_object(
+        'box hole', 
+        function (message, event, robot) {
+            var get_hole_contents = function (number, box) {
+                var n = Math.round(number.to_float());
+                if (n < 1) {
+                    TT.UTILITIES.display_message("Box hole function bird cannot accept " + number + ". She only accepts positive numbers.");
+                    return;
+                }
+                if (n > box.get_size()) {
+                    TT.UTILITIES.display_message("Box hole function bird cannot accept " + number + ". The box only has " + box.get_size() + " holes.");
+                    return;
+                }
+                return box.get_hole_contents(n-1);
+            };
+            return functions.fixed_arity_function(message, get_hole_contents, ['number', 'box'], 'box hole', event, robot);
+        },
+        "The bird will return with what is in a hole of the box. The number determines which hole's contents are returned. 1 for the first hole.",
+        "hole",
+        ['number', 'box']);
+    return functions.get_function_table();
 }
 ());
 

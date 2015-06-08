@@ -3319,6 +3319,19 @@ window.TOONTALK.UTILITIES =
            return result;
        };
 
+       utilities.conjunction = function (list, add_a_or_an) {
+           // turns a list into an English conjunction
+           return list.map(function (element, index) {
+                               var item = add_a_or_an ? utilities.add_a_or_an(element) : element;
+                               if (index === list.length-2) {
+                                   return item + " and ";
+                               } else if (index === list.length-1) {
+                                   return item;
+                               }
+                               return item + ", ";
+                           }).join("");
+       };
+
 //         enable_touch_events = function (maximum_click_duration) {
 //             // based on ideas in http://stackoverflow.com/questions/5186441/javascript-drag-and-drop-for-touch-devices/6362527#6362527
 //             var last_touch_down_time;
