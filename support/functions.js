@@ -76,7 +76,7 @@ window.TOONTALK.create_function_table =
         return false;
     },
     number_check: function (widget, function_name, index) {
-        return type_check('number', widget, function_name, index);
+        return this.type_check('number', widget, function_name, index);
     },
     n_ary_widget_function: function (message, zero_ary_value_function, binary_operation, function_name, event, robot) { 
         // binary_operation is a function of two widgets that updates the first
