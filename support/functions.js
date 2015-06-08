@@ -40,7 +40,7 @@ window.TOONTALK.create_function_table =
             // following should not pass event through since otherwise it is recorded as if robot being trained did this
             bird.widget_dropped_on_me(response, false, undefined, robot, true, true);
         }
-        message.remove();
+        message.remove(undefined, true);
     },  
     process_message: function (message, compute_response, event, robot) {
         var response;
