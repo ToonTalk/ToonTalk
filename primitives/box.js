@@ -526,10 +526,18 @@ window.TOONTALK.box = (function (TT) {
                 }
             }.bind(this);
         var update_dimensions = function () {
-            box_width  = $(frontside_element).width()  || TT.box.get_default_width();
+            if (size === 0) {
+                box_width = 0;
+            } else {
+                box_width = $(frontside_element).width()  || TT.box.get_default_width();
+            }
             box_height = $(frontside_element).height() || TT.box.get_default_height();
             if (horizontal) {
-                hole_width  = box_width/size;
+                if (size === 0) {
+                    hole_width = 0;
+                } else {
+                    hole_width  = box_width/size;
+                }
                 hole_height = box_height;
             } else {
                 hole_width  = box_width;
@@ -587,6 +595,21 @@ window.TOONTALK.box = (function (TT) {
     };
 
     box.get_border_size = function (width, height) {
+        var frontside_width;
+        if (width === 0) {
+            // i.e. a zero-hole box
+            frontside_width =  $(this.get_frontside_element()).width();
+            if (frontside_width <= 16) {
+                return 4;
+            }
+            if (frontside_width <= 32) {
+                return 8;
+            }
+            if (frontside_width <= 64) {
+                return 16;
+            }
+            return 32;
+        }
         if (!width) {
             width  = $(this.get_frontside_element()).width();
         }
@@ -708,7 +731,7 @@ window.TOONTALK.box = (function (TT) {
     box.element_to_highlight = function (event) {
         var hole_index = this.which_hole(event, true);
         var hole, hole_contents;
-        if (hole_index < 0) {
+        if (hole_index < 0 || this.get_size() === 0) {
             // highlight the whole thing
             return this.get_frontside_element();
         }
