@@ -20,9 +20,9 @@ window.TOONTALK.bird = (function (TT) {
     var add_function_choice = function (nest, backside, bird) {
         var type_name = nest.get_function_type();
         var function_object = nest.get_function_object();
-        var items = Object.keys(TOONTALK.number.function); 
+        var items = Object.keys(TOONTALK[type_name]['function']); 
         var item_titles = items.map(function (item) {
-            return TOONTALK.number.function[item].title;
+            return TOONTALK[type_name]['function'][item].title;
         });
         var select_menu = TT.UTILITIES.create_select_menu("functions",
                                                           items,
@@ -50,7 +50,7 @@ window.TOONTALK.bird = (function (TT) {
         new_bird.is_bird = function () {
             return true;
         };
-        new_bird.widget_dropped_on_me = function (other, other_is_backside, event, robot, do_not_run_next_step) {
+        new_bird.widget_dropped_on_me = function (other, other_is_backside, event, robot, do_not_run_next_step, by_function_bird) {
             var message_side = other_is_backside ? other.get_backside() : other;
             var frontside_element, fly_continuation, run_next_step_continuation;
             if (nest) {
@@ -62,7 +62,10 @@ window.TOONTALK.bird = (function (TT) {
                     (!robot || !robot.visible() || robot.animate_consequences_of_actions())) {
                     // if !robot.animate_consequences_of_actions() then finishing watched cycle after context closed
                     // so do it immediately
-                    other.save_dimensions();
+                    if (!by_function_bird) {
+                        // if "dropped" by function bird then geometry isn't relevant 
+                        other.save_dimensions();
+                    }
                     // doesn't matter if robot is visible or there is a user event -- if either end visible show the delivery
                     frontside_element = this.get_frontside_element();
                     setTimeout(function () {
@@ -176,6 +179,7 @@ window.TOONTALK.bird = (function (TT) {
                             return;
                         } else {
                             // is an error -- this isn't the place to deal with it
+                            console.error(nest_or_error.stack);
                             throw nest_or_error;
                         }
                     }
@@ -337,6 +341,15 @@ window.TOONTALK.bird = (function (TT) {
                 var set_down_message_continuation = function () {
                         var fly_to_nest_continuation = function () {
                             // no other bird should do this once this one begins to fly to the nest to move its contents
+                            if (!nest_recieving_message.visible()) {
+                                // been hidden since this bird started delivery
+                                nest_recieving_message.add_to_contents(message_side, event, robot, this, true);
+                                if (after_delivery_continuation) {
+                                    after_delivery_continuation();
+                                    after_delivery_continuation = undefined;
+                                }
+                                return;
+                            }
                             nest_recieving_message.set_locked(true);
                             this.fly_to(nest_offset, move_nest_contents_continuation, robot, delay_between_steps);
                         }.bind(this);
@@ -362,7 +375,7 @@ window.TOONTALK.bird = (function (TT) {
                         this.fly_to(nest_offset, deliver_message_continuation, robot, delay_between_steps);
                     }.bind(this);
                 var deliver_message_continuation = function () {
-                        var message_dimensions = nest.get_contents_dimensions();
+                        var message_dimensions = nest_recieving_message.get_contents_dimensions();
                         stop_carrying_element(nest_offset);
                         TT.UTILITIES.set_css(message_side.get_frontside_element(), message_dimensions);
                         this.fly_to(contents_offset, move_contents_back_continuation, robot, delay_between_steps);
@@ -662,7 +675,7 @@ window.TOONTALK.nest = (function (TT) {
         var non_empty_listeners = [];
         var nest_under_capacity_listeners = [];
         var waiting_widgets     = [];
-        var nest_copies, generic_set_name;
+        var nest_copies, generic_set_name, generic_set_visible;
         if (!contents) {
             contents = [];
         }
@@ -746,7 +759,7 @@ window.TOONTALK.nest = (function (TT) {
         new_nest.add_to_contents = function (widget_side, event, robot, delivery_bird, ignore_copies) {
             var current_non_empty_listeners, widget_side_copy;
             var stack_size = contents.push(widget_side);
-            if (stack_size > nest.maximum_capacity && !robot.visible() && !this.visible()) {
+            if (stack_size > nest.maximum_capacity && robot && !robot.visible() && !this.visible()) {
                 // if robot or nest is visible let it keep running even if nest goes over capactity
                 if (TT.logging && TT.logging.indexOf("nest") >= 0) {
                     console.log(this.to_debug_string() + " postponing addition of " + widget_side.to_debug_string() +
@@ -1289,6 +1302,7 @@ window.TOONTALK.nest = (function (TT) {
         };
         new_nest.get_path_to = function (widget, robot) {
             var widget_on_nest;
+            var path;
             if (contents.length > 0) {
                 widget_on_nest = contents[0].get_widget();
                 if (widget_on_nest === widget) {
@@ -1297,7 +1311,9 @@ window.TOONTALK.nest = (function (TT) {
                 }
                 if (widget_on_nest.get_path_to) {
                     // assuming frontside
-                    return widget_on_nest.get_path_to(widget, robot);
+                    path = TT.path.to_widget_on_nest();
+                    path.next = widget_on_nest.get_path_to(widget, robot);
+                    return path;
                 }
             }
         };
@@ -1378,6 +1394,13 @@ window.TOONTALK.nest = (function (TT) {
         new_nest.compare_with_box   = new_nest.compare_with_number;
         new_nest.compare_with_scale = new_nest.compare_with_number;
         new_nest.add_standard_widget_functionality(new_nest);
+        generic_set_visible = new_nest.set_visible;
+        new_nest.set_visible = function (new_value) {
+            generic_set_visible.call(this, new_value);
+            if (!new_value) {
+                this.set_locked(false);
+            }
+        };
         new_nest.set_description(description);
         if (TT.debugging) {
             new_nest._debug_id = TT.UTILITIES.generate_unique_id();

@@ -816,7 +816,7 @@ window.TOONTALK.widget = (function (TT) {
             return string;
         },
         
-        remove: function (event) {
+        remove: function (event, do_not_remove_children) {
             var backside  = this.get_backside();
             var frontside = this.get_frontside();
             var parent_of_frontside = this.get_parent_of_frontside();
@@ -833,7 +833,7 @@ window.TOONTALK.widget = (function (TT) {
             }   
             this.set_running(false);
             this.set_visible(false); // in case robot vacuumed the widget while it was animating
-            if (this.walk_children) {
+            if (this.walk_children && !do_not_remove_children) {
                 this.walk_children(function (child) {
                                        if (child.remove) {
                                            child.remove();

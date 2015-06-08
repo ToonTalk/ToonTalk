@@ -734,6 +734,7 @@ window.TOONTALK.UTILITIES =
                      drop:          create_sound("BOOK_DROP.WAV"),
                      magic:         create_sound("MAGIC.WAV"),
                      fall_inside:   create_sound("FALL_INSIDE.WAV"),
+                     click:         create_sound("TYPE.WAV"),
                      event_ignored: create_sound("PLOP.WAV")};
         TT.sounds.bird_fly.loop = true;
     };
@@ -913,6 +914,7 @@ window.TOONTALK.UTILITIES =
                 try {
                     widget = TT.creators_from_json[json_semantic.type](json_semantic, additional_info);
                 } catch (e) {
+                    console.error(e.stack);
                     utilities.report_internal_error("Unable to recreate a " + json_semantic.type + ". Error is " + e); 
                 }
                // following was needed when get_json_top_level wasn't working properly
@@ -1198,7 +1200,7 @@ window.TOONTALK.UTILITIES =
             var is_backside = json.view.backside;
             var backside_widgets = widget.get_backside_widgets();
             var type_description = widget.get_type_name();
-            var title = widget.toString();
+            var title = widget.toString({for_json_div: true});
             var data_image_start, data_image_end;
             if (type_description === 'top-level') {
                 if (is_backside) {
@@ -1323,7 +1325,7 @@ window.TOONTALK.UTILITIES =
                error_callback(e);
            } else {
                utilities.display_message("Error trying to GET " + url + " " + e);
-               console.trace();
+               console.error(e.stack);
            }
        }
     };
@@ -2877,6 +2879,7 @@ window.TOONTALK.UTILITIES =
             var alert_element = utilities.create_alert_element(message);
             $(".toontalk-alert-element").remove(); // remove any pre-existing alerts
             console.log(message);
+            console.trace();
             document.body.insertBefore(alert_element, document.body.firstChild);
             setTimeout(function () {
                            $(alert_element).remove();
@@ -3299,7 +3302,61 @@ window.TOONTALK.UTILITIES =
 
        utilities.set_css = function (element, css) {
            // this is mostly useful debugging computed CSS problems since can break here
+           if (!css) {
+               return;
+           }
            $(element).css(css);
+       };
+
+       utilities.map_arguments = function (args, fun) {
+           // args need not be an ordinary array but could be the arguments of a function
+           var size = args.length;
+           var index = 0;
+           var result = [];
+           while (index < size) {
+               result.push(fun(args[index]));
+               index++;
+           }
+           return result;
+       };
+
+       utilities.conjunction = function (list, add_a_or_an) {
+           // turns a list into an English conjunction
+           return list.map(function (element, index) {
+                               var item;
+                               if (typeof element === 'undefined') {
+                                   return "anything";
+                               }
+                               item = add_a_or_an ? utilities.add_a_or_an(element) : element;
+                               if (index === list.length-2) {
+                                   return item + " and ";
+                               } else if (index === list.length-1) {
+                                   return item;
+                               }
+                               return item + ", ";
+                           }).join("");
+       };
+
+       utilities.insert_function_bird_documentation = function (type_name) {
+           var function_table = TOONTALK[type_name]['function'];
+           var function_names = Object.keys(function_table);
+           var table = "<table class='toontalk-function-bird-documentation-table'>";
+           function_names.forEach(function (function_name, index) {
+               var function_object = function_table[function_name];
+               table += "<tr><td><div id='bird_id_" + index + "'></div></td><td class='toontalk-function-bird-name'>" + function_name + 
+                        "</td><td class='toontalk-function-bird-title-documentation'>" +
+                        function_object.title + "</td></tr>";
+           });
+           table += "</table>";
+           document.write(table);
+           function_names.forEach(function (function_name, index) {
+               var bird = window.TOONTALK.bird.create_function(type_name, undefined, function_name);
+               var bird_frontside_element = bird.get_frontside_element();
+               bird.update_display();
+               $("#bird_id_" + index).replaceWith($(bird_frontside_element).addClass("toontalk-function-bird-documentation-bird"));
+               // sanitise the id -- id enables links to specific function birds
+               bird_frontside_element.id = encodeURIComponent(function_name);
+           });  
        };
 
 //         enable_touch_events = function (maximum_click_duration) {

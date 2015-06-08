@@ -415,7 +415,9 @@ window.TOONTALK.robot = (function (TT) {
         };      
         if (TT.debugging || TT.logging) {
             new_robot.to_debug_string = function () {
-                return " (" + (this.get_description() || "") + " " + this.get_name() + ")";
+                var frontside_conditions = this.get_frontside_conditions();
+                return "Robot (" + (this.get_description() || "") + " " + this.get_name() + ") runs if working on " + 
+                       (frontside_conditions ? TT.UTILITIES.add_a_or_an(frontside_conditions.toString()) : "anything");
             };
         }
         if (next_robot) {

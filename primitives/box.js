@@ -210,7 +210,9 @@ window.TOONTALK.box = (function (TT) {
             holes[i].set_parent_of_frontside(new_box);
         }
         new_box.set_description(description);
-        new_box.set_contents(initial_contents);
+        if (initial_contents) {
+            new_box.set_contents(initial_contents);
+        }
         if (TT.debugging) {
             new_box._debug_id = TT.UTILITIES.generate_unique_id();
             new_box._debug_string = new_box.to_debug_string();
@@ -524,10 +526,18 @@ window.TOONTALK.box = (function (TT) {
                 }
             }.bind(this);
         var update_dimensions = function () {
-            box_width  = $(frontside_element).width()  || TT.box.get_default_width();
+            if (size === 0) {
+                box_width = 0;
+            } else {
+                box_width = $(frontside_element).width()  || TT.box.get_default_width();
+            }
             box_height = $(frontside_element).height() || TT.box.get_default_height();
             if (horizontal) {
-                hole_width  = box_width/size;
+                if (size === 0) {
+                    hole_width = 0;
+                } else {
+                    hole_width  = box_width/size;
+                }
                 hole_height = box_height;
             } else {
                 hole_width  = box_width;
@@ -585,6 +595,21 @@ window.TOONTALK.box = (function (TT) {
     };
 
     box.get_border_size = function (width, height) {
+        var frontside_width;
+        if (width === 0) {
+            // i.e. a zero-hole box
+            frontside_width =  $(this.get_frontside_element()).width();
+            if (frontside_width <= 16) {
+                return 4;
+            }
+            if (frontside_width <= 32) {
+                return 8;
+            }
+            if (frontside_width <= 64) {
+                return 16;
+            }
+            return 32;
+        }
         if (!width) {
             width  = $(this.get_frontside_element()).width();
         }
@@ -706,7 +731,7 @@ window.TOONTALK.box = (function (TT) {
     box.element_to_highlight = function (event) {
         var hole_index = this.which_hole(event, true);
         var hole, hole_contents;
-        if (hole_index < 0) {
+        if (hole_index < 0 || this.get_size() === 0) {
             // highlight the whole thing
             return this.get_frontside_element();
         }
@@ -1021,7 +1046,7 @@ window.TOONTALK.box_hole =
             };
             hole.dereference = function () {
                 if (contents) {
-                    return contents[0].dereference();
+                    return contents.dereference();
                 }
                 return this;
             };
@@ -1096,6 +1121,11 @@ window.TOONTALK.box_hole =
             hole.set_running = function (new_value) {
                 if (contents) {
                     contents.set_running(new_value);
+                }
+            };
+            hole.maintain_proportional_dimensions = function () {
+                if (contents) {
+                    return contents.maintain_proportional_dimensions();
                 }
             };
             hole.removed_from_container = function (part, backside_removed, event, index, report_error) {
@@ -1212,6 +1242,127 @@ window.TOONTALK.box_hole =
     };
     
 }(window.TOONTALK));
+
+window.TOONTALK.box.function = 
+(function () {
+    var functions = TT.create_function_table();
+    functions.add_function_object(
+        'box hole', 
+        function (message, event, robot) {
+            var get_hole_contents = function (number, box) {
+                var n = Math.round(number.to_float());
+                if (n < 1) {
+                    TT.UTILITIES.display_message("The box hole function bird cannot accept " + number + ". She only accepts positive numbers.");
+                    return;
+                }
+                if (n > box.get_size()) {
+                    TT.UTILITIES.display_message("The box hole function bird cannot accept " + number + ". The box only has " + box.get_size() + " holes.");
+                    return;
+                };
+                return box.get_hole_contents(n-1);
+            };
+            return functions.typed_bird_function(message, get_hole_contents, ['number', 'box'], 2, 'box hole', event, robot);
+        },
+        "The bird will return with what is in a hole of the box. The number determines which hole's contents are returned. 1 for the first hole.",
+        "hole",
+        ['number', 'box']);
+    functions.add_function_object(
+        'count holes', 
+        function (message, event, robot) {
+            var get_size = function (box) {
+                return TT.number.create(box.get_size());
+            };
+            return functions.typed_bird_function(message, get_size, ['box'], 1, 'count holes', event, robot);
+        },
+        "The bird will return with the number of holes the box has.",
+        "count holes",
+        ['box']);
+    functions.add_function_object(
+        'fill hole', 
+        function (message, event, robot) {
+            var set_hole_contents = function (number, box, new_contents) {
+                var n = Math.round(number.to_float());
+                if (n < 1) {
+                    TT.UTILITIES.display_message("The fill hole function bird cannot accept " + number + ". She only accepts positive numbers.");
+                    return;
+                }
+                if (n > box.get_size()) {
+                    box.set_size(n);
+                };
+                box.set_hole(n-1, new_contents);
+                return box;
+            };
+            return functions.typed_bird_function(message, set_hole_contents, ['number', 'box', undefined], 3, 'fill hole', event, robot);
+        },
+        "The bird will return with the box where one of its holes has been filled by whatever is in the fourth hole. The number determines which hole's contents are changed. 1 for the first hole.",
+        "fill hole",
+        ['number', 'box', undefined]);
+    functions.add_function_object(
+        'split box', 
+        function (message, event, robot) {
+            var split_box = function (number, box) {
+                var n = Math.round(number.to_float());
+                var box_size = box.get_size();
+                var box_of_boxes = function () {
+                    var original_holes = box.get_holes();
+                    // create a box with holes after n
+                    var box2_size = box_size-n;
+                    var box2 = TT.box.create(box2_size);
+                    var i;
+                    for (i = 0; i < box2_size; i++) {
+                        box2.set_hole(i, box.get_hole_contents(i+n));
+                    }
+                    // reduce original to n holes
+                    box.set_size(n);
+                    return TT.box.create(2, false, [box, box2]);
+                };
+                if (n < 0) {
+                    TT.UTILITIES.display_message("The box split function bird cannot accept " + number + ". She only accepts zero or positive numbers.");
+                    return;
+                }
+                if (n > box_size) {
+                    TT.UTILITIES.display_message("The box split function bird cannot accept " + number + ". The box only has " + box_size + " holes.");
+                    return;
+                }
+                return box_of_boxes();
+            };
+            return functions.typed_bird_function(message, split_box, ['number', 'box'], 2, 'split box', event, robot);
+        },
+        "The bird will return with a box with the original box split in two. The number determines where the split is. 1 for after the first hole.",
+        "split",
+        ['number', 'box']);
+    functions.add_function_object(
+        'merge boxes', 
+        function (message, event, robot) {
+            var merge_box = function () {
+                var new_box_size = 0;
+                var i, j, merged_box, merged_box_hole_index, box_size;
+                if (arguments.length === 0) {
+                    return TT.box.create(0);
+                }
+                merged_box = arguments[0]; // reuse the first box
+                for (i = 0; i < arguments.length; i++) {
+                    new_box_size += arguments[i].get_size();
+                }
+                merged_box_hole_index = merged_box.get_size();
+                merged_box.set_size(new_box_size);
+                for (i = 1; i < arguments.length; i++) {
+                    box_size = arguments[i].get_size();
+                    for (j = 0; j < box_size; j++) {
+                        merged_box.set_hole(merged_box_hole_index, arguments[i].get_hole_contents(j));
+                        merged_box_hole_index++;
+                    }
+                }
+                return merged_box;
+            };
+            return functions.typed_bird_function(message, merge_box, ['box'], undefined, 'merge boxes', event, robot);
+        },
+        "The bird will return with a box that joins together all the boxes.",
+        "merge",
+        ['any number of boxes']);
+    return functions.get_function_table();
+}
+());
 
 }(window.TOONTALK));
 

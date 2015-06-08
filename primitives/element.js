@@ -151,6 +151,14 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                         html = html.substring(0, anchor_start) + target_blank + html.substring(anchor_start);
                     }
                 }
+                if (html.indexOf("data:image") === 0) {
+                    html = "<image src='" + html + "'>";
+                } else if (html.indexOf("data:audio") === 0) {
+                    html = "<audio src='" + html + "'>";
+                } else if (html.indexOf("data:video") === 0) {
+                    html = "<video src='" + html + "'>";
+                }
+                // TODO: support data: text, uuencoded text, and HTML
                 return html;
             }.bind(this);
             if (!frontside_element) {
@@ -165,7 +173,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             if (this.is_plain_text_element()) {
                 // the following is necessary so that when placed in boxes
                 // and is scaled to fit it doesn't change its line breaks
-                // not that don't want to set the html instance variable
+                // note that don't want to set the html instance variable
                 frontside_element.innerHTML = html.replace(/ /g, "&nbsp;");
             } else {
                 frontside_element.innerHTML = html; // until re-rendered
@@ -511,7 +519,12 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         };
         new_element.is_plain_text_element = function () {
             var html = this.get_HTML();
-            return html && html[0] !== '<' && html[html.length-1] !== '>';
+            var element_start;
+            // is not plain text if it contains <x ... where x is a character
+            if (!html) {
+                return;
+            }
+            return !html.match(/<\w/);
         };
         new_element.compute_original_dimensions = function (recompute) {
             TT.UTILITIES.original_dimensions(this, 
@@ -1042,9 +1055,17 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
            // else is a plain string so quote it
            return '"' + html + '"';
         };
-        var description = to_string_info && (to_string_info.role === "conditions" || to_string_info.plain_text) ?
-                          '"' + this.get_text() + '"':
-                          scale_or_quote_html(this.get_HTML());
+        var description;
+        if (to_string_info) {
+            if (to_string_info.role === "conditions" || to_string_info.plain_text) {
+               description =  '"' + this.get_text() + '"';
+            } else if (to_string_info.for_json_div) {
+                // don't risk confusing things with a comment based upon an HTML element
+               return "";
+            }
+        } else {
+            description = scale_or_quote_html(this.get_HTML());
+        }            
         return "the element " + description;
     };
     

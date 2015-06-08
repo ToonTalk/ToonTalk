@@ -27,7 +27,14 @@ window.TOONTALK.tool = (function (TT) {
                 if (event) {
                     event.preventDefault();
                 }
-                $(element).addClass("toontalk-tool-held");
+                // don't change CSS if just clicked upon (held for less than 200 milliseconds)
+                setTimeout(function () {
+                               // if tool doesn't support held() or is still held then change its CSS 
+                               if (!tool.held || tool.held()) {
+                                   $(element).addClass("toontalk-tool-held");
+                               } 
+                           },
+                           200);
                 home_position = $(element).offset();
                 document.addEventListener('mousemove',  mouse_move);
                 document.addEventListener('touchmove',  mouse_move);

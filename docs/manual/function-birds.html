@@ -13,31 +13,18 @@ The difference is that a function bird behaves as if offscreen robots are waitin
 These robots expect, by convention, that the delivered box contains another bird and some other widgets.
 The bird is given the result of computing a function of the other widgets.
 <h2>Numeric Function Birds</h2>
-<p>
-Here is the list of numeric functions birds available in this system:
+<p id='number_function'>
+Here is the list of <b>number</b> functions birds available in this system:
 <script type="text/javascript">
-    var function_names = Object.keys(TOONTALK.number.function);
-    var table = "<table class='toontalk-function-bird-documentation-table'>";
-    function_names.forEach(function (function_name, index) {
-        var function_object = TOONTALK.number.function[function_name];
-        console.log(function_name);
-        table += "<tr><td><div id='bird_id_" + index + "'></div></td><td class='toontalk-function-bird-name'>" + function_name + 
-                 "</td><td class='toontalk-function-bird-title-documentation'>" +
-                 function_object.title + "</td></tr>";
-    });
-    table += "</table>";
-    document.write(table);
-    function_names.forEach(function (function_name, index) {
-        var bird = window.TOONTALK.bird.create_function('number', undefined, function_name);
-        var bird_frontside_element = bird.get_frontside_element();
-        bird.update_display();
-        $("#bird_id_" + index).replaceWith($(bird_frontside_element).addClass("toontalk-function-bird-documentation-bird"));
-        // sanitise the id -- id enables links to specific function birds
-        bird_frontside_element.id = encodeURIComponent(function_name);
-    });
+   window.TOONTALK.UTILITIES.insert_function_bird_documentation('number');
   </script> 
 </p>
-<br>
+<p id='box_functions'>
+Here is the list of <b>box</b> functions birds available in this system:
+<script type="text/javascript">
+   window.TOONTALK.UTILITIES.insert_function_bird_documentation('box');
+  </script> 
+</p>
 <p>
 You can add a function bird to your work space by dragging one of the birds above or by clicking on a number.
 Click on <b>'>'</b> to see the advanced options and then click on 'Make a function bird'.
