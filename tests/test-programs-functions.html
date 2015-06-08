@@ -11269,5 +11269,1261 @@ top level widget
     }
   ]
 }</div></div>
+<p>Replacing the contents of a hole</p>
+<div class='toontalk-json'>
+This will be replaced by a work area containing 5 things: a robot, a box, a bird, a box, and a nest.
+top level widget
+<div style='display:none;'>{
+  "semantic": {
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "robot",
+            "frontside_conditions": {
+              "type": "top_level"
+            },
+            "backside_conditions": {
+              "box": {
+                "semantic": {
+                  "type": "box",
+                  "size": 3,
+                  "contents": [
+                    {
+                      "semantic": {
+                        "type": "bird"
+                      },
+                      "view": {
+                        "backside": false
+                      },
+                      "version": 1
+                    },
+                    {
+                      "semantic": {
+                        "type": "number",
+                        "operator": "+",
+                        "numerator": "2",
+                        "denominator": "1",
+                        "format": "mixed_number",
+                        "erased": true
+                      },
+                      "view": {
+                        "backside": false
+                      },
+                      "version": 1
+                    },
+                    {
+                      "semantic": {
+                        "type": "box",
+                        "size": 3,
+                        "contents": [
+                          {
+                            "semantic": {
+                              "type": "number",
+                              "operator": "+",
+                              "numerator": "1",
+                              "denominator": "1",
+                              "format": "mixed_number"
+                            },
+                            "view": {
+                              "backside": false
+                            },
+                            "version": 1
+                          },
+                          {
+                            "semantic": {
+                              "type": "number",
+                              "operator": "+",
+                              "numerator": "2",
+                              "denominator": "1",
+                              "format": "mixed_number"
+                            },
+                            "view": {
+                              "backside": false
+                            },
+                            "version": 1
+                          },
+                          {
+                            "semantic": {
+                              "type": "number",
+                              "operator": "+",
+                              "numerator": "3",
+                              "denominator": "1",
+                              "format": "mixed_number"
+                            },
+                            "view": {
+                              "backside": false
+                            },
+                            "version": 1
+                          }
+                        ],
+                        "horizontal": true,
+                        "name": ";;",
+                        "erased": true
+                      },
+                      "view": {
+                        "backside": false
+                      },
+                      "version": 1
+                    }
+                  ],
+                  "horizontal": true,
+                  "name": ";;",
+                  "erased": true
+                },
+                "view": {
+                  "backside": false
+                },
+                "version": 1
+              }
+            },
+            "body": {
+              "type": "body",
+              "steps": [
+                {
+                  "type": "robot_action",
+                  "action_name": "pick up",
+                  "path": {
+                    "type": "path.to_backside_widget_of_context",
+                    "type_name": "box",
+                    "removing_widget": true
+                  },
+                  "additional_info": {
+                    "time": 4658
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "drop it on",
+                  "path": {
+                    "type": "path.to_backside_widget_of_context",
+                    "type_name": "bird"
+                  },
+                  "additional_info": {
+                    "time": 2499
+                  }
+                }
+              ]
+            },
+            "run_once": true,
+            "name": "#1",
+            "speed": 1
+          },
+          "view": {
+            "frontside_width": 66,
+            "frontside_height": 110,
+            "frontside_left": 574.703125,
+            "frontside_top": 74.546875,
+            "saved_width": 66,
+            "saved_height": 110,
+            "backside": false
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "box",
+            "size": 4,
+            "contents": [
+              {
+                "semantic": {
+                  "type": "bird",
+                  "nest": {
+                    "shared_widget_index": 0
+                  }
+                },
+                "view": {
+                  "saved_width": 70,
+                  "saved_height": 102,
+                  "backside": false
+                },
+                "version": 1
+              },
+              {
+                "semantic": {
+                  "type": "number",
+                  "operator": "+",
+                  "numerator": "2",
+                  "denominator": "1",
+                  "format": "mixed_number"
+                },
+                "view": {
+                  "saved_width": 76,
+                  "saved_height": 55,
+                  "backside": false
+                },
+                "version": 1
+              },
+              {
+                "semantic": {
+                  "type": "box",
+                  "size": 3,
+                  "contents": [
+                    {
+                      "semantic": {
+                        "type": "number",
+                        "operator": "+",
+                        "numerator": "1",
+                        "denominator": "1",
+                        "format": "mixed_number"
+                      },
+                      "view": {
+                        "saved_width": 76,
+                        "saved_height": 55,
+                        "backside": false
+                      },
+                      "version": 1
+                    },
+                    {
+                      "semantic": {
+                        "type": "number",
+                        "operator": "+",
+                        "numerator": "0",
+                        "denominator": "1",
+                        "format": "mixed_number"
+                      },
+                      "view": {
+                        "saved_width": 76,
+                        "saved_height": 55,
+                        "backside": false
+                      },
+                      "version": 1
+                    },
+                    {
+                      "semantic": {
+                        "type": "number",
+                        "operator": "+",
+                        "numerator": "3",
+                        "denominator": "1",
+                        "format": "mixed_number"
+                      },
+                      "view": {
+                        "saved_width": 76,
+                        "saved_height": 55,
+                        "backside": false
+                      },
+                      "version": 1
+                    }
+                  ],
+                  "horizontal": true,
+                  "name": ";;"
+                },
+                "view": {
+                  "backside": false
+                },
+                "version": 1
+              },
+              {
+                "semantic": {
+                  "type": "number",
+                  "operator": "+",
+                  "numerator": "2",
+                  "denominator": "1",
+                  "format": "mixed_number"
+                },
+                "view": {
+                  "saved_width": 76,
+                  "saved_height": 55,
+                  "backside": false
+                },
+                "version": 1
+              }
+            ],
+            "horizontal": true,
+            "name": ";;"
+          },
+          "view": {
+            "frontside_width": 353,
+            "frontside_height": 68,
+            "frontside_left": 98.453125,
+            "frontside_top": 68.8125,
+            "saved_width": 353,
+            "saved_height": 68,
+            "backside": false
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "bird",
+            "nest": {
+              "semantic": {
+                "type": "function_nest",
+                "function_type": "box",
+                "function_name": "fill hole"
+              },
+              "view": {
+                "backside": false
+              },
+              "version": 1
+            }
+          },
+          "view": {
+            "frontside_width": 70,
+            "frontside_height": 102,
+            "frontside_left": 85.0625,
+            "frontside_top": 230.25,
+            "saved_width": 70,
+            "saved_height": 102,
+            "backside": false
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "box",
+            "size": 3,
+            "contents": [
+              {
+                "semantic": {
+                  "type": "number",
+                  "operator": "+",
+                  "numerator": "1",
+                  "denominator": "1",
+                  "format": "mixed_number"
+                },
+                "view": {
+                  "backside": false
+                },
+                "version": 1
+              },
+              {
+                "semantic": {
+                  "type": "number",
+                  "operator": "+",
+                  "numerator": "2",
+                  "denominator": "1",
+                  "format": "mixed_number"
+                },
+                "view": {
+                  "backside": false
+                },
+                "version": 1
+              },
+              {
+                "semantic": {
+                  "type": "number",
+                  "operator": "+",
+                  "numerator": "3",
+                  "denominator": "1",
+                  "format": "mixed_number"
+                },
+                "view": {
+                  "backside": false
+                },
+                "version": 1
+              }
+            ],
+            "horizontal": true,
+            "name": ";;"
+          },
+          "view": {
+            "frontside_width": 153,
+            "frontside_height": 52,
+            "frontside_left": 285.359375,
+            "frontside_top": 306.390625,
+            "backside": false
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "shared_widget_index": 0
+        }
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgb(245, 240, 240)",
+    "backside_width": 658,
+    "backside_height": 438,
+    "backside_left": 8,
+    "backside_top": 184.1875,
+    "backside": true,
+    "drag_x_offset": 573,
+    "drag_y_offset": 306.8125
+  },
+  "version": 1,
+  "shared_widgets": [
+    {
+      "semantic": {
+        "type": "nest",
+        "contents": [],
+        "guid": "toontalk_id_1433768429191",
+        "serial_number": 1,
+        "name": "#1"
+      },
+      "view": {
+        "frontside_width": 116,
+        "frontside_height": 98,
+        "frontside_left": 255.390625,
+        "frontside_top": 178.75,
+        "saved_width": 116,
+        "saved_height": 98,
+        "backside": false
+      },
+      "version": 1
+    }
+  ]
+}</div></div>
+<p>Spliting a box in two</p>
+<div class='toontalk-json'>
+This will be replaced by a work area containing 5 things: a robot, a box, a box, a bird, and a nest.
+top level widget
+<div style='display:none;'>{
+  "semantic": {
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "robot",
+            "frontside_conditions": {
+              "type": "top_level"
+            },
+            "backside_conditions": {
+              "box": {
+                "semantic": {
+                  "type": "box",
+                  "size": 3,
+                  "contents": [
+                    {
+                      "semantic": {
+                        "type": "bird"
+                      },
+                      "view": {
+                        "backside": false
+                      },
+                      "version": 1
+                    },
+                    {
+                      "semantic": {
+                        "type": "number",
+                        "operator": "+",
+                        "numerator": "2",
+                        "denominator": "1",
+                        "format": "mixed_number",
+                        "erased": true
+                      },
+                      "view": {
+                        "backside": false
+                      },
+                      "version": 1
+                    },
+                    {
+                      "semantic": {
+                        "type": "box",
+                        "size": 3,
+                        "contents": [
+                          {
+                            "semantic": {
+                              "type": "number",
+                              "operator": "+",
+                              "numerator": "1",
+                              "denominator": "1",
+                              "format": "mixed_number"
+                            },
+                            "view": {
+                              "backside": false
+                            },
+                            "version": 1
+                          },
+                          {
+                            "semantic": {
+                              "type": "number",
+                              "operator": "+",
+                              "numerator": "2",
+                              "denominator": "1",
+                              "format": "mixed_number"
+                            },
+                            "view": {
+                              "backside": false
+                            },
+                            "version": 1
+                          },
+                          {
+                            "semantic": {
+                              "type": "number",
+                              "operator": "+",
+                              "numerator": "3",
+                              "denominator": "1",
+                              "format": "mixed_number"
+                            },
+                            "view": {
+                              "backside": false
+                            },
+                            "version": 1
+                          }
+                        ],
+                        "horizontal": true,
+                        "name": ";;",
+                        "erased": true
+                      },
+                      "view": {
+                        "backside": false
+                      },
+                      "version": 1
+                    }
+                  ],
+                  "horizontal": true,
+                  "name": ";;",
+                  "erased": true
+                },
+                "view": {
+                  "backside": false
+                },
+                "version": 1
+              }
+            },
+            "body": {
+              "type": "body",
+              "steps": [
+                {
+                  "type": "robot_action",
+                  "action_name": "pick up",
+                  "path": {
+                    "type": "path.to_backside_widget_of_context",
+                    "type_name": "box",
+                    "removing_widget": true
+                  },
+                  "additional_info": {
+                    "time": 4658
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "drop it on",
+                  "path": {
+                    "type": "path.to_backside_widget_of_context",
+                    "type_name": "bird"
+                  },
+                  "additional_info": {
+                    "time": 2499
+                  }
+                }
+              ]
+            },
+            "run_once": true,
+            "name": "#1",
+            "speed": 1
+          },
+          "view": {
+            "frontside_width": 66,
+            "frontside_height": 110,
+            "frontside_left": 586.703125,
+            "frontside_top": 86.546875,
+            "saved_width": 66,
+            "saved_height": 110,
+            "backside": false
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "box",
+            "size": 3,
+            "contents": [
+              {
+                "semantic": {
+                  "type": "bird",
+                  "nest": {
+                    "shared_widget_index": 0
+                  }
+                },
+                "view": {
+                  "saved_width": 70,
+                  "saved_height": 102,
+                  "backside": false
+                },
+                "version": 1
+              },
+              {
+                "semantic": {
+                  "type": "number",
+                  "operator": "+",
+                  "numerator": "2",
+                  "denominator": "1",
+                  "format": "mixed_number"
+                },
+                "view": {
+                  "saved_width": 76,
+                  "saved_height": 55,
+                  "backside": false
+                },
+                "version": 1
+              },
+              {
+                "semantic": {
+                  "type": "box",
+                  "size": 3,
+                  "contents": [
+                    {
+                      "semantic": {
+                        "type": "number",
+                        "operator": "+",
+                        "numerator": "1",
+                        "denominator": "1",
+                        "format": "mixed_number"
+                      },
+                      "view": {
+                        "saved_width": 76,
+                        "saved_height": 55,
+                        "backside": false
+                      },
+                      "version": 1
+                    },
+                    {
+                      "semantic": {
+                        "type": "number",
+                        "operator": "+",
+                        "numerator": "2",
+                        "denominator": "1",
+                        "format": "mixed_number"
+                      },
+                      "view": {
+                        "saved_width": 76,
+                        "saved_height": 55,
+                        "backside": false
+                      },
+                      "version": 1
+                    },
+                    {
+                      "semantic": {
+                        "type": "number",
+                        "operator": "+",
+                        "numerator": "3",
+                        "denominator": "1",
+                        "format": "mixed_number"
+                      },
+                      "view": {
+                        "saved_width": 76,
+                        "saved_height": 55,
+                        "backside": false
+                      },
+                      "version": 1
+                    }
+                  ],
+                  "horizontal": true,
+                  "name": ";;"
+                },
+                "view": {
+                  "backside": false
+                },
+                "version": 1
+              }
+            ],
+            "horizontal": true,
+            "name": ";;"
+          },
+          "view": {
+            "frontside_width": 353,
+            "frontside_height": 68,
+            "frontside_left": 110.453125,
+            "frontside_top": 80.8125,
+            "saved_width": 353,
+            "saved_height": 68,
+            "backside": false
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "box",
+            "size": 2,
+            "contents": [
+              {
+                "semantic": {
+                  "type": "box",
+                  "size": 2,
+                  "contents": [
+                    {
+                      "semantic": {
+                        "type": "number",
+                        "operator": "+",
+                        "numerator": "1",
+                        "denominator": "1",
+                        "format": "mixed_number"
+                      },
+                      "view": {
+                        "backside": false
+                      },
+                      "version": 1
+                    },
+                    {
+                      "semantic": {
+                        "type": "number",
+                        "operator": "+",
+                        "numerator": "2",
+                        "denominator": "1",
+                        "format": "mixed_number"
+                      },
+                      "view": {
+                        "backside": false
+                      },
+                      "version": 1
+                    }
+                  ],
+                  "horizontal": true,
+                  "name": ";;"
+                },
+                "view": {
+                  "backside": false
+                },
+                "version": 1
+              },
+              {
+                "semantic": {
+                  "type": "box",
+                  "size": 1,
+                  "contents": [
+                    {
+                      "semantic": {
+                        "type": "number",
+                        "operator": "+",
+                        "numerator": "3",
+                        "denominator": "1",
+                        "format": "mixed_number"
+                      },
+                      "view": {
+                        "backside": false
+                      },
+                      "version": 1
+                    }
+                  ],
+                  "horizontal": true,
+                  "name": ";"
+                },
+                "view": {
+                  "backside": false
+                },
+                "version": 1
+              }
+            ],
+            "horizontal": false,
+            "name": ";;"
+          },
+          "view": {
+            "frontside_width": 259,
+            "frontside_height": 133,
+            "frontside_left": 375.25,
+            "frontside_top": 257.5625,
+            "saved_width": 259,
+            "saved_height": 133,
+            "backside": false
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "bird",
+            "nest": {
+              "semantic": {
+                "type": "function_nest",
+                "function_type": "box",
+                "function_name": "split box"
+              },
+              "view": {
+                "backside": false
+              },
+              "version": 1
+            }
+          },
+          "view": {
+            "frontside_width": 70,
+            "frontside_height": 102,
+            "frontside_left": 21.578125,
+            "frontside_top": 89.109375,
+            "saved_width": 70,
+            "saved_height": 102,
+            "backside": false
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "shared_widget_index": 0
+        }
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgb(245, 240, 240)",
+    "backside_width": 658,
+    "backside_height": 438,
+    "backside_left": 8,
+    "backside_top": 184.1875,
+    "backside": true,
+    "drag_x_offset": 471,
+    "drag_y_offset": 229.8125
+  },
+  "version": 1,
+  "shared_widgets": [
+    {
+      "semantic": {
+        "type": "nest",
+        "contents": [],
+        "guid": "toontalk_id_1433768429191",
+        "serial_number": 1,
+        "name": "#1"
+      },
+      "view": {
+        "frontside_width": 116,
+        "frontside_height": 98,
+        "frontside_left": 89.40625,
+        "frontside_top": 277.28125,
+        "saved_width": 116,
+        "saved_height": 98,
+        "backside": false
+      },
+      "version": 1
+    }
+  ]
+}</div></div>
+<p>Merge some boxes</p>
+<div class='toontalk-json'>
+This will be replaced by a work area containing 5 things: a box, a nest, a bird, a robot, and a nest.
+top level widget
+<div style='display:none;'>{
+  "semantic": {
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "box",
+            "size": 5,
+            "contents": [
+              {
+                "semantic": {
+                  "type": "bird",
+                  "nest": {
+                    "shared_widget_index": 0
+                  }
+                },
+                "view": {
+                  "backside": false
+                },
+                "version": 1
+              },
+              {
+                "semantic": {
+                  "type": "box",
+                  "size": 3,
+                  "contents": [
+                    {
+                      "semantic": {
+                        "type": "number",
+                        "operator": "+",
+                        "numerator": "1",
+                        "denominator": "1",
+                        "format": "mixed_number"
+                      },
+                      "view": {
+                        "backside": false
+                      },
+                      "version": 1
+                    },
+                    {
+                      "semantic": {
+                        "type": "number",
+                        "operator": "+",
+                        "numerator": "2",
+                        "denominator": "1",
+                        "format": "mixed_number"
+                      },
+                      "view": {
+                        "backside": false
+                      },
+                      "version": 1
+                    },
+                    {
+                      "semantic": {
+                        "type": "number",
+                        "operator": "+",
+                        "numerator": "3",
+                        "denominator": "1",
+                        "format": "mixed_number"
+                      },
+                      "view": {
+                        "backside": false
+                      },
+                      "version": 1
+                    }
+                  ],
+                  "horizontal": true,
+                  "name": ";;"
+                },
+                "view": {
+                  "backside": false
+                },
+                "version": 1
+              },
+              {
+                "semantic": {
+                  "type": "box",
+                  "size": 2,
+                  "contents": [
+                    {
+                      "semantic": {
+                        "type": "number",
+                        "operator": "+",
+                        "numerator": "4",
+                        "denominator": "1",
+                        "format": "mixed_number"
+                      },
+                      "view": {
+                        "backside": false
+                      },
+                      "version": 1
+                    },
+                    {
+                      "semantic": {
+                        "type": "number",
+                        "operator": "+",
+                        "numerator": "5",
+                        "denominator": "1",
+                        "format": "mixed_number"
+                      },
+                      "view": {
+                        "backside": false
+                      },
+                      "version": 1
+                    }
+                  ],
+                  "horizontal": true,
+                  "name": ";;"
+                },
+                "view": {
+                  "backside": false
+                },
+                "version": 1
+              },
+              {
+                "semantic": {
+                  "type": "box",
+                  "size": 0,
+                  "contents": [],
+                  "horizontal": true,
+                  "name": ";;"
+                },
+                "view": {
+                  "backside": false
+                },
+                "version": 1
+              },
+              {
+                "semantic": {
+                  "type": "box",
+                  "size": 1,
+                  "contents": [
+                    {
+                      "semantic": {
+                        "type": "number",
+                        "operator": "+",
+                        "numerator": "6",
+                        "denominator": "1",
+                        "format": "mixed_number"
+                      },
+                      "view": {
+                        "backside": false
+                      },
+                      "version": 1
+                    }
+                  ],
+                  "horizontal": true,
+                  "name": ";;"
+                },
+                "view": {
+                  "backside": false
+                },
+                "version": 1
+              }
+            ],
+            "horizontal": true,
+            "name": ";;"
+          },
+          "view": {
+            "frontside_width": 353,
+            "frontside_height": 68,
+            "frontside_left": 121.34375,
+            "frontside_top": 37.171875,
+            "saved_width": 353,
+            "saved_height": 68,
+            "backside": false
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "nest",
+            "contents": [],
+            "guid": "toontalk_id_1433768429191",
+            "original_nest": {
+              "shared_widget_index": 0
+            },
+            "serial_number": 1,
+            "name": "#1"
+          },
+          "view": {
+            "frontside_width": 116,
+            "frontside_height": 98,
+            "frontside_left": 105.4375,
+            "frontside_top": 179.90625,
+            "saved_width": 116,
+            "saved_height": 98,
+            "backside": false
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "bird",
+            "nest": {
+              "semantic": {
+                "type": "function_nest",
+                "function_type": "box",
+                "function_name": "merge boxes"
+              },
+              "view": {
+                "backside": false
+              },
+              "version": 1
+            }
+          },
+          "view": {
+            "frontside_width": 70,
+            "frontside_height": 102,
+            "frontside_left": 20.921875,
+            "frontside_top": 39.140625,
+            "saved_width": 70,
+            "saved_height": 102,
+            "backside": false
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "robot",
+            "frontside_conditions": {
+              "type": "top_level"
+            },
+            "body": {
+              "type": "body",
+              "steps": [
+                {
+                  "type": "robot_action",
+                  "action_name": "pick up",
+                  "path": {
+                    "type": "path.to_backside_widget_of_context",
+                    "type_name": "box",
+                    "removing_widget": true
+                  },
+                  "additional_info": {
+                    "time": 4658
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "drop it on",
+                  "path": {
+                    "type": "path.to_backside_widget_of_context",
+                    "type_name": "bird"
+                  },
+                  "additional_info": {
+                    "time": 2499
+                  }
+                }
+              ]
+            },
+            "run_once": true,
+            "name": "#1",
+            "speed": 1
+          },
+          "view": {
+            "frontside_width": 66,
+            "frontside_height": 110,
+            "frontside_left": 565.015625,
+            "frontside_top": 45.421875,
+            "saved_width": 66,
+            "saved_height": 110,
+            "backside": false
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "nest",
+            "contents": [
+              {
+                "widget": {
+                  "semantic": {
+                    "type": "box",
+                    "size": 6,
+                    "contents": [
+                      {
+                        "semantic": {
+                          "type": "number",
+                          "operator": "+",
+                          "numerator": "1",
+                          "denominator": "1",
+                          "format": "mixed_number"
+                        },
+                        "view": {
+                          "backside": false
+                        },
+                        "version": 1
+                      },
+                      {
+                        "semantic": {
+                          "type": "number",
+                          "operator": "+",
+                          "numerator": "2",
+                          "denominator": "1",
+                          "format": "mixed_number"
+                        },
+                        "view": {
+                          "backside": false
+                        },
+                        "version": 1
+                      },
+                      {
+                        "semantic": {
+                          "type": "number",
+                          "operator": "+",
+                          "numerator": "3",
+                          "denominator": "1",
+                          "format": "mixed_number"
+                        },
+                        "view": {
+                          "backside": false
+                        },
+                        "version": 1
+                      },
+                      {
+                        "semantic": {
+                          "type": "number",
+                          "operator": "+",
+                          "numerator": "4",
+                          "denominator": "1",
+                          "format": "mixed_number"
+                        },
+                        "view": {
+                          "backside": false
+                        },
+                        "version": 1
+                      },
+                      {
+                        "semantic": {
+                          "type": "number",
+                          "operator": "+",
+                          "numerator": "5",
+                          "denominator": "1",
+                          "format": "mixed_number"
+                        },
+                        "view": {
+                          "backside": false
+                        },
+                        "version": 1
+                      },
+                      {
+                        "semantic": {
+                          "type": "number",
+                          "operator": "+",
+                          "numerator": "6",
+                          "denominator": "1",
+                          "format": "mixed_number"
+                        },
+                        "view": {
+                          "backside": false
+                        },
+                        "version": 1
+                      }
+                    ],
+                    "horizontal": true,
+                    "name": ";;"
+                  },
+                  "view": {
+                    "saved_width": 379,
+                    "saved_height": 96,
+                    "backside": false
+                  },
+                  "version": 1
+                }
+              }
+            ],
+            "guid": "toontalk_id_1433771370562",
+            "serial_number": 1,
+            "name": "#1"
+          },
+          "view": {
+            "frontside_width": 116,
+            "frontside_height": 98,
+            "frontside_left": 180.921875,
+            "frontside_top": 301.4375,
+            "saved_width": 116,
+            "saved_height": 98,
+            "backside": false
+          },
+          "version": 1
+        }
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgb(245, 240, 240)",
+    "backside_width": 658,
+    "backside_height": 438,
+    "backside_left": 8,
+    "backside_top": 184.1875,
+    "backside": true,
+    "drag_x_offset": 470,
+    "drag_y_offset": 357.8125
+  },
+  "version": 1,
+  "shared_widgets": [
+    {
+      "semantic": {
+        "type": "nest",
+        "contents": [],
+        "guid": "toontalk_id_1433768429191",
+        "serial_number": 1,
+        "name": "#1"
+      },
+      "view": {
+        "frontside_width": 116,
+        "frontside_height": 98,
+        "frontside_left": 0,
+        "frontside_top": 0,
+        "saved_width": 116,
+        "saved_height": 98,
+        "backside": false
+      },
+      "version": 1
+    }
+  ]
+}</div></div>
 </body>
 </html>
