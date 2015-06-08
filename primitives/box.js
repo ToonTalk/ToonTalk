@@ -210,7 +210,9 @@ window.TOONTALK.box = (function (TT) {
             holes[i].set_parent_of_frontside(new_box);
         }
         new_box.set_description(description);
-        new_box.set_contents(initial_contents);
+        if (initial_contents) {
+            new_box.set_contents(initial_contents);
+        }
         if (TT.debugging) {
             new_box._debug_id = TT.UTILITIES.generate_unique_id();
             new_box._debug_string = new_box.to_debug_string();
@@ -1098,6 +1100,11 @@ window.TOONTALK.box_hole =
                     contents.set_running(new_value);
                 }
             };
+            hole.maintain_proportional_dimensions = function () {
+                if (contents) {
+                    return contents.maintain_proportional_dimensions();
+                }
+            };
             hole.removed_from_container = function (part, backside_removed, event, index, report_error) {
                 if (contents) {
                     if (event) {
@@ -1222,11 +1229,11 @@ window.TOONTALK.box.function =
             var get_hole_contents = function (number, box) {
                 var n = Math.round(number.to_float());
                 if (n < 1) {
-                    TT.UTILITIES.display_message("Box hole function bird cannot accept " + number + ". She only accepts positive numbers.");
+                    TT.UTILITIES.display_message("The box hole function bird cannot accept " + number + ". She only accepts positive numbers.");
                     return;
                 }
                 if (n > box.get_size()) {
-                    TT.UTILITIES.display_message("Box hole function bird cannot accept " + number + ". The box only has " + box.get_size() + " holes.");
+                    TT.UTILITIES.display_message("The box hole function bird cannot accept " + number + ". The box only has " + box.get_size() + " holes.");
                     return;
                 }
                 return box.get_hole_contents(n-1);
@@ -1235,6 +1242,40 @@ window.TOONTALK.box.function =
         },
         "The bird will return with what is in a hole of the box. The number determines which hole's contents are returned. 1 for the first hole.",
         "hole",
+        ['number', 'box']);
+    functions.add_function_object(
+        'split box', 
+        function (message, event, robot) {
+            var split_box = function (number, box) {
+                var n = Math.round(number.to_float());
+                var box_size = box.get_size();
+                var box_of_boxes = function () {
+                    var original_holes = box.get_holes();
+                    // create a box with holes after n
+                    var box2_size = box_size-n;
+                    var box2 = TT.box.create(box2_size);
+                    var i;
+                    for (i = 0; i < box2_size; i++) {
+                        box2.set_hole(i, box.get_hole_contents(i+n));
+                    }
+                    // reduce original to n holes
+                    box.set_size(n);
+                    return TT.box.create(2, false, [box, box2]);
+                }
+                if (n < 0) {
+                    TT.UTILITIES.display_message("The box split function bird cannot accept " + number + ". She only accepts zero or positive numbers.");
+                    return;
+                }
+                if (n > box_size) {
+                    TT.UTILITIES.display_message("The box split function bird cannot accept " + number + ". The box only has " + box_size + " holes.");
+                    return;
+                }
+                return box_of_boxes();
+            };
+            return functions.fixed_arity_function(message, split_box, ['number', 'box'], 'box hole', event, robot);
+        },
+        "The bird will return with a box with the original box split in two. The number determines where the split is. 1 for after the first hole.",
+        "split",
         ['number', 'box']);
     return functions.get_function_table();
 }
