@@ -1325,7 +1325,7 @@ window.TOONTALK.UTILITIES =
                error_callback(e);
            } else {
                utilities.display_message("Error trying to GET " + url + " " + e);
-               console.trace();
+               console.error(e.stack);
            }
        }
     };
@@ -3305,6 +3305,18 @@ window.TOONTALK.UTILITIES =
                return;
            }
            $(element).css(css);
+       };
+
+       utilities.map_arguments = function (args, fun) {
+           // args need not be an ordinary array but could be the arguments of a function
+           var size = args.length;
+           var index = 0;
+           var result = [];
+           while (index < size) {
+               result.push(fun(args[index]));
+               index++;
+           }
+           return result;
        };
 
 //         enable_touch_events = function (maximum_click_duration) {

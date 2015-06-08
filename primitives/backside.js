@@ -719,7 +719,7 @@ window.TOONTALK.backside =
                            }
                            event.stopPropagation();
             });
-            if (widget.is_number()) {
+            if (widget.is_number() || widget.is_box()) {
                 // will implement more functions (e.g. for string elements and boxes)
                 $make_function_bird_button.attr('title', "Click to get a bird that flies to functions of " + widget.get_type_name(true) + ".");
             } else {

@@ -176,6 +176,7 @@ window.TOONTALK.bird = (function (TT) {
                             return;
                         } else {
                             // is an error -- this isn't the place to deal with it
+                            console.error(nest_or_error.stack);
                             throw nest_or_error;
                         }
                     }

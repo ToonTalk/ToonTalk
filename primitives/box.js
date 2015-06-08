@@ -1213,5 +1213,13 @@ window.TOONTALK.box_hole =
     
 }(window.TOONTALK));
 
+window.TOONTALK.box.function = 
+(function () {
+    var functions = {};
+
+    return functions;
+}
+());
+
 }(window.TOONTALK));
 
