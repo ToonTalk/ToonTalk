@@ -3337,6 +3337,28 @@ window.TOONTALK.UTILITIES =
                            }).join("");
        };
 
+       utilities.insert_function_bird_documentation = function (type_name) {
+           var function_table = TOONTALK[type_name]['function'];
+           var function_names = Object.keys(function_table);
+           var table = "<table class='toontalk-function-bird-documentation-table'>";
+           function_names.forEach(function (function_name, index) {
+               var function_object = function_table[function_name];
+               table += "<tr><td><div id='bird_id_" + index + "'></div></td><td class='toontalk-function-bird-name'>" + function_name + 
+                        "</td><td class='toontalk-function-bird-title-documentation'>" +
+                        function_object.title + "</td></tr>";
+           });
+           table += "</table>";
+           document.write(table);
+           function_names.forEach(function (function_name, index) {
+               var bird = window.TOONTALK.bird.create_function(type_name, undefined, function_name);
+               var bird_frontside_element = bird.get_frontside_element();
+               bird.update_display();
+               $("#bird_id_" + index).replaceWith($(bird_frontside_element).addClass("toontalk-function-bird-documentation-bird"));
+               // sanitise the id -- id enables links to specific function birds
+               bird_frontside_element.id = encodeURIComponent(function_name);
+           });  
+       };
+
 //         enable_touch_events = function (maximum_click_duration) {
 //             // based on ideas in http://stackoverflow.com/questions/5186441/javascript-drag-and-drop-for-touch-devices/6362527#6362527
 //             var last_touch_down_time;
