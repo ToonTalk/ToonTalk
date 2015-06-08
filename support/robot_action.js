@@ -263,10 +263,12 @@ window.TOONTALK.robot_action =
             return;
         }
         if (widget.save_dimensions() && robot.animate_consequences_of_actions()) {
-            if (frontside_element.offsetWidth) {
-                $(frontside_element).css({width:  frontside_element.offsetWidth  + "px",
-                                          height: frontside_element.offsetHeight + "px"});
-            }
+            // not sure what the following accomplished but it causes things picked up and dropped by a robot to change size
+            // and to change even before robot gets there
+//             if (frontside_element.offsetWidth) {
+//                 $(frontside_element).css({width:  frontside_element.offsetWidth  + "px",
+//                                           height: frontside_element.offsetHeight + "px"});
+//             }
             move_robot_animation(widget, robot, new_continuation, additional_info);
         } else {
             new_continuation();
