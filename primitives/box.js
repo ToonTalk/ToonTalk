@@ -1244,6 +1244,17 @@ window.TOONTALK.box.function =
         "hole",
         ['number', 'box']);
     functions.add_function_object(
+        'holes count', 
+        function (message, event, robot) {
+            var get_size = function (box) {
+                return TT.number.create(box.get_size());
+            };
+            return functions.typed_bird_function(message, get_size, ['box'], 1, 'holes count', event, robot);
+        },
+        "The bird will return with the number of holes the box has.",
+        "holes count",
+        ['box']);
+    functions.add_function_object(
         'fill hole', 
         function (message, event, robot) {
             var set_hole_contents = function (number, box, new_contents) {

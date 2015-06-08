@@ -183,7 +183,7 @@ window.TOONTALK.create_function_table =
         if (types) {
            if (types.length === 1) {
                get_description = function () {
-                   return "If you give me a box with another bird and " + types[0] + " then " + 
+                   return "If you give me a box with another bird and " + TT.UTILITIES.add_a_or_an(types[0]) + " then " + 
                           TT.UTILITIES.lower_case_first_letter(this.title) + and_on_my_back;
                }
             } else {
