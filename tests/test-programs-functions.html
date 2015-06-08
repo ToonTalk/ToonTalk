@@ -10519,5 +10519,755 @@ top level widget
   },
   "version": 1
 }</div></div>
+<p>Select item in second hole</p>
+<div class='toontalk-json'>
+This will be replaced by a work area containing 5 things: a bird, a scale, a robot, a bird, and a box.
+top level widget
+<div style='display:none;'>{
+  "semantic": {
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "bird",
+            "nest": {
+              "semantic": {
+                "type": "function_nest",
+                "function_type": "box",
+                "function_name": "box hole"
+              },
+              "view": {
+                "backside": false
+              },
+              "version": 1
+            }
+          },
+          "view": {
+            "frontside_width": 70,
+            "frontside_height": 102,
+            "frontside_left": 109.5625,
+            "frontside_top": 228.390625,
+            "saved_width": 70,
+            "saved_height": 102,
+            "backside": false
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "scale",
+            "size": 2,
+            "contents": [
+              {
+                "shared_widget_index": 0
+              },
+              {
+                "semantic": {
+                  "type": "number",
+                  "operator": "+",
+                  "numerator": "2",
+                  "denominator": "1",
+                  "format": "mixed_number"
+                },
+                "view": {
+                  "saved_width": 91,
+                  "saved_height": 52,
+                  "backside": false
+                },
+                "version": 1
+              }
+            ],
+            "horizontal": true,
+            "name": ";;"
+          },
+          "view": {
+            "frontside_width": 123,
+            "frontside_height": 91,
+            "frontside_left": 484.140625,
+            "frontside_top": 236.9375,
+            "backside_geometry": {
+              "x_scale": 1,
+              "y_scale": 1,
+              "original_width": 123,
+              "original_height": 91
+            },
+            "saved_width": 123,
+            "saved_height": 91,
+            "backside": false
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "robot",
+            "frontside_conditions": {
+              "type": "top_level"
+            },
+            "backside_conditions": {
+              "box": {
+                "semantic": {
+                  "type": "box",
+                  "size": 3,
+                  "contents": [
+                    {
+                      "semantic": {
+                        "type": "bird"
+                      },
+                      "view": {
+                        "backside": false
+                      },
+                      "version": 1
+                    },
+                    {
+                      "semantic": {
+                        "type": "number",
+                        "operator": "+",
+                        "numerator": "2",
+                        "denominator": "1",
+                        "format": "mixed_number",
+                        "erased": true
+                      },
+                      "view": {
+                        "backside": false
+                      },
+                      "version": 1
+                    },
+                    {
+                      "semantic": {
+                        "type": "box",
+                        "size": 3,
+                        "contents": [
+                          {
+                            "semantic": {
+                              "type": "number",
+                              "operator": "+",
+                              "numerator": "1",
+                              "denominator": "1",
+                              "format": "mixed_number"
+                            },
+                            "view": {
+                              "backside": false
+                            },
+                            "version": 1
+                          },
+                          {
+                            "semantic": {
+                              "type": "number",
+                              "operator": "+",
+                              "numerator": "2",
+                              "denominator": "1",
+                              "format": "mixed_number"
+                            },
+                            "view": {
+                              "backside": false
+                            },
+                            "version": 1
+                          },
+                          {
+                            "semantic": {
+                              "type": "number",
+                              "operator": "+",
+                              "numerator": "3",
+                              "denominator": "1",
+                              "format": "mixed_number"
+                            },
+                            "view": {
+                              "backside": false
+                            },
+                            "version": 1
+                          }
+                        ],
+                        "horizontal": true,
+                        "name": ";;",
+                        "erased": true
+                      },
+                      "view": {
+                        "backside": false
+                      },
+                      "version": 1
+                    }
+                  ],
+                  "horizontal": true,
+                  "name": ";;"
+                },
+                "view": {
+                  "backside": false
+                },
+                "version": 1
+              }
+            },
+            "body": {
+              "type": "body",
+              "steps": [
+                {
+                  "type": "robot_action",
+                  "action_name": "pick up",
+                  "path": {
+                    "type": "path.to_backside_widget_of_context",
+                    "type_name": "box",
+                    "removing_widget": true
+                  },
+                  "additional_info": {
+                    "time": 4658
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "drop it on",
+                  "path": {
+                    "type": "path.to_backside_widget_of_context",
+                    "type_name": "bird"
+                  },
+                  "additional_info": {
+                    "time": 2499
+                  }
+                }
+              ]
+            },
+            "run_once": true,
+            "name": "#1",
+            "speed": 1
+          },
+          "view": {
+            "frontside_width": 66,
+            "frontside_height": 110,
+            "frontside_left": 556.703125,
+            "frontside_top": 56.546875,
+            "saved_width": 66,
+            "saved_height": 110,
+            "backside": false
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "bird",
+            "nest": {
+              "semantic": {
+                "type": "function_nest",
+                "function_type": "box",
+                "function_name": "box hole"
+              },
+              "view": {
+                "backside": false
+              },
+              "version": 1
+            }
+          },
+          "view": {
+            "frontside_width": 70,
+            "frontside_height": 102,
+            "frontside_left": 107.5625,
+            "frontside_top": 226.390625,
+            "saved_width": 70,
+            "saved_height": 102,
+            "backside": false
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "box",
+            "size": 3,
+            "contents": [
+              {
+                "semantic": {
+                  "type": "bird",
+                  "nest": {
+                    "shared_widget_index": 0
+                  }
+                },
+                "view": {
+                  "saved_width": 70,
+                  "saved_height": 102,
+                  "backside": false
+                },
+                "version": 1
+              },
+              {
+                "semantic": {
+                  "type": "number",
+                  "operator": "+",
+                  "numerator": "2",
+                  "denominator": "1",
+                  "format": "mixed_number"
+                },
+                "view": {
+                  "saved_width": 76,
+                  "saved_height": 55,
+                  "backside": false
+                },
+                "version": 1
+              },
+              {
+                "semantic": {
+                  "type": "box",
+                  "size": 3,
+                  "contents": [
+                    {
+                      "semantic": {
+                        "type": "number",
+                        "operator": "+",
+                        "numerator": "1",
+                        "denominator": "1",
+                        "format": "mixed_number"
+                      },
+                      "view": {
+                        "saved_width": 76,
+                        "saved_height": 55,
+                        "backside": false
+                      },
+                      "version": 1
+                    },
+                    {
+                      "semantic": {
+                        "type": "number",
+                        "operator": "+",
+                        "numerator": "2",
+                        "denominator": "1",
+                        "format": "mixed_number"
+                      },
+                      "view": {
+                        "saved_width": 76,
+                        "saved_height": 55,
+                        "backside": false
+                      },
+                      "version": 1
+                    },
+                    {
+                      "semantic": {
+                        "type": "number",
+                        "operator": "+",
+                        "numerator": "3",
+                        "denominator": "1",
+                        "format": "mixed_number"
+                      },
+                      "view": {
+                        "saved_width": 76,
+                        "saved_height": 55,
+                        "backside": false
+                      },
+                      "version": 1
+                    }
+                  ],
+                  "horizontal": true,
+                  "name": ";;"
+                },
+                "view": {
+                  "saved_width": 164,
+                  "saved_height": 68,
+                  "backside": false
+                },
+                "version": 1
+              }
+            ],
+            "horizontal": true,
+            "name": ";;"
+          },
+          "view": {
+            "frontside_width": 353,
+            "frontside_height": 68,
+            "frontside_left": 80.453125,
+            "frontside_top": 50.8125,
+            "saved_width": 353,
+            "saved_height": 68,
+            "backside": false
+          },
+          "version": 1
+        }
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgb(245, 240, 240)",
+    "backside_width": 658,
+    "backside_height": 438,
+    "backside_left": 8,
+    "backside_top": 184.1875,
+    "backside": true,
+    "drag_x_offset": 296,
+    "drag_y_offset": 295.8125
+  },
+  "version": 1,
+  "shared_widgets": [
+    {
+      "semantic": {
+        "type": "nest",
+        "contents": [],
+        "guid": "toontalk_id_1433768429191",
+        "serial_number": 1,
+        "name": "#1"
+      },
+      "view": {
+        "saved_width": 116,
+        "saved_height": 98,
+        "backside": false
+      },
+      "version": 1
+    }
+  ]
+}</div></div>
+<p>Computing the number of holes</p>
+<div class='toontalk-json'>
+This will be replaced by a work area containing 4 things: a scale, a robot, a box, and a bird.
+top level widget
+<div style='display:none;'>{
+  "semantic": {
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "scale",
+            "size": 2,
+            "contents": [
+              {
+                "shared_widget_index": 0
+              },
+              {
+                "semantic": {
+                  "type": "number",
+                  "operator": "+",
+                  "numerator": "3",
+                  "denominator": "1",
+                  "format": "mixed_number"
+                },
+                "view": {
+                  "saved_width": 91,
+                  "saved_height": 52,
+                  "backside": false
+                },
+                "version": 1
+              }
+            ],
+            "horizontal": true,
+            "name": ";;"
+          },
+          "view": {
+            "frontside_width": 123,
+            "frontside_height": 91,
+            "frontside_left": 490.140625,
+            "frontside_top": 242.9375,
+            "backside_geometry": {
+              "x_scale": 1,
+              "y_scale": 1,
+              "original_width": 123,
+              "original_height": 91
+            },
+            "saved_width": 123,
+            "saved_height": 91,
+            "backside": false
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "robot",
+            "frontside_conditions": {
+              "type": "top_level"
+            },
+            "backside_conditions": {
+              "box": {
+                "semantic": {
+                  "type": "box",
+                  "size": 3,
+                  "contents": [
+                    {
+                      "semantic": {
+                        "type": "bird"
+                      },
+                      "view": {
+                        "backside": false
+                      },
+                      "version": 1
+                    },
+                    {
+                      "semantic": {
+                        "type": "number",
+                        "operator": "+",
+                        "numerator": "2",
+                        "denominator": "1",
+                        "format": "mixed_number",
+                        "erased": true
+                      },
+                      "view": {
+                        "backside": false
+                      },
+                      "version": 1
+                    },
+                    {
+                      "semantic": {
+                        "type": "box",
+                        "size": 3,
+                        "contents": [
+                          {
+                            "semantic": {
+                              "type": "number",
+                              "operator": "+",
+                              "numerator": "1",
+                              "denominator": "1",
+                              "format": "mixed_number"
+                            },
+                            "view": {
+                              "backside": false
+                            },
+                            "version": 1
+                          },
+                          {
+                            "semantic": {
+                              "type": "number",
+                              "operator": "+",
+                              "numerator": "2",
+                              "denominator": "1",
+                              "format": "mixed_number"
+                            },
+                            "view": {
+                              "backside": false
+                            },
+                            "version": 1
+                          },
+                          {
+                            "semantic": {
+                              "type": "number",
+                              "operator": "+",
+                              "numerator": "3",
+                              "denominator": "1",
+                              "format": "mixed_number"
+                            },
+                            "view": {
+                              "backside": false
+                            },
+                            "version": 1
+                          }
+                        ],
+                        "horizontal": true,
+                        "name": ";;",
+                        "erased": true
+                      },
+                      "view": {
+                        "backside": false
+                      },
+                      "version": 1
+                    }
+                  ],
+                  "horizontal": true,
+                  "name": ";;",
+                  "erased": true
+                },
+                "view": {
+                  "backside": false
+                },
+                "version": 1
+              }
+            },
+            "body": {
+              "type": "body",
+              "steps": [
+                {
+                  "type": "robot_action",
+                  "action_name": "pick up",
+                  "path": {
+                    "type": "path.to_backside_widget_of_context",
+                    "type_name": "box",
+                    "removing_widget": true
+                  },
+                  "additional_info": {
+                    "time": 4658
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "drop it on",
+                  "path": {
+                    "type": "path.to_backside_widget_of_context",
+                    "type_name": "bird"
+                  },
+                  "additional_info": {
+                    "time": 2499
+                  }
+                }
+              ]
+            },
+            "run_once": true,
+            "name": "#1",
+            "speed": 1
+          },
+          "view": {
+            "frontside_width": 66,
+            "frontside_height": 110,
+            "frontside_left": 562.703125,
+            "frontside_top": 62.546875,
+            "saved_width": 66,
+            "saved_height": 110,
+            "backside": false
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "box",
+            "size": 2,
+            "contents": [
+              {
+                "semantic": {
+                  "type": "bird",
+                  "nest": {
+                    "shared_widget_index": 0
+                  }
+                },
+                "view": {
+                  "saved_width": 70,
+                  "saved_height": 102,
+                  "backside": false
+                },
+                "version": 1
+              },
+              {
+                "semantic": {
+                  "type": "box",
+                  "size": 3,
+                  "contents": [
+                    {
+                      "semantic": {
+                        "type": "number",
+                        "operator": "+",
+                        "numerator": "1",
+                        "denominator": "1",
+                        "format": "mixed_number"
+                      },
+                      "view": {
+                        "saved_width": 76,
+                        "saved_height": 55,
+                        "backside": false
+                      },
+                      "version": 1
+                    },
+                    {
+                      "semantic": {
+                        "type": "number",
+                        "operator": "+",
+                        "numerator": "2",
+                        "denominator": "1",
+                        "format": "mixed_number"
+                      },
+                      "view": {
+                        "saved_width": 76,
+                        "saved_height": 55,
+                        "backside": false
+                      },
+                      "version": 1
+                    },
+                    {
+                      "semantic": {
+                        "type": "number",
+                        "operator": "+",
+                        "numerator": "3",
+                        "denominator": "1",
+                        "format": "mixed_number"
+                      },
+                      "view": {
+                        "saved_width": 76,
+                        "saved_height": 55,
+                        "backside": false
+                      },
+                      "version": 1
+                    }
+                  ],
+                  "horizontal": true,
+                  "name": ";;"
+                },
+                "view": {
+                  "backside": false
+                },
+                "version": 1
+              }
+            ],
+            "horizontal": true,
+            "name": ";;"
+          },
+          "view": {
+            "frontside_width": 353,
+            "frontside_height": 68,
+            "frontside_left": 86.453125,
+            "frontside_top": 56.8125,
+            "saved_width": 353,
+            "saved_height": 68,
+            "backside": false
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "bird",
+            "nest": {
+              "semantic": {
+                "type": "function_nest",
+                "function_type": "box",
+                "function_name": "holes count"
+              },
+              "view": {
+                "backside": false
+              },
+              "version": 1
+            }
+          },
+          "view": {
+            "frontside_width": 70,
+            "frontside_height": 102,
+            "frontside_left": 136.515625,
+            "frontside_top": 238.21875,
+            "saved_width": 70,
+            "saved_height": 102,
+            "backside": false
+          },
+          "version": 1
+        }
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgb(245, 240, 240)",
+    "backside_width": 658,
+    "backside_height": 438,
+    "backside_left": 8,
+    "backside_top": 184.1875,
+    "backside": true,
+    "drag_x_offset": 335,
+    "drag_y_offset": 324.8125
+  },
+  "version": 1,
+  "shared_widgets": [
+    {
+      "semantic": {
+        "type": "nest",
+        "contents": [],
+        "guid": "toontalk_id_1433768429191",
+        "serial_number": 1,
+        "name": "#1"
+      },
+      "view": {
+        "saved_width": 116,
+        "saved_height": 98,
+        "backside": false
+      },
+      "version": 1
+    }
+  ]
+}</div></div>
 </body>
 </html>

@@ -133,7 +133,7 @@ window.TOONTALK.create_function_table =
         var compute_response = function (bird, box_size) {
             var next_widget, index, args, type;
             if (arity >= 0 && box_size != arity+1) { // one for the bird
-                TT.UTILITIES.display_message("Birds for the " + function_name + " function can only respond to boxes with " + (minimum_arity+1) + " holes. Not " + box_size + " holes.");
+                TT.UTILITIES.display_message("Birds for the " + function_name + " function can only respond to boxes with " + (arity+1) + " holes. Not " + box_size + " holes.");
                 return;
             }
             args = [];
