@@ -1244,6 +1244,26 @@ window.TOONTALK.box.function =
         "hole",
         ['number', 'box']);
     functions.add_function_object(
+        'fill hole', 
+        function (message, event, robot) {
+            var set_hole_contents = function (number, box, new_contents) {
+                var n = Math.round(number.to_float());
+                if (n < 1) {
+                    TT.UTILITIES.display_message("The fill hole function bird cannot accept " + number + ". She only accepts positive numbers.");
+                    return;
+                }
+                if (n > box.get_size()) {
+                    box.set_size(n);
+                };
+                box.set_hole(n-1, new_contents);
+                return box;
+            };
+            return functions.typed_bird_function(message, set_hole_contents, ['number', 'box', undefined], 3, 'fill hole', event, robot);
+        },
+        "The bird will return with the box where one of its holes has been filled by whatever is in the fourth hole. The number determines which hole's contents are changed. 1 for the first hole.",
+        "fill hole",
+        ['number', 'box', undefined]);
+    functions.add_function_object(
         'split box', 
         function (message, event, robot) {
             var split_box = function (number, box) {
@@ -1272,7 +1292,7 @@ window.TOONTALK.box.function =
                 }
                 return box_of_boxes();
             };
-            return functions.typed_bird_function(message, split_box, ['number', 'box'], 2, 'box hole', event, robot);
+            return functions.typed_bird_function(message, split_box, ['number', 'box'], 2, 'split box', event, robot);
         },
         "The bird will return with a box with the original box split in two. The number determines where the split is. 1 for after the first hole.",
         "split",

@@ -3323,7 +3323,11 @@ window.TOONTALK.UTILITIES =
        utilities.conjunction = function (list, add_a_or_an) {
            // turns a list into an English conjunction
            return list.map(function (element, index) {
-                               var item = add_a_or_an ? utilities.add_a_or_an(element) : element;
+                               var item;
+                               if (typeof element === 'undefined') {
+                                   return "anything";
+                               }
+                               item = add_a_or_an ? utilities.add_a_or_an(element) : element;
                                if (index === list.length-2) {
                                    return item + " and ";
                                } else if (index === list.length-1) {
