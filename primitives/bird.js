@@ -338,7 +338,7 @@ window.TOONTALK.bird = (function (TT) {
                 var set_down_message_continuation = function () {
                         var fly_to_nest_continuation = function () {
                             // no other bird should do this once this one begins to fly to the nest to move its contents
-                            if (!nest.visible()) {
+                            if (!nest_recieving_message.visible()) {
                                 // been hidden since this bird started delivery
                                 nest_recieving_message.add_to_contents(message_side, event, robot, this, true);
                                 if (after_delivery_continuation) {
@@ -372,7 +372,7 @@ window.TOONTALK.bird = (function (TT) {
                         this.fly_to(nest_offset, deliver_message_continuation, robot, delay_between_steps);
                     }.bind(this);
                 var deliver_message_continuation = function () {
-                        var message_dimensions = nest.get_contents_dimensions();
+                        var message_dimensions = nest_recieving_message.get_contents_dimensions();
                         stop_carrying_element(nest_offset);
                         TT.UTILITIES.set_css(message_side.get_frontside_element(), message_dimensions);
                         this.fly_to(contents_offset, move_contents_back_continuation, robot, delay_between_steps);
