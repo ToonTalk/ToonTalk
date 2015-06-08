@@ -1235,10 +1235,10 @@ window.TOONTALK.box.function =
                 if (n > box.get_size()) {
                     TT.UTILITIES.display_message("The box hole function bird cannot accept " + number + ". The box only has " + box.get_size() + " holes.");
                     return;
-                }
+                };
                 return box.get_hole_contents(n-1);
             };
-            return functions.fixed_arity_function(message, get_hole_contents, ['number', 'box'], 'box hole', event, robot);
+            return functions.typed_bird_function(message, get_hole_contents, ['number', 'box'], 2, 'box hole', event, robot);
         },
         "The bird will return with what is in a hole of the box. The number determines which hole's contents are returned. 1 for the first hole.",
         "hole",
@@ -1261,7 +1261,7 @@ window.TOONTALK.box.function =
                     // reduce original to n holes
                     box.set_size(n);
                     return TT.box.create(2, false, [box, box2]);
-                }
+                };
                 if (n < 0) {
                     TT.UTILITIES.display_message("The box split function bird cannot accept " + number + ". She only accepts zero or positive numbers.");
                     return;
@@ -1272,11 +1272,40 @@ window.TOONTALK.box.function =
                 }
                 return box_of_boxes();
             };
-            return functions.fixed_arity_function(message, split_box, ['number', 'box'], 'box hole', event, robot);
+            return functions.typed_bird_function(message, split_box, ['number', 'box'], 2, 'box hole', event, robot);
         },
         "The bird will return with a box with the original box split in two. The number determines where the split is. 1 for after the first hole.",
         "split",
         ['number', 'box']);
+    functions.add_function_object(
+        'merge boxes', 
+        function (message, event, robot) {
+            var merge_box = function () {
+                var new_box_size = 0;
+                var i, j, merged_box, merged_box_hole_index, box_size;
+                if (arguments.length === 0) {
+                    return TT.box.create(0);
+                }
+                merged_box = arguments[0]; // reuse the first box
+                for (i = 0; i < arguments.length; i++) {
+                    new_box_size += arguments[i].get_size();
+                }
+                merged_box_hole_index = merged_box.get_size();
+                merged_box.set_size(new_box_size);
+                for (i = 1; i < arguments.length; i++) {
+                    box_size = arguments[i].get_size();
+                    for (j = 0; j < box_size; j++) {
+                        merged_box.set_hole(merged_box_hole_index, arguments[i].get_hole_contents(j));
+                        merged_box_hole_index++;
+                    }
+                }
+                return merged_box;
+            };
+            return functions.typed_bird_function(message, merge_box, ['box'], undefined, 'merge boxes', event, robot);
+        },
+        "The bird will return with a box that joins together all the boxes.",
+        "merge",
+        ['any number of boxes']);
     return functions.get_function_table();
 }
 ());
