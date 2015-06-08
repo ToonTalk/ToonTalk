@@ -50,7 +50,7 @@ window.TOONTALK.bird = (function (TT) {
         new_bird.is_bird = function () {
             return true;
         };
-        new_bird.widget_dropped_on_me = function (other, other_is_backside, event, robot, do_not_run_next_step) {
+        new_bird.widget_dropped_on_me = function (other, other_is_backside, event, robot, do_not_run_next_step, by_function_bird) {
             var message_side = other_is_backside ? other.get_backside() : other;
             var frontside_element, fly_continuation, run_next_step_continuation;
             if (nest) {
@@ -62,7 +62,10 @@ window.TOONTALK.bird = (function (TT) {
                     (!robot || !robot.visible() || robot.animate_consequences_of_actions())) {
                     // if !robot.animate_consequences_of_actions() then finishing watched cycle after context closed
                     // so do it immediately
-                    other.save_dimensions();
+                    if (!by_function_bird) {
+                        // if "dropped" by function bird then geometry isn't relevant 
+                        other.save_dimensions();
+                    }
                     // doesn't matter if robot is visible or there is a user event -- if either end visible show the delivery
                     frontside_element = this.get_frontside_element();
                     setTimeout(function () {
