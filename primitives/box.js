@@ -1046,7 +1046,7 @@ window.TOONTALK.box_hole =
             };
             hole.dereference = function () {
                 if (contents) {
-                    return contents[0].dereference();
+                    return contents.dereference();
                 }
                 return this;
             };
