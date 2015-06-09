@@ -564,6 +564,13 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             if (typeof value === 'number') {
                 return value;
             }
+            if (value.charAt(value.length-1) === "%") {
+                if (attribute === 'left' || attribute === 'top') {
+                    return $(frontside_element).offset()[attribute];
+                }
+                // any need for something like the following?
+                // return parseFloat(value.substring(0, value.length-2))*attribute-of-parent;
+            }
             // should really check that px is at the end the rest is a number
             return value.replace("px", "");
         };
@@ -827,10 +834,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 return "element attribute";
             };
             attribute_widget.toString = function () {
-                return widget_to_string.call(this) + " (" + this.attribute + " of " + "this.element_widget" + ")";
+                return widget_to_string.call(this) + " (" + this.attribute + " of " + this.get_attribute_owner() + ")";   
             };
             attribute_widget.get_custom_title_prefix = function () {
-                return "I'm the '" + this.attribute + "' attribute of " + this.element_widget + ".\n" +
+                return "I'm the '" + this.attribute + "' attribute of " + this.get_attribute_owner() + ".\n" +
                        "Drop a number on me or edit my back side to change my value. My back side has an info button to learn more.";
             };
             attribute_widget.equals = function (other) {
@@ -867,7 +874,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                         element: TT.UTILITIES.get_json(this_element_widget, json_history)};            
             };
             attribute_widget.get_original_attribute_widget = function () {
-                return this_element_widget.get_original_copies()[attribute_name][0];
+                var copies = this_element_widget.get_original_copies()[attribute_name];
+                return copies && copies[0];
             };
             attribute_widget.get_attribute_owner = function () {
                 // return this_element_widget or backside top ancestor of type element
@@ -884,14 +892,14 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     // which is OK since will treat this_element_widget as its owner
                 };
                 // if this is a copy use the original 
-                var original = this.get_original_attribute_widget();
-                if (original !== this) {
-                    return original.get_attribute_owner();
-                }
-                var backside_ancestor_side, widget, widget_parent;
+                var original, backside_ancestor_side, widget, widget_parent;
                 backside_ancestor_side = get_backside_parent(this);
                 if (!backside_ancestor_side) {
-                    return this_element_widget;
+                    original = this.get_original_attribute_widget();
+                    if (original && original !== this) {
+                        return original.get_attribute_owner();
+                     }
+                     return this_element_widget;
                 }
                 if (!backside_ancestor_side.get_widget().is_element()) {
                     return this_element_widget;
@@ -921,15 +929,14 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 // so best to approximate -- also should be faster to do arithmetic
                 var copies = this_element_widget.get_original_copies()[attribute_name];
                 var decimal_value = bigrat.toDecimal(new_value);
-                var return_value, value_approximation;
+                var value_approximation = bigrat.fromDecimal(decimal_value);
                 if (this.get_attribute_owner().set_attribute(this.attribute, decimal_value)) {
                     // if the new_value is different from the current value
-                    value_approximation = bigrat.fromDecimal(decimal_value);
                     copies.forEach(function (copy, index) {
-                        return_value = copy.set_value_from_sub_classes(value_approximation, true); 
+                       copy.set_value_from_sub_classes(value_approximation, true); 
                   });
                 }
-                return return_value;
+                return this.set_value_from_sub_classes(value_approximation, true);
             };
             attribute_widget.is_attribute_widget = function () {
                 return true;
