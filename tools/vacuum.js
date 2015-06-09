@@ -184,7 +184,7 @@ window.TOONTALK.vacuum = (function (TT) {
                         TT.sounds.bird_fly.pause(); // just in case
                     }
                     backside_widgets.forEach(function (widget_side) {
-                                                 if (widget !== widget.robot_in_training()) {
+                                                 if (widget_side && widget !== widget.robot_in_training()) {
                                                      remove_widget(widget_side);
                                                  }
                                              });

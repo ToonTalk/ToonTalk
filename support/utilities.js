@@ -983,6 +983,9 @@ window.TOONTALK.UTILITIES =
             widget.set_backside_widget_sides(backside_widgets, 
                                              json_semantic_backside_widgets.map(
                                                   function (json) {
+                                                      if (!json) {
+                                                          return json;
+                                                      }
                                                       if (json.widget.shared_widget_index >= 0) {
                                                           return additional_info.json_of_shared_widgets[json.widget.shared_widget_index].view;
                                                       }
