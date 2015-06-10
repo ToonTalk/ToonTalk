@@ -949,7 +949,7 @@ window.TOONTALK.UTILITIES =
                                                          utilities.set_css(side_element, size_css);
                                                      });
                         } else {
-                            utilities.set_css(side_element, size_css);;
+                            utilities.set_css(side_element, size_css);
                         }
                     }
                 }

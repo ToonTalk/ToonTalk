@@ -955,7 +955,7 @@ window.TOONTALK.number = (function () {
         // bigger fonts mean more digits can be seen so compute more of them
         var decimal_places = generate_decimal_places(fractional_part, decimal_max_digits);
         var after_decimal_point;
-        if (decimal_places.length < number_of_full_size_characters) {
+        if (decimal_places.length < number_of_full_size_characters_after_decimal_point) {
             // not repeating and not too many decimal digits
             after_decimal_point = decimal_places;
         } else {
