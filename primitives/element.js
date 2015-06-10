@@ -936,7 +936,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                        copy.set_value_from_sub_classes(value_approximation, true); 
                   });
                 }
-                return this.set_value_from_sub_classes(value_approximation, true);
+                return this.set_value_from_sub_classes(value_approximation, false);
             };
             attribute_widget.is_attribute_widget = function () {
                 return true;
