@@ -144,6 +144,9 @@ window.TOONTALK.widget = (function (TT) {
             if (!widget.is_plain_text_element) {
                widget.is_plain_text_element = return_false;
             }
+            if (!widget.is_attribute_widget) {
+                widget.is_attribute_widget = return_false;
+            }
             if (!widget.maintain_proportional_dimensions) {
                widget.maintain_proportional_dimensions = return_false;
             }
@@ -1477,6 +1480,7 @@ window.TOONTALK.widget = (function (TT) {
             widget.is_function_nest = return_false;
             widget.is_hole = return_false;
             widget.is_plain_text_element = return_false;
+            widget.is_attribute_widget = return_false;
             widget.ok_to_set_dimensions = return_false;
             widget.get_json = function (json_history) {
                 var backside = this.get_backside(true);
