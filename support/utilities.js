@@ -979,7 +979,9 @@ window.TOONTALK.UTILITIES =
             if (!json_semantic_backside_widgets) {
                 return;
             }
-            additional_info.to_be_on_backside_of = widget;
+            if (!widget.is_top_level()) {
+                additional_info.to_be_on_backside_of = widget;
+            }
             backside_widgets = this.create_array_from_json(json_semantic_backside_widgets, additional_info);
             widget.set_backside_widget_sides(backside_widgets, 
                                              json_semantic_backside_widgets.map(

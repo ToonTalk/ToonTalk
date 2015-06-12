@@ -805,16 +805,16 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         }
     };
 
-    element.get_attribute_widget_in_backside_table = function (attribute_name, dont_create) {
+    element.get_attribute_widget_in_backside_table = function (attribute_name, dont_create, additional_info) {
         var attribute_widget = this.get_attribute_widgets_in_backside_table()[attribute_name];
         if (!attribute_widget && !dont_create) {
-            attribute_widget = this.create_attribute_widget(attribute_name);
+            attribute_widget = this.create_attribute_widget(attribute_name, additional_info);
             this.get_attribute_widgets_in_backside_table()[attribute_name] = attribute_widget;
         }
         return attribute_widget;
     };
 
-    element.create_attribute_widget = function (attribute_name) {
+    element.create_attribute_widget = function (attribute_name, additional_info) {
         var selector = ".toontalk-element-" + attribute_name + "-attribute-input";
         var backside_element = this.get_backside_element();
         var attribute_value = this.get_attribute(attribute_name);
@@ -988,10 +988,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     return true; // don't remove
                 });
                 if (attribute_name === 'left' || attribute_name === 'top') {
+                    var owner = (additional_info && additional_info.to_be_on_backside_of) || attribute_widget.get_attribute_owner();
                     drag_listener = 
                         function (event) {
                             // ensures numbers are updated as the element is dragged
-                            var owner = attribute_widget.get_attribute_owner();
                             var top_level_position, attribute_value, left, top;
                             if (event.currentTarget.toontalk_widget !== owner) {
                                 return;
@@ -1005,15 +1005,15 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                             top  = event.pageY-top_level_position.top -(owner.drag_y_offset || 0);
                             if (attribute_name === 'left') {
                                 attribute_value = left;
-                                this.set_attribute('top', top);
+                                owner.set_attribute('top', top);
                             } else {
                                 attribute_value = top;
-                                this.set_attribute('left', left);
+                                owner.set_attribute('left', left);
                             }
                             attribute_widget.set_value_from_decimal(attribute_value);
                             widget_update_display.call(attribute_widget);
-                    }.bind(this);
-                    frontside_element = this.get_frontside_element();
+                    };
+                    frontside_element = owner.get_frontside_element();
                     frontside_element.addEventListener('drag', drag_listener);
                 }
             }
@@ -1036,7 +1036,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
 
     TT.creators_from_json["attribute_widget"] = function (json, additional_info) {
         var element_widget = TT.UTILITIES.create_from_json(json.element, additional_info);
-        return element_widget.create_attribute_widget(json.attribute_name);
+        return element_widget.create_attribute_widget(json.attribute_name, additional_info);
     };
 
     // for backwards compatibility:
@@ -1153,7 +1153,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 reconstructed_element.add_to_css(attribute_name, value_in_pixels(value) || value);
             }
             if (backside_widgets_of_attribute_json) {
-                attribute_widget = reconstructed_element.get_attribute_widget_in_backside_table(attribute_name);
+                attribute_widget = reconstructed_element.get_attribute_widget_in_backside_table(attribute_name, false, additional_info);
                 TT.UTILITIES.add_backside_widgets_from_json(attribute_widget, backside_widgets_of_attribute_json, additional_info);
             }
         }.bind(this));
@@ -1272,7 +1272,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         var index = style_attributes.indexOf(attribute);
         if (index >= 0) {
             style_attributes.splice(index, 1);
-            update_style_attribute_chooser(attributes_chooser, this, attribute_table);
+            this.get_backside().update_style_attribute_chooser();
         }
         return true; // so robot knows this succeeded
     };
@@ -1283,79 +1283,6 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
 window.TOONTALK.element_backside = 
 (function (TT) {
     "use strict";
-    
-    var update_style_attribute_chooser = function (attributes_chooser, element_widget, attribute_table) {
-        // the following could be made the default
-        // but if TT.attribute_options is set use it instead
-        var options = [{label: "Geometry attributes",
-                        sub_menus: ["left", "top", "width", "height", "z-index", "background-position"]},
-                       {label: "Color attributes",
-                        sub_menus: ["background-color", "color", "opacity"]},
-                       {label: "Font attributes",
-                        sub_menus: ["font-size", "font-weight"]},
-                       {label: "Visibility",
-                        sub_menus: ["display", "visibility"]},
-                       {label: "Transformations",
-                        sub_menus: ["rotate", "skewX", "skewY", "transform-origin-x", "transform-origin-y"]}];
-        var process_menu_item = function (option, menu_list, element_widget) {
-            var style_attributes = element_widget.get_style_attributes();
-            var already_added = style_attributes.indexOf(option) >= 0;
-            var title = "Click to add or remove the '" + option + "' style attribute from my backside.";
-            var check_box = TT.UTILITIES.create_check_box(already_added, "toontalk-style-attribute-check-box", option+"&nbsp;", title);
-            var additional_class = "toontalk-style-attribute-check-box-for-" + option;
-            var documentation_link = TT.UTILITIES.create_anchor_element("i", documentation_source(option));
-            var list_item = document.createElement("li");
-            $(documentation_link).addClass("toontalk-help-button notranslate toontalk-attribute-help-button");
-            $(documentation_link).css({color: "white"}); // ui-widget-content interferes with this
-            documentation_link.translate = false; // should not be translated
-            documentation_link.lang      = "en";
-            check_box.container.appendChild(documentation_link);
-            $(check_box.button).addClass(additional_class);
-            check_box.button.addEventListener('click', function (event) {
-                if (check_box.button.checked) {
-                    element_widget.add_style_attribute(option);
-                } else {
-                    element_widget.remove_style_attribute(option);
-                }
-                update_style_attributes_table(attribute_table, element_widget, element_widget.get_backside());
-                if (element_widget.robot_in_training()) {
-                    element_widget.robot_in_training().edited(element_widget, 
-                                                               {setter_name: (check_box.button.checked ? "add_style_attribute" : "remove_style_attribute"),
-                                                                argument_1: option,
-                                                                toString: (check_box.button.checked ? "add" : "remove") + " a widget for the " + option + " attribute of",
-                                                                button_selector: "." + additional_class});
-                }
-            });
-            list_item.appendChild(check_box.container);
-            menu_list.appendChild(list_item);
-         };
-        var process_options = function (sub_tree, menu_list, element_widget) {
-            var category_header, sub_menu_list;
-            if (typeof sub_tree === 'string') {
-                process_menu_item(sub_tree, menu_list, element_widget);
-            } else if (sub_tree.label) {
-                category_header = document.createElement("h3");
-                category_header.textContent = sub_tree.label;
-                sub_menu_list = document.createElement("ul");
-                menu_list.appendChild(category_header);
-                menu_list.appendChild(sub_menu_list);   
-                process_options(sub_tree.sub_menus, sub_menu_list, element_widget);
-            } else {
-                // is an array
-                sub_tree.forEach(function (sub_sub_tree) {
-                    process_options(sub_sub_tree, menu_list, element_widget);
-                });               
-            }
-        };
-        if ($(attributes_chooser).is(".ui-accordion")) {
-            $(attributes_chooser).accordion('destroy');
-        }
-        $(attributes_chooser).empty();
-        process_options(options, attributes_chooser, element_widget);
-        $(attributes_chooser).accordion({active: 0,
-                                         heightStyle: "content"});
-        return attributes_chooser;
-    };
     
     var update_style_attributes_table = function (table, element_widget, backside) {
         if (!backside.visible()) {
@@ -1507,6 +1434,78 @@ window.TOONTALK.element_backside =
                     backside_element.appendChild(URL_input.container);
                 }
             }
+            backside.update_style_attribute_chooser = function () {
+                // the following could be made the default
+                // but if TT.attribute_options is set use it instead
+                var options = [{label: "Geometry attributes",
+                                sub_menus: ["left", "top", "width", "height", "z-index", "background-position"]},
+                               {label: "Color attributes",
+                                sub_menus: ["background-color", "color", "opacity"]},
+                               {label: "Font attributes",
+                                sub_menus: ["font-size", "font-weight"]},
+                               {label: "Visibility",
+                                sub_menus: ["display", "visibility"]},
+                               {label: "Transformations",
+                                sub_menus: ["rotate", "skewX", "skewY", "transform-origin-x", "transform-origin-y"]}];
+                var process_menu_item = function (option, menu_list, element_widget) {
+                    var style_attributes = element_widget.get_style_attributes();
+                    var already_added = style_attributes.indexOf(option) >= 0;
+                    var title = "Click to add or remove the '" + option + "' style attribute from my backside.";
+                    var check_box = TT.UTILITIES.create_check_box(already_added, "toontalk-style-attribute-check-box", option+"&nbsp;", title);
+                    var additional_class = "toontalk-style-attribute-check-box-for-" + option;
+                    var documentation_link = TT.UTILITIES.create_anchor_element("i", documentation_source(option));
+                    var list_item = document.createElement("li");
+                    $(documentation_link).addClass("toontalk-help-button notranslate toontalk-attribute-help-button");
+                    $(documentation_link).css({color: "white"}); // ui-widget-content interferes with this
+                    documentation_link.translate = false; // should not be translated
+                    documentation_link.lang      = "en";
+                    check_box.container.appendChild(documentation_link);
+                    $(check_box.button).addClass(additional_class);
+                    check_box.button.addEventListener('click', function (event) {
+                        if (check_box.button.checked) {
+                            element_widget.add_style_attribute(option);
+                        } else {
+                            element_widget.remove_style_attribute(option);
+                        }
+                        update_style_attributes_table(attribute_table, element_widget, element_widget.get_backside());
+                        if (element_widget.robot_in_training()) {
+                            element_widget.robot_in_training().edited(element_widget, 
+                                                                       {setter_name: (check_box.button.checked ? "add_style_attribute" : "remove_style_attribute"),
+                                                                        argument_1: option,
+                                                                        toString: (check_box.button.checked ? "add" : "remove") + " a widget for the " + option + " attribute of",
+                                                                        button_selector: "." + additional_class});
+                        }
+                    });
+                    list_item.appendChild(check_box.container);
+                    menu_list.appendChild(list_item);
+                 };
+                var process_options = function (sub_tree, menu_list, element_widget) {
+                    var category_header, sub_menu_list;
+                    if (typeof sub_tree === 'string') {
+                        process_menu_item(sub_tree, menu_list, element_widget);
+                    } else if (sub_tree.label) {
+                        category_header = document.createElement("h3");
+                        category_header.textContent = sub_tree.label;
+                        sub_menu_list = document.createElement("ul");
+                        menu_list.appendChild(category_header);
+                        menu_list.appendChild(sub_menu_list);   
+                        process_options(sub_tree.sub_menus, sub_menu_list, element_widget);
+                    } else {
+                        // is an array
+                        sub_tree.forEach(function (sub_sub_tree) {
+                            process_options(sub_sub_tree, menu_list, element_widget);
+                        });               
+                    }
+                };
+                if ($(attributes_chooser).is(".ui-accordion")) {
+                    $(attributes_chooser).accordion('destroy');
+                }
+                $(attributes_chooser).empty();
+                process_options(options, attributes_chooser, element_widget);
+                $(attributes_chooser).accordion({active: 0,
+                                                 heightStyle: "content"});
+                return attributes_chooser;
+            };
             backside.get_attributes_chooser = function () {
                 return attributes_chooser;
             };
@@ -1571,7 +1570,7 @@ window.TOONTALK.element_backside =
                 video_label_and_title();
                 backside_element.appendChild($play_video_button.get(0));
             }
-            update_style_attribute_chooser(attributes_chooser, element_widget, attribute_table);
+            backside.update_style_attribute_chooser();
             update_style_attributes_table(attribute_table, element_widget, backside);
             backside_element.appendChild(attributes_chooser);
             backside_element.appendChild(show_attributes_chooser);
@@ -1585,8 +1584,13 @@ window.TOONTALK.element_backside =
                 }
                 update_style_attributes_table(attribute_table, element_widget, backside);
                 if ($(attributes_chooser).is(":visible")) {
-                    update_style_attribute_chooser(attributes_chooser, element_widget, attribute_table);
+                    backside.update_style_attribute_chooser();
                 }
+                element_widget.get_backside_widgets().forEach(function (widget) {
+                    if (widget && widget.is_attribute_widget()) {
+                        widget.rerender();
+                    }
+                });
                 generic_backside_update();
             };
             // if the backside is hidden then so should the attributes chooser
