@@ -1593,7 +1593,7 @@ window.TOONTALK.element_backside =
                     backside.update_style_attribute_chooser();
                 }
                 element_widget.get_backside_widgets().forEach(function (widget) {
-                    if (widget && widget.is_attribute_widget()) {
+                    if (widget && widget.get_widget().is_attribute_widget()) {
                         widget.rerender();
                     }
                 });
