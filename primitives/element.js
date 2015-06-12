@@ -972,7 +972,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         var widget_copier;         // how the widget is copied without attribute widget enhancements
         var value_setter;          // how the widget's value is set
         var widget_update_display; // how widget updates display without attribute widget enhancements
-        var $attribute_input, attribute_widget, original_copies, frontside_element, drag_listener;
+        var $attribute_input, attribute_widget, original_copies, drag_listener;
         if (backside_element) {
             $attribute_input = $(backside_element).find(selector);
             if ($attribute_input.length > 0) {
@@ -993,7 +993,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                         function (event) {
                             // ensures numbers are updated as the element is dragged
                             var top_level_position, attribute_value, left, top;
-                            if (event.currentTarget.toontalk_widget !== owner) {
+                            if (event.currentTarget.toontalk_widget !== attribute_widget.get_attribute_owner()) {
                                 return;
                             }
                             top_level_position = $(owner.get_frontside_element()).closest(".toontalk-top-level-backside").offset();
@@ -1013,8 +1013,14 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                             attribute_widget.set_value_from_decimal(attribute_value);
                             widget_update_display.call(attribute_widget);
                     };
-                    frontside_element = owner.get_frontside_element();
-                    frontside_element.addEventListener('drag', drag_listener);
+                    attribute_widget.add_parent_of_frontside_change_listener(function (old_parent, new_parent) {
+                        if (old_parent) {
+                            old_parent.get_frontside_element().removeEventListener('drag', drag_listener);
+                        }
+                        if (new_parent) {
+                            new_parent.get_frontside_element().addEventListener('drag', drag_listener);
+                        }
+                    });
                 }
             }
         } else if (type === 'string') {
