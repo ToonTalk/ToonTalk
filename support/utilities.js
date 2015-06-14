@@ -980,7 +980,13 @@ window.TOONTALK.UTILITIES =
                 return;
             }
             if (!widget.is_top_level()) {
-                additional_info.to_be_on_backside_of = widget;
+                // the backside widgets need to know parent to be
+                // since they may be called recursively maintain a stack of them
+                if (additional_info.to_be_on_backside_of) {
+                    additional_info.to_be_on_backside_of.push(widget);
+                } else {
+                    additional_info.to_be_on_backside_of = [widget];    
+                }
             }
             backside_widgets = this.create_array_from_json(json_semantic_backside_widgets, additional_info);
             widget.set_backside_widget_sides(backside_widgets, 
@@ -994,6 +1000,7 @@ window.TOONTALK.UTILITIES =
                                                       }
                                                       return json.widget.view; 
                                                   }));
+            additional_info.to_be_on_backside_of.pop();
         };
         
         utilities.create_array_from_json = function (json_array, additional_info) {

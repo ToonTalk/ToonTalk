@@ -988,7 +988,13 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     return true; // don't remove
                 });
                 if (attribute_name === 'left' || attribute_name === 'top') {
-                    var owner = (additional_info && additional_info.to_be_on_backside_of) || attribute_widget.get_attribute_owner();
+                    var owner;
+                    if (additional_info && additional_info.to_be_on_backside_of) {
+                       owner = additional_info.to_be_on_backside_of[0]; // top of stack
+                    }
+                    if (!owner) {
+                         owner = attribute_widget.get_attribute_owner();
+                    }
                     drag_listener = 
                         function (event) {
                             // ensures numbers are updated as the element is dragged
