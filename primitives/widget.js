@@ -144,6 +144,9 @@ window.TOONTALK.widget = (function (TT) {
             if (!widget.is_plain_text_element) {
                widget.is_plain_text_element = return_false;
             }
+            if (!widget.is_attribute_widget) {
+                widget.is_attribute_widget = return_false;
+            }
             if (!widget.maintain_proportional_dimensions) {
                widget.maintain_proportional_dimensions = return_false;
             }
@@ -596,6 +599,7 @@ window.TOONTALK.widget = (function (TT) {
         
         has_parent: function (widget) {
             // the parent is either the widget or its backside
+            var parent_of_frontside_change_listeners = [];
             var parent_of_frontside, parent_of_backside;
             widget.get_parent_of_frontside = function () {
                 return parent_of_frontside;
@@ -620,6 +624,18 @@ window.TOONTALK.widget = (function (TT) {
                 }
                 if (old_parent_of_frontside && !backside_widget_already_removed && !parent_is_backside && old_parent_of_frontside.is_backside()) {
                     old_parent_of_frontside.get_widget().remove_backside_widget(this, false, true);
+                }
+                parent_of_frontside_change_listeners.forEach(function (listener) {
+                        listener(old_parent_of_frontside, parent_of_frontside);
+                });
+            };
+            widget.add_parent_of_frontside_change_listener = function (listener) {
+                parent_of_frontside_change_listeners.push(listener);
+            };
+            widget.remove_parent_of_frontside_change_listener = function (listener) {
+                var index = parent_of_frontside_change_listeners.indexOf(listener);
+                if (index >= 0) {
+                    parent_of_frontside_change_listeners.splice(index, 1);
                 }
             };
             widget.set_parent_of_backside = function (widget, parent_is_backside, already_removed_from_parent_of_backside) {
@@ -1464,6 +1480,7 @@ window.TOONTALK.widget = (function (TT) {
             widget.is_function_nest = return_false;
             widget.is_hole = return_false;
             widget.is_plain_text_element = return_false;
+            widget.is_attribute_widget = return_false;
             widget.ok_to_set_dimensions = return_false;
             widget.get_json = function (json_history) {
                 var backside = this.get_backside(true);

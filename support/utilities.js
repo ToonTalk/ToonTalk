@@ -949,7 +949,7 @@ window.TOONTALK.UTILITIES =
                                                          utilities.set_css(side_element, size_css);
                                                      });
                         } else {
-                            utilities.set_css(side_element, size_css);;
+                            utilities.set_css(side_element, size_css);
                         }
                     }
                 }
@@ -979,15 +979,30 @@ window.TOONTALK.UTILITIES =
             if (!json_semantic_backside_widgets) {
                 return;
             }
+            if (!widget.is_top_level()) {
+                // the backside widgets need to know parent to be
+                // since they may be called recursively maintain a stack of them
+                if (additional_info.to_be_on_backside_of) {
+                    additional_info.to_be_on_backside_of.push(widget);
+                } else {
+                    additional_info.to_be_on_backside_of = [widget];    
+                }
+            }
             backside_widgets = this.create_array_from_json(json_semantic_backside_widgets, additional_info);
             widget.set_backside_widget_sides(backside_widgets, 
                                              json_semantic_backside_widgets.map(
                                                   function (json) {
+                                                      if (!json) {
+                                                          return json;
+                                                      }
                                                       if (json.widget.shared_widget_index >= 0) {
                                                           return additional_info.json_of_shared_widgets[json.widget.shared_widget_index].view;
                                                       }
                                                       return json.widget.view; 
                                                   }));
+            if (!widget.is_top_level()) {
+                additional_info.to_be_on_backside_of.pop();
+            }
         };
         
         utilities.create_array_from_json = function (json_array, additional_info) {
@@ -1358,13 +1373,20 @@ window.TOONTALK.UTILITIES =
         };
         
         utilities.copy_widget_sides = function (widget_sides, parameters) {
-            return widget_sides.map(function (widget_side) {
-                var widget_copy = widget_side.get_widget().copy(parameters);
-                if (widget_side.is_backside()) {
-                    return widget_copy.get_backside(true);
+            var copy = [];
+            widget_sides.forEach(function (widget_side) {
+                var widget_copy;
+                if (!widget_side) {
+                    return;
                 }
-                return widget_copy;
+                widget_copy = widget_side.get_widget().copy(parameters);
+                if (widget_side.is_backside()) {
+                    copy.push(widget_copy.get_backside(true));
+                } else {
+                    copy.push(widget_copy);
+                }
             });
+            return copy;
         };
         
         utilities.copy_array = function (array) {
