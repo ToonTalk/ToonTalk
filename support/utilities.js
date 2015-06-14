@@ -766,8 +766,9 @@ window.TOONTALK.UTILITIES =
     };
     var process_encoded_HTML = function (s, encoded_HTML_function) {
         var cursor = 0;
-        var token = "decodeURIComponent";
-        var encoding_token_start = s.indexOf(token);
+        var token_start = encodeURIComponent("<span class='notranslate'>decodeURIComponent");
+        var token_end   = encodeURIComponent("decodeURIComponent</span>");
+        var encoding_token_start = s.indexOf(token_start);
         var decoded = "";
         var encoding_start, encoding_end;
         if (encoding_token_start < 0) {
@@ -775,15 +776,15 @@ window.TOONTALK.UTILITIES =
             return s;
         }
         while (encoding_token_start >= 0) {
-            encoding_start = encoding_token_start+token.length;
-            encoding_end = s.indexOf(token,encoding_start);
+            encoding_start = encoding_token_start+token_start.length;
+            encoding_end = s.indexOf(token_end,encoding_start);
             if (encoding_end < 0) {
-                utilities.report_internal_error("Expected title to have an even number of occurrences of " + token);
+                utilities.report_internal_error("Expected title to have matching pairs of " + token_start + " and " + token_end);
                 return s;
             }
             decoded += s.substring(cursor, encoding_token_start) + encoded_HTML_function(s.substring(encoding_start, encoding_end));
-            cursor = encoding_end+token.length;
-            encoding_token_start = s.indexOf(token, cursor);
+            cursor = encoding_end+token_end.length;
+            encoding_token_start = s.indexOf(token_start, cursor);
         }
         decoded += s.substring(cursor);
         return decoded; 
@@ -1929,7 +1930,7 @@ window.TOONTALK.UTILITIES =
         };
 
         utilities.encode_HTML_for_title = function (html) {
-            return encodeURIComponent("decodeURIComponent" + html + "decodeURIComponent"); 
+            return encodeURIComponent("<span class='notranslate'>decodeURIComponent" + html + "decodeURIComponent</span>"); 
         };
 
         utilities.remove_encoded_HTML = function (s) {
