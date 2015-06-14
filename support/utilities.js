@@ -1000,7 +1000,9 @@ window.TOONTALK.UTILITIES =
                                                       }
                                                       return json.widget.view; 
                                                   }));
-            additional_info.to_be_on_backside_of.pop();
+            if (!widget.is_top_level()) {
+                additional_info.to_be_on_backside_of.pop();
+            }
         };
         
         utilities.create_array_from_json = function (json_array, additional_info) {
