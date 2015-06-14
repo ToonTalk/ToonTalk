@@ -886,6 +886,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                         if (parent.is_backside()) {
                             return parent;
                         }
+                        if (parent.is_nest()) {
+                            // nests "insulates attribute widgets from changing "aligence" to what they are on the back of
+                            return;
+                        }
                         return get_backside_parent(parent.get_widget());
                     }
                     // if backside never opened then the attribute_widget may not have a parent
@@ -1020,10 +1024,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                             widget_update_display.call(attribute_widget);
                     };
                     attribute_widget.add_parent_of_frontside_change_listener(function (old_parent, new_parent) {
-                        if (old_parent) {
+                        if (old_parent && old_parent.get_widget().is_element()) {
                             old_parent.get_frontside_element().removeEventListener('drag', drag_listener);
                         }
-                        if (new_parent) {
+                        if (new_parent && new_parent.get_widget().is_element()) {
                             new_parent.get_frontside_element().addEventListener('drag', drag_listener);
                         }
                     });
