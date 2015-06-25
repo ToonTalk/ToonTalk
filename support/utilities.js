@@ -1941,7 +1941,7 @@ window.TOONTALK.UTILITIES =
                           // auto hide after duration proportional to text_length
                           // TODO: if longer than fits on the screen then autoscroll after some time
                           setTimeout(function () {
-                                         ui.tooltip.hide();
+                                         ui.tooltip.remove();
                                          element_displaying_tool = undefined;
                                      }, 
                                      text_length*(TT.MAXIMUM_TOOLTIP_DURATION_PER_CHARACTER || 100));
