@@ -1404,7 +1404,7 @@ window.TOONTALK.UTILITIES =
                 return element.currentStyle[style_property];
             } 
             if (window.getComputedStyle) {
-                 return document.defaultView.getComputedStyle(element, null).getPropertyValue(style_property);
+                return document.defaultView.getComputedStyle(element, null).getPropertyValue(style_property);
             }
         };
 
@@ -2694,7 +2694,7 @@ window.TOONTALK.UTILITIES =
                     pending_css.left -= (original_width-new_width)/2;
                     need_to_translate = false;
                 }
-                if (typeof pending_css.left === 'number') {
+                if (typeof pending_css.top === 'number') {
                     pending_css.top -= (original_height-new_height)/2;
                     need_to_translate = false;
                 }
