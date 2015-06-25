@@ -1776,6 +1776,7 @@ window.TOONTALK.UTILITIES =
             if (!element.parentElement) {
                 return left;
             }
+            left = utilities.adjust_left_if_scaled(left, element);
             parent_rectangle = element.parentElement.getBoundingClientRect();
             return 100*($(element.parentElement).offset().left-window.scrollX+left-parent_rectangle.left)/parent_rectangle.width  + "%";
         };
@@ -1785,8 +1786,29 @@ window.TOONTALK.UTILITIES =
             if (!element.parentElement) {
                 return top;
             }
+            top = utilities.adjust_top_if_scaled(top, element);
             parent_rectangle = element.parentElement.getBoundingClientRect();
             return 100*($(element.parentElement).offset().top+-window.scrollY+top-parent_rectangle.top)/parent_rectangle.height + "%";
+        };
+
+        utilities.adjust_left_if_scaled = function (left, element) {
+            var widget = utilities.widget_of_element(element);
+            var original_width;
+            if (widget && widget.get_original_width) {
+                original_width = widget.get_original_width();
+                return left-(original_width-widget.get_attribute('width'))/2;
+            }
+            return left;
+        };
+
+        utilities.adjust_top_if_scaled = function (top, element) {
+            var widget = utilities.widget_of_element(element);
+            var original_height;
+            if (widget && widget.get_original_height) {
+                original_height = widget.get_original_height();
+                return top-(original_height-widget.get_attribute('height'))/2;
+            }
+            return top;
         };
         
         utilities.ordinal = function (n) {
