@@ -411,6 +411,13 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             Object.keys(attribute_widgets_in_backside_table).forEach(function (attribute_name) {
                 attribute_widgets_in_backside_table[attribute_name].set_running(new_value, top_level_context);
             });
+            if (!new_value && this.visible()) {
+                // if stopped ensure that the latest attribute values are used to render this
+                style_attributes.forEach(function (attribute_name) {
+                                             this.add_to_css(attribute_name, this.get_attribute(attribute_name));
+                                         }.bind(this));
+                this.rerender();
+            }
         };
         widget_can_run = new_element.can_run.bind(new_element);
         new_element.can_run = function () {
