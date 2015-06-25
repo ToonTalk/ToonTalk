@@ -551,7 +551,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 return current_height || original_height;
             }
             frontside_element = this.get_frontside_element();
-            value = frontside_element.style[attribute];
+            value = TT.UTILITIES.get_style_numeric_property(frontside_element, attribute);
+//             value = frontside_element.style[attribute];
             if (value === "") {
                 // this caused integer rounding (at least of font-size)
                 // but if the above doesn't find a value seems sometimes this does
@@ -562,6 +563,15 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 return 0;
             }
             if (typeof value === 'number') {
+                if (original_width && current_height) {
+                    // adjust position if scaled since origin is not top left
+                    if (attribute === 'left') {
+                        return value+(original_width-current_width)/2;
+                    }
+                    if (attribute === 'top') {
+                        return value+(original_height-current_height)/2;
+                    }
+                }
                 return value;
             }
             if (value.charAt(value.length-1) === "%") {
@@ -571,8 +581,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 // any need for something like the following?
                 // return parseFloat(value.substring(0, value.length-2))*attribute-of-parent;
             }
-            // should really check that px is at the end the rest is a number
-            return value.replace("px", "");
+            return value;
         };
         new_element.get_original_width = function () {
             return original_width;
