@@ -612,13 +612,13 @@ window.TOONTALK.UTILITIES =
                         handle_drop($target, $(widget.get_frontside_element(true)), widget, target_widget, target_position, event);
                     }
                 };
-                var error_handler = function (response_event) {
+                var error_handler = function (error) {
                     var text =  event.dataTransfer.getData("text/html") || event.dataTransfer.getData("text");
                     if (text) {
                         widget_callback(TT.element.create(text));
                     } else {
-                        utilities.display_message("Error: " + e + ". When trying to fetch " + url);
-                        console.log(e);
+                        utilities.display_message("Error: " + error + ". When trying to fetch " + uri);
+                        console.log(error);
                     }
                     // is there more than be done if not text?
                 };
@@ -1296,6 +1296,10 @@ window.TOONTALK.UTILITIES =
                 var type = this.getResponseHeader('content-type');
                 var widget;
                 if (!type) {
+                    if (error_callback) {
+                        error_callback("Could not determine the contents type of the url");
+                    }
+                    request.removeEventListener('readystatechange', response_handler);
                     return;
                 }
                 if (type.indexOf("audio") === 0) {
