@@ -799,7 +799,7 @@ window.TOONTALK.UTILITIES =
     var timeouts = [];
     var timeout_message_name = "zero-timeout-message";
     var messages_displayed = [];
-    var backside_widgets_left, element_displaying_tool;
+    var backside_widgets_left, element_displaying_tooltip;
     window.addEventListener("message", 
                             function (event) {
                                 if (event.data === timeout_message_name && event.source === window) {
@@ -1927,8 +1927,8 @@ window.TOONTALK.UTILITIES =
                               // //width: (340 + 340*(text_length-default_capacity)/default_capacity),
                               ui.tooltip.css({maxWidth: new_width});
                           }
-                          if (element_displaying_tool) {
-                              element_displaying_tool.remove();
+                          if (element_displaying_tooltip) {
+                              element_displaying_tooltip.remove();
                           }
                           // need to add the arrow here since the replacing of the innerHTML above removed the arrow
                           // when it was added earlier
@@ -1938,7 +1938,7 @@ window.TOONTALK.UTILITIES =
 //                                     .addClass(feedback_vertical)
 //                                     .addClass(feedback_horizontal)
 //                                     .appendTo(ui.tooltip);
-                          element_displaying_tool = ui.tooltip;
+                          element_displaying_tooltip = ui.tooltip;
     //                       if (height_adjustment) {
     //                           $(ui.tooltip).css({maxHeight: $(ui.tooltip).height()+height_adjustment/2});
     //                       }
@@ -1946,12 +1946,12 @@ window.TOONTALK.UTILITIES =
                           // TODO: if longer than fits on the screen then autoscroll after some time
                           setTimeout(function () {
                                          ui.tooltip.remove();
-                                         element_displaying_tool = undefined;
+                                         element_displaying_tooltip = undefined;
                                      }, 
                                      text_length*(TT.MAXIMUM_TOOLTIP_DURATION_PER_CHARACTER || 100));
                       },
                close: function () {
-                          element_displaying_tool = undefined;
+                          element_displaying_tooltip = undefined;
                }});
         };
 
