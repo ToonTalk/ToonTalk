@@ -1928,7 +1928,7 @@ window.TOONTALK.UTILITIES =
                               ui.tooltip.css({maxWidth: new_width});
                           }
                           if (element_displaying_tool) {
-                              element_displaying_tool.hide();
+                              element_displaying_tool.remove();
                           }
                           // need to add the arrow here since the replacing of the innerHTML above removed the arrow
                           // when it was added earlier
