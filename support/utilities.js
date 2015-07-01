@@ -1420,6 +1420,9 @@ window.TOONTALK.UTILITIES =
                 if (index >= 0) {
                     as_string = as_string.substring(0, index);
                 }
+                if (as_string === 'auto') {
+                    return as_string;
+                }
                 return parseInt(as_string, 10);
             }
             return as_string;
@@ -1761,9 +1764,8 @@ window.TOONTALK.UTILITIES =
         utilities.set_position_is_absolute = function (element, absolute) {
             // this computes left and top as percentages since the parent may be scaled
             // note that if scaled the upper left corner for drops is preserved
-            var left, top, parent_rectangle;
+            var left, top;
             if (absolute) {
-                parent_rectangle = element.parentElement.getBoundingClientRect();
                 left = utilities.get_style_numeric_property(element, 'left');
                 top  = utilities.get_style_numeric_property(element, 'top');
                 utilities.set_css(element,
@@ -1780,9 +1782,14 @@ window.TOONTALK.UTILITIES =
             if (!element.parentElement) {
                 return left;
             }
-            left = utilities.adjust_left_if_scaled(left, element);
             parent_rectangle = element.parentElement.getBoundingClientRect();
-            return 100*($(element.parentElement).offset().left-window.scrollX+left-parent_rectangle.left)/parent_rectangle.width  + "%";
+            if (left === 'auto' || isNaN(left)) {
+                // typically is auto on IE11
+                left = $(element).offset().left;
+            } else {
+                left = utilities.adjust_left_if_scaled(left, element);
+            }
+            return 100*($(element.parentElement).offset().left-window.pageXOffset+left-parent_rectangle.left)/parent_rectangle.width  + "%";
         };
 
         utilities.top_as_percent = function (top, element) {
@@ -1790,9 +1797,14 @@ window.TOONTALK.UTILITIES =
             if (!element.parentElement) {
                 return top;
             }
-            top = utilities.adjust_top_if_scaled(top, element);
             parent_rectangle = element.parentElement.getBoundingClientRect();
-            return 100*($(element.parentElement).offset().top+-window.scrollY+top-parent_rectangle.top)/parent_rectangle.height + "%";
+             if (top === 'auto' || isNaN(top)) {
+                // typically is auto on IE11
+                top = $(element).offset().top;
+            } else {
+                top = utilities.adjust_top_if_scaled(top, element);
+            }
+            return 100*($(element.parentElement).offset().top+-window.pageYOffset+top-parent_rectangle.top)/parent_rectangle.height + "%";
         };
 
         utilities.adjust_left_if_scaled = function (left, element) {
@@ -1907,8 +1919,8 @@ window.TOONTALK.UTILITIES =
                                } else {
                                     position.top += 20;
                                }
-                               position.left = Math.max(position.left, window.scrollX);
-                               position.top  = Math.max(position.top,  window.scrollY);
+                               position.left = Math.max(position.left, window.pageXOffset);
+                               position.top  = Math.max(position.top,  window.pageYOffset);
                                utilities.set_css(this, position);
                                feedback_horizontal = feedback.horizontal;
                                feedback_vertical   = feedback.vertical;
