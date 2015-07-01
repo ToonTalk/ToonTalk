@@ -181,11 +181,6 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             if (initialized) {
                 // need to know new dimensions to scale appropriately
                 this.compute_original_dimensions(true);
-                // reapply CSS attribute values
-                style_attributes.forEach(function (attribute_name) {
-                                     this.add_to_css(attribute_name, this.get_attribute(attribute_name));
-                                 }.bind(this));
-                this.rerender();
             }
             return true;
         };
@@ -251,7 +246,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         };
         new_element.apply_css = function () {
             var transform = "";
-            var frontside_element, x_scale, y_scale, $container, container_width, container_height;
+            var frontside_element, x_scale, y_scale, $container, container_width, container_height, parent_of_frontside;
             if (!pending_css && !transform_css) {
                 return;
             }
@@ -297,18 +292,21 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             };
             if (pending_css.left || pending_css.top) {
                 // elements (like turtles) by default wrap -- TODO: make this configurable
-                if (pending_css.left) {      
-                    // if negative after mod add width -- do another mod in case was positive
-                    $container = $(this.get_parent_of_frontside().get_element());
-                    container_width = $container.width();
-                    pending_css.left = ((pending_css.left%container_width)+container_width)%container_width;
-                }
-                if (pending_css.top) {
-                    if (!$container) {
-                        $container = $(this.get_parent_of_frontside().get_element());
+                parent_of_frontside = this.get_parent_of_frontside();
+                if (parent_of_frontside) {
+                    if (pending_css.left) {      
+                        // if negative after mod add width -- do another mod in case was positive
+                        $container = $(parent_of_frontside.get_element());
+                        container_width = $container.width();
+                        pending_css.left = ((pending_css.left%container_width)+container_width)%container_width;
                     }
-                    container_height = $container.height();
-                    pending_css.top = ((pending_css.top%container_height)+container_height)%container_height;
+                    if (pending_css.top) {
+                        if (!$container) {
+                            $container = $(parent_of_frontside.get_element());
+                        }
+                        container_height = $container.height();
+                        pending_css.top = ((pending_css.top%container_height)+container_height)%container_height;
+                    }
                 }
             }
             if (current_width || current_height) {
@@ -413,6 +411,13 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             Object.keys(attribute_widgets_in_backside_table).forEach(function (attribute_name) {
                 attribute_widgets_in_backside_table[attribute_name].set_running(new_value, top_level_context);
             });
+            if (!new_value && this.visible()) {
+                // if stopped ensure that the latest attribute values are used to render this
+                style_attributes.forEach(function (attribute_name) {
+                                             this.add_to_css(attribute_name, this.get_attribute(attribute_name));
+                                         }.bind(this));
+                this.rerender();
+            }
         };
         widget_can_run = new_element.can_run.bind(new_element);
         new_element.can_run = function () {
@@ -538,6 +543,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                                          return;
                                                      } // else if there is another container that constrains the dimensions of this rerender it too
                                                  }
+                                                 // reapply CSS attribute values
+                                                 style_attributes.forEach(function (attribute_name) {
+                                                                              this.add_to_css(attribute_name, this.get_attribute(attribute_name));
+                                                                          }.bind(this));
                                                  this.rerender();
                                              }.bind(this),
                                              recompute);
@@ -551,7 +560,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 return current_height || original_height;
             }
             frontside_element = this.get_frontside_element();
-            value = frontside_element.style[attribute];
+            value = TT.UTILITIES.get_style_numeric_property(frontside_element, attribute);
+//             value = frontside_element.style[attribute];
             if (value === "") {
                 // this caused integer rounding (at least of font-size)
                 // but if the above doesn't find a value seems sometimes this does
@@ -562,6 +572,15 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 return 0;
             }
             if (typeof value === 'number') {
+                if (original_width && current_height) {
+                    // adjust position if scaled since origin is not top left
+                    if (attribute === 'left') {
+                        return value+(original_width-current_width)/2;
+                    }
+                    if (attribute === 'top') {
+                        return value+(original_height-current_height)/2;
+                    }
+                }
                 return value;
             }
             if (value.charAt(value.length-1) === "%") {
@@ -571,8 +590,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 // any need for something like the following?
                 // return parseFloat(value.substring(0, value.length-2))*attribute-of-parent;
             }
-            // should really check that px is at the end the rest is a number
-            return value.replace("px", "");
+            return value;
         };
         new_element.get_original_width = function () {
             return original_width;

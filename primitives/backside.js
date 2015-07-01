@@ -218,9 +218,9 @@ window.TOONTALK.backside =
                                   .click(function (event) {
                                           widget.open_settings();
                                           event.stopPropagation();
-                                  });
-                TT.UTILITIES.give_tooltip(settings_button, "Click to change settings or open a different program.");   
-                backside_element.appendChild(settings_button);         
+                                  });  
+                backside_element.appendChild(settings_button); 
+                TT.UTILITIES.give_tooltip(settings_button, "Click to change settings or open a different program.");        
             }
             // wait for DOM to settle down
             TT.UTILITIES.set_timeout(update_flag_and_sign_position);

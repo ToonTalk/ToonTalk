@@ -946,9 +946,6 @@ window.TOONTALK.box_hole =
                 }
                 return this.get_element();
             };
-            hole.get_side_element = function () {
-                return this.get_element();
-            };
             // there is no backside of an empty hole
             hole.get_frontside_element = function (update) {
                 // this once returned the element of its contents

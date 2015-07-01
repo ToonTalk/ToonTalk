@@ -612,13 +612,13 @@ window.TOONTALK.UTILITIES =
                         handle_drop($target, $(widget.get_frontside_element(true)), widget, target_widget, target_position, event);
                     }
                 };
-                var error_handler = function (response_event) {
+                var error_handler = function (error) {
                     var text =  event.dataTransfer.getData("text/html") || event.dataTransfer.getData("text");
                     if (text) {
                         widget_callback(TT.element.create(text));
                     } else {
-                        utilities.display_message("Error: " + e + ". When trying to fetch " + url);
-                        console.log(e);
+                        utilities.display_message("Error: " + error + ". When trying to fetch " + uri);
+                        console.log(error);
                     }
                     // is there more than be done if not text?
                 };
@@ -799,7 +799,7 @@ window.TOONTALK.UTILITIES =
     var timeouts = [];
     var timeout_message_name = "zero-timeout-message";
     var messages_displayed = [];
-    var backside_widgets_left, element_displaying_tool;
+    var backside_widgets_left, element_displaying_tooltip;
     window.addEventListener("message", 
                             function (event) {
                                 if (event.data === timeout_message_name && event.source === window) {
@@ -1296,6 +1296,10 @@ window.TOONTALK.UTILITIES =
                 var type = this.getResponseHeader('content-type');
                 var widget;
                 if (!type) {
+                    if (error_callback) {
+                        error_callback("Could not determine the contents type of the url");
+                    }
+                    request.removeEventListener('readystatechange', response_handler);
                     return;
                 }
                 if (type.indexOf("audio") === 0) {
@@ -1404,7 +1408,7 @@ window.TOONTALK.UTILITIES =
                 return element.currentStyle[style_property];
             } 
             if (window.getComputedStyle) {
-                 return document.defaultView.getComputedStyle(element, null).getPropertyValue(style_property);
+                return document.defaultView.getComputedStyle(element, null).getPropertyValue(style_property);
             }
         };
 
@@ -1415,6 +1419,9 @@ window.TOONTALK.UTILITIES =
                 index = as_string.indexOf('px');
                 if (index >= 0) {
                     as_string = as_string.substring(0, index);
+                }
+                if (as_string === 'auto') {
+                    return as_string;
                 }
                 return parseInt(as_string, 10);
             }
@@ -1757,9 +1764,8 @@ window.TOONTALK.UTILITIES =
         utilities.set_position_is_absolute = function (element, absolute) {
             // this computes left and top as percentages since the parent may be scaled
             // note that if scaled the upper left corner for drops is preserved
-            var left, top, parent_rectangle;
+            var left, top;
             if (absolute) {
-                parent_rectangle = element.parentElement.getBoundingClientRect();
                 left = utilities.get_style_numeric_property(element, 'left');
                 top  = utilities.get_style_numeric_property(element, 'top');
                 utilities.set_css(element,
@@ -1777,7 +1783,13 @@ window.TOONTALK.UTILITIES =
                 return left;
             }
             parent_rectangle = element.parentElement.getBoundingClientRect();
-            return 100*($(element.parentElement).offset().left-window.scrollX+left-parent_rectangle.left)/parent_rectangle.width  + "%";
+            if (left === 'auto' || isNaN(left)) {
+                // typically is auto on IE11
+                left = $(element).offset().left;
+            } else {
+                left = utilities.adjust_left_if_scaled(left, element);
+            }
+            return 100*($(element.parentElement).offset().left-window.pageXOffset+left-parent_rectangle.left)/parent_rectangle.width  + "%";
         };
 
         utilities.top_as_percent = function (top, element) {
@@ -1786,7 +1798,33 @@ window.TOONTALK.UTILITIES =
                 return top;
             }
             parent_rectangle = element.parentElement.getBoundingClientRect();
-            return 100*($(element.parentElement).offset().top+-window.scrollY+top-parent_rectangle.top)/parent_rectangle.height + "%";
+             if (top === 'auto' || isNaN(top)) {
+                // typically is auto on IE11
+                top = $(element).offset().top;
+            } else {
+                top = utilities.adjust_top_if_scaled(top, element);
+            }
+            return 100*($(element.parentElement).offset().top+-window.pageYOffset+top-parent_rectangle.top)/parent_rectangle.height + "%";
+        };
+
+        utilities.adjust_left_if_scaled = function (left, element) {
+            var widget = utilities.widget_of_element(element);
+            var original_width;
+            if (widget && widget.get_original_width) {
+                original_width = widget.get_original_width();
+                return left-(original_width-widget.get_attribute('width'))/2;
+            }
+            return left;
+        };
+
+        utilities.adjust_top_if_scaled = function (top, element) {
+            var widget = utilities.widget_of_element(element);
+            var original_height;
+            if (widget && widget.get_original_height) {
+                original_height = widget.get_original_height();
+                return top-(original_height-widget.get_attribute('height'))/2;
+            }
+            return top;
         };
         
         utilities.ordinal = function (n) {
@@ -1881,8 +1919,8 @@ window.TOONTALK.UTILITIES =
                                } else {
                                     position.top += 20;
                                }
-                               position.left = Math.max(position.left, window.scrollX);
-                               position.top  = Math.max(position.top,  window.scrollY);
+                               position.left = Math.max(position.left, window.pageXOffset);
+                               position.top  = Math.max(position.top,  window.pageYOffset);
                                utilities.set_css(this, position);
                                feedback_horizontal = feedback.horizontal;
                                feedback_vertical   = feedback.vertical;
@@ -1901,8 +1939,8 @@ window.TOONTALK.UTILITIES =
                               // //width: (340 + 340*(text_length-default_capacity)/default_capacity),
                               ui.tooltip.css({maxWidth: new_width});
                           }
-                          if (element_displaying_tool) {
-                              element_displaying_tool.hide();
+                          if (element_displaying_tooltip) {
+                              element_displaying_tooltip.remove();
                           }
                           // need to add the arrow here since the replacing of the innerHTML above removed the arrow
                           // when it was added earlier
@@ -1912,20 +1950,20 @@ window.TOONTALK.UTILITIES =
 //                                     .addClass(feedback_vertical)
 //                                     .addClass(feedback_horizontal)
 //                                     .appendTo(ui.tooltip);
-                          element_displaying_tool = ui.tooltip;
+                          element_displaying_tooltip = ui.tooltip;
     //                       if (height_adjustment) {
     //                           $(ui.tooltip).css({maxHeight: $(ui.tooltip).height()+height_adjustment/2});
     //                       }
                           // auto hide after duration proportional to text_length
                           // TODO: if longer than fits on the screen then autoscroll after some time
                           setTimeout(function () {
-                                         ui.tooltip.hide();
-                                         element_displaying_tool = undefined;
+                                         ui.tooltip.remove();
+                                         element_displaying_tooltip = undefined;
                                      }, 
                                      text_length*(TT.MAXIMUM_TOOLTIP_DURATION_PER_CHARACTER || 100));
                       },
                close: function () {
-                          element_displaying_tool = undefined;
+                          element_displaying_tooltip = undefined;
                }});
         };
 
@@ -2694,7 +2732,7 @@ window.TOONTALK.UTILITIES =
                     pending_css.left -= (original_width-new_width)/2;
                     need_to_translate = false;
                 }
-                if (typeof pending_css.left === 'number') {
+                if (typeof pending_css.top === 'number') {
                     pending_css.top -= (original_height-new_height)/2;
                     need_to_translate = false;
                 }

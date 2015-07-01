@@ -871,15 +871,6 @@ window.TOONTALK.widget = (function (TT) {
             }
         },
         
-//         get_side_element: function (create) {
-//             // returns frontside if showing otherwise backside
-//             if (this.get_frontside().visible()) {
-//                 return this.get_frontside_element(create);
-//             } else {
-//                 return this.get_backside_element(create);
-//             }
-//         },
-        
         add_to_json: function (json_semantic, json_history) {
             var json_view, json, position, frontside_element, backside, backside_element, frontside_width;
             if (json_semantic) {
