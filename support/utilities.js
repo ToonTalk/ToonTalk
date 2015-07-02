@@ -726,16 +726,16 @@ window.TOONTALK.UTILITIES =
             sound.volume = volume;
             return sound;
         }
-        TT.sounds = {hatching:      create_sound("SPARROW.WAV"),
-                     bird_fly:      create_sound("PIGEON.WAV"),
-                     bammer_hammer: create_sound("POP.WAV"),
-                     vacuum_spit:   create_sound("SPIT.WAV"),
-                     vacuum_suck:   create_sound("DUSTBUST.WAV"),
-                     drop:          create_sound("BOOK_DROP.WAV"),
-                     magic:         create_sound("MAGIC.WAV"),
-                     fall_inside:   create_sound("FALL_INSIDE.WAV"),
-                     click:         create_sound("TYPE.WAV"),
-                     event_ignored: create_sound("PLOP.WAV")};
+        TT.sounds = {hatching:      create_sound("SPARROW.mp3"),
+                     bird_fly:      create_sound("PIGEON.mp3"),
+                     bammer_hammer: create_sound("POP.mp3"),
+                     vacuum_spit:   create_sound("SPIT.mp3"),
+                     vacuum_suck:   create_sound("DUSTBUST.mp3"),
+                     drop:          create_sound("BOOK_DROP.mp3"),
+                     magic:         create_sound("MAGIC.mp3"),
+                     fall_inside:   create_sound("FALL_INSIDE.mp3"),
+                     click:         create_sound("TYPE.mp3"),
+                     event_ignored: create_sound("PLOP.mp3")};
         TT.sounds.bird_fly.loop = true;
     };
     var load_script = function (url) {

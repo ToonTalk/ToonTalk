@@ -1564,7 +1564,7 @@ window.TOONTALK.element_backside =
                         sound_effect.play();
                         sound_effect.addEventListener('ended', audio_label_and_title);
                     } else {
-                        sound_effect.pause();            
+                        sound_effect.pause();
                     }
                     audio_label_and_title();
                     if (element_widget.robot_in_training()) {
