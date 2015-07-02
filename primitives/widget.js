@@ -699,8 +699,7 @@ window.TOONTALK.widget = (function (TT) {
                         return true;
                     }
                     if (ancestor.is_backside()) {
-                        new_ancestor = ancestor.get_widget().get_parent_of_backside();
-                            
+                        new_ancestor = ancestor.get_widget().get_parent_of_backside();                     
                     } else {
                         new_ancestor = ancestor.get_parent_of_frontside();
                     }

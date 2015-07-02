@@ -1012,7 +1012,7 @@ window.TOONTALK.robot = (function (TT) {
     
     robot.toString = function (to_string_info) {
         var frontside_conditions, backside_conditions, backside_conditions_defined, body, prefix, postfix,
-            frontside_conditions_string, next_robot, robot_description, robot_conditions_description, original_person;
+            frontside_conditions_string, next_robot, robot_description, robot_conditions_description, original_person, mismatch_description, backside_description;
         if (to_string_info && to_string_info.role === "conditions") {
             return "any robot";
         }
@@ -1076,12 +1076,36 @@ window.TOONTALK.robot = (function (TT) {
         }
         if (this.match_status) {
             if (this.match_status.is_widget) {
+                if (frontside_conditions.is_top_level()) {
+                    backside_description = "the work area I'm running on";
+                } else {
+                    backside_description = "the thing I'm on the back of";
+                }
+                if (this.match_status === frontside_conditions) {
+                    mismatch_description = backside_description;
+                } else if (this.match_status.has_ancestor(frontside_conditions)) {
+                    mismatch_description = this.match_status.toString() + " inside the " + backside_description;
+                } else {
+                    if (!frontside_conditions.is_top_level()) {
+                        backside_description = "the thing on " + backside_description;
+                    }
+                    Object.keys(backside_conditions).some(function (type_name) {
+                        var backside_condition = backside_conditions[type_name];
+                        if (this.match_status === backside_condition) {
+                            mismatch_description = "any of the " + backside_condition.get_type_name(true) + " on the back of " + backside_description;
+                            return true;
+                        } else if (this.match_status.has_ancestor(backside_condition)) {
+                            mismatch_description = "any of " + this.match_status.toString() + " inside the " + backside_condition.get_type_name(true) + " on the back of " + backside_description;
+                            return true;
+                        }
+                    }.bind(this));
+                }
                 robot_description = "I'm not running because the " + this.match_status + 
-                                   " in my conditions (highlighted in red) doesn't match the corresponding widget. Perhaps editing my conditions will help.\n" + 
+                                   " (highlighted in red on my backside) that I'm expecting doesn't match " + mismatch_description + ". Perhaps editing my conditions will help.\n" + 
                                    robot_description;
             } else if (this.match_status !== 'matched') {
                 robot_description = "I'm waiting for something to be delivered to the nest that matches the " + this.match_status[0][1] +
-                                    " in my conditions (highlighted in yellow).\n" + robot_description;
+                                    " in my conditions (highlighted in yellow on my backside).\n" + robot_description;
             }
         }
         if (next_robot) {
