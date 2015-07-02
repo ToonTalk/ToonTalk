@@ -82,7 +82,7 @@ window.TOONTALK.path =
                     var sub_path;
                     if (backside_widget === widget ||
                         (backside_widget.top_contents_is && backside_widget.top_contents_is(widget)) ) {
-                        path = TT.path.get_path_to_backside_widget_of_context(backside_widget.get_type_name());
+                        path = TT.path.get_path_to_backside_widget_of_context(backside_widget.get_type_name(), robot);
                         path.is_backside = is_backside;
                         robot.add_to_backside_conditions(backside_widget); // does nothing if already added
                         return true; // stop searching
@@ -91,7 +91,7 @@ window.TOONTALK.path =
                         sub_path = backside_widget.get_path_to(widget, robot);
                         if (sub_path) {
                             sub_path.is_backside = is_backside;
-                            path = TT.path.get_path_to_backside_widget_of_context(backside_widget.get_type_name());
+                            path = TT.path.get_path_to_backside_widget_of_context(backside_widget.get_type_name(), robot);
                             path.next = sub_path;
                             robot.add_to_backside_conditions(backside_widget);
                             return true; // stop searching
@@ -288,24 +288,28 @@ window.TOONTALK.path =
                     }
             };
         },
-        get_path_to_backside_widget_of_context: function (type_name) {
+        get_path_to_backside_widget_of_context: function (type_name, robot) {
              return {dereference_path: function (context, top_level_context, robot) {
-                        var referenced;
-                        context.backside_widgets.some(function (backside_widget_side) {
-                            if (backside_widget_side.get_widget().is_of_type(type_name) &&
-                                // should be a widget that was there when robot matched backside conditions
-                                // not one that was created subsequently
-                                !robot.is_newly_created(backside_widget_side.get_widget())) {
-                                referenced = backside_widget_side.get_widget();
-                                return true; // stop searching
-                            }
-                        });
+                        var referenced = robot.get_matched_backside_widget(type_name);
+                        if (!referenced) {
+                            context.backside_widgets.some(function (backside_widget_side) {
+                                if (backside_widget_side.get_widget().is_of_type(type_name) &&
+                                    // should be a widget that was there when robot matched backside conditions
+                                    // not one that was created subsequently
+                                    !robot.is_newly_created(backside_widget_side.get_widget())) {
+                                    referenced = backside_widget_side.get_widget();
+                                    return true; // stop searching
+                                }
+                            });
+                        }
                         if (referenced) {
                             return TT.path.continue_dereferencing_path(this, referenced, top_level_context, robot);
-                        }
+                        }          
                     },
-                    toString: function () {
-                        var string = "the " + type_name + " on the back of what I'm working on";
+                    toString: function (to_string_info) {
+                        var string = ((to_string_info && to_string_info.robot && to_string_info.robot.get_backside_conditions()) ? to_string_info.robot.get_backside_conditions()[type_name] :
+                                                                                 TT.UTILITIES.add_a_or_an(type_name)) + 
+                                     " on the back of what I'm working on";
                         if (this.removing_widget) {
                             return "what is on " + string;
                         }

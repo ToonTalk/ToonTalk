@@ -54,7 +54,7 @@ window.TOONTALK.robot = (function (TT) {
         // when running watched runs these after each step
         var watched_step_end_listeners = [];
         var running_or_in_run_queue, stopped;
-        var original_backside_widgets_of_context;
+        var original_backside_widgets_of_context, backside_matched_widgets;
         if (!body) {
             body = TT.actions.create();
         }
@@ -76,7 +76,18 @@ window.TOONTALK.robot = (function (TT) {
         };
         new_robot.get_backside_conditions = function () {
             return backside_conditions;
-        }; 
+        };
+        new_robot.get_backside_matched_widgets = function () {
+           return backside_matched_widgets;
+        };
+        new_robot.set_backside_matched_widgets = function (new_value) {
+            backside_matched_widgets = new_value;
+        };
+        new_robot.get_matched_backside_widget = function (type_name) {
+            if (backside_matched_widgets) {
+                return backside_matched_widgets[type_name];
+            }
+        };
         new_robot.set_backside_conditions = function (new_value) {
             backside_conditions = new_value;
             if (backside_conditions) {
@@ -486,7 +497,7 @@ window.TOONTALK.robot = (function (TT) {
     
     robot.run = function (context, top_level_context, queue) {
         var frontside_condition_widget = this.get_frontside_conditions();
-        var backside_conditions, backside_widgets, condition_frontside_element, to_run_when_non_empty, next_robot_match_status, clear_all_mismatch_displays;
+        var backside_conditions, backside_widgets, condition_frontside_element, to_run_when_non_empty, next_robot_match_status, clear_all_mismatch_displays, type_names, backside_matched_widgets;
         if (this.being_trained || this.running_or_in_run_queue()) {
             // should not run if being trained or already scheduled to run
             return this;
@@ -503,43 +514,53 @@ window.TOONTALK.robot = (function (TT) {
 //      console.log("Match is " + TT.UTILITIES.match(frontside_condition_widget, context) + " for condition " + frontside_condition_widget + " with " + context);
         this.match_status = TT.UTILITIES.match(frontside_condition_widget, context);
         if (this.match_status === 'matched') {
-            backside_conditions = this.get_backside_conditions();
+            backside_matched_widgets = {};
+            backside_conditions = this.get_backside_conditions();      
             if (backside_conditions) {
+                type_names = Object.keys(backside_conditions);
                 backside_widgets = context.get_backside_widgets();
                 if (backside_widgets) {
                     // check that widgets on the back match the conditions
                     backside_widgets.some(function (backside_widget_side) {
-                        var backside_condition_widget_of_type = !backside_widget_side.is_backside() && backside_conditions[backside_widget_side.get_widget().get_type_name()];
+                        var type_name = backside_widget_side.get_widget().get_type_name();
+                        var backside_condition_widget_of_type = !backside_widget_side.is_backside() && backside_conditions[type_name];
                         var sub_match_status;
                         if (backside_condition_widget_of_type) {
                             clear_all_mismatch_displays(backside_condition_widget_of_type);
                             sub_match_status = TT.UTILITIES.match(backside_condition_widget_of_type, backside_widget_side.get_widget());
-                            if (sub_match_status !== 'matched') {
-                                this.match_status = sub_match_status;
-                                // stop going through backside_widgets
-                                return true;
+                            if (sub_match_status === 'matched') {
+                                backside_matched_widgets[type_name] = backside_widget_side.get_widget();
                             }
                         }
                     }.bind(this));
                 }
-                if (this.match_status === 'matched') {
+                type_names.some(function (type_name) {
                     // need to check conditions that no expected backside widgets are missing
-                    Object.keys(backside_conditions).some(function (type) {
-                        var found_one;
-                        if (backside_conditions[type]) {
-                            backside_widgets.some(function (backside_widget_side) {
-                                if (backside_widget_side.get_widget().is_of_type(type)) {
-                                    found_one = true;
-                                    return true;
-                                }
-                            });
-                            if (!found_one) {
-                                this.match_status = backside_conditions[type];
-                                return true;
-                            }
-                        }
-                    }.bind(this));
-                }
+                    if (typeof backside_matched_widgets[type_name] === 'undefined') {
+                        this.match_status = backside_conditions[type_name];
+                        backside_matched_widgets = undefined;
+                        return true;
+                    }
+                }.bind(this));
+                this.set_backside_matched_widgets(backside_matched_widgets);
+//                 if (this.match_status === 'matched') {
+//                     // need to check conditions that no expected backside widgets are missing
+//                     Object.keys(backside_conditions).some(function (type) {
+//                         var found_one;
+//                         if (backside_conditions[type]) {
+//                             backside_widgets.some(function (backside_widget_side) {
+//                                 if (backside_widget_side.get_widget().is_of_type(type)) {
+//                                     found_one = true;
+//                                     return true;
+//                                 }
+//                             });
+//                             if (!found_one) {
+//                                 this.match_status = backside_conditions[type];
+//                                 return true;
+//                             }
+//                         }
+//                     }.bind(this));
+//                 }
             }
         }
 //      console.log("robot#" + this._debug_id + " match_status is " + this.match_status);
@@ -1194,22 +1215,22 @@ window.TOONTALK.robot = (function (TT) {
              TT.UTILITIES.report_internal_error("Robot has widget in its conditions but unable to construct the path.");
              return;
          }
-         return TT.robot.create_conditions_path (path_within_conditions, path_to_robot, backside_conditions_type);
+         return TT.robot.create_conditions_path(path_within_conditions, path_to_robot, backside_conditions_type);
     };
 
     robot.create_conditions_path = function (path_within_conditions, path_to_robot, backside_conditions_type) {
          return {dereference_path: function (context, top_level_context, robot) {
                      var robot_with_widget_in_conditions = TT.path.dereference_path(path_to_robot, context, top_level_context, robot);
-                     var conditions;
+                     var condition;
                      if (backside_conditions_type) {
-                         conditions = robot_with_widget_in_conditions.get_backside_conditions()[backside_conditions_type];
+                         condition = robot_with_widget_in_conditions.get_backside_conditions()[backside_conditions_type];
                      } else {
-                         conditions = robot_with_widget_in_conditions.get_frontside_conditions();
+                         condition = robot_with_widget_in_conditions.get_frontside_conditions();
                      }
                      if (path_within_conditions === 'entire_condition') {
-                         return conditions;
+                         return condition;
                      }
-                     return TT.path.dereference_path(path_within_conditions, conditions, top_level_context, robot);
+                     return TT.path.dereference_path(path_within_conditions, condition, top_level_context, robot);
                  },
                  toString: function () {
                      var path_to_condition_description = (path_within_conditions === 'entire_condition') ?
