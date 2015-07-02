@@ -814,7 +814,8 @@ window.TOONTALK.UTILITIES =
                                 }
                             },
                             false); // don't capture events
-    $(document).ready(initialize);
+    document.addEventListener('DOMContentLoaded', initialize);
+//     $(document).ready(initialize);
 
     utilities.available_types = ["number", "box", "element", "robot", "nest", "sensor", "top-level"];
     

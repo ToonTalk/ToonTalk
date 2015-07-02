@@ -8,10 +8,11 @@
 <script src="../../libraries/jquery.jqTOC.js" type="text/javascript" charset="utf-8"></script>
 <link rel="stylesheet" media="all" href="../../libraries/jquery.jqTOC.css">
 <script type="text/javascript" charset="utf-8">
-	    $(document).ready(function(){
-	        $("div#table_of_contents").jqTOC({tocWidth:   200,
-                                              tocTitle:   'Click to navigate',
-                                              tocTopLink: 'Top of page'});
+	    document.addEventListener('DOMContentLoaded', 
+	                              function() {
+                                  $("div#table_of_contents").jqTOC({tocWidth:   200,
+                                                                    tocTitle:   'Click to navigate',
+                                                                    tocTopLink: 'Top of page'});
 	    })
 </script>
 <title>Numbers in ToonTalk</title>
