@@ -498,7 +498,8 @@ window.TOONTALK.robot = (function (TT) {
     
     robot.run = function (context, top_level_context, queue) {
         var frontside_condition_widget = this.get_frontside_conditions();
-        var backside_conditions, backside_widgets, condition_frontside_element, to_run_when_non_empty, next_robot_match_status, clear_all_mismatch_displays, type_names, backside_matched_widgets;
+        var backside_conditions, backside_widgets, condition_frontside_element, to_run_when_non_empty, next_robot_match_status, clear_all_mismatch_displays, 
+            type_names, backside_matched_widgets, backside_conditions_remaining;
         if (this.being_trained || this.running_or_in_run_queue()) {
             // should not run if being trained or already scheduled to run
             return this;
@@ -519,6 +520,7 @@ window.TOONTALK.robot = (function (TT) {
             backside_conditions = this.get_backside_conditions();      
             if (backside_conditions) {
                 type_names = Object.keys(backside_conditions);
+                backside_conditions_remaining = type_names.length;
                 backside_widgets = context.get_backside_widgets();
                 if (backside_widgets) {
                     // check that widgets on the back match the conditions
@@ -531,18 +533,30 @@ window.TOONTALK.robot = (function (TT) {
                             sub_match_status = TT.UTILITIES.match(backside_condition_widget_of_type, backside_widget_side.get_widget());
                             if (sub_match_status === 'matched') {
                                 backside_matched_widgets[type_name] = backside_widget_side.get_widget();
+                                backside_conditions_remaining--;
+                                if (backside_conditions_remaining === 0) {
+                                    return true;
+                                }
+                            } else if (!backside_matched_widgets[type_name] && !sub_match_status.is_widget) {
+                                // match_status is suspension info
+                                backside_matched_widgets[type_name] = sub_match_status;
+                            } else if (!backside_matched_widgets[type_name]) {
+                                backside_matched_widgets[type_name] = sub_match_status;
                             }
                         }
                     }.bind(this));
                 }
-                type_names.some(function (type_name) {
-                    // need to check conditions that no expected backside widgets are missing
-                    if (typeof backside_matched_widgets[type_name] === 'undefined') {
-                        this.match_status = backside_conditions[type_name];
-                        backside_matched_widgets = undefined;
-                        return true;
-                    }
-                }.bind(this));
+                if (backside_conditions_remaining > 0) {
+                    type_names.some(function (type_name) {
+                        // need to suspend if any matches are suspensions
+                        if (backside_matched_widgets[type_name] && !backside_matched_widgets[type_name].is_widget) {
+                            this.match_status = backside_matched_widgets[type_name];
+                            backside_matched_widgets = undefined;
+                            return true;
+                        }
+                        this.match_status = backside_matched_widgets[type_name];
+                    }.bind(this));
+                }
                 this.set_backside_matched_widgets(backside_matched_widgets);
 //                 if (this.match_status === 'matched') {
 //                     // need to check conditions that no expected backside widgets are missing
@@ -1093,10 +1107,10 @@ window.TOONTALK.robot = (function (TT) {
                     Object.keys(backside_conditions).some(function (type_name) {
                         var backside_condition = backside_conditions[type_name];
                         if (this.match_status === backside_condition) {
-                            mismatch_description = "any of the " + backside_condition.get_type_name(true) + " on the back of " + backside_description;
+                            mismatch_description = "any " + backside_condition.get_type_name(true) + " on the back of " + backside_description;
                             return true;
                         } else if (this.match_status.has_ancestor(backside_condition)) {
-                            mismatch_description = "any of " + this.match_status.toString() + " inside the " + backside_condition.get_type_name(true) + " on the back of " + backside_description;
+                            mismatch_description = "any " + this.match_status.toString() + " inside the " + backside_condition.get_type_name(true) + " on the back of " + backside_description;
                             return true;
                         }
                     }.bind(this));
