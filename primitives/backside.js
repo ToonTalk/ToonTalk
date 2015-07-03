@@ -116,7 +116,6 @@ window.TOONTALK.backside =
                                 }
                             });
                             if (!robot_found) {
-                                console.log("Expected to find a robot on back of " + widget);
                                 do_after_closing();
                             }
                             $backside_element.css({opacity: 1});
