@@ -569,6 +569,7 @@ window.TOONTALK.bird = (function (TT) {
         if (other.match_with_any_bird) {
             return other.match_with_any_bird(this);
         }
+        this.last_match = other;
         return this;
     };
     
@@ -742,6 +743,7 @@ window.TOONTALK.nest = (function (TT) {
             if (contents.length > 0) {
                 return contents[0];
             }
+            this.last_match = other;
             return this;
         };
         new_nest.match = function (other) {
@@ -754,7 +756,8 @@ window.TOONTALK.nest = (function (TT) {
             if (other.match_nest_with_nest) {
                 return other.match_nest_with_nest(this);
             }
-            return other;
+            this.last_match = other;
+            return this;
         };
         new_nest.add_to_contents = function (widget_side, event, robot, delivery_bird, ignore_copies) {
             var current_non_empty_listeners, widget_side_copy;

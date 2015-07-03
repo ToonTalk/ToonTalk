@@ -636,9 +636,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             if (other.match_with_any_element) {
                 return other.match_with_any_element();
             }
+            this.last_match = other;
             return this;
         }
         if (!other.match_with_another_element_widget) {
+            this.last_match = other;
             return this;
         }
         return other.match_with_another_element_widget(this);
@@ -657,6 +659,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         if (text_pattern !== "" && text_pattern === this.get_text()) {
             return 'matched';
         }
+        element_pattern.last_match = this;
         return element_pattern;
     };
 

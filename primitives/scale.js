@@ -300,6 +300,7 @@ window.TOONTALK.scale = (function (TT) {
             if (other.match_with_scale) {
                 return other.match_with_scale(this);
             }
+            this.last_match = other;
             return this;
         };
         new_scale.match_with_scale = function (scale_pattern) {

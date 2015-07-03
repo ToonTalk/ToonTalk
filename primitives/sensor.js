@@ -216,6 +216,7 @@ window.TOONTALK.sensor = (function (TT) {
         };
         new_sensor.match = function (other) {
             // TODO:
+            this.last_match = other;
             return this;
         };
         new_sensor.set_sensor_of = function (new_value) {

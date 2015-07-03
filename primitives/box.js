@@ -293,9 +293,11 @@ window.TOONTALK.box = (function (TT) {
             if (other.match_with_any_box) {
                 return other.match_with_any_box();
             }
+            this.last_match = other;
             return this;
         }
         if (!other.match_with_this_box) {
+            this.last_match = other;
             return this;
         }
         return other.match_with_this_box(this);
@@ -311,6 +313,7 @@ window.TOONTALK.box = (function (TT) {
         var waiting_widgets = [];
         var i, my_hole, pattern_hole, hole_match, contents_temporarily_removed;
         if (size !== pattern_box.get_size()) {
+            pattern_box.last_match = this;
             return pattern_box;
         }
         for (i = 0; i < size; i++) {
@@ -338,6 +341,7 @@ window.TOONTALK.box = (function (TT) {
                         waiting_widgets.push(contents_temporarily_removed);
                     } else {
                         // expected something -- not an empty hole
+                        pattern_box.last_match = this;
                         return pattern_box; // or should this be pattern_hole to provide more tragetted feedback?
                     }
                 }

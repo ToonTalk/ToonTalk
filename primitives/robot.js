@@ -487,6 +487,7 @@ window.TOONTALK.robot = (function (TT) {
                 return "matched";
             }
         }
+        this.last_match = other;
         return this;
     };
 
@@ -1079,15 +1080,15 @@ window.TOONTALK.robot = (function (TT) {
                 if (frontside_conditions.is_top_level()) {
                     backside_description = "the work area I'm running on";
                 } else {
-                    backside_description = "the thing I'm on the back of";
+                    backside_description = "the " + frontside_conditions.get_type_name() + " I'm on the back of";
                 }
                 if (this.match_status === frontside_conditions) {
                     mismatch_description = backside_description;
                 } else if (this.match_status.has_ancestor(frontside_conditions)) {
-                    mismatch_description = this.match_status.toString() + " inside the " + backside_description;
+                    mismatch_description = "the " + (this.match_status.last_match ? this.match_status.last_match.toString() : "thing") + " inside the " + backside_description;
                 } else {
                     if (!frontside_conditions.is_top_level()) {
-                        backside_description = "the thing on " + backside_description;
+                        backside_description =  "the " + this.match_status.get_type_name() + " on " + backside_description;
                     }
                     Object.keys(backside_conditions).some(function (type_name) {
                         var backside_condition = backside_conditions[type_name];
