@@ -362,6 +362,8 @@ window.TOONTALK.backside =
                     return;
                 }
                 // too soon to add these widgets so delay slightly
+                // with no delay or too small then sometimes things on nests are displayed without the correct z-index
+                // so the nest name is drawn on top of the nest contents
                 TT.UTILITIES.set_timeout(
                     function () {
                         var backside_visible = this.visible();
@@ -405,7 +407,8 @@ window.TOONTALK.backside =
                             backside_widget_side.set_visible(backside_visible);
                             backside_widget_side.get_widget().rerender();
                         });
-                    }.bind(this));
+                    }.bind(this),
+                    100);
             };
             backside.get_backside_dimensions = function () {
                 if (x_scale !== 1 || y_scale !== 1) {
