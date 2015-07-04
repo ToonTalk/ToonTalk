@@ -74,6 +74,8 @@ window.TOONTALK.UTILITIES =
         widget.being_dragged = true;
         bounding_rectangle = dragee.get(0).getBoundingClientRect();
         is_resource = dragee.is(".toontalk-top-level-resource");
+        // should not wiggle if picked up
+        $(element).removeClass("toontalk-wiggle");
         if (widget.get_json) {
             json_object = utilities.get_json_top_level(widget);
             json_object.view.drag_x_offset = client_x - bounding_rectangle.left;
@@ -134,9 +136,11 @@ window.TOONTALK.UTILITIES =
         var json_object;
         if (dragee) {
             return utilities.widget_from_jquery(dragee);
-        } 
-        json_object = utilities.data_transfer_json_object(event);
-        return utilities.create_from_json(json_object);
+        }
+        if (event) { 
+            json_object = utilities.data_transfer_json_object(event);
+            return utilities.create_from_json(json_object);
+        }
     };
     var drop_handler = function (event, element) {
         // TODO: event.currentTarget should always be === element so this could simplified
