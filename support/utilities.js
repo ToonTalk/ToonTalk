@@ -707,6 +707,10 @@ window.TOONTALK.UTILITIES =
         discover_default_dimensions('toontalk-robot',       TT.robot);
         discover_default_dimensions('toontalk-empty-nest',  TT.nest);
         discover_default_dimensions('toontalk-bird-static', TT.bird);
+        // all titles should use custom tool tips (e.g. those in documentation pages)
+        $("[title]").each(function (index, element) {
+                              window.TOONTALK.UTILITIES.use_custom_tooltip(element);
+	    });
 //         discover_default_dimensions('toontalk-scale',       TT.scale);
     };
     var discover_default_dimensions = function (class_name, toontalk_module) {
