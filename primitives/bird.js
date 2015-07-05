@@ -644,6 +644,7 @@ window.TOONTALK.bird_backside =
     return {
         create: function (bird) {
             var backside = TT.backside.create(bird);
+            backside.get_element().appendChild(TT.backside.create_advanced_settings_button(backside, bird));
             backside.add_advanced_settings(true);
             return backside;
         }
@@ -1569,6 +1570,7 @@ window.TOONTALK.nest_backside =
     return {
         create: function (nest) {
             var backside = TT.backside.create(nest);
+            backside.get_element().appendChild(TT.backside.create_advanced_settings_button(backside, nest));
             backside.add_advanced_settings(true);
             return backside;
         }

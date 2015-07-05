@@ -382,9 +382,9 @@ window.TOONTALK.scale_backside =
     return {
         create: function (scale) {
             var backside = TT.backside.create(scale);
+            backside.get_element().appendChild(TT.backside.create_advanced_settings_button(backside, scale));
             backside.add_advanced_settings(true);
             return backside;
-        }
-        
+        }  
     };
 }(window.TOONTALK));

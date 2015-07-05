@@ -315,9 +315,7 @@ window.TOONTALK.sensor_backside =
                 sensor.render();
                 event.stopPropagation();
             });
-            backside_element.insertBefore(event_name_input.container,      advanced_settings_button);
-            backside_element.insertBefore(event_attribute_input.container, advanced_settings_button);
-            backside_element.insertBefore(activate_switch.container,       advanced_settings_button);
+            $(backside_element).find(".toontalk-advanced-setting").append(event_name_input.container, event_attribute_input.container, activate_switch.container);
             return backside;
     }};
 }(window.TOONTALK));
