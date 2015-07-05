@@ -78,8 +78,8 @@ window.TOONTALK.UTILITIES =
         $(element).removeClass("toontalk-wiggle");
         if (widget.get_json) {
             json_object = utilities.get_json_top_level(widget);
-            json_object.view.drag_x_offset = client_x - bounding_rectangle.left;
-            json_object.view.drag_y_offset = client_y - bounding_rectangle.top;
+            json_object.view.drag_x_offset = client_x-bounding_rectangle.left;
+            json_object.view.drag_y_offset = client_y-bounding_rectangle.top;
             if (!json_object.view.frontside_width) {
                 if (dragee.parent().is(".toontalk-backside")) {
                     json_object.view.frontside_width  = dragee.width();
@@ -265,7 +265,7 @@ window.TOONTALK.UTILITIES =
                 // only called now that elementFromPoint is used to find another target when dropped on part of itself
                 utilities.set_css($source,
                                   {left: $source.get(0).offsetLeft + (event.layerX - drag_x_offset),
-                                   top: $source.get(0).offsetTop  + (event.layerY - drag_y_offset)});
+                                   top:  $source.get(0).offsetTop  + (event.layerY - drag_y_offset)});
                 event.stopPropagation();
                 return;
             }
@@ -472,40 +472,42 @@ window.TOONTALK.UTILITIES =
             // $target.get(0).offsetTop did and then it stopped working
             // not sure what is happening or even whey they are different
             // consider also using layerX and layerY
-            if (typeof drag_x_offset === 'undefined' && source_widget.is_element()) {
-                 drag_x_offset = 0;
-                 drag_y_offset = 0;
-                // drag a picture from a non-ToonTalk source so at least Windows displays about about a 90x90 square while dragging
-                // and, except for small images, it is 'held' at the bottom centre
-                // while images from web pages are held in the center
-                setTimeout(function () {
-                   var html   = source_widget.get_HTML();
-                   var width  = $source.width();
-                   var height = $source.height();
-                   var x_offset, y_offset;
-                   if (html.indexOf("data:image") >= 0) {
-                       x_offset = Math.min(80, width)/2;
-                       y_offset = 90;
-                       if (height < 90) {
-                           y_offset -= (90-height)/2;
-                       }
-                   } else {
-                       // is about 120x60
-                       // but drag offset can be anywhere...
-                       x_offset = Math.min(60, width/2);
-                       y_offset = Math.min(30, height/2);  
-                   }
-                   utilities.set_css($source,
-                                     {left: left-x_offset,
-                                      top:  top -y_offset}); 
-              },
-              50);
+//             if (typeof drag_x_offset === 'undefined' && source_widget.is_element()) {
+//                  drag_x_offset = 0;
+//                  drag_y_offset = 0;
+//                 // drag a picture from a non-ToonTalk source so at least Windows displays about about a 90x90 square while dragging
+//                 // and, except for small images, it is 'held' at the bottom centre
+//                 // while images from web pages are held in the center
+//                 setTimeout(function () {
+//                    var html   = source_widget.get_HTML();
+//                    var width  = $source.width();
+//                    var height = $source.height();
+//                    var x_offset, y_offset;
+//                    if (html.indexOf("data:image") >= 0) {
+//                        x_offset = Math.min(80, width)/2;
+//                        y_offset = 90;
+//                        if (height < 90) {
+//                            y_offset -= (90-height)/2;
+//                        }
+//                    } else {
+//                        // is about 120x60
+//                        // but drag offset can be anywhere...
+//                        x_offset = Math.min(60, width/2);
+//                        y_offset = Math.min(30, height/2);  
+//                    }
+//                    utilities.set_css($source,
+//                                      {left: left-x_offset,
+//                                       top:  top -y_offset}); 
+//                 },
+//                 50);
+//             }
+            if (typeof drag_x_offset !== 'undefined') {
+                left = page_x - (target_position.left + (drag_x_offset || 0));
+                top  = page_y - (target_position.top  + (drag_y_offset || 0));
+                utilities.set_css($source,
+                                  {left: TT.UTILITIES.left_as_percent(left, $source.get(0)),
+                                   top:  TT.UTILITIES.top_as_percent (top,  $source.get(0))});
             }
-            left = page_x - (target_position.left + (drag_x_offset || 0));
-            top  = page_y - (target_position.top  + (drag_y_offset || 0));
-            utilities.set_css($source,
-                              {left: TT.UTILITIES.left_as_percent(left, $source.get(0)),
-                               top:  TT.UTILITIES.top_as_percent (top,  $source.get(0))});
             if (json_object && json_object.semantic.running && !utilities.get_dragee()) {
                 // JSON was dropped here from outside so if was running before should be here
                 // but not if just a local move
@@ -1770,13 +1772,27 @@ window.TOONTALK.UTILITIES =
             return element_found;
         };
         
-        utilities.set_position_is_absolute = function (element, absolute) {
+        utilities.set_position_is_absolute = function (element, absolute, event) {
             // this computes left and top as percentages since the parent may be scaled
             // note that if scaled the upper left corner for drops is preserved
-            var left, top;
+            var left, top, parent_offset;
             if (absolute) {
                 left = utilities.get_style_numeric_property(element, 'left');
                 top  = utilities.get_style_numeric_property(element, 'top');
+                if (event) {
+                    // dropped from another window so use event coordinates
+                    parent_offset = $(element.parentElement).offset();
+                    if (left === 'auto') {
+                        left = event.pageX-parent_offset.left;
+                        // following is needed for drops from other windows but not clear why
+                        left -= $(element).width()/2;
+                    }
+                    if (top === 'auto') {
+                        top  = event.pageY-parent_offset.top;
+                        // following is needed for drops from other windows but not clear why
+                        top -= 90;
+                    }
+                }
                 utilities.set_css(element,
                                   {left: utilities.left_as_percent(left, element),
                                    top:  utilities.top_as_percent (top,  element),
@@ -1821,7 +1837,9 @@ window.TOONTALK.UTILITIES =
             var original_width;
             if (widget && widget.get_original_width) {
                 original_width = widget.get_original_width();
-                return left-(original_width-widget.get_attribute('width'))/2;
+                if (original_width) {
+                    return left-(original_width-widget.get_attribute('width'))/2;
+                }
             }
             return left;
         };
@@ -1831,7 +1849,9 @@ window.TOONTALK.UTILITIES =
             var original_height;
             if (widget && widget.get_original_height) {
                 original_height = widget.get_original_height();
-                return top-(original_height-widget.get_attribute('height'))/2;
+                if (original_height) {
+                    return top-(original_height-widget.get_attribute('height'))/2;
+                }
             }
             return top;
         };
@@ -3284,7 +3304,7 @@ window.TOONTALK.UTILITIES =
                 if (drag_started) {
                     touch = event.changedTouches[0];
                     utilities.set_absolute_position($(element), {left: touch.pageX-drag_x_offset,
-                                                                    top:  touch.pageY-drag_y_offset});
+                                                                 top:  touch.pageY-drag_y_offset});
                     widget_under_element = utilities.find_widget_on_page(touch, element, 0, 0);
                     if (widget_drag_entered && widget_drag_entered !== widget_under_element) {
                         drag_leave_handler(touch, widget_drag_entered.get_frontside_element());
