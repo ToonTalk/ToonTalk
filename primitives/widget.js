@@ -905,11 +905,9 @@ window.TOONTALK.widget = (function (TT) {
                             }
                         }
                         if (frontside_width !== 0) {
-                            position = $(frontside_element).position();
-                        }
-                        if (position) {
-                            json_view.frontside_left = position.left;
-                            json_view.frontside_top  = position.top;
+                            // was using $(frontside_element).position() but then the position of rotated elements wasn't reproduced 
+                            json_view.frontside_left = TT.UTILITIES.get_style_numeric_property(frontside_element, 'left')
+                            json_view.frontside_top  = TT.UTILITIES.get_style_numeric_property(frontside_element, 'top');
                         }
                     }
                 }
