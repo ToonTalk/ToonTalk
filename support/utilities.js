@@ -1007,7 +1007,7 @@ window.TOONTALK.UTILITIES =
                                                       if (!json) {
                                                           return json;
                                                       }
-                                                      if (json.widget.shared_widget_index >= 0) {
+                                                      if (json.widget.shared_widget_index >= 0 && additional_info.json_of_shared_widgets[json.widget.shared_widget_index]) {
                                                           return additional_info.json_of_shared_widgets[json.widget.shared_widget_index].view;
                                                       }
                                                       return json.widget.view; 
@@ -1042,6 +1042,7 @@ window.TOONTALK.UTILITIES =
                         json[index] = {widget: utilities.get_json(widget_side.get_widget(), json_history),
                                        is_backside: true};
                     } else if (widget_side.get_type_name) {
+                        // TODO: determine if .is_widget is a better conditon here
                         json[index] = {widget: utilities.get_json(widget_side, json_history)};
                     } else {
                         // isn't a widget -- e.g. is a path

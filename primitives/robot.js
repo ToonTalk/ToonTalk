@@ -36,9 +36,8 @@ window.TOONTALK.robot = (function (TT) {
     var name_counter = 0;
  
     robot.create = function (frontside_conditions, backside_conditions, body, description, thing_in_hand, run_once, next_robot, name, watched_speed) {
-        // frontside_conditions holds a widget that needs to be matched against the frontside of the widget to run
-        // backside_conditions holds an object whose keys are type_names of required widgets on the backside
-        // and whose values are widgets that need to match backside widgets of that type
+        // frontside_conditions is a widget that needs to be matched against the frontside of the widget to run
+        // backside_conditions is a list of required widgets on the backside
         // body holds the actions the robot does when it runs
         // if watched_speed is undefined then runs at original speed
         // otherwise is a positive time which is the multiplier of the normal default speed for each step
@@ -83,20 +82,34 @@ window.TOONTALK.robot = (function (TT) {
         new_robot.set_backside_matched_widgets = function (new_value) {
             backside_matched_widgets = new_value;
         };
-        new_robot.get_matched_backside_widget = function (type_name) {
+        new_robot.get_matched_backside_widget = function (backside_widget) {
+            if (backside_matched_widgets) {
+                return backside_matched_widgets[this.get_context().get_backside_widgets().indexOf(backside_widget)];
+            }
+        };
+        new_robot.get_backside_widget_of_type = function (type_name) {
+            // supporting the older format for backwards compatibility
             if (backside_matched_widgets) {
                 return backside_matched_widgets[type_name];
             }
         };
         new_robot.set_backside_conditions = function (new_value) {
-            backside_conditions = new_value;
+            if ($.isArray(new_value)) {
+                backside_conditions = new_value;
+            } else {
+                // older format was only one backside condition per type
+                backside_conditions = [];
+                TT.UTILITIES.available_types.forEach(function (type) {
+                    if (new_value[type]) {
+                        backside_conditions.push(new_value[type]);
+                    }
+                });
+            }
             if (backside_conditions) {
                 // only makes sense to erase frontsides of backside_conditions
-                TT.UTILITIES.available_types.forEach(function (type) {
-                    if (backside_conditions[type]) {
-                        TT.widget.erasable(backside_conditions[type]);
-                        backside_conditions[type].set_parent_of_frontside(this);
-                    }
+                backside_conditions.forEach(function (condition) {
+                    TT.widget.erasable(condition);
+                    condition.set_parent_of_frontside(this);
                 }.bind(this)); 
             }
         };
@@ -127,38 +140,41 @@ window.TOONTALK.robot = (function (TT) {
             }.bind(this));
         };
         new_robot.add_to_backside_conditions = function (widget) {
-            var widget_copy, widget_type;
+            var widget_copy, widget_index;
             if (this.get_newly_created_widgets().indexOf(widget) >= 0) {
                 // this isn't a condition since robot just added or created it
                 return;
             }
-            widget_type = widget.get_type_name();
-            if (backside_conditions) {
-                if (backside_conditions[widget_type]) {
-                    return; // already has one
-                }
-            } else {
-                backside_conditions = {};
+            if (!backside_conditions) {
+                backside_conditions = [];
             }
             // the condition is what the widget was like when training started
             // but no need to consider all backside widgets as backside conditions
             // only those that are "used"
-            original_backside_widgets_of_context.some(function (widget) {
-                if (widget.is_of_type(widget_type)) {
-                    widget_copy = widget;
-                    return true;
-                }
-            });
+            widget_index = this.get_context().get_backside_widgets().indexOf(widget);
+            if (widget_index >= 0) {
+                widget_copy = original_backside_widgets_of_context[widget_index]
+            }
             if (!widget_copy) {
                 return;
             }
-            // note that if widget is a covered nest then the type below is nest but the copy is of the nest contents 
-            // TODO: is this comment still true??
-            backside_conditions[widget_type] = widget_copy;
-            TT.widget.erasable(widget_copy);
+            // note that if widget is a covered nest then the type below is nest but the copy is of the nest contents
+            if (backside_conditions.indexOf(widget_copy) < 0) {
+                backside_conditions.push(widget_copy);
+                TT.widget.erasable(widget_copy);
+            }
+        };
+        new_robot.get_backside_condition_index = function (widget) {
+            var backside_widget_index = this.get_context().get_backside_widgets().indexOf(widget);
+            if (backside_widget_index >= 0) {
+                return backside_conditions.indexOf(original_backside_widgets_of_context[backside_widget_index]);
+            }
         };
         new_robot.get_body = function () {
             return body;
+        };
+        new_robot.set_body = function (new_value) {
+            body = new_value;
         };
         new_robot.get_running = function () {
             return running_or_in_run_queue || this.is_ok_to_run();
@@ -458,12 +474,7 @@ window.TOONTALK.robot = (function (TT) {
         var next_robot_copy = next_robot ? next_robot.copy(parameters) : undefined;
         var backside_conditions_copy;
         if (backside_conditions) {
-            backside_conditions_copy = {};
-            TT.UTILITIES.available_types.forEach(function (type) {
-                if (backside_conditions_copy[type]) {
-                    backside_conditions_copy[type] = backside_conditions_copy[type].copy({just_value: true});
-                }
-            });
+            backside_conditions_copy = TT.UTILITIES.copy_widgets(backside_conditions, {just_value: true});
         }
         var copy = this.create(frontside_conditions_copy,
                                backside_conditions_copy,
@@ -499,12 +510,14 @@ window.TOONTALK.robot = (function (TT) {
     robot.run = function (context, top_level_context, queue) {
         var frontside_condition_widget = this.get_frontside_conditions();
         var backside_conditions, backside_widgets, condition_frontside_element, to_run_when_non_empty, next_robot_match_status, clear_all_mismatch_displays, 
-            type_names, backside_matched_widgets, backside_conditions_remaining;
+            backside_matched_widgets;
         if (this.being_trained || this.running_or_in_run_queue()) {
             // should not run if being trained or already scheduled to run
             return this;
         }
         clear_all_mismatch_displays = function (widget) {
+            // TODO: call this only if robot backside is visible?
+            // conditions could keep last_match_status and when displayed use appropriate CSS
             if (widget && widget.visible()) {
                 $(widget.get_frontside_element()).removeClass("toontalk-conditions-not-matched toontalk-conditions-waiting")
                                                  // clear all the mismatch displays from descendants
@@ -516,66 +529,47 @@ window.TOONTALK.robot = (function (TT) {
 //      console.log("Match is " + TT.UTILITIES.match(frontside_condition_widget, context) + " for condition " + frontside_condition_widget + " with " + context);
         this.match_status = TT.UTILITIES.match(frontside_condition_widget, context);
         if (this.match_status === 'matched') {
-            backside_matched_widgets = {};
+            backside_matched_widgets = [];
             backside_conditions = this.get_backside_conditions();      
             if (backside_conditions) {
-                type_names = Object.keys(backside_conditions);
-                backside_conditions_remaining = type_names.length;
                 backside_widgets = context.get_backside_widgets();
                 if (backside_widgets) {
-                    // check that widgets on the back match the conditions
-                    backside_widgets.some(function (backside_widget_side) {
-                        var type_name = backside_widget_side.get_widget().get_type_name();
-                        var backside_condition_widget_of_type = !backside_widget_side.is_backside() && backside_conditions[type_name];
-                        var sub_match_status;
-                        if (backside_condition_widget_of_type) {
-                            clear_all_mismatch_displays(backside_condition_widget_of_type);
-                            sub_match_status = TT.UTILITIES.match(backside_condition_widget_of_type, backside_widget_side.get_widget());
-                            if (sub_match_status === 'matched') {
-                                backside_matched_widgets[type_name] = backside_widget_side.get_widget();
-                                backside_conditions_remaining--;
-                                if (backside_conditions_remaining === 0) {
-                                    return true;
-                                }
-                            } else if (!backside_matched_widgets[type_name] && !sub_match_status.is_widget) {
-                                // match_status is suspension info
-                                backside_matched_widgets[type_name] = sub_match_status;
-                            } else if (!backside_matched_widgets[type_name]) {
-                                backside_matched_widgets[type_name] = sub_match_status;
+                    backside_conditions.some(function (condition) {
+                        // check that a widget on the back matches this condition
+                        var best_sub_match_status = undefined;
+                        backside_widgets.some(function (backside_widget_side) {
+                            var sub_match_status;
+                            if (backside_matched_widgets.indexOf(backside_widget_side) >= 0) {
+                                // don't match twice against the same backside widget
+                                return;
                             }
-                        }
-                    }.bind(this));
-                }
-                if (backside_conditions_remaining > 0) {
-                    type_names.some(function (type_name) {
-                        // need to suspend if any matches are suspensions
-                        if (backside_matched_widgets[type_name] && !backside_matched_widgets[type_name].is_widget) {
-                            this.match_status = backside_matched_widgets[type_name];
-                            backside_matched_widgets = undefined;
+                            if (!backside_widget_side.is_backside()) {
+                                clear_all_mismatch_displays(backside_widget_side);
+                                sub_match_status = TT.UTILITIES.match(condition, backside_widget_side);
+                                if (sub_match_status === 'matched') {
+                                    backside_matched_widgets.push(backside_widget_side);
+                                    best_sub_match_status = sub_match_status;
+                                    return true;
+                                } else if (!sub_match_status.is_widget) {
+                                    // match_status is suspension info
+                                    best_sub_match_status = sub_match_status;
+                                } else if (!best_sub_match_status || best_sub_match_status.is_widget) {
+                                    // only set to failure if not a suspension (or match)
+                                    best_sub_match_status = sub_match_status;
+                                }
+                            }
+                        }.bind(this));
+                        if (best_sub_match_status !== 'matched') {
+                            // failed or suspended
+                            this.match_status = best_sub_match_status;
                             return true;
                         }
-                        this.match_status = backside_matched_widgets[type_name];
-                    }.bind(this));
+                   }.bind(this));
+                }
+                if (this.match_status !== 'matched') {
+                    backside_matched_widgets = undefined;
                 }
                 this.set_backside_matched_widgets(backside_matched_widgets);
-//                 if (this.match_status === 'matched') {
-//                     // need to check conditions that no expected backside widgets are missing
-//                     Object.keys(backside_conditions).some(function (type) {
-//                         var found_one;
-//                         if (backside_conditions[type]) {
-//                             backside_widgets.some(function (backside_widget_side) {
-//                                 if (backside_widget_side.get_widget().is_of_type(type)) {
-//                                     found_one = true;
-//                                     return true;
-//                                 }
-//                             });
-//                             if (!found_one) {
-//                                 this.match_status = backside_conditions[type];
-//                                 return true;
-//                             }
-//                         }
-//                     }.bind(this));
-//                 }
             }
         }
 //      console.log("robot#" + this._debug_id + " match_status is " + this.match_status);
@@ -1026,7 +1020,7 @@ window.TOONTALK.robot = (function (TT) {
     };
     
     robot.toString = function (to_string_info) {
-        var frontside_conditions, backside_conditions, backside_conditions_defined, body, prefix, postfix,
+        var frontside_conditions, backside_conditions, backside_conditions_defined, body, prefix, postfix, frontside_is_top_level,
             frontside_conditions_string, next_robot, robot_description, robot_conditions_description, original_person, mismatch_description, backside_description;
         if (to_string_info && to_string_info.role === "conditions") {
             return "any robot";
@@ -1035,6 +1029,7 @@ window.TOONTALK.robot = (function (TT) {
         if (!frontside_conditions) {
             return "an untrained robot";
         }
+        frontside_is_top_level = frontside_conditions.is_top_level();
         if (!to_string_info) {
             to_string_info = {};
         }
@@ -1051,7 +1046,7 @@ window.TOONTALK.robot = (function (TT) {
         prefix = "";
         postfix = "";
         next_robot = this.get_next_robot();
-        if (frontside_conditions.is_top_level()) {
+        if (frontside_is_top_level) {
             robot_conditions_description = "When the workspace's green flag " + 
                                            TT.UTILITIES.encode_HTML_for_title("<span class='toontalk-green-flag-icon'></span>") +
                                            " is pressed";
@@ -1060,13 +1055,13 @@ window.TOONTALK.robot = (function (TT) {
             robot_conditions_description = "When working on something that matches " + frontside_conditions_string;
         }
         if (backside_conditions) {
-            Object.keys(backside_conditions).forEach(function (key) {
-                var condition = backside_conditions[key];
+            backside_conditions.forEach(function (condition) {
                 if (condition) {
-                    robot_conditions_description += " and\nif on the back is " + TT.UTILITIES.add_a_or_an(key) +
-                    " that matches " + TT.UTILITIES.add_a_or_an(condition.get_full_description({role: "conditions"}));
+                    robot_conditions_description += " and\nif on the" + 
+                                                    (frontside_is_top_level ? " work area " : " back ") + 
+                                                    " is " + TT.UTILITIES.add_a_or_an(condition.get_full_description({role: "conditions"}));
+                    backside_conditions_defined = true;
                 }
-                backside_conditions_defined = true;
             });
             if (backside_conditions_defined) {
                 // need new line before the "he will"
@@ -1104,13 +1099,16 @@ window.TOONTALK.robot = (function (TT) {
                     if (!frontside_conditions.is_top_level()) {
                         backside_description =  "the " + this.match_status.get_type_name() + " on " + backside_description;
                     }
-                    Object.keys(backside_conditions).some(function (type_name) {
-                        var backside_condition = backside_conditions[type_name];
-                        if (this.match_status === backside_condition) {
-                            mismatch_description = "any " + backside_condition.get_type_name(true) + " on the back of " + backside_description;
+                    backside_conditions.some(function (condition) {
+                        if (this.match_status === condition) {
+                            mismatch_description = "any " + condition.get_type_name(true) + " on ";
+                            if (!frontside_conditions.is_top_level()) {
+                                mismatch_description += "the back of ";
+                            } 
+                            mismatch_description += backside_description;
                             return true;
-                        } else if (this.match_status.has_ancestor(backside_condition)) {
-                            mismatch_description = "any " + this.match_status.toString() + " inside the " + backside_condition.get_type_name(true) + " on the back of " + backside_description;
+                        } else if (this.match_status.has_ancestor(condition)) {
+                            mismatch_description = "any " + this.match_status.toString() + " inside the " + condition.get_type_name(true) + " on the back of " + backside_description;
                             return true;
                         }
                     }.bind(this));
@@ -1181,14 +1179,7 @@ window.TOONTALK.robot = (function (TT) {
             }
         }
         if (backside_conditions) {
-            TT.UTILITIES.available_types.forEach(function (type) {
-                if (backside_conditions[type]) {
-                    if (!backside_conditions_json) {
-                        backside_conditions_json = {};
-                    }
-                    backside_conditions_json[type] = TT.UTILITIES.get_json(backside_conditions[type], json_history);
-                }
-            });
+            backside_conditions_json = TT.UTILITIES.get_json_of_array(backside_conditions, json_history);
         }
         if (this.get_next_robot()) {
             next_robot_json = TT.UTILITIES.get_json(this.get_next_robot(), json_history);
@@ -1205,7 +1196,7 @@ window.TOONTALK.robot = (function (TT) {
     };
     
     TT.creators_from_json["robot"] = function (json, additional_info) {
-        var next_robot, thing_in_hand, backside_conditions;
+        var next_robot, thing_in_hand, frontside_conditions, backside_conditions, robot;
         if (json.thing_in_hand) {
             thing_in_hand = TT.UTILITIES.create_from_json(json.thing_in_hand, additional_info);
         }
@@ -1213,56 +1204,92 @@ window.TOONTALK.robot = (function (TT) {
             next_robot = TT.UTILITIES.create_from_json(json.next_robot, additional_info);
         }
         if (json.backside_conditions) {
-            backside_conditions = {};
-            TT.UTILITIES.available_types.forEach(
-                function (type) {
-                    var condition = TT.UTILITIES.create_from_json(json.backside_conditions[type], additional_info);
-                    if (condition) {
-                        backside_conditions[type] = condition;
+            if ($.isArray(json.backside_conditions)) {
+                backside_conditions = TT.UTILITIES.create_array_from_json(json.backside_conditions, additional_info);
+            } else if (json.semantic) {
+                // older format
+                TT.UTILITIES.available_types.forEach(function (type) {
+                    if (json.semantic.backside_conditions[type]) {
+                        backside_conditions.push(TT.UTILITIES.get_json(json.semantic.backside_conditions[type], json_history));
                     }
-            });
+                });
+           }
         }
-        return TT.robot.create(TT.UTILITIES.create_from_json(json.frontside_conditions || json.bubble, additional_info),
-                               backside_conditions,
-                               TT.UTILITIES.create_from_json(json.body, additional_info),
-                               json.description,
-                               thing_in_hand,
-                               json.run_once,
-                               next_robot,
-                               json.name,
-                               json.speed);
+        frontside_conditions = TT.UTILITIES.create_from_json(json.frontside_conditions || json.bubble, additional_info);
+        robot = TT.robot.create(frontside_conditions,
+                                backside_conditions,
+                                undefined,
+                                json.description,
+                                thing_in_hand,
+                                json.run_once,
+                                next_robot,
+                                json.name,
+                                json.speed);
+        // need to pass the robot down to some of the path expressions of the body
+        if (!additional_info) {
+            additional_info = {};
+        }
+        additional_info.robot = robot;
+        robot.set_body(TT.UTILITIES.create_from_json(json.body, additional_info));
+        // if loading a page with robot backside already open then
+        // the conditions don't render properly since update_display is called before they are attached
+        // TODO: solve this more elegantly
+        setTimeout(function () {
+                       if (robot.visible()) {
+                           if (backside_conditions) {
+                               backside_conditions.forEach(function (condition) {
+                                   condition.set_visible(true);
+                                   condition.render();
+                               });
+                           }
+                           if (frontside_conditions) {
+                               frontside_conditions.set_visible(true);
+                               frontside_conditions.render();
+                           }
+                       }
+                  },
+                  1000);
+        return robot;
     };
 
     robot.find_conditions_path = function (widget, robot_with_widget_in_conditions, robot) {
          var frontside_conditions = robot_with_widget_in_conditions.get_frontside_conditions();
          var path_within_conditions = frontside_conditions === widget ? 'entire_condition' : frontside_conditions.get_path_to && frontside_conditions.get_path_to(widget, robot);
          var path_to_robot = TT.path.get_path_to(robot_with_widget_in_conditions, robot);
-         var backside_conditions, backside_conditions_type;
+         var backside_conditions, backside_condition_with_path;
          if (!path_within_conditions) {
              backside_conditions = robot_with_widget_in_conditions.get_backside_conditions();
-             TT.UTILITIES.available_types.some(function (type) {
-                                                   if (backside_conditions[type]) {
-                                                       path_within_conditions = backside_conditions[type].get_path_to(widget, robot);
-                                                       if (path_within_conditions) {
-                                                           backside_conditions_type = type;
-                                                           return;
-                                                       }
-                                                   }
-                                               });
+             backside_conditions.some(function (condition) {
+                                           if (condition) {
+                                               path_within_conditions = condition.get_path_to(widget, robot);
+                                               if (path_within_conditions) {
+                                                   backside_condition_with_path = condition;
+                                                   return;
+                                               }
+                                           }
+                                      });
          }
          if (!path_within_conditions) {
              TT.UTILITIES.report_internal_error("Robot has widget in its conditions but unable to construct the path.");
              return;
          }
-         return TT.robot.create_conditions_path(path_within_conditions, path_to_robot, backside_conditions_type);
+         return TT.robot.create_conditions_path(path_within_conditions, path_to_robot, backside_condition_with_path);
     };
 
-    robot.create_conditions_path = function (path_within_conditions, path_to_robot, backside_conditions_type) {
-         return {dereference_path: function (context, top_level_context, robot) {
+    robot.create_conditions_path = function (path_within_conditions, path_to_robot, backside_condition_with_path) {
+        if (typeof backside_condition_with_path === 'string') {
+            this.get_backside_conditions().some(function (backside_condition) {
+                if (backside_condition && backside_condition.get_type_name() === backside_condition_with_path) {
+                    backside_condition_with_path = backside_condition;
+                    return true;
+                }
+            });
+        }
+        // in older version backside_condition_with_path is just the type_name 
+        return {dereference_path: function (context, top_level_context, robot) {
                      var robot_with_widget_in_conditions = TT.path.dereference_path(path_to_robot, context, top_level_context, robot);
-                     var condition;
-                     if (backside_conditions_type) {
-                         condition = robot_with_widget_in_conditions.get_backside_conditions()[backside_conditions_type];
+                     if (backside_condition_with_path) {
+                         condition = backside_condition_with_path;
                      } else {
                          condition = robot_with_widget_in_conditions.get_frontside_conditions();
                      }
@@ -1273,16 +1300,15 @@ window.TOONTALK.robot = (function (TT) {
                  },
                  toString: function () {
                      var path_to_condition_description = (path_within_conditions === 'entire_condition') ?
-                                                         "the " : TT.path.toString(path_within_conditions) + " of the ";
-                                                         
-                     if (backside_conditions_type) {
-                         return path_to_condition_description + backside_conditions_type + " backside condition of " + TT.path.toString(path_to_robot);
+                                                         "the " : TT.path.toString(path_within_conditions) + " of the ";                                                     
+                     if (backside_condition_with_path) {
+                         return path_to_condition_description + backside_condition_with_path.toString() + " backside condition of " + TT.path.toString(path_to_robot);
                      }
                      return path_to_condition_description + " front side condition of " + TT.path.toString(path_to_robot);
                  },
                  get_json: function () {
                      return {type: "path_to_robot_conditions",
-                             backside_conditions_type: backside_conditions_type,
+                             backside_condition: TT.UTILITIES.get_json(backside_condition_with_path),
                              path_to_robot: path_to_robot.get_json(),
                              path_within_conditions: (path_within_conditions === 'entire_condition') ? 'entire_condition' : path_within_conditions.get_json()};
                  }};
@@ -1292,7 +1318,12 @@ window.TOONTALK.robot = (function (TT) {
             var path_to_robot = TT.UTILITIES.create_from_json(json.path_to_robot);
             var path_within_conditions = (json.path_within_conditions === 'entire_condition') ? 
                                          json.path_within_conditions : TT.UTILITIES.create_from_json(json.path_within_conditions);
-            return TT.robot.create_conditions_path(path_within_conditions, path_to_robot, json.backside_conditions_type);
+            var backside_condition = 
+                json.backside_condition ?
+                    TT.UTILITIES.create_from_json(json.backside_condition)
+                    :
+                    json.backside_condition_type;
+            return TT.robot.create_conditions_path(path_within_conditions, path_to_robot, backside_condition);
     };
     
     return robot;
@@ -1306,7 +1337,6 @@ window.TOONTALK.robot_backside =
         var condition_element = condition_widget.get_frontside_element(true);
         var condition_element_div_parent = document.createElement('div');
         var conditions_panel;
-//      TT.UTILITIES.set_position_is_absolute(condition_element, false);
         $(condition_element).addClass("toontalk-conditions-contents " + class_name);
         TT.UTILITIES.set_timeout(function () {
                 // this is needed since the element may be transparent and yet need to see the border
@@ -1317,8 +1347,8 @@ window.TOONTALK.robot_backside =
 //                                        top:    '4%', // unclear why this works but 0 or inherit leaves element too high
                                           width:  'inherit',
                                           height: 'inherit'});
-                condition_widget.render();
-            });
+                condition_widget.rerender();
+        });
         if (robot.match_status) {
             if (robot.match_status.is_widget) {
                 $(robot.match_status.get_frontside_element()).addClass("toontalk-conditions-not-matched");
@@ -1339,17 +1369,17 @@ window.TOONTALK.robot_backside =
         var frontside_condition_widget = robot.get_frontside_conditions();
         var backside_conditions = robot.get_backside_conditions();
         var robot_visible = robot.visible();
-        var green_flag_message = "This robot always runs when the green flag <span class='toontalk-green-flag-icon'></span> is clicked.";
-        var backside_condition_widget, area_class_name;
+        var green_flag_message = "I always run when the green flag <span class='toontalk-green-flag-icon'></span> is clicked.";
+        var area_class_name;
         if (frontside_condition_widget) {
             if (frontside_condition_widget.is_top_level()) {
-                if (backside_element.firstChild.textContent.indexOf("This robot always runs when the green flag") < 0) {
+                if (backside_element.firstChild.textContent.indexOf("I always run when the green flag") < 0) {
                     backside_element.insertBefore(TT.UTILITIES.create_text_element(green_flag_message),
                                                   backside_element.firstChild);
                 }
             } else if ($(backside_element).find(".toontalk-frontside-conditions-area").length === 0) {
                 // and not already added
-                backside_element.insertBefore(create_conditions_area("Runs only if the widget matches: ", 
+                backside_element.insertBefore(create_conditions_area("I run only if the thing I'm on the back of matches: ", 
                                                                      frontside_condition_widget, 
                                                                      robot,
                                                                      "toontalk-frontside-conditions-area"), 
@@ -1359,24 +1389,22 @@ window.TOONTALK.robot_backside =
             frontside_condition_widget.rerender();
         }
         if (backside_conditions) {
-            Object.keys(backside_conditions).forEach(function (type) {
-                var condition_element;
-                backside_condition_widget = backside_conditions[type];
-                if (backside_condition_widget) {
+            backside_conditions.forEach(function (backside_condition) {
+                var condition_element, type;
+                if (backside_condition) {
+                    type = backside_condition.get_type_name();
                     area_class_name = "toontalk-backside-" + type + "-conditions-area";
-                    if ($(backside_element).find("." + area_class_name).length === 0) {
-                        if (type === 'bird') {
-                            condition_element = TT.UTILITIES.create_text_element("And there is a bird on the back.");
-                        } else {
-                            condition_element = create_conditions_area("Runs only if the " + type + " on the backside matches: ", 
-                                                                       backside_condition_widget, 
-                                                                       robot,
-                                                                       area_class_name);
-                        }
-                        backside_element.insertBefore(condition_element, backside_element.firstChild.nextSibling);
-                        backside_condition_widget.set_visible(robot_visible);
-                        backside_condition_widget.rerender();
+                    if (type === 'bird') {
+                        condition_element = TT.UTILITIES.create_text_element("And there is a bird on the back.");
+                    } else {
+                        condition_element = create_conditions_area("And if " + TT.UTILITIES.add_a_or_an(type) + " matches: ", 
+                                                                   backside_condition, 
+                                                                   robot,
+                                                                   area_class_name);
                     }
+                    backside_element.insertBefore(condition_element, backside_element.firstChild.nextSibling);
+                    backside_condition.set_visible(robot_visible);
+                    backside_condition.rerender();
                 }
             });
         }
