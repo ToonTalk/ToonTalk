@@ -840,7 +840,9 @@ window.TOONTALK.backside =
             }
             animate_disappearance($backside_element);
             this.set_visible(false); // semantic side of things needs to know this backside isn't being watched any more
-            if (!$(frontside_element).is(":visible")) {
+            if (event && !$(frontside_element).is(":visible")) {
+                // don't do any of this if robot is responsible
+                // in particular don't add widget back -- not as clear about updating CSS below
                 if (backside_position) {
                     TT.UTILITIES.set_css(frontside_element,
                                          {left:  backside_position.left,
