@@ -744,7 +744,6 @@ window.TOONTALK.nest = (function (TT) {
             if (contents.length > 0) {
                 return contents[0];
             }
-            this.last_match = other;
             return this;
         };
         new_nest.match = function (other) {
