@@ -2108,11 +2108,12 @@ window.TOONTALK.UTILITIES =
             if ($(element).is(".toontalk-highlight")) {
                 return; // already highlighted
             }
-            $(element).addClass("toontalk-highlight")
-                      .css({"z-index": utilities.next_z_index()});
+            $(element).addClass("toontalk-highlight");
+            // this used to also change the CSS to give this element a high z-index but didn't work well
+            // and was hard to resotre after the highlight
             if (duration) {
                 setTimeout(function () {
-                        utilities.remove_highlight();
+                        utilities.remove_highlight(element);
                     },
                     duration);
             }
