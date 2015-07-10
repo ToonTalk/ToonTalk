@@ -96,9 +96,9 @@ window.TOONTALK.path =
                         sub_path = backside_widget.get_path_to(widget, robot);
                         if (sub_path) {
                             sub_path.is_backside = is_backside;
+                            robot.add_to_backside_conditions(backside_widget);
                             path = TT.path.get_path_to_backside_widget_of_context(backside_widget, robot);
                             path.next = sub_path;
-                            robot.add_to_backside_conditions(backside_widget);
                             return true; // stop searching
                         }
                     }
