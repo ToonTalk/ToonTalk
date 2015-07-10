@@ -1185,7 +1185,8 @@ window.TOONTALK.widget = (function (TT) {
                                  {width:  ok_to_set_dimensions ? $(frontside_element).width()  : "",
                                   height: ok_to_set_dimensions ? $(frontside_element).height() : "",
                                   left:   position.left+x_offset,
-                                  top:    position.top+y_offset});
+                                  top:    position.top+y_offset,
+                                  "z-index": TT.UTILITIES.next_z_index()});
             $container_element.get(0).appendChild(frontside_element_copy);
             if (container_widget) {
                 container_widget.add_backside_widget(widget_copy);
