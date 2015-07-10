@@ -1305,7 +1305,7 @@ window.TOONTALK.nest = (function (TT) {
         };
         new_nest.get_path_to = function (widget, robot) {
             var widget_on_nest;
-            var path;
+            var path, sub_path;
             if (contents.length > 0) {
                 widget_on_nest = contents[0].get_widget();
                 if (widget_on_nest === widget) {
@@ -1315,8 +1315,11 @@ window.TOONTALK.nest = (function (TT) {
                 if (widget_on_nest.get_path_to) {
                     // assuming frontside
                     path = TT.path.to_widget_on_nest();
-                    path.next = widget_on_nest.get_path_to(widget, robot);
-                    return path;
+                    sub_path = widget_on_nest.get_path_to(widget, robot);
+                    if (sub_path) {
+                        path.next = sub_path;
+                        return path;
+                    }
                 }
             }
         };
