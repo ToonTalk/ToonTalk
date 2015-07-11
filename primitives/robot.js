@@ -532,21 +532,22 @@ window.TOONTALK.robot = (function (TT) {
     robot.run = function (context, top_level_context, queue) {
         var frontside_condition_widget = this.get_frontside_conditions();
         var backside_conditions, backside_widgets, condition_frontside_element, to_run_when_non_empty, next_robot_match_status, clear_all_mismatch_displays, 
-            backside_matched_widgets;
+            backside_matched_widgets, backside, backside_visible;
         if (this.being_trained || this.running_or_in_run_queue()) {
             // should not run if being trained or already scheduled to run
             return this;
         }
+        backside = this.get_backside();
+        backside_visible = backside && backside.visible();
         clear_all_mismatch_displays = function (widget) {
-            // TODO: call this only if robot backside is visible?
             // conditions could keep last_match_status and when displayed use appropriate CSS
-            if (widget && widget.visible()) {
-                $(widget.get_frontside_element()).removeClass("toontalk-conditions-not-matched toontalk-conditions-waiting")
+            $(widget.get_frontside_element()).removeClass("toontalk-conditions-not-matched toontalk-conditions-waiting")
                                                  // clear all the mismatch displays from descendants
-                                                 .find(".toontalk-conditions-not-matched, .toontalk-conditions-waiting").removeClass("toontalk-conditions-not-matched toontalk-conditions-waiting");
-            }
+                                             .find(".toontalk-conditions-not-matched, .toontalk-conditions-waiting").removeClass("toontalk-conditions-not-matched toontalk-conditions-waiting");
         };
-        clear_all_mismatch_displays(frontside_condition_widget);
+        if (backside_visible) {
+            clear_all_mismatch_displays(frontside_condition_widget);
+        }
         this.rerender();
 //      console.log("Match is " + TT.UTILITIES.match(frontside_condition_widget, context) + " for condition " + frontside_condition_widget + " with " + context);
         this.match_status = TT.UTILITIES.match(frontside_condition_widget, context);
@@ -566,7 +567,9 @@ window.TOONTALK.robot = (function (TT) {
                                 return;
                             }
                             if (!backside_widget_side.is_backside()) {
-                                clear_all_mismatch_displays(backside_widget_side);
+                                if (backside_visible) {
+                                    clear_all_mismatch_displays(backside_widget_side);
+                                }
                                 sub_match_status = TT.UTILITIES.match(condition, backside_widget_side);
                                 if (sub_match_status === 'matched') {
                                     backside_matched_widgets.push(backside_widget_side);
