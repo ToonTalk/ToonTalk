@@ -1114,7 +1114,7 @@ window.TOONTALK.box_hole =
                 // otherwise nothing to do
             };
             hole.rerender = function () {
-                if (contents.visible()) {
+                if (contents && contents.visible()) {
                     return this.render();
                 }
                 // otherwise nothing to do
