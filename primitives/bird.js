@@ -70,8 +70,10 @@ window.TOONTALK.bird = (function (TT) {
                     frontside_element = this.get_frontside_element();
                     setTimeout(function () {
                         // delay this since removes geometry until recomputed
-                        $(frontside_element).removeClass("toontalk-bird-gimme");
-                    });
+                        $(frontside_element).removeClass("toontalk-bird-gimme")
+                                            .addClass(this.get_class_name_with_color("toontalk-bird-static"));
+                        this.get_parent_of_frontside().rerender();
+                    }.bind(this));
                     other.set_visible(true); // since nest is
                     if (robot && !do_not_run_next_step) {
                         // robot needs to wait until delivery is finished
@@ -825,8 +827,9 @@ window.TOONTALK.nest = (function (TT) {
         };
         new_nest.animate_bird_delivery = function (message_side, bird, continuation, event, robot) {
             var start_position, bird_parent_element, visible;
-            if (TT.debugging && this.get_parent_of_frontside() === undefined) {
-                console.error("Nest has no parent but received a message.");
+            if (this.get_parent_of_frontside() === undefined) {
+                // is acting like a sink for messages
+                message_side.remove();
                 if (continuation) {
                     continuation();
                 }
