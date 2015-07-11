@@ -18350,26 +18350,12 @@ top level widget
 }</div></div>
 <p>Add mouse down coordinates to the number</p>
 <div class='toontalk-json'>
-This will be replaced by a work area containing 2 things: a bird, and a number.
+This will be replaced by a work area containing one thing: a number.
 top level widget
 <div style='display:none;'>{
   "semantic": {
     "type": "top_level",
     "backside_widgets": [
-      {
-        "widget": {
-          "semantic": {
-            "type": "bird",
-            "nest": {
-              "shared_widget_index": 0
-            }
-          },
-          "view": {
-            "backside": false
-          },
-          "version": 1
-        }
-      },
       {
         "widget": {
           "semantic": {
@@ -18381,7 +18367,27 @@ top level widget
             "backside_widgets": [
               {
                 "widget": {
-                  "shared_widget_index": 0
+                  "semantic": {
+                    "type": "sensor",
+                    "contents": [],
+                    "guid": "sensor",
+                    "serial_number": 11,
+                    "name": "mousedown sensor",
+                    "event_name": "mousedown",
+                    "attribute": "clientX clientY",
+                    "active": false,
+                    "description": "a sensor for the location of a mouse down event."
+                  },
+                  "view": {
+                    "frontside_width": 116,
+                    "frontside_height": 98,
+                    "frontside_left": "5.938052120141343%",
+                    "frontside_top": "40.299479166666664%",
+                    "saved_width": 116,
+                    "saved_height": 98,
+                    "backside": false
+                  },
+                  "version": 1
                 }
               },
               {
@@ -18406,58 +18412,41 @@ top level widget
                       {
                         "widget": {
                           "semantic": {
-                            "type": "nest",
+                            "type": "box",
+                            "size": 2,
                             "contents": [
                               {
-                                "widget": {
-                                  "semantic": {
-                                    "type": "box",
-                                    "size": 2,
-                                    "contents": [
-                                      {
-                                        "semantic": {
-                                          "type": "number",
-                                          "operator": "+",
-                                          "numerator": "752",
-                                          "denominator": "1",
-                                          "format": "mixed_number",
-                                          "erased": true
-                                        },
-                                        "view": {
-                                          "backside": false
-                                        },
-                                        "version": 1
-                                      },
-                                      {
-                                        "semantic": {
-                                          "type": "number",
-                                          "operator": "+",
-                                          "numerator": "269",
-                                          "denominator": "1",
-                                          "format": "mixed_number",
-                                          "erased": true
-                                        },
-                                        "view": {
-                                          "backside": false
-                                        },
-                                        "version": 1
-                                      }
-                                    ],
-                                    "horizontal": true,
-                                    "name": "clientX;clientY",
-                                    "description": "the values of the clientX and clientY attributes of a mousedown event."
-                                  },
-                                  "view": {
-                                    "backside": false
-                                  },
-                                  "version": 1
-                                }
+                                "semantic": {
+                                  "type": "number",
+                                  "operator": "+",
+                                  "numerator": "752",
+                                  "denominator": "1",
+                                  "format": "mixed_number",
+                                  "erased": true
+                                },
+                                "view": {
+                                  "backside": false
+                                },
+                                "version": 1
+                              },
+                              {
+                                "semantic": {
+                                  "type": "number",
+                                  "operator": "+",
+                                  "numerator": "269",
+                                  "denominator": "1",
+                                  "format": "mixed_number",
+                                  "erased": true
+                                },
+                                "view": {
+                                  "backside": false
+                                },
+                                "version": 1
                               }
                             ],
-                            "guid": "in a robot's condition",
-                            "serial_number": 3,
-                            "name": "mousedown sensor",
-                            "description": "a sensor for the location of a mouse down event."
+                            "horizontal": true,
+                            "name": "clientX;clientY",
+                            "description": "the values of the clientX and clientY attributes of a mousedown event."
                           },
                           "view": {
                             "backside": false
@@ -18559,11 +18548,15 @@ top level widget
             ]
           },
           "view": {
-            "frontside_width": 222,
+            "frontside_width": 320,
             "frontside_height": 55,
-            "frontside_left": 40,
-            "frontside_top": 25,
-            "saved_width": 76,
+            "frontside_left": 47,
+            "frontside_top": 84,
+            "backside_width": 0,
+            "backside_height": 0,
+            "backside_left": 0,
+            "backside_top": 0,
+            "saved_width": 222,
             "saved_height": 55,
             "backside": false
           },
@@ -18577,37 +18570,12 @@ top level widget
     "backside_width": 456,
     "backside_height": 246,
     "backside_left": 8,
-    "backside_top": 184.1875,
+    "backside_top": 20666.96875,
     "backside": true,
-    "drag_x_offset": 363,
-    "drag_y_offset": 130.8125
+    "drag_x_offset": 265,
+    "drag_y_offset": 46.03125
   },
-  "version": 1,
-  "shared_widgets": [
-    {
-      "semantic": {
-        "type": "sensor",
-        "contents": [],
-        "guid": "sensor",
-        "serial_number": 3,
-        "name": "mousedown sensor",
-        "event_name": "mousedown",
-        "attribute": "clientX clientY",
-        "active": false,
-        "description": "a sensor for the location of a mouse down event."
-      },
-      "view": {
-        "frontside_width": 116,
-        "frontside_height": 98,
-        "frontside_left": "5.938052120141343%",
-        "frontside_top": "40.299479166666664%",
-        "saved_width": 116,
-        "saved_height": 98,
-        "backside": false
-      },
-      "version": 1
-    }
-  ]
+  "version": 1
 }</div></div>
 <p>Moving left together or independently (using copies of the same attribute widget):</p>
 <div class='toontalk-json'>
