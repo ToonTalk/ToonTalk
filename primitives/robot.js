@@ -1297,6 +1297,7 @@ window.TOONTALK.robot = (function (TT) {
         // in older version backside_condition_with_path is just the type_name 
         return {dereference_path: function (context, top_level_context, robot) {
                      var robot_with_widget_in_conditions = TT.path.dereference_path(path_to_robot, context, top_level_context, robot);
+                     var condition;
                      if (backside_condition_with_path) {
                          condition = backside_condition_with_path;
                      } else {
