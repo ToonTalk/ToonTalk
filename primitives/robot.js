@@ -95,7 +95,15 @@ window.TOONTALK.robot = (function (TT) {
         };
         new_robot.set_backside_conditions = function (new_value) {
             if ($.isArray(new_value)) {
-                backside_conditions = new_value;
+                backside_conditions = 
+                    new_value.map(function (condition) {
+                        if (condition.is_nest()) {
+                            // replace a covered nest with a copy of its top contents
+                            // this is for backwards compatibility
+                            return condition.dereference().copy();
+                        }
+                        return condition;
+                    });
             } else {
                 // older format was only one backside condition per type
                 backside_conditions = [];
