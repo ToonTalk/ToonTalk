@@ -19,6 +19,7 @@ var static_contents_header_1 =
 '<link rel="stylesheet" media="all" href="https://toontalk.github.io/ToonTalk/toontalk.css">\n' +
 '<link href="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/css/font-awesome.min.css" rel="stylesheet" type="text/css" />\n' +
 '<link href="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/css/froala_editor.min.css" rel="stylesheet" type="text/css" />\n' +
+'<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>' +
 '<script src="https://toontalk.github.io/ToonTalk/compile/toontalk.js"></script>\n' +
 '<script src="https://toontalk.github.io/ToonTalk/libraries/jquery-ui-1.11.2.custom/jquery-ui.min.js"></script>\n' +
 '<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/froala_editor.min.js"></script>\n' +
