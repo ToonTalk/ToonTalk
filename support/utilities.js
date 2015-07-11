@@ -1690,7 +1690,6 @@ window.TOONTALK.UTILITIES =
             var top_level_position = $top_level_element.offset();
             var left, top, element_width, element_height, top_level_element_width, top_level_element_height;
             if (!top_level_position) {
-                console.log("Unable to find top-level backside. Perhaps is 'visible' but not attached.");
                 top_level_position = {left: 0, top: 0};
             }
             left = absolute_position.left-top_level_position.left;
