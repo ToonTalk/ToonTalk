@@ -148,7 +148,9 @@ window.TOONTALK.actions =
                     // robot was added to top-level backside so z-index will work as desired (robot on top of everything)
                     // the following restores it
                     if (first_robot_still_visible) {
-                        saved_parent_element.appendChild(frontside_element);
+                        if (saved_parent_element) {
+                            saved_parent_element.appendChild(frontside_element);
+                        }
                         robot.set_animating(false);
                     }
                     if (robot.get_run_once()) {
@@ -162,6 +164,10 @@ window.TOONTALK.actions =
                     robot.rerender();
                 };
                 if (first_robot_still_visible) {
+                    if (!frontside_element.parentElement) {
+                        // can happen if window is minimised and then restored
+                        robot.get_parent_of_frontside().get_frontside_element().appendChild(frontside_element);  
+                    }
                     TT.UTILITIES.animate_to_absolute_position(frontside_element,
                                                               robot_home,
                                                               continuation,
@@ -220,7 +226,6 @@ window.TOONTALK.actions =
                 robot_height = $(frontside_element).height();
             }
             if (!top_level_position) {
-                console.log("Unable to find top-level backside. Perhaps is 'visible' but not attached.");
                 top_level_position = {left: 0, top: 0};
             }
             if ($backside_element.length > 0) {

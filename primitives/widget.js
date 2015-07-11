@@ -1199,7 +1199,12 @@ window.TOONTALK.widget = (function (TT) {
         },
         
         visible: function () {
-            var frontside = this.get_frontside();
+            var frontside
+            if (document.hidden) {
+                // e.g. window is minimised
+                return;
+            }
+            frontside = this.get_frontside();
             if (!frontside) {
                 return false;
             }
