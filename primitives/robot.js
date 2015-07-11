@@ -87,11 +87,24 @@ window.TOONTALK.robot = (function (TT) {
                 return backside_matched_widgets[this.get_context().get_backside_widgets().indexOf(backside_widget)];
             }
         };
-        new_robot.get_backside_widget_of_type = function (type_name) {
+        new_robot.get_backside_widget_of_type = function (type_name, context) {
             // supporting the older format for backwards compatibility
+            var backside_widgets, backside_widget;
             if (backside_matched_widgets) {
                 return backside_matched_widgets[type_name];
             }
+            backside_widgets = context && context.get_backside_widgets();
+            if (!backside_widgets) {
+                return;
+            }
+            backside_widgets.some(function (widget) {
+                if (widget.is_of_type(type_name) && this.get_newly_created_widgets().indexOf(widget) < 0) {
+                    // first condition of type that wasn't just added or created it by this robot
+                    backside_widget = widget;
+                    return true;
+                }
+            }.bind(this));
+            return backside_widget;            
         };
         new_robot.set_backside_conditions = function (new_value) {
             if ($.isArray(new_value)) {

@@ -306,7 +306,7 @@ window.TOONTALK.path =
                 // backside_widget is a type_name so return any bacvkside widget matching that type
                 type_name = backside_widget;
                 return {dereference_path: function (context, top_level_context, robot) {
-                            var referenced = robot.get_backside_widget_of_type(type_name);
+                            var referenced = robot.get_backside_widget_of_type(type_name, context);
                             if (!referenced) {
                                 context.backside_widgets.some(function (backside_widget_side) {
                                     if (backside_widget_side.get_widget().is_of_type(type_name) &&
@@ -317,6 +317,9 @@ window.TOONTALK.path =
                                         return true; // stop searching
                                     }
                                 });
+                             }
+                             if (referenced) {
+                                return TT.path.continue_dereferencing_path(this, referenced, top_level_context, robot);
                              }
                        },
                        toString: function (to_string_info) {
@@ -330,7 +333,7 @@ window.TOONTALK.path =
                     },
                     get_json: function () {
                             return {type: "path.to_backside_widget_of_context",
-                                type_name: type_name};
+                                    type_name: type_name};
                     }};
             }
             return this.get_path_to_backside_index_of_context(robot.get_backside_condition_index(backside_widget), backside_widget.get_type_name(), robot);   
