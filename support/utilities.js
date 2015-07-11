@@ -713,6 +713,12 @@ window.TOONTALK.UTILITIES =
         $("[title]").each(function (index, element) {
                               window.TOONTALK.UTILITIES.use_custom_tooltip(element);
 	    });
+	    document.addEventListener("visibilitychange", function() {
+	        if (!document.hidden) {
+	            // make sure all widgets are redisplayed
+                utilities.rerender_all();
+	        }
+	    });
 //         discover_default_dimensions('toontalk-scale',       TT.scale);
     };
     var discover_default_dimensions = function (class_name, toontalk_module) {
@@ -3105,6 +3111,7 @@ window.TOONTALK.UTILITIES =
                         }
                     });
                     div.innerHTML = "Run all tests";
+                    utilities.rerender_all();
                 } else {
                     $(".toontalk-green-flag").each(function () {
                         if ($(this).parent().is(".toontalk-top-level-backside")) {
@@ -3448,6 +3455,15 @@ window.TOONTALK.UTILITIES =
                // sanitise the id -- id enables links to specific function birds
                bird_frontside_element.id = encodeURIComponent(function_name);
            });  
+       };
+
+       utilities.rerender_all = function () {
+           $(".toontalk-side").each(function (index, element) {
+                                        var widget = utilities.widget_of_element(element);
+                                        if (widget) {
+                                            widget.rerender();
+                                        }
+                                    });
        };
 
 //         enable_touch_events = function (maximum_click_duration) {
