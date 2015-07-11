@@ -559,31 +559,43 @@ window.TOONTALK.robot = (function (TT) {
                 if (backside_widgets) {
                     backside_conditions.some(function (condition) {
                         // check that a widget on the back matches this condition
-                        var best_sub_match_status = undefined;
-                        backside_widgets.some(function (backside_widget_side) {
-                            var sub_match_status;
-                            if (backside_matched_widgets.indexOf(backside_widget_side) >= 0) {
-                                // don't match twice against the same backside widget
-                                return;
+                        var sub_match_status, best_sub_match_status;
+                        if (condition.matching_widget && condition.matching_widget.get_parent_of_frontside()) {
+                            // try the last widget (if not recently removed) first to see if it matches since corresponding widget rarely changes
+                            sub_match_status = TT.UTILITIES.match(condition, condition.matching_widget);
+                            if (sub_match_status === 'matched') {
+                                backside_matched_widgets.push(condition.matching_widget);
+                                best_sub_match_status = sub_match_status;
                             }
-                            if (!backside_widget_side.is_backside()) {
-                                if (backside_visible) {
-                                    clear_all_mismatch_displays(backside_widget_side);
+                        }
+                        if (!best_sub_match_status) {
+                            // if matching_widget didn't help search for match
+                            backside_widgets.some(function (backside_widget_side) {
+                                sub_match_status = undefined;
+                                if (backside_matched_widgets.indexOf(backside_widget_side) >= 0) {
+                                    // don't match twice against the same backside widget
+                                    return;
                                 }
-                                sub_match_status = TT.UTILITIES.match(condition, backside_widget_side);
-                                if (sub_match_status === 'matched') {
-                                    backside_matched_widgets.push(backside_widget_side);
-                                    best_sub_match_status = sub_match_status;
-                                    return true;
-                                } else if (!sub_match_status.is_widget) {
-                                    // match_status is suspension info
-                                    best_sub_match_status = sub_match_status;
-                                } else if (!best_sub_match_status || best_sub_match_status.is_widget) {
-                                    // only set to failure if not a suspension (or match)
-                                    best_sub_match_status = sub_match_status;
+                                if (!backside_widget_side.is_backside()) {
+                                    if (backside_visible) {
+                                        clear_all_mismatch_displays(backside_widget_side);
+                                    }
+                                    sub_match_status = TT.UTILITIES.match(condition, backside_widget_side);
+                                    if (sub_match_status === 'matched') {
+                                        backside_matched_widgets.push(backside_widget_side);
+                                        best_sub_match_status = sub_match_status;
+                                        condition.matching_widget = backside_widget_side; // to save time next time around
+                                        return true;
+                                    } else if (!sub_match_status.is_widget) {
+                                        // match_status is suspension info
+                                        best_sub_match_status = sub_match_status;
+                                    } else if (!best_sub_match_status || best_sub_match_status.is_widget) {
+                                        // only set to failure if not a suspension (or match)
+                                        best_sub_match_status = sub_match_status;
+                                    }
                                 }
-                            }
-                        }.bind(this));
+                            }.bind(this));
+                        }
                         if (best_sub_match_status !== 'matched') {
                             // failed or suspended
                             this.match_status = best_sub_match_status;
