@@ -119,8 +119,9 @@ window.TOONTALK.robot = (function (TT) {
         new_robot.initialize_backside_conditions = function () {
 //          Any covered nests should be used as a condition
             var context = this.get_context();
-            original_backside_widgets_of_context = TT.UTILITIES.copy_widget_sides(context.get_backside_widgets(), {just_value: true,
-                                                                                                                   copy_covered_nests: true});
+            // following used to also include copy_covered_nests: true but that caused nest sharing between members of a robot team
+            // that led to several bugs -- also robots shouldn't be able to tell if it has a widget or has a nest with that widget on top
+            original_backside_widgets_of_context = TT.UTILITIES.copy_widget_sides(context.get_backside_widgets(), {just_value: true});
             context.get_backside_widgets().forEach(function (widget_side) {
                 if (widget_side.is_backside()) {
                     return;
