@@ -249,7 +249,7 @@ window.TOONTALK.path =
             };
         },
         to_widget_on_nest: function () {
-           return {dereference_path: function (context, top_level_context, robot) {
+            return {dereference_path: function (context, top_level_context, robot) {
                         return TT.path.continue_dereferencing_path(this, context, top_level_context, robot);
                     },
                     toString: function () {
@@ -263,6 +263,9 @@ window.TOONTALK.path =
         get_path_to_resource: function (widget) {
             // ignore the side information and just use the widget
             // revisit this if resources are ever backside resources
+            if (!widget) {
+                console.error("Widget missing in get_path_to_resource.");
+            }
             widget = widget.get_widget(); // if widget is really the backside of the widget
             return {dereference_path: function (context, top_level_context, robot) {
                         var widget_copy = widget.copy({copying_resource: true});
