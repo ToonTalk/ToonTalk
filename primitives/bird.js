@@ -245,9 +245,6 @@ window.TOONTALK.bird = (function (TT) {
                 $top_level_backside_element, top_level_backside_element_offset, continuation, delivery_continuation, restore_contents,
                 nest_contents_frontside_element, nest_width, nest_height, nest_offset, message_element, 
                 top_level_widget, top_level_backside_element_bounding_box;
-            if (TT.sounds) {
-                TT.sounds.bird_fly.play();
-            }
             if (!nest_recieving_message) {
                 nest_recieving_message = nest;
             }
@@ -261,6 +258,9 @@ window.TOONTALK.bird = (function (TT) {
                 // neither are visible so just add contents to nest
                 nest_recieving_message.add_to_contents(message_side, event, robot, this, true);
                 return;
+            }
+            if (TT.sounds) {
+                TT.sounds.bird_fly.play();
             }
             if (!target_side.is_function_nest()) {
                 // nests of functions are 'virtual'
@@ -825,6 +825,13 @@ window.TOONTALK.nest = (function (TT) {
         };
         new_nest.animate_bird_delivery = function (message_side, bird, continuation, event, robot) {
             var start_position, bird_parent_element, visible;
+            if (TT.debugging && this.get_parent_of_frontside() === undefined) {
+                console.error("Nest has no parent but received a message.");
+                if (continuation) {
+                    continuation();
+                }
+                return;
+            }
             bird.animate_delivery_to(message_side, this, undefined, undefined, undefined, continuation, event, robot);
             if (nest_copies) {
                 start_position = $(bird.closest_visible_ancestor().get_widget().get_frontside_element()).closest(":visible").position();
