@@ -88,7 +88,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         var html, initialized, original_width, original_height, current_width, current_height,
             pending_css, transform_css, on_update_display_handlers, $image_element, widget_set_running, widget_can_run;
         if (!style_attributes) {
-            style_attributes = [];
+            style_attributes = ['left', 'top', 'width', 'height'];
         }
         if (sound_effect_or_sound_effect_file_name) {
             // by supporting both the sound effect and the file name we can get sharing of audio objects between copies of the same element
@@ -636,9 +636,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             if (other.match_with_any_element) {
                 return other.match_with_any_element();
             }
+            this.last_match = other;
             return this;
         }
         if (!other.match_with_another_element_widget) {
+            this.last_match = other;
             return this;
         }
         return other.match_with_another_element_widget(this);
@@ -657,6 +659,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         if (text_pattern !== "" && text_pattern === this.get_text()) {
             return 'matched';
         }
+        element_pattern.last_match = this;
         return element_pattern;
     };
 
@@ -708,7 +711,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     
     element.get_attribute = function (attribute) {
         var value = this.get_attribute_from_pending_css(attribute);
-        if (typeof value !== 'undefined') {
+        if (typeof value !== 'undefined' && value != 'auto') {
             return value;
         };
         return this.get_attribute_from_current_css(attribute);
@@ -1564,7 +1567,7 @@ window.TOONTALK.element_backside =
                         sound_effect.play();
                         sound_effect.addEventListener('ended', audio_label_and_title);
                     } else {
-                        sound_effect.pause();            
+                        sound_effect.pause();
                     }
                     audio_label_and_title();
                     if (element_widget.robot_in_training()) {
@@ -1606,8 +1609,6 @@ window.TOONTALK.element_backside =
             }
             backside.update_style_attribute_chooser();
             update_style_attributes_table(attribute_table, element_widget, backside);
-            backside_element.appendChild(attributes_chooser);
-            backside_element.appendChild(show_attributes_chooser);
             backside_element.appendChild(attribute_table);
             backside_element.appendChild(advanced_settings_button);
             $(attributes_chooser).hide();
@@ -1640,6 +1641,7 @@ window.TOONTALK.element_backside =
             } else {
                 backside.add_advanced_settings(false, react_to_pointer_checkbox.container);
             }
+            backside.add_advanced_settings(false, attributes_chooser, show_attributes_chooser);
             return backside;
     }};
 }(window.TOONTALK));

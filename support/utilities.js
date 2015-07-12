@@ -74,10 +74,12 @@ window.TOONTALK.UTILITIES =
         widget.being_dragged = true;
         bounding_rectangle = dragee.get(0).getBoundingClientRect();
         is_resource = dragee.is(".toontalk-top-level-resource");
+        // should not wiggle if picked up
+        $(element).removeClass("toontalk-wiggle");
         if (widget.get_json) {
             json_object = utilities.get_json_top_level(widget);
-            json_object.view.drag_x_offset = client_x - bounding_rectangle.left;
-            json_object.view.drag_y_offset = client_y - bounding_rectangle.top;
+            json_object.view.drag_x_offset = client_x-bounding_rectangle.left;
+            json_object.view.drag_y_offset = client_y-bounding_rectangle.top;
             if (!json_object.view.frontside_width) {
                 if (dragee.parent().is(".toontalk-backside")) {
                     json_object.view.frontside_width  = dragee.width();
@@ -134,9 +136,11 @@ window.TOONTALK.UTILITIES =
         var json_object;
         if (dragee) {
             return utilities.widget_from_jquery(dragee);
-        } 
-        json_object = utilities.data_transfer_json_object(event);
-        return utilities.create_from_json(json_object);
+        }
+        if (event) { 
+            json_object = utilities.data_transfer_json_object(event);
+            return utilities.create_from_json(json_object);
+        }
     };
     var drop_handler = function (event, element) {
         // TODO: event.currentTarget should always be === element so this could simplified
@@ -261,7 +265,7 @@ window.TOONTALK.UTILITIES =
                 // only called now that elementFromPoint is used to find another target when dropped on part of itself
                 utilities.set_css($source,
                                   {left: $source.get(0).offsetLeft + (event.layerX - drag_x_offset),
-                                   top: $source.get(0).offsetTop  + (event.layerY - drag_y_offset)});
+                                   top:  $source.get(0).offsetTop  + (event.layerY - drag_y_offset)});
                 event.stopPropagation();
                 return;
             }
@@ -468,40 +472,42 @@ window.TOONTALK.UTILITIES =
             // $target.get(0).offsetTop did and then it stopped working
             // not sure what is happening or even whey they are different
             // consider also using layerX and layerY
-            if (typeof drag_x_offset === 'undefined' && source_widget.is_element()) {
-                 drag_x_offset = 0;
-                 drag_y_offset = 0;
-                // drag a picture from a non-ToonTalk source so at least Windows displays about about a 90x90 square while dragging
-                // and, except for small images, it is 'held' at the bottom centre
-                // while images from web pages are held in the center
-                setTimeout(function () {
-                   var html   = source_widget.get_HTML();
-                   var width  = $source.width();
-                   var height = $source.height();
-                   var x_offset, y_offset;
-                   if (html.indexOf("data:image") >= 0) {
-                       x_offset = Math.min(80, width)/2;
-                       y_offset = 90;
-                       if (height < 90) {
-                           y_offset -= (90-height)/2;
-                       }
-                   } else {
-                       // is about 120x60
-                       // but drag offset can be anywhere...
-                       x_offset = Math.min(60, width/2);
-                       y_offset = Math.min(30, height/2);  
-                   }
-                   utilities.set_css($source,
-                                     {left: left-x_offset,
-                                      top:  top -y_offset}); 
-              },
-              50);
+//             if (typeof drag_x_offset === 'undefined' && source_widget.is_element()) {
+//                  drag_x_offset = 0;
+//                  drag_y_offset = 0;
+//                 // drag a picture from a non-ToonTalk source so at least Windows displays about about a 90x90 square while dragging
+//                 // and, except for small images, it is 'held' at the bottom centre
+//                 // while images from web pages are held in the center
+//                 setTimeout(function () {
+//                    var html   = source_widget.get_HTML();
+//                    var width  = $source.width();
+//                    var height = $source.height();
+//                    var x_offset, y_offset;
+//                    if (html.indexOf("data:image") >= 0) {
+//                        x_offset = Math.min(80, width)/2;
+//                        y_offset = 90;
+//                        if (height < 90) {
+//                            y_offset -= (90-height)/2;
+//                        }
+//                    } else {
+//                        // is about 120x60
+//                        // but drag offset can be anywhere...
+//                        x_offset = Math.min(60, width/2);
+//                        y_offset = Math.min(30, height/2);  
+//                    }
+//                    utilities.set_css($source,
+//                                      {left: left-x_offset,
+//                                       top:  top -y_offset}); 
+//                 },
+//                 50);
+//             }
+            if (typeof drag_x_offset !== 'undefined') {
+                left = page_x - (target_position.left + (drag_x_offset || 0));
+                top  = page_y - (target_position.top  + (drag_y_offset || 0));
+                utilities.set_css($source,
+                                  {left: TT.UTILITIES.left_as_percent(left, $source.get(0)),
+                                   top:  TT.UTILITIES.top_as_percent (top,  $source.get(0))});
             }
-            left = page_x - (target_position.left + (drag_x_offset || 0));
-            top  = page_y - (target_position.top  + (drag_y_offset || 0));
-            utilities.set_css($source,
-                              {left: TT.UTILITIES.left_as_percent(left, $source.get(0)),
-                               top:  TT.UTILITIES.top_as_percent (top,  $source.get(0))});
             if (json_object && json_object.semantic.running && !utilities.get_dragee()) {
                 // JSON was dropped here from outside so if was running before should be here
                 // but not if just a local move
@@ -703,6 +709,16 @@ window.TOONTALK.UTILITIES =
         discover_default_dimensions('toontalk-robot',       TT.robot);
         discover_default_dimensions('toontalk-empty-nest',  TT.nest);
         discover_default_dimensions('toontalk-bird-static', TT.bird);
+        // all titles should use custom tool tips (e.g. those in documentation pages)
+        $("[title]").each(function (index, element) {
+                              window.TOONTALK.UTILITIES.use_custom_tooltip(element);
+	    });
+	    document.addEventListener("visibilitychange", function() {
+	        if (!document.hidden) {
+	            // make sure all widgets are redisplayed
+                utilities.rerender_all();
+	        }
+	    });
 //         discover_default_dimensions('toontalk-scale',       TT.scale);
     };
     var discover_default_dimensions = function (class_name, toontalk_module) {
@@ -726,16 +742,16 @@ window.TOONTALK.UTILITIES =
             sound.volume = volume;
             return sound;
         }
-        TT.sounds = {hatching:      create_sound("SPARROW.WAV"),
-                     bird_fly:      create_sound("PIGEON.WAV"),
-                     bammer_hammer: create_sound("POP.WAV"),
-                     vacuum_spit:   create_sound("SPIT.WAV"),
-                     vacuum_suck:   create_sound("DUSTBUST.WAV"),
-                     drop:          create_sound("BOOK_DROP.WAV"),
-                     magic:         create_sound("MAGIC.WAV"),
-                     fall_inside:   create_sound("FALL_INSIDE.WAV"),
-                     click:         create_sound("TYPE.WAV"),
-                     event_ignored: create_sound("PLOP.WAV")};
+        TT.sounds = {hatching:      create_sound("SPARROW.mp3"),
+                     bird_fly:      create_sound("PIGEON.mp3"),
+                     bammer_hammer: create_sound("POP.mp3"),
+                     vacuum_spit:   create_sound("SPIT.mp3"),
+                     vacuum_suck:   create_sound("DUSTBUST.mp3"),
+                     drop:          create_sound("BOOK_DROP.mp3"),
+                     magic:         create_sound("MAGIC.mp3"),
+                     fall_inside:   create_sound("FALL_INSIDE.mp3"),
+                     click:         create_sound("TYPE.mp3"),
+                     event_ignored: create_sound("PLOP.mp3")};
         TT.sounds.bird_fly.loop = true;
     };
     var load_script = function (url) {
@@ -814,7 +830,8 @@ window.TOONTALK.UTILITIES =
                                 }
                             },
                             false); // don't capture events
-    $(document).ready(initialize);
+    document.addEventListener('DOMContentLoaded', initialize);
+//     $(document).ready(initialize);
 
     utilities.available_types = ["number", "box", "element", "robot", "nest", "sensor", "top-level"];
     
@@ -996,7 +1013,7 @@ window.TOONTALK.UTILITIES =
                                                       if (!json) {
                                                           return json;
                                                       }
-                                                      if (json.widget.shared_widget_index >= 0) {
+                                                      if (json.widget.shared_widget_index >= 0 && additional_info.json_of_shared_widgets[json.widget.shared_widget_index]) {
                                                           return additional_info.json_of_shared_widgets[json.widget.shared_widget_index].view;
                                                       }
                                                       return json.widget.view; 
@@ -1031,6 +1048,7 @@ window.TOONTALK.UTILITIES =
                         json[index] = {widget: utilities.get_json(widget_side.get_widget(), json_history),
                                        is_backside: true};
                     } else if (widget_side.get_type_name) {
+                        // TODO: determine if .is_widget is a better conditon here
                         json[index] = {widget: utilities.get_json(widget_side, json_history)};
                     } else {
                         // isn't a widget -- e.g. is a path
@@ -1421,6 +1439,12 @@ window.TOONTALK.UTILITIES =
                     as_string = as_string.substring(0, index);
                 }
                 if (as_string === 'auto') {
+                    if (style_property === 'left') {
+                        return $(element).position().left;
+                    }
+                    if (style_property === 'top') {
+                        return $(element).position().top;
+                    }
                     return as_string;
                 }
                 return parseInt(as_string, 10);
@@ -1678,7 +1702,6 @@ window.TOONTALK.UTILITIES =
             var top_level_position = $top_level_element.offset();
             var left, top, element_width, element_height, top_level_element_width, top_level_element_height;
             if (!top_level_position) {
-                console.log("Unable to find top-level backside. Perhaps is 'visible' but not attached.");
                 top_level_position = {left: 0, top: 0};
             }
             left = absolute_position.left-top_level_position.left;
@@ -1761,13 +1784,27 @@ window.TOONTALK.UTILITIES =
             return element_found;
         };
         
-        utilities.set_position_is_absolute = function (element, absolute) {
+        utilities.set_position_is_absolute = function (element, absolute, event) {
             // this computes left and top as percentages since the parent may be scaled
             // note that if scaled the upper left corner for drops is preserved
-            var left, top;
+            var left, top, parent_offset;
             if (absolute) {
                 left = utilities.get_style_numeric_property(element, 'left');
                 top  = utilities.get_style_numeric_property(element, 'top');
+                if (event) {
+                    // dropped from another window so use event coordinates
+                    parent_offset = $(element.parentElement).offset();
+                    if (left === 'auto') {
+                        left = event.pageX-parent_offset.left;
+                        // following is needed for drops from other windows but not clear why
+                        left -= $(element).width()/2;
+                    }
+                    if (top === 'auto') {
+                        top  = event.pageY-parent_offset.top;
+                        // following is needed for drops from other windows but not clear why
+                        top -= 90;
+                    }
+                }
                 utilities.set_css(element,
                                   {left: utilities.left_as_percent(left, element),
                                    top:  utilities.top_as_percent (top,  element),
@@ -1812,7 +1849,9 @@ window.TOONTALK.UTILITIES =
             var original_width;
             if (widget && widget.get_original_width) {
                 original_width = widget.get_original_width();
-                return left-(original_width-widget.get_attribute('width'))/2;
+                if (original_width) {
+                    return left-(original_width-widget.get_attribute('width'))/2;
+                }
             }
             return left;
         };
@@ -1822,7 +1861,9 @@ window.TOONTALK.UTILITIES =
             var original_height;
             if (widget && widget.get_original_height) {
                 original_height = widget.get_original_height();
-                return top-(original_height-widget.get_attribute('height'))/2;
+                if (original_height) {
+                    return top-(original_height-widget.get_attribute('height'))/2;
+                }
             }
             return top;
         };
@@ -2078,11 +2119,12 @@ window.TOONTALK.UTILITIES =
             if ($(element).is(".toontalk-highlight")) {
                 return; // already highlighted
             }
-            $(element).addClass("toontalk-highlight")
-                      .css({"z-index": utilities.next_z_index()});
+            $(element).addClass("toontalk-highlight");
+            // this used to also change the CSS to give this element a high z-index but didn't work well
+            // and was hard to resotre after the highlight
             if (duration) {
                 setTimeout(function () {
-                        utilities.remove_highlight();
+                        utilities.remove_highlight(element);
                     },
                     duration);
             }
@@ -3075,6 +3117,7 @@ window.TOONTALK.UTILITIES =
                         }
                     });
                     div.innerHTML = "Run all tests";
+                    utilities.rerender_all();
                 } else {
                     $(".toontalk-green-flag").each(function () {
                         if ($(this).parent().is(".toontalk-top-level-backside")) {
@@ -3275,7 +3318,7 @@ window.TOONTALK.UTILITIES =
                 if (drag_started) {
                     touch = event.changedTouches[0];
                     utilities.set_absolute_position($(element), {left: touch.pageX-drag_x_offset,
-                                                                    top:  touch.pageY-drag_y_offset});
+                                                                 top:  touch.pageY-drag_y_offset});
                     widget_under_element = utilities.find_widget_on_page(touch, element, 0, 0);
                     if (widget_drag_entered && widget_drag_entered !== widget_under_element) {
                         drag_leave_handler(touch, widget_drag_entered.get_frontside_element());
@@ -3418,6 +3461,15 @@ window.TOONTALK.UTILITIES =
                // sanitise the id -- id enables links to specific function birds
                bird_frontside_element.id = encodeURIComponent(function_name);
            });  
+       };
+
+       utilities.rerender_all = function () {
+           $(".toontalk-side").each(function (index, element) {
+                                        var widget = utilities.widget_of_element(element);
+                                        if (widget) {
+                                            widget.rerender();
+                                        }
+                                    });
        };
 
 //         enable_touch_events = function (maximum_click_duration) {

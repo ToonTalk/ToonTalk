@@ -293,9 +293,11 @@ window.TOONTALK.box = (function (TT) {
             if (other.match_with_any_box) {
                 return other.match_with_any_box();
             }
+            this.last_match = other;
             return this;
         }
         if (!other.match_with_this_box) {
+            this.last_match = other;
             return this;
         }
         return other.match_with_this_box(this);
@@ -311,6 +313,7 @@ window.TOONTALK.box = (function (TT) {
         var waiting_widgets = [];
         var i, my_hole, pattern_hole, hole_match, contents_temporarily_removed;
         if (size !== pattern_box.get_size()) {
+            pattern_box.last_match = this;
             return pattern_box;
         }
         for (i = 0; i < size; i++) {
@@ -338,6 +341,7 @@ window.TOONTALK.box = (function (TT) {
                         waiting_widgets.push(contents_temporarily_removed);
                     } else {
                         // expected something -- not an empty hole
+                        pattern_box.last_match = this;
                         return pattern_box; // or should this be pattern_hole to provide more tragetted feedback?
                     }
                 }
@@ -778,7 +782,7 @@ window.TOONTALK.box = (function (TT) {
                 if (hole) {
                     if (hole.dereference_contents && !path.not_to_be_dereferenced) {
                         // this will dereference the top of a nest instead of the nest itself
-                        return hole.dereference_contents(path, top_level_context, robot);
+                        return hole.dereference_contents(path.next || path, top_level_context, robot);
                     }
                     if (path.next) {
                         if (hole.dereference_path) {
@@ -1110,7 +1114,7 @@ window.TOONTALK.box_hole =
                 // otherwise nothing to do
             };
             hole.rerender = function () {
-                if (contents.visible()) {
+                if (contents && contents.visible()) {
                     return this.render();
                 }
                 // otherwise nothing to do

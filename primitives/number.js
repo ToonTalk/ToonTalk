@@ -973,9 +973,11 @@ window.TOONTALK.number = (function () {
             if (other.match_with_any_number) {
                 return other.match_with_any_number();
             }
+            this.last_match = other;
             return this; // since doesn't handle match_with_any_number
         }
         if (!other.match_with_this_number) {
+            this.last_match = other;
             return this;
         }
         return other.match_with_this_number(this);
@@ -989,6 +991,7 @@ window.TOONTALK.number = (function () {
         if (number_pattern.equals(this)) {
             return 'matched';
         }
+        number_pattern.last_match = this;
         return number_pattern;
     };
 

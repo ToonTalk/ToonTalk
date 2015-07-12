@@ -699,8 +699,7 @@ window.TOONTALK.widget = (function (TT) {
                         return true;
                     }
                     if (ancestor.is_backside()) {
-                        new_ancestor = ancestor.get_widget().get_parent_of_backside();
-                            
+                        new_ancestor = ancestor.get_widget().get_parent_of_backside();                     
                     } else {
                         new_ancestor = ancestor.get_parent_of_frontside();
                     }
@@ -906,11 +905,9 @@ window.TOONTALK.widget = (function (TT) {
                             }
                         }
                         if (frontside_width !== 0) {
-                            position = $(frontside_element).position();
-                        }
-                        if (position) {
-                            json_view.frontside_left = position.left;
-                            json_view.frontside_top  = position.top;
+                            // was using $(frontside_element).position() but then the position of rotated elements wasn't reproduced 
+                            json_view.frontside_left = TT.UTILITIES.get_style_numeric_property(frontside_element, 'left')
+                            json_view.frontside_top  = TT.UTILITIES.get_style_numeric_property(frontside_element, 'top');
                         }
                     }
                 }
@@ -1188,7 +1185,8 @@ window.TOONTALK.widget = (function (TT) {
                                  {width:  ok_to_set_dimensions ? $(frontside_element).width()  : "",
                                   height: ok_to_set_dimensions ? $(frontside_element).height() : "",
                                   left:   position.left+x_offset,
-                                  top:    position.top+y_offset});
+                                  top:    position.top+y_offset,
+                                  "z-index": TT.UTILITIES.next_z_index()});
             $container_element.get(0).appendChild(frontside_element_copy);
             if (container_widget) {
                 container_widget.add_backside_widget(widget_copy);
@@ -1201,7 +1199,12 @@ window.TOONTALK.widget = (function (TT) {
         },
         
         visible: function () {
-            var frontside = this.get_frontside();
+            var frontside
+            if (document.hidden) {
+                // e.g. window is minimised
+                return;
+            }
+            frontside = this.get_frontside();
             if (!frontside) {
                 return false;
             }

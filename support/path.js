@@ -24,8 +24,13 @@ window.TOONTALK.path =
         return TT.path.top_level_backside;
     };
 
-    TT.creators_from_json["path.to_backside_widget_of_context"] = function (json) {
-        return TT.path.get_path_to_backside_widget_of_context(json.type_name);
+    TT.creators_from_json["path.to_backside_widget_of_context"] = function (json, additional_info) {
+        var condition;
+        if (typeof json.backside_index === 'undefined') {
+            // older format
+            return TT.path.get_path_to_backside_widget_of_context(json.type_name, additional_info && additional_info.robot);
+        }
+        return TT.path.get_path_to_backside_index_of_context(json.backside_index, json.type_name, additional_info && additional_info.robot);
     };
 
     TT.creators_from_json["path.to_resource"] = function (json, additional_info) {
@@ -82,18 +87,18 @@ window.TOONTALK.path =
                     var sub_path;
                     if (backside_widget === widget ||
                         (backside_widget.top_contents_is && backside_widget.top_contents_is(widget)) ) {
-                        path = TT.path.get_path_to_backside_widget_of_context(backside_widget.get_type_name());
-                        path.is_backside = is_backside;
                         robot.add_to_backside_conditions(backside_widget); // does nothing if already added
+                        path = TT.path.get_path_to_backside_widget_of_context(backside_widget, robot);
+                        path.is_backside = is_backside;
                         return true; // stop searching
                     } else if (backside_widget.get_path_to) {
                         // e.g. might be in a box
                         sub_path = backside_widget.get_path_to(widget, robot);
                         if (sub_path) {
                             sub_path.is_backside = is_backside;
-                            path = TT.path.get_path_to_backside_widget_of_context(backside_widget.get_type_name());
-                            path.next = sub_path;
                             robot.add_to_backside_conditions(backside_widget);
+                            path = TT.path.get_path_to_backside_widget_of_context(backside_widget, robot);
+                            path.next = sub_path;
                             return true; // stop searching
                         }
                     }
@@ -177,6 +182,9 @@ window.TOONTALK.path =
         toString: function (a_path, to_string_info) {
             var prefix = "";
             var sub_path_string, path_description, original_string_info_resource;
+            if (!a_path) {
+                return "undefined path";
+            }
             if (a_path.is_backside) {
                 prefix = "the backside of ";
             }
@@ -241,7 +249,7 @@ window.TOONTALK.path =
             };
         },
         to_widget_on_nest: function () {
-           return {dereference_path: function (context, top_level_context, robot) {
+            return {dereference_path: function (context, top_level_context, robot) {
                         return TT.path.continue_dereferencing_path(this, context, top_level_context, robot);
                     },
                     toString: function () {
@@ -255,6 +263,9 @@ window.TOONTALK.path =
         get_path_to_resource: function (widget) {
             // ignore the side information and just use the widget
             // revisit this if resources are ever backside resources
+            if (!widget) {
+                console.error("Widget missing in get_path_to_resource.");
+            }
             widget = widget.get_widget(); // if widget is really the backside of the widget
             return {dereference_path: function (context, top_level_context, robot) {
                         var widget_copy = widget.copy({copying_resource: true});
@@ -288,32 +299,70 @@ window.TOONTALK.path =
                     }
             };
         },
-        get_path_to_backside_widget_of_context: function (type_name) {
-             return {dereference_path: function (context, top_level_context, robot) {
-                        var referenced;
-                        context.backside_widgets.some(function (backside_widget_side) {
-                            if (backside_widget_side.get_widget().is_of_type(type_name) &&
-                                // should be a widget that was there when robot matched backside conditions
-                                // not one that was created subsequently
-                                !robot.is_newly_created(backside_widget_side.get_widget())) {
-                                referenced = backside_widget_side.get_widget();
-                                return true; // stop searching
-                            }
-                        });
-                        if (referenced) {
-                            return TT.path.continue_dereferencing_path(this, referenced, top_level_context, robot);
-                        }
-                    },
-                    toString: function () {
-                        var string = "the " + type_name + " on the back of what I'm working on";
+        get_path_to_backside_widget_of_context: function (backside_widget, robot) {
+            var type_name;
+            if (typeof backside_widget === 'string') {
+                // old format
+                // backside_widget is a type_name so return any bacvkside widget matching that type
+                type_name = backside_widget;
+                return {dereference_path: function (context, top_level_context, robot) {
+                            var referenced = robot.get_backside_widget_of_type(type_name, context);
+                            if (!referenced) {
+                                context.backside_widgets.some(function (backside_widget_side) {
+                                    if (backside_widget_side.get_widget().is_of_type(type_name) &&
+                                        // should be a widget that was there when robot matched backside conditions
+                                        // not one that was created subsequently
+                                        !robot.is_newly_created(backside_widget_side.get_widget())) {
+                                        referenced = backside_widget_side.get_widget();
+                                        return true; // stop searching
+                                    }
+                                });
+                             }
+                             if (referenced) {
+                                return TT.path.continue_dereferencing_path(this, referenced, top_level_context, robot);
+                             }
+                       },
+                       toString: function (to_string_info) {
+                        var string = ((to_string_info && to_string_info.robot && to_string_info.robot.get_backside_conditions()) ? to_string_info.robot.get_backside_conditions()[type_name] :
+                                                                                 TT.UTILITIES.add_a_or_an(type_name)) + 
+                                     " on the back of what I'm working on";
                         if (this.removing_widget) {
                             return "what is on " + string;
                         }
                         return string;
                     },
                     get_json: function () {
+                            return {type: "path.to_backside_widget_of_context",
+                                    type_name: type_name};
+                    }};
+            }
+            return this.get_path_to_backside_index_of_context(robot.get_backside_condition_index(backside_widget), backside_widget.get_type_name(), robot);   
+        },
+        get_path_to_backside_index_of_context: function (backside_index, type_name, robot) {
+            // type_name is only used to generate better robot titles
+            return {dereference_path: function (context, top_level_context, robot) {
+                        var referenced = robot.get_backside_matched_widgets()[backside_index];
+                        if (referenced) {
+                            return TT.path.continue_dereferencing_path(this, referenced, top_level_context, robot);
+                        }
+                        // else signal an error?
+                        if (TT.debugging) {
+                            console.log("can this happen?"); 
+                        }     
+                    },
+                    toString: function (to_string_info) {
+                        var back = robot.get_frontside_conditions().is_top_level() ? "work area" : "back of what";
+                        var string = TT.UTILITIES.add_a_or_an(type_name || "thing") + 
+                                     " on the " + back + " I'm working on";
+                        if (this.removing_widget) {
+                            return "what is on " + string;
+                        }
+                        return string;
+                    },
+                    get_json: function (json_history) {
                         return {type: "path.to_backside_widget_of_context",
-                                type_name: type_name};
+                                type_name: type_name,
+                                backside_index: backside_index};
                     }
             };
         },

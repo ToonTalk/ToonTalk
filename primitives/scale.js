@@ -14,7 +14,7 @@ window.TOONTALK.scale = (function (TT) {
 
     var scale = Object.create(TT.widget);
 
-    scale.create = function (initial_contents, description, new_scale, inactive_state) {
+    scale.create = function (initial_contents, description, new_scale, inactive_state, name) {
         // inactive_state is the state of the scale when it became inactive (or undefined)
         var full_size_width = 123;
         var full_size_height = 91;
@@ -25,7 +25,7 @@ window.TOONTALK.scale = (function (TT) {
         var box_get_json, box_copy, box_get_path_to, previous_state;
         // new_scale is bound when copying a scale
         if (!new_scale) {
-            new_scale = TT.box.create(2, undefined, initial_contents, description);
+            new_scale = TT.box.create(2, undefined, initial_contents, description, name || "");
         } 
         box_get_json = new_scale.get_json;
         box_copy = new_scale.copy;
@@ -35,6 +35,8 @@ window.TOONTALK.scale = (function (TT) {
         };
         new_scale.copy = function (parameters) {
             var copy_as_box, copy;
+            // if name is not captured here box_copy will use its own name generator for labelling box holes
+            var name = this.get_name();
             if (!parameters) {
                 // as a container it may contain birds and nests that need the parameters object
                 // to maintain the correct relationships between birds and nests in the copy
@@ -42,6 +44,7 @@ window.TOONTALK.scale = (function (TT) {
             }
             copy_as_box = box_copy.call(this, parameters);
             copy = TT.scale.create(undefined, undefined, copy_as_box, parameters.just_value && this.get_state());
+            copy.set_name(name);
             return new_scale.add_to_copy(copy, parameters);
         };
         new_scale.get_json = function (json_history) {
@@ -300,6 +303,7 @@ window.TOONTALK.scale = (function (TT) {
             if (other.match_with_scale) {
                 return other.match_with_scale(this);
             }
+            this.last_match = other;
             return this;
         };
         new_scale.match_with_scale = function (scale_pattern) {
@@ -329,6 +333,11 @@ window.TOONTALK.scale = (function (TT) {
                 return -1;
             }
             return 0;
+        };
+        // scales have names not their holes like boxes which would otherwise be inherited
+        new_scale.get_name_input_label = undefined;
+        new_scale.generate_name = function () {
+            return "";
         };
         // following should only be done when first becoming visible (and removed when becoming hidden)
         new_scale.get_hole(0).add_listener('value_changed', contents_listener);
@@ -368,7 +377,7 @@ window.TOONTALK.scale = (function (TT) {
     };
 
     TT.creators_from_json["scale"] = function (json, additional_info) {
-        return scale.create(TT.UTILITIES.create_array_from_json(json.contents, additional_info), json.description, undefined, json.inactive_state);
+        return scale.create(TT.UTILITIES.create_array_from_json(json.contents, additional_info), json.description, undefined, json.inactive_state, json.name);
     };
 
     return scale;
@@ -381,9 +390,9 @@ window.TOONTALK.scale_backside =
     return {
         create: function (scale) {
             var backside = TT.backside.create(scale);
+            backside.get_element().appendChild(TT.backside.create_advanced_settings_button(backside, scale));
             backside.add_advanced_settings(true);
             return backside;
-        }
-        
+        }  
     };
 }(window.TOONTALK));
