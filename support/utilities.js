@@ -1439,6 +1439,12 @@ window.TOONTALK.UTILITIES =
                     as_string = as_string.substring(0, index);
                 }
                 if (as_string === 'auto') {
+                    if (style_property === 'left') {
+                        return $(element).position().left;
+                    }
+                    if (style_property === 'top') {
+                        return $(element).position().top;
+                    }
                     return as_string;
                 }
                 return parseInt(as_string, 10);

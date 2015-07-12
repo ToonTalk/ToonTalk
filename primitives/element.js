@@ -711,7 +711,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     
     element.get_attribute = function (attribute) {
         var value = this.get_attribute_from_pending_css(attribute);
-        if (typeof value !== 'undefined') {
+        if (typeof value !== 'undefined' && value != 'auto') {
             return value;
         };
         return this.get_attribute_from_current_css(attribute);
