@@ -12,24 +12,19 @@
 <h2>Sample programs</h2>
 <h3>A turtle</h3>
 <p>
-Here is a turtle that responds to <b>go forward</b> and <b>turn right</b> messages.<br>
-Give the bird messages and click the green flag to start it running.<br>
+Here is a turtle that responds to <b>go forward</b> and <b>turn right</b> messages.
+Give the bird messages.<br>
 Click on the turtle to watch how he works.
 </p>
 <br>
 <div class='toontalk-json'>
-This will be replaced by a work area containing 2 things: an element, and a box.
+This will be replaced by a work area containing 2 things: a box, and an element.
 top level widget
 <div style='display:none;'>{
   "semantic": {
     "type": "top_level",
     "running": true,
     "backside_widgets": [
-      {
-        "widget": {
-          "shared_widget_index": 0
-        }
-      },
       {
         "widget": {
           "semantic": {
@@ -44,8 +39,6 @@ top level widget
                   }
                 },
                 "view": {
-                  "saved_width": 70,
-                  "saved_height": 102,
                   "backside": false
                 },
                 "version": 1
@@ -60,7 +53,8 @@ top level widget
                         "type": "element",
                         "html": "%3Cspan%20style%3D%22color%3A%20rgb(255%2C%200%2C%20255)%3B%20font-family%3A%20arial%2C%20sans-serif%3B%20font-size%3A%20xx-large%3B%20font-style%3A%20normal%3B%20font-variant%3A%20normal%3B%20font-weight%3A%20normal%3B%20letter-spacing%3A%20normal%3B%20line-height%3A%20normal%3B%20orphans%3A%20auto%3B%20text-align%3A%20start%3B%20text-indent%3A%200px%3B%20text-transform%3A%20none%3B%20white-space%3A%20normal%3B%20widows%3A%20auto%3B%20word-spacing%3A%200px%3B%20-webkit-text-stroke-width%3A%200px%3B%20display%3A%20inline%20!important%3B%20float%3A%20none%3B%20background-color%3A%20rgb(238%2C%20238%2C%20238)%3B%22%3ETurn%20right%3C%2Fspan%3E",
                         "attributes": [],
-                        "attribute_values": []
+                        "attribute_values": [],
+                        "attributes_backsides": []
                       },
                       "view": {
                         "backside": false
@@ -108,7 +102,8 @@ top level widget
                         "type": "element",
                         "html": "%3Cspan%20style%3D%22color%3A%20rgb(255%2C%20229%2C%20153)%3B%20font-family%3A%20arial%2C%20sans-serif%3B%20font-size%3A%20xx-large%3B%20font-style%3A%20normal%3B%20font-variant%3A%20normal%3B%20font-weight%3A%20normal%3B%20letter-spacing%3A%20normal%3B%20line-height%3A%20normal%3B%20orphans%3A%20auto%3B%20text-align%3A%20start%3B%20text-indent%3A%200px%3B%20text-transform%3A%20none%3B%20white-space%3A%20normal%3B%20widows%3A%20auto%3B%20word-spacing%3A%200px%3B%20-webkit-text-stroke-width%3A%200px%3B%20display%3A%20inline%20!important%3B%20float%3A%20none%3B%20background-color%3A%20rgb(153%2C%200%2C%200)%3B%22%3EGo%20Forward%3C%2Fspan%3E",
                         "attributes": [],
-                        "attribute_values": []
+                        "attribute_values": [],
+                        "attributes_backsides": []
                       },
                       "view": {
                         "backside": false
@@ -159,8 +154,8 @@ top level widget
           "view": {
             "frontside_width": 445,
             "frontside_height": 96,
-            "frontside_left": 279.328125,
-            "frontside_top": 28.125,
+            "frontside_left": 104,
+            "frontside_top": 37,
             "backside_geometry": {
               "x_scale": 1,
               "y_scale": 1,
@@ -173,700 +168,39 @@ top level widget
           },
           "version": 1
         }
-      }
-    ]
-  },
-  "view": {
-    "background_color": "rgb(245, 240, 240)",
-    "backside_width": 1063,
-    "backside_height": 448,
-    "backside_left": 8,
-    "backside_top": 184.1875,
-    "backside": true,
-    "drag_x_offset": 458,
-    "drag_y_offset": 326.8125
-  },
-  "version": 1,
-  "shared_widgets": [
-    {
-      "semantic": {
-        "type": "element",
-        "html": {
-          "shared_html_index": 0
-        },
-        "attributes": [
-          "left",
-          "top",
-          "width",
-          "height",
-          "rotate"
-        ],
-        "attribute_values": [
-          "-68.6116845715012",
-          "-77.1651165095992",
-          54,
-          78,
-          204
-        ],
-        "running": true,
-        "description": "a turtle that responds to \"Go Forward\" and \"Turn Right\" messages.",
-        "backside_widgets": [
-          {
-            "widget": {
-              "semantic": {
-                "type": "number",
-                "operator": "+",
-                "numerator": "1",
-                "denominator": "1",
-                "format": "improper_fraction"
-              },
-              "view": {
-                "backside": false,
-                "frontside_left": 6,
-                "frontside_top": 200
-              },
-              "version": 1
-            }
-          },
-          {
-            "widget": {
-              "semantic": {
-                "type": "number",
-                "operator": "+",
-                "numerator": "1",
-                "denominator": "1",
-                "format": "improper_fraction"
-              },
-              "view": {
-                "backside": false,
-                "frontside_left": 6,
-                "frontside_top": 200
-              },
-              "version": 1
-            }
-          },
-          {
-            "widget": {
-              "semantic": {
-                "type": "number",
-                "operator": "+",
-                "numerator": "1",
-                "denominator": "1",
-                "format": "improper_fraction"
-              },
-              "view": {
-                "backside": false,
-                "frontside_left": 6,
-                "frontside_top": 200
-              },
-              "version": 1
-            }
-          },
-          {
-            "widget": {
-              "semantic": {
-                "type": "number",
-                "operator": "+",
-                "numerator": "1",
-                "denominator": "1",
-                "format": "improper_fraction"
-              },
-              "view": {
-                "backside": false,
-                "frontside_left": 6,
-                "frontside_top": 200
-              },
-              "version": 1
-            }
-          },
-          {
-            "widget": {
-              "semantic": {
-                "type": "number",
-                "operator": "+",
-                "numerator": "1",
-                "denominator": "1",
-                "format": "improper_fraction"
-              },
-              "view": {
-                "backside": false,
-                "frontside_left": 6,
-                "frontside_top": 200
-              },
-              "version": 1
-            }
-          },
-          {
-            "widget": {
-              "semantic": {
-                "type": "number",
-                "operator": "+",
-                "numerator": "1",
-                "denominator": "1",
-                "format": "improper_fraction"
-              },
-              "view": {
-                "backside": false,
-                "frontside_left": 6,
-                "frontside_top": 200
-              },
-              "version": 1
-            }
-          },
-          {
-            "widget": {
-              "semantic": {
-                "type": "attribute_widget",
-                "attribute_name": "rotate",
-                "element": {
-                  "shared_widget_index": 0
-                },
-                "infinite_stack": true
-              },
-              "view": {
-                "frontside_width": 194,
-                "frontside_height": 24,
-                "frontside_left": 67,
-                "frontside_top": 200,
-                "backside": false
-              },
-              "version": 1
-            }
-          },
-          {
-            "widget": {
-              "semantic": {
-                "type": "robot",
-                "frontside_conditions": {
-                  "semantic": {
-                    "type": "element",
-                    "html": {
-                      "shared_html_index": 0
-                    },
-                    "attributes": [
-                      "left",
-                      "top",
-                      "width",
-                      "height",
-                      "rotate"
-                    ],
-                    "attribute_values": [
-                      "inherit",
-                      "auto",
-                      273,
-                      393,
-                      0
-                    ],
-                    "erased": true
-                  },
-                  "view": {
-                    "backside": false
-                  },
-                  "version": 1
-                },
-                "backside_conditions": {
-                  "box": {
-                    "semantic": {
-                      "type": "box",
-                      "size": 2,
-                      "contents": [
-                        {
-                          "semantic": {
-                            "type": "box",
-                            "size": 2,
-                            "contents": [
-                              {
-                                "semantic": {
-                                  "type": "element",
-                                  "html": "%3Cspan%20style%3D%22color%3A%20rgb(255%2C%20229%2C%20153)%3B%20font-family%3A%20arial%2C%20sans-serif%3B%20font-size%3A%20xx-large%3B%20font-style%3A%20normal%3B%20font-variant%3A%20normal%3B%20font-weight%3A%20normal%3B%20letter-spacing%3A%20normal%3B%20line-height%3A%20normal%3B%20orphans%3A%20auto%3B%20text-align%3A%20start%3B%20text-indent%3A%200px%3B%20text-transform%3A%20none%3B%20white-space%3A%20normal%3B%20widows%3A%20auto%3B%20word-spacing%3A%200px%3B%20-webkit-text-stroke-width%3A%200px%3B%20display%3A%20inline%20!important%3B%20float%3A%20none%3B%20background-color%3A%20rgb(153%2C%200%2C%200)%3B%22%3EGo%20Forward%3C%2Fspan%3E",
-                                  "attributes": [],
-                                  "attribute_values": []
-                                },
-                                "view": {
-                                  "backside": false
-                                },
-                                "version": 1
-                              },
-                              {
-                                "semantic": {
-                                  "type": "number",
-                                  "operator": "+",
-                                  "numerator": "50",
-                                  "denominator": "1",
-                                  "format": "improper_fraction",
-                                  "erased": true
-                                },
-                                "view": {
-                                  "backside": false
-                                },
-                                "version": 1
-                              }
-                            ],
-                            "horizontal": true,
-                            "name": ";;"
-                          },
-                          "view": {
-                            "backside": false
-                          },
-                          "version": 1
-                        },
-                        {
-                          "semantic": {
-                            "type": "number",
-                            "operator": "+",
-                            "numerator": "30",
-                            "denominator": "1",
-                            "format": "improper_fraction",
-                            "erased": true
-                          },
-                          "view": {
-                            "backside": false
-                          },
-                          "version": 1
-                        }
-                      ],
-                      "horizontal": true,
-                      "name": ";;"
-                    },
-                    "view": {
-                      "backside": false
-                    },
-                    "version": 1
-                  }
-                },
-                "body": {
-                  "type": "body",
-                  "steps": [
-                    {
-                      "type": "robot_action",
-                      "action_name": "pick up",
-                      "path": {
-                        "type": "path.to_resource",
-                        "resource": {
-                          "type": "box",
-                          "size": 2,
-                          "contents": [
-                            null,
-                            null
-                          ],
-                          "horizontal": true,
-                          "name": ";;",
-                          "is_backside": true
-                        }
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "drop it on",
-                      "path": {
-                        "type": "path.to_entire_context",
-                        "is_backside": true
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "copy",
-                      "path": {
-                        "type": "path.to_backside_widget_of_context",
-                        "type_name": "box",
-                        "next_path": {
-                          "type": "box_path",
-                          "index": 1
-                        }
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "pick up",
-                      "path": {
-                        "type": "newly_created_widgets_path",
-                        "index": 1,
-                        "removing_widget": true
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "drop it on",
-                      "path": {
-                        "type": "newly_created_widgets_path",
-                        "index": 0,
-                        "next_path": {
-                          "type": "box_path",
-                          "index": 1
-                        }
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "pick up",
-                      "path": {
-                        "type": "path.to_resource",
-                        "resource": {
-                          "type": "nest",
-                          "contents": [],
-                          "original_nest": {
-                            "semantic": {
-                              "type": "nest",
-                              "contents": [],
-                              "guid": "toontalk_id_1426243259674",
-                              "serial_number": 28,
-                              "name": "#28"
-                            },
-                            "view": {
-                              "saved_width": 116,
-                              "saved_height": 141,
-                              "backside": false
-                            },
-                            "version": 1
-                          },
-                          "serial_number": 29,
-                          "name": "#29",
-                          "is_backside": true
-                        }
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "drop it on",
-                      "path": {
-                        "type": "path.to_entire_context",
-                        "is_backside": true
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "pick up",
-                      "path": {
-                        "type": "newly_created_widgets_path",
-                        "index": 3,
-                        "removing_widget": true
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "drop it on",
-                      "path": {
-                        "type": "newly_created_widgets_path",
-                        "index": 0,
-                        "next_path": {
-                          "type": "box_path",
-                          "index": 0
-                        }
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "copy",
-                      "path": {
-                        "type": "newly_created_widgets_path",
-                        "index": 0
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "edit",
-                      "path": {
-                        "type": "path.to_backside_widget_of_context",
-                        "type_name": "box",
-                        "next_path": {
-                          "type": "box_path",
-                          "index": 0,
-                          "next": {
-                            "type": "box_path",
-                            "index": 1
-                          },
-                          "next_path": {
-                            "type": "box_path",
-                            "index": 1
-                          }
-                        }
-                      },
-                      "additional_info": {
-                        "setter_name": "set_operator",
-                        "argument_1": "*",
-                        "toString": "by changing the operator to * of the number",
-                        "button_selector": ".toontalk-times-radio-button"
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "edit",
-                      "path": {
-                        "type": "path.to_backside_widget_of_context",
-                        "type_name": "box",
-                        "next_path": {
-                          "type": "box_path",
-                          "index": 0,
-                          "next": {
-                            "type": "box_path",
-                            "index": 1
-                          },
-                          "next_path": {
-                            "type": "box_path",
-                            "index": 1
-                          }
-                        }
-                      },
-                      "additional_info": {
-                        "setter_name": "set_infinite_stack",
-                        "argument_1": true,
-                        "toString": "change dragging to make a copy of ",
-                        "button_selector": ".toontalk-infinite-stack-check-box"
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "add a new widget to the work space",
-                      "path": {
-                        "type": "path.to_resource",
-                        "resource": {
-                          "type": "bird",
-                          "nest": {
-                            "semantic": {
-                              "type": "function_nest",
-                              "function_type": "number",
-                              "function_name": "sine"
-                            },
-                            "view": {
-                              "backside": false
-                            },
-                            "version": 1
-                          },
-                          "is_backside": true
-                        }
-                      },
-                      "additional_info": {
-                        "button_selector": ".toontalk-make-function_bird_button",
-                        "path_to_source": {
-                          "json": {
-                            "type": "path.to_backside_widget_of_context",
-                            "type_name": "box"
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "edit",
-                      "path": {
-                        "type": "newly_created_widgets_path",
-                        "index": 5
-                      },
-                      "additional_info": {
-                        "setter_name": "set_function_name",
-                        "argument_1": "cosine",
-                        "toString": "change the function bird to 'cosine'",
-                        "button_selector": ".toontalk-select-function"
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "pick up",
-                      "path": {
-                        "type": "newly_created_widgets_path",
-                        "index": 4,
-                        "removing_widget": true
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "drop it on",
-                      "path": {
-                        "type": "newly_created_widgets_path",
-                        "index": 5
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "pick up a copy of",
-                      "path": {
-                        "type": "path.to_backside_widget_of_context",
-                        "type_name": "box",
-                        "next_path": {
-                          "type": "box_path",
-                          "index": 0,
-                          "next": {
-                            "type": "box_path",
-                            "index": 1
-                          },
-                          "next_path": {
-                            "type": "box_path",
-                            "index": 1
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "drop it on",
-                      "path": {
-                        "type": "newly_created_widgets_path",
-                        "index": 2,
-                        "next_path": {
-                          "type": "path.to_widget_on_nest"
-                        }
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "pick up",
-                      "path": {
-                        "type": "newly_created_widgets_path",
-                        "index": 2,
-                        "next_path": {
-                          "type": "path.to_widget_on_nest",
-                          "removing_widget": true
-                        }
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "drop it on",
-                      "path": {
-                        "type": "path_to_style_attribute",
-                        "attribute": "left",
-                        "element_widget_path": {
-                          "type": "path.to_entire_context"
-                        }
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "edit",
-                      "path": {
-                        "type": "newly_created_widgets_path",
-                        "index": 5
-                      },
-                      "additional_info": {
-                        "setter_name": "set_function_name",
-                        "argument_1": "sine",
-                        "toString": "change the function bird to 'sine'",
-                        "button_selector": ".toontalk-select-function"
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "pick up",
-                      "path": {
-                        "type": "newly_created_widgets_path",
-                        "index": 0,
-                        "removing_widget": true
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "drop it on",
-                      "path": {
-                        "type": "newly_created_widgets_path",
-                        "index": 5
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "pick up a copy of",
-                      "path": {
-                        "type": "path.to_backside_widget_of_context",
-                        "type_name": "box",
-                        "next_path": {
-                          "type": "box_path",
-                          "index": 0,
-                          "next": {
-                            "type": "box_path",
-                            "index": 1
-                          },
-                          "next_path": {
-                            "type": "box_path",
-                            "index": 1
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "drop it on",
-                      "path": {
-                        "type": "newly_created_widgets_path",
-                        "index": 2,
-                        "next_path": {
-                          "type": "path.to_widget_on_nest"
-                        }
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "edit",
-                      "path": {
-                        "type": "newly_created_widgets_path",
-                        "index": 2,
-                        "next_path": {
-                          "type": "path.to_widget_on_nest"
-                        }
-                      },
-                      "additional_info": {
-                        "setter_name": "set_operator",
-                        "argument_1": "-",
-                        "toString": "by changing the operator to - of the number",
-                        "button_selector": ".toontalk-minus-radio-button"
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "pick up",
-                      "path": {
-                        "type": "newly_created_widgets_path",
-                        "index": 2,
-                        "next_path": {
-                          "type": "path.to_widget_on_nest",
-                          "removing_widget": true
-                        }
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "drop it on",
-                      "path": {
-                        "type": "path_to_style_attribute",
-                        "attribute": "top",
-                        "element_widget_path": {
-                          "type": "path.to_entire_context"
-                        }
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "remove",
-                      "path": {
-                        "type": "path.to_backside_widget_of_context",
-                        "type_name": "box",
-                        "next_path": {
-                          "type": "box_path",
-                          "index": 0,
-                          "removing_widget": true
-                        }
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "remove",
-                      "path": {
-                        "type": "newly_created_widgets_path",
-                        "index": 2,
-                        "removing_widget": true,
-                        "not_to_be_dereferenced": true
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "remove",
-                      "path": {
-                        "type": "newly_created_widgets_path",
-                        "index": 5,
-                        "removing_widget": true
-                      }
-                    }
-                  ]
-                },
-                "next_robot": {
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "element",
+            "html": {
+              "shared_html_index": 0
+            },
+            "attributes": [
+              "left",
+              "top",
+              "width",
+              "height",
+              "rotate"
+            ],
+            "attribute_values": [
+              468,
+              271,
+              44,
+              68,
+              180
+            ],
+            "attributes_backsides": [
+              [],
+              [],
+              [],
+              [],
+              []
+            ],
+            "running": true,
+            "backside_widgets": [
+              {
+                "widget": {
                   "semantic": {
                     "type": "robot",
                     "frontside_conditions": {
@@ -885,108 +219,580 @@ top level widget
                         "attribute_values": [
                           0,
                           0,
-                          273,
-                          393,
-                          0
+                          44,
+                          68,
+                          30
+                        ],
+                        "attributes_backsides": [
+                          null,
+                          null,
+                          null,
+                          null,
+                          null
                         ],
                         "erased": true
                       },
                       "view": {
+                        "saved_width": 44,
+                        "saved_height": 68,
                         "backside": false
                       },
                       "version": 1
                     },
-                    "backside_conditions": {
-                      "box": {
-                        "semantic": {
-                          "type": "box",
-                          "size": 2,
-                          "contents": [
-                            {
-                              "semantic": {
-                                "type": "box",
-                                "size": 2,
-                                "contents": [
-                                  {
-                                    "semantic": {
-                                      "type": "element",
-                                      "html": "%3Cspan%20style%3D%22color%3A%20rgb(255%2C%200%2C%20255)%3B%20font-family%3A%20arial%2C%20sans-serif%3B%20font-size%3A%20xx-large%3B%20font-style%3A%20normal%3B%20font-variant%3A%20normal%3B%20font-weight%3A%20normal%3B%20letter-spacing%3A%20normal%3B%20line-height%3A%20normal%3B%20orphans%3A%20auto%3B%20text-align%3A%20start%3B%20text-indent%3A%200px%3B%20text-transform%3A%20none%3B%20white-space%3A%20normal%3B%20widows%3A%20auto%3B%20word-spacing%3A%200px%3B%20-webkit-text-stroke-width%3A%200px%3B%20display%3A%20inline%20!important%3B%20float%3A%20none%3B%20background-color%3A%20rgb(238%2C%20238%2C%20238)%3B%22%3ETurn%20right%3C%2Fspan%3E",
-                                      "attributes": [],
-                                      "attribute_values": []
-                                    },
-                                    "view": {
-                                      "backside": false
-                                    },
-                                    "version": 1
-                                  },
-                                  {
-                                    "semantic": {
-                                      "type": "number",
-                                      "operator": "+",
-                                      "numerator": "30",
-                                      "denominator": "1",
-                                      "format": "improper_fraction",
-                                      "erased": true
-                                    },
-                                    "view": {
-                                      "backside": false
-                                    },
-                                    "version": 1
-                                  }
-                                ],
-                                "horizontal": true,
-                                "name": ";;"
+                    "backside_conditions": [
+                      {
+                        "widget": {
+                          "semantic": {
+                            "type": "box",
+                            "size": 2,
+                            "contents": [
+                              {
+                                "semantic": {
+                                  "type": "element",
+                                  "html": "%3Cspan%20style%3D%22color%3A%20rgb(255%2C%20229%2C%20153)%3B%20font-family%3A%20arial%2C%20sans-serif%3B%20font-size%3A%20xx-large%3B%20font-style%3A%20normal%3B%20font-variant%3A%20normal%3B%20font-weight%3A%20normal%3B%20letter-spacing%3A%20normal%3B%20line-height%3A%20normal%3B%20orphans%3A%20auto%3B%20text-align%3A%20start%3B%20text-indent%3A%200px%3B%20text-transform%3A%20none%3B%20white-space%3A%20normal%3B%20widows%3A%20auto%3B%20word-spacing%3A%200px%3B%20-webkit-text-stroke-width%3A%200px%3B%20display%3A%20inline%20!important%3B%20float%3A%20none%3B%20background-color%3A%20rgb(153%2C%200%2C%200)%3B%22%3EGo%20Forward%3C%2Fspan%3E",
+                                  "attributes": [],
+                                  "attribute_values": [],
+                                  "attributes_backsides": []
+                                },
+                                "view": {
+                                  "backside": false
+                                },
+                                "version": 1
                               },
-                              "view": {
-                                "backside": false
-                              },
-                              "version": 1
-                            },
-                            {
-                              "semantic": {
-                                "type": "number",
-                                "operator": "+",
-                                "numerator": "90",
-                                "denominator": "1",
-                                "format": "improper_fraction",
-                                "erased": true
-                              },
-                              "view": {
-                                "backside": false
-                              },
-                              "version": 1
-                            }
-                          ],
-                          "horizontal": true,
-                          "name": ";;"
-                        },
-                        "view": {
-                          "backside": false
-                        },
-                        "version": 1
+                              {
+                                "semantic": {
+                                  "type": "number",
+                                  "operator": "+",
+                                  "numerator": "3",
+                                  "denominator": "1",
+                                  "format": "improper_fraction",
+                                  "erased": true
+                                },
+                                "view": {
+                                  "backside": false
+                                },
+                                "version": 1
+                              }
+                            ],
+                            "horizontal": true,
+                            "name": ";;"
+                          },
+                          "view": {
+                            "backside": false
+                          },
+                          "version": 1
+                        }
                       }
-                    },
+                    ],
                     "body": {
                       "type": "body",
                       "steps": [
                         {
                           "type": "robot_action",
-                          "action_name": "copy",
+                          "action_name": "pick up",
                           "path": {
-                            "type": "path.to_backside_widget_of_context",
-                            "type_name": "box",
+                            "type": "path.to_resource",
+                            "resource": {
+                              "type": "box",
+                              "size": 2,
+                              "contents": [
+                                null,
+                                null
+                              ],
+                              "horizontal": true,
+                              "name": ";;",
+                              "is_backside": true
+                            }
+                          },
+                          "additional_info": {
+                            "time": 7912
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "drop it on",
+                          "path": {
+                            "type": "path.to_entire_context",
+                            "is_backside": true
+                          },
+                          "additional_info": {
+                            "left_offset_fraction": 0.46539772727272727,
+                            "top_offset_fraction": 0.6045280612244898,
+                            "time": 2025
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "pick up",
+                          "path": {
+                            "type": "path.to_resource",
+                            "resource": {
+                              "type": "number",
+                              "operator": "+",
+                              "numerator": "1",
+                              "denominator": "1",
+                              "format": "mixed_number",
+                              "is_backside": true
+                            }
+                          },
+                          "additional_info": {
+                            "time": 1722
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "drop it on",
+                          "path": {
+                            "type": "newly_created_widgets_path",
+                            "index": 0,
                             "next_path": {
                               "type": "box_path",
-                              "index": 0,
-                              "next": {
-                                "type": "box_path",
-                                "index": 1
-                              },
+                              "index": 1
+                            }
+                          },
+                          "additional_info": {
+                            "time": 1527
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "open the backside",
+                          "path": {
+                            "type": "newly_created_widgets_path",
+                            "index": 0,
+                            "next_path": {
+                              "type": "box_path",
+                              "index": 1
+                            }
+                          },
+                          "additional_info": {
+                            "time": 2490
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "edit",
+                          "path": {
+                            "type": "newly_created_widgets_path",
+                            "index": 0,
+                            "next_path": {
+                              "type": "box_path",
+                              "index": 1
+                            }
+                          },
+                          "additional_info": {
+                            "setter_name": "set_numerator",
+                            "argument_1": "-90",
+                            "toString": "by changing the value of the numerator to -90",
+                            "button_selector": ".toontalk-numerator-input",
+                            "time": 5379
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "close the backside",
+                          "path": {
+                            "type": "newly_created_widgets_path",
+                            "index": 0,
+                            "next_path": {
+                              "type": "box_path",
+                              "index": 1
+                            }
+                          },
+                          "additional_info": {
+                            "time": 2285
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "pick up a copy of",
+                          "path": {
+                            "type": "path_to_style_attribute",
+                            "attribute": "rotate",
+                            "element_widget_path": {
+                              "type": "path.to_entire_context"
+                            }
+                          },
+                          "additional_info": {
+                            "time": 4446
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "drop it on",
+                          "path": {
+                            "type": "newly_created_widgets_path",
+                            "index": 0,
+                            "next_path": {
+                              "type": "box_path",
+                              "index": 1
+                            }
+                          },
+                          "additional_info": {
+                            "time": 4375
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "pick up",
+                          "path": {
+                            "type": "path.to_resource",
+                            "resource": {
+                              "type": "nest",
+                              "contents": [],
+                              "serial_number": 3,
+                              "name": "#26",
+                              "is_backside": true
+                            }
+                          },
+                          "additional_info": {
+                            "time": 1465
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "drop it on",
+                          "path": {
+                            "type": "path.to_entire_context",
+                            "is_backside": true
+                          },
+                          "additional_info": {
+                            "left_offset_fraction": 0.5628693181818182,
+                            "top_offset_fraction": 0.06549744897959184,
+                            "time": 1162
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "pick up",
+                          "path": {
+                            "type": "newly_created_widgets_path",
+                            "index": 4,
+                            "removing_widget": true
+                          },
+                          "additional_info": {
+                            "time": 5335
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "drop it on",
+                          "path": {
+                            "type": "newly_created_widgets_path",
+                            "index": 0,
+                            "next_path": {
+                              "type": "box_path",
+                              "index": 0
+                            }
+                          },
+                          "additional_info": {
+                            "time": 1142
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "open the backside",
+                          "path": {
+                            "type": "path.to_backside_widget_of_context",
+                            "type_name": "nest",
+                            "backside_index": 0,
+                            "next_path": {
+                              "type": "path.to_widget_on_nest",
                               "next_path": {
                                 "type": "box_path",
                                 "index": 1
                               }
                             }
+                          },
+                          "additional_info": {
+                            "time": 3076
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "click the button of",
+                          "path": {
+                            "type": "path.to_backside_widget_of_context",
+                            "type_name": "nest",
+                            "backside_index": 0,
+                            "next_path": {
+                              "type": "path.to_widget_on_nest",
+                              "next_path": {
+                                "type": "box_path",
+                                "index": 1
+                              }
+                            }
+                          },
+                          "additional_info": {
+                            "button_selector": ".toontalk-settings-backside-button",
+                            "time": 1934
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "edit",
+                          "path": {
+                            "type": "path.to_backside_widget_of_context",
+                            "type_name": "nest",
+                            "backside_index": 0,
+                            "next_path": {
+                              "type": "path.to_widget_on_nest",
+                              "next_path": {
+                                "type": "box_path",
+                                "index": 1
+                              }
+                            }
+                          },
+                          "additional_info": {
+                            "setter_name": "set_operator",
+                            "argument_1": "*",
+                            "toString": "by changing the operator to * of the number",
+                            "button_selector": ".toontalk-times-radio-button",
+                            "time": 2632
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "edit",
+                          "path": {
+                            "type": "path.to_backside_widget_of_context",
+                            "type_name": "nest",
+                            "backside_index": 0,
+                            "next_path": {
+                              "type": "path.to_widget_on_nest",
+                              "next_path": {
+                                "type": "box_path",
+                                "index": 1
+                              }
+                            }
+                          },
+                          "additional_info": {
+                            "setter_name": "set_infinite_stack",
+                            "argument_1": true,
+                            "toString": "change dragging to make a copy of ",
+                            "button_selector": ".toontalk-infinite-stack-check-box",
+                            "time": 3151
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "add a new widget to the work space",
+                          "path": {
+                            "type": "path.to_resource",
+                            "resource": {
+                              "type": "bird",
+                              "nest": {
+                                "semantic": {
+                                  "type": "function_nest",
+                                  "function_type": "number",
+                                  "function_name": "sine"
+                                },
+                                "view": {
+                                  "backside": false
+                                },
+                                "version": 1
+                              },
+                              "is_backside": true
+                            }
+                          },
+                          "additional_info": {
+                            "button_selector": ".toontalk-make-function_bird_button",
+                            "path_to_source": {
+                              "json": {
+                                "type": "path.to_backside_widget_of_context",
+                                "type_name": "nest",
+                                "backside_index": 0
+                              }
+                            }
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "close the backside",
+                          "path": {
+                            "type": "path.to_backside_widget_of_context",
+                            "type_name": "nest",
+                            "backside_index": 0,
+                            "next_path": {
+                              "type": "path.to_widget_on_nest",
+                              "next_path": {
+                                "type": "box_path",
+                                "index": 1
+                              }
+                            }
+                          },
+                          "additional_info": {
+                            "time": 3161
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "open the backside",
+                          "path": {
+                            "type": "newly_created_widgets_path",
+                            "index": 5
+                          },
+                          "additional_info": {
+                            "time": 1489
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "edit",
+                          "path": {
+                            "type": "newly_created_widgets_path",
+                            "index": 5
+                          },
+                          "additional_info": {
+                            "setter_name": "set_function_name",
+                            "argument_1": "cosine",
+                            "toString": "change the function bird to 'cosine'",
+                            "button_selector": ".toontalk-select-function",
+                            "time": 4268
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "copy",
+                          "path": {
+                            "type": "newly_created_widgets_path",
+                            "index": 0
+                          },
+                          "additional_info": {
+                            "time": 5282
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "pick up",
+                          "path": {
+                            "type": "newly_created_widgets_path",
+                            "index": 6,
+                            "removing_widget": true
+                          },
+                          "additional_info": {
+                            "time": 2015
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "drop it on",
+                          "path": {
+                            "type": "newly_created_widgets_path",
+                            "index": 5
+                          },
+                          "additional_info": {
+                            "time": 3581
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "pick up a copy of",
+                          "path": {
+                            "type": "path.to_backside_widget_of_context",
+                            "type_name": "nest",
+                            "backside_index": 0,
+                            "next_path": {
+                              "type": "path.to_widget_on_nest",
+                              "next_path": {
+                                "type": "box_path",
+                                "index": 1
+                              }
+                            }
+                          },
+                          "additional_info": {
+                            "time": 7556
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "drop it on",
+                          "path": {
+                            "type": "newly_created_widgets_path",
+                            "index": 3,
+                            "next_path": {
+                              "type": "path.to_widget_on_nest"
+                            }
+                          },
+                          "additional_info": {
+                            "time": 3036
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "pick up",
+                          "path": {
+                            "type": "newly_created_widgets_path",
+                            "index": 3,
+                            "next_path": {
+                              "type": "path.to_widget_on_nest",
+                              "removing_widget": true
+                            }
+                          },
+                          "additional_info": {
+                            "time": 2685
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "drop it on",
+                          "path": {
+                            "type": "path_to_style_attribute",
+                            "attribute": "left",
+                            "element_widget_path": {
+                              "type": "path.to_entire_context"
+                            }
+                          },
+                          "additional_info": {
+                            "time": 4291
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "open the backside",
+                          "path": {
+                            "type": "newly_created_widgets_path",
+                            "index": 5
+                          },
+                          "additional_info": {
+                            "time": 2682
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "open the backside",
+                          "path": {
+                            "type": "newly_created_widgets_path",
+                            "index": 5
+                          },
+                          "additional_info": {
+                            "time": 1218
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "edit",
+                          "path": {
+                            "type": "newly_created_widgets_path",
+                            "index": 5
+                          },
+                          "additional_info": {
+                            "setter_name": "set_function_name",
+                            "argument_1": "sine",
+                            "toString": "change the function bird to 'sine'",
+                            "button_selector": ".toontalk-select-function",
+                            "time": 3792
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "close the backside",
+                          "path": {
+                            "type": "newly_created_widgets_path",
+                            "index": 5
+                          },
+                          "additional_info": {
+                            "time": 2414
                           }
                         },
                         {
@@ -996,6 +802,68 @@ top level widget
                             "type": "newly_created_widgets_path",
                             "index": 0,
                             "removing_widget": true
+                          },
+                          "additional_info": {
+                            "time": 3009
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "drop it on",
+                          "path": {
+                            "type": "newly_created_widgets_path",
+                            "index": 5
+                          },
+                          "additional_info": {
+                            "time": 1490
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "pick up a copy of",
+                          "path": {
+                            "type": "path.to_backside_widget_of_context",
+                            "type_name": "nest",
+                            "backside_index": 0,
+                            "next_path": {
+                              "type": "path.to_widget_on_nest",
+                              "next_path": {
+                                "type": "box_path",
+                                "index": 1
+                              }
+                            }
+                          },
+                          "additional_info": {
+                            "time": 6361
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "drop it on",
+                          "path": {
+                            "type": "newly_created_widgets_path",
+                            "index": 3,
+                            "next_path": {
+                              "type": "path.to_widget_on_nest"
+                            }
+                          },
+                          "additional_info": {
+                            "time": 3195
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "pick up",
+                          "path": {
+                            "type": "newly_created_widgets_path",
+                            "index": 3,
+                            "next_path": {
+                              "type": "path.to_widget_on_nest",
+                              "removing_widget": true
+                            }
+                          },
+                          "additional_info": {
+                            "time": 2905
                           }
                         },
                         {
@@ -1003,74 +871,13 @@ top level widget
                           "action_name": "drop it on",
                           "path": {
                             "type": "path_to_style_attribute",
-                            "attribute": "rotate",
+                            "attribute": "top",
                             "element_widget_path": {
                               "type": "path.to_entire_context"
                             }
-                          }
-                        },
-                        {
-                          "type": "robot_action",
-                          "action_name": "pick up",
-                          "path": {
-                            "type": "path.to_backside_widget_of_context",
-                            "type_name": "box",
-                            "next_path": {
-                              "type": "box_path",
-                              "index": 0,
-                              "next": {
-                                "type": "box_path",
-                                "index": 1
-                              },
-                              "next_path": {
-                                "type": "box_path",
-                                "index": 1,
-                                "removing_widget": true
-                              }
-                            }
-                          }
-                        },
-                        {
-                          "type": "robot_action",
-                          "action_name": "drop it on",
-                          "path": {
-                            "type": "path.to_entire_context",
-                            "is_backside": true
-                          }
-                        },
-                        {
-                          "type": "robot_action",
-                          "action_name": "edit",
-                          "path": {
-                            "type": "newly_created_widgets_path",
-                            "index": 1
                           },
                           "additional_info": {
-                            "setter_name": "set_operator",
-                            "argument_1": "-",
-                            "toString": "by changing the operator to - of the number",
-                            "button_selector": ".toontalk-minus-radio-button"
-                          }
-                        },
-                        {
-                          "type": "robot_action",
-                          "action_name": "pick up",
-                          "path": {
-                            "type": "newly_created_widgets_path",
-                            "index": 1,
-                            "removing_widget": true
-                          }
-                        },
-                        {
-                          "type": "robot_action",
-                          "action_name": "drop it on",
-                          "path": {
-                            "type": "path.to_backside_widget_of_context",
-                            "type_name": "box",
-                            "next_path": {
-                              "type": "box_path",
-                              "index": 1
-                            }
+                            "time": 13818
                           }
                         },
                         {
@@ -1078,46 +885,157 @@ top level widget
                           "action_name": "remove",
                           "path": {
                             "type": "path.to_backside_widget_of_context",
-                            "type_name": "box",
-                            "next_path": {
-                              "type": "box_path",
-                              "index": 0,
-                              "removing_widget": true
-                            }
+                            "type_name": "nest",
+                            "backside_index": 0,
+                            "removing_widget": true
+                          },
+                          "additional_info": {
+                            "time": 11387
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "remove",
+                          "path": {
+                            "type": "newly_created_widgets_path",
+                            "index": 3,
+                            "removing_widget": true,
+                            "not_to_be_dereferenced": true
+                          },
+                          "additional_info": {
+                            "time": 4496
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "remove",
+                          "path": {
+                            "type": "newly_created_widgets_path",
+                            "index": 5,
+                            "removing_widget": true
+                          },
+                          "additional_info": {
+                            "time": 5768
                           }
                         }
                       ]
                     },
-                    "name": "RT",
-                    "speed": 1,
-                    "description": "a robot that responds to \"Turn right\" messages"
+                    "next_robot": {
+                      "shared_widget_index": 0
+                    },
+                    "name": "FD",
+                    "running": true,
+                    "description": "a robot that responds to go \"Forward\" messages to a turtle.",
+                    "backside_widgets": [
+                      {
+                        "widget": {
+                          "shared_widget_index": 0
+                        },
+                        "is_backside": true
+                      }
+                    ]
                   },
                   "view": {
                     "frontside_width": 66,
                     "frontside_height": 110,
-                    "frontside_left": 0,
-                    "frontside_top": 0,
+                    "frontside_left": "81.98155918727915%",
+                    "frontside_top": "13.71875%",
+                    "backside_width": 0,
+                    "backside_height": 0,
+                    "backside_left": 0,
+                    "backside_top": 0,
+                    "backside_geometry": {
+                      "x_scale": 1,
+                      "y_scale": 2.086956521739129,
+                      "original_width": 550,
+                      "original_height": 253
+                    },
                     "saved_width": 66,
                     "saved_height": 110,
                     "backside": false
                   },
                   "version": 1
-                },
-                "name": "FD",
-                "speed": 1,
-                "running": true,
-                "description": "a robot that responds to 'Go Forward' messages."
+                }
               },
-              "view": {
-                "saved_width": 66,
-                "saved_height": 110,
-                "backside": false,
-                "frontside_left": 312.109375,
-                "frontside_top": 129.734375
-              },
-              "version": 1
-            }
+              {
+                "widget": {
+                  "shared_widget_index": 1
+                }
+              }
+            ]
           },
+          "view": {
+            "frontside_width": 44,
+            "frontside_height": 68,
+            "frontside_left": 468,
+            "frontside_top": 271,
+            "backside_width": 0,
+            "backside_height": 0,
+            "backside_left": 0,
+            "backside_top": 0,
+            "saved_width": 44,
+            "saved_height": 68,
+            "backside": false
+          },
+          "version": 1
+        }
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgb(245, 240, 240)",
+    "backside_width": 1173,
+    "backside_height": 474,
+    "backside_left": 8,
+    "backside_top": 184.1875,
+    "saved_width": 146,
+    "saved_height": 50.5,
+    "backside": true,
+    "drag_x_offset": 320,
+    "drag_y_offset": 254.8125
+  },
+  "version": 1,
+  "shared_widgets": [
+    {
+      "semantic": {
+        "type": "robot",
+        "frontside_conditions": {
+          "semantic": {
+            "type": "element",
+            "html": {
+              "shared_html_index": 0
+            },
+            "attributes": [
+              "left",
+              "top",
+              "width",
+              "height",
+              "rotate"
+            ],
+            "attribute_values": [
+              0,
+              0,
+              44,
+              68,
+              6
+            ],
+            "attributes_backsides": [
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            "erased": true
+          },
+          "view": {
+            "saved_width": 44,
+            "saved_height": 68,
+            "backside": false
+          },
+          "version": 1
+        },
+        "backside_conditions": [
           {
             "widget": {
               "semantic": {
@@ -1126,15 +1044,13 @@ top level widget
                 "contents": [
                   {
                     "semantic": {
-                      "type": "nest",
-                      "contents": [],
-                      "guid": "toontalk_id_1429691368892",
-                      "serial_number": 1,
-                      "name": "Turt"
+                      "type": "element",
+                      "html": "%3Cspan%20style%3D%22color%3A%20rgb(255%2C%200%2C%20255)%3B%20font-family%3A%20arial%2C%20sans-serif%3B%20font-size%3A%20xx-large%3B%20font-style%3A%20normal%3B%20font-variant%3A%20normal%3B%20font-weight%3A%20normal%3B%20letter-spacing%3A%20normal%3B%20line-height%3A%20normal%3B%20orphans%3A%20auto%3B%20text-align%3A%20start%3B%20text-indent%3A%200px%3B%20text-transform%3A%20none%3B%20white-space%3A%20normal%3B%20widows%3A%20auto%3B%20word-spacing%3A%200px%3B%20-webkit-text-stroke-width%3A%200px%3B%20display%3A%20inline%20!important%3B%20float%3A%20none%3B%20background-color%3A%20rgb(238%2C%20238%2C%20238)%3B%22%3ETurn%20right%3C%2Fspan%3E",
+                      "attributes": [],
+                      "attribute_values": [],
+                      "attributes_backsides": []
                     },
                     "view": {
-                      "saved_width": 116,
-                      "saved_height": 98,
                       "backside": false
                     },
                     "version": 1
@@ -1143,13 +1059,12 @@ top level widget
                     "semantic": {
                       "type": "number",
                       "operator": "+",
-                      "numerator": "-2664",
+                      "numerator": "3",
                       "denominator": "1",
-                      "format": "improper_fraction"
+                      "format": "improper_fraction",
+                      "erased": true
                     },
                     "view": {
-                      "saved_width": 76,
-                      "saved_height": 55,
                       "backside": false
                     },
                     "version": 1
@@ -1159,834 +1074,79 @@ top level widget
                 "name": ";;"
               },
               "view": {
-                "frontside_width": 287,
-                "frontside_height": 78,
-                "frontside_left": 427.203125,
-                "frontside_top": 200,
-                "backside_geometry": {
-                  "x_scale": 1,
-                  "y_scale": 1,
-                  "original_width": 171,
-                  "original_height": 39
-                },
-                "saved_width": 164,
-                "saved_height": 68,
                 "backside": false
               },
               "version": 1
             }
-          },
-          {
-            "widget": {
-              "semantic": {
-                "type": "robot",
-                "frontside_conditions": {
-                  "semantic": {
-                    "type": "element",
-                    "html": {
-                      "shared_html_index": 0
-                    },
-                    "attributes": [
-                      "left",
-                      "top",
-                      "width",
-                      "height",
-                      "rotate"
-                    ],
-                    "attribute_values": [
-                      "inherit",
-                      "auto",
-                      273,
-                      393,
-                      0
-                    ],
-                    "erased": true
-                  },
-                  "view": {
-                    "backside": false
-                  },
-                  "version": 1
-                },
-                "backside_conditions": {
-                  "box": {
-                    "semantic": {
-                      "type": "box",
-                      "size": 2,
-                      "contents": [
-                        {
-                          "semantic": {
-                            "type": "box",
-                            "size": 2,
-                            "contents": [
-                              {
-                                "semantic": {
-                                  "type": "element",
-                                  "html": "%3Cspan%20style%3D%22color%3A%20rgb(255%2C%20229%2C%20153)%3B%20font-family%3A%20arial%2C%20sans-serif%3B%20font-size%3A%20xx-large%3B%20font-style%3A%20normal%3B%20font-variant%3A%20normal%3B%20font-weight%3A%20normal%3B%20letter-spacing%3A%20normal%3B%20line-height%3A%20normal%3B%20orphans%3A%20auto%3B%20text-align%3A%20start%3B%20text-indent%3A%200px%3B%20text-transform%3A%20none%3B%20white-space%3A%20normal%3B%20widows%3A%20auto%3B%20word-spacing%3A%200px%3B%20-webkit-text-stroke-width%3A%200px%3B%20display%3A%20inline%20!important%3B%20float%3A%20none%3B%20background-color%3A%20rgb(153%2C%200%2C%200)%3B%22%3EGo%20Forward%3C%2Fspan%3E",
-                                  "attributes": [],
-                                  "attribute_values": []
-                                },
-                                "view": {
-                                  "backside": false
-                                },
-                                "version": 1
-                              },
-                              {
-                                "semantic": {
-                                  "type": "number",
-                                  "operator": "+",
-                                  "numerator": "50",
-                                  "denominator": "1",
-                                  "format": "improper_fraction",
-                                  "erased": true
-                                },
-                                "view": {
-                                  "backside": false
-                                },
-                                "version": 1
-                              }
-                            ],
-                            "horizontal": true,
-                            "name": ";;"
-                          },
-                          "view": {
-                            "backside": false
-                          },
-                          "version": 1
-                        },
-                        {
-                          "semantic": {
-                            "type": "number",
-                            "operator": "+",
-                            "numerator": "30",
-                            "denominator": "1",
-                            "format": "improper_fraction",
-                            "erased": true
-                          },
-                          "view": {
-                            "backside": false
-                          },
-                          "version": 1
-                        }
-                      ],
-                      "horizontal": true,
-                      "name": ";;"
-                    },
-                    "view": {
-                      "backside": false
-                    },
-                    "version": 1
-                  }
-                },
-                "body": {
-                  "type": "body",
-                  "steps": [
-                    {
-                      "type": "robot_action",
-                      "action_name": "pick up",
-                      "path": {
-                        "type": "path.to_resource",
-                        "resource": {
-                          "type": "box",
-                          "size": 2,
-                          "contents": [
-                            null,
-                            null
-                          ],
-                          "horizontal": true,
-                          "name": ";;",
-                          "is_backside": true
-                        }
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "drop it on",
-                      "path": {
-                        "type": "path.to_entire_context",
-                        "is_backside": true
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "copy",
-                      "path": {
-                        "type": "path.to_backside_widget_of_context",
-                        "type_name": "box",
-                        "next_path": {
-                          "type": "box_path",
-                          "index": 1
-                        }
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "pick up",
-                      "path": {
-                        "type": "newly_created_widgets_path",
-                        "index": 1,
-                        "removing_widget": true
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "drop it on",
-                      "path": {
-                        "type": "newly_created_widgets_path",
-                        "index": 0,
-                        "next_path": {
-                          "type": "box_path",
-                          "index": 1
-                        }
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "pick up",
-                      "path": {
-                        "type": "path.to_resource",
-                        "resource": {
-                          "type": "nest",
-                          "contents": [],
-                          "original_nest": {
-                            "semantic": {
-                              "type": "nest",
-                              "contents": [],
-                              "guid": "toontalk_id_1426243259674",
-                              "serial_number": 28,
-                              "name": "#28"
-                            },
-                            "view": {
-                              "saved_width": 116,
-                              "saved_height": 141,
-                              "backside": false
-                            },
-                            "version": 1
-                          },
-                          "serial_number": 29,
-                          "name": "#29",
-                          "is_backside": true
-                        }
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "drop it on",
-                      "path": {
-                        "type": "path.to_entire_context",
-                        "is_backside": true
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "pick up",
-                      "path": {
-                        "type": "newly_created_widgets_path",
-                        "index": 3,
-                        "removing_widget": true
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "drop it on",
-                      "path": {
-                        "type": "newly_created_widgets_path",
-                        "index": 0,
-                        "next_path": {
-                          "type": "box_path",
-                          "index": 0
-                        }
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "copy",
-                      "path": {
-                        "type": "newly_created_widgets_path",
-                        "index": 0
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "edit",
-                      "path": {
-                        "type": "path.to_backside_widget_of_context",
-                        "type_name": "box",
-                        "next_path": {
-                          "type": "box_path",
-                          "index": 0,
-                          "next": {
-                            "type": "box_path",
-                            "index": 1
-                          },
-                          "next_path": {
-                            "type": "box_path",
-                            "index": 1
-                          }
-                        }
-                      },
-                      "additional_info": {
-                        "setter_name": "set_operator",
-                        "argument_1": "*",
-                        "toString": "by changing the operator to * of the number",
-                        "button_selector": ".toontalk-times-radio-button"
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "edit",
-                      "path": {
-                        "type": "path.to_backside_widget_of_context",
-                        "type_name": "box",
-                        "next_path": {
-                          "type": "box_path",
-                          "index": 0,
-                          "next": {
-                            "type": "box_path",
-                            "index": 1
-                          },
-                          "next_path": {
-                            "type": "box_path",
-                            "index": 1
-                          }
-                        }
-                      },
-                      "additional_info": {
-                        "setter_name": "set_infinite_stack",
-                        "argument_1": true,
-                        "toString": "change dragging to make a copy of ",
-                        "button_selector": ".toontalk-infinite-stack-check-box"
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "add a new widget to the work space",
-                      "path": {
-                        "type": "path.to_resource",
-                        "resource": {
-                          "type": "bird",
-                          "nest": {
-                            "semantic": {
-                              "type": "function_nest",
-                              "function_type": "number",
-                              "function_name": "sine"
-                            },
-                            "view": {
-                              "backside": false
-                            },
-                            "version": 1
-                          },
-                          "is_backside": true
-                        }
-                      },
-                      "additional_info": {
-                        "button_selector": ".toontalk-make-function_bird_button",
-                        "path_to_source": {
-                          "json": {
-                            "type": "path.to_backside_widget_of_context",
-                            "type_name": "box"
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "edit",
-                      "path": {
-                        "type": "newly_created_widgets_path",
-                        "index": 5
-                      },
-                      "additional_info": {
-                        "setter_name": "set_function_name",
-                        "argument_1": "cosine",
-                        "toString": "change the function bird to 'cosine'",
-                        "button_selector": ".toontalk-select-function"
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "pick up",
-                      "path": {
-                        "type": "newly_created_widgets_path",
-                        "index": 4,
-                        "removing_widget": true
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "drop it on",
-                      "path": {
-                        "type": "newly_created_widgets_path",
-                        "index": 5
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "pick up a copy of",
-                      "path": {
-                        "type": "path.to_backside_widget_of_context",
-                        "type_name": "box",
-                        "next_path": {
-                          "type": "box_path",
-                          "index": 0,
-                          "next": {
-                            "type": "box_path",
-                            "index": 1
-                          },
-                          "next_path": {
-                            "type": "box_path",
-                            "index": 1
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "drop it on",
-                      "path": {
-                        "type": "newly_created_widgets_path",
-                        "index": 2,
-                        "next_path": {
-                          "type": "path.to_widget_on_nest"
-                        }
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "pick up",
-                      "path": {
-                        "type": "newly_created_widgets_path",
-                        "index": 2,
-                        "next_path": {
-                          "type": "path.to_widget_on_nest",
-                          "removing_widget": true
-                        }
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "drop it on",
-                      "path": {
-                        "type": "path_to_style_attribute",
-                        "attribute": "left",
-                        "element_widget_path": {
-                          "type": "path.to_entire_context"
-                        }
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "edit",
-                      "path": {
-                        "type": "newly_created_widgets_path",
-                        "index": 5
-                      },
-                      "additional_info": {
-                        "setter_name": "set_function_name",
-                        "argument_1": "sine",
-                        "toString": "change the function bird to 'sine'",
-                        "button_selector": ".toontalk-select-function"
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "pick up",
-                      "path": {
-                        "type": "newly_created_widgets_path",
-                        "index": 0,
-                        "removing_widget": true
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "drop it on",
-                      "path": {
-                        "type": "newly_created_widgets_path",
-                        "index": 5
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "pick up a copy of",
-                      "path": {
-                        "type": "path.to_backside_widget_of_context",
-                        "type_name": "box",
-                        "next_path": {
-                          "type": "box_path",
-                          "index": 0,
-                          "next": {
-                            "type": "box_path",
-                            "index": 1
-                          },
-                          "next_path": {
-                            "type": "box_path",
-                            "index": 1
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "drop it on",
-                      "path": {
-                        "type": "newly_created_widgets_path",
-                        "index": 2,
-                        "next_path": {
-                          "type": "path.to_widget_on_nest"
-                        }
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "edit",
-                      "path": {
-                        "type": "newly_created_widgets_path",
-                        "index": 2,
-                        "next_path": {
-                          "type": "path.to_widget_on_nest"
-                        }
-                      },
-                      "additional_info": {
-                        "setter_name": "set_operator",
-                        "argument_1": "-",
-                        "toString": "by changing the operator to - of the number",
-                        "button_selector": ".toontalk-minus-radio-button"
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "pick up",
-                      "path": {
-                        "type": "newly_created_widgets_path",
-                        "index": 2,
-                        "next_path": {
-                          "type": "path.to_widget_on_nest",
-                          "removing_widget": true
-                        }
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "drop it on",
-                      "path": {
-                        "type": "path_to_style_attribute",
-                        "attribute": "top",
-                        "element_widget_path": {
-                          "type": "path.to_entire_context"
-                        }
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "remove",
-                      "path": {
-                        "type": "path.to_backside_widget_of_context",
-                        "type_name": "box",
-                        "next_path": {
-                          "type": "box_path",
-                          "index": 0,
-                          "removing_widget": true
-                        }
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "remove",
-                      "path": {
-                        "type": "newly_created_widgets_path",
-                        "index": 2,
-                        "removing_widget": true,
-                        "not_to_be_dereferenced": true
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "remove",
-                      "path": {
-                        "type": "newly_created_widgets_path",
-                        "index": 5,
-                        "removing_widget": true
-                      }
-                    }
-                  ]
-                },
-                "next_robot": {
-                  "semantic": {
-                    "type": "robot",
-                    "frontside_conditions": {
-                      "semantic": {
-                        "type": "element",
-                        "html": {
-                          "shared_html_index": 0
-                        },
-                        "attributes": [
-                          "left",
-                          "top",
-                          "width",
-                          "height",
-                          "rotate"
-                        ],
-                        "attribute_values": [
-                          0,
-                          0,
-                          273,
-                          393,
-                          0
-                        ],
-                        "erased": true
-                      },
-                      "view": {
-                        "backside": false
-                      },
-                      "version": 1
-                    },
-                    "backside_conditions": {
-                      "box": {
-                        "semantic": {
-                          "type": "box",
-                          "size": 2,
-                          "contents": [
-                            {
-                              "semantic": {
-                                "type": "box",
-                                "size": 2,
-                                "contents": [
-                                  {
-                                    "semantic": {
-                                      "type": "element",
-                                      "html": "%3Cspan%20style%3D%22color%3A%20rgb(255%2C%200%2C%20255)%3B%20font-family%3A%20arial%2C%20sans-serif%3B%20font-size%3A%20xx-large%3B%20font-style%3A%20normal%3B%20font-variant%3A%20normal%3B%20font-weight%3A%20normal%3B%20letter-spacing%3A%20normal%3B%20line-height%3A%20normal%3B%20orphans%3A%20auto%3B%20text-align%3A%20start%3B%20text-indent%3A%200px%3B%20text-transform%3A%20none%3B%20white-space%3A%20normal%3B%20widows%3A%20auto%3B%20word-spacing%3A%200px%3B%20-webkit-text-stroke-width%3A%200px%3B%20display%3A%20inline%20!important%3B%20float%3A%20none%3B%20background-color%3A%20rgb(238%2C%20238%2C%20238)%3B%22%3ETurn%20right%3C%2Fspan%3E",
-                                      "attributes": [],
-                                      "attribute_values": []
-                                    },
-                                    "view": {
-                                      "backside": false
-                                    },
-                                    "version": 1
-                                  },
-                                  {
-                                    "semantic": {
-                                      "type": "number",
-                                      "operator": "+",
-                                      "numerator": "30",
-                                      "denominator": "1",
-                                      "format": "improper_fraction",
-                                      "erased": true
-                                    },
-                                    "view": {
-                                      "backside": false
-                                    },
-                                    "version": 1
-                                  }
-                                ],
-                                "horizontal": true,
-                                "name": ";;"
-                              },
-                              "view": {
-                                "backside": false
-                              },
-                              "version": 1
-                            },
-                            {
-                              "semantic": {
-                                "type": "number",
-                                "operator": "+",
-                                "numerator": "90",
-                                "denominator": "1",
-                                "format": "improper_fraction",
-                                "erased": true
-                              },
-                              "view": {
-                                "backside": false
-                              },
-                              "version": 1
-                            }
-                          ],
-                          "horizontal": true,
-                          "name": ";;"
-                        },
-                        "view": {
-                          "backside": false
-                        },
-                        "version": 1
-                      }
-                    },
-                    "body": {
-                      "type": "body",
-                      "steps": [
-                        {
-                          "type": "robot_action",
-                          "action_name": "copy",
-                          "path": {
-                            "type": "path.to_backside_widget_of_context",
-                            "type_name": "box",
-                            "next_path": {
-                              "type": "box_path",
-                              "index": 0,
-                              "next": {
-                                "type": "box_path",
-                                "index": 1
-                              },
-                              "next_path": {
-                                "type": "box_path",
-                                "index": 1
-                              }
-                            }
-                          }
-                        },
-                        {
-                          "type": "robot_action",
-                          "action_name": "pick up",
-                          "path": {
-                            "type": "newly_created_widgets_path",
-                            "index": 0,
-                            "removing_widget": true
-                          }
-                        },
-                        {
-                          "type": "robot_action",
-                          "action_name": "drop it on",
-                          "path": {
-                            "type": "path_to_style_attribute",
-                            "attribute": "rotate",
-                            "element_widget_path": {
-                              "type": "path.to_entire_context"
-                            }
-                          }
-                        },
-                        {
-                          "type": "robot_action",
-                          "action_name": "pick up",
-                          "path": {
-                            "type": "path.to_backside_widget_of_context",
-                            "type_name": "box",
-                            "next_path": {
-                              "type": "box_path",
-                              "index": 0,
-                              "next": {
-                                "type": "box_path",
-                                "index": 1
-                              },
-                              "next_path": {
-                                "type": "box_path",
-                                "index": 1,
-                                "removing_widget": true
-                              }
-                            }
-                          }
-                        },
-                        {
-                          "type": "robot_action",
-                          "action_name": "drop it on",
-                          "path": {
-                            "type": "path.to_entire_context",
-                            "is_backside": true
-                          }
-                        },
-                        {
-                          "type": "robot_action",
-                          "action_name": "edit",
-                          "path": {
-                            "type": "newly_created_widgets_path",
-                            "index": 1
-                          },
-                          "additional_info": {
-                            "setter_name": "set_operator",
-                            "argument_1": "-",
-                            "toString": "by changing the operator to - of the number",
-                            "button_selector": ".toontalk-minus-radio-button"
-                          }
-                        },
-                        {
-                          "type": "robot_action",
-                          "action_name": "pick up",
-                          "path": {
-                            "type": "newly_created_widgets_path",
-                            "index": 1,
-                            "removing_widget": true
-                          }
-                        },
-                        {
-                          "type": "robot_action",
-                          "action_name": "drop it on",
-                          "path": {
-                            "type": "path.to_backside_widget_of_context",
-                            "type_name": "box",
-                            "next_path": {
-                              "type": "box_path",
-                              "index": 1
-                            }
-                          }
-                        },
-                        {
-                          "type": "robot_action",
-                          "action_name": "remove",
-                          "path": {
-                            "type": "path.to_backside_widget_of_context",
-                            "type_name": "box",
-                            "next_path": {
-                              "type": "box_path",
-                              "index": 0,
-                              "removing_widget": true
-                            }
-                          }
-                        }
-                      ]
-                    },
-                    "name": "RT",
-                    "speed": 1,
-                    "description": "a robot that responds to \"Turn right\" messages"
-                  },
-                  "view": {
-                    "frontside_width": 66,
-                    "frontside_height": 110,
-                    "frontside_left": 0,
-                    "frontside_top": 0,
-                    "saved_width": 66,
-                    "saved_height": 110,
-                    "backside": false
-                  },
-                  "version": 1
-                },
-                "name": "FD",
-                "speed": 1,
-                "description": "a robot that responds to 'Go Forward' messages."
-              },
-              "view": {
-                "frontside_width": 66,
-                "frontside_height": 110,
-                "frontside_left": 0,
-                "frontside_top": 0,
-                "backside_width": 550,
-                "backside_height": 535,
-                "backside_left": 214,
-                "backside_top": 275.734375,
-                "advanced_settings_open": true,
-                "saved_width": 66,
-                "saved_height": 110,
-                "backside": false
-              },
-              "version": 1
-            },
-            "is_backside": true
           }
-        ]
+        ],
+        "body": {
+          "type": "body",
+          "steps": [
+            {
+              "type": "robot_action",
+              "action_name": "pick up",
+              "path": {
+                "type": "path.to_backside_widget_of_context",
+                "type_name": "nest",
+                "backside_index": 0,
+                "next_path": {
+                  "type": "path.to_widget_on_nest",
+                  "next_path": {
+                    "type": "box_path",
+                    "index": 1,
+                    "removing_widget": true
+                  }
+                }
+              },
+              "additional_info": {
+                "time": 5194
+              }
+            },
+            {
+              "type": "robot_action",
+              "action_name": "drop it on",
+              "path": {
+                "type": "path_to_style_attribute",
+                "attribute": "rotate",
+                "element_widget_path": {
+                  "type": "path.to_entire_context"
+                }
+              },
+              "additional_info": {
+                "time": 3174
+              }
+            },
+            {
+              "type": "robot_action",
+              "action_name": "remove",
+              "path": {
+                "type": "path.to_backside_widget_of_context",
+                "type_name": "nest",
+                "backside_index": 0,
+                "removing_widget": true
+              },
+              "additional_info": {
+                "time": 5733
+              }
+            }
+          ]
+        },
+        "name": "RT",
+        "description": "a robot that processes \"Turn right\" messages to turtles."
       },
       "view": {
-        "frontside_width": 272,
-        "frontside_height": 396,
-        "frontside_left": 33.89277267456055,
-        "frontside_top": 111.64581298828125,
+        "frontside_width": 66,
+        "frontside_height": 110,
+        "frontside_left": null,
+        "frontside_top": null,
         "backside_width": 0,
         "backside_height": 0,
-        "backside_left": 0,
-        "backside_top": 0,
-        "backside_geometry": {
-          "x_scale": 1.2517485585263615,
-          "y_scale": 1,
-          "original_width": 611,
-          "original_height": 365
-        },
-        "saved_width": 54,
-        "saved_height": 78,
+        "backside_left": "0%",
+        "backside_top": "91.78825827205883%",
+        "advanced_settings_open": true,
+        "saved_width": 66,
+        "saved_height": 110,
         "backside": false
       },
       "version": 1
@@ -1995,20 +1155,23 @@ top level widget
       "semantic": {
         "type": "nest",
         "contents": [],
-        "guid": "toontalk_id_1429691368892",
+        "guid": "toontalk_id_1436697087263",
         "serial_number": 1,
-        "name": "Turt"
+        "name": "turtle",
+        "description": "a nest that receives turtle messages such as \"Go Forward\" and \"Turn right\"."
       },
       "view": {
         "saved_width": 116,
         "saved_height": 98,
-        "backside": false
+        "backside": false,
+        "frontside_left": "33.858767667844525%",
+        "frontside_top": "20.625%"
       },
       "version": 1
     }
   ],
   "shared_html": [
-    "%3Cimg%20src%3D'data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8%2BDQo8IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiIFsNCjwhRU5USVRZIG5zX3N2ZyAiaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPg0KCTwhRU5USVRZIG5zX3hsaW5rICJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj4NCl0%2BDQo8c3ZnIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDI3Mi42NjggMzkyLjc1IiBoZWlnaHQ9IjM5Mi43NSIgdmlld0JveD0iMCAwIDI3Mi42NjggMzkyLjc1IiB3aWR0aD0iMjcyLjY3IiB4bWw6c3BhY2U9InByZXNlcnZlIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPg0KPGcgZmlsbC1ydWxlPSJldmVub2RkIj4NCgk8cGF0aCBkPSJtMTQyLDIzLjI0MWMzLjYzMSwyLjQ5NCA0LjIwNiw4LjE0NiA0LDExLjMzMy0yLjk2LTIuOTkxLTIuMDEtMTAuOTctNC0xMS4zMzN6IiBmaWxsPSIjZjhlZDliIj48L3BhdGg%2BDQoJPHBhdGggZD0ibTEyOS4zMywyNC41NzVoMmMtLjg2NCwyLjQ3NCAyLjAxNSwyLjQ3NSAxLjMzMyw2LTMuNjgtLjMzNi0zLjUtMi4xNjctMy4zMy02eiIgZmlsbD0iI2Y4ZWQ5YiI%2BPC9wYXRoPg0KCTxwYXRoIGQ9Im0xNDYsNTguNTc1Yy0uMzc2LDIuNDU1IDEuMzM5LDYuOTI5LTQsOCAyLjA2OS0yLjYzOS0uMDQ0LTQuNjM0LS42NjctOCAyLjQ1LjQxNyAzLjMyLS4zMDkgNC42NywweiIgZmlsbD0iI2Y4ZWQ5YiI%2BPC9wYXRoPg0KCTxwYXRoIGQ9Im0xMzgsNTkuMjQxYy0yLjMwMywxLjU4Ny0yLjkyMS45NTItNi42NjcsMS4zMzMgMS4xNS0xLjQyNiA1LjI3LTIuMjQ5IDYuNjctMS4zMzN6IiBmaWxsPSIjZjhlZDliIj48L3BhdGg%2BDQoJPHBhdGggZD0ibTExMiw2MS4yNDFjMS4zMS0yLjYyNSAyLjY3MS0xLjYxOSA2LjY2Ny0yLS4xLDMuOTc1LTEuMDE0LDUuMTI4IDAsOS4zMzMtLjU5My0uNDEtMS4xOTItLjgwNi0xLjMzMywwLTMuMS0yLjM2NS0yLjQtOC4xMTctNS4zNC03LjMzM3oiIGZpbGw9IiNmOGVkOWIiPjwvcGF0aD4NCgk8cGF0aCBkPSJtMTI2LDc5LjI0MWMtMS41OTIsMS45MjctNi41NjgtLjU1Ny02LDItNS4xMTkuMTMyLTMuNzcyLTIuNzQzLTkuMzMzLTIuNjY3IDQuOTItMS43NTkgMTEuMjEtMy42OTUgMTUuMzMuNjY3eiIgZmlsbD0iI2Y4ZWQ5YiI%2BPC9wYXRoPg0KCTxwYXRoIGQ9Im0xMDQuNjcsNzkuMjQxYy0yLjcyNiwxLjA1LTguNjExLDIuOTctOS4zMzMsNS4zMzMtNS4zOSwxLjIxOS0xMC41MzMsMi42MjktMTIuNjY3LDgtMS4zNTktMS4xNjQtMS4zMDcuNDk3LTIuNjY3LS42NjcgLjcyMS00LjI4MSA1Ljk4OC03LjE5MSA4LjY2Ny03LjMzM3YtMmMzLjg5Ni44NjUgOS43NzEtNi4wMzkgMTYtMy4zMzN6IiBmaWxsPSIjZjhlZDliIj48L3BhdGg%2BDQoJPHBhdGggZD0ibTExOC42Nyw4OC41NzVjMi40MDksMS41NDQtLjY1NCwyLjE4NSAwLDUuMzMzLTEuOTcxLS45NjQtLjU3NS0xLjQ4OS0xLjMzMy00IC41OS0uMjk2IDEuMTktLjU4NiAxLjMzLTEuMzMzeiIgZmlsbD0iI2Y4ZWQ5YiI%2BPC9wYXRoPg0KCTxwYXRoIGQ9Im0xMjYuNjcsODguNTc1YzEuOTkxLDIuMTM5IDIuNTE3LDcuMDc0IDAsMTAtLjUzNi0uMzUzLTEuMDgyLS42OTYtMi0uNjY3IDEuMzUtMy43OSAxLjY1LTUuMDggMi05LjMzM3oiIGZpbGw9IiNmOGVkOWIiPjwvcGF0aD4NCgk8cGF0aCBkPSJtMTEyLDg5LjkwOGMuOTYuMTUxLjIzMiwxLjk5IDEuMzMzLDItLjY5LDIuMDE3LTIuNjQ0LDIuMjkzLTMuMzMzLDIuNjY3LTEuMzktMS4wMDcgMS42OC0zLjE2NyAyLTQuNjY3eiIgZmlsbD0iI2Y4ZWQ5YiI%2BPC9wYXRoPg0KCTxwYXRoIGQ9Im01NCw5MC41NzVjMS42OTYuMDY3IDEuNTc1LDIuNDg0LjY2NywzLjMzMy0xLjgzNS0uODI4LTEuMDI1LTEuOTM5LS42NjctMy4zMzN6IiBmaWxsPSIjZjhlZDliIj48L3BhdGg%2BDQoJPHBhdGggZD0ibTIxOS4zMyw5MC41NzVjMS4wNzQuOTk2IDMuNjAzLS44MzQgMy4zMzQsMi42NjctMi4yNy4yNzgtMy43OS0uMjAyLTMuMzMtMi42Njd6IiBmaWxsPSIjZjhlZDliIj48L3BhdGg%2BDQoJPHBhdGggZD0ibTk2LDkxLjI0MWMyLjg2Ny45NjggMi4zOTEsNy4xMjIgMiw5LjMzMy0zLjUyOC0xLjk2Ny0zLjg0NC01LjEyOC0yLTkuMzI5eiIgZmlsbD0iI2Y4ZWQ5YiI%2BPC9wYXRoPg0KCTxwYXRoIGQ9Im04OC42NjcsOTIuNTc1YzMuMDA5LDMuOTE3IDEuMzU3LDcuMjAyIDMuMzMzLDEzLjMzMy00LjM3OC0uNzMzLTIuMjM1LTcuOTg3LTQuNjY3LTEwLjY2NyAuMDA5LTEuMzI2IDEuODE5LS44NDkgMS4zMzQtMi42Njh6IiBmaWxsPSIjZjhlZDliIj48L3BhdGg%2BDQoJPHBhdGggZD0ibTIyNC42Nyw5My4yNDFjLjk4NywxLjE3OSAzLjQ0NS0xLjI1MiAzLjMzMywyLS45OS45OTgtMy40NC4wNjItMy4zMy0yeiIgZmlsbD0iI2Y4ZWQ5YiI%2BPC9wYXRoPg0KCTxwYXRoIGQ9Im00NCw5My45MDhjMS4xNjguNjA5IDIuMzE2LDEuMjQgMiwzLjMzM2gtMi42NjdjLjc1NC0yLjA5My0uMTkxLTEuNzYxLjY2Ny0zLjMzM3oiIGZpbGw9IiNmOGVkOWIiPjwvcGF0aD4NCgk8cGF0aCBkPSJtNzAuNjY3LDExNS4yNGM3LjAwNy4wMTQgNy41NDQtNC42NDYgNy4zMzMtOC42NjctMi45NDMuOTQ3LS4yMDEtMy43NTYtMy4zMzMtMi42NjctLjI4Mi0xLjM5My40NTctMS43NjUuNjY3LTIuNjY3IC41OTMuNTE4IDEuNTA1LjcxNyAyLjY2Ny42NjcgLjEyMy41NjctLjI2LjYyOS0uNjY3LjY2NyAzLjIzLDEuNzE2LjE2Miw0LjA1IDIuNjY3LDUuMzMzLTIuMjM3LDEuMTI5LS4xMzEsMy41OTUtLjY2Nyw0LjY2Ny0yLjAwOCw0LjAxNy04LjU4OCw1LjY1NS0xMC42NjcsNC42NjctMS40NDktLjY4OC03LjA0NC01LjAzNi0xLjMzMy02IC4xMjMuNTY3LS4yNi42MjktLjY2Ny42NjcgLjEwOC43ODEgMS4yMTYuNTYyIDIsLjY2Ny0xLjY3NiwyLjE5IDEuNjcyLS4xNCAyLDIuNjZ6IiBmaWxsPSIjZjhlZDliIj48L3BhdGg%2BDQoJPHBhdGggZD0ibTMzLjMzMywxMDYuNThjLS4xMTItMS40NDYgMi4zNjQtLjMwMiAzLjMzMy0uNjY3djIuNjY3Yy0xLjU0Ni4yMTItMi41Ni0uMTA3LTMuMzMzLS42NjcgLjQxLS42LjgwNi0xLjE5IDAtMS4zM3oiIGZpbGw9IiNmOGVkOWIiPjwvcGF0aD4NCgk8cGF0aCBkPSJtNTcuMzMzLDExMy45MWM0LjA5NCw1LjQ5LTguMDIsMTIuNzc0LTMuMzMzLDE4LjY2Ny0zLjA4MywxLjc2LTMuMzc5LDMuODM5LTYsOC0yLjgwOS0yLjcyNiAzLjE3OS0xMi4yNzUgMi42NjctMTUuMzMzIC4xMDgtLjc4MSAxLjIxNi0uNTYyIDItLjY2Ny0xLjI4Mi0zLjQgMy40MjktNy4yOCA0LjY2Ni0xMC42N3oiIGZpbGw9IiNmOGVkOWIiPjwvcGF0aD4NCgk8cGF0aCBkPSJtNjEuMzMzLDEyMS45MWM2LjMzOCw3Ljk1Ni0xLjk5NCwxNi45MDYtNi42NjcsMTguNjY3LTEuNDQ1LjExMi0uMzAyLTIuMzY1LS42NjctMy4zMzMgMTEuMjgyLTIuNjYgNC42NjgtMTAuMDcgNy4zMzQtMTUuMzR6IiBmaWxsPSIjZjhlZDliIj48L3BhdGg%2BDQoJPHBhdGggZD0ibTUwLDE1OS4yNGMtMS4yNDksMi41MjktLjk0Nyw2LjYwOC01LjMzMyw2IDEuNjE1LTMuNDggMi4xNTEtNS4xIDUuMzMzLTZ6IiBmaWxsPSIjZjhlZDliIj48L3BhdGg%2BDQoJPHBhdGggZD0ibTIzMS4zMywxNzguNThjMi40NDMsMS44NDctMi4wODQsMi4zMDctMi42NjYsMy4zMzMtMS4xNzMsNi4zNDYtMi41ODEsOC43OTYtLjY2NywxMy4zMzMgMi41Mi0uMDc1IDMuNTg1LDEuMzA1IDQsMy4zMzNoLTRjLS4xMjMtLjU2Ni4yNi0uNjI5LjY2Ny0uNjY2LS4xMDgtLjc4MS0xLjIxNi0uNTYyLTItLjY2Ny0yLjI5Ny02LjA2Ni0uMzMxLTExLjc2MSAxLjMzMy0xNy4zMzMgLjU0LTIuMDUgMy4xNC0uMzMgMy4zNC0xLjMyeiIgZmlsbD0iI2Y4ZWQ5YiI%2BPC9wYXRoPg0KCTxwYXRoIGQ9Im0yMzYuNjcsMTgzLjkxYzIuMjMzLDUuNzMgMi4zOTQsMTIuODUzIDIsMTYuNjY3LTEuMDctNC4zOC0zLjY5LTEwLjUzLTItMTYuNjd6IiBmaWxsPSIjZjhlZDliIj48L3BhdGg%2BDQoJPHBhdGggZD0ibTMyLDIwNS45MWMxMS4yMzYuMTk0IDYuNjg4LDEyLjQxOCA0LjY2NywxOS4zMzMtMi4wNzYuMDA2LTQuMzQ0LDEuNTc2LTYsMCA0LjUzNS0yLjE2IDcuMzI5LTcuNzU2IDYtMTQuNjY3LS43MzctMS43MDctMy41OC0xLjMwOS02LTEuMzMzIC43NDQtMS41NS0uMTQzLTEuNzggMS4zMzMtMy4zM3oiIGZpbGw9IiNmOGVkOWIiPjwvcGF0aD4NCgk8cGF0aCBkPSJtNTIuNjY3LDI3Mi41N2MtLjM0Ni0xLjI1My02LjEyOC0uMDE5LTcuMzMzLS42NjYgMS4yNzUtMi4yNDUgMi44MzEtMy4xODEgNC42NjctMy4zMzQgMy42MTEsMS43MjMgNi4xMTYsNC41NTIgOCw4LS44MjUsMi44MS02Ljc3MS0yLjUxLTUuMzM0LTR6IiBmaWxsPSIjZjhlZDliIj48L3BhdGg%2BDQoJPHBhdGggZD0ibTU3LjMzMywyODAuNTdjLjU5My40MSAxLjE5Mi44MDYgMS4zMzMsMCAyLjMzOC4xODItMS4yMDQsMi45NTIuNjY3LDIuNjY3LTEuMTQ5LDIuNDg0LTQuNjg0LDEuOTYxLTQsNC42NjdoLTMuMzMzYy40MS0uNTk0LjgwNi0xLjE5MiAwLTEuMzM0IDIuNjI5LTEuMTUgNC4wNzItMy40OSA1LjMzMy02LjAxeiIgZmlsbD0iI2Y4ZWQ5YiI%2BPC9wYXRoPg0KCTxwYXRoIGQ9Im0xOTQuNjcsMzAwLjU3Yy0xLjYyOS0xLjY4OS0xLjQyMSwxLjQwNS00LC42NjctLjQyOSwyLjk2Ny0uNjU0LDcuMDYyLTIsMTItMS41MjctMS4xNC0xLjU3Ny0zLjc1Ny0yLTYgMS45OS0zLjMxIDMuMjQtMTEuMiA4LTYuNjd6IiBmaWxsPSIjZjhlZDliIj48L3BhdGg%2BDQoJPHBhdGggZD0ibTg3LjMzMywzMDIuNTdjMS4xNzIuMTYxIDEuNTIsMS4xNDcgMS4zMzMsMi42NjctMi44NTMsMS41NTgtMy42OTgsMy4zNTQtNy4zMzMsNS4zMzMtMS42NjUtMy41NSAzLjQ2NS01LjE2IDYtOHoiIGZpbGw9IiNmOGVkOWIiPjwvcGF0aD4NCgk8cGF0aCBkPSJtMTcyLjY3LDMxNS4yNGMtMS44NjItLjM3OC0xLjYyMy0yLjQ0Mi0yLTUuMzMzaDJjLjU5OCw0LjU4MyAyLjMzNSw1LjI0IDIsMTAtMS4xOTYuMDg0LTEuNDA2LS44MTYtMi42NjctLjY2NyAxLjI4LTEuNjYtMS4wMi0yLjc0LjY3LTR6IiBmaWxsPSIjZjhlZDliIj48L3BhdGg%2BDQoJPHBhdGggZD0ibTY2LjY2NywzMTIuNTdjNC41NC0uNzYyIDQuNTI0LDMuMDMyIDgsMy4zMzQtMS4yMzYsMy41Ny02Ljk1OS0uNjEtOC0zLjMzeiIgZmlsbD0iI2Y4ZWQ5YiI%2BPC9wYXRoPg0KCTxwYXRoIGQ9Im0xNDMuMzMsMzEyLjU3YzEuNjc4LDUuMjQyIDUuNDM3LDQuMzExIDYuNjY3LDEwLS45NiwxLjQ3Ni0xLjYyNy0uODM5LTIsLjY2Ny0uODAyLTQuMzQ3LTguNjItMTEuNzkzLTEwLTUuMzMzLTEuNTI0LjY5Ny0yLjM2MiwyLjA4Mi00LjY2NywyIC41Ny02LjE4IDQuNzEtNy4zMyAxMC03LjM0eiIgZmlsbD0iI2Y4ZWQ5YiI%2BPC9wYXRoPg0KCTxwYXRoIGQ9Im05OS4zMzMsMzEzLjkxYzEuMjU5LjA3My40NjIsMi4yMDQgMiwyLTEuODU1LDIuNDAyLS44MTIsMy41OTgtMi42NjcsNi0xLjk3Ny0yLjI0LjM3Ni01LjgyLjY3LTh6IiBmaWxsPSIjZjhlZDliIj48L3BhdGg%2BDQoJPHBhdGggZD0ibTEyOCwzMzYuNTdjLTEsLjc3OC0xLjYzLDEuOTI2LTMuMzMzLDItMS41OC0yLjc4IDEuMTMtMyAzLjMzLTJ6IiBmaWxsPSIjZjhlZDliIj48L3BhdGg%2BDQoJPHBhdGggZD0ibTEzNiw3LjI0MWMxLjE1NC0uMjA0IDYuNTEzLDIuNzM5IDcuMzMzLDIuNjY3IDMuOTYzLDQuMDEyIDEuNzA5LDEwLjM0NyA1LjMzNCwxNC0xLjExMSw1LjA2NSA2LjA2MywxMi4wMTQgMy4zMzMsMTYuNjY3IDQuODk2LDMuNzQ5LTIuNzk0LDE5LjE2OCAxLjMzMywyMC42NjctLjM5MSwxLjM4Ny0xLjQsMi4xNTUtMiwzLjMzMyAxLjI4MiwxLjY2My0xLjAxNywyLjczOS42NjcsNC00LjUwMyw3LjYyNiAyLjc1LDYuMTMxIDYsNi42NjcgOC45NTcsMS40NzYgMjAuNzUyLS4yNzQgMzAuNjY3LDcuMzMzIDMuNjI4LDIuNzgzIDIuODA4LDcuMDA5IDEwLDYuNjY3IDUuNjA0LDIuMDQyIDE5LjU0LTkuNjQgMjgsMCAuOTY5LTIuODk0IDcuNTM2LDQuNjI1IDEwLjY2Niw0IDQuNzA2LDcuNyA2LjI3NC01LjAzMiAxMi01LjMzMyA0Ljg5OS0uMjU3IDEzLjI5Myw1IDE2LjY2Nyw0LjY2NyAuNTY5LDEuMjA4IDEuNzE3LDEuODM4IDIsMy4zMzMtMS4wMzYtMS4yNTctMi41OTguOTU3LTQtLjY2NyAzLjUyLDUuNDg4IDguNzQ0LDEuMzI3IDguNjY3LDEwLTQuMjMtLjQyLTIuMjczLTMuOTI0LTgtMi42Njd2My4zMzNjMy4xNTQsMS4wNjEgNS4zOTQsNC40MjIgMy4zMzMsNi0uNjIzLjQ3OC02Ljc4Mi0xLjQ5Ni0xMCwuNjY3LTEuNDA0Ljk0NC0yLjUyMSwyLjQyNi0yLjY2Nyw0LjY2Ny0xLjg4NC45OTMtNC4yMzktLjAzNy02LTItLjEyMi41NjcuMjYxLjYyOS42NjcuNjY3LTIuMjY5LTEuNDU4LTE4LjM5MiwyLjIyNy0yMC00LjY2Ny0xLjQ0LjM0OC0xMS4xODMtNy40OTQtMTIuNjY3LTEuMzMzLS4xNTMuNjM3IDUuNjQ4LDEwLjQwMSA2LjY2NywxMiAuMzg1LjYwNSAxLjAwMy42OTggMiwuNjY3IDEuMjA3LDYuOTU1IDIuODQyLDE0LjkxMiA3LjMzMywyNiAuMTA4Ljc4MSAxLjIxNi41NjIgMiwuNjY3IDEuMzQ0LDguMDY5LjExMSwxNi4wNDIgMi42NjcsMjUuMzMzIC4zNzMsMS41MDYgMS4wNC0uODA5IDIsLjY2NyAxLjIzNywxMC43MDMgMy45ODIsMTQuNjg0IDMuMzMzLDIwLjY2Ny00LjYzMyw1Ljg4LjgxNCw4LjUxNyAwLDE1LjMzMyAxLjE0NS0xLjk2MyAyLjcwNiw0LjE3Mi0uNjY2LDQgLjE4MSwxLjU3IDIuOTUyLjQwNyAyLjY2Ni0uNjY3IC43MDIsNi4zMTMuNTUzLDE0LjAxNC0uNjY2LDIwLS4yMSwxLjAzMi00LjM2OSwxMS4yNDggMCwxNC42NjctMy4wNzYsNC4yNTQtMS4zMTQsMTAuMjI3LTEuMzM0LDEzLjMzMy0yLjk4NSwyLjAyOC0zLjM3OSw2LjU3MS0zLjMzMyw4LjY2Ny0xLC43NzgtMS42MywxLjkyNi0zLjMzMywyIC43MjgsMy45OTgtNS40MzYsNi4xODQtNC42NjcsMTEuMzMzLTIuNTI4LS41MzgtLjkyMiw0LjUyMi00LDQgMS4xNzIsNS4xMjItNy4zNDEsOS4wMzMtNS4zMzMsMTUuMzM0IDMuODI4LTEuMjI5IDIuMjkxLDEuNTEzIDMuMzMzLDIgMy4yNTYsMS41MjIgMTMuODkyLTMuMjcgMTYuNjY3LDMuMzMzLS41NzMtMi41NiA4LjQxMywyLjY0NiA5LjMzMywyLjY2NyA0LjM2Myw0LjQ3OC0yLjM5LDUuNzYyLTYuNjY3LDEuMzMzLTIuNTAzLDEuMTQ5LjA5NiwzLjUxOC0xLjMzMyw0LjY2NyAxLjE0LDEuNTI2IDMuNzU3LDEuNTc2IDYsMi0uNzEsMS4wNzIuMTY3LDEuOTQ5IDIuNjY3LDIuNjY2LS40MjYsMi4wNTggMS42MzUsMy44MzYgMS4zMzMsNS4zMzQtLjYwOS43NDMtMS4yMzkuMjEtMy4zMzMuNjY2IC44NTMtMy41Mi0yLjU0OC0yLjc4Ni0yLjY2Ny01LjMzMy0yLjA1Mi0uNDk2LTEuMjgxLDEuODMtMy4zMzMsMS4zMzMtLjAzNCw0Ljc2Mi0xLjYwNiwzLjcxNSAwLDggMi41MDktMS45ODctLjYyNCwyLjE2NSAyLjY2NiwyIC43NDQsMy4zMTItLjIxOSw1LjM4OCAwLDYuNjY3LTEuMDgzLDIuNTE2LTIuMTY0LTMuOTM1LTIuNjY2LTItLjMxMi0xLjQ5OC0uMzYzLTMuMjc1LTIuNjY3LTUuMzMzLTIuNTQ2LDMuMDIzLTUuODMzLDIuMDIxLTguNjY3LDUuMzMzIC43MTIuNjIyLjIwOCwyLjQ1OSAyLDItMS4zNTIsMy4zNS0zLjksMS4zOTgtNS4zMzMsNC42NjctMS43OTYtMS4wODEtOC40NjguOTkzLTkuMzMzLTQtMS43NzQuNTM3LTMuMDY2LTEuMTUyLTIuNjY3LS42NjctMy44NDItNC42NjYtNy45MTgtMi45NjEtMTAuNjY3LTQuNjY3LTQuMTE1LTIuNTU0LTIuNDctNS40MzgtNi04IDIuMDY4LTUuMjczLTIuMjEzLTUuMTA2LS42NjYtOC04LjM4MywxLjA4Ni04LjMyLDQuMDcyLTE3LjMzNCw0LTYuOTIsNy45MzItMTYuNTk1LDE0LjMxMi0yNS4zMzMsOS4zMzQtMi4yODUtMS4zMDMtNC44MTUsMi40OTktOCw0LTUuOTc2LDIuODE1LTExLjI1MS0uMTQyLTE2LDIgLjM5OCw5LjI4LjMyLDE5LjEwMiAyLDI4LjY2NiAuMTY1LjkzNi43NjcuMTIxLjY2NywwIDIuMTQzLDIuNTkxLS4xOTcsNi4yNi42NjcsOS4zMzQgLjM0NSwxLjIyNSAxLjkwNiwxLjQ0NiAyLDIgLjE4LDEuMDUxLTEuMzIzLS4xNTQtMS4zMzMsMC0uMDY4LDEuMDYzIDIuMjA2LDkuMjYxIDIsOC42NjYgLjcwMiwyLjAyMy4zOTYsMi4yMDQuNjY3LDQtOC43MTksMS4zOTUtNi4xNDUtNS45MDgtMTAtOCAuODQxLS43ODIuNTM1LTIuNzctMS4zMzMtMi42NjYtLjE4My03LjE2Mi0yLjc5Mi05LjQ4Ny0zLjMzMy0yMC0uNDU5LS4xNTMtLjc2OS4yOTktLjY2Ny42NjYtMi42MzYtOS40NjUtMi45MDMtMTQuNjEyLTQuNjY3LTI2LTcuNDg3LDEuODk2LTE0LjY2NS0yLjkzOC0xOS4zMzMtNCAuMjgyLTEuMzk0LS40NTctMS43NjUtLjY2Ny0yLjY2Ni02LjQ0OSw0LjY0OS0xNC4wNzctMy4zNzEtMTkuMzMzLTItLjM5LjEwMi0xLjUtMS4yNjctMS4zMzMtMS4zMzQtMS45ODcuODA0LTEuMDM2LDQuMjY4IDAsNS4zMzQgMy4wNjQsOC00LjQwOCw5Ljg1NC01LjMzMywxNC0uNjcyLDMuMDExIDEuODU5LDUuMDcgMCw4LjY2Ni0xLjI3MS0xLjI1MS0xLjIwNi4zOTYtMy4zMzMsMCAuMjQ0LDMuNjkyLjAzNCwzLjg3NC42NjcsNi42NjctMi4zMTYsMS44NDctNy4wOTYsMy4wMzktOCw0LTEuMTY4LS42MDktMi4zMTYtMS4yMzktMi0zLjMzMy00LjU3Mi4xMy0xLjMyOSwzLjk3LTcuMzMzLDIuNjY2LTMuMTE5LDIuNzAzIDIuMjE1LDkuMTgtLjY2NywxMi00Ljk1LS43NTQtNS44MTMtNy4zNjgtNC0xMi42NjYtMS42MjQtMi40NTctNC4wNzctMi4xNTctNy4zMzMtNC0xLjkxNi45MjEtLjk2LDMuMDc4LS42NjcsNCAuNjI5LDEuMjMyLTMuODE1LjQwOS0xLjMzMywxLjMzMy01LjQ1OSwxLjQzNy0xLjgzMS01LjIwMy0uNjY3LTkuMzMzIDEuMzI1LTQuNzAxLTIuNjg2LTExLjEzLTQuNjY3LTExLjMzNC0zLjYwNC0uMzcuNDc2LDQuNjc5LTMuMzMzLDUuMzM0IDIuMjE4LS40MzMgMS4zMSwwIDIsMi0xLjQ1NC4xMDgtMS45MzYsMi41MDMtMy4zMzMsMS4zMzMtNS4yOC00LjQyNCA1Ljg0Ni0xOS40ODggMTAuNjY3LTI0IDEuMzk1LDEuMTg0IDIuNTA1LS41MjQgMy4zMzMuNjY3IDMuOTY1LTIuOTMzIDEuNzk3LTguMjg0IDcuMzMzLTEwIDEuMjA4LTMuNDIyLTEuNDkyLTUuMDE4IDItNS4zMzQtMi40ODEtNi41MDEuNzIxLTcuMTM0LTIuNjY3LTEzLjMzMy01LjAzMy0xLjM4Mi0xMy4yODktOS41NzEtMTMuMzMzLTE0LTIuMTAxLDIuMTYyLS4yODEtMi41NDQtMy4zMzMtMS4zMzMgLjEzLTEuODY0IDEuNjk0LTQuMTIxLTEuMzMzLTUuMzM0IDEuODU0LTUuNDc0LTguMDM5LTEyLjcwMS03LjMzMy0xOC0uMTA3LS43ODEtMS4yMTUtLjU2Mi0yLS42NjYgLjY2Ny0xLjYxNS44NzctMi45NDgtMS4zMzMtNCAxLjg1Ni0xLjE5My41OTUuNDczIDAtMS4zMzQtMi42MTYtNy45NDUuMzk2LTI1LjQ1Ni0xLjMzMy0zNC42NjYtLjcwNC0zLjc1LjUzNC0xMC45OS0uNjY3LTE0IDQuODE1LTcuNzA2IDMuNjIxLTE2Ljg1NiA2LjY2Ny0yMi0uNTM4LS4xMjMtLjY2Ny4yNi0uNjY3LjY2Ny0uMDA1LTQuNTUxIDMuMTc0LTEwLjA4NiA1LjMzMy0xNy4zMzMgNC4zMTUtLjAyNC45NzktNS4zMDkgNC42NjctNS4zMzMtLjA5LTkuMDI2IDUuMjcxLTE3LjAzNSA4LTI2LjY2NyAuNjk4LTIuNDYyLjcxOS00Ljc2NiAxLjMzMy03LjMzMyAwLC4wMDEgMS4yOTkuODE2IDEuMzMzLjY2NyAuMzYtMS41NTggMS43MjgtNy4xNDggMy4zMzMtMTAgMi4zODUtNC4yMzggOS4yMzYtMTAuMDI2LS42NjctMTAuNjY3LTIuMTI0LDIuMTU3LTExLjMwOCw4LjE5NC0xMy4zMzMsMi42NjctNi44MSwyLjEwNi0xMy40NjgsOC42MjctMjAuNjY3LjY2Ny00LjkzNSwxLjgzNC0yLjQ0OCw4LjA0OS01LjMzMyw5LjMzMy0xLjQ4Ni42NjItLjU0Ni00Ljc1Mi0yLS42NjctMS4zMjYtLjQ1MS42NTktMi4yMTUtLjY2Ny0yLjY2NyAuMTA3LS43ODEgMS4yMTUtLjU2MiAyLS42NjctMS4zNDYtMi4wOS40ODQtNS44ODYgMy4zMzMtNy4zMzMgLjM5Ni0yLjEyNy0xLjI1MS0yLjA2MiAwLTMuMzMzLTIuNjk2LTMuMzEtNy4xNTYtLjM0OS05LjMzMywzLjMzM2gtNGMuNDYyLTEuMTc1LjczNi0yLjA2NCAwLTIuNjY3IDEuODEyLS44MzQgMi4wMTEtMy4yNjcgNS4zMzMtNiAxLjgyOS0xLjUwNSA4LjMxNS0xLjcxNSA0LTQtLjk0Ni0uNTAxLTEuOTUyLDIuMDY3LTQsLjY2N3YtMmMyLjI4MS4zMzEgMi42MDEtMi42ODQgMi42NTItMy4zNTkgMy40MDUtMy4wMTIgNi41MjMuNTk1IDgtLjY2NyAxLjMwOS0xLjExNy0uNTM3LTIuODk2IDAtMy4zMzMgMi42NzMtMi4xNzYgNC45NTktMS4xNDUgOS4zMzMsMCA0LjgyNi00LjY4MyA2LjAwNC0uMTIgOS4zMzMsMi0uMzYtLjIyOSAzLjU5MS0xLjUzNyAxLjMzMy0uNjY3IDUuNDAyLTIuMDgyIDExLjAwNS00Ljg0MyAxNi03LjMzMyA5LjU2LS41MzQgMTQuMjY0LDUuODg4IDIxLjMzMyw5LjMzMyAxLjE4MS0uMzQgNC4wODUtNC4zNjUgMi42NjctMS4zMzMgMi42NjguNDk3IDIuMjU2LTQuMTM2IDIuNjY3LTQuNjY3IDIuNTEzLTMuMjQ2IDEzLjU3OS0xMS4wNzkgMTQuNjY3LTEwLjY2NyAzLjM0OSwxLjI2OCAxMS44MzgtNC4xMTUgMTcuMzMzLS42NjcgMS45MTUtNS4wMDUtNC4yODgtMTMuMTE2LTItMTkuMzMzLTEuODk3Ljc4MS0uNjM0LTEuNDgzLS42NjctMi0uMzQ4LTUuNjIxLTEuOTMzLTEyLjAwNCAxLjMzMy0yMS4zMzMgLjg4Mi0yLjUyIDIuOTY2LTQuMzA4IDMuMzMzLTYuNjY3IC4yOTEtMS44NjMtMS4wNjItNC4wNjgtLjY2Ny02LjY2NyAuNTc1LTMuNzg3IDMuNjgzLTYuNjQ1IDQuNjY3LTEwIDIuMDU0LDEuNDAyIDMuMzQ5LTIuNTY0IDYuNjY3LTJ2LTMuMzMzYzIuNTI2LTEuMjI5IDYuNzI0LTcuMDkyIDEwLTMuMzMzIC44MywxLjEyNyAzLjMzLDQuMTQ2IDIuNjcsNnptMTAsMjcuMzM0Yy4yMDYtMy4xODgtLjM2OS04LjgzOS00LTExLjMzMyAxLjk5LjM2MiAxLjA0LDguMzQxIDQsMTEuMzMzem0tMzIsMS4zMzNjLjE0MS0uODA2Ljc0LS40MSAxLjMzMywwIDEuMTE4LTQuMzQ1IDMuODk0LTkuODY4LjY2Ny0xMC42NjctLjA2LDMuNzQ4LTMuNyw4LjM5Ni0yLDEwLjY2N3ptMTguNjctNS4zMzNjLjY4Mi0zLjUyNS0yLjE5Ny0zLjUyNi0xLjMzMy02aC0yYy0uMTgsMy44MzMtLjM2LDUuNjY0IDMuMzMsNnptLTcuMzQsNC42NjZjLjAzOC0uNDA3LjEtLjc4OS42NjctLjY2NyAuMzY1Ljk2OS0uNzc5LDMuNDQ2LjY2NywzLjMzMyAuNDQ2LTMuMTEyLTEuMDcyLTQuMjYxLTItNi0xLDEuMzk1LjY2LDIuNTA3LjY2LDMuMzM0em05LjM0LDRjMS4xOTMtMS4yNTEgMi4zODEtMi41MDggMy4zMzMtNC0uODgxLS4wMDgtLjYwOS0xLjE2OC0xLjMzMy0xLjMzMyAyLjIsMi42MjYtMy42NCwzLjU5Mi0yLDUuMzMzem0zLjMzLDE4Yy44NTgtLjIxMyAzLjMxMy0uNTU0IDYtLjY2NyAyLjIyMi0yLjYwNC0xLjQ1Ni05LjE1Ni0xLjMzMy0xMS4zMzMtMS4zNTctLjE5OC0xLjc3Ni0xLjMzNS0yLjY2Ny0yLS41Niw1LjI5LTEuOTQsOC40Ni0yLDE0em0tMTgtMTIuNjY2Yy0zLjg5OSw0LjkzOS00Ljg0NiwxNy4zNzcgMy4zMzMsMTIuNjY3LS4zMDctMy45NTMuMzA1LTQuNzEzLTItNi42NjcgLjU2My0xLjYwMS41NjMtNC40IDAtNi0uMTQuODA1LS43NC40MDktMS4zMywwem0yMS4zMywxNGMuNjIzLDMuMzY2IDIuNzM2LDUuMzYxLjY2Nyw4IDUuMzM5LTEuMDcxIDMuNjI0LTUuNTQ1IDQtOC0xLjM1LS4zMDktMi4yMi40MTctNC42Nywwem0tMTAsMmMzLjc0Ni0uMzgyIDQuMzY0LjI1MyA2LjY2Ny0xLjMzMy0xLjQtLjkxNy01LjUyLS4wOTQtNi42NywxLjMzM3ptLTE0LDhjLjE0MS0uODA2Ljc0LS40MSAxLjMzMywwLTEuMDE0LTQuMjA2LS4xLTUuMzU5IDAtOS4zMzMtMy45OTYuMzgxLTUuMzU3LS42MjUtNi42NjcsMiAyLjk1LS43ODUgMi4yNSw0Ljk2NyA1LjM0LDcuMzMzem0tNi42NiwxMGM1LjU2MS0uMDc3IDQuMjE0LDIuNzk4IDkuMzMzLDIuNjY3LS41NjgtMi41NTcgNC40MDgtLjA3MyA2LTItNC4xMi00LjM2My0xMC40MS0yLjQyNy0xNS4zMy0uNjY3em00Ny4zMywxLjMzM2MxLjEwNC0zLjA1NC0zLjIzNy0yLjEwNi00LTEuMzMzLTcuNTAxLTMuNjIxLTE5LjMwMiwxLjE1Ny0yNi0yLS4zOTYsMi4xMjcgMS4yNTEsMi4wNjIgMCwzLjMzMyAxOC4yLDEuNjM0IDEyLjgxLjMxMiAzMCwwem0tNjkuMzMzLDIuNjY3djJjLTIuNjc5LjE0Mi03Ljk0NSwzLjA1Mi04LjY2Nyw3LjMzMyAxLjM1OSwxLjE2NCAxLjMwNy0uNDk3IDIuNjY3LjY2NyAyLjEzNC01LjM3MSA3LjI3Ny02Ljc4MSAxMi42NjctOCAuNzIyLTIuMzY0IDYuNjA3LTQuMjg0IDkuMzMzLTUuMzMzLTYuMjI5LTIuNzA3LTEyLjEwNCw0LjE5Ny0xNi4wMDMsMy4zMzN6bTgwLjAwMy0yLjY2N2MzLjE3NS45MSA0Ljk1NCw0LjAzNCA4LjY2Niw1LjMzMyA4LjcxNy0xLjgyIDkuODE2LDQuNjYyIDE0LDQuNjY3LTUuMDY0LTcuNTQtMTkuNTQ3LTEyLjE0Ny0zMC0xMS4zMzMgLjcsMy42MDcgNC45My42NDUgNy4zMywxLjMzM3ptLTY3LjM0LDkuMzMzYzEuMDUxLDQuOTIzLTEuMDc1LDUuMzU0IDIsOC42NjctLjE5NS00LjM2Ny0uMDQ1LTQuOTM1LS42NjctOC42NjcgLjM3LjAwMi43NTctLjU0IDAtLjY2Ny0uMTQuNTItLjU1Ljc3Ni0xLjMzLjY2N3ptMTYsLjY2N2MuNzU4LDIuNTExLS42MzgsMy4wMzYgMS4zMzMsNC0uNjU0LTMuMTQ4IDIuNDA5LTMuNzg5IDAtNS4zMzMtLjEzLjc0Ny0uNzMsMS4wMzctMS4zMywxLjMzM3ptNy4zNCw4Yy45MTgtLjAyOSAxLjQ2NC4zMTQgMiwuNjY3IDIuNTE3LTIuOTI2IDEuOTkxLTcuODYxIDAtMTAtLjM1LDQuMjUzLS42NSw1LjU0My0yLDkuMzMzem00Mi02YzIuNTQyLjg3Ny0xLjAzMyw0LjAwMyAyLjY2Niw0LTEuMTAzLTIuNzU2IDEuNDczLTUuMjI4IDAtNy4zMzMtLjE1OSwxLjI1LTEuMDk4LS4zNzgtMS4zMzMuNjY3IDEuOC42MDItMS41MywxLjQ5LTEuMzQsMi42NjZ6bS0yNC42NywwYy0uMjg4LDEuNTI2LjI2NCw0LjQ2OS42NjcsNy4zMzMgLjE5Ni0xLjM4OSAxLjgwNC45ODkgMi0xLjMzMy0uNTYtMy4zOTYtMS43My0xMC45NjMtMi42Ny02em0tMzIsMi42NjdjLjY5LS4zNzQgMi42NDQtLjY1IDMuMzMzLTIuNjY3LTEuMTAxLS4wMS0uMzczLTEuODQ5LTEuMzMzLTItLjMyLDEuNS0zLjM5LDMuNjYtMiw0LjY2N3ptNjUuMzMsNS4zMzNjMS43MTQtMS43MDMgMS41MDQtNy40NjQuNjY3LTEwLTEuODIsMi42NTMtLjY4LDcuMzg3LS42NywxMHptLTEyMC42Ni02Yy45MDktLjg0OSAxLjAzLTMuMjY2LS42NjctMy4zMzMtLjM1OCwxLjM5NC0xLjE2OCwyLjUwNS42NjcsMy4zMzN6bTE2OC0uNjY3Yy4yNjktMy41MDEtMi4yNi0xLjY3LTMuMzM0LTIuNjY3LS40NywyLjQ2NiAxLjA1LDIuOTQ2IDMuMzMsMi42Njd6bS0xMjQuNjcsNy4zMzljLjM5MS0yLjIxMi44NjctOC4zNjYtMi05LjMzMy0xLjg0NCw0LjE5NS0xLjUyOCw3LjM1NiAyLDkuMzMzem04My4zMyw0YzEuMTY1LTIuODA5IDEuMTY5LTUuNTkxIDMuMzM0LTQuNjY3IC4zMjQtNS4xMjUgMi4yNzgtNS4wOTItLjY2Ny04LjY2Ny0uMTYsMS4yNS0xLjA5OC0uMzc4LTEuMzMzLjY2NyAzLjEsMi41MzEtNC4zMyw4LjA4LTEuMzMsMTIuNjY3em0xMi0xMy4zMzljLS4yMDkuOTAxLS45NDgsMS4yNzMtLjY2NiwyLjY2NyAuNDA5LjkyNCAyLjU2Ni4xMDEgMi42NjYsMS4zMzMtMi41NjgsMy4zNjktMS44Niw5LjAxNi00LjY2NiwxMi42NjcgNS4xMjQsMS45MjkgNi4zMDcsOS42MjcgMTYsOS4zMzMgLjUzLTEuMjQ5IDUuNzcyLTMuNDA0IDQtNi42NjctNS4xNzEsMi44MjItMTEuNDgsNi4zNS0xMy4zMzQsMCAxLjg0MSwxLjgyMS42MjYtLjk3NyAyLTEuMzMzIC44MjgsMS4xOTEgMS45MzktLjUxOCAzLjMzNC42NjcgLjM4Ny0xLjgzNSAxLjY1OS0yLjc4NSAyLTQuNjY3aC0zLjMzNGMtMS4xNTEuNDA0LjA1MiwzLjE2Mi0xLjMzMywzLjMzM2gtMS4zMzNjMS4xMS0xLjMyNS0uMDYxLS44NDggMC0yLjY2NyAxLjg0NC4xMTMgMi4yODgtMS4wMjQgMS4zMzMtMiAyLjUzOSwyLjE5OCAxLjQwNS0yLjU2IDItMi42NjcgMS4zNjQsMi44NDEgNS4zMzYsNC42NzYgNS4zMzMsMi42NjcgMS42MDQuODcxIDQsNC40MDcgNS4zMzQsMy4zMzMgLjM1Ny0xLjU0NS0yLjc3Ny0yLjE4NS0yLjY2Ny01LjMzMy02LjgxLTQuMzE2LTguMTQtNy44NDYtMTYuNjYtMTAuNjU5em0xNiwuNjY3YzEuMTAyLjAxLjM3MywxLjg0OSAxLjMzNCwyIC4xNDEtLjgwNi43MzktLjQxIDEuMzMzLDAgLjQ2Mi0xLjE3NS43MzYtMi4wNjQgMC0yLjY2NyAuMjksMS44NzEtMi40Ny0xLjY3MS0yLjY2LjY2N3ptLTE0OCwzLjMzM3YtMS4zMzNjLS4wMzgtLjQwNy0uMS0uNzg5LS42NjctLjY2Ny0uNjg5LDEuODYtMi42NDQtMy41MDMtMy4zMzMsMCAyLjU0LS41MzkgMi4wNDYsMS45NTQgNCwyem0yNiwwYzIuNDMyLDIuNjguMjg5LDkuOTM0IDQuNjY3LDEwLjY2Ny0xLjk3Ni02LjEzMS0uMzI0LTkuNDE3LTMuMzMzLTEzLjMzMyAuNDg1LDEuODE3LTEuMzI1LDEuMzQtMS4zMzQsMi42NjR6bTE0MC42NywwYy4xMTItMy4yNTItMi4zNDYtLjgyMS0zLjMzMy0yLS4xMSwyLjA2MiAyLjM0LDIuOTk4IDMuMzMsMnptLTE4NC42NywyaDIuNjY3Yy4zMTYtMi4wOTQtLjgzMi0yLjcyNC0yLTMuMzMzLS44NTgsMS41NzIuMDg3LDEuMjQtLjY2NywzLjMzM3ptMzAuNjY3LDEyLjY2OWMtLjgwNi0uMTQxLS40MS0uNzQgMC0xLjMzMy04LjI3NS0zLjQ2NS0yLjU0MS0xMC45MzQgMy4zMzMtMTQtNC45NTQtMS4xNTQtOS4xODEsNS40NzctMTIuNjY3LDkuMzMzLTIuMTM1LDIuMzYyLTYuODcyLDUuNzEtNC42NjcsOC42NjcgMi40MTUtMi43NzIgMi4xNzgtNy45MTcgOS4zMzMtNy4zMzMtLjgzMywyLjgzIDMuMTU2LDQuODUgNC42NjgsNC42NnptMTc2LTEzLjMzNWMxLjUzNi4yMzkgNS4zNDUtMS41NzMgNC42NjctMS4zMzMtLjM3NC0xLjUwNi0xLjA0LjgwOS0yLS42NjctLjE5LDEuMzc0LTIuOTUuMTU4LTIuNjcsMnptLTIyOC0uNjY3Yy0uMDM4LjQwNy0uMS43OS0uNjY3LjY2Ny0xLjQyMy0xLjQ2LTcuNDI1LTEuNjk5LTYsLjY2NyAxLjUxMS0xLjMyNCA2LjgxNywxLjA0MiA2LjY2Ny0xLjMzNHptLTkuMzMzLDcuMzMyYzIuOCwyLjI3IDYuMjcxLTEuMDY3IDgtMi42NjctMi4zMTIuMS00LjY3MSwxLjI3LTgsMi42N3ptMTI1LjMzLDEuMzRjLS44MDYtLjE0MS0uNDEtLjc0IDAtMS4zMzMtNS40NDMuNzc2LTguMTQzLTEuMTktMTAuNjY3LTMuMzMzLTYuMzA4LDMuNTY4LTE0Ljc3MSwxLjU4Mi0xNiw2IDguNjE0LTEgMTcuMDYtNy4zNDMgMjEuMzMzLjY2NyAxLjA4NCw4LjEyOS0uOTUxLDE0LjIwOCAyLDE4IC43My0zLjg1LS4yMi0xNi40OSAzLjM0LTIwLjAxem0tNjkuMzMzLDhjLS43ODQtLjEwNC0xLjg5Mi4xMTQtMi0uNjY3IC40MDctLjAzOC43OS0uMS42NjctLjY2Ny01LjcxMS45NjQtLjExNiw1LjMxMiAxLjMzMyw2IDIuMDc5Ljk4OCA4LjY1OS0uNjUgMTAuNjY3LTQuNjY3IC41MzYtMS4wNzItMS41Ny0zLjUzOC42NjctNC42NjctMi41MDUtMS4yODMuNTY0LTMuNjE3LTIuNjY3LTUuMzMzIC40MDctLjAzOC43ODktLjEuNjY3LS42NjctMS4xNjEuMDUtMi4wNzMtLjE0OS0yLjY2Ny0uNjY3LS4yMS45MDEtLjk0OSwxLjI3My0uNjY3LDIuNjY3IDMuMTMzLTEuMDg5LjM5MSwzLjYxNCAzLjMzMywyLjY2NyAuMjExLDQuMDItLjMyNiw4LjY4MS03LjMzMyw4LjY2Ny0uMzI4LTIuOC0zLjY3Ni0uNDctMi0yLjY2em03Ni42NjMtMTBjLTEuMDc1LS44OC01Ljg3My0xLjQ0LTYsLjY2NyAyLjgxLS4wMSA1LjU4LS4wMyA2LS42N3ptLTMyLjY2LDQzLjMzYy0xLjIzNiwzLjU0OS02LjgzNiw0LjQxNy0xMCw2LjY2Ny00LjEyOSwyLjkzOC02LjA5Niw3Ljc5NC04LDkuMzMzLTkuNTQ5LDcuNzE4LTIyLjIzMS03Ljk0OS0zMi42NjctMS4zMzMgMS45OTQuNDUuNDMyLDQuNDU3IDIuNjY3LDQuNjY3IDIuNTAyLTEuODkyIDYuNjM3LTQuOTk2IDEyLTIuNjY3LTEuMjg2LDEuODM1IDEuNzQ4LDMuNDEgMS4zMzMsMS4zMzMgNC44NjIsNC42MjIgMTMuNDM5LDEuNTczIDE0LDEwLjY2NyAuNzg1LjEwNCAxLjg5My0uMTE1IDIsLjY2Ny0uMjgyLDMuMjA3IDIuMjE3LDEwLjU1MyA2LDE0LjY2NyAuMDgtOS41NjgtNi43MzMtMTYuMTQ3LTYuNjY3LTIzLjMzMyA1LjIxOC00LjUwNyAxMi42MTMsMS45MjYgMTIuNjY3LTExLjMzMyAuNzQ3LS4wNjggMS4wNC45NyAxLjMzMywwIDMuMDczLTEwLjE1NiAxNS41NTktMy44MzMgMjQtNC42NjctMS44MjEsMS44NDEuOTc2LjYyNSAxLjMzMywyLTMuOTYzLDkuMzE0LjM4LDE1LjQ5MS0yLDI0LjY2NyAzLjAzLjAyLjA4NSwxLjk1OSAwLDIuNjY3LS4wMDMuMDI0IDEuMzY2LjgxNCAxLjMzMywxLjMzMy0uMjg4LDQuNjMyLS45NDIsMTMuNjY3LTIuNjY3LDE1LjMzMy0xNC4wOC0xLjQ2Ni0xOS4zOTYsNC44Mi0yNi42NjctMi0uMjYzLTEuMTQ3Ljk5LTEuNzA5IDAtMi0xLjI4LDIuOTEtMS4yMDYtNC40MjMtMi0yIDEuODkzLDUuNDI1IDEuMDc1LDkuODk4LTIuNjY3LDEyLjY2NyA1LjUyMS0zLjc4NyAyNy43MS00LjQ0NSAyOS4zMzMtNiAyLjAwNiwxLjM5OCA0LjA3NywyLjI4NSA0LDQuNjY3LS4yNjgsOC4zMDctLjI5NywyMy4xNDQtMS4zMzMsMzYtMi4zNDMsMi42MDQtMy42NDIuNTY5LTUuMzMzLDIuNjY2IDEuNjI4LjY2NSAxLjQyLjIyMiA0LC42NjctMS44MjEsMS44NDEuOTc3LjYyNiAxLjMzMywyLS4xODEsNC40IDEuNDQsOS4xOTQuNjY3LDE2LS41Nyw1LjAxOS0uNzksMTEuMzg2LTIuNjY3LDE1LjMzMyAyLjIzNiwxLjg2OCAxLjAxMyw2Ljg1My0uNjY3LDgtMi41Ni0uNzg0LTUuMDU4LTIuNjk0LTguNjY3LTEuMzMzIDEwLjc2My4xNjMgOS41ODEsOS42NjYgMTEuMzMzLDEyLjY2Ny0xLjk2NiwxMS40Ni0yLjQzMywyMy40NS0uNjY3LDM2LjY2NiA0LjcwMS0xMi42MjctLjgwMi0xOS4zMTkuNjY3LTMyIC42NjMtNS43MjQtLjMyMy0xMS4wNjQgNC0xNC0uMzcuMDAyLS43NTctLjU0IDAtLjY2NiA2LjIwNi0uNjczIDEwLjQ1My0xLjgxMyAxNC0yIDUuODM0LDUuNjY5IDMuMzMsMTguMTQ3IDEwLDI1LjMzMy0xLjM3NC0xMS4yNjQtMTEuNDk0LTI0Ljc0NSA0LTMwIC4wNjcuNzQ4LS45NjksMS4wMzggMCwxLjMzMyA3Ljg5NS02LjcyNSAyMi45MDMtMy4yMjkgMjQsOC42NjcgMS44ODQtLjU1MSAxLjcyOC45MzkgMy4zMzMuNjY3LS4zMzItNS4yNzMtNC43LTUuOTkxLTMuMzMzLTExLjMzNC00LjkwMi01LjI3MS0xOC4xNjEtMS44NzktMTcuMzMzLTE0LjY2Ni0uNzg1LS4xMDQtMS44OTMuMTE0LTItLjY2NyAuOTY0LS4xNiAxLjU1LTUuNDg2LS42NjctNC42NjctMi4xMzYsNC4zOTIgNC44MzcsMTMuNTIyLS42NjcsMTguNjY3LTExLjgzLDIuMzI0LTIyLjU4Niw1Ljc1OS0zMi42NjcsNy4zMzMtLjMxNS0yLjc5OC0uNTIyLS40Ny0yLTIuNjY2IC4zODYtNS45NDQuNzk3LTEyLjE2NyAwLTE4LjY2NyAzLjYxNS0yLjA4My4yMDMtMTYuNDUgNC0xOS4zMzMgMy4zOTMtMS4wNDUgMTkuMjM3LDMuMzggMjIuNjY3LDEuMzMzLTkuMTk4LTIuNjkxLTE5Ljg3OC0uODY4LTI0LjY2Ny02LjY2Ny0uODMzLTE4LjQwMyAxLjI3Ny0zMC44MTEgMS4zMzMtMzguNjY2IC42NjktLjAwMy43OTMuNTQgMS4zMzMuNjY2LTMuODk2LTYuOTM2LjI5Mi0xMC43MTgtMi42NjctMTYgLjA3LTEwLjMwNyAxLjQ4LTE4LjcyNCAxLjMzMy0yNi42NjctLjA0Mi0yLjI5My0uMTM2LTQuMDk1IDIuNjY3LTUuMzMzIDguMDA0LTMuNTM4IDI4LjI5Mi0zLjY4NiAyNy4zMzMsMTIgNC4zMjMuNDg5IDguNTE1LS45OTggOC42NjctMi42NjcgLjE0MS44MDYuNzM5LjQxIDEuMzMzLDAtLjQxNywxLjI5OSAzLjY1NSwzLjE0IDQsNi0uMDcxLS41OTUtMS44MDUsNi4zMDQtMi42NjcsOC0xLjE3OCwyLjMyMS0zLjg2OSwyLjkyOS00LjY2Niw1LjMzMy0xLjA3OCwzLjI1Mi0uOTIyLDQuMDgzLTIsNi42NjctMS43ODMsNC4yNzItNC40OTUsMTAuNjY5LTYuNjY3LDEzLjMzMy03LjcyNy44MjYtMTQuNjczLTEuMTQ2LTIxLjMzMy0yLjY2NyA5LjgzMiw4LjA1MSAxNy4xODctLjI5OCAyNCw2LjY2Ny0uNDQ5LS40NTguNzE4LDEuNzk3IDEuMzMzLDIuNjY3IDEuNjIyLDIuMjk1IDIuOTAyLDkuNjAyIDUuMzMzLDEyIDIuMDk0LDIuMDY1IDMuMTY0LDIuMTEgNC42NjcsNCAuMzAzLTcuMDIzLTUuOTE2LTExLjUxNy04LjY2Ny0xNi42NjctNC4yMjYtNy45MTIuNTM0LTEzLjA1NCA1LjMzNC0yMC42NjctMi4wMzItLjgxNS45NzUtMi41NDQtLjY2Ny0zLjMzMyAyLjk1MS4yODkgMS41NTYtMS40MDggMS4zMzMtMi42NjdoMmMtLjg2Ni0zLjYyOCAyLjI1MS02LjM5OSA0LTkuMzMzIDIuNzMxLjQ5MyA5LjgyNi0uMzg1IDE0LS42NjcgNC40OTUtOC43ODUgMTIuMDI0LjQyNCAxNi42NjcsMC0xLjI3MS0uMDY4LjUzMS0yLjQ4NC42NjctMy4zMzMtOC4yMjktNC4wNzEtMTYuNDYtMS40MjMtMjIuNjY3LjY2Ny0uMDY3LS43NDguOTY5LTEuMDM4IDAtMS4zMzMtNS4xMzIsMi45MzktOS43MDQtMS4yNzQtMTMuMzMzLTQuNjY3LTQuMzEtNC4wMjctMTIuNDU5LTkuODA5LTIwLjY2Ny0xMy4zMzMgNi4xNi0xMC42MjUgMy43NDUtMzAuMDUyIDEzLjMzMy0zOS4zMzMtLjgwNi0uMTQxLS40MDktLjc0IDAtMS4zMzMtNS42NzUtMS42MDUtMTMuNDI1LTEuNTg4LTE3LjMzMy0xLjMzMyAzLjQ1NSwxLjIxMSA3LjMyNCwyLjAwOSAxMiwyLTEuNjYzLDExLjgyLTYuMzA5LDI2LjI5LTgsMzcuMzMzLS4wMDItLjM3LjU0LS43NTYuNjY3LDAtNS4xMjQsNS4xOTctMTEuNjk0LDMuNDY2LTE4LjY2Nyw0LjY2Ny0zLjI0Ny03LjI5Mi40NTctMTMuMzE2LTEuMzMzLTIwLTEuNTY1LDQuNDIzLTEuNjI3LDguMDM1LTIsMTgtNy45NDYsNC40OTItOS4zNCwyLjIwOC0xNy4zMzMsMS4zMzMtMi40MTgtNC43MzMtMS41NDItNy40OTMtNC42NjctMTEuMzMzLS45NiwzLjEyIDMuMjQsNS45MiAyLjA2LDkuMzF6bS0zMi42Nyw3NC42NmMuMTk0LS4wNzctLjk3LTEuMzk2LTEuMzMzLTEuMzMzLTIuODk2LjUwMy01LjM1My45OTktOC42NjcsMS4zMzMtNy4yMTYuNzI4LTE1LjMxOSwyLjcwOC0yMS4zMzMsMTAgMTQuODg1LTYuNzc1IDM4LjM4Ny0xNi42MDEgNDMuMzMzLDIuNjY3aDJjLS4wNjIsMi40MDUgMS43MDYsNS4zNyAzLjMzMyw2LjY2Ny0uMTQ5LTEuOTM3LS40MjktNS4yNTctLjY2Ny02LTEuMTI0LTMuNTEyLTQuNTk4LTQuNDEzLTYuNjY3LTgtLjE1MS0uMjYzLS40NzEuMjk2LTEuMzMzLS42NjctMi42NzgtMi45OTItMy4yMTUtNi40NjUtMi04IDEuNjE5LTIuMDQ1IDIuNTczLTIuMDI5IDMuMzMzLTMuMzMzIC4zMjgtLjU2MiAyLjQ5NC0uNjMyIDMuMzMzLTEuMzM0IDIuNzczLTIuMzE3Ljc5Mi02LjExMyA0LjY2Ny02LjY2Ni0xLjIxNC4wMjEgMS4yNzEtMy4zNTQtMS4zMzMtMy4zMzQtLjAxLDEuMTAyLTEuODQ5LjM3My0yLDEuMzM0LTEuNDczLDIuMTU2LTUuNjA3LDQuMDg3LTYsOC42NjYtMy4yMDMuNzYtMy44MTIsNi4wNC04LjY2Niw3Ljk5em00NC42NywxOC42N2MtOS4wMjcuOTUyLTE0LjE1NSwxLjU2OS0yMy4zMzMsNC0xLjg5Ni0xLjMzNy0uODMxLTMuMDk5LTIuNjY3LTMuMzMzLTEuODM1LDEuMDMxLS4wNjQsNC4wMDEuNjY3LDQuNjY2LTEuNzA0LTEuNzYzLTEuMzIzLjkxMy0xLjMzMywyLjY2Ny0uNzg1LjEwNC0xLjg5My0uMTE0LTIsLjY2Ny0uODg3LDcuMDYzLTYuMzM5LDIwLjMwNC0xNy4zMzMsMjIuNjY2IC43NTUsMy44MjQtMi45MTMsNy4wNzMtNS4zMzMsMTIgMi43MTguMTQ3IDQuNzUxLTIuNzYyIDQtNCA1LjgxMi00Ljg5NiAxOC41OS02LjU5OSAyMy4zMzMtNi0yLjMwMy0uODcxLTQuMzY5LTEuMjU1LTcuMzMzLTEuMzMzLS45NDEtMi44OC0xLjU3OC01LjE1OS0xLjMzMy03LjMzMyAuMjYyLTIuMzM2IDMuMDg5LTMuNDU0IDIuNjY3LTMuMzM0IDEuMTExLS4zMTcgMS4xMTktOS40MTMgMy4zMzMtMTMuMzMzIDcuOTExLTMuNDc0IDE3LjI4Ny00LjgzOCAyNi42NjctNi42NjctLjgxLS4xNy0uNDEtLjc2IDAtMS4zNnptNDIuNjYsMS4zM2MtMy44MzUsNC44MiA0LjY5Ni01LjQxNiA4LTYgMy42ODEtMTQuMDkgMTAuMzUzLTcuOTc1IDI0LTEwLTUuMjY0LTEuOTc5LTExLjQwMS0uMDMzLTE2LjY2Ni0uNjY2LTMuMTM0LS4zNzctNC4xOTEtMi44MTItNi42NjctMS4zMzQgLjk2MywxLjU4OCAxLjAxMSwxLjYzNyAyLDItMy4wMyw4LjM1LTguMjgsNi43LTEwLjY2LDE2em0tMTQ0LjY2LTEzNS45OWMtMS4xNDkuMTMzLTMuNTE3LDEuOTcxLTQuNjY3LDQgMS4xNzYtMS4zIDUuODA2LTIuNiA0LjY2Ny00em01OS4zMzMsOGMuMDY4LDIuNDU0LTQuNjc0LDQuMjU3LTcuMzMzLDYuNjY3IC44MTYsNi45MjktNC4xNzUsOC41MzQgMCwxMS4zMzMtLjU0MS0xMi4zODcgMTEuMjUtMTguODMgMjAtMjEuMzMzLTMuNTU1LTEuMDYtNy42ODksMS40NS0xMi42NjcsMy4zM3ptMjgsMTZjLTEuNTIyLTEwLjM4Mi05LjE5OS0xNi4yMTYtNC0yMy4zMzMtMy42MTQuMDM2LTcuOTM3LDEuOTA0LTExLjMzMyw0IC40MDcuMDM4Ljc5LjEuNjY3LjY2Ny0uMzctLjAwMi0uNzU3LjU0IDAsLjY2NyA1LjIxNS00LjQ1OSA5Ljg1OSw3LjEzNCA4LjY2Nyw5LjMzMyA2LjEyLDMuMyAxLjU0LDcuMyA2LDguNjZ6bS03Ni42NjctMjAuNjdjLjc3My41NiAxLjc4Ny44NzkgMy4zMzMuNjY3di0yLjY2N2MtLjk2OS4zNjUtMy40NDUtLjc3OS0zLjMzMy42NjcgLjgwNi4xNC40MS43MyAwLDEuMzN6bTE1NS4zNCw1LjMzYzIuMDc0LDEuNzE5IDQuMzczLDYuNzE3IDYuNjY2LDYtMi43My0yLjM0NS0xLjEwOC0yLjc5Ny0yLjY2Ni02LjY2Ny00LjQ2My0xLjc2Ny0xNC4zOS0xLjYwMi0xOC0yIDQuMTEsMS40NSA5LjcyLDEuMzkgMTQsMi42N3ptMzIsOGMtMS4xNjEtNC4zOTYtMi43MTItNi4zNTMtNC42NjctOC42NjctLjE2Ljk1MS0xLjA5OCwxLjEyNS0xLjMzMywyIDMuNzYsMS42NSAzLjUsNC45NyA2LDYuNjd6bS0xNjgsMy4zNGMtLjc4NC4xMDQtMS44OTItLjExNS0yLC42NjcgLjUxMywzLjA1OC01LjQ3NiwxMi42MDgtMi42NjcsMTUuMzMzIDIuNjIxLTQuMTYxIDIuOTE3LTYuMjQgNi04LTQuNjg2LTUuODkzIDcuNDI4LTEzLjE3NyAzLjMzMy0xOC42NjctMS4yMzcsMy4zOS01Ljk0OCw3LjI3LTQuNjY2LDEwLjY3em0xLjMzMywxMi42NmMuMzY1Ljk2OS0uNzc5LDMuNDQ2LjY2NywzLjMzMyA0LjY3My0xLjc2MSAxMy4wMDUtMTAuNzExIDYuNjY3LTE4LjY2Ny0yLjY2Nyw1LjI4IDMuOTQ3LDEyLjY5LTcuMzM0LDE1LjM0em0xNjYuNjcsMi42N2MtNy45NjktMy44NzItOS40OTUtOC4zNjgtOC0xOC00LjkzLDQuOS43MywyMC4yNiA4LDE4em02LTIuNjdjLTEuMTk0LTIuMzg3LTEuNTQzLTEwLjY1My02LTE0LjY2NyAuNTc3LDQuMDA5LjIzNSw1LjEyOCAwLDkuMzMzIDQuMjQsMS4zIDMuNjMsNC42OSA2LDUuMzR6bS0xODQsMTAuNjdjLS4yNDQsMS40ODEtLjIyLDcuOTg3LTIuNjY3LDcuMzMzIC42NzksNS43OTgtMy4zNTEsNi45MDEtMS4zMzMsOS4zMzMgLjE0MS0uODA2Ljc0LS40MSAxLjMzMywwIDYuMzY1LTcuODY4IDMuOTUtMTIuNTExIDUuMzMzLTIxLjMzMy0uODM4LDEuNjEtLjQyNSw0LjQ2LTIuNjY2LDQuNjd6bTguNjY2LS42N2MtMi41MTEtLjM0NC0zLjAzNi0uODQzLTQsMS4zMzMgMy43NTUuMDggMS4wNDIsOC40NyAyLjY2Nyw4LjY2NyAuMTYtMS4yNSAxLjA5OC4zNzggMS4zMzMtLjY2NyAuMzk3LTIuMzg4IDEuMTUxLTUuMDU1IDEuMzMzLTgtMS4xNjEtMS4yNS0yLjU2Ny45Mi0xLjMzMy0xLjMzem0xNzAsMTQuNjdjLjUzNS0uODg0IDMuNCw5LjAyMSA3LjMzNCw1LjMzMy03LjkzNy0xLjk1OC04LjkyOC0xMy4wNzgtNC42NjctMTguNjY3LTUuNDMuOTMtMy40OCw4LjcyLTIuNjYsMTMuMzR6bTEyLjY3LDUuMzNjLTEuODUtNi0uOTgxLTE1Ljk5Ni00LjY2Ny0xOC0yLjUsNS4zMS40MSwxNC40IDQuNjcsMTh6bS0xODkuMzMtMmM0LjM4Ni42MDggNC4wODUtMy40NzEgNS4zMzMtNi0zLjE4Mi45LTMuNzE4LDIuNTItNS4zMzMsNnptLTEwLDUuMzRjMS4zMjYuNDUxLS42NTksMi4yMTUuNjY3LDIuNjY3IDEuNDY2LTEuOTU3Ljg1NS0zLjUxOSAzLjMzMy01LjMzMy0xLjUyLS4xODYtMi41MDYuMTYxLTIuNjY3LDEuMzMzIDEuODA2LDEuMzctMS41MjQuNTctMS4zMzMsMS4zM3ptMjIsMTAuNjZjLS41MjksMS4zOTktMy40MTMsMTcuMTI3LTYsMTkuMzMzLTIuODAzLDIuMzkyLTIuNDk1LDUuNTY5LTMuMzMzLDggMi4yNzQuNjM5IDYuOTEzLDEuMzg2IDQuNjY3LTJoMmMzLjE2Ny04LjkxIDMuNzM3LTE2Ljk1NCA1LjMzMy0yNS4zMzMgLjUxNS0yLjcwNSAzLjE0NC02LjY5MSAyLTExLjMzMy0yLjg2NywyLjk1LTIuNzA1LDYuMTUtNC42NjcsMTEuMzN6bS0xNi42NjctOGM2LjMzLDMuODI2LS4yMjUsOS42NDIgMiwxNC0yLjMwOC42MDQtNi42MiwyLjY4My00LjY2Nyw1LjMzMyAxLjM0NC0yLjQ3NCAyLjYwNi0uOTEgNC42NjctMi42NjcgMi42OTctMS40OCAzLjkzNi0xNS4zNS42NjctMTcuMzMzIC4yODUsMS44Ny0yLjQ4Ni0xLjY3LTIuNjY3LjY3em0tMTAsMTBjMi4xMjUsMi40NjgtMy4zMzksOS4zNzggMCwxMi42NjctLjI5OC0yLjk4MiAxLjc2Ni0zLjAzMSAyLTggNS40MzMtMi45NjkgMi4zNjYtOS45MjYgMi42NjctMTQtLjE2LDEuMjUtMS4wOTgtLjM3OC0xLjMzMy42NjcgMS40ODUsMS44Ni0uOTA1LDUuNzMtMy4zMzQsOC42NnptMTk4LTMuMzNjLTEuNjY0LDUuNTcyLTMuNjMsMTEuMjY3LTEuMzMzLDE3LjMzMyAuNzg0LjEwNCAxLjg5Mi0uMTE0IDIsLjY2Ny0uNDA3LjAzNy0uNzkuMS0uNjY3LjY2Nmg0Yy0uNDE1LTIuMDI4LTEuNDgtMy40MDgtNC0zLjMzMy0xLjkxNC00LjUzNy0uNTA2LTYuOTg4LjY2Ny0xMy4zMzMgLjU4Mi0xLjAyNiA1LjEwOS0xLjQ4NiAyLjY2Ni0zLjMzMy0uMjEuOTgtMi44MS0uNzQtMy4zNCwxLjMyem0xMC42NywyMC42NmMuMzk0LTMuODEzLjIzMy0xMC45MzctMi0xNi42NjctMS42OSw2LjE1LjkzLDEyLjMgMiwxNi42N3ptLTIzLjM0LDcuMzRjMS45MTMtNC44MDYtMS42MjMtOC43NTEtMy4zMzMtMTIuNjY3LS40MjktLjk4My0xLjM5LTUuMzMxLTIuNjY3LTQuNjY3IDEuNTEsNS44NC0xLjUzLDE1LjI2IDYsMTcuMzR6bS0xODQuNjYtOGMtLjgwNi0uMTQyLS40MS0uNzQgMC0xLjMzNC01LjY3NiwxLjU1OS0zLjU3Nyw4LjE3Ny00LDEwLjY2Ny0xLjI1Myw3LjM3Ny0uODY5LDE0LjA5NC0xLjMzMywyMS4zMzMgNC44OTEuMzQ2LS4xNzEtOS40OCA0LTExLjMzMy0yLjAwMy00LjQ4Mi0yLjA4OS0xMy41NzEuNjY3LTE5LjMzMy0uMDAzLjM2LjUzOS43NC42NjYtLjAxem0wLDkuMzNjMi40Mi4wMjQgNS4yNjMtLjM3NCA2LDEuMzMzIDEuMzI5LDYuOTExLTEuNDY1LDEyLjUwNy02LDE0LjY2NyAxLjY1NiwxLjU3NiAzLjkyNC4wMDYgNiwwIDIuMDIyLTYuOTE1IDYuNTctMTkuMTM5LTQuNjY3LTE5LjMzMy0xLjQ3NiwxLjU1LS41ODksMS43OC0xLjMzMywzLjMzem0xOTkuMzMsNGMxLjU1Ni0xLjc3NyAzLjAyNi0zLjY0IDUuMzMzLTQuNjY3LTMuNDM4LTEuMTg2LTUuNzk5LjgzMS03LjMzMywzLjMzNCAuNzg0LjEwNCAxLjg5My0uMTE1IDIsLjY2Ni0uMzcsMC0uNzYuNTQgMCwuNjd6bTEwLDRjLS43NDguMDY3LTEuMDM4LS45NjktMS4zMzMsMCAxLjI2MSwxLjEwOC0uMjI2LDEuNzktLjY2Nyw0IDMuMjA2LDIuMzA3LjY3Niw1Ljk2MiAzLjMzMyw3LjMzMy0uNDM4LTUuNDk3IDEuNjk4LTE1LjA5My0xLjMzMy0xNi42NjYgLjkyLDEuMTktMS4xOSwyLjk4IDAsNS4zNHptLTQuNjcsMTRjLS40NjMtMy4yNjEtNS4zMTktMy4xMzItNy4zMzMtNy4zMzMgLjgwMi0xLjI0OS44MDItMy40MTggMC00LjY2Ny0yLjM4NSwzLjI4NC0uMDA3LDUuMzgzLTEuMzMzLDguNjY3IDMuNjguNDQgNi41NSw1LjI5IDguNjYsMy4zM3ptLTE5LjMzLS42N2MtMi4zNjYtMi44Ny00LjkxMi0xLjg3Ni02LTUuMzMzLTIuNzA1LDEuNDU5LTUuMjI3LTIuNzI3LTcuMzMzLDAgMy40NS0uNDg1IDUuOTUzLDQuMjQ1IDYsMS4zMzMgMi4wNiwxLjI3IDUuNzIsNi41NSA3LjMzLDR6bS0xODIsMzguNjdjLTQuNDg5LTMuNjAxIDEuOTItMTguMDcxLTQtMjAuNjY3LTIuOTAzLTcuNjI2LS43NTctMTEuMjA0LTEuMzMzLTE2LjY2Ni0uMTQxLjgwNi0uNzQuNDA5LTEuMzMzLDAgLjM1OSwyLjM1OC0xLjA3OSwyLjkyMS0yLDQgMS42MDUsOS4zMzEgMi43MDMsMjguMjMgNy4zMzMsMzUuMzMzIDMuMTQ1LjQ5MyAyLjY2My0yLjE1OCAyLTIuNjY3LS4wMzguNDItLjEuOC0uNjY3LjY4em03LjMzMy0yNmMtLjAyMS42MTktLjYyNS0uMTg4LTEuMzMzLTItMS4yMjktMy4xNDgtMi40NjgtNi43NDQtOC00LjY2NyAuMzY1Ljk2OS0uNzc5LDMuNDQ2LjY2NywzLjMzNCA5LjE1OSwzLjIzMSA0LjY5NCw4LjIzMSA3LjMzMywyMC0xLjQzOCwxLjY3NC00LjEyLDIuMTAzLTUuMzMzLDQgMi42OC4wODcuMzc1LDEuNzU2IDUuMzMzLDEuMzMzLS4wMzYtMS4yNDcuNTEzLTEuNDExIDEuMzMzLS42NjcgMS45OTUtNy41OC0uMjA2LTE1LjM1IDAtMjEuMzJ6bTE5OC42NywwYy0xLjY0Mi0uNzg5IDEuMzY1LTIuNTE5LS42NjctMy4zMzMtLjE0MS44MDYtLjczOS40MDktMS4zMzMsMC0xLjAzLDIuNDEgMy42NSw0LjUzIDIsMy4zM3ptLTc0LjY3LDBjLS4xNDEuODA2LS43MzkuNDEtMS4zMzMsMC0uOTEyLDIuODk2LTMuMzcxLS42NjctNS4zMzMsMiAyLjc2NS41NzQgNS45NDUsMy44NzcgNS4zMzMsNy4zMzMgMi42MTQtMS40MjYuNDgzLDUuMTkgMiwyLjY2Ny0uNjQ2LTQuNDI5LjU0My00LjQ0OS0yLTcuMzMzIC41MzktMS4yMzkuODYyLTIuNjk0IDItMy4zMzQtMS4yNS0uMTYuMzgtMS4xLS42Ny0xLjM0em02My4zNCwyNGMtMy4yNjQtMi4xMzYtNi4xNC0xMC43NTctMi0xMi42NjctMi40NjEtMy4yNzEtLjI2Ny03LjE0NiA0LTguNjY2IDEuODA5LDEuMTQ4IDMuNzU2LDIuOTU0IDQuNjY2LDAtNS4xMjYtMS40NDMtNy42MTEtMi4yNDgtMTEuMzMzLDEuMzMzLS40MSwxMC41MS00LjM1LDE4LjU2IDQuNjYsMjAuMDF6bTkuMzMtMTcuMzNjLTMuMzMsNi44MTktMS42MDcsMTIuMjk0LTIuNjY3LDE5LjMzMyAuMTQyLS44MDYuNzQtLjQxIDEuMzM0LDAtMS4wMS00LjY1IDUuNzItMTUuOTggMS4zNC0xOS4zM3ptLTE4MCwyNi42NmMtMS44ODQtMy40NDgtNC4zODktNi4yNzctOC04LTEuODM2LjE1My0zLjM5MiwxLjA4OS00LjY2NywzLjMzNCAxLjIwNS42NDcgNi45ODctLjU4NyA3LjMzMy42NjYtMS40MzYsMS40OSA0LjUxLDYuODEgNS4zMzQsNHptMTczLjMzLTIuNjZjLjM3LS4wMDIuNzU3LjU0IDAsLjY2Ni0uMDM3LS40MDYtLjEtLjc4OS0uNjY2LS42NjZ2MS4zMzNjLjAzNy40MDYuMS43ODkuNjY2LjY2NyAxLjE3NC4wNTkgMi42NDUtMS43NzggNC0zLjMzNC0xLjMyNS0uNDUxLjY1OS0yLjIxNS0uNjY2LTIuNjY2IC4zOCwyLjM2LTIuMDIsMS44OC0zLjMzLDR6bS0xOTMuMzMtMS4zNGMtMS4xNjEuMDUxLTIuMDczLS4xNDgtMi42NjctLjY2Ni0xLjgxLDYuMjA5IDcuMDUxLDE2LjQ3OCA5LjMzMywxOS4zMzMgMy4yNDYsNC4wNjIgNC4wNDgsNy43MDEgOCw4IDEuOTMyLTEuNzY3LTIuODI3LTQuNDkzLTMuMzMzLTYtMS4yNjMtMy43NTYtLjM4NC05LjYyNi02LjY2Ny04LjY2NyAuNDI5LTQuMDEtNi42NjktNy4wMS00LjY2Ni0xMS45OXptNjYuNjcsMjhjLTIuNTAyLS4yMTQtMS44MzEsMi41MjUtMy4zMzMsNiA1LjIwNC02LjA5IDcuMjgzLTE0LjM3OCAxMC42NjctMjMuMzMzIDIuMzQyLS44MjQgMi4yNDItNC4wOTUgNS4zMzMtMy4zMzMtNC44MjEtMS41NS0xMC40MDYtNy43OTUtMTMuMzMzLTUuMzM0IDEzLjc4MSw0LjY3NCAyLjE5NiwxNi4wNzcgMCwyNCAuNzI0LjE2IDEuNjAxLDEuMDk4LjY2NywxLjMzNC0uMjctMS4wMy0uODEtLjEtLjAxLjY2em0xMTEuMzMtMjcuMzNjLTIuMTk1LDIuNDA3LTkuMzg2LDYuODYtNC42NjcsMTAtLjQwMy00LjAwNSAyLjY0My00LjM1NiA0LjY2Ny03LjMzM2gzLjMzM2MuMjM4LDEuMjk1IDIuOTM1LDQuOTYxIDQsNC42NjYgLjcyLTEuNDQtMy40Ni02LjU2LTcuMzMtNy4zNHptMTIuNjcsNC42N2MtMi4wMiw1LjIyNi0xLjg1OSw4LjgtNi42NjcsMTIuNjY2LTEuMjQ5LS4zNTctMy41OTYuNjgyLTYsMiAuNjU4LDguMDM4LTIuNjY2LDcuNTI4LTYuNjY3LDEyLjY2NyAyLjQ4NCwyLjQ4OCA4LjU2OC00LjA3IDgtNi42NjcgMS45NDUuMTg3IDIuMjkyLS4xNiAxLjMzNC0xLjMzMyA1LjkyLTIuNzEyIDUuNzU0LTEwLjY5OCAxMC0xMi0xLjYyLTQuMDkgMy45My0zLjE0LjAxLTcuMzR6bS0xNzYuNjcsOC42NmMuODA2LjE0Mi40MS43NCAwLDEuMzM0aDMuMzMzYy0uNjg0LTIuNzA2IDIuODUxLTIuMTgzIDQtNC42NjctMS44NzEuMjg1IDEuNjcxLTIuNDg1LS42NjctMi42NjctLjE0MS44MDYtLjc0LjQxLTEuMzMzLDAtMS4yNjEsMi41My0yLjcwNCw0Ljg3LTUuMzMzLDYuMDF6bTE1OS4zMywxMS4zNGMtLjQyNy0yLjUyMi0yLjc5NS03LjAyNS0yLjY2Ni05LjMzNGgtMmMuNTUxLDMuODc1IDIuNDAzLDUuODcyIDEuMzMzLDguNjY3IDIuMS0xLjEyIDIuNzMsMi40NyAzLjM0LjY2em0tMTM2LTUuMzRjLS41Mi0uMTQ2LS43NzUtLjU1OC0uNjY3LTEuMzMzLTYuMzM2LTEuNjE0LTExLjY0Ni0uNDMxLTEwLjY2Nyw1LjMzMyAuMTYtMS4yNSAxLjA5OC4zNzkgMS4zMzMtLjY2Ni0xLjE0OC0uOTc4IDIuNzA5LTIuNTg2IDMuMzMzLTQgMi45MzUtLjYxIDUuMzU1LDMuNzggNi42NjguNjd6bS00LDEzLjM0YzUuMDAzLDIuNjA3IDUuNzc2LTMuMTkyIDgtNC0uODMxLTIuNDk1IDEuMDAzLTYuMTcyLTQtOC42NjcgMi43NjksMi45OTcuMDg3LDE0LjA2Mi0yLjY2NywxMC42NjctLjE1OS45NS0xLjA5NywxLjEyLTEuMzMzLDJ6bTExNS4zNCwxLjMzYy40MjMsMi4yNDMuNDczLDQuODYgMiw2IDEuMzQ2LTQuOTM4IDEuNTcxLTkuMDMzIDItMTIgMi41NzkuNzM4IDIuMzcxLTIuMzU2IDQtLjY2Ny00Ljc2LTQuNTMtNi4wMSwzLjM2LTgsNi42N3ptLTEyMC42Nyw1LjMzYy0xLjg4LTUuNjc0LTcuOTY1LTcuNTU3LTExLjMzMy0xMy4zMzMtLjUyMi40NjMtMS40ODMsMy43MiAwLDQgMi44NjkuOTIgOC4xMjQsOC43NSAxMS4zMzMsOS4zM3ptMTM1LjMzLTcuMzNjNC4xMjQtLjkyOC0uNzA0LTMuODY3IDAtNi0uNDY4Ljg1Ny0zLjgzMi0uNDkxLTQsLjY2NyAxLjk4Ljg1IDUuMzQsMi4wNyA0LDUuMzN6bS0xMjAsNS4zM2MzLjYzNS0xLjk3OSA0LjQ4LTMuNzc1IDcuMzMzLTUuMzMzIC4xODctMS41Mi0uMTYxLTIuNTA2LTEuMzMzLTIuNjY3LTIuNTM1LDIuODQtNy42NjUsNC40NS02LDh6bTcuMzM0LDQuNjdjMy40NzguOTE1IDMuMjMxLTMuNTM2IDUuMzMzLTUuMzMzLS43NDgtLjE0Mi0xLjAzOC0uNzQtMS4zMzMtMS4zMzQtMi4wMjktLjAyOS0yLjU5MiwxLjQwOC00LDItLjIyNywyLjA2IDEuNTQzLDMuMTggMCw0LjY2em04My4zMzMsNGMxLjI2MS0uMTQ5IDEuNDcxLjc1MSAyLjY2Ny42NjcgLjMzNS00Ljc2LTEuNDAyLTUuNDE3LTItMTBoLTJjLjM3NywyLjg5MS4xMzgsNC45NTUgMiw1LjMzMy0xLjY5LDEuMjYuNjEsMi4zNC0uNjcsNHptMTYuNjcsMmM1LjY5MS0yLjU5NiAxMy4zOS02LjE2OSAxNi42NjYtMTEuMzMzLTUuMTY2LDEuNjU5LTcuOTA3LDMuODg4LTEyLDQgLjcsNC4yOC01LjM3LDUuMjgtNC42Nyw3LjMzem0tNzkuMzQtNC42N2MuOTc2LDIuMzcyLTIuMTQzLDMuOTk1LS42NjcsNC42NjcgLjQ1Mi0xLjMyNiAyLjIxNS42NTkgMi42NjctLjY2Ny0uMDA1LTcuMTcxIDguMjA4LTMuNTU0IDEzLjMzMy0uNjY2IC44NDgtLjc4OS4yODMtMi41MTktLjY2Ny0zLjMzNC0zLjE2MiwxLjE0Ni02LjIzNS0zLjUzLTkuMzMzLTQuNjY2LTEuMTc1LDEuMzc1LTIuMDY0LjU4My0yLjY2NywxLjMzMyAuNTksMC0uMzMsNC4wNi0yLjY2LDMuMzR6bS0zNC42NjMtLjY2Yy0zLjQ3Ni0uMzAyLTMuNDYtNC4wOTYtOC0zLjMzNCAxLjA0MSwyLjcxIDYuNzY0LDYuODkgOCwzLjMzem01OC42NjMsNGMyLjMwNS4wODIgMy4xNDItMS4zMDMgNC42NjctMiAxLjM4LTYuNDYgOS4xOTguOTg2IDEwLDUuMzMzIC4zNzMtMS41MDYgMS4wNC44MDkgMi0uNjY3LTEuMjMtNS42ODktNC45ODktNC43NTgtNi42NjctMTAtNS4yOS4wMS05LjQzLDEuMTYtMTAsNy4zNHptMzAuNjctNy4zNGMtLjAxOSwyLjc5LS43MTcsOC41ODYgMiw4LS40MDYtLjAzNy0uNzg5LS4xLS42NjctLjY2NiAxLjQyMS0uNTIxIDIuMTU5LTMuMTE1IDEuMzM0LTQuNjY3LTEuOTM3LDEuNDM3LS4yODQtMi40NTktMS4zMzQtMi42NjctLjE0LjgyLS43NC40Mi0xLjMzLjAxem0tNiwxMS4zNGMxLjktMy45MjkgMS44NjgtNy44MDUgMS4zMzMtMTAuNjY3LTEuNzQtLjI5LTIuMSw4LjYtMS4zMywxMC42N3ptLTU5LjMzMy0yYzEuODU1LTIuNDAyLjgxMi0zLjU5OCAyLjY2Ny02LTEuNTM4LjIwNC0uNzQxLTEuOTI3LTItMi0uMjkxLDIuMTgtMi42NDQsNS43Ni0uNjYzLDh6bS0yMi0xLjM0YzIuNDYxLDEuNzEzIDUuMjE5LDQuMDc2IDcuMzMzLDIuNjY3djJjNC44MzEtLjY5MSAxMy4wNjIsNS40NTkgMTYuNjY3LDEuMzMzLTEwLjc3LDEuNzktMTMuMzg2LTguNzEtMjQuMDAzLTZ6bTEwMC42Niw1LjM0Yy0xMC45LS43MTYtMTIuNjAxLjEwMS0xOS4zMzMsNS4zMzMgNC40NjIsMS4zNDggOC4xOTktMy4zNCA4LS42NjcgLjA0Ny0yLjg0MiA1LjcyMi0uMDU2IDYuNjY3LTItMS4zNy0uMDI0IDEwLjI3Ni0zLjI0NiA2LjY2Ni01LjMzMy0uMzQsMS45Ni0xLjI3LjM4LTIuMDEsMi42N3ptLTYwLDEuMzNjLTIuNTEzLS4yMDktNi41MDMsMi4zNDYtOS4zMzMsMi42NjctMS4yNTQuMTQyLTMuOTA1LTMuMjk0LTMuMzMzLjY2NiA3Ljk1NywxLjkxMiA5LjA5MywyLjA4NiAyMC42NjcsMy4zMzQgLjE5Ni0xLjM1OSAxLjgwNC0xLjMwOCAyLTIuNjY3LTQuNDYuOC02LjQyLTMuNy0xMC4wMS00em0xNC42Nyw2YzguMDc3LDMuNDgxIDEzLjU5Mi45MzUgMjEuMzMzLS42Njd2LTIuNjY2Yy03LjMsNi40MS0xMy43Mi00LjU4LTIxLjMzLDMuMzR6bS05Miw2LjY3YzQuMDgtMS41MjggOC44NTUtMy44NCAxMi42NjctNC42NjctMS4yNS0uMTYuMzc4LTEuMDk4LS42NjctMS4zMzMtMi45MzQsMy40NS05LjcwOS42Ni0xMiw2em04NC42Ny0xLjM0YzEuNzA0LS4wNzQgMi4zMzMtMS4yMjIgMy4zMzMtMi0yLjItMS00LjkxLS43OC0zLjMzLDJ6bS03MS4zMzcsNmMtLjk2NC4xMzgtMS40ODksMS4yMS00LDEuMzM0IC44NDMsMy45NDgtNS4wNzIsMS40MTctMi42NjcsNS4zMzMgLjE0MS0uODA2Ljc0LS40MSAxLjMzMywwLS4zNTQtMy45MiA1LjY5Ny00Ljk0IDUuMzM0LTYuNjZ6bTYuNjY3LDZjLjk1Mi4xNiAxLjEyNSwxLjA5OSAyLDEuMzM0LS40OTMtMi45MzggMi4xNTgtMi43MzEgMi42NjctNC42NjctMy4yOTktLjYyLTIuMjI1LDMuMTItNC42NjcsMy4zNHoiIGZpbGw9IiM1YjU2MDAiPjwvcGF0aD4NCgk8cGF0aCBkPSJtMTE2LDI1LjI0MWMzLjIyOC43OTkuNDUxLDYuMzIxLS42NjcsMTAuNjY3LS41OTQtLjQxLTEuMTkyLS44MDYtMS4zMzMsMC0xLjctMi4yNzEgMS45NC02LjkxOSAyLTEwLjY2N3oiIGZpbGw9IiNmOGVkOWIiPjwvcGF0aD4NCgk8cGF0aCBkPSJtMTI0LjY3LDMxLjkwOGMuOTI4LDEuNzM5IDIuNDQ2LDIuODg4IDIsNi0xLjQ0NS4xMTMtLjMwMi0yLjM2NC0uNjY3LTMuMzMzLS41NjctLjEyMy0uNjI5LjI2LS42NjcuNjY3IDAtLjgyOC0xLjY2LTEuOTQtLjY2LTMuMzM0eiIgZmlsbD0iI2Y4ZWQ5YiI%2BPC9wYXRoPg0KCTxwYXRoIGQ9Im0xMzYuNjcsMzMuOTA4Yy43MjQuMTY1LjQ1MywxLjMyNiAxLjMzMywxLjMzMy0uOTUyLDEuNDkyLTIuMTQsMi43NDktMy4zMzMsNC0xLjY0LTEuNzQxIDQuMi0yLjcwNyAyLTUuMzMzeiIgZmlsbD0iI2Y4ZWQ5YiI%2BPC9wYXRoPg0KCTxwYXRoIGQ9Im0xNDAsNDMuMjQxYy44OTEuNjY1IDEuMzEsMS44MDIgMi42NjcsMi0uMTIzLDIuMTc3IDMuNTU1LDguNzI5IDEuMzMzLDExLjMzMy0yLjY4Ny4xMTMtNS4xNDIuNDU0LTYsLjY2NyAuMDYtNS41NCAxLjQ0LTguNzEgMi0xNHoiIGZpbGw9IiNmOGVkOWIiPjwvcGF0aD4NCgk8cGF0aCBkPSJtMTIxLjMzLDQ0LjU3NWMuNTYzLDEuNi41NjMsNC4zOTkgMCw2IDIuMzA1LDEuOTU0IDEuNjkzLDIuNzE0IDIsNi42NjctOC4xOCw0LjcxLTcuMjMyLTcuNzI3LTMuMzMzLTEyLjY2NyAuNTkuNDA5IDEuMTkuODA1IDEuMzMsMHoiIGZpbGw9IiNmOGVkOWIiPjwvcGF0aD4NCgk8cGF0aCBkPSJtMTI4LDc5LjkwOGMxLjI1MS0xLjI3MS0uMzk2LTEuMjA2IDAtMy4zMzMgNi42OTgsMy4xNTcgMTguNDk5LTEuNjIxIDI2LDIgLjc2My0uNzczIDUuMTA0LTEuNzIxIDQsMS4zMzMtMTcuMTkuMzEyLTExLjgsMS42MzQtMzAsMHoiIGZpbGw9IiNmOGVkOWIiPjwvcGF0aD4NCgk8cGF0aCBkPSJtMTYxLjMzLDc4LjU3NWMxMC40NTMtLjgxNCAyNC45MzYsMy43OTMgMzAsMTEuMzMzLTQuMTg0LS4wMDQtNS4yODMtNi40ODYtMTQtNC42NjctMy43MTItMS4yOTktNS40OTEtNC40MjQtOC42NjYtNS4zMzMtMi4zOS0uNjg4LTYuNjIsMi4yNzQtNy4zMy0xLjMzM3oiIGZpbGw9IiNmOGVkOWIiPjwvcGF0aD4NCgk8cGF0aCBkPSJtMTAyLjY3LDg4LjU3NWMuNzU3LjEyNi4zNy42NjggMCwuNjY3IC42MjIsMy43MzIuNDcyLDQuMy42NjcsOC42NjctMy4wNzUtMy4zMTMtLjk0OS0zLjc0NC0yLTguNjY3IC43Ny4xMDggMS4xOC0uMTQ4IDEuMzMtLjY2N3oiIGZpbGw9IiNmOGVkOWIiPjwvcGF0aD4NCgk8cGF0aCBkPSJtMTY4LDg5LjI0MWMuMjM1LTEuMDQ1IDEuMTc0LjU4MyAxLjMzMy0uNjY3IDEuNDczLDIuMTA1LTEuMTAzLDQuNTc3IDAsNy4zMzMtMy42OTkuMDAzLS4xMjQtMy4xMjMtMi42NjYtNC0uMTgtMS4xNzUgMy4xNS0yLjA2MyAxLjM0LTIuNjY2eiIgZmlsbD0iI2Y4ZWQ5YiI%2BPC9wYXRoPg0KCTxwYXRoIGQ9Im0xNDQuNjcsOTcuOTA4Yy0uMTk2LDIuMzIzLTEuODA0LS4wNTYtMiwxLjMzMy0uNDAzLTIuODY1LS45NTUtNS44MDgtLjY2Ny03LjMzMyAuOTQtNC45NjMgMi4xMSwyLjYwNCAyLjY3LDZ6IiBmaWxsPSIjZjhlZDliIj48L3BhdGg%2BDQoJPHBhdGggZD0ibTE3Niw4OS45MDhjLjgzNywyLjUzNiAxLjA0Nyw4LjI5Ny0uNjY3LDEwLS4wMS0yLjYxMy0xLjE1LTcuMzQ3LjY3LTEweiIgZmlsbD0iI2Y4ZWQ5YiI%2BPC9wYXRoPg0KCTxwYXRoIGQ9Im0xODIuNjcsOTEuOTA4Yy4yMzUtMS4wNDUgMS4xNzMuNTg0IDEuMzMzLS42NjcgMi45NDUsMy41NzUuOTkxLDMuNTQyLjY2Nyw4LjY2Ny0yLjE2NS0uOTI0LTIuMTY5LDEuODU4LTMuMzM0LDQuNjY3LTMuMDEtNC41ODcgNC40Mi0xMC4xMzYgMS4zMy0xMi42NzJ6IiBmaWxsPSIjZjhlZDliIj48L3BhdGg%2BDQoJPHBhdGggZD0ibTIxMCwxMDEuOTFjLS4xMSwzLjE0OCAzLjAyNCwzLjc4OSAyLjY2Nyw1LjMzMy0xLjMzNCwxLjA3My0zLjczLTIuNDYzLTUuMzM0LTMuMzMzIC4wMDMsMi4wMS0zLjk2OS4xNzQtNS4zMzMtMi42NjctLjU5NS4xMDYuNTM5LDQuODY0LTIsMi42NjcgLjk1NS45NzYuNTExLDIuMTEzLTEuMzMzLDItLjA2MSwxLjgxOSAxLjExLDEuMzQyIDAsMi42NjdoMS4zMzNjMS4zODUtLjE3MS4xODItMi45MjkgMS4zMzMtMy4zMzNoMy4zMzRjLS4zNDEsMS44ODItMS42MTMsMi44MzItMiw0LjY2Ny0xLjM5NS0xLjE4NC0yLjUwNi41MjQtMy4zMzQtLjY2Ny0xLjM3NC4zNTctLjE1OSwzLjE1NC0yLDEuMzMzIDEuODU0LDYuMzUgOC4xNjMsMi44MjIgMTMuMzM0LDAgMS43NzIsMy4yNjItMy40Nyw1LjQxNy00LDYuNjY3LTkuNjkzLjI5NC0xMC44NzYtNy40MDUtMTYtOS4zMzMgMi44MDYtMy42NSAyLjA5OC05LjI5NyA0LjY2Ni0xMi42NjctLjEtMS4yMzMtMi4yNTctLjQwOS0yLjY2Ni0xLjMzMy0uMjgyLTEuMzkzLjQ1Ny0xLjc2NS42NjYtMi42NjcgOC41MSwyLjgwMSA5Ljg0LDYuMzMxIDE2LjY2LDEwLjY1N3oiIGZpbGw9IiNmOGVkOWIiPjwvcGF0aD4NCgk8cGF0aCBkPSJtMjEyLDkxLjI0MWMuNzM2LjYwMy40NjIsMS40OTEgMCwyLjY2Ny0uNTk0LS40MS0xLjE5Mi0uODA2LTEuMzMzLDAtLjk2MS0uMTUxLS4yMzItMS45OS0xLjMzNC0yIC4xOC0yLjMzOCAyLjk0LDEuMjA0IDIuNjYtLjY2N3oiIGZpbGw9IiNmOGVkOWIiPjwvcGF0aD4NCgk8cGF0aCBkPSJtNTcuMzMzLDkzLjI0MWMuNjg5LTMuNTAzIDIuNjQ0LDEuODYgMy4zMzMsMCAuNTY3LS4xMjMuNjI5LjI2LjY2Ny42Njd2MS4zMzNjLTEuOTU0LS4wNDYtMS40Ni0yLjUzOS00LTJ6IiBmaWxsPSIjZjhlZDliIj48L3BhdGg%2BDQoJPHBhdGggZD0ibTY5LjMzMywxMDUuMjRjLTcuMTU2LS41ODQtNi45MTgsNC41NjItOS4zMzMsNy4zMzMtMi4yMDYtMi45NTcgMi41MzItNi4zMDUgNC42NjctOC42NjcgMy40ODYtMy44NTYgNy43MTMtMTAuNDg3IDEyLjY2Ny05LjMzMy01Ljg3NSwzLjA2Ni0xMS42MDksMTAuNTM1LTMuMzMzLDE0LS40MS41OTMtLjgwNiwxLjE5MiAwLDEuMzMzLTEuNTEzLjItNS41MDItMS44Mi00LjY2OC00LjY2eiIgZmlsbD0iI2Y4ZWQ5YiI%2BPC9wYXRoPg0KCTxwYXRoIGQ9Im0yNTIuNjcsOTQuNTc1Yy45NiwxLjQ3NSAxLjYyNi0uODM5IDIsLjY2NyAuNjc4LS4yNC0zLjEzMSwxLjU3My00LjY2NywxLjMzMy0uMjgtMS44NDIgMi40OC0uNjI2IDIuNjctMnoiIGZpbGw9IiNmOGVkOWIiPjwvcGF0aD4NCgk8cGF0aCBkPSJtMTUuMzMzLDk3LjI0MWMtMS40MjUtMi4zNjYgNC41NzctMi4xMjcgNi0uNjY3IC41NjcuMTIzLjYyOS0uMjYuNjY3LS42NjcgLjE1LDIuMzc3LTUuMTU2LjAxMS02LjY2NywxLjMzNHoiIGZpbGw9IiNmOGVkOWIiPjwvcGF0aD4NCgk8cGF0aCBkPSJtMjAuNjY3LDEwMC41OGMtMS43MjksMS41OTktNS4yLDQuOTM3LTgsMi42NjcgMy4zMjktMS40MSA1LjY4OC0yLjU4IDgtMi42N3oiIGZpbGw9IiNmOGVkOWIiPjwvcGF0aD4NCgk8cGF0aCBkPSJtMTM0LjY3LDEyNC41OGMtMi45NTEtMy43OTItLjkxNi05Ljg3MS0yLTE4LTQuMjczLTguMDEtMTIuNzE5LTEuNjY3LTIxLjMzMy0uNjY3IDEuMjI5LTQuNDE4IDkuNjkyLTIuNDMyIDE2LTYgMi41MjMsMi4xNDQgNS4yMjMsNC4xMSAxMC42NjcsMy4zMzMtLjQxLjU5My0uODA2LDEuMTkyIDAsMS4zMzMtMy41NywzLjUzLTIuNjIsMTYuMTctMy4zNCwyMC4wMXoiIGZpbGw9IiNmOGVkOWIiPjwvcGF0aD4NCgk8cGF0aCBkPSJtMTM5LjMzLDEwMy4yNGMuMTI3LTIuMTA2IDQuOTI1LTEuNTQ2IDYtLjY2Ny0uNDIuNjUtMy4xOS42Ny02LC42N3oiIGZpbGw9IiNmOGVkOWIiPjwvcGF0aD4NCgk8cGF0aCBkPSJtMTEwLjY3LDEzNi41OGMzLjEyNSwzLjg0IDIuMjQ5LDYuNiA0LjY2NywxMS4zMzMgNy45OTMuODc1IDkuMzg3LDMuMTU5IDE3LjMzMy0xLjMzMyAuMzczLTkuOTY1LjQzNS0xMy41NzcgMi0xOCAxLjc5MSw2LjY4NC0xLjkxNCwxMi43MDggMS4zMzMsMjAgNi45NzMtMS4yMDEgMTMuNTQzLjUzIDE4LjY2Ny00LjY2Ny0uMTI3LS43NTYtLjY2OS0uMzctLjY2NywwIDEuNjkxLTExLjA0MyA2LjMzNy0yNS41MTMgOC0zNy4zMzMtNC42NzYuMDA5LTguNTQ1LS43ODktMTItMiAzLjkwOC0uMjU1IDExLjY1OC0uMjcyIDE3LjMzMywxLjMzMy0uNDA5LjU5NC0uODA2LDEuMTkyIDAsMS4zMzMtOS41ODgsOS4yODEtNy4xNzMsMjguNzA5LTEzLjMzMywzOS4zMzMgOC4yMDgsMy41MjQgMTYuMzU3LDkuMzA2IDIwLjY2NywxMy4zMzMgMy42MjksMy4zOTMgOC4yMDEsNy42MDYgMTMuMzMzLDQuNjY3IC45NjkuMjk1LS4wNjcuNTg1IDAsMS4zMzMgNi4yMDctMi4wODkgMTQuNDM4LTQuNzM4IDIyLjY2Ny0uNjY3LS4xMzYuODQ5LTEuOTM4LDMuMjY2LS42NjcsMy4zMzMtNC42NDMuNDI0LTEyLjE3Mi04Ljc4NS0xNi42NjcsMC00LjE3NC4yODItMTEuMjY5LDEuMTYtMTQsLjY2Ny0xLjc0OSwyLjkzNC00Ljg2Niw1LjcwNi00LDkuMzMzaC0yYy4yMjMsMS4yNTggMS42MTgsMi45NTUtMS4zMzMsMi42NjcgMS42NDIuNzg5LTEuMzY1LDIuNTE5LjY2NywzLjMzMy00LjgsNy42MTItOS41NiwxMi43NTQtNS4zMzQsMjAuNjY3IDIuNzUxLDUuMTUgOC45Nyw5LjY0NCA4LjY2NywxNi42NjctMS41MDMtMS44OS0yLjU3My0xLjkzNS00LjY2Ny00LTIuNDMxLTIuMzk4LTMuNzExLTkuNzA1LTUuMzMzLTEyLS42MTUtLjg3LTEuNzgyLTMuMTI1LTEuMzMzLTIuNjY3LTYuODEzLTYuOTY1LTE0LjE2OCwxLjM4NC0yNC02LjY2NyA2LjY2LDEuNTIxIDEzLjYwNiwzLjQ5MyAyMS4zMzMsMi42NjcgMi4xNzItMi42NjQgNC44ODQtOS4wNjIgNi42NjctMTMuMzMzIDEuMDc4LTIuNTgzLjkyMi0zLjQxNCAyLTYuNjY3IC43OTctMi40MDUgMy40ODgtMy4wMTMgNC42NjYtNS4zMzMgLjg2Mi0xLjY5NiAyLjU5Ni04LjU5NSAyLjY2Ny04LS4zNDUtMi44Ni00LjQxNy00LjcwMS00LTYtLjU5NC40MS0xLjE5Mi44MDYtMS4zMzMsMC0uMTUyLDEuNjY5LTQuMzQ0LDMuMTU2LTguNjY3LDIuNjY3IC45NTktMTUuNjg2LTE5LjMyOS0xNS41MzgtMjcuMzMzLTEyLTIuODAyLDEuMjM4LTIuNzA5LDMuMDQtMi42NjcsNS4zMzMgLjE0Niw3Ljk0My0xLjI2NCwxNi4zNi0xLjMzMywyNi42NjcgMi45NTksNS4yODItMS4yMjksOS4wNjMgMi42NjcsMTYtLjU0LS4xMjYtLjY2NS0uNjY5LTEuMzMzLS42NjYtLjA1Nyw3Ljg1NS0yLjE2NywyMC4yNjMtMS4zMzMsMzguNjY2IDQuNzg5LDUuNzk5IDE1LjQ2OCwzLjk3NiAyNC42NjcsNi42NjctMy40MywyLjA0Ny0xOS4yNzMtMi4zNzgtMjIuNjY3LTEuMzMzLTMuNzk3LDIuODgzLS4zODUsMTcuMjUtNCwxOS4zMzMgLjc5Nyw2LjUuMzg2LDEyLjcyMyAwLDE4LjY2NyAxLjQ3OCwyLjE5NiAxLjY4NS0uMTMyIDIsMi42NjYgMTAuMDgxLTEuNTc0IDIwLjgzNi01LjAwOSAzMi42NjctNy4zMzMgNS41MDQtNS4xNDUtMS40NjktMTQuMjc1LjY2Ny0xOC42NjcgMi4yMTctLjgxOSAxLjYzMSw0LjUwNy42NjcsNC42NjcgLjEwNy43ODEgMS4yMTUuNTYyIDIsLjY2Ny0uODI4LDEyLjc4NyAxMi40MzEsOS4zOTYgMTcuMzMzLDE0LjY2Ni0xLjM2Nyw1LjM0MyAzLjAwMSw2LjA2MSAzLjMzMywxMS4zMzQtMS42MDUuMjcyLTEuNDQ5LTEuMjE4LTMuMzMzLS42NjctMS4wOTctMTEuODk2LTE2LjEwNS0xNS4zOTItMjQtOC42NjctLjk2OS0uMjk1LjA2Ny0uNTg1IDAtMS4zMzMtMTUuNDk0LDUuMjU1LTUuMzc0LDE4LjczNi00LDMwLTYuNjctNy4xODYtNC4xNjYtMTkuNjY0LTEwLTI1LjMzMy0zLjU0Ny4xODctNy43OTQsMS4zMjctMTQsMi0uNzU3LjEyNi0uMzcuNjY4IDAsLjY2Ni00LjMyMywyLjkzNi0zLjMzNyw4LjI3Ni00LDE0LTEuNDY5LDEyLjY4MSA0LjAzNCwxOS4zNzMtLjY2NywzMi0xLjc2Ny0xMy4yMTYtMS4yOTktMjUuMjA2LjY2Ny0zNi42NjYtMS43NTMtMy4wMDEtLjU3LTEyLjUwNC0xMS4zMzMtMTIuNjY3IDMuNjA5LTEuMzYxIDYuMTA3LjU0OSA4LjY2NywxLjMzMyAxLjY4LTEuMTQ3IDIuOTAzLTYuMTMyLjY2Ny04IDEuODc3LTMuOTQ3IDIuMDk2LTEwLjMxNCAyLjY2Ny0xNS4zMzMgLjc3NC02LjgwNi0uODQ4LTExLjYtLjY2Ny0xNi0uMzU3LTEuMzc0LTMuMTU0LS4xNTktMS4zMzMtMi0yLjU4LS40NDUtMi4zNzItLjAwMi00LS42NjcgMS42OTItMi4wOTcgMi45OTEtLjA2MiA1LjMzMy0yLjY2NiAxLjAzNy0xMi44NTYgMS4wNjYtMjcuNjkzIDEuMzMzLTM2IC4wNzctMi4zODItMS45OTQtMy4yNjktNC00LjY2Ny0xLjYyMywxLjU1NS0yMy44MTMsMi4yMTMtMjkuMzMzLDYgMy43NDItMi43NjkgNC41Ni03LjI0MSAyLjY2Ny0xMi42NjcgLjc5NC0yLjQyMy43Miw0LjkxIDIsMiAuOTkuMjkxLS4yNjMuODUzIDAsMiA3LjI3MSw2LjgyIDEyLjU4Ny41MzMgMjYuNjY3LDIgMS43MjUtMS42NjYgMi4zNzktMTAuNzAxIDIuNjY3LTE1LjMzMyAuMDMyLS41Mi0xLjMzNi0xLjMwOS0xLjMzMy0xLjMzMyAuMDg1LS43MDggMy4wMy0yLjY0NiAwLTIuNjY3IDIuMzgtOS4xNzUtMS45NjMtMTUuMzUyIDItMjQuNjY3LS4zNTctMS4zNzUtMy4xNTQtLjE1OS0xLjMzMy0yLTguNDQxLjgzMy0yMC45MjctNS40ODktMjQsNC42NjctLjI5My45Ny0uNTg3LS4wNjgtMS4zMzMsMC0uMDU0LDEzLjI2LTcuNDQ4LDYuODI2LTEyLjY2NywxMS4zMzMtLjA2Nyw3LjE4NiA2Ljc0NiwxMy43NjUgNi42NjcsMjMuMzMzLTMuNzgzLTQuMTE0LTYuMjgyLTExLjQ1OS02LTE0LjY2Ny0uMTA3LS43ODEtMS4yMTUtLjU2Mi0yLS42NjctLjU2MS05LjA5NC05LjEzOC02LjA0NS0xNC0xMC42NjcgLjQxNCwyLjA3Ny0yLjYyLjUwMi0xLjMzMy0xLjMzMy01LjM2My0yLjMyOS05LjQ5OC43NzUtMTIsMi42NjctMi4yMzUtLjIwOS0uNjcyLTQuMjE3LTIuNjY3LTQuNjY3IDEwLjQzNS02LjYxNiAyMy4xMTcsOS4wNTEgMzIuNjY3LDEuMzMzIDEuOTA0LTEuNTM5IDMuODcxLTYuMzk2IDgtOS4zMzMgMy4xNjQtMi4yNSA4Ljc2NC0zLjExOCAxMC02LjY2NyAxLjEyLTMuMzctMy4wOC02LjE3LTIuMDYtOS4zMXoiIGZpbGw9IiNmOGVkOWIiPjwvcGF0aD4NCgk8cGF0aCBkPSJtODguNjY3LDIxMi41N2MuMzkzLTQuNTc5IDQuNTI3LTYuNTEgNi04LjY2NiAuMTUxLS45NjEgMS45OS0uMjMyIDItMS4zMzQgMi42MDUtLjAyMS4xMTksMy4zNTQgMS4zMzMsMy4zMzQtMy44NzUuNTUzLTEuODk0LDQuMzQ5LTQuNjY3LDYuNjY2LS44NC43MDItMy4wMDUuNzcxLTMuMzMzLDEuMzM0LS43NjEsMS4zMDQtMS43MTUsMS4yODgtMy4zMzMsMy4zMzMtMS4yMTUsMS41MzUtLjY3OCw1LjAwOCAyLDggLjg2Mi45NjMgMS4xODIuNDA0IDEuMzMzLjY2NyAyLjA2OCwzLjU4NyA1LjU0Myw0LjQ4OCA2LjY2Nyw4IC4yMzguNzQzLjUxOCw0LjA2My42NjcsNi0xLjYyOC0xLjI5Ny0zLjM5Ni00LjI2Mi0zLjMzMy02LjY2N2gtMmMtNC45NDYtMTkuMjY4LTI4LjQ0OS05LjQ0Mi00My4zMzMtMi42NjcgNi4wMTQtNy4yOTIgMTQuMTE3LTkuMjcyIDIxLjMzMy0xMCAzLjMxMy0uMzM0IDUuNzcxLS44MyA4LjY2Ny0xLjMzMyAuMzY0LS4wNjMgMS41MjcsMS4yNTYgMS4zMzMsMS4zMzMgNC44NTMtMS45NCA1LjQ2Mi03LjIyIDguNjY2LTcuOTl6IiBmaWxsPSIjZjhlZDliIj48L3BhdGg%2BDQoJPHBhdGggZD0ibTEyNC42NywyNDAuNTdjLTkuMzc5LDEuODI5LTE4Ljc1NiwzLjE5My0yNi42NjcsNi42NjctMi4yMTQsMy45Mi0yLjIyMywxMy4wMTYtMy4zMzMsMTMuMzMzIC40MjItLjEyLTIuNDA0Ljk5OC0yLjY2NywzLjMzNC0uMjQ0LDIuMTc0LjM5Miw0LjQ1MyAxLjMzMyw3LjMzMyAyLjk2NC4wNzggNS4wMy40NjIgNy4zMzMsMS4zMzMtNC43NDMtLjU5OS0xNy41MjEsMS4xMDQtMjMuMzMzLDYgLjc1MSwxLjIzOC0xLjI4Miw0LjE0Ny00LDQgMi40Mi00LjkyNyA2LjA4OC04LjE3NiA1LjMzMy0xMiAxMC45OTUtMi4zNjIgMTYuNDQ3LTE1LjYwMyAxNy4zMzMtMjIuNjY2IC4xMDctLjc4MSAxLjIxNS0uNTYyIDItLjY2NyAuMDEtMS43NTQtLjM3LTQuNDMgMS4zMzMtMi42NjctLjczMS0uNjY1LTIuNTAyLTMuNjM1LS42NjctNC42NjYgMS44MzYuMjM0Ljc3MSwxLjk5NiAyLjY2NywzLjMzMyA5LjE3OC0yLjQzMSAxNC4zMDYtMy4wNDggMjMuMzMzLTQtLjQxLjYzLS44MSwxLjIyIDAsMS4zNnoiIGZpbGw9IiNmOGVkOWIiPjwvcGF0aD4NCgk8cGF0aCBkPSJtMTc4LDIyNC41N2MtLjk4OS0uMzYzLTEuMDM3LS40MTItMi0yIDIuNDc2LTEuNDc4IDMuNTMzLjk1NyA2LjY2NywxLjMzNCA1LjI2NS42MzMgMTEuNDAyLTEuMzEzIDE2LjY2Ni42NjYtMTMuNjQ3LDIuMDI1LTIwLjMxOS00LjA5LTI0LDEwLTMuMzA0LjU4NC0xMS44MzUsMTAuODItOCw2IDIuMzctOS4zIDcuNjItNy42NSAxMC42Ni0xNnoiIGZpbGw9IiNmOGVkOWIiPjwvcGF0aD4NCgk8cGF0aCBkPSJtMTgsMTA4LjU4YzEuMTQ5LTIuMDI5IDMuNTE4LTMuODY3IDQuNjY3LTQgMS4xMzksMS40LTMuNDkxLDIuNy00LjY2Nyw0eiIgZmlsbD0iI2Y4ZWQ5YiI%2BPC9wYXRoPg0KCTxwYXRoIGQ9Im05NC42NjcsMTA5LjI0Yy04Ljc1LDIuNTA0LTIwLjU0MSw4Ljk0Ny0yMCwyMS4zMzMtNC4xNzUtMi44LjgxNi00LjQwNSAwLTExLjMzMyAyLjY1OS0yLjQxIDcuNDAyLTQuMjEyIDcuMzMzLTYuNjY3IDQuOTc4LTEuODcgOS4xMTItNC4zOCAxMi42NjctMy4zM3oiIGZpbGw9IiNmOGVkOWIiPjwvcGF0aD4NCgk8cGF0aCBkPSJtMTA0LDExOS45MWMxLjE5Mi0yLjE5OS0zLjQ1Mi0xMy43OTItOC42NjctOS4zMzMtLjc1Ny0uMTI3LS4zNy0uNjY5IDAtLjY2NyAuMTIzLS41NjctLjI2LS42MjktLjY2Ny0uNjY3IDMuMzk3LTIuMDk2IDcuNzItMy45NjQgMTEuMzMzLTQtNS4xOTksNy4xMTcgMi40NzgsMTIuOTUxIDQsMjMuMzMzLTQuNDYtMS4zNS4xMi01LjM1LTYtOC42NnoiIGZpbGw9IiNmOGVkOWIiPjwvcGF0aD4NCgk8cGF0aCBkPSJtMTc0LjY3LDExMC41OGMzLjYxLjM5OCAxMy41MzcuMjMzIDE4LDIgMS41NTgsMy44Ny0uMDY0LDQuMzIyIDIuNjY2LDYuNjY3LTIuMjkzLjcxNy00LjU5Mi00LjI4MS02LjY2Ni02LTQuMjgtMS4yOS05Ljg5LTEuMjMtMTQtMi42N3oiIGZpbGw9IiNmOGVkOWIiPjwvcGF0aD4NCgk8cGF0aCBkPSJtMjE0LjY3LDExNC41OGMuMjM1LS44NzUgMS4xNzMtMS4wNDkgMS4zMzMtMiAxLjk1NSwyLjMxNCAzLjUwNiw0LjI3MSA0LjY2Nyw4LjY2Ny0yLjUtMS43MS0yLjI0LTUuMDMtNi02LjY3eiIgZmlsbD0iI2Y4ZWQ5YiI%2BPC9wYXRoPg0KCTxwYXRoIGQ9Im0yMTIuNjcsMTIxLjkxYy0xLjQ5NSw5LjYzMi4wMzEsMTQuMTI4IDgsMTgtNy4yNywyLjI2LTEyLjkzLTEzLjEtOC0xOHoiIGZpbGw9IiNmOGVkOWIiPjwvcGF0aD4NCgk8cGF0aCBkPSJtMjIwLjY3LDEzMS45MWMuMjM1LTQuMjA1LjU3Ny01LjMyNCAwLTkuMzMzIDQuNDU3LDQuMDEzIDQuODA2LDEyLjI4IDYsMTQuNjY3LTIuMzctLjY2LTEuNzYtNC4wNS02LTUuMzR6IiBmaWxsPSIjZjhlZDliIj48L3BhdGg%2BDQoJPHBhdGggZD0ibTQ1LjMzMywxNDMuMjRjLTEuMzgzLDguODIzIDEuMDMxLDEzLjQ2Ni01LjMzMywyMS4zMzMtLjU5My0uNDEtMS4xOTItLjgwNi0xLjMzMywwLTIuMDE4LTIuNDMzIDIuMDEzLTMuNTM1IDEuMzMzLTkuMzMzIDIuNDQ3LjY1NCAyLjQyMy01Ljg1MiAyLjY2Ny03LjMzMyAyLjI0MS0uMjEgMS44MjgtMy4wNiAyLjY2Ni00LjY3eiIgZmlsbD0iI2Y4ZWQ5YiI%2BPC9wYXRoPg0KCTxwYXRoIGQ9Im01Mi42NjcsMTQ4LjU4Yy0uMTgyLDIuOTQ1LS45MzYsNS42MTItMS4zMzMsOC0uMjM2LDEuMDQ1LTEuMTc0LS41ODQtMS4zMzMuNjY3LTEuNjI1LS4xOTcgMS4wODgtOC41ODctMi42NjctOC42NjcgLjk2NC0yLjE3NiAxLjQ4OS0xLjY3OCA0LTEuMzMzLTEuMjM1LDIuMjQuMTcxLjA3IDEuMzMzLDEuMzN6IiBmaWxsPSIjZjhlZDliIj48L3BhdGg%2BDQoJPHBhdGggZD0ibTIyNCwxNDguNThjLTQuMjYxLDUuNTg4LTMuMjcsMTYuNzA5IDQuNjY3LDE4LjY2Ny0zLjkzNCwzLjY4OC02Ljc5OS02LjIxNy03LjMzNC01LjMzMy0uODMtNC42My0yLjc4LTEyLjQyIDIuNjYtMTMuMzR6IiBmaWxsPSIjZjhlZDliIj48L3BhdGg%2BDQoJPHBhdGggZD0ibTIyOS4zMywxNDkuMjRjMy42ODYsMi4wMDQgMi44MTcsMTIgNC42NjcsMTgtNC4yNi0zLjYtNy4xNy0xMi42OS00LjY3LTE4eiIgZmlsbD0iI2Y4ZWQ5YiI%2BPC9wYXRoPg0KCTxwYXRoIGQ9Im0zNiwxNjkuMjRjLjE2MS0xLjE3MyAxLjE0Ny0xLjUyIDIuNjY3LTEuMzMzLTIuNDc4LDEuODE0LTEuODY3LDMuMzc3LTMuMzMzLDUuMzMzLTEuMzI2LS40NTEuNjU5LTIuMjE1LS42NjctMi42NjctLjE5MS0uNzUgMy4xMzkuMDUgMS4zMzMtMS4zM3oiIGZpbGw9IiNmOGVkOWIiPjwvcGF0aD4NCgk8cGF0aCBkPSJtNjEuMzMzLDE2OS45MWMxLjE0NCw0LjY0My0xLjQ4NSw4LjYyOS0yLDExLjMzMy0xLjU5Nyw4LjM3OS0yLjE2NywxNi40MjMtNS4zMzMsMjUuMzMzaC0yYzIuMjQ2LDMuMzg2LTIuMzkzLDIuNjM5LTQuNjY3LDIgLjgzOC0yLjQzMS41My01LjYwOCAzLjMzMy04IDIuNTg3LTIuMjA2IDUuNDcxLTE3LjkzNCA2LTE5LjMzMyAxLjk2My01LjE4IDEuODAxLTguMzggNC42NjctMTEuMzN6IiBmaWxsPSIjZjhlZDliIj48L3BhdGg%2BDQoJPHBhdGggZD0ibTQyLjY2NywxNzIuNThjMy4yNjksMS45ODMgMi4wMzEsMTUuODUzLS42NjcsMTcuMzMzLTIuMDYxLDEuNzU3LTMuMzIyLjE5My00LjY2NywyLjY2Ny0xLjk1My0yLjY1IDIuMzU5LTQuNzMgNC42NjctNS4zMzMtMi4yMjUtNC4zNTggNC4zMy0xMC4xNzQtMi0xNCAuMTgxLTIuMzUgMi45NTIsMS4xOSAyLjY2Ny0uNjd6IiBmaWxsPSIjZjhlZDliIj48L3BhdGg%2BDQoJPHBhdGggZD0ibTMzLjMzMywxNzQuNThjLjIzNS0xLjA0NSAxLjE3My41ODMgMS4zMzMtLjY2Ny0uMzAxLDQuMDc0IDIuNzY3LDExLjAzMS0yLjY2NywxNC0uMjM0LDQuOTY5LTIuMjk4LDUuMDE4LTIsOC0zLjMzOS0zLjI4OSAyLjEyNS0xMC4xOTkgMC0xMi42NjcgMi40My0yLjkzIDQuODItNi44IDMuMzM0LTguNjZ6IiBmaWxsPSIjZjhlZDliIj48L3BhdGg%2BDQoJPHBhdGggZD0ibTIwOS4zMywxOTAuNThjMS4yNzctLjY2NCAyLjIzOCwzLjY4NCAyLjY2Nyw0LjY2NyAxLjcxLDMuOTE2IDUuMjQ2LDcuODYxIDMuMzMzLDEyLjY2Ny03LjUzLTIuMDktNC40OS0xMS41MS02LTE3LjM0eiIgZmlsbD0iI2Y4ZWQ5YiI%2BPC9wYXRoPg0KCTxwYXRoIGQ9Im0zMCwxOTkuOTFjLTIuNzU1LDUuNzYyLTIuNjcsMTQuODUxLS42NjcsMTkuMzMzLTQuMTcxLDEuODUzLjg5MSwxMS42NzktNCwxMS4zMzMgLjQ2NC03LjIzOS4wOC0xMy45NTYgMS4zMzMtMjEuMzMzIC40MjMtMi40OS0xLjY3Ni05LjEwOCA0LTEwLjY2Ny0uNDEuNTk0LS44MDYsMS4xOTIgMCwxLjMzNC0uMTI2Ljc2LS42NjguMzgtLjY2Ni4wMXoiIGZpbGw9IiNmOGVkOWIiPjwvcGF0aD4NCgk8cGF0aCBkPSJtMjMwLDIxMi41N2MtLjEwNy0uNzgxLTEuMjE2LS41NjItMi0uNjY2IDEuNTM0LTIuNTAzIDMuODk2LTQuNTIgNy4zMzMtMy4zMzQtMi4zMDcsMS4wMjctMy43NzcsMi44OS01LjMzMyw0LjY2Ny0uNzYtLjEzLS4zNy0uNjcgMC0uNjd6IiBmaWxsPSIjZjhlZDliIj48L3BhdGg%2BDQoJPHBhdGggZD0ibTI0MCwyMTEuOTFjMy4wMzEsMS41NzMuODk2LDExLjE2OSAxLjMzMywxNi42NjYtMi42NTctMS4zNzEtLjEyNy01LjAyNi0zLjMzMy03LjMzMyAuNDQxLTIuMjEgMS45MjgtMi44OTIuNjY3LTQgLjI5NS0uOTY5LjU4NS4wNjcgMS4zMzMsMC0xLjE5LTIuMzcuOTItNC4xNiAwLTUuMzR6IiBmaWxsPSIjZjhlZDliIj48L3BhdGg%2BDQoJPHBhdGggZD0ibTIyNi42NywyMjcuOTFjMS4zMjYtMy4yODQtMS4wNTItNS4zODMgMS4zMzMtOC42NjcgLjgwMiwxLjI0OS44MDIsMy40MTggMCw0LjY2NyAyLjAxNCw0LjIwMSA2Ljg3LDQuMDcyIDcuMzMzLDcuMzMzLTIuMTEsMS45Ni00Ljk4LTIuODktOC42Ni0zLjMzeiIgZmlsbD0iI2Y4ZWQ5YiI%2BPC9wYXRoPg0KCTxwYXRoIGQ9Im0yMDguNjcsMjI2LjU3Yy0uMDQ3LDIuOTEyLTIuNTUtMS44MTgtNi0xLjMzMyAyLjEwNi0yLjcyNyA0LjYyOCwxLjQ1OSA3LjMzMywwIDEuMDg4LDMuNDU3IDMuNjM0LDIuNDYzIDYsNS4zMzMtMS42MSwyLjU1LTUuMjctMi43My03LjMzLTR6IiBmaWxsPSIjZjhlZDliIj48L3BhdGg%2BDQoJPHBhdGggZD0ibTM0LjY2NywyNjguNTdjLjY2My41MDkgMS4xNDUsMy4xNi0yLDIuNjY3LTQuNjMtNy4xMDMtNS43MjgtMjYuMDAyLTcuMzMzLTM1LjMzMyAuOTIxLTEuMDc5IDIuMzU5LTEuNjQyIDItNCAuNTkzLjQwOSAxLjE5Mi44MDYgMS4zMzMsMCAuNTc3LDUuNDYyLTEuNTcsOS4wNCAxLjMzMywxNi42NjYgNS45MiwyLjU5Ni0uNDg5LDE3LjA2NiA0LDIwLjY2NyAuNTY3LjExLjYyOS0uMjcuNjY3LS42OHoiIGZpbGw9IiNmOGVkOWIiPjwvcGF0aD4NCgk8cGF0aCBkPSJtNDEuMzMzLDI2NC41N2MtLjgyLS43NDQtMS4zNjktLjU4LTEuMzMzLjY2Ny00Ljk1OS40MjMtMi42NTMtMS4yNDYtNS4zMzMtMS4zMzMgMS4yMTQtMS44OTcgMy44OTYtMi4zMjYgNS4zMzMtNC0yLjYzOS0xMS43NjkgMS44MjUtMTYuNzY5LTcuMzMzLTIwLTEuNDQ1LjExMi0uMzAyLTIuMzY1LS42NjctMy4zMzQgNS41MzItMi4wNzcgNi43NzEsMS41MTkgOCw0LjY2NyAuNzA4LDEuODEyIDEuMzEyLDIuNjE5IDEuMzMzLDItLjIwNiw1Ljk2IDEuOTk1LDEzLjczIDAsMjEuMzJ6IiBmaWxsPSIjZjhlZDliIj48L3BhdGg%2BDQoJPHBhdGggZD0ibTIzOCwyMzkuOTFjLjU5NC40MDkgMS4xOTIuODA2IDEuMzMzLDAgMi4wMzIuODE0LS45NzUsMi41NDQuNjY3LDMuMzMzIDEuNjUsMS4yLTMuMDMtLjkyLTItMy4zM3oiIGZpbGw9IiNmOGVkOWIiPjwvcGF0aD4NCgk8cGF0aCBkPSJtMTY2LDI0NC41N2MtMS4xMzguNjQtMS40NjEsMi4wOTUtMiwzLjMzNCAyLjU0MywyLjg4NCAxLjM1NCwyLjkwNCAyLDcuMzMzLTEuNTE3LDIuNTIzLjYxNC00LjA5My0yLTIuNjY3IC42MTItMy40NTYtMi41NjgtNi43NTktNS4zMzMtNy4zMzMgMS45NjItMi42NjcgNC40MjEuODk2IDUuMzMzLTIgLjU5NC40MSAxLjE5Mi44MDYgMS4zMzMsMCAxLjA1LjI1LS41OCwxLjE5LjY3LDEuMzR6IiBmaWxsPSIjZjhlZDliIj48L3BhdGg%2BDQoJPHBhdGggZD0ibTIyNCwyNDcuMjRjMy43MjItMy41ODEgNi4yMDctMi43NzYgMTEuMzMzLTEuMzMzLS45MSwyLjk1NC0yLjg1NywxLjE0OC00LjY2NiwwLTQuMjY3LDEuNTItNi40NjEsNS4zOTUtNCw4LjY2Ni00LjE0LDEuOTEtMS4yNjQsMTAuNTMxIDIsMTIuNjY3LTktMS40Ni01LjA2LTkuNTEtNC42Ni0yMC4wMXoiIGZpbGw9IiNmOGVkOWIiPjwvcGF0aD4NCgk8cGF0aCBkPSJtMjM2LjY3LDI2OS4yNGMtLjU5NC0uNDEtMS4xOTItLjgwNi0xLjMzNCwwIDEuMDYtNy4wMzktLjY2My0xMi41MTQgMi42NjctMTkuMzMzIDQuMzcsMy4zNS0yLjM2LDE0LjY4LTEuMzQsMTkuMzN6IiBmaWxsPSIjZjhlZDliIj48L3BhdGg%2BDQoJPHBhdGggZD0ibTIzNC42NywyNjkuOTFjMS4zMjUuNDUxLS42NTksMi4yMTUuNjY2LDIuNjY2LTEuMzU1LDEuNTU2LTIuODI2LDMuMzkzLTQsMy4zMzQtLjU2Ni4xMjItLjYyOS0uMjYxLS42NjYtLjY2N3YtMS4zMzNjLjU2Ni0uMTIzLjYyOS4yNi42NjYuNjY2IC43NTctLjEyNi4zNy0uNjY4IDAtLjY2NiAxLjMtMi4xMiAzLjctMS42NCAzLjMzLTR6IiBmaWxsPSIjZjhlZDliIj48L3BhdGg%2BDQoJPHBhdGggZD0ibTQyLjY2NywyODQuNTdjNi4yODMtLjk1OSA1LjQwNCw0LjkxMSA2LjY2Nyw4LjY2NyAuNTA2LDEuNTA3IDUuMjY1LDQuMjMzIDMuMzMzLDYtMy45NTItLjI5OS00Ljc1NC0zLjkzOC04LTgtMi4yODItMi44NTUtMTEuMTQzLTEzLjEyNC05LjMzMy0xOS4zMzMgLjU5My41MTggMS41MDUuNzE3IDIuNjY3LjY2Ni0yLjAwNCw0Ljk3IDUuMDk0LDcuOTcgNC42NjYsMTEuOTl6IiBmaWxsPSIjZjhlZDliIj48L3BhdGg%2BDQoJPHBhdGggZD0ibTEwNC42NywyOTkuOTFjLjkzNC0uMjM2LjA1OC0xLjE3NC0uNjY3LTEuMzM0IDIuMTk2LTcuOTIzIDEzLjc4MS0xOS4zMjYgMC0yNCAyLjkyOC0yLjQ2MSA4LjUxMywzLjc4NCAxMy4zMzMsNS4zMzQtMy4wOTEtLjc2Mi0yLjk5MSwyLjUwOS01LjMzMywzLjMzMy0zLjM4NCw4Ljk1NS01LjQ2MiwxNy4yNDMtMTAuNjY3LDIzLjMzMyAxLjUwMi0zLjQ3NS44MzEtNi4yMTQgMy4zMzMtNi0uNzktLjc2LS4yNS0xLjY5LjAxLS42NnoiIGZpbGw9IiNmOGVkOWIiPjwvcGF0aD4NCgk8cGF0aCBkPSJtMjIzLjMzLDI4MC41N2MtMS4wNjUuMjk1LTMuNzYyLTMuMzcxLTQtNC42NjZoLTMuMzMzYy0yLjAyNCwyLjk3Ny01LjA3LDMuMzI4LTQuNjY3LDcuMzMzLTQuNzE5LTMuMTQgMi40NzItNy41OTMgNC42NjctMTAgMy44Ny43OSA4LjA1LDUuOTEgNy4zMyw3LjM0eiIgZmlsbD0iI2Y4ZWQ5YiI%2BPC9wYXRoPg0KCTxwYXRoIGQ9Im0yMjguNjcsMjg1LjI0Yy00LjI0NiwxLjMwMi00LjA4LDkuMjg4LTEwLDEyIC45NTgsMS4xNzMuNjExLDEuNTItMS4zMzQsMS4zMzMgLjU2OCwyLjU5Ny01LjUxNiw5LjE1NS04LDYuNjY3IDQuMDAxLTUuMTM5IDcuMzI1LTQuNjI5IDYuNjY3LTEyLjY2NyAyLjQwNC0xLjMxOCA0Ljc1MS0yLjM1NyA2LTIgNC44MDgtMy44NjYgNC42NDctNy40NCA2LjY2Ny0xMi42NjYgMy45MSw0LjIxLTEuNjQsMy4yNi0uMDEsNy4zNHoiIGZpbGw9IiNmOGVkOWIiPjwvcGF0aD4NCgk8cGF0aCBkPSJtMjA4LDI5Ny4yNGMxLjA3LTIuNzk1LS43ODItNC43OTItMS4zMzMtOC42NjdoMmMtLjEyOSwyLjMwOSAyLjIzOSw2LjgxMiAyLjY2Niw5LjMzNC0uNjIsMS44Mi0xLjI1LTEuNzctMy4zNC0uNjZ6IiBmaWxsPSIjZjhlZDliIj48L3BhdGg%2BDQoJPHBhdGggZD0ibTY4LjY2NywyOTEuOTFjLS42MjQsMS40MTQtNC40ODEsMy4wMjItMy4zMzMsNC0uMjM2LDEuMDQ1LTEuMTc0LS41ODQtMS4zMzMuNjY2LS45NzktNS43NjQgNC4zMzEtNi45NDcgMTAuNjY3LTUuMzMzLS4xMDguNzc1LjE0NywxLjE4Ny42NjcsMS4zMzMtMS4zMTUsMy4xLTMuNzM1LTEuMjktNi42NjgtLjY3eiIgZmlsbD0iI2Y4ZWQ5YiI%2BPC9wYXRoPg0KCTxwYXRoIGQ9Im03Mi42NjcsMzAzLjkxYzIuNzU0LDMuMzk2IDUuNDM2LTcuNjcgMi42NjctMTAuNjY3IDUuMDAzLDIuNDk1IDMuMTY5LDYuMTcyIDQsOC42NjctMi4yMjQuODA4LTIuOTk3LDYuNjA3LTgsNCAuMjM1LS44OCAxLjE3My0xLjA1IDEuMzMzLTJ6IiBmaWxsPSIjZjhlZDliIj48L3BhdGg%2BDQoJPHBhdGggZD0ibTU0LjY2NywzMDMuMjRjLTEuNDgzLS4yOC0uNTIyLTMuNTM3IDAtNCAzLjM2OSw1Ljc3NiA5LjQ1Myw3LjY1OSAxMS4zMzMsMTMuMzMzLTMuMjA5LS41OC04LjQ2NC04LjQxLTExLjMzMy05LjMzeiIgZmlsbD0iI2Y4ZWQ5YiI%2BPC9wYXRoPg0KCTxwYXRoIGQ9Im0xOTcuMzMsMjk5LjkxYy4xNjgtMS4xNTggMy41MzIuMTkgNC0uNjY3LS43MDQsMi4xMzMgNC4xMjQsNS4wNzIgMCw2IDEuMzQtMy4yNi0yLjAyLTQuNDgtNC01LjMzeiIgZmlsbD0iI2Y4ZWQ5YiI%2BPC9wYXRoPg0KCTxwYXRoIGQ9Im04OC42NjcsMzEwLjU3YzEuNDA4LS41OTIgMS45NzEtMi4wMjkgNC0yIC4yOTUuNTk0LjU4NSwxLjE5MiAxLjMzMywxLjMzNC0yLjEwMiwxLjc5Ny0xLjg1Niw2LjI0OC01LjMzMyw1LjMzMyAxLjU0My0xLjQ3LS4yMjctMi41OSAwLTQuNjZ6IiBmaWxsPSIjZjhlZDliIj48L3BhdGg%2BDQoJPHBhdGggZD0ibTE5My4zMywzMTMuOTFjNC4wOTMtLjExMiA2LjgzNC0yLjM0MSAxMi00LTMuMjc2LDUuMTY0LTEwLjk3NSw4LjczNy0xNi42NjYsMTEuMzMzLS42OS0yLjA1IDUuMzgtMy4wNSA0LjY3LTcuMzN6IiBmaWxsPSIjZjhlZDliIj48L3BhdGg%2BDQoJPHBhdGggZD0ibTExMiwzMTMuMjRjLjYwMy0uNzUgMS40OTEuMDQyIDIuNjY3LTEuMzMzIDMuMDk5LDEuMTM2IDYuMTcxLDUuODEyIDkuMzMzLDQuNjY2IC45NDkuODE1IDEuNTE1LDIuNTQ1LjY2NywzLjMzNC01LjEyNS0yLjg4OC0xMy4zMzgtNi41MDUtMTMuMzMzLjY2Ni0uNDUyLDEuMzI2LTIuMjE1LS42NTktMi42NjcuNjY3LTEuNDc2LS42NzIgMS42NDMtMi4yOTUuNjY3LTQuNjY3IDIuMzIuNzEgMy4yNC0zLjM1IDIuNjYtMy4zNHoiIGZpbGw9IiNmOGVkOWIiPjwvcGF0aD4NCgk8cGF0aCBkPSJtMTY1LjMzLDMxMi41N2MxLjA1LjIwOC0uNjAzLDQuMTA0IDEuMzM0LDIuNjY3IC44MjUsMS41NTIuMDg3LDQuMTQ2LTEuMzM0LDQuNjY3LS4xMjIuNTY2LjI2MS42MjkuNjY3LjY2Ni0yLjcxNy41ODYtMi4wMTktNS4yMS0yLTggLjU5LjQgMS4xOS44IDEuMzMtLjAxeiIgZmlsbD0iI2Y4ZWQ5YiI%2BPC9wYXRoPg0KCTxwYXRoIGQ9Im0xNTkuMzMsMzEzLjI0Yy41MzUsMi44NjIuNTY3LDYuNzM4LTEuMzMzLDEwLjY2Ny0uNzctMi4wNy0uNDEtMTAuOTYgMS4zMy0xMC42N3oiIGZpbGw9IiNmOGVkOWIiPjwvcGF0aD4NCgk8cGF0aCBkPSJtMTAwLjY3LDMyNi41N2MtMy42MDgsNC4xMy0xMS44MzktMi4wMi0xNi42Ny0xLjMzdi0yYy0yLjExNSwxLjQwOS00Ljg3My0uOTU0LTcuMzMzLTIuNjY3IDEwLjYxNy0yLjcxIDEzLjIzMyw3Ljc5IDI0LjAwMyw2eiIgZmlsbD0iI2Y4ZWQ5YiI%2BPC9wYXRoPg0KCTxwYXRoIGQ9Im0xNzkuMzMsMzIzLjI0YzMuNjEsMi4wODctOC4wMzYsNS4zMDktNi42NjYsNS4zMzMtLjk0NSwxLjk0NC02LjYyLS44NDItNi42NjcsMiAuMTk5LTIuNjczLTMuNTM4LDIuMDE1LTgsLjY2NyA2LjczMi01LjIzMiA4LjQzMy02LjA0OSAxOS4zMzMtNS4zMzMgLjc1LTIuMjkgMS42OC0uNzEgMi4wMS0yLjY3eiIgZmlsbD0iI2Y4ZWQ5YiI%2BPC9wYXRoPg0KCTxwYXRoIGQ9Im0xMjcuMzMsMzMxLjI0Yy0uMTk2LDEuMzU5LTEuODA0LDEuMzA4LTIsMi42NjctMTEuNTc0LTEuMjQ4LTEyLjcxLTEuNDIyLTIwLjY2Ny0zLjMzNC0uNTcyLTMuOTYgMi4wOC0uNTI0IDMuMzMzLS42NjYgMi44My0uMzIxIDYuODItMi44NzYgOS4zMzMtMi42NjcgMy42LjMgNS41Niw0LjggMTAuMDEsNHoiIGZpbGw9IiNmOGVkOWIiPjwvcGF0aD4NCgk8cGF0aCBkPSJtMTUzLjMzLDMyOS45MXYyLjY2NmMtNy43NDEsMS42MDItMTMuMjU2LDQuMTQ4LTIxLjMzMy42NjcgNy42MS03LjkzIDE0LjAzLDMuMDYgMjEuMzMtMy4zNHoiIGZpbGw9IiNmOGVkOWIiPjwvcGF0aD4NCgk8cGF0aCBkPSJtNTIsMzMzLjkxYzEuMDQ1LjIzNS0uNTgzLDEuMTczLjY2NywxLjMzMy0zLjgxMi44MjctOC41ODcsMy4xMzktMTIuNjY3LDQuNjY3IDIuMjkxLTUuMzQgOS4wNjYtMi41NSAxMi02eiIgZmlsbD0iI2Y4ZWQ5YiI%2BPC9wYXRoPg0KCTxwYXRoIGQ9Im00OCwzNTEuMjRjLS41OTMtLjQxLTEuMTkyLS44MDYtMS4zMzMsMC0yLjQwNS0zLjkxNiAzLjUxLTEuMzg1IDIuNjY3LTUuMzMzIDIuNTExLS4xMjQgMy4wMzYtMS4xOTYgNC0xLjMzNCAuMzYyLDEuNzEtNS42ODksMi43My01LjMzNCw2LjY2eiIgZmlsbD0iI2Y4ZWQ5YiI%2BPC9wYXRoPg0KCTxwYXRoIGQ9Im02NC42NjcsMzQ3LjI0Yy0uNTA5LDEuOTM2LTMuMTYsMS43MjktMi42NjcsNC42NjctLjg3NS0uMjM1LTEuMDQ4LTEuMTc0LTItMS4zMzQgMi40NDItLjIzIDEuMzY4LTMuOTcgNC42NjctMy4zNHoiIGZpbGw9IiNmOGVkOWIiPjwvcGF0aD4NCjwvZz4NCjwvc3ZnPg0K'%20alt%3D'turtle-46749.svg'%2F%3E"
+    "%3Cimg%20src%3D'data%3Aimage%2Fpng%3Bbase64%2CiVBORw0KGgoAAAANSUhEUgAAACwAAABACAYAAABhspUgAAAABmJLR0QA%2FwD%2FAP%2BgvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3wcKChwIFxpolwAAAB1pVFh0Q29tbWVudAAAAAAAQ3JlYXRlZCB3aXRoIEdJTVBkLmUHAAAVMElEQVRo3s2aeWzd13XnP%2Fe3vp2Pi7iTIrVQ3EQt1q5ot2TLiiLbihMD7aRxO02TSYtpMcUUE2QWoCkm7QwazIok03ScOh57XCd2nESKtVmyLGulZNmSKYrivm9vX3%2Fr%2FEGKliyJcicu6gs8PBL4vfv73nu%2B55zvOffCpzAOPKEB8MRu1f%2FFA%2FLfH%2FyC8tJjuzwBgCf3KXyaQ%2F5NJ9iyKcyRE2n27fHU%2Bfz2v1dV56uK4rYoilu6pF6%2B9vNDVuzTBCz9phOcfncGj89n%2Fo2u2d%2BUJNcVwhW6Zv9zVRX%2FDmD3ds9nBzDAprVVRYpitwK4LsJ1Z80nm1sBjp7MfTYAr2irB%2BDqB8PS6tUbsB2orq6ltmYhjgNNTa0lWzeyGmDD%2BkX%2F9ICvvt8LwPatPKcqcrEkIBZLMD45gSQgkYgGios5CHDufM9nhRJ%2FJQIBaeXlK%2BcVy4JcLgWug%2B3A2NiwpOtSI1wVnxkOB%2Fz%2FSQfhz%2BUs9j7%2BBLmcRSqV5wv7n0TXPTiOU7JxzcbCzwzgVHoi7zhOOhDwsWv7NiwLbBuWLV1CU2Mztk20u29x8tMC%2FClEdeHaNrn6ukVcam9H10HTdN4%2BfRqfz4%2FtkJ6Y%2BsD8TOzwmkfKAMjlGVi5YpXz%2BhuvIwRomsKF9vMIScJ1SPyTJ449O70AXGofn5lE0t995dWXMqZlzNAklQYX3n33lA2i935zbN8S%2BP%2Bz553%2FPLo9wLGTKQC%2B%2BXX4H9%2B%2F%2B%2BFHd%2Fg49lYGQDy1v2B7UaG6K5VO77Ato3J5a2NNUWGB3NnVRWFhEYos0HUP0VgqOjIyfs00xZgkiwGPHrqWyaaPXv0gMtbRif3sU%2FDya3e%2FZ%2F%2FjGpmcn%2BMno%2FMD%2FvjYu9uz0OOxHrEtO9LVU3qmo3PcfGQF3o0bar9dXbXgWwsWFNF1q4u%2Bvj4qK8oJFYSZmpqkpKQEj8eLZRgYpsnE5ARlpWWAYPHiJdzs6jEj0cy%2F%2FZ8%2F7P9LgMpyvKtXqosFpvSLX3MdsB%2B6w4%2FtFI8HAmKfogjdNMVFSXJqJcnZ7%2FH6VmiqkkokUkevdzjf2rypfteiuuL%2FPjU9SiwWQ9N0XNchnc4SDhdgGDni8QSSJFBVjVwujySB48CSJUuZnBwnHA5jGDb5PD%2Fu7h5O1NUVN5hmvsHn9cqxePq9SNT43qEj1smnPi9vV1T7j21beTcS8b128p1El%2FjCXk9AUYzXFi6s2ppKxdV0OgFg6LpHKS5aII%2BMDhIMhkgmEyxd2pyIRKa1ZDLmqVu4iLVr1%2FHmkSOk0wkMI4eqqrS2rOBS%2B3lUVWPlytWcO3cORQHXhfr6paRTSZY1NHHm7CmefuoZTMNwf3X4FwJACAiFiojHI7lsxjkuye6q4uKSymQyahmmPXGrx7tBMS3Xj1AKvR5Ni8XyCAGSJOmGkWNkdBAhIJFI0LB0GdVVlaHI9ATpdJ5wuJBDh39JPB4BQNU8VFZWg5AoLioBIejt7UNRQFFUZFmit7eLYLCAyalxHMehsaGBuoULhRASb%2FzyZ7iuy%2FT0BELg0XT2AcRikwiBosgU11YZL0u6xl8H%2FO7NkbHRiM8XBCAUCqPrOiCwLboLi4oIBgsYHBqivLyK4uIChkdGcF2X3Y%2FuJRgMU7%2BwjrHRYc6fP8vTTz9DPp9ncnKMYDDM4sVNPPvMb2GakM%2FnGBoepKCgEF3z8MpPX2dweBhd97m5HMccR2q%2Fi7MCXFdg22IgmfZ9W16y2DuRznLZsfO%2BfD69yHHk4UzG%2BIFhONdtW%2FyVLBe84fMqvxXw%2BamsqsKyHHTdQyQyBbhomkYmm6a3rw%2FLNnFdUDWNkZFBHMcmm83h8%2BqMjY8RjU4hyzKyrFJdVcP45BSqKuP3eekf6Kehcd0PX3xh4BsL62TNtiXZtpVxxxFlpil9R5Lc%2F%2BI48ogSj%2FvOBQLp50xL%2Fq%2BKwp84juREolJa05B%2BfSxvfPvPag8FAzLXrr%2BPcusG27ft5vLls4hZdx0ZHSbgDyJJ4wgxsyPpVBp3VhQLAZruo7unC0kCyzIwTYOuWx0MjwyTz6cRQmAYppgc7%2FlaQxM%2FS2e8%2F0ZRTS%2BuLFTF0pIpOX7khGVB5u6wtn%2Bvxi8OGx9lspVK%2FTf%2BYHfP0FA%2F45OjpFNpqqpq6e29hSTdNplERUU1ExOjWNZMBlYUbfZvF8eBhoZmeno6cZz7RytJKFTX1BOPTVNd3fDfvvUfzv3Jg0LbXZnuNtjtW3yzAr30L8rLSrAdG1wAl7GxobndnakwHEZGBubAui6UlJQiyzNTe70eXNdmdoL7Dtux8Hg8eL0eFpQWL123Gv8%2FKDWfPJ0BoLQ0sO%2BdM%2B%2BgqirJZALLMsnlch8DDMXFpUjSTD3rOBAqCCNJEq4L4XAhyUQCx3EeCNh1IR6PYDvw9tsnNtbVKv7HH%2FV%2BMsDhcGhmlzezb2pqzN%2FX30tXV8ecOcV9cmM8HqOmpg7bngHs0bS5HVUUnUw2jevOI2gkmJgYYXp6DMvKFuQMsfnXx7KfrMzP5fIA%2FNmfPvaXhmk079m9hyvvfXAHZ%2B9%2BvrCwiA3rNqNpGkKotLa0sGvHDqLxLJqmU1VZSXNzK4lEgkwmPS81fN4Ai%2BoXk81mH796Lf%2FdT6yHC0NUtTQva26%2FfJZr1z9AUaC6qhpFVRkfHyOZzOK6UFFRwr%2F85h%2Fz6muv0n75PWQZJieHiMWmudnVgeNAX18vjgvf%2FfPvcOnyJX51%2BBeYpj0bX%2B%2FYORk03UPA76e5aUmorDxeMD7WHf9EgHfvCjW9e%2B7dyqbGJs5fOI%2BmSSxvaaOz6ybLlrVQWV5ONpthYW0dNzo76Lx5A1WdLZkCQTweL7IsA%2FZsKIOXXnmRcEEhdQsXz4DFpSAURlEUhIALF8%2BSy2UZGRunoryS0qJe%2F%2FgY8YeqtfVr8D6ysvYHufzkP3McC8Mw51KrYeRRFAVd8%2FLc7%2FwuP%2F7J82QyKWz7owgUChZQVFzCwEDvPY7mOLBy5SoalzYyNT3NtQ%2FfJxqNUFFRzcBAD0JI%2BP0BDCPP4JC66djJ1NmHcvixXQsW2k72Ry0tbYyODiOES1NTK7lchlwuh%2BM45PMGnV03aW1po6e3b47fAF6%2FH1yJZOreQsPn8%2BE4gnfOnKG3r5tMJoXj2MRi0VnfcLEsE9u2kSRH6bjpvP7QKKFp3i%2BvbGsGLDRNx%2B%2F3oyoqiUTiLq%2BenIxSVVmFpkp3uZFpmOSN3D3O5Tiwom01Qjgoygxnbzvw7W%2FXhfLyGgKBELrOVz5RWHMcY08oVEBx0QIMI4em6Xi9HkzT%2FtjC4NTpExQVl%2BLeZXmXcLgQSZLuAVxSsoC%2BvqH7hEYx54C2bZNOp2lubjS3bmLDAwHv3DbTOrCs%2FLb33n%2BPU28fw3Fs%2FP7gnEb4uIqamppAU3UcZ6a0N03wev0UFhYCAseZAWqasGrlKk68dXTOOe9cyKJFS9E9HlwXQqEQiiITDBbKukbbA6PEiVNRNq4LLAoGNaamJ7EtCyFg04ZNnDt%2F9h73dF3weDxs2riR7dt20NvXiySDJARejxdFUWltfQTDMEgk4qxfu55L7VfQ9XvNnM9lePrAQZ5%2F4UWSyRi67uVGxzV7KqKdBuPBYW1BSfr36%2BtWoqoq09MTBIJh6mprefnvX0K6A7BtQ01VJatXr%2Bel%2F%2Fsyts1cVREOB6ioqMKyDK5cuYAQM8%2Bfeuc01dVljI2NI8t3Z7mhkWECgQC4MD4%2BSihUSCQSEeWl3jKg44EcVmRptWGaVJSXEwqFyaSTfP9%2FfR%2FXced21bLA6%2FOwZcsOLlw6iyyDxzMDWFVB0zRyOQPXdZHlGUCqCh0d19m1cw9%2Bn%2BfeNO26%2FO%2Fnf4Sug88XRFE1AoGAHCrw7HiI0wmrfmENo2Ojs2k6Sywew3XBMCAQCNG4bBmbNmzh2Ik3mZgY42O%2BhSTJGEZuTg%2FfmckuXjxPS0sbljWz%2BNuf24pNiJmKZHJijNaW5VJZqX%2F1QzKdMzIxOUVNTR3d3Z1zmetzm7cRDATo7u0mGpnGNM0HihlJCFzHxXXvdlQhoOvWTZa3rmDNmrVEowlc1yUWm0SWZVKpGKZpUVlZw9TUGKl0CsPIyfMCNi0ln0gkOHv%2BMj7vjDkrKmo4%2Fc5JotHUXOy80dnD%2BnVr8Hn9DAz2z%2B2y6zIrK%2B%2Ff7igsLERRVT744DKWZc%2F9pqqqisLCxXR1dWKaORqXtXDlvUsgPOa8lJAlm4rKSvY9to3SBSUIATdvfkg6nULXmQv4ugeuXb9CVfVC8vkZujgOFBWVUF5eyfLW5SiKgmUzJzktCxoblzMyPIBlzWgMSZqZb2RkmN7eThQFhoaGZ8CCk8vm2ufdYUmysUyT%2FsEBFi1qIBKdRpLc%2B3ZfLMvm6tXL%2FNE3v0FPXx%2BZTJq%2B3m5M06SkuITmlhXggGGZRCOTeDw%2B2tvfxTSt%2B%2FD%2BIwt5vTqWZVNcXOpcuz51bd6wBqBrKtPRKLW1dQgh7nGeO%2BNwRUUVL778AslEarafAZIMZ86eoX%2Bgf05C6rrC2rWb6enpRpmnwRsKhWhbvppYLMrNrg9FMOBWz0sJw1QG4okYrU0tyPL8rWMhYEFpKYl46i5tkM8bZHPZuZAmy5DPWwwNDd4Vf%2B83VFVlZGSIi5eu8tSTX3ajcWtiXsATk%2FpPbnX3WeXlFfh8flzXvW80yOVg1aq1DA%2F13QMik0mTyWTuWZzj2BQXL5i3VAKBJMsoKiQSMRyLzLyAL7SnR1Jp4%2Ft9%2Ff0cPXYIXffg9we5U9Y6Dqxfu4r9T%2Byjv3%2FwHj7KsoqiqPdwdHCwnxVtK8jleCDoWCzK9NQUHl3h8pXr6bfP8sa8gE%2B%2BDpm08%2BfRaHJE03Sqq2vZtnU7RUVFcy9pbmrm67%2F%2FNUZHR6mvX4KmeggEQrMVBgSDQUKh0Nzziqygqioej5enDxzg2S8dpLy88h5%2FKCwspqCgkOnINK2tK%2Bns7P3PAI%2BsKn2wgL%2FwfhUnTo3nDz7ZVhYq8G%2B6evUaQ0N9LFhQNiuyBbW1i%2FnR83%2FDmbMXSaUiOK7FurUbUVWdZDJJVWU1Pq8PBCwoKWPr5q0EggVoHg9%2F98LfEYlGeOrAQa5dex%2FbtnFd8Pn8tLa0kUymCIfD9PWNnHn15%2Fmv%2FvYz8Obx9IMBT04mARyPOqRv3rj%2ByaVLFqmTU5OzYig2W9JPYxgGmsqcsJGExNT0BJZl09jQRDAYYGJiAk1TKSkq4fJ7FxkeHkaWIZFIMzQySOmCCqampxACvB4vXbe6iMUThAsXIMneZy5cig6Xl%2Fvp7jUffpp%2Fo8u5KdwbbV%2F64sHWw28eIRGPsW7dBqqrFxKJTGOa%2Bbm06%2Ff78PsDRCKTWJZJNBZjdGyU6elJ4vEoqXQWx7HJ57NzfM6k0yQSMVwcHAeaW9qYnBzlK7%2F9VSYmo68ff6vjB%2Bse0cxDR3IP70tsXFfA0HCeDzt53bE7t%2B7YtrW2p%2FeWiMcj9Pb2sGbNeoaG%2BucAh8NFyLIyV5e5Lti2hW1buC4UFIRxXXe2J3GH88gSQkiAS0GoACEUqiproj958ei%2FOt%2FOzc4ue%2FZcxU9Pn%2FlgwEPDebZu1ugftJ329zI%2FDvqnalauaFk9MjqEz%2BejqqoKRdHIZDLYtoWiaCQSM8JFCPB4fMiyQi43YwVVVbFth2z2o06OZcHOnXsYHx8hHC5meHiQz23ewis%2F%2FVna61HPr2gVoaZlSs2HnbuHe%2Fo63IdSon%2FQZtvmQvoHcyxZREBIxsHi4nIsy2R4eBCBYMeOR7lx40NyuRymZVFdVUMkkqCoKIwkCQoKCshmM2QyafJ5A0VRKS4unqkw8iaVFZX09XVTVlZJNpuh8%2BaHKAo%2BVXUfkyT3y5LkPNu8rHdrwxKVxfWejq5u05n3nM51c7NB36icmhpncLCHFW0rSabSDA2PcubM20iSTGNjM0sWLWH1ytXs3LmTsrIK9u39AksWN7B58w7yeaiprePzT%2BwnkUhRX78IWYZL7ef4vee%2BRiaTIpO5s5%2FseoVwCyTJLXQcpnJ5uV%2BSHOmBjZRd2zwcPzUDdtvnvDXlpflORXG8t0uj2tqF7sYNm93jJ45I6XQSTdNR1RlaGIbFovrFSLJMV9dNgkE%2FRUXFGIZBJpPBcUxs2yWfzyWLiqoyPT3Dr%2Fj8YpmuuXvu24a1hZHJqN%2FJZrXvHj2ZMu9Lid5%2Ba%2FbiESt8Pus%2F6rrbdmfGikTi493dI3%2Fb1NSclSTNjEajrs%2Fn8X1u0xaqKisZmxhDUWSqKssQQpBIxMlls7S2tNHQ0IRhiA8iEefA374w%2FqddPRxuXiaHZJl99%2BuKGob6Q8OUj2iaNX7zlm08sLf2%2BcdZU1FR%2FLrf769KJKKk08m5qKAowuztTf%2F1C%2F%2FndGTvHqrChSWlBQUVXxqfiGxRFbnc6%2FWX5bJpaqprMUxIJs0LPl%2Fgje7unsX9g5O3EnHnxZNn6L%2F9rnRWvCbL4oAQYo%2BiOHNlk2nKxy2btO1w%2BdARI%2FlASjyxRw%2F4fcbLwaB3n2UZ2Lb1cTP96uWffmU%2F%2FHjOex9ZiarryCXFytfDBc730hn5kMdb%2BRepZCJrWdHOy%2B3kV65CmZwKW5euxOyZU1aNw0dntO4zT8r%2BXF4u0nXnVY9urctmlVv5vNJimG6tIlvZQ0ft4QdGieXNosJ1pf2um7cVRS0pLashn08jyxqOYzE6XvxU38DZyR1bPPQNzCxmdAxncBhrcZ1X03XjOZDeSaczP3jjUGq4qrLYvHYj697qwR4Zy80t8lbPR50kvzdovnU6kygsCrzgOuJ6LKr%2B66Mns5nuXjvS1eMm9z4qc6vHvb%2BAj8T8rt%2Bb%2FZ4kid8rKw03Dg32EQz4Ma08ti2NeT1ZC%2BCt0%2FdmISFJHbYjEMLRZWnmkOPk6emHntBfvJJg7x4Ph48k8sDLAOsfCXK%2BfYYJh4%2FZ91drjY31nDwdH%2FjVkTXHhZDd4dHxLlWFTDaNZVlks8qRw0czN%2B%2F30vVra%2FD5MmnXFb2uS7HrOv%2Bgqw2HP5aGb4OdV17euNE7ew3h%2FYJYQnvespTVuZw6HY15dscT2mPAvwDYsEa7Z6LzFwfJpL2m60jHQVRLsviNbx1%2BovHo9rsvXjzzlHxr7mLHLu%2B8v11cVy6%2BeED5w2cPCvdLT4uSndv8nzq%2Be8x2%2B4LH7ZHNqH%2FQtKzAD3DkeHbeybr7xlwh3A7XlchmtcITp9L%2F%2BIDvHE%2Fu0%2Fnlm7njHZ3x9JpVwU94y0q9IUlOnxBs%2FcdgwLw8u9H1kXeOjBmfaMJbPVayYYkaVhS77cMb7s8%2FbcD%2FD%2FBf0Fk6gIDSAAAAAElFTkSuQmCC'%20alt%3D'turtle.png'%2F%3E"
   ]
 }</div></div>
 <br>
