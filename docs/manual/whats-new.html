@@ -9,7 +9,7 @@
 <link rel="shortcut icon" href="../../favicon.ico" />
 </head>
 <body>
-<h2>Recent changes to ToonTalk</h2>
+<h2>Major changes to ToonTalk</h2>
 <p>
 <a href='../../index.html' title='Click to go back to ToonTalk.'>ToonTalk</a> is changing all the time.
 For the full gory details visit <a href="https://github.com/ToonTalk/ToonTalk/commits/master">the list of changes to the implementation</a>.
@@ -17,93 +17,108 @@ For the full gory details visit <a href="https://github.com/ToonTalk/ToonTalk/co
 <h2>Highlights of recent changes</h2>
 <ul>
 <li>
-<b>Function birds for boxes</b>.</br>
+<b style="color: brown">General support for robots to use widgets on the backside</b>.</br>
+Robots can now be trained to use any number of the widgets on the back of what they are working on.
+<i>Released 12 July.</i>
+</li>
+<li>
+<b style="color: brown">Widget interfaces simplified</b>.</br>
+By arranging that many features are visible only if the user clicks on the 'advanced settings' button (<b>></b>).
+<i>Released 12 July.</i>
+</li>
+<li>
+<b style="color: brown">Watched robots now run as fast they as they can when the browser window is minimized or the brower tab is hidden</b>.</br>
+And when the window is restored they resume animating their execution.
+<i>Released 12 July.</i>
+</li>
+<li>
+<b style="color: brown">Function birds for boxes</b>.</br>
 <a href='function-birds.html#box_functions'>Function birds</a> added for accessing the contents of box holes,
 determining how many holes a box has, updating boxes, and spliting and merging boxes.
 <i>Released 8 June.</i>
 </li>
 <li>
-<b>Video elements can be paused and resumed</b>.</br>
+<b style="color: brown">Video elements can be paused and resumed</b>.</br>
 <i>Released 8 June.</i>
 </li>
 <li>
-<b>Audio elements can be paused and resumed</b>.</br>
+<b style="color: brown">Audio elements can be paused and resumed</b>.</br>
 <i>Released 12 May.</i>
 </li>
 <li>
-<b>FireFox and Internet Explorer 11 in addition to Chrome now pass automated tests</b>.</br>
+<b style="color: brown">FireFox and Internet Explorer 11 in addition to Chrome now pass automated tests</b>.</br>
 <i>Released 12 May.</i>
 </li>
 <li>
-<b>Elements default response to pointer events can be toggled</b>.</br>
+<b style="color: brown">Elements default response to pointer events can be toggled</b>.</br>
 <a href="elements.html">Elements</a> now have a check box so that the browser's response to the mouse can be temporarily disabled.
 For example, a link can be made inactive while giving it behaviours and testing it and then re-enabled.
 <i>Released 12 May.</i>
 </li>
 <li>
-<b>Added the first robot-guided tour</b>.</br>
+<b style="color: brown">Added the first robot-guided tour</b>.</br>
 The first <a href='../tours/tour1.html?reset=1' title='Click to visit a page that replays a tour.'>tour given by a robot</a> created.
 <i>Released 25 April.</i>
 </li>
 <li>
-<b>Sound effects added</b>.</br>
+<b style="color: brown">Sound effects added</b>.</br>
 Many actions are accompanied by sound effects.
 You can control the volumn of these effects by adding volume=N to the URL parameters.
 A value of 0 means no sound and 100 full volume.
 <i>Released 23 April.</i>
 </li>
 <li>
-<b>Audio elements added</b>.</br>
+<b style="color: brown">Audio elements added</b>.</br>
 Audio files or URLs can be dropped in ToonTalk.
 They can be played by the user or robots.
 <i>Released 23 April.</i>
 </li>
 <li>
-<b>Video elements added</b>.</br>
+<b style="color: brown">Video elements added</b>.</br>
 Video files or URLs can be dropped in ToonTalk.
 They can be played by the user or robots.
 <i>Released 23 April.</i>
 </li>
 <li>
-<b>Textual element widgets whose contents are those of a URL were added</b>.</br>
+<b style="color: brown">Textual element widgets whose contents are those of a URL were added</b>.</br>
 A URL whose contents are non-HTML text can be dropped in ToonTalk.
 The textual element widget will display the current contents.
 HTML URLs will create an iframe element widget.
 <i>Released 23 April.</i>
 </li>
 <li>
-<b>Robots can run at different speeds</b>.</br>
+<b style="color: brown">Robots can run at different speeds</b>.</br>
 Robots remember how long each step took during training and optionally can reconstruct the timing during training.
 Or they can run very slowly to see exactly what they are doing or very fast.
 <i>Released 23 April.</i>
 </li>
 <li>
-<b>Robots remember all actions</b>.</br>
+<b style="color: brown">Robots remember all actions</b>.</br>
 Robots remember opening and closing the back side of widgets, displaying advanced options, and resizing widgets.
 These actions are ignored when the robot is running unwatched.
 They also remember where they dropped things on back sides.
 <i>Released 23 April.</i>
 </li>
 <li>
-<b>Birds, nests, and robots have names</b>.</br>
+<b style="color: brown">Birds, nests, and robots have names</b>.</br>
 They are displayed on their "chests".
 Default names are generated that can be edited.
 Also three different tints are added to birds and nests to help see which nests are paired with which birds.
 <i>Released 23 April.</i>
 </li>
 <li>
-<b>Logging facility added</b>.</br>
+<b style="color: brown">Logging facility added</b>.</br>
 If the URL parameters include log=X then events are logged to the console.
 X can contain 'event', 'nest', 'bird', or 'run' to specify which kinds of events to log.
 <i>Released 23 April.</i>
 </li>
 <li>
-<b>Robots can train robots</b>.</br>
+<b style="color: brown">Robots can train robots</b>.</br>
 Robots can train other robots. Besides consistency can be used for making demonstrations.
 <i>Released 6 April.</i>
 </li>
 <li>
-<b>Robots remember where to drop things</b>.</br>
+<b style="color: brown">Robots remember where to drop things</b>.</br>
 And will place things on the backside proportionately at the same place as when trained. 
 If the robot is repeately doing this it will tile as it drops subsequent widgets.
 Also useful for automated demonstrations.
@@ -111,58 +126,58 @@ Here is a <a href="https://ce9597fe5aab852dc99b385031e18636eb17e114.googledrive.
 <i>Released 6 April.</i>
 </li>
 <li>
-<b>Robots can be trained to push buttons</b>.</br>
+<b style="color: brown">Robots can be trained to push buttons</b>.</br>
 They can press the green flag, stop sign, or toggle advanced back side settings. More to come.
 <i>Released 6 April.</i>
 </li>
 <li>
-<b>Non-numeric attributes of element widgets supported</b>.</br>
+<b style="color: brown">Non-numeric attributes of element widgets supported</b>.</br>
 Non-numeric attributes (e.g. color and background-color) of <a href="elements.html">element widgets</a>
 (e.g. pictures and text) can now be changed by you or robots.
 <i>Released 1 April.</i>
 </li>
 <li>
-<b>Text element's text area now accepts drag and drop</b>.</br>
+<b style="color: brown">Text element's text area now accepts drag and drop</b>.</br>
 You (or a robot) can drop textual <a href="elements.html">element widgets</a> and numbers
 on the text area of another element widget to change its text.
 This works for non-numeric element attribute widgets as well.
 <i>Released 1 April.</i>
 </li>
 <li>
-<b>Box size can be changed by robots</b>.</br>
+<b style="color: brown">Box size can be changed by robots</b>.</br>
 You (or a robot) can drop a number on the input area of a <a href="boxes.html">box's</a> back side to change its number of holes.
 <i>Released 1 April.</i>
 </li>
 <li>
-<b>Robots can change the description of any widget</b>.</br>
+<b style="color: brown">Robots can change the description of any widget</b>.</br>
 You (or a robot) can drop a textual widget on the description area any widget.
 The description is added to the tool tip of the widget and is displayed on its back side.
 <i>Released 1 April.</i>
 </li>
 <li>
-<b>Improved titles for robots, elements, and more</b>.</br>
+<b style="color: brown">Improved titles for robots, elements, and more</b>.</br>
 When the mouse hovers over a widget tool tips appear. These now can contain scaled images and rich text.
 <i>Released 26 March.</i>
 </li>
 <li>
-<b>Turtles implemented with robots and birds</b>.<br>
-A turtle that  to <b>go forward</b> and <b>turn right</b> messages has been added to the <a href="examples.html">examples</a> page.
+<b style="color: brown">Turtles implemented with robots and birds</b>.<br>
+A turtle that  to <b style="color: brown">go forward</b> and <b style="color: brown">turn right</b> messages has been added to the <a href="examples.html">examples</a> page.
 <i>Released 15 March.</i>
 </li>
 <li>
-<b>Robot can put things on the back of widgets</b>.<br>
+<b style="color: brown">Robot can put things on the back of widgets</b>.<br>
 <a href="robots.html">Robots</a> can now be trained to put things on the back of <a href="index.html#widgets-documentation-table">widgets</a>.
 This includes other robots who can begin working on the back of those widgets.
 <i>Released 15 March.</i>
 </li>
 <li>
-<b>Robots can vacuum up themselves and the widget they are working on</b>.<br>
+<b style="color: brown">Robots can vacuum up themselves and the widget they are working on</b>.<br>
 <a href="robots.html">Robots</a> can be trained to use <a href="vacuum.html">Dusty the Vacuum</a> to remove themselves or removes themselves and the <a href="index.html#widgets-documentation-table">widget</a> they are working on.
 This is a nice way of expressing the termination of a process.
 <i>Released 15 March.</i>
 </li>
 <li>
-<b>Numeric functions</b>.<br>
+<b style="color: brown">Numeric functions</b>.<br>
 Added <a href="function-birds.html">function birds</a> which can be used for advanced numeric calculations.
 ToonTalk <a href="numbers.html">numbers</a> can be combined by adding, subtracting, multiplying, and dividing.
 (A limited ability to compute a number raised to another number was removed and replaced by the <i>power</i> function bird.)
@@ -170,18 +185,18 @@ Function birds can be used to obtain random numbers, compute trigonometric funct
 <i>Released 23 February.</i> 
 </li>
 <li>
-<b>Robot descriptions</b>.<br>
+<b style="color: brown">Robot descriptions</b>.<br>
 Trained <a href="robots.html">Robots</a> now display a much improved description of what they do as an enhanced "tool tip".
 Also robots dragged to a text editor (not all accept drops) results in text that includes the description of what they do. <i>Released 23 February.</i> 
 </li>
 <li>
-<b>Clear all</b>.<br>
+<b style="color: brown">Clear all</b>.<br>
 <a href="vacuum.html">Dusty the Vacuum</a> can now clear everything from the workspace.
 Everything is still in Dusty to "spit" out again if needed.
 <i>Released 23 February.</i>
 </li>
 <li>
-<b>Access to saved programs and pages</b>.<br>
+<b style="color: brown">Access to saved programs and pages</b>.<br>
 Listings of programs and saved pages (accessible via the <a href="settings.html">settings button</a> (<img src="../../images/settings-gear.png" width="22" height="22" />)) now supports any number of files and search facilities.
 <i>Released 5 February.</i>
 </li>
