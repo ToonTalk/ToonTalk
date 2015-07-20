@@ -3406,8 +3406,14 @@ window.TOONTALK.UTILITIES =
 
        utilities.set_css = function (element, css) {
            // this is mostly useful debugging computed CSS problems since can break here
+           var widget;
            if (!css) {
                return;
+           }
+           widget = utilities.widget_of_element(element);
+           if (widget && widget.location_constrained_by_container()) {
+               css.left = '';
+               css.top  = '';
            }
            $(element).css(css);
        };

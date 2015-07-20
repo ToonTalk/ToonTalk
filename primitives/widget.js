@@ -1426,6 +1426,14 @@ window.TOONTALK.widget = (function (TT) {
         hide: function () {
             $(this.get_frontside_element()).hide();
         },
+
+        location_constrained_by_container: function () {
+            var parent = this.get_parent_of_frontside();
+            if (parent && parent.is_hole()) {
+                return true;
+            }
+            return false;
+        },
         
         close_button_ok: function (element) {
             return this.get_type_name() !== "top-level" &&
@@ -1723,6 +1731,9 @@ window.TOONTALK.widget = (function (TT) {
             };
             widget.render = function () {
                 // ignore
+            };
+            widget.location_constrained_by_container = function () {
+                return false;
             };
             widget.is_widget = true;
             widget.get_backside(true).set_visible(true); // top-level backsides are always visible (at least for now)

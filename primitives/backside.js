@@ -964,6 +964,10 @@ window.TOONTALK.backside =
             return this.get_widget().is_of_type(type_name);
         },
 
+        is_hole: function () {
+            return false;
+        },
+
         save_dimensions: function () {
             // TODO: later support robots moving around backsides
             return false;

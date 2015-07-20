@@ -934,6 +934,9 @@ window.TOONTALK.box_hole =
             hole.is_empty_hole = function () {
                 return !contents;
             };
+            hole.location_constrained_by_container = function () {
+                return false;
+            };
             hole.get_element = function () {
                 if (!hole_element) {
                     hole_element = document.createElement("div");
