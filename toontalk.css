@@ -2500,24 +2500,6 @@ background-image: url("images/dusty-morph.png");
  	font-weight: bold;
     font-size: 12pt;
 }
-.toontalk-bird-static-yellow::after {
- 	content: attr(toontalk_name);
- 	position: relative;	
-    top: 50%;
- 	color: #432707; 
- 	text-shadow: 1px 1px 2px #E7D9A8;
- 	font-weight: bold;
-    font-size: 12pt;
-}
-.toontalk-bird-static-magenta::after {
- 	content: attr(toontalk_name);
- 	position: relative;	
-    top: 50%; 
- 	color: #432707; 
- 	text-shadow: 1px 1px 2px #E7D9A8;
- 	font-weight: bold;
-    font-size: 12pt;
-}
 /* Couldn't get the following to work -- tried to define new bird-morph-from-static keyframes but didn't help */
 /* .toontalk-bird-morph-from-static {
     width:  88px;

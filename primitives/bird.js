@@ -123,7 +123,7 @@ window.TOONTALK.bird = (function (TT) {
                     } else if (this.visible()) {
                         become_static = function () {
                             $(bird_frontside_element).removeClass("toontalk-bird-morph-to-static");
-                            $(bird_frontside_element).addClass(this.get_class_name_with_color("toontalk-bird-static"));
+                            $(bird_frontside_element).addClass("toontalk-bird-static " + this.get_class_name_with_color("toontalk-bird-static"));
                             if (parent) {
                                 parent.get_widget().rerender();
                             }
@@ -264,6 +264,7 @@ window.TOONTALK.bird = (function (TT) {
             if (TT.sounds) {
                 TT.sounds.bird_fly.play();
             }
+            $(bird_frontside_element).removeClass("toontalk-bird-static");
             if (!target_side.is_function_nest()) {
                 // nests of functions are 'virtual'
                 target_frontside_element = target_side.get_widget().closest_visible_ancestor_or_frontside().get_widget().get_frontside_element();
@@ -505,14 +506,14 @@ window.TOONTALK.bird = (function (TT) {
                 $(frontside_element).addClass(this.get_class_name_with_color("toontalk-bird toontalk-bird-static"));
                 frontside_element.addEventListener("dragenter", function (event) {
                     if (frontside_element.className.indexOf("toontalk-bird-static") >= 0) {
-                        $(frontside_element).removeClass(this.get_class_name_with_color("toontalk-bird-static"));
+                        $(frontside_element).removeClass("toontalk-bird-static " + this.get_class_name_with_color("toontalk-bird-static"));
                         TT.UTILITIES.add_animation_class(frontside_element, "toontalk-bird-gimme");
                     }
                 }.bind(this));
                 frontside_element.addEventListener("dragleave", function (event) {
                     if ($(frontside_element).is(".toontalk-bird-gimme")) {
                         $(frontside_element)
-                            .addClass(this.get_class_name_with_color("toontalk-bird-static"))
+                            .addClass("toontalk-bird-static " + this.get_class_name_with_color("toontalk-bird-static"))
                             .removeClass("toontalk-bird-gimme");
                        // if in a container restore dimensions
                        this.get_parent_of_frontside().render();
