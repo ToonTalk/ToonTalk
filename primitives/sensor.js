@@ -13,7 +13,8 @@ window.TOONTALK.sensor = (function (TT) {
     
     var style_contents = function (widget, sensor) {
         if (widget.get_type_name() === 'element') {
-            widget.set_attribute('font-size', $(sensor.get_frontside_element(true)).height()*0.5, false, true);
+//             widget.set_attribute('font-size', $(sensor.get_frontside_element(true)).height()*0.5, false, true);
+            TT.UTILITIES.set_css(widget.get_frontside_element(true), {'font-size': $(sensor.get_frontside_element(true)).height()});
             widget.set_additional_classes("toontalk-string-value-from-sensor");
             if (sensor.visible()) {
                 widget.rerender();

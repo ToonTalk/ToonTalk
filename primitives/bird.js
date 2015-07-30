@@ -1300,15 +1300,16 @@ window.TOONTALK.nest = (function (TT) {
             var width  = TT.nest.CONTENTS_WIDTH_FACTOR *nest_width;
             var height = TT.nest.CONTENTS_HEIGHT_FACTOR*nest_height;
             var top_contents_widget = contents[0];
+            var border_factor, border_adjustment;
             if (!top_contents_widget) {
                 return;
             }
-            // loggically border_adjustment should be twice the border_size since there are two borders
+            // logically border_adjustment should be twice the border_size since there are two borders
             // but once looks better for boxes
             // the underlying problem is that the border width depends upon the size which in turn depends upon the border-width
             // tried to use JQuery's outerWidth but it didn't help
-            var border_factor = top_contents_widget.is_box() ? 1 : 2;
-            var border_adjustment = top_contents_widget.get_border_size ? border_factor*top_contents_widget.get_border_size(width, height) : 0;
+            border_factor = top_contents_widget.is_box() ? 1 : 2;
+            border_adjustment = top_contents_widget.get_border_size ? border_factor*top_contents_widget.get_border_size(width, height) : 0;
             width  -= border_adjustment;
             height -= border_adjustment;
             return {width:  width,

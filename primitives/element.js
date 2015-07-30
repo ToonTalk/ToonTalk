@@ -535,7 +535,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             TT.UTILITIES.original_dimensions(this, 
                                              function (width, height) {
                                                  var parent = this.get_parent_of_frontside();
-                                                 original_width =  width;
+                                                 original_width  = width;
                                                  original_height = height;
                                                  if (parent) {
                                                      if (parent.get_box) {
