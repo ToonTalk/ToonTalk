@@ -13,7 +13,7 @@ window.TOONTALK.sensor = (function (TT) {
     
     var style_contents = function (widget, sensor) {
         if (widget.get_type_name() === 'element') {
-            widget.set_attributes('font-size', $(sensor.get_frontside_element(true)).height()*0.5, false, true);
+            widget.set_attribute('font-size', $(sensor.get_frontside_element(true)).height()*0.5, false, true);
             widget.set_additional_classes("toontalk-string-value-from-sensor");
             if (sensor.visible()) {
                 widget.rerender();
@@ -31,20 +31,19 @@ window.TOONTALK.sensor = (function (TT) {
         var attribute_values = function (event) {
             return attributes.map(
                 function (attribute) {
-                    var value;
+                    var value = event[attribute];
                     if (attribute === 'keyCode') {
                         // is this a good idea? shouldn't the DOM events be left alone?
                         // perhaps this should be renamed keyChar or something...
                         if (value === 16) {
                             // is only the shift key
-                            return "";
+                            return;
                         }
                         value = String.fromCharCode(value);
                         if (!event.shiftKey) {
                             value = value.toLowerCase();
                         }
-                    } else {
-                        value = event[attribute];
+                    } else {       
                          if (typeof value === 'undefined') {
                              value = "No " + attribute + " in event " + event + " of sensor " + sensor;
                              TT.UTILITIES.display_message(value);
@@ -72,15 +71,18 @@ window.TOONTALK.sensor = (function (TT) {
             return value_widget;
         };
         var event_listener = function (event) {
+            var values, visible, $top_level_backside, value_widget, frontside_element, delivery_bird;
             if (!new_sensor.get_active()) {
                 return;
             }
-            var values = attribute_values(event);
-            var visible = new_sensor.visible();
-            var $top_level_backside = $(new_sensor.get_frontside_element()).closest(".toontalk-top-level-backside");        
-            var value_widget, frontside_element, delivery_bird;
+            values = attribute_values(event);
+            visible = new_sensor.visible();
+            $top_level_backside = $(new_sensor.get_frontside_element()).closest(".toontalk-top-level-backside");        
             if (values.length === 1) {
                 value_widget = attribute_widget(values[0]);
+                if (typeof value_widget === "undefined") {
+                    return;
+                }
             } else {
                 value_widget = TT.box.create(values.length,
                                              true,
