@@ -255,7 +255,10 @@ window.TOONTALK.widget = (function (TT) {
                     var frontside_element, css;
                     if (this.saved_width > 0) {
                        frontside_element = this.get_frontside_element();
-                       if (!this.ok_to_set_dimensions()) {
+                       if (this.use_scaling_transform) {
+                           this.use_scaling_transform( {width:  this.saved_width,
+                                                        height: this.saved_height});  
+                       } else if (!this.ok_to_set_dimensions()) {
                            css = {width:  '',
                                   height: ''};
                            // remove transforms as well

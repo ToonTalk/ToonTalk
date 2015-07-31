@@ -207,12 +207,14 @@ window.TOONTALK.bird = (function (TT) {
                     // the timeout fixes a problem when a watched robot gives a bird something that
                     // thing carried is displayed displaced to the southeast from where it should be
                     TT.UTILITIES.set_timeout(function () {
-                            TT.UTILITIES.set_css(this.element_to_display_when_flying,
-                                                 {left: '',
-                                                  top:  '',
-                                                  width: '',
-                                                  height: '',
-                                                  position: ''});
+                            var css = {left: '',
+                                       top:  '',
+                                       position: ''}
+                            if (!widget_side.use_scaling_transform) {
+                                css.width = '';
+                                css.height = '';
+                            }
+                            TT.UTILITIES.set_css(this.element_to_display_when_flying, css);
                             this.update_display();
                         }.bind(this));
                 }.bind(this);

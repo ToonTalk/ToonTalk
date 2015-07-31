@@ -3415,7 +3415,13 @@ window.TOONTALK.UTILITIES =
                css.left = '';
                css.top  = '';
            }
-           $(element).css(css);
+           if (!css.transform && css.width !== undefined && css.height  !== undefined && widget.use_scaling_transform) {
+               // leave CSS width and height alone and recompute scaling transform
+               // following will call set_css again with modified css
+               widget.use_scaling_transform(css);
+           } else {
+               $(element).css(css);
+           }
        };
 
        utilities.map_arguments = function (args, fun) {
