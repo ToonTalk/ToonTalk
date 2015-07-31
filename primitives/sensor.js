@@ -14,8 +14,6 @@ window.TOONTALK.sensor = (function (TT) {
     var style_contents = function (widget, sensor) {
         // styles the contents (the widget) of the sensor
         if (widget.get_type_name() === 'element') {
-//          TT.UTILITIES.set_css(widget.get_frontside_element(true), {'font-size': $(sensor.get_frontside_element(true)).height()});
-            TT.UTILITIES.set_css(widget.get_frontside_element(true), {'font-size': '50%'});
             widget.set_additional_classes("toontalk-string-value-from-sensor");
             if (sensor.visible()) {
                 widget.rerender();

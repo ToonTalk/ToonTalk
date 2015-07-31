@@ -1601,6 +1601,7 @@ body {
 }
 .toontalk-plain-text-element {
 	background-color: white;
+	font-size: 80%;
 }
 .toontalk-box-hole > .toontalk-plain-text-element {
 /* 	looks better with a smaller font when scaled to fit in a hole */

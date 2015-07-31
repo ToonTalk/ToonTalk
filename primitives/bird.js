@@ -210,7 +210,7 @@ window.TOONTALK.bird = (function (TT) {
                             var css = {left: '',
                                        top:  '',
                                        position: ''}
-                            if (!widget_side.use_scaling_transform) {
+                            if (widget_side && !widget_side.use_scaling_transform) {
                                 css.width = '';
                                 css.height = '';
                             }

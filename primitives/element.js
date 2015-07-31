@@ -317,9 +317,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                         height: original_height});
                 }
                 if (this.is_plain_text_element()) {
-                    // this is to scale the element (and its font) properly
-                    original_width  = 9;
-                    original_height = 14;
+                    this.plain_text_dimensions();
                 }
                 $(frontside_element).css({width: '', height: ''});
                 TT.UTILITIES.run_when_dimensions_known(frontside_element,
@@ -533,6 +531,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                         $(frontside_element).addClass(additional_classes);
                     }
                     $(frontside_element).addClass("ui-widget toontalk-plain-text-element");
+                    this.plain_text_dimensions();
                 }
                 initialized = true;
             }
@@ -545,6 +544,12 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 return;
             }
             return !html.match(/<\w/);
+        };
+        new_element.plain_text_dimensions = function () {
+            // this is to scale the element (and its font) properly
+            // TODO: fix this in a principled manner
+            original_width  = 9*this.get_HTML().length;
+            original_height = 24;
         };
         new_element.compute_original_dimensions = function (recompute) {
             TT.UTILITIES.original_dimensions(this, 
