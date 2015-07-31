@@ -316,6 +316,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     $image_element.css({width:  original_width,
                                         height: original_height});
                 }
+                if (this.is_plain_text_element()) {
+                    // this is to scale the element (and its font) properly
+                    original_width  = 9;
+                    original_height = 14;
+                }
                 $(frontside_element).css({width: '', height: ''});
                 TT.UTILITIES.run_when_dimensions_known(frontside_element,
                                                        function (original_parent) {
