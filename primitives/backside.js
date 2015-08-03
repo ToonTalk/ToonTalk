@@ -927,7 +927,7 @@ window.TOONTALK.backside =
                TT.UTILITIES.set_css($backside_element,
                                     {transform: "scale(" + scale + ", " + scale + ")",
                                      "transform-origin": "left top", 
-                                      width:  original_width *  x_scale / scale,
+                                      width:  original_width  * x_scale / scale,
                                       height: original_height * y_scale / scale});
             }
  //         console.log({scale: scale, x_scale: x_scale, y_scale: y_scale});

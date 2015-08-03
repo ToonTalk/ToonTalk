@@ -383,7 +383,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             }
             return video_object;
         };
-         new_element.set_video_object = function (new_value) {
+        new_element.set_video_object = function (new_value) {
             video_object = new_value;
         };
         new_element.get_ignore_pointer_events = function () {
@@ -1207,7 +1207,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             var backside_widgets_of_attribute_json = json.attributes_backsides && json.attributes_backsides[index];
             var attribute_widget;
             if (ignore_attributes.indexOf(attribute_name) < 0) {
-                reconstructed_element.add_to_css(attribute_name, value_in_pixels(value) || value);
+                if (value === 0 && (attribute_name === 'width' || attribute_name === 'height')) {
+                    // ignore 0 values for width or height
+                } else {
+                    reconstructed_element.add_to_css(attribute_name, value_in_pixels(value) || value);
+                }
             }
             if (backside_widgets_of_attribute_json) {
                 attribute_widget = reconstructed_element.get_attribute_widget_in_backside_table(attribute_name, false, additional_info);
@@ -1484,8 +1488,6 @@ window.TOONTALK.element_backside =
                                                                undefined,
                                                                undefined,
                                                                URL_drop_handler);
-//                     $(URL_input.container).css({width: "100%"});
-//                     $(URL_input.button).css({width: "100%"});
                     URL_input.button.addEventListener('change',   update_URL);
                     URL_input.button.addEventListener('mouseout', update_URL);
                     backside_element.appendChild(URL_input.container);
