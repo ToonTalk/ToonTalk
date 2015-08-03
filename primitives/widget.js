@@ -1290,7 +1290,7 @@ window.TOONTALK.widget = (function (TT) {
                 container_offset, container_width;
             if (backside) {
                 backside_element = backside.get_element();
-                if ($(backside_element).is(":visible")) {
+                if (TT.UTILITIES.visible_element(backside_element)) {
                     TT.UTILITIES.highlight_element(backside_element, undefined, 1000);
                     if (new_continuation) {
                         new_continuation();

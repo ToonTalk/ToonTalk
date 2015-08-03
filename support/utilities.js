@@ -3415,7 +3415,7 @@ window.TOONTALK.UTILITIES =
                css.left = '';
                css.top  = '';
            }
-           if (!css.transform && css.width !== undefined && css.height  !== undefined && widget.use_scaling_transform) {
+           if (!css.transform && css.width !== undefined && css.height !== undefined && widget && widget.use_scaling_transform) {
                // leave CSS width and height alone and recompute scaling transform
                // following will call set_css again with modified css
                widget.use_scaling_transform(css);
@@ -3482,6 +3482,11 @@ window.TOONTALK.UTILITIES =
                                             widget.rerender();
                                         }
                                     });
+       };
+
+       utilities.visible_element = function (element) {
+           var $element = $(element);
+           return $element.is(":visible") && $element.css('opacity') !== '0';
        };
 
 //         enable_touch_events = function (maximum_click_duration) {
