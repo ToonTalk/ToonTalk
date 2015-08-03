@@ -558,11 +558,6 @@ window.TOONTALK.backside =
             $(this.get_element()).remove();
         },
         
-//         visible: function () {
-//             var backside_element = this.get_element();
-//             return (backside_element && $(backside_element).is(":visible"));
-//         },
-        
 //         update_run_button_disabled_attribute: function () {
 //             var backside_element = this.get_element();
 //             var $run_button;
@@ -846,7 +841,7 @@ window.TOONTALK.backside =
             }
             animate_disappearance($backside_element);
             this.set_visible(false); // semantic side of things needs to know this backside isn't being watched any more
-            if (event && !$(frontside_element).is(":visible")) {
+            if (event && !TT.UTILITIES.visible_element(frontside_element)) {
                 // don't do any of this if robot is responsible
                 // in particular don't add widget back -- not as clear about updating CSS below
                 if (backside_position) {

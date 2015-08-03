@@ -200,7 +200,7 @@ window.TOONTALK.robot_action =
             animation_top_offset  = additional_info.top_offset_fraction*widget_height;
             if (thing_in_hand) {
                 thing_in_hand_element = thing_in_hand.get_element();
-                if ($(thing_in_hand_element).is(":visible")) {
+                if (TT.UTILITIES.visible_element(thing_in_hand_element)) {
                     thing_in_hand_location = $(thing_in_hand_element).offset();
                     robot_location         = $(robot_frontside_element).offset();
                     animation_left_offset -= thing_in_hand_location.left-robot_location.left;
@@ -295,7 +295,7 @@ window.TOONTALK.robot_action =
             if (thing_in_hand.drop_on) {
                 if (robot.animate_consequences_of_actions()) {
                     // need to see it before actions such as Bammer take place
-                    if (!$thing_in_hand_frontside_element.is(":visible")) {
+                    if (!TT.UTILITIES.visible_element($thing_in_hand_frontside_element.get(0))) {
                         $top_level_element = $(robot.get_frontside_element()).closest(".toontalk-top-level-backside")
                         $top_level_element.append($thing_in_hand_frontside_element.get(0));
                     }
@@ -323,7 +323,7 @@ window.TOONTALK.robot_action =
 //                 TT.UTILITIES.set_absolute_position($thing_in_hand_frontside_element, thing_in_hand_position);
 //             }
         };
-        if (target.is_backside() && !$(target.get_element()).is(":visible")) {
+        if (target.is_backside() && !TT.UTILITIES.visible_element(target.get_element())) {
             click_and_open_backside(target.get_widget(), robot, new_continuation, additional_info);
         } else {
             move_robot_animation(target, robot, new_continuation, additional_info);
@@ -357,13 +357,6 @@ window.TOONTALK.robot_action =
             } else {
                 parent.render();
             }
-//             if (!$thing_in_hand_frontside_element.is(":visible")) {
-//                 // TODO: determine if this can ever happen
-//                 $top_level_element = $(robot.get_frontside_element()).closest(".toontalk-top-level-backside")
-//                 $top_level_element.append($thing_in_hand_frontside_element.get(0));
-//             }
-//             TT.UTILITIES.set_absolute_position($thing_in_hand_frontside_element, thing_in_hand_position);
-//             thing_in_hand.restore_dimensions();
             robot.set_thing_in_hand(undefined);
             robot.run_next_step();
         }
@@ -372,7 +365,7 @@ window.TOONTALK.robot_action =
             return $(target.get_backside_element()).find(additional_info.area_selector).get(0);
         };
         robot.rerender();
-        if (!$(target.get_backside_element()).is(":visible")) {
+        if (!TT.UTILITIES.visible_element(target.get_backside_element())) {
             click_and_open_backside(target, 
                                     robot,
                                     function () {
@@ -422,7 +415,7 @@ window.TOONTALK.robot_action =
                       delay);
         };
         var animation_continuation = function () {
-            if (!$(button_element).is(":visible") && backside) {
+            if (!TT.UTILITIES.visible_element(button_element) && backside) {
                 // open advanced settings if button isn't visible
                 backside.set_advanced_settings_showing(true, backside.get_element());
             }

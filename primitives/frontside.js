@@ -102,10 +102,6 @@ window.TOONTALK.frontside =
             return this.get_widget().update_display();
         },
         
-//         visible: function () {
-//             return $(this.get_element()).is(":visible"); 
-//         },
-        
         remove: function () {
             // used to have debugging code that checked if was still attached
             // but when running unwatched might never have been attached

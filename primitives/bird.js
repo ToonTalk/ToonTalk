@@ -258,7 +258,7 @@ window.TOONTALK.bird = (function (TT) {
                 // nests of functions are 'virtual'
                 target_frontside_element = target_side.get_widget().closest_visible_ancestor_or_frontside().get_widget().get_frontside_element();
             }
-            if ((!target_side.visible() && !this.visible()) || (!target_side.is_function_nest() && !$(target_frontside_element).is(":visible"))) {
+            if ((!target_side.visible() && !this.visible()) || (!target_side.is_function_nest() && !TT.UTILITIES.visible_element(target_frontside_element))) {
                 // neither are visible so just add contents to nest
                 nest_recieving_message.add_to_contents(message_side, event, robot, this, true);
                 return;

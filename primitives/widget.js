@@ -462,7 +462,7 @@ window.TOONTALK.widget = (function (TT) {
             if (!widget.animate_to_widget) {
                 find_widget_element = function (widget) {
                     var widget_element = widget.get_element();
-                    if (!widget_element || (!widget.is_backside() && !$(widget_element).is(":visible"))) {        
+                    if (!widget_element || (!widget.is_backside() && !TT.UTILITIES.visible_element(widget_element))) {        
                         // widget is assumed to be a fresh copy of a resource that has yet to be added to anything
                         widget_element = TT.UTILITIES.find_resource_equal_to_widget(widget);
                     }
@@ -487,7 +487,7 @@ window.TOONTALK.widget = (function (TT) {
                     var target_absolute_position = $(target_element).offset();
                     var $frontside_element = $(this.get_frontside_element());
                     var target_is_backside = $(target_element).is(".toontalk-backside");
-                    if (!target_element || !$(target_element).is(":visible")) {
+                    if (!target_element || !TT.UTILITIES.visible_element(target_element)) {
                         // don't know where to go so just start doing the next thing
                         if (continuation) {
                             continuation();
@@ -541,7 +541,7 @@ window.TOONTALK.widget = (function (TT) {
                         } else {
                             title = "Drag me to a work area.";
                         }   
-                    } else if (!backside || !backside.get_element() || !$(backside.get_element()).is(":visible")) {
+                    } else if (!backside || !backside.get_element() || !TT.UTILITIES.visible_element(backside.get_element())) {
                         if (this.can_run && this.can_run()) {
                             if (this.get_running()) {
                                 title = "Robots on my back are running (or waiting to run).\nTo see them click the stop sign " +
@@ -668,7 +668,7 @@ window.TOONTALK.widget = (function (TT) {
                 // differs from closest_visible_ancestor in that if a backside has no parent then continues with frontside
                 var ancestor = this;
                 var previous_ancestor;
-                while (ancestor && !$(ancestor.get_frontside_element()).is(":visible")) {
+                while (ancestor && !TT.UTILITIES.visible_element(ancestor.get_frontside_element())) {
                     previous_ancestor = ancestor;
                     if (ancestor.is_backside()) {
                         ancestor = ancestor.get_parent_of_backside();

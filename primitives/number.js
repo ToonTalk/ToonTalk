@@ -470,7 +470,7 @@ window.TOONTALK.number = (function () {
             client_width  = 200;
             client_height =  32;
         } else {
-            if (!$dimensions_holder.is(":visible")) {
+            if (!TT.UTILITIES.visible_element($dimensions_holder.get(0))) {
                 if (TT.logging && TT.logging.indexOf('display') >= 0) {
                     console.log("Container not visible so no display of " + this.to_debug_string());
                 }
