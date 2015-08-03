@@ -863,10 +863,13 @@ window.TOONTALK.box_backside =
             var size_area_drop_handler = 
                 function (event) {
                     var dropped = TT.UTILITIES.input_area_drop_handler(event, box.receive_size_from_dropped.bind(box), box);
-                    if (dropped && box.robot_in_training()) {
-                        box.robot_in_training().dropped_on_text_area(dropped, box, {area_selector: ".toontalk-box-size-input",
-                                                                                    setter: 'receive_size_from_dropped',
-                                                                                    toString: "for the box's size"});
+                    if (dropped) {
+                        box.rerender();
+                        if (box.robot_in_training()) {
+                            box.robot_in_training().dropped_on_text_area(dropped, box, {area_selector: ".toontalk-box-size-input",
+                                                                                        setter: 'receive_size_from_dropped',
+                                                                                        toString: "for the box's size"});
+                        }
                     }
                 };
             var size_input = TT.UTILITIES.create_text_input(box.get_size().toString(), 'toontalk-box-size-input', "Number of holes", "Type here to edit the number of holes.", undefined, "number", size_area_drop_handler);
