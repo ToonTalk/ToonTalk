@@ -720,6 +720,10 @@ window.TOONTALK.robot_action =
                         }.bind(this),
                         robot);
                     robot.set_waiting(true);
+                    if (!TOONTALK.UTILITIES.visible_element(context.get_backside_element())) {
+                        // backside robot is working on is no longer visible so robot should not be either
+                        robot.get_frontside().remove();
+                    }
                     return;
                 }
                 referenced.set_visible(true);

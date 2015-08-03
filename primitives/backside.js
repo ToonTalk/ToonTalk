@@ -111,17 +111,23 @@ window.TOONTALK.backside =
                                 var backside_widget = backside_widget_side.get_widget();
                                 if (backside_widget.is_robot()) {
                                    backside_widget.finish_cycle_immediately(do_after_closing);
-                                   robot_found = true;
+                                   robot_found = backside_widget;
                                    return true;
                                 }
                             });
-                            if (!robot_found) {
+                            if (robot_found) {   
+                                // restore visibility after robot is finished
+                                robot_found.add_body_finished_listener(function () {
+                                       $backside_element.css({opacity: 1});
+                                       do_after_closing();
+                                });
+                            } else {
                                 do_after_closing();
                             }
                             $backside_element.css({opacity: 1});
+                            // animate it become invisible
                             $backside_element.addClass("toontalk-animating-element");
                             $backside_element.css({opacity: 0});
-                            // to do restore this
                         } else {
                             do_after_closing();
                         }
