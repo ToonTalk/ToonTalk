@@ -228,6 +228,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         new_element.get_attribute_widgets_in_backside_table = function () {
             return attribute_widgets_in_backside_table;
         };
+        new_element.set_attribute_widgets_in_backside_table = function (new_value) {
+            attribute_widgets_in_backside_table = new_value;
+        };
         new_element.get_original_copies = function () {
             return original_copies;
         };
@@ -688,6 +691,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                   this.get_sound_effect(),
                                   this.get_video_object(),
                                   this.get_ignore_pointer_events());
+        var attribute_widgets_in_backside_table = this.get_attribute_widgets_in_backside_table();
+        var attribute_widgets_in_backside_table_copy = {};
         copy.set_source_URL(this.get_source_URL());
         if (parameters) {
             if (!parameters.elements_copied) {
@@ -695,9 +700,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             }
             parameters.elements_copied[this.get_guid()] = copy;
         }
-        style_attributes.forEach(function (attribute_name) {
-                                     copy.set_attribute(attribute_name, this.get_attribute(attribute_name));
-                                 }.bind(this));
+        Object.keys(attribute_widgets_in_backside_table).forEach(function (attribute_name) {
+                                        attribute_widgets_in_backside_table_copy[attribute_name] = attribute_widgets_in_backside_table[attribute_name].copy(parameters);
+                                 });
+        copy.set_attribute_widgets_in_backside_table(attribute_widgets_in_backside_table_copy);        
         return this.add_to_copy(copy, parameters);
     };
     
