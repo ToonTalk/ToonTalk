@@ -111,17 +111,23 @@ window.TOONTALK.backside =
                                 var backside_widget = backside_widget_side.get_widget();
                                 if (backside_widget.is_robot()) {
                                    backside_widget.finish_cycle_immediately(do_after_closing);
-                                   robot_found = true;
+                                   robot_found = backside_widget;
                                    return true;
                                 }
                             });
-                            if (!robot_found) {
+                            if (robot_found) {   
+                                // restore visibility after robot is finished
+                                robot_found.add_body_finished_listener(function () {
+                                       $backside_element.css({opacity: 1});
+                                       do_after_closing();
+                                });
+                            } else {
                                 do_after_closing();
                             }
                             $backside_element.css({opacity: 1});
+                            // animate it become invisible
                             $backside_element.addClass("toontalk-animating-element");
                             $backside_element.css({opacity: 0});
-                            // to do restore this
                         } else {
                             do_after_closing();
                         }
@@ -552,11 +558,6 @@ window.TOONTALK.backside =
             $(this.get_element()).remove();
         },
         
-//         visible: function () {
-//             var backside_element = this.get_element();
-//             return (backside_element && $(backside_element).is(":visible"));
-//         },
-        
 //         update_run_button_disabled_attribute: function () {
 //             var backside_element = this.get_element();
 //             var $run_button;
@@ -840,7 +841,7 @@ window.TOONTALK.backside =
             }
             animate_disappearance($backside_element);
             this.set_visible(false); // semantic side of things needs to know this backside isn't being watched any more
-            if (event && !$(frontside_element).is(":visible")) {
+            if (event && !TT.UTILITIES.visible_element(frontside_element)) {
                 // don't do any of this if robot is responsible
                 // in particular don't add widget back -- not as clear about updating CSS below
                 if (backside_position) {
@@ -926,7 +927,7 @@ window.TOONTALK.backside =
                TT.UTILITIES.set_css($backside_element,
                                     {transform: "scale(" + scale + ", " + scale + ")",
                                      "transform-origin": "left top", 
-                                      width:  original_width *  x_scale / scale,
+                                      width:  original_width  * x_scale / scale,
                                       height: original_height * y_scale / scale});
             }
  //         console.log({scale: scale, x_scale: x_scale, y_scale: y_scale});
@@ -962,6 +963,10 @@ window.TOONTALK.backside =
 
         is_of_type: function (type_name) {
             return this.get_widget().is_of_type(type_name);
+        },
+
+        is_hole: function () {
+            return false;
         },
 
         save_dimensions: function () {

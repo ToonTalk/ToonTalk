@@ -1578,7 +1578,7 @@ window.TOONTALK.robot_backside =
                         TT.UTILITIES.give_tooltip($train_button.get(0), "Click to start training this robot all over again.");
                     }  
                 }
-                if ($(backside_element).is(":visible")) {
+                if (TT.UTILITIES.visible_element(backside_element)) {
                     add_conditions_area(backside_element, robot);
                 }
             };

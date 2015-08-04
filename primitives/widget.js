@@ -255,7 +255,10 @@ window.TOONTALK.widget = (function (TT) {
                     var frontside_element, css;
                     if (this.saved_width > 0) {
                        frontside_element = this.get_frontside_element();
-                       if (!this.ok_to_set_dimensions()) {
+                       if (this.use_scaling_transform) {
+                           this.use_scaling_transform( {width:  this.saved_width,
+                                                        height: this.saved_height});  
+                       } else if (!this.ok_to_set_dimensions()) {
                            css = {width:  '',
                                   height: ''};
                            // remove transforms as well
@@ -459,7 +462,7 @@ window.TOONTALK.widget = (function (TT) {
             if (!widget.animate_to_widget) {
                 find_widget_element = function (widget) {
                     var widget_element = widget.get_element();
-                    if (!widget_element || (!widget.is_backside() && !$(widget_element).is(":visible"))) {        
+                    if (!widget_element || (!widget.is_backside() && !TT.UTILITIES.visible_element(widget_element))) {        
                         // widget is assumed to be a fresh copy of a resource that has yet to be added to anything
                         widget_element = TT.UTILITIES.find_resource_equal_to_widget(widget);
                     }
@@ -484,7 +487,7 @@ window.TOONTALK.widget = (function (TT) {
                     var target_absolute_position = $(target_element).offset();
                     var $frontside_element = $(this.get_frontside_element());
                     var target_is_backside = $(target_element).is(".toontalk-backside");
-                    if (!target_element || !$(target_element).is(":visible")) {
+                    if (!target_element || !TT.UTILITIES.visible_element(target_element)) {
                         // don't know where to go so just start doing the next thing
                         if (continuation) {
                             continuation();
@@ -538,7 +541,7 @@ window.TOONTALK.widget = (function (TT) {
                         } else {
                             title = "Drag me to a work area.";
                         }   
-                    } else if (!backside || !backside.get_element() || !$(backside.get_element()).is(":visible")) {
+                    } else if (!backside || !backside.get_element() || !TT.UTILITIES.visible_element(backside.get_element())) {
                         if (this.can_run && this.can_run()) {
                             if (this.get_running()) {
                                 title = "Robots on my back are running (or waiting to run).\nTo see them click the stop sign " +
@@ -665,7 +668,7 @@ window.TOONTALK.widget = (function (TT) {
                 // differs from closest_visible_ancestor in that if a backside has no parent then continues with frontside
                 var ancestor = this;
                 var previous_ancestor;
-                while (ancestor && !$(ancestor.get_frontside_element()).is(":visible")) {
+                while (ancestor && !TT.UTILITIES.visible_element(ancestor.get_frontside_element())) {
                     previous_ancestor = ancestor;
                     if (ancestor.is_backside()) {
                         ancestor = ancestor.get_parent_of_backside();
@@ -1287,7 +1290,7 @@ window.TOONTALK.widget = (function (TT) {
                 container_offset, container_width;
             if (backside) {
                 backside_element = backside.get_element();
-                if ($(backside_element).is(":visible")) {
+                if (TT.UTILITIES.visible_element(backside_element)) {
                     TT.UTILITIES.highlight_element(backside_element, undefined, 1000);
                     if (new_continuation) {
                         new_continuation();
@@ -1425,6 +1428,14 @@ window.TOONTALK.widget = (function (TT) {
         
         hide: function () {
             $(this.get_frontside_element()).hide();
+        },
+
+        location_constrained_by_container: function () {
+            var parent = this.get_parent_of_frontside();
+            if (parent && parent.is_hole()) {
+                return true;
+            }
+            return false;
         },
         
         close_button_ok: function (element) {
@@ -1723,6 +1734,9 @@ window.TOONTALK.widget = (function (TT) {
             };
             widget.render = function () {
                 // ignore
+            };
+            widget.location_constrained_by_container = function () {
+                return false;
             };
             widget.is_widget = true;
             widget.get_backside(true).set_visible(true); // top-level backsides are always visible (at least for now)

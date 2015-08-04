@@ -316,6 +316,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     $image_element.css({width:  original_width,
                                         height: original_height});
                 }
+                if (this.is_plain_text_element()) {
+                    this.plain_text_dimensions();
+                }
                 $(frontside_element).css({width: '', height: ''});
                 TT.UTILITIES.run_when_dimensions_known(frontside_element,
                                                        function (original_parent) {
@@ -380,7 +383,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             }
             return video_object;
         };
-         new_element.set_video_object = function (new_value) {
+        new_element.set_video_object = function (new_value) {
             video_object = new_value;
         };
         new_element.get_ignore_pointer_events = function () {
@@ -402,6 +405,16 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             source_URL = new_value;
             this.refresh();
             return true;
+        };
+        new_element.use_scaling_transform = function (css) {
+            if (css.width === '') {
+                css.width = undefined;
+            }
+            if (css.height === '') {
+                css.height = undefined;
+            }
+            // instead of updating the CSS width and height this uses the scaling transform instead
+            TT.UTILITIES.scale_element(this.get_frontside_element(), css.width, css.height, original_width, original_height, undefined, css);
         };
         new_element = new_element.add_standard_widget_functionality(new_element);
         widget_set_running = new_element.set_running.bind(new_element);
@@ -518,6 +531,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                         $(frontside_element).addClass(additional_classes);
                     }
                     $(frontside_element).addClass("ui-widget toontalk-plain-text-element");
+                    this.plain_text_dimensions();
                 }
                 initialized = true;
             }
@@ -531,11 +545,17 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             }
             return !html.match(/<\w/);
         };
+        new_element.plain_text_dimensions = function () {
+            // this is to scale the element (and its font) properly
+            // TODO: fix this in a principled manner
+            original_width  = 9*this.get_HTML().length;
+            original_height = 24;
+        };
         new_element.compute_original_dimensions = function (recompute) {
             TT.UTILITIES.original_dimensions(this, 
                                              function (width, height) {
                                                  var parent = this.get_parent_of_frontside();
-                                                 original_width =  width;
+                                                 original_width  = width;
                                                  original_height = height;
                                                  if (parent) {
                                                      if (parent.get_box) {
@@ -1187,7 +1207,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             var backside_widgets_of_attribute_json = json.attributes_backsides && json.attributes_backsides[index];
             var attribute_widget;
             if (ignore_attributes.indexOf(attribute_name) < 0) {
-                reconstructed_element.add_to_css(attribute_name, value_in_pixels(value) || value);
+                if (value === 0 && (attribute_name === 'width' || attribute_name === 'height')) {
+                    // ignore 0 values for width or height
+                } else {
+                    reconstructed_element.add_to_css(attribute_name, value_in_pixels(value) || value);
+                }
             }
             if (backside_widgets_of_attribute_json) {
                 attribute_widget = reconstructed_element.get_attribute_widget_in_backside_table(attribute_name, false, additional_info);
@@ -1464,8 +1488,6 @@ window.TOONTALK.element_backside =
                                                                undefined,
                                                                undefined,
                                                                URL_drop_handler);
-//                     $(URL_input.container).css({width: "100%"});
-//                     $(URL_input.button).css({width: "100%"});
                     URL_input.button.addEventListener('change',   update_URL);
                     URL_input.button.addEventListener('mouseout', update_URL);
                     backside_element.appendChild(URL_input.container);

@@ -123,7 +123,7 @@ window.TOONTALK.bird = (function (TT) {
                     } else if (this.visible()) {
                         become_static = function () {
                             $(bird_frontside_element).removeClass("toontalk-bird-morph-to-static");
-                            $(bird_frontside_element).addClass(this.get_class_name_with_color("toontalk-bird-static"));
+                            $(bird_frontside_element).addClass("toontalk-bird-static " + this.get_class_name_with_color("toontalk-bird-static"));
                             if (parent) {
                                 parent.get_widget().rerender();
                             }
@@ -207,12 +207,14 @@ window.TOONTALK.bird = (function (TT) {
                     // the timeout fixes a problem when a watched robot gives a bird something that
                     // thing carried is displayed displaced to the southeast from where it should be
                     TT.UTILITIES.set_timeout(function () {
-                            TT.UTILITIES.set_css(this.element_to_display_when_flying,
-                                                 {left: '',
-                                                  top:  '',
-                                                  width: '',
-                                                  height: '',
-                                                  position: ''});
+                            var css = {left: '',
+                                       top:  '',
+                                       position: ''}
+                            if (widget_side && !widget_side.use_scaling_transform) {
+                                css.width = '';
+                                css.height = '';
+                            }
+                            TT.UTILITIES.set_css(this.element_to_display_when_flying, css);
                             this.update_display();
                         }.bind(this));
                 }.bind(this);
@@ -256,7 +258,7 @@ window.TOONTALK.bird = (function (TT) {
                 // nests of functions are 'virtual'
                 target_frontside_element = target_side.get_widget().closest_visible_ancestor_or_frontside().get_widget().get_frontside_element();
             }
-            if ((!target_side.visible() && !this.visible()) || (!target_side.is_function_nest() && !$(target_frontside_element).is(":visible"))) {
+            if ((!target_side.visible() && !this.visible()) || (!target_side.is_function_nest() && !TT.UTILITIES.visible_element(target_frontside_element))) {
                 // neither are visible so just add contents to nest
                 nest_recieving_message.add_to_contents(message_side, event, robot, this, true);
                 return;
@@ -264,6 +266,7 @@ window.TOONTALK.bird = (function (TT) {
             if (TT.sounds) {
                 TT.sounds.bird_fly.play();
             }
+            $(bird_frontside_element).removeClass("toontalk-bird-static");
             if (!target_side.is_function_nest()) {
                 // nests of functions are 'virtual'
                 target_frontside_element = target_side.get_widget().closest_visible_ancestor_or_frontside().get_widget().get_frontside_element();
@@ -505,14 +508,14 @@ window.TOONTALK.bird = (function (TT) {
                 $(frontside_element).addClass(this.get_class_name_with_color("toontalk-bird toontalk-bird-static"));
                 frontside_element.addEventListener("dragenter", function (event) {
                     if (frontside_element.className.indexOf("toontalk-bird-static") >= 0) {
-                        $(frontside_element).removeClass(this.get_class_name_with_color("toontalk-bird-static"));
+                        $(frontside_element).removeClass("toontalk-bird-static " + this.get_class_name_with_color("toontalk-bird-static"));
                         TT.UTILITIES.add_animation_class(frontside_element, "toontalk-bird-gimme");
                     }
                 }.bind(this));
                 frontside_element.addEventListener("dragleave", function (event) {
                     if ($(frontside_element).is(".toontalk-bird-gimme")) {
                         $(frontside_element)
-                            .addClass(this.get_class_name_with_color("toontalk-bird-static"))
+                            .addClass("toontalk-bird-static " + this.get_class_name_with_color("toontalk-bird-static"))
                             .removeClass("toontalk-bird-gimme");
                        // if in a container restore dimensions
                        this.get_parent_of_frontside().render();
@@ -1299,15 +1302,16 @@ window.TOONTALK.nest = (function (TT) {
             var width  = TT.nest.CONTENTS_WIDTH_FACTOR *nest_width;
             var height = TT.nest.CONTENTS_HEIGHT_FACTOR*nest_height;
             var top_contents_widget = contents[0];
+            var border_factor, border_adjustment;
             if (!top_contents_widget) {
                 return;
             }
-            // loggically border_adjustment should be twice the border_size since there are two borders
+            // logically border_adjustment should be twice the border_size since there are two borders
             // but once looks better for boxes
             // the underlying problem is that the border width depends upon the size which in turn depends upon the border-width
             // tried to use JQuery's outerWidth but it didn't help
-            var border_factor = top_contents_widget.is_box() ? 1 : 2;
-            var border_adjustment = top_contents_widget.get_border_size ? border_factor*top_contents_widget.get_border_size(width, height) : 0;
+            border_factor = top_contents_widget.is_box() ? 1 : 2;
+            border_adjustment = top_contents_widget.get_border_size ? border_factor*top_contents_widget.get_border_size(width, height) : 0;
             width  -= border_adjustment;
             height -= border_adjustment;
             return {width:  width,

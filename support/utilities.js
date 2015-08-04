@@ -3406,10 +3406,22 @@ window.TOONTALK.UTILITIES =
 
        utilities.set_css = function (element, css) {
            // this is mostly useful debugging computed CSS problems since can break here
+           var widget;
            if (!css) {
                return;
            }
-           $(element).css(css);
+           widget = utilities.widget_of_element(element);
+           if (widget && widget.location_constrained_by_container()) {
+               css.left = '';
+               css.top  = '';
+           }
+           if (!css.transform && css.width !== undefined && css.height !== undefined && widget && widget.use_scaling_transform) {
+               // leave CSS width and height alone and recompute scaling transform
+               // following will call set_css again with modified css
+               widget.use_scaling_transform(css);
+           } else {
+               $(element).css(css);
+           }
        };
 
        utilities.map_arguments = function (args, fun) {
@@ -3470,6 +3482,11 @@ window.TOONTALK.UTILITIES =
                                             widget.rerender();
                                         }
                                     });
+       };
+
+       utilities.visible_element = function (element) {
+           var $element = $(element);
+           return $element.is(":visible") && $element.css('opacity') !== '0';
        };
 
 //         enable_touch_events = function (maximum_click_duration) {

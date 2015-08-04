@@ -1601,6 +1601,7 @@ body {
 }
 .toontalk-plain-text-element {
 	background-color: white;
+	font-size: 80%;
 }
 .toontalk-box-hole > .toontalk-plain-text-element {
 /* 	looks better with a smaller font when scaled to fit in a hole */
@@ -2495,24 +2496,6 @@ background-image: url("images/dusty-morph.png");
  	content: attr(toontalk_name);
  	position: relative;	
     top: 50%;
- 	color: #432707; 
- 	text-shadow: 1px 1px 2px #E7D9A8;
- 	font-weight: bold;
-    font-size: 12pt;
-}
-.toontalk-bird-static-yellow::after {
- 	content: attr(toontalk_name);
- 	position: relative;	
-    top: 50%;
- 	color: #432707; 
- 	text-shadow: 1px 1px 2px #E7D9A8;
- 	font-weight: bold;
-    font-size: 12pt;
-}
-.toontalk-bird-static-magenta::after {
- 	content: attr(toontalk_name);
- 	position: relative;	
-    top: 50%; 
  	color: #432707; 
  	text-shadow: 1px 1px 2px #E7D9A8;
  	font-weight: bold;
