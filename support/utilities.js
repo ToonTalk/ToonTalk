@@ -501,13 +501,11 @@ window.TOONTALK.UTILITIES =
 //                 },
 //                 50);
 //             }
-            if (typeof drag_x_offset !== 'undefined') {
-                left = page_x - (target_position.left + (drag_x_offset || 0));
-                top  = page_y - (target_position.top  + (drag_y_offset || 0));
-                utilities.set_css($source,
-                                  {left: TT.UTILITIES.left_as_percent(left, $source.get(0)),
-                                   top:  TT.UTILITIES.top_as_percent (top,  $source.get(0))});
-            }
+            left = page_x - (target_position.left + (drag_x_offset || 0));
+            top  = page_y - (target_position.top  + (drag_y_offset || 0));
+            utilities.set_css($source,
+                              {left: TT.UTILITIES.left_as_percent(left, $source.get(0)),
+                               top:  TT.UTILITIES.top_as_percent (top,  $source.get(0))});
             if (json_object && json_object.semantic.running && !utilities.get_dragee()) {
                 // JSON was dropped here from outside so if was running before should be here
                 // but not if just a local move
