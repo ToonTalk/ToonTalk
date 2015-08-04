@@ -454,6 +454,15 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     return true;
                 }
             });
+            if (result) {
+                return result;
+            }
+            children.some(function (child) {
+                if (child.can_run()) {
+                    result = true;
+                    return true;
+                }
+            })
             return result;
         }
         new_element.drag_started = function (json, is_resource) {
