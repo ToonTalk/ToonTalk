@@ -681,7 +681,13 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     element.copy = function (parameters) {
         // copy has a copy of the attributes array as well
         var style_attributes = this.get_style_attributes();
-        var copy = element.create(this.get_HTML(), style_attributes.slice(), this.get_description(), this.get_children(), this.get_sound_effect(), this.get_video_object(), this.get_ignore_pointer_events());
+        var copy = element.create(this.get_HTML(), 
+                                  style_attributes.slice(),
+                                  this.get_description(),
+                                  TT.UTILITIES.copy_widgets(this.get_children()),
+                                  this.get_sound_effect(),
+                                  this.get_video_object(),
+                                  this.get_ignore_pointer_events());
         copy.set_source_URL(this.get_source_URL());
         if (parameters) {
             if (!parameters.elements_copied) {
