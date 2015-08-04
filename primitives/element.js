@@ -77,7 +77,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         return value;
     };
     
-    element.create = function (original_html, style_attributes, description, sound_effect_or_sound_effect_file_name, video_object_or_video_file_name, ignore_pointer_events, additional_classes) {
+    element.create = function (original_html, style_attributes, description, children, sound_effect_or_sound_effect_file_name, video_object_or_video_file_name, ignore_pointer_events, additional_classes) {
         var new_element = Object.create(element);
         var guid = TT.UTILITIES.generate_unique_id(); // needed for copying tables
         var widget_drag_started = new_element.drag_started;
@@ -89,6 +89,13 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             pending_css, transform_css, on_update_display_handlers, $image_element, widget_set_running, widget_can_run;
         if (!style_attributes) {
             style_attributes = ['left', 'top', 'width', 'height'];
+        }
+        if (children) {
+            children.forEach(function (child) {
+                child.set_parent_of_frontside(new_element);
+            });
+        } else {
+            children = [];
         }
         if (sound_effect_or_sound_effect_file_name) {
             // by supporting both the sound effect and the file name we can get sharing of audio objects between copies of the same element
@@ -371,6 +378,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         new_element.set_additional_classes = function (new_value) {
             additional_classes = new_value;
         };
+        new_element.get_children = function () {
+            return children;
+        };
         new_element.set_sound_effect = function (new_value) {
             sound_effect = new_value;
         };
@@ -505,6 +515,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 this.compute_original_dimensions();
             }
             this.apply_css();
+            children.forEach(function (child) {
+                frontside_element.appendChild(child.get_frontside_element(true));
+                child.set_visible(true);
+                child.update_display();
+            });
             this.fire_on_update_display_handlers();
             TT.UTILITIES.give_tooltip(frontside_element,
                                       "Click to see the backside where you can place robots or change the style of this " + 
@@ -625,6 +640,23 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         new_element.increment_height = function (delta) {
             this.set_attribute('height', (current_height || original_height) + delta);
         };
+        new_element.add_child = function (widget) {
+            var $widget_element = $(widget.get_frontside_element(true));
+            var $this_element   = $(this.get_frontside_element(true));
+            var new_relative_position;
+            children.push(widget);
+            widget.set_parent_of_frontside(this);
+            new_relative_position = TT.UTILITIES.set_position_relative_to_element($widget_element, $this_element, $widget_element.offset(), true);
+            if (widget.is_element()) {
+                widget.set_location_attributes(new_relative_position.left, new_relative_position.top);
+            }
+        };
+        new_element.removed_from_container = function (child, backside_removed, event, index, report_error_if_no_index) {
+            var index = children.indexOf(child);
+            if (index >= 0) {
+                children.splice(index, 1);
+            }
+        };
         new_element.set_HTML(original_html.toString());
         new_element.set_description(description);
         if (TT.debugging) {
@@ -637,7 +669,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     element.copy = function (parameters) {
         // copy has a copy of the attributes array as well
         var style_attributes = this.get_style_attributes();
-        var copy = element.create(this.get_HTML(), style_attributes.slice(), this.get_description(), this.get_sound_effect(), this.get_video_object(), this.get_ignore_pointer_events());
+        var copy = element.create(this.get_HTML(), style_attributes.slice(), this.get_description(), this.get_children(), this.get_sound_effect(), this.get_video_object(), this.get_ignore_pointer_events());
         copy.set_source_URL(this.get_source_URL());
         if (parameters) {
             if (!parameters.elements_copied) {
@@ -708,9 +740,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             this.set_HTML(other.get_HTML());
             this.set_erased(false);
             other.remove();
-            return true;
+        } else {
+            this.add_child(other);
+            this.rerender();
         }
-        console.log("Dropping widgets on un-erased elements does nothing (but may someday)");
+        return true;
     };
     
     element.create_backside = function () {
@@ -1174,27 +1208,35 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         });
         return {type: "element",
                 // z-index info is temporary and should not be captured here
-                html: html_encoded_or_shared, 
-                attributes: json_attributes,
-                attribute_values: json_attributes.map(this.get_attribute.bind(this)),
+                html:                 html_encoded_or_shared, 
+                attributes:           json_attributes,
+                attribute_values:     json_attributes.map(this.get_attribute.bind(this)),
                 attributes_backsides: json_attributes.map(function (attribute_name) {
                                                                var backside_widget = this.get_attribute_widget_in_backside_table(attribute_name, true);
                                                                if (backside_widget) {
                                                                    return TT.UTILITIES.get_json_of_array(backside_widget.get_backside_widgets(), json_history)
                                                                }
                                                           }.bind(this)),
-                additional_classes: this.get_additional_classes(),
-                sound_effect: this.get_sound_effect() && this.get_sound_effect().src,
-                video:        this.get_video_object() && this.get_video_object().src,
+                additional_classes:    this.get_additional_classes(),
+                children:              this.get_children().length > 0 && TT.UTILITIES.get_json_of_array(this.get_children(), json_history),
+                sound_effect:          this.get_sound_effect() && this.get_sound_effect().src,
+                video:                 this.get_video_object() && this.get_video_object().src,
                 ignore_pointer_events: this.get_ignore_pointer_events() ? true : undefined, // undefined means no attribute value pair saving space
-                source_URL: this.get_source_URL()
+                source_URL:            this.get_source_URL()
                 };
     };
     
     TT.creators_from_json["element"] = function (json, additional_info) {
-        var html = decodeURIComponent(typeof json.html === 'string' ? json.html : additional_info.shared_html[json.html.shared_html_index]); 
-        var reconstructed_element = element.create(html, json.attributes, json.description, json.sound_effect, json.video, json.ignore_pointer_events);
-        var ignore_attributes;
+        var html = decodeURIComponent(typeof json.html === 'string' ? json.html : additional_info.shared_html[json.html.shared_html_index]);
+        var children, is_child, ignore_attributes, reconstructed_element;
+        if (json.children) {
+            is_child = additional_info.is_child;
+            additional_info.is_child = true;
+            children = TT.UTILITIES.create_array_from_json(json.children, additional_info);
+            // restore is_child flag
+            additional_info.is_child = is_child;
+        }
+        reconstructed_element = element.create(html, json.attributes, json.description, children, json.sound_effect, json.video, json.ignore_pointer_events);
         if (additional_info && additional_info.event) {
             // perhaps should check that event is a drop event
             // drop event location has priority over these settings
@@ -1206,7 +1248,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             var attribute_name = json.attributes[index];
             var backside_widgets_of_attribute_json = json.attributes_backsides && json.attributes_backsides[index];
             var attribute_widget;
-            if (ignore_attributes.indexOf(attribute_name) < 0) {
+            if (additional_info.is_child || ignore_attributes.indexOf(attribute_name) < 0) {
                 if (value === 0 && (attribute_name === 'width' || attribute_name === 'height')) {
                     // ignore 0 values for width or height
                 } else {

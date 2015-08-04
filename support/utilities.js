@@ -1692,42 +1692,45 @@ window.TOONTALK.UTILITIES =
                                position: "absolute"});
             if ($element.is(".toontalk-side-animating")) {
                 // animation doesn't work with JQuery css
-                $element.get(0).style.left = left+"px";
-                $element.get(0).style.top  = top +"px";
+                $element.get(0).style.left = left + "px";
+                $element.get(0).style.top  = top  + "px";
             }
         };
         
-        utilities.set_position_relative_to_top_level_backside = function ($element, absolute_position, stay_inside_top_level_backside) {
-            var $top_level_element = $element.closest(".toontalk-top-level-backside");
-            var top_level_position = $top_level_element.offset();
-            var left, top, element_width, element_height, top_level_element_width, top_level_element_height;
-            if (!top_level_position) {
-                top_level_position = {left: 0, top: 0};
+        utilities.set_position_relative_to_top_level_backside = function ($element, absolute_position, stay_inside_parent) {
+            return this.set_position_relative_to_element($element, $element.closest(".toontalk-top-level-backside"), absolute_position, stay_inside_parent);
+        };
+
+        utilities.set_position_relative_to_element = function ($element, $parent_element, absolute_position, stay_inside_parent) {
+            var parent_position = $parent_element.offset();
+            var left, top, element_width, element_height, parent_element_width, parent_element_height, css;
+            if (!parent_position) {
+                parent_position = {left: 0, top: 0};
             }
-            left = absolute_position.left-top_level_position.left;
-            top  = absolute_position.top -top_level_position.top;
-            if (stay_inside_top_level_backside) {
+            left = absolute_position.left-parent_position.left;
+            top  = absolute_position.top -parent_position.top;
+            if (stay_inside_parent) {
                 element_width  = $element.width();
                 element_height = $element.height();
-                top_level_element_width  = $top_level_element.width();
-                top_level_element_height = $top_level_element.height();
-                if (left > top_level_element_width-element_width) {
-                    left = top_level_element_width-element_width;
+                parent_element_width  = $parent_element.width();
+                parent_element_height = $parent_element.height();
+                if (left > parent_element_width-element_width) {
+                    left = parent_element_width-element_width;
                 }
                 if (left < 0) {
                     left = 0;
                 }
-                if (top > top_level_element_height-element_height) {
-                    top = top_level_element_height-element_height;
+                if (top > parent_element_height-element_height) {
+                    top = parent_element_height-element_height;
                 }
                 if (top < 0) {
                     top = 0;
                 }
             }
-            utilities.set_css($element,
-                              {left: left,
-                               top:  top,
-                               position: "absolute"});
+            css = {left: left,
+                   top:  top,
+                   position: "absolute"};
+            utilities.set_css($element, css);
             if ($element.is(".toontalk-side-animating")) {
                 // animation doesn't work with JQuery css
                 $element.get(0).style.left = left+"px";
@@ -1738,6 +1741,7 @@ window.TOONTALK.UTILITIES =
                     $element.get(0).style.transitionDuration = '';
                 });
             }
+            return css;
         };
         
         utilities.restore_resource = function ($dropped, dropped_widget) {
