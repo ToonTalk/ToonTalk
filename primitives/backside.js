@@ -142,7 +142,7 @@ window.TOONTALK.backside =
                 }
                 close_title = "Click to hide this back side of " + close_title + ".";
                 close_button = TT.UTILITIES.create_close_button(close_handler, close_title);
-                backside_element.appendChild(close_button);        
+                backside_element.appendChild(close_button);
             }
             $(green_flag_element).addClass("toontalk-green-flag toontalk-green-flag-inactive")
                                  .click(function (event) {

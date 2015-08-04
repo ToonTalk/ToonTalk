@@ -441,6 +441,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                          }.bind(this));
                 this.rerender();
             }
+            children.forEach(function (child) {
+                child.set_running(new_value, top_level_context);
+            });
         };
         widget_can_run = new_element.can_run.bind(new_element);
         new_element.can_run = function () {
@@ -462,7 +465,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     result = true;
                     return true;
                 }
-            })
+            });
             return result;
         }
         new_element.drag_started = function (json, is_resource) {
