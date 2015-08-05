@@ -256,7 +256,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         };
         new_element.apply_css = function () {
             var transform = "";
-            var frontside_element, x_scale, y_scale, $container, container_width, container_height, parent_of_frontside;
+            var frontside_element, x_scale, y_scale, $container, container_width_minus_width, container_height_minus_width, parent_of_frontside;
             if (!pending_css && !transform_css) {
                 return;
             }
@@ -307,15 +307,15 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     if (pending_css.left) {      
                         // if negative after mod add width -- do another mod in case was positive
                         $container = $(parent_of_frontside.get_element());
-                        container_width = $container.width();
-                        pending_css.left = ((pending_css.left%container_width)+container_width)%container_width;
+                        container_width_minus_width = $container.width()-current_width;
+                        pending_css.left = ((pending_css.left%container_width_minus_width)+container_width_minus_width)%container_width_minus_width;
                     }
                     if (pending_css.top) {
                         if (!$container) {
                             $container = $(parent_of_frontside.get_element());
                         }
-                        container_height = $container.height();
-                        pending_css.top = ((pending_css.top%container_height)+container_height)%container_height;
+                        container_height_minus_width = $container.height()-current_height;
+                        pending_css.top = ((pending_css.top%container_height_minus_width)+container_height_minus_width)%container_height_minus_width;
                     }
                 }
             }
