@@ -90,13 +90,6 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         if (!style_attributes) {
             style_attributes = ['left', 'top', 'width', 'height'];
         }
-        if (children) {
-            children.forEach(function (child) {
-                child.set_parent_of_frontside(new_element);
-            });
-        } else {
-            children = [];
-        }
         if (sound_effect_or_sound_effect_file_name) {
             // by supporting both the sound effect and the file name we can get sharing of audio objects between copies of the same element
             if (typeof sound_effect_or_sound_effect_file_name === 'string') { 
@@ -332,9 +325,19 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 $(frontside_element).css({width: '', height: ''});
                 TT.UTILITIES.run_when_dimensions_known(frontside_element,
                                                        function (original_parent) {
-                                                           TT.UTILITIES.scale_element(frontside_element, current_width, current_height, original_width, original_height, transform, pending_css, original_parent);
+                                                           var parent = this.get_parent_of_frontside();
+                                                           TT.UTILITIES.scale_element(frontside_element,
+                                                                                      current_width,
+                                                                                      current_height,
+                                                                                      original_width,
+                                                                                      original_height,
+                                                                                      transform,
+                                                                                      pending_css,
+                                                                                      original_parent,
+                                                                                      // no need to translate if element is part of another element
+                                                                                      !parent.is_backside && parent.is_element());
                                                            pending_css = undefined;
-                                                       });
+                                                       }.bind(this));
                 return;
             } else {
                 // use center center for transform-origin unless in a box hole
@@ -530,11 +533,15 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 this.compute_original_dimensions();
             }
             this.apply_css();
-            children.forEach(function (child) {
-                frontside_element.appendChild(child.get_frontside_element(true));
-                child.set_visible(true);
-                child.update_display();
-            });
+            if (children) {
+                children.forEach(function (child) {
+                    frontside_element.appendChild(child.get_frontside_element(true));
+                    child.set_visible(true);
+                    child.update_display();
+                });
+            } else {
+                children = [];
+            }
             this.fire_on_update_display_handlers();
             TT.UTILITIES.give_tooltip(frontside_element,
                                       "Click to see the backside where you can place robots or change the style of this " + 
@@ -678,6 +685,13 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             new_element._debug_id = TT.UTILITIES.generate_unique_id();
             new_element._debug_string = new_element.to_debug_string();
         }
+        if (children) {
+            children.forEach(function (child) {
+                child.set_parent_of_frontside(new_element);
+            });
+        } else {
+            children = [];
+        }
         return new_element;
     };
     
@@ -693,6 +707,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                   this.get_ignore_pointer_events());
         var attribute_widgets_in_backside_table = this.get_attribute_widgets_in_backside_table();
         var attribute_widgets_in_backside_table_copy = {};
+        var backside = copy.get_backside(true);
         copy.set_source_URL(this.get_source_URL());
         if (parameters) {
             if (!parameters.elements_copied) {
@@ -702,6 +717,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         }
         Object.keys(attribute_widgets_in_backside_table).forEach(function (attribute_name) {
                                         attribute_widgets_in_backside_table_copy[attribute_name] = attribute_widgets_in_backside_table[attribute_name].copy(parameters);
+                                        attribute_widgets_in_backside_table_copy[attribute_name].set_parent_of_frontside(backside, false, true); // a white lie
                                         copy.set_attribute(attribute_name, this.get_attribute(attribute_name));
                                  }.bind(this));
         copy.set_attribute_widgets_in_backside_table(attribute_widgets_in_backside_table_copy);        
@@ -958,7 +974,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             attribute_widget.copy = function (parameters) {
                 var copy_of_this_element_widget;
                 if (parameters)  {
-                    if  (parameters.just_value) {
+                    if (parameters.just_value) {
                         // just copy as a number
                         return widget_copier(parameters);
                     }

@@ -2758,9 +2758,8 @@ window.TOONTALK.UTILITIES =
             return utilities.scale_element(this_element, $(other_element).width(), $(other_element).height(), original_width, original_height);  
         };
 
-        utilities.scale_element = function (element, new_width, new_height, original_width, original_height, other_transforms, pending_css, original_parent) {
+        utilities.scale_element = function (element, new_width, new_height, original_width, original_height, other_transforms, pending_css, original_parent, no_need_to_translate) {
             var update_css = function () {
-                var need_to_translate = true;
                 // for things to fit in box holes or for scales to be placed as other widgets 
                 // need them to use left top instead of center center as the transform-origin
                 var parent_element = (original_parent && original_parent !== document.body) ? original_parent : element.parentElement;
@@ -2774,13 +2773,13 @@ window.TOONTALK.UTILITIES =
                 // coordinates are no longer in terms of left top corner so adjust them
                 if (typeof pending_css.left === 'number') {
                     pending_css.left -= (original_width-new_width)/2;
-                    need_to_translate = false;
+                    no_need_to_translate = true;
                 }
                 if (typeof pending_css.top === 'number') {
                     pending_css.top -= (original_height-new_height)/2;
-                    need_to_translate = false;
+                    no_need_to_translate = true;
                 }
-                if (need_to_translate && transform_origin_center) {
+                if (!no_need_to_translate && transform_origin_center) {
                     if (new_width) {
                         translate += "translateX(" + (new_width-original_width)/2 + "px) ";
                     }
