@@ -1299,7 +1299,7 @@ window.TOONTALK.widget = (function (TT) {
                 }
                 // need to see if on backside is on the backside of another (and that is closed)
                 parent = this.get_parent_of_backside();
-                if (parent && parent.is_backside()) {
+                if (parent && parent.is_backside() && !parent.get_widget().is_top_level()) {
                     return parent.get_widget().open_backside(continuation);
                 }
             }
