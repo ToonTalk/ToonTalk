@@ -60,6 +60,9 @@ window.TOONTALK.robot = (function (TT) {
         if (!first_in_team) {
             first_in_team = new_robot;
         }
+        if (frontside_conditions) {
+            frontside_conditions.set_parent_of_frontside(new_robot);
+        };
         new_robot.is_robot = function () {
             return true;
         };
@@ -69,12 +72,6 @@ window.TOONTALK.robot = (function (TT) {
         new_robot.set_frontside_conditions = function (new_value) {
             frontside_conditions = new_value;
             frontside_conditions.set_parent_of_frontside(this);
-        };
-        if (frontside_conditions) {
-            frontside_conditions.set_parent_of_frontside(new_robot);
-        };
-        new_robot.get_backside_conditions = function () {
-            return backside_conditions;
         };
         new_robot.get_backside_matched_widgets = function () {
            return backside_matched_widgets;
@@ -105,6 +102,9 @@ window.TOONTALK.robot = (function (TT) {
                 }
             }.bind(this));
             return backside_widget;            
+        };
+        new_robot.get_backside_conditions = function () {
+            return backside_conditions;
         };
         new_robot.set_backside_conditions = function (new_value) {
             if ($.isArray(new_value)) {
@@ -143,6 +143,7 @@ window.TOONTALK.robot = (function (TT) {
             // following used to also include copy_covered_nests: true but that caused nest sharing between members of a robot team
             // that led to several bugs -- also robots shouldn't be able to tell if it has a widget or has a nest with that widget on top
             original_backside_widgets_of_context = TT.UTILITIES.copy_widget_sides(context.get_backside_widgets(), {just_value: true});
+            this.set_backside_conditions([]);
             context.get_backside_widgets().forEach(function (widget_side) {
                 if (widget_side.is_backside()) {
                     return;
@@ -1587,6 +1588,7 @@ window.TOONTALK.robot_backside =
                 training = !training;
                 backside.change_label_and_title_of_train_button(training);
                 if (training) {
+                    robot.initialize_backside_conditions();
                     robot.get_body().reset_steps();
                     robot.robot_started_training(robot);
                     robot.training_started();
