@@ -121,6 +121,8 @@ window.TOONTALK.backside =
                                        $backside_element.css({opacity: 1});
                                        do_after_closing();
                                 });
+                                // but let robots and birds "know" that this is "hidden"
+                                backside.set_visible(false);
                             } else {
                                 do_after_closing();
                             }
