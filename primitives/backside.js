@@ -38,9 +38,9 @@ window.TOONTALK.backside =
                 var backside_width  = $backside_element.width();
                 var backside_height = $backside_element.height();
                 var sign_width, close_button_width, green_flag_width, help_button_width;
-                if (backside_width === 0) {
+                if (!TOONTALK.UTILITIES.visible_element(backside_element)) {
                     // backside_element not yet added to the DOM
-                    // should really listen to an event that it has been
+                    // TODO: should really listen to an event when it is added to the DOM
                     setTimeout(update_flag_and_sign_position, 100);
                 } else {
                     sign_width = $(stop_sign_element) .width();
