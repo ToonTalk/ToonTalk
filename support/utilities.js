@@ -1520,7 +1520,7 @@ window.TOONTALK.UTILITIES =
                                      });
             element.addEventListener('dragend',
                                      function (event) {
-                                          drag_end_handler(event, element);
+                                         drag_end_handler(event, element);
                                      });
         };
         
@@ -1598,38 +1598,44 @@ window.TOONTALK.UTILITIES =
                     }
                     json_string = json_string.substring(json_string.indexOf("{"), json_string.lastIndexOf("}")+1);
                     json = JSON.parse(json_string);
-                    widget = utilities.create_from_json(json);
+                    if (json.semantic && json.semantic.type === 'top_level') {
+                        // perhaps local storage will be used instead of the current json
+                        if (!TT.no_local_storage) {
+                            if (!utilities.get_current_url_boolean_parameter("reset", false)) {
+                                if (json.load_most_recent_program) {
+                                    try {
+                                         toontalk_last_key = window.localStorage.getItem('toontalk-last-key');
+                                         if (toontalk_last_key) {
+                                             stored_json_string = window.localStorage.getItem(toontalk_last_key);
+                                         }
+                                    } catch (error) {
+                                        message = "Error reading previous state. Error message is " + error;
+                                        if (utilities.is_internet_explorer()) {
+                                            // TODO: determine if there still is a problem with IE11 and local storage
+                                            console.error(message);
+                                        } else {
+                                            utilities.display_message(message);
+                                        }
+                                    }
+                                }
+                                if (stored_json_string) {
+                                    json = JSON.parse(stored_json_string);
+                                    // create the top-level widget with the additional info stored here:
+                                    widget = utilities.create_from_json(json);
+                                }
+                            }
+                        }
+                    }
+                    if (!widget) {
+                        widget = utilities.create_from_json(json);
+                    }
                     if (widget) {
                         element.textContent = ""; // served its purpose of being parsed as JSON
                         if (!widget.get_type_name) {
                             // isn't a widget. e.g. a tool
                             element.appendChild(widget.get_element());
                         } else if (widget.is_top_level()) {
-                            if (!TT.no_local_storage) {
-                                if (!utilities.get_current_url_boolean_parameter("reset", false)) {
-                                    if (json.load_most_recent_program) {
-                                        try {
-                                            toontalk_last_key = window.localStorage.getItem('toontalk-last-key');
-                                            if (toontalk_last_key) {
-                                                stored_json_string = window.localStorage.getItem(toontalk_last_key);
-                                            }
-                                        } catch (error) {
-                                            message = "Error reading previous state. Error message is " + error;
-                                            if (utilities.is_internet_explorer()) {
-                                                // TODO: determine if there still is a problem with IE11 and local storage
-                                                console.error(message);
-                                            } else {
-                                                utilities.display_message(message);
-                                            }
-                                        }
-                                    }
-                                    if (stored_json_string) {
-                                        json = JSON.parse(stored_json_string);
-                                        // re-create the top-level widget with the additional info stored here:
-                                        widget = utilities.create_from_json(json);
-                                    }
-                                }
-                            }
+                            
                             backside = widget.get_backside(true);
                             backside_element = backside.get_element();
                             $(element).replaceWith(backside_element);
