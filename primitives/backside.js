@@ -894,14 +894,14 @@ window.TOONTALK.backside =
                 backside_element = this.get_element();
             }
             if (!$settings_button) {
-                $settings_button = $(backside_element).find(".toontalk-settings-backside-button");  
+                $settings_button = $(backside_element).children(".toontalk-settings-backside-button");  
             } 
             if (show) {
-                $(backside_element).find(".toontalk-advanced-setting").show();
+                $(backside_element).children(".toontalk-advanced-setting").show();
                 $settings_button.html("<");
                 TT.UTILITIES.give_tooltip($settings_button.get(0), "Click to hide the advanced settings.");  
             } else {
-                $(backside_element).find(".toontalk-advanced-setting").hide();
+                $(backside_element).children(".toontalk-advanced-setting").hide();
                 $settings_button.html(">");
                 TT.UTILITIES.give_tooltip($settings_button.get(0), "Click to show the advanced settings.");    
             }
