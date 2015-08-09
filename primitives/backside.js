@@ -35,14 +35,14 @@ window.TOONTALK.backside =
                 }
             };
             var update_flag_and_sign_position = function () {
-                var backside_width  = $backside_element.width();
-                var backside_height = $backside_element.height();
-                var sign_width, close_button_width, green_flag_width, help_button_width;
+                var backside_width, backside_height, sign_width, close_button_width, green_flag_width, help_button_width;
                 if (!TOONTALK.UTILITIES.visible_element(backside_element)) {
                     // backside_element not yet added to the DOM
                     // TODO: should really listen to an event when it is added to the DOM
-                    setTimeout(update_flag_and_sign_position, 100);
+                    setTimeout(update_flag_and_sign_position, 1000);
                 } else {
+                    backside_width  = $backside_element.width();
+                    backside_height = $backside_element.height();
                     sign_width = $(stop_sign_element) .width();
                     close_button_width = $(close_button).width();
                     if (close_button_width) {
