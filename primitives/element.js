@@ -335,7 +335,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                                                                       pending_css,
                                                                                       original_parent,
                                                                                       // no need to translate if element is part of another element
-                                                                                      !parent.is_backside && parent.is_element());
+                                                                                      !parent || (!parent.is_backside && parent.is_element()));
                                                            pending_css = undefined;
                                                        }.bind(this));
                 return;
