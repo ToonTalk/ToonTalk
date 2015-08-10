@@ -152,6 +152,7 @@ window.TOONTALK.backside =
                                                 update_flag_and_stop_sign_classes(true);
                                                 widget.set_running(true);
                                                 update_stop_sign_title();
+                                                TT.DEFAULT_QUEUE.start();
                                             } else {
                                                 if (widget.is_top_level()) {
                                                     TT.UTILITIES.display_message("There is nothing to run.");

@@ -673,7 +673,7 @@ window.TOONTALK.UTILITIES =
         // frontside's click handler will run the top-level resource widgets if clicked
         TT.DEFAULT_QUEUE = window.TOONTALK.queue.create();
         // might want two queues: so new entries end up in the 'next queue'
-        TT.DEFAULT_QUEUE.run();
+        TT.DEFAULT_QUEUE.start();
         window.addEventListener('beforeunload', function (event) {
             try {
                 utilities.backup_all_top_level_widgets(true);
