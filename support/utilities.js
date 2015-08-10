@@ -2012,6 +2012,8 @@ window.TOONTALK.UTILITIES =
                                              // destroy it if it has been intialized and not already destroyed elsewhere
                                              // see http://stackoverflow.com/questions/18833609/testing-if-jquery-tooltip-is-initialized
                                              $(tooltip).tooltip('destroy');
+                                                                           // ui-helper-hidden-accessible elements were added by tooltip for accessibility but tooltip is being closed now
+                              $(".ui-helper-hidden-accessible").remove();
                                              utilities.use_custom_tooltip(element);
                                          }
                                          element_displaying_tooltip = undefined;
@@ -2021,6 +2023,8 @@ window.TOONTALK.UTILITIES =
                close: function () {
                           if ($(this).data('ui-tooltip')) {
                               $(this).tooltip('destroy');
+                              // ui-helper-hidden-accessible elements were added by tooltip for accessibility but tooltip is being closed now
+                              $(".ui-helper-hidden-accessible").remove();
                               utilities.use_custom_tooltip(element);
                           }
                           element_displaying_tooltip = undefined;
