@@ -24,6 +24,7 @@ window.TOONTALK.widget = (function (TT) {
         var widget = TT.widget.create_top_level_widget(json.settings);
         var $backside_element = $(widget.get_backside(true).get_element());
         $backside_element.addClass("toontalk-top-level-backside");
+        widget.get_backside().update_flag_and_sign_position();
 //         $backside_element.click(
 //             function (event) {
 //                 if (event.target === $backside_element.get(0)) {
@@ -289,6 +290,7 @@ window.TOONTALK.widget = (function (TT) {
              if (!widget.set_backside) {
                 widget.set_backside = function (new_value) {
                     backside = new_value;
+                    backside.update_flag_and_sign_position();
                 };
             }
             if (!widget.forget_backside) {
@@ -1371,6 +1373,7 @@ window.TOONTALK.widget = (function (TT) {
                         }
                 }.bind(this));
             }
+            backside.update_flag_and_sign_position();
             return backside;
         },
                 

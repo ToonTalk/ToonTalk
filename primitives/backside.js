@@ -34,34 +34,6 @@ window.TOONTALK.backside =
                                          .removeClass("toontalk-stop-sign-inactive");
                 }
             };
-            var update_flag_and_sign_position = function () {
-                var backside_width, backside_height, sign_width, close_button_width, green_flag_width, help_button_width;
-                if (!TOONTALK.UTILITIES.visible_element(backside_element)) {
-                    // backside_element not yet added to the DOM
-                    // TODO: should really listen to an event when it is added to the DOM
-                    setTimeout(update_flag_and_sign_position, 1000);
-                } else {
-                    backside_width  = $backside_element.width();
-                    backside_height = $backside_element.height();
-                    sign_width = $(stop_sign_element) .width();
-                    close_button_width = $(close_button).width();
-                    if (close_button_width) {
-                        close_button_width += 14; // needs a gap
-                    } else {
-                        close_button_width = 0; // width() may have returned null
-                    }
-                    $(stop_sign_element) .css({right: close_button_width});
-                    $(green_flag_element).css({right: close_button_width+sign_width+6}); // smaller gap needed
-                    green_flag_width = $(green_flag_element).width();
-                    if (help_button) {          
-                        $(help_button).css({right: close_button_width+sign_width+green_flag_width+12});
-                    }
-                    if (settings_button) {
-                        help_button_width = $(help_button).width() || 0;
-                        $(settings_button).css({right: close_button_width+sign_width+green_flag_width+help_button_width+12});
-                    }
-                }
-            };
             var description_label = this.create_description_label(backside, widget);
             var update_green_flag_title = function () {
                                               var title;
@@ -230,8 +202,6 @@ window.TOONTALK.backside =
                 backside_element.appendChild(settings_button); 
                 TT.UTILITIES.give_tooltip(settings_button, "Click to change settings or open a different program.");        
             }
-            // wait for DOM to settle down
-            TT.UTILITIES.set_timeout(update_flag_and_sign_position);
             $backside_element.addClass("toontalk-backside toontalk-side " + "toontalk-backside-of-" + widget.get_type_name());
             $backside_element.css({"z-index": TT.UTILITIES.next_z_index()});
             backside.get_element = function () {
@@ -446,6 +416,34 @@ window.TOONTALK.backside =
             backside.run_status_changed = function (running) {
                 update_flag_and_stop_sign_classes(running);
             };
+            backside.update_flag_and_sign_position = function () {
+                var backside_width, backside_height, sign_width, close_button_width, green_flag_width, help_button_width;
+                if (!TOONTALK.UTILITIES.visible_element(backside_element)) {
+                    // backside_element not yet added to the DOM
+                    // TODO: should really listen to an event when it is added to the DOM
+                    setTimeout(this.update_flag_and_sign_position.bind(this), 100);
+                } else {
+                    backside_width  = $backside_element.width();
+                    backside_height = $backside_element.height();
+                    sign_width = $(stop_sign_element) .width();
+                    close_button_width = $(close_button).width();
+                    if (close_button_width) {
+                        close_button_width += 14; // needs a gap
+                    } else {
+                        close_button_width = 0; // width() may have returned null
+                    }
+                    $(stop_sign_element) .css({right: close_button_width});
+                    $(green_flag_element).css({right: close_button_width+sign_width+6}); // smaller gap needed
+                    green_flag_width = $(green_flag_element).width();
+                    if (help_button) {          
+                        $(help_button).css({right: close_button_width+sign_width+green_flag_width+12});
+                    }
+                    if (settings_button) {
+                        help_button_width = $(help_button).width() || 0;
+                        $(settings_button).css({right: close_button_width+sign_width+green_flag_width+help_button_width+12});
+                    }
+                }
+            };
             if (TT.debugging || TT.logging) {
                 backside.to_debug_string = function () {
                     return "backside of " + this.get_widget().to_debug_string();
@@ -532,6 +530,7 @@ window.TOONTALK.backside =
                 if (name_text_input) {
                     name_text_input.button.value = this.get_widget().get_name();
                 }
+                backside.update_flag_and_sign_position();
                 backside.display_updated();
             };
             backside.display_updated = function () {
