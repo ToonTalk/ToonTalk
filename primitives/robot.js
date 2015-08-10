@@ -616,9 +616,11 @@ window.TOONTALK.robot = (function (TT) {
                 queue = TT.DEFAULT_QUEUE;
             }
             this.get_body().reset_newly_created_widgets();
-//             this.get_first_in_team().set_running(true);
             // TODO: determine if the queue: queue passed in is always the queue who enqueues it
-            queue.enqueue({robot: this, context: context, top_level_context: top_level_context, queue: queue});
+            if (queue.enqueue({robot: this, context: context, top_level_context: top_level_context, queue: queue})) {
+                // enqueued the first item so start running
+                queue.run();
+            }
             return this.match_status;
         }
         if (this.match_status.is_widget) { // failed to match - this.match_status is the cause

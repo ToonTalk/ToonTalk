@@ -32,35 +32,38 @@ window.TOONTALK.queue =
                 return;
             }
             robot_context_queue.robot.set_running_or_in_run_queue(true);
-            return this.to_run.enqueue(robot_context_queue);
+            this.to_run.enqueue(robot_context_queue);
         },
         
         maximum_run: 50, // milliseconds
         
         paused: false,
 
+        running: false,
+
         start: function () {
+            if (this.running) {
+                // already running so ignore this
+                return;
+            }
             if (!this.to_run.isEmpty()) {
                 this.run();
             }
+            TT.DISPLAY_UPDATES.update_display();
         },
         
         run: function () {
-            var next_robot_run, context, now, element;
-            var end_time = Date.now()+queue.maximum_run;
-            while (!this.to_run.isEmpty()) {
-                if (this.paused) {
-                    break;
-                }
+            var end_time, next_robot_run, context, now, element;
+            this.running = true;
+            end_time = Date.now()+queue.maximum_run;
+            while (!this.to_run.isEmpty() && !this.paused && Date.now() < end_time) {
                 // tried checking the time every nth time but then add 1 unwatched looked funny (appeared to skip some additions)
-                if (Date.now() >= end_time) {
-                    break; 
-                }
                 next_robot_run = this.to_run.dequeue();
                 next_robot_run.robot.run_actions(next_robot_run.context, next_robot_run.top_level_context, next_robot_run.queue);
             }
-            TT.DISPLAY_UPDATES.run_cycle_is_over();
+            TT.DISPLAY_UPDATES.update_display();
             if (this.to_run.isEmpty()) {
+                this.running = false;
                 return;
             }
             // give browser a chance to run

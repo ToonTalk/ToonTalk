@@ -717,7 +717,10 @@ window.TOONTALK.UTILITIES =
                 utilities.rerender_all();
 	        }
 	    });
-//         discover_default_dimensions('toontalk-scale',       TT.scale);
+	    setTimeout(function () {
+	                   TT.DISPLAY_UPDATES.update_display();
+                   },
+                   100); 
     };
     var discover_default_dimensions = function (class_name, toontalk_module) {
         var $element_for_determining_dimensions = $("<div class='" + class_name + "'>");
@@ -1547,6 +1550,7 @@ window.TOONTALK.UTILITIES =
                                          // prevent default first so if there is an exception the default behaviour for some drags of going to a new page is prevented
                                          event.preventDefault();
                                          drop_handler(event, element);
+                                         TT.DISPLAY_UPDATES.update_display();
                                          event.stopPropagation();
                                      });
             element.addEventListener('dragenter', highlight_element);
@@ -2012,8 +2016,8 @@ window.TOONTALK.UTILITIES =
                                              // destroy it if it has been intialized and not already destroyed elsewhere
                                              // see http://stackoverflow.com/questions/18833609/testing-if-jquery-tooltip-is-initialized
                                              $(tooltip).tooltip('destroy');
-                                                                           // ui-helper-hidden-accessible elements were added by tooltip for accessibility but tooltip is being closed now
-                              $(".ui-helper-hidden-accessible").remove();
+                                             // ui-helper-hidden-accessible elements were added by tooltip for accessibility but tooltip is being closed now
+                                             $(".ui-helper-hidden-accessible").remove();
                                              utilities.use_custom_tooltip(element);
                                          }
                                          element_displaying_tooltip = undefined;
@@ -3504,6 +3508,7 @@ window.TOONTALK.UTILITIES =
                                             widget.rerender();
                                         }
                                     });
+           TT.DISPLAY_UPDATES.update_display();
        };
 
        utilities.visible_element = function (element) {
@@ -3580,7 +3585,9 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                   },
                   // Enqueues the specified item.
                   enqueue: function(item) {
+                      var first_item = queue.length == 0;
                       queue.push(item);
+                      return first_item;
                   },
                   // Dequeues an item and returns it. 
                   // If the queue is empty, the value'undefined' is returned.

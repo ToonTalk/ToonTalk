@@ -125,6 +125,7 @@ window.TOONTALK.actions =
                     // if that is always the case no need calling the following
                     robot.set_running_or_in_run_queue(false);
                     robot.run_body_finished_listeners(context, top_level_context, queue);
+                    TT.DISPLAY_UPDATES.update_display();
                     if (robot.get_run_once()) {
                         robot.get_first_in_team().set_running(false);
                     } else {
@@ -269,6 +270,7 @@ window.TOONTALK.actions =
                                 // so best to restore position first
                                 robot.run_body_finished_listeners();     
                             }
+                            TT.DISPLAY_UPDATES.update_display();
                         },
                         robot.transform_step_duration(50));
                 } else {
@@ -283,7 +285,8 @@ window.TOONTALK.actions =
                    frontside_element.style.left =  robot_start_position.left+"px";
                    frontside_element.style.top  =  robot_start_position.top +"px";
                    saved_parent_element.appendChild(frontside_element);
-                   this.run_unwatched(context, top_level_context, queue, robot, step_number)
+                   this.run_unwatched(context, top_level_context, queue, robot, step_number);
+                   TT.DISPLAY_UPDATES.update_display();
                 }
             }.bind(this);
             robot.set_animating(true, robot_home);

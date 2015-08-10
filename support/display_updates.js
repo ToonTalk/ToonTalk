@@ -9,25 +9,25 @@ window.TOONTALK.DISPLAY_UPDATES =
     "use strict";
     // backsides, frontsides, and widgets (typically both sides) can be 'dirty'
     var pending_updates = [];
-    var time_of_last_update = 0;
+    var time_of_next_update = 0;
+    var minimum_delay_between_updates = 50;
+    var updating = false;
     return {
         pending_update: function (x) {
             if (pending_updates.indexOf(x) >= 0) {
                 // already scheduled to be rendered
                 return;
             }
-//          if (current_update && current_update !== x && x.has_ancestor && x.has_ancestor(current_update)) {
-                // is being called recursively by the display of decendant so ignore it
-//              return;
-//          }
             pending_updates.push(x);
         },
         
         update_display: function () {
             var updates, ensure_childen_have_higer_z_index;
-            if (pending_updates.length === 0) {
+            if (pending_updates.length === 0 || updating  || document.hidden || Date.now() < time_of_next_update) {
+                // nothing to update or this has been called recursively or tab is hidden or too soon after last call
                 return;
             }
+            updating = true;
             updates = pending_updates;
             ensure_childen_have_higer_z_index = function (element, z_index) {
                 $(element).children().each(function (index, child_element) {
@@ -39,14 +39,10 @@ window.TOONTALK.DISPLAY_UPDATES =
             updates.forEach(function (pending_update) {
                 var frontside_element = pending_update.get_frontside_element && pending_update.get_frontside_element();
                 var $parent_side_element, z_index, parent_z_index, backside;
-//                 if (!(current_update && pending_update.has_ancestor && pending_update.has_ancestor(current_update))) {
-//                     // current_update is the current TOP-LEVEL widget - this ignores its descendants
-//                     current_update = pending_update;
-//                 }
                 pending_update.update_display();
                 if (pending_update.get_backside) {
                     backside = pending_update.get_backside();
-                    if (backside) {
+                    if (backside && backside.visible()) {
                         backside.update_display();
                     }
                 }
@@ -86,11 +82,8 @@ window.TOONTALK.DISPLAY_UPDATES =
                                             });   
                 }                  
             });
-        },
-        
-        run_cycle_is_over: function () {
-            // note that this will not be called more frequently than TT.queue.maximum_run milliseconds
-            this.update_display(); 
+            time_of_next_update = Date.now()+minimum_delay_between_updates;
+            updating = false;
         }
     };
 }(window.TOONTALK));
