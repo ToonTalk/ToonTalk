@@ -2007,11 +2007,22 @@ window.TOONTALK.UTILITIES =
                           // TODO: if longer than fits on the screen then autoscroll after some time
                           setTimeout(function () {
                                          ui.tooltip.remove();
+                                         // see http://bugs.jqueryui.com/ticket/10689
+                                         if ($(tooltip).data('ui-tooltip')) {
+                                             // destroy it if it has been intialized and not already destroyed elsewhere
+                                             // see http://stackoverflow.com/questions/18833609/testing-if-jquery-tooltip-is-initialized
+                                             $(tooltip).tooltip('destroy');
+                                             utilities.use_custom_tooltip(element);
+                                         }
                                          element_displaying_tooltip = undefined;
                                      }, 
                                      text_length*(TT.MAXIMUM_TOOLTIP_DURATION_PER_CHARACTER || 100));
                       },
                close: function () {
+                          if ($(this).data('ui-tooltip')) {
+                              $(this).tooltip('destroy');
+                              utilities.use_custom_tooltip(element);
+                          }
                           element_displaying_tooltip = undefined;
                }});
         };
