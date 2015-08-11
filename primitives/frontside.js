@@ -105,7 +105,9 @@ window.TOONTALK.frontside =
         remove: function () {
             // used to have debugging code that checked if was still attached
             // but when running unwatched might never have been attached
-            $(this.get_element()).remove();
+            var element = this.get_element();
+            $(element).remove();
+            element.toontalk_widget = null; // free the memory
         }
 
     };
