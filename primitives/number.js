@@ -473,8 +473,8 @@ window.TOONTALK.number = (function () {
             // TODO: generalise this
             client_width  = 76;
             client_height =  55;
-             $(frontside_element).css({width: client_width,
-                                      height: client_height});
+             $(frontside_element).css({width:  client_width,
+                                       height: client_height});
         } else {
             if (!TT.UTILITIES.visible_element($dimensions_holder.get(0))) {
                 if (TT.logging && TT.logging.indexOf('display') >= 0) {

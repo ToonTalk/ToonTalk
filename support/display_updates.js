@@ -40,7 +40,11 @@ window.TOONTALK.DISPLAY_UPDATES =
                 // this has been called recursively  
                 return;
             }
-            this.update_display_workhorse(now);
+            setTimeout(function () {
+                // delay until others have chance to add to the queue (e.g. contents of box holes)
+                update_scheduled = true;
+                this.update_display_workhorse(now);
+            }.bind(this));
         },
 
         update_display_workhorse: function (now) {
