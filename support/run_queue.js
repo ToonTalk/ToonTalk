@@ -32,7 +32,10 @@ window.TOONTALK.queue =
                 return;
             }
             robot_context_queue.robot.set_running_or_in_run_queue(true);
-            this.to_run.enqueue(robot_context_queue);
+            if (this.to_run.enqueue(robot_context_queue) && !this.running) {
+                // if this is the first in the queue run (unless already running)
+                this.run();
+            }
         },
         
         maximum_run: 50, // milliseconds
@@ -49,7 +52,7 @@ window.TOONTALK.queue =
             if (!this.to_run.isEmpty()) {
                 this.run();
             }
-            TT.DISPLAY_UPDATES.update_display();
+//             TT.DISPLAY_UPDATES.update_display();
         },
         
         run: function () {

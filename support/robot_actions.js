@@ -158,7 +158,6 @@ window.TOONTALK.actions =
                         robot.get_first_in_team().set_running(false);
                     } else if (!robot.stopped()) {
                         robot.get_first_in_team().run(context, top_level_context, queue);
-                        queue.start(); // in case nothing else is running
                     }
                     if (robot.get_first_in_team() === robot) {
                         TT.UTILITIES.set_absolute_position($(frontside_element), robot_home);
@@ -287,7 +286,6 @@ window.TOONTALK.actions =
                    frontside_element.style.top  =  robot_start_position.top +"px";
                    saved_parent_element.appendChild(frontside_element);
                    this.run_unwatched(context, top_level_context, queue, robot, step_number);
-                   queue.start();
                    TT.DISPLAY_UPDATES.update_display();
                 }
             }.bind(this);
