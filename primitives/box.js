@@ -883,6 +883,7 @@ window.TOONTALK.box_backside =
                                                          toString: "by changing the number of holes to " + new_size + " of the box",
                                                          button_selector: ".toontalk-box-size-input"});
                 }
+                TT.DISPLAY_UPDATES.update_display();
             };
             var update_orientation = function () {
                 var selected_button = TT.UTILITIES.selected_radio_button(horizontal.button, vertical.button);
@@ -896,6 +897,7 @@ window.TOONTALK.box_backside =
                                                          // just use the first className to find this button later
                                                          button_selector: "." + selected_button.className.split(" ", 1)[0]});
                 }
+                TT.DISPLAY_UPDATES.update_display();
             };
             var backside_element = backside.get_element();
             var advanced_settings_button = TT.backside.create_advanced_settings_button(backside, box);
