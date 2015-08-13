@@ -2037,7 +2037,7 @@ window.TOONTALK.UTILITIES =
                           if ($(this).data('ui-tooltip')) {
                               $(this).tooltip('destroy');
                               // ui-helper-hidden-accessible elements were added by tooltip for accessibility but tooltip is being closed now
-//                               $(".ui-helper-hidden-accessible").remove();
+                              $("[role='log']").remove();
                               utilities.use_custom_tooltip(element);
                           }
                           element_displaying_tooltip = undefined;
