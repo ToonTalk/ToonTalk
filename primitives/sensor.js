@@ -171,13 +171,13 @@ window.TOONTALK.sensor = (function (TT) {
             }
             if (new_value === true) { // not 'temporarily false'
                if (widget) {
-                    widget.get_frontside_element().addEventListener(event_name, event_listener);
+                    widget.get_frontside_element(true).addEventListener(event_name, event_listener);
                 } else {
                     window.addEventListener(event_name, event_listener);
                 }
             } else {
                 if (widget) {
-                    widget.get_frontside_element().removeEventListener(event_name, event_listener);
+                    widget.get_frontside_element(true).removeEventListener(event_name, event_listener);
                 } else {
                     window.removeEventListener(event_name, event_listener);
                 }

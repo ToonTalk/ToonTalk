@@ -85,7 +85,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         var original_copies                     = {}; // table relating attribute_name and all the widget copies for that attribute
         var sound_effect, video_object;
         var source_URL;
-        var html, initialized, original_width, original_height, current_width, current_height,
+        var html, text, initialized, original_width, original_height, current_width, current_height,
             pending_css, transform_css, on_update_display_handlers, $image_element, widget_set_running, widget_can_run;
         if (!style_attributes) {
             style_attributes = ['left', 'top', 'width', 'height'];
@@ -116,15 +116,33 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             return guid;
         };
         new_element.get_text = function () {
-            var text = this.get_frontside_element().textContent;
-            if (text === "") {
-                // might have just been created by dragging from elsewhere
-                this.update_display();
-                text = this.get_frontside_element().textContent;
-            }
-            if (text === "") {
-                // e.g. is an image
-                return this.get_HTML();
+            var frontside_element, html;
+            if (text === undefined) {
+                frontside_element = this.get_frontside_element();
+                if (frontside_element) {
+                    text = frontside_element.textContent;
+                } else {
+                    // create temporary element with HTML to obtain its text
+                    html = this.get_HTML();
+                    frontside_element = $().get(0);
+                    if (frontside_element) {
+                        document.body.appendChild(frontside_element);
+                        text = frontside_element.textContent;
+                        $(frontside_element).remove();
+                    } else {
+                        // plain text element
+                        text = html;
+                    }
+                }
+                if (text === "" && frontside_element) {
+                    // might have just been created by dragging from elsewhere
+                    this.update_display();
+                    text = frontside_element.textContent;
+                }
+                if (text === "") {
+                    // e.g. is an image
+                    return this.get_HTML();
+                }
             }
             return text;
         };
@@ -161,13 +179,13 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 // TODO: support data: text, uuencoded text, and HTML
                 return html;
             }.bind(this);
-            if (!frontside_element) {
-                return false;
-            }
             if (html === new_value) {
                 return false;
             }
             html = transform_HTML(new_value);
+            if (!frontside_element) {
+                return false;
+            }
             // remove children so will be updated
             $(frontside_element).children(":not(.ui-resizable-handle)").remove();
             if (this.is_plain_text_element()) {
@@ -395,7 +413,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         };
         new_element.get_video_object = function () {
             if (!video_object) {
-                video_object = this.get_frontside_element().getElementsByTagName('video')[0];
+                video_object = this.get_frontside_element(true).getElementsByTagName('video')[0];
             }
             return video_object;
         };
@@ -432,7 +450,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             // instead of updating the CSS width and height this uses the scaling transform instead
             TT.UTILITIES.scale_element(this.get_frontside_element(), css.width, css.height, original_width, original_height, undefined, css);
         };
-        new_element = new_element.add_standard_widget_functionality(new_element);
+        new_element.add_standard_widget_functionality(new_element);
         widget_set_running = new_element.set_running.bind(new_element);
         new_element.set_running = function (new_value, top_level_context) {
             widget_set_running(new_value, top_level_context);
@@ -553,7 +571,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             var frontside_element = this.get_frontside_element();
             var resize_handles = $(frontside_element).children(".ui-resizable-handle");
             var additional_classes, is_plain_text, htmnl;
-            if (!initialized) {
+            if (!initialized && frontside_element) {
                 html =  this.get_HTML();
                 is_plain_text = this.is_plain_text_element();
                 // the introduction of non-breaking spaces is necessary for plain text elements
@@ -616,7 +634,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             if (attribute === 'height' && (current_height || original_height)) {
                 return current_height || original_height;
             }
-            frontside_element = this.get_frontside_element();
+            frontside_element = this.get_frontside_element(true);
             value = TT.UTILITIES.get_style_numeric_property(frontside_element, attribute);
 //             value = frontside_element.style[attribute];
             if (value === "") {
@@ -1143,7 +1161,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                         if (old_parent && old_parent.get_widget().is_element()) {
                             old_parent.get_frontside_element().removeEventListener('drag', drag_listener);
                         }
-                        if (new_parent && new_parent.get_widget().is_element()) {
+                        if (new_parent && new_parent.get_widget().is_element() && new_parent.get_frontside_element()) {
+                            // TODO: get this to happen later when new_parent has a frontside_element
                             new_parent.get_frontside_element().addEventListener('drag', drag_listener);
                         }
                     });
@@ -1429,11 +1448,12 @@ window.TOONTALK.element_backside =
     "use strict";
     
     var update_style_attributes_table = function (table, element_widget, backside) {
+        var style_attributes, frontside_element;
         if (!backside.visible()) {
             return;
         }
-        var style_attributes = element_widget.get_style_attributes();
-        var frontside_element = element_widget.get_frontside_element();
+        style_attributes = element_widget.get_style_attributes();
+        frontside_element = element_widget.get_frontside_element();
         $(table).empty();
         style_attributes.forEach(function (attribute) {
             var value = element_widget.get_attribute(attribute);
@@ -1444,7 +1464,7 @@ window.TOONTALK.element_backside =
             var row = document.createElement("tr");
             var td  = document.createElement("td");
             var attribute_widget = element_widget.get_attribute_widget_in_backside_table(attribute);
-            var attribute_frontside_element = attribute_widget.get_frontside_element();
+            var attribute_frontside_element = attribute_widget.get_frontside_element(true);
             attribute_widget.set_parent_of_frontside(backside, false, true); // a white lie
             attribute_widget.set_infinite_stack(true);
             table.appendChild(row);

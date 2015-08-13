@@ -286,7 +286,9 @@ window.TOONTALK.robot_action =
         if (TT.debugging && thing_in_hand === target) {
             TT.UTILITIES.report_internal_error("Dropping something on itself!");
         }
-        $thing_in_hand_frontside_element = $(thing_in_hand.get_frontside_element());
+        $thing_in_hand_frontside_element = $(thing_in_hand.get_frontside_element(true));
+        thing_in_hand.set_visible(true);
+        thing_in_hand.rerender();
         new_continuation = function () {
             var thing_in_hand_position = $thing_in_hand_frontside_element.offset();
             var $top_level_element;

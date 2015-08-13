@@ -188,6 +188,7 @@ window.TOONTALK.vacuum = (function (TT) {
                                                      remove_widget(widget_side);
                                                  }
                                              });
+                    top_level_backside.set_backside_widgets([]);
                 }
             },
             nothing_under_tool: function () {

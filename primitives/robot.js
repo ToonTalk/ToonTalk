@@ -474,7 +474,7 @@ window.TOONTALK.robot = (function (TT) {
             // this will update first_in_team for subsequent robots
             new_robot.set_next_robot(next_robot);
         }
-        new_robot = new_robot.add_standard_widget_functionality(new_robot);
+        new_robot.add_standard_widget_functionality(new_robot);
         new_robot.has_name(new_robot);
         new_robot.set_name(name);
         new_robot.set_description(description);
@@ -555,7 +555,7 @@ window.TOONTALK.robot = (function (TT) {
         if (this.match_status === 'matched') {
             backside_matched_widgets = [];
             backside_conditions = this.get_backside_conditions();      
-            if (backside_conditions) {
+            if (backside_conditions && backside_conditions.length > 0) {
                 backside_widgets = context.get_backside_widgets();
                 if (backside_widgets) {
                     backside_conditions.some(function (condition) {
@@ -672,6 +672,9 @@ window.TOONTALK.robot = (function (TT) {
 
     robot.set_waiting = function (waiting) {
         var frontside_element = this.get_frontside_element();
+        if (!frontside_element) {
+            return;
+        }
         if (waiting) {
             TT.UTILITIES.add_animation_class(frontside_element, "toontalk-robot-waiting");
             TT.UTILITIES.give_tooltip(frontside_element, "This robot is waiting for a bird to deliver something.");
@@ -1493,7 +1496,7 @@ window.TOONTALK.robot_backside =
             var add_to_drop_area = function (widget, drop_area) {
                 // delay for dimensions to be known in the DOM
                 setTimeout(function () {
-                    var frontside_element = widget.get_frontside_element(robot.visible());
+                    var frontside_element = widget.get_frontside_element(true);
                     var default_width, default_height;
                     if (widget.get_default_width) {
                         default_width  = widget.get_default_width();

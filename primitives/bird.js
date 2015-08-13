@@ -252,7 +252,7 @@ window.TOONTALK.bird = (function (TT) {
             if (!nest_recieving_message) {
                 nest_recieving_message = nest;
             }
-            message_element = message_side.get_element();
+            message_element = message_side.get_element(true);
             carry_element(message_element, message_side);
             if (!target_side.is_function_nest()) {
                 // nests of functions are 'virtual'
@@ -554,7 +554,7 @@ window.TOONTALK.bird = (function (TT) {
                 return nest.set_name(new_value, update_display);
             };
         }   
-        new_bird = new_bird.add_standard_widget_functionality(new_bird);
+        new_bird.add_standard_widget_functionality(new_bird);
         new_bird.set_description(description);
         if (TT.debugging) {
             new_bird._debug_id = TT.UTILITIES.generate_unique_id();
@@ -1226,12 +1226,12 @@ window.TOONTALK.nest = (function (TT) {
                 top_contents_widget = contents[0].get_widget();
                 if (contents[0].is_backside()) {
                     contents_backside = top_contents_widget.get_backside(true);
-                    contents_side_element = contents_backside.get_element();
+                    contents_side_element = contents_backside.get_element(true);
                     contents_backside.update_display();
                     contents_backside.scale_to_fit(contents_side_element, frontside_element);
                 } else {
                     top_contents_widget.render();
-                    contents_side_element = contents[0].get_element();
+                    contents_side_element = contents[0].get_element(true);
                     $(contents_side_element).show();
                 }
                 nest_width  = $(frontside_element).width();

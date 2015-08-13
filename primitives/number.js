@@ -356,7 +356,7 @@ window.TOONTALK.number = (function () {
                 }
                 return this;
             };
-        new_number = number.add_standard_widget_functionality(new_number);
+        number.add_standard_widget_functionality(new_number);
         new_number.set_description(description);
         if (TT.debugging) {
             new_number._debug_string = new_number.toString();
@@ -469,6 +469,12 @@ window.TOONTALK.number = (function () {
             // good enough if this number is an element attribute
             client_width  = 200;
             client_height =  32;
+        } else if (size_unconstrained_by_container && $dimensions_holder.is(".toontalk-top-level-resource")) {
+            // TODO: generalise this
+            client_width  = 76;
+            client_height =  55;
+             $(frontside_element).css({width: client_width,
+                                      height: client_height});
         } else {
             if (!TT.UTILITIES.visible_element($dimensions_holder.get(0))) {
                 if (TT.logging && TT.logging.indexOf('display') >= 0) {
@@ -482,6 +488,8 @@ window.TOONTALK.number = (function () {
                 if (TT.logging && TT.logging.indexOf('display') >= 0) {
                     console.log("Container has zero dimensions so no display of " + this.to_debug_string());
                 }
+                // try again in a second
+                setTimeout(this.update_display.bind(this), 100);
                 return;
             }
             if ($dimensions_holder.is(".toontalk-nest")) {
@@ -532,7 +540,7 @@ window.TOONTALK.number = (function () {
     };
 
     number.get_border_size = function (width, height) {
-         if (width <= 64 || height <= 64) {
+        if (width <= 64 || height <= 64) {
             return 4;
         } else if (width <= 128 || height <= 128) {
             return 8;
@@ -1109,6 +1117,7 @@ window.TOONTALK.number_backside =
                     }         
                 }
                 number.rerender();
+                TT.DISPLAY_UPDATES.update_display();
             };
             var update_format = function () {
                 var selected_button = TT.UTILITIES.selected_radio_button(decimal_format.button, mixed_number_format.button, improper_format.button, scientific_format.button);
