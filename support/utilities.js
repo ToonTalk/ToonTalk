@@ -2724,6 +2724,7 @@ window.TOONTALK.UTILITIES =
                                                 }
                                             }
                                             widget.rerender();
+                                            TT.DISPLAY_UPDATES.update_display();
                                 },
                                 stop: function (event, ui) {
                                     if (widget.robot_in_training && widget.robot_in_training()) {
