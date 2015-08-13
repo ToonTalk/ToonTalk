@@ -52,7 +52,6 @@ window.TOONTALK.queue =
             if (!this.to_run.isEmpty()) {
                 this.run();
             }
-//             TT.DISPLAY_UPDATES.update_display();
         },
         
         run: function () {
@@ -64,7 +63,6 @@ window.TOONTALK.queue =
                 next_robot_run = this.to_run.dequeue();
                 next_robot_run.robot.run_actions(next_robot_run.context, next_robot_run.top_level_context, next_robot_run.queue);
             }
-            TT.DISPLAY_UPDATES.update_display();
             if (this.to_run.isEmpty()) {
                 this.running = false;
                 return;

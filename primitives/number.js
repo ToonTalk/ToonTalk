@@ -1117,7 +1117,6 @@ window.TOONTALK.number_backside =
                     }   
                 }
                 number.rerender();
-                TT.DISPLAY_UPDATES.update_display();
             };
             var update_format = function () {
                 var selected_button = TT.UTILITIES.selected_radio_button(decimal_format.button, mixed_number_format.button, improper_format.button, scientific_format.button);
@@ -1131,7 +1130,6 @@ window.TOONTALK.number_backside =
                                                                button_selector: "." + selected_button.className.split(" ", 1)[0]});
                 }
                 number.rerender();
-                TT.DISPLAY_UPDATES.update_display();
             };
             var update_operator = function () {
                 var selected_button = TT.UTILITIES.selected_radio_button(plus.button, minus.button, multiply.button, divide.button, set.button);
@@ -1144,7 +1142,6 @@ window.TOONTALK.number_backside =
                                                                // just use the first className to find this button later
                                                                button_selector: "." + selected_button.className.split(" ", 1)[0]});
                 }
-                TT.DISPLAY_UPDATES.update_display();
             };
             var number_set = TT.UTILITIES.create_horizontal_table(numerator_input.container, slash, denominator_input.container);
             var format_set = $(TT.UTILITIES.create_horizontal_table(decimal_format.container, mixed_number_format.container, improper_format.container, scientific_format.container)).buttonset().get(0);

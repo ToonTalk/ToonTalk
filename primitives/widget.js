@@ -1413,7 +1413,6 @@ window.TOONTALK.widget = (function (TT) {
 
         backup_all: function (immediately) {
             var top_level_widget = this.top_level_widget();
-            TT.DISPLAY_UPDATES.update_display();
             if (top_level_widget) {
                 top_level_widget.save(immediately);
             }

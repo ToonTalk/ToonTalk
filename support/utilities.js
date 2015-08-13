@@ -107,10 +107,14 @@ window.TOONTALK.UTILITIES =
         event.stopPropagation();
     };
     var drag_end_handler = function (event) {
+        var widget;
         if (!dragee) {
             dragee = $(event.target).closest(".toontalk-side");
         }
-        utilities.widget_from_jquery(dragee).being_dragged = undefined;
+        widget = utilities.widget_from_jquery(dragee);
+        if (widget) {
+            widget.being_dragged = undefined;
+        }
         if (dragee.is(".toontalk-frontside")) {
             if (dragee.parent().is(".toontalk-backside")) {
                 // restore ordinary size styles
@@ -1558,7 +1562,6 @@ window.TOONTALK.UTILITIES =
                                          // prevent default first so if there is an exception the default behaviour for some drags of going to a new page is prevented
                                          event.preventDefault();
                                          drop_handler(event, element);
-                                         TT.DISPLAY_UPDATES.update_display();
                                          event.stopPropagation();
                                      });
             element.addEventListener('dragenter', highlight_element);
@@ -2724,7 +2727,6 @@ window.TOONTALK.UTILITIES =
                                                 }
                                             }
                                             widget.rerender();
-                                            TT.DISPLAY_UPDATES.update_display();
                                 },
                                 stop: function (event, ui) {
                                     if (widget.robot_in_training && widget.robot_in_training()) {
@@ -3518,7 +3520,6 @@ window.TOONTALK.UTILITIES =
                                             widget.rerender();
                                         }
                                     });
-           TT.DISPLAY_UPDATES.update_display();
        };
 
        utilities.visible_element = function (element) {

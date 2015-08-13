@@ -12,30 +12,49 @@ window.TOONTALK.DISPLAY_UPDATES =
     var time_of_next_update = 0;
     var minimum_delay_between_updates = 50;
     var updating = false;
+    var update_scheduled = false;
     return {
-        pending_update: function (x) {
+        pending_update: function (x) {   
             if (pending_updates.indexOf(x) >= 0) {
                 // already scheduled to be rendered
                 return;
             }
             pending_updates.push(x);
+            this.update_display();
         },
-        
+
         update_display: function () {
-            var updates, ensure_childen_have_higer_z_index;
-            if (pending_updates.length === 0 || updating  || document.hidden || Date.now() < time_of_next_update) {
-                // nothing to update or this has been called recursively or tab is hidden or too soon after last call
+            var now;
+            if (update_scheduled || document.hidden || pending_updates.length === 0) {
+                // updated already scheduled, tab is hidden, or nothing queued
                 return;
             }
-            updating = true;
-            updates = pending_updates;
-            ensure_childen_have_higer_z_index = function (element, z_index) {
+            now = Date.now();
+            if (now < time_of_next_update) {
+                // too soon after last call
+                update_scheduled = true;
+                setTimeout(this.update_display_workhorse.bind(this), time_of_next_update-now);
+                return;
+            }
+            if (updating) {
+                // this has been called recursively  
+                return;
+            }
+            this.update_display_workhorse(now);
+        },
+
+        update_display_workhorse: function (now) {
+            var updates = pending_updates;
+            var ensure_childen_have_higer_z_index = function (element, z_index) {
                 $(element).children().each(function (index, child_element) {
                         $(child_element).css({"z-index": z_index+1});
                         ensure_childen_have_higer_z_index(child_element, z_index+1);
                 });
-            }
+            };
             pending_updates = [];
+            updating = true;
+            update_scheduled = false;   
+            time_of_next_update = (now | Date.now())+minimum_delay_between_updates;
             updates.forEach(function (pending_update) {
                 var frontside_element = pending_update.get_frontside_element && pending_update.get_frontside_element();
                 var $parent_side_element, z_index, parent_z_index, backside;
@@ -82,7 +101,6 @@ window.TOONTALK.DISPLAY_UPDATES =
                                             });   
                 }                  
             });
-            time_of_next_update = Date.now()+minimum_delay_between_updates;
             updating = false;
         }
     };
