@@ -74,7 +74,7 @@ window.TOONTALK.bird = (function (TT) {
                                             .addClass(this.get_class_name_with_color("toontalk-bird-static"));
                         this.get_parent_of_frontside().rerender();
                     }.bind(this));
-                    other.set_visible(true); // since nest is
+                    other.set_visible(nest.visible()); // since nest is
                     if (robot && !do_not_run_next_step) {
                         // robot needs to wait until delivery is finished
                         other.robot_waiting_before_next_step = robot;
@@ -767,7 +767,8 @@ window.TOONTALK.nest = (function (TT) {
         new_nest.add_to_contents = function (widget_side, event, robot, delivery_bird, ignore_copies) {
             var current_non_empty_listeners, widget_side_copy;
             var stack_size = contents.push(widget_side);
-            if (stack_size > nest.maximum_capacity && robot && !robot.visible() && !this.visible()) {
+            var nest_visible = this.visible();
+            if (stack_size > nest.maximum_capacity && robot && !robot.visible() && !nest_visible) {
                 // if robot or nest is visible let it keep running even if nest goes over capactity
                 if (TT.logging && TT.logging.indexOf("nest") >= 0) {
                     console.log(this.to_debug_string() + " postponing addition of " + widget_side.to_debug_string() +
@@ -798,7 +799,10 @@ window.TOONTALK.nest = (function (TT) {
                                                             non_empty_listener(widget_side);
                                                         });
                 }
-                widget_side.set_visible(this.visible());
+                widget_side.set_visible(nest_visible);
+                if (!nest_visible) {
+                    widget_side.get_widget().hide();
+                }
             } else {
                 // is under the top widget
                 widget_side.get_widget().hide();
