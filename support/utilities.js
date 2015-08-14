@@ -63,6 +63,10 @@ window.TOONTALK.UTILITIES =
         if (!widget) {
             widget = utilities.widget_of_element(element);
             utilities.report_internal_error("Possible bug that " + dragee + " doesn't have a known owner.");
+            if (!widget) {
+                utilities.report_internal_error("The element doesn't have an owner either.");
+                return;
+            }
             dragee = $(element);
         }
         if (widget.set_stopped) {
