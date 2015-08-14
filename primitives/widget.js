@@ -9,13 +9,10 @@
 window.TOONTALK.widget = (function (TT) {
     "use strict";
     // following definition is used for two different methods
-    var get_frontside_element_function = function (update) {
-        var frontside = this.get_frontside && this.get_frontside(update);
+    var get_frontside_element_function = function (create) {
+        var frontside = this.get_frontside && this.get_frontside(create);
         if (!frontside) {
             return;
-        }
-        if (update) {
-            this.rerender();
         }
         return frontside.get_element();
     };
