@@ -1219,7 +1219,7 @@ window.TOONTALK.widget = (function (TT) {
         },
 
         set_visible: function (new_value) {
-            var frontside = this.get_frontside();
+            var frontside = this.get_frontside(new_value);
             if (frontside) {
                 frontside.set_visible(new_value);
             }
