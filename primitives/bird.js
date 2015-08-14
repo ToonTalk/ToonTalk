@@ -961,7 +961,7 @@ window.TOONTALK.nest = (function (TT) {
                         top_level_backside_element_offset = {left: 0,
                                                              top:  0};
                     }
-                    widget_element = widget.get_frontside_element();
+                    widget_element = widget.get_frontside_element(true);
                     nest_width =  $(nest_element).width();
                     nest_height = $(nest_element).height();
                     // left and top are 10%
