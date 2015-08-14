@@ -1364,7 +1364,7 @@ window.TOONTALK.widget = (function (TT) {
             backside_widgets = this.get_backside_widgets();
             if (backside_widgets.length > 0) {
                 backside_widgets.forEach(function (widget_side) {
-                        if (widget_side.is_backside() && backside_widgetss.indexOf(widget_side.get_widget()) >= 0) {
+                        if (widget_side.is_backside() && backside_widgets.indexOf(widget_side.get_widget()) >= 0) {
                             // hide backside if front side also on the back
                             widget_side.hide_backside();
                         } else { 
