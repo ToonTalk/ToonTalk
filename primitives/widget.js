@@ -1178,21 +1178,23 @@ window.TOONTALK.widget = (function (TT) {
                 $container_element = $(".toontalk-backside");  
             }
             container_widget = TT.UTILITIES.widget_from_jquery($container_element);
-            if (typeof x_offset === 'undefined') {
-                x_offset = 30;
+            if (visible) {
+                if (typeof x_offset === 'undefined') {
+                    x_offset = 30;
+                }
+                if (typeof y_offset === 'undefined') {
+                    y_offset = 30;
+                }
+                position = TT.UTILITIES.relative_position(frontside_element, $container_element.get(0));
+                $container_element.get(0).appendChild(frontside_element_copy);
+                // plain text should not have its dimensions set
+                TT.UTILITIES.set_css(frontside_element_copy,
+                                     {width:  ok_to_set_dimensions ? $(frontside_element).width()  : "",
+                                      height: ok_to_set_dimensions ? $(frontside_element).height() : "",
+                                      left:   position.left+x_offset,
+                                      top:    position.top+y_offset,
+                                      "z-index": TT.UTILITIES.next_z_index()});
             }
-            if (typeof y_offset === 'undefined') {
-                y_offset = 30;
-            }
-            position = TT.UTILITIES.relative_position(frontside_element, $container_element.get(0));
-            $container_element.get(0).appendChild(frontside_element_copy);
-            // plain text should not have its dimensions set
-            TT.UTILITIES.set_css(frontside_element_copy,
-                                 {width:  ok_to_set_dimensions ? $(frontside_element).width()  : "",
-                                  height: ok_to_set_dimensions ? $(frontside_element).height() : "",
-                                  left:   position.left+x_offset,
-                                  top:    position.top+y_offset,
-                                  "z-index": TT.UTILITIES.next_z_index()});
             if (container_widget) {
                 container_widget.add_backside_widget(widget_copy);
 //              console.log("Added the copy " + widget_copy + " (" + widget_copy._debug_id + ") to " + container_widget + " (" + container_widget._debug_id + ")");
