@@ -107,7 +107,7 @@ window.TOONTALK.bird = (function (TT) {
             // starting_left and starting_top are optional and if given are in the coordinate system of the top-level backside
             var temporary_bird = !!nest_recieving_message;
             var parent = this.get_parent_of_frontside();
-            var bird_frontside_element = this.get_frontside_element();
+            var bird_frontside_element = this.get_frontside_element(true);
             var bird_width = $(bird_frontside_element).width();
             var visible_ancestor = this.closest_visible_ancestor_or_frontside();
             var bird_offset = $(visible_ancestor.get_frontside_element()).offset();
