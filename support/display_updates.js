@@ -40,9 +40,9 @@ window.TOONTALK.DISPLAY_UPDATES =
                 // this has been called recursively  
                 return;
             }
+            update_scheduled = true;
             setTimeout(function () {
-                // delay until others have chance to add to the queue (e.g. contents of box holes)
-                update_scheduled = true;
+                // delay until others have chance to add to the queue (e.g. contents of box holes)  
                 this.update_display_workhorse(now);
             }.bind(this));
         },
