@@ -1360,6 +1360,7 @@ window.TOONTALK.widget = (function (TT) {
                 final_top += 28;
             } 
             animate_backside_appearance(backside_element, "inherit");
+            backside.set_visible(true);
             backside.render();
             backside_widgets = this.get_backside_widgets();
             if (backside_widgets.length > 0) {
