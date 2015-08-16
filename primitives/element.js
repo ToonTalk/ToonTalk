@@ -317,11 +317,17 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 if (parent_of_frontside) {
                     if (pending_css.left) {      
                         // if negative after mod add width -- do another mod in case was positive
+                        if (current_width === undefined) {
+                            current_width = $(frontside_element).width();
+                        }
                         $container = $(parent_of_frontside.get_element());
                         container_width_minus_width = $container.width()-current_width;
                         pending_css.left = ((pending_css.left%container_width_minus_width)+container_width_minus_width)%container_width_minus_width;
                     }
                     if (pending_css.top) {
+                        if (current_height === undefined) {
+                            current_height = $(frontside_element).height();
+                        }
                         if (!$container) {
                             $container = $(parent_of_frontside.get_element());
                         }
@@ -568,10 +574,13 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             this.set_ignore_pointer_events(this.get_ignore_pointer_events());
         };
         new_element.initialize_element = function () {
-            var frontside_element = this.get_frontside_element();
-            var resize_handles = $(frontside_element).children(".ui-resizable-handle");
-            var additional_classes, is_plain_text, htmnl;
-            if (!initialized && frontside_element) {
+            var frontside_element, resize_handles, additional_classes, is_plain_text, htmnl;
+            if (initialized) {
+                return;
+            }
+            frontside_element = this.get_frontside_element();
+            if (frontside_element) {
+                resize_handles = $(frontside_element).children(".ui-resizable-handle");
                 html =  this.get_HTML();
                 is_plain_text = this.is_plain_text_element();
                 // the introduction of non-breaking spaces is necessary for plain text elements
@@ -1072,8 +1081,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     // if the new_value is different from the current value
                     copies.forEach(function (copy, index) {
                        copy.set_value_from_sub_classes(value_approximation, true); 
-                  });
+                    });
                 }
+                // TODO: determine if the following could be moved up into the conditional and replaced with return false;
                 return this.set_value_from_sub_classes(value_approximation, false);
             };
             attribute_widget.is_attribute_widget = function () {
