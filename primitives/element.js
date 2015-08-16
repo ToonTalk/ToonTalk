@@ -970,6 +970,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             var widget_to_string               = attribute_widget.toString;
             var widget_equals                  = attribute_widget.equals;
             var widget_get_custom_title_prefix = attribute_widget.get_custom_title_prefix;
+            var remove_widget = attribute_widget.remove;
             // following needs to be in an outer scope for drag_listener
             widget_update_display = attribute_widget.update_display;
             attribute_widget.element_widget = this;
@@ -1063,6 +1064,15 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     widget_parent = widget.get_parent_of_backside();
                 }
                 return widget;
+            };
+            attribute_widget.remove = function (event, do_not_remove_children) {
+                // when removing an attribute widget also remove it from the table of original copies
+                var original_copies = this_element_widget.get_original_copies()[attribute_name];
+                var index = original_copies && original_copies.indexOf(this);
+                if (index >= 0) {
+                    original_copies.splice(index, 1);
+                }
+                remove_widget.call(this, event, do_not_remove_children);
             };
             attribute_widget.get_help_URL = function () {
                 return documentation_source(attribute_name);
