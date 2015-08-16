@@ -1007,7 +1007,7 @@ window.TOONTALK.box_hole =
                         }
                     }
                 } else {
-                    box.render();
+                    box.rerender();
                     this.set_contents(dropped);
                 }
                 return true;

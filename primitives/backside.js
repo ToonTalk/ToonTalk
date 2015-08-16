@@ -280,26 +280,28 @@ window.TOONTALK.backside =
                     // event serves 2 functions: info for adjusting for scrolling and whether to update the display
                     // TODO: avoid all this work when not watched
                     var other_side, other_side_element, $other_side_element, backside_of_other;
-                    if (TT.sounds && event) {
-                        TT.sounds.drop.play();
+                    if (this.visible()) {
+                        if (TT.sounds && event) {
+                                TT.sounds.drop.play();
+                            }
+                            if (other_is_backside) {
+                                other_side = other.get_backside(this.visible());
+                                other_side_element = other_side.get_element();
+                                other_side.rerender();
+                            } else {
+                                other_side = other.get_frontside(this.visible());
+                                other_side_element = other_side.get_element();
+                                other.rerender();
+                            }
+                            $other_side_element = $(other_side_element);
+                            $backside_element.append($other_side_element);
+                            TT.UTILITIES.set_position_is_absolute(other_side_element, true, event); // when on the backside
                     }
-                    if (other_is_backside) {
-                        other_side = other.get_backside(true);
-                        other_side_element = other_side.get_element();
-                        other_side.rerender();
-                    } else {
-                        other_side = other.get_frontside(true);
-                        other_side_element = other_side.get_element();
-                        other.rerender();
-                    }
-                    $other_side_element = $(other_side_element);
-                    $backside_element.append($other_side_element);
                     if (this.get_widget().is_top_level()) {
                         if (robot && !robot.visible()) {
-                           $other_side_element.addClass("toontalk-widget-added-to-backside-by-unwatched-robot");
+                            $other_side_element.addClass("toontalk-widget-added-to-backside-by-unwatched-robot");
                         }
                     }
-                    TT.UTILITIES.set_position_is_absolute(other_side_element, true, event); // when on the backside
                     if (widget.robot_in_training() && !ignore_training && event) {
                         // delay this so it can record where the other was dropped
                         setTimeout(function () {

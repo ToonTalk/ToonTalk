@@ -418,8 +418,12 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             return sound_effect;
         };
         new_element.get_video_object = function () {
+            var frontside_element;
             if (!video_object) {
-                video_object = this.get_frontside_element(true).getElementsByTagName('video')[0];
+                frontside_element = this.get_frontside_element();
+                if (frontside_element) {
+                    video_object = frontside_element.getElementsByTagName('video')[0];
+                }
             }
             return video_object;
         };
@@ -734,7 +738,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                   this.get_ignore_pointer_events());
         var attribute_widgets_in_backside_table = this.get_attribute_widgets_in_backside_table();
         var attribute_widgets_in_backside_table_copy = {};
-        var backside = copy.get_backside(true);
+        var backside = copy.get_backside(this.visible());
         copy.set_source_URL(this.get_source_URL());
         if (parameters) {
             if (!parameters.elements_copied) {
