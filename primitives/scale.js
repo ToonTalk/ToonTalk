@@ -177,6 +177,7 @@ window.TOONTALK.scale = (function (TT) {
                         }           
                     }
                     hole_element.appendChild(content_frontside_element); // no-op if already there
+                    contents.rerender();
                 }                                          
             };
             var state, class_name, scales;
