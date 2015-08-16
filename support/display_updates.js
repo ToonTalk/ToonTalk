@@ -106,6 +106,14 @@ window.TOONTALK.DISPLAY_UPDATES =
                 }                  
             });
             updating = false;
+            if (pending_updates.length > 0) {
+                // new updates scheduled while running this
+                update_scheduled = true;
+                setTimeout(function () {
+                               this.update_display_workhorse();
+                           }.bind(this),
+                           minimum_delay_between_updates);
+            }
         }
     };
 }(window.TOONTALK));
