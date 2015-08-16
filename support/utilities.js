@@ -1844,7 +1844,7 @@ window.TOONTALK.UTILITIES =
 
         utilities.left_as_percent = function (left, element) {
             var parent_rectangle;
-            if (!element.parentElement) {
+            if (!element || !element.parentElement) {
                 return left;
             }
             parent_rectangle = element.parentElement.getBoundingClientRect();
@@ -1859,7 +1859,7 @@ window.TOONTALK.UTILITIES =
 
         utilities.top_as_percent = function (top, element) {
             var parent_rectangle;
-            if (!element.parentElement) {
+            if (!element || !element.parentElement) {
                 return top;
             }
             parent_rectangle = element.parentElement.getBoundingClientRect();
