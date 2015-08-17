@@ -2201,9 +2201,13 @@ window.TOONTALK.UTILITIES =
                 return;
             }
             var container_height = $(container_element).height();
-            // css is relative to element
-            css.left = Math.min(Math.max(css.left, 0), container_width);
-            css.top  = Math.min(Math.max(css.top,  0), container_height);
+            if (typeof css.left === 'number') {
+                // css is relative to element
+                css.left = Math.min(Math.max(css.left, 0), container_width);
+            }
+            if (typeof css.top === 'number') {
+                css.top  = Math.min(Math.max(css.top,  0), container_height);
+            }
         };
         
         utilities.next_z_index = function () {
