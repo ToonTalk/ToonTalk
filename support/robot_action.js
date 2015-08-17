@@ -476,7 +476,7 @@ window.TOONTALK.robot_action =
             if (parent && parent.get_widget().get_type_name() !== 'top-level' && parent.update_display) {
                 parent.update_display();
             }
-            widget.render(); // if wasn't removed
+            widget.rerender(); // if wasn't removed
         };
         move_to_tool_and_use_animation(widget, context, top_level_context, robot, new_continuation, "toontalk-vacuum-ready-small", "toontalk-vacuum");
     };
