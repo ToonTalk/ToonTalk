@@ -1019,7 +1019,7 @@ window.TOONTALK.robot = (function (TT) {
                     css.top  = relative_top;
                     $(thing_in_hand_frontside_element).css(css);
                     if (thing_in_hand) {
-                        thing_in_hand.render(); // or should it be rerender -- could it be invisible?
+                        thing_in_hand.rerender();
                     }
                 }
             });
