@@ -487,7 +487,7 @@ window.TOONTALK.box = (function (TT) {
                 hole_element.appendChild(content_frontside_element);
                 // tried to delay the following until the changes to this box in the DOM have settled down
                 // but the hole's contents may have changed
-                hole.get_contents().render();
+                hole.get_contents().rerender();
             }
             if (hole.is_element()) {
                 hole_contents = hole.get_contents();
@@ -1120,7 +1120,7 @@ window.TOONTALK.box_hole =
                 // otherwise nothing to do
             };
             hole.rerender = function () {
-                if (contents && contents.visible()) {
+                if (contents && this.visible()) {
                     return this.render();
                 }
                 // otherwise nothing to do
