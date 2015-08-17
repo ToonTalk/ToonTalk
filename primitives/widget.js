@@ -279,6 +279,10 @@ window.TOONTALK.widget = (function (TT) {
                     if (create && !backside) {
                         // backsides are customised by each kind of widget
                         backside = this.create_backside();
+                        if (this.backside_widgets_json_views) {
+                            backside.add_backside_widgets(this.get_backside_widgets(), this.backside_widgets_json_views);
+                            this.backside_widgets_json_views = undefined;
+                        }
                     }
                     return backside;
                 };
@@ -907,8 +911,8 @@ window.TOONTALK.widget = (function (TT) {
                 if (this.get_running && this.get_running()) {
                     json_semantic.running = true;
                 }
-                if (!this.get_parent_of_frontside() || this.get_parent_of_frontside().is_backside()) {
-                    // otherwise geometry isn't needed
+                if (!this.get_parent_widget_of_frontside() || this.parent_of_frontside_is_backside()) {
+                    // otherwise geometry isn't needed now
                     frontside_element = this.get_frontside_element && this.get_frontside_element();
                     if (frontside_element) {
                         frontside_width = $(frontside_element).width();
