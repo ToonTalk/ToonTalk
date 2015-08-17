@@ -1085,20 +1085,25 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             attribute_widget.set_format('decimal');
             // another way to implement this would be for the recursive call to add an extra parameter: ignore_copies
             attribute_widget.set_value = function (new_value) {
-                // need to convert new_value into a decimal approximation
-                // since bigrat.toDecimal works by converting the numerator and denominator to JavaScript numbers
-                // so best to approximate -- also should be faster to do arithmetic
-                var copies = this_element_widget.get_original_copies()[attribute_name];
-                var decimal_value = bigrat.toDecimal(new_value);
-                var value_approximation = bigrat.fromDecimal(decimal_value);
-                if (this.get_attribute_owner().set_attribute(this.attribute, decimal_value)) {
-                    // if the new_value is different from the current value
-                    copies.forEach(function (copy, index) {
-                       copy.set_value_from_sub_classes(value_approximation, true); 
-                    });
+                try {
+                    // need to convert new_value into a decimal approximation
+                    // since bigrat.toDecimal works by converting the numerator and denominator to JavaScript numbers
+                    // so best to approximate -- also should be faster to do arithmetic
+                    var copies = this_element_widget.get_original_copies()[attribute_name];
+                    var decimal_value = bigrat.toDecimal(new_value);
+                    var value_approximation = bigrat.fromDecimal(decimal_value);
+                    if (this.get_attribute_owner().set_attribute(this.attribute, decimal_value)) {
+                        // if the new_value is different from the current value
+                        copies.forEach(function (copy, index) {
+                           copy.set_value_from_sub_classes(value_approximation, true); 
+                        });
+                    }
+                    // TODO: determine if the following could be moved up into the conditional and replaced with return false;
+                    return this.set_value_from_sub_classes(value_approximation, false);
+                } catch (error) {
+                    TT.UTILITIES.report_internal_error("Error while setting the value of an attribute widget: " + error);
+                    return false;
                 }
-                // TODO: determine if the following could be moved up into the conditional and replaced with return false;
-                return this.set_value_from_sub_classes(value_approximation, false);
             };
             attribute_widget.is_attribute_widget = function () {
                 return true;
