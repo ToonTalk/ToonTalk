@@ -1025,7 +1025,7 @@ window.TOONTALK.widget = (function (TT) {
                         backside_widgets = [widget_side];
                     } else if (backside_widgets.indexOf(widget_side) < 0) {
                         backside_widgets.push(widget_side);
-                        if (TT.logging && TT.logging.indexOf('backside_widgets') >= 0) {
+                        if (TT.logging && TT.logging.indexOf('backside-widgets') >= 0) {
                             console.log("Added " + widget_side + " to backside widgets of " + this + ". Number of backside widgets is " + backside_widgets.length);
                         }                       
                     }
@@ -1068,7 +1068,7 @@ window.TOONTALK.widget = (function (TT) {
                         return;                        
                     }
                     backside_widgets.splice(widget_index, 1);
-                    if (TT.logging && TT.logging.indexOf('backside_widgets') >= 0) {
+                    if (TT.logging && TT.logging.indexOf('backside-widgets') >= 0) {
                         console.log("Removed " + widget + " from backside widgets of " + this + ". Number of backside widgets is " + backside_widgets.length);
                     }  
                     if (this.backside_widgets_json_views) {

@@ -42,7 +42,9 @@ window.TOONTALK.actions =
                 this.reset_newly_created_widgets();
             };
             new_actions.reset_newly_created_widgets = function () {
-//                 console.log("reset newly_created_widgets. Length was " + newly_created_widgets.length);
+                 if (TT.logging && TT.logging.indexOf("newly-created") >= 0) {
+                     console.log("Reset newly_created_widgets. Length was " + newly_created_widgets.length);
+                 }
                 newly_created_widgets = [];
             };
             new_actions.add_step = function (step, new_widget) {
