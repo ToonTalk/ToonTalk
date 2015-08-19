@@ -597,17 +597,20 @@ window.TOONTALK.bird = (function (TT) {
         var full_continuation = function () {
             $(frontside_element).removeClass(direction);
             if (delay) {
-//                 $(frontside_element).addClass(this.get_class_name_with_color("toontalk-bird-static")); // should be bird-waiting
                 setTimeout(continuation, robot ? robot.transform_step_duration(delay) : delay);
             } else {
                 continuation();
             };
         }.bind(this);
-        TT.UTILITIES.add_animation_class(frontside_element, direction);
-        $(frontside_element).removeClass($(frontside_element).removeClass(this.get_class_name_with_color("toontalk-bird-static")));
-        // duration is proportional to distance
-//      console.log("Flying to " + target_offset.left + ", " + target_offset.top + " holding " + (this.element_to_display_when_flying && this.element_to_display_when_flying.className));
-        this.animate_to_absolute_position(target_offset, full_continuation, robot && robot.transform_animation_speed(TT.UTILITIES.default_animation_speed));
+        // this timeout fixes the problem that the bird's name is displayed incorrectly while she is flying
+        setTimeout(function () {
+                       $(frontside_element).removeClass("toontalk-bird-static");
+                       TT.UTILITIES.add_animation_class(frontside_element, direction);
+                       // duration is proportional to distance
+                       // console.log("Flying to " + target_offset.left + ", " + target_offset.top + " holding " + (this.element_to_display_when_flying && this.element_to_display_when_flying.className));
+                       this.animate_to_absolute_position(target_offset, full_continuation, robot && robot.transform_animation_speed(TT.UTILITIES.default_animation_speed));
+                   }.bind(this),
+                   1);
     };
     
     bird.get_type_name = function (plural, detailed) {
