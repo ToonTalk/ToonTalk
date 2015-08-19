@@ -1231,6 +1231,9 @@ window.TOONTALK.box_hole =
             hole.is_top_level = function () {
                 return false;
             };
+            hole.is_plain_text_element = function () {
+                return false;
+            };
             TT.widget.has_parent(hole);
             TT.widget.has_listeners(hole);
             if (TT.debugging || TT.logging) {

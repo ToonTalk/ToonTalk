@@ -3465,9 +3465,14 @@ window.TOONTALK.UTILITIES =
                return;
            }
            widget = utilities.widget_of_element(element);
-           if (widget && widget.location_constrained_by_container()) {
-               css.left = '';
-               css.top  = '';
+           if (widget) {
+               if (widget.location_constrained_by_container()) {
+                   css.left   = '';
+                   css.top    = '';
+               } else if (widget.is_plain_text_element()) {
+                   css.width  = '';
+                   css.height = '';
+               }
            }
            if (!css.transform && css.width !== undefined && css.height !== undefined && widget && widget.use_scaling_transform) {
                // leave CSS width and height alone and recompute scaling transform
