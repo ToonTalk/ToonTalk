@@ -400,7 +400,9 @@ window.TOONTALK.backside =
                                         $(widget_side_element).css(css);
                                     }
                                 }
-                                $backside_element.append(widget_side_element);
+                                if ($backside_element.is(":visible")) {
+                                    $backside_element.append(widget_side_element);
+                                }
                             }
                             backside_widget_side.set_visible(backside_visible);
                             backside_widget_side.get_widget().rerender();
