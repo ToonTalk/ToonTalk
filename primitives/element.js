@@ -1274,8 +1274,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         var json_attributes = [];
         var html = TT.UTILITIES.remove_z_index(this.get_HTML()); // z-index is transient
         var html_encoded = encodeURIComponent(html);
-        // rewrite using startsWith in ECMAScript version 6
-        var html_worth_sharing = html.indexOf("<img src='data:image/") === 0;
+        // don't bother to share short HTMLs
+        var html_worth_sharing = html.length >= 100;
         var html_encoded_or_shared, html_index;
         if (html_worth_sharing) {
             if (!json_history.shared_html) {
