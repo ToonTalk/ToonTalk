@@ -462,6 +462,10 @@ window.TOONTALK.UTILITIES =
                           height: height};
                    utilities.constrain_css_to_fit_inside(top_level_element, css);
                    utilities.set_css(element_of_backside_widget, css);
+//                    if (source_widget.set_location_attributes) {
+//                        // e.g. an element needs to know its position attributes
+//                        widget.set_location_attributes(css.left, css.top);
+//                    }
                    if (backside_widget_side.is_backside()) {
                        widget.backside_geometry = json_view.backside_geometry;
                        widget.apply_backside_geometry();
@@ -514,6 +518,10 @@ window.TOONTALK.UTILITIES =
             utilities.set_css($source,
                               {left: TT.UTILITIES.left_as_percent(left, $source.get(0)),
                                top:  TT.UTILITIES.top_as_percent (top,  $source.get(0))});
+//             if (source_widget.set_location_attributes) {
+//                 // e.g. an element needs to know its position attributes
+//                 source_widget.set_location_attributes(left, top);
+//             }
             if (json_object && json_object.semantic.running && !utilities.get_dragee()) {
                 // JSON was dropped here from outside so if was running before should be here
                 // but not if just a local move
@@ -2836,7 +2844,7 @@ window.TOONTALK.UTILITIES =
                                                translate,
                                                pending_css,
                                                transform_origin_center);  
-                pending_css.width =  original_width,
+                pending_css.width  = original_width,
                 pending_css.height = original_height;
 //                 if (pending_css["transform-origin"] === "center center") {
 //                     // coordinates are no longer in terms of left top corner so adjust them
@@ -2856,12 +2864,12 @@ window.TOONTALK.UTILITIES =
             if (!original_height) {
                 original_height = $(element).height();
             }
-            if (new_width) {
+            if (new_width && original_width !== 0) {
                 x_scale = new_width/original_width;
             } else {
                 x_scale = 1;
             }
-            if (new_height) {
+            if (new_height && original_height !== 0) {
                 y_scale = new_height/original_height;
             } else {
                 y_scale = 1;
@@ -3435,8 +3443,8 @@ window.TOONTALK.UTILITIES =
            var best_so_far, best_distance_so_far;
            $(".toontalk-top-level-backside").each(function () {
                var position = $(this).offset();
-               var this_distance = (position.left + $(this).width()/2 - x)^2 + 
-                                   (position.top  + $(this).height()/2 - x)^2;;
+               var this_distance = (position.left + $(this).width()/2  - x)^2 + 
+                                   (position.top  + $(this).height()/2 - x)^2;
                if (best_so_far) {
                    if (this_distance < best_distance_so_far) {
                         best_so_far = this;
