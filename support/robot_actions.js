@@ -261,7 +261,7 @@ window.TOONTALK.actions =
                                 if (robot.get_thing_in_hand()) {
                                     // TODO: move this elsewhere
                                     robot.get_thing_in_hand().save_dimensions();
-                                    robot.render();
+                                    robot.rerender();
                                 }
                             } else {
                                 robot.set_running_or_in_run_queue(false);
