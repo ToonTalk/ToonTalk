@@ -348,17 +348,20 @@ window.TOONTALK.backside =
                         return this.get_widget().add_backside_widget(widget, is_backside);
                 };
             backside.add_backside_widgets = function (backside_widgets, json_array)  {
+                var current_backside_widgets;
                 if (backside_widgets.length === 0) {
                     return;
                 }
+                // create a copy of the list since it will be reset by the time the time out runs
+                current_backside_widgets = backside_widgets.slice();
                 // too soon to add these widgets so delay slightly
-                // with no delay or too small then sometimes things on nests are displayed without the correct z-index
+                // with no delay or too small a delay then sometimes things on nests are displayed without the correct z-index
                 // so the nest name is drawn on top of the nest contents
                 TT.UTILITIES.set_timeout(
                     function () {
                         var backside_visible = this.visible();
                         var widget_side_element, backside, json_view, css;
-                        backside_widgets.forEach(function (backside_widget_side, index) {
+                        current_backside_widgets.forEach(function (backside_widget_side, index) {
                             if (!backside_widget_side) {
                                 return;
                             }
