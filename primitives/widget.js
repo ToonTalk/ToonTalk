@@ -318,9 +318,12 @@ window.TOONTALK.widget = (function (TT) {
             var running   = false;
             var ok_to_run = false;
             if (!widget.get_running) {
-                widget.get_running = function () {
+                widget.get_running = function (ignore_ancestors_and_backside_widgets) {
                     var some_backside_widgets_running = false;
-                    var backside_widgets;
+                    var backside_widgets, ancestor;
+                    if (ignore_ancestors_and_backside_widgets) {
+                        return running;
+                    }
                     if (running) {
                         // see if it is really running
                         backside_widgets = this.get_backside_widgets();
@@ -339,6 +342,16 @@ window.TOONTALK.widget = (function (TT) {
                                                           return true;
                                                       }
                             });
+                            ancestor = this.get_parent_of_frontside();
+                            while (ancestor) {
+                                if (ancestor.is_backside()) {
+                                    return ancestor.get_widget().get_running(true);
+                                }
+                                if (ancestor.get_running && ancestor.get_running(true)) {
+                                    return true;
+                                }
+                                ancestor = ancestor.get_parent_of_frontside();
+                            }
                             // TODO: see why caching this if false didn't work
 //                          running = some_backside_widgets_running;
                         }
@@ -484,7 +497,7 @@ window.TOONTALK.widget = (function (TT) {
                     var new_continuation = 
                         function () {
                              this.animate_to_element(find_widget_element(target_widget), continuation, speed, left_offset, top_offset, more_animation_follows, duration && Math.max(0, duration-100));
-                             this.render();
+                             this.rerender();
                          }.bind(this);
                     if (duration === 0) {
                         new_continuation();
@@ -1281,7 +1294,7 @@ window.TOONTALK.widget = (function (TT) {
                 final_left, final_top, 
                 frontside_offset, backside_width, frontside_height, 
                 container_offset, container_width;
-            if (backside) {
+            if (backside && $(backside.get_element()).is(":visible")) {
                 // already open
                 // make it is opaque
                 $(backside.get_element()).css({opacity: 1});
@@ -1291,8 +1304,8 @@ window.TOONTALK.widget = (function (TT) {
                 return;
             }
             new_continuation = continuation && function () {
-                                                      setTimeout(continuation);
-                                                   };
+                                                   setTimeout(continuation);
+                                               };
             animate_backside_appearance = 
                 function (element, final_opacity) {
                     TT.UTILITIES.set_timeout(

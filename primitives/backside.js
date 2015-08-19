@@ -282,20 +282,20 @@ window.TOONTALK.backside =
                     var other_side, other_side_element, $other_side_element, backside_of_other;
                     if (this.visible()) {
                         if (TT.sounds && event) {
-                                TT.sounds.drop.play();
-                            }
-                            if (other_is_backside) {
-                                other_side = other.get_backside(this.visible());
-                                other_side_element = other_side.get_element();
-                                other_side.rerender();
-                            } else {
-                                other_side = other.get_frontside(this.visible());
-                                other_side_element = other_side.get_element();
-                                other.rerender();
-                            }
-                            $other_side_element = $(other_side_element);
-                            $backside_element.append($other_side_element);
-                            TT.UTILITIES.set_position_is_absolute(other_side_element, true, event); // when on the backside
+                            TT.sounds.drop.play();
+                        }
+                        if (other_is_backside) {
+                            other_side = other.get_backside(this.visible());
+                            other_side_element = other_side.get_element();
+                            other_side.rerender();
+                        } else {
+                            other_side = other.get_frontside(this.visible());
+                            other_side_element = other_side.get_element();
+                            other.rerender();
+                        }
+                        $other_side_element = $(other_side_element);
+                        $backside_element.append($other_side_element);
+                        TT.UTILITIES.set_position_is_absolute(other_side_element, true, event); // when on the backside
                     }
                     if (this.get_widget().is_top_level()) {
                         if (robot && !robot.visible()) {
@@ -341,6 +341,9 @@ window.TOONTALK.backside =
 //                         // so run the widget who just got a robot or widget on the back
 //                         this.get_widget().set_running(true);
 //                     }
+                    if (other.is_robot() && this.get_widget().get_running()) {
+                        this.get_widget().set_running(true);
+                    }
                     return true;
                 };
             backside.add_backside_widget =  
