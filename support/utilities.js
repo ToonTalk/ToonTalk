@@ -456,16 +456,16 @@ window.TOONTALK.UTILITIES =
                    target_widget.add_backside_widget(widget, backside_widget_side.is_backside());
                    top_level_element.appendChild(element_of_backside_widget);
                    position = $(element_of_backside_widget).position();
-                   css = {left: position.left + left_offset,
-                          top:  position.top  + top_offset,
+                   css = {left: position.left+left_offset,
+                          top:  position.top +top_offset,
                           width:  width,
                           height: height};
                    utilities.constrain_css_to_fit_inside(top_level_element, css);
                    utilities.set_css(element_of_backside_widget, css);
-//                    if (source_widget.set_location_attributes) {
-//                        // e.g. an element needs to know its position attributes
-//                        widget.set_location_attributes(css.left, css.top);
-//                    }
+                   if (source_widget.set_location_attributes) {
+                       // e.g. an element needs to know its position attributes
+                       widget.set_location_attributes(css.left, css.top);
+                   }
                    if (backside_widget_side.is_backside()) {
                        widget.backside_geometry = json_view.backside_geometry;
                        widget.apply_backside_geometry();
@@ -518,10 +518,10 @@ window.TOONTALK.UTILITIES =
             utilities.set_css($source,
                               {left: TT.UTILITIES.left_as_percent(left, $source.get(0)),
                                top:  TT.UTILITIES.top_as_percent (top,  $source.get(0))});
-//             if (source_widget.set_location_attributes) {
-//                 // e.g. an element needs to know its position attributes
-//                 source_widget.set_location_attributes(left, top);
-//             }
+            if (source_widget.set_location_attributes) {
+                // e.g. an element needs to know its position attributes
+                source_widget.set_location_attributes(left, top);
+            }
             if (json_object && json_object.semantic.running && !utilities.get_dragee()) {
                 // JSON was dropped here from outside so if was running before should be here
                 // but not if just a local move

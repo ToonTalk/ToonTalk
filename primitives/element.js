@@ -267,7 +267,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         };
         new_element.apply_css = function () {
             var transform = "";
-            var frontside_element, x_scale, y_scale, $container, container_width_minus_width, container_height_minus_width, parent_of_frontside;
+            var frontside_element, x_scale, y_scale, $container, container_width_minus_width, container_height_minus_height, parent_of_frontside;
             if (!pending_css && !transform_css) {
                 return;
             }
@@ -315,24 +315,25 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 // elements (like turtles) by default wrap -- TODO: make this configurable
                 parent_of_frontside = this.get_parent_of_frontside();
                 if (parent_of_frontside) {
-                    if (pending_css.left) {      
+                    if (pending_css.left) {   
                         // if negative after mod add width -- do another mod in case was positive
-                        if (current_width === undefined) {
-                            current_width = $(frontside_element).width();
-                        }
+                        // keep it within the bounds of its container
                         $container = $(parent_of_frontside.get_element());
-                        container_width_minus_width = $container.width()-current_width;
+                        container_width_minus_width = $container.width();
+                        if (current_width !== undefined) {
+                            container_width_minus_width -= current_width;
+                        }
                         pending_css.left = ((pending_css.left%container_width_minus_width)+container_width_minus_width)%container_width_minus_width;
                     }
                     if (pending_css.top) {
-                        if (current_height === undefined) {
-                            current_height = $(frontside_element).height();
-                        }
                         if (!$container) {
                             $container = $(parent_of_frontside.get_element());
                         }
-                        container_height_minus_width = $container.height()-current_height;
-                        pending_css.top = ((pending_css.top%container_height_minus_width)+container_height_minus_width)%container_height_minus_width;
+                        container_height_minus_height = $container.height();
+                        if (current_height !== undefined) {
+                            container_height_minus_height -= current_height;
+                        }
+                        pending_css.top = ((pending_css.top%container_height_minus_height)+container_height_minus_height)%container_height_minus_height;
                     }
                 }
             }
@@ -633,6 +634,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                                  }
                                                  // reapply CSS attribute values
                                                  style_attributes.forEach(function (attribute_name) {
+                                                                              // should this be conditional on attribute name not being 'left' or 'top'?
                                                                               this.add_to_css(attribute_name, this.get_attribute(attribute_name));
                                                                           }.bind(this));
                                                  this.rerender();
