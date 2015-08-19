@@ -284,7 +284,9 @@ window.TOONTALK.actions =
                    // following doesn't use JQuery since it wasn't working
                    frontside_element.style.left =  robot_start_position.left+"px";
                    frontside_element.style.top  =  robot_start_position.top +"px";
-                   saved_parent_element.appendChild(frontside_element);
+                   if (saved_parent_element) {
+                       saved_parent_element.appendChild(frontside_element);
+                   }
                    this.run_unwatched(context, top_level_context, queue, robot, step_number);
                 }
             }.bind(this);
