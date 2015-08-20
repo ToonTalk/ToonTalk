@@ -675,8 +675,10 @@ window.TOONTALK.robot = (function (TT) {
             return;
         }
         if (waiting) {
-            TT.UTILITIES.add_animation_class(frontside_element, "toontalk-robot-waiting");
-            TT.UTILITIES.give_tooltip(frontside_element, "This robot is waiting for a bird to deliver something.");
+            if (this.visible()) {
+                TT.UTILITIES.add_animation_class(frontside_element, "toontalk-robot-waiting");
+                TT.UTILITIES.give_tooltip(frontside_element, "This robot is waiting for a bird to deliver something.");
+            }
         } else {
             $(frontside_element).removeClass("toontalk-robot-waiting");
             TT.UTILITIES.give_tooltip(frontside_element, this.get_title());
