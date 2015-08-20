@@ -883,8 +883,7 @@ window.TOONTALK.backside =
                 // frontside needs to be added to backside container
                 container_widget = TT.UTILITIES.widget_from_jquery($backside_container);
                 if (container_widget) {
-                    container_widget.add_backside_widget(widget);
-                    $backside_container.append(frontside_element);
+                    container_widget.widget_dropped_on_me(widget);
                     widget.render();
                 }
             }

@@ -469,12 +469,12 @@ window.TOONTALK.number = (function () {
             // good enough if this number is an element attribute
             client_width  = 200;
             client_height =  32;
-        } else if (size_unconstrained_by_container && $dimensions_holder.is(".toontalk-top-level-resource")) {
+        } else if (size_unconstrained_by_container && (frontside_element === $dimensions_holder.get(0) || $dimensions_holder.is(".toontalk-top-level-resource"))) {
             // TODO: generalise this
             client_width  = 76;
             client_height =  55;
-             $(frontside_element).css({width:  client_width,
-                                       height: client_height});
+            $(frontside_element).css({width:  client_width,
+                                      height: client_height});
         } else {
             if (!TT.UTILITIES.visible_element($dimensions_holder.get(0))) {
                 if (TT.logging && TT.logging.indexOf('display') >= 0) {
