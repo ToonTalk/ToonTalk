@@ -1409,9 +1409,10 @@ window.TOONTALK.widget = (function (TT) {
                         if (widget_side.is_backside() && backside_widgets.indexOf(widget_side.get_widget()) >= 0) {
                             // hide backside if front side also on the back
                             widget_side.hide_backside();
-                        } else { 
-                            widget_side.render();
+                        } else {
                             widget_side.set_visible(true);
+                            widget_side.render();
+                            backside_element.appendChild(widget_side.get_frontside_element(true));
                         }
                 }.bind(this));
             }
