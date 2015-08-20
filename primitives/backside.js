@@ -370,6 +370,9 @@ window.TOONTALK.backside =
                             }
                             widget_side_element = backside_widget_side.get_element(backside_visible);
                             if (widget_side_element) {
+                                if (backside_visible) {
+                                    $backside_element.append(widget_side_element);
+                                }
                                 widget_side_element.toontalk_widget = backside_widget_side.get_widget();
                                 if (json_array) {
                                     json_view = json_array[index];
@@ -391,17 +394,14 @@ window.TOONTALK.backside =
                                             if (json_view.frontside_height === 0) {
                                                 json_view.frontside_height = '';
                                             }                                        
-                                            css = {left:   json_view.frontside_left,
-                                                   top:    json_view.frontside_top,
+                                            css = {left:   (json_view.frontside_left || 0),
+                                                   top:    (json_view.frontside_top  || 0),
                                                    width:  json_view.frontside_width  || json_view.saved_width,
                                                    height: json_view.frontside_height || json_view.saved_height};
                                         }
                                         TT.UTILITIES.constrain_css_to_fit_inside(backside_element, css);
                                         $(widget_side_element).css(css);
                                     }
-                                }
-                                if ($backside_element.is(":visible")) {
-                                    $backside_element.append(widget_side_element);
                                 }
                             }
                             backside_widget_side.set_visible(backside_visible);
