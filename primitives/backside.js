@@ -437,12 +437,21 @@ window.TOONTALK.backside =
             backside.run_status_changed = function (running) {
                 update_flag_and_stop_sign_classes(running);
             };
-            backside.update_flag_and_sign_position = function () {
+            backside.update_flag_and_sign_position = function (call_count) {
                 var backside_width, backside_height, sign_width, close_button_width, green_flag_width, help_button_width;
                 if (!TOONTALK.UTILITIES.visible_element(backside_element)) {
                     // backside_element not yet added to the DOM
                     // TODO: should really listen to an event when it is added to the DOM
-                    setTimeout(this.update_flag_and_sign_position.bind(this), 100);
+                    if (call_count === undefined) {
+                        call_count = 1;
+                    }
+                    if (call_count < 100) {
+                        // othewise give up -- can't take 10 seconds to be added to DOM
+                        setTimeout(function () {
+                                        this.update_flag_and_sign_position(call_count+1);
+                                   }.bind(this), 
+                                   100);
+                    }
                 } else {
                     backside_width  = $backside_element.width();
                     backside_height = $backside_element.height();
