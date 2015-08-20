@@ -171,7 +171,7 @@ window.TOONTALK.widget = (function (TT) {
             }
             if ((TT.debugging  || TT.logging) && !widget.to_debug_string) {
                 widget.to_debug_string = function () {
-                    var parent = this.get_parent_of_frontside();
+                    var parent = this.get_parent_widget_of_frontside();
                     var id = this._debug_id;
                     var description = this.get_description();
                     if (description) {
