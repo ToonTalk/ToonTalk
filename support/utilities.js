@@ -2226,7 +2226,7 @@ window.TOONTALK.UTILITIES =
             } else {
                 percent = utilities.extract_percentage_from_string(css.left);
                 if (typeof percent === 'number') {
-                    css.left = Math.min(100, percent) + "%";
+                    css.left = Math.min(100, Math.max(percent, 0)) + "%";
                 }
             }
             if (typeof css.top === 'number') {
@@ -2234,7 +2234,7 @@ window.TOONTALK.UTILITIES =
             } else {
                 percent = utilities.extract_percentage_from_string(css.top);
                 if (typeof percent === 'number') {
-                    css.top = Math.min(100, percent) + "%";
+                    css.top = Math.min(100, Math.max(percent, 0)) + "%";
                 }
             }
         };
