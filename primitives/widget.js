@@ -1179,6 +1179,7 @@ window.TOONTALK.widget = (function (TT) {
                 }
             }
             copy.set_visible(this.visible());
+            copy.set_running(this.get_running());
             return copy;
         },
         
