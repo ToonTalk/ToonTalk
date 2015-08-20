@@ -474,6 +474,10 @@ window.TOONTALK.UTILITIES =
                return;
             }
             // widget_dropped_on_me needed here to get geometry right
+            if (!target_widget) {
+                utilities.report_internal_error("No target_widget");
+                return;
+            }
             if (source_widget) {
                 target_widget.get_backside().widget_dropped_on_me(source_widget, source_is_backside, event);
             } else {
