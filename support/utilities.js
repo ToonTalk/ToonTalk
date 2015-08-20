@@ -2205,16 +2205,38 @@ window.TOONTALK.UTILITIES =
         utilities.constrain_css_to_fit_inside = function (container_element, css) {
             // updates left and top to fit inside element
             var container_width  = $(container_element).width();
+            var container_height, percent;
             if (container_width === 0) {
                 return;
             }
-            var container_height = $(container_element).height();
+            container_height = $(container_element).height();
             if (typeof css.left === 'number') {
                 // css is relative to element
                 css.left = Math.min(Math.max(css.left, 0), container_width);
+            } else {
+                percent = utilities.extract_percentage_from_string(css.left);
+                if (typeof percent === 'number') {
+                    css.left = Math.min(100, percent) + "%";
+                }
             }
             if (typeof css.top === 'number') {
                 css.top  = Math.min(Math.max(css.top,  0), container_height);
+            } else {
+                percent = utilities.extract_percentage_from_string(css.top);
+                if (typeof percent === 'number') {
+                    css.top = Math.min(100, percent) + "%";
+                }
+            }
+        };
+
+        utilities.extract_percentage_from_string = function (s) {
+            // returns the percent as a number from a string like 2.5% or undefined if not possible.
+            try {
+                if (typeof s === 'string' && s[s.length-1] === '%') {
+                    return parseFloat(s.substring(0, s.length-1));
+                }
+            } catch (e) {
+                return;
             }
         };
         
