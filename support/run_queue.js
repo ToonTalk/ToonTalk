@@ -68,9 +68,7 @@ window.TOONTALK.queue =
                 return;
             }
             // give browser a chance to run
-            TT.UTILITIES.set_timeout(this.run_function,
-                                     // if more to run don't wait -- otherwise wait
-                                     this.maximum_run); 
+            TT.UTILITIES.set_timeout(this.run_function); 
         }
         
     };
