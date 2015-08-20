@@ -1510,6 +1510,13 @@ window.TOONTALK.robot_backside =
                     drop_area.appendChild(frontside_element);
                 });
             };
+            var generic_hide_backside = backside.hide_backside;
+            backside.hide_backside = function (event) {
+                generic_hide_backside.call(this, event);
+                if (robot.being_trained) {
+                    robot.training_finished();
+                }
+            };
             $next_robot_area.data("drop_area_owner", robot);
             $(run_once_input.button).click(function (event) {
                 var keep_running = run_once_input.button.checked;
