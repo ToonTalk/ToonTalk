@@ -686,7 +686,7 @@ window.TOONTALK.number = (function () {
             console.log("No handler for drop of '" + this + "' on '" + other + "'");
             return;
         }
-        var result = other.number_dropped_on_me(this, is_backside, event, robot);
+        other.number_dropped_on_me(this, is_backside, event, robot);
         return true;
     };
     

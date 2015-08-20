@@ -533,23 +533,22 @@ window.TOONTALK.robot = (function (TT) {
     robot.run = function (context, top_level_context, queue) {
         var frontside_condition_widget = this.get_frontside_conditions();
         var backside_conditions, backside_widgets, condition_frontside_element, to_run_when_non_empty, next_robot_match_status, clear_all_mismatch_displays, 
-            backside_matched_widgets, backside, backside_visible;
+            backside_matched_widgets, backside;
         if (this.being_trained || this.running_or_in_run_queue()) {
             // should not run if being trained or already scheduled to run
             return this;
         }
         backside = this.get_backside();
-        backside_visible = backside && backside.visible();
-        clear_all_mismatch_displays = function (widget) {
-            // conditions could keep last_match_status and when displayed use appropriate CSS
-            $(widget.get_frontside_element()).removeClass("toontalk-conditions-not-matched toontalk-conditions-waiting")
+        if (backside && backside.visible()) {
+            clear_all_mismatch_displays = function (widget) {
+                // conditions could keep last_match_status and when displayed use appropriate CSS
+                $(widget.get_frontside_element()).removeClass("toontalk-conditions-not-matched toontalk-conditions-waiting")
                                                  // clear all the mismatch displays from descendants
-                                             .find(".toontalk-conditions-not-matched, .toontalk-conditions-waiting").removeClass("toontalk-conditions-not-matched toontalk-conditions-waiting");
-        };
-        if (backside_visible) {
+                                                 .find(".toontalk-conditions-not-matched, .toontalk-conditions-waiting").removeClass("toontalk-conditions-not-matched toontalk-conditions-waiting");
+            };
             clear_all_mismatch_displays(frontside_condition_widget);
+            this.rerender();
         }
-        this.rerender();
 //      console.log("Match is " + TT.UTILITIES.match(frontside_condition_widget, context) + " for condition " + frontside_condition_widget + " with " + context);
         this.match_status = TT.UTILITIES.match(frontside_condition_widget, context);
         if (this.match_status === 'matched') {
@@ -578,7 +577,7 @@ window.TOONTALK.robot = (function (TT) {
                                     return;
                                 }
                                 if (!backside_widget_side.is_backside()) {
-                                    if (backside_visible) {
+                                    if (clear_all_mismatch_displays) {
                                         clear_all_mismatch_displays(backside_widget_side);
                                     }
                                     sub_match_status = TT.UTILITIES.match(condition, backside_widget_side);
