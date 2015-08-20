@@ -281,12 +281,13 @@ window.TOONTALK.actions =
                    // since not visible using set_absolute_position to robot_home doesn't work
                    $(frontside_element).css({width:  '',
                                              height: ''});
-                   // following doesn't use JQuery since it wasn't working
-                   frontside_element.style.left =  robot_start_position.left+"px";
-                   frontside_element.style.top  =  robot_start_position.top +"px";
+                   frontside_element.style.transitionDuration = '';
                    if (saved_parent_element) {
                        saved_parent_element.appendChild(frontside_element);
                    }
+                   // following doesn't use JQuery since it wasn't working
+                   frontside_element.style.left =  robot_start_position.left+"px";
+                   frontside_element.style.top  =  robot_start_position.top +"px";
                    this.run_unwatched(context, top_level_context, queue, robot, step_number);
                 }
             }.bind(this);

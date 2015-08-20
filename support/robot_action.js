@@ -504,6 +504,8 @@ window.TOONTALK.robot_action =
             frontside_element.style.width  = new_width +"px";
             frontside_element.style.height = new_height+"px";
             setTimeout(function () {
+                           $(frontside_element).removeClass("toontalk-animating-element");
+                           frontside_element.style.transitionDuration = '';
                            continuation();
                            widget.render();
                            robot.run_next_step();
