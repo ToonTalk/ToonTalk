@@ -230,7 +230,6 @@ window.TOONTALK.bird = (function (TT) {
                                              {width:  this.element_to_display_when_flying.width_before_carry  || '',
                                               height: this.element_to_display_when_flying.height_before_carry || '',
                                               "z-index": TT.UTILITIES.next_z_index()});
-                        $(bird_frontside_element).closest(".toontalk-top-level-backside").append(this.element_to_display_when_flying);
                         TT.UTILITIES.set_absolute_position($(this.element_to_display_when_flying), where_to_leave_it);
                         parent = message_side.get_parent_of_frontside();
                         if (parent && !parent.is_backside()) {
