@@ -295,7 +295,11 @@ window.TOONTALK.widget = (function (TT) {
             }
             if (!widget.forget_backside) {
                 widget.forget_backside = function () {
-                    var element = backside.get_element();
+                    var element;
+                    if (!backside) {
+                        return;
+                    }
+                    element = backside.get_element();
                     if (element) {
                         element.toontalk_widget = undefined;
                     }
