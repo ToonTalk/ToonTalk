@@ -363,6 +363,7 @@ window.TOONTALK.backside =
                 TT.UTILITIES.set_timeout(
                     function () {
                         var backside_visible = this.visible();
+                        var backside_element = this.get_element();
                         var widget_side_element, backside, json_view, css;
                         current_backside_widgets.forEach(function (backside_widget_side, index) {
                             if (!backside_widget_side) {
@@ -370,8 +371,9 @@ window.TOONTALK.backside =
                             }
                             widget_side_element = backside_widget_side.get_element(backside_visible);
                             if (widget_side_element) {
-                                if (backside_visible) {
-                                    $backside_element.append(widget_side_element);
+                                if (backside_visible && !widget_side_element.parentElement) {
+                                    // needs to be added to backside element
+                                    backside_element.appendChild(widget_side_element);
                                 }
                                 widget_side_element.toontalk_widget = backside_widget_side.get_widget();
                                 if (json_array) {
