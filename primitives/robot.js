@@ -52,6 +52,8 @@ window.TOONTALK.robot = (function (TT) {
         var body_finished_listeners = [];
         // when running watched runs these after each step
         var watched_step_end_listeners = [];
+        // backside that the robot is (or last) was running on
+        var context;
         var running_or_in_run_queue, stopped;
         var original_backside_widgets_of_context, backside_matched_widgets;
         if (!body) {
@@ -250,6 +252,12 @@ window.TOONTALK.robot = (function (TT) {
         new_robot.get_maximum_step_duration = function () {
             return maximum_step_duration;
         };
+        new_robot.get_context = function () {
+            return context;
+        };
+        new_robot.set_context = function (new_value) {
+            context = new_value;
+        };
         new_robot.animate_consequences_of_actions = function () {
             return this.visible() && maximum_step_duration !== 0;
         };
@@ -269,11 +277,19 @@ window.TOONTALK.robot = (function (TT) {
         new_robot.transform_original_step_duration = function (duration) {
             // no watched speed means the original durations (if known)
             // when duration isn't available the speed will be used
+            if (!context.get_backside()) {
+                // was watched but no longer
+                return 0;
+            }
             if (!watched_speed) {
                 return duration;
             }
         }
         new_robot.transform_animation_speed = function (speed) {
+            if (!context.get_backside()) {
+                // was watched but no longer
+                return 0;
+            }
             if (watched_speed) {
                 return speed*watched_speed;
             }
@@ -616,10 +632,8 @@ window.TOONTALK.robot = (function (TT) {
             }
             this.get_body().reset_newly_created_widgets();
             // TODO: determine if the queue: queue passed in is always the queue who enqueues it
-            if (queue.enqueue({robot: this, context: context, top_level_context: top_level_context, queue: queue})) {
-                // enqueued the first item so start running
-                queue.run();
-            }
+            this.set_context(context);
+            queue.enqueue({robot: this, top_level_context: top_level_context, queue: queue});
             return this.match_status;
         }
         if (this.match_status.is_widget) { // failed to match - this.match_status is the cause
@@ -938,21 +952,6 @@ window.TOONTALK.robot = (function (TT) {
             // this limits training to two levels -- could have more but must limit it
             this.robot_training_this_robot().trained(this, step);
         }
-    };
-    
-    robot.get_context = function () {
-        var frontside_element = this.get_frontside_element();
-        var $parent_element = $(frontside_element).parent();
-        var widget = TT.UTILITIES.widget_from_jquery($parent_element);
-        var previous_robot;
-        if (!widget) {
-            // check if robot is in the 'next robot' area
-            previous_robot = TT.UTILITIES.widget_from_jquery($parent_element.closest(".toontalk-backside-of-robot"));
-            if (previous_robot) {
-                return previous_robot.get_context();
-            }
-        }
-        return widget;
     };
     
     robot.update_display = function () {
