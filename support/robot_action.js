@@ -691,7 +691,8 @@ window.TOONTALK.robot_action =
             new_action.run_watched = function (context, top_level_context, robot) {
                 var referenced = TT.path.dereference_path(path, context, top_level_context, robot); 
                 var continuation = function () {
-                    if (robot.stopped()) {
+                    if (robot.stopped() && !robot.being_trained) {
+                        // don't stop if this is a robot being trained by another robot
                         return;
                     }
                     if (!additional_info) {
