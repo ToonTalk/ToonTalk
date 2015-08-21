@@ -40,7 +40,7 @@ window.TOONTALK.path =
     return { 
         get_path_to: function (widget, robot) {
             var compute_path = function (widget, robot) {
-                var context = robot.get_context();
+                var context = robot.get_training_context();
                 var body = robot.get_body();
                 var path, sub_path, widget_type, is_backside, robot_ancestor;
                 if (widget.is_backside()) {

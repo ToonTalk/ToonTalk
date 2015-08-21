@@ -52,6 +52,8 @@ window.TOONTALK.robot = (function (TT) {
         var body_finished_listeners = [];
         // when running watched runs these after each step
         var watched_step_end_listeners = [];
+        // backside that the robot is (or last) was running on
+        var context;
         var running_or_in_run_queue, stopped;
         var original_backside_widgets_of_context, backside_matched_widgets;
         if (!body) {
@@ -81,7 +83,7 @@ window.TOONTALK.robot = (function (TT) {
         };
         new_robot.get_matched_backside_widget = function (backside_widget) {
             if (backside_matched_widgets) {
-                return backside_matched_widgets[this.get_context().get_backside_widgets().indexOf(backside_widget)];
+                return backside_matched_widgets[this.get_training_context().get_backside_widgets().indexOf(backside_widget)];
             }
         };
         new_robot.get_backside_widget_of_type = function (type_name, context) {
@@ -139,7 +141,7 @@ window.TOONTALK.robot = (function (TT) {
         }
         new_robot.initialize_backside_conditions = function () {
 //          Any covered nests should be used as a condition
-            var context = this.get_context();
+            var context = this.get_training_context();
             // following used to also include copy_covered_nests: true but that caused nest sharing between members of a robot team
             // that led to several bugs -- also robots shouldn't be able to tell if it has a widget or has a nest with that widget on top
             original_backside_widgets_of_context = TT.UTILITIES.copy_widget_sides(context.get_backside_widgets(), {just_value: true});
@@ -174,7 +176,7 @@ window.TOONTALK.robot = (function (TT) {
             // the condition is what the widget was like when training started
             // but no need to consider all backside widgets as backside conditions
             // only those that are "used"
-            widget_index = this.get_context().get_backside_widgets().indexOf(widget);
+            widget_index = this.get_training_context().get_backside_widgets().indexOf(widget);
             if (widget_index >= 0) {
                 widget_copy = original_backside_widgets_of_context[widget_index]
             }
@@ -188,7 +190,7 @@ window.TOONTALK.robot = (function (TT) {
             }
         };
         new_robot.get_backside_condition_index = function (widget) {
-            var backside_widget_index = this.get_context().get_backside_widgets().indexOf(widget);
+            var backside_widget_index = this.get_training_context().get_backside_widgets().indexOf(widget);
             if (backside_widget_index >= 0) {
                 return backside_conditions.indexOf(original_backside_widgets_of_context[backside_widget_index]);
             }
@@ -250,6 +252,12 @@ window.TOONTALK.robot = (function (TT) {
         new_robot.get_maximum_step_duration = function () {
             return maximum_step_duration;
         };
+        new_robot.get_context = function () {
+            return context;
+        };
+        new_robot.set_context = function (new_value) {
+            context = new_value;
+        };
         new_robot.animate_consequences_of_actions = function () {
             return this.visible() && maximum_step_duration !== 0;
         };
@@ -269,11 +277,19 @@ window.TOONTALK.robot = (function (TT) {
         new_robot.transform_original_step_duration = function (duration) {
             // no watched speed means the original durations (if known)
             // when duration isn't available the speed will be used
+            if (context && !context.get_backside()) { // context is undefined if being trained (by another robot)
+                // was watched but no longer
+                return 0;
+            }
             if (!watched_speed) {
                 return duration;
             }
-        }
+        };
         new_robot.transform_animation_speed = function (speed) {
+            if (context && !context.get_backside()) {
+                // was watched but no longer
+                return 0;
+            }
             if (watched_speed) {
                 return speed*watched_speed;
             }
@@ -411,7 +427,7 @@ window.TOONTALK.robot = (function (TT) {
                     TT.widget.can_run.call(this);
         };
         new_robot.training_started = function (robot_training_this_robot) {
-            var context = this.get_context();
+            var context = this.get_training_context();
             var backside_element;
             if (!context) {
                 TT.UTILITIES.report_internal_error("Robot started training but can't find its 'context'.");
@@ -616,10 +632,8 @@ window.TOONTALK.robot = (function (TT) {
             }
             this.get_body().reset_newly_created_widgets();
             // TODO: determine if the queue: queue passed in is always the queue who enqueues it
-            if (queue.enqueue({robot: this, context: context, top_level_context: top_level_context, queue: queue})) {
-                // enqueued the first item so start running
-                queue.run();
-            }
+            this.set_context(context);
+            queue.enqueue({robot: this, top_level_context: top_level_context, queue: queue});
             return this.match_status;
         }
         if (this.match_status.is_widget) { // failed to match - this.match_status is the cause
@@ -930,17 +944,8 @@ window.TOONTALK.robot = (function (TT) {
         // might be new -- following does nothing if already known
         this.add_newly_created_widget_if_new(part);
     };
-    
-    robot.add_step = function (step, new_widget) {
-        this.get_body().add_step(step, new_widget);
-        this.update_title();
-        if (step.get_action_name() !== 'train' && step.get_action_name() !== 'start training' && this.robot_training_this_robot()) {
-            // this limits training to two levels -- could have more but must limit it
-            this.robot_training_this_robot().trained(this, step);
-        }
-    };
-    
-    robot.get_context = function () {
+
+    robot.get_training_context = function () {
         var frontside_element = this.get_frontside_element();
         var $parent_element = $(frontside_element).parent();
         var widget = TT.UTILITIES.widget_from_jquery($parent_element);
@@ -949,10 +954,19 @@ window.TOONTALK.robot = (function (TT) {
             // check if robot is in the 'next robot' area
             previous_robot = TT.UTILITIES.widget_from_jquery($parent_element.closest(".toontalk-backside-of-robot"));
             if (previous_robot) {
-                return previous_robot.get_context();
+                return previous_robot.get_training_context();
             }
         }
         return widget;
+    };
+    
+    robot.add_step = function (step, new_widget) {
+        this.get_body().add_step(step, new_widget);
+        this.update_title();
+        if (step.get_action_name() !== 'train' && step.get_action_name() !== 'start training' && this.robot_training_this_robot()) {
+            // this limits training to two levels -- could have more but must limit it
+            this.robot_training_this_robot().trained(this, step);
+        }
     };
     
     robot.update_display = function () {
@@ -1031,7 +1045,7 @@ window.TOONTALK.robot = (function (TT) {
     };
     
     robot.add_newly_created_widget_if_new = function (new_widget) {
-        if (new_widget !== this.get_context() && this !== new_widget) {
+        if (new_widget !== this.get_training_context() && this !== new_widget) {
             // ignore manipulations of the context or the robot
             return this.get_body().add_newly_created_widget_if_new(new_widget);
         }
