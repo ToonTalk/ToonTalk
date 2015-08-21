@@ -61,7 +61,7 @@ window.TOONTALK.queue =
             while (!this.to_run.isEmpty() && !this.paused && Date.now() < end_time) {
                 // tried checking the time every nth time but then add 1 unwatched looked funny (appeared to skip some additions)
                 next_robot_run = this.to_run.dequeue();
-                next_robot_run.robot.run_actions(next_robot_run.robot.get_context(), next_robot_run.top_level_context, next_robot_run.queue);
+                next_robot_run.robot.run_actions(next_robot_run.context, next_robot_run.top_level_context, next_robot_run.queue);
             }
             if (this.to_run.isEmpty()) {
                 this.running = false;
