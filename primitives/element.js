@@ -509,7 +509,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             widget_drag_started.call(this, json, is_resource);
         };
         new_element.update_display = function () {
-            var frontside_element = this.get_frontside_element();
+            var frontside_element = this.get_frontside_element(true);
             var backside = this.get_backside();
             var element_description = function (element) {
                 if (this.get_image_element()) {
