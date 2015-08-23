@@ -146,23 +146,25 @@ window.TOONTALK.robot = (function (TT) {
             // that led to several bugs -- also robots shouldn't be able to tell if it has a widget or has a nest with that widget on top
             original_backside_widgets_of_context = TT.UTILITIES.copy_widget_sides(context.get_backside_widgets(), {just_value: true});
             this.set_backside_conditions([]);
-            context.get_backside_widgets().forEach(function (widget_side) {
-                if (widget_side.is_backside()) {
-                    return;
-                }
-                if (widget_side.is_nest() && widget_side.dereference() !== widget_side) {
-                    this.add_to_backside_conditions(widget_side);
-                } else if (widget_side.walk_children) {
-                    widget_side.walk_children(function (child_side) {
-                        if (child_side.is_nest() && !child_side.is_hole() && child_side.dereference() !== child_side) {
-                            // is a covered nest inside of something
-                            this.add_to_backside_conditions(widget_side);
-                            return false; // stop
-                        }
-                        return true;
-                    }.bind(this));
-                }
-            }.bind(this));
+            // commented out the following since covered nests should work generically now that any number of widgets on the backside
+            // can contribute to the backside conditions
+//             context.get_backside_widgets().forEach(function (widget_side) {
+//                 if (widget_side.is_backside()) {
+//                     return;
+//                 }
+//                 if (widget_side.is_nest() && widget_side.dereference() !== widget_side) {
+//                     this.add_to_backside_conditions(widget_side);
+//                 } else if (widget_side.walk_children) {
+//                     widget_side.walk_children(function (child_side) {
+//                         if (child_side.is_nest() && !child_side.is_hole() && child_side.dereference() !== child_side) {
+//                             // is a covered nest inside of something
+//                             this.add_to_backside_conditions(widget_side);
+//                             return false; // stop
+//                         }
+//                         return true;
+//                     }.bind(this));
+//                 }
+//             }.bind(this));
         };
         new_robot.add_to_backside_conditions = function (widget) {
             var widget_copy, widget_index;
