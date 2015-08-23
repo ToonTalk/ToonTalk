@@ -627,13 +627,15 @@ window.TOONTALK.number = (function () {
                     // 3 for x10
                     max_characters -= 3+exponent.length/2;
                 }
-                minimum_characters += 2; // need a bit more than ordinary decimals
+                if (format === 'scientific_notation') {
+                    minimum_characters += 2; // need room for exponent and x10
+                }
                 if (max_characters < minimum_characters && digits_needed > max_characters) {
                     shrinkage = Math.min(minimum_characters, digits_needed);
                     if (max_characters <= 0) {
                         font_size *= Math.max(1, max_characters) / shrinkage;
                     } else {
-                        font_size *= Math.max(3, max_characters) / shrinkage;
+                        font_size *= Math.max(2, max_characters) / shrinkage;
                     }
                     max_characters = shrinkage;
                 }
