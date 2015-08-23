@@ -124,7 +124,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 } else {
                     // create temporary element with HTML to obtain its text
                     html = this.get_HTML();
-                    frontside_element = $().get(0);
+                    frontside_element = html && html[0] == '<' && $(html).get(0);
                     if (frontside_element) {
                         document.body.appendChild(frontside_element);
                         text = frontside_element.textContent;
