@@ -1856,7 +1856,7 @@ window.TOONTALK.UTILITIES =
 
         utilities.left_as_percent = function (left, element, parent_element) {
             var parent_rectangle;
-            if (!parent_element) {
+            if (!parent_element && element) {
                 parent_element = element.parentElement;
             }
             if (!element || !parent_element) {
@@ -1874,7 +1874,7 @@ window.TOONTALK.UTILITIES =
 
         utilities.top_as_percent = function (top, element, parent_element) {
             var parent_rectangle;
-            if (!parent_element) {
+            if (!parent_element && parent) {
                 parent_element = parent_element;
             }
             if (!element || !parent_element) {
