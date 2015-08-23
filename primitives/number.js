@@ -470,11 +470,15 @@ window.TOONTALK.number = (function () {
             client_width  = 200;
             client_height =  32;
         } else if (size_unconstrained_by_container && (frontside_element === $dimensions_holder.get(0) || $dimensions_holder.is(".toontalk-top-level-resource"))) {
-            // TODO: generalise this
-            client_width  = 76;
-            client_height =  55;
-            $(frontside_element).css({width:  client_width,
-                                      height: client_height});
+            client_width  = $(frontside_element).width();
+            client_height = $(frontside_element).height()
+            if (!client_width || !client_height) {
+                // TODO: generalise this
+                client_width  = 76;
+                client_height =  55;
+                $(frontside_element).css({width:  client_width,
+                                          height: client_height});
+            }
         } else {
             if (!TT.UTILITIES.visible_element($dimensions_holder.get(0))) {
                 if (TT.logging && TT.logging.indexOf('display') >= 0) {
@@ -556,6 +560,7 @@ window.TOONTALK.number = (function () {
             // following needed for scientific notation
             exponent, ten_to_exponent, exponent_area, exponent_index, exponent_string, significand, max_decimal_places, decimal_digits, integer_digit, negative, decimal_part;
         var extra_class = (top_level !== false) ? ' toontalk-top-level-number' : '';
+        var minimum_characters = 4;
         if (this.is_attribute_widget && this.is_attribute_widget()) {
              extra_class += " toontalk-attribute-number";
         } else if (this.get_approximate()) {
@@ -619,11 +624,17 @@ window.TOONTALK.number = (function () {
                     digits_needed++;
                 }
                 if (exponent) {
+                    // 3 for x10
                     max_characters -= 3+exponent.length/2;
                 }
-                if (max_characters < 4 && digits_needed > max_characters) {
-                    shrinkage = Math.min(4, digits_needed);
-                    font_size *= max_characters / shrinkage;
+                minimum_characters += 2; // need a bit more than ordinary decimals
+                if (max_characters < minimum_characters && digits_needed > max_characters) {
+                    shrinkage = Math.min(minimum_characters, digits_needed);
+                    if (max_characters <= 0) {
+                        font_size *= Math.max(1, max_characters) / shrinkage;
+                    } else {
+                        font_size *= Math.max(3, max_characters) / shrinkage;
+                    }
                     max_characters = shrinkage;
                 }
                 if (exponent) {
