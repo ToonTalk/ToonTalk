@@ -1797,7 +1797,7 @@ window.TOONTALK.element_backside =
             } else {
                 backside.add_advanced_settings(false, react_to_pointer_checkbox.container);
             }
-            backside.add_advanced_settings(false, attributes_chooser, show_attributes_chooser);
+            $(backside_element).children(".toontalk-advanced-setting").append(attributes_chooser,  show_attributes_chooser);
             return backside;
     }};
 }(window.TOONTALK));
