@@ -552,9 +552,9 @@ window.TOONTALK.number = (function () {
     };
     
     number.to_HTML = function (max_characters, font_size, format, top_level, operator, size_unconstrained_by_container) {
-        var integer_as_string, integer_part, fractional_part, improper_fraction_HTML, digits_needed, shrinkage, table_style,
+        var integer_as_string, value_as_string, integer_part, fractional_part, improper_fraction_HTML, digits_needed, shrinkage, table_style,
             // following needed for scientific notation
-            exponent, ten_to_exponent, exponent_area, significand, max_decimal_places, decimal_digits, integer_digit, negative, decimal_part;
+            exponent, ten_to_exponent, exponent_area, exponent_index, exponent_string, significand, max_decimal_places, decimal_digits, integer_digit, negative, decimal_part;
         var extra_class = (top_level !== false) ? ' toontalk-top-level-number' : '';
         if (this.is_attribute_widget && this.is_attribute_widget()) {
              extra_class += " toontalk-attribute-number";
@@ -600,6 +600,40 @@ window.TOONTALK.number = (function () {
             }
             return '<div class="toontalk-number toontalk-integer' + extra_class + '" style="font-size: ' + font_size + 'px;">' +
                    operator_HTML + fit_string_to_length(integer_as_string, max_characters, font_size) + '</div>';
+        }
+        if (this.get_approximate() || this.is_attribute_widget()) {
+            if (format === 'decimal') {
+                value_as_string = bigrat.toDecimal(this.get_value()).toString();
+            } else if (format === 'scientific_notation') {
+                value_as_string = bigrat.toDecimal(this.get_value()).toExponential();
+                exponent_index = value_as_string.indexOf('e');
+                if (exponent_index >= 0) {
+                    exponent = value_as_string.substring(exponent_index+1);
+                    value_as_string = value_as_string.substring(0, exponent_index); 
+                    
+                }
+            }
+            if (value_as_string) {
+                digits_needed = value_as_string.length;
+                if (operator_HTML.length > 0) {
+                    digits_needed++;
+                }
+                if (exponent) {
+                    max_characters -= 3+exponent.length/2;
+                }
+                if (max_characters < 4 && digits_needed > max_characters) {
+                    shrinkage = Math.min(4, digits_needed);
+                    font_size *= max_characters / shrinkage;
+                    max_characters = shrinkage;
+                }
+                if (exponent) {
+                    exponent_string = '&times;10<sup style="font-size: ' + font_size/2 + 'px;">' + exponent + '</sup>';
+                } else {
+                    exponent_string = "";
+                }
+                return '<div class="toontalk-number toontalk-approximate-number' + extra_class + '" style="font-size: ' + font_size + 'px;">' +
+                       operator_HTML + shrink_to_fit(value_as_string, max_characters, font_size, true) + exponent_string + '</div>';
+            }
         }
         table_style = ' style="font-size:' + (font_size * 0.4) + 'px;"';
         if (format === 'improper_fraction' || !format) { // default format
@@ -943,26 +977,27 @@ window.TOONTALK.number = (function () {
     };
 
     number.decimal_string = function (number_of_full_size_characters, font_size) {
+        var value, copy, integer_part, integer_string, fractional_part, number_of_full_size_characters_after_decimal_point,
+            decimal_max_digits, integer_max_digits, decimal_places, after_decimal_point;
         if (this.is_integer()) {
             return this.numerator_string();
         }
-        var value = this.get_value();
-        var copy = number.create(value[0], value[1]);
-        var integer_part = copy.integer_part();
-        var integer_string = integer_part.toString();
+        value = this.get_value();
+        copy = number.create(value[0], value[1]);
+        integer_part = copy.integer_part();
+        integer_string = integer_part.toString();
         if (integer_string === "0" && this.is_negative()) {
             // need -0.ddd
             integer_string = "-" + integer_string;
         }
-        var fractional_part = copy.get_value(); // will be the fractional remainder after the following
+        fractional_part = copy.get_value(); // will be the fractional remainder after the following
         bigrat.subtract(fractional_part, fractional_part, integer_part.get_value());
-        var number_of_full_size_characters_after_decimal_point = 
+        number_of_full_size_characters_after_decimal_point = 
             compute_number_of_full_size_characters_after_decimal_point(number_of_full_size_characters, integer_string.length);
-        var decimal_max_digits = shrinking_digits_length(number_of_full_size_characters_after_decimal_point, font_size);
-        var integer_max_digits = Math.min(integer_string.length, number_of_full_size_characters/2);
+        decimal_max_digits = shrinking_digits_length(number_of_full_size_characters_after_decimal_point, font_size);
+        integer_max_digits = Math.min(integer_string.length, number_of_full_size_characters/2);
         // bigger fonts mean more digits can be seen so compute more of them
-        var decimal_places = generate_decimal_places(fractional_part, decimal_max_digits);
-        var after_decimal_point;
+        decimal_places = generate_decimal_places(fractional_part, decimal_max_digits);
         if (decimal_places.length < number_of_full_size_characters_after_decimal_point) {
             // not repeating and not too many decimal digits
             after_decimal_point = decimal_places;
