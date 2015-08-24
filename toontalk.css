@@ -1871,7 +1871,9 @@ table.toontalk-documentation-table {
 	border-radius: 10px;
 }
 .toontalk-highlight {
-	border: solid 4px white;
+/* 	used to add a border but that looked terrible when element was scaled */
+	transition: 2s;
+    background-color: rgb(255, 255, 184);
 }
 .toontalk-highlight.toontalk-number-full-size-border {
 	border: 32px solid transparent;
