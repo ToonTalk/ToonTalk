@@ -1868,8 +1868,12 @@ table.toontalk-documentation-table {
 	border-color: rgb(185, 113, 141);
 	border-radius: 10px;
 }
-.toontalk-highlight {
-/* 	used to add a border but that looked terrible when element was scaled */
+.toontalk-highlight.toontalk-robot, .toontalk-highlight.toontalk-nest, .toontalk-highlight.toontalk-bird, .toontalk-highlight.toontalk-scale,
+ .toontalk-highlight.toontalk-element-frontside, .toontalk-highlight.toontalk-backside {
+	border: solid 4px white;
+}
+.toontalk-highlight.toontalk-plain-text-element {
+/* 	a border might be scaled and can look terrible */
 	transition: 2s;
     background-color: rgb(255, 255, 184);
 }
