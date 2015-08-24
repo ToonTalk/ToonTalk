@@ -1669,14 +1669,15 @@ window.TOONTALK.UTILITIES =
                             backside = widget.get_backside(true);
                             backside_element = backside.get_element();
                             $(element).replaceWith(backside_element);
-                            utilities.set_css(backside_element,
-                                              {width:  json.view.backside_width,
-                                               height: json.view.backside_height,
-                                               // color may be undefined
-                                               // do the following in a more general manner
-                                               // perhaps using additional classes?
-                                               "background-color": json.view.background_color,
-                                               "border-width":     json.view.border_width});
+                            // use JQuery css directly rather than set_css since that does processing
+                            // of plain text widgets appropriate only for frontside
+                            $(backside_element).css({width:  json.view.backside_width,
+                                                     height: json.view.backside_height,
+                                                     // color may be undefined
+                                                     // do the following in a more general manner
+                                                     // perhaps using additional classes?
+                                                     "background-color": json.view.background_color,
+                                                     "border-width":     json.view.border_width});
                         } else {
                             // TODO: determine why both levels have the same class here
                             $(element).addClass("toontalk-top-level-resource toontalk-top-level-resource-container");
