@@ -609,6 +609,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     }
                     $(frontside_element).addClass("ui-widget toontalk-plain-text-element");
                     this.plain_text_dimensions();
+                } else {
+                    $(frontside_element).addClass("toontalk-non-plain-text-element");
                 }
                 initialized = true;
             }
