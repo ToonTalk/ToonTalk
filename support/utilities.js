@@ -522,7 +522,7 @@ window.TOONTALK.UTILITIES =
             utilities.set_css($source,
                               {left: TT.UTILITIES.left_as_percent(left, $source.get(0)),
                                top:  TT.UTILITIES.top_as_percent (top,  $source.get(0))});
-            if (source_widget.set_location_attributes) {
+            if (!source_is_backside && source_widget.set_location_attributes) {
                 // e.g. an element needs to know its position attributes
                 source_widget.set_location_attributes(left, top);
             }
