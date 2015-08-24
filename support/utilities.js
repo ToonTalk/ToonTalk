@@ -3507,7 +3507,9 @@ window.TOONTALK.UTILITIES =
                    css.height = '';
                }
            }
-           if (!css.transform && css.width !== undefined && css.height !== undefined && widget && widget.use_scaling_transform) {
+           if (!css.transform && css.width !== undefined && css.height !== undefined &&
+               widget && widget.use_scaling_transform &&
+               !$(element).is(".toontalk-backside")) {
                // leave CSS width and height alone and recompute scaling transform
                // following will call set_css again with modified css
                widget.use_scaling_transform(css);
