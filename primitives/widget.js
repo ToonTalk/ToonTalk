@@ -1323,29 +1323,12 @@ window.TOONTALK.widget = (function (TT) {
                             };
                             $(element).addClass("toontalk-side-appearing");
                             TT.UTILITIES.add_one_shot_event_handler(element, "transitionend", 2500, remove_transition_class);
-                            TT.UTILITIES.set_css(element,
-                                                 {left:    final_left,
-                                                  top:     final_top,
-                                                  opacity: final_opacity});
+                            $(element).css({left:    final_left,
+                                            top:     final_top,
+                                            opacity: final_opacity});
                             this.apply_backside_geometry();
                         }.bind(this));
                 }.bind(this);
-            
-//             if (backside) {
-//                 backside_element = backside.get_element();
-//                 if (TT.UTILITIES.visible_element(backside_element)) {
-//                     TT.UTILITIES.highlight_element(backside_element, undefined, 1000);
-//                     if (new_continuation) {
-//                         new_continuation();
-//                     }
-//                     return backside;
-//                 }
-//                 // need to see if on backside is on the backside of another (and that is closed)
-//                 parent = this.get_parent_of_backside();
-//                 if (parent && parent.is_backside() && !parent.get_widget().is_top_level()) {
-//                     return parent.get_widget().open_backside(continuation);
-//                 }
-//             }
             frontside_element = this.get_frontside_element();
             // frontside_ancestor_that_is_backside_element is first parent that is a toontalk-backside
             $frontside_ancestor_that_is_backside_element = $(frontside_element).parent();
@@ -1372,11 +1355,9 @@ window.TOONTALK.widget = (function (TT) {
                 container_offset = {left: 0, 
                                     top:  0};
             }
-            TT.UTILITIES.set_css(backside_element,
-                                 {left: frontside_offset.left-container_offset.left,
-                                  top:  frontside_offset.top -container_offset.top,
-                                  opacity: .01
-            });
+            $(backside_element).css({left: frontside_offset.left-container_offset.left,
+                                     top:  frontside_offset.top -container_offset.top,
+                                     opacity: .01});
             $frontside_ancestor_that_is_backside_element.append(backside_element);
             ancestor_that_owns_backside_element = TT.UTILITIES.widget_from_jquery($frontside_ancestor_that_is_backside_element);
             if (ancestor_that_owns_backside_element) {
