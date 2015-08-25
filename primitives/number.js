@@ -442,7 +442,7 @@ window.TOONTALK.number = (function () {
         frontside_element = frontside.get_element();
         if ($(frontside_element).is(".toontalk-conditions-contents")) {
             $dimensions_holder = $(frontside_element);
-        } else if ($(frontside_element).parent().is(".toontalk-backside, .toontalk-json")) {
+        } else if ($(frontside_element).parent().is(".toontalk-backside, .toontalk-json, .toontalk-element-frontside")) {
             $dimensions_holder = $(frontside_element);
             size_unconstrained_by_container = true;
         } else if ($(frontside_element).parent().is(".toontalk-scale-half")) {
@@ -486,7 +486,7 @@ window.TOONTALK.number = (function () {
                 }
                 return;
             }
-            client_width =  $dimensions_holder.width();
+            client_width  = $dimensions_holder.width();
             client_height = $dimensions_holder.height();
             if (client_width === 0 || client_height === 0) {
                 if (TT.logging && TT.logging.indexOf('display') >= 0) {
