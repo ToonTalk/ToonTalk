@@ -90,22 +90,6 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         if (!style_attributes) {
             style_attributes = ['left', 'top', 'width', 'height'];
         }
-        if (sound_effect_or_sound_effect_file_name) {
-            // by supporting both the sound effect and the file name we can get sharing of audio objects between copies of the same element
-            if (typeof sound_effect_or_sound_effect_file_name === 'string') { 
-                sound_effect = new Audio(sound_effect_or_sound_effect_file_name);
-            } else {
-                sound_effect = sound_effect_or_sound_effect_file_name;
-            }
-        }
-        if (video_object_or_video_file_name) {
-            // by supporting both the video object and the file name we can get sharing of video objects between copies of the same element
-            if (typeof video_object_or_video_file_name === 'string') {
-                original_html = "<video src='" + video_object_or_video_file_name + "' alt='" + video_object_or_video_file_name + "'/>"
-            } else {
-                video_object = video_object_or_video_file_name;
-            }
-        }
         new_element.is_element = function () {
             return true;
         };
@@ -428,6 +412,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         };
         new_element.set_sound_effect = function (new_value) {
             sound_effect = new_value;
+            sound_effect.volume = TT.UTILITIES.get_audio_volume(sound_effect);
         };
         new_element.get_sound_effect = function () {
             return sound_effect;
@@ -729,6 +714,22 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         };
         new_element.set_HTML(original_html.toString());
         new_element.set_description(description);
+        if (sound_effect_or_sound_effect_file_name) {
+            // by supporting both the sound effect and the file name we can get sharing of audio objects between copies of the same element
+            if (typeof sound_effect_or_sound_effect_file_name === 'string') { 
+                new_element.set_sound_effect(new Audio(sound_effect_or_sound_effect_file_name));
+            } else {
+                new_element.set_sound_effect(sound_effect_or_sound_effect_file_name);
+            }
+        }
+        if (video_object_or_video_file_name) {
+            // by supporting both the video object and the file name we can get sharing of video objects between copies of the same element
+            if (typeof video_object_or_video_file_name === 'string') {
+                original_html = "<video src='" + video_object_or_video_file_name + "' alt='" + video_object_or_video_file_name + "'/>"
+            } else {
+                video_object = video_object_or_video_file_name;
+            }
+        }
         if (TT.debugging) {
             new_element._debug_id = TT.UTILITIES.generate_unique_id();
             new_element._debug_string = new_element.to_debug_string();
@@ -1735,7 +1736,7 @@ window.TOONTALK.element_backside =
                 $play_sound_effect_button.addClass("toontalk-play-sound-effect-button");
                 $play_sound_effect_button.click(function (event) {
                     if (sound_effect.paused) {
-                        sound_effect.play();
+                        TT.UTILITIES.play_audio(sound_effect);
                         sound_effect.addEventListener('ended', audio_label_and_title);
                     } else {
                         sound_effect.pause();

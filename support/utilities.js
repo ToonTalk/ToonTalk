@@ -27,6 +27,8 @@ window.TOONTALK.UTILITIES =
     var div_hidden = "<div style='display:none;'>"; // don't use a class since CSS might not be loaded
     var div_hidden_and_json_start = div_hidden + "{";
     var div_close  = "</div>";
+    var muted_audio_objects = [];
+    var audio_objects_playing = [];
     var path_to_toontalk_folder;
     var extract_json_from_div_string = function (div_string) {
         // expecting div_string to begin with div_open and end with div_close
@@ -671,12 +673,11 @@ window.TOONTALK.UTILITIES =
         });
     };
     var initialize = function () {
-       var translation_div, volume;
+       var translation_div;
         TT.debugging = utilities.get_current_url_parameter('debugging');
         TT.logging   = utilities.get_current_url_parameter('log');
-        volume = utilities.get_current_url_numeric_parameter('volume', 10); // 10% volume default
-        if (volume > 0) {
-            initialize_sounds(volume/100);
+        if (utilities.get_current_url_numeric_parameter('volume', 10) > 0) {
+            initialize_sounds();
         }
         utilities.process_json_elements();
         // for top-level resources since they are not on the backside 'work space' we need a way to turn them off
@@ -732,9 +733,12 @@ window.TOONTALK.UTILITIES =
                               window.TOONTALK.UTILITIES.use_custom_tooltip(element);
 	    });
 	    document.addEventListener("visibilitychange", function() {
-	        if (!document.hidden) {
+	        if (document.hidden) {
+	            utilities.mute_audio_objects_playing();
+	        } else {
 	            // make sure all widgets are redisplayed
                 utilities.rerender_all();
+                utilities.restore_audio_volumes();
 	        }
 	    });
 	    setTimeout(function () {
@@ -756,11 +760,11 @@ window.TOONTALK.UTILITIES =
                                                    };
                                                });
     };
-    var initialize_sounds = function (volume) {
+    var initialize_sounds = function () {
         var sounds_path = utilities.get_path_to_toontalk_folder() + "sounds/";
         var create_sound = function (file_name) {
             var sound = new Audio(sounds_path + file_name);
-            sound.volume = volume;
+            sound.volume = utilities.get_audio_volume(sound);
             return sound;
         }
         TT.sounds = {hatching:      create_sound("SPARROW.mp3"),
@@ -3583,6 +3587,42 @@ window.TOONTALK.UTILITIES =
            return $element.is(":visible") && $element.css('opacity') !== '0';
        };
 
+       utilities.get_audio_volume = function (audio_object) {
+           var volume = document.hidden ? 0 : utilities.get_current_url_numeric_parameter('volume', 10)/100;
+           if (volume === 0) {
+               muted_audio_objects.push({audio_object: audio_object,
+                                         volume: audio_object.volume});
+           }
+           return volume;
+       };
+
+       utilities.play_audio = function (audio_object) {
+           audio_object.play();
+           audio_objects_playing.push(audio_object);
+           audio_object.addEventListener('ended', function () {
+                                                      var index = audio_objects_playing.indexOf(audio_object);
+                                                      if (index >= 0) {
+                                                          audio_objects_playing.splice(index, 1);
+                                                      }
+           });
+       };
+
+       utilities.mute_audio_objects_playing = function () {
+           audio_objects_playing.forEach(function (audio_object) {
+               muted_audio_objects.push({audio_object: audio_object,
+                                         volume: audio_object.volume});
+               audio_object.volume = 0;
+           });
+           audio_objects_playing = [];
+       };
+
+       utilities.restore_audio_volumes = function () {
+            muted_audio_objects.forEach(function (muted_audio_object) {
+                muted_audio_object.audio_object.volume = muted_audio_object.volume;
+                audio_objects_playing.push(muted_audio_object.audio_object)
+            });
+            muted_audio_objects = [];
+       };
 //         enable_touch_events = function (maximum_click_duration) {
 //             // based on ideas in http://stackoverflow.com/questions/5186441/javascript-drag-and-drop-for-touch-devices/6362527#6362527
 //             var last_touch_down_time;
