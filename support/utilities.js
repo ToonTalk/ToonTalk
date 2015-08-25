@@ -3616,6 +3616,13 @@ window.TOONTALK.UTILITIES =
            audio_objects_playing = [];
        };
 
+       utilities.stop_audio_objects = function () {
+            audio_objects_playing.forEach(function (audio_object) {
+                audio_object.pause();
+                audio_object.currentTime = 0;
+            });
+       };
+
        utilities.restore_audio_volumes = function () {
             muted_audio_objects.forEach(function (muted_audio_object) {
                 muted_audio_object.audio_object.volume = muted_audio_object.volume;

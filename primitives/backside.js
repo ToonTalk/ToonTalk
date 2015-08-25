@@ -152,7 +152,10 @@ window.TOONTALK.backside =
                                             if (widget.robot_in_training()) {
                                                 widget.robot_in_training().button_clicked(".toontalk-stop-sign", widget);
                                             }  
-                                            event.stopPropagation();                                                                     
+                                            event.stopPropagation();
+                                            if (widget.is_top_level()) {
+                                                TT.UTILITIES.stop_audio_objects();
+                                            }                                                                    
                                         })
                                  .on('mouseenter', update_green_flag_title);
             backside_element.appendChild(green_flag_element);
