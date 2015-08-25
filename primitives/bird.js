@@ -214,7 +214,7 @@ window.TOONTALK.bird = (function (TT) {
                                 css.width = '';
                                 css.height = '';
                             }
-                            TT.UTILITIES.set_css(this.element_to_display_when_flying, css);
+                            TT.UTILITIES.set_css(element, css);
                             this.update_display();
                         }.bind(this));
                 }.bind(this);
