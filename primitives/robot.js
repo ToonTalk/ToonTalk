@@ -52,6 +52,8 @@ window.TOONTALK.robot = (function (TT) {
         var body_finished_listeners = [];
         // when running watched runs these after each step
         var watched_step_end_listeners = [];
+        // backside that the robot is (or last) was running on
+        var context;
         var running_or_in_run_queue, stopped;
         var original_backside_widgets_of_context, backside_matched_widgets;
         if (!body) {
@@ -60,6 +62,9 @@ window.TOONTALK.robot = (function (TT) {
         if (!first_in_team) {
             first_in_team = new_robot;
         }
+        if (frontside_conditions) {
+            frontside_conditions.set_parent_of_frontside(new_robot);
+        };
         new_robot.is_robot = function () {
             return true;
         };
@@ -70,12 +75,6 @@ window.TOONTALK.robot = (function (TT) {
             frontside_conditions = new_value;
             frontside_conditions.set_parent_of_frontside(this);
         };
-        if (frontside_conditions) {
-            frontside_conditions.set_parent_of_frontside(new_robot);
-        };
-        new_robot.get_backside_conditions = function () {
-            return backside_conditions;
-        };
         new_robot.get_backside_matched_widgets = function () {
            return backside_matched_widgets;
         };
@@ -84,7 +83,7 @@ window.TOONTALK.robot = (function (TT) {
         };
         new_robot.get_matched_backside_widget = function (backside_widget) {
             if (backside_matched_widgets) {
-                return backside_matched_widgets[this.get_context().get_backside_widgets().indexOf(backside_widget)];
+                return backside_matched_widgets[this.get_training_context().get_backside_widgets().indexOf(backside_widget)];
             }
         };
         new_robot.get_backside_widget_of_type = function (type_name, context) {
@@ -105,6 +104,9 @@ window.TOONTALK.robot = (function (TT) {
                 }
             }.bind(this));
             return backside_widget;            
+        };
+        new_robot.get_backside_conditions = function () {
+            return backside_conditions;
         };
         new_robot.set_backside_conditions = function (new_value) {
             if ($.isArray(new_value)) {
@@ -139,27 +141,30 @@ window.TOONTALK.robot = (function (TT) {
         }
         new_robot.initialize_backside_conditions = function () {
 //          Any covered nests should be used as a condition
-            var context = this.get_context();
+            var context = this.get_training_context();
             // following used to also include copy_covered_nests: true but that caused nest sharing between members of a robot team
             // that led to several bugs -- also robots shouldn't be able to tell if it has a widget or has a nest with that widget on top
             original_backside_widgets_of_context = TT.UTILITIES.copy_widget_sides(context.get_backside_widgets(), {just_value: true});
-            context.get_backside_widgets().forEach(function (widget_side) {
-                if (widget_side.is_backside()) {
-                    return;
-                }
-                if (widget_side.is_nest() && widget_side.dereference() !== widget_side) {
-                    this.add_to_backside_conditions(widget_side);
-                } else if (widget_side.walk_children) {
-                    widget_side.walk_children(function (child_side) {
-                        if (child_side.is_nest() && !child_side.is_hole() && child_side.dereference() !== child_side) {
-                            // is a covered nest inside of something
-                            this.add_to_backside_conditions(widget_side);
-                            return false; // stop
-                        }
-                        return true;
-                    }.bind(this));
-                }
-            }.bind(this));
+            this.set_backside_conditions([]);
+            // commented out the following since covered nests should work generically now that any number of widgets on the backside
+            // can contribute to the backside conditions
+//             context.get_backside_widgets().forEach(function (widget_side) {
+//                 if (widget_side.is_backside()) {
+//                     return;
+//                 }
+//                 if (widget_side.is_nest() && widget_side.dereference() !== widget_side) {
+//                     this.add_to_backside_conditions(widget_side);
+//                 } else if (widget_side.walk_children) {
+//                     widget_side.walk_children(function (child_side) {
+//                         if (child_side.is_nest() && !child_side.is_hole() && child_side.dereference() !== child_side) {
+//                             // is a covered nest inside of something
+//                             this.add_to_backside_conditions(widget_side);
+//                             return false; // stop
+//                         }
+//                         return true;
+//                     }.bind(this));
+//                 }
+//             }.bind(this));
         };
         new_robot.add_to_backside_conditions = function (widget) {
             var widget_copy, widget_index;
@@ -173,7 +178,7 @@ window.TOONTALK.robot = (function (TT) {
             // the condition is what the widget was like when training started
             // but no need to consider all backside widgets as backside conditions
             // only those that are "used"
-            widget_index = this.get_context().get_backside_widgets().indexOf(widget);
+            widget_index = this.get_training_context().get_backside_widgets().indexOf(widget);
             if (widget_index >= 0) {
                 widget_copy = original_backside_widgets_of_context[widget_index]
             }
@@ -187,7 +192,7 @@ window.TOONTALK.robot = (function (TT) {
             }
         };
         new_robot.get_backside_condition_index = function (widget) {
-            var backside_widget_index = this.get_context().get_backside_widgets().indexOf(widget);
+            var backside_widget_index = this.get_training_context().get_backside_widgets().indexOf(widget);
             if (backside_widget_index >= 0) {
                 return backside_conditions.indexOf(original_backside_widgets_of_context[backside_widget_index]);
             }
@@ -249,6 +254,12 @@ window.TOONTALK.robot = (function (TT) {
         new_robot.get_maximum_step_duration = function () {
             return maximum_step_duration;
         };
+        new_robot.get_context = function () {
+            return context;
+        };
+        new_robot.set_context = function (new_value) {
+            context = new_value;
+        };
         new_robot.animate_consequences_of_actions = function () {
             return this.visible() && maximum_step_duration !== 0;
         };
@@ -268,11 +279,19 @@ window.TOONTALK.robot = (function (TT) {
         new_robot.transform_original_step_duration = function (duration) {
             // no watched speed means the original durations (if known)
             // when duration isn't available the speed will be used
+            if (context && !context.get_backside()) { // context is undefined if being trained (by another robot)
+                // was watched but no longer
+                return 0;
+            }
             if (!watched_speed) {
                 return duration;
             }
-        }
+        };
         new_robot.transform_animation_speed = function (speed) {
+            if (context && !context.get_backside()) {
+                // was watched but no longer
+                return 0;
+            }
             if (watched_speed) {
                 return speed*watched_speed;
             }
@@ -410,7 +429,7 @@ window.TOONTALK.robot = (function (TT) {
                     TT.widget.can_run.call(this);
         };
         new_robot.training_started = function (robot_training_this_robot) {
-            var context = this.get_context();
+            var context = this.get_training_context();
             var backside_element;
             if (!context) {
                 TT.UTILITIES.report_internal_error("Robot started training but can't find its 'context'.");
@@ -473,7 +492,7 @@ window.TOONTALK.robot = (function (TT) {
             // this will update first_in_team for subsequent robots
             new_robot.set_next_robot(next_robot);
         }
-        new_robot = new_robot.add_standard_widget_functionality(new_robot);
+        new_robot.add_standard_widget_functionality(new_robot);
         new_robot.has_name(new_robot);
         new_robot.set_name(name);
         new_robot.set_description(description);
@@ -532,35 +551,34 @@ window.TOONTALK.robot = (function (TT) {
     robot.run = function (context, top_level_context, queue) {
         var frontside_condition_widget = this.get_frontside_conditions();
         var backside_conditions, backside_widgets, condition_frontside_element, to_run_when_non_empty, next_robot_match_status, clear_all_mismatch_displays, 
-            backside_matched_widgets, backside, backside_visible;
+            backside_matched_widgets, backside;
         if (this.being_trained || this.running_or_in_run_queue()) {
             // should not run if being trained or already scheduled to run
             return this;
         }
         backside = this.get_backside();
-        backside_visible = backside && backside.visible();
-        clear_all_mismatch_displays = function (widget) {
-            // conditions could keep last_match_status and when displayed use appropriate CSS
-            $(widget.get_frontside_element()).removeClass("toontalk-conditions-not-matched toontalk-conditions-waiting")
+        if (backside && backside.visible()) {
+            clear_all_mismatch_displays = function (widget) {
+                // conditions could keep last_match_status and when displayed use appropriate CSS
+                $(widget.get_frontside_element()).removeClass("toontalk-conditions-not-matched toontalk-conditions-waiting")
                                                  // clear all the mismatch displays from descendants
-                                             .find(".toontalk-conditions-not-matched, .toontalk-conditions-waiting").removeClass("toontalk-conditions-not-matched toontalk-conditions-waiting");
-        };
-        if (backside_visible) {
+                                                 .find(".toontalk-conditions-not-matched, .toontalk-conditions-waiting").removeClass("toontalk-conditions-not-matched toontalk-conditions-waiting");
+            };
             clear_all_mismatch_displays(frontside_condition_widget);
+            this.rerender();
         }
-        this.rerender();
 //      console.log("Match is " + TT.UTILITIES.match(frontside_condition_widget, context) + " for condition " + frontside_condition_widget + " with " + context);
         this.match_status = TT.UTILITIES.match(frontside_condition_widget, context);
         if (this.match_status === 'matched') {
             backside_matched_widgets = [];
             backside_conditions = this.get_backside_conditions();      
-            if (backside_conditions) {
+            if (backside_conditions && backside_conditions.length > 0) {
                 backside_widgets = context.get_backside_widgets();
                 if (backside_widgets) {
                     backside_conditions.some(function (condition) {
                         // check that a widget on the back matches this condition
                         var sub_match_status, best_sub_match_status;
-                        if (condition.matching_widget && condition.matching_widget.get_parent_of_frontside()) {
+                        if (condition.matching_widget && condition.matching_widget.get_parent_widget_of_frontside()) {
                             // try the last widget (if not recently removed) first to see if it matches since corresponding widget rarely changes
                             sub_match_status = TT.UTILITIES.match(condition, condition.matching_widget);
                             if (sub_match_status === 'matched') {
@@ -577,7 +595,7 @@ window.TOONTALK.robot = (function (TT) {
                                     return;
                                 }
                                 if (!backside_widget_side.is_backside()) {
-                                    if (backside_visible) {
+                                    if (clear_all_mismatch_displays) {
                                         clear_all_mismatch_displays(backside_widget_side);
                                     }
                                     sub_match_status = TT.UTILITIES.match(condition, backside_widget_side);
@@ -615,9 +633,9 @@ window.TOONTALK.robot = (function (TT) {
                 queue = TT.DEFAULT_QUEUE;
             }
             this.get_body().reset_newly_created_widgets();
-//             this.get_first_in_team().set_running(true);
             // TODO: determine if the queue: queue passed in is always the queue who enqueues it
-            queue.enqueue({robot: this, context: context, top_level_context: top_level_context, queue: queue});
+            this.set_context(context);
+            queue.enqueue({robot: this, top_level_context: top_level_context, queue: queue});
             return this.match_status;
         }
         if (this.match_status.is_widget) { // failed to match - this.match_status is the cause
@@ -669,9 +687,14 @@ window.TOONTALK.robot = (function (TT) {
 
     robot.set_waiting = function (waiting) {
         var frontside_element = this.get_frontside_element();
+        if (!frontside_element) {
+            return;
+        }
         if (waiting) {
-            TT.UTILITIES.add_animation_class(frontside_element, "toontalk-robot-waiting");
-            TT.UTILITIES.give_tooltip(frontside_element, "This robot is waiting for a bird to deliver something.");
+            if (this.visible()) {
+                TT.UTILITIES.add_animation_class(frontside_element, "toontalk-robot-waiting");
+                TT.UTILITIES.give_tooltip(frontside_element, "This robot is waiting for a bird to deliver something.");
+            }
         } else {
             $(frontside_element).removeClass("toontalk-robot-waiting");
             TT.UTILITIES.give_tooltip(frontside_element, this.get_title());
@@ -923,17 +946,8 @@ window.TOONTALK.robot = (function (TT) {
         // might be new -- following does nothing if already known
         this.add_newly_created_widget_if_new(part);
     };
-    
-    robot.add_step = function (step, new_widget) {
-        this.get_body().add_step(step, new_widget);
-        this.update_title();
-        if (step.get_action_name() !== 'train' && step.get_action_name() !== 'start training' && this.robot_training_this_robot()) {
-            // this limits training to two levels -- could have more but must limit it
-            this.robot_training_this_robot().trained(this, step);
-        }
-    };
-    
-    robot.get_context = function () {
+
+    robot.get_training_context = function () {
         var frontside_element = this.get_frontside_element();
         var $parent_element = $(frontside_element).parent();
         var widget = TT.UTILITIES.widget_from_jquery($parent_element);
@@ -942,10 +956,19 @@ window.TOONTALK.robot = (function (TT) {
             // check if robot is in the 'next robot' area
             previous_robot = TT.UTILITIES.widget_from_jquery($parent_element.closest(".toontalk-backside-of-robot"));
             if (previous_robot) {
-                return previous_robot.get_context();
+                return previous_robot.get_training_context();
             }
         }
         return widget;
+    };
+    
+    robot.add_step = function (step, new_widget) {
+        this.get_body().add_step(step, new_widget);
+        this.update_title();
+        if (step.get_action_name() !== 'train' && step.get_action_name() !== 'start training' && this.robot_training_this_robot()) {
+            // this limits training to two levels -- could have more but must limit it
+            this.robot_training_this_robot().trained(this, step);
+        }
     };
     
     robot.update_display = function () {
@@ -1013,7 +1036,7 @@ window.TOONTALK.robot = (function (TT) {
                     css.top  = relative_top;
                     $(thing_in_hand_frontside_element).css(css);
                     if (thing_in_hand) {
-                        thing_in_hand.render(); // or should it be rerender -- could it be invisible?
+                        thing_in_hand.rerender();
                     }
                 }
             });
@@ -1024,7 +1047,7 @@ window.TOONTALK.robot = (function (TT) {
     };
     
     robot.add_newly_created_widget_if_new = function (new_widget) {
-        if (new_widget !== this.get_context() && this !== new_widget) {
+        if (new_widget !== this.get_training_context() && this !== new_widget) {
             // ignore manipulations of the context or the robot
             return this.get_body().add_newly_created_widget_if_new(new_widget);
         }
@@ -1297,13 +1320,13 @@ window.TOONTALK.robot = (function (TT) {
          if (!path_within_conditions) {
              backside_conditions = robot_with_widget_in_conditions.get_backside_conditions();
              backside_conditions.some(function (condition) {
-                                           if (condition) {
-                                               path_within_conditions = condition.get_path_to(widget, robot);
-                                               if (path_within_conditions) {
-                                                   backside_condition_with_path = condition;
-                                                   return;
-                                               }
-                                           }
+                                          if (condition) {
+                                              path_within_conditions = condition.get_path_to(widget, robot);
+                                              if (path_within_conditions) {
+                                                  backside_condition_with_path = condition;
+                                                  return;
+                                              }
+                                          }
                                       });
          }
          if (!path_within_conditions) {
@@ -1315,52 +1338,48 @@ window.TOONTALK.robot = (function (TT) {
 
     robot.create_conditions_path = function (path_within_conditions, path_to_robot, backside_condition_with_path) {
         if (typeof backside_condition_with_path === 'string') {
+            // in older version backside_condition_with_path is just the type_name 
             this.get_backside_conditions().some(function (backside_condition) {
                 if (backside_condition && backside_condition.get_type_name() === backside_condition_with_path) {
                     backside_condition_with_path = backside_condition;
                     return true;
                 }
             });
-        }
-        // in older version backside_condition_with_path is just the type_name 
+        }  
         return {dereference_path: function (context, top_level_context, robot) {
-                     var robot_with_widget_in_conditions = TT.path.dereference_path(path_to_robot, context, top_level_context, robot);
-                     var condition;
-                     if (backside_condition_with_path) {
-                         condition = backside_condition_with_path;
-                     } else {
-                         condition = robot_with_widget_in_conditions.get_frontside_conditions();
-                     }
-                     if (path_within_conditions === 'entire_condition') {
-                         return condition;
-                     }
-                     return TT.path.dereference_path(path_within_conditions, condition, top_level_context, robot);
-                 },
-                 toString: function () {
-                     var path_to_condition_description = (path_within_conditions === 'entire_condition') ?
-                                                         "the " : TT.path.toString(path_within_conditions) + " of the ";                                                     
-                     if (backside_condition_with_path) {
-                         return path_to_condition_description + backside_condition_with_path.toString() + " backside condition of " + TT.path.toString(path_to_robot);
-                     }
-                     return path_to_condition_description + " front side condition of " + TT.path.toString(path_to_robot);
-                 },
-                 get_json: function () {
-                     return {type: "path_to_robot_conditions",
-                             backside_condition: TT.UTILITIES.get_json(backside_condition_with_path),
-                             path_to_robot: path_to_robot.get_json(),
-                             path_within_conditions: (path_within_conditions === 'entire_condition') ? 'entire_condition' : path_within_conditions.get_json()};
-                 }};
+                    var robot_with_widget_in_conditions = TT.path.dereference_path(path_to_robot, context, top_level_context, robot);
+                    var condition;
+                    if (backside_condition_with_path) {
+                        condition = backside_condition_with_path;
+                    } else {
+                        condition = robot_with_widget_in_conditions.get_frontside_conditions();
+                    }
+                    if (path_within_conditions === 'entire_condition') {
+                        return condition;
+                    }
+                    return TT.path.dereference_path(path_within_conditions, condition, top_level_context, robot);
+                },
+                toString: function () {
+                    var path_to_condition_description = (path_within_conditions === 'entire_condition') ?
+                                                        "the " : TT.path.toString(path_within_conditions) + " of the ";                                                     
+                    if (backside_condition_with_path) {
+                        return path_to_condition_description + backside_condition_with_path.toString() + " backside condition of " + TT.path.toString(path_to_robot);
+                    }
+                    return path_to_condition_description + " front side condition of " + TT.path.toString(path_to_robot);
+                },
+                get_json: function (json_history) {
+                    return {type: "path_to_robot_conditions",
+                            backside_condition: backside_condition_with_path && TT.UTILITIES.get_json(backside_condition_with_path, json_history),
+                            path_to_robot: path_to_robot.get_json(),
+                            path_within_conditions: (path_within_conditions === 'entire_condition') ? 'entire_condition' : path_within_conditions.get_json()};
+                }};
     };
 
     TT.creators_from_json["path_to_robot_conditions"] = function (json) {
             var path_to_robot = TT.UTILITIES.create_from_json(json.path_to_robot);
             var path_within_conditions = (json.path_within_conditions === 'entire_condition') ? 
                                          json.path_within_conditions : TT.UTILITIES.create_from_json(json.path_within_conditions);
-            var backside_condition = 
-                json.backside_condition ?
-                    TT.UTILITIES.create_from_json(json.backside_condition)
-                    :
-                    json.backside_condition_type;
+            var backside_condition = json.backside_condition && TT.UTILITIES.create_from_json(json.backside_condition);
             return TT.robot.create_conditions_path(path_within_conditions, path_to_robot, backside_condition);
     };
     
@@ -1490,7 +1509,7 @@ window.TOONTALK.robot_backside =
             var add_to_drop_area = function (widget, drop_area) {
                 // delay for dimensions to be known in the DOM
                 setTimeout(function () {
-                    var frontside_element = widget.get_frontside_element(robot.visible());
+                    var frontside_element = widget.get_frontside_element(true);
                     var default_width, default_height;
                     if (widget.get_default_width) {
                         default_width  = widget.get_default_width();
@@ -1503,6 +1522,13 @@ window.TOONTALK.robot_backside =
                     }
                     drop_area.appendChild(frontside_element);
                 });
+            };
+            var generic_hide_backside = backside.hide_backside;
+            backside.hide_backside = function (event) {
+                generic_hide_backside.call(this, event);
+                if (robot.being_trained) {
+                    robot.training_finished();
+                }
             };
             $next_robot_area.data("drop_area_owner", robot);
             $(run_once_input.button).click(function (event) {
@@ -1587,6 +1613,7 @@ window.TOONTALK.robot_backside =
                 training = !training;
                 backside.change_label_and_title_of_train_button(training);
                 if (training) {
+                    robot.initialize_backside_conditions();
                     robot.get_body().reset_steps();
                     robot.robot_started_training(robot);
                     robot.training_started();

@@ -487,7 +487,7 @@ window.TOONTALK.box = (function (TT) {
                 hole_element.appendChild(content_frontside_element);
                 // tried to delay the following until the changes to this box in the DOM have settled down
                 // but the hole's contents may have changed
-                hole.get_contents().update_display();
+                hole.get_contents().rerender();
             }
             if (hole.is_element()) {
                 hole_contents = hole.get_contents();
@@ -874,7 +874,7 @@ window.TOONTALK.box_backside =
                 };
             var size_input = TT.UTILITIES.create_text_input(box.get_size().toString(), 'toontalk-box-size-input', "Number of holes", "Type here to edit the number of holes.", undefined, "number", size_area_drop_handler);
             var horizontal = TT.UTILITIES.create_radio_button("box_orientation", "horizontal", "toontalk-horizontal-radio-button", "Left to right", "Show box horizontally."); // might be nicer replaced by an icon
-            var vertical = TT.UTILITIES.create_radio_button("box_orientation", "vertical", "toontalk-vertical-radio-button", "Top to bottom", "Show box vertically.");
+            var vertical   = TT.UTILITIES.create_radio_button("box_orientation", "vertical", "toontalk-vertical-radio-button", "Top to bottom", "Show box vertically.");
             var update_value = function () {
                 var new_size = parseInt(size_input.button.value.trim(), 10);
                 if (box.set_size(new_size, true) && box.robot_in_training()) {
@@ -1007,7 +1007,7 @@ window.TOONTALK.box_hole =
                         }
                     }
                 } else {
-                    box.render();
+                    box.rerender();
                     this.set_contents(dropped);
                 }
                 return true;
@@ -1120,7 +1120,7 @@ window.TOONTALK.box_hole =
                 // otherwise nothing to do
             };
             hole.rerender = function () {
-                if (contents && contents.visible()) {
+                if (contents && this.visible()) {
                     return this.render();
                 }
                 // otherwise nothing to do
@@ -1229,6 +1229,9 @@ window.TOONTALK.box_hole =
                 return false;
             };
             hole.is_top_level = function () {
+                return false;
+            };
+            hole.is_plain_text_element = function () {
                 return false;
             };
             TT.widget.has_parent(hole);

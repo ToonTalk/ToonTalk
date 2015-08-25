@@ -1420,14 +1420,12 @@ body {
 }
 .toontalk-backside {
 	position: absolute;
-/* 	was not full opaque - 0.94 */
-	background-color: rgb(245, 240, 240); 
-    cursor: move;
+	background: linear-gradient(to bottom, rgb(245, 240, 240), rgb(146, 156, 150));
+	cursor: move;
 	border-style: solid;
 	border-width: 2px;
 	border-color: rgb(185, 113, 141);
-	border-radius: 10px;
-	/* leave room at the bottom for hide buttons, etc. */
+	border-radius: 10px;/* leave room at the bottom for hide buttons, etc. */
 	padding-bottom: 6px;
 	padding-top:    6px;
 	padding-left:   6px;
@@ -1451,13 +1449,13 @@ body {
         @keyframes wiggle { from { margin-left:-1px; margin-top:-1px;} to { margin-left:1px; margin-top:1px;}  }
 
 .toontalk-backside-of-number {
-	background-color: rgb(220, 255, 236);
+	background: linear-gradient(to bottom, rgb(220, 255, 236), rgb(160, 255, 156));
 }
 .toontalk-backside-of-box {
-	background-color: rgb(212, 241, 247);
+	background: linear-gradient(to bottom, rgb(212, 241, 255), rgb(152, 221, 235));
 }
 .toontalk-backside-of-robot {
-	background-color: rgb(230, 230, 255);
+	background: linear-gradient(to bottom, rgb(230, 230, 255), rgb(200, 200, 235));
 	width: 480px;
 }
 .toontalk-top-level-backside {
@@ -1870,8 +1868,14 @@ table.toontalk-documentation-table {
 	border-color: rgb(185, 113, 141);
 	border-radius: 10px;
 }
-.toontalk-highlight {
+.toontalk-highlight.toontalk-robot, .toontalk-highlight.toontalk-nest, .toontalk-highlight.toontalk-bird, .toontalk-highlight.toontalk-scale,
+                                    .toontalk-highlight.toontalk-non-plain-text-element, .toontalk-highlight.toontalk-backside {
 	border: solid 4px white;
+}
+.toontalk-highlight.toontalk-plain-text-element {
+/* 	a border might be scaled and can look terrible */
+	transition: 3s;
+    background-color: rgb(255, 184, 184);
 }
 .toontalk-highlight.toontalk-number-full-size-border {
 	border: 32px solid transparent;
@@ -2294,10 +2298,10 @@ background-image: url("images/dusty-morph.png");
     font-size: 18pt;
 }
 .toontalk-backside-of-sensor {
-	background-color: rgb(248, 228, 210);
+	background: linear-gradient(to bottom, rgb(248, 228, 210), rgb(233, 177, 127));
 }
 .toontalk-backside-of-nest {
-    background-color: rgb(248, 248, 192);
+    background: linear-gradient(to bottom, rgb(248, 248, 192), rgb(237, 243, 45));
 }
 .toontalk-slide {
 /* 	to have room for green flag and stop sign */
@@ -2434,7 +2438,7 @@ background-image: url("images/dusty-morph.png");
 	text-align: center;
 }
 .toontalk-backside-of-bird {
-    background-color: rgb(230, 230, 240);	
+    background: linear-gradient(to bottom, rgb(230, 230, 240), rgb(121, 132, 193));
 }
 .toontalk-bird-gimme {
     width:  103px;
@@ -2975,8 +2979,7 @@ background-image: url("images/dusty-morph.png");
      to { background-position: -1238px; }
 }
 .toontalk-backside-of-scale {
-    background-color: rgb(239, 210, 248);
-	
+	background: linear-gradient(to bottom, rgb(239, 210, 248), rgb(163, 121, 193));
 }
 .toontalk-scale-half {
 /* 	is invisible but receives drops */

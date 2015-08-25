@@ -9,44 +9,63 @@ window.TOONTALK.DISPLAY_UPDATES =
     "use strict";
     // backsides, frontsides, and widgets (typically both sides) can be 'dirty'
     var pending_updates = [];
-    var time_of_last_update = 0;
+    var time_of_next_update = 0;
+    var minimum_delay_between_updates = 50;
+    var updating = false;
+    var update_scheduled = false;
     return {
-        pending_update: function (x) {
+        pending_update: function (x) {   
             if (pending_updates.indexOf(x) >= 0) {
                 // already scheduled to be rendered
                 return;
             }
-//          if (current_update && current_update !== x && x.has_ancestor && x.has_ancestor(current_update)) {
-                // is being called recursively by the display of decendant so ignore it
-//              return;
-//          }
             pending_updates.push(x);
+            this.update_display();
         },
-        
+
         update_display: function () {
-            var updates, ensure_childen_have_higer_z_index;
-            if (pending_updates.length === 0) {
+            var now;
+            if (update_scheduled || document.hidden || pending_updates.length === 0) {
+                // updated already scheduled, tab is hidden, or nothing queued
                 return;
             }
-            updates = pending_updates;
-            ensure_childen_have_higer_z_index = function (element, z_index) {
+            now = Date.now();
+            if (now < time_of_next_update) {
+                // too soon after last call
+                update_scheduled = true;
+                setTimeout(this.update_display_workhorse.bind(this), time_of_next_update-now);
+                return;
+            }
+            if (updating) {
+                // this has been called recursively  
+                return;
+            }
+            update_scheduled = true;
+            setTimeout(function () {
+                // delay until others have chance to add to the queue (e.g. contents of box holes)  
+                this.update_display_workhorse(now);
+            }.bind(this));
+        },
+
+        update_display_workhorse: function (now) {
+            var updates = pending_updates;
+            var ensure_childen_have_higer_z_index = function (element, z_index) {
                 $(element).children().each(function (index, child_element) {
                         $(child_element).css({"z-index": z_index+1});
                         ensure_childen_have_higer_z_index(child_element, z_index+1);
                 });
-            }
+            };
             pending_updates = [];
+            updating = true;
+            update_scheduled = false;   
+            time_of_next_update = (now | Date.now())+minimum_delay_between_updates;
             updates.forEach(function (pending_update) {
                 var frontside_element = pending_update.get_frontside_element && pending_update.get_frontside_element();
                 var $parent_side_element, z_index, parent_z_index, backside;
-//                 if (!(current_update && pending_update.has_ancestor && pending_update.has_ancestor(current_update))) {
-//                     // current_update is the current TOP-LEVEL widget - this ignores its descendants
-//                     current_update = pending_update;
-//                 }
                 pending_update.update_display();
                 if (pending_update.get_backside) {
                     backside = pending_update.get_backside();
-                    if (backside) {
+                    if (backside && backside.visible()) {
                         backside.update_display();
                     }
                 }
@@ -86,11 +105,15 @@ window.TOONTALK.DISPLAY_UPDATES =
                                             });   
                 }                  
             });
-        },
-        
-        run_cycle_is_over: function () {
-            // note that this will not be called more frequently than TT.queue.maximum_run milliseconds
-            this.update_display(); 
+            updating = false;
+            if (pending_updates.length > 0) {
+                // new updates scheduled while running this
+                update_scheduled = true;
+                setTimeout(function () {
+                               this.update_display_workhorse();
+                           }.bind(this),
+                           minimum_delay_between_updates);
+            }
         }
     };
 }(window.TOONTALK));

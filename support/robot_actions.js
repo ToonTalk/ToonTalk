@@ -42,7 +42,9 @@ window.TOONTALK.actions =
                 this.reset_newly_created_widgets();
             };
             new_actions.reset_newly_created_widgets = function () {
-//                 console.log("reset newly_created_widgets. Length was " + newly_created_widgets.length);
+                 if (TT.logging && TT.logging.indexOf("newly-created") >= 0) {
+                     console.log("Reset newly_created_widgets. Length was " + newly_created_widgets.length);
+                 }
                 newly_created_widgets = [];
             };
             new_actions.add_step = function (step, new_widget) {
@@ -259,7 +261,7 @@ window.TOONTALK.actions =
                                 if (robot.get_thing_in_hand()) {
                                     // TODO: move this elsewhere
                                     robot.get_thing_in_hand().save_dimensions();
-                                    robot.render();
+                                    robot.rerender();
                                 }
                             } else {
                                 robot.set_running_or_in_run_queue(false);
@@ -279,11 +281,14 @@ window.TOONTALK.actions =
                    // since not visible using set_absolute_position to robot_home doesn't work
                    $(frontside_element).css({width:  '',
                                              height: ''});
+                   frontside_element.style.transitionDuration = '';
+                   if (saved_parent_element) {
+                       saved_parent_element.appendChild(frontside_element);
+                   }
                    // following doesn't use JQuery since it wasn't working
                    frontside_element.style.left =  robot_start_position.left+"px";
                    frontside_element.style.top  =  robot_start_position.top +"px";
-                   saved_parent_element.appendChild(frontside_element);
-                   this.run_unwatched(context, top_level_context, queue, robot, step_number)
+                   this.run_unwatched(context, top_level_context, queue, robot, step_number);
                 }
             }.bind(this);
             robot.set_animating(true, robot_home);

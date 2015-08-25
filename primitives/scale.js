@@ -124,7 +124,7 @@ window.TOONTALK.scale = (function (TT) {
             return inactive_state;
         };
         new_scale.update_display = function () {
-            var frontside_element = this.get_frontside_element();
+            var frontside_element = this.get_frontside_element(true);
             var $frontside_element = $(frontside_element);
             var $scale_parts = $(frontside_element).children(".toontalk-scale-half");
             var $parent = $(frontside_element).parent();
@@ -177,6 +177,7 @@ window.TOONTALK.scale = (function (TT) {
                         }           
                     }
                     hole_element.appendChild(content_frontside_element); // no-op if already there
+                    contents.rerender();
                 }                                          
             };
             var state, class_name, scales;

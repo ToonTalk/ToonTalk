@@ -40,7 +40,7 @@ window.TOONTALK.path =
     return { 
         get_path_to: function (widget, robot) {
             var compute_path = function (widget, robot) {
-                var context = robot.get_context();
+                var context = robot.get_training_context();
                 var body = robot.get_body();
                 var path, sub_path, widget_type, is_backside, robot_ancestor;
                 if (widget.is_backside()) {
@@ -81,7 +81,7 @@ window.TOONTALK.path =
                         return path;
                     }
                 }
-                context.backside_widgets.some(function (backside_widget_side) {
+                context.get_backside_widgets().some(function (backside_widget_side) {
                     // widget might be on the backside of the context
                     var backside_widget = backside_widget_side.get_widget();
                     var sub_path;
@@ -308,7 +308,7 @@ window.TOONTALK.path =
                 return {dereference_path: function (context, top_level_context, robot) {
                             var referenced = robot.get_backside_widget_of_type(type_name, context);
                             if (!referenced) {
-                                context.backside_widgets.some(function (backside_widget_side) {
+                                context.get_backside_widgets().some(function (backside_widget_side) {
                                     if (backside_widget_side.get_widget().is_of_type(type_name) &&
                                         // should be a widget that was there when robot matched backside conditions
                                         // not one that was created subsequently

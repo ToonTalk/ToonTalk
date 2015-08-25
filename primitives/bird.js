@@ -74,7 +74,7 @@ window.TOONTALK.bird = (function (TT) {
                                             .addClass(this.get_class_name_with_color("toontalk-bird-static"));
                         this.get_parent_of_frontside().rerender();
                     }.bind(this));
-                    other.set_visible(true); // since nest is
+                    other.set_visible(nest.visible()); // since nest is
                     if (robot && !do_not_run_next_step) {
                         // robot needs to wait until delivery is finished
                         other.robot_waiting_before_next_step = robot;
@@ -107,7 +107,7 @@ window.TOONTALK.bird = (function (TT) {
             // starting_left and starting_top are optional and if given are in the coordinate system of the top-level backside
             var temporary_bird = !!nest_recieving_message;
             var parent = this.get_parent_of_frontside();
-            var bird_frontside_element = this.get_frontside_element();
+            var bird_frontside_element = this.get_frontside_element(true);
             var bird_width = $(bird_frontside_element).width();
             var visible_ancestor = this.closest_visible_ancestor_or_frontside();
             var bird_offset = $(visible_ancestor.get_frontside_element()).offset();
@@ -214,7 +214,7 @@ window.TOONTALK.bird = (function (TT) {
                                 css.width = '';
                                 css.height = '';
                             }
-                            TT.UTILITIES.set_css(this.element_to_display_when_flying, css);
+                            TT.UTILITIES.set_css(element, css);
                             this.update_display();
                         }.bind(this));
                 }.bind(this);
@@ -230,7 +230,6 @@ window.TOONTALK.bird = (function (TT) {
                                              {width:  this.element_to_display_when_flying.width_before_carry  || '',
                                               height: this.element_to_display_when_flying.height_before_carry || '',
                                               "z-index": TT.UTILITIES.next_z_index()});
-                        $(bird_frontside_element).closest(".toontalk-top-level-backside").append(this.element_to_display_when_flying);
                         TT.UTILITIES.set_absolute_position($(this.element_to_display_when_flying), where_to_leave_it);
                         parent = message_side.get_parent_of_frontside();
                         if (parent && !parent.is_backside()) {
@@ -252,7 +251,7 @@ window.TOONTALK.bird = (function (TT) {
             if (!nest_recieving_message) {
                 nest_recieving_message = nest;
             }
-            message_element = message_side.get_element();
+            message_element = message_side.get_element(true);
             carry_element(message_element, message_side);
             if (!target_side.is_function_nest()) {
                 // nests of functions are 'virtual'
@@ -554,7 +553,7 @@ window.TOONTALK.bird = (function (TT) {
                 return nest.set_name(new_value, update_display);
             };
         }   
-        new_bird = new_bird.add_standard_widget_functionality(new_bird);
+        new_bird.add_standard_widget_functionality(new_bird);
         new_bird.set_description(description);
         if (TT.debugging) {
             new_bird._debug_id = TT.UTILITIES.generate_unique_id();
@@ -597,17 +596,20 @@ window.TOONTALK.bird = (function (TT) {
         var full_continuation = function () {
             $(frontside_element).removeClass(direction);
             if (delay) {
-//                 $(frontside_element).addClass(this.get_class_name_with_color("toontalk-bird-static")); // should be bird-waiting
                 setTimeout(continuation, robot ? robot.transform_step_duration(delay) : delay);
             } else {
                 continuation();
             };
         }.bind(this);
-        TT.UTILITIES.add_animation_class(frontside_element, direction);
-        $(frontside_element).removeClass($(frontside_element).removeClass(this.get_class_name_with_color("toontalk-bird-static")));
-        // duration is proportional to distance
-//      console.log("Flying to " + target_offset.left + ", " + target_offset.top + " holding " + (this.element_to_display_when_flying && this.element_to_display_when_flying.className));
-        this.animate_to_absolute_position(target_offset, full_continuation, robot && robot.transform_animation_speed(TT.UTILITIES.default_animation_speed));
+        // this timeout fixes the problem that the bird's name is displayed incorrectly while she is flying
+        setTimeout(function () {
+                       $(frontside_element).removeClass("toontalk-bird-static");
+                       TT.UTILITIES.add_animation_class(frontside_element, direction);
+                       // duration is proportional to distance
+                       // console.log("Flying to " + target_offset.left + ", " + target_offset.top + " holding " + (this.element_to_display_when_flying && this.element_to_display_when_flying.className));
+                       this.animate_to_absolute_position(target_offset, full_continuation, robot && robot.transform_animation_speed(TT.UTILITIES.default_animation_speed));
+                   }.bind(this),
+                   1);
     };
     
     bird.get_type_name = function (plural, detailed) {
@@ -767,7 +769,8 @@ window.TOONTALK.nest = (function (TT) {
         new_nest.add_to_contents = function (widget_side, event, robot, delivery_bird, ignore_copies) {
             var current_non_empty_listeners, widget_side_copy;
             var stack_size = contents.push(widget_side);
-            if (stack_size > nest.maximum_capacity && robot && !robot.visible() && !this.visible()) {
+            var nest_visible = this.visible();
+            if (stack_size > nest.maximum_capacity && robot && !robot.visible() && !nest_visible) {
                 // if robot or nest is visible let it keep running even if nest goes over capactity
                 if (TT.logging && TT.logging.indexOf("nest") >= 0) {
                     console.log(this.to_debug_string() + " postponing addition of " + widget_side.to_debug_string() +
@@ -798,7 +801,10 @@ window.TOONTALK.nest = (function (TT) {
                                                             non_empty_listener(widget_side);
                                                         });
                 }
-                widget_side.set_visible(this.visible());
+                widget_side.set_visible(nest_visible);
+                if (!nest_visible) {
+                    widget_side.get_widget().hide();
+                }
             } else {
                 // is under the top widget
                 widget_side.get_widget().hide();
@@ -961,7 +967,7 @@ window.TOONTALK.nest = (function (TT) {
                         top_level_backside_element_offset = {left: 0,
                                                              top:  0};
                     }
-                    widget_element = widget.get_frontside_element();
+                    widget_element = widget.get_frontside_element(true);
                     nest_width =  $(nest_element).width();
                     nest_height = $(nest_element).height();
                     // left and top are 10%
@@ -1226,12 +1232,12 @@ window.TOONTALK.nest = (function (TT) {
                 top_contents_widget = contents[0].get_widget();
                 if (contents[0].is_backside()) {
                     contents_backside = top_contents_widget.get_backside(true);
-                    contents_side_element = contents_backside.get_element();
+                    contents_side_element = contents_backside.get_element(true);
                     contents_backside.update_display();
                     contents_backside.scale_to_fit(contents_side_element, frontside_element);
                 } else {
                     top_contents_widget.render();
-                    contents_side_element = contents[0].get_element();
+                    contents_side_element = contents[0].get_element(true);
                     $(contents_side_element).show();
                 }
                 nest_width  = $(frontside_element).width();

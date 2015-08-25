@@ -6,6 +6,9 @@
  
  /*jslint browser: true, devel: true, plusplus: true, vars: true, white: true */
 
+ // Sensors listen for DOM events and are 'concretized' as nests and events as messages delivered by birds
+ // Only keyCode is changed from a number to a string to be more user friendly
+
 window.TOONTALK.sensor = (function (TT) {
     "use strict";
     
@@ -171,13 +174,13 @@ window.TOONTALK.sensor = (function (TT) {
             }
             if (new_value === true) { // not 'temporarily false'
                if (widget) {
-                    widget.get_frontside_element().addEventListener(event_name, event_listener);
+                    widget.get_frontside_element(true).addEventListener(event_name, event_listener);
                 } else {
                     window.addEventListener(event_name, event_listener);
                 }
             } else {
                 if (widget) {
-                    widget.get_frontside_element().removeEventListener(event_name, event_listener);
+                    widget.get_frontside_element(true).removeEventListener(event_name, event_listener);
                 } else {
                     window.removeEventListener(event_name, event_listener);
                 }
