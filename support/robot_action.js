@@ -49,7 +49,7 @@ window.TOONTALK.robot_action =
                          return true;
                      }
                      TT.UTILITIES.report_internal_error("Thing in robot's hand (" + thing_in_hand + ") doesn't handle 'drop_on'. Robot that " + robot);
-                 } else {
+                 } else if (!robot.being_trained) {
                      TT.UTILITIES.report_internal_error("The robot that '" + robot.toString() + "' is executing drop_on but has nothing in its hand.");
                  }
              } else {
