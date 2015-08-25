@@ -267,7 +267,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         };
         new_element.apply_css = function (count) {
             var transform = "";
-            var frontside_element, x_scale, y_scale, $container, container_width_minus_width, container_height_minus_height, parent_of_frontside;
+            var frontside_element, x_scale, y_scale,
+                $container, container_width_minus_width, container_height_minus_height, parent_of_frontside, wrap_location, current_pending_css;
             if (!pending_css && !transform_css) {
                 return;
             }
@@ -295,6 +296,34 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 }
                 return;
             }
+            wrap_location = function (css) {
+                if (css.left || css.top) {
+                    // elements (like turtles) by default wrap -- TODO: make this configurable
+                    parent_of_frontside = this.get_parent_of_frontside();
+                    if (parent_of_frontside) {
+                        if (css.left) {   
+                            // if negative after mod add width -- do another mod in case was positive
+                            // keep it within the bounds of its container
+                            $container = $(parent_of_frontside.get_element());
+                            container_width_minus_width = $container.width();
+                            if (current_width !== undefined) {
+                                container_width_minus_width -= current_width;
+                            }
+                            css.left = ((css.left%container_width_minus_width)+container_width_minus_width)%container_width_minus_width;
+                        }
+                        if (css.top) {
+                            if (!$container) {
+                                $container = $(parent_of_frontside.get_element());
+                            }
+                            container_height_minus_height = $container.height();
+                            if (current_height !== undefined) {
+                                container_height_minus_height -= current_height;
+                            }
+                            css.top = ((css.top%container_height_minus_height)+container_height_minus_height)%container_height_minus_height;
+                        }
+                    }
+                }
+            }.bind(this);
             if (pending_css) {
                 if (pending_css.width) {
                     current_width  = pending_css.width;
@@ -319,32 +348,6 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     pending_css['transform-origin'] = (transform_css['transform-origin-x'] || 0) + ' ' + (transform_css['transform-origin-y'] || 0);
                 }
             };
-            if (pending_css.left || pending_css.top) {
-                // elements (like turtles) by default wrap -- TODO: make this configurable
-                parent_of_frontside = this.get_parent_of_frontside();
-                if (parent_of_frontside) {
-                    if (pending_css.left) {   
-                        // if negative after mod add width -- do another mod in case was positive
-                        // keep it within the bounds of its container
-                        $container = $(parent_of_frontside.get_element());
-                        container_width_minus_width = $container.width();
-                        if (current_width !== undefined) {
-                            container_width_minus_width -= current_width;
-                        }
-                        pending_css.left = ((pending_css.left%container_width_minus_width)+container_width_minus_width)%container_width_minus_width;
-                    }
-                    if (pending_css.top) {
-                        if (!$container) {
-                            $container = $(parent_of_frontside.get_element());
-                        }
-                        container_height_minus_height = $container.height();
-                        if (current_height !== undefined) {
-                            container_height_minus_height -= current_height;
-                        }
-                        pending_css.top = ((pending_css.top%container_height_minus_height)+container_height_minus_height)%container_height_minus_height;
-                    }
-                }
-            }
             if (current_width || current_height) {
                 // if it contains an image then change it too (needed only for width and height)
                 // TODO: is the following still needed?
@@ -356,16 +359,18 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     this.plain_text_dimensions();
                 }
                 $(frontside_element).css({width: '', height: ''});
+                current_pending_css = pending_css;
                 TT.UTILITIES.run_when_dimensions_known(frontside_element,
                                                        function (original_parent) {
                                                            var parent = this.get_parent_of_frontside();
+                                                           wrap_location(current_pending_css);
                                                            TT.UTILITIES.scale_element(frontside_element,
                                                                                       current_width,
                                                                                       current_height,
                                                                                       original_width,
                                                                                       original_height,
                                                                                       transform,
-                                                                                      pending_css,
+                                                                                      current_pending_css,
                                                                                       original_parent,
                                                                                       // no need to translate if element is part of another element
                                                                                       !parent || (!parent.is_backside && parent.is_element()));
@@ -374,6 +379,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 return;
             } else {
                 // use center center for transform-origin unless in a box hole
+                wrap_location(pending_css);
                 TT.UTILITIES.add_transform_to_css(transform, "", pending_css, frontside_element.parentElement.className.indexOf("toontalk-box-hole") < 0);
                 $(frontside_element).css(pending_css);
             }
@@ -599,7 +605,6 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 // the introduction of non-breaking spaces is necessary for plain text elements
                 // so that when placed in boxes they don't change shape
                 frontside_element.innerHTML = is_plain_text ? html.replace(/ /g, "&nbsp;") : html;
-//                 this.set_image_element(rendering, frontside_element);
                 $(frontside_element).addClass("toontalk-element-frontside");
                 if (is_plain_text) {
                     //  give it a class that will give it a better font and size
