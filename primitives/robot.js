@@ -1320,13 +1320,13 @@ window.TOONTALK.robot = (function (TT) {
          if (!path_within_conditions) {
              backside_conditions = robot_with_widget_in_conditions.get_backside_conditions();
              backside_conditions.some(function (condition) {
-                                           if (condition) {
-                                               path_within_conditions = condition.get_path_to(widget, robot);
-                                               if (path_within_conditions) {
-                                                   backside_condition_with_path = condition;
-                                                   return;
-                                               }
-                                           }
+                                          if (condition) {
+                                              path_within_conditions = condition.get_path_to(widget, robot);
+                                              if (path_within_conditions) {
+                                                  backside_condition_with_path = condition;
+                                                  return;
+                                              }
+                                          }
                                       });
          }
          if (!path_within_conditions) {
@@ -1338,52 +1338,48 @@ window.TOONTALK.robot = (function (TT) {
 
     robot.create_conditions_path = function (path_within_conditions, path_to_robot, backside_condition_with_path) {
         if (typeof backside_condition_with_path === 'string') {
+            // in older version backside_condition_with_path is just the type_name 
             this.get_backside_conditions().some(function (backside_condition) {
                 if (backside_condition && backside_condition.get_type_name() === backside_condition_with_path) {
                     backside_condition_with_path = backside_condition;
                     return true;
                 }
             });
-        }
-        // in older version backside_condition_with_path is just the type_name 
+        }  
         return {dereference_path: function (context, top_level_context, robot) {
-                     var robot_with_widget_in_conditions = TT.path.dereference_path(path_to_robot, context, top_level_context, robot);
-                     var condition;
-                     if (backside_condition_with_path) {
-                         condition = backside_condition_with_path;
-                     } else {
-                         condition = robot_with_widget_in_conditions.get_frontside_conditions();
-                     }
-                     if (path_within_conditions === 'entire_condition') {
-                         return condition;
-                     }
-                     return TT.path.dereference_path(path_within_conditions, condition, top_level_context, robot);
-                 },
-                 toString: function () {
-                     var path_to_condition_description = (path_within_conditions === 'entire_condition') ?
-                                                         "the " : TT.path.toString(path_within_conditions) + " of the ";                                                     
-                     if (backside_condition_with_path) {
-                         return path_to_condition_description + backside_condition_with_path.toString() + " backside condition of " + TT.path.toString(path_to_robot);
-                     }
-                     return path_to_condition_description + " front side condition of " + TT.path.toString(path_to_robot);
-                 },
-                 get_json: function () {
-                     return {type: "path_to_robot_conditions",
-                             backside_condition: TT.UTILITIES.get_json(backside_condition_with_path),
-                             path_to_robot: path_to_robot.get_json(),
-                             path_within_conditions: (path_within_conditions === 'entire_condition') ? 'entire_condition' : path_within_conditions.get_json()};
-                 }};
+                    var robot_with_widget_in_conditions = TT.path.dereference_path(path_to_robot, context, top_level_context, robot);
+                    var condition;
+                    if (backside_condition_with_path) {
+                        condition = backside_condition_with_path;
+                    } else {
+                        condition = robot_with_widget_in_conditions.get_frontside_conditions();
+                    }
+                    if (path_within_conditions === 'entire_condition') {
+                        return condition;
+                    }
+                    return TT.path.dereference_path(path_within_conditions, condition, top_level_context, robot);
+                },
+                toString: function () {
+                    var path_to_condition_description = (path_within_conditions === 'entire_condition') ?
+                                                        "the " : TT.path.toString(path_within_conditions) + " of the ";                                                     
+                    if (backside_condition_with_path) {
+                        return path_to_condition_description + backside_condition_with_path.toString() + " backside condition of " + TT.path.toString(path_to_robot);
+                    }
+                    return path_to_condition_description + " front side condition of " + TT.path.toString(path_to_robot);
+                },
+                get_json: function (json_history) {
+                    return {type: "path_to_robot_conditions",
+                            backside_condition: backside_condition_with_path && TT.UTILITIES.get_json(backside_condition_with_path, json_history),
+                            path_to_robot: path_to_robot.get_json(),
+                            path_within_conditions: (path_within_conditions === 'entire_condition') ? 'entire_condition' : path_within_conditions.get_json()};
+                }};
     };
 
     TT.creators_from_json["path_to_robot_conditions"] = function (json) {
             var path_to_robot = TT.UTILITIES.create_from_json(json.path_to_robot);
             var path_within_conditions = (json.path_within_conditions === 'entire_condition') ? 
                                          json.path_within_conditions : TT.UTILITIES.create_from_json(json.path_within_conditions);
-            var backside_condition = 
-                json.backside_condition ?
-                    TT.UTILITIES.create_from_json(json.backside_condition)
-                    :
-                    json.backside_condition_type;
+            var backside_condition = json.backside_condition && TT.UTILITIES.create_from_json(json.backside_condition);
             return TT.robot.create_conditions_path(path_within_conditions, path_to_robot, backside_condition);
     };
     
