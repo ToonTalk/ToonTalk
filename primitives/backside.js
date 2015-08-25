@@ -1004,6 +1004,11 @@ window.TOONTALK.backside =
             return false;
         },
 
+        is_box: function () {
+            return false;
+        },
+
+        // TODO: more is_* and return false
         save_dimensions: function () {
             // TODO: later support robots moving around backsides
             return false;
