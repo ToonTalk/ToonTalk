@@ -398,7 +398,7 @@ window.TOONTALK.widget = (function (TT) {
                                return;
                            }
                         }
-                        if (backside_widget.is_robot() && !backside_widget.being_trained) {
+                        if (backside_widget.is_robot() && !backside_widget.being_trained && !backside_widget.get_body().is_empty()) {
                             // could this set_stopped stuff be combined with set_running?
                             if (running) {
                                 backside_widget.set_stopped(false);
