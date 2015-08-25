@@ -48,11 +48,13 @@ window.TOONTALK.robot_action =
                          }
                          return true;
                      }
-                     TT.UTILITIES.report_internal_error("Thing in robot's hand (" + thing_in_hand + ") doesn't handle 'drop_on'. Robot that " + robot);
-                 } else if (!robot.being_trained) {
+                     if (TT.debugging) {
+                        TT.UTILITIES.report_internal_error("Thing in robot's hand (" + thing_in_hand + ") doesn't handle 'drop_on'. Robot that " + robot);
+                     }
+                 } else if (!robot.being_trained && TT.debugging) {
                      TT.UTILITIES.report_internal_error("The robot that '" + robot.toString() + "' is executing drop_on but has nothing in its hand.");
                  }
-             } else {
+             } else if (TT.debugging) {
                  TT.UTILITIES.report_internal_error("The robot that '" + robot.toString() + "' is executing drop_on but doesn't know where to drop what its holding");
              }
          },
@@ -278,8 +280,11 @@ window.TOONTALK.robot_action =
         var thing_in_hand = robot.get_thing_in_hand();
         var $thing_in_hand_frontside_element, new_continuation;
         if (!thing_in_hand) {
-            TT.UTILITIES.report_internal_error("Expected the robot to be holding something.");
-            console.log("The robot is " + robot);
+            if (TT.debugging) {
+                TT.UTILITIES.report_internal_error("Expected the robot to be holding something.");
+                // since the robot's description can be long add it the console
+                console.log("The robot is " + robot);
+            }
             move_robot_animation(target, robot, continuation, additional_info);
             return;
         }
