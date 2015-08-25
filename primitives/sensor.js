@@ -31,30 +31,7 @@ window.TOONTALK.sensor = (function (TT) {
         var nest_update_display = new_sensor.update_display;
         var nest_copy = new_sensor.copy;
         var attributes = attributes_string.split(" ");
-        var attribute_values = function (event) {
-            return attributes.map(
-                function (attribute) {
-                    var value = event[attribute];
-                    if (attribute === 'keyCode') {
-                        // is this a good idea? shouldn't the DOM events be left alone?
-                        // perhaps this should be renamed keyChar or something...
-                        if (value === 16) {
-                            // is only the shift key
-                            return;
-                        }
-                        value = String.fromCharCode(value);
-                        if (!event.shiftKey) {
-                            value = value.toLowerCase();
-                        }
-                    } else {       
-                         if (typeof value === 'undefined') {
-                             value = "No " + attribute + " in event " + event + " of sensor " + sensor;
-                             TT.UTILITIES.display_message(value);
-                         }
-                    }
-                    return value;
-                });
-        };
+        var attribute_values;
         var attribute_widget = function (value) {
             var value_widget;
             switch (typeof value) {
@@ -70,15 +47,18 @@ window.TOONTALK.sensor = (function (TT) {
                 value_widget = TT.element.create(value.toString(), undefined, undefined, undefined, undefined, undefined, "toontalk-string-value-from-sensor");
                 style_contents(value_widget, new_sensor);
                 break;
+                default:
+                return value;
             }
             return value_widget;
         };
         var event_listener = function (event) {
-            var values, visible, $top_level_backside, value_widget, frontside_element, delivery_bird;
+            var values, attributes, visible, $top_level_backside, value_widget, frontside_element, delivery_bird;
             if (!new_sensor.get_active()) {
                 return;
             }
             values = attribute_values(event);
+            attributes = new_sensor.get_attributes();
             visible = new_sensor.visible();
             $top_level_backside = $(new_sensor.get_frontside_element()).closest(".toontalk-top-level-backside");        
             if (values.length === 1) {
@@ -238,6 +218,33 @@ window.TOONTALK.sensor = (function (TT) {
             }
             return title;
         };
+        attribute_values = function (event) {
+            return new_sensor.get_attributes().map(
+                function (attribute) {
+                    var value = event[attribute];
+                    if (attribute === 'keyCode') {
+                        // is this a good idea? shouldn't the DOM events be left alone?
+                        // perhaps this should be renamed keyChar or something...
+                        if (value === 16) {
+                            // is only the shift key
+                            return;
+                        }
+                        value = String.fromCharCode(value);
+                        if (!event.shiftKey) {
+                            value = value.toLowerCase();
+                        }
+                    } else {       
+                         if (typeof value === 'undefined') {
+                             if (event.detail && event.detail.element_widget && attribute === 'widget') {
+                                 return TT.UTILITIES.widget_of_element(event.detail.element_widget).copy();
+                             }
+                             value = "No " + attribute + " in event " + event + " of sensor " + sensor;
+                             TT.UTILITIES.display_message(value);
+                         }
+                    }
+                    return value;
+                });
+        };
         return new_sensor;
     };
     
@@ -285,6 +292,8 @@ window.TOONTALK.sensor_backside =
         create: function (sensor) {
             var event_name_input      = TT.UTILITIES.create_text_input(sensor.get_event_name(), 
                                                                        'toontalk-sensor-event-name-input',
+                                                                       // spaces are so this lines up with the next area "Event attribute"
+                                                                       // TODO: figure out how to make this work with translation on
                                                                        "Event name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",
                                                                        "Type here the event name.",
                                                                        "https://developer.mozilla.org/en-US/docs/Web/Events/" + sensor.get_event_name());
