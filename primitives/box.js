@@ -944,7 +944,7 @@ window.TOONTALK.box_hole =
                 if (!hole_element) {
                     hole_element = document.createElement("div");
                     hole_element.className = "toontalk-box-hole toontalk-frontside toontalk-side";
-                    hole_element.toontalk_widget = hole;
+                    hole_element.toontalk_widget_side = hole;
                 }
                 // can only receive drops if empty -- rather than add and remove these listeners use box.element_to_highlight
 //              TT.UTILITIES.can_receive_drops(hole_element);

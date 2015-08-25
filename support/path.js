@@ -276,7 +276,7 @@ window.TOONTALK.path =
                             // but robot isn't referring to the resource itself just the 'value'
                             widget_frontside_element = TT.UTILITIES.find_resource_equal_to_widget(widget);
                             if (widget_frontside_element) {
-                                widget_copy.save_dimensions_of(TT.UTILITIES.widget_of_element(widget_frontside_element));
+                                widget_copy.save_dimensions_of(TT.UTILITIES.widget_side_of_element(widget_frontside_element));
                                 copy_frontside_element = widget_copy.get_frontside_element();
                                 widget_frontside_position = $(widget_frontside_element).position();
                                 TT.UTILITIES.set_timeout(function ()  {

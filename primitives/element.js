@@ -1163,7 +1163,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         if (backside_element) {
             $attribute_input = $(backside_element).find(selector);
             if ($attribute_input.length > 0) {
-                $attribute_input.get(0).toontalk_widget = this;
+                $attribute_input.get(0).toontalk_widget_side = this;
             }
         }
         if (type === 'number') {
@@ -1186,7 +1186,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                         function (event) {
                             // ensures numbers are updated as the element is dragged
                             var top_level_position, attribute_value, left, top;
-                            if (event.currentTarget.toontalk_widget !== attribute_widget.get_attribute_owner()) {
+                            if (event.currentTarget.toontalk_widget_side !== attribute_widget.get_attribute_owner()) {
                                 return;
                             }
                             top_level_position = $(owner.get_frontside_element()).closest(".toontalk-top-level-backside").offset();

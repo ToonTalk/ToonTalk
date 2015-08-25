@@ -237,7 +237,7 @@ window.TOONTALK.sensor = (function (TT) {
                          if (typeof value === 'undefined') {
                              if (event.detail && event.detail.element_widget && attribute === 'widget') {
                                  // return a fresh backside of the widget
-                                 return TT.UTILITIES.widget_of_element(event.detail.element_widget).create_backside();
+                                 return TT.UTILITIES.widget_side_of_element(event.detail.element_widget).create_backside();
                              }
                              value = "No " + attribute + " in event " + event + " of sensor " + sensor;
                              TT.UTILITIES.display_message(value);

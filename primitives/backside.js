@@ -314,6 +314,7 @@ window.TOONTALK.backside =
                     }
                     if (this.get_widget().is_top_level()) {
                         if (robot && !robot.visible()) {
+                            // TODO: determine if this is not visible whether $other_side_element is undefined
                             $other_side_element.addClass("toontalk-widget-added-to-backside-by-unwatched-robot");
                         }
                     }
@@ -363,7 +364,7 @@ window.TOONTALK.backside =
                 };
             backside.add_backside_widget =  
                 function (widget, is_backside) {
-                        return this.get_widget().add_backside_widget(widget, is_backside);
+                    return this.get_widget().add_backside_widget(widget, is_backside);
                 };
             backside.add_backside_widgets = function (backside_widgets, json_array)  {
                 var current_backside_widgets;
@@ -390,7 +391,7 @@ window.TOONTALK.backside =
                                     // needs to be added to backside element
                                     backside_element.appendChild(widget_side_element);
                                 }
-                                widget_side_element.toontalk_widget = backside_widget_side.get_widget();
+                                widget_side_element.toontalk_widget_side = backside_widget_side;
                                 if (json_array) {
                                     json_view = json_array[index];
                                     if (json_view) {
@@ -496,7 +497,7 @@ window.TOONTALK.backside =
                     return "backside of " + this.get_widget().to_debug_string();
                 };
             }
-            backside_element.toontalk_widget = widget;
+            backside_element.toontalk_widget_side = this;
             TT.UTILITIES.drag_and_drop(backside_element);
             $backside_element.resizable(
                 {start: function () {
@@ -537,7 +538,7 @@ window.TOONTALK.backside =
 //                     if ($source.is(".ui-resizable")) {
 //                         $source.resizable("enable");
 //                     }
-//                     owner_widget = TT.UTILITIES.widget_from_jquery($source);
+//                     owner_widget = TT.UTILITIES.widget_side_of_jquery($source);
 //                     if (owner_widget) {
 //                         owner_widget.render();
 //                     }
@@ -898,7 +899,7 @@ window.TOONTALK.backside =
                                           top:   backside_position.top});
                 }
                 // frontside needs to be added to backside container
-                container_widget = TT.UTILITIES.widget_from_jquery($backside_container);
+                container_widget = TT.UTILITIES.widget_side_of_jquery($backside_container);
                 if (container_widget) {
                     container_widget.widget_dropped_on_me(widget);
                     widget.render();
@@ -950,17 +951,6 @@ window.TOONTALK.backside =
                 $settings_button.html(">");
                 TT.UTILITIES.give_tooltip($settings_button.get(0), "Click to show the advanced settings.");    
             }
-        },
-        
-        get_widgets: function () {
-            var widgets = [];
-            $(this.get_element()).children().each(function (index, element) {
-                var owner = element.toontalk_widget;
-                if (owner && widgets.indexOf(owner) < 0) {
-                    widgets.push(owner);
-                }
-            });
-            return widgets;
         },
         
         scale_backside: function ($backside_element, x_scale, y_scale, original_width, original_height) {

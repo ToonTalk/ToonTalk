@@ -72,7 +72,7 @@ window.TOONTALK.widget = (function (TT) {
                 if (this.is_top_level()) {
                     return this;
                 }
-                top_level_widget = TT.UTILITIES.widget_from_jquery($(this.get_frontside_element()).closest(".toontalk-top-level-backside"));
+                top_level_widget = TT.UTILITIES.widget_side_of_jquery($(this.get_frontside_element()).closest(".toontalk-top-level-backside"));
                 if (top_level_widget) {
                     return top_level_widget;
                 }
@@ -88,7 +88,7 @@ window.TOONTALK.widget = (function (TT) {
                     if ($top_level_backsides.length > 1) {
                        console.log("Cannot find the top-level widget of " + this + " but found " + $top_level_backsides.length + " top-level backsides so picked one.");
                     }
-                    top_level_widget = TT.UTILITIES.widget_from_jquery($top_level_backsides);
+                    top_level_widget = TT.UTILITIES.widget_side_of_jquery($top_level_backsides).get_widget();
                     return top_level_widget;
                 }
                 console.log("Could not find top_level_widget of " + this + ". Created one instead");
@@ -302,7 +302,7 @@ window.TOONTALK.widget = (function (TT) {
                     element = backside.get_element();
                     if (element) {
                         $(element).remove();
-                        element.toontalk_widget = undefined;
+                        element.toontalk_widget_side = undefined;
                     }
                     backside = undefined;
                     // do this recursively so backsides are fully reconstructed
@@ -1206,7 +1206,7 @@ window.TOONTALK.widget = (function (TT) {
             if ($container_element.length === 0) {
                 $container_element = $(".toontalk-backside");  
             }
-            container_widget = TT.UTILITIES.widget_from_jquery($container_element);
+            container_widget = TT.UTILITIES.widget_side_of_jquery($container_element);
             if (visible) {
                 if (typeof x_offset === 'undefined') {
                     x_offset = 30;
@@ -1347,7 +1347,7 @@ window.TOONTALK.widget = (function (TT) {
             frontside_ancestor_before_backside_element = $frontside_ancestor_before_backside_element.get(0);
             backside = this.get_backside(true);
             backside_element = backside.get_element();
-            backside_element.toontalk_widget = this;
+            backside_element.toontalk_widget_side = backside;
             // start on the frontside (same upper left corner as frontside)
             frontside_offset = $(frontside_element).offset();
             container_offset = $frontside_ancestor_that_is_backside_element.offset();
@@ -1360,7 +1360,7 @@ window.TOONTALK.widget = (function (TT) {
                                      top:  frontside_offset.top -container_offset.top,
                                      opacity: .01});
             $frontside_ancestor_that_is_backside_element.append(backside_element);
-            ancestor_that_owns_backside_element = TT.UTILITIES.widget_from_jquery($frontside_ancestor_that_is_backside_element);
+            ancestor_that_owns_backside_element = TT.UTILITIES.widget_side_of_jquery($frontside_ancestor_that_is_backside_element);
             if (ancestor_that_owns_backside_element) {
                 ancestor_that_owns_backside_element.add_backside_widget(this, true);
             }
@@ -1491,6 +1491,7 @@ window.TOONTALK.widget = (function (TT) {
         },
 
         create_top_level_widget: function (settings) {
+                // TODO: rename to top_level_widget
             var widget = Object.create(TT.widget);
             var stack_of_robots_in_training = [];
             var return_false = function () {

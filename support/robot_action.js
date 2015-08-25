@@ -118,7 +118,7 @@ window.TOONTALK.robot_action =
                  $(widget_frontside_element).css({left: context_frontside_position.left,
                                                   top:  context_frontside_position.top});
                  top_level_element.appendChild(widget_frontside_element);
-                 top_level_element.toontalk_widget.add_backside_widget(widget);
+                 top_level_element.toontalk_widget_side.get_widget().add_backside_widget(widget);
                  widget.animate_to_element(top_level_element, undefined, robot.transform_animation_speed(TT.UTILITIES.default_animation_speed));
              }
              return true;

@@ -106,7 +106,7 @@ return {
         } else {
             widgets_json = [];
             $elements.each(function (index, element) {
-                var widget = element.toontalk_widget;
+                var widget = element.toontalk_widget_side.get_widget();
                 var json   = TT.UTILITIES.get_json_top_level(widget);
                 var json_div = TT.UTILITIES.toontalk_json_div(json, widget);
                 widgets_json[index] = json_div;
@@ -133,7 +133,7 @@ return {
                                      editable_contents[index] = content;
         });
         $(".toontalk-backside-of-top-level, .toontalk-top-level-resource-container").each(function (index, element) {
-            var widget = TT.UTILITIES.widget_from_jquery($(element));
+            var widget = TT.UTILITIES.widget_side_of_element(element);
             var json = TT.UTILITIES.get_json_top_level(widget);
             var json_div = TT.UTILITIES.toontalk_json_div(json, widget);
             if (widgets_json[index] && widgets_json[index] !== json_div) {

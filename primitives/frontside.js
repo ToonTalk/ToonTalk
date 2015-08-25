@@ -41,7 +41,7 @@ window.TOONTALK.frontside =
             };
             var visible;
             $(frontside_element).addClass("toontalk-frontside toontalk-side");
-            frontside_element.toontalk_widget = widget;
+            frontside_element.toontalk_widget_side = widget;
 //          console.log(widget + " with " + widget.debug_id + " associated with " + frontside_element.className);
             TT.UTILITIES.drag_and_drop(frontside_element);
             frontside.get_element = function () {
@@ -107,7 +107,7 @@ window.TOONTALK.frontside =
             // but when running unwatched might never have been attached
             var element = this.get_element();
             $(element).remove();
-            element.toontalk_widget = null; // free the memory
+            element.toontalk_widget_side = null; // free the memory
         }
 
     };

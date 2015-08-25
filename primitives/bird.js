@@ -305,7 +305,7 @@ window.TOONTALK.bird = (function (TT) {
                 restore_contents = parent.temporarily_remove_contents(this, true);
                 if (restore_contents) {
                     // if it really did remove the contents
-                    top_level_widget.add_to_top_level_backside(this);
+                    this.get_widget().add_to_top_level_backside(this);
                 }
             }
             $top_level_backside_element.append(bird_frontside_element); // while flying            
@@ -1108,9 +1108,9 @@ window.TOONTALK.nest = (function (TT) {
                         backside_where_bird_goes = other.get_backside();
                     } else {
                         // TODO: determine if this should be using this.top_level_widget()
-                        top_level_widget = TT.UTILITIES.widget_from_jquery($(frontside_element).closest(".toontalk-top-level-backside"));
+                        top_level_widget = TT.UTILITIES.widget_side_of_jquery($(frontside_element).closest(".toontalk-top-level-backside"));
                         if (!top_level_widget) {
-                            top_level_widget = TT.UTILITIES.widget_from_jquery($(other.get_widget().get_frontside_element(true)).closest(".toontalk-top-level-backside"));     
+                            top_level_widget = TT.UTILITIES.widget_side_of_jquery($(other.get_widget().get_frontside_element(true)).closest(".toontalk-top-level-backside"));     
                         }
                         if (top_level_widget) {
                             backside_where_bird_goes = top_level_widget.get_backside();
