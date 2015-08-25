@@ -301,6 +301,7 @@ window.TOONTALK.widget = (function (TT) {
                     }
                     element = backside.get_element();
                     if (element) {
+                        $(element).remove();
                         element.toontalk_widget = undefined;
                     }
                     backside = undefined;
