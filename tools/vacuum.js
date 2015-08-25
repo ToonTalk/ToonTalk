@@ -125,7 +125,7 @@ window.TOONTALK.vacuum = (function (TT) {
                         widget_side.set_running(false);
                     }
                     widget_side.this_and_walk_children(function (child) {
-                        if (child.is_sensor() && child.get_active()) {
+                        if (!child.is_backside() && child.is_sensor() && child.get_active()) {
                             child.set_active(false);
                         }
                         return true;

@@ -19,7 +19,7 @@ window.TOONTALK.backside =
             var green_flag_element = document.createElement("div");
             var stop_sign_element  = document.createElement("div");
             var help_URL = widget.get_help_URL && widget.get_help_URL();
-            var settings_button, visible, original_width, original_height, width_at_resize_start, height_at_resize_start, 
+            var parent, settings_button, visible, original_width, original_height, width_at_resize_start, height_at_resize_start, 
                 close_button, backside_widgets, help_button, help_frame, close_help_button;
             var update_flag_and_stop_sign_classes = function (running) {
                 if (running) {
@@ -243,8 +243,20 @@ window.TOONTALK.backside =
                     return backside;
                 };
             };
+            backside.is_primary_backside = function () {
+                return this === this.get_widget().get_backside();
+            };
             backside.get_parent_of_backside = function () {
-                return widget.get_parent_of_backside();
+                if (this.is_primary_backside()) {
+                    return widget.get_parent_of_backside();
+                }
+                return parent;
+            };
+            backside.set_parent_of_backside = function (new_value) {
+                if (this.is_primary_backside()) {
+                    return widget.set_parent_of_backside(new_value);
+                }
+                parent = new_value;
             };
             backside.get_parent_of_frontside = function () {  
                 return widget.get_parent_of_frontside();

@@ -811,9 +811,9 @@ window.TOONTALK.nest = (function (TT) {
                 widget_side.set_visible(false);
             }
             if (widget_side.is_backside()) {
-                widget_side.get_widget().set_parent_of_backside(this);
+                widget_side.set_parent_of_backside(this);
             } else {
-                widget_side.get_widget().set_parent_of_frontside(this);
+                widget_side.set_parent_of_frontside(this);
             }
             if (nest_copies && !ignore_copies) {
                 if (delivery_bird) {
@@ -1225,20 +1225,19 @@ window.TOONTALK.nest = (function (TT) {
         new_nest.update_display = function () {
             var frontside = this.get_frontside(true);
             var backside = this.get_backside(); 
-            var frontside_element, top_contents_widget, nest_width, nest_height, contents_backside, contents_side_element;
+            var frontside_element, top_contents, nest_width, nest_height, top_contents_element;
             frontside_element = frontside.get_element();
             frontside_element.setAttribute('toontalk_name', this.get_name());
             if (contents.length > 0) {
-                top_contents_widget = contents[0].get_widget();
-                if (contents[0].is_backside()) {
-                    contents_backside = top_contents_widget.get_backside(true);
-                    contents_side_element = contents_backside.get_element(true);
-                    contents_backside.update_display();
-                    contents_backside.scale_to_fit(contents_side_element, frontside_element);
+                top_contents = contents[0];
+                if (top_contents.is_backside()) {
+                    top_contents_element = top_contents.get_element(true);
+                    top_contents.update_display(); // TODO: see if render is OK
+                    top_contents.scale_to_fit(top_contents_element, frontside_element);
                 } else {
-                    top_contents_widget.render();
-                    contents_side_element = contents[0].get_element(true);
-                    $(contents_side_element).show();
+                    top_contents.render();
+                    top_contents_element = contents[0].get_element(true);
+                    $(top_contents_element).show();
                 }
                 nest_width  = $(frontside_element).width();
                 nest_height = $(frontside_element).height();
@@ -1251,25 +1250,25 @@ window.TOONTALK.nest = (function (TT) {
                             if (!contents_dimension) {
                                 return;
                             }
-                            TT.UTILITIES.set_css(contents_side_element,
+                            TT.UTILITIES.set_css(top_contents_element,
                                                  {width:  contents_dimension.width,
                                                   height: contents_dimension.height,
                                                   // offset by 10% -- tried left: 10% but that only worked in first box hole
                                                   left: nest_width*0.1,
                                                   top:  nest_height*0.1});
-                            if (top_contents_widget.set_size_attributes) {
+                            if (top_contents.set_size_attributes) {
                                 // e.g. element widgets need to update their attributes
-                                top_contents_widget.set_size_attributes(contents_dimension.width, contents_dimension.height);
+                                top_contents.set_size_attributes(contents_dimension.width, contents_dimension.height);
                             }
                         }.bind(this),
                         2); // TODO: see if 0 works here
                 }
-                frontside_element.appendChild(contents_side_element);
+                frontside_element.appendChild(top_contents_element);
                 $(frontside_element).addClass(this.get_class_name_with_color("toontalk-empty-nest"));
                 if (contents[0].is_backside()) {
-                    top_contents_widget.set_parent_of_backside(this);
+                    top_contents.set_parent_of_backside(this);
                 } else {
-                    top_contents_widget.set_parent_of_frontside(this);
+                    top_contents.set_parent_of_frontside(this);
                 }
             } else {
                 TT.UTILITIES.give_tooltip(frontside_element, this.get_title());
