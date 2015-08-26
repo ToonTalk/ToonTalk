@@ -497,7 +497,7 @@ window.TOONTALK.backside =
                     return "backside of " + this.get_widget().to_debug_string();
                 };
             }
-            backside_element.toontalk_widget_side = this;
+            backside_element.toontalk_widget_side = backside;
             TT.UTILITIES.drag_and_drop(backside_element);
             $backside_element.resizable(
                 {start: function () {

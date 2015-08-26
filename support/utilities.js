@@ -2761,7 +2761,7 @@ window.TOONTALK.UTILITIES =
 
         utilities.backup_all_top_level_widgets = function (immediately) {
             $(".toontalk-top-level-backside").each(function (index, element) {
-                var top_level_widget = utilities.widget_side_of_element(element);
+                var top_level_widget = utilities.widget_side_of_element(element).get_widget();
                 top_level_widget.save(immediately);
             });
         };

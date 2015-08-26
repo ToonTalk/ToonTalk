@@ -1103,17 +1103,20 @@ window.TOONTALK.nest = (function (TT) {
                 TT.UTILITIES.add_animation_class(frontside_element, "toontalk-hatch-egg");
                 hatching_finished_handler = function () {
                     var backside_where_bird_goes, top_level_backside_element, top_level_backside_position, 
-                        resting_left, resting_top, top_level_widget;
+                        resting_left, resting_top, top_level_widget_side;
                     if (other_is_backside) {
                         backside_where_bird_goes = other.get_backside();
                     } else {
-                        // TODO: determine if this should be using this.top_level_widget()
-                        top_level_widget = TT.UTILITIES.widget_side_of_jquery($(frontside_element).closest(".toontalk-top-level-backside"));
-                        if (!top_level_widget) {
-                            top_level_widget = TT.UTILITIES.widget_side_of_jquery($(other.get_widget().get_frontside_element(true)).closest(".toontalk-top-level-backside"));     
+                        top_level_widget_side = TT.UTILITIES.widget_side_of_jquery($(frontside_element).closest(".toontalk-top-level-backside"));
+                        if (!top_level_widget_side) {
+                            top_level_widget_side = TT.UTILITIES.widget_side_of_jquery($(other.get_widget().get_frontside_element(true)).closest(".toontalk-top-level-backside"));     
                         }
-                        if (top_level_widget) {
-                            backside_where_bird_goes = top_level_widget.get_backside();
+                        if (top_level_widget_side) {
+                            if (top_level_widget_side.is_backside()) {
+                                backside_where_bird_goes = top_level_widget_side;
+                            } else {
+                                backside_where_bird_goes = top_level_widget_side.get_backside();
+                            }
                         } else {
                             TT.UTILITIES.report_internal_error("Unable to find the top-level backside for bird to go to.");
                             return;

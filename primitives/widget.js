@@ -74,6 +74,7 @@ window.TOONTALK.widget = (function (TT) {
                 }
                 top_level_widget = TT.UTILITIES.widget_side_of_jquery($(this.get_frontside_element()).closest(".toontalk-top-level-backside"));
                 if (top_level_widget) {
+                    top_level_widget = top_level_widget.get_widget();
                     return top_level_widget;
                 }
                 // TODO: revisit this -- may end up mixing up front and backsides
