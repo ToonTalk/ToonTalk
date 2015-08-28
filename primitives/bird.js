@@ -78,7 +78,8 @@ window.TOONTALK.bird = (function (TT) {
                         // robot needs to wait until delivery is finished
                         message_side.robot_waiting_before_next_step = robot;
                         // generalise this with backside support too
-                        message_side.remove_from_parent_of_frontside();
+                        // the following was redundant (but unsure if it alsways is)
+//                      message_side.remove_from_parent_of_frontside();
                         if (robot.run_next_step) {
                             run_next_step_continuation = function () {
                                 message_side.robot_waiting_before_next_step = undefined;
