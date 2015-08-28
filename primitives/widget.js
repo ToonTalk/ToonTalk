@@ -1357,7 +1357,7 @@ window.TOONTALK.widget = (function (TT) {
             $frontside_ancestor_that_is_backside_element.append(backside_element);
             ancestor_that_owns_backside_element = TT.UTILITIES.widget_side_of_jquery($frontside_ancestor_that_is_backside_element);
             if (ancestor_that_owns_backside_element) {
-                ancestor_that_owns_backside_element.add_backside_widget(this);
+                ancestor_that_owns_backside_element.add_backside_widget(backside);
             }
             // leave a gap between front and backside -- don't want settings, flag, and stop sign to be overlapped
             if (this.is_element()) {
