@@ -357,7 +357,7 @@ window.TOONTALK.UTILITIES =
                 // dropped something from a different window/tab so treat it like the robot picked it up
                 source_widget_side.robot_in_training().drop_from_data_transfer(source_widget_side);
             }
-            $source = $(source_widget_side.get_element());
+            $source = $(source_widget_side.get_element(true));
             if (source_widget_side.is_backside()) {
                 utilities.set_css($source,
                                   {width: json_object.view.backside_width,
