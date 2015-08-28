@@ -873,8 +873,8 @@ window.TOONTALK.box_backside =
                     }
                 };
             var size_input = TT.UTILITIES.create_text_input(box.get_size().toString(), 'toontalk-box-size-input', "Number of holes", "Type here to edit the number of holes.", undefined, "number", size_area_drop_handler);
-            var horizontal = TT.UTILITIES.create_radio_button("box_orientation", "horizontal", "toontalk-horizontal-radio-button", "Left to right", "Show box horizontally."); // might be nicer replaced by an icon
-            var vertical   = TT.UTILITIES.create_radio_button("box_orientation", "vertical", "toontalk-vertical-radio-button", "Top to bottom", "Show box vertically.");
+            var horizontal = TT.UTILITIES.create_radio_button("box_orientation", "horizontal", "toontalk-horizontal-radio-button", "Left to right", "Show box horizontally.", true); // might be nicer replaced by an icon
+            var vertical   = TT.UTILITIES.create_radio_button("box_orientation", "vertical", "toontalk-vertical-radio-button", "Top to bottom", "Show box vertically.", true);
             var update_value = function () {
                 var new_size = parseInt(size_input.button.value.trim(), 10);
                 if (box.set_size(new_size, true) && box.robot_in_training()) {
@@ -900,6 +900,7 @@ window.TOONTALK.box_backside =
             var backside_element = backside.get_element();
             var advanced_settings_button = TT.backside.create_advanced_settings_button(backside, box);
             var generic_backside_update = backside.update_display.bind(backside);
+            var buttons = TT.UTILITIES.create_horizontal_table(horizontal.container, vertical.container)
             size_input.button.addEventListener('change',   update_value);
             size_input.button.addEventListener('mouseout', update_value);
             horizontal.button.addEventListener('change',   update_orientation);
@@ -914,7 +915,8 @@ window.TOONTALK.box_backside =
                 generic_backside_update();
             };
             backside_element.appendChild(size_input.container);
-            backside_element.appendChild($(TT.UTILITIES.create_horizontal_table(horizontal.container, vertical.container)).buttonset().get(0));
+            backside_element.appendChild(buttons);
+            $(buttons).buttonset();
             backside_element.appendChild(advanced_settings_button);
             backside.add_advanced_settings();
             backside.rerender();

@@ -2269,23 +2269,23 @@ window.TOONTALK.UTILITIES =
             $(button_elements.label).addClass('ui-state-active');
         };
         
-        utilities.create_button_set = function () { 
-            // takes any number of parameters, any of which can be an array of buttons
-            var container = document.createElement("div");
-            var i, j;
-            // arguments isn't an ordinary array so can't use forEach
-            for (i = 0; i < arguments.length; i++) {
-                if (arguments[i].length >= 0) {
-                    for (j = 0; j < arguments[i].length; j++) {
-                        container.appendChild(arguments[i][j]);
-                    }
-                } else { 
-                    container.appendChild(arguments[i]);
-                }
-            }
-            $(container).buttonset();
-            return container;
-        };
+//         utilities.create_button_set = function () { 
+//             // takes any number of parameters, any of which can be an array of buttons
+//             var container = document.createElement("div");
+//             var i, j;
+//             // arguments isn't an ordinary array so can't use forEach
+//             for (i = 0; i < arguments.length; i++) {
+//                 if (arguments[i].length >= 0) {
+//                     for (j = 0; j < arguments[i].length; j++) {
+//                         container.appendChild(arguments[i][j]);
+//                     }
+//                 } else { 
+//                     container.appendChild(arguments[i]);
+//                 }
+//             }
+//             $(container).buttonset();
+//             return container;
+//         };
 
         utilities.create_alert_element = function (text) {
             var alert_element = utilities.create_text_element(text);
@@ -2416,7 +2416,7 @@ window.TOONTALK.UTILITIES =
             return typeof new_text === 'string' && dropped;
         };
         
-        utilities.create_radio_button = function (name, value, class_name, label, title) {
+        utilities.create_radio_button = function (name, value, class_name, label, title, part_of_buttonset) {
             var container = document.createElement("div");
             var input = document.createElement("input");
             var label_element = document.createElement("label");
@@ -2432,9 +2432,11 @@ window.TOONTALK.UTILITIES =
             utilities.give_tooltip(container, title);
             // the following breaks the change listener
             // used to work with use htmlFor to connect label and input
-            $(input).button();
+            if (!part_of_buttonset) {
+                // if part_of_buttonset then no need to call button();
+                $(input).button();
+            }
             utilities.use_custom_tooltip(input);
-//             $(label_element).button();
             return {container: container,
                     button: input,
                     label: label_element};
