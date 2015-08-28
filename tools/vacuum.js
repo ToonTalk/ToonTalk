@@ -92,12 +92,12 @@ window.TOONTALK.vacuum = (function (TT) {
                 var widget = widget_side.get_widget();
                 var remove_widget = function (widget_side) {  
                     var copy;
+                    if (event && widget.robot_in_training()) {
+                        widget.robot_in_training().removed(widget_side);
+                    }
                     if (widget_side.is_backside()) {
                         widget_side.hide_backside();
                         return;
-                    }
-                    if (event && widget.robot_in_training()) {
-                        widget.robot_in_training().removed(widget_side);
                     }
                     if (widget_side === widget.robot_in_training()) {
                         // vacuuming himself so automatically finish training

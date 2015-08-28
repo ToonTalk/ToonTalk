@@ -86,14 +86,13 @@ window.TOONTALK.frontside =
             frontside_element.addEventListener("mouseleave", function (event) {
                 var backside = widget.get_backside();
                 var wiggling_widget = widget.is_empty_hole() ? wiget.get_parent_of_frontside() : widget;
-//              console.log("remove " + wiggling_widget.debug_string);
                 if (backside) {
                     TT.UTILITIES.remove_highlight();
                 }
                 $(wiggling_widget.get_frontside_element()).removeClass("toontalk-wiggle");
             });
             if (TT.debugging) {
-                frontside_element.id = widget.debug_id;
+                frontside_element.id = widget._debug_id;
             }
             return frontside;
         },

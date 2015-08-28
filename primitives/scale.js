@@ -60,46 +60,46 @@ window.TOONTALK.scale = (function (TT) {
             }
             return path;
         };
-        new_scale.drop_on = function (other, is_backside, event, robot) {
-            if (other.widget_dropped_on_me) {
-                return other.widget_dropped_on_me(this, is_backside, event, robot);
+        new_scale.drop_on = function (side_of_other, event, robot) {
+            if (side_of_other.widget_side_dropped_on_me) {
+                return side_of_other.widget_side_dropped_on_me(this, event, robot);
             }
         };
-        new_scale.widget_dropped_on_me = function (dropped, is_backside, event, robot) {
+        new_scale.widget_side_dropped_on_me = function (dropped, event, robot) {
             var left_contents  = this.get_hole_contents(0);
             var right_contents = this.get_hole_contents(1); 
             var hole_index;
             if (dropped.dropped_on_other) {
                 // e.g. so egg can hatch from nest drop
-                dropped.dropped_on_other(this, false, event, robot);
+                dropped.dropped_on_other(this, event, robot);
             }
             if (left_contents && !right_contents) {
-                this.get_hole(1).widget_dropped_on_me(dropped, is_backside, event, robot);
+                this.get_hole(1).widget_side_dropped_on_me(dropped, event, robot);
                 return true;
             }
             if (!left_contents && (right_contents || !event)) {
                 // if a robot drops a scale on a scale with empty pans it goes in left pan
-                this.get_hole(0).widget_dropped_on_me(dropped, is_backside, event, robot);
+                this.get_hole(0).widget_side_dropped_on_me(dropped, event, robot);
                 return true;
             }
             hole_index = this.which_hole(event, false);
             if (hole_index === 0) {
                 if (left_contents) {
                     if (left_contents.drop_on) {
-                        return dropped.drop_on(left_contents, is_backside, event, robot);
+                        return dropped.drop_on(left_contents, event, robot);
                     }
                     return; // not much can be done if contents doesn't accept drop_one
                 }
             } else {
                 if (right_contents) {
                     if (right_contents.drop_on) {
-                        return dropped.drop_on(right_contents, is_backside, event, robot);
+                        return dropped.drop_on(right_contents, event, robot);
                     }
                     return; // not much can be done
                 }
             }
             // hole was empty so fill it
-            this.get_hole(hole_index).widget_dropped_on_me(dropped, is_backside, event, robot); 
+            this.get_hole(hole_index).widget_side_dropped_on_me(dropped, event, robot); 
             return true;
         };
         new_scale.which_hole = function (event, or_entire_thing) {

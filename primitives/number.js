@@ -725,30 +725,32 @@ window.TOONTALK.number = (function () {
         // else warn??
     };
 
-    number.drop_on = function (other, is_backside, event, robot) {
-        if (!other.number_dropped_on_me) {
-            if (other.widget_dropped_on_me) {
-                return other.widget_dropped_on_me(this, is_backside, event, robot);
+    number.drop_on = function (side_of_other, event, robot) {
+        if (!side_of_other.number_dropped_on_me) {
+            if (side_of_other.widget_side_dropped_on_me) {
+                return side_of_other.widget_side_dropped_on_me(this, event, robot);
             }
             console.log("No handler for drop of '" + this + "' on '" + other + "'");
             return;
         }
-        other.number_dropped_on_me(this, is_backside, event, robot);
+        side_of_other.number_dropped_on_me(this, event, robot);
         return true;
     };
     
-    number.number_dropped_on_me = function (other_number, other_is_backside, event, robot) {
+    number.number_dropped_on_me = function (side_of_other_number, event, robot) {
          var bammer_element, $top_level_backside_element, target_absolute_position, 
              this_frontside_element, hit_number_continuation, bammer_gone_continuation;
-         if (other_number.visible() && (event || robot)) {
+         if (side_of_other_number.is_backside()) {
+             return;
+         }
+         if (side_of_other_number.visible() && (event || robot)) {
              // do this if number is visible and user did the drop or a visible robot did it
              if (robot) {
                  if (!robot.animate_consequences_of_actions()) {
-                     other_number.remove();
-                     return this.number_dropped_on_me_semantics(other_number, event, robot);
+                     return this.number_dropped_on_me_semantics(side_of_other_number, event, robot);
                  }
                  // robot should wait for this
-                 other_number.robot_waiting_before_next_step = robot;
+                 side_of_other_number.robot_waiting_before_next_step = robot;
              }
              bammer_element = document.createElement("div");
              $(bammer_element).addClass("toontalk-bammer-down");
@@ -767,7 +769,7 @@ window.TOONTALK.number = (function () {
                  if (TT.sounds) {
                      TT.sounds.bammer_hammer.play();
                  }
-                 if (this.number_dropped_on_me_semantics(other_number, event, robot) && robot) {
+                 if (this.number_dropped_on_me_semantics(side_of_other_number, event, robot) && robot) {
                      // will stop if drop signaled an error
                      robot.run_next_step();
                  }
@@ -802,7 +804,7 @@ window.TOONTALK.number = (function () {
                                     "z-index": TT.UTILITIES.next_z_index()+100});
              return this;             
          } else {
-             return this.number_dropped_on_me_semantics(other_number, event, robot);
+             return this.number_dropped_on_me_semantics(side_of_other_number, event, robot);
          }
      };
 
@@ -836,10 +838,10 @@ window.TOONTALK.number = (function () {
         }
     };
     
-    number.widget_dropped_on_me = function (other, other_is_backside, event, robot) {
-        if (other.number_dropped_on_me) {
+    number.widget_side_dropped_on_me = function (side_of_other, event, robot) {
+        if (side_of_other.number_dropped_on_me) {
             // this can happen if this number is on a nest
-            return this.number_dropped_on_me(other, other_is_backside, event, robot);
+            return this.number_dropped_on_me(side_of_other, event, robot);
         }
         // only numbers can be dropped on numbers (for now at least)
         return false;

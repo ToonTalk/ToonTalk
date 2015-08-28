@@ -708,8 +708,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             // signal event in case a sensor is listening
             $this_element.get(0).dispatchEvent(new CustomEvent('widget added', {detail: {element_widget: $widget_element.get(0)}}));
         };
-        new_element.removed_from_container = function (child, backside_removed, event, index, report_error_if_no_index) {
-            var index = children.indexOf(child);
+        new_element.removed_from_container = function (child_side, event, index, report_error_if_no_index) {
+            var index = children.indexOf(child_side);
             if (index >= 0) {
                 children.splice(index, 1);
             }
@@ -824,10 +824,13 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         return comparison;
     };
 
-    element.widget_dropped_on_me = function (other, other_is_backside, event, robot) {
+    element.widget_dropped_on_me = function (side_of_other, event, robot) {
         // TODO: involve Bammer the Mouse if being watched
         // TODO: decide if this really is a good idea -- worked pretty well in the Desktop version 
         // to use erased widgets for type coercion
+        if (side_of_other.is_backside()) {
+            return false;
+        }
         if (this.get_erased() && other.get_HTML) {
             this.set_HTML(other.get_HTML());
             this.set_erased(false);

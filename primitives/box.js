@@ -639,18 +639,18 @@ window.TOONTALK.box = (function (TT) {
         return "Each hole label is followed by a ';'. Yoou may enter as many hole labels as there are holes.";
     };
     
-    box.drop_on = function (other, is_backside, event, robot) {
+    box.drop_on = function (side_of_other, event, robot) {
         var result;
-        if (!other.box_dropped_on_me) {
-            if (other.widget_dropped_on_me) {
-                return other.widget_dropped_on_me(this, is_backside, event, robot);
+        if (!side_of_other.box_dropped_on_me) {
+            if (side_of_other.widget_side_dropped_on_me) {
+                return side_of_other.widget_side_dropped_on_me(this, event, robot);
             }
-            console.log("No handler for drop of " + this + " on " + other);
+            console.log("No handler for drop of " + this + " on " + side_of_other);
             return;
         }
-        result = other.box_dropped_on_me(this, event, robot);
+        result = side_of_other.box_dropped_on_me && side_of_other.box_dropped_on_me(this, event, robot);
         if (event) {
-            other.rerender();
+            side_of_other.rerender();
         }
         if (result) {
             this.remove();
@@ -663,18 +663,18 @@ window.TOONTALK.box = (function (TT) {
         return false;
     };
 
-    box.widget_dropped_on_me = function (other, other_is_backside, event, robot) {
+    box.widget_side_dropped_on_me = function (side_of_other, event, robot) {
         var hole_index = this.which_hole(event);
         var hole_contents, hole;
         if (hole_index >= 0) {
             hole = this.get_hole(hole_index);
             hole_contents = hole.get_contents();
             if (hole_contents) {
-                return other.drop_on(hole_contents, other_is_backside, event, robot);
+                return side_of_other.drop_on(hole_contents, event, robot);
             } 
-            return hole.widget_dropped_on_me(other, other_is_backside, event, robot);  
+            return hole.widget_side_dropped_on_me(side_of_other, event, robot);  
         }
-        TT.UTILITIES.report_internal_error(other + " dropped on " + this + " but no event was provided.");
+        TT.UTILITIES.report_internal_error(side_of_other + " dropped on " + this + " but no event was provided.");
     };
     
     box.get_index_of = function (part) {
@@ -682,20 +682,20 @@ window.TOONTALK.box = (function (TT) {
         return part.get_parent_of_frontside() && part.get_parent_of_frontside().get_index && part.get_parent_of_frontside().get_index();
     };
     
-    box.removed_from_container = function (part, backside_removed, event, index, report_error_if_no_index) {
+    box.removed_from_container = function (part_side, event, index, report_error_if_no_index) {
         var update_display = !!event;
         var hole, part_frontside_element;
         if (typeof index === 'undefined') {
-            index = this.get_index_of(part);
+            index = this.get_index_of(part_side);
         }
         if (index >= 0) {
             this.set_hole(index, undefined, update_display);
             if (update_display) {
                 this.rerender();
-                part.restore_dimensions();
+                part_side.restore_dimensions();
             }
         } else if (report_error_if_no_index) {
-            TT.UTILITIES.report_internal_error("Attempted to remove " + part + " from " + this + " but not found.");
+            TT.UTILITIES.report_internal_error("Attempted to remove " + part_side + " from " + this + " but not found.");
         }
     };
     
@@ -966,12 +966,12 @@ window.TOONTALK.box_hole =
                 // doubles as its own frontside
                 return this;
             };
-            hole.widget_dropped_on_me = function (dropped, is_backside, event, robot) {
+            hole.widget_side_dropped_on_me = function (dropped, event, robot) {
                 var box = this.get_parent_of_frontside();
                 var hole_element, hole_position, parent_position, dropped_element, finished_animating, is_plain_text;
                 if (dropped.dropped_on_other) {
                     // e.g. so egg can hatch from nest drop
-                    dropped.dropped_on_other(this, false, event, robot);
+                    dropped.dropped_on_other(this, event, robot);
                 }
                 if (event) {
                     if (TT.sounds) {
@@ -1135,7 +1135,7 @@ window.TOONTALK.box_hole =
                     return contents.maintain_proportional_dimensions();
                 }
             };
-            hole.removed_from_container = function (part, backside_removed, event, index, report_error) {
+            hole.removed_from_container = function (part, event, index, report_error) {
                 if (contents) {
                     if (event) {
                         contents.restore_dimensions();

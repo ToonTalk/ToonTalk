@@ -34,7 +34,7 @@ window.TOONTALK.robot_action =
                              TT.UTILITIES.report_internal_error("Dropping something on itself! " + target);
                          }
                          // TODO: update this when robots can drop backsides as well
-                         thing_in_hand.drop_on(target, false, undefined, robot);
+                         thing_in_hand.drop_on(target, undefined, robot);
                          robot.set_thing_in_hand(undefined);
                          target.rerender();
                          if (thing_in_hand.robot_waiting_before_next_step === robot) {
@@ -131,7 +131,7 @@ window.TOONTALK.robot_action =
                  widget.update_display(); // so it has width and height for the following
                  TT.UTILITIES.set_position_relative_to_top_level_backside($(widget_frontside_element), robot_location, true);
              } else {
-                 widget.drop_on(context.get_backside(), false, undefined, robot, true);
+                 widget.drop_on(context.get_backside(), undefined, robot, true);
              }
              return true;
          },

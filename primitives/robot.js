@@ -236,7 +236,7 @@ window.TOONTALK.robot = (function (TT) {
             if (!thing_in_hand) {
                 return;
             }
-            thing_in_hand.drop_on(this.top_level_widget(), false, undefined, this);
+            thing_in_hand.drop_on(this.top_level_widget(), undefined, this);
             this.set_thing_in_hand(undefined);
         }
         new_robot.finish_cycle_immediately = function (do_at_end_of_cycle) {
@@ -925,16 +925,16 @@ window.TOONTALK.robot = (function (TT) {
         return this.get_body().get_newly_created_widgets();
     };
     
-    robot.remove_from_container = function (part, container) {
+    robot.remove_from_container = function (part_side, container) {
         // this is used when running a robot -- not training
         // need to compute index now since parent may have changed by the time this runs
         // or perhaps not and a different bug was making it appear to be so
-        var index = container.get_index_of && part.get_parent_of_frontside() && container.get_index_of(part);
+        var index = container.get_index_of && part_side.get_parent_of_frontside() && container.get_index_of(part_side);
         var do_removal =
             function () {
                 // if part has already been removed from a nest in another container
                 // the following will ignore this due to the last argument being false
-                container.removed_from_container(part, false, true, index, false);
+                container.removed_from_container(part_side, undefined, index, false);
         };
         if (this.animate_consequences_of_actions()) {
             // if animating then delay removing it
@@ -944,7 +944,7 @@ window.TOONTALK.robot = (function (TT) {
             do_removal();
         }
         // might be new -- following does nothing if already known
-        this.add_newly_created_widget_if_new(part);
+        this.add_newly_created_widget_if_new(part_side);
     };
 
     robot.get_training_context = function () {
