@@ -730,7 +730,7 @@ window.TOONTALK.number = (function () {
             if (side_of_other.widget_side_dropped_on_me) {
                 return side_of_other.widget_side_dropped_on_me(this, event, robot);
             }
-            console.log("No handler for drop of '" + this + "' on '" + other + "'");
+            console.log("No handler for drop of '" + this + "' on '" + side_of_other + "'");
             return;
         }
         side_of_other.number_dropped_on_me(this, event, robot);
