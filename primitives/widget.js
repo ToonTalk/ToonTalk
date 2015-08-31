@@ -1071,11 +1071,7 @@ window.TOONTALK.widget = (function (TT) {
                     var widget_index = backside_widgets.indexOf(widget_side);
                     var parent_of_backside, parent_of_frontside;
                     if (widget_index < 0) {
-                        if (ignore_if_not_on_backside) {
-                            if (TT.debugging) {
-                                console.log("Warning: Probable redundant call to remove_backside_widget");
-                            }
-                        } else {
+                        if (!ignore_if_not_on_backside) {
                             TT.UTILITIES.report_internal_error("Couldn't find a widget to remove it from backside widgets. " + widget_side.get_widget() + " (" + widget_side.get_widget()._debug_id + ")"); 
                         }
                         return;                        
