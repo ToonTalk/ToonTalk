@@ -247,15 +247,16 @@ window.TOONTALK.backside =
                 return this === this.get_widget().get_backside();
             };
             backside.get_parent_of_backside = function () {
-//                 if (this.is_primary_backside()) {
-//                     return widget.get_parent_of_backside();
-//                 }
+                if (this.is_primary_backside()) {
+                    return widget.get_parent_of_backside();
+                }
                 return parent;
             };
             backside.set_parent_of_backside = function (new_value) {
-//                 if (this.is_primary_backside()) {
-//                     return widget.set_parent_of_backside(new_value);
-//                 }
+                if (this.is_primary_backside()) {
+                    // widget needs to keep track of backside parent in case backside doesn't need to be instantiated 
+                    widget.set_parent_of_backside(new_value);
+                }
                 if (!new_value && parent && parent.is_backside()) {
                     parent.remove_backside_widget(this, true);
                 }
