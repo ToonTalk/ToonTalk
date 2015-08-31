@@ -1441,6 +1441,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
 
     element.receive_HTML_from_dropped = function (dropped) {
         var new_text = dropped.get_text && dropped.get_text();
+        dropped.remove();
         if (this.set_HTML(new_text)) {
             return this.get_text();
         }
