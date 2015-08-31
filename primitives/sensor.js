@@ -208,8 +208,8 @@ window.TOONTALK.sensor = (function (TT) {
             widget = new_value;
         };
         new_sensor.get_custom_title_prefix = function () {
-            var who_to = widget ? "to " + widget : "";
-            var title = "When a '" + event_name + "' event " + who_to + "occurs my bird will bring me the '" + this.get_attributes_string() + "' attribute of the event.";
+            var who_to = widget ? " to " + widget : "";
+            var title = "When a '" + event_name + "' event" + who_to + " occurs my bird will bring me the '" + this.get_attributes_string() + "' attribute of the event.";
             if (active) {
                 if (!this.get_backside()) {
                     title += " On my back you can change which kind of events and attributes I receive.";
@@ -223,6 +223,7 @@ window.TOONTALK.sensor = (function (TT) {
             return new_sensor.get_attributes().map(
                 function (attribute) {
                     var value = event[attribute];
+                    var backside_of_widget_value;
                     if (attribute === 'keyCode') {
                         // is this a good idea? shouldn't the DOM events be left alone?
                         // perhaps this should be renamed keyChar or something...
@@ -238,7 +239,9 @@ window.TOONTALK.sensor = (function (TT) {
                          if (typeof value === 'undefined') {
                              if (event.detail && event.detail.element_widget && attribute === 'widget') {
                                  // return a fresh backside of the widget
-                                 return TT.UTILITIES.widget_side_of_element(event.detail.element_widget).create_backside();
+                                 backside_of_widget_value = TT.UTILITIES.widget_side_of_element(event.detail.element_widget).create_backside();
+                                 backside_of_widget_value.save_dimensions();
+                                 return backside_of_widget_value;
                              }
                              value = "No " + attribute + " in event " + event + " of sensor " + sensor;
                              TT.UTILITIES.display_message(value);

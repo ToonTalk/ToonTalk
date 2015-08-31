@@ -896,7 +896,7 @@ window.TOONTALK.nest = (function (TT) {
             }
             if (removed) {
                 if (removed.is_backside()) {
-                    removed.get_widget().set_parent_of_backside(undefined);
+                    removed.set_parent_of_backside(undefined);
                 } else {
                     removed.get_widget().set_parent_of_frontside(undefined);
                 }
@@ -907,7 +907,9 @@ window.TOONTALK.nest = (function (TT) {
                 return;
             }
             if (this.visible()) {
-                removed.get_widget().restore_dimensions();
+                if (removed.restore_dimensions) {
+                    removed.restore_dimensions();
+                }
                 if (contents.length > 0) {
                     contents[0].set_visible(true);
                     $(contents[0].get_element()).show();

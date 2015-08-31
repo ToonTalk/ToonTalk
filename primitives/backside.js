@@ -19,7 +19,7 @@ window.TOONTALK.backside =
             var green_flag_element = document.createElement("div");
             var stop_sign_element  = document.createElement("div");
             var help_URL = widget.get_help_URL && widget.get_help_URL();
-            var parent, settings_button, visible, original_width, original_height, width_at_resize_start, height_at_resize_start, 
+            var parent, settings_button, visible, original_width, original_height, original_x_scale, original_y_scale, width_at_resize_start, height_at_resize_start, 
                 close_button, backside_widgets, help_button, help_frame, close_help_button;
             var update_flag_and_stop_sign_classes = function (running) {
                 if (running) {
@@ -247,17 +247,17 @@ window.TOONTALK.backside =
                 return this === this.get_widget().get_backside();
             };
             backside.get_parent_of_backside = function () {
-                if (this.is_primary_backside()) {
-                    return widget.get_parent_of_backside();
-                }
+//                 if (this.is_primary_backside()) {
+//                     return widget.get_parent_of_backside();
+//                 }
                 return parent;
             };
             backside.set_parent_of_backside = function (new_value) {
 //                 if (this.is_primary_backside()) {
 //                     return widget.set_parent_of_backside(new_value);
 //                 }
-                if (!new_value && parent) {
-                    parent.remove_backside_widget(this);
+                if (!new_value && parent && parent.is_backside()) {
+                    parent.remove_backside_widget(this, true);
                 }
                 parent = new_value;
             };
@@ -487,6 +487,13 @@ window.TOONTALK.backside =
                     }
                 }
             };
+            backside.save_dimensions = function () {
+                original_x_scale = x_scale;
+                original_y_scale = y_scale;  
+            };
+            backside.restore_dimensions = function () {
+                this.scale_backside(this.get_element(true), original_x_scale || x_scale, original_y_scale || y_scale, original_width, original_height);
+            };
             if (TT.debugging || TT.logging) {
                 backside.to_debug_string = function () {
                     return "backside of " + this.get_widget().to_debug_string();
@@ -519,7 +526,7 @@ window.TOONTALK.backside =
                     width_at_resize_start  = current_width;
                     height_at_resize_start = current_height;
 //                     console.log(current_width + "x" + current_height + " and scale is " + x_scale + "x" + y_scale);
-                    TT.backside.scale_backside($backside_element, x_scale, y_scale, original_width, original_height);
+                    this.restore_dimensions();
                 },
                 handles: "e,s,se"}); // was "n,e,s,w,se,ne,sw,nw" but interfered with buttons
             // following should be done by something like GWT's onLoad...
@@ -953,19 +960,28 @@ window.TOONTALK.backside =
             }
         },
         
-        scale_backside: function ($backside_element, x_scale, y_scale, original_width, original_height) {
+        scale_backside: function (backside_element, x_scale, y_scale, original_width, original_height) {
             var scale = Math.min(1, x_scale, y_scale);
             if (x_scale === 1 && y_scale === 1) {
-               // if not scaling let the browser decide the dimensions
-               TT.UTILITIES.set_css($backside_element,
-                                    {width:  '',
-                                     height: ''});
+               if (!this.get_parent() || this.get_parent().is_backside()) {
+                   // dimensions are not constrained so use original dimensions
+                   TT.UTILITIES.set_css(backside_element,
+                                        {width:  original_width,
+                                         height: original_height,
+                                         transform:          '',
+                                         "transform-origin": ''});
+               } else {
+                   // if not scaling let the browser decide the dimensions
+                   TT.UTILITIES.set_css(backside_element,
+                                        {width:  '',
+                                         height: ''});
+               }
             } else {
-               TT.UTILITIES.set_css($backside_element,
+               TT.UTILITIES.set_css(backside_element,
                                     {transform: "scale(" + scale + ", " + scale + ")",
                                      "transform-origin": "left top", 
-                                      width:  original_width  * x_scale / scale,
-                                      height: original_height * y_scale / scale});
+                                     width:  original_width  * x_scale / scale,
+                                     height: original_height * y_scale / scale});
             }
  //         console.log({scale: scale, x_scale: x_scale, y_scale: y_scale});
         },

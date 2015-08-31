@@ -1457,6 +1457,7 @@ window.TOONTALK.widget = (function (TT) {
         location_constrained_by_container: function () {
             var parent = this.get_parent_of_frontside();
             if (parent && parent.is_hole()) {
+                 // TODO: generalise this for other kinds of containers
                 return true;
             }
             return false;
