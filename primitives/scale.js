@@ -174,10 +174,10 @@ window.TOONTALK.scale = (function (TT) {
                         }
                         if (hole_widget.set_size_attributes) {
                             hole_widget.set_size_attributes(contents_width, contents_height);
-                        }           
+                        }
+                        contents.rerender();
                     }
                     hole_element.appendChild(content_frontside_element); // no-op if already there
-                    contents.rerender();
                 }                                          
             };
             var state, class_name, scales;
