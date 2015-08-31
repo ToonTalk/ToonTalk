@@ -826,19 +826,19 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         return comparison;
     };
 
-    element.widget_dropped_on_me = function (side_of_other, event, robot) {
+    element.widget_side_dropped_on_me = function (side_of_other, event, robot) {
         // TODO: involve Bammer the Mouse if being watched
         // TODO: decide if this really is a good idea -- worked pretty well in the Desktop version 
         // to use erased widgets for type coercion
         if (side_of_other.is_backside()) {
             return false;
         }
-        if (this.get_erased() && other.get_HTML) {
-            this.set_HTML(other.get_HTML());
+        if (this.get_erased() && side_of_other.get_HTML) {
+            this.set_HTML(side_of_other.get_HTML());
             this.set_erased(false);
-            other.remove();
+            side_of_other.remove();
         } else {
-            this.add_child(other);
+            this.add_child(side_of_other);
             this.rerender();
         }
         return true;
