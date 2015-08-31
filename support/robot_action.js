@@ -33,7 +33,6 @@ window.TOONTALK.robot_action =
                          if (TT.debugging && thing_in_hand === target) {
                              TT.UTILITIES.report_internal_error("Dropping something on itself! " + target);
                          }
-                         // TODO: update this when robots can drop backsides as well
                          thing_in_hand.drop_on(target, undefined, robot);
                          robot.set_thing_in_hand(undefined);
                          target.rerender();
