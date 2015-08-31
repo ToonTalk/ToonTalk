@@ -134,7 +134,7 @@ window.TOONTALK.vacuum = (function (TT) {
                 };
                 var restoring, initial_location, restored_front_side_element, new_erased, top_level_backside, backside_widgets;
                 if (mode === 'suck') {
-                    if (widget_side.remove && widget_side.get_type_name() !== 'top-level') {
+                    if (widget_side.remove && !widget_side.get_widget().is_top_level()) {
                         remove_widget(widget_side);
                         if (TT.sounds) {
                             TT.sounds.vacuum_suck.play();
