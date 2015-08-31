@@ -208,7 +208,8 @@ window.TOONTALK.sensor = (function (TT) {
             widget = new_value;
         };
         new_sensor.get_custom_title_prefix = function () {
-            var title = "When a '" + event_name + "' event occurs my bird will bring me the '" + this.get_attributes_string() + "' attribute of the event.";
+            var who_to = widget ? "to " + widget : "";
+            var title = "When a '" + event_name + "' event " + who_to + "occurs my bird will bring me the '" + this.get_attributes_string() + "' attribute of the event.";
             if (active) {
                 if (!this.get_backside()) {
                     title += " On my back you can change which kind of events and attributes I receive.";
