@@ -492,8 +492,10 @@ window.TOONTALK.number = (function () {
                 if (TT.logging && TT.logging.indexOf('display') >= 0) {
                     console.log("Container has zero dimensions so no display of " + this.to_debug_string());
                 }
-                // try again in a second
-                setTimeout(this.update_display.bind(this), 100);
+                if (!TT.UTILITIES.is_attached(frontside_element)) {
+                    // try again when attached
+                    TT.UTILITIES.when_attached(frontside_element, this.update_display.bind(this));
+                }
                 return;
             }
             if ($dimensions_holder.is(".toontalk-nest")) {
@@ -779,6 +781,7 @@ window.TOONTALK.number = (function () {
                      this.backup_all();
                  }
                  $(bammer_element).removeClass("toontalk-bammer-down");
+                 // TODO: see if timeout is still needed
                  TT.UTILITIES.set_timeout(function () {
                          var top_level_offset = $top_level_backside_element.offset();
                          if (!top_level_offset) {
