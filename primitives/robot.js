@@ -300,7 +300,7 @@ window.TOONTALK.robot = (function (TT) {
         new_robot.set_animating = function (animating, robot_position) {
             var frontside_element = this.get_frontside_element();
             var robot_position;
-            if (animating) {
+            if (animating && $(frontside_element).is(":visible")) {
                 if (!robot_position) {
                     robot_position = $(frontside_element).offset();
                 }
