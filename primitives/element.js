@@ -249,7 +249,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             }
             pending_css[attribute] = value;
         };
-        new_element.apply_css = function (count) {
+        new_element.apply_css = function () {
             var transform = "";
             var frontside_element, x_scale, y_scale,
                 $container, container_width_minus_width, container_height_minus_height, parent_of_frontside, wrap_location, current_pending_css;
@@ -266,18 +266,19 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             }
             if (!$(frontside_element).is(":visible")) {
                 // not yet visible so postpone
-                if (!count) {
-                    count = 1;
-                } else {
-                    count++;
-                }
-                if (count < 100) {
-                    // give up after 100 tries (10 seconds)
-                    TT.UTILITIES.set_timeout(function () {
-                        this.apply_css(count);
-                    }.bind(this),
-                    100);
-                }
+                TT.UTILITIES.when_attached(frontside_element, this.apply_css.bind(this));
+//                 if (!count) {
+//                     count = 1;
+//                 } else {
+//                     count++;
+//                 }
+//                 if (count < 100) {
+//                     // give up after 100 tries (10 seconds)
+//                     TT.UTILITIES.set_timeout(function () {
+//                         this.apply_css(count);
+//                     }.bind(this),
+//                     100);
+//                 }
                 return;
             }
             wrap_location = function (css) {
