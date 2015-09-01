@@ -40,8 +40,6 @@ window.TOONTALK.UTILITIES =
                                                                           if (added_node.toontalk_attached_callback) {
                                                                               added_node.toontalk_attached_callback();
                                                                               added_node.toontalk_attached_callback = undefined;
-                                                                          } else {
-                                                                              console.log(added_node.className); // for debugging
                                                                           }
                                                                       }
                                                                   }                                                                
@@ -501,40 +499,6 @@ window.TOONTALK.UTILITIES =
             } else {
                 utilities.report_internal_error("No source_widget");
             }
-            // should the following use pageX instead?
-            // for a while using target_position.top didn't work while
-            // $target.get(0).offsetTop did and then it stopped working
-            // not sure what is happening or even whey they are different
-            // consider also using layerX and layerY
-//             if (typeof drag_x_offset === 'undefined' && source_widget.is_element()) {
-//                  drag_x_offset = 0;
-//                  drag_y_offset = 0;
-//                 // drag a picture from a non-ToonTalk source so at least Windows displays about about a 90x90 square while dragging
-//                 // and, except for small images, it is 'held' at the bottom centre
-//                 // while images from web pages are held in the center
-//                 setTimeout(function () {
-//                    var html   = source_widget.get_HTML();
-//                    var width  = $source.width();
-//                    var height = $source.height();
-//                    var x_offset, y_offset;
-//                    if (html.indexOf("data:image") >= 0) {
-//                        x_offset = Math.min(80, width)/2;
-//                        y_offset = 90;
-//                        if (height < 90) {
-//                            y_offset -= (90-height)/2;
-//                        }
-//                    } else {
-//                        // is about 120x60
-//                        // but drag offset can be anywhere...
-//                        x_offset = Math.min(60, width/2);
-//                        y_offset = Math.min(30, height/2);  
-//                    }
-//                    utilities.set_css($source,
-//                                      {left: left-x_offset,
-//                                       top:  top -y_offset}); 
-//                 },
-//                 50);
-//             }
             left = page_x - (target_position.left + (drag_x_offset || 0));
             top  = page_y - (target_position.top  + (drag_y_offset || 0));
             utilities.set_css($source,
@@ -704,8 +668,6 @@ window.TOONTALK.UTILITIES =
                 TT.UTILITIES.report_internal_error(error);
             }
         });
-        // add tooltips to widget sides or tools
-//         setTimeout(custom_tooltips_for_all_titles);
         TT.TRANSLATION_ENABLED = utilities.get_current_url_boolean_parameter("translate", false);
         if (TT.TRANSLATION_ENABLED) {
             $("a").each(function (index, element) {
@@ -791,8 +753,6 @@ window.TOONTALK.UTILITIES =
             return;
         }
         dragee.removeClass("toontalk-being-dragged");
-        // restore events to decendants
-//         dragee.find("*").removeClass("toontalk-ignore-events");
         // need delay since there may be other listeners to drop events that need to know this
         // e.g. drop area for next robot
         utilities.set_timeout(function () {
