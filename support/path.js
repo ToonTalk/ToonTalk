@@ -279,6 +279,7 @@ window.TOONTALK.path =
                                 widget_copy.save_dimensions_of(TT.UTILITIES.widget_side_of_element(widget_frontside_element));
                                 copy_frontside_element = widget_copy.get_frontside_element();
                                 widget_frontside_position = $(widget_frontside_element).position();
+                                // TODO: determine if timeout still needed or could be replaced by DOM attachment callback
                                 TT.UTILITIES.set_timeout(function ()  {
                                     $(copy_frontside_element).css({left:   widget_frontside_position.left,
                                                                    top:    widget_frontside_position.top,
