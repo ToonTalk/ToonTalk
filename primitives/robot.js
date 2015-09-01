@@ -1292,24 +1292,6 @@ window.TOONTALK.robot = (function (TT) {
         }
         additional_info.robot = robot;
         robot.set_body(TT.UTILITIES.create_from_json(json.body, additional_info));
-        // if loading a page with robot backside already open then
-        // the conditions don't render properly since update_display is called before they are attached
-        // TODO: solve this more elegantly
-        setTimeout(function () {
-                       if (robot.visible()) {
-                           if (backside_conditions) {
-                               backside_conditions.forEach(function (condition) {
-                                   condition.set_visible(true);
-                                   condition.render();
-                               });
-                           }
-                           if (frontside_conditions) {
-                               frontside_conditions.set_visible(true);
-                               frontside_conditions.render();
-                           }
-                       }
-                  },
-                  1000);
         return robot;
     };
 
@@ -1573,6 +1555,19 @@ window.TOONTALK.robot_backside =
                 }
                 generic_backside_update();
             };
+            TT.UTILITIES.when_attached(backside_element,
+                                       function () {
+                                           var backside_conditions = robot.get_backside_conditions();
+                                           var frontside_conditions = robot.get_frontside_conditions();
+                                           if (backside_conditions) {
+                                               backside_conditions.forEach(function (condition) {
+                                                   condition.set_visible(true);
+                                               });
+                                           }
+                                           if (frontside_conditions) {
+                                               frontside_conditions.set_visible(true);
+                                           }
+                                      });
             backside_element.appendChild(this.create_train_button(backside, robot));
             backside_element.appendChild(advanced_settings_button);
             $(run_once_input.container).addClass("toontalk-advanced-setting");
