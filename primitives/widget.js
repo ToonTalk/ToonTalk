@@ -1044,7 +1044,7 @@ window.TOONTALK.widget = (function (TT) {
                         console.log("Added " + widget_side + " to backside widgets of " + this + ". Number of backside widgets is " + backside_widgets.length);
                     }  
                     if (widget_side.is_backside()) {
-                        widget_side.set_parent_of_backside(this, true);
+                        widget_side.set_parent_of_backside(backside, true);
                     } else {
                         widget_side.set_parent_of_frontside(this, true);
                     }
