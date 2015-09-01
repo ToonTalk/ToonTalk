@@ -3614,11 +3614,14 @@ window.TOONTALK.UTILITIES =
            }
            if (jQuery.contains(window.document, element)) {
                // already attached
+               // be sure element is restored to no callback state
                element.toontalk_attached_callback = undefined;
+               $(element).removeClass("toontalk_has_attached_callback");
                callback();
                return;
            }
            element.toontalk_attached_callback = callback;
+           // following shouldn't be necessary but the selector [toontalk_attached_callback] didn't work
            $(element).addClass("toontalk_has_attached_callback");
        };
 //         enable_touch_events = function (maximum_click_duration) {
