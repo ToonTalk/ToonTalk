@@ -3601,9 +3601,20 @@ window.TOONTALK.UTILITIES =
            return jQuery.contains(window.document, element);
        };
 
-       utilities.when_attached = function (element, callback) {
+       utilities.when_attached = function (element, new_callback) {
+           var old_callback = element.toontalk_attached_callback;
+           var callback;
+           if (old_callback) {
+               callback = function () {
+                              old_callback();
+                              new_callback();
+                          };
+           } else {
+               callback = new_callback;
+           }
            if (jQuery.contains(window.document, element)) {
                // already attached
+               element.toontalk_attached_callback = undefined;
                callback();
                return;
            }

@@ -1242,6 +1242,10 @@ window.TOONTALK.widget = (function (TT) {
             var frontside = this.get_frontside(new_value);
             if (frontside) {
                 frontside.set_visible(new_value);
+                if (new_value) {
+                    TT.UTILITIES.when_attached(frontside.get_element(true), 
+                                               this.render.bind(this));
+                }
             }
         },
 
