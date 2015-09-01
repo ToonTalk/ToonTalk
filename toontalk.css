@@ -1873,8 +1873,8 @@ table.toontalk-documentation-table {
 	border: solid 4px white;
 }
 .toontalk-highlight.toontalk-plain-text-element {
-/* 	a border might be scaled and can look terrible */
-	transition: 3s;
+/* 	a border might be scaled and can look terrible so use color change instead to highlight */
+	transition: 2s;
     background-color: rgb(255, 184, 184);
 }
 .toontalk-highlight.toontalk-number-full-size-border {
