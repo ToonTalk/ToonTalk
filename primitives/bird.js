@@ -308,7 +308,7 @@ window.TOONTALK.bird = (function (TT) {
                     this.get_widget().add_to_top_level_backside(this);
                 }
             }
-            $top_level_backside_element.append(bird_frontside_element); // while flying            
+            $top_level_backside_element.get(0).appendChild(bird_frontside_element); // while flying            
             TT.UTILITIES.set_css(bird_frontside_element,
                                  {left:   starting_left || bird_offset.left-top_level_backside_element_bounding_box.left,
                                   top:    starting_top  || bird_offset.top -top_level_backside_element_bounding_box.top,
@@ -860,7 +860,7 @@ window.TOONTALK.nest = (function (TT) {
                         } else {
                             bird_copy = bird.copy({just_value: true});
                             bird_frontside_element = bird_copy.get_frontside_element(true); 
-                            $(bird_parent_element).append(bird_frontside_element);
+                            bird_parent_element.appendChild(bird_frontside_element);
                             bird_copy.animate_delivery_to(message_copy, nest_copy, nest_copy, start_position.left, start_position.top, undefined, event, robot);
                         }
                    }
@@ -978,7 +978,7 @@ window.TOONTALK.nest = (function (TT) {
                                           top:    nest_height * .1 + nest_offset.top -  top_level_backside_element_offset.top,
                                           width:  contents_width(nest_width),
                                           height: contents_height(nest_height)});
-                    $top_level_backside_element.append(widget_element);
+                    $top_level_backside_element.get(0).appendChild(widget_element);
                 }
                 return widget;
             }

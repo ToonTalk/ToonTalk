@@ -86,7 +86,7 @@ window.TOONTALK.box = (function (TT) {
                 }
                 hole_dimensions = this.get_hole_dimensions();
                 content_frontside_element = new_content.get_frontside_element(true);
-                $hole_element.append(content_frontside_element);
+                $hole_element.get(0).appendChild(content_frontside_element);
                 update_css_of_hole_contents(new_content, content_frontside_element, hole_dimensions.width, hole_dimensions.height);
                 new_content.rerender();
             }

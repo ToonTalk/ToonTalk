@@ -758,7 +758,7 @@ window.TOONTALK.number = (function () {
              // start lower left off screen
              bammer_element.style.left = "-10px";
              bammer_element.style.top = ($top_level_backside_element.height())+"px";
-             $top_level_backside_element.append(bammer_element);
+             $top_level_backside_element.get(0).appendChild(bammer_element);
              this_frontside_element = this.get_frontside_element();
              target_absolute_position = $(this_frontside_element).offset();
              target_absolute_position.left -= $(bammer_element).width()*0.75; // hammer is on bammer's right

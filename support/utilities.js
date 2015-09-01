@@ -29,6 +29,24 @@ window.TOONTALK.UTILITIES =
     var div_close  = "</div>";
     var muted_audio_objects = [];
     var audio_objects_playing = [];
+    var observer = new MutationObserver(function (mutations) {
+                                            mutations.forEach(function(mutation) {
+                                                                  var i, added_node;
+                                                                  // mutation.addedNodes is a NodeList so can't use forEach
+                                                                  for (i = 0; i < mutation.addedNodes.length; i++) {
+                                                                      added_node = mutation.addedNodes.item(i);
+                                                                      if (added_node.nodeType === 1) {
+                                                                          // is an element
+                                                                          if (added_node.toontalk_attached_callback) {
+                                                                              added_node.toontalk_attached_callback();
+                                                                              added_node.toontalk_attached_callback = undefined;
+                                                                          } else {
+                                                                              console.log(added_node.className); // for debugging
+                                                                          }
+                                                                      }
+                                                                  }                                                                
+                                                              });    
+                                        });
     var path_to_toontalk_folder;
     var extract_json_from_div_string = function (div_string) {
         // expecting div_string to begin with div_open and end with div_close
@@ -533,7 +551,7 @@ window.TOONTALK.UTILITIES =
             }
         } else if ($target.is(".toontalk-drop-area")) {
             $source.addClass("toontalk-widget-in-drop_area");
-            $target.append($source.get(0));
+            $target.get(0).appendChild($source.get(0));
             if ($source.is(".toontalk-robot")) {
                 $target.data("drop_area_owner").set_next_robot(utilities.widget_side_of_jquery($source));
             }
@@ -840,10 +858,9 @@ window.TOONTALK.UTILITIES =
                             },
                             false); // don't capture events
     document.addEventListener('DOMContentLoaded', initialize);
-//     $(document).ready(initialize);
-
-    utilities.available_types = ["number", "box", "element", "robot", "nest", "sensor", "top-level"];
-    
+    observer.observe(window.document, {childList: true,
+                                       subtree:   true});
+    utilities.available_types = ["number", "box", "element", "robot", "nest", "sensor", "top-level"];   
     utilities.create_from_json = function (json, additional_info, delay_backside_widgets) {
             var handle_delayed_backside_widgets = function (widget, additional_info, shared_widget_index) {
                 additional_info.shared_widgets[shared_widget_index] = widget;
@@ -1601,7 +1618,7 @@ window.TOONTALK.UTILITIES =
             drop_area_instructions.innerHTML = instructions;
             $(drop_area_instructions).addClass("toontalk-drop-area-instructions ui-widget");
             $drop_area.addClass("toontalk-drop-area");
-            $drop_area.append(drop_area_instructions);
+            drop_area.appendChild(drop_area_instructions);
             utilities.can_receive_drops(drop_area);
             return $drop_area;
         };
@@ -3621,6 +3638,10 @@ window.TOONTALK.UTILITIES =
                 audio_objects_playing.push(muted_audio_object.audio_object)
             });
             muted_audio_objects = [];
+       };
+
+       utilities.when_attached = function (element, callback) {
+           element.toontalk_attached_callback = callback;
        };
 //         enable_touch_events = function (maximum_click_duration) {
 //             // based on ideas in http://stackoverflow.com/questions/5186441/javascript-drag-and-drop-for-touch-devices/6362527#6362527
