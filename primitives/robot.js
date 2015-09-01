@@ -1378,17 +1378,17 @@ window.TOONTALK.robot_backside =
         var condition_element_div_parent = document.createElement('div');
         var conditions_panel;
         $(condition_element).addClass("toontalk-conditions-contents " + class_name);
-        TT.UTILITIES.set_timeout(function () {
-                // this is needed since the element may be transparent and yet need to see the border
-                // should really wait until condition_element is attached to the DOM
-                $(condition_element).parent().addClass("toontalk-conditions-contents-container");
-                $(condition_element).css({left:   'inherit',
-                // following caused all conditions to be at the top 
-//                                        top:    '4%', // unclear why this works but 0 or inherit leaves element too high
-                                          width:  'inherit',
-                                          height: 'inherit'});
-                condition_widget.rerender();
-        });
+        TT.UTILITIES.when_attached(condition_element,
+                                   function () {
+                                       // this is needed since the element may be transparent and yet need to see the border
+                                       $(condition_element).parent().addClass("toontalk-conditions-contents-container");
+                                       $(condition_element).css({left:   'inherit',
+                                       // following caused all conditions to be at the top 
+                        //                                       top:    '4%', // unclear why this works but 0 or inherit leaves element too high
+                                                                 width:  'inherit',
+                                                                 height: 'inherit'});
+                                       condition_widget.rerender();
+                                 });
         if (robot.match_status) {
             if (robot.match_status.is_widget) {
                 $(robot.match_status.get_frontside_element()).addClass("toontalk-conditions-not-matched");
@@ -1490,8 +1490,6 @@ window.TOONTALK.robot_backside =
             var advanced_settings_button = TT.backside.create_advanced_settings_button(backside, robot);
             var generic_backside_update = backside.update_display.bind(backside);
             var add_to_drop_area = function (widget, drop_area) {
-                // delay for dimensions to be known in the DOM
-                setTimeout(function () {
                     var frontside_element = widget.get_frontside_element(true);
                     var default_width, default_height;
                     if (widget.get_default_width) {
@@ -1504,7 +1502,6 @@ window.TOONTALK.robot_backside =
                                                   height: default_height});
                     }
                     drop_area.appendChild(frontside_element);
-                });
             };
             var generic_hide_backside = backside.hide_backside;
             backside.hide_backside = function (event) {
