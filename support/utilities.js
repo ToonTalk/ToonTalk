@@ -3597,7 +3597,16 @@ window.TOONTALK.UTILITIES =
             muted_audio_objects = [];
        };
 
+       utilities.is_attached = function (element) {
+           return jQuery.contains(window.document, element);
+       };
+
        utilities.when_attached = function (element, callback) {
+           if (jQuery.contains(window.document, element)) {
+               // already attached
+               callback();
+               return;
+           }
            element.toontalk_attached_callback = callback;
            $(element).addClass("toontalk_has_attached_callback");
        };
