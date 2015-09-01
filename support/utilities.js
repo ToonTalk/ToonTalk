@@ -2924,12 +2924,12 @@ window.TOONTALK.UTILITIES =
                            });
                 return;
             }
-            check_if_dimensions_known = function (delay_if_not) {
+            check_if_dimensions_known = function () {
                 // add to DOM temporarily so can get dimensions
                 setTimeout(function () {
                                var width  = $(element).width();
                                var height = $(element).height();
-                               if (width && height) { // } && !$(element).is(".toontalk-carried-by-bird")) {
+                               if (width && height) {
                                    if (not_in_a_hole(element.parentElement)) {
                                        callback(original_parent);
                                        if (original_parent) {
@@ -2944,17 +2944,18 @@ window.TOONTALK.UTILITIES =
                                        utilities.run_when_dimensions_known(element, callback, true);
                                    }
                                } else {
-                                   setTimeout(function () {
-                                                  // still not known so wait twice as long and try again
-                                                  var widget = utilities.widget_side_of_element(element);
-                                                  if (delay_if_not < 10000) {
-                                                      // might be an anima gadget on the back of something
-                                                      // and back isn't visible in which case no point waiting very long
-                                                      // 10 seconds should be more than long enough for the DOM to be updated
-                                                      check_if_dimensions_known(delay_if_not*2);
-                                                  }
-                                              },
-                                              delay_if_not);
+                                   utilities.report_internal_error("check_if_dimensions_known did not find dimensions known");
+//                                    setTimeout(function () {
+//                                                   // still not known so wait twice as long and try again
+//                                                   var widget = utilities.widget_side_of_element(element);
+//                                                   if (delay_if_not < 10000) {
+//                                                       // might be an anima gadget on the back of something
+//                                                       // and back isn't visible in which case no point waiting very long
+//                                                       // 10 seconds should be more than long enough for the DOM to be updated
+//                                                       check_if_dimensions_known(delay_if_not*2);
+//                                                   }
+//                                               },
+//                                               delay_if_not);
                                }
                 }); 
             }
@@ -2966,7 +2967,8 @@ window.TOONTALK.UTILITIES =
                                    height:    '',
                                    transform: ''});
             }
-            check_if_dimensions_known(1);
+//             check_if_dimensions_known(1);
+            utilities.when_attached(element, check_if_dimensions_known);
         };
 
         utilities.original_dimensions = function (widget, set_original_dimensions, recompute) {
