@@ -247,18 +247,22 @@ window.TOONTALK.backside =
                 return this === this.get_widget().get_backside();
             };
             backside.get_parent_of_backside = function () {
+                // the primary backside is the one created by clicking on a widget
+                // in order for robots to run efficiently unwatched some widgets have never created their backside
+                // and yet it is the parent of bacvkside widgets so the widget itself keeps track of backside parents
+                // non-primary backsides can be created by sensors or the magic wand and they know their parent via the 'parent' closure variable
                 if (this.is_primary_backside()) {
                     return widget.get_parent_of_backside();
                 }
                 return parent;
             };
             backside.set_parent_of_backside = function (new_value) {
+                if (!new_value && parent && parent.is_backside()) {
+                    parent.remove_backside_widget(this, true);
+                }
                 if (this.is_primary_backside()) {
                     // widget needs to keep track of backside parent in case backside doesn't need to be instantiated 
                     widget.set_parent_of_backside(new_value);
-                }
-                if (!new_value && parent && parent.is_backside()) {
-                    parent.remove_backside_widget(this, true);
                 }
                 parent = new_value;
             };
@@ -825,12 +829,23 @@ window.TOONTALK.backside =
             animate_disappearance = 
                 function ($element) {
                     var frontside_offset = $(frontside_element).position();
-                    var remove_element = 
+                    var remove_backside = 
                         function () {
+                            if (parent_of_backside) {
+                                this.set_parent_of_backside(undefined, true);
+                                if (!parent_of_backside.is_backside()) {
+                                     parent_of_backside.removed_from_container(this, event, undefined, true);
+                                }
+                                // important to run the above before the following since otherwise backsides won't be there to remove
+                                if (widget.forget_backside) {
+                                    widget.forget_backside();
+                                }
+                            }
                             $element.remove();
-                        };
+                        }.bind(this);
                     if (!$element.is(":visible")) {
                         // robot may have opened the backside and then removed the widget itself
+                        remove_backside();
                         return;
                     }
                     if ($element.css('opacity') === "0") {
@@ -841,12 +856,12 @@ window.TOONTALK.backside =
                         return;
                     }
                     $element.addClass("toontalk-side-appearing");
-                    TT.UTILITIES.add_one_shot_event_handler($element.get(0), 'transitionend', 2500, remove_element);
+                    TT.UTILITIES.add_one_shot_event_handler($element.get(0), 'transitionend', 2500, remove_backside);
                     TT.UTILITIES.set_css($element,
                                          {left: frontside_offset.left,
                                           top:  frontside_offset.top,
                                           opacity: .1});      
-            };
+            }.bind(this);
             record_backside_widget_positions = function () {
                 var backside_widgets = widget.get_backside_widgets();
                 var backside_widgets_json_views = widget.get_backside_widgets_json_views(true);
@@ -882,17 +897,6 @@ window.TOONTALK.backside =
             TT.UTILITIES.remove_highlight();
             record_backside_widget_positions();
             widget.backside_geometry = this.get_backside_dimensions();
-            if (parent_of_backside) {
-                if (parent_of_backside.is_backside()) {
-                    this.set_parent_of_backside(undefined, true);
-                } else {
-                    parent_of_backside.removed_from_container(this, event, undefined, true);
-                }
-                // important to run the above before the following since otherwise backsides won't be there to remove
-                if (widget.forget_backside) {
-                    widget.forget_backside();
-                }
-            }
             animate_disappearance($backside_element);
             this.set_visible(false); // semantic side of things needs to know this backside isn't being watched any more
             if (event && !TT.UTILITIES.visible_element(frontside_element)) {
