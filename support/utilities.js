@@ -40,6 +40,14 @@ window.TOONTALK.UTILITIES =
                                                                           if (added_node.toontalk_attached_callback) {
                                                                               added_node.toontalk_attached_callback();
                                                                               added_node.toontalk_attached_callback = undefined;
+                                                                              $(added_node).removeClass("toontalk_has_attached_callback");
+                                                                          } else {
+                                                                              $(added_node).find(".toontalk_has_attached_callback").each(function (index, element) {
+                                                                                  element.toontalk_attached_callback();
+                                                                                  element.toontalk_attached_callback = undefined;
+                                                                                  $(element).removeClass("toontalk_has_attached_callback");
+                                                                              });
+
                                                                           }
                                                                       }
                                                                   }                                                                
@@ -205,8 +213,6 @@ window.TOONTALK.UTILITIES =
         }
         // should this set the dropEffect? 
         // https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer#dropEffect.28.29 
-        // restore events to decendants
-//         $(element).find("*").removeClass("toontalk-ignore-events");
         $source = dragee;
         drag_ended();
         if (!$source && !json_object && !event.dataTransfer.files && !non_data_URL_in_data_transfer(event)) {
@@ -417,13 +423,6 @@ window.TOONTALK.UTILITIES =
         if ($element_underneath) {
             // could support a can_drop protocol and use it here
             utilities.highlight_element($element_underneath.get(0), event);
-            // moving over decendants triggers dragleave unless their pointer events are turned off
-            // they are restored on dragend
-//             if (!$element_underneath.is(".toontalk-backside, .toontalk-drop-area") && utilities.widget_side_of_element(element).get_type_name() !== 'box') {
-//                 // this breaks the dropping of elements on empty holes so not supported
-//                 $element_underneath.find(".toontalk-side").addClass("toontalk-ignore-events");
-//                 // except for toontalk-sides and their ancestors since they are OK to drop on
-//             }
             return $element_underneath.get(0); // return highlighted element
         }
     };
@@ -694,7 +693,7 @@ window.TOONTALK.UTILITIES =
         discover_default_dimensions('toontalk-bird-static', TT.bird);
         // all titles should use custom tool tips (e.g. those in documentation pages)
         $("[title]").each(function (index, element) {
-                              window.TOONTALK.UTILITIES.use_custom_tooltip(element);
+                              utilities.use_custom_tooltip(element);
 	    });
 	    document.addEventListener("visibilitychange", function() {
 	        if (document.hidden) {
@@ -2441,11 +2440,6 @@ window.TOONTALK.UTILITIES =
                 }
                 select.appendChild(option);
             });
-            // following produces a select menu that works when added to document.body but not the backside of a widget
-            // looks OK but nothing pops up when clicked
-//             setTimeout(function () {
-//                 $(select).selectmenu({width: 200});
-//             });
             $(select).addClass("ui-widget");
             $(label_element).addClass("ui-widget");
             utilities.use_custom_tooltip(select);
@@ -2644,8 +2638,9 @@ window.TOONTALK.UTILITIES =
         utilities.create_local_files_table = function () {
             var data = utilities.get_local_files_data();
             var table = utilities.create_file_data_table();
-            setTimeout(function () {
-                utilities.become_file_data_table(table, data, false, "toontalk-file-load-button toontalk-file-load-button-without-click-handler");
+            utilities.when_attached(table, 
+                                    function () {
+                                        utilities.become_file_data_table(table, data, false, "toontalk-file-load-button toontalk-file-load-button-without-click-handler");
             });
             return table;
         };
@@ -3602,6 +3597,7 @@ window.TOONTALK.UTILITIES =
 
        utilities.when_attached = function (element, callback) {
            element.toontalk_attached_callback = callback;
+           $(element).addClass("toontalk_has_attached_callback");
        };
 //         enable_touch_events = function (maximum_click_duration) {
 //             // based on ideas in http://stackoverflow.com/questions/5186441/javascript-drag-and-drop-for-touch-devices/6362527#6362527
