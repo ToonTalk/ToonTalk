@@ -1350,7 +1350,9 @@ window.TOONTALK.widget = (function (TT) {
             $(backside_element).css({left: frontside_offset.left-container_offset.left,
                                      top:  frontside_offset.top -container_offset.top,
                                      opacity: .01});
-            $frontside_ancestor_that_is_backside_element.get(0).appendChild(backside_element);
+            if ($frontside_ancestor_that_is_backside_element.length > 0) {
+                $frontside_ancestor_that_is_backside_element.get(0).appendChild(backside_element);
+            }
             ancestor_that_owns_backside_element = TT.UTILITIES.widget_side_of_jquery($frontside_ancestor_that_is_backside_element);
             if (ancestor_that_owns_backside_element) {
                 ancestor_that_owns_backside_element.add_backside_widget(backside);
