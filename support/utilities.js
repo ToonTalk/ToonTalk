@@ -40,12 +40,12 @@ window.TOONTALK.UTILITIES =
                                                                           if (added_node.toontalk_attached_callback) {
                                                                               added_node.toontalk_attached_callback();
                                                                               added_node.toontalk_attached_callback = undefined;
-                                                                              $(added_node).removeClass("toontalk_has_attached_callback");
+                                                                              $(added_node).removeClass("toontalk-has-attached-callback");
                                                                           } else {
-                                                                              $(added_node).find(".toontalk_has_attached_callback").each(function (index, element) {
+                                                                              $(added_node).find(".toontalk-has-attached-callback").each(function (index, element) {
                                                                                   element.toontalk_attached_callback();
                                                                                   element.toontalk_attached_callback = undefined;
-                                                                                  $(element).removeClass("toontalk_has_attached_callback");
+                                                                                  $(element).removeClass("toontalk-has-attached-callback");
                                                                               });
 
                                                                           }
@@ -3618,13 +3618,13 @@ window.TOONTALK.UTILITIES =
                // already attached
                // be sure element is restored to no callback state
                element.toontalk_attached_callback = undefined;
-               $(element).removeClass("toontalk_has_attached_callback");
+               $(element).removeClass("toontalk-has-attached-callback");
                callback();
                return;
            }
            element.toontalk_attached_callback = callback;
            // following shouldn't be necessary but the selector [toontalk_attached_callback] didn't work
-           $(element).addClass("toontalk_has_attached_callback");
+           $(element).addClass("toontalk-has-attached-callback");
        };
 //         enable_touch_events = function (maximum_click_duration) {
 //             // based on ideas in http://stackoverflow.com/questions/5186441/javascript-drag-and-drop-for-touch-devices/6362527#6362527
