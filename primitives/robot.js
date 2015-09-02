@@ -354,7 +354,6 @@ window.TOONTALK.robot = (function (TT) {
         };
         new_robot.set_next_robot = function (new_value) {
             var backside_element = this.get_backside_element();
-            var drop_area_instructions;
             if (new_value) {
                 new_value.set_first_in_team(this.get_first_in_team());
             }
@@ -368,12 +367,7 @@ window.TOONTALK.robot = (function (TT) {
                 next_robot.set_previous_robot(this);
             }
             if (backside_element) {
-                if (new_value) {
-                    drop_area_instructions = "When the robot can't run then this one will try: ";
-                } else {
-                    drop_area_instructions = window.TOONTALK.robot.empty_drop_area_instructions;
-                }
-                $(backside_element).find(".toontalk-drop-area-instructions").get(0).innerHTML = drop_area_instructions;
+                $(backside_element).find(".toontalk-drop-area-instructions").get(0).innerHTML = this.drop_area_instructions();
             }
         };
         new_robot.get_previous_robot = function () {
@@ -1227,6 +1221,13 @@ window.TOONTALK.robot = (function (TT) {
     robot.get_help_URL = function () {
         return "docs/manual/robots.html";
     };
+
+    robot.drop_area_instructions = function () {
+        if (this.get_next_robot()) {
+            return "The robot here will try to run when I can't.";
+        }
+        return "Drop a robot here who will try to run when I can't.";
+    };
     
     robot.get_json = function (json_history) {
         var frontside_conditions = this.get_frontside_conditions();
@@ -1485,7 +1486,7 @@ window.TOONTALK.robot_backside =
                                                               "Half the normal speed",
                                                               "Ten times normal speed",
                                                               "One-fourth of normal speed"]);
-            var next_robot_area = TT.UTILITIES.create_drop_area(window.TOONTALK.robot.empty_drop_area_instructions);
+            var next_robot_area = TT.UTILITIES.create_drop_area(robot.drop_area_instructions());
             var next_robot = robot.get_next_robot();
             var advanced_settings_button = TT.backside.create_advanced_settings_button(backside, robot);
             var generic_backside_update = backside.update_display.bind(backside);
@@ -1624,8 +1625,5 @@ window.TOONTALK.robot_backside =
         
     };
 }(window.TOONTALK));
-
-
-window.TOONTALK.robot.empty_drop_area_instructions = "Drop a robot here who will try to run when I can't."
 
 }());
