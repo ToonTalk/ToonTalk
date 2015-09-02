@@ -226,9 +226,7 @@ window.TOONTALK.backside =
                 return visible;
             };
             backside.set_visible = function (new_value) {
-                if (new_value === visible) {
-                    return; // no change
-                }
+                // tried to return if no change if visibility but then loading backside of robot lost its conditions
                 visible = new_value;
                 this.get_widget().get_backside_widgets().forEach(function (backside_widget) {
                         if (backside_widget) {

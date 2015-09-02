@@ -54,12 +54,9 @@ window.TOONTALK.frontside =
                 return visible;
             };
             frontside.set_visible = function (new_value) {
-                var widget;
-                if (visible === new_value) {
-                    return;
-                }
+                var widget = this.get_widget();
+                // tried to return if no change if visibility but then loading backside of robot lost its conditions
                 visible = new_value;
-                widget = this.get_widget();
                 if (widget.walk_children) {
                     widget.walk_children(function (child_side) {
                                              child_side.set_visible(new_value);
