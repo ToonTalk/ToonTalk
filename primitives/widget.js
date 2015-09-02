@@ -1050,7 +1050,6 @@ window.TOONTALK.widget = (function (TT) {
                     }
                     if (backside.visible()) {
                         widget_side.set_visible(true);
-                        widget_side.render();
                     }
      //             if (this.get_running()) {
      //                 widget.set_running(true);
@@ -1206,7 +1205,9 @@ window.TOONTALK.widget = (function (TT) {
                     y_offset = 30;
                 }
                 position = TT.UTILITIES.relative_position(frontside_element, $container_element.get(0));
-                $container_element.get(0).appendChild(frontside_element_copy);
+                if ($container_element.length > 0) {
+                    $container_element.get(0).appendChild(frontside_element_copy);
+                }
                 // plain text should not have its dimensions set
                 TT.UTILITIES.set_css(frontside_element_copy,
                                      {width:  ok_to_set_dimensions ? $(frontside_element).width()  : "",
@@ -1382,7 +1383,6 @@ window.TOONTALK.widget = (function (TT) {
             } 
             animate_backside_appearance(backside_element, "inherit");
             backside.set_visible(true);
-            backside.render();
             backside_widgets = this.get_backside_widgets();
             if (backside_widgets.length > 0) {
                 backside_widgets.forEach(function (widget_side) {
