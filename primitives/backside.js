@@ -553,7 +553,7 @@ window.TOONTALK.backside =
                     width_at_resize_start  = current_width;
                     height_at_resize_start = current_height;
 //                     console.log(current_width + "x" + current_height + " and scale is " + x_scale + "x" + y_scale);
-                    this.restore_dimensions();
+                    backside.restore_dimensions();
                 },
                 handles: "e,s,se"}); // was "n,e,s,w,se,ne,sw,nw" but interfered with buttons
             backside_element.addEventListener("mouseenter", function (event) {
