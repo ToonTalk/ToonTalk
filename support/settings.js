@@ -305,7 +305,7 @@ window.TOONTALK.SETTINGS =
                          1);
           }
           if ($row.length > 0) {
-              row.get(0).appendChild(TT.UTILITIES.create_table_entry(publish_and_as_workspace));
+              $row.get(0).appendChild(TT.UTILITIES.create_table_entry(publish_and_as_workspace));
           }
           add_files_tabs(widget, cloud_available, settings_panel);
           widget_element.appendChild(settings_panel);                  
