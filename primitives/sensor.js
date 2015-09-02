@@ -320,6 +320,7 @@ window.TOONTALK.sensor_backside =
                 sensor.set_attributes(event_attribute_input.button.value.trim());
             };
             var advanced_settings_button = $(backside_element).find(".toontalk-settings-backside-button").get(0);
+            var advanced_settings_panel  = $(backside_element).find(".toontalk-advanced-setting").get(0);
             event_name_input.button.addEventListener(     'change', update_event_name);
             event_attribute_input.button.addEventListener('change', update_attributes);
             $(activate_switch.button).click(function (event) {
@@ -334,7 +335,7 @@ window.TOONTALK.sensor_backside =
                 sensor.render();
                 event.stopPropagation();
             });
-            $(backside_element).find(".toontalk-advanced-setting").get(0).appendChild(event_name_input.container, event_attribute_input.container, activate_switch.container);
+            advanced_settings_panel.appendChild(event_name_input.container, event_attribute_input.container, activate_switch.container);
             return backside;
     }};
 }(window.TOONTALK));

@@ -178,8 +178,11 @@ window.TOONTALK.SETTINGS =
           var display_published = function (google_file, extra_info) {
               // currently extra_info is the JSON of the current widgets if previously published
               var link_to_publication = create_connection_to_google_file(google_file, "Published: ", extra_info);
+              var $row = $(program_name.container).children("tr");
               TT.UTILITIES.display_message("Your web page is ready for you to edit. Just click on the link.");
-              $(program_name.container).children("tr").get(0).appendChild(TT.UTILITIES.create_table_entry(link_to_publication));
+              if ($row.length > 0) {
+                  $row.get(0).appendChild(TT.UTILITIES.create_table_entry(link_to_publication));
+              }
           };
           var create_connection_to_google_file = function (google_file, prefix, extra_info) {
               var link_to_publication = document.createElement('span');
@@ -225,6 +228,7 @@ window.TOONTALK.SETTINGS =
                   }
              };
           var publish_and_as_workspace = TT.UTILITIES.create_vertical_table(publish, as_workspace.container);
+          var $row = $(program_name.container).children("tr");
           $(settings_panel).addClass("toontalk-settings-panel")
                            .css({width:  $(widget_element).width() +29,
                                  height: $(widget_element).height()+50,
@@ -300,7 +304,9 @@ window.TOONTALK.SETTINGS =
                          },
                          1);
           }
-          $(program_name.container).children("tr").get(0).appendChild(TT.UTILITIES.create_table_entry(publish_and_as_workspace));
+          if ($row.length > 0) {
+              row.get(0).appendChild(TT.UTILITIES.create_table_entry(publish_and_as_workspace));
+          }
           add_files_tabs(widget, cloud_available, settings_panel);
           widget_element.appendChild(settings_panel);                  
       }
