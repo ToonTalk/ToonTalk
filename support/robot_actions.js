@@ -164,6 +164,7 @@ window.TOONTALK.actions =
                         TT.UTILITIES.set_absolute_position($(frontside_element), robot_home);
                     } else {
                         TT.UTILITIES.set_css(frontside_element, {position: 'static'});
+                        previous_robot.get_backside(true).get_next_robot_area().appendChild(frontside_element);
                     }
                     robot.rerender();
                 };
@@ -179,8 +180,10 @@ window.TOONTALK.actions =
                 } else {
                     robot.set_animating(false);
                     continuation();
-                    // put robot back on the backside of the context
-                    context.add_backside_widget(robot);
+                    if (robot === first_robot) {
+                        // put first robot back on the backside of the context
+                        context.add_backside_widget(robot);
+                    }
                     $(robot.get_frontside_element()).remove();
                 }
             };
@@ -197,11 +200,11 @@ window.TOONTALK.actions =
             }
             previous_robot = robot.get_previous_robot();
             if (previous_robot) {
-                $home_element = $(previous_robot.get_backside().get_next_robot_area());
+                $home_element = $(previous_robot.get_backside(true).get_next_robot_area());
             } else {
                 $home_element = $(frontside_element).closest(".toontalk-backside");
             }
-            if (!robot.get_parent_of_frontside() && previous_robot) {
+            if (!TT.UTILITIES.is_attached(frontside_element) && previous_robot) {
                 // could be a 'next robot' that hasn't been opened          
                 previous_robot.open_backside();
                 previous_robot.get_backside().set_advanced_settings_showing(true);
@@ -293,8 +296,8 @@ window.TOONTALK.actions =
                        saved_parent_element.appendChild(frontside_element);
                    }
                    // following doesn't use JQuery since it wasn't working
-                   frontside_element.style.left =  robot_start_position.left+"px";
-                   frontside_element.style.top  =  robot_start_position.top +"px";
+                   frontside_element.style.left = robot_start_position.left+"px";
+                   frontside_element.style.top  = robot_start_position.top +"px";
                    this.run_unwatched(context, top_level_context, queue, robot, step_number);
                 }
             }.bind(this);
