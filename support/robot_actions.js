@@ -142,10 +142,10 @@ window.TOONTALK.actions =
             var frontside_element = robot.get_frontside_element();
             var original_parent_element, previous_robot, previous_robot_backside_element;
             var saved_parent_element = frontside_element.parentElement;
+            var first_robot = robot.get_first_in_team();
             var restore_after_last_event = function () {
-                var first_robot_still_visible = robot.visible() && 
-                                                robot.get_maximum_step_duration() !== 0 &&
-                                                robot.get_first_in_team() === robot;
+                var first_robot_still_visible = first_robot.visible() && 
+                                                first_robot.get_maximum_step_duration() !== 0;
                 var continuation = function () {
                     // robot was added to top-level backside so z-index will work as desired (robot on top of everything)
                     // the following restores it
@@ -156,12 +156,14 @@ window.TOONTALK.actions =
                         robot.set_animating(false);
                     }
                     if (robot.get_run_once()) {
-                        robot.get_first_in_team().set_running(false);
+                        first_robot.set_running(false);
                     } else if (!robot.stopped()) {
-                        robot.get_first_in_team().run(context, top_level_context, queue);
+                        first_robot.run(context, top_level_context, queue);
                     }
-                    if (robot.get_first_in_team() === robot) {
+                    if (first_robot === robot) {
                         TT.UTILITIES.set_absolute_position($(frontside_element), robot_home);
+                    } else {
+                        TT.UTILITIES.set_css(frontside_element, {position: 'static'});
                     }
                     robot.rerender();
                 };
