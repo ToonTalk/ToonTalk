@@ -1805,12 +1805,13 @@ padding-bottom:  8%;}
 	display:  inline;
 	vertical-align: middle;
 }
-.toontalk-widget-in-drop_area {
+.toontalk-drop-area > .toontalk-frontside {
 	width:  32px;
 	height: 32px;
 	display:  inline-block;
 	vertical-align: middle;
 	padding:  8pt;
+	position: static;
 }
 .toontalk-infinite-stack {
 	box-shadow: 10px 5px 5px black;
