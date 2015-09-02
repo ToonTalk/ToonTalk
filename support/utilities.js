@@ -514,7 +514,9 @@ window.TOONTALK.UTILITIES =
             }
         } else if ($target.is(".toontalk-drop-area")) {
             $source.addClass("toontalk-widget-in-drop_area");
-            $target.get(0).appendChild($source.get(0));
+            if ($target.length > 0) {
+                $target.get(0).appendChild($source.get(0));
+            }
             if ($source.is(".toontalk-robot")) {
                 $target.data("drop_area_owner").set_next_robot(utilities.widget_side_of_jquery($source));
             }
@@ -2926,7 +2928,7 @@ window.TOONTALK.UTILITIES =
             }
             check_if_dimensions_known = function () {
                 // add to DOM temporarily so can get dimensions
-                setTimeout(function () {
+//                 setTimeout(function () {
                                var width  = $(element).width();
                                var height = $(element).height();
                                if (width && height) {
@@ -2957,7 +2959,7 @@ window.TOONTALK.UTILITIES =
 //                                               },
 //                                               delay_if_not);
                                }
-                }); 
+//                 }); 
             }
             $(element).addClass("toontalk-not-observable");
             document.body.appendChild(element);
