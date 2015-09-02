@@ -1485,7 +1485,7 @@ window.TOONTALK.robot_backside =
                                                               "Half the normal speed",
                                                               "Ten times normal speed",
                                                               "One-fourth of normal speed"]);
-            var $next_robot_area = TT.UTILITIES.create_drop_area(window.TOONTALK.robot.empty_drop_area_instructions);
+            var next_robot_area = TT.UTILITIES.create_drop_area(window.TOONTALK.robot.empty_drop_area_instructions);
             var next_robot = robot.get_next_robot();
             var advanced_settings_button = TT.backside.create_advanced_settings_button(backside, robot);
             var generic_backside_update = backside.update_display.bind(backside);
@@ -1510,7 +1510,8 @@ window.TOONTALK.robot_backside =
                     robot.training_finished();
                 }
             };
-            $next_robot_area.data("drop_area_owner", robot);
+            // TODO: replace JQuery data with element property
+            $(next_robot_area).data("drop_area_owner", robot);
             $(run_once_input.button).click(function (event) {
                 var keep_running = run_once_input.button.checked;
                 robot.set_run_once(!keep_running);
@@ -1528,9 +1529,9 @@ window.TOONTALK.robot_backside =
                 robot.set_watched_speed(speed_name_to_value(event.target.value));
             });
             if (next_robot) {
-                add_to_drop_area(next_robot, $next_robot_area.get(0));
+                add_to_drop_area(next_robot, next_robot_area);
             }
-            $next_robot_area.get(0).addEventListener('drop', function (event) {
+            next_robot_area.addEventListener('drop', function (event) {
                 // start training when robot is dropped here
                 var dragee = TT.UTILITIES.get_dragee();
                 var widget = TT.UTILITIES.widget_side_of_jquery(dragee);
@@ -1540,11 +1541,14 @@ window.TOONTALK.robot_backside =
                         backside = widget.open_backside();
                         $(backside.get_element()).find(".toontalk-train-backside-button").click();
                     } else {
-                        add_to_drop_area(widget, $next_robot_area.get(0));
+                        add_to_drop_area(widget, next_robot_area);
                         robot.set_next_robot(widget);
                     }
                 }
             });
+            backside.get_next_robot_area = function () {
+                return next_robot_area;
+            };
             backside.update_display = function () {
                 var frontside_element = robot.get_frontside_element();
                 if (frontside_element) {
@@ -1569,10 +1573,10 @@ window.TOONTALK.robot_backside =
             backside_element.appendChild(advanced_settings_button);
             $(run_once_input.container).addClass("toontalk-advanced-setting");
             $((speed_menu.container))  .addClass("toontalk-advanced-setting");
-            $next_robot_area           .addClass("toontalk-advanced-setting");
+            $(next_robot_area)         .addClass("toontalk-advanced-setting");
             backside_element.appendChild(run_once_input.container);
             backside_element.appendChild(speed_menu.container);
-            backside_element.appendChild($next_robot_area.get(0));
+            backside_element.appendChild(next_robot_area);
             add_conditions_area(backside_element, robot);
             backside.add_advanced_settings();
             return backside;

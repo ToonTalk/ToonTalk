@@ -1581,7 +1581,7 @@ window.TOONTALK.UTILITIES =
             $drop_area.addClass("toontalk-drop-area");
             drop_area.appendChild(drop_area_instructions);
             utilities.can_receive_drops(drop_area);
-            return $drop_area;
+            return drop_area;
         };
    
         utilities.process_json_elements = function () {
