@@ -231,11 +231,11 @@ window.TOONTALK.backside =
                 backside_widgets.forEach(function (backside_widget) {
                         if (backside_widget) {
                             backside_widget.set_visible(new_value);
-                            if (new_value) {
-                                backside_widget.render();
-                            }
                         }
                 });
+                if (visible) {
+                    this.render();
+                }
             };
             if (!widget.get_backside) {
                 // e.g. top-level backside
@@ -985,7 +985,6 @@ window.TOONTALK.backside =
                                      width:  original_width  * x_scale / scale,
                                      height: original_height * y_scale / scale});
             }
- //         console.log({scale: scale, x_scale: x_scale, y_scale: y_scale});
         },
         
         render: function () {
