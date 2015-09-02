@@ -1474,7 +1474,11 @@ window.TOONTALK.widget = (function (TT) {
 
         add_to_top_level_backside: function (widget, train) {
             var top_level_widget = this.top_level_widget();
-            var widget_frontside_element = widget.get_frontside_element(true);
+            var widget_frontside_element;
+            if (!widget) {
+                widget = this;
+            }
+            widget_frontside_element = widget.get_frontside_element(true);
             top_level_widget.add_backside_widget(widget);
             top_level_widget.get_backside_element().appendChild(widget_frontside_element);
             widget.render();
