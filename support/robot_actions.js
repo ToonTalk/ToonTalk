@@ -194,7 +194,7 @@ window.TOONTALK.actions =
             if (TT.logging && TT.logging.indexOf('run') >= 0) {           
                 console.log(robot.to_debug_string() + " running watched");
             }
-            if (!robot.get_parent_of_frontside()) {
+            if (!robot.get_parent_of_frontside() && robot.get_previous_robot()) {
                 // could be a 'next robot' that hasn't been opened
                 previous_robot = robot.get_previous_robot();
                 previous_robot.open_backside();
@@ -221,11 +221,12 @@ window.TOONTALK.actions =
                                                                                 top:  ""});
                                                  });    
             }
+            robot.add_to_top_level_backside(); // needed sometimes for "next robots"
             if (robot_width === 0) {
                 $(frontside_element).css({width:  '',
                                           height: ''});
-                robot_width  = $(frontside_element).width();
-                robot_height = $(frontside_element).height();
+                robot_width  = robot.saved_width  || $(frontside_element).width();
+                robot_height = robot.saved_height || $(frontside_element).height();
             }
             if (!top_level_position) {
                 top_level_position = {left: 0, top: 0};
@@ -237,6 +238,9 @@ window.TOONTALK.actions =
                     robot_home.left+robot_width  > backside_rectangle.right +top_level_position.left ||
                     robot_home.top +robot_height > backside_rectangle.bottom+top_level_position.top) {
                     // robot isn't within the backside so reset its home to bottom centre of backside parent
+                    if (this !== this.get_first_in_team()) {
+                            TT.UTILITIES.report_internal_error("fix this");
+                    }
                     robot_home = $backside_element.offset();
                     robot_home.left += $backside_element.width()/2;
                     robot_home.top  += $backside_element.height()-robot_height;
