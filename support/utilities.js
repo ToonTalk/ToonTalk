@@ -390,7 +390,7 @@ window.TOONTALK.UTILITIES =
                 source_widget_side.apply_backside_geometry();
             }
         }    
-        if (source_widget_side.get_widget() === target_widget_side.get_widget()) {
+        if (target_widget_side && source_widget_side.get_widget() === target_widget_side.get_widget()) {
             // dropping front side on back side so ignore
             return;
         }
