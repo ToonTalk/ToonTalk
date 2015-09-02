@@ -1224,7 +1224,7 @@ window.TOONTALK.robot = (function (TT) {
 
     robot.drop_area_instructions = function () {
         if (this.get_next_robot()) {
-            return "The robot here will try to run when I can't.";
+            return "This robot here will try to run when I can't:&nbsp;&nbsp;";
         }
         return "Drop a robot here who will try to run when I can't.";
     };

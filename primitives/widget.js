@@ -1392,7 +1392,6 @@ window.TOONTALK.widget = (function (TT) {
                         }
                 }.bind(this));
             }
-//             backside.update_flag_and_sign_position();
             return backside;
         },
                 
