@@ -1101,8 +1101,8 @@ window.TOONTALK.widget = (function (TT) {
                     var backside_visible = backside && backside.visible();
                     backside_widgets = new_backside_widgets;
                     if (backside_widgets.length > 0) {
-                        if (this.get_backside()) {
-                            this.get_backside().add_backside_widgets(backside_widgets, json_views);
+                        if (backside) {
+                            backside.add_backside_widgets(backside_widgets, json_views);
                         } else {
                             // store this for when backside is created 
                             this.backside_widgets_json_views = json_views;
