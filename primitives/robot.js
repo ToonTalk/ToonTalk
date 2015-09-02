@@ -706,7 +706,7 @@ window.TOONTALK.robot = (function (TT) {
             this.get_first_in_team().set_running(false);
             return false;
         }
-        if (this.visible()) {
+        if (this.get_first_in_team().visible()) {
             return this.get_body().run_watched(context, top_level_context, queue, this);
         }
         return this.get_body().run_unwatched(context, top_level_context, queue, this);
