@@ -179,9 +179,15 @@ window.TOONTALK.robot_action =
         var thing_in_hand = robot.get_thing_in_hand();
         var robot_frontside_element = robot.get_frontside_element();
         var widget_element  = side.get_element();
-        var widget_width    = $(widget_element).width();
-        var widget_height   = $(widget_element).height();
-        var left_offset,
+        if (!TT.UTILITIES.is_attached(widget_element)) {
+            // is running in a context where the source of this widget isn't available
+            // e.g. published page or test file without standard resource widgets
+            continuation();
+            return;
+        }
+        var widget_width,
+            widget_height,
+            left_offset,
             top_offset,
             animation_left_offset,
             animation_top_offset,
@@ -190,6 +196,8 @@ window.TOONTALK.robot_action =
             thing_in_hand_height,
             robot_location,
             thing_in_hand_location;
+        widget_width  = $(widget_element).width();
+        widget_height = $(widget_element).height();
         if (additional_info && additional_info.left_offset_fraction) {
             if (!robot.original_animation_left_offset) {
                 robot.original_animation_left_offset = [];

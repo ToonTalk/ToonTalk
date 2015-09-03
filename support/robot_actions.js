@@ -215,26 +215,22 @@ window.TOONTALK.actions =
                     // if no original_parent_element then find where it should be
                     original_parent_element = $home_element.get(0);
                 }
-                context.get_backside_element().appendChild(frontside_element);
-                context.add_backside_widget(robot);
+                robot.set_visible(true);
                 robot.update_display();
                 // put the robot back when finished
                 robot.add_body_finished_listener(function () {
                                                       if (original_parent_element) {
                                                           original_parent_element.appendChild(frontside_element);
                                                       }
-                                                      // was temporarily added the backside of the context
-                                                      context.remove_backside_widget(robot);
-                                                      // above will have made the robot not visible
-                                                      robot.set_visible(true);
-                                                      // top left of drop area
+                                                      // let CSS position it
                                                       $(frontside_element).css({left: "",
-                                                                                top:  ""});
+                                                                                top:  "",
+                                                                                position: ""});
                                                  });    
             }
+            TT.UTILITIES.set_absolute_position(frontside_element, robot_home);
             // make sure the robot is a child of the top-level widget backside
             top_level_widget.get_backside_element().appendChild(frontside_element);
-            TT.UTILITIES.set_absolute_position(frontside_element, robot_home);
             if (robot_width === 0) {
                 $(frontside_element).css({width:  '',
                                           height: ''});
