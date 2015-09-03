@@ -155,16 +155,16 @@ window.TOONTALK.actions =
                         }
                         robot.set_animating(false);
                     }
+                    if (first_robot === robot) {
+                        TT.UTILITIES.set_absolute_position(frontside_element, robot_home);
+                    } else {
+                        TT.UTILITIES.set_css(frontside_element, {position: 'static'});
+                        previous_robot.get_backside(true).get_next_robot_area().appendChild(frontside_element);
+                    }
                     if (robot.get_run_once()) {
                         first_robot.set_running(false);
                     } else if (!robot.stopped()) {
                         first_robot.run(context, top_level_context, queue);
-                    }
-                    if (first_robot === robot) {
-                        TT.UTILITIES.set_absolute_position($(frontside_element), robot_home);
-                    } else {
-                        TT.UTILITIES.set_css(frontside_element, {position: 'static'});
-                        previous_robot.get_backside(true).get_next_robot_area().appendChild(frontside_element);
                     }
                     robot.rerender();
                 };

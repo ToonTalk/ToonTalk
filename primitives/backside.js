@@ -720,7 +720,7 @@ window.TOONTALK.backside =
                         initial_location.left = 0;
                     }
                 }
-                TT.UTILITIES.set_absolute_position($(widget_frontside_element), initial_location); 
+                TT.UTILITIES.set_absolute_position(widget_frontside_element, initial_location); 
             };
             var advanced_settings_button = $(backside_element).find(".toontalk-settings-backside-button").get(0);
             var name_text_input, name_drop_handler, name_change, i;

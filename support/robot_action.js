@@ -277,7 +277,7 @@ window.TOONTALK.robot_action =
     };
     var drop_it_on_animation = function (target, context, top_level_context, robot, continuation, additional_info) {
         var thing_in_hand = robot.get_thing_in_hand();
-        var $thing_in_hand_frontside_element, new_continuation;
+        var thing_in_hand_frontside_element, new_continuation;
         if (!thing_in_hand) {
             if (TT.debugging) {
                 TT.UTILITIES.report_internal_error("Expected the robot to be holding something.");
@@ -290,21 +290,23 @@ window.TOONTALK.robot_action =
         if (TT.debugging && thing_in_hand === target) {
             TT.UTILITIES.report_internal_error("Dropping something on itself!");
         }
-        $thing_in_hand_frontside_element = $(thing_in_hand.get_frontside_element(true));
+        thing_in_hand_frontside_element = thing_in_hand.get_frontside_element(true);
         thing_in_hand.set_visible(true);
         new_continuation = function () {
-            var thing_in_hand_position = $thing_in_hand_frontside_element.offset();
+            var thing_in_hand_position = $(thing_in_hand_frontside_element).offset();
             var $top_level_element;
-            $thing_in_hand_frontside_element.removeClass("toontalk-held-by-robot");
+            $(thing_in_hand_frontside_element).removeClass("toontalk-held-by-robot");
             continuation();
             if (thing_in_hand.drop_on) {
                 if (robot.animate_consequences_of_actions()) {
                     // need to see it before actions such as Bammer take place
-                    if (!TT.UTILITIES.visible_element($thing_in_hand_frontside_element.get(0))) {
+                    if (!TT.UTILITIES.visible_element(thing_in_hand_frontside_element)) {
                         $top_level_element = $(robot.get_frontside_element()).closest(".toontalk-top-level-backside")
-                        $top_level_element.append($thing_in_hand_frontside_element.get(0));
+                        if ($top_level_element.length > 0) {
+                            $top_level_element.get(0).appendChild(thing_in_hand_frontside_element);
+                        }
                     }
-                    TT.UTILITIES.set_absolute_position($thing_in_hand_frontside_element, thing_in_hand_position);
+                    TT.UTILITIES.set_absolute_position(thing_in_hand_frontside_element, thing_in_hand_position);
                     thing_in_hand.restore_dimensions();
                 }
                 // remove it from the robot's hand since the drop can take a few seconds
@@ -317,16 +319,11 @@ window.TOONTALK.robot_action =
                 } else {
                     // e.g., a nest may take some time because the egg hatches
                     // but the robot is still holding it   
-//                     $(thing_in_hand.get_frontside_element()).css({position: ""}); // no longer absolute -- TODO: check if still needed
                     robot.set_thing_in_hand(undefined);
                     robot.run_next_step();
                 }
                 robot.rerender();
             }
-            // TODO: revisit use of get_parent_of_frontside once robots can manipulate backsides...
-//             if ($thing_in_hand_frontside_element.is(":visible") && thing_in_hand.get_parent_of_frontside() && thing_in_hand.get_parent_of_frontside().is_backside()) {
-//                 TT.UTILITIES.set_absolute_position($thing_in_hand_frontside_element, thing_in_hand_position);
-//             }
         };
         if (target.is_backside() && !TT.UTILITIES.visible_element(target.get_element())) {
             click_and_open_backside(target.get_widget(), robot, new_continuation, additional_info);

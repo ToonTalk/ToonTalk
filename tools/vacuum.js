@@ -164,7 +164,7 @@ window.TOONTALK.vacuum = (function (TT) {
                         restored_front_side_element = widget_side.add_to_top_level_backside(restoring, true);
                         initial_location = $(element).offset();
                         initial_location.left -= $(restored_front_side_element).width(); // left of vacuum
-                        TT.UTILITIES.set_absolute_position($(restored_front_side_element), initial_location);
+                        TT.UTILITIES.set_absolute_position(restored_front_side_element, initial_location);
                         restoring.this_and_walk_children(function (child) {
                             if (child.is_sensor()) {
                                 child.restore_active();

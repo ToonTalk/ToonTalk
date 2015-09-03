@@ -1678,25 +1678,25 @@ window.TOONTALK.UTILITIES =
                 });
         };
         
-        utilities.set_absolute_position = function ($element, absolute_position) {
-            var $ancestor = $element.parent();
+        utilities.set_absolute_position = function (element, absolute_position) {
+            var ancestor = element.parentElement;
             var left = absolute_position.left;
             var top  = absolute_position.top;
             var ancestor_position;
-            while ($ancestor.is("*") && !$ancestor.is("html")) {
-                ancestor_position = $ancestor.position();
+            while (ancestor && ancestor.nodeType !== "html") {
+                ancestor_position = $(ancestor).position();
                 left -= ancestor_position.left;
                 top  -= ancestor_position.top;
-                $ancestor = $ancestor.parent();
+                ancestor = ancestor.parentElement;
             }
-            utilities.set_css($element,
+            utilities.set_css(element,
                               {left: left,
                                top:  top,
                                position: "absolute"});
-            if ($element.is(".toontalk-side-animating")) {
+            if ($(element).is(".toontalk-side-animating")) {
                 // animation doesn't work with JQuery css
-                $element.get(0).style.left = left + "px";
-                $element.get(0).style.top  = top  + "px";
+                element.style.left = left + "px";
+                element.style.top  = top  + "px";
             }
         };
         
@@ -2081,7 +2081,7 @@ window.TOONTALK.UTILITIES =
             var distance = utilities.distance(target_absolute_position, source_absolute_position);
             var left, top;
             if (duration === 0) {
-                utilities.set_absolute_position($(source_element), target_absolute_position);
+                utilities.set_absolute_position(source_element, target_absolute_position);
                 if (continuation) {
                     continuation();
                 }
@@ -3378,8 +3378,8 @@ window.TOONTALK.UTILITIES =
                 event.preventDefault();
                 if (drag_started) {
                     touch = event.changedTouches[0];
-                    utilities.set_absolute_position($(element), {left: touch.pageX-drag_x_offset,
-                                                                 top:  touch.pageY-drag_y_offset});
+                    utilities.set_absolute_position(element, {left: touch.pageX-drag_x_offset,
+                                                               top:  touch.pageY-drag_y_offset});
                     widget_side_under_element = utilities.find_widget_on_page_side(touch, element, 0, 0);
                     if (widget_drag_entered && widget_drag_entered !== widget_side_under_element) {
                         drag_leave_handler(touch, widget_drag_entered.get_frontside_element());
