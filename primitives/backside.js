@@ -878,7 +878,7 @@ window.TOONTALK.backside =
                             backside_widgets_json_views[index] = {};
                         }
                         if (backside_widget_side.start_offset) {
-                            position = TT.UTILITIES.relative_position_from_absolute_position(backside_widget_side.start_offset);
+                            position = TT.UTILITIES.relative_position_from_absolute_position(backside_widget_side_element.parentElement, backside_widget_side.start_offset);
                             backside_widget_side.start_offset = undefined;
                         } else {
                             position = $(backside_widget_side_element).position();
