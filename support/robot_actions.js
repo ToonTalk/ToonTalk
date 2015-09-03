@@ -230,7 +230,9 @@ window.TOONTALK.actions =
                                                                                 top:  ""});
                                                  });    
             }
-            robot.add_to_top_level_backside(); // needed sometimes for "next robots"
+            if (robot.get_parent_of_frontside() && !robot.get_parent_of_frontside().get_widget().is_top_level()) {
+                robot.add_to_top_level_backside(); // needed sometimes for "next robots"
+            }
             if (robot_width === 0) {
                 $(frontside_element).css({width:  '',
                                           height: ''});
