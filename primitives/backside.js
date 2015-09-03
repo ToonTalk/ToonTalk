@@ -272,11 +272,11 @@ window.TOONTALK.backside =
             backside.is_parent_backside = function () {
                 return widget.is_parent_backside();
             };
-            backside.get_frontside = function () {
-                return widget.get_frontside();
+            backside.get_frontside = function (create) {
+                return widget.get_frontside(create);
             };
-            backside.get_frontside_element = function () {
-                return widget.get_frontside_element();
+            backside.get_frontside_element = function (create) {
+                return widget.get_frontside_element(create);
             };
             backside.get_description_text_area = function () {
                 return description_text_area;
