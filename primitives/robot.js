@@ -299,7 +299,7 @@ window.TOONTALK.robot = (function (TT) {
         };
         new_robot.set_animating = function (animating, robot_position) {
             var frontside_element = this.get_frontside_element();
-            var robot_position;
+            var $top_level_element, robot_position;
             if (animating && $(frontside_element).is(":visible")) {
                 if (!robot_position) {
                     robot_position = $(frontside_element).offset();
@@ -311,7 +311,10 @@ window.TOONTALK.robot = (function (TT) {
                                           height: '', // otherwise doesn't animate well
                                           "z-index": TT.UTILITIES.next_z_index()});
                 TT.UTILITIES.set_position_relative_to_top_level_backside($(frontside_element), robot_position);
-                $(frontside_element).closest(".toontalk-top-level-backside").get(0).appendChild(frontside_element);
+                $top_level_element = $(frontside_element).closest(".toontalk-top-level-backside");
+                if ($top_level_element.length > 0) {
+                    $top_level_element.get(0).appendChild(frontside_element);
+                }
             } else {
                 $(frontside_element).removeClass("toontalk-robot-animating toontalk-side-animating");
             }
