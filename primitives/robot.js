@@ -297,24 +297,28 @@ window.TOONTALK.robot = (function (TT) {
             }
             return speed;
         };
-        new_robot.set_animating = function (animating, robot_position) {
+        new_robot.set_animating = function (animating, robot_offset) {
             var frontside_element = this.get_frontside_element();
-            var $top_level_element, robot_position;
+            var $top_level_element, robot_offset;
             if (animating && $(frontside_element).is(":visible")) {
-                if (!robot_position) {
-                    robot_position = $(frontside_element).offset();
-                }
-                $(frontside_element).addClass("toontalk-robot-animating toontalk-side-animating");
+                if (!robot_offset) {
+                    robot_offset = $(frontside_element).offset();
+                } 
                 // z ordering (z-index) doesn't work unless the robot is a child of the top-level backside while animating
                 // need to change its relative coordinates so it doesn't move
                 $(frontside_element).css({width:  '', // rely upon toontalk-robot-animating for dimensions
                                           height: '', // otherwise doesn't animate well
                                           "z-index": TT.UTILITIES.next_z_index()});
-                TT.UTILITIES.set_position_relative_to_top_level_backside($(frontside_element), robot_position);
+                TT.UTILITIES.set_position_relative_to_top_level_backside($(frontside_element), robot_offset);
                 $top_level_element = $(frontside_element).closest(".toontalk-top-level-backside");
                 if ($top_level_element.length > 0) {
                     $top_level_element.get(0).appendChild(frontside_element);
                 }
+                $(frontside_element).addClass("toontalk-robot-animating");
+                setTimeout(function () {
+                    // need to delay this since otherwise it takes a couple seconds to transform into the animating form
+                     $(frontside_element).addClass("toontalk-side-animating");
+                });
             } else {
                 $(frontside_element).removeClass("toontalk-robot-animating toontalk-side-animating");
             }
