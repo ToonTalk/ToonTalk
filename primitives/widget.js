@@ -1195,7 +1195,7 @@ window.TOONTALK.widget = (function (TT) {
             $container_element = $(frontside_element).closest(".toontalk-backside");
             ok_to_set_dimensions = widget_copy.ok_to_set_dimensions();
             if ($container_element.length === 0) {
-                $container_element = $(".toontalk-backside");  
+                $container_element = $(this.top_level_widget().get_backside_element());  
             }
             container_widget = TT.UTILITIES.widget_side_of_jquery($container_element);
             if (visible) {
