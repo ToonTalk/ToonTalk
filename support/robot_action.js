@@ -453,7 +453,6 @@ window.TOONTALK.robot_action =
             robot.carrying_tool = undefined;
             robot.update_display(); // to stop displaying tool
             continuation();
-//          $(robot.get_frontside_element()).css({"z-index": TT.UTILITIES.next_z_index()});
             robot.run_next_step();
         };
         if (!robot.animate_consequences_of_actions()) {

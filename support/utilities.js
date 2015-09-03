@@ -3315,8 +3315,7 @@ window.TOONTALK.UTILITIES =
                             drag_started = true;
                             widget = utilities.widget_side_of_element(element);
                             if (widget && widget.get_infinite_stack()) {
-                                widget_copy = widget.copy();
-                                widget.add_copy_to_container(widget_copy, 0, 0);
+                                widget_copy = widget.copy();     
                                 widget.set_infinite_stack(false);
                                 widget_copy.set_infinite_stack(true);
                             } else if ($(element).is(".toontalk-top-level-resource")) {
@@ -3325,6 +3324,12 @@ window.TOONTALK.UTILITIES =
                                 // need to capture the position of the original
                                 element_position = $(element).offset();
                                 element = widget_copy.get_frontside_element(true);                              
+                            }
+                            if (widget_copy) {
+                                widget.add_copy_to_container(widget_copy, 0, 0);
+                                if (widget.robot_in_training()) {
+                                    widget.robot_in_training().copied(widget, widget_copy, false);
+                                }
                             }
                             if (!element_position) {
                                 element_position = $(element).offset();

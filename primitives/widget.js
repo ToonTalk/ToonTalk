@@ -1031,6 +1031,9 @@ window.TOONTALK.widget = (function (TT) {
 
                 widget.add_backside_widget = function (widget_side) {
                     var backside = this.get_backside(true);
+                    if (widget_side.is_robot && widget_side.is_robot() && widget_side.get_first_in_team() !== widget_side) {
+                            console.log("debug this");
+                    }
                     if (TT.debugging && widget_side === this) {
                         TT.UTILITIES.report_internal_error("Adding a widget to a list of its backside widgets!");
                         return;
@@ -1219,9 +1222,6 @@ window.TOONTALK.widget = (function (TT) {
             if (container_widget) {
                 container_widget.add_backside_widget(widget_copy);
 //              console.log("Added the copy " + widget_copy + " (" + widget_copy._debug_id + ") to " + container_widget + " (" + container_widget._debug_id + ")");
-            }
-            if (this.robot_in_training()) {
-                this.robot_in_training().copied(this, widget_copy, false);
             }
             return widget_copy;
         },
