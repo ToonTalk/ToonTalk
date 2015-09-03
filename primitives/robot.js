@@ -318,7 +318,8 @@ window.TOONTALK.robot = (function (TT) {
                 setTimeout(function () {
                     // need to delay this since otherwise it takes a couple seconds to transform into the animating form
                      $(frontside_element).addClass("toontalk-side-animating");
-                });
+                            },
+                            2000);
             } else {
                 $(frontside_element).removeClass("toontalk-robot-animating toontalk-side-animating");
             }

@@ -189,9 +189,11 @@ window.TOONTALK.actions =
             };
             var step_number = 0;
             var robot_home = $(frontside_element).offset();
-            var robot_start_offset = $(frontside_element).position();
+            var robot_start_offset = $(frontside_element).offset();
             var robot_width  = $(frontside_element).width();
             var robot_height = $(frontside_element).height();
+            var top_level_widget = robot.top_level_widget();
+            // TODO: determine if the following should be replaced by top_level_widget.get_backside(true)...
             var top_level_position = $(frontside_element).closest(".toontalk-top-level-backside").offset();
             var context_backside = context.get_backside();
             var $home_element, backside_rectangle;
@@ -202,7 +204,7 @@ window.TOONTALK.actions =
             if (previous_robot) {
                 $home_element = $(previous_robot.get_backside(true).get_next_robot_area());
             } else {
-                $home_element = $(frontside_element).closest(".toontalk-backside");
+                $home_element = $(context_backside.get_backside_element(true)); // $(frontside_element).closest(".toontalk-backside");
             }
             if (!TT.UTILITIES.is_attached(frontside_element) && previous_robot) {
                 // could be a 'next robot' that hasn't been opened          
@@ -230,9 +232,8 @@ window.TOONTALK.actions =
                                                                                 top:  ""});
                                                  });    
             }
-            if (robot.get_parent_of_frontside() && !robot.get_parent_of_frontside().get_widget().is_top_level()) {
-                robot.add_to_top_level_backside();
-            }
+            // make sure the robot is a child of the top-level widget backside
+            top_level_widget.get_backside_element().appendChild(frontside_element);
             TT.UTILITIES.set_absolute_position(frontside_element, robot_home);
             if (robot_width === 0) {
                 $(frontside_element).css({width:  '',
@@ -246,7 +247,7 @@ window.TOONTALK.actions =
             if ($home_element.length > 0) {
                 backside_rectangle = $home_element.get(0).getBoundingClientRect();
                 if (robot_home.left < backside_rectangle.left-top_level_position.left ||
-                    robot_home.top  < backside_rectangle.top -top_level_position.top  ||
+                    robot_home.top  < backside_rectangle.top -top_level_position.top ||
                     robot_home.left+robot_width  > backside_rectangle.right +top_level_position.left ||
                     robot_home.top +robot_height > backside_rectangle.bottom+top_level_position.top) {
                     // robot isn't within the backside so reset its home to bottom centre of its home element
