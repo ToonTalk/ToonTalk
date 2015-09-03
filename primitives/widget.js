@@ -1172,7 +1172,8 @@ window.TOONTALK.widget = (function (TT) {
                     copy.set_backside_widgets(TT.UTILITIES.copy_widget_sides(backside_widgets, parameters), this.get_backside_widgets_json_views());
                 }
             }
-            copy.set_visible(this.visible());
+            // used to make copy visible if this is but not always appropriate
+            // e.g. when a robot on the back is copying resources
             copy.set_running(this.get_running());
             return copy;
         },
