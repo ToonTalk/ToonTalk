@@ -179,7 +179,7 @@ window.TOONTALK.robot_action =
         var thing_in_hand = robot.get_thing_in_hand();
         var robot_frontside_element = robot.get_frontside_element();
         var widget_element  = side.get_element();
-        if (!TT.UTILITIES.is_attached(widget_element)) {
+        if (!TT.UTILITIES.is_attached(widget_element) || !robot.visible()) {
             // is running in a context where the source of this widget isn't available
             // e.g. published page or test file without standard resource widgets
             continuation();
@@ -299,7 +299,7 @@ window.TOONTALK.robot_action =
             TT.UTILITIES.report_internal_error("Dropping something on itself!");
         }
         thing_in_hand_frontside_element = thing_in_hand.get_frontside_element(true);
-        thing_in_hand.set_visible(true);
+        thing_in_hand.set_visible(robot.visible());
         new_continuation = function () {
             var thing_in_hand_position = $(thing_in_hand_frontside_element).offset();
             var $top_level_element;
@@ -500,7 +500,14 @@ window.TOONTALK.robot_action =
     };
     var change_size_animation = function (widget, context, top_level_context, robot, continuation, additional_info) {
        var frontside_element = widget.get_frontside_element();
-       var new_continuation = function () {
+       var new_continuation;
+       if (!frontside_element) {
+           // was hidden while running
+           continuation();
+           robot.run_next_step();
+           return;
+       }
+       new_continuation = function () {
             var width  = $(frontside_element).width();
             var height = $(frontside_element).height();
             var new_width  = width *additional_info.x_factor;
@@ -731,7 +738,7 @@ window.TOONTALK.robot_action =
                     }
                     return;
                 }
-                referenced.set_visible(true);
+//                 referenced.set_visible(robot.visible());
                 watched_run_function(referenced, context, top_level_context, robot, continuation, additional_info);
             };
             new_action.toString = function (to_string_info) {
