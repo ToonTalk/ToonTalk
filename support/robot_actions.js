@@ -192,7 +192,8 @@ window.TOONTALK.actions =
             var robot_start_offset = $(frontside_element).offset();
             var robot_width  = $(frontside_element).width();
             var robot_height = $(frontside_element).height();
-            var top_level_widget = robot.top_level_widget();
+            // only the first in team is certain to already have its frontside_element attached
+            var top_level_widget = robot.get_first_in_team().top_level_widget();
             // TODO: determine if the following should be replaced by top_level_widget.get_backside(true)...
             var top_level_position = $(frontside_element).closest(".toontalk-top-level-backside").offset();
             var context_backside = context.get_backside();
@@ -216,7 +217,10 @@ window.TOONTALK.actions =
                     original_parent_element = $home_element.get(0);
                 }
                 robot.set_visible(true);
+                // need the robot's element to be initialised since will start animating very soon
                 robot.update_display();
+                // and ensure it has a reasonable z-index
+//                 $(frontside_element).css({"z-index": TT.UTILITIES.next_z_index()+100});
                 // put the robot back when finished
                 robot.add_body_finished_listener(function () {
                                                       if (original_parent_element) {
@@ -225,7 +229,8 @@ window.TOONTALK.actions =
                                                       // let CSS position it
                                                       $(frontside_element).css({left: "",
                                                                                 top:  "",
-                                                                                position: ""});
+                                                                                position: "",
+                                                                                "z-index": ''});
                                                  });    
             }
             TT.UTILITIES.set_absolute_position(frontside_element, robot_home);
