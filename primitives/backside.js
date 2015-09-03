@@ -228,6 +228,10 @@ window.TOONTALK.backside =
             backside.set_visible = function (new_value) {
                 // tried to return if no change if visibility but then loading backside of robot lost its conditions
                 visible = new_value;
+                if (widget.is_top_level()) {
+                    // no point doing the rest for top-level backsides
+                    return;
+                }
                 this.get_widget().get_backside_widgets().forEach(function (backside_widget) {
                         if (backside_widget) {
                             backside_widget.set_visible(new_value);
