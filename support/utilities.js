@@ -1739,7 +1739,6 @@ window.TOONTALK.UTILITIES =
             css = {left: left,
                    top:  top,
                    position: "absolute"};
-            utilities.set_css($element, css);
             if ($element.is(".toontalk-side-animating")) {
                 // animation doesn't work with JQuery css
                 $element.get(0).style.left = left+"px";
@@ -1749,6 +1748,8 @@ window.TOONTALK.UTILITIES =
                     $element.removeClass("toontalk-side-animating");
                     $element.get(0).style.transitionDuration = '';
                 });
+            } else {    
+                utilities.set_css($element, css);
             }
             return css;
         };
