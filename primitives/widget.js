@@ -1387,7 +1387,6 @@ window.TOONTALK.widget = (function (TT) {
                             widget_side.hide_backside();
                         } else {
                             widget_side.set_visible(true);
-                            widget_side.render();
                             backside_element.appendChild(widget_side.get_frontside_element(true));
                         }
                 }.bind(this));

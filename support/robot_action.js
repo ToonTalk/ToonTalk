@@ -292,7 +292,6 @@ window.TOONTALK.robot_action =
         }
         $thing_in_hand_frontside_element = $(thing_in_hand.get_frontside_element(true));
         thing_in_hand.set_visible(true);
-        thing_in_hand.rerender();
         new_continuation = function () {
             var thing_in_hand_position = $thing_in_hand_frontside_element.offset();
             var $top_level_element;

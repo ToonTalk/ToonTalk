@@ -1530,8 +1530,7 @@ window.TOONTALK.element_backside =
             row.appendChild(td);
             attribute_widget.set_visible(true);
             $(attribute_frontside_element).addClass("toontalk-element-attribute");
-            td.appendChild(attribute_frontside_element);
-            attribute_widget.render();           
+            td.appendChild(attribute_frontside_element);        
         });
     };
     
