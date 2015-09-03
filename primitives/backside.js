@@ -301,8 +301,15 @@ window.TOONTALK.backside =
             backside.widget_side_dropped_on_me = 
                 function (side_of_other, event, robot, ignore_training) {
                     // event serves 2 functions: info for adjusting for scrolling and whether to update the display
-                    // TODO: avoid all this work when not watched
+                    // undefined if this is done by a robot
                     var other, side_of_other_element, backside_of_other;
+                    if (robot && !robot.visible()) {
+                        this.add_backside_widget(side_of_other);
+                        if (side_of_other.dropped_on_other) {
+                            side_of_other.dropped_on_other(this, event, robot);
+                        }
+                        return; 
+                    }
                     if (this.visible()) {
                         if (TT.sounds && event) {
                             TT.sounds.drop.play();
