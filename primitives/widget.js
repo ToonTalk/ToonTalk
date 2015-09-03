@@ -1031,9 +1031,6 @@ window.TOONTALK.widget = (function (TT) {
 
                 widget.add_backside_widget = function (widget_side) {
                     var backside = this.get_backside(true);
-                    if (widget_side.is_robot && widget_side.is_robot() && widget_side.get_first_in_team() !== widget_side) {
-                            console.log("debug this");
-                    }
                     if (TT.debugging && widget_side === this) {
                         TT.UTILITIES.report_internal_error("Adding a widget to a list of its backside widgets!");
                         return;
