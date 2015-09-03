@@ -189,7 +189,7 @@ window.TOONTALK.actions =
             };
             var step_number = 0;
             var robot_home = $(frontside_element).offset();
-            var robot_start_position = $(frontside_element).position();
+            var robot_start_offset = $(frontside_element).position();
             var robot_width  = $(frontside_element).width();
             var robot_height = $(frontside_element).height();
             var top_level_position = $(frontside_element).closest(".toontalk-top-level-backside").offset();
@@ -231,7 +231,8 @@ window.TOONTALK.actions =
                                                  });    
             }
             if (robot.get_parent_of_frontside() && !robot.get_parent_of_frontside().get_widget().is_top_level()) {
-                robot.add_to_top_level_backside(); // needed sometimes for "next robots"
+                robot.add_to_top_level_backside();
+                TT.UTILITIES.set_absolute_position(frontside_element, robot_home);
             }
             if (robot_width === 0) {
                 $(frontside_element).css({width:  '',
@@ -252,12 +253,12 @@ window.TOONTALK.actions =
                     robot_home = $home_element.offset();
                     robot_home.left += $home_element.width()/2;
                     robot_home.top  += $home_element.height()-robot_height;
-                    robot_start_position = robot_home;
+                    robot_start_offset = robot_home;
                 }
             }
             // store this so that if the backside is closed while it is running its position is restored
-            robot.start_position = robot_start_position;
-            TT.UTILITIES.set_css(frontside_element, robot_start_position);
+            robot.start_offset = robot_start_offset;
+            TT.UTILITIES.set_css(frontside_element, robot_start_offset);
             robot.run_next_step = function () {
                 if (context_backside && (context_backside.visible() || TT.UTILITIES.visible_element(context_backside.get_element()))) {
                     // TODO: determine how context_backside.visible() can be false and
@@ -299,9 +300,9 @@ window.TOONTALK.actions =
                    if (saved_parent_element) {
                        saved_parent_element.appendChild(frontside_element);
                    }
-                   // following doesn't use JQuery since it wasn't working
-                   frontside_element.style.left = robot_start_position.left+"px";
-                   frontside_element.style.top  = robot_start_position.top +"px";
+//                    // following doesn't use JQuery since it wasn't working
+//                    frontside_element.style.left = robot_start_offset.left+"px";
+//                    frontside_element.style.top  = robot_start_offset.top +"px";
                    this.run_unwatched(context, top_level_context, queue, robot, step_number);
                 }
             }.bind(this);

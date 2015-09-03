@@ -1677,8 +1677,8 @@ window.TOONTALK.UTILITIES =
                     }
                 });
         };
-        
-        utilities.set_absolute_position = function (element, absolute_position) {
+
+        utilities.relative_position_from_absolute_position = function (element, absolute_position) {
             var ancestor = element.parentElement;
             var left = absolute_position.left;
             var top  = absolute_position.top;
@@ -1689,14 +1689,20 @@ window.TOONTALK.UTILITIES =
                 top  -= ancestor_position.top;
                 ancestor = ancestor.parentElement;
             }
+            return {left: left,
+                    top:  top};
+        };
+        
+        utilities.set_absolute_position = function (element, absolute_position) {
+            var relative_position = utilities.relative_position_from_absolute_position(element, absolute_position);
             utilities.set_css(element,
-                              {left: left,
-                               top:  top,
+                              {left: relative_position.left,
+                               top:  relative_position.top,
                                position: "absolute"});
             if ($(element).is(".toontalk-side-animating")) {
                 // animation doesn't work with JQuery css
-                element.style.left = left + "px";
-                element.style.top  = top  + "px";
+                element.style.left = relative_position.left + "px";
+                element.style.top  = relative_position.top  + "px";
             }
         };
         
