@@ -2995,8 +2995,13 @@ window.TOONTALK.UTILITIES =
         };
         
         utilities.relative_position = function (target_element, reference_element) {
-             var target_offset = $(target_element).offset();
-             var reference_offset;
+             var target_offset, reference_offset;
+             if (!utilities.is_attached(target_element)) {
+                 // can happen if, for example, target_element is new and yet to be rendered (or one of its ancestors)
+                 return {left: 0,
+                         top:  0};
+             }
+             target_offset = $(target_element).offset();
              if (reference_element) {
                  reference_offset = $(reference_element).offset();
                  target_offset.left -= reference_offset.left;
