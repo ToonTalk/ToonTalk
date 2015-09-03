@@ -232,8 +232,8 @@ window.TOONTALK.actions =
             }
             if (robot.get_parent_of_frontside() && !robot.get_parent_of_frontside().get_widget().is_top_level()) {
                 robot.add_to_top_level_backside();
-                TT.UTILITIES.set_absolute_position(frontside_element, robot_home);
             }
+            TT.UTILITIES.set_absolute_position(frontside_element, robot_home);
             if (robot_width === 0) {
                 $(frontside_element).css({width:  '',
                                           height: ''});
@@ -258,7 +258,6 @@ window.TOONTALK.actions =
             }
             // store this so that if the backside is closed while it is running its position is restored
             robot.start_offset = robot_start_offset;
-            TT.UTILITIES.set_css(frontside_element, robot_start_offset);
             robot.run_next_step = function () {
                 if (context_backside && (context_backside.visible() || TT.UTILITIES.visible_element(context_backside.get_element()))) {
                     // TODO: determine how context_backside.visible() can be false and
