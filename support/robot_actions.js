@@ -252,10 +252,12 @@ window.TOONTALK.actions =
                     robot_home = $home_element.offset();
                     robot_home.left += $home_element.width()/2;
                     robot_home.top  += $home_element.height()-robot_height;
+                    robot_start_position = robot_home;
                 }
             }
             // store this so that if the backside is closed while it is running its position is restored
             robot.start_position = robot_start_position;
+            TT.UTILITIES.set_css(frontside_element, robot_start_position);
             robot.run_next_step = function () {
                 if (context_backside && (context_backside.visible() || TT.UTILITIES.visible_element(context_backside.get_element()))) {
                     // TODO: determine how context_backside.visible() can be false and
