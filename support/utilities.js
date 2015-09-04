@@ -337,6 +337,8 @@ window.TOONTALK.UTILITIES =
                         } else {
                             container.removed_from_container(source_widget_side, event, undefined, true);
                             if (source_widget_side.restore_dimensions && !container.is_empty_hole()) {
+                                // TODO: unclear whether callers removed_from_container should restore_dimensions
+                                // or removed_from_container itself
                                 source_widget_side.restore_dimensions();
                             }
                         }

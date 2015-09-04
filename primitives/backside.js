@@ -1042,6 +1042,10 @@ window.TOONTALK.backside =
             this.get_widget().remove();
         },
 
+        copy: function () {
+            return this.get_widget().create_backside();
+        },
+
         is_backside: function () {
             return true;
         },
