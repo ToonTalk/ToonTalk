@@ -465,6 +465,9 @@ window.TOONTALK.number = (function () {
             // good enough values when carried by a bird
             client_width  = 100;
             client_height = 100;
+        } else  if ($(frontside_element).is(".toontalk-held-by-robot")) {
+            client_width  = 76;
+            client_height =  55;
         } else if ($(frontside_element).is(".toontalk-element-attribute")) {
             // good enough if this number is an element attribute
             client_width  = 200;
