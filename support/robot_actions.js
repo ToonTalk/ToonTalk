@@ -233,9 +233,9 @@ window.TOONTALK.actions =
                                                                                 "z-index": ''});
                                                  });    
             }
-            TT.UTILITIES.set_absolute_position(frontside_element, robot_home);
             // make sure the robot is a child of the top-level widget backside
             top_level_widget.get_backside_element().appendChild(frontside_element);
+            TT.UTILITIES.set_absolute_position(frontside_element, robot_home);
             if (robot_width === 0) {
                 $(frontside_element).css({width:  '',
                                           height: ''});
