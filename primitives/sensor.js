@@ -321,20 +321,22 @@ window.TOONTALK.sensor_backside =
             };
             var advanced_settings_button = $(backside_element).find(".toontalk-settings-backside-button").get(0);
             var advanced_settings_panel  = $(backside_element).find(".toontalk-advanced-setting").get(0);
-            event_name_input.button.addEventListener(     'change', update_event_name);
+            var activate_switch_clicked =
+                function (event) {
+                    var active = activate_switch.button.checked;
+                    sensor.set_active(active);
+                    if (sensor.robot_in_training()) {
+                        sensor.robot_in_training().edited(robot, {setter_name: "set_active",
+                                                                  argument_1: active,
+                                                                  toString: "change to " + (active ? "active" : "inactive") + " of the " + sensor,
+                                                                  button_selector: ".toontalk-sensor-active-check-box"});
+                    }
+                    sensor.render();
+                    event.stopPropagation();
+                };
+            event_name_input.button     .addEventListener('change', update_event_name);
             event_attribute_input.button.addEventListener('change', update_attributes);
-            $(activate_switch.button).click(function (event) {
-                var active = activate_switch.button.checked;
-                sensor.set_active(active);
-                if (sensor.robot_in_training()) {
-                    sensor.robot_in_training().edited(robot, {setter_name: "set_active",
-                                                              argument_1: active,
-                                                              toString: "change to " + (active ? "active" : "inactive") + " of the " + sensor,
-                                                              button_selector: ".toontalk-sensor-active-check-box"});
-                }
-                sensor.render();
-                event.stopPropagation();
-            });
+            activate_switch.button      .addEventListener('click', activate_switch_clicked);
             advanced_settings_panel.appendChild(event_name_input.container, event_attribute_input.container, activate_switch.container);
             return backside;
     }};

@@ -115,8 +115,11 @@ window.TOONTALK.SETTINGS =
             // save in case current program has changed
             widget.save(true, undefined, saved_callback);
         };
-        $(table).find(".toontalk-file-load-button-without-click-handler").click(program_click_handler)
-                                                                         .removeClass("toontalk-file-load-button-without-click-handler");
+        var $elements_needing_click_handlers = $(table).find(".toontalk-file-load-button-without-click-handler");
+        $elements_needing_click_handlers.each(function (index, element) {
+            element.addEventListener(program_click_handler);
+        });
+        $elements_needing_click_handlers.removeClass("toontalk-file-load-button-without-click-handler");
     };
 
     return {

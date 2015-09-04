@@ -640,7 +640,17 @@ window.TOONTALK.UTILITIES =
         });
     };
     var initialize = function () {
-       var translation_div;
+        var document_click =
+            function (event) {
+    //          event.stopPropagation();
+                $(".toontalk-top-level-resource-container").each(function (index, element) {
+                    var widget = element.toontalk_widget_side;
+                    if (widget && widget.set_running) {
+                        widget.set_running(false);
+                    }
+                });
+            };
+        var translation_div;
         TT.debugging = utilities.get_current_url_parameter('debugging');
         TT.logging   = utilities.get_current_url_parameter('log');
         if (utilities.get_current_url_numeric_parameter('volume', 10) > 0) {
@@ -649,15 +659,7 @@ window.TOONTALK.UTILITIES =
         utilities.process_json_elements();
         // for top-level resources since they are not on the backside 'work space' we need a way to turn them off
         // clicking on a running widget may not work since its HTML may be changing constantly
-        $(document).click(function (event) {
-//          event.stopPropagation();
-            $(".toontalk-top-level-resource-container").each(function (index, element) {
-                var widget = element.toontalk_widget_side;
-                if (widget && widget.set_running) {
-                    widget.set_running(false);
-                }
-            });
-        });
+        window.document.addEventListener('click', document_click);
         // frontside's click handler will run the top-level resource widgets if clicked
         TT.DEFAULT_QUEUE = window.TOONTALK.queue.create();
         // might want two queues: so new entries end up in the 'next queue'
@@ -2232,8 +2234,8 @@ window.TOONTALK.UTILITIES =
 
         utilities.create_button = function (label, class_name, title, click_handler) {
             var $button = $("<button>" + label + "</button>").button();
-            $button.addClass(class_name)
-                   .click(click_handler);
+            $button.addClass(class_name);
+            $button.get(0).addEventListener('click', click_handler);
             utilities.give_tooltip($button.get(0), title);
             return $button.get(0);
         };
@@ -2242,7 +2244,7 @@ window.TOONTALK.UTILITIES =
             var close_button = document.createElement("div");
             var x = document.createElement("div");
             $(close_button).addClass("toontalk-close-button");
-            $(close_button).click(handler);
+            close_button.addEventListener('click', handler);
             utilities.give_tooltip(close_button, title);
             x.innerHTML = "&times;";
             close_button.appendChild(x);
@@ -3169,33 +3171,35 @@ window.TOONTALK.UTILITIES =
 
        utilities.add_test_all_button = function () {
             var $div = $("#toontalk-test-all-button");
+            var running = false;
+            var button_clicked =
+                function (event) {
+                    if (running) {
+                        $(".toontalk-stop-sign").each(function () {
+                            if ($(this).parent().is(".toontalk-top-level-backside")) {
+                                $(this).click();
+                            }
+                        });
+                        div.innerHTML = "Run all tests";
+                        utilities.rerender_all();
+                    } else {
+                        $(".toontalk-green-flag").each(function () {
+                            if ($(this).parent().is(".toontalk-top-level-backside")) {
+                                $(this).click();
+                            }
+                        });
+                        div.innerHTML = "Stop all tests";
+                    }
+                    running = !running;
+                };
             var div;
             if ($div.length === 0) {
                 return;
             }
             $div.button();
             div = $div.get(0);
-            div.innerHTML = "Run all tests";
-            var running = false;
-            $div.click(function (event) {
-                if (running) {
-                    $(".toontalk-stop-sign").each(function () {
-                        if ($(this).parent().is(".toontalk-top-level-backside")) {
-                            $(this).click();
-                        }
-                    });
-                    div.innerHTML = "Run all tests";
-                    utilities.rerender_all();
-                } else {
-                    $(".toontalk-green-flag").each(function () {
-                        if ($(this).parent().is(".toontalk-top-level-backside")) {
-                            $(this).click();
-                        }
-                    });
-                    div.innerHTML = "Stop all tests";
-                }
-                running = !running;
-            });
+            div.innerHTML = "Run all tests"; 
+            $div.get(0).addEventListener('click', button_clicked);
         };
 
         utilities.set_timeout = function (delayed, delay) {

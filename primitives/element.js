@@ -1540,21 +1540,23 @@ window.TOONTALK.element_backside =
         var hide_label = "Hide my style attributes list";
         var hide_title = "Click to hide my list of attributes that can be added or removed.";
         var $show_chooser_button = $("<button>" + show_label + "</button>").button();
+        var show_chooser_button_clicked =
+            function (event) {
+                if ($(attributes_chooser).is(":visible")) {
+                    $(attributes_chooser).hide();
+                    $show_chooser_button.button("option", "label", show_label);
+                    TT.UTILITIES.give_tooltip($show_chooser_button.get(0), show_title);
+                } else {
+                    $(attributes_chooser).show();
+                    $show_chooser_button.button("option", "label", hide_label);
+                    TT.UTILITIES.give_tooltip($show_chooser_button.get(0), hide_title);
+                }
+                if (element_widget.robot_in_training()) {
+                    element_widget.robot_in_training().button_clicked(".toontalk-show-attributes-chooser-button", element_widget);
+                }
+            };
         $show_chooser_button.addClass("toontalk-show-attributes-chooser-button");
-        $show_chooser_button.click(function (event) {
-            if ($(attributes_chooser).is(":visible")) {
-                $(attributes_chooser).hide();
-                $show_chooser_button.button("option", "label", show_label);
-                TT.UTILITIES.give_tooltip($show_chooser_button.get(0), show_title);
-            } else {
-                $(attributes_chooser).show();
-                $show_chooser_button.button("option", "label", hide_label);
-                TT.UTILITIES.give_tooltip($show_chooser_button.get(0), hide_title);
-            }
-            if (element_widget.robot_in_training()) {
-                element_widget.robot_in_training().button_clicked(".toontalk-show-attributes-chooser-button", element_widget);
-            }
-        });
+        $show_chooser_button.get(0).addEventListener('click', show_chooser_button_clicked);
         TT.UTILITIES.give_tooltip($show_chooser_button.get(0), show_title);
         return $show_chooser_button.get(0);
     };
@@ -1584,7 +1586,8 @@ window.TOONTALK.element_backside =
                 URL_input, update_URL, URL_drop_handler,
                 $play_sound_effect_button, $play_video_button,
                 sound_effect, audio_label_and_title,
-                video_object, video_label_and_title;
+                video_object, video_label_and_title,
+                play_sound_effect_button_clicked, play_video_button_clicked;
             // need to ensure that it 'knows' its textContent, etc.
             element_widget.initialize_element();
             text = element_widget[getter]().trim();
@@ -1742,18 +1745,20 @@ window.TOONTALK.element_backside =
                 };
                 $play_sound_effect_button = $("<button>Play sound</button>").button();
                 $play_sound_effect_button.addClass("toontalk-play-sound-effect-button");
-                $play_sound_effect_button.click(function (event) {
-                    if (sound_effect.paused) {
-                        TT.UTILITIES.play_audio(sound_effect);
-                        sound_effect.addEventListener('ended', audio_label_and_title);
-                    } else {
-                        sound_effect.pause();
-                    }
-                    audio_label_and_title();
-                    if (element_widget.robot_in_training()) {
-                        element_widget.robot_in_training().button_clicked(".toontalk-play-sound-effect-button", element_widget);
-                    }                                            
-                });
+                play_sound_effect_button_clicked = 
+                    function (event) {
+                        if (sound_effect.paused) {
+                            TT.UTILITIES.play_audio(sound_effect);
+                            sound_effect.addEventListener('ended', audio_label_and_title);
+                        } else {
+                            sound_effect.pause();
+                        }
+                        audio_label_and_title();
+                        if (element_widget.robot_in_training()) {
+                            element_widget.robot_in_training().button_clicked(".toontalk-play-sound-effect-button", element_widget);
+                        }                                            
+                    };
+                $play_sound_effect_button.get(0).addEventListener('click', play_sound_effect_button_clicked);
                 audio_label_and_title();
                 backside_element.appendChild($play_sound_effect_button.get(0));
             } else if ($(element_widget.get_frontside_element()).find("video").is("*")) {
@@ -1772,18 +1777,20 @@ window.TOONTALK.element_backside =
                 };
                 $play_video_button = $("<button>Play video</button>").button();
                 $play_video_button.addClass("toontalk-play-video-button");
-                $play_video_button.click(function (event) {
-                                             if (video_object.paused) {
-                                                 video_object.play();
-                                                 video_object.addEventListener('ended', video_label_and_title);
-                                             } else {
-                                                 video_object.pause();            
-                                             }
-                                             video_label_and_title();
-                                             if (element_widget.robot_in_training()) {
-                                                 element_widget.robot_in_training().button_clicked(".toontalk-play-video-button", element_widget);
-                                             }                                            
-                                         });
+                play_sound_effect_button_clicked =
+                    function (event) {
+                        if (video_object.paused) {
+                            video_object.play();
+                            video_object.addEventListener('ended', video_label_and_title);
+                        } else {
+                             video_object.pause();            
+                        }
+                        video_label_and_title();
+                        if (element_widget.robot_in_training()) {
+                            element_widget.robot_in_training().button_clicked(".toontalk-play-video-button", element_widget);
+                        }                                            
+                    };
+                $play_video_button.get(0).addEventListener('click', play_video_button_clicked);
                 video_label_and_title();
                 backside_element.appendChild($play_video_button.get(0));
             }
@@ -1809,11 +1816,14 @@ window.TOONTALK.element_backside =
                 generic_backside_update();
             };
             // if the backside is hidden then so should the attributes chooser
-            $(backside_element).find(".toontalk-hide-backside-button").click(function (event) {
-                $(attributes_chooser).hide();
+            $(backside_element).find(".toontalk-hide-backside-button").each(function (index, element) {
+                element.addEventListener('click',
+                                         function () {
+                                             $(attributes_chooser).hide();
+                                         });
             });
             react_to_pointer_checkbox.button.checked = !element_widget.get_ignore_pointer_events();
-            react_to_pointer_checkbox.button.addEventListener('click', function (event) {
+            react_to_pointer_checkbox.button.addEventListener('click', function () {
                 element_widget.set_ignore_pointer_events(!react_to_pointer_checkbox.button.checked);
             });
             if (!element_widget.is_plain_text_element()) {

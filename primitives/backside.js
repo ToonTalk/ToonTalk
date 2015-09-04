@@ -60,6 +60,52 @@ window.TOONTALK.backside =
                                              }
                                              TT.UTILITIES.give_tooltip(stop_sign_element, title);
                                          };
+            var green_flag_clicked = function (event) {
+                                         if (widget.can_run()) {
+                                             update_flag_and_stop_sign_classes(true);
+                                             widget.set_running(true);
+                                             update_stop_sign_title();
+                                             TT.DEFAULT_QUEUE.start();
+                                         } else {
+                                             if (widget.is_top_level()) {
+                                                 TT.UTILITIES.display_message("There is nothing to run.");
+                                             } else {
+                                                 TT.UTILITIES.display_message("This " + widget.get_type_name() + " has nothing to run. Add some robots on the back.");
+                                             }
+                                         }
+                                         if (widget.robot_in_training()) {
+                                             widget.robot_in_training().button_clicked(".toontalk-green-flag", widget);
+                                         }
+                                         event.stopPropagation();                                                                   
+                                     };
+            var stop_sign_clicked = function (event) {
+                                        update_flag_and_stop_sign_classes(false);
+                                        widget.set_running(false);
+                                        update_green_flag_title();
+                                        if (widget.robot_in_training()) {
+                                            widget.robot_in_training().button_clicked(".toontalk-stop-sign", widget);
+                                        }  
+                                        event.stopPropagation();
+                                        if (widget.is_top_level()) {
+                                            TT.UTILITIES.stop_audio_objects();
+                                        }                                                                    
+                                    };
+            var help_button_clicked = function (event) {
+                                          if (relative_URL) {
+                                              // is a relative path so no problem with iframes
+                                              help_frame = document.createElement("iframe");
+                                              $(help_frame).addClass("toontalk-help-frame");
+                                              help_frame.src = help_URL;
+                                              document.body.appendChild(close_help_button);
+                                              document.body.appendChild(help_frame);
+                                              event.stopPropagation();
+                                          } else {
+                                              // need to work around:
+                                              // Refused to display 'https://developer.mozilla.org/en-US/docs/Web/CSS/transform#rotate' in a frame because it set 'X-Frame-Options' to 'DENY'.
+                                              help_button.href = help_URL;
+                                              help_button.target = '_blank';
+                                          }
+                                      };
             var close_title, close_handler, description_text_area, name_text_input, relative_URL;
             if (TT.TRANSLATION_ENABLED) {
                 help_URL = TT.UTILITIES.add_URL_parameter(help_URL, "translate", "1");
@@ -130,40 +176,12 @@ window.TOONTALK.backside =
                 close_button = TT.UTILITIES.create_close_button(close_handler, close_title);
                 backside_element.appendChild(close_button);
             }
-            $(green_flag_element).addClass("toontalk-green-flag toontalk-green-flag-inactive")
-                                 .click(function (event) {
-                                            if (widget.can_run()) {
-                                                update_flag_and_stop_sign_classes(true);
-                                                widget.set_running(true);
-                                                update_stop_sign_title();
-                                                TT.DEFAULT_QUEUE.start();
-                                            } else {
-                                                if (widget.is_top_level()) {
-                                                    TT.UTILITIES.display_message("There is nothing to run.");
-                                                } else {
-                                                    TT.UTILITIES.display_message("This " + widget.get_type_name() + " has nothing to run. Add some robots on the back.");
-                                                }
-                                            }
-                                            if (widget.robot_in_training()) {
-                                                widget.robot_in_training().button_clicked(".toontalk-green-flag", widget);
-                                            }
-                                            event.stopPropagation();                                                                   
-                                        })
-                                 .on('mouseenter', update_stop_sign_title);
-            $(stop_sign_element) .addClass("toontalk-stop-sign toontalk-stop-sign-active")
-                                 .click(function (event) {
-                                            update_flag_and_stop_sign_classes(false);
-                                            widget.set_running(false);
-                                            update_green_flag_title();
-                                            if (widget.robot_in_training()) {
-                                                widget.robot_in_training().button_clicked(".toontalk-stop-sign", widget);
-                                            }  
-                                            event.stopPropagation();
-                                            if (widget.is_top_level()) {
-                                                TT.UTILITIES.stop_audio_objects();
-                                            }                                                                    
-                                        })
-                                 .on('mouseenter', update_green_flag_title);
+            $(green_flag_element).addClass("toontalk-green-flag toontalk-green-flag-inactive");
+            green_flag_element.addEventListener('click', green_flag_clicked);
+            green_flag_element.addEventListener('mouseenter', update_stop_sign_title);
+            $(stop_sign_element).addClass("toontalk-stop-sign toontalk-stop-sign-active");
+            stop_sign_element.addEventListener('click', stop_sign_clicked);
+            stop_sign_element.addEventListener('mouseenter', update_green_flag_title);
             backside_element.appendChild(green_flag_element);
             backside_element.appendChild(stop_sign_element);
             TT.UTILITIES.use_custom_tooltip(green_flag_element);
@@ -173,34 +191,20 @@ window.TOONTALK.backside =
                 help_button = document.createElement(relative_URL ? "div" : "a");
                 // notranslate shouldn't be needed and is the older way of avoiding translation
                 // see http://www.w3.org/International/questions/qa-translate-flag
-                $(help_button).addClass("toontalk-help-button notranslate toontalk-widget-help-button")
-                              .click(function (event) {
-                                         if (relative_URL) {
-                                             // is a relative path so no problem with iframes
-                                             help_frame = document.createElement("iframe");
-                                             $(help_frame).addClass("toontalk-help-frame");
-                                             help_frame.src = help_URL;
-                                             document.body.appendChild(close_help_button);
-                                             document.body.appendChild(help_frame);
-                                             event.stopPropagation();
-                                         } else {
-                                             // need to work around:
-                                             // Refused to display 'https://developer.mozilla.org/en-US/docs/Web/CSS/transform#rotate' in a frame because it set 'X-Frame-Options' to 'DENY'.
-                                             help_button.href = help_URL;
-                                             help_button.target = '_blank';
-                                         }
-                                     });
+                $(help_button).addClass("toontalk-help-button notranslate toontalk-widget-help-button");
+                help_button.addEventListener('click', help_button_clicked);
                 help_button.innerHTML = 'i'; // like tourist info -- alternatively could use a question mark
                 help_button.translate = false; // should not be translated
                 TT.UTILITIES.give_tooltip(help_button, "Click to learn more about " + widget.get_type_name(true, true) + ".");
                 close_help_button = document.createElement("div");
                 $(close_help_button).addClass("toontalk-close-help-frame-button")
-                                    .button()
-                                    .click(function (event) {
-                                               $(help_frame).remove();
-                                               $(close_help_button).remove();
-                                               event.stopPropagation();
-                                           });
+                                    .button();
+                close_help_button.addEventListener('click',
+                                                   function (event) {
+                                                       $(help_frame).remove();
+                                                       $(close_help_button).remove();
+                                                       event.stopPropagation();
+                                                   });
                 close_help_button.innerHTML = "Return to ToonTalk";
                 backside_element.appendChild(help_button);
             };        
@@ -209,11 +213,12 @@ window.TOONTALK.backside =
             }
             if (widget.is_top_level()) {
                 settings_button = document.createElement("div");
-                $(settings_button).addClass("toontalk-settings-button")
-                                  .click(function (event) {
-                                          widget.open_settings();
-                                          event.stopPropagation();
-                                  });  
+                $(settings_button).addClass("toontalk-settings-button");
+                settings_button.addEventListener('click', 
+                                                 function (event) {
+                                                      widget.open_settings();
+                                                      event.stopPropagation();
+                                                 });  
                 backside_element.appendChild(settings_button); 
                 TT.UTILITIES.give_tooltip(settings_button, "Click to change settings or open a different program.");        
             }
@@ -656,7 +661,7 @@ window.TOONTALK.backside =
                                                           "Copy when dragged.",
                                                           "Check this if you want the " + widget.get_type_name()
                                                           + " to be copied instead of moved.");
-            $(check_box.button).click(function (event) {
+            var check_box_clicked = function (event) {
                 var infinite_stack = check_box.button.checked;
                 var action_string;
                 widget.set_infinite_stack(infinite_stack);
@@ -672,7 +677,8 @@ window.TOONTALK.backside =
                                                                button_selector: ".toontalk-infinite-stack-check-box"});
                 }
                 event.stopPropagation();
-            });
+            };
+            check_box.button.addEventListener('click', check_box_clicked);
             return check_box;
         },
         
@@ -739,6 +745,25 @@ window.TOONTALK.backside =
                 }
                 TT.UTILITIES.set_absolute_position(widget_frontside_element, initial_location); 
             };
+            var make_sensor_nest_button_clicked = 
+                function (event) {
+                    var sensor = TT.sensor.create('click', 'which', undefined, undefined, true, widget);
+                    add_new_widget_to_backside(sensor, $make_sensor_nest_button);
+                    if (widget.robot_in_training()) {
+                        widget.robot_in_training().created_widget(sensor, widget, ".toontalk-make-sensor_nest_button");
+                    }
+                    event.stopPropagation();
+            };
+            var make_function_bird_button_clicked = 
+                function (event) {
+                           var function_type = widget.get_function_type && widget.get_function_type();
+                           var function_bird = TT.bird.create_function(function_type || type_name);
+                           add_new_widget_to_backside(function_bird, $make_function_bird_button);
+                           if (widget.robot_in_training()) {
+                               widget.robot_in_training().created_widget(function_bird, widget, ".toontalk-make-function_bird_button");
+                           }
+                           event.stopPropagation();
+            };
             var advanced_settings_button = $(backside_element).find(".toontalk-settings-backside-button").get(0);
             var name_text_input, name_drop_handler, name_change, i;
             if (widget.set_name) {
@@ -777,28 +802,11 @@ window.TOONTALK.backside =
             description_text_area.button.addEventListener('change',   description_change);
             description_text_area.button.addEventListener('mouseout', description_change);
             this.set_description_text_area(description_text_area);
-            $make_sensor_nest_button
-                .addClass("toontalk-make-sensor_nest_button")
-                .click(function (event) {
-                    var sensor = TT.sensor.create('click', 'which', undefined, undefined, true, widget);
-                    add_new_widget_to_backside(sensor, $make_sensor_nest_button);
-                    if (widget.robot_in_training()) {
-                        widget.robot_in_training().created_widget(sensor, widget, ".toontalk-make-sensor_nest_button");
-                    }
-                    event.stopPropagation();
-            });
+            $make_sensor_nest_button.addClass("toontalk-make-sensor_nest_button");
+            $make_sensor_nest_button.get(0).addEventListener('click', make_sensor_nest_button_clicked);
             $make_sensor_nest_button.attr('title', "Click to create a nest which receives messages when events happen to this " + widget.get_type_name() + ".");
-            $make_function_bird_button
-                .addClass("toontalk-make-function_bird_button")
-                .click(function (event) {
-                           var function_type = widget.get_function_type && widget.get_function_type();
-                           var function_bird = TT.bird.create_function(function_type || type_name);
-                           add_new_widget_to_backside(function_bird, $make_function_bird_button);
-                           if (widget.robot_in_training()) {
-                               widget.robot_in_training().created_widget(function_bird, widget, ".toontalk-make-function_bird_button");
-                           }
-                           event.stopPropagation();
-            });
+            $make_function_bird_button.addClass("toontalk-make-function_bird_button");
+            $make_function_bird_button.get(0).addEventListener('click', make_function_bird_button_clicked);
             if (widget.is_number() || widget.is_box()) {
                 // will implement more functions (e.g. for string elements and boxes)
                 $make_function_bird_button.attr('title', "Click to get a bird that flies to functions of " + widget.get_type_name(true) + ".");
@@ -945,17 +953,19 @@ window.TOONTALK.backside =
             var buuton = document.createElement('div');
             var $settings_button = $(buuton);
             var settings_showing = false;
-            buuton.innerHTML = '&gt;';
-            $settings_button.addClass("toontalk-settings-backside-button");
-            $settings_button.css({"z-index": TT.UTILITIES.next_z_index()});
-            $settings_button.click(function (event) {
+            var settings_button_clicked = 
+                function (event) {
                     settings_showing = !settings_showing;
                     this.set_advanced_settings_showing(settings_showing, backside.get_element(), $settings_button);
                     event.stopPropagation();
                     if (widget.robot_in_training()) {
                         widget.robot_in_training().button_clicked(".toontalk-settings-backside-button", backside);   
                     }
-            }.bind(this));
+                }.bind(this);
+            buuton.innerHTML = '&gt;';
+            $settings_button.addClass("toontalk-settings-backside-button");
+            $settings_button.css({"z-index": TT.UTILITIES.next_z_index()});
+            $settings_button.get(0).addEventListener('click', settings_button_clicked);
             TT.UTILITIES.give_tooltip($settings_button.get(0), "Click to see the advanced settings of this " + widget.get_type_name() + ".");
             return $settings_button.get(0);
         },

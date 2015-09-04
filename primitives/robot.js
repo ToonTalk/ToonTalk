@@ -1513,6 +1513,19 @@ window.TOONTALK.robot_backside =
                     drop_area.appendChild(frontside_element);
             };
             var generic_hide_backside = backside.hide_backside;
+            var run_once_button_clicked =
+                function (event) {
+                    var keep_running = run_once_input.button.checked;
+                    robot.set_run_once(!keep_running);
+                    TT.UTILITIES.give_tooltip(run_once_input.container, run_once_title(!keep_running));
+                    if (robot.robot_in_training()) {
+                        robot.robot_in_training().edited(robot, {setter_name: "set_run_once",
+                                                                 argument_1: !keep_running,
+                                                                 toString: "change to " + (keep_running ? "run again" : "run once") + " of the robot",
+                                                                 button_selector: ".toontalk-run-once-check-box"});
+                    }
+                    event.stopPropagation();
+                };
             backside.hide_backside = function (event) {
                 generic_hide_backside.call(this, event);
                 if (robot.being_trained) {
@@ -1521,18 +1534,7 @@ window.TOONTALK.robot_backside =
             };
             // TODO: replace JQuery data with element property
             $(next_robot_area).data("drop_area_owner", robot);
-            $(run_once_input.button).click(function (event) {
-                var keep_running = run_once_input.button.checked;
-                robot.set_run_once(!keep_running);
-                TT.UTILITIES.give_tooltip(run_once_input.container, run_once_title(!keep_running));
-                if (robot.robot_in_training()) {
-                    robot.robot_in_training().edited(robot, {setter_name: "set_run_once",
-                                                             argument_1: !keep_running,
-                                                             toString: "change to " + (keep_running ? "run again" : "run once") + " of the robot",
-                                                             button_selector: ".toontalk-run-once-check-box"});
-                }
-                event.stopPropagation();
-            });
+            run_once_input.button.addEventListener('click', run_once_button_clicked);
             speed_menu.menu.value = speed_value_to_name(robot.get_watched_speed());
             speed_menu.menu.addEventListener('change', function (event) {
                 robot.set_watched_speed(speed_name_to_value(event.target.value));
@@ -1595,8 +1597,22 @@ window.TOONTALK.robot_backside =
             var backside_element = backside.get_element();
             var $backside_element = $(backside_element);
             var $train_button = $("<button>Train</button>").button();
-            $train_button.addClass("toontalk-train-backside-button");
             var training = false;
+            var train_button_clicked =
+                function (event) {
+                    training = !training;
+                    backside.change_label_and_title_of_train_button(training);
+                    if (training) {
+                        robot.initialize_backside_conditions();
+                        robot.get_body().reset_steps();
+                        robot.robot_started_training(robot);
+                        robot.training_started();
+                    } else {
+                        robot.training_finished();
+                    }
+                    event.stopPropagation();
+                };
+            $train_button.addClass("toontalk-train-backside-button");
             backside.change_label_and_title_of_train_button = function (training_started) {
                 if (training_started) {
                     $train_button.button("option", "label", "Stop training " + robot.get_name());
@@ -1615,19 +1631,7 @@ window.TOONTALK.robot_backside =
                 }
             };
             backside.change_label_and_title_of_train_button(training);
-            $train_button.click(function (event) {
-                training = !training;
-                backside.change_label_and_title_of_train_button(training);
-                if (training) {
-                    robot.initialize_backside_conditions();
-                    robot.get_body().reset_steps();
-                    robot.robot_started_training(robot);
-                    robot.training_started();
-                } else {
-                    robot.training_finished();
-                }
-                event.stopPropagation();
-            });
+            $train_button.get(0).addEventListener('click', train_button_clicked);
             return $train_button.get(0);
         }
         
