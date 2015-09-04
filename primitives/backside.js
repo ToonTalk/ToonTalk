@@ -113,7 +113,6 @@ window.TOONTALK.backside =
                                                                     2000,
                                                                     function () {
                                                                         widget.forget_backside();
-                            
                                                                     });
                         } else {
                             do_after_closing();

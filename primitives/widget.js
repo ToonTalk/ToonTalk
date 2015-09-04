@@ -289,7 +289,6 @@ window.TOONTALK.widget = (function (TT) {
             if (!widget.set_backside) {
                 widget.set_backside = function (new_value) {
                     backside = new_value;
-//                     backside.update_flag_and_sign_position();
                 };
             }
             if (!widget.forget_backside) {
@@ -304,11 +303,6 @@ window.TOONTALK.widget = (function (TT) {
                         element.toontalk_widget_side = undefined;
                     }
                     backside = undefined;
-                    // do this recursively so backsides are fully reconstructed
-                    // otherwise things like JQuery UI 'button' is not reapplied
-//                     this.get_backside_widgets().forEach(function (backside_widget) {
-//                             backside_widget.get_widget().forget_backside();
-//                     });
                 };
             }
             if (!widget.create_backside) {

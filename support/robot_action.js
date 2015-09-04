@@ -25,7 +25,7 @@ window.TOONTALK.robot_action =
              return true;
          },
          "drop it on": function (target, context, top_level_context, robot, additional_info) {
-             var thing_in_hand, thing_in_hand_frontside_element, thing_in_hand_position;
+             var thing_in_hand;
              if (target) {
                  thing_in_hand = robot.get_thing_in_hand();
                  if (thing_in_hand) {

@@ -992,7 +992,7 @@ window.TOONTALK.robot = (function (TT) {
         }
         TT.UTILITIES.give_tooltip(frontside_element, this.get_title());
         $(frontside_element).addClass("toontalk-robot");
-        $(frontside_element).children(".toontalk-side, .toontalk-held-by-robot").remove();
+        $(frontside_element).children(".toontalk-held-by-robot").remove(); // if needed will be added again below
         if (thing_in_hand_frontside_element) {
             frontside_element.appendChild(thing_in_hand_frontside_element);
         }
