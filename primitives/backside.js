@@ -1039,7 +1039,16 @@ window.TOONTALK.backside =
         },
 
         remove: function () {
-            this.get_widget().remove();
+            var backside_element;
+            if (this.is_primary_backside()) {
+                this.get_widget().remove();
+            } else if (parent) {
+                this.set_parent_of_backside(undefined);
+                backside_element = this.get_element();
+                if (backside_element) {
+                   $(backside_element).remove();
+                }
+            }
         },
 
         copy: function () {
