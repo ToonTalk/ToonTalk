@@ -1206,10 +1206,9 @@ window.TOONTALK.number_backside =
             var operator_set =TT.UTILITIES.create_horizontal_table(plus.container, minus.container, multiply.container, divide.container, set.container);
             var advanced_settings_button = TT.backside.create_advanced_settings_button(backside, number);
             var generic_backside_update = backside.update_display.bind(backside);
+            var generic_add_advanced_settings = backside.add_advanced_settings;
             slash.innerHTML = "/";
             $(slash).addClass("ui-widget"); // to look nice
-            backside_element.appendChild(number_set);
-            backside_element.appendChild(advanced_settings_button);
             numerator_input.button.addEventListener('change',   update_value);
             numerator_input.button.addEventListener('mouseout', update_value);
             numerator_input.button.addEventListener('mouseenter', function () {
@@ -1220,6 +1219,8 @@ window.TOONTALK.number_backside =
             denominator_input.button.addEventListener('mouseenter', function () {
                 current_denominator = denominator_input.button.value.trim();
             });
+            backside_element.appendChild(number_set);
+            backside_element.appendChild(advanced_settings_button);
             decimal_format.button     .addEventListener('change', update_format);
             mixed_number_format.button.addEventListener('change', update_format);
             improper_format.button    .addEventListener('change', update_format);
@@ -1266,13 +1267,11 @@ window.TOONTALK.number_backside =
                 $(denominator_input.button).val(number.denominator_string());
                 generic_backside_update();
             };
-            $(format_set)  .addClass("toontalk-advanced-setting");
-            $(operator_set).addClass("toontalk-advanced-setting");
-            backside_element.appendChild(format_set);
-            backside_element.appendChild(operator_set);
-            $(format_set).buttonset();
-            $(operator_set).buttonset();
-            backside.add_advanced_settings();
+            backside.add_advanced_settings = function () {
+                generic_add_advanced_settings.call(backside, format_set, operator_set);
+                $(format_set).buttonset();
+                $(operator_set).buttonset();
+            };
             return backside;
         }
 

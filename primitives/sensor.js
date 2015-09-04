@@ -319,8 +319,7 @@ window.TOONTALK.sensor_backside =
             var update_attributes = function () {
                 sensor.set_attributes(event_attribute_input.button.value.trim());
             };
-            var advanced_settings_button = $(backside_element).find(".toontalk-settings-backside-button").get(0);
-            var advanced_settings_panel  = $(backside_element).find(".toontalk-advanced-setting").get(0);
+            var advanced_settings_button = TT.backside.create_advanced_settings_button(backside, sensor);
             var activate_switch_clicked =
                 function (event) {
                     var active = activate_switch.button.checked;
@@ -334,10 +333,20 @@ window.TOONTALK.sensor_backside =
                     sensor.render();
                     event.stopPropagation();
                 };
-            event_name_input.button     .addEventListener('change', update_event_name);
-            event_attribute_input.button.addEventListener('change', update_attributes);
-            activate_switch.button      .addEventListener('click', activate_switch_clicked);
-            advanced_settings_panel.appendChild(event_name_input.container, event_attribute_input.container, activate_switch.container);
+            var generic_add_advanced_settings = backside.add_advanced_settings;
+            backside_element.appendChild(advanced_settings_button);
+            backside.add_advanced_settings = function () {
+                var $advanced_settings_table;
+                event_name_input.button     .addEventListener('change', update_event_name);
+                event_attribute_input.button.addEventListener('change', update_attributes);
+                activate_switch.button      .addEventListener('click', activate_switch_clicked);
+                generic_add_advanced_settings.call(backside, event_name_input.container, event_attribute_input.container); 
+                // advanced table added above
+                $advanced_settings_table = $(backside_element).children(".toontalk-advanced-settings-table");
+                if ($advanced_settings_table.length > 0) {
+                    $advanced_settings_table.get(0).appendChild(activate_switch.container);
+                }
+            };
             return backside;
     }};
 }(window.TOONTALK));

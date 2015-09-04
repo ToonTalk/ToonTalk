@@ -920,7 +920,6 @@ window.TOONTALK.box_backside =
             backside_element.appendChild(buttons);
             $(buttons).buttonset();
             backside_element.appendChild(advanced_settings_button);
-            backside.add_advanced_settings();
             backside.rerender();
             return backside;
         }};

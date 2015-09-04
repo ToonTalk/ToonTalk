@@ -1582,6 +1582,7 @@ window.TOONTALK.element_backside =
             var edit_HTML = TT.UTILITIES.get_current_url_boolean_parameter("elementHTML", true);
             var getter = edit_HTML ? "get_HTML" : "get_text";
             var generic_backside_update = backside.update_display.bind(backside);
+            var generic_add_advanced_settings = backside.add_advanced_settings;
             var text, html_input, update_html, drop_handler, 
                 URL_input, update_URL, URL_drop_handler,
                 $play_sound_effect_button, $play_video_button,
@@ -1729,6 +1730,20 @@ window.TOONTALK.element_backside =
             backside.get_attributes_chooser = function () {
                 return attributes_chooser;
             };
+            backside.add_advanced_settings = function () {
+                var $advanced_settings_table;
+                generic_add_advanced_settings.call(backside);
+                // advanced table added above
+                $advanced_settings_table = $(backside_element).children(".toontalk-advanced-settings-table");
+                if ($advanced_settings_table.length > 0) {
+                    $advanced_settings_table.get(0).appendChild(react_to_pointer_checkbox.container);
+                    $advanced_settings_table.get(0).appendChild(attributes_chooser);
+                    $advanced_settings_table.get(0).appendChild(show_attributes_chooser);
+                    if (!element_widget.is_plain_text_element()) {
+                        $advanced_settings_table.get(0).appendChild(html_input.container); 
+                    }
+                }
+            };
             if (element_widget.get_sound_effect()) {
                 sound_effect = element_widget.get_sound_effect();
                 audio_label_and_title = function () {
@@ -1815,7 +1830,7 @@ window.TOONTALK.element_backside =
                 });
                 generic_backside_update();
             };
-            // if the backside is hidden then so should the attributes chooser
+            // if the backside is hidden then so should be the attributes chooser
             $(backside_element).find(".toontalk-hide-backside-button").each(function (index, element) {
                 element.addEventListener('click',
                                          function () {
@@ -1826,12 +1841,6 @@ window.TOONTALK.element_backside =
             react_to_pointer_checkbox.button.addEventListener('click', function () {
                 element_widget.set_ignore_pointer_events(!react_to_pointer_checkbox.button.checked);
             });
-            if (!element_widget.is_plain_text_element()) {
-                backside.add_advanced_settings(false, html_input.container, react_to_pointer_checkbox.container);
-            } else {
-                backside.add_advanced_settings(false, react_to_pointer_checkbox.container);
-            }
-            $(backside_element).children(".toontalk-advanced-setting").get(0).appendChild(attributes_chooser, show_attributes_chooser);
             return backside;
     }};
 }(window.TOONTALK));

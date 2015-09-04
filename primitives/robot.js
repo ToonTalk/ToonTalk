@@ -1526,6 +1526,7 @@ window.TOONTALK.robot_backside =
                     }
                     event.stopPropagation();
                 };
+            var generic_add_advanced_settings = backside.add_advanced_settings;
             backside.hide_backside = function (event) {
                 generic_hide_backside.call(this, event);
                 if (robot.being_trained) {
@@ -1582,14 +1583,10 @@ window.TOONTALK.robot_backside =
                                       });
             backside_element.appendChild(this.create_train_button(backside, robot));
             backside_element.appendChild(advanced_settings_button);
-            $(run_once_input.container).addClass("toontalk-advanced-setting");
-            $((speed_menu.container))  .addClass("toontalk-advanced-setting");
-            $(next_robot_area)         .addClass("toontalk-advanced-setting");
-            backside_element.appendChild(run_once_input.container);
-            backside_element.appendChild(speed_menu.container);
-            backside_element.appendChild(next_robot_area);
-            add_conditions_area(backside_element, robot);
-            backside.add_advanced_settings();
+            backside.add_advanced_settings = function () {
+                generic_add_advanced_settings.call(backside, run_once_input.container, speed_menu.container, next_robot_area);  
+                add_conditions_area(backside_element, robot);
+            };
             return backside;
         },
         
