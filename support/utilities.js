@@ -3492,6 +3492,10 @@ window.TOONTALK.UTILITIES =
            widget_side = utilities.widget_side_of_element(element);
            if (widget_side) {
                if (widget_side.is_backside()) {
+                   if (!css.transform) {
+                       css.width  = '';
+                       css.height = '';
+                   }
                    $(element).css(css);
                    return;
                }
