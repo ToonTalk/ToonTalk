@@ -233,9 +233,6 @@ window.TOONTALK.actions =
                                                                                 "z-index": ''});
                                                  });    
             }
-            // make sure the robot is a child of the top-level widget backside
-            top_level_widget.get_backside_element().appendChild(frontside_element);
-            TT.UTILITIES.set_absolute_position(frontside_element, robot_home);
             if (robot_width === 0) {
                 $(frontside_element).css({width:  '',
                                           height: ''});
@@ -260,6 +257,9 @@ window.TOONTALK.actions =
             }
             // store this so that if the backside is closed while it is running its position is restored
             robot.start_offset = robot_start_offset;
+             // make sure the robot is a child of the top-level widget backside
+            top_level_widget.get_backside_element().appendChild(frontside_element);
+            TT.UTILITIES.set_absolute_position(frontside_element, robot_home);
             robot.run_next_step = function () {
                 if (context_backside && (context_backside.visible() || TT.UTILITIES.visible_element(context_backside.get_element()))) {
                     // TODO: determine how context_backside.visible() can be false and
