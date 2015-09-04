@@ -44,7 +44,6 @@ window.TOONTALK.scale = (function (TT) {
             }
             copy_as_box = box_copy.call(this, parameters);
             copy = TT.scale.create(undefined, undefined, copy_as_box, parameters.just_value && this.get_state());
-            copy.set_name(name);
             return new_scale.add_to_copy(copy, parameters);
         };
         new_scale.get_json = function (json_history) {
@@ -370,6 +369,7 @@ window.TOONTALK.scale = (function (TT) {
                         "The " + right_contents + " is less than the " + left_contents + "."][state+1];
             }            
         };
+        new_scale.set_name = undefined; // unlike boxes which re-use name for labels
         if (TT.debugging) {
             new_scale._debug_id = TT.UTILITIES.generate_unique_id();
             new_scale._debug_string = new_scale.to_debug_string();
