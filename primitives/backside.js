@@ -108,6 +108,13 @@ window.TOONTALK.backside =
                             // animate it becoming invisible
                             $backside_element.addClass("toontalk-animating-element");
                             $backside_element.css({opacity: 0});
+                            TT.UTILITIES.add_one_shot_event_handler(backside_element,
+                                                                    'transitionend',
+                                                                    2000,
+                                                                    function () {
+                                                                        widget.forget_backside();
+                            
+                                                                    });
                         } else {
                             do_after_closing();
                         }
