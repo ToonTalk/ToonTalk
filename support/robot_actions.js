@@ -48,6 +48,10 @@ window.TOONTALK.actions =
                 newly_created_widgets = [];
             };
             new_actions.add_step = function (step, new_widget) {
+                if (!step) {
+                    TT.UTILITIES.report_internal_error("Attempt to add an undefined step.");
+                    return;
+                }
                 steps.push(step);
                 if (new_widget) {
                     this.add_newly_created_widget_if_new(new_widget);
