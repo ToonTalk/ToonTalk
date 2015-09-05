@@ -317,6 +317,9 @@ window.TOONTALK.backside =
                     }
                 };
             }
+            backside.drop_on = function (side_of_other, event, robot) {
+                return side_of_other.widget_side_dropped_on_me(this, event, robot);
+            };
             backside.widget_side_dropped_on_me = 
                 function (side_of_other, event, robot, ignore_training) {
                     // event serves 2 functions: info for adjusting for scrolling and whether to update the display
