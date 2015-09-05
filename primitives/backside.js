@@ -1105,6 +1105,10 @@ window.TOONTALK.backside =
             return this.get_widget().is_of_type(type_name);
         },
 
+        is_top_level: function () {
+            return this.get_widget().is_top_level();
+        },
+
         is_hole: function () {
             return false;
         },
@@ -1126,6 +1130,12 @@ window.TOONTALK.backside =
 
         hide: function () {
             $(this.get_element()).hide();
+        },
+
+        drag_started: function (json, is_resource) {
+            if (this.robot_in_training()) {
+                this.robot_in_training().picked_up(this, json, is_resource);
+            }
         },
 
         get_json: function (json_history) {

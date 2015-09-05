@@ -733,42 +733,43 @@ window.TOONTALK.robot = (function (TT) {
             this.data_transfer = data_transferred_widget;
         }
     };
+
+    robot.ignore_pick_up_or_drop = function (other) {
+        return this === other.get_widget() || // robot picked up its frontside or backside  
+               other.is_top_level() ||
+               this.get_parent_of_frontside() === other; // just moving the context the robot is being trained in
+    };
     
-    robot.picked_up = function (widget, json, is_resource) {
-        var path, step, action_name, widget_copy, new_widget, additional_info, now;
-        if (this === widget) {
-            // robot picked up its frontside or backside -- so ignore this
-            return;
-        }
-        if (widget.is_top_level()) {
-            // doesn't make sense and easy to do by mistake
+    robot.picked_up = function (widget_side, json, is_resource) {
+        var path, step, action_name, widget_copy, new_widget_side, additional_info, now;
+        if (this.ignore_pick_up_or_drop(widget_side)) {
             return;
         }
         // current_action_name is used to distinguish between removing something from its container versus referring to it
-        if (widget.get_infinite_stack && widget.get_infinite_stack()) {
+        if (widget_side.get_infinite_stack && widget_side.get_infinite_stack()) {
             // does this cause an addition to newly created backside widgets?
             this.current_action_name = "pick up a copy of";
         } else {
             this.current_action_name = "pick up";
         }
         if (is_resource) {
-            new_widget = widget; // this widget was just created
+            new_widget_side = widget_side; // this widget_side was just created
             // robot needs a copy of the resource to avoid sharing it with training widget
-            widget_copy = widget.copy({fresh_copy: true});
+            widget_copy = widget_side.copy({fresh_copy: true});
             path = TT.path.get_path_to_resource(widget_copy);
         } else {
-            path = TT.path.get_path_to(widget, this);
+            path = TT.path.get_path_to(widget_side, this);
         }
         if (path) {
             now = Date.now();
             additional_info = {time: now-this.time_of_last_step};
             this.time_of_last_step = now;
             step = TT.robot_action.create(path, this.current_action_name, additional_info);
-            this.add_step(step, new_widget);
+            this.add_step(step, new_widget_side);
         }
-        widget.last_action = this.current_action_name;
+        widget_side.last_action = this.current_action_name;
         this.current_action_name = undefined;
-        this.set_thing_in_hand(widget);
+        this.set_thing_in_hand(widget_side);
         return step;
     };
     
@@ -778,8 +779,7 @@ window.TOONTALK.robot = (function (TT) {
             target_location, source_location,
             target_width, target_height, left_offset_fraction, top_offset_fraction,
             now;
-        if (this === source_widget) {
-            // robot dropped its frontside or backside -- so ignore this
+        if (this.ignore_pick_up_or_drop(source_widget)) {
             return;
         }
         if (this.get_parent_of_frontside() && this.get_parent_of_frontside().get_widget() === source_widget) {
