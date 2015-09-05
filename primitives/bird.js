@@ -1420,7 +1420,7 @@ window.TOONTALK.nest = (function (TT) {
                     if (this.getAttribute('toontalk_name') === old_name) {
                         // if some happen to have the same name (e.g. are in different backsides)
                         // then just some time wasted re-rendering them
-                        TT.UTILITIES.widget_of_element(this).rerender();
+                        TT.UTILITIES.widget_side_of_element(this).rerender();
                     }
                 });
             }
