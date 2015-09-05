@@ -356,9 +356,9 @@ window.TOONTALK.backside =
                         // We need to remove the front of side_of_other since it is being used as an anima-gadget
                         // This is not permanent since it can be recreated by removing the backside from this backside
                         other = side_of_other.get_widget();
-                        other.forget_backside();
+                        other.set_backside(undefined); // don't remove side_of_other
                         // following does too much if the widget knows its backside
-                        // so temporarily remove it
+                        // so temporarily removed
                         other.remove(event);
                         other.set_backside(side_of_other);
                     }
