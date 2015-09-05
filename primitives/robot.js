@@ -958,24 +958,24 @@ window.TOONTALK.robot = (function (TT) {
         var frontside = this.get_frontside(true);
         var backside = this.get_backside(); 
         var thing_in_hand = this.get_thing_in_hand();
-        var frontside_element, thing_in_hand_frontside_element;
+        var frontside_element, thing_in_hand_element;
         if (TT.debugging) {
             // this can't be done during robot creation since robot actions references to newly_created_widgets is premature
             this._debug_string = this.to_debug_string();
         }
         frontside_element = frontside.get_element();
         if (thing_in_hand) {
-            thing_in_hand_frontside_element = thing_in_hand.get_frontside_element();
+            thing_in_hand_element = thing_in_hand.get_element();
         }
-        if (!thing_in_hand_frontside_element && this.carrying_tool) {
-            thing_in_hand_frontside_element = document.createElement("div");
-            $(thing_in_hand_frontside_element).addClass(this.carrying_tool);
+        if (!thing_in_hand_element && this.carrying_tool) {
+            thing_in_hand_element = document.createElement("div");
+            $(thing_in_hand_element).addClass(this.carrying_tool);
         }
         TT.UTILITIES.give_tooltip(frontside_element, this.get_title());
         $(frontside_element).addClass("toontalk-robot");
         $(frontside_element).children(".toontalk-held-by-robot").remove(); // if needed will be added again below
-        if (thing_in_hand_frontside_element) {
-            frontside_element.appendChild(thing_in_hand_frontside_element);
+        if (thing_in_hand_element) {
+            frontside_element.appendChild(thing_in_hand_element);
         }
         if (this.match_status) {
             if (this.match_status.is_widget) { // didn't match
@@ -989,18 +989,18 @@ window.TOONTALK.robot = (function (TT) {
         TT.UTILITIES.set_timeout( // wait for layout to settle down
             function () {
                 var relative_left, relative_top, thing_in_hand_width, thing_in_hand_height, robot_width, robot_height, css;
-                if (thing_in_hand_frontside_element) {
+                if (thing_in_hand_element) {
                     css = {position: "absolute"};
                     // tried to add position: absolute to toontalk-held-by-robot CSS but didn't work
-                    $(thing_in_hand_frontside_element).addClass("toontalk-held-by-robot");
+                    $(thing_in_hand_element).addClass("toontalk-held-by-robot");
                     // compute where the thing should be to be centred over the robot
-                    thing_in_hand_width  = $(thing_in_hand_frontside_element).width();
-                    thing_in_hand_height = $(thing_in_hand_frontside_element).height();
+                    thing_in_hand_width  = $(thing_in_hand_element).width();
+                    thing_in_hand_height = $(thing_in_hand_element).height();
                     robot_width  = $(frontside_element).width();
                     robot_height = $(frontside_element).height();
                     if (thing_in_hand && thing_in_hand_width === 0) {
                         // could be holding a tool so thing_in_hand is undefined but 
-                        // thing_in_hand_frontside_element is the tool's element
+                        // thing_in_hand_element is the tool's element
                         if (thing_in_hand.get_default_width) {
                             thing_in_hand_width = thing_in_hand.get_default_width();
                         } else {
@@ -1018,7 +1018,7 @@ window.TOONTALK.robot = (function (TT) {
                     relative_top  = robot_height/4;
                     css.left = relative_left;
                     css.top  = relative_top;
-                    $(thing_in_hand_frontside_element).css(css);
+                    $(thing_in_hand_element).css(css);
                     if (thing_in_hand) {
                         thing_in_hand.rerender();
                     }
