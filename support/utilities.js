@@ -106,7 +106,7 @@ window.TOONTALK.UTILITIES =
         is_resource = dragee.is(".toontalk-top-level-resource");
         // should not wiggle if picked up
         $(element).removeClass("toontalk-wiggle");
-        if (widget_side.get_json || widget_side.is_backside()) {
+        if (widget_side.get_json) {
             json_object = utilities.get_json_top_level(widget_side);
             json_object.view.drag_x_offset = client_x-bounding_rectangle.left;
             json_object.view.drag_y_offset = client_y-bounding_rectangle.top;
@@ -382,7 +382,7 @@ window.TOONTALK.UTILITIES =
                 source_widget_side.robot_in_training().drop_from_data_transfer(source_widget_side);
             }
             $source = $(source_widget_side.get_element(true));
-            if (source_widget_side.is_backside()) {
+            if (source_widget_side.is_primary_backside && source_widget_side.is_primary_backside()) {
                 utilities.set_css($source,
                                   {width: json_object.view.backside_width,
                                    height: json_object.view.backside_height,
@@ -509,7 +509,7 @@ window.TOONTALK.UTILITIES =
                 // e.g. an element needs to know its position attributes
                 source_widget_side.set_location_attributes(left, top);
             }
-            if (json_object && json_object.semantic.running && !utilities.get_dragee()) {
+            if (json_object && json_object.semantic && json_object.semantic.running && !utilities.get_dragee()) {
                 // JSON was dropped here from outside so if was running before should be here
                 // but not if just a local move
                 source_widget_side.set_running(true);
@@ -1043,7 +1043,7 @@ window.TOONTALK.UTILITIES =
                     return; // leave it undefined
                 }
                 try {
-                    if (widget_side.is_backside && widget_side.is_backside()) {
+                    if (widget_side.is_primary_backside && widget_side.is_primary_backside()) {
                         json[index] = {widget: utilities.get_json(widget_side.get_widget(), json_history),
                                        is_backside: true};
                     } else if (widget_side.get_type_name) {
@@ -1066,9 +1066,9 @@ window.TOONTALK.UTILITIES =
                     json_of_widgets_encountered: []};
         };
         
-        utilities.get_json_top_level = function (widget) {
+        utilities.get_json_top_level = function (widget_side) {
             var json_history = this.fresh_json_history();
-            var json = utilities.get_json(widget, json_history);
+            var json = utilities.get_json(widget_side, json_history);
             if (json_history.shared_widgets.length > 0) {
                 json.shared_widgets = json_history.shared_widgets.map(function (shared_widget, widget_index) {
                     // get the JSON of only those widgets that occurred more than once
@@ -1080,7 +1080,7 @@ window.TOONTALK.UTILITIES =
                         return get_json_of_widget_from_history(json_history.shared_widgets[index]);
                     }
                     var json_of_widget = get_json_of_widget_from_history(shared_widget);
-                    if (widget === shared_widget) {
+                    if (widget_side === shared_widget) {
                         // top-level widget itself is shared_widget_index
                         // return shallow clone of json_of_widget since don't want to create circularity via shared_widgets
                         json_of_widget = {semantic: json_of_widget.semantic,
@@ -1104,32 +1104,39 @@ window.TOONTALK.UTILITIES =
             return json;
         };
         
-        utilities.get_json = function (widget, json_history) {
-            var index, widget_json, is_backside;
+        utilities.get_json = function (widget_side, json_history) {
+            var index, widget_json, is_primary_backside;
             if (TT.debugging && !json_history) {
                 utilities.report_internal_error("no json_history");
             }
-            index = json_history.shared_widgets.indexOf(widget);
+            index = json_history.shared_widgets.indexOf(widget_side);
             if (index >= 0) {
                 return {shared_widget_index: index};
             }
-            index = json_history.widgets_encountered.indexOf(widget);
+            index = json_history.widgets_encountered.indexOf(widget_side);
             if (index >= 0) {
                 // need to process children before ancestors when generating the final JSON
-                index = utilities.insert_ancestors_last(widget, json_history.shared_widgets);
+                index = utilities.insert_ancestors_last(widget_side, json_history.shared_widgets);
                 return {shared_widget_index: index};
             }
             // need to keep track of the index rather than push json_of_widgets_encountered to keep them aligned properly
-            index = json_history.widgets_encountered.push(widget)-1;
-            is_backside = widget.is_backside();
-            widget = widget.get_widget(); // ignore which side it was
-            widget_json = widget.get_json(json_history);
-            widget_json = widget.add_to_json(widget_json, json_history);
-            widget_json.view.backside = is_backside;
-            // need to push the widget on the list before computing the backside widget's jSON in case there is a cycle
+            index = json_history.widgets_encountered.push(widget_side)-1;
+            is_primary_backside = widget_side.is_primary_backside && widget_side.is_primary_backside();
+            if (is_primary_backside) {
+                // save as widget with a flag that is the backside
+                widget_side = widget_side.get_widget();
+            }
+            widget_json = widget_side.get_json(json_history);
+            if (widget_side.add_to_json) {
+                widget_json = widget_side.add_to_json(widget_json, json_history);
+            }
+            if (is_primary_backside) {
+                widget_json.view.backside = true;
+            }
+            // need to push the widget on the list before computing the backside widgets'' jSON in case there is a cycle
             json_history.json_of_widgets_encountered[index] = widget_json;
-            if (widget.add_backside_widgets_to_json) {
-                widget.add_backside_widgets_to_json(widget_json, json_history);
+            if (widget_side.add_backside_widgets_to_json) {
+                widget_side.add_backside_widgets_to_json(widget_json, json_history);
             }
             return widget_json;
         };

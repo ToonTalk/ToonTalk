@@ -545,7 +545,13 @@ window.TOONTALK.backside =
                 original_y_scale = y_scale;  
             };
             backside.restore_dimensions = function () {
-                this.scale_backside(this.get_element(true), original_x_scale || x_scale, original_y_scale || y_scale, original_width, original_height);
+                if (original_x_scale) {
+                    x_scale = original_x_scale;
+                }
+                if (original_y_scale) {
+                    y_scale = original_y_scale;
+                }
+                this.scale_backside(this.get_element(true), x_scale, y_scale, original_width, original_height);
                 // not clear why these input areas lose their JQuery UI attributes -- e.g. when delivered by a sensor bird
                 $(".toontalk-text-area, .toontalk-radio-button, .toontalk-text-input").button();
             };
@@ -1085,10 +1091,40 @@ window.TOONTALK.backside =
         },
 
         // TODO: more is_* and return false
+
         save_dimensions: function () {
             // TODO: later support robots moving around backsides
             return false;
+        },
+
+        get_json: function (json_history) {
+            var dimensions = this.get_backside_dimensions();
+            var position = $(this.get_element()).position();
+            var css;
+            if (dimensions) {
+                css = {width:  dimensions.original_width,
+                       height: dimensions.original_height,
+                       transform: "scale(" + dimensions.x_scale + ", " + dimensions.y_scale + ")",
+                       "transform-origin": "left top 0px",
+                       left: position.left,
+                       top:  position.top};
+            } else {
+                css = position;
+            }
+            return {type: "backside",
+                    my_widget: TT.UTILITIES.get_json(this.get_widget(), json_history),
+                    css: css,
+                    view: {}};
         }
 
     };
+    
 }(window.TOONTALK));
+
+TOONTALK.creators_from_json['backside'] = function (json, additional_info) {
+    var widget = TOONTALK.UTILITIES.create_from_json(json.my_widget, additional_info);
+    var backside = widget.create_backside();
+    var backside_element = backside.get_element();
+    TOONTALK.UTILITIES.set_css(backside_element, json.css);
+    return backside;
+};
