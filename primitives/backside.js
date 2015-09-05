@@ -870,8 +870,12 @@ window.TOONTALK.backside =
                                                                      function () {
                                                                          this.remove();
                                                                          widget.remove();
+                                                                         if (widget.robot_in_training()) {
+                                                                             widget.robot_in_training().button_clicked(".toontalk-remove-backside-and-widget-buttton", widget);        
+                                                                         }
                                                                      }.bind(this));
                 $create_remove_widget_button.attr('title', "Click to remove this " + widget.get_type_name() + " and its backside.");
+                $create_remove_widget_button.addClass("toontalk-remove-backside-and-widget-buttton");
                 TT.UTILITIES.use_custom_tooltip($create_remove_widget_button.get(0));
                 settings.appendChild($create_remove_widget_button.get(0));
             }
@@ -1001,7 +1005,7 @@ window.TOONTALK.backside =
                     backside.set_advanced_settings_showing(settings_showing, backside.get_element(), $settings_button);
                     event.stopPropagation();
                     if (widget.robot_in_training()) {
-                        widget.robot_in_training().button_clicked(".toontalk-settings-backside-button", backside);   
+                        widget.robot_in_training().button_clicked(".toontalk-settings-backside-button", widget);   
                     }
                 };
             buuton.innerHTML = '&gt;';
@@ -1096,10 +1100,15 @@ window.TOONTALK.backside =
         match: function (other) {
             // matches if both are backsides and corresponding widgets match
             if (other.is_backside()) {
-                return this.get_widget().match(other.get_widget);
+                return this.get_widget().match(other.get_widget());
             }
             other.last_match = this;
             return other;
+        },
+
+        get_backside: function () {
+            // e.g. a path to the backside of a widget and already have the backside
+            return this;
         },
 
         copy: function () {
