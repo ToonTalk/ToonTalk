@@ -744,10 +744,6 @@ window.TOONTALK.robot = (function (TT) {
             // doesn't make sense and easy to do by mistake
             return;
         }
-        if (json && json.view.backside) {
-            // at least for now ignore picking up of the backside of a widget
-            return;
-        }
         // current_action_name is used to distinguish between removing something from its container versus referring to it
         if (widget.get_infinite_stack && widget.get_infinite_stack()) {
             // does this cause an addition to newly created backside widgets?
