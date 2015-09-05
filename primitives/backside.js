@@ -657,6 +657,10 @@ window.TOONTALK.backside =
         toString: function () {
             return "backside of " + this.get_widget();
         },
+
+        get_full_description: function (to_string_info) {
+            return "backside of " + this.get_widget().get_full_description(to_string_info);
+        },
                 
         remove_element: function () {
             $(this.get_element()).remove();
@@ -933,11 +937,9 @@ window.TOONTALK.backside =
                 var backside_dimensions = this.get_backside_dimensions();
                 var x_scale = backside_dimensions ? backside_dimensions.x_scale : 1;
                 var y_scale = backside_dimensions ? backside_dimensions.y_scale : 1;
-                var backside_widget_side_element;
                 backside_widgets.forEach(function (backside_widget_side, index) {
-                    var backside_widget = backside_widget_side.get_widget();
+                    var backside_widget_side_element = backside_widget_side.get_element();
                     var position;
-                    backside_widget_side_element = backside_widget_side.get_element();
                     if (backside_widget_side_element) {
                         if (!backside_widgets_json_views[index]) {
                             backside_widgets_json_views[index] = {};
@@ -981,7 +983,7 @@ window.TOONTALK.backside =
             }
             if (widget.get_backside_widgets()) {
                 widget.get_backside_widgets().forEach(function (widget_side) {
-                        widget_side.set_visible(false);
+                                                          widget_side.set_visible(false);
                 });
             }
             if (widget.on_backside_hidden) {
@@ -1089,6 +1091,15 @@ window.TOONTALK.backside =
                    $(backside_element).remove();
                 }
             }
+        },
+
+        match: function (other) {
+            // matches if both are backsides and corresponding widgets match
+            if (other.is_backside()) {
+                return this.get_widget().match(other.get_widget);
+            }
+            other.last_match = this;
+            return other;
         },
 
         copy: function () {
