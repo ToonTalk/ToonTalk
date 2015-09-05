@@ -1018,11 +1018,19 @@ window.TOONTALK.widget = (function (TT) {
                 var backside_widgets = [];
 
                 widget.get_backside_widgets = function () {
+                    // TODO: callers no longer need check if each element is defined since add_backside_widget checks now
                     return backside_widgets;
                 };
 
                 widget.add_backside_widget = function (widget_side) {
-                    var backside = this.get_backside(true);
+                    var backside;
+                    if (!widget_side) {
+                        if (TT.debugging) {
+                           TT.UTILITIES.report_internal_error("adding undefined to back side widgets.");
+                        }
+                        return;
+                    }
+                    backside = this.get_backside(true);
                     if (TT.debugging && widget_side === this) {
                         TT.UTILITIES.report_internal_error("Adding a widget to a list of its backside widgets!");
                         return;
