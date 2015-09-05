@@ -555,6 +555,11 @@ window.TOONTALK.backside =
             };
             backside.restore_dimensions = function () {
                 var backside_element = this.get_element();
+                if (!this.is_primary_backside()) {
+                     // not very general but is what one normally wants
+                     original_x_scale = 1;
+                     original_y_scale = 1;
+                }
                 if (original_x_scale) {
                     x_scale = original_x_scale;
                 }
