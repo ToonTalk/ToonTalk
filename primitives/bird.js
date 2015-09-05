@@ -730,7 +730,7 @@ window.TOONTALK.nest = (function (TT) {
         };
         new_nest.matched_by = function (other) {
             if (contents.length > 0) {
-                return TT.UTILITIES.match(other, contents[0].get_widget());
+                return TT.UTILITIES.match(other, contents[0]);
             } else {
                 // suspend on this nest -- other is reported for help providing useful feedback
                 return [[this, other]];
