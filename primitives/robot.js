@@ -1069,6 +1069,9 @@ window.TOONTALK.robot = (function (TT) {
         if (to_string_info && to_string_info.role === "conditions") {
             return "any robot";
         }
+        if (to_string_info && to_string_info.role === "match_status") {
+            return "robot " + this.get_name();
+        }
         frontside_conditions = this.get_frontside_conditions();
         if (!frontside_conditions) {
             return "an untrained robot";
@@ -1157,7 +1160,7 @@ window.TOONTALK.robot = (function (TT) {
                         }
                     }.bind(this));
                 }
-                robot_description = "I'm not running because the " + this.match_status + 
+                robot_description = "I'm not running because the " + this.match_status.toString({role: "match_status"}) + 
                                    " (highlighted in red on my backside) that I'm expecting doesn't match " + mismatch_description + ". Perhaps editing my conditions will help.\n" + 
                                    robot_description;
             } else if (this.match_status !== 'matched') {
