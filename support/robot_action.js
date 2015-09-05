@@ -772,6 +772,9 @@ window.TOONTALK.robot_action =
                     case ".toontalk-show-attributes-chooser-button":
                         action_description = "click the button to add or remove attributes of ";
                         break;
+                    case ".toontalk-remove-backside-and-widget-buttton":
+                        action_description = "click the button to remove the back and front of ";
+                        break;
                     default:
                         action_description = "click a button of";
                         break;
