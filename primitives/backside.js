@@ -542,6 +542,8 @@ window.TOONTALK.backside =
             };
             backside.restore_dimensions = function () {
                 this.scale_backside(this.get_element(true), original_x_scale || x_scale, original_y_scale || y_scale, original_width, original_height);
+                // not clear why these input areas lose their JQuery UI attributes -- e.g. when delivered by a sensor bird
+                $(".toontalk-text-area, .toontalk-radio-button, .toontalk-text-input").button();
             };
             if (TT.debugging || TT.logging) {
                 backside.to_debug_string = function () {
