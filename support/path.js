@@ -43,7 +43,7 @@ window.TOONTALK.path =
                 var context = robot.get_training_context();
                 var body = robot.get_body();
                 var path, sub_path, widget_type, is_backside, robot_ancestor;
-                if (widget.is_backside()) {
+                if (widget.is_primary_backside && widget.is_primary_backside()) {
                     is_backside = true;
                     widget = widget.get_widget();
                 }
