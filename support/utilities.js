@@ -116,12 +116,9 @@ window.TOONTALK.UTILITIES =
                     json_object.view.frontside_height = dragee.height();
                 }
             }
-            if (dragee.is(".toontalk-backside")) {
-                json_object.view.backside = true;
-            }
             dragee.data("json", json_object);   
             if (event.dataTransfer) {
-                json_div = utilities.toontalk_json_div(json_object, widget_side.get_widget());
+                json_div = utilities.toontalk_json_div(json_object, widget_side);
                 event.dataTransfer.effectAllowed = is_resource ? 'copy' : 'move';
                 // text is good for dragging to text editors
                 event.dataTransfer.setData("text", json_div);
@@ -184,7 +181,7 @@ window.TOONTALK.UTILITIES =
         var insert_widget_in_editable_text = function (json_object, event) {
             var widget = utilities.create_from_json(json_object);
             var top_level_element = document.createElement('div');
-            var json_object_element = json_object.view.backside ? widget.get_backside_element(true) : widget.get_frontside_element(true);
+            var json_object_element = widget.get_element(true);
             var $current_editable_text = $(element).closest(".toontalk-edit");
             var editable_text = TT.published_support.create_editable_text();
             var child_target = event.target;
@@ -838,7 +835,7 @@ window.TOONTALK.UTILITIES =
                 }    
                 return widget;   
             };
-            var widget, side_element, backside_widgets, json_semantic, json_view, size_css, json_of_shared_widget, shared_widget;
+            var widget_side, side_element, backside_widgets, json_semantic, json_view, size_css, json_of_shared_widget, shared_widget;
             if (!json) {
                 // was undefined and still is
                 return;
@@ -859,11 +856,11 @@ window.TOONTALK.UTILITIES =
             }
             if (json.widget) {
                 // is a context where need to know which side of the widget
-                widget = utilities.create_from_json(json.widget, additional_info);
-                if (widget && json.is_backside) { // is there both json.is_backside and json.view.backside????
-                    return widget.get_backside(true);
+                widget_side = utilities.create_from_json(json.widget, additional_info);
+                if (widget_side && json.is_backside) { 
+                    return widget_side.get_backside(true);
                 }
-                return widget;
+                return widget_side;
             }
             if (additional_info && additional_info.shared_widgets && json.shared_widget_index >= 0) {
                 shared_widget = additional_info.shared_widgets[json.shared_widget_index];
@@ -886,18 +883,18 @@ window.TOONTALK.UTILITIES =
                 // if this is encountered again recursively will discover the JSON with shared_widget_index
 //                 additional_info.shared_widgets[json.shared_widget_index] = json;
                 // following postpones creation of backside widgets to deal with cycles
-                widget = utilities.create_from_json(json_of_shared_widget, additional_info, true);
+                widget_side = utilities.create_from_json(json_of_shared_widget, additional_info, true);
 //                 if (additional_info.cyclic_widgets_json && typeof json_of_shared_widget.shared_widget_index === 'undefined') {
 //                     if (additional_info.cyclic_widgets_json.indexOf(json) >= 0) {
-//                         // contains cyclic references so make json into the widget
-//                         // clobber json to have all the (deep) properties of the widget
-//                         $.extend(true, json, widget);
+//                         // contains cyclic references so make json into the widget_side
+//                         // clobber json to have all the (deep) properties of the widget_side
+//                         $.extend(true, json, widget_side);
 //                         json.shared_widget_index = undefined;
 //                         // all references shared including the top-level one
-//                         widget = json;
+//                         widget_side = json;
 //                     }
 //                 }
-                return handle_delayed_backside_widgets(widget, additional_info, json.shared_widget_index);
+                return handle_delayed_backside_widgets(widget_side, additional_info, json.shared_widget_index);
             }
             json_semantic = json.semantic;
             if (!json_semantic) {
@@ -910,8 +907,8 @@ window.TOONTALK.UTILITIES =
                     utilities.report_internal_error("JSON refers to shared widgets but they can't be found. Sorry.");
                     return;
                 }
-                widget = utilities.create_from_json(additional_info.json_of_shared_widgets[json_semantic.shared_widget_index], additional_info, true);
-                return handle_delayed_backside_widgets(widget, additional_info, json_semantic.shared_widget_index);
+                widget_side = utilities.create_from_json(additional_info.json_of_shared_widgets[json_semantic.shared_widget_index], additional_info, true);
+                return handle_delayed_backside_widgets(widget_side, additional_info, json_semantic.shared_widget_index);
             } else if (TT.creators_from_json[json_semantic.type]) {
                 if (!additional_info) {
                     additional_info = {};
@@ -922,42 +919,42 @@ window.TOONTALK.UTILITIES =
                     json_view = additional_info.json_view;
                 }
                 try {
-                    widget = TT.creators_from_json[json_semantic.type](json_semantic, additional_info);
+                    widget_side = TT.creators_from_json[json_semantic.type](json_semantic, additional_info);
                 } catch (e) {
                     console.error(e.stack);
                     utilities.report_internal_error("Unable to recreate a " + json_semantic.type + ". Error is " + e); 
                 }
                // following was needed when get_json_top_level wasn't working properly
 //             } else if (json_semantic.shared_widget_index >= 0) {
-//                 widget = additional_info.shared_widgets[json_semantic.shared_widget_index];
-//                 if (!widget) {
+//                 widget_side = additional_info.shared_widgets[json_semantic.shared_widget_index];
+//                 if (!widget_side) {
 //                     // try again with the JSON of the shared widget
-//                     widget = utilities.create_from_json(additional_info.json_of_shared_widgets[json_semantic.shared_widget_index], additional_info);
+//                     widget_side = utilities.create_from_json(additional_info.json_of_shared_widgets[json_semantic.shared_widget_index], additional_info);
 //                 }
             } else {
                 utilities.report_internal_error("JSON type '" + json_semantic.type + "' not supported. Perhaps a JavaScript file implementing it is missing.");
                 return;
             }
-            if (widget && widget.get_backside) {
-                // widget may be a robot body or some other part of a widget
+            if (widget_side && widget_side.get_backside) {
+                // widget_side may be a robot body or some other part of a widget
                 if (json_semantic.erased) {
-                    TT.widget.erasable(widget);
-                    widget.set_erased(json_semantic.erased);
+                    TT.widget.erasable(widget_side);
+                    widget_side.set_erased(json_semantic.erased);
                 }
                 if (json_semantic.infinite_stack) {
-                    widget.set_infinite_stack(json_semantic.infinite_stack);
+                    widget_side.set_infinite_stack(json_semantic.infinite_stack);
                 }
                 if (json_view) {
                     if (json_view.frontside_width) {
-                        side_element = json_view.backside ? widget.get_backside(true).get_element() : widget.get_frontside_element();
+                        side_element = widget_side.get_element();
                         if (side_element) {
-                            if (widget.ok_to_set_dimensions()) {
+                            if (widget_side.ok_to_set_dimensions()) {
                                 // plain text elements don't need explicit width or height
                                 size_css = {width:  json_view.frontside_width,
                                             height: json_view.frontside_height};
                                 if (json_semantic.type === 'element') {
                                     // delay until updated
-                                    widget.on_update_display(function () {
+                                    widget_side.on_update_display(function () {
                                                                  utilities.set_css(side_element, size_css);
                                                              });
                                 } else {
@@ -965,49 +962,49 @@ window.TOONTALK.UTILITIES =
                                 }
                             }
                         } else if (!json_view.saved_width) {
-                            // save the size until element is created (if this widget is ever viewed)
-                            widget.saved_width =  json_view.frontside_width;
-                            widget.saved_height = json_view.frontside_height;
+                            // save the size until element is created (if this widget_side is ever viewed)
+                            widget_side.saved_width =  json_view.frontside_width;
+                            widget_side.saved_height = json_view.frontside_height;
                         }
                     }
                     if (json_view.saved_width) {
-                        widget.saved_width =  json_view.saved_width;
-                        widget.saved_height = json_view.saved_height;
+                        widget_side.saved_width =  json_view.saved_width;
+                        widget_side.saved_height = json_view.saved_height;
                     }
                     if (json_view.backside_geometry) {
-                        widget.backside_geometry = json_view.backside_geometry;                    
+                        widget_side.backside_geometry = json_view.backside_geometry;                    
                     }
                 }
                 if (json_semantic.backside_widgets) {
                     if (delay_backside_widgets) {
                         // caller will call this 
-                        widget.finish_create_from_json_continuation = function () {
-                            this.add_backside_widgets_from_json(widget, json_semantic.backside_widgets, additional_info);  
+                        widget_side.finish_create_from_json_continuation = function () {
+                            this.add_backside_widgets_from_json(widget_side, json_semantic.backside_widgets, additional_info);  
                         }.bind(this);
                     } else {
-                        this.add_backside_widgets_from_json(widget, json_semantic.backside_widgets, additional_info);
+                        this.add_backside_widgets_from_json(widget_side, json_semantic.backside_widgets, additional_info);
                     }
                 }
             }
-            return widget;
+            return widget_side;
         };
 
-        utilities.add_backside_widgets_from_json = function (widget, json_semantic_backside_widgets, additional_info) {
+        utilities.add_backside_widgets_from_json = function (widget_side, json_semantic_backside_widgets, additional_info) {
             var backside_widgets;
             if (!json_semantic_backside_widgets) {
                 return;
             }
-            if (!widget.is_top_level()) {
+            if (!widget_side.is_top_level()) {
                 // the backside widgets need to know parent to be
                 // since they may be called recursively maintain a stack of them
                 if (additional_info.to_be_on_backside_of) {
-                    additional_info.to_be_on_backside_of.push(widget);
+                    additional_info.to_be_on_backside_of.push(widget_side);
                 } else {
-                    additional_info.to_be_on_backside_of = [widget];    
+                    additional_info.to_be_on_backside_of = [widget_side];    
                 }
             }
             backside_widgets = this.create_array_from_json(json_semantic_backside_widgets, additional_info);
-            widget.set_backside_widgets(backside_widgets, 
+            widget_side.set_backside_widgets(backside_widgets, 
                                         json_semantic_backside_widgets.map(
                                             function (json) {
                                                 if (!json) {
@@ -1018,7 +1015,7 @@ window.TOONTALK.UTILITIES =
                                                 }
                                                 return json.widget.view; 
                                          }));
-            if (!widget.is_top_level()) {
+            if (!widget_side.is_top_level()) {
                 additional_info.to_be_on_backside_of.pop();
             }
         };
@@ -1131,9 +1128,6 @@ window.TOONTALK.UTILITIES =
             if (widget_side.add_to_json) {
                 widget_json = widget_side.add_to_json(widget_json, json_history);
             }
-            if (is_primary_backside) {
-                widget_json.view.backside = true;
-            }
             // need to push the widget on the list before computing the backside widgets'' jSON in case there is a cycle
             json_history.json_of_widgets_encountered[index] = widget_json;
             if (widget_side.add_backside_widgets_to_json) {
@@ -1235,16 +1229,16 @@ window.TOONTALK.UTILITIES =
             return insertion_index;
         };
 
-        utilities.toontalk_json_div = function (json, widget) {
+        utilities.toontalk_json_div = function (json, widget_side) {
             // convenience for dragging into documents (e.g. Word or WordPad -- not sure what else)
             // also for publishing to the cloud
-            var is_backside = json.view.backside;
+            var widget = widget_side.get_widget();
             var backside_widgets = widget.get_backside_widgets();
             var type_description = widget.get_type_name();
             var title = widget.toString({for_json_div: true});
             var data_image_start, data_image_end;
             if (type_description === 'top-level') {
-                if (is_backside) {
+                if (widget_side.is_backside()) {
                     // drag and drop should not preserve current settings
                     // they are part of the JSON for when saving the current state to the cloud or local storage
                     json.semantic.settings = undefined;
@@ -1273,7 +1267,7 @@ window.TOONTALK.UTILITIES =
                 }
             } else {
                 type_description = utilities.add_a_or_an(type_description);
-                if (is_backside) {
+                if (widget_side.is_backside()) {
                     type_description = "the back of " + type_description;
                 }
             }
