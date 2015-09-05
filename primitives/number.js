@@ -1272,6 +1272,15 @@ window.TOONTALK.number_backside =
                 $(format_set).buttonset();
                 $(operator_set).buttonset();
             };
+            TT.UTILITIES.when_attached(backside_element,
+                                       function () {
+                                           if (!backside.is_primary_backside()) {
+                                               // primary backsides update when frontside does
+                                               number.add_listener('value_changed', function () {
+                                                     backside.rerender();
+                                                 });
+                                           }
+                                       });            
             return backside;
         }
 
