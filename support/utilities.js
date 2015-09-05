@@ -266,7 +266,8 @@ window.TOONTALK.UTILITIES =
         utilities.remove_highlight();
         target_widget_side = utilities.widget_side_of_jquery($target);
         if ($source && $source.length > 0 &&
-            !(target_widget_side && target_widget_side.get_widget().get_infinite_stack && target_widget_side.get_widget().get_infinite_stack()) && // OK to drop on infinite stack since will become a copy
+            // OK to drop on infinite stack since will become a copy
+            !(target_widget_side && target_widget_side.get_widget().get_infinite_stack && target_widget_side.get_widget().get_infinite_stack()) &&
             ($source.get(0) === $target.get(0) || jQuery.contains($source.get(0), $target.get(0)))) {
             if ($source.is(".toontalk-top-level-backside")) {
                 return; // let event propagate since this doesn't make sense

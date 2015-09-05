@@ -350,9 +350,11 @@ window.TOONTALK.backside =
                              widget.robot_in_training().dropped_on(side_of_other, this, event); 
                         }.bind(this)) ;      
                     }
-                    if (side_of_other.is_backside() && !this.get_widget().is_top_level()) {
-                        // remove other since its backside is on another backside (other than top-level) 
-                        // can be recreated by removing backside from this backside
+                    if (side_of_other.is_backside() && side_of_other.get_widget().is_element() && widget.is_element()) {
+                        // When an element backside is dropped on another element backside it is treated as an "anima-gadget"
+                        // where its properties apply to the widget whose back it was dropped on
+                        // We need to remove the front of side_of_other since it is being used as an anima-gadget
+                        // This is not permanent since it can be recreated by removing the backside from this backside
                         other = side_of_other.get_widget();
                         other.forget_backside();
                         // following does too much if the widget knows its backside
