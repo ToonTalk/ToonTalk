@@ -322,8 +322,8 @@ window.TOONTALK.bird = (function (TT) {
                            (starting_top  || bird_offset.top -top_level_backside_element_bounding_box.top) + 
                             " to " + target_offset.left + ", " + target_offset.top);
             }
-            nest_contents_frontside_element = nest_recieving_message.get_contents_frontside_element &&
-                                              nest_recieving_message.get_contents_frontside_element();
+            nest_contents_frontside_element = nest_recieving_message.get_contents_element &&
+                                              nest_recieving_message.get_contents_element();
             if (nest_contents_frontside_element && nest_recieving_message.visible() &&
                 (!robot || robot.animate_consequences_of_actions())) {
                 // just fly to nest and return if unwatched robot caused this
@@ -806,11 +806,11 @@ window.TOONTALK.nest = (function (TT) {
                 }
                 widget_side.set_visible(nest_visible);
                 if (!nest_visible) {
-                    widget_side.get_widget().hide();
+                    widget_side.hide();
                 }
             } else {
                 // is under the top widget
-                widget_side.get_widget().hide();
+                widget_side.hide();
                 widget_side.set_visible(false);
             }
             if (widget_side.is_backside()) {
@@ -870,9 +870,9 @@ window.TOONTALK.nest = (function (TT) {
                });
             }
         };
-        new_nest.get_contents_frontside_element = function () {
+        new_nest.get_contents_element = function () {
             if (contents.length > 0) {
-                return contents[0].get_widget().get_frontside_element();
+                return contents[0].get_element();
             }
         };
         new_nest.get_locked = function () {
@@ -991,7 +991,8 @@ window.TOONTALK.nest = (function (TT) {
             if (path_to_nest.next) {
                 return contents[0].get_widget().dereference_path(path_to_nest.next, top_level_context, robot);
             }
-            return contents[0].get_widget();         
+            // TODO: determine if this should just be return contents[0]
+            return contents[0].get_widget();
         };
         // defined here so that contents and other state can be private
         new_nest.get_json = function (json_history) {
@@ -1021,7 +1022,7 @@ window.TOONTALK.nest = (function (TT) {
             var contents_copy, copy, top_content_copy, new_original_nest, new_original_nest_guid;
             if (parameters && parameters.just_value) {
                 if (contents.length > 0) {
-                    top_content_copy = contents[0].get_widget().copy(parameters);
+                    top_content_copy = contents[0].copy(parameters);
                     if (!parameters.copy_covered_nests) {
                         return top_content_copy;
                     }
@@ -1215,7 +1216,7 @@ window.TOONTALK.nest = (function (TT) {
                     this.robot_in_training().dropped_on(side_of_other, this);
                 }
             } else {
-                side_of_other.drop_on(contents[0].get_widget(), event, robot)
+                side_of_other.drop_on(contents[0], event, robot)
             }
             return true;
         };
@@ -1360,7 +1361,7 @@ window.TOONTALK.nest = (function (TT) {
             };
         };
         new_nest.top_contents_is = function (other) {
-            return contents.length > 0 && contents[0].get_widget() === other;
+            return contents.length > 0 && contents[0] === other;
         };
         new_nest.any_nest_copies_visible = function () {
             var found_one = false;

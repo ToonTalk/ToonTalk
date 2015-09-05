@@ -1097,6 +1097,14 @@ window.TOONTALK.backside =
             return false;
         },
 
+        show: function () {
+            $(this.get_element()).show();
+        },
+
+        hide: function () {
+            $(this.get_element()).hide();
+        },
+
         get_json: function (json_history) {
             var dimensions = this.get_backside_dimensions();
             var position = $(this.get_element()).position();
