@@ -176,7 +176,7 @@ window.TOONTALK.backside =
                 } else {
                     close_title = "the " + widget.get_type_name();
                 }
-                close_title = "Click to hide this back side of " + close_title + ".";
+                close_title = "Click to remove this back side of " + close_title + ".";
                 close_button = TT.UTILITIES.create_close_button(close_handler, close_title);
                 backside_element.appendChild(close_button);
             }
