@@ -497,10 +497,14 @@ window.TOONTALK.backside =
                                             green_flag_width = $(green_flag_element).width();
                                             if (help_button) {          
                                                 $(help_button).css({right: close_button_width+sign_width+green_flag_width+12});
+                                                TT.UTILITIES.use_custom_tooltip(help_button);
                                             }
                                             if (settings_button) {
                                                 help_button_width = $(help_button).width() || 0;
                                                 $(settings_button).css({right: close_button_width+sign_width+green_flag_width+help_button_width+12});
+                                            }
+                                            if (close_button) {
+                                                TT.UTILITIES.use_custom_tooltip(close_button);
                                             }
                                        });
 //             backside.update_flag_and_sign_position = function (call_count) {
@@ -545,15 +549,20 @@ window.TOONTALK.backside =
                 original_y_scale = y_scale;  
             };
             backside.restore_dimensions = function () {
+                var backside_element = this.get_element();
                 if (original_x_scale) {
                     x_scale = original_x_scale;
                 }
                 if (original_y_scale) {
                     y_scale = original_y_scale;
                 }
-                this.scale_backside(this.get_element(true), x_scale, y_scale, original_width, original_height);
+                this.scale_backside(backside_element, x_scale, y_scale, original_width, original_height);
                 // not clear why these input areas lose their JQuery UI attributes -- e.g. when delivered by a sensor bird
                 $(".toontalk-text-area, .toontalk-radio-button, .toontalk-text-input").button();
+                // also not clear why the custom tooltips disappear
+                $(backside_element).find("[title]").each(function (index, element) {
+                                                             TT.UTILITIES.use_custom_tooltip(element);
+	            });
             };
             if (TT.debugging || TT.logging) {
                 backside.to_debug_string = function () {
@@ -773,10 +782,11 @@ window.TOONTALK.backside =
         add_advanced_settings: function () {
             // advanced options not visible by default
             var widget = this.get_widget();
-            var check_box = this.create_infinite_stack_check_box(this, widget);
+            var infinite_stack_check_box = this.create_infinite_stack_check_box(this, widget);
             var type_name = widget.get_type_name();
             var $make_sensor_nest_button   = $("<button>Make a sensor nest</button>")  .button();
             var $make_function_bird_button = $("<button>Make a function bird</button>").button();
+            var $create_remove_widget_button;
             var settings = document.createElement("table");
             var backside_element = this.get_element();
             var add_new_widget_to_backside = function (new_widget, $button) {
@@ -847,7 +857,20 @@ window.TOONTALK.backside =
             if (widget.set_name && !this.get_name_text_input()) {
                 this.add_name_setting(settings);
             }
-            settings.appendChild(TT.UTILITIES.create_row($make_sensor_nest_button.get(0), $make_function_bird_button.get(0), check_box.container));
+            settings.appendChild(TT.UTILITIES.create_row($make_sensor_nest_button.get(0), $make_function_bird_button.get(0), infinite_stack_check_box.container));
+            if (!this.is_primary_backside()) {
+                $create_remove_widget_button = $("<button>Remove me and my widget</button>").button();
+                $create_remove_widget_button.get(0).addEventListener('click',
+                                                                     function () {
+                                                                         this.remove();
+                                                                         widget.remove();
+                                                                     }.bind(this));
+                $create_remove_widget_button.attr('title', "Click to remove this " + widget.get_type_name() + " and its backside.");
+                TT.UTILITIES.use_custom_tooltip($create_remove_widget_button.get(0));
+                settings.appendChild($create_remove_widget_button.get(0));
+            }
+            TT.UTILITIES.use_custom_tooltip($make_sensor_nest_button.get(0));
+            TT.UTILITIES.use_custom_tooltip($make_function_bird_button.get(0));
             backside_element.appendChild(settings);
         },
 
