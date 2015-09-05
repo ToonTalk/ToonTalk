@@ -829,9 +829,13 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
 
     element.widget_side_dropped_on_me = function (side_of_other, event, robot) {
         // TODO: involve Bammer the Mouse if being watched
-        // TODO: decide if this really is a good idea -- worked pretty well in the Desktop version 
-        // to use erased widgets for type coercion
+        // TODO: use erased widgets for type coercion
         if (side_of_other.is_backside()) {
+            return false;
+        }
+        if (!side_of_other.is_element() && !side_of_other.is_number()) {
+            // numbers can become more "element" like when on another element -- e.g. the score
+            // TODO: render numbers on top of elements differently
             return false;
         }
         if (this.get_erased() && side_of_other.get_HTML) {
