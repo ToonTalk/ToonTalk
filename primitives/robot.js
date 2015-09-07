@@ -1566,10 +1566,10 @@ window.TOONTALK.robot_backside =
                                            }
                                       });
             backside_element.appendChild(this.create_train_button(backside, robot));
+            add_conditions_area(backside_element, robot);
             backside_element.appendChild(advanced_settings_button);
             backside.add_advanced_settings = function () {
-                generic_add_advanced_settings.call(backside, run_once_input.container, speed_menu.container, next_robot_area);  
-                add_conditions_area(backside_element, robot);
+                generic_add_advanced_settings.call(backside, run_once_input.container, speed_menu.container, next_robot_area);   
             };
             return backside;
         },
