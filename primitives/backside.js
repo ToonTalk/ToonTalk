@@ -875,12 +875,13 @@ window.TOONTALK.backside =
             if (!this.is_primary_backside()) {
                 $create_remove_widget_button = $("<button>Remove me and my widget</button>").button();
                 $create_remove_widget_button.get(0).addEventListener('click',
-                                                                     function () {
+                                                                     function () {                                 
+                                                                         if (widget.robot_in_training()) {
+                                                                             widget.robot_in_training().removed(widget);
+                                                                             widget.robot_in_training().removed(this);
+                                                                         }
                                                                          this.remove();
                                                                          widget.remove();
-                                                                         if (widget.robot_in_training()) {
-                                                                             widget.robot_in_training().button_clicked(".toontalk-remove-backside-and-widget-buttton", widget);        
-                                                                         }
                                                                      }.bind(this));
                 $create_remove_widget_button.attr('title', "Click to remove this " + widget.get_type_name() + " and its backside.");
                 $create_remove_widget_button.addClass("toontalk-remove-backside-and-widget-buttton");
