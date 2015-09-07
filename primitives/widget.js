@@ -945,8 +945,11 @@ window.TOONTALK.widget = (function (TT) {
                 if (backside) {
                     backside_element = backside.get_element();
                     if (backside_element) {
-                        json_view.backside_width  = $(backside_element).width();
-                        json_view.backside_height = $(backside_element).height();
+                        if (backside.get_backside_dimensions() || backside.is_top_level()) {
+                            // don't add this if not scaled since should adjust to contents
+                            json_view.backside_width  = $(backside_element).width();
+                            json_view.backside_height = $(backside_element).height();
+                        }
                         if (!json_view.backside_left) {
                             position = $(backside_element).position();
                             json_view.backside_left = position.left;
