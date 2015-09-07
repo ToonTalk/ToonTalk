@@ -1054,7 +1054,7 @@ window.TOONTALK.number = (function () {
     };
 
     number.match_with_this_number = function (number_pattern) {
-        if (number_pattern.equals(this)) {
+        if (number_pattern.equals(this) && number_pattern.get_operator() === this.get_operator()) {
             return 'matched';
         }
         number_pattern.last_match = this;
