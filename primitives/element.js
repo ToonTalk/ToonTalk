@@ -1346,14 +1346,26 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     };
     
     TT.creators_from_json["element"] = function (json, additional_info) {
-        var html = decodeURIComponent(typeof json.html === 'string' ? json.html : additional_info.shared_html[json.html.shared_html_index]);
-        var children, is_child, ignore_attributes, reconstructed_element;
+        var html = decodeURIComponent(typeof json.html === 'string' ? json.html : additional_info.shared_html && additional_info.shared_html[json.html.shared_html_index]);
+        var children, is_child, ignore_attributes, reconstructed_element, error_message;
         if (json.children) {
             is_child = additional_info.is_child;
             additional_info.is_child = true;
             children = TT.UTILITIES.create_array_from_json(json.children, additional_info);
             // restore is_child flag
             additional_info.is_child = is_child;
+        }
+        if (!html) {
+            if (typeof json.html === 'string') {
+                error_message = "No json.html recreating an element widget.";
+            } else {
+                error_message = "additional_info.shared_html missing while recreating an element widget.";
+            }
+            if (TT.debugging) {
+                html = error_message;
+            } else {
+                throw error_message;
+            }
         }
         reconstructed_element = element.create(html, json.attributes, json.description, children, json.sound_effect, json.video, json.ignore_pointer_events);
         if (additional_info && additional_info.event) {
