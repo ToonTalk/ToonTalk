@@ -250,7 +250,7 @@ window.TOONTALK.widget = (function (TT) {
                 widget.restore_dimensions = function () {
                     var frontside_element, css;
                     if (this.saved_width > 0) {
-                       frontside_element = this.get_frontside_element();
+                       frontside_element = this.get_frontside_element(true);
                        if (this.use_scaling_transform) {
                            this.use_scaling_transform({width:  this.saved_width,
                                                        height: this.saved_height});  
