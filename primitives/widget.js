@@ -1034,9 +1034,15 @@ window.TOONTALK.widget = (function (TT) {
                         return;
                     }
                     backside = this.get_backside(true);
-                    if (TT.debugging && widget_side === this) {
-                        TT.UTILITIES.report_internal_error("Adding a widget to a list of its backside widgets!");
-                        return;
+                    if (TT.debugging) {
+                        if (widget_side === this) {
+                            TT.UTILITIES.report_internal_error("Adding a widget to the list of its backside widgets!");
+                            return;
+                        }
+                        if (widget_side.get_widget() === this) {
+                            TT.UTILITIES.report_internal_error("Adding the backside of a widget to the list of its backside widgets!");
+                            return;        
+                        }
                     }
                     if (!backside_widgets) {
                         backside_widgets = [widget_side];
@@ -1119,7 +1125,9 @@ window.TOONTALK.widget = (function (TT) {
                             } else {
                                 backside_widget.get_widget().set_parent_of_frontside(this, true);
                             }
-                            backside_widget.set_visible(backside_visible);
+                            if (backside_visible) {
+                                backside_widget.set_visible(backside_visible);
+                            }
                         }.bind(this)); 
                     }
                 };

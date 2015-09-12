@@ -251,10 +251,10 @@ window.TOONTALK.backside =
                     return;
                 }
                 this.get_widget().get_backside_widgets().forEach(function (backside_widget) {
-                        if (backside_widget) {
+                        if (backside_widget && backside_widget !== this) {
                             backside_widget.set_visible(new_value);
                         }
-                });
+                }.bind(this));
                 if (visible) {
                     this.render();
                 }
@@ -417,6 +417,12 @@ window.TOONTALK.backside =
                         var widget_side_element, backside, json_view, css;
                         current_backside_widgets.forEach(function (backside_widget_side, index) {
                             if (!backside_widget_side) {
+                                return;
+                            }
+                            if (TT.debugging && backside_widget_side.get_widget() === widget) {
+                                TT.UTILITIES.report_internal_error("Adding to backside itself or its backside!");
+                                // try to repair things
+                                backside_widgets.splice(index, 1);
                                 return;
                             }
                             widget_side_element = backside_widget_side.get_element(backside_visible);
