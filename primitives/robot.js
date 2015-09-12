@@ -1367,21 +1367,33 @@ window.TOONTALK.robot_backside =
     "use strict";
     var create_conditions_area = function (text, condition_widget, robot, class_name) {
         var description = TT.UTILITIES.create_text_element(text);
-        var condition_element = condition_widget.get_frontside_element(true);
+        var condition_element = condition_widget.get_element(true);
         var condition_element_div_parent = document.createElement('div');
         var conditions_panel;
         $(condition_element).addClass("toontalk-conditions-contents " + class_name);
-        TT.UTILITIES.when_attached(condition_element,
-                                   function () {
-                                       // this is needed since the element may be transparent and yet need to see the border
-                                       $(condition_element).parent().addClass("toontalk-conditions-contents-container");
-                                       $(condition_element).css({left:   'inherit',
-                                       // following caused all conditions to be at the top 
-                        //                                       top:    '4%', // unclear why this works but 0 or inherit leaves element too high
-                                                                 width:  'inherit',
-                                                                 height: 'inherit'});
-                                       condition_widget.rerender();
-                                 });
+        TT.UTILITIES.run_when_dimensions_known(condition_element,
+                                               function () {
+                                                   var css;
+                                                   $(condition_element).parent().addClass("toontalk-conditions-contents-container");
+                                                   // need to add the class before checking width and height
+                                                   css = {width:  $(condition_element_div_parent).width(),
+                                                          height: $(condition_element_div_parent).height(),
+                                                          left:   '',
+                                                          top:    ''};
+                                                   if (condition_widget.use_scaling_transform) {
+                                                       condition_widget.use_scaling_transform(css);
+                                                   } else if (condition_widget.is_backside()) {
+                                                       TT.UTILITIES.scale_element(condition_element, 
+                                                                                  css.width,
+                                                                                  css.height,
+                                                                                  condition_widget.get_original_width()  || $(condition_element).width(),
+                                                                                  condition_widget.get_original_height() || $(condition_element).height(),
+                                                                                  undefined,
+                                                                                  css);
+                                                   }
+                                                   $(condition_element).css(css);
+                                                   condition_widget.rerender();
+                                             });
         if (robot.match_status) {
             if (robot.match_status.is_widget) {
                 $(robot.match_status.get_frontside_element()).addClass("toontalk-conditions-not-matched");

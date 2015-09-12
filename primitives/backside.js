@@ -452,8 +452,8 @@ window.TOONTALK.backside =
                                             if (json_view.frontside_height === 0) {
                                                 json_view.frontside_height = '';
                                             }                                        
-                                            css = {left:   (json_view.frontside_left || 0),
-                                                   top:    (json_view.frontside_top  || 0),
+                                            css = {left:   json_view.frontside_left   || 0,
+                                                   top:    json_view.frontside_top    || 0,
                                                    width:  json_view.frontside_width  || json_view.saved_width,
                                                    height: json_view.frontside_height || json_view.saved_height};
                                         }
@@ -491,6 +491,12 @@ window.TOONTALK.backside =
                 scales = TT.UTILITIES.scale_to_fit(this_element, other_element, original_width, original_height);
                 x_scale = scales.x_scale;
                 y_scale = scales.y_scale;
+            };
+            backside.get_original_width = function () {
+                return original_width;
+            };
+            backside.get_original_height = function () {
+                return original_height;
             };
             backside.run_status_changed = function (running) {
                 update_flag_and_stop_sign_classes(running);

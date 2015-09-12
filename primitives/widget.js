@@ -732,10 +732,6 @@ window.TOONTALK.widget = (function (TT) {
                     } else {
                         new_ancestor = ancestor.get_parent_of_frontside();
                     }
-//                     if (new_ancestor && new_ancestor.get_widget() === ancestor.get_widget()) {
-//                         // skip a generation to avoid infinite loop
-//                          ancestor = new_ancestor.get_widget().get_parent_of_frontside();
-//                     }
                     ancestor = new_ancestor;
                 }
                 return false;
