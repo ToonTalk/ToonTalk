@@ -285,7 +285,7 @@ window.TOONTALK.robot_action =
     };
     var drop_it_on_animation = function (target, context, top_level_context, robot, continuation, additional_info) {
         var thing_in_hand = robot.get_thing_in_hand();
-        var thing_in_hand_frontside_element, new_continuation;
+        var thing_in_hand_element, new_continuation;
         if (!thing_in_hand) {
             if (TT.debugging) {
                 TT.UTILITIES.report_internal_error("Expected the robot to be holding something.");
@@ -298,23 +298,23 @@ window.TOONTALK.robot_action =
         if (TT.debugging && thing_in_hand === target) {
             TT.UTILITIES.report_internal_error("Dropping something on itself!");
         }
-        thing_in_hand_frontside_element = thing_in_hand.get_frontside_element(true);
+        thing_in_hand_element = thing_in_hand.get_element(true);
         thing_in_hand.set_visible(robot.visible());
         new_continuation = function () {
-            var thing_in_hand_position = $(thing_in_hand_frontside_element).offset();
+            var thing_in_hand_position = $(thing_in_hand_element).offset();
             var $top_level_element;
-            $(thing_in_hand_frontside_element).removeClass("toontalk-held-by-robot");
+            $(thing_in_hand_element).removeClass("toontalk-held-by-robot");
             continuation();
             if (thing_in_hand.drop_on) {
                 if (robot.animate_consequences_of_actions()) {
                     // need to see it before actions such as Bammer take place
-                    if (!TT.UTILITIES.visible_element(thing_in_hand_frontside_element)) {
+                    if (!TT.UTILITIES.visible_element(thing_in_hand_element)) {
                         $top_level_element = $(robot.get_frontside_element()).closest(".toontalk-top-level-backside")
                         if ($top_level_element.length > 0) {
-                            $top_level_element.get(0).appendChild(thing_in_hand_frontside_element);
+                            $top_level_element.get(0).appendChild(thing_in_hand_element);
                         }
                     }
-                    TT.UTILITIES.set_absolute_position(thing_in_hand_frontside_element, thing_in_hand_position);
+                    TT.UTILITIES.set_absolute_position(thing_in_hand_element, thing_in_hand_position);
                     thing_in_hand.restore_dimensions();
                 }
                 // remove it from the robot's hand since the drop can take a few seconds
