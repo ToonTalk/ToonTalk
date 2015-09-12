@@ -951,7 +951,7 @@ window.TOONTALK.nest = (function (TT) {
             return this;
         };
         new_nest.dereference_contents = function (path_to_nest, top_level_context, robot) {
-            var widget, nest_offset, $top_level_backside_element, top_level_backside_element_offset, 
+            var widget_side, nest_offset, $top_level_backside_element, top_level_backside_element_offset, 
                 widget_element, nest_element, nest_width, nest_height;
             if (contents.length === 0) {
                 // robot needs to wait until something arrives on this nest
@@ -959,8 +959,8 @@ window.TOONTALK.nest = (function (TT) {
             }
             // e.g. when a robot takes something off the nest
             if (path_to_nest.removing_widget) {
-                widget = contents[0];
-                robot.remove_from_container(widget, this);
+                widget_side = contents[0];
+                robot.remove_from_container(widget_side, this);
                 // isn't attached to the DOM because was removed from nest
                 if (this.visible()) {
                     nest_element = this.get_frontside_element();
@@ -972,7 +972,7 @@ window.TOONTALK.nest = (function (TT) {
                         top_level_backside_element_offset = {left: 0,
                                                              top:  0};
                     }
-                    widget_element = widget.get_frontside_element(true);
+                    widget_element = widget_side.get_element(true);
                     nest_width =  $(nest_element).width();
                     nest_height = $(nest_element).height();
                     // left and top are 10%
@@ -985,7 +985,7 @@ window.TOONTALK.nest = (function (TT) {
                         $top_level_backside_element.get(0).appendChild(widget_element);
                     }
                 }
-                return widget;
+                return widget_side;
             }
             // act as if the top contents was being dereferenced
             if (path_to_nest.next) {
