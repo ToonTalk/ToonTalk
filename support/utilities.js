@@ -38,9 +38,14 @@ window.TOONTALK.UTILITIES =
                                                                       if (added_node.nodeType === 1) {
                                                                           // is an element
                                                                           if (added_node.toontalk_attached_callback) {
-                                                                              added_node.toontalk_attached_callback();
-                                                                              added_node.toontalk_attached_callback = undefined;
-                                                                              $(added_node).removeClass("toontalk-has-attached-callback");
+                                                                              if (!$(added_node).is(".toontalk-not-observable") ||
+                                                                                  added_node.toontalk_run_even_if_not_observable) {
+                                                                                  // was only attached to compute original dimensions and is not computing now
+                                                                                  added_node.toontalk_attached_callback();
+                                                                                  added_node.toontalk_attached_callback = undefined;
+                                                                                  added_node.toontalk_run_even_if_not_observable = undefined;
+                                                                                  $(added_node).removeClass("toontalk-has-attached-callback");
+                                                                              }
                                                                           } else {
                                                                               $(added_node).find(".toontalk-has-attached-callback").each(function (index, element) {
                                                                                   element.toontalk_attached_callback();
@@ -1209,19 +1214,16 @@ window.TOONTALK.UTILITIES =
                     } else if (["string", "number", "function", "undefined", "boolean"].indexOf(typeof value) >= 0) {
                         // skip atomic objects
                     } else if (this.tree_replace_once(value, replace, replacement, get_json_of_widget_from_shared_widget_index, id)) {
-    //                         messages.forEach(function (message) {
-    //                             console.log(message);
-    //                         });
-    //                         console.log("Object is now " + JSON.stringify(object));
                         return true;
                     }
             }.bind(this));
             return false;            
         };
 
-        utilities.insert_ancestors_last = function (widget, array_of_widgets) {
+        utilities.insert_ancestors_last = function (widget_side, array_of_widgets) {
             // inserts widget before any of its ancestors into the array
             // returns the index of the widget
+            var widget = widget_side.get_widget();
             var insertion_index = -1;
             array_of_widgets.some(function (other, index) {
                 if (widget.has_ancestor(other)) {
@@ -1883,7 +1885,7 @@ window.TOONTALK.UTILITIES =
             var original_width;
             if (widget && widget.get_original_width) {
                 original_width = widget.get_original_width();
-                if (original_width) {
+                if (original_width && widget.get_attribute) {
                     return left-(original_width-widget.get_attribute('width'))/2;
                 }
             }
@@ -1895,7 +1897,7 @@ window.TOONTALK.UTILITIES =
             var original_height;
             if (widget && widget.get_original_height) {
                 original_height = widget.get_original_height();
-                if (original_height) {
+                if (original_height && widget.get_attribute) {
                     return top-(original_height-widget.get_attribute('height'))/2;
                 }
             }
@@ -2932,7 +2934,7 @@ window.TOONTALK.UTILITIES =
             css['transform']         = transform;
         };
 
-        utilities.run_when_dimensions_known = function (element, callback, recompute) {
+utilities.run_when_dimensions_known = function (element, callback, recompute) {
             var original_parent = element.parentElement;
             var not_in_a_hole = function (parent_element) {
                 return parent_element && parent_element.className.indexOf("toontalk-box-hole") < 0;
@@ -2946,12 +2948,12 @@ window.TOONTALK.UTILITIES =
                            });
                 return;
             }
-            check_if_dimensions_known = function () {
+            check_if_dimensions_known = function (delay_if_not) {
                 // add to DOM temporarily so can get dimensions
-//                 setTimeout(function () {
+                setTimeout(function () {
                                var width  = $(element).width();
                                var height = $(element).height();
-                               if (width && height) {
+                               if (width && height) { // } && !$(element).is(".toontalk-carried-by-bird")) {
                                    if (not_in_a_hole(element.parentElement)) {
                                        callback(original_parent);
                                        if (original_parent) {
@@ -2966,20 +2968,19 @@ window.TOONTALK.UTILITIES =
                                        utilities.run_when_dimensions_known(element, callback, true);
                                    }
                                } else {
-                                   utilities.report_internal_error("check_if_dimensions_known did not find dimensions known");
-//                                    setTimeout(function () {
-//                                                   // still not known so wait twice as long and try again
-//                                                   var widget = utilities.widget_side_of_element(element);
-//                                                   if (delay_if_not < 10000) {
-//                                                       // might be an anima gadget on the back of something
-//                                                       // and back isn't visible in which case no point waiting very long
-//                                                       // 10 seconds should be more than long enough for the DOM to be updated
-//                                                       check_if_dimensions_known(delay_if_not*2);
-//                                                   }
-//                                               },
-//                                               delay_if_not);
+                                   setTimeout(function () {
+                                                  // still not known so wait twice as long and try again
+                                                  var widget = utilities.widget_side_of_element(element);
+                                                  if (delay_if_not < 10000) {
+                                                      // might be an anima gadget on the back of something
+                                                      // and back isn't visible in which case no point waiting very long
+                                                      // 10 seconds should be more than long enough for the DOM to be updated
+                                                      check_if_dimensions_known(delay_if_not*2);
+                                                  }
+                                              },
+                                              delay_if_not);
                                }
-//                 }); 
+                }); 
             }
             $(element).addClass("toontalk-not-observable");
             document.body.appendChild(element);
@@ -2989,9 +2990,53 @@ window.TOONTALK.UTILITIES =
                                    height:    '',
                                    transform: ''});
             }
-//             check_if_dimensions_known(1);
-            utilities.when_attached(element, check_if_dimensions_known);
+            check_if_dimensions_known(1);
         };
+
+// tried to use mutation observers but could only get it partially working
+//         utilities.run_when_dimensions_known = function (element, callback, recompute) {
+//             var original_parent = element.parentElement;
+//             var not_in_a_hole = function (parent_element) {
+//                 return parent_element && parent_element.className.indexOf("toontalk-box-hole") < 0;
+//             };
+//             var check_if_dimensions_known;
+//             if (!recompute && $(element).width() && not_in_a_hole(original_parent)) {
+//                 // already known -- delaying it fixes problems with elements in box holes not computing the right scaling
+//                 // but size in a box hole should not count
+//                 setTimeout(function () {
+//                                callback(original_parent);
+//                            });
+//                 return;
+//             }
+//             var observer = new MutationObserver(function (mutations) {
+//                                                     mutations.some(function(mutation) {
+//                                                         var width  = $(element).width();
+//                                                         var height = $(element).height();
+//                                                         if (width && height && not_in_a_hole(element.parentElement)) {
+//                                                             callback(original_parent);
+//                                                             observer.disconnect();
+//                                                             $(element).removeClass("toontalk-not-observable");
+//                                                             if (original_parent) {
+//                                                                 original_parent.appendChild(element);
+//                                                             } else if (element.parentElement === document.body) {
+//                                                                 $(element).remove();
+//                                                             }
+//                                                             return true;
+//                                                         }
+//                                                     })});
+//             $(element).addClass("toontalk-not-observable");
+//             // add to DOM temporarily so can get dimensions
+//             document.body.appendChild(element); 
+//             // observe changes to style (where width and height "live")
+//             observer.observe(element, {attributes: true,
+//                                        attributeFilter: ["style"]});               
+//             if (recompute) {
+//                 utilities.set_css(element,
+//                                   {width:     '',
+//                                    height:    '',
+//                                    transform: ''});
+//             }
+//         };
 
         utilities.original_dimensions = function (widget, set_original_dimensions, recompute) {
             // this relies upon run_when_dimensions_known which keeps trying until it finds out the dimensions of this element
@@ -3639,7 +3684,7 @@ window.TOONTALK.UTILITIES =
            return jQuery.contains(window.document, element);
        };
 
-       utilities.when_attached = function (element, new_callback) {
+       utilities.when_attached = function (element, new_callback, even_if_not_observable) {
            var old_callback = element.toontalk_attached_callback;
            var callback;
            if (old_callback) {
@@ -3650,7 +3695,7 @@ window.TOONTALK.UTILITIES =
            } else {
                callback = new_callback;
            }
-           if (jQuery.contains(window.document, element)) {
+           if (jQuery.contains(window.document, element) && !even_if_not_observable) {
                // already attached
                // be sure element is restored to no callback state
                element.toontalk_attached_callback = undefined;
@@ -3659,6 +3704,9 @@ window.TOONTALK.UTILITIES =
                return;
            }
            element.toontalk_attached_callback = callback;
+           if (even_if_not_observable) {
+               element.toontalk_run_even_if_not_observable = true;
+           }
            // following shouldn't be necessary but the selector [toontalk_attached_callback] didn't work
            $(element).addClass("toontalk-has-attached-callback");
        };
