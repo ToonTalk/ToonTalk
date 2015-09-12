@@ -402,7 +402,6 @@ window.TOONTALK.widget = (function (TT) {
                                 backside_widget.set_stopped(true);
                                 backside_widget.set_running(false);
                             }
-                            backside_widget.rerender();
                         } else if (backside_widget.set_running) {
                             if (!top_level_context && backside_widget_side.is_backside() && widget.get_type_name() !== "top-level") {
                                 // a robot is on the backside of a widget that is on the backside of another
@@ -413,6 +412,7 @@ window.TOONTALK.widget = (function (TT) {
                                 backside_widget.set_running(new_value);
                             }
                         }
+                        backside_widget.rerender();
                     }.bind(this));
                     if (this.walk_children) {
                         this.walk_children(function (child) {
