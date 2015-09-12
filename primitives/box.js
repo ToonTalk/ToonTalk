@@ -848,6 +848,7 @@ window.TOONTALK.box = (function (TT) {
             path.next = TT.UTILITIES.create_from_json(json.next, additional_info);
         }
         if (json.true_type) {
+            // true_type is needed to distinguish boxes from scale (that are like 2-hole boxes with additional behaviours)
             path.true_type = json.true_type;
         }
         return path;

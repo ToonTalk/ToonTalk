@@ -827,6 +827,84 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         return comparison;
     };
 
+    element.get_path_to = function (widget, robot) {
+        var children = this.get_children();
+        var index = children.indexOf(widget);
+        var path, sub_path;
+        if (index >= 0) {
+            return element.path.create(index);
+        }
+        children.forEach(function (child, child_index) {    
+            if (child.get_path_to) {
+                sub_path = child.get_path_to(widget, robot);
+                if (sub_path) {
+                    path = element.path.create(child_index);
+                    path.next = sub_path;
+                }
+            }
+        });
+        return path;
+    };
+
+    TT.creators_from_json["element_path"] = function (json, additional_info) {
+        var path = element.path.create(json.index);
+        if (json.next) {
+            path.next = TT.UTILITIES.create_from_json(json.next, additional_info);
+        }
+        return path;
+    };
+
+    element.dereference_path = function (path, top_level_context, robot) {
+        var index, child, children;
+        if (path) {
+            index = path.get_index && path.get_index();
+            if (!TT.debugging || typeof index === 'number') {
+                children = this.get_children();
+                child = children[index]
+                if (child) {
+                    if (child.dereference_contents && !path.not_to_be_dereferenced) {
+                        // this will dereference the top of a nest instead of the nest itself
+                        return child.dereference_contents(path.next || path, top_level_context, robot);
+                    }
+                    if (path.next) {
+                        if (child.dereference_path) {
+                            return child.dereference_path(path.next, top_level_context, robot);
+                        } else {
+                            TT.UTILITIES.report_internal_error("Expected to refer to a child of " + child + " but it lacks a method to obtain " + TT.path.toString(path.next));
+                        }
+                    }
+                    if (path.removing_widget) {
+                        if (!child.get_infinite_stack()) {
+                            robot.remove_from_container(child, this);
+                        }
+                    }
+                    return child;
+                }
+            }
+            TT.UTILITIES.report_internal_error(this + " unable to dereference the path: " + TT.path.toString(path));
+        } else {
+            return this;
+        }
+    };
+
+    element.path = {
+        create: function (index) {
+            return {
+                get_index: function () {
+                    return index;
+                },
+                toString: function () {
+                    return "the " + TT.UTILITIES.ordinal(index) + " widget ";
+                },
+                get_json: function (json_history) {
+                    return {type: "element_path",
+                            index: index,
+                            next: this.next && this.next.get_json(json_history)};
+                }
+            };
+        }
+    };
+
     element.widget_side_dropped_on_me = function (side_of_other, event, robot) {
         // TODO: involve Bammer the Mouse if being watched
         // TODO: use erased widgets for type coercion
