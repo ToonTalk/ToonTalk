@@ -1094,11 +1094,13 @@ window.TOONTALK.UTILITIES =
                     } else {
                         // start searching tree for json_of_widget with the semantic component
                         // because json might === json_of_widget
-                        utilities.tree_replace_once(json.semantic, 
+                        if (json.semantic) {
+                            utilities.tree_replace_once(json.semantic, 
                                                        json_of_widget,
                                                        {shared_widget_index: widget_index},
                                                        get_json_of_widget_from_shared_widget_index,
                                                        utilities.generate_unique_id());
+                        } // otherwise might be JSON for a backside - TODO: should it also be searched?                        
                         return json_of_widget;
                     }
                 });
