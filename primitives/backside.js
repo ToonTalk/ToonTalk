@@ -247,6 +247,9 @@ window.TOONTALK.backside =
                     // no point doing the rest for top-level backsides
                     return;
                 }
+                if (!this.is_primary_backside()) {
+                    return;
+                }
                 this.get_widget().get_backside_widgets().forEach(function (backside_widget) {
                         if (backside_widget) {
                             backside_widget.set_visible(new_value);
@@ -265,6 +268,7 @@ window.TOONTALK.backside =
             backside.is_primary_backside = function () {
                 return this === this.get_widget().get_backside();
             };
+            backside.is_widget = true; // perhaps should be renamed is_widget_side
             backside.get_parent_of_backside = function () {
                 // the primary backside is the one created by clicking on a widget
                 // in order for robots to run efficiently unwatched some widgets have never created their backside

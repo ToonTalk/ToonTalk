@@ -1012,7 +1012,8 @@ window.TOONTALK.UTILITIES =
             widget_side.set_backside_widgets(backside_widgets, 
                                         json_semantic_backside_widgets.map(
                                             function (json) {
-                                                if (!json) {
+                                                if (!json || !json.widget) {
+                                                    // json.widget will be undefined if json is for a backside
                                                     return json;
                                                 }
                                                 if (json.widget.shared_widget_index >= 0 && additional_info.json_of_shared_widgets[json.widget.shared_widget_index]) {
@@ -1045,20 +1046,19 @@ window.TOONTALK.UTILITIES =
                 if (!widget_side) {
                     return; // leave it undefined
                 }
-                try {
+//                 try {
                     if (widget_side.is_primary_backside && widget_side.is_primary_backside()) {
                         json[index] = {widget: utilities.get_json(widget_side.get_widget(), json_history),
                                        is_backside: true};
-                    } else if (widget_side.get_type_name) {
-                        // TODO: determine if .is_widget is a better conditon here
+                    } else if (widget_side.is_widget) {
                         json[index] = {widget: utilities.get_json(widget_side, json_history)};
                     } else {
                         // isn't a widget -- e.g. is a path
                         json[index] = widget_side.get_json(json_history);
                     }
-                } catch (e) {
-                    utilities.report_internal_error("Error trying to save " + widget_side);
-                }
+//                 } catch (e) {
+//                     utilities.report_internal_error("Error trying to save " + widget_side);
+//                 }
             });
             return json;
         };
