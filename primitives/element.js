@@ -118,7 +118,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                         text = html;
                     }
                 }
-                if (text === "" && frontside_element) {
+                if (text === "" && frontside_element && frontside_element.nodeName !== "IMG") {
+                    // TODO: IMG test should be generalised
                     // might have just been created by dragging from elsewhere
                     this.update_display();
                     text = frontside_element.textContent;
