@@ -1117,9 +1117,9 @@ window.TOONTALK.widget = (function (TT) {
                                 return;
                             }
                             if (backside_widget.is_backside()) {
-                                backside_widget.get_widget().set_parent_of_backside(this, true);
+                                backside_widget.set_parent_of_backside(this, true);
                             } else {
-                                backside_widget.get_widget().set_parent_of_frontside(this, true);
+                                backside_widget.set_parent_of_frontside(this, true);
                             }
                             if (backside_visible) {
                                 backside_widget.set_visible(backside_visible);

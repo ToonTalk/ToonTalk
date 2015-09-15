@@ -1015,17 +1015,17 @@ window.TOONTALK.UTILITIES =
             }
             backside_widgets = this.create_array_from_json(json_semantic_backside_widgets, additional_info);
             widget_side.set_backside_widgets(backside_widgets, 
-                                        json_semantic_backside_widgets.map(
-                                            function (json) {
-                                                if (!json || !json.widget) {
-                                                    // json.widget will be undefined if json is for a backside
-                                                    return json;
-                                                }
-                                                if (json.widget.shared_widget_index >= 0 && additional_info.json_of_shared_widgets[json.widget.shared_widget_index]) {
-                                                    return additional_info.json_of_shared_widgets[json.widget.shared_widget_index].view;
-                                                }
-                                                return json.widget.view; 
-                                         }));
+                                             json_semantic_backside_widgets.map(
+                                                 function (json) {
+                                                     if (!json || !json.widget) {
+                                                         // json.widget will be undefined if json is for a backside
+                                                         return json;
+                                                     }
+                                                     if (json.widget.shared_widget_index >= 0 && additional_info.json_of_shared_widgets[json.widget.shared_widget_index]) {
+                                                         return additional_info.json_of_shared_widgets[json.widget.shared_widget_index].view;
+                                                     }
+                                                     return json.widget.view; 
+                                                 }));
             if (!widget_side.is_top_level()) {
                 additional_info.to_be_on_backside_of.pop();
             }

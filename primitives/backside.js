@@ -19,7 +19,8 @@ window.TOONTALK.backside =
             var green_flag_element = document.createElement("div");
             var stop_sign_element  = document.createElement("div");
             var help_URL = widget.get_help_URL && widget.get_help_URL();
-            var parent, settings_button, visible, original_width, original_height, original_x_scale, original_y_scale, width_at_resize_start, height_at_resize_start, 
+            var parent, parent_is_backside, settings_button, visible,
+                original_width, original_height, original_x_scale, original_y_scale, width_at_resize_start, height_at_resize_start, 
                 close_button, backside_widgets, help_button, help_frame, close_help_button;
             var update_flag_and_stop_sign_classes = function (running) {
                 if (running) {
@@ -272,22 +273,26 @@ window.TOONTALK.backside =
             backside.get_parent_of_backside = function () {
                 // the primary backside is the one created by clicking on a widget
                 // in order for robots to run efficiently unwatched some widgets have never created their backside
-                // and yet it is the parent of bacvkside widgets so the widget itself keeps track of backside parents
+                // and yet it is the parent of backside widgets so the widget itself keeps track of backside parents
                 // non-primary backsides can be created by sensors or the magic wand and they know their parent via the 'parent' closure variable
                 if (this.is_primary_backside()) {
                     return widget.get_parent_of_backside();
                 }
+                if (parent_is_backside) {
+                    return parent.get_backside(true);
+                }
                 return parent;
             };
-            backside.set_parent_of_backside = function (new_value) {
-                if (!new_value && parent && parent.is_backside()) {
+            backside.set_parent_of_backside = function (new_parent, is_backside) {
+                if (!new_parent && parent && parent_is_backside) {
                     parent.remove_backside_widget(this, true);
                 }
                 if (this.is_primary_backside()) {
                     // widget needs to keep track of backside parent in case backside doesn't need to be instantiated 
-                    widget.set_parent_of_backside(new_value);
+                    widget.set_parent_of_backside(new_parent, is_backside);
                 }
-                parent = new_value;
+                parent = new_parent;
+                parent_is_backside = is_backside;
             };
             backside.get_parent_of_frontside = function () {  
                 return widget.get_parent_of_frontside();
