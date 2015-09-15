@@ -946,10 +946,21 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     
     element.get_attribute = function (attribute) {
         var value = this.get_attribute_from_pending_css(attribute);
+        var adjustment, frontside_element;
+        if (attribute === 'left') {
+            frontside_element = this.get_frontside_element();
+            adjustment = frontside_element && frontside_element.toontalk_translate_x;
+        } else if (attribute === 'top') {
+            frontside_element = this.get_frontside_element();
+            adjustment = frontside_element && frontside_element.toontalk_translate_y;
+        }
+        if (!adjustment) {
+            adjustment = 0;
+        }
         if (typeof value !== 'undefined' && value != 'auto') {
-            return value;
+            return value+adjustment;
         };
-        return this.get_attribute_from_current_css(attribute);
+        return this.get_attribute_from_current_css(attribute)+adjustment;
     };
     
     element.set_attribute = function (attribute, new_value, handle_training, add_to_style_attributes) {

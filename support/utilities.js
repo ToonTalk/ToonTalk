@@ -2856,11 +2856,17 @@ window.TOONTALK.UTILITIES =
                 }
                 if (!no_need_to_translate && transform_origin_center) {
                     if (new_width) {
-                        translate += "translateX(" + (new_width-original_width)/2 + "px) ";
+                        element.toontalk_translate_x = (new_width-original_width)/2;
+                        translate += "translateX(" + element.toontalk_translate_x + "px) ";
                     }
                     if (new_height) {
-                        translate += "translateY(" + (new_height-original_height)/2 + "px) ";
+                        element.toontalk_translate_y = (new_height-original_height)/2;
+                        translate += "translateY(" + element.toontalk_translate_y + "px) ";
                     }
+                } else {
+                    // might have changed parent and old translation no longer in effect
+                    element.toontalk_translate_x = undefined;
+                    element.toontalk_translate_y = undefined;
                 }
                 utilities.add_transform_to_css((other_transforms || "") + " scale(" + x_scale + ", " + y_scale + ")",
                                                translate,
