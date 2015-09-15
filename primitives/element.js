@@ -1385,16 +1385,16 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         var children = this.get_children();
         var text, description;
         if (to_string_info) {
-            if (to_string_info.role === "conditions" || to_string_info.plain_text) {
+            if (to_string_info.for_json_div) {
+                // don't risk confusing things with a comment that might interfere with the HTML
+               return "";
+            } else {
                 text = this.get_text();
                 if (text) {
                     description = '"' + text + '"';
                 } else {
                     description = image_description() || "";
                 }
-            } else if (to_string_info.for_json_div) {
-                // don't risk confusing things with a comment based upon an HTML element
-               return "";
             }
         } else {
             description = scale_or_quote_html(this.get_HTML());
