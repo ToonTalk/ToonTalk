@@ -1375,6 +1375,7 @@ window.TOONTALK.robot_backside =
                                                function () {
                                                    var css;
                                                    $(condition_element).parent().addClass("toontalk-conditions-contents-container");
+                                                   condition_widget.update_display();
                                                    // need to add the class before checking width and height
                                                    css = {width:  $(condition_element_div_parent).width(),
                                                           height: $(condition_element_div_parent).height(),

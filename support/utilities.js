@@ -2891,12 +2891,24 @@ window.TOONTALK.UTILITIES =
 //                 }
                 utilities.set_css(element, pending_css);
             };
-            var x_scale, y_scale;
+            var x_scale, y_scale, $image;
             if (!original_width) {
-                original_width = $(element).width();
+                $image = $(element).children("img");
+                if ($image.is("*")) {
+                    original_width = $image.width();
+                } else {
+                    original_width = $(element).width();
+                }
             }
             if (!original_height) {
-                original_height = $(element).height();
+                if (!$image) {
+                     $image = $(element).children("img");
+                }
+                if ($image.is("*")) {
+                    original_height = $image.height();
+                } else {
+                    original_height = $(element).height();
+                }
             }
             if (new_width && original_width !== 0) {
                 x_scale = new_width/original_width;
