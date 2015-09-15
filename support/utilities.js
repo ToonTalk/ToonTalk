@@ -3056,7 +3056,12 @@ utilities.run_when_dimensions_known = function (element, callback, recompute) {
             var frontside_element = widget.get_frontside_element();
             var update_original_dimensions =
                 function () {
-                    set_original_dimensions($(frontside_element).width(), $(frontside_element).height());
+                    var $image = $(frontside_element).children("img");
+                    if ($image.is("*")) {
+                        set_original_dimensions($image.width(), $image.height());
+                    } else {
+                        set_original_dimensions($(frontside_element).width(), $(frontside_element).height());
+                    }
                 };
             if (frontside_element.parentElement === document.body) {
                 return; // this was called twice -- probably by update_display
