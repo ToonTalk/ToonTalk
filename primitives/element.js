@@ -1369,11 +1369,29 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
            // else is a plain string so quote it
            return '"' + html + '"';
         };
+        var image_description = function () {
+            // if image returns alt if known otherwise default string
+            var html = this.get_HTML();
+            var alt_index = html.indexOf("alt=");
+            var end_quote_index;
+            if (alt_index >= 0) {
+                end_quote_index = html.indexOf("'", alt_index+5);
+                if (end_quote_index >= 0) {
+                    return "(" + html.substring(alt_index+5, end_quote_index) + ")";
+                }
+            }
+            return "";
+        }.bind(this);
         var children = this.get_children();
-        var description;
+        var text, description;
         if (to_string_info) {
             if (to_string_info.role === "conditions" || to_string_info.plain_text) {
-               description =  '"' + this.get_text() + '"';
+                text = this.get_text();
+                if (text) {
+                    description = '"' + text + '"';
+                } else {
+                    description = image_description() || "";
+                }
             } else if (to_string_info.for_json_div) {
                 // don't risk confusing things with a comment based upon an HTML element
                return "";
