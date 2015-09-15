@@ -358,8 +358,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                                                                       transform,
                                                                                       current_pending_css,
                                                                                       original_parent,
-                                                                                      // no need to translate if element is part of another element
-                                                                                      !parent || (!parent.is_backside && parent.is_element()));
+                                                                                      // no need to translate if no parent
+                                                                                      !parent);
                                                            pending_css = undefined;
                                                        }.bind(this));
                 return;
