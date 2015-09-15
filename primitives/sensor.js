@@ -219,6 +219,10 @@ window.TOONTALK.sensor = (function (TT) {
             }
             return title;
         };
+        new_sensor.can_run = function () {
+            // can run in the sense of becoming active
+            return true;
+        };
         attribute_values = function (event) {
             return new_sensor.get_attributes().map(
                 function (attribute) {
