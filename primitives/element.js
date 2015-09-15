@@ -1369,6 +1369,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
            // else is a plain string so quote it
            return '"' + html + '"';
         };
+        var children = this.get_children();
         var description;
         if (to_string_info) {
             if (to_string_info.role === "conditions" || to_string_info.plain_text) {
@@ -1379,7 +1380,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             }
         } else {
             description = scale_or_quote_html(this.get_HTML());
-        }            
+        }
+        if (children && children.length > 0) {
+            description += " with " + TT.UTILITIES.describe_widgets(children) + " on top";
+        }          
         return "the element " + description;
     };
     

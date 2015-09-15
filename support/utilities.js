@@ -810,7 +810,7 @@ window.TOONTALK.UTILITIES =
     var timeouts = [];
     var timeout_message_name = "zero-timeout-message";
     var messages_displayed = [];
-    var backside_widgets_left, element_displaying_tooltip;
+    var widgets_left, element_displaying_tooltip;
     window.addEventListener("message", 
                             function (event) {
                                 if (event.data === timeout_message_name && event.source === window) {
@@ -1260,16 +1260,7 @@ window.TOONTALK.UTILITIES =
                         } else {
                             type_description += backside_widgets.length + " things: ";
                         }
-                        backside_widgets_left = backside_widgets.length;
-                        backside_widgets.forEach(function (backside_widget) {
-                            backside_widgets_left--;
-                            type_description += utilities.add_a_or_an(backside_widget.get_type_name());
-                            if (backside_widgets_left === 1) {
-                                type_description += ", and ";
-                            } else if (backside_widgets_left > 1) {
-                                type_description += ", ";
-                            }
-                        });
+                        type_description += utilities.describe_widgets(backside_widgets);
                     }
                 } else {
                     type_description = "a top-level widget";
@@ -1295,6 +1286,21 @@ window.TOONTALK.UTILITIES =
                               (title ? title + "\n" : "") +
                               div_hidden + JSON.stringify(json, utilities.clean_json, '  ') + div_close + 
                    div_close;
+    };
+
+    utilities.describe_widgets = function (widget_array) {
+        var description = "";
+        var widgets_left = widget_array.length;
+        widget_array.forEach(function (widget_side) {
+                                 widgets_left--;
+                                 description += utilities.add_a_or_an(widget_side.get_type_name());
+                                 if (widgets_left === 1) {
+                                     description += ", and ";
+                                 } else if (widgets_left > 1) {
+                                     description += ", ";
+                                 }
+                             });
+        return description;
     };
 
     utilities.elide = function (s, length, fraction_in_first_part) {
