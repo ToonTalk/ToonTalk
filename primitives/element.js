@@ -968,12 +968,19 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         var frontside_element = frontside.get_element();
         var css = {};
         var current_value, new_value_number;
-        var style_attributes;
-//      console.log(attribute + " of " + this._debug_id + " is " + new_value);
+        var adjustment, style_attributes;
         if (!frontside_element) {
             return false;
         }
+        if (attribute === 'left') {
+            adjustment = frontside_element && frontside_element.toontalk_translate_x;
+        } else if (attribute === 'top') {
+            adjustment = frontside_element && frontside_element.toontalk_translate_y;
+        }
         current_value = this.get_attribute_from_pending_css(attribute);
+        if (adjustment) {
+            new_value -= adjustment;
+        }
         if (current_value === new_value) {
             return false;
         }
