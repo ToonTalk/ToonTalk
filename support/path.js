@@ -38,7 +38,7 @@ window.TOONTALK.path =
     };
     
     return { 
-        get_path_to: function (widget, robot) {
+        get_path_to: function (widget, robot, or_any_backside_of_widget) {
             var compute_path = function (widget, robot) {
                 var context = robot.get_training_context();
                 var body = robot.get_body();
@@ -56,7 +56,7 @@ window.TOONTALK.path =
                 if (widget_type === "top-level") {
                     return TT.path.top_level_backside;
                 }
-                path = body.get_path_to(widget, robot);
+                path = body.get_path_to(widget, robot, or_any_backside_of_widget);
                 if (path) {
                     path.is_backside = is_backside;
                     return path;

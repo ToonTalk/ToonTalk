@@ -80,10 +80,10 @@ window.TOONTALK.actions =
             new_actions.get_newly_created_widgets = function () {
                 return newly_created_widgets;
             };
-            new_actions.get_path_to = function (widget, robot) {
+            new_actions.get_path_to = function (widget, robot, or_any_backside_of_widget) {
                 var path, sub_path, children;
                 newly_created_widgets.some(function (newly_created_widget, index) {
-                    if (newly_created_widget === widget || newly_created_widget.get_widget() === widget) {
+                    if (newly_created_widget === widget || (or_any_backside_of_widget && newly_created_widget.get_widget() === widget)) {
                         // might be a backside of the widget that was referenced
                         path = TT.newly_created_widgets_path.create(index);
                         return true;

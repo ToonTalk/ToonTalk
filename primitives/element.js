@@ -1492,7 +1492,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     };
     
     element.create_attribute_path = function (attribute_widget, robot) {
-        var path_to_element_widget = TT.path.get_path_to(attribute_widget.element_widget, robot);
+        var path_to_element_widget = TT.path.get_path_to(attribute_widget.element_widget, robot, true);
         return this.extend_attribute_path(path_to_element_widget, attribute_widget.attribute);
     };
 
