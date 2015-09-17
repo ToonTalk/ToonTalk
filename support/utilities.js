@@ -58,7 +58,25 @@ window.TOONTALK.UTILITIES =
                                                                   }                                                                
                                                               });    
                                         });
-    var path_to_toontalk_folder;
+    var translate = function (element, translate_attribute, scale_attribute) {
+            var translation, ancestor;
+            if (!element) {
+                return;
+            }
+            translation = element[translate_attribute] || 0;
+            if (element[scale_attribute]) {
+                translation /= element[scale_attribute];
+            }
+            ancestor = element.parentElement;
+            while (ancestor) {
+                translation += ancestor[translate_attribute] || 0;
+                if (ancestor[scale_attribute]) {
+                    translation /= ancestor[scale_attribute];
+                }
+                ancestor = ancestor.parentElement;
+            }
+            return translation;
+        };
     var extract_json_from_div_string = function (div_string) {
         // expecting div_string to begin with div_open and end with div_close
         // but users may be dragging something different
@@ -810,7 +828,7 @@ window.TOONTALK.UTILITIES =
     var timeouts = [];
     var timeout_message_name = "zero-timeout-message";
     var messages_displayed = [];
-    var widgets_left, element_displaying_tooltip;
+    var path_to_toontalk_folder, widgets_left, element_displaying_tooltip;
     window.addEventListener("message", 
                             function (event) {
                                 if (event.data === timeout_message_name && event.source === window) {
@@ -2927,37 +2945,19 @@ window.TOONTALK.UTILITIES =
             if (y_scale === 0) {
                 y_scale = 1;
             }
+            element.toontalk_x_scale = x_scale;
+            element.toontalk_y_scale = y_scale;
             update_css();
             return {x_scale: x_scale,
                     y_scale: y_scale};
         };
 
         utilities.translate_x = function (element) {
-            var translation, ancestor;
-            if (!element) {
-                return;
-            }
-            translation = element.toontalk_translate_x || 0;
-            ancestor = element.parentElement;
-            while (ancestor) {
-                translation += ancestor.toontalk_translate_x || 0;
-                ancestor = ancestor.parentElement;
-            }
-            return translation;
+            return translate('toontalk_translate_x', 'toontalk_x_scale'); 
         };
 
         utilities.translate_y = function (element) {
-            var translation, ancestor;
-            if (!element) {
-                return;
-            }
-            translation = element.toontalk_translate_y || 0;
-            ancestor = element.parentElement;
-            while (ancestor) {
-                translation += ancestor.toontalk_translate_y || 0;
-                ancestor = ancestor.parentElement;
-            }
-            return translation;
+            return translate('toontalk_translate_y', 'toontalk_y_scale'); 
         };
 
         utilities.add_transform_to_css = function (transform, translate, css, transform_origin_center) {

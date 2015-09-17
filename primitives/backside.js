@@ -269,6 +269,12 @@ window.TOONTALK.backside =
             backside.is_primary_backside = function () {
                 return this === this.get_widget().get_backside();
             };
+            backside.get_width = function () {
+                return $(this.get_element()).width();
+            };
+            backside.get_height = function () {
+                return $(this.get_element()).height();
+            };
             backside.is_widget = true; // perhaps should be renamed is_widget_side
             backside.get_parent_of_backside = function () {
                 // the primary backside is the one created by clicking on a widget
@@ -1165,6 +1171,10 @@ window.TOONTALK.backside =
         },
 
         is_box: function () {
+            return false;
+        },
+
+        is_element: function () {
             return false;
         },
 

@@ -168,6 +168,16 @@ window.TOONTALK.widget = (function (TT) {
                         };
                     };
             }
+            if (!widget.get_width) {
+               widget.get_width = function () {
+                   return $(widget.get_frontside_element()).width();
+               }
+            }
+            if (!widget.get_height) {
+               widget.get_height = function () {
+                   return $(widget.get_frontside_element()).height();
+               }
+            }
             if ((TT.debugging  || TT.logging) && !widget.to_debug_string) {
                 widget.to_debug_string = function () {
                     var parent = this.get_parent_widget_of_frontside();

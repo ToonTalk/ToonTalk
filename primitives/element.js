@@ -252,8 +252,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         };
         new_element.apply_css = function () {
             var transform = "";
-            var frontside_element, x_scale, y_scale,
-                $container, container_width_minus_width, container_height_minus_height, parent_of_frontside, wrap_location, current_pending_css;
+            var frontside_element, container_width, container_height, parent_of_frontside, wrap_location, current_pending_css;
             if (!pending_css && !transform_css) {
                 return;
             }
@@ -290,22 +289,23 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                         if (css.left) {   
                             // if negative after mod add width -- do another mod in case was positive
                             // keep it within the bounds of its container
-                            $container = $(parent_of_frontside.get_element());
-                            container_width_minus_width = $container.width();
-                            if (current_width !== undefined) {
-                                container_width_minus_width -= current_width;
-                            }
-                            css.left = ((css.left%container_width_minus_width)+container_width_minus_width)%container_width_minus_width;
+                            // note that if the container has scaling transforms those are ignored here
+                            container_width = parent_of_frontside.is_element() ? 
+                                              parent_of_frontside.get_original_width() :
+                                              parent_of_frontside.get_width();
+//                             if (current_width !== undefined) {
+//                                 container_width -= current_width;
+//                             }
+                            css.left = ((css.left%container_width)+container_width)%container_width;
                         }
                         if (css.top) {
-                            if (!$container) {
-                                $container = $(parent_of_frontside.get_element());
-                            }
-                            container_height_minus_height = $container.height();
-                            if (current_height !== undefined) {
-                                container_height_minus_height -= current_height;
-                            }
-                            css.top = ((css.top%container_height_minus_height)+container_height_minus_height)%container_height_minus_height;
+                            container_height = parent_of_frontside.is_element() ? 
+                                               parent_of_frontside.get_original_height() :
+                                               parent_of_frontside.get_height();
+//                             if (current_height !== undefined) {
+//                                 container_height -= current_height;
+//                             }
+                            css.top = ((css.top%container_height)+container_height)%container_height;
                         }
                     }
                 }
@@ -698,6 +698,12 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         };
         new_element.increment_height = function (delta) {
             this.set_attribute('height', (current_height || original_height) + delta);
+        };
+        new_element.get_width = function () {
+            return current_width;
+        };
+        new_element.get_height  = function () {
+            return current_height;
         };
         new_element.add_child = function (widget) {
             var $widget_element = $(widget.get_frontside_element(true));
