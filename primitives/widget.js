@@ -669,7 +669,7 @@ window.TOONTALK.widget = (function (TT) {
             };
             widget.set_parent_of_backside = function (widget, new_parent_is_backside, already_removed_from_parent_of_backside) {
                 if (widget === undefined && !already_removed_from_parent_of_backside && parent_of_backside_is_backside && parent_of_backside) {
-                    parent_of_backside.get_widget().remove_backside_widget(this, true);
+                    parent_of_backside.get_widget().remove_backside_widget(this.get_backside(), true);
                 }
                 parent_of_backside = widget;
                 parent_of_backside_is_backside = new_parent_is_backside;
