@@ -1389,11 +1389,14 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 // don't risk confusing things with a comment that might interfere with the HTML
                return "";
             } else {
-                text = this.get_text();
-                if (text) {
-                    description = '"' + text + '"';
-                } else {
-                    description = image_description() || "";
+                description = image_description();
+                if (!description) {
+                    text = this.get_text();
+                    if (text) {
+                        description = '"' + text + '"';
+                    } else {
+                        description = "";
+                    }
                 }
             }
         } else {

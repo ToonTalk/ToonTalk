@@ -185,8 +185,11 @@ window.TOONTALK.widget = (function (TT) {
                        } else {
                           id = "";
                        }
-                    } 
-                    return this.toString({plain_text: true}) + " (" + description + " " + ((this.get_name && (this.get_name() + " ")) || "") + id + ")";
+                    }
+                    if (description) {
+                       description += " "; // space before next item
+                    }
+                    return this.toString({plain_text: true}) + " (" + description + ((this.get_name && (this.get_name() + " ")) || "") + id + ")";
                 };
             }
             widget.is_top_level = return_false;
