@@ -1369,32 +1369,36 @@ window.TOONTALK.robot_backside =
         var description = TT.UTILITIES.create_text_element(text);
         var condition_element = condition_widget.get_element(true);
         var condition_element_div_parent = document.createElement('div');
+        var scale_element = function () {
+                                var css;
+                                $(condition_element).parent().addClass("toontalk-conditions-contents-container");
+                                condition_widget.update_display();
+                                // need to add the class before checking width and height
+                                css = {width:  $(condition_element_div_parent).width(),
+                                       height: $(condition_element_div_parent).height(),
+                                       left:   '',
+                                       top:    ''};
+                                if (condition_widget.use_scaling_transform) {
+                                    condition_widget.use_scaling_transform(css);
+                                } else if (condition_widget.is_backside()) {
+                                    TT.UTILITIES.scale_element(condition_element, 
+                                                               css.width,
+                                                               css.height,
+                                                               condition_widget.get_original_width()  || $(condition_element).width(),
+                                                               condition_widget.get_original_height() || $(condition_element).height(),
+                                                               undefined,
+                                                               css);
+                                }
+                                $(condition_element).css(css);
+                                condition_widget.rerender();
+                            };
         var conditions_panel;
         $(condition_element).addClass("toontalk-conditions-contents " + class_name);
-        TT.UTILITIES.run_when_dimensions_known(condition_element,
-                                               function () {
-                                                   var css;
-                                                   $(condition_element).parent().addClass("toontalk-conditions-contents-container");
-                                                   condition_widget.update_display();
-                                                   // need to add the class before checking width and height
-                                                   css = {width:  $(condition_element_div_parent).width(),
-                                                          height: $(condition_element_div_parent).height(),
-                                                          left:   '',
-                                                          top:    ''};
-                                                   if (condition_widget.use_scaling_transform) {
-                                                       condition_widget.use_scaling_transform(css);
-                                                   } else if (condition_widget.is_backside()) {
-                                                       TT.UTILITIES.scale_element(condition_element, 
-                                                                                  css.width,
-                                                                                  css.height,
-                                                                                  condition_widget.get_original_width()  || $(condition_element).width(),
-                                                                                  condition_widget.get_original_height() || $(condition_element).height(),
-                                                                                  undefined,
-                                                                                  css);
-                                                   }
-                                                   $(condition_element).css(css);
-                                                   condition_widget.rerender();
-                                             });
+        TT.UTILITIES.run_when_dimensions_known(condition_element, function () {
+                                                                      // need to delay this to ensure this happens after original dimensions set
+                                                                      // if condition is an element widget
+                                                                      setTimeout(scale_element, 100);
+                                                                  });
         if (robot.match_status) {
             if (robot.match_status.is_widget) {
                 $(robot.match_status.get_frontside_element()).addClass("toontalk-conditions-not-matched");
