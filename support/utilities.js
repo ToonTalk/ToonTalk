@@ -2932,6 +2932,34 @@ window.TOONTALK.UTILITIES =
                     y_scale: y_scale};
         };
 
+        utilities.translate_x = function (element) {
+            var translation, ancestor;
+            if (!element) {
+                return;
+            }
+            translation = element.toontalk_translate_x || 0;
+            ancestor = element.parentElement;
+            while (ancestor) {
+                translation += ancestor.toontalk_translate_x || 0;
+                ancestor = ancestor.parentElement;
+            }
+            return translation;
+        };
+
+        utilities.translate_y = function (element) {
+            var translation, ancestor;
+            if (!element) {
+                return;
+            }
+            translation = element.toontalk_translate_y || 0;
+            ancestor = element.parentElement;
+            while (ancestor) {
+                translation += ancestor.toontalk_translate_y || 0;
+                ancestor = ancestor.parentElement;
+            }
+            return translation;
+        };
+
         utilities.add_transform_to_css = function (transform, translate, css, transform_origin_center) {
             if (!transform) {
                 return;

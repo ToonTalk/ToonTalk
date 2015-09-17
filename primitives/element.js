@@ -265,7 +265,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 // trying to figure out its original dimensions
                 return;
             }
-            if (!$(frontside_element).is(":visible")) {
+            if (!jQuery.contains(window.document, frontside_element)) {
                 // not yet visible so postpone
                 TT.UTILITIES.when_attached(frontside_element, this.apply_css.bind(this));
 //                 if (!count) {
@@ -949,12 +949,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         var adjustment, frontside_element;
         if (attribute === 'left') {
             frontside_element = this.get_frontside_element();
-            adjustment = frontside_element && frontside_element.toontalk_translate_x;
+            adjustment = TT.UTILITIES.translate_x(frontside_element);
         } else if (attribute === 'top') {
             frontside_element = this.get_frontside_element();
-            adjustment = frontside_element && frontside_element.toontalk_translate_y;
-        }
-        if (!adjustment) {
+            adjustment = TT.UTILITIES.translate_y(frontside_element);
+        } else {
             adjustment = 0;
         }
         if (typeof value !== 'undefined' && value != 'auto') {
@@ -973,14 +972,14 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             return false;
         }
         if (attribute === 'left') {
-            adjustment = frontside_element && frontside_element.toontalk_translate_x;
+            adjustment = TT.UTILITIES.translate_x(frontside_element);
         } else if (attribute === 'top') {
-            adjustment = frontside_element && frontside_element.toontalk_translate_y;
+            adjustment = TT.UTILITIES.translate_y(frontside_element);
+        } else {
+            adjustment = 0;
         }
         current_value = this.get_attribute_from_pending_css(attribute);
-        if (adjustment) {
-            new_value -= adjustment;
-        }
+        new_value -= adjustment;
         if (current_value === new_value) {
             return false;
         }
