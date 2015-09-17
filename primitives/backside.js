@@ -570,7 +570,8 @@ window.TOONTALK.backside =
 //             };
             backside.save_dimensions = function () {
                 original_x_scale = x_scale;
-                original_y_scale = y_scale;  
+                original_y_scale = y_scale;
+                return true; 
             };
             backside.restore_dimensions = function () {
                 var backside_element = this.get_element();
