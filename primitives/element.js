@@ -1657,7 +1657,9 @@ window.TOONTALK.element_backside =
             var classes = "toontalk-element-attribute-input toontalk-element-" + attribute + "-attribute-input";
             var row = document.createElement("tr");
             var td  = document.createElement("td");
-            var attribute_widget = element_widget.get_attribute_widget_in_backside_table(attribute);
+            var attribute_widget = backside.is_primary_backside() ? 
+                                   element_widget.get_attribute_widget_in_backside_table(attribute) :
+                                   backside.get_widget().create_attribute_widget(attribute);
             var attribute_frontside_element = attribute_widget.get_frontside_element(true);
             attribute_widget.set_parent_of_frontside(backside, false, true); // a white lie
             attribute_widget.set_infinite_stack(true);
