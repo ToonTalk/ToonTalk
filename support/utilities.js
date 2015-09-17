@@ -2958,7 +2958,7 @@ window.TOONTALK.UTILITIES =
             css['transform']         = transform;
         };
 
-utilities.run_when_dimensions_known = function (element, callback, recompute) {
+        utilities.run_when_dimensions_known = function (element, callback, recompute) {
             var original_parent = element.parentElement;
             var not_in_a_hole = function (parent_element) {
                 return parent_element && parent_element.className.indexOf("toontalk-box-hole") < 0;

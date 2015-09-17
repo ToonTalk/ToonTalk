@@ -318,14 +318,12 @@ window.TOONTALK.backside =
             backside.set_name_text_input = function (new_value) {
                 name_text_input = new_value;
             };
-            if (!widget.removed_from_container) {
-                widget.removed_from_container = function (side_of_other, event, index, ignore_if_not_on_backside) {
-                    if (!widget.robot_in_training()) {
-                       // robots in training take care of this (and need to record things properly)
-                       this.remove_backside_widget(side_of_other, ignore_if_not_on_backside);
-                    }
-                };
-            }
+            backside.removed_from_container = function (side_of_other, event, index, ignore_if_not_on_backside) {
+                if (!backside.get_widget().robot_in_training()) {
+                    // robots in training take care of this (and need to record things properly)
+                    this.remove_backside_widget(side_of_other, ignore_if_not_on_backside);
+                }
+            };
             backside.drop_on = function (side_of_other, event, robot) {
                 return side_of_other.widget_side_dropped_on_me(this, event, robot);
             };
