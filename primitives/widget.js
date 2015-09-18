@@ -21,16 +21,6 @@ window.TOONTALK.widget = (function (TT) {
         var widget = TT.widget.create_top_level_widget(json.settings);
         var $backside_element = $(widget.get_backside(true).get_element());
         $backside_element.addClass("toontalk-top-level-backside");
-//         widget.get_backside().update_flag_and_sign_position();
-//         $backside_element.click(
-//             function (event) {
-//                 if (event.target === $backside_element.get(0)) {
-//                     // only if directly clicked upon
-//                     widget.set_running(!widget.get_running());
-//                     event.stopPropagation();
-//                 }
-//             }
-//         );
         return widget;
     };
     

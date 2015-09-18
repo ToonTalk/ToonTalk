@@ -460,6 +460,12 @@ window.TOONTALK.UTILITIES =
         var page_y = utilities.get_mouse_or_first_touch_event_attribute("pageY", event);
         var new_target, backside_widgets_json, shared_widgets, top_level_element, top_level_backside_position, backside_widgets, 
             left, top, element_here, css, robot_in_training;
+        if (!drag_x_offset) {
+            drag_x_offset = 0;
+        }
+        if (!drag_y_offset) {
+            drag_y_offset = 0;
+        }
         source_widget_side.set_visible(true);
         if ($target.is(".toontalk-backside")) {
             if (source_widget_side.get_widget().is_top_level()) {
