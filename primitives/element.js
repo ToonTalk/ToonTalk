@@ -1147,7 +1147,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 var attribute_value, owner, decimal_value, css;
                 if (!this.get_erased()) {
                     owner = this.get_attribute_owner();
-                    if (owner.get_parent_of_frontside().is_element() && !owner.being_dragged) {
+                    if (owner.get_parent_of_frontside() && owner.get_parent_of_frontside().is_element() && !owner.being_dragged) {
                         // owner is part of an element so use its value to determine the CSS of this child
                         css = {};
                         decimal_value = bigrat.toDecimal(this.get_value());
