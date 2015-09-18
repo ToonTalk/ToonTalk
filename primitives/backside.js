@@ -191,6 +191,15 @@ window.TOONTALK.backside =
             backside_element.appendChild(stop_sign_element);
             TT.UTILITIES.use_custom_tooltip(green_flag_element);
             TT.UTILITIES.use_custom_tooltip(stop_sign_element);
+            TT.UTILITIES.when_attached(backside_element,
+                                       function () {
+                                            if (widget.is_robot()) {
+                                                backside_element.title = "On the back of the robot you can change the conditions and setting of robot."
+                                            } else {
+                                                backside_element.title = "The back of the " + widget + ". You can put robots on the back to make it come 'alive'."; 
+                                            }                  
+                                            TT.UTILITIES.use_custom_tooltip(backside_element);
+                                       });
             if (help_URL) {
                 relative_URL = help_URL.indexOf("://") < 0;
                 help_button = document.createElement(relative_URL ? "div" : "a");
