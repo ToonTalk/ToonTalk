@@ -19,7 +19,7 @@ window.TOONTALK.backside =
             var green_flag_element = document.createElement("div");
             var stop_sign_element  = document.createElement("div");
             var help_URL = widget.get_help_URL && widget.get_help_URL();
-            var parent, parent_is_backside, settings_button, visible,
+            var erased, parent, parent_is_backside, settings_button, visible,
                 original_width, original_height, original_x_scale, original_y_scale, width_at_resize_start, height_at_resize_start, 
                 close_button, backside_widgets, help_button, help_frame, close_help_button;
             var update_flag_and_stop_sign_classes = function (running) {
@@ -258,6 +258,15 @@ window.TOONTALK.backside =
                 }.bind(this));
                 if (visible) {
                     this.render();
+                }
+            };
+            backside.get_erased = function () {
+                return erased;
+            };
+            backside.set_erased = function (new_value, update_now) {
+                erased = new_value;
+                if (update_now) {
+                    this.rerender();
                 }
             };
             if (!widget.get_backside) {
@@ -661,7 +670,11 @@ window.TOONTALK.backside =
                 if (name_text_input) {
                     name_text_input.button.value = this.get_widget().get_name();
                 }
-//                 backside.update_flag_and_sign_position();
+                if (this.get_erased()) {
+                    $(backside_element).find(":not(.ui-resizable-handle, .toontalk-green-flag, .toontalk-stop-sign, .toontalk-close-button, .toontalk-help-button)").hide(); // 
+                } else {
+                    $(backside_element).find().show();      
+                }
                 backside.display_updated();
             };
             backside.display_updated = function () {
@@ -1136,6 +1149,13 @@ window.TOONTALK.backside =
             // matches if both are backsides and corresponding widgets match
             var this_widget, match_status;
             if (other.is_backside()) {
+                if (this.get_erased()) {
+                    // matches any backside of the same widget type
+                    if (this.get_widget().get_type_name() === other.get_widget().get_type_name()) {
+                        return 'matched';
+                    }
+                    return this;
+                }
                 this_widget = this.get_widget();
                 match_status = this_widget.match(other.get_widget());
                 if (match_status === this_widget) {
@@ -1236,6 +1256,7 @@ window.TOONTALK.backside =
             return {type: "backside",
                     my_widget: TT.UTILITIES.get_json(this.get_widget(), json_history),
                     css: css,
+                    erased: this.get_erased(),
                     view: {}};
         }
 
@@ -1248,5 +1269,8 @@ TOONTALK.creators_from_json['backside'] = function (json, additional_info) {
     var backside = widget.create_backside();
     var backside_element = backside.get_element();
     TOONTALK.UTILITIES.set_css(backside_element, json.css);
+    if (json.erased) {
+        backside.set_erased(json.erased);
+    }
     return backside;
 };
