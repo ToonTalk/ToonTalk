@@ -805,6 +805,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     };
     
     element.match_with_another_element_widget = function (element_pattern) {
+        // TODO: match children elements as well
         var text_pattern;
         if (this.get_HTML() === element_pattern.get_HTML()) {
             return 'matched';

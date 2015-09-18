@@ -581,7 +581,8 @@ window.TOONTALK.robot = (function (TT) {
                                     // don't match twice against the same backside widget
                                     return;
                                 }
-                                if (!backside_widget_side.is_backside()) {
+                                if (!backside_widget_side.is_backside() && backside_widget_side !== this) {
+                                    // robots ignore themselves when matching backside widgets
                                     if (clear_all_mismatch_displays) {
                                         clear_all_mismatch_displays(backside_widget_side);
                                     }
