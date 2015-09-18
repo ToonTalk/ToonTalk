@@ -1761,6 +1761,8 @@ window.TOONTALK.UTILITIES =
         utilities.set_position_relative_to_element = function ($element, $parent_element, absolute_position, stay_inside_parent) {
             var parent_position = $parent_element.offset();
             var left, top, element_width, element_height, parent_element_width, parent_element_height, css;
+            // make sure element is a child of parent_element
+            $parent_element.get(0).appendChild($element.get(0));
             if (!parent_position) {
                 parent_position = {left: 0, top: 0};
             }
