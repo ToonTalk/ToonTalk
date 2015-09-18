@@ -76,6 +76,51 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         }
         return value;
     };
+
+    var wrap_location = function (widget, css) {
+        var parent_of_frontside, left, top, changed, container_width, container_height;
+        if (css.left || css.top) {
+            // elements (like turtles) by default wrap -- TODO: make this configurable
+            if (widget.being_dragged) {
+                return;
+            }
+            parent_of_frontside = widget.get_parent_of_frontside();
+            if (parent_of_frontside) {
+                if (css.left) {   
+                    // if negative after mod add width -- do another mod in case was positive
+                    // keep it within the bounds of its container
+                    // note that if the container has scaling transforms those are ignored here
+                    container_width = parent_of_frontside.is_element() ? 
+                                      parent_of_frontside.get_original_width() :
+                                      parent_of_frontside.get_width();
+                    if (container_width > 0) {
+                        left = ((css.left%container_width)+container_width)%container_width;
+                    } else {
+                        left = css.left;
+                    }
+                    if (css.left !== left) {
+                        css.left = left;
+                        changed = true;
+                    }
+                }
+                if (css.top) {
+                    container_height = parent_of_frontside.is_element() ? 
+                                       parent_of_frontside.get_original_height() :
+                                       parent_of_frontside.get_height();
+                    if (container_height > 0) {
+                        top = ((css.top%container_height)+container_height)%container_height;
+                    } else {
+                        top = css.top;
+                    }
+                    if (css.top !== top) {
+                        css.top = top;
+                        changed = true;
+                    }
+                }
+                return changed;
+            }
+        }
+    };
     
     element.create = function (original_html, style_attributes, description, children, sound_effect_or_sound_effect_file_name, video_object_or_video_file_name, ignore_pointer_events, additional_classes) {
         var new_element = Object.create(element);
@@ -252,7 +297,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         };
         new_element.apply_css = function () {
             var transform = "";
-            var frontside_element, container_width, container_height, parent_of_frontside, wrap_location, current_pending_css;
+            var frontside_element, current_pending_css;
             if (!pending_css && !transform_css) {
                 return;
             }
@@ -281,35 +326,6 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
 //                 }
                 return;
             }
-            wrap_location = function (css) {
-                if (css.left || css.top) {
-                    // elements (like turtles) by default wrap -- TODO: make this configurable
-                    parent_of_frontside = this.get_parent_of_frontside();
-                    if (parent_of_frontside) {
-                        if (css.left) {   
-                            // if negative after mod add width -- do another mod in case was positive
-                            // keep it within the bounds of its container
-                            // note that if the container has scaling transforms those are ignored here
-                            container_width = parent_of_frontside.is_element() ? 
-                                              parent_of_frontside.get_original_width() :
-                                              parent_of_frontside.get_width();
-//                             if (current_width !== undefined) {
-//                                 container_width -= current_width;
-//                             }
-                            css.left = ((css.left%container_width)+container_width)%container_width;
-                        }
-                        if (css.top) {
-                            container_height = parent_of_frontside.is_element() ? 
-                                               parent_of_frontside.get_original_height() :
-                                               parent_of_frontside.get_height();
-//                             if (current_height !== undefined) {
-//                                 container_height -= current_height;
-//                             }
-                            css.top = ((css.top%container_height)+container_height)%container_height;
-                        }
-                    }
-                }
-            }.bind(this);
             if (pending_css) {
                 if (pending_css.width) {
                     current_width  = pending_css.width;
@@ -349,7 +365,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 TT.UTILITIES.run_when_dimensions_known(frontside_element,
                                                        function (original_parent) {
                                                            var parent = this.get_parent_of_frontside();
-                                                           wrap_location(current_pending_css);
+                                                           wrap_location(this, current_pending_css);
                                                            TT.UTILITIES.scale_element(frontside_element,
                                                                                       current_width,
                                                                                       current_height,
@@ -365,7 +381,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 return;
             } else {
                 // use center center for transform-origin unless in a box hole
-                wrap_location(pending_css);
+                wrap_location(this, pending_css);
                 TT.UTILITIES.add_transform_to_css(transform, "", pending_css, frontside_element.parentElement.className.indexOf("toontalk-box-hole") < 0);
                 $(frontside_element).css(pending_css);
             }
@@ -1128,10 +1144,23 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 return widget_equals.call(this, other);
             };
             attribute_widget.update_display = function () {
-                var attribute_value;
+                var attribute_value, owner, decimal_value, css;
                 if (!this.get_erased()) {
-                    attribute_value = this.get_attribute_owner().get_attribute(this.attribute);
-                    value_setter(attribute_value);
+                    owner = this.get_attribute_owner();
+                    if (owner.get_parent_of_frontside().is_element() && !owner.being_dragged) {
+                        // owner is part of an element so use its value to determine the CSS of this child
+                        css = {};
+                        decimal_value = bigrat.toDecimal(this.get_value());
+                        css[this.attribute] = decimal_value;
+                        if (wrap_location(owner, css)) {
+                            this.set_value(css[this.attribute]);
+                        }
+                        $(owner.get_frontside_element()).css(css);
+                    } else {
+                        // if owner is "free" (not a child of another element widget) then it should be updated with the current value
+                        attribute_value = owner.get_attribute(this.attribute);
+                        value_setter(attribute_value);
+                    }
                 }
                 widget_update_display.call(this);
             };
@@ -1223,7 +1252,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     // since bigrat.toDecimal works by converting the numerator and denominator to JavaScript numbers
                     // so best to approximate -- also should be faster to do arithmetic
                     var copies = this_element_widget.get_original_copies()[attribute_name];
-                    var decimal_value = bigrat.toDecimal(new_value);
+                    var decimal_value = typeof new_value === 'number' ? new_value : bigrat.toDecimal(new_value);
                     var value_approximation = bigrat.fromDecimal(decimal_value);
                     if (this.get_attribute_owner().set_attribute(this.attribute, decimal_value)) {
                         // if the new_value is different from the current value
@@ -1302,6 +1331,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                             if (event.currentTarget.toontalk_widget_side !== attribute_widget.get_attribute_owner()) {
                                 return;
                             }
+                            event.stopPropagation();
                             top_level_position = $(owner.get_frontside_element()).closest(".toontalk-top-level-backside").offset();
                             if (!top_level_position) {
                                 console.log("Unable to find top-level backside of an element for its position. Perhaps is 'visible' but not attached.");
@@ -1609,7 +1639,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
            // update the backside during drag if 'left' or 'top' are attributes
            if (attribute === 'left') {
                frontside_element = this.get_frontside_element();
-               $(frontside_element).on('drag', function (event) {
+               $(frontside_element).addEventListener('drag', function (event) {
                    var backside_element  = this.get_backside_element(true);
                    var frontside_element = this.get_frontside_element();
                    if (backside_element && frontside_element) {
@@ -1619,7 +1649,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                }.bind(this));
            } else if (attribute === 'top') {
                frontside_element = this.get_frontside_element();
-               $(frontside_element).on('drag', function (event) {
+               $(frontside_element).addEventListener('drag', function (event) {
                    var backside_element  = this.get_backside_element(true);
                    var frontside_element = this.get_frontside_element();
                    if (backside_element && frontside_element) {
