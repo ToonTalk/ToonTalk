@@ -733,6 +733,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             }
             // signal event in case a sensor is listening
             $this_element.get(0).dispatchEvent(new CustomEvent('widget added', {detail: {element_widget: $widget_element.get(0)}}));
+            if (this.robot_in_training()) {
+                this.robot_in_training().dropped_on(widget, this);
+            }
         };
         new_element.removed_from_container = function (child_side, event, index, report_error_if_no_index) {
             var index = children.indexOf(child_side);
