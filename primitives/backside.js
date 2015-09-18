@@ -920,7 +920,7 @@ window.TOONTALK.backside =
         },
 
        get_type_name: function () {
-           return "the backside of " + TT.UTILITIES.add_a_or_an(this.get_widget().get_type_name());
+           return "backside of " + TT.UTILITIES.add_a_or_an(this.get_widget().get_type_name());
        },
         
        hide_backside: function (event) {
