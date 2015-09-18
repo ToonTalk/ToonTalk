@@ -301,6 +301,9 @@ window.TOONTALK.UTILITIES =
             $target.show();
             if (new_target) {
                 $target = $(new_target).closest(".toontalk-side");
+                if ($target.length === 0) {
+                    return;
+                }
                 target_position = $target.offset();
                 target_widget_side = utilities.widget_side_of_jquery($target);
             }
