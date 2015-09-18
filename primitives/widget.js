@@ -734,18 +734,14 @@ window.TOONTALK.widget = (function (TT) {
                 return ancestor;
             };
             widget.has_ancestor = function (other) {
-                var ancestor = this;
-                var new_ancestor;
-                while (ancestor) {
-                    if (other === ancestor) {
-                        return true;
-                    }
-                    if (ancestor.is_backside()) {
-                        new_ancestor = ancestor.get_widget().get_parent_of_backside();                     
-                    } else {
-                        new_ancestor = ancestor.get_parent_of_frontside();
-                    }
-                    ancestor = new_ancestor;
+                // goes up the ancestor tree following backside or frontside parent as appropriate
+                var parent;
+                if (this === other) {
+                    return true;
+                }
+                parent = this.get_parent_of_frontside();
+                if (parent) {
+                    return parent.has_ancestor(other);
                 }
                 return false;
             };

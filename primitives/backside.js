@@ -1134,11 +1134,31 @@ window.TOONTALK.backside =
 
         match: function (other) {
             // matches if both are backsides and corresponding widgets match
+            var this_widget, match_status;
             if (other.is_backside()) {
-                return this.get_widget().match(other.get_widget());
+                this_widget = this.get_widget();
+                match_status = this_widget.match(other.get_widget());
+                if (match_status === this_widget) {
+                   // other widget failed to match so the problem is this backside not the front side
+                   return this;
+                }
+                return match_status;
             }
             other.last_match = this;
             return other;
+        },
+
+        has_ancestor: function (other) {
+            // goes up the ancestor tree following backside or frontside parent as appropriate
+            var parent;
+            if (this === other) {
+                return true;
+            }
+            parent = this.get_parent_of_backside();
+            if (parent) {
+                return parent.has_ancestor(other);
+            }
+            return false;
         },
 
         get_backside: function () {
