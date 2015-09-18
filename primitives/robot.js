@@ -917,8 +917,8 @@ window.TOONTALK.robot = (function (TT) {
         var do_removal =
             function () {
                 // if part has already been removed from a nest in another container
-                // the following will ignore this due to the last argument being false
-                container.removed_from_container(part_side, undefined, index, false);
+                // the following will ignore this due to the last argument being true
+                container.removed_from_container(part_side, undefined, index, true);
         };
         if (this.animate_consequences_of_actions()) {
             // if animating then delay removing it
