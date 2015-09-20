@@ -1095,10 +1095,15 @@ window.TOONTALK.UTILITIES =
             return json;
         };
         
-        utilities.fresh_json_history = function () {
-            return {widgets_encountered: [],
-                    shared_widgets: [],
-                    json_of_widgets_encountered: []};
+        utilities.fresh_json_history = function (current_json_history) {
+            var json_history = {widgets_encountered: [],
+                                shared_widgets: [],
+                                json_of_widgets_encountered: []};
+            if (current_json_history && current_json_history.shared_html) {
+                // fresh except for shared_html which just to avoid repeating large chunks of HTML
+                json_history.shared_html = current_json_history.shared_html;
+            }
+            return json_history;
         };
         
         utilities.get_json_top_level = function (widget_side) {

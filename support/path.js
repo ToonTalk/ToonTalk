@@ -223,7 +223,7 @@ window.TOONTALK.path =
             if (path.not_to_be_dereferenced) {
                 json.not_to_be_dereferenced = true;
             }
-            if (path.is_backside) {
+            if (path.is_backside && path.is_backside()) {
                 json.is_backside = true;
             }
             return json;
@@ -293,10 +293,11 @@ window.TOONTALK.path =
                     toString: function (to_string_info) {
                         return TT.UTILITIES.add_a_or_an(widget.toString(to_string_info));
                     },
-                    get_json: function () {
+                    get_json: function (json_history) {
                         return {type: "path.to_resource",
-                                // following resets json_history since within a path there shouldn't be sharing without the 'outside'
-                                resource: TT.path.get_json(widget, TT.UTILITIES.fresh_json_history())};
+                                // following resets json_history since within a path there shouldn't be sharing with the 'outside'
+                                // except for shared HTML (which is just an optimisation)
+                                resource: TT.path.get_json(widget, TT.UTILITIES.fresh_json_history(json_history))};
                     }
             };
         },
