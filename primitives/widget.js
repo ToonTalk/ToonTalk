@@ -1090,12 +1090,12 @@ window.TOONTALK.widget = (function (TT) {
                     if (widget_side.is_backside()) {
                         parent_of_backside = widget_side.get_parent();
                         if (parent_of_backside && parent_of_backside.get_widget() === this) {
-                            widget.set_parent_of_backside(undefined, true, true);
+                            widget_side.set_parent_of_backside(undefined, true, true);
                         }
                     } else {
                         parent_of_frontside = widget_side.get_parent_of_frontside();
                         if (parent_of_frontside && parent_of_frontside.get_widget() === this) {
-                            widget.set_parent_of_frontside(undefined, undefined, true);
+                            widget_side.set_parent_of_frontside(undefined, undefined, true);
                         }       
                     }
                     widget_side.set_visible(false);
