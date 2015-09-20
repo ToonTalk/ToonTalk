@@ -892,7 +892,7 @@ window.TOONTALK.nest = (function (TT) {
                 this.to_run_when_unlocked = [listener];
             }
         };
-        new_nest.removed_from_container = function (part_side, event, index, report_error_if_nothing_removed) {
+        new_nest.removed_from_container = function (part_side, event) {
             var removed = contents.shift();
             if (TT.logging && TT.logging.indexOf("nest") >= 0) {
                 console.log(this.to_debug_string() + " removed " + removed.to_debug_string() + " remaining widgets is " + contents.length);

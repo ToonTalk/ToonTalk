@@ -737,7 +737,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 this.robot_in_training().dropped_on(widget, this);
             }
         };
-        new_element.removed_from_container = function (child_side, event, index, report_error_if_no_index) {
+        new_element.removed_from_container = function (child_side, event) {
             var index = children.indexOf(child_side);
             if (index >= 0) {
                 children.splice(index, 1);

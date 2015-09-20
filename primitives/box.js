@@ -684,19 +684,17 @@ window.TOONTALK.box = (function (TT) {
         return part.get_parent_of_frontside() && part.get_parent_of_frontside().get_index && part.get_parent_of_frontside().get_index();
     };
     
-    box.removed_from_container = function (part_side, event, index, report_error_if_no_index) {
+    box.removed_from_container = function (part_side, event) {
         var update_display = !!event;
+        var index = this.get_index_of(part_side);
         var hole, part_frontside_element;
-        if (typeof index === 'undefined') {
-            index = this.get_index_of(part_side);
-        }
         if (index >= 0) {
             this.set_hole(index, undefined, update_display);
             if (update_display) {
                 this.rerender();
                 part_side.restore_dimensions();
             }
-        } else if (report_error_if_no_index) {
+        } else if (TT.debugging) {
             TT.UTILITIES.report_internal_error("Attempted to remove " + part_side + " from " + this + " but not found.");
         }
     };

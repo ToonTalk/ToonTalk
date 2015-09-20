@@ -359,7 +359,7 @@ window.TOONTALK.UTILITIES =
                         if ($container.is(".toontalk-backside")) {
                             container.remove_backside_widget(source_widget_side, true);
                         } else {
-                            container.removed_from_container(source_widget_side, event, undefined, true);
+                            container.removed_from_container(source_widget_side, event);
                             if (source_widget_side.restore_dimensions && !container.is_empty_hole()) {
                                 // TODO: unclear whether callers removed_from_container should restore_dimensions
                                 // or removed_from_container itself

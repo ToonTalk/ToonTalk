@@ -744,7 +744,7 @@ window.TOONTALK.widget = (function (TT) {
                          if (parent_of_frontside_is_backside) {
                             parent_of_frontside.remove_backside_widget(this, true);
                          } else {
-                            parent_of_frontside.removed_from_container(this, event, undefined, true);
+                            parent_of_frontside.removed_from_container(this, event);
                          }
                      }
                  }
@@ -1586,10 +1586,10 @@ window.TOONTALK.widget = (function (TT) {
             top_level_widget.runnable(top_level_widget);
             top_level_widget.has_parent(top_level_widget);
             top_level_widget.has_backside_widgets(top_level_widget);
-            top_level_widget.removed_from_container = function (side_of_other, event, index, ignore_if_not_on_backside) {
+            top_level_widget.removed_from_container = function (side_of_other, event) {
                 if (!this.robot_in_training()) {
                    // robots in training take care of this (and need to to record things properly)
-                   this.remove_backside_widget(side_of_other, ignore_if_not_on_backside);
+                   this.remove_backside_widget(side_of_other, true);
                 };
             };
             top_level_widget.widget_side_dropped_on_me = function (side_of_other, event, robot, ignore_training) {
