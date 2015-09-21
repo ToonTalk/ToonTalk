@@ -2808,7 +2808,6 @@ window.TOONTALK.UTILITIES =
                                 },
                                 stop: function (event, ui) {
                                     if (widget.robot_in_training && widget.robot_in_training()) {
-                                        // backsides don't define robot_in_training -- might reconsider this someday
                                         widget.robot_in_training().resized_widget(widget, previous_width, previous_height, ui.size.width, ui.size.height);
                                     }
                                 },

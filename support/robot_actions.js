@@ -168,7 +168,9 @@ window.TOONTALK.actions =
                     }
                     if (robot.get_run_once()) {
                         first_robot.set_running(false);
-                    } else if (!robot.stopped()) {
+                    } else if (robot.stopped()) {
+                        $(frontside_element).removeClass(".toontalk-side-animating");
+                    } else {
                         first_robot.run(context, top_level_context, queue);
                     }
                     robot.rerender();
