@@ -199,7 +199,7 @@
 	cursor: pointer;
 	vertical-align: middle;
 	text-align: center;
-	overflow: visible; /* removes extra width in IE */
+	overflow: visible;/* removes extra width in IE */
 }
 .ui-button,
 .ui-button:link,
@@ -250,7 +250,7 @@ button.ui-button-icons-only {
 }
 /* no icon support for input elements, provide padding by default */
 input.ui-button {
-	padding: .4em 1em;
+/* 	padding: .4em 1em; */
 }
 
 /* button icon element(s) */
@@ -1749,9 +1749,11 @@ padding-bottom:  8%;}
     color: inherit;
     background: none;
     cursor: text;
+    height: 24pt;
 }
 .toontalk-text-area {
 	background-color: white;
+	height: 24pt;
 }
 .toontalk-numerator-input {
 }
