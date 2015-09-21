@@ -307,12 +307,14 @@ window.TOONTALK.robot_action =
                             $top_level_element.get(0).appendChild(thing_in_hand_element);
                         }
                     }
-                    TT.UTILITIES.set_absolute_position(thing_in_hand_element, thing_in_hand_position);
-                    thing_in_hand.restore_dimensions();
                 }
                 robot.rerender();
             }
             continuation();
+            if (thing_in_hand.drop_on) {
+                TT.UTILITIES.set_absolute_position(thing_in_hand_element, thing_in_hand_position);
+                thing_in_hand.restore_dimensions();
+            }
             if (thing_in_hand.robot_waiting_before_next_step !== robot) {
                 robot.run_next_step();
             }
