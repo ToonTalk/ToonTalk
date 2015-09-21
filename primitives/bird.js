@@ -501,12 +501,10 @@ window.TOONTALK.bird = (function (TT) {
             var backside = this.get_backside(); 
             var bird_image, frontside_element;
             frontside_element = frontside.get_element();
-            if (nest) {
-                frontside_element.setAttribute('toontalk_name', nest.get_name());
-            }
+            frontside_element.setAttribute('toontalk_name', this.get_name());
             TT.UTILITIES.give_tooltip(frontside_element, this.get_title());
             if (!$(frontside_element).is(".toontalk-bird, .toontalk-side-animating")) {
-                $(frontside_element).addClass(this.get_class_name_with_color("toontalk-bird toontalk-bird-static"));
+                $(frontside_element).addClass("toontalk-bird-static " + this.get_class_name_with_color("toontalk-bird toontalk-bird-static"));
                 frontside_element.addEventListener("dragenter", function (event) {
                     if (frontside_element.className.indexOf("toontalk-bird-static") >= 0) {
                         $(frontside_element).removeClass("toontalk-bird-static " + this.get_class_name_with_color("toontalk-bird-static"));
