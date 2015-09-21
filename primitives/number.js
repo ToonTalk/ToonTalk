@@ -435,16 +435,20 @@ window.TOONTALK.number = (function () {
         var border_size = 28;
         var frontside_element, $dimensions_holder, client_width, client_height, border_size,
             font_height, font_width, max_decimal_places, new_HTML, backside, 
-            size_unconstrained_by_container, parent_widget, child_element;
+            size_unconstrained_by_container, no_borders, parent_widget, child_element;
         if (TT.logging && TT.logging.indexOf('display') >= 0) {
             console.log("Updating display of " + this.to_debug_string());
         }
         frontside_element = frontside.get_element();
         if ($(frontside_element).is(".toontalk-conditions-contents")) {
             $dimensions_holder = $(frontside_element);
-        } else if ($(frontside_element).parent().is(".toontalk-backside, .toontalk-json, .toontalk-element-frontside")) {
+        } else if ($(frontside_element).parent().is(".toontalk-backside, .toontalk-json")) {
             $dimensions_holder = $(frontside_element);
             size_unconstrained_by_container = true;
+        } else if ($(frontside_element).parent().is(".toontalk-element-frontside")) {
+            $dimensions_holder = $(frontside_element);
+            size_unconstrained_by_container = true;
+            no_borders = true;
         } else if ($(frontside_element).parent().is(".toontalk-scale-half")) {
             // scales set the size of contents explicitly 
             $dimensions_holder = $(frontside_element);
@@ -467,7 +471,7 @@ window.TOONTALK.number = (function () {
             client_height = 100;
         } else  if ($(frontside_element).is(".toontalk-held-by-robot")) {
             client_width  = 76;
-            client_height =  55;
+            client_height = 55;
         } else if ($(frontside_element).is(".toontalk-element-attribute")) {
             // good enough if this number is an element attribute
             client_width  = 200;
@@ -478,7 +482,7 @@ window.TOONTALK.number = (function () {
             if (!client_width || !client_height) {
                 // TODO: generalise this
                 client_width  = 76;
-                client_height =  55;
+                client_height = 55;
                 $(frontside_element).css({width:  client_width,
                                           height: client_height});
             }
@@ -507,9 +511,18 @@ window.TOONTALK.number = (function () {
                 client_height *= TT.nest.CONTENTS_HEIGHT_FACTOR;
             }
         }
+        child_element = $(frontside_element).children(".toontalk-widget");
+        if (child_element.is("*")) {
+            child_element = child_element.get(0);
+        } else {
+            child_element = document.createElement('div');
+            frontside_element.appendChild(child_element);
+        }
         $(frontside_element).removeClass("toontalk-number-eighth-size-border toontalk-number-quarter-size-border toontalk-number-half-size-border toontalk-number-full-size-border");
         border_size = this.get_border_size(client_width, client_height);
-        if (border_size === 4) {
+        if (no_borders) {
+            // e.g. part of an element widget
+        } else if (border_size === 4) {
             $(frontside_element).addClass("toontalk-number-eighth-size-border toontalk-number");
         } else if (border_size === 8) {
             $(frontside_element).addClass("toontalk-number-quarter-size-border toontalk-number");
@@ -529,13 +542,6 @@ window.TOONTALK.number = (function () {
         if (TT.UTILITIES.on_a_nest_in_a_box(frontside_element)) {
             // need to work around a CSS problem where nested percentage widths don't behave as expected
             new_HTML = add_to_style(new_HTML, "width:" + client_width + "px;");
-        }
-        child_element = $(frontside_element).children(".toontalk-widget");
-        if (child_element.is("*")) {
-            child_element = child_element.get(0);
-        } else {
-            child_element = document.createElement('div');
-            frontside_element.appendChild(child_element);
         }
         child_element.innerHTML = new_HTML;
         // numbers looked wrong when translated (extra spaces between digits)
