@@ -223,7 +223,9 @@ window.TOONTALK.path =
             if (path.not_to_be_dereferenced) {
                 json.not_to_be_dereferenced = true;
             }
-            if (path.is_backside && path.is_backside()) {
+            if (path.is_backside === true || (path.is_backside && path.is_backside())) {
+                // TODO: rationalise this -- in one case is_backside is a flag of a path 
+                // in the other the path is itself the backside of a widget
                 json.is_backside = true;
             }
             return json;
