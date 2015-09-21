@@ -803,7 +803,10 @@ window.TOONTALK.backside =
             description_text_area.button.addEventListener('change',   description_change);
             description_text_area.button.addEventListener('mouseout', description_change);
             this.set_description_text_area(description_text_area);
-            (container_element || this.get_backside_element(true)).appendChild(TT.UTILITIES.create_row(description_text_area.container));                                                      
+            (container_element || this.get_backside_element(true)).appendChild(TT.UTILITIES.create_row(description_text_area.container));
+            if (!widget.get_description()) {
+                description_text_area.button.setAttribute('placeholder', TT.UTILITIES.add_a_or_an(type_name) + ".");
+            }                                                 
         },
 
         add_name_setting: function (container_element) {
@@ -922,12 +925,16 @@ window.TOONTALK.backside =
             settings.appendChild(TT.UTILITIES.create_row($make_sensor_nest_button.get(0), $make_function_bird_button.get(0), infinite_stack_check_box.container));
             if (!this.is_primary_backside()) {
                 $create_remove_widget_button = $("<button>Remove me and my widget</button>").button();
+                // TODO: decide if more buttons are needed -- e.g. to copy the widget
                 $create_remove_widget_button.get(0).addEventListener('click',
                                                                      function () {                                 
                                                                          if (widget.robot_in_training()) {
                                                                              widget.robot_in_training().removed(widget);
                                                                              widget.robot_in_training().removed(this);
                                                                          }
+                                                                         // TODO: determine if this should work more like vacuuming?
+                                                                         // and maybe can undo by spitting them out again
+                                                                         // note robots animate this as if the vacuum was used
                                                                          this.remove();
                                                                          widget.remove();
                                                                      }.bind(this));
