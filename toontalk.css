@@ -1605,6 +1605,9 @@ body {
 /* 	looks better with a smaller font when scaled to fit in a hole */
 	font-size: .8em;
 }
+.toontalk-element-frontside > .toontalk-plain-text-element {
+	background-color: transparent;
+}
 .toontalk-box-hole {
 	position: absolute;
 /*     width:  100%;
