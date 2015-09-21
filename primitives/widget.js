@@ -896,7 +896,7 @@ window.TOONTALK.widget = (function (TT) {
         },
         
         add_to_json: function (json_semantic, json_history) {
-            var json_view, json, position, frontside_element, backside, backside_element, frontside_width;
+            var json_view, json, position, frontside_element, parent_widget_of_frontside, backside, backside_element, frontside_width;
             if (json_semantic) {
                 if (json_semantic.view) {
                     // already contains both semantic and view
@@ -918,7 +918,8 @@ window.TOONTALK.widget = (function (TT) {
                 if (this.get_running && this.get_running()) {
                     json_semantic.running = true;
                 }
-                if (!this.get_parent_widget_of_frontside() || this.parent_of_frontside_is_backside()) {
+                parent_widget_of_frontside = this.get_parent_widget_of_frontside();
+                if (!parent_widget_of_frontside || this.parent_of_frontside_is_backside() || parent_widget_of_frontside.is_element()) {
                     // otherwise geometry isn't needed now
                     frontside_element = this.get_frontside_element && this.get_frontside_element();
                     if (frontside_element) {
