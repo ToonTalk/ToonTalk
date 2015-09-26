@@ -1559,6 +1559,18 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             reconstructed_element.set_source_URL(json.source_URL);
             reconstructed_element.refresh();
         }
+        if (children) {
+            TT.UTILITIES.when_attached(function () {
+                 children.forEach(function (child, index) {
+                    var view = json.children[index].widget && json.children[index].widget.view;
+                    if (view) {
+                        TT.UTILITIES.set_css(child.get_frontside_element(true),
+                                             {left: view.frontside_left,
+                                              top:  view.frontside_top});
+                    }
+                });
+            });
+        }
         return reconstructed_element;
     };
     
