@@ -117,7 +117,7 @@ window.TOONTALK.SETTINGS =
         };
         var $elements_needing_click_handlers = $(table).find(".toontalk-file-load-button-without-click-handler");
         $elements_needing_click_handlers.each(function (index, element) {
-            element.addEventListener(program_click_handler);
+            element.addEventListener('click', program_click_handler);
         });
         $elements_needing_click_handlers.removeClass("toontalk-file-load-button-without-click-handler");
     };
