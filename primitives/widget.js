@@ -381,7 +381,7 @@ window.TOONTALK.widget = (function (TT) {
 //                     }
                     backside_widgets = this.get_backside_widgets();
                     running = new_value;
-                    if (this.get_backside()) {
+                    if (this.get_backside() && !unchanged_value) {
                         this.get_backside().run_status_changed(running);
                     }
                     backside_widgets.forEach(function (backside_widget_side) {
@@ -871,7 +871,9 @@ window.TOONTALK.widget = (function (TT) {
             if (parent_of_frontside) {
                 this.remove_from_parent_of_frontside(event);
             }
-            this.set_running(false);
+            if (this.get_running()) {
+                this.set_running(false);
+            }
             this.set_visible(false); // in case robot vacuumed the widget while it was animating
             if (this.walk_children && !do_not_remove_children) {
                 this.walk_children(function (child) {
@@ -1066,9 +1068,10 @@ window.TOONTALK.widget = (function (TT) {
                     if (!backside_widgets) {
                         return;
                     }
-                    while (backside_widgets.length > 0) {
-                        backside_widgets[0].remove();
-                    }
+                    // slice() is to copy the array since calls to remove() may alter the array
+                    backside_widgets.slice().forEach(function (backside_widget) {
+                            backside_widget.remove();
+                    });
                 };
 
                 widget.remove_backside_widget = function (widget_side, ignore_if_not_on_backside) {
