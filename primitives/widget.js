@@ -1262,6 +1262,10 @@ window.TOONTALK.widget = (function (TT) {
         get_parent: function () {
             return this.get_parent_of_frontside();
         },
+
+        set_parent: function (new_parent) {
+            this.set_parent_of_frontside(new_parent);
+        },
         
         drag_started: function (json, is_resource) {
             // by default records this if robot is being trained

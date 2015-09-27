@@ -246,6 +246,8 @@ window.TOONTALK.sensor = (function (TT) {
                                  backside_of_widget_value = TT.UTILITIES.widget_side_of_element(event.detail.element_widget).create_backside();
                                  backside_of_widget_value.save_dimensions();
                                  return backside_of_widget_value;
+                             } else if (event.detail && event.detail[attribute] !== undefined) {
+                                 return event.detail[attribute];
                              }
                              value = "No " + attribute + " in event " + event + " of sensor " + sensor;
                              TT.UTILITIES.display_message(value);

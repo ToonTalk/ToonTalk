@@ -378,12 +378,13 @@ window.TOONTALK.backside =
                             $(side_of_other_element).addClass("toontalk-widget-added-to-backside-by-unwatched-robot");
                         }
                         if (event && !side_of_other.is_backside()) {
-                            window.dispatchEvent(new CustomEvent('widget added', {detail: {element_widget: side_of_other_element}}));
+                            window.dispatchEvent(new CustomEvent('widget added', {detail: {element_widget: side_of_other_element,
+                                                                                           where: 'back'}}));
                         }
                     }
                     if (event && !side_of_other.is_backside()) {
                         this.get_frontside_element().dispatchEvent(new CustomEvent('widget added', {detail: {element_widget: side_of_other_element,
-                                                                                                             on_backside: true}}));
+                                                                                                             where: 'back'}}));
                     }
                     if (widget.robot_in_training() && !ignore_training && event) {
                         // delay this so it can record where the other was dropped
