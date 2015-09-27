@@ -377,6 +377,13 @@ window.TOONTALK.backside =
                             // TODO: determine if this is not visible when side_of_other_element is undefined
                             $(side_of_other_element).addClass("toontalk-widget-added-to-backside-by-unwatched-robot");
                         }
+                        if (event && !side_of_other.is_backside()) {
+                            window.dispatchEvent(new CustomEvent('widget added', {detail: {element_widget: side_of_other_element}}));
+                        }
+                    }
+                    if (event && !side_of_other.is_backside()) {
+                        this.get_frontside_element().dispatchEvent(new CustomEvent('widget added', {detail: {element_widget: side_of_other_element,
+                                                                                                             on_backside: true}}));
                     }
                     if (widget.robot_in_training() && !ignore_training && event) {
                         // delay this so it can record where the other was dropped
@@ -518,6 +525,16 @@ window.TOONTALK.backside =
                 scales = TT.UTILITIES.scale_to_fit(this_element, other_element, original_width, original_height);
                 x_scale = scales.x_scale;
                 y_scale = scales.y_scale;
+            };
+            backside.scale_to = function (new_width, new_height) {
+                var scales;
+                if (!original_width && this.get_widget().backside_geometry) {
+                    original_width  = this.get_widget().backside_geometry.original_width;
+                    original_height = this.get_widget().backside_geometry.original_height;  
+                }
+                scales = TT.UTILITIES.scale_element(this.get_element(true), new_width, new_height, original_width, original_height);
+                x_scale = scales.x_scale;
+                y_scale = scales.y_scale;  
             };
             backside.get_original_width = function () {
                 return original_width;
@@ -1214,6 +1231,22 @@ window.TOONTALK.backside =
             return this.get_parent_of_backside();
         },
 
+        set_parent: function (new_parent) {
+            this.set_parent_of_backside(new_parent);
+        },
+
+        maintain_proportional_dimensions: function () {
+            return false;
+        },
+
+        set_running: function () {
+            // ignore it since only frontsides "run"
+        },
+
+        dereference: function () {
+            return this;
+        },
+
         is_of_type: function (type_name) {
             return this.get_widget().is_of_type(type_name);
         },
@@ -1231,6 +1264,14 @@ window.TOONTALK.backside =
         },
 
         is_element: function () {
+            return false;
+        },
+
+        is_sensor: function () {
+            return false;
+        },
+
+        is_plain_text_element: function () {
             return false;
         },
 
