@@ -193,8 +193,9 @@ window.TOONTALK.bird = (function (TT) {
                 }.bind(this);
             var carry_element = 
                 function (element, widget_side) {
-                    element.width_before_carry  = $(element).width();
-                    element.height_before_carry = $(element).height();
+                    // CSS uses .8 and .4 for scaling relative to bird dimensions
+                    element.width_before_carry  = $(element).width()  || $(this.get_frontside_element(true)).width() *0.8;
+                    element.height_before_carry = $(element).height() || $(this.get_frontside_element(true)).height()*0.4;
                     this.element_to_display_when_flying = element;
                     if (widget_side) {
                         this.update_display();
