@@ -2946,12 +2946,12 @@ window.TOONTALK.UTILITIES =
             if (new_width && original_width !== 0) {
                 x_scale = new_width/original_width;
             } else {
-                x_scale = 1;
+                x_scale =  element.toontalk_x_scale || 1;
             }
             if (new_height && original_height !== 0) {
                 y_scale = new_height/original_height;
             } else {
-                y_scale = 1;
+                y_scale =  element.toontalk_y_scale || 1;
             }
             // e.g. new_width was 0
             if (x_scale === 0) {
@@ -3633,7 +3633,7 @@ window.TOONTALK.UTILITIES =
                    css.height = '';
                }
            }
-           if (!css.transform && css.width !== undefined && css.height !== undefined &&
+           if (!css.transform && typeof css.width === 'number' && typeof css.height === 'number' &&
                widget_side && widget_side.use_scaling_transform) {
                // leave CSS width and height alone and recompute scaling transform
                // following will call set_css again with modified css
