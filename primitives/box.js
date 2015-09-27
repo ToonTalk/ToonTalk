@@ -694,9 +694,8 @@ window.TOONTALK.box = (function (TT) {
                 this.rerender();
                 part_side.restore_dimensions();
             }
-        } else if (TT.debugging) {
-            TT.UTILITIES.report_internal_error("Attempted to remove " + part_side + " from " + this + " but not found.");
         }
+        // otherwise might have already been removed (e.g. by unwatched robot action called by watched robot)
     };
     
     box.get_path_to = function (widget, robot) {
