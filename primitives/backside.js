@@ -1276,6 +1276,10 @@ window.TOONTALK.backside =
             return false;
         },
 
+        is_nest: function () {
+            return false;
+        },
+
         // TODO: more is_* and return false
 
         save_dimensions: function () {

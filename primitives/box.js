@@ -1233,6 +1233,16 @@ window.TOONTALK.box_hole =
                 }
                 return false;
             };
+            hole.get_original_width = function () {
+                if (contents && contents.get_original_width) {
+                    return contents.get_original_width();
+                }
+            };
+            hole.get_original_height = function () {
+                if (contents && contents.get_original_height) {
+                    return contents.get_original_height();
+                }
+            };
             hole.is_sensor = function () {
                 if (contents) {
                     return contents.is_sensor();
