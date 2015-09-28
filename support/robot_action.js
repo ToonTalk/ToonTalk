@@ -256,8 +256,7 @@ window.TOONTALK.robot_action =
                                 true,
                                 robot.transform_original_step_duration(additional_info && additional_info.time));
     };
-    var pick_up_animation = function (widget, context, top_level_context, robot, continuation, additional_info) {
-        var frontside_element = widget.get_frontside_element();
+    var pick_up_animation = function (widget_side, context, top_level_context, robot, continuation, additional_info) {
         var new_continuation = function () {
             continuation();
             if (robot.animate_consequences_of_actions()) {
@@ -267,12 +266,12 @@ window.TOONTALK.robot_action =
             }
             robot.run_next_step();
         };
-        if (widget.get_type_name() === 'empty hole') {
+        if (TT.debugging && widget_side.get_type_name() === 'empty hole') {
             TT.UTILITIES.report_internal_error("Robot trying to pick up an empty hole.");
             return;
         }
-        if (widget.save_dimensions() && robot.animate_consequences_of_actions()) {
-            move_robot_animation(widget, robot, new_continuation, additional_info);
+        if (widget_side.save_dimensions() && robot.animate_consequences_of_actions()) {
+            move_robot_animation(widget_side, robot, new_continuation, additional_info);
         } else {
             new_continuation();
         }

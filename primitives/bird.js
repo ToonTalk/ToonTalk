@@ -1015,8 +1015,8 @@ window.TOONTALK.nest = (function (TT) {
                         robot.add_watched_step_end_listeners(function () {
                             // run this after step has finished since removal from parent may happen during this step
                             $top_level_backside_element.get(0).appendChild(widget_element);
-                            TT.UTILITIES.set_absolute_position(widget_element, {left: left, 
-                                                                                 top: top});
+                            TT.UTILITIES.set_css(widget_element, {left: left, 
+                                                                   top: top});
                             });
                     }
                 }
