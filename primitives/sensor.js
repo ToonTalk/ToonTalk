@@ -230,7 +230,13 @@ window.TOONTALK.sensor = (function (TT) {
                     var backside_of_widget_value;
                     if (attribute === 'key' && value === undefined) {
                         // keyIdentifier has been deprecated in favour of key but Chrome (version 47) doesn't support it
-                       return event.keyIdentifier;
+                        // keyIdentifier has reasonable string values for function keys, shift, etc
+                        // but orindary letters end up as strings such as U+0058
+                       value = event.keyIdentifier;
+                       if (value.indexOf("U+") === 0) {
+                           return String.fromCharCode(event.keyCode);
+                       }
+                       return value;
                     } else {       
                          if (typeof value === 'undefined') {
                              if (event.detail && event.detail.element_widget && attribute === 'widget') {
