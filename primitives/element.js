@@ -476,7 +476,14 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 css.height = undefined;
             }
             // instead of updating the CSS width and height this uses the scaling transform instead
-            TT.UTILITIES.scale_element(this.get_frontside_element(), css.width, css.height, original_width, original_height, undefined, css);
+            if (original_width === undefined) {
+                TT.UTILITIES.run_when_dimensions_known(this.get_frontside_element(),
+                                                       function () {
+                                                           TT.UTILITIES.scale_element(this.get_frontside_element(), css.width, css.height, original_width, original_height, undefined, css);
+                                                       }.bind(this));
+            } else {
+                TT.UTILITIES.scale_element(this.get_frontside_element(), css.width, css.height, original_width, original_height, undefined, css);
+            }
         };
         new_element.add_standard_widget_functionality(new_element);
         widget_set_running = new_element.set_running.bind(new_element);
