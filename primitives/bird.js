@@ -70,7 +70,7 @@ window.TOONTALK.bird = (function (TT) {
                     setTimeout(function () {
                         // delay this since removes geometry until recomputed
                         $(frontside_element).removeClass("toontalk-bird-gimme")
-                                            .addClass(this.get_class_name_with_color("toontalk-bird-static"));
+                                            .addClass("toontalk-bird-static " + this.get_class_name_with_color("toontalk-bird-static"));
                         this.get_parent_of_frontside().rerender();
                     }.bind(this));
                     message_side.set_visible(nest.visible()); // since nest is
@@ -282,7 +282,7 @@ window.TOONTALK.bird = (function (TT) {
             if (TT.sounds) {
                 TT.sounds.bird_fly.play();
             }
-            $(bird_frontside_element).removeClass("toontalk-bird-static");
+            $(bird_frontside_element).removeClass("toontalk-bird-static " + this.get_class_name_with_color("toontalk-bird-static"));
             if (!target_side.is_function_nest()) {
                 // nests of functions are 'virtual'
                 target_frontside_element = target_side.get_widget().closest_visible_ancestor_or_frontside().get_widget().get_frontside_element();
@@ -628,7 +628,7 @@ window.TOONTALK.bird = (function (TT) {
         }.bind(this);
         // this timeout fixes the problem that the bird's name is displayed incorrectly while she is flying
         setTimeout(function () {
-                       $(frontside_element).removeClass("toontalk-bird-static");
+                       $(frontside_element).removeClass("toontalk-bird-static " + this.get_class_name_with_color("toontalk-bird-static"));
                        TT.UTILITIES.add_animation_class(frontside_element, direction);
                        // duration is proportional to distance
                        // console.log("Flying to " + target_offset.left + ", " + target_offset.top + " holding " + (this.element_to_display_when_flying && this.element_to_display_when_flying.className));
@@ -1164,7 +1164,7 @@ window.TOONTALK.nest = (function (TT) {
                     top_level_backside_element = backside_where_bird_goes.get_element();
                     top_level_backside_position = $(top_level_backside_element).offset();
                     bird_frontside_element = bird.get_frontside_element(true);
-                    $(bird_frontside_element).removeClass(this.get_class_name_with_color("toontalk-bird-static"));
+                    $(bird_frontside_element).removeClass("toontalk-bird-static " + this.get_class_name_with_color("toontalk-bird-static"));
                     TT.UTILITIES.add_animation_class(bird_frontside_element, "toontalk-fly-southwest");
                     nest_position = TT.UTILITIES.relative_position(frontside_element, top_level_backside_element);
                     TT.UTILITIES.set_css(bird_frontside_element,
@@ -1195,12 +1195,12 @@ window.TOONTALK.nest = (function (TT) {
                         $(bird_frontside_element).removeClass("toontalk-fly-southwest");
                         TT.UTILITIES.set_timeout(function () {
                                 TT.UTILITIES.add_animation_class(bird_frontside_element, "toontalk-fly-down");
-                                $(bird_frontside_element).removeClass(this.get_class_name_with_color("toontalk-bird-static"));
+                                $(bird_frontside_element).removeClass("toontalk-bird-static " + this.get_class_name_with_color("toontalk-bird-static"));
                                 fly_down_finished_handler = function () {
                                     var become_static = function () {
                                         $(bird_frontside_element)
                                             .removeClass("toontalk-bird-morph-to-static toontalk-side-animating")
-                                            .addClass(this.get_class_name_with_color("toontalk-bird-static"));
+                                            .addClass("toontalk-bird-static " + this.get_class_name_with_color("toontalk-bird-static"));
                                     }.bind(this);
                                     $(bird_frontside_element).removeClass("toontalk-fly-down");
                                     TT.UTILITIES.add_animation_class(bird_frontside_element, "toontalk-bird-morph-to-static");
@@ -1220,7 +1220,7 @@ window.TOONTALK.nest = (function (TT) {
                                 TT.UTILITIES.add_one_shot_event_handler(frontside_element, "animationend", 1000, fly_down_finished_handler);
                             }.bind(this));
                     }.bind(this);
-                    $(bird_frontside_element).removeClass(this.get_class_name_with_color("toontalk-bird-static"));
+                    $(bird_frontside_element).removeClass("toontalk-bird-static " + this.get_class_name_with_color("toontalk-bird-static"));
                     resting_left = Math.max(10, nest_position.left-70);
                     // because of the animation the top of the nest is higher than it appears so add more to top target
                     resting_top = Math.max(10, nest_position.top+70);

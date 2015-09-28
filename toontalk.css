@@ -2511,7 +2511,9 @@ background-image: url("images/dusty-morph.png");
     height: 102px;
     text-align: center;
 }
-.toontalk-bird-static::after {
+.toontalk-bird-static::befre {
+/* 	::before isntead of ::after in case bird is holding something 
+	in which case her name ends up below the thing */
  	content: attr(toontalk_name);
  	position: relative;	
     top: 50%;
