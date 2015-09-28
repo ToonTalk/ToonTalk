@@ -823,7 +823,7 @@ window.TOONTALK.backside =
             this.set_description_text_area(description_text_area);
             (container_element || this.get_backside_element(true)).appendChild(TT.UTILITIES.create_row(description_text_area.container));
             if (!widget.get_description()) {
-                description_text_area.button.setAttribute('placeholder', TT.UTILITIES.add_a_or_an(type_name) + ".");
+                description_text_area.button.setAttribute('placeholder', widget.get_default_description());
             }                                                 
         },
 
@@ -849,7 +849,7 @@ window.TOONTALK.backside =
                                                                  name_drop_handler);
             var name_change = function () {
                     var name = name_text_input.button.value.trim();
-                    if (widget.set_name(name, true) && widget.robot_in_training()) {
+                    if (widget.set_name && widget.set_name(name, true) && widget.robot_in_training()) {
                         widget.robot_in_training().edited(widget, {setter_name: "set_name",
                                                                    argument_1: name,
                                                                    toString: "change the name to '" + name + "'' of the " + type_name,

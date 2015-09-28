@@ -369,6 +369,9 @@ window.TOONTALK.scale = (function (TT) {
                         "The " + right_contents + " is less than the " + left_contents + "."][state+1];
             }            
         };
+        new_scale.get_default_description = function () {
+            return "a scale for comparing things.";
+        };
         new_scale.set_name = undefined; // unlike boxes which re-use name for labels
         if (TT.debugging) {
             new_scale._debug_id = TT.UTILITIES.generate_unique_id();

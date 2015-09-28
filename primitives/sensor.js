@@ -219,6 +219,13 @@ window.TOONTALK.sensor = (function (TT) {
             }
             return title;
         };
+        new_sensor.get_default_description = function () {
+            if (widget) {
+                return "a sensor for " + widget.get_default_description();
+            } else {
+                return "a sensor for this document.";
+            }
+        };
         new_sensor.can_run = function () {
             // can run in the sense of becoming active
             return true;

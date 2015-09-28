@@ -96,6 +96,11 @@ window.TOONTALK.widget = (function (TT) {
                     return this;
                 };
             }
+            if (!widget.get_default_description) {
+                 widget.get_default_description = function () {
+                     return TT.UTILITIES.add_a_or_an(this.get_type_name()) + ".";
+                 };  
+            }
             if (!widget.is_number) {
                 widget.is_number = return_false;
             }
@@ -579,10 +584,6 @@ window.TOONTALK.widget = (function (TT) {
                         } else {
                             title = "Click to see my back side.";
                         }
-//                     } else if (!description && !this.get_custom_title_prefix) {
-//                         title = "I'm " + TT.UTILITIES.add_a_or_an(type_name) + ".";
-//                     } else {
-//                         title = "";
                     }
                     if (description) {
                         description = "I'm " + description;

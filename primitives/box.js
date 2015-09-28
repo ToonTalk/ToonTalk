@@ -383,6 +383,10 @@ window.TOONTALK.box = (function (TT) {
         return "box";
     };
 
+    box.get_default_description = function () {
+        return "a box for holding things.";
+    };
+
     box.get_help_URL = function () {
         return "docs/manual/boxes.html";
     };

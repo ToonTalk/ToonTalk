@@ -195,7 +195,7 @@ window.TOONTALK.create_function_table =
         } else {
             get_description = function () {
                 return "If you give me a box with another bird and some numbers then " + 
-                      TT.UTILITIES.lower_case_first_letter(this.title) + and_on_my_back;
+                       TT.UTILITIES.lower_case_first_letter(this.title) + and_on_my_back;
             };
         }
         var to_string_function = function () {

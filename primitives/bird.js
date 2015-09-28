@@ -521,6 +521,12 @@ window.TOONTALK.bird = (function (TT) {
             }
             return "a bird without a nest";
         };
+        new_bird.get_default_description = function () {
+            if (this.is_function_bird()) {
+                return "a bird who gives another bird the '" + nest.get_function_object().name + "' of things.";
+            }
+            return "a bird who takes things to her nest.";
+        };
         new_bird.update_display = function () {
             var frontside = this.get_frontside(true);
             var backside = this.get_backside(); 
@@ -1579,6 +1585,10 @@ window.TOONTALK.nest = (function (TT) {
     
     nest.toString = function () {
         return "a nest"; // good enough for now
+    };
+
+    nest.get_default_description = function () {
+        return "a nest that receives things from its birds.";
     };
 
     nest.get_help_URL = function () {
