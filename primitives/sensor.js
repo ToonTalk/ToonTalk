@@ -7,7 +7,7 @@
  /*jslint browser: true, devel: true, plusplus: true, vars: true, white: true */
 
  // Sensors listen for DOM events and are 'concretized' as nests and events as messages delivered by birds
- // Only keyCode is changed from a number to a string to be more user friendly
+ // the keyboard event attribute 'key' is supported in browsers without by using keyIdentifier instead
 
 window.TOONTALK.sensor = (function (TT) {
     "use strict";
@@ -228,17 +228,9 @@ window.TOONTALK.sensor = (function (TT) {
                 function (attribute) {
                     var value = event[attribute];
                     var backside_of_widget_value;
-                    if (attribute === 'keyCode') {
-                        // is this a good idea? shouldn't the DOM events be left alone?
-                        // perhaps this should be renamed keyChar or something...
-                        if (value === 16) {
-                            // is only the shift key
-                            return;
-                        }
-                        value = String.fromCharCode(value);
-                        if (!event.shiftKey) {
-                            value = value.toLowerCase();
-                        }
+                    if (attribute === 'key' && value === undefined) {
+                        // keyIdentifier has been deprecated in favour of key but Chrome (version 47) doesn't support it
+                       return event.keyIdentifier;
                     } else {       
                          if (typeof value === 'undefined') {
                              if (event.detail && event.detail.element_widget && attribute === 'widget') {
