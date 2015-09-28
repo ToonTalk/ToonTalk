@@ -975,7 +975,8 @@ window.TOONTALK.nest = (function (TT) {
         };
         new_nest.dereference_contents = function (path_to_nest, top_level_context, robot) {
             var widget_side, nest_offset, $top_level_backside_element, top_level_backside_element_offset, 
-                widget_element, nest_element, nest_width, nest_height;
+                widget_element, nest_element, nest_width, nest_height,
+                left, top;
             if (contents.length === 0) {
                 // robot needs to wait until something arrives on this nest
                 return {wait_until_this_nest_receives_something: this};
@@ -999,13 +1000,20 @@ window.TOONTALK.nest = (function (TT) {
                     nest_width =  $(nest_element).width();
                     nest_height = $(nest_element).height();
                     // left and top are 10%
+                    left = nest_width  * .1 + nest_offset.left - top_level_backside_element_offset.left;
+                    top  = nest_height * .1 + nest_offset.top -  top_level_backside_element_offset.top;
                     TT.UTILITIES.set_css(widget_element,
-                                         {left:   nest_width  * .1 + nest_offset.left - top_level_backside_element_offset.left,
-                                          top:    nest_height * .1 + nest_offset.top -  top_level_backside_element_offset.top,
+                                         {left:   left,
+                                          top:    top,
                                           width:  contents_width(nest_width),
                                           height: contents_height(nest_height)});
                     if ($top_level_backside_element.length > 0) {
-                        $top_level_backside_element.get(0).appendChild(widget_element);
+                        robot.add_watched_step_end_listeners(function () {
+                            // run this after step has finished since removal from parent may happen during this step
+                            $top_level_backside_element.get(0).appendChild(widget_element);
+                            TT.UTILITIES.set_absolute_position(widget_element, {left: left, 
+                                                                                 top: top});
+                            });
                     }
                 }
                 return widget_side;
