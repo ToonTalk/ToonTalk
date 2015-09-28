@@ -1009,9 +1009,7 @@ window.TOONTALK.nest = (function (TT) {
                     left = nest_width  * .1 + nest_offset.left - top_level_backside_element_offset.left;
                     top  = nest_height * .1 + nest_offset.top -  top_level_backside_element_offset.top;
                     TT.UTILITIES.set_css(widget_element,
-                                         {left:   left,
-                                          top:    top,
-                                          width:  contents_width(nest_width),
+                                         {width:  contents_width(nest_width),
                                           height: contents_height(nest_height)});
                     if ($top_level_backside_element.length > 0) {
                         robot.add_watched_step_end_listeners(function () {
