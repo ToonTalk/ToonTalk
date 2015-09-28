@@ -1601,9 +1601,12 @@ body {
 	background-color: white;
 	font-size: 80%;
 }
+.toontalk-nest > .toontalk-plain-text-element {
+   /* font-size: 100%; */
+}
 .toontalk-box-hole > .toontalk-plain-text-element {
 /* 	looks better with a smaller font when scaled to fit in a hole */
-	font-size: .8em;
+   font-size: 80%;
 }
 .toontalk-element-frontside > .toontalk-plain-text-element {
 	background-color: transparent;
@@ -2250,8 +2253,11 @@ background-image: url("images/dusty-morph.png");
 .toontalk-carried-by-bird {
     position: static;
     transform: scale(0.8, 0.4);
-    width: 100%;	
+    width: 100%;
     height: 100%;
+}
+.toontalk-carried-by-bird.toontalk-plain-text-element, .toontalk-temporarily-set-down.toontalk-plain-text-element {
+	font-size: 60px;
 }
 .toontalk-nest-with-egg {
     background-image: url("images/nest-with-egg.png");

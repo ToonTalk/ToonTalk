@@ -3625,7 +3625,10 @@ window.TOONTALK.UTILITIES =
                    $(element).css(css);
                    return;
                }
-               if (widget_side.location_constrained_by_container()) {
+               if ($(element).is(".toontalk-temporarily-set-down")) {
+                   // leave the CSS alone
+                   // TODO: make this more modular/cleaner
+               } else if (widget_side.location_constrained_by_container()) {
                    css.left   = '';
                    css.top    = '';
                } else if (widget_side.is_plain_text_element()) {

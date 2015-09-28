@@ -232,6 +232,7 @@ window.TOONTALK.sensor = (function (TT) {
                         // keyIdentifier has been deprecated in favour of key but Chrome (version 47) doesn't support it
                         // keyIdentifier has reasonable string values for function keys, shift, etc
                         // but orindary letters end up as strings such as U+0058
+                        // Note that this workaround fails for some punctuation -- e.g. '-' becomes 'insert'
                        value = event.keyIdentifier;
                        if (value.indexOf("U+") === 0) {
                            return String.fromCharCode(event.keyCode);
