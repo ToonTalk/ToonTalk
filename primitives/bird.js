@@ -381,7 +381,7 @@ window.TOONTALK.bird = (function (TT) {
                     if (nest_recieving_message.get_locked()) {
                         // another bird is delivering
                         nest_recieving_message.run_when_unlocked(fly_to_nest_continuation);
-                        // should 'busy wait' animatioin
+                        // should 'busy wait' animation
                     } else {
                         fly_to_nest_continuation();
                     }                       

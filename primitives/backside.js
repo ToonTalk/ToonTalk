@@ -1167,10 +1167,23 @@ window.TOONTALK.backside =
         },
 
         remove: function () {
-            var backside_element;
+            var parent, backside_element;
             if (this.is_primary_backside()) {
                 this.get_widget().remove();
-            } else if (parent) {
+            } else {
+                parent = this.get_parent_of_backside();
+                if (parent) {
+                    if (parent.is_backside()) {
+                        // !event because if a robot is doing this no warning if already removed
+                        parent.remove_backside_widget(this, !event);
+                    } else if (parent.removed_from_container) {
+                        if (parent.is_backside()) {
+                            parent.remove_backside_widget(this, true);
+                        } else {
+                           parent.removed_from_container(this, event);
+                        }
+                    }
+                }
                 this.set_parent_of_backside(undefined);
                 backside_element = this.get_element();
                 if (backside_element) {
