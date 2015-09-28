@@ -1723,7 +1723,7 @@ window.TOONTALK.widget = (function (TT) {
                         message = "Error while saving to local storage. Error message is " + error;
                     }
                     if (TT.UTILITIES.is_internet_explorer()) {
-                        console.error(message);
+                        console.error("Unresolved difficulties using window.localStorage in IE11: " + message);
                     } else {
                         TT.UTILITIES.display_message(message);
                     }
