@@ -3011,222 +3011,6 @@ top level widget
     }
   ]
 }</div></div>
-<p>Adds mouse button number: </p>
-<iframe src=test-programs-iframe.html width=800 height=300>
-</iframe>
-<p>Adds mouse button number (watched):</p>
-<div class='toontalk-json'>
-This will be replaced by a work area containing 3 things: a number, the backside of a number, and an element.
-top level widget
-<div style='display:none;'>{
-  "semantic": {
-    "type": "top_level",
-    "backside_widgets": [
-      {
-        "widget": {
-          "shared_widget_index": 0
-        }
-      },
-      {
-        "widget": {
-          "shared_widget_index": 0
-        },
-        "is_backside": true
-      },
-      {
-        "widget": {
-          "semantic": {
-            "type": "element",
-            "html": "Click%20on%20the%20number",
-            "attributes": [
-              "left",
-              "top",
-              "width",
-              "height"
-            ],
-            "attribute_values": [
-              352,
-              35,
-              0,
-              0
-            ],
-            "attributes_backsides": [
-              null,
-              null,
-              null,
-              null
-            ]
-          },
-          "view": {
-            "backside": false
-          },
-          "version": 1
-        }
-      }
-    ]
-  },
-  "view": {
-    "background_color": "rgb(245, 240, 240)",
-    "backside_width": 783,
-    "backside_height": 416,
-    "backside_left": 8,
-    "backside_top": 184.1875,
-    "backside": true,
-    "drag_x_offset": 603,
-    "drag_y_offset": 78.8125
-  },
-  "version": 1,
-  "shared_widgets": [
-    {
-      "semantic": {
-        "type": "number",
-        "operator": "+",
-        "numerator": "1",
-        "denominator": "1",
-        "format": "mixed_number",
-        "backside_widgets": [
-          {
-            "widget": {
-              "semantic": {
-                "type": "sensor",
-                "contents": [],
-                "guid": "sensor",
-                "serial_number": 5,
-                "name": "sensor",
-                "event_name": "click",
-                "attribute": "which",
-                "active": true,
-                "sensor_of": {
-                  "shared_widget_index": 0
-                },
-                "description": "a sensor that reports which mouse button was clicked on my number."
-              },
-              "view": {
-                "frontside_width": 116,
-                "frontside_height": 98,
-                "frontside_left": "5.068462897526501%",
-                "frontside_top": "37.449363425925924%",
-                "saved_width": 116,
-                "saved_height": 98,
-                "backside": false
-              },
-              "version": 1
-            }
-          },
-          {
-            "widget": {
-              "semantic": {
-                "type": "robot",
-                "frontside_conditions": {
-                  "semantic": {
-                    "type": "number",
-                    "operator": "+",
-                    "numerator": "1",
-                    "denominator": "1",
-                    "format": "mixed_number",
-                    "erased": true
-                  },
-                  "view": {
-                    "backside": false
-                  },
-                  "version": 1
-                },
-                "backside_conditions": [
-                  {
-                    "widget": {
-                      "semantic": {
-                        "type": "nest",
-                        "contents": [
-                          {
-                            "widget": {
-                              "semantic": {
-                                "type": "number",
-                                "operator": "+",
-                                "numerator": "1",
-                                "denominator": "1",
-                                "format": "mixed_number",
-                                "erased": true
-                              },
-                              "view": {
-                                "backside": false
-                              },
-                              "version": 1
-                            }
-                          }
-                        ],
-                        "guid": "in a robot's condition",
-                        "serial_number": 5,
-                        "name": "sensor",
-                        "description": "a sensor that reports which mouse button was clicked on my number."
-                      },
-                      "view": {
-                        "backside": false
-                      },
-                      "version": 1
-                    }
-                  }
-                ],
-                "body": {
-                  "type": "body",
-                  "steps": [
-                    {
-                      "type": "robot_action",
-                      "action_name": "pick up",
-                      "path": {
-                        "type": "path.to_backside_widget_of_context",
-                        "type_name": "sensor",
-                        "backside_index": 0,
-                        "removing_widget": true
-                      },
-                      "additional_info": {
-                        "time": 2263
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "drop it on",
-                      "path": {
-                        "type": "path.to_entire_context"
-                      },
-                      "additional_info": {
-                        "time": 2360
-                      }
-                    }
-                  ]
-                },
-                "name": "#1"
-              },
-              "view": {
-                "frontside_width": 66,
-                "frontside_height": 110,
-                "frontside_left": "37.73741166077738%",
-                "frontside_top": "40.0318287037037%",
-                "saved_width": 66,
-                "saved_height": 110,
-                "backside": false
-              },
-              "version": 1
-            }
-          }
-        ]
-      },
-      "view": {
-        "frontside_width": 76,
-        "frontside_height": 55,
-        "frontside_left": 86,
-        "frontside_top": 45,
-        "backside_width": 550,
-        "backside_height": 200,
-        "backside_left": 143.21875,
-        "backside_top": 143.234375,
-        "saved_width": 76,
-        "saved_height": 55,
-        "backside": false
-      },
-      "version": 1
-    }
-  ]
-}</div></div>
 <p>Adding 2 by dropping things on top-level backside: (watched)</p>
 <div class='toontalk-json'>{
   "semantic": {
@@ -18098,456 +17882,6 @@ top level widget
   },
   "version": 1
 }</div></div>
-<p>Element that tracks mouse vertically</p>
-<div class='toontalk-json'>
-This will be replaced by a work area containing one thing: an element.
-top level widget
-<div style='display:none;'>{
-  "semantic": {
-    "type": "top_level",
-    "backside_widgets": [
-      {
-        "widget": {
-          "semantic": {
-            "type": "element",
-            "html": "Paddle",
-            "attributes": [
-              "top"
-            ],
-            "attribute_values": [
-              203
-            ],
-            "attributes_backsides": [
-              []
-            ],
-            "backside_widgets": [
-              {
-                "widget": {
-                  "semantic": {
-                    "type": "sensor",
-                    "contents": [],
-                    "guid": "sensor",
-                    "serial_number": 6,
-                    "name": "sensor",
-                    "event_name": "mousemove",
-                    "attribute": "clientY",
-                    "active": false,
-                    "description": "a sensor for the vertical position of the mouse."
-                  },
-                  "view": {
-                    "frontside_width": 116,
-                    "frontside_height": 98,
-                    "frontside_left": "22.791519434628974%",
-                    "frontside_top": "46.75925925925926%",
-                    "saved_width": 116,
-                    "saved_height": 98,
-                    "backside": false
-                  },
-                  "version": 1
-                }
-              },
-              {
-                "widget": {
-                  "semantic": {
-                    "type": "robot",
-                    "frontside_conditions": {
-                      "semantic": {
-                        "type": "element",
-                        "html": "Paddle",
-                        "attributes": [
-                          "top"
-                        ],
-                        "attribute_values": [
-                          0
-                        ],
-                        "attributes_backsides": [
-                          null
-                        ]
-                      },
-                      "view": {
-                        "backside": false
-                      },
-                      "version": 1
-                    },
-                    "backside_conditions": [
-                      {
-                        "widget": {
-                          "semantic": {
-                            "type": "nest",
-                            "contents": [
-                              {
-                                "widget": {
-                                  "semantic": {
-                                    "type": "number",
-                                    "operator": "+",
-                                    "numerator": "1",
-                                    "denominator": "1",
-                                    "format": "mixed_number",
-                                    "erased": true
-                                  },
-                                  "view": {
-                                    "backside": false
-                                  },
-                                  "version": 1
-                                }
-                              }
-                            ],
-                            "guid": "in a robot's condition",
-                            "serial_number": 5,
-                            "name": "sensor",
-                            "description": "a sensor for the vertical position of the mouse."
-                          },
-                          "view": {
-                            "backside": false
-                          },
-                          "version": 1
-                        }
-                      }
-                    ],
-                    "body": {
-                      "type": "body",
-                      "steps": [
-                        {
-                          "type": "robot_action",
-                          "action_name": "open the backside",
-                          "path": {
-                            "type": "path.to_backside_widget_of_context",
-                            "type_name": "sensor",
-                            "backside_index": 0
-                          },
-                          "additional_info": {
-                            "time": 271935
-                          }
-                        },
-                        {
-                          "type": "robot_action",
-                          "action_name": "click the button of",
-                          "path": {
-                            "type": "path.to_backside_widget_of_context",
-                            "type_name": "sensor",
-                            "backside_index": 0
-                          },
-                          "additional_info": {
-                            "button_selector": ".toontalk-settings-backside-button",
-                            "time": 61270
-                          }
-                        },
-                        {
-                          "type": "robot_action",
-                          "action_name": "edit",
-                          "path": {
-                            "type": "path.to_backside_widget_of_context",
-                            "type_name": "sensor",
-                            "backside_index": 0
-                          },
-                          "additional_info": {
-                            "setter_name": "set_operator",
-                            "argument_1": "=",
-                            "toString": "by changing the operator to = of the number",
-                            "button_selector": ".toontalk-set-equal-radio-button",
-                            "time": 7929
-                          }
-                        },
-                        {
-                          "type": "robot_action",
-                          "action_name": "pick up",
-                          "path": {
-                            "type": "path.to_backside_widget_of_context",
-                            "type_name": "sensor",
-                            "backside_index": 0,
-                            "removing_widget": true
-                          },
-                          "additional_info": {
-                            "time": 3860
-                          }
-                        },
-                        {
-                          "type": "robot_action",
-                          "action_name": "drop it on",
-                          "path": {
-                            "type": "path_to_style_attribute",
-                            "attribute": "top",
-                            "element_widget_path": {
-                              "type": "path.to_entire_context"
-                            }
-                          },
-                          "additional_info": {
-                            "time": 2361
-                          }
-                        }
-                      ]
-                    },
-                    "name": "#1"
-                  },
-                  "view": {
-                    "saved_width": 66,
-                    "saved_height": 110,
-                    "backside": false,
-                    "frontside_left": "64.13427561837456%",
-                    "frontside_top": "36.574074074074076%"
-                  },
-                  "version": 1
-                }
-              }
-            ]
-          },
-          "view": {
-            "frontside_left": 101,
-            "frontside_top": 203,
-            "backside_width": 0,
-            "backside_height": 0,
-            "backside_left": 0,
-            "backside_top": 0,
-            "saved_width": 58,
-            "saved_height": 26,
-            "backside": false
-          },
-          "version": 1
-        }
-      }
-    ]
-  },
-  "view": {
-    "background_color": "rgb(245, 240, 240)",
-    "backside_width": 329,
-    "backside_height": 503,
-    "backside_left": 8,
-    "backside_top": 184.1875,
-    "backside": true,
-    "drag_x_offset": 233,
-    "drag_y_offset": 92.8125
-  },
-  "version": 1
-}</div></div>
-<p>Add mouse down coordinates to the number</p>
-<div class='toontalk-json'>
-This will be replaced by a work area containing one thing: a number.
-top level widget
-<div style='display:none;'>{
-  "semantic": {
-    "type": "top_level",
-    "backside_widgets": [
-      {
-        "widget": {
-          "semantic": {
-            "type": "number",
-            "operator": "+",
-            "numerator": "8913",
-            "denominator": "1",
-            "format": "mixed_number",
-            "backside_widgets": [
-              {
-                "widget": {
-                  "semantic": {
-                    "type": "sensor",
-                    "contents": [],
-                    "guid": "sensor",
-                    "serial_number": 11,
-                    "name": "mousedown sensor",
-                    "event_name": "mousedown",
-                    "attribute": "clientX clientY",
-                    "active": false,
-                    "description": "a sensor for the location of a mouse down event."
-                  },
-                  "view": {
-                    "frontside_width": 116,
-                    "frontside_height": 98,
-                    "frontside_left": "5.938052120141343%",
-                    "frontside_top": "40.299479166666664%",
-                    "saved_width": 116,
-                    "saved_height": 98,
-                    "backside": false
-                  },
-                  "version": 1
-                }
-              },
-              {
-                "widget": {
-                  "semantic": {
-                    "type": "robot",
-                    "frontside_conditions": {
-                      "semantic": {
-                        "type": "number",
-                        "operator": "+",
-                        "numerator": "1",
-                        "denominator": "1",
-                        "format": "mixed_number",
-                        "erased": true
-                      },
-                      "view": {
-                        "backside": false
-                      },
-                      "version": 1
-                    },
-                    "backside_conditions": [
-                      {
-                        "widget": {
-                          "semantic": {
-                            "type": "box",
-                            "size": 2,
-                            "contents": [
-                              {
-                                "semantic": {
-                                  "type": "number",
-                                  "operator": "+",
-                                  "numerator": "752",
-                                  "denominator": "1",
-                                  "format": "mixed_number",
-                                  "erased": true
-                                },
-                                "view": {
-                                  "backside": false
-                                },
-                                "version": 1
-                              },
-                              {
-                                "semantic": {
-                                  "type": "number",
-                                  "operator": "+",
-                                  "numerator": "269",
-                                  "denominator": "1",
-                                  "format": "mixed_number",
-                                  "erased": true
-                                },
-                                "view": {
-                                  "backside": false
-                                },
-                                "version": 1
-                              }
-                            ],
-                            "horizontal": true,
-                            "name": "clientX;clientY",
-                            "description": "the values of the clientX and clientY attributes of a mousedown event."
-                          },
-                          "view": {
-                            "backside": false
-                          },
-                          "version": 1
-                        }
-                      }
-                    ],
-                    "body": {
-                      "type": "body",
-                      "steps": [
-                        {
-                          "type": "robot_action",
-                          "action_name": "pick up",
-                          "path": {
-                            "type": "path.to_backside_widget_of_context",
-                            "type_name": "sensor",
-                            "backside_index": 0,
-                            "next_path": {
-                              "type": "path.to_widget_on_nest",
-                              "next_path": {
-                                "type": "box_path",
-                                "index": 0,
-                                "removing_widget": true
-                              }
-                            }
-                          },
-                          "additional_info": {
-                            "time": 1678
-                          }
-                        },
-                        {
-                          "type": "robot_action",
-                          "action_name": "drop it on",
-                          "path": {
-                            "type": "path.to_entire_context"
-                          },
-                          "additional_info": {
-                            "time": 2236
-                          }
-                        },
-                        {
-                          "type": "robot_action",
-                          "action_name": "pick up",
-                          "path": {
-                            "type": "path.to_backside_widget_of_context",
-                            "type_name": "sensor",
-                            "backside_index": 0,
-                            "next_path": {
-                              "type": "path.to_widget_on_nest",
-                              "next_path": {
-                                "type": "box_path",
-                                "index": 1,
-                                "removing_widget": true
-                              }
-                            }
-                          },
-                          "additional_info": {
-                            "time": 961
-                          }
-                        },
-                        {
-                          "type": "robot_action",
-                          "action_name": "drop it on",
-                          "path": {
-                            "type": "path.to_entire_context"
-                          },
-                          "additional_info": {
-                            "time": 2181
-                          }
-                        },
-                        {
-                          "type": "robot_action",
-                          "action_name": "remove",
-                          "path": {
-                            "type": "path.to_backside_widget_of_context",
-                            "type_name": "sensor",
-                            "backside_index": 0,
-                            "removing_widget": true
-                          },
-                          "additional_info": {
-                            "time": 3491
-                          }
-                        }
-                      ]
-                    },
-                    "name": "#1"
-                  },
-                  "view": {
-                    "saved_width": 66,
-                    "saved_height": 110,
-                    "backside": false,
-                    "frontside_left": "40.009386042402824%",
-                    "frontside_top": "44.140625%"
-                  },
-                  "version": 1
-                }
-              }
-            ]
-          },
-          "view": {
-            "frontside_width": 320,
-            "frontside_height": 55,
-            "frontside_left": 47,
-            "frontside_top": 84,
-            "backside_width": 0,
-            "backside_height": 0,
-            "backside_left": 0,
-            "backside_top": 0,
-            "saved_width": 222,
-            "saved_height": 55,
-            "backside": false
-          },
-          "version": 1
-        }
-      }
-    ]
-  },
-  "view": {
-    "background_color": "rgb(245, 240, 240)",
-    "backside_width": 456,
-    "backside_height": 246,
-    "backside_left": 8,
-    "backside_top": 20666.96875,
-    "backside": true,
-    "drag_x_offset": 265,
-    "drag_y_offset": 46.03125
-  },
-  "version": 1
-}</div></div>
 <p>Moving left together or independently (using copies of the same attribute widget):</p>
 <div class='toontalk-json'>
 This will be replaced by a work area containing 4 things: the backside of an element, an element, the backside of an element, and an element.
@@ -20599,7 +19933,7 @@ top level widget
 }</div></div>
 <p>Unwtched robot reacts to a number dropped in a box with message:</p>
 <div class='toontalk-json'>
-This will be replaced by a work area containing 5 things: an element, an element, a backside of a box, a box, and an element.
+This will be replaced by a work area containing 4 things: an element, an element, a box, and an element.
 top level widget
 <div style='display:none;'>{
   "semantic": {
@@ -20666,19 +20000,6 @@ top level widget
       },
       {
         "widget": {
-          "type": "backside",
-          "my_widget": {
-            "shared_widget_index": 0
-          },
-          "css": {
-            "top": 0,
-            "left": 0
-          },
-          "view": {}
-        }
-      },
-      {
-        "widget": {
           "shared_widget_index": 0
         }
       },
@@ -20722,8 +20043,8 @@ top level widget
     "backside_height": 276,
     "backside_left": 8,
     "backside_top": 184.1875,
-    "drag_x_offset": 504,
-    "drag_y_offset": 190.8125
+    "drag_x_offset": 438,
+    "drag_y_offset": 134.8125
   },
   "version": 1,
   "shared_widgets": [
@@ -20733,7 +20054,17 @@ top level widget
         "size": 2,
         "contents": [
           null,
-          null
+          {
+            "semantic": {
+              "type": "number",
+              "operator": "+",
+              "numerator": "2",
+              "denominator": "1",
+              "format": "mixed_number"
+            },
+            "view": {},
+            "version": 1
+          }
         ],
         "horizontal": true,
         "name": ";;",
@@ -20921,6 +20252,672 @@ top level widget
       "version": 1
     }
   ]
+}</div></div>
+<p>Adds mouse button number: </p>
+<iframe src=test-programs-iframe.html width=800 height=300>
+</iframe>
+<p>Adds mouse button number (watched):</p>
+<div class='toontalk-json'>
+This will be replaced by a work area containing 3 things: a number, the backside of a number, and an element.
+top level widget
+<div style='display:none;'>{
+  "semantic": {
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "shared_widget_index": 0
+        }
+      },
+      {
+        "widget": {
+          "shared_widget_index": 0
+        },
+        "is_backside": true
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "element",
+            "html": "Click%20on%20the%20number",
+            "attributes": [
+              "left",
+              "top",
+              "width",
+              "height"
+            ],
+            "attribute_values": [
+              352,
+              35,
+              0,
+              0
+            ],
+            "attributes_backsides": [
+              null,
+              null,
+              null,
+              null
+            ]
+          },
+          "view": {
+            "backside": false
+          },
+          "version": 1
+        }
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgb(245, 240, 240)",
+    "backside_width": 783,
+    "backside_height": 416,
+    "backside_left": 8,
+    "backside_top": 184.1875,
+    "backside": true,
+    "drag_x_offset": 603,
+    "drag_y_offset": 78.8125
+  },
+  "version": 1,
+  "shared_widgets": [
+    {
+      "semantic": {
+        "type": "number",
+        "operator": "+",
+        "numerator": "1",
+        "denominator": "1",
+        "format": "mixed_number",
+        "backside_widgets": [
+          {
+            "widget": {
+              "semantic": {
+                "type": "sensor",
+                "contents": [],
+                "guid": "sensor",
+                "serial_number": 5,
+                "name": "sensor",
+                "event_name": "click",
+                "attribute": "which",
+                "active": true,
+                "sensor_of": {
+                  "shared_widget_index": 0
+                },
+                "description": "a sensor that reports which mouse button was clicked on my number."
+              },
+              "view": {
+                "frontside_width": 116,
+                "frontside_height": 98,
+                "frontside_left": "5.068462897526501%",
+                "frontside_top": "37.449363425925924%",
+                "saved_width": 116,
+                "saved_height": 98,
+                "backside": false
+              },
+              "version": 1
+            }
+          },
+          {
+            "widget": {
+              "semantic": {
+                "type": "robot",
+                "frontside_conditions": {
+                  "semantic": {
+                    "type": "number",
+                    "operator": "+",
+                    "numerator": "1",
+                    "denominator": "1",
+                    "format": "mixed_number",
+                    "erased": true
+                  },
+                  "view": {
+                    "backside": false
+                  },
+                  "version": 1
+                },
+                "backside_conditions": [
+                  {
+                    "widget": {
+                      "semantic": {
+                        "type": "nest",
+                        "contents": [
+                          {
+                            "widget": {
+                              "semantic": {
+                                "type": "number",
+                                "operator": "+",
+                                "numerator": "1",
+                                "denominator": "1",
+                                "format": "mixed_number",
+                                "erased": true
+                              },
+                              "view": {
+                                "backside": false
+                              },
+                              "version": 1
+                            }
+                          }
+                        ],
+                        "guid": "in a robot's condition",
+                        "serial_number": 5,
+                        "name": "sensor",
+                        "description": "a sensor that reports which mouse button was clicked on my number."
+                      },
+                      "view": {
+                        "backside": false
+                      },
+                      "version": 1
+                    }
+                  }
+                ],
+                "body": {
+                  "type": "body",
+                  "steps": [
+                    {
+                      "type": "robot_action",
+                      "action_name": "pick up",
+                      "path": {
+                        "type": "path.to_backside_widget_of_context",
+                        "type_name": "sensor",
+                        "backside_index": 0,
+                        "removing_widget": true
+                      },
+                      "additional_info": {
+                        "time": 2263
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "drop it on",
+                      "path": {
+                        "type": "path.to_entire_context"
+                      },
+                      "additional_info": {
+                        "time": 2360
+                      }
+                    }
+                  ]
+                },
+                "name": "#1"
+              },
+              "view": {
+                "frontside_width": 66,
+                "frontside_height": 110,
+                "frontside_left": "37.73741166077738%",
+                "frontside_top": "40.0318287037037%",
+                "saved_width": 66,
+                "saved_height": 110,
+                "backside": false
+              },
+              "version": 1
+            }
+          }
+        ]
+      },
+      "view": {
+        "frontside_width": 76,
+        "frontside_height": 55,
+        "frontside_left": 86,
+        "frontside_top": 45,
+        "backside_width": 550,
+        "backside_height": 200,
+        "backside_left": 143.21875,
+        "backside_top": 143.234375,
+        "saved_width": 76,
+        "saved_height": 55,
+        "backside": false
+      },
+      "version": 1
+    }
+  ]
+}</div></div>
+<p>Element that tracks mouse vertically</p>
+<div class='toontalk-json'>
+This will be replaced by a work area containing one thing: an element.
+top level widget
+<div style='display:none;'>{
+  "semantic": {
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "element",
+            "html": "Paddle",
+            "attributes": [
+              "top"
+            ],
+            "attribute_values": [
+              203
+            ],
+            "attributes_backsides": [
+              []
+            ],
+            "backside_widgets": [
+              {
+                "widget": {
+                  "semantic": {
+                    "type": "sensor",
+                    "contents": [],
+                    "guid": "sensor",
+                    "serial_number": 6,
+                    "name": "sensor",
+                    "event_name": "mousemove",
+                    "attribute": "clientY",
+                    "active": false,
+                    "description": "a sensor for the vertical position of the mouse."
+                  },
+                  "view": {
+                    "frontside_width": 116,
+                    "frontside_height": 98,
+                    "frontside_left": "22.791519434628974%",
+                    "frontside_top": "46.75925925925926%",
+                    "saved_width": 116,
+                    "saved_height": 98,
+                    "backside": false
+                  },
+                  "version": 1
+                }
+              },
+              {
+                "widget": {
+                  "semantic": {
+                    "type": "robot",
+                    "frontside_conditions": {
+                      "semantic": {
+                        "type": "element",
+                        "html": "Paddle",
+                        "attributes": [
+                          "top"
+                        ],
+                        "attribute_values": [
+                          0
+                        ],
+                        "attributes_backsides": [
+                          null
+                        ]
+                      },
+                      "view": {
+                        "backside": false
+                      },
+                      "version": 1
+                    },
+                    "backside_conditions": [
+                      {
+                        "widget": {
+                          "semantic": {
+                            "type": "nest",
+                            "contents": [
+                              {
+                                "widget": {
+                                  "semantic": {
+                                    "type": "number",
+                                    "operator": "+",
+                                    "numerator": "1",
+                                    "denominator": "1",
+                                    "format": "mixed_number",
+                                    "erased": true
+                                  },
+                                  "view": {
+                                    "backside": false
+                                  },
+                                  "version": 1
+                                }
+                              }
+                            ],
+                            "guid": "in a robot's condition",
+                            "serial_number": 5,
+                            "name": "sensor",
+                            "description": "a sensor for the vertical position of the mouse."
+                          },
+                          "view": {
+                            "backside": false
+                          },
+                          "version": 1
+                        }
+                      }
+                    ],
+                    "body": {
+                      "type": "body",
+                      "steps": [
+                        {
+                          "type": "robot_action",
+                          "action_name": "open the backside",
+                          "path": {
+                            "type": "path.to_backside_widget_of_context",
+                            "type_name": "sensor",
+                            "backside_index": 0
+                          },
+                          "additional_info": {
+                            "time": 271935
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "click the button of",
+                          "path": {
+                            "type": "path.to_backside_widget_of_context",
+                            "type_name": "sensor",
+                            "backside_index": 0
+                          },
+                          "additional_info": {
+                            "button_selector": ".toontalk-settings-backside-button",
+                            "time": 61270
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "edit",
+                          "path": {
+                            "type": "path.to_backside_widget_of_context",
+                            "type_name": "sensor",
+                            "backside_index": 0
+                          },
+                          "additional_info": {
+                            "setter_name": "set_operator",
+                            "argument_1": "=",
+                            "toString": "by changing the operator to = of the number",
+                            "button_selector": ".toontalk-set-equal-radio-button",
+                            "time": 7929
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "pick up",
+                          "path": {
+                            "type": "path.to_backside_widget_of_context",
+                            "type_name": "sensor",
+                            "backside_index": 0,
+                            "removing_widget": true
+                          },
+                          "additional_info": {
+                            "time": 3860
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "drop it on",
+                          "path": {
+                            "type": "path_to_style_attribute",
+                            "attribute": "top",
+                            "element_widget_path": {
+                              "type": "path.to_entire_context"
+                            }
+                          },
+                          "additional_info": {
+                            "time": 2361
+                          }
+                        }
+                      ]
+                    },
+                    "name": "#1"
+                  },
+                  "view": {
+                    "saved_width": 66,
+                    "saved_height": 110,
+                    "backside": false,
+                    "frontside_left": "64.13427561837456%",
+                    "frontside_top": "36.574074074074076%"
+                  },
+                  "version": 1
+                }
+              }
+            ]
+          },
+          "view": {
+            "frontside_left": 101,
+            "frontside_top": 203,
+            "backside_width": 0,
+            "backside_height": 0,
+            "backside_left": 0,
+            "backside_top": 0,
+            "saved_width": 58,
+            "saved_height": 26,
+            "backside": false
+          },
+          "version": 1
+        }
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgb(245, 240, 240)",
+    "backside_width": 329,
+    "backside_height": 503,
+    "backside_left": 8,
+    "backside_top": 184.1875,
+    "backside": true,
+    "drag_x_offset": 233,
+    "drag_y_offset": 92.8125
+  },
+  "version": 1
+}</div></div>
+<p>Add mouse down coordinates to the number</p>
+<div class='toontalk-json'>
+This will be replaced by a work area containing one thing: a number.
+top level widget
+<div style='display:none;'>{
+  "semantic": {
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "number",
+            "operator": "+",
+            "numerator": "8913",
+            "denominator": "1",
+            "format": "mixed_number",
+            "backside_widgets": [
+              {
+                "widget": {
+                  "semantic": {
+                    "type": "sensor",
+                    "contents": [],
+                    "guid": "sensor",
+                    "serial_number": 11,
+                    "name": "mousedown sensor",
+                    "event_name": "mousedown",
+                    "attribute": "clientX clientY",
+                    "active": false,
+                    "description": "a sensor for the location of a mouse down event."
+                  },
+                  "view": {
+                    "frontside_width": 116,
+                    "frontside_height": 98,
+                    "frontside_left": "5.938052120141343%",
+                    "frontside_top": "40.299479166666664%",
+                    "saved_width": 116,
+                    "saved_height": 98,
+                    "backside": false
+                  },
+                  "version": 1
+                }
+              },
+              {
+                "widget": {
+                  "semantic": {
+                    "type": "robot",
+                    "frontside_conditions": {
+                      "semantic": {
+                        "type": "number",
+                        "operator": "+",
+                        "numerator": "1",
+                        "denominator": "1",
+                        "format": "mixed_number",
+                        "erased": true
+                      },
+                      "view": {
+                        "backside": false
+                      },
+                      "version": 1
+                    },
+                    "backside_conditions": [
+                      {
+                        "widget": {
+                          "semantic": {
+                            "type": "box",
+                            "size": 2,
+                            "contents": [
+                              {
+                                "semantic": {
+                                  "type": "number",
+                                  "operator": "+",
+                                  "numerator": "752",
+                                  "denominator": "1",
+                                  "format": "mixed_number",
+                                  "erased": true
+                                },
+                                "view": {
+                                  "backside": false
+                                },
+                                "version": 1
+                              },
+                              {
+                                "semantic": {
+                                  "type": "number",
+                                  "operator": "+",
+                                  "numerator": "269",
+                                  "denominator": "1",
+                                  "format": "mixed_number",
+                                  "erased": true
+                                },
+                                "view": {
+                                  "backside": false
+                                },
+                                "version": 1
+                              }
+                            ],
+                            "horizontal": true,
+                            "name": "clientX;clientY",
+                            "description": "the values of the clientX and clientY attributes of a mousedown event."
+                          },
+                          "view": {
+                            "backside": false
+                          },
+                          "version": 1
+                        }
+                      }
+                    ],
+                    "body": {
+                      "type": "body",
+                      "steps": [
+                        {
+                          "type": "robot_action",
+                          "action_name": "pick up",
+                          "path": {
+                            "type": "path.to_backside_widget_of_context",
+                            "type_name": "sensor",
+                            "backside_index": 0,
+                            "next_path": {
+                              "type": "path.to_widget_on_nest",
+                              "next_path": {
+                                "type": "box_path",
+                                "index": 0,
+                                "removing_widget": true
+                              }
+                            }
+                          },
+                          "additional_info": {
+                            "time": 1678
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "drop it on",
+                          "path": {
+                            "type": "path.to_entire_context"
+                          },
+                          "additional_info": {
+                            "time": 2236
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "pick up",
+                          "path": {
+                            "type": "path.to_backside_widget_of_context",
+                            "type_name": "sensor",
+                            "backside_index": 0,
+                            "next_path": {
+                              "type": "path.to_widget_on_nest",
+                              "next_path": {
+                                "type": "box_path",
+                                "index": 1,
+                                "removing_widget": true
+                              }
+                            }
+                          },
+                          "additional_info": {
+                            "time": 961
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "drop it on",
+                          "path": {
+                            "type": "path.to_entire_context"
+                          },
+                          "additional_info": {
+                            "time": 2181
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "remove",
+                          "path": {
+                            "type": "path.to_backside_widget_of_context",
+                            "type_name": "sensor",
+                            "backside_index": 0,
+                            "removing_widget": true
+                          },
+                          "additional_info": {
+                            "time": 3491
+                          }
+                        }
+                      ]
+                    },
+                    "name": "#1"
+                  },
+                  "view": {
+                    "saved_width": 66,
+                    "saved_height": 110,
+                    "backside": false,
+                    "frontside_left": "40.009386042402824%",
+                    "frontside_top": "44.140625%"
+                  },
+                  "version": 1
+                }
+              }
+            ]
+          },
+          "view": {
+            "frontside_width": 320,
+            "frontside_height": 55,
+            "frontside_left": 47,
+            "frontside_top": 84,
+            "backside_width": 0,
+            "backside_height": 0,
+            "backside_left": 0,
+            "backside_top": 0,
+            "saved_width": 222,
+            "saved_height": 55,
+            "backside": false
+          },
+          "version": 1
+        }
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgb(245, 240, 240)",
+    "backside_width": 456,
+    "backside_height": 246,
+    "backside_left": 8,
+    "backside_top": 20666.96875,
+    "backside": true,
+    "drag_x_offset": 265,
+    "drag_y_offset": 46.03125
+  },
+  "version": 1
 }</div></div>
 </body>
 </html>
