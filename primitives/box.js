@@ -1013,9 +1013,9 @@ window.TOONTALK.box_hole =
                         }
                     }
                     if (!dropped.is_backside()) {
-                        box.get_frontside_element().dispatchEvent(new CustomEvent('widget added', {detail: {element_widget: dropped_element,
-                                                                                                            where: 'front',
-                                                                                                            index: this.get_index()}}));
+                        box.get_frontside_element().dispatchEvent(TT.UTILITIES.create_event('widget added', {element_widget: dropped_element,
+                                                                                                             where: 'front',
+                                                                                                             ndex: this.get_index()}));
                     }
                 } else {
                     box.rerender();

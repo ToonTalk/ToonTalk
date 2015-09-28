@@ -3782,6 +3782,18 @@ window.TOONTALK.UTILITIES =
            // following shouldn't be necessary but the selector [toontalk_attached_callback] didn't work
            $(element).addClass("toontalk-has-attached-callback");
        };
+
+       utilities.create_event = function (name, details) {
+           var event;
+           try {
+               event = new CustomEvent(name, {detail: details});
+           } catch (e) {
+               // fall back on old way of doing this (needed for IE11)
+               event = document.createEvent("CustomEvent");
+               event.initCustomEvent('myMessage', false, false, details);
+           }
+           return event;
+       };
 //         enable_touch_events = function (maximum_click_duration) {
 //             // based on ideas in http://stackoverflow.com/questions/5186441/javascript-drag-and-drop-for-touch-devices/6362527#6362527
 //             var last_touch_down_time;

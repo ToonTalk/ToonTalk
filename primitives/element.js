@@ -732,8 +732,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 widget.set_location_attributes(new_relative_position.left, new_relative_position.top);
             }
             // signal event in case a sensor is listening
-            $this_element.get(0).dispatchEvent(new CustomEvent('widget added', {detail: {element_widget: $widget_element.get(0),
-                                                                                         where: 'front'}}));
+            $this_element.get(0).dispatchEvent(TT.UTILITIES.create_event('widget added', {element_widget: $widget_element.get(0),
+                                                                                          where: 'front'}));
             if (this.robot_in_training()) {
                 this.robot_in_training().dropped_on(widget, this);
             }
