@@ -827,8 +827,8 @@ window.TOONTALK.robot = (function (TT) {
     robot.removed = function (widget) {
         var action_name = "remove";
         var context;
-        if (this.get_parent_of_frontside()) {
-            context = this.get_parent_of_frontside().get_widget();
+        if (this.get_parent()) {
+            context = this.get_parent().get_widget();
         }
         add_step_to_robot(widget, action_name, this);
         widget.last_action = action_name;
@@ -886,9 +886,13 @@ window.TOONTALK.robot = (function (TT) {
         add_step_to_robot(widget, action_name, this);
     };
 
-    robot.backside_closed = function (widget) {
+    robot.backside_closed = function (backside) {
         var action_name = "close the backside";
-        add_step_to_robot(widget, action_name, this);
+        if (backside.is_primary_backside()) {
+            add_step_to_robot(backside.get_widget(), action_name, this);
+        } else {
+            this.removed(backside);
+        }
     };
 
     robot.button_clicked = function (selector, widget_side) {

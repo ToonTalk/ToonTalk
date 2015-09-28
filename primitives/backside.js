@@ -115,15 +115,15 @@ window.TOONTALK.backside =
                 close_handler =
                     function (event) {
                         var do_after_closing = 
-                            function () {
+                            function () { 
+                                if (widget.robot_in_training() && widget.robot_in_training() !== widget) {
+                                    // ignore a robot training a robot that closes the trainee's backside
+                                    widget.robot_in_training().backside_closed(backside);
+                                }
                                 if (backside.is_primary_backside()) {
                                     backside.hide_backside(event);
                                 } else {
                                     backside.remove();
-                                }  
-                                if (widget.robot_in_training() && widget.robot_in_training() !== widget) {
-                                    // ignore a robot training a robot that closes the trainee's backside
-                                    widget.robot_in_training().backside_closed(widget);
                                 }    
                             };
                         var backside_widgets, robot_found;
