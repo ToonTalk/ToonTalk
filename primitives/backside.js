@@ -713,8 +713,8 @@ window.TOONTALK.backside =
                     original_height = $backside_element.height();
                 }
             };
-            backside.add_to_top_level_backside = function (widget, train) {
-                return this.get_widget().add_to_top_level_backside(widget, train);
+            backside.add_to_top_level_backside = function (widget_side, train) {
+                return this.get_widget().add_to_top_level_backside(widget_side, train);
             };
             if (widget.get_backside_widgets) {
                 backside_widgets = widget.get_backside_widgets();

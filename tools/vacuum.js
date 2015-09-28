@@ -169,14 +169,16 @@ window.TOONTALK.vacuum = (function (TT) {
                         initial_location = $(element).offset();
                         initial_location.left -= $(restored_front_side_element).width(); // left of vacuum
                         TT.UTILITIES.set_absolute_position(restored_front_side_element, initial_location);
-                        restoring.this_and_walk_children(function (child) {
-                            if (child.is_sensor()) {
-                                child.restore_active();
+                        if (restoring.this_and_walk_children) {
+                            restoring.this_and_walk_children(function (child) {
+                                if (child.is_sensor()) {
+                                    child.restore_active();
+                                }
+                                return true;
+                            });
+                            if (TT.sounds) {
+                                TT.sounds.vacuum_spit.play();
                             }
-                            return true;
-                        });
-                        if (TT.sounds) {
-                            TT.sounds.vacuum_spit.play();
                         }
                     }
                 } else if (mode === 'suck_all') {

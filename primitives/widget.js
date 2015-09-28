@@ -1483,18 +1483,18 @@ window.TOONTALK.widget = (function (TT) {
             return this;
         },
 
-        add_to_top_level_backside: function (widget, train) {
+        add_to_top_level_backside: function (widget_side, train) {
             var top_level_widget = this.top_level_widget();
             var widget_frontside_element;
-            if (!widget) {
-                widget = this;
+            if (!widget_side) {
+                widget_side = this;
             }
-            widget_frontside_element = widget.get_frontside_element(true);
-            top_level_widget.add_backside_widget(widget);
+            widget_frontside_element = widget_side.get_element(true);
+            top_level_widget.add_backside_widget(widget_side);
             top_level_widget.get_backside_element().appendChild(widget_frontside_element);
-            widget.render();
+            widget_side.render();
             if (train && this.robot_in_training()) {
-                this.robot_in_training().dropped_on(widget, top_level_widget);
+                this.robot_in_training().dropped_on(widget_side, top_level_widget);
             }
             return widget_frontside_element;
         },
