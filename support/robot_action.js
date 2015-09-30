@@ -181,13 +181,7 @@ window.TOONTALK.robot_action =
     var move_robot_animation = function (side, robot, continuation, additional_info) {
         var thing_in_hand = robot.get_thing_in_hand();
         var robot_frontside_element = robot.get_frontside_element();
-        var widget_element  = side.get_element();
-        if (!TT.UTILITIES.is_attached(widget_element) || !robot.visible()) {
-            // is running in a context where the source of this widget isn't available
-            // e.g. published page or test file without standard resource widgets
-            continuation();
-            return;
-        }
+        var widget_element = side.get_element();
         var widget_width,
             widget_height,
             left_offset,
@@ -199,6 +193,15 @@ window.TOONTALK.robot_action =
             thing_in_hand_height,
             robot_location,
             thing_in_hand_location;
+        if (!widget_element) {
+            widget_element = TT.UTILITIES.find_resource_equal_to_widget(side);
+        }
+        if (!TT.UTILITIES.is_attached(widget_element) || !robot.visible()) {
+            // is running in a context where the source of this widget isn't available
+            // e.g. published page or test file without standard resource widgets
+            continuation();
+            return;
+        }
         widget_width  = $(widget_element).width();
         widget_height = $(widget_element).height();
         if (additional_info && additional_info.left_offset_fraction) {
