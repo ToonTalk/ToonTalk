@@ -51,7 +51,7 @@ window.TOONTALK.bird = (function (TT) {
             return true;
         };
         new_bird.widget_side_dropped_on_me = function (message_side, event, robot, do_not_run_next_step, by_function_bird) {
-            var frontside_element, fly_continuation, run_next_step_continuation;
+            var frontside_element, fly_continuation, run_next_step_continuation, add_to_nest_contents_directly;
             if (nest) {
                 if (nest.has_ancestor(message_side)) {
                     TT.UTILITIES.display_message("Bird can't take its nest to its nest!");
@@ -88,8 +88,23 @@ window.TOONTALK.bird = (function (TT) {
                         }
                     }
                     nest.animate_bird_delivery(message_side, this, run_next_step_continuation, event, robot);
-                } else { 
-                    nest.add_to_contents(message_side, event, robot);    
+                } else {
+                    add_to_nest_contents_directly = function () {
+                        try {
+                            nest.add_to_contents(message_side, event, robot);
+                         } catch (nest_or_error) {
+                            if (nest_or_error.wait_for_nest_to_receive_something) {
+                                // e.g. this is a function bird and it received a box with empty nests inside
+                                nest_or_error.wait_for_nest_to_receive_something.run_when_non_empty(add_to_nest_contents_directly, this);
+                                return;
+                            } else {
+                                // is an error -- this isn't the place to deal with it
+                                console.error(nest_or_error.stack);
+                                throw nest_or_error;
+                            }
+                        }
+                    };
+                    add_to_nest_contents_directly();
                     if (robot && robot === message_side.robot_waiting_before_next_step) {
                         message_side.robot_waiting_before_next_step = undefined;
                         robot.run_next_step();
