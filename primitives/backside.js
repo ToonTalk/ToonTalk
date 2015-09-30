@@ -355,7 +355,7 @@ window.TOONTALK.backside =
                 function (side_of_other, event, robot, ignore_training) {
                     // event serves 2 functions: info for adjusting for scrolling and whether to update the display
                     // undefined if this is done by a robot
-                    var other, side_of_other_element, backside_of_other;
+                    var other, side_of_other_element, backside_of_other, widget_offset;
                     if (robot && !robot.visible() && !this.visible()) {
                         this.add_backside_widget(side_of_other);
                         if (side_of_other.dropped_on_other) {
@@ -369,8 +369,14 @@ window.TOONTALK.backside =
                         }
                         side_of_other_element = side_of_other.get_element(this.visible());
                         side_of_other.rerender();
-                        backside_element.appendChild(side_of_other_element);
-                        TT.UTILITIES.set_position_is_absolute(side_of_other_element, true, event); // when on the backside
+                        if (event || !side_of_other_element.parentElement) {
+                            backside_element.appendChild(side_of_other_element);
+                            TT.UTILITIES.set_position_is_absolute(side_of_other_element, true, event); // when on the backside
+                        } else {
+                            widget_offset = $(side_of_other_element).offset();
+                            backside_element.appendChild(side_of_other_element);
+                            TT.UTILITIES.set_absolute_position(side_of_other_element, widget_offset);
+                        }
                     }
                     if (this.get_widget().is_top_level()) {
                         if (robot && !robot.visible()) {
