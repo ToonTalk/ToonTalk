@@ -294,7 +294,6 @@ window.TOONTALK.robot_action =
         thing_in_hand_element = thing_in_hand.get_element(true);
         thing_in_hand.set_visible(robot.visible());
         new_continuation = function () {
-            var thing_in_hand_position = $(thing_in_hand_element).offset();
             var $top_level_element;
             $(thing_in_hand_element).removeClass("toontalk-held-by-robot");
             if (thing_in_hand.drop_on) {
@@ -310,8 +309,8 @@ window.TOONTALK.robot_action =
                 robot.rerender();
             }
             continuation();
-            if (thing_in_hand.drop_on) {
-                TT.UTILITIES.set_absolute_position(thing_in_hand_element, thing_in_hand_position);
+            if (thing_in_hand.drop_on && thing_in_hand.visible()) {
+                TT.UTILITIES.set_absolute_position(thing_in_hand_element, $(thing_in_hand_element).offset());
                 thing_in_hand.restore_dimensions();
             }
             if (thing_in_hand.robot_waiting_before_next_step !== robot) {
