@@ -1202,7 +1202,7 @@ window.TOONTALK.nest = (function (TT) {
                                         // height while bird was hatching
                                         .css({width:  '',
                                               height: ''});
-                    if (this.get_parent_of_frontside().get_widget().is_top_level()) {
+                    if (this.get_parent_of_frontside() && this.get_parent_of_frontside().is_top_level()) {
                         // due to switch from animation of bird hatching in nest to static nest
                         // position needs adjusting
                         TT.UTILITIES.set_css(frontside_element,

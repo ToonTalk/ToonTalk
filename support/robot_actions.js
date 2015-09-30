@@ -281,7 +281,6 @@ window.TOONTALK.actions =
                                     console.log(step.get_action_name() + " (watched)");
                                 }
                                 step.run_watched(context, top_level_context, robot);
-                                console.log(Date.now());
                                 if (robot.get_thing_in_hand()) {
                                     // TODO: move this elsewhere
                                     robot.get_thing_in_hand().save_dimensions();
