@@ -736,6 +736,13 @@ window.TOONTALK.number = (function () {
         // else warn??
     };
 
+    number.get_default_description = function () {
+        if (this.get_approximate()) {
+            return "a number from an approximate calculation.";
+        }
+        return "a number.";
+    };
+
     number.drop_on = function (side_of_other, event, robot) {
         if (!side_of_other.number_dropped_on_me) {
             if (side_of_other.widget_side_dropped_on_me) {
