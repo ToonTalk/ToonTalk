@@ -306,7 +306,13 @@ window.TOONTALK.robot_action =
                         }
                     }
                 }
-                robot.rerender();
+                if (robot.visible()) {
+                    robot.render();
+                } else {
+                    // robot was running watched but window hidden or robot's context closed
+                    // so thing dropped should be removed from DOM
+                    $(thing_in_hand_element).remove();
+                }
             }
             continuation();
             if (thing_in_hand.drop_on && thing_in_hand.visible()) {
