@@ -369,11 +369,15 @@ window.TOONTALK.backside =
                         }
                         side_of_other_element = side_of_other.get_element(this.visible());
                         side_of_other.rerender();
-                        if (event || !side_of_other_element.parentElement) {
+                        if (event) {
                             backside_element.appendChild(side_of_other_element);
                             TT.UTILITIES.set_position_is_absolute(side_of_other_element, true, event); // when on the backside
                         } else {
-                            widget_offset = $(side_of_other_element).offset();
+                            if (robot) {
+                                widget_offset = $(robot.get_frontside_element()).offset();
+                            } else {
+                                widget_offset = $(side_of_other_element).offset();
+                            }
                             backside_element.appendChild(side_of_other_element);
                             TT.UTILITIES.set_absolute_position(side_of_other_element, widget_offset);
                         }
