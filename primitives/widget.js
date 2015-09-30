@@ -611,7 +611,10 @@ window.TOONTALK.widget = (function (TT) {
                 };
             }
             widget.update_title = function () {
-                TT.UTILITIES.give_tooltip(this.get_frontside_element(), this.get_title());
+                var frontside_element = this.get_frontside_element();
+                if (frontside_element) {
+                    TT.UTILITIES.give_tooltip(frontside_element, this.get_title());
+                }
             };
         },
 
