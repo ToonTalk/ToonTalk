@@ -375,11 +375,15 @@ window.TOONTALK.backside =
                         } else {
                             if (robot) {
                                 widget_offset = $(robot.get_frontside_element()).offset();
-                            } else {
+                            }
+                            if (!widget_offset) {
+                                // no robot or robot not visible
                                 widget_offset = $(side_of_other_element).offset();
                             }
                             backside_element.appendChild(side_of_other_element);
-                            TT.UTILITIES.set_absolute_position(side_of_other_element, widget_offset);
+                            if (widget_offset && (widget_offset.left !== 0 || widget_offset.top !== 0)) {
+                                TT.UTILITIES.set_absolute_position(side_of_other_element, widget_offset);
+                            }
                         }
                     }
                     if (this.get_widget().is_top_level()) {
