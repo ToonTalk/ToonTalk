@@ -38,12 +38,12 @@ window.TOONTALK.path =
     };
     
     return { 
-        get_path_to: function (widget, robot) {
+        get_path_to: function (widget, robot, or_any_backside_of_widget) {
             var compute_path = function (widget, robot) {
                 var context = robot.get_training_context();
                 var body = robot.get_body();
                 var path, sub_path, widget_type, is_backside, robot_ancestor;
-                if (widget.is_backside()) {
+                if (widget.is_primary_backside && widget.is_primary_backside()) {
                     is_backside = true;
                     widget = widget.get_widget();
                 }
@@ -56,7 +56,7 @@ window.TOONTALK.path =
                 if (widget_type === "top-level") {
                     return TT.path.top_level_backside;
                 }
-                path = body.get_path_to(widget, robot);
+                path = body.get_path_to(widget, robot, or_any_backside_of_widget);
                 if (path) {
                     path.is_backside = is_backside;
                     return path;
@@ -223,7 +223,9 @@ window.TOONTALK.path =
             if (path.not_to_be_dereferenced) {
                 json.not_to_be_dereferenced = true;
             }
-            if (path.is_backside) {
+            if (path.is_backside === true || (path.is_backside && path.is_backside())) {
+                // TODO: rationalise this -- in one case is_backside is a flag of a path 
+                // in the other the path is itself the backside of a widget
                 json.is_backside = true;
             }
             return json;
@@ -276,9 +278,10 @@ window.TOONTALK.path =
                             // but robot isn't referring to the resource itself just the 'value'
                             widget_frontside_element = TT.UTILITIES.find_resource_equal_to_widget(widget);
                             if (widget_frontside_element) {
-                                widget_copy.save_dimensions_of(TT.UTILITIES.widget_of_element(widget_frontside_element));
+                                widget_copy.save_dimensions_of(TT.UTILITIES.widget_side_of_element(widget_frontside_element));
                                 copy_frontside_element = widget_copy.get_frontside_element();
                                 widget_frontside_position = $(widget_frontside_element).position();
+                                // TODO: determine if timeout still needed or could be replaced by DOM attachment callback
                                 TT.UTILITIES.set_timeout(function ()  {
                                     $(copy_frontside_element).css({left:   widget_frontside_position.left,
                                                                    top:    widget_frontside_position.top,
@@ -292,10 +295,11 @@ window.TOONTALK.path =
                     toString: function (to_string_info) {
                         return TT.UTILITIES.add_a_or_an(widget.toString(to_string_info));
                     },
-                    get_json: function () {
+                    get_json: function (json_history) {
                         return {type: "path.to_resource",
-                                // following resets json_history since within a path there shouldn't be sharing without the 'outside'
-                                resource: TT.path.get_json(widget, TT.UTILITIES.fresh_json_history())};
+                                // following resets json_history since within a path there shouldn't be sharing with the 'outside'
+                                // except for shared HTML (which is just an optimisation)
+                                resource: TT.path.get_json(widget, TT.UTILITIES.fresh_json_history(json_history))};
                     }
             };
         },

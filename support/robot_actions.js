@@ -48,6 +48,10 @@ window.TOONTALK.actions =
                 newly_created_widgets = [];
             };
             new_actions.add_step = function (step, new_widget) {
+                if (!step) {
+                    TT.UTILITIES.report_internal_error("Attempt to add an undefined step.");
+                    return;
+                }
                 steps.push(step);
                 if (new_widget) {
                     this.add_newly_created_widget_if_new(new_widget);
@@ -76,10 +80,11 @@ window.TOONTALK.actions =
             new_actions.get_newly_created_widgets = function () {
                 return newly_created_widgets;
             };
-            new_actions.get_path_to = function (widget, robot) {
+            new_actions.get_path_to = function (widget, robot, or_any_backside_of_widget) {
                 var path, sub_path, children;
                 newly_created_widgets.some(function (newly_created_widget, index) {
-                    if (newly_created_widget === widget) {
+                    if (newly_created_widget === widget || (or_any_backside_of_widget && newly_created_widget.get_widget() === widget)) {
+                        // might be a backside of the widget that was referenced
                         path = TT.newly_created_widgets_path.create(index);
                         return true;
                     } else if (newly_created_widget.get_path_to) {
@@ -142,10 +147,10 @@ window.TOONTALK.actions =
             var frontside_element = robot.get_frontside_element();
             var original_parent_element, previous_robot, previous_robot_backside_element;
             var saved_parent_element = frontside_element.parentElement;
+            var first_robot = robot.get_first_in_team();
             var restore_after_last_event = function () {
-                var first_robot_still_visible = robot.visible() && 
-                                                robot.get_maximum_step_duration() !== 0 &&
-                                                robot.get_first_in_team() === robot;
+                var first_robot_still_visible = first_robot.visible() && 
+                                                first_robot.get_maximum_step_duration() !== 0;
                 var continuation = function () {
                     // robot was added to top-level backside so z-index will work as desired (robot on top of everything)
                     // the following restores it
@@ -155,13 +160,18 @@ window.TOONTALK.actions =
                         }
                         robot.set_animating(false);
                     }
-                    if (robot.get_run_once()) {
-                        robot.get_first_in_team().set_running(false);
-                    } else if (!robot.stopped()) {
-                        robot.get_first_in_team().run(context, top_level_context, queue);
+                    if (first_robot === robot) {
+                        TT.UTILITIES.set_absolute_position(frontside_element, robot_home);
+                    } else {
+                        TT.UTILITIES.set_css(frontside_element, {position: 'static'});
+                        previous_robot.get_backside(true).get_next_robot_area().appendChild(frontside_element);
                     }
-                    if (robot.get_first_in_team() === robot) {
-                        TT.UTILITIES.set_absolute_position($(frontside_element), robot_home);
+                    if (robot.get_run_once()) {
+                        first_robot.set_running(false);
+                    } else if (robot.stopped()) {
+                        $(frontside_element).removeClass(".toontalk-side-animating");
+                    } else {
+                        first_robot.run(context, top_level_context, queue);
                     }
                     robot.rerender();
                 };
@@ -177,75 +187,88 @@ window.TOONTALK.actions =
                 } else {
                     robot.set_animating(false);
                     continuation();
-                    // put robot back on the backside of the context
-                    context.add_backside_widget(robot);
+                    if (robot === first_robot) {
+                        // put first robot back on the backside of the context
+                        context.add_backside_widget(robot);
+                    }
                     $(robot.get_frontside_element()).remove();
                 }
             };
             var step_number = 0;
             var robot_home = $(frontside_element).offset();
-            var robot_start_position = $(frontside_element).position();
+            var robot_start_offset = $(frontside_element).offset();
             var robot_width  = $(frontside_element).width();
             var robot_height = $(frontside_element).height();
-            var $backside_element = $(frontside_element).closest(".toontalk-backside");
+            // only the first in team is certain to already have its frontside_element attached
+            var top_level_widget = robot.get_first_in_team().top_level_widget();
+            // TODO: determine if the following should be replaced by top_level_widget.get_backside(true)...
             var top_level_position = $(frontside_element).closest(".toontalk-top-level-backside").offset();
             var context_backside = context.get_backside();
-            var backside_rectangle;
+            var $home_element, backside_rectangle;
             if (TT.logging && TT.logging.indexOf('run') >= 0) {           
                 console.log(robot.to_debug_string() + " running watched");
             }
-            if (!robot.get_parent_of_frontside()) {
-                // could be a 'next robot' that hasn't been opened
-                previous_robot = robot.get_previous_robot();
+            previous_robot = robot.get_previous_robot();
+            if (previous_robot) {
+                $home_element = $(previous_robot.get_backside(true).get_next_robot_area());
+            } else {
+                $home_element = $(context_backside.get_backside_element(true)); // $(frontside_element).closest(".toontalk-backside");
+            }
+            if (!TT.UTILITIES.is_attached(frontside_element) && previous_robot) {
+                // could be a 'next robot' that hasn't been opened          
                 previous_robot.open_backside();
                 previous_robot.get_backside().set_advanced_settings_showing(true);
                 original_parent_element = frontside_element.parentElement;
                 if (!original_parent_element) {
                     // if no original_parent_element then find where it should be
-                    original_parent_element = $(previous_robot.get_backside_element()).find(".toontalk-drop-area").get(0);
+                    original_parent_element = $home_element.get(0);
                 }
-                context.get_backside_element().appendChild(frontside_element);
-                context.add_backside_widget(robot);
+                robot.set_visible(true);
+                // need the robot's element to be initialised since will start animating very soon
                 robot.update_display();
+                // and ensure it has a reasonable z-index
+//                 $(frontside_element).css({"z-index": TT.UTILITIES.next_z_index()+100});
                 // put the robot back when finished
                 robot.add_body_finished_listener(function () {
                                                       if (original_parent_element) {
                                                           original_parent_element.appendChild(frontside_element);
                                                       }
-                                                      // was temporarily added the backside of the context
-                                                      context.remove_backside_widget(robot);
-                                                      // above will have made the robot not visible
-                                                      robot.set_visible(true);
-                                                      // top left of drop area
+                                                      // let CSS position it
                                                       $(frontside_element).css({left: "",
-                                                                                top:  ""});
+                                                                                top:  "",
+                                                                                position: "",
+                                                                                "z-index": ''});
                                                  });    
             }
             if (robot_width === 0) {
                 $(frontside_element).css({width:  '',
                                           height: ''});
-                robot_width  = $(frontside_element).width();
-                robot_height = $(frontside_element).height();
+                robot_width  = robot.saved_width  || $(frontside_element).width();
+                robot_height = robot.saved_height || $(frontside_element).height();
             }
             if (!top_level_position) {
                 top_level_position = {left: 0, top: 0};
             }
-            if ($backside_element.length > 0) {
-                backside_rectangle = $backside_element.get(0).getBoundingClientRect();
+            if ($home_element.length > 0) {
+                backside_rectangle = $home_element.get(0).getBoundingClientRect();
                 if (robot_home.left < backside_rectangle.left-top_level_position.left ||
-                    robot_home.top  < backside_rectangle.top -top_level_position.top  ||
+                    robot_home.top  < backside_rectangle.top -top_level_position.top ||
                     robot_home.left+robot_width  > backside_rectangle.right +top_level_position.left ||
                     robot_home.top +robot_height > backside_rectangle.bottom+top_level_position.top) {
-                    // robot isn't within the backside so reset its home to bottom centre of backside parent
-                    robot_home = $backside_element.offset();
-                    robot_home.left += $backside_element.width()/2;
-                    robot_home.top  += $backside_element.height()-robot_height;
+                    // robot isn't within the backside so reset its home to bottom centre of its home element
+                    robot_home = $home_element.offset();
+                    robot_home.left += $home_element.width()/2;
+                    robot_home.top  += $home_element.height()-robot_height;
+                    robot_start_offset = robot_home;
                 }
             }
             // store this so that if the backside is closed while it is running its position is restored
-            robot.start_position = robot_start_position;
+            robot.start_offset = robot_start_offset;
+             // make sure the robot is a child of the top-level widget backside
+            top_level_widget.get_backside_element().appendChild(frontside_element);
+            TT.UTILITIES.set_absolute_position(frontside_element, robot_home);
             robot.run_next_step = function () {
-                if (context_backside && (context_backside.visible() || TT.UTILITIES.visible_element(context_backside.get_element()))) {
+                if (context_backside && !document.hidden && (context_backside.visible() || TT.UTILITIES.visible_element(context_backside.get_element()))) {
                     // TODO: determine how context_backside.visible() can be false and
                     // $(context_backside.get_element()).is(":visible") true (test-programs.html has an example)
                     // pause between steps and give the previous step a chance to update the DOM     
@@ -285,9 +308,6 @@ window.TOONTALK.actions =
                    if (saved_parent_element) {
                        saved_parent_element.appendChild(frontside_element);
                    }
-                   // following doesn't use JQuery since it wasn't working
-                   frontside_element.style.left =  robot_start_position.left+"px";
-                   frontside_element.style.top  =  robot_start_position.top +"px";
                    this.run_unwatched(context, top_level_context, queue, robot, step_number);
                 }
             }.bind(this);

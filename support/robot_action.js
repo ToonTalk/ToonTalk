@@ -25,7 +25,7 @@ window.TOONTALK.robot_action =
              return true;
          },
          "drop it on": function (target, context, top_level_context, robot, additional_info) {
-             var thing_in_hand, thing_in_hand_frontside_element, thing_in_hand_position;
+             var thing_in_hand;
              if (target) {
                  thing_in_hand = robot.get_thing_in_hand();
                  if (thing_in_hand) {
@@ -33,8 +33,10 @@ window.TOONTALK.robot_action =
                          if (TT.debugging && thing_in_hand === target) {
                              TT.UTILITIES.report_internal_error("Dropping something on itself! " + target);
                          }
-                         // TODO: update this when robots can drop backsides as well
-                         thing_in_hand.drop_on(target, false, undefined, robot);
+                         // might be a robot was running watched but window hidden or robot's context closed
+                         // so thing dropped should be removed from DOM
+                         $(thing_in_hand.get_frontside_element()).remove();
+                         thing_in_hand.drop_on(target, undefined, robot);
                          robot.set_thing_in_hand(undefined);
                          target.rerender();
                          if (thing_in_hand.robot_waiting_before_next_step === robot) {
@@ -118,7 +120,7 @@ window.TOONTALK.robot_action =
                  $(widget_frontside_element).css({left: context_frontside_position.left,
                                                   top:  context_frontside_position.top});
                  top_level_element.appendChild(widget_frontside_element);
-                 top_level_element.toontalk_widget.add_backside_widget(widget);
+                 top_level_element.toontalk_widget_side.get_widget().add_backside_widget(widget);
                  widget.animate_to_element(top_level_element, undefined, robot.transform_animation_speed(TT.UTILITIES.default_animation_speed));
              }
              return true;
@@ -131,7 +133,7 @@ window.TOONTALK.robot_action =
                  widget.update_display(); // so it has width and height for the following
                  TT.UTILITIES.set_position_relative_to_top_level_backside($(widget_frontside_element), robot_location, true);
              } else {
-                 widget.drop_on(context.get_backside(), false, undefined, robot, true);
+                 widget.drop_on(context.get_backside(), undefined, robot, true);
              }
              return true;
          },
@@ -179,10 +181,10 @@ window.TOONTALK.robot_action =
     var move_robot_animation = function (side, robot, continuation, additional_info) {
         var thing_in_hand = robot.get_thing_in_hand();
         var robot_frontside_element = robot.get_frontside_element();
-        var widget_element  = side.get_element();
-        var widget_width    = $(widget_element).width();
-        var widget_height   = $(widget_element).height();
-        var left_offset,
+        var widget_element = side.get_element();
+        var widget_width,
+            widget_height,
+            left_offset,
             top_offset,
             animation_left_offset,
             animation_top_offset,
@@ -191,6 +193,17 @@ window.TOONTALK.robot_action =
             thing_in_hand_height,
             robot_location,
             thing_in_hand_location;
+        if (!widget_element) {
+            widget_element = TT.UTILITIES.find_resource_equal_to_widget(side);
+        }
+        if (!TT.UTILITIES.is_attached(widget_element) || !robot.visible()) {
+            // is running in a context where the source of this widget isn't available
+            // e.g. published page or test file without standard resource widgets
+            continuation();
+            return;
+        }
+        widget_width  = $(widget_element).width();
+        widget_height = $(widget_element).height();
         if (additional_info && additional_info.left_offset_fraction) {
             if (!robot.original_animation_left_offset) {
                 robot.original_animation_left_offset = [];
@@ -249,8 +262,7 @@ window.TOONTALK.robot_action =
                                 true,
                                 robot.transform_original_step_duration(additional_info && additional_info.time));
     };
-    var pick_up_animation = function (widget, context, top_level_context, robot, continuation, additional_info) {
-        var frontside_element = widget.get_frontside_element();
+    var pick_up_animation = function (widget_side, context, top_level_context, robot, continuation, additional_info) {
         var new_continuation = function () {
             continuation();
             if (robot.animate_consequences_of_actions()) {
@@ -260,25 +272,19 @@ window.TOONTALK.robot_action =
             }
             robot.run_next_step();
         };
-        if (widget.get_type_name() === 'empty hole') {
+        if (TT.debugging && widget_side.get_type_name() === 'empty hole') {
             TT.UTILITIES.report_internal_error("Robot trying to pick up an empty hole.");
             return;
         }
-        if (widget.save_dimensions() && robot.animate_consequences_of_actions()) {
-            // not sure what the following accomplished but it causes things picked up and dropped by a robot to change size
-            // and to change even before robot gets there
-//             if (frontside_element.offsetWidth) {
-//                 $(frontside_element).css({width:  frontside_element.offsetWidth  + "px",
-//                                           height: frontside_element.offsetHeight + "px"});
-//             }
-            move_robot_animation(widget, robot, new_continuation, additional_info);
+        if (widget_side.save_dimensions() && robot.animate_consequences_of_actions()) {
+            move_robot_animation(widget_side, robot, new_continuation, additional_info);
         } else {
             new_continuation();
         }
     };
     var drop_it_on_animation = function (target, context, top_level_context, robot, continuation, additional_info) {
         var thing_in_hand = robot.get_thing_in_hand();
-        var $thing_in_hand_frontside_element, new_continuation;
+        var thing_in_hand_element, new_continuation;
         if (!thing_in_hand) {
             if (TT.debugging) {
                 TT.UTILITIES.report_internal_error("Expected the robot to be holding something.");
@@ -291,44 +297,31 @@ window.TOONTALK.robot_action =
         if (TT.debugging && thing_in_hand === target) {
             TT.UTILITIES.report_internal_error("Dropping something on itself!");
         }
-        $thing_in_hand_frontside_element = $(thing_in_hand.get_frontside_element(true));
-        thing_in_hand.set_visible(true);
-        thing_in_hand.rerender();
+        thing_in_hand_element = thing_in_hand.get_element(true);
+        thing_in_hand.set_visible(robot.visible());
         new_continuation = function () {
-            var thing_in_hand_position = $thing_in_hand_frontside_element.offset();
             var $top_level_element;
-            $thing_in_hand_frontside_element.removeClass("toontalk-held-by-robot");
-            continuation();
+            $(thing_in_hand_element).removeClass("toontalk-held-by-robot");
             if (thing_in_hand.drop_on) {
                 if (robot.animate_consequences_of_actions()) {
                     // need to see it before actions such as Bammer take place
-                    if (!TT.UTILITIES.visible_element($thing_in_hand_frontside_element.get(0))) {
+                    if (!TT.UTILITIES.visible_element(thing_in_hand_element)) {
                         $top_level_element = $(robot.get_frontside_element()).closest(".toontalk-top-level-backside")
-                        $top_level_element.append($thing_in_hand_frontside_element.get(0));
+                        if ($top_level_element.length > 0) {
+                            $top_level_element.get(0).appendChild(thing_in_hand_element);
+                        }
                     }
-                    TT.UTILITIES.set_absolute_position($thing_in_hand_frontside_element, thing_in_hand_position);
-                    thing_in_hand.restore_dimensions();
-                }
-                // remove it from the robot's hand since the drop can take a few seconds
-                // and we don't want to see it in the robot's hand
-                if (thing_in_hand.robot_waiting_before_next_step === robot) {
-                    // NOTE thing_in_hand needs to call robot.run_next_step();
-//                     console.log("Expecting " + thing_in_hand + " to run_next_step");
-//                     thing_in_hand.robot_waiting_before_next_step = undefined;
-//                     console.log("robot_waiting_before_next_step reset for " + thing_in_hand + " in adjust_dropped_location_continuation");
-                } else {
-                    // e.g., a nest may take some time because the egg hatches
-                    // but the robot is still holding it   
-//                     $(thing_in_hand.get_frontside_element()).css({position: ""}); // no longer absolute -- TODO: check if still needed
-                    robot.set_thing_in_hand(undefined);
-                    robot.run_next_step();
                 }
                 robot.rerender();
             }
-            // TODO: revisit use of get_parent_of_frontside once robots can manipulate backsides...
-//             if ($thing_in_hand_frontside_element.is(":visible") && thing_in_hand.get_parent_of_frontside() && thing_in_hand.get_parent_of_frontside().is_backside()) {
-//                 TT.UTILITIES.set_absolute_position($thing_in_hand_frontside_element, thing_in_hand_position);
-//             }
+            continuation();
+            if (thing_in_hand.drop_on && thing_in_hand.visible()) {
+                TT.UTILITIES.set_absolute_position(thing_in_hand_element, $(thing_in_hand_element).offset());
+                thing_in_hand.restore_dimensions();
+            }
+            if (thing_in_hand.robot_waiting_before_next_step !== robot) {
+                robot.run_next_step();
+            }
         };
         if (target.is_backside() && !TT.UTILITIES.visible_element(target.get_element())) {
             click_and_open_backside(target.get_widget(), robot, new_continuation, additional_info);
@@ -454,7 +447,6 @@ window.TOONTALK.robot_action =
             robot.carrying_tool = undefined;
             robot.update_display(); // to stop displaying tool
             continuation();
-//          $(robot.get_frontside_element()).css({"z-index": TT.UTILITIES.next_z_index()});
             robot.run_next_step();
         };
         if (!robot.animate_consequences_of_actions()) {
@@ -465,7 +457,7 @@ window.TOONTALK.robot_action =
         robot.carrying_tool = tool_held_by_robot_css_class;
         robot.update_display(); // to display tool
         // robots move at 1/4 pixel per millisecond for clarity
-        robot.animate_to_element(widget.get_frontside_element(), new_continuation, robot.transform_animation_speed(TT.UTILITIES.default_animation_speed/2), 0, 0, true);
+        robot.animate_to_element(widget.get_element(), new_continuation, robot.transform_animation_speed(TT.UTILITIES.default_animation_speed/2), 0, 0, true);
     };
     var copy_animation = function (widget, context, top_level_context, robot, continuation) {
         var new_continuation = function () {
@@ -494,11 +486,18 @@ window.TOONTALK.robot_action =
             }
             continuation();
         };
-        button_use_animation(widget, context, top_level_context, robot, new_continuation, additional_info.button_selector, additional_info, 1000);
+        button_use_animation(widget, context, top_level_context, robot, new_continuation, additional_info.button_selector, additional_info, robot.transform_step_duration(1000));
     };
     var change_size_animation = function (widget, context, top_level_context, robot, continuation, additional_info) {
        var frontside_element = widget.get_frontside_element();
-       var new_continuation = function () {
+       var new_continuation;
+       if (!frontside_element) {
+           // was hidden while running
+           continuation();
+           robot.run_next_step();
+           return;
+       }
+       new_continuation = function () {
             var width  = $(frontside_element).width();
             var height = $(frontside_element).height();
             var new_width  = width *additional_info.x_factor;
@@ -524,7 +523,7 @@ window.TOONTALK.robot_action =
         var source_widget;
         if (show_button_use) {
             source_widget = TT.path.dereference_path(additional_info.path_to_source, context, top_level_context, robot);
-            button_use_animation(source_widget, context, top_level_context, robot, continuation, additional_info.button_selector, additional_info, 3000);
+            button_use_animation(source_widget, context, top_level_context, robot, continuation, additional_info.button_selector, additional_info, robot.transform_step_duration(3000));
         } else {
             continuation();
             robot.run_next_step();
@@ -552,7 +551,7 @@ window.TOONTALK.robot_action =
                 trained_robot.get_backside().change_label_and_title_of_train_button(false);
                 $(trained_robot_frontside_element).removeClass("toontalk-robot-animating toontalk-robot-being-trained-by-robot");
                 trained_robot_frontside_element.toontalk_followed_by = undefined;
-                setTimeout(continuation, 1500);                      
+                setTimeout(continuation, robot.transform_step_duration(1500));                      
             };
             if (trained_robot_frontside_element.toontalk_return_to) {
                 TT.UTILITIES.animate_to_absolute_position(trained_robot_frontside_element,
@@ -563,7 +562,7 @@ window.TOONTALK.robot_action =
                 robot_returned_continuation();
             }
          };
-         button_use_animation(trained_robot, context, top_level_context, robot, new_continuation, ".toontalk-train-backside-button", additional_info, 1000);
+         button_use_animation(trained_robot, context, top_level_context, robot, new_continuation, ".toontalk-train-backside-button", additional_info, robot.transform_step_duration(1000));
     };
     var train_another_animation = function (robot_being_trained, context, top_level_context, robot, continuation, additional_info) {
         var new_continuation = function () {
@@ -729,7 +728,7 @@ window.TOONTALK.robot_action =
                     }
                     return;
                 }
-                referenced.set_visible(true);
+//                 referenced.set_visible(robot.visible());
                 watched_run_function(referenced, context, top_level_context, robot, continuation, additional_info);
             };
             new_action.toString = function (to_string_info) {
@@ -762,6 +761,9 @@ window.TOONTALK.robot_action =
                         break;
                     case ".toontalk-show-attributes-chooser-button":
                         action_description = "click the button to add or remove attributes of ";
+                        break;
+                    case ".toontalk-remove-backside-and-widget-buttton":
+                        action_description = "click the button to remove the back and front of ";
                         break;
                     default:
                         action_description = "click a button of";

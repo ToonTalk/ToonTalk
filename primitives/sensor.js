@@ -7,7 +7,7 @@
  /*jslint browser: true, devel: true, plusplus: true, vars: true, white: true */
 
  // Sensors listen for DOM events and are 'concretized' as nests and events as messages delivered by birds
- // Only keyCode is changed from a number to a string to be more user friendly
+ // the keyboard event attribute 'key' is supported in browsers without by using keyIdentifier instead
 
 window.TOONTALK.sensor = (function (TT) {
     "use strict";
@@ -31,30 +31,7 @@ window.TOONTALK.sensor = (function (TT) {
         var nest_update_display = new_sensor.update_display;
         var nest_copy = new_sensor.copy;
         var attributes = attributes_string.split(" ");
-        var attribute_values = function (event) {
-            return attributes.map(
-                function (attribute) {
-                    var value = event[attribute];
-                    if (attribute === 'keyCode') {
-                        // is this a good idea? shouldn't the DOM events be left alone?
-                        // perhaps this should be renamed keyChar or something...
-                        if (value === 16) {
-                            // is only the shift key
-                            return;
-                        }
-                        value = String.fromCharCode(value);
-                        if (!event.shiftKey) {
-                            value = value.toLowerCase();
-                        }
-                    } else {       
-                         if (typeof value === 'undefined') {
-                             value = "No " + attribute + " in event " + event + " of sensor " + sensor;
-                             TT.UTILITIES.display_message(value);
-                         }
-                    }
-                    return value;
-                });
-        };
+        var attribute_values;
         var attribute_widget = function (value) {
             var value_widget;
             switch (typeof value) {
@@ -70,15 +47,18 @@ window.TOONTALK.sensor = (function (TT) {
                 value_widget = TT.element.create(value.toString(), undefined, undefined, undefined, undefined, undefined, "toontalk-string-value-from-sensor");
                 style_contents(value_widget, new_sensor);
                 break;
+                default:
+                return value;
             }
             return value_widget;
         };
         var event_listener = function (event) {
-            var values, visible, $top_level_backside, value_widget, frontside_element, delivery_bird;
+            var values, attributes, visible, $top_level_backside, value_widget, frontside_element, delivery_bird;
             if (!new_sensor.get_active()) {
                 return;
             }
             values = attribute_values(event);
+            attributes = new_sensor.get_attributes();
             visible = new_sensor.visible();
             $top_level_backside = $(new_sensor.get_frontside_element()).closest(".toontalk-top-level-backside");        
             if (values.length === 1) {
@@ -228,7 +208,8 @@ window.TOONTALK.sensor = (function (TT) {
             widget = new_value;
         };
         new_sensor.get_custom_title_prefix = function () {
-            var title = "When a '" + event_name + "' event occurs my bird will bring me the '" + this.get_attributes_string() + "' attribute of the event.";
+            var who_to = widget ? " to " + widget : "";
+            var title = "When a '" + event_name + "' event" + who_to + " occurs my bird will bring me the '" + this.get_attributes_string() + "' attribute of the event.";
             if (active) {
                 if (!this.get_backside()) {
                     title += " On my back you can change which kind of events and attributes I receive.";
@@ -237,6 +218,49 @@ window.TOONTALK.sensor = (function (TT) {
                 title += " But I'm deactivated and can't receive anything until the 'Listening to events' check box on my back is ticked.";
             }
             return title;
+        };
+        new_sensor.get_default_description = function () {
+            if (widget) {
+                return "a sensor for " + widget.get_default_description();
+            } else {
+                return "a sensor for this document.";
+            }
+        };
+        new_sensor.can_run = function () {
+            // can run in the sense of becoming active
+            return true;
+        };
+        attribute_values = function (event) {
+            return new_sensor.get_attributes().map(
+                function (attribute) {
+                    var value = event[attribute];
+                    var backside_of_widget_value;
+                    if (attribute === 'key' && value === undefined) {
+                        // keyIdentifier has been deprecated in favour of key but Chrome (version 47) doesn't support it
+                        // keyIdentifier has reasonable string values for function keys, shift, etc
+                        // but orindary letters end up as strings such as U+0058
+                        // Note that this workaround fails for some punctuation -- e.g. '-' becomes 'insert'
+                       value = event.keyIdentifier;
+                       if (value.indexOf("U+") === 0) {
+                           return String.fromCharCode(event.keyCode);
+                       }
+                       return value;
+                    } else {       
+                         if (typeof value === 'undefined') {
+                             if (event.detail && event.detail.element_widget && attribute === 'widget') {
+                                 // return a fresh backside of the widget
+                                 backside_of_widget_value = TT.UTILITIES.widget_side_of_element(event.detail.element_widget).create_backside();
+                                 backside_of_widget_value.save_dimensions();
+                                 return backside_of_widget_value;
+                             } else if (event.detail && event.detail[attribute] !== undefined) {
+                                 return event.detail[attribute];
+                             }
+                             value = "No " + attribute + " in event " + event + " of sensor " + sensor;
+                             TT.UTILITIES.display_message(value);
+                         }
+                    }
+                    return value;
+                });
         };
         return new_sensor;
     };
@@ -285,6 +309,8 @@ window.TOONTALK.sensor_backside =
         create: function (sensor) {
             var event_name_input      = TT.UTILITIES.create_text_input(sensor.get_event_name(), 
                                                                        'toontalk-sensor-event-name-input',
+                                                                       // spaces are so this lines up with the next area "Event attribute"
+                                                                       // TODO: figure out how to make this work with translation on
                                                                        "Event name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",
                                                                        "Type here the event name.",
                                                                        "https://developer.mozilla.org/en-US/docs/Web/Events/" + sensor.get_event_name());
@@ -305,22 +331,34 @@ window.TOONTALK.sensor_backside =
             var update_attributes = function () {
                 sensor.set_attributes(event_attribute_input.button.value.trim());
             };
-            var advanced_settings_button = $(backside_element).find(".toontalk-settings-backside-button").get(0);
-            event_name_input.button.addEventListener(     'change', update_event_name);
-            event_attribute_input.button.addEventListener('change', update_attributes);
-            $(activate_switch.button).click(function (event) {
-                var active = activate_switch.button.checked;
-                sensor.set_active(active);
-                if (sensor.robot_in_training()) {
-                    sensor.robot_in_training().edited(robot, {setter_name: "set_active",
-                                                              argument_1: active,
-                                                              toString: "change to " + (active ? "active" : "inactive") + " of the " + sensor,
-                                                              button_selector: ".toontalk-sensor-active-check-box"});
+            var advanced_settings_button = TT.backside.create_advanced_settings_button(backside, sensor);
+            var activate_switch_clicked =
+                function (event) {
+                    var active = activate_switch.button.checked;
+                    sensor.set_active(active);
+                    if (sensor.robot_in_training()) {
+                        sensor.robot_in_training().edited(robot, {setter_name: "set_active",
+                                                                  argument_1: active,
+                                                                  toString: "change to " + (active ? "active" : "inactive") + " of the " + sensor,
+                                                                  button_selector: ".toontalk-sensor-active-check-box"});
+                    }
+                    sensor.render();
+                    event.stopPropagation();
+                };
+            var generic_add_advanced_settings = backside.add_advanced_settings;
+            backside_element.appendChild(advanced_settings_button);
+            backside.add_advanced_settings = function () {
+                var $advanced_settings_table;
+                event_name_input.button     .addEventListener('change', update_event_name);
+                event_attribute_input.button.addEventListener('change', update_attributes);
+                activate_switch.button      .addEventListener('click', activate_switch_clicked);
+                generic_add_advanced_settings.call(backside, event_name_input.container, event_attribute_input.container); 
+                // advanced table added above
+                $advanced_settings_table = $(backside_element).children(".toontalk-advanced-settings-table");
+                if ($advanced_settings_table.length > 0) {
+                    $advanced_settings_table.get(0).appendChild(activate_switch.container);
                 }
-                sensor.render();
-                event.stopPropagation();
-            });
-            $(backside_element).find(".toontalk-advanced-setting").append(event_name_input.container, event_attribute_input.container, activate_switch.container);
+            };
             return backside;
     }};
 }(window.TOONTALK));

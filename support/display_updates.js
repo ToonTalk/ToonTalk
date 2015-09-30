@@ -60,7 +60,7 @@ window.TOONTALK.DISPLAY_UPDATES =
             update_scheduled = false;   
             time_of_next_update = (now | Date.now())+minimum_delay_between_updates;
             updates.forEach(function (pending_update) {
-                var frontside_element = pending_update.get_frontside_element && pending_update.get_frontside_element();
+                var element = pending_update.get_element && pending_update.get_element();
                 var $parent_side_element, z_index, parent_z_index, backside;
                 pending_update.update_display();
                 if (pending_update.get_backside) {
@@ -70,12 +70,12 @@ window.TOONTALK.DISPLAY_UPDATES =
                     }
                 }
                 setTimeout(function () {
-                               TT.UTILITIES.use_custom_tooltip(frontside_element);
+                               TT.UTILITIES.use_custom_tooltip(element);
                            });
                 // ensure that children have higher z-index than parent (unless some children are animating)
-                $parent_side_element = $(frontside_element).parent().closest(".toontalk-side");
+                $parent_side_element = $(element).parent().closest(".toontalk-side");
                 if ($parent_side_element.is('*') && $parent_side_element.find(".toontalk-side-animating, .toontalk-side-appearing").length === 0) {
-                    z_index = TT.UTILITIES.get_style_numeric_property(frontside_element, 'z-index');
+                    z_index = TT.UTILITIES.get_style_numeric_property(element, 'z-index');
                     parent_z_index = TT.UTILITIES.get_style_numeric_property($parent_side_element.get(0), "z-index");
                     if (!parent_z_index) {
                         parent_z_index = TT.UTILITIES.next_z_index();
@@ -83,24 +83,24 @@ window.TOONTALK.DISPLAY_UPDATES =
                     }
                     if (!z_index || $parent_side_element.is(".toontalk-top-level-backside")) {
                         z_index = TT.UTILITIES.next_z_index();
-                        $(frontside_element).css({'z-index': z_index});
+                        $(element).css({'z-index': z_index});
                     } else if (z_index >= parent_z_index) {
                         z_index = parent_z_index+1;
-                        $(frontside_element).css({'z-index': z_index});
+                        $(element).css({'z-index': z_index});
                     }
-                    ensure_childen_have_higer_z_index(frontside_element, z_index);
+                    ensure_childen_have_higer_z_index(element, z_index);
                 }
                 // ensure that it is resizable if appropriate
-                if (frontside_element && !$(frontside_element).is(".toontalk-top-level-resource, .toontalk-bird, .toontalk-nest, .toontalk-box-hole, .toontalk-plain-text-element, .toontalk-conditions-contents, .toontalk-robot, .toontalk-widget, .toontalk-held-by-robot")) {
+                if (element && !$(element).is(".toontalk-top-level-resource, .toontalk-bird, .toontalk-nest, .toontalk-box-hole, .toontalk-plain-text-element, .toontalk-conditions-contents, .toontalk-robot, .toontalk-widget, .toontalk-held-by-robot")) {
                     // need to delay in order for the DOM to settle down with the changes caused by update_display
                     TT.UTILITIES.set_timeout(function () {
                                                  if ($parent_side_element.is('.toontalk-box-hole')) {
                                                      // not resizable while in a box hole
-                                                     if ($(frontside_element).is(".ui-resizable")) {
-                                                         $(frontside_element).resizable('destroy');
+                                                     if ($(element).is(".ui-resizable")) {
+                                                         $(element).resizable('destroy');
                                                      }
-                                                 } else if (!$(frontside_element).is(".ui-resizable")) {
-                                                     TT.UTILITIES.make_resizable($(frontside_element), pending_update);
+                                                 } else if (!$(element).is(".ui-resizable")) {
+                                                     TT.UTILITIES.make_resizable($(element), pending_update);
                                                  }
                                             });   
                 }                  

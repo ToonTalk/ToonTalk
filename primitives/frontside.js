@@ -27,7 +27,7 @@ window.TOONTALK.frontside =
                 }
                 if ($frontside_element.is(".toontalk-top-level-resource")) {
                     widget.set_running(!widget.get_running());
-                } else if (widget.get_running() && !widget.robot_in_training()) {
+//                 } else if (widget.get_running() && !widget.robot_in_training()) {
 //                     if (TT.debugging) {
 //                         TT.UTILITIES.display_message("Clicks on running widgets are ignored. If you wish to see its backside then stop it and click again.");
 //                     }
@@ -41,8 +41,10 @@ window.TOONTALK.frontside =
             };
             var visible;
             $(frontside_element).addClass("toontalk-frontside toontalk-side");
-            frontside_element.toontalk_widget = widget;
-//          console.log(widget + " with " + widget.debug_id + " associated with " + frontside_element.className);
+            if (widget.get_infinite_stack()) {
+                $(frontside_element).addClass("toontalk-infinite-stack");
+            }
+            frontside_element.toontalk_widget_side = widget;
             TT.UTILITIES.drag_and_drop(frontside_element);
             frontside.get_element = function () {
                 return frontside_element;
@@ -54,17 +56,18 @@ window.TOONTALK.frontside =
                 return visible;
             };
             frontside.set_visible = function (new_value) {
-                var widget;
-                if (visible === new_value) {
-                    return;
-                }
+                var widget = this.get_widget();
+                // tried to return if no change if visibility but then loading backside of robot lost its conditions
                 visible = new_value;
-                widget = this.get_widget();
                 if (widget.walk_children) {
                     widget.walk_children(function (child_side) {
                                              child_side.set_visible(new_value);
                                              return true; // continue to next child
                     });
+                }
+                if (new_value) {
+                    TT.UTILITIES.when_attached(this.get_element(true), 
+                                               widget.render.bind(widget));
                 }
             };
             // prefer addEventListener over JQuery's equivalent since when I inspect listeners I get a link to this code
@@ -86,14 +89,13 @@ window.TOONTALK.frontside =
             frontside_element.addEventListener("mouseleave", function (event) {
                 var backside = widget.get_backside();
                 var wiggling_widget = widget.is_empty_hole() ? wiget.get_parent_of_frontside() : widget;
-//              console.log("remove " + wiggling_widget.debug_string);
                 if (backside) {
                     TT.UTILITIES.remove_highlight();
                 }
                 $(wiggling_widget.get_frontside_element()).removeClass("toontalk-wiggle");
             });
             if (TT.debugging) {
-                frontside_element.id = widget.debug_id;
+                frontside_element.id = widget._debug_id;
             }
             return frontside;
         },
@@ -107,7 +109,7 @@ window.TOONTALK.frontside =
             // but when running unwatched might never have been attached
             var element = this.get_element();
             $(element).remove();
-            element.toontalk_widget = null; // free the memory
+            element.toontalk_widget_side = null; // free the memory
         }
 
     };

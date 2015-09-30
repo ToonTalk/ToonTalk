@@ -15,11 +15,15 @@ window.TOONTALK.wand = (function (TT) {
         var element;
         return  {
             apply_tool: function (widget) {
+                            var widget_copy;
                             if (widget.get_type_name() !== 'top-level') {
                                 if (TT.sounds) {
                                     TT.sounds.magic.play();
                                 }
-                                widget.add_copy_to_container();
+                                widget_copy = widget.add_copy_to_container();
+                                if (widget.robot_in_training()) {
+                                    widget.robot_in_training().copied(widget, widget_copy, false);
+                                }
                             }
                         },
             get_element: function () {

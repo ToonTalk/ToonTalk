@@ -199,7 +199,7 @@
 	cursor: pointer;
 	vertical-align: middle;
 	text-align: center;
-	overflow: visible; /* removes extra width in IE */
+	overflow: visible;/* removes extra width in IE */
 }
 .ui-button,
 .ui-button:link,
@@ -250,7 +250,7 @@ button.ui-button-icons-only {
 }
 /* no icon support for input elements, provide padding by default */
 input.ui-button {
-	padding: .4em 1em;
+/* 	padding: .4em 1em; */
 }
 
 /* button icon element(s) */
@@ -1601,9 +1601,18 @@ body {
 	background-color: white;
 	font-size: 80%;
 }
+.toontalk-nest > .toontalk-plain-text-element {
+   /* font-size: 100%; */
+}
 .toontalk-box-hole > .toontalk-plain-text-element {
 /* 	looks better with a smaller font when scaled to fit in a hole */
-	font-size: .8em;
+   font-size: 80%;
+}
+.toontalk-element-frontside > .toontalk-plain-text-element {
+	background-color: transparent;
+}
+.toontalk-element-frontside .toontalk-top-level-number {
+	background-color: transparent;
 }
 .toontalk-box-hole {
 	position: absolute;
@@ -1749,9 +1758,11 @@ padding-bottom:  8%;}
     color: inherit;
     background: none;
     cursor: text;
+    height: 24pt;
 }
 .toontalk-text-area {
 	background-color: white;
+	height: 24pt;
 }
 .toontalk-numerator-input {
 }
@@ -1772,7 +1783,7 @@ padding-bottom:  8%;}
 	margin-right:  6px;
 }
 .toontalk-description-input {
-	width: 24em;
+	width: 28em;
 	text-align: inherit;
 }
 .toontalk-conditions-contents {
@@ -1805,12 +1816,13 @@ padding-bottom:  8%;}
 	display:  inline;
 	vertical-align: middle;
 }
-.toontalk-widget-in-drop_area {
+.toontalk-drop-area > .toontalk-frontside {
 	width:  32px;
 	height: 32px;
 	display:  inline-block;
 	vertical-align: middle;
 	padding:  8pt;
+	position: static;
 }
 .toontalk-infinite-stack {
 	box-shadow: 10px 5px 5px black;
@@ -1873,8 +1885,8 @@ table.toontalk-documentation-table {
 	border: solid 4px white;
 }
 .toontalk-highlight.toontalk-plain-text-element {
-/* 	a border might be scaled and can look terrible */
-	transition: 3s;
+/* 	a border might be scaled and can look terrible so use color change instead to highlight */
+	transition: 2s;
     background-color: rgb(255, 184, 184);
 }
 .toontalk-highlight.toontalk-number-full-size-border {
@@ -2241,8 +2253,11 @@ background-image: url("images/dusty-morph.png");
 .toontalk-carried-by-bird {
     position: static;
     transform: scale(0.8, 0.4);
-    width: 100%;	
+    width: 100%;
     height: 100%;
+}
+.toontalk-carried-by-bird.toontalk-plain-text-element, .toontalk-temporarily-set-down.toontalk-plain-text-element {
+	font-size: 60px;
 }
 .toontalk-nest-with-egg {
     background-image: url("images/nest-with-egg.png");
@@ -2496,7 +2511,9 @@ background-image: url("images/dusty-morph.png");
     height: 102px;
     text-align: center;
 }
-.toontalk-bird-static::after {
+.toontalk-bird-static::befre {
+/* 	::before isntead of ::after in case bird is holding something 
+	in which case her name ends up below the thing */
  	content: attr(toontalk_name);
  	position: relative;	
     top: 50%;

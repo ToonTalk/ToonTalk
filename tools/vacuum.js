@@ -92,12 +92,12 @@ window.TOONTALK.vacuum = (function (TT) {
                 var widget = widget_side.get_widget();
                 var remove_widget = function (widget_side) {  
                     var copy;
-                    if (widget_side.is_backside()) {
-                        widget_side.hide_backside();
-                        return;
-                    }
                     if (event && widget.robot_in_training()) {
                         widget.robot_in_training().removed(widget_side);
+                    }
+                    if (widget_side.is_primary_backside && widget_side.is_primary_backside()) {
+                        widget_side.hide_backside();
+                        return;
                     }
                     if (widget_side === widget.robot_in_training()) {
                         // vacuuming himself so automatically finish training
@@ -112,29 +112,33 @@ window.TOONTALK.vacuum = (function (TT) {
                     }
                     // save a copy for restoring since the following clobbers the original -- e.g. removing contents from boxes
                     copy = widget_side.copy();
-                    copy.save_dimensions_of(widget_side);
-                    // inactive any active sensors but need to re-activate if restored
-                    copy.this_and_walk_children(function (child) {
-                        if (child.is_sensor() && child.get_active()) {
-                            child.set_active('temporarily false');
-                        }
-                        return true;
-                    });
+                    if (!copy.is_backside()) {
+                        copy.save_dimensions_of(widget_side);
+                        // inactive any active sensors but need to re-activate if restored
+                        copy.this_and_walk_children(function (child) {
+                            if (child.is_sensor() && child.get_active()) {
+                                child.set_active('temporarily false');
+                            }
+                            return true;
+                        });
+                    }
                     removed_items.push(copy);
                     if (widget_side.set_running) {
                         widget_side.set_running(false);
                     }
-                    widget_side.this_and_walk_children(function (child) {
-                        if (child.is_sensor() && child.get_active()) {
-                            child.set_active(false);
-                        }
-                        return true;
-                    });
+                    if (!copy.is_backside()) {
+                        widget_side.this_and_walk_children(function (child) {
+                            if (!child.is_backside() && child.is_sensor() && child.get_active()) {
+                                child.set_active(false);
+                            }
+                            return true;
+                        });
+                    }
                     widget_side.remove(event);
                 };
                 var restoring, initial_location, restored_front_side_element, new_erased, top_level_backside, backside_widgets;
                 if (mode === 'suck') {
-                    if (widget_side.remove && widget_side.get_type_name() !== 'top-level') {
+                    if (widget_side.remove && !widget_side.get_widget().is_top_level()) {
                         remove_widget(widget_side);
                         if (TT.sounds) {
                             TT.sounds.vacuum_suck.play();
@@ -164,15 +168,17 @@ window.TOONTALK.vacuum = (function (TT) {
                         restored_front_side_element = widget_side.add_to_top_level_backside(restoring, true);
                         initial_location = $(element).offset();
                         initial_location.left -= $(restored_front_side_element).width(); // left of vacuum
-                        TT.UTILITIES.set_absolute_position($(restored_front_side_element), initial_location);
-                        restoring.this_and_walk_children(function (child) {
-                            if (child.is_sensor()) {
-                                child.restore_active();
+                        TT.UTILITIES.set_absolute_position(restored_front_side_element, initial_location);
+                        if (restoring.this_and_walk_children) {
+                            restoring.this_and_walk_children(function (child) {
+                                if (child.is_sensor()) {
+                                    child.restore_active();
+                                }
+                                return true;
+                            });
+                            if (TT.sounds) {
+                                TT.sounds.vacuum_spit.play();
                             }
-                            return true;
-                        });
-                        if (TT.sounds) {
-                            TT.sounds.vacuum_spit.play();
                         }
                     }
                 } else if (mode === 'suck_all') {

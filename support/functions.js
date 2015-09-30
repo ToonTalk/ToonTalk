@@ -38,7 +38,7 @@ window.TOONTALK.create_function_table =
             // it used to be that this also called add_newly_created_widget
             // this wasn't necessary and for the delay function bird meant this could happen at the wrong step
             // following should not pass event through since otherwise it is recorded as if robot being trained did this
-            bird.widget_dropped_on_me(response, false, undefined, robot, true, true);
+            bird.widget_side_dropped_on_me(response, undefined, robot, true, true);
         }
         message.remove(undefined, true);
     },  
@@ -195,7 +195,7 @@ window.TOONTALK.create_function_table =
         } else {
             get_description = function () {
                 return "If you give me a box with another bird and some numbers then " + 
-                      TT.UTILITIES.lower_case_first_letter(this.title) + and_on_my_back;
+                       TT.UTILITIES.lower_case_first_letter(this.title) + and_on_my_back;
             };
         }
         var to_string_function = function () {
