@@ -433,7 +433,7 @@ window.TOONTALK.backside =
 //                         // so run the widget who just got a robot or widget on the back
 //                         this.get_widget().set_running(true);
 //                     }
-                    if (!side_of_other.is_backside() && side_of_other.is_robot() && this.get_widget().get_running()) {
+                    if (!side_of_other.is_backside() && side_of_other.is_robot() && this.get_widget().get_running() && !this.is_top_level()) {
                         this.get_widget().set_running(true);
                     }
                     return true;
