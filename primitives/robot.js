@@ -936,18 +936,7 @@ window.TOONTALK.robot = (function (TT) {
     };
 
     robot.get_training_context = function () {
-        var frontside_element = this.get_frontside_element();
-        var $parent_element = $(frontside_element).parent();
-        var widget_side = TT.UTILITIES.widget_side_of_jquery($parent_element);
-        var previous_robot;
-        if (!widget_side) {
-            // check if robot is in the 'next robot' area
-            previous_robot = TT.UTILITIES.widget_side_of_jquery($parent_element.closest(".toontalk-backside-of-robot"));
-            if (previous_robot) {
-                return previous_robot.get_widget().get_training_context();
-            }
-        }
-        return widget_side && widget_side.get_widget();
+        return this.get_first_in_team().get_parent_of_frontside().get_widget();
     };
     
     robot.add_step = function (step, new_widget) {
