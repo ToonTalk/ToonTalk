@@ -1145,7 +1145,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 return widget_to_string.call(this) + " (" + this.attribute + " of " + this.get_attribute_owner() + ")";   
             };
             attribute_widget.get_default_description = function () {
-                return "a number that is the " + this.attribute + " of " + this.get_attribute_owner() + ".";
+                return "a number that is the " + this.attribute + " of " + this.get_attribute_owner().toString({plain_text: true}) + ".";
             };
             attribute_widget.get_custom_title_prefix = function () {
                 return "I'm the '" + this.attribute + "' attribute of " + this.get_attribute_owner() + ".\n" +
