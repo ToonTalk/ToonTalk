@@ -486,7 +486,7 @@ window.TOONTALK.robot_action =
             }
             continuation();
         };
-        button_use_animation(widget, context, top_level_context, robot, new_continuation, additional_info.button_selector, additional_info, 1000);
+        button_use_animation(widget, context, top_level_context, robot, new_continuation, additional_info.button_selector, additional_info, robot.transform_step_duration(1000));
     };
     var change_size_animation = function (widget, context, top_level_context, robot, continuation, additional_info) {
        var frontside_element = widget.get_frontside_element();
@@ -523,7 +523,7 @@ window.TOONTALK.robot_action =
         var source_widget;
         if (show_button_use) {
             source_widget = TT.path.dereference_path(additional_info.path_to_source, context, top_level_context, robot);
-            button_use_animation(source_widget, context, top_level_context, robot, continuation, additional_info.button_selector, additional_info, 3000);
+            button_use_animation(source_widget, context, top_level_context, robot, continuation, additional_info.button_selector, additional_info, robot.transform_step_duration(3000));
         } else {
             continuation();
             robot.run_next_step();
@@ -551,7 +551,7 @@ window.TOONTALK.robot_action =
                 trained_robot.get_backside().change_label_and_title_of_train_button(false);
                 $(trained_robot_frontside_element).removeClass("toontalk-robot-animating toontalk-robot-being-trained-by-robot");
                 trained_robot_frontside_element.toontalk_followed_by = undefined;
-                setTimeout(continuation, 1500);                      
+                setTimeout(continuation, robot.transform_step_duration(1500));                      
             };
             if (trained_robot_frontside_element.toontalk_return_to) {
                 TT.UTILITIES.animate_to_absolute_position(trained_robot_frontside_element,
@@ -562,7 +562,7 @@ window.TOONTALK.robot_action =
                 robot_returned_continuation();
             }
          };
-         button_use_animation(trained_robot, context, top_level_context, robot, new_continuation, ".toontalk-train-backside-button", additional_info, 1000);
+         button_use_animation(trained_robot, context, top_level_context, robot, new_continuation, ".toontalk-train-backside-button", additional_info, robot.transform_step_duration(1000));
     };
     var train_another_animation = function (robot_being_trained, context, top_level_context, robot, continuation, additional_info) {
         var new_continuation = function () {

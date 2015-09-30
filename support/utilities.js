@@ -2142,7 +2142,7 @@ window.TOONTALK.UTILITIES =
             var source_relative_position = $(source_element).position();
             var distance = utilities.distance(target_absolute_position, source_absolute_position);
             var left, top;
-            if (duration === 0) {
+            if (duration === 0 || speed === 0) {
                 utilities.set_absolute_position(source_element, target_absolute_position);
                 if (continuation) {
                     continuation();

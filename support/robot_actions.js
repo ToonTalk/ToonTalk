@@ -268,7 +268,7 @@ window.TOONTALK.actions =
             top_level_widget.get_backside_element().appendChild(frontside_element);
             TT.UTILITIES.set_absolute_position(frontside_element, robot_home);
             robot.run_next_step = function () {
-                if (context_backside && (context_backside.visible() || TT.UTILITIES.visible_element(context_backside.get_element()))) {
+                if (context_backside && !document.hidden && (context_backside.visible() || TT.UTILITIES.visible_element(context_backside.get_element()))) {
                     // TODO: determine how context_backside.visible() can be false and
                     // $(context_backside.get_element()).is(":visible") true (test-programs.html has an example)
                     // pause between steps and give the previous step a chance to update the DOM     
@@ -281,6 +281,7 @@ window.TOONTALK.actions =
                                     console.log(step.get_action_name() + " (watched)");
                                 }
                                 step.run_watched(context, top_level_context, robot);
+                                console.log(Date.now());
                                 if (robot.get_thing_in_hand()) {
                                     // TODO: move this elsewhere
                                     robot.get_thing_in_hand().save_dimensions();
@@ -308,9 +309,6 @@ window.TOONTALK.actions =
                    if (saved_parent_element) {
                        saved_parent_element.appendChild(frontside_element);
                    }
-//                    // following doesn't use JQuery since it wasn't working
-//                    frontside_element.style.left = robot_start_offset.left+"px";
-//                    frontside_element.style.top  = robot_start_offset.top +"px";
                    this.run_unwatched(context, top_level_context, queue, robot, step_number);
                 }
             }.bind(this);

@@ -252,6 +252,10 @@ window.TOONTALK.robot = (function (TT) {
             if (duration === undefined && maximum_step_duration === 0) {
                 return 0;
             }
+            if (!this.visible()) {
+                // was watched but window hidden or robot's context closed
+                return 0;
+            }
             if (watched_speed && duration) {
                 return duration/watched_speed;
             }
@@ -268,6 +272,10 @@ window.TOONTALK.robot = (function (TT) {
                 // was watched but no longer
                 return 0;
             }
+            if (!this.visible()) {
+                // was watched but window hidden or robot's context closed
+                return 0;
+            }
             if (!watched_speed) {
                 return duration;
             }
@@ -275,6 +283,10 @@ window.TOONTALK.robot = (function (TT) {
         new_robot.transform_animation_speed = function (speed) {
             if (context && !context.get_backside()) {
                 // was watched but no longer
+                return 0;
+            }
+            if (!this.visible()) {
+                // was watched but window hidden or robot's context closed
                 return 0;
             }
             if (watched_speed) {
@@ -301,8 +313,8 @@ window.TOONTALK.robot = (function (TT) {
                 }
                 $(frontside_element).addClass("toontalk-robot-animating");
                 setTimeout(function () {
-                    // need to delay this since otherwise it takes a couple seconds to transform into the animating form
-                     $(frontside_element).addClass("toontalk-side-animating");
+                               // need to delay this since otherwise it takes a couple seconds to transform into the animating form
+                               $(frontside_element).addClass("toontalk-side-animating");
                             },
                             2000);
             } else {
