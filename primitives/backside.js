@@ -1180,7 +1180,7 @@ window.TOONTALK.backside =
             return this.get_widget().robot_in_training();
         },
 
-        remove: function () {
+        remove: function (event) {
             var parent, backside_element;
             if (this.is_primary_backside()) {
                 this.get_widget().remove();
