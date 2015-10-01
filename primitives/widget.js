@@ -219,7 +219,7 @@ window.TOONTALK.widget = (function (TT) {
         },
         
         add_sides_functionality: function (widget) {
-            var frontside, backside;
+            var frontside, backside, open_backside_only_if_stopped;
             if (!widget.get_frontside) {
                 widget.get_frontside = function (create) {
                     if (create && !frontside) {
@@ -316,6 +316,16 @@ window.TOONTALK.widget = (function (TT) {
             if (!widget.create_backside) {
                 widget.create_backside = function () {
                     return TT.backside.create(widget);
+                };
+            }
+            if (!widget.get_open_backside_only_if_stopped) {
+                widget.get_open_backside_only_if_stopped = function () {
+                    return open_backside_only_if_stopped;
+                };
+            }
+            if (!widget.set_open_backside_only_if_stopped) {
+                widget.set_open_backside_only_if_stopped = function (new_value) {
+                    open_backside_only_if_stopped = new_value;
                 };
             }
         },
@@ -920,6 +930,10 @@ window.TOONTALK.widget = (function (TT) {
                 }
                 if (this.get_infinite_stack && this.get_infinite_stack()) {
                     json_semantic.infinite_stack = true;
+                }
+                if (this.get_open_backside_only_if_stopped && this.get_open_backside_only_if_stopped()) {
+                    // default is false  so only add this if true
+                    json_semantic.open_backside_only_if_stopped = true;
                 }
                 if (this.get_running && this.get_running()) {
                     json_semantic.running = true;

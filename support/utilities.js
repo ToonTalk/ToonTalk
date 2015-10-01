@@ -981,6 +981,9 @@ window.TOONTALK.UTILITIES =
                 if (json_semantic.infinite_stack) {
                     widget_side.set_infinite_stack(json_semantic.infinite_stack);
                 }
+                if (json_semantic.open_backside_only_if_stopped) {
+                    widget_side.set_open_backside_only_if_stopped(true);
+                }
                 if (json_view) {
                     if (json_view.frontside_width) {
                         side_element = widget_side.get_element();

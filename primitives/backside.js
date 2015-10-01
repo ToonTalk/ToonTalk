@@ -796,6 +796,32 @@ window.TOONTALK.backside =
             check_box.button.addEventListener('click', check_box_clicked);
             return check_box;
         },
+
+        create_click_opens_backside_check_box: function (backside, widget) {
+            var check_box = TT.UTILITIES.create_check_box(widget.get_open_backside_only_if_stopped(), 
+                                                          "toontalk-click-opens-backside-check-box",
+                                                          "Mouse click opens this back side only if I'm stopped.",
+                                                          "Check this if you want my backside to open only when I'm stopped. Really useful if there are robots using click sensors.");
+            var check_box_clicked = function (event) {
+                var open_backside_only_if_stopped = check_box.button.checked;
+                var action_string;
+                widget.set_open_backside_only_if_stopped(open_backside_only_if_stopped);
+                if (widget.robot_in_training()) {
+                    if (open_backside_only_if_stopped) {
+                        action_string = "change the response to a mouse click to open only if stopped the backside of ";
+                    } else {
+                        action_string = "change the response to a mouse click to always open the backside of ";
+                    }
+                    widget.robot_in_training().edited(widget, {setter_name: "set_open_backside_only_if_stopped",
+                                                               argument_1: open_backside_only_if_stopped,
+                                                               toString: action_string,
+                                                               button_selector: ".toontalk-click-opens-backside-check-box"});
+                }
+                event.stopPropagation();
+            };
+            check_box.button.addEventListener('click', check_box_clicked);
+            return check_box;
+        },
         
         create_description_label: function (backside, widget) {
             var description = widget.get_description();
@@ -880,6 +906,7 @@ window.TOONTALK.backside =
             // advanced options not visible by default
             var widget = this.get_widget();
             var infinite_stack_check_box = this.create_infinite_stack_check_box(this, widget);
+            var click_opens_backside_check_box = this.create_click_opens_backside_check_box(this, widget);
             var type_name = widget.get_type_name();
             var $make_sensor_nest_button   = $("<button>Make a sensor nest</button>")  .button();
             var $make_function_bird_button = $("<button>Make a function bird</button>").button();
@@ -954,7 +981,7 @@ window.TOONTALK.backside =
             if (widget.set_name && !this.get_name_text_input()) {
                 this.add_name_setting(settings);
             }
-            settings.appendChild(TT.UTILITIES.create_row($make_sensor_nest_button.get(0), $make_function_bird_button.get(0), infinite_stack_check_box.container));
+            settings.appendChild(TT.UTILITIES.create_row($make_sensor_nest_button.get(0), $make_function_bird_button.get(0), infinite_stack_check_box.container, click_opens_backside_check_box.container));
             if (!this.is_primary_backside()) {
                 $create_remove_widget_button = $("<button>Remove me and my widget</button>").button();
                 // TODO: decide if more buttons are needed -- e.g. to copy the widget

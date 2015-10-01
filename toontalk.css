@@ -1335,7 +1335,7 @@ table.dataTable td {
 /* The following is for surrounding text and could be the same font as used internally
 which is current ui-widget or font-family: Segoe UI,Arial,sans-serif; */
 body {
-    font-family: "Tahoma" "Trebuchet MS";
+    font-family: "Tahoma", "Trebuchet MS";
     font-size: 1.1em;
 }
  
