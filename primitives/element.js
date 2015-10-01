@@ -1776,7 +1776,7 @@ window.TOONTALK.element_backside =
             var react_to_pointer_checkbox = TT.UTILITIES.create_check_box(true,
                                                                           "toontalk-react-to-pointer-check-box",
                                                                           "Normal response to mouse",
-                                                                          "Uncheck this if you don't want the usual browser action to occur when clicked.");
+                                                                          "Uncheck this if you don't want the usual browser action to occur when clicked. Useful if this element normally responds to mouse clicks.");
             // conditional on URL parameter whether HTML or plain text
             // default is plain text (displayed and edited) (if there is any -- could be an image or something else)
             // full HTML editing but that is both insecure (could cleanse the HTML) and confusing to non-experts
