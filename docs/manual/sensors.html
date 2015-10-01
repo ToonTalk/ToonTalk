@@ -39,6 +39,13 @@ Try a few keys on your keyboard and watch the sensor below.
 Unlike nests the backside of sensors has fields that can be edited to change what event and what attribute of the event the sensor tracks.
 Any of the browser events should work.
 <a href='https://developer.mozilla.org/en-US/docs/Web/Events' target='_blank'>Here is a good site</a> that documents all the events.
+ToonTalk events can also be sensed.
+The first one supported is 'widget added'.
+It is triggered if something is added to an <a href='elements.html'>element widget</a>, a <a href='boxes.html'>box</a>,
+or the backside of any widget (including the top-level work area).
+The event has a '<i>widget</i>' property that provides a back side of the widget added so it can be inspected, altered, or removed.
+Other properties are '<i>where</i>' which has the value of either <i>front</i> or <i>back</i> depending upon whether the front or back of a widget was added.
+If the widget was dropped in a box then '<i>index</i>' indicates the hole number the widget was added to.
 Click on the sensor below and edit the event name and event attribute.
 For example, try changing the event name to <i>click</i>
 and the attribute to <i>which</i> to listen to mouse click events and see which mouse buton was clicked.
