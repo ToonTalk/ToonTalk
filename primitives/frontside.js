@@ -22,7 +22,10 @@ window.TOONTALK.frontside =
                     return;
                 }
                 if (event.type === 'click' && event.which !== 1) {
-                    // only left button opens it
+                    // only left button opens it -- how could it be other than of 'click' type
+                    return;
+                }
+                if (widget.get_open_backside_only_if_stopped() && widget.get_running()) {
                     return;
                 }
                 if ($frontside_element.is(".toontalk-top-level-resource")) {
