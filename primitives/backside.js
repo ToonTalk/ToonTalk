@@ -1019,12 +1019,13 @@ window.TOONTALK.backside =
             }
             widget = this.get_widget();
             robot_in_training = widget.robot_in_training();
+            $backside_element = $(this.get_element());
             if (robot_in_training && robot_in_training.get_training_context() === widget) {
                // closing the backside of a context while a robot is being trained to work on it
-               robot_in_training.training_finished();        
+               $backside_element.find(".toontalk-train-backside-button").click();
+               // firing click also updates the label of the button and also does robot_in_training.training_finished();       
             }
             frontside_element = widget.get_frontside_element(true);
-            $backside_element = $(widget.get_backside_element());
             backside_position = $backside_element.position();
             $backside_container = $backside_element.parent().closest(".toontalk-backside");
             animate_disappearance = 
