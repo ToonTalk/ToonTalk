@@ -3639,6 +3639,12 @@ window.TOONTALK.UTILITIES =
                    css.height = '';
                }
            }
+           if (css.width === 0) {
+               css.width  = '';
+           }
+           if (css.height === 0) {
+               css.height  = '';
+           }
            if (!css.transform && typeof css.width === 'number' && typeof css.height === 'number' &&
                widget_side && widget_side.use_scaling_transform) {
                // leave CSS width and height alone and recompute scaling transform
