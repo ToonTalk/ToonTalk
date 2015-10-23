@@ -31,12 +31,19 @@ window.TOONTALK.bird = (function (TT) {
                                                           "Click to select the function that this bird will use when given a box.",
                                                           item_titles);
         var backside_element = backside.get_element();
+        var $description_text_area;
         if (function_object) {
             select_menu.menu.value = function_object.name;
         }
         select_menu.menu.addEventListener('change', function (event) {
-                bird.set_function_name(event.target.value);
-            });
+            bird.set_function_name(event.target.value);
+            if (!bird.get_description()) {
+                $description_text_area = $(bird.get_backside_element()).find(".toontalk-description-input");
+                if ($description_text_area.length > 0) {
+                    $description_text_area.get(0).setAttribute('placeholder', bird.get_default_description());
+                }
+            }
+        });
         backside_element.insertBefore(select_menu.container, backside_element.firstChild);
     };
     
