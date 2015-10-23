@@ -1413,6 +1413,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
            var style, first_space;
            if (html.length > 1 && html.charAt(0) === '<') {
                 style = "style='width: 50px; height: 30px;'";
+                if (to_string_info && to_string_info.inside_tool_tip) {
+                    style += " class='toontalk-widget-in-tool-tip'";
+                }
                 first_space = html.indexOf(' ');
                 return html.substring(0, first_space+1) + style + html.substring(first_space);
            }
@@ -1434,7 +1437,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         }.bind(this);
         var children = this.get_children();
         var text, description;
-        if (to_string_info) {
+        if (to_string_info && !to_string_info.inside_tool_tip) {
             if (to_string_info.for_json_div) {
                 // don't risk confusing things with a comment that might interfere with the HTML
                return "";

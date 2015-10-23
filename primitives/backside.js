@@ -107,7 +107,7 @@ window.TOONTALK.backside =
                                               help_button.target = '_blank';
                                           }
                                       };
-            var close_title, close_handler, description_text_area, name_text_input, relative_URL;
+            var close_title, close_handler, description_text_area, name_text_input, relative_URL, widget_HTML;
             if (TT.TRANSLATION_ENABLED) {
                 help_URL = TT.UTILITIES.add_URL_parameter(help_URL, "translate", "1");
             }
@@ -196,7 +196,8 @@ window.TOONTALK.backside =
                                             if (widget.is_robot()) {
                                                 backside_element.title = "On the back of the robot you can change the conditions and setting of robot."
                                             } else {
-                                                backside_element.title = "The back of the " + widget + ". You can put robots on the back to make it come 'alive'."; 
+                                                widget_HTML = widget.toString({inside_tool_tip: true}); 
+                                                backside_element.title = "The back of " + widget_HTML + ". You can put robots on the back to make it come 'alive'."; 
                                             }                  
                                             TT.UTILITIES.use_custom_tooltip(backside_element);
                                        });
