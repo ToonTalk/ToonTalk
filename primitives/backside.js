@@ -302,7 +302,7 @@ window.TOONTALK.backside =
                 if (this.is_primary_backside()) {
                     return widget.get_parent_of_backside();
                 }
-                if (parent_is_backside) {
+                if (parent_is_backside && parent) {
                     return parent.get_backside(true);
                 }
                 return parent;
@@ -1012,12 +1012,17 @@ window.TOONTALK.backside =
        },
         
        hide_backside: function (event) {
-            var widget, frontside_element, $backside_element, backside_position, $backside_container,
+            var widget, robot_in_training, frontside_element, $backside_element, backside_position, $backside_container,
                 animate_disappearance, record_backside_widget_positions, parent_of_backside, container_widget;
             if (!this.visible()) {
                 return;
             }
             widget = this.get_widget();
+            robot_in_training = widget.robot_in_training();
+            if (robot_in_training && robot_in_training.get_training_context() === widget) {
+               // closing the backside of a context while a robot is being trained to work on it
+               robot_in_training.training_finished();        
+            }
             frontside_element = widget.get_frontside_element(true);
             $backside_element = $(widget.get_backside_element());
             backside_position = $backside_element.position();
