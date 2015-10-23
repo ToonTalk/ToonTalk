@@ -1377,6 +1377,9 @@ window.TOONTALK.robot_backside =
         var condition_element_div_parent = document.createElement('div');
         var scale_element = function () {
                                 var css;
+                                if (!condition_widget.visible()) {
+                                    return;
+                                }
                                 $(condition_element).parent().addClass("toontalk-conditions-contents-container");
                                 condition_widget.update_display();
                                 // need to add the class before checking width and height
@@ -1400,11 +1403,6 @@ window.TOONTALK.robot_backside =
                             };
         var conditions_panel;
         $(condition_element).addClass("toontalk-conditions-contents " + class_name);
-        TT.UTILITIES.run_when_dimensions_known(condition_element, function () {
-                                                                      // need to delay this to ensure this happens after original dimensions set
-                                                                      // if condition is an element widget
-                                                                      setTimeout(scale_element, 100);
-                                                                  });
         if (robot.match_status) {
             if (robot.match_status.is_widget) {
                 $(robot.match_status.get_frontside_element()).addClass("toontalk-conditions-not-matched");
@@ -1419,6 +1417,11 @@ window.TOONTALK.robot_backside =
         condition_element_div_parent.appendChild(condition_element);
         conditions_panel = TT.UTILITIES.create_horizontal_table(description, condition_element_div_parent);
         $(conditions_panel).addClass("toontalk-conditions-panel");
+        TT.UTILITIES.run_when_dimensions_known(condition_element, function () {
+                                                                      // need to delay this to ensure this happens after original dimensions set
+                                                                      // if condition is an element widget
+                                                                      setTimeout(scale_element, 100);
+                                                                  });
         return conditions_panel;
     };
     var add_conditions_area = function (backside_element, robot) {
