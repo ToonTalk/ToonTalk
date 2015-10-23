@@ -146,7 +146,7 @@ window.TOONTALK.vacuum = (function (TT) {
                      } // else warn??
                 } else if (mode === 'erase' || (mode === 'restore' && widget_side.get_erased && widget_side.get_erased())) {
                     // erase mode toggles and restore mode unerases if erased
-                    if (widget_side.get_type_name() !== 'top-level') {
+                    if (!widget_side.is_top_level()) {
                         new_erased = !widget_side.get_erased();
                         if (TT.sounds) {
                             if (new_erased) {
