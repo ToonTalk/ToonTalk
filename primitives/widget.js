@@ -753,13 +753,15 @@ window.TOONTALK.widget = (function (TT) {
                  if (parent_of_frontside) {
                      if (parent_of_frontside.is_backside()) {
                          // !event because if a robot is doing this no warning if already removed
-                         parent_of_frontside.remove_backside_widget(this, !event);
+                         parent_of_frontside.remove_backside_widget(this, !event);  
                      } else if (parent_of_frontside.removed_from_container) {
                          if (parent_of_frontside_is_backside) {
                             parent_of_frontside.remove_backside_widget(this, true);
                          } else {
                             parent_of_frontside.removed_from_container(this, event);
                          }
+                     } else if (parent_of_frontside.get_backside()) {
+                         parent_of_frontside.remove_backside_widget(this, !event); 
                      }
                  }
             };
