@@ -194,7 +194,7 @@ window.TOONTALK.backside =
             TT.UTILITIES.when_attached(backside_element,
                                        function () {
                                             if (widget.is_robot()) {
-                                                backside_element.title = "On the back of the robot you can change the conditions and setting of robot."
+                                                backside_element.title = "On the back of the robot you can change the conditions and setting of the robot."
                                             } else {
                                                 widget_HTML = widget.toString({inside_tool_tip: true}); 
                                                 backside_element.title = "The back of " + widget_HTML + ". You can put robots on the back to make it come 'alive'."; 
