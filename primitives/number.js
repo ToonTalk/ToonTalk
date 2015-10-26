@@ -481,8 +481,8 @@ window.TOONTALK.number = (function () {
             client_height = $(frontside_element).height()
             if (!client_width || !client_height) {
                 // TODO: generalise this
-                client_width  = 76;
-                client_height = 55;
+                client_width  = this.saved_width   || 76;
+                client_height = this.saved_heieght || 55;
                 $(frontside_element).css({width:  client_width,
                                           height: client_height});
             }
