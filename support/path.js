@@ -157,6 +157,12 @@ window.TOONTALK.path =
             // called when (partial) path has produced referenced
             var new_referenced;
             if (referenced === undefined) {
+                if (robot.context_is_backside()) {
+                    // if is a backside on a backside -- if no top_level_context then context used below
+                    referenced = robot.get_top_level_context();
+                }                   
+            }
+            if (referenced === undefined) {
                 referenced = robot.get_context();
             }
             if (path.next) {
@@ -314,7 +320,8 @@ window.TOONTALK.path =
                 // backside_widget is a type_name so return any bacvkside widget matching that type
                 type_name = backside_widget;
                 return {dereference_path: function (robot) {
-                            var referenced = robot.get_backside_widget_of_type(type_name, robot.get_context());
+                            var context = robot.get_context();
+                            var referenced = robot.get_backside_widget_of_type(type_name, context);
                             if (!referenced) {
                                 context.get_backside_widgets().some(function (backside_widget_side) {
                                     if (backside_widget_side.get_widget().is_of_type(type_name) &&
