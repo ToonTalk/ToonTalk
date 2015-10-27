@@ -17,8 +17,7 @@ window.TOONTALK.queue =
             return result;
         },
         
-        enqueue: function (robot_context_queue) {
-//          console.log("enqueued robot#" + robot_context_queue.robot.debug_id);
+        enqueue: function (robot) {
 //             if (TT.debugging && this.to_run.does_any_item_satisfy(function (item) {
 //                                                                       return item.robot === robot_context_queue.robot;
 //                                                                   })) {
@@ -27,12 +26,12 @@ window.TOONTALK.queue =
 //                 console.error("The same robot is being queued twice.\nRobot is: " + robot_context_queue.robot.debug_id);
 //                 return;
 //             }
-            if (robot_context_queue.robot.running_or_in_run_queue()) {
+            if (robot.running_or_in_run_queue()) {
                 // already queued 
                 return;
             }
-            robot_context_queue.robot.set_running_or_in_run_queue(true);
-            if (this.to_run.enqueue(robot_context_queue) && !this.running) {
+            robot.set_running_or_in_run_queue(true);
+            if (this.to_run.enqueue(robot) && !this.running) {
                 // if this is the first in the queue run (unless already running)
                 this.run();
             }
@@ -61,7 +60,7 @@ window.TOONTALK.queue =
             while (!this.to_run.isEmpty() && !this.paused && Date.now() < end_time) {
                 // tried checking the time every nth time but then add 1 unwatched looked funny (appeared to skip some additions)
                 next_robot_run = this.to_run.dequeue();
-                next_robot_run.robot.run_actions(next_robot_run.robot.get_context(), next_robot_run.top_level_context, next_robot_run.queue);
+                next_robot_run.run_actions();
             }
             if (this.to_run.isEmpty()) {
                 this.running = false;

@@ -108,7 +108,7 @@ window.TOONTALK.actions =
             return new_actions;
         },
         
-        run_unwatched: function (context, top_level_context, queue, robot, step_number) {
+        run_unwatched: function (robot, step_number) {
             var steps = this.get_steps();
             var step;
             if (TT.logging && TT.logging.indexOf('run') >= 0) {           
@@ -126,23 +126,23 @@ window.TOONTALK.actions =
                         console.log(step.get_action_name() + " (unwatched)");
                     }
                     // each step needs to call robot.run_next_step
-                    step.run_unwatched(context, top_level_context, robot);
+                    step.run_unwatched(robot);
                 } else {
                     // currently only watched robots use these listeners
                     // if that is always the case no need calling the following
                     robot.set_running_or_in_run_queue(false);
-                    robot.run_body_finished_listeners(context, top_level_context, queue);
+                    robot.run_body_finished_listeners();
                     if (robot.get_run_once()) {
                         robot.get_first_in_team().set_running(false);
                     } else {
-                        robot.get_first_in_team().run(context, top_level_context, queue);
+                        robot.get_first_in_team().run();
                     }
                 }
             };
             robot.run_next_step(); // do first step             
         },
         
-        run_watched: function (context, top_level_context, queue, robot) {
+        run_watched: function (robot) {
             var steps = this.get_steps();
             var frontside_element = robot.get_frontside_element();
             var original_parent_element, previous_robot, previous_robot_backside_element;
@@ -171,7 +171,7 @@ window.TOONTALK.actions =
                     } else if (robot.stopped()) {
                         $(frontside_element).removeClass(".toontalk-side-animating");
                     } else {
-                        first_robot.run(context, top_level_context, queue);
+                        first_robot.run();
                     }
                     robot.rerender();
                 };
@@ -189,7 +189,7 @@ window.TOONTALK.actions =
                     continuation();
                     if (robot === first_robot) {
                         // put first robot back on the backside of the context
-                        context.add_backside_widget(robot);
+                        robot.get_context().add_backside_widget(robot);
                     }
                     $(robot.get_frontside_element()).remove();
                 }
@@ -203,7 +203,7 @@ window.TOONTALK.actions =
             var top_level_widget = robot.get_first_in_team().top_level_widget();
             // TODO: determine if the following should be replaced by top_level_widget.get_backside(true)...
             var top_level_position = $(frontside_element).closest(".toontalk-top-level-backside").offset();
-            var context_backside = context.get_backside();
+            var context_backside = robot.get_context().get_backside();
             var $home_element, backside_rectangle;
             if (TT.logging && TT.logging.indexOf('run') >= 0) {           
                 console.log(robot.to_debug_string() + " running watched");
@@ -280,7 +280,7 @@ window.TOONTALK.actions =
                                 if (TT.logging && TT.logging.indexOf('event') >= 0) {           
                                     console.log(step.get_action_name() + " (watched)");
                                 }
-                                step.run_watched(context, top_level_context, robot);
+                                step.run_watched(robot);
                                 if (robot.get_thing_in_hand()) {
                                     // TODO: move this elsewhere
                                     robot.get_thing_in_hand().save_dimensions();
@@ -308,7 +308,7 @@ window.TOONTALK.actions =
                    if (saved_parent_element) {
                        saved_parent_element.appendChild(frontside_element);
                    }
-                   this.run_unwatched(context, top_level_context, queue, robot, step_number);
+                   this.run_unwatched(robot, step_number);
                 }
             }.bind(this);
             robot.set_animating(true, robot_home);
@@ -363,12 +363,12 @@ window.TOONTALK.newly_created_widgets_path =
     return {
         create: function (index) {
             return {
-                dereference_path: function (context, top_level_context, robot) {
+                dereference_path: function (robot) {
                     var widget = robot.get_body().dereference_path(index);
                     var container;
                     if (this.next) {
                         // there is more to the path so compute the part of the widget referenced
-                        return TT.path.dereference_path(this.next, widget, top_level_context, robot);
+                        return TT.path.dereference_path(this.next, robot, widget);
                     }
                     if (this.removing_widget) {
                         container = widget.get_parent_of_frontside();

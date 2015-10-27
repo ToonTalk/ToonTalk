@@ -386,7 +386,7 @@ window.TOONTALK.widget = (function (TT) {
                 };
             }
             if (!widget.set_running) {
-                widget.set_running = function (new_value, top_level_context) {
+                widget.set_running = function (new_value, top_level_context, is_backside) {
                     var unchanged_value = (running === new_value);
                     var backside_widgets, backside_widget, backside_element;
                     ok_to_run = new_value;
@@ -414,7 +414,9 @@ window.TOONTALK.widget = (function (TT) {
                             // could this set_stopped stuff be combined with set_running?
                             if (running) {
                                 backside_widget.set_stopped(false);
-                                backside_widget.run(widget, top_level_context);
+                                // no need to create backside to run the robot but the robot needs to know if the backside of the widget is running
+                                // e.g. to act like an "anima-gadget" if is a backside on a backside
+                                backside_widget.run(widget, is_backside, top_level_context);
                                 backside_widget.set_ok_to_run(true);
                             } else {
                                 backside_widget.set_stopped(true);
@@ -424,7 +426,7 @@ window.TOONTALK.widget = (function (TT) {
                             if (!top_level_context && backside_widget_side.is_backside() && widget.get_type_name() !== "top-level") {
                                 // a robot is on the backside of a widget that is on the backside of another
                                 // then its context is the containing widget
-                                backside_widget.set_running(new_value, widget);
+                                backside_widget.set_running(new_value, widget, true);
                             } else {
                                 // if frontside then its context is the widget of the frontside (i.e. backside_widget)
                                 backside_widget.set_running(new_value);
@@ -446,7 +448,7 @@ window.TOONTALK.widget = (function (TT) {
                         if (running) {
                             if (widget.get_parent_of_backside()) {
                                 this.set_stopped(false);
-                                this.run(widget.get_parent_of_backside().get_widget(), top_level_context);
+                                this.run(widget.get_parent_of_backside().get_widget());
                             }
                         } else {
                             this.set_stopped(true);

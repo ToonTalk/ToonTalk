@@ -833,11 +833,11 @@ window.TOONTALK.nest = (function (TT) {
                 }
                 // stop the robot at the end of this cycle
                 // and let him run again when the nest isn't so full
-                robot.add_body_finished_listener(function (context, top_level_context, queue) {
+                robot.add_body_finished_listener(function () {
                     robot.set_stopped(true);
                     nest_under_capacity_listeners.push(function () {
                         robot.set_stopped(false);
-                        robot.run_actions(context, top_level_context, queue);
+                        robot.run_actions();
                     });
                 })
             }
@@ -985,7 +985,7 @@ window.TOONTALK.nest = (function (TT) {
             }
             return removed;
         };
-        new_nest.dereference_path = function (path, top_level_context, robot) {
+        new_nest.dereference_path = function (path, robot) {
             if (contents.length === 0) {
                 if (this.get_guid()) {
                     // robot needs to wait until something arrives on this nest
@@ -996,12 +996,12 @@ window.TOONTALK.nest = (function (TT) {
                 }
             }
             if (contents) {
-                return contents[0].dereference_path(path, top_level_context, robot);
+                return contents[0].dereference_path(path, robot);
             }
             TT.UTILITIES.display_message("Robot expected to find a nest something that it could get " + TT.path.toString(path) + ". But the nest is empty.");
             return this;
         };
-        new_nest.dereference_contents = function (path_to_nest, top_level_context, robot) {
+        new_nest.dereference_contents = function (path_to_nest, robot) {
             var widget_side, nest_offset, $top_level_backside_element, top_level_backside_element_offset, 
                 widget_element, nest_element, nest_width, nest_height,
                 left, top;
@@ -1046,22 +1046,13 @@ window.TOONTALK.nest = (function (TT) {
             }
             // act as if the top contents was being dereferenced
             if (path_to_nest.next) {
-                return contents[0].get_widget().dereference_path(path_to_nest.next, top_level_context, robot);
+                return contents[0].get_widget().dereference_path(path_to_nest.next, robot);
             }
             // TODO: determine if this should just be return contents[0]
             return contents[0].get_widget();
         };
         // defined here so that contents and other state can be private
         new_nest.get_json = function (json_history) {
-            // doesn't really make sense to JSONify waiting robots of a nest
-            // and now they are closures for generality and not structures
-//             var non_empty_listeners_json = 
-//                 non_empty_listeners && non_empty_listeners.map(function (non_empty_listener) {
-//                     // no point jsonifying the queue since for the seeable future there is only one queue
-//                     return {robot: TT.UTILITIES.get_json(non_empty_listener.robot, json_history),
-//                             context: non_empty_listener.context && TT.UTILITIES.get_json(non_empty_listener.context, json_history),
-//                             top_level_context: non_empty_listener.top_level_context && TT.UTILITIES.get_json(non_empty_listener.top_level_context, json_history)};
-//             });
             return {type: "nest",
                     contents: TT.UTILITIES.get_json_of_array(contents, json_history),
                     guid: guid,

@@ -889,7 +889,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         return path;
     };
 
-    element.dereference_path = function (path, top_level_context, robot) {
+    element.dereference_path = function (path, robot) {
         var index, child, children;
         if (path) {
             index = path.get_index && path.get_index();
@@ -899,11 +899,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 if (child) {
                     if (child.dereference_contents && !path.not_to_be_dereferenced) {
                         // this will dereference the top of a nest instead of the nest itself
-                        return child.dereference_contents(path.next || path, top_level_context, robot);
+                        return child.dereference_contents(path.next || path, robot);
                     }
                     if (path.next) {
                         if (child.dereference_path) {
-                            return child.dereference_path(path.next, top_level_context, robot);
+                            return child.dereference_path(path.next, robot);
                         } else {
                             TT.UTILITIES.report_internal_error("Expected to refer to a child of " + child + " but it lacks a method to obtain " + TT.path.toString(path.next));
                         }
@@ -1606,10 +1606,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     
     element.extend_attribute_path = function (path_to_element_widget, attribute_name) {
        return {
-            dereference_path: function (context, top_level_context, robot) {
+            dereference_path: function (robot) {
                 // if the robot is running on the backside of a widget that is on the backside of the top_level_context
                 // then use the top_level_context
-                var element_widget = path_to_element_widget.dereference_path((top_level_context || context), undefined, robot);
+                var element_widget = path_to_element_widget.dereference_path(robot, (robot.get_top_level_context() || robot.get_context()));
                 return element_widget.get_widget().get_attribute_widget_in_backside_table(attribute_name);
             },
             toString: function () {

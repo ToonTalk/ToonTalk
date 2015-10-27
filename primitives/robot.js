@@ -53,7 +53,10 @@ window.TOONTALK.robot = (function (TT) {
         // when running watched runs these after each step
         var watched_step_end_listeners = [];
         // backside that the robot is (or last) was running on
-        var context;
+        var context; // context that the robut is running in (typically the backside of something)
+        var context_is_backside; // true if the context was run as a backside (e.g. it on the back of a widget that was run)
+        var top_level_context; // if the context is on the backside of another (and possibly more) this is the top level widget
+        var queue; // run queue this robot is running (or will run) on
         var running_or_in_run_queue, stopped;
         var original_backside_widgets_of_context, backside_matched_widgets;
         if (!body) {
@@ -244,6 +247,36 @@ window.TOONTALK.robot = (function (TT) {
         };
         new_robot.set_context = function (new_value) {
             context = new_value;
+            if (this.get_next_robot()) {
+                this.get_next_robot().set_context(new_value);
+            }
+        };
+        new_robot.context_is_backside = function () {
+            return context_is_backside;
+        };
+        new_robot.set_context_is_backside = function (new_value) {
+            context_is_backside = new_value;
+            if (this.get_next_robot()) {
+                this.get_next_robot().set_context_is_backside(new_value);
+            }
+        };
+        new_robot.get_top_level_context = function () {
+            return top_level_context;
+        };
+        new_robot.set_top_level_context = function (new_value) {
+            top_level_context = new_value;
+            if (this.get_next_robot()) {
+                this.get_next_robot().set_top_level_context(new_value);
+            }
+        };
+        new_robot.get_queue = function () {
+            return queue;
+        };
+        new_robot.set_queue = function (new_value) {
+            queue = new_value;
+            if (this.get_next_robot()) {
+                this.get_next_robot().set_queue(new_value);
+            }
         };
         new_robot.animate_consequences_of_actions = function () {
             return this.visible() && maximum_step_duration !== 0;
@@ -324,9 +357,9 @@ window.TOONTALK.robot = (function (TT) {
         new_robot.add_body_finished_listener = function (listener) {
             body_finished_listeners.push(listener);
         };
-        new_robot.run_body_finished_listeners = function (context, top_level_context, queue) {
+        new_robot.run_body_finished_listeners = function () {
             body_finished_listeners.forEach(function (listener) {
-                listener(context, top_level_context, queue);
+                listener();
             });
             body_finished_listeners = [];
         };
@@ -547,7 +580,8 @@ window.TOONTALK.robot = (function (TT) {
         return "#" + name_counter.toString();
     };
     
-    robot.run = function (context, top_level_context, queue) {
+    robot.run = function (context, context_is_backside, top_level_context, queue) {
+        // top_level_context if defined is top level context is the top widget if there are backsides on backsides (and possibly so on)
         var frontside_condition_widget = this.get_frontside_conditions();
         var backside_conditions, backside_widgets, condition_frontside_element, to_run_when_non_empty, next_robot_match_status, clear_all_mismatch_displays, 
             backside_matched_widgets, backside;
@@ -566,8 +600,17 @@ window.TOONTALK.robot = (function (TT) {
             clear_all_mismatch_displays(frontside_condition_widget);
             this.rerender();
         }
+        if (context) {
+            // context should be undefined if this robot is just repeatedly running
+            this.set_context(context);        
+            this.set_context_is_backside(context_is_backside);
+            this.set_top_level_context(top_level_context);
+            this.set_queue(queue);
+        } else {
+            context = this.get_context();
+        }
 //      console.log("Match is " + TT.UTILITIES.match(frontside_condition_widget, context) + " for condition " + frontside_condition_widget + " with " + context);
-        this.match_status = TT.UTILITIES.match(frontside_condition_widget, context);
+        this.match_status = TT.UTILITIES.match(frontside_condition_widget, this.get_context());
         if (this.match_status === 'matched') {
             backside_matched_widgets = [];
             backside_conditions = this.get_backside_conditions();      
@@ -633,16 +676,14 @@ window.TOONTALK.robot = (function (TT) {
                 queue = TT.DEFAULT_QUEUE;
             }
             this.get_body().reset_newly_created_widgets();
-            // TODO: determine if the queue: queue passed in is always the queue who enqueues it
-            this.set_context(context);
-            queue.enqueue({robot: this, top_level_context: top_level_context, queue: queue});
+            queue.enqueue(this);
             return this.match_status;
         }
         if (this.match_status.is_widget) { // failed to match - this.match_status is the cause
             $(this.match_status.get_frontside_element()).addClass("toontalk-conditions-not-matched");
             this.rerender();
             if (this.get_next_robot()) {
-                return this.get_next_robot().run(context, top_level_context, queue);
+                return this.get_next_robot().run();
             }
             return this.match_status;
         }
@@ -654,7 +695,7 @@ window.TOONTALK.robot = (function (TT) {
             }
         });
         if (this.get_next_robot()) {
-            next_robot_match_status = this.get_next_robot().run(context, top_level_context, queue);
+            next_robot_match_status = this.get_next_robot().run();
             if (next_robot_match_status === 'matched') {
                 return next_robot_match_status;
             } else if (!next_robot_match_status.is_widget) {
@@ -669,7 +710,7 @@ window.TOONTALK.robot = (function (TT) {
         if (this.get_first_in_team() === this) {
             to_run_when_non_empty = function () {
                  this.set_waiting(false);
-                 this.run(context, top_level_context, queue);
+                 this.run();
             }.bind(this);
             this.match_status.forEach(function (sub_match_status) {
                 if (sub_match_status[0]) {
@@ -701,15 +742,15 @@ window.TOONTALK.robot = (function (TT) {
         }
     };
     
-    robot.run_actions = function (context, top_level_context, queue) {
+    robot.run_actions = function () {
         if (this.stopped()) { 
             this.get_first_in_team().set_running(false);
             return false;
         }
         if (this.get_first_in_team().visible()) {
-            return this.get_body().run_watched(context, top_level_context, queue, this);
+            return this.get_body().run_watched(this);
         }
-        return this.get_body().run_unwatched(context, top_level_context, queue, this);
+        return this.get_body().run_unwatched(this);
     };
 
     robot.drop_from_data_transfer = function (data_transferred_widget, target_widget) {
@@ -1328,8 +1369,8 @@ window.TOONTALK.robot = (function (TT) {
                 }
             });
         }  
-        return {dereference_path: function (context, top_level_context, robot) {
-                    var robot_with_widget_in_conditions = TT.path.dereference_path(path_to_robot, context, top_level_context, robot);
+        return {dereference_path: function (robot) {
+                    var robot_with_widget_in_conditions = TT.path.dereference_path(path_to_robot, robot);
                     var condition;
                     if (backside_condition_with_path) {
                         condition = backside_condition_with_path;
@@ -1339,7 +1380,7 @@ window.TOONTALK.robot = (function (TT) {
                     if (path_within_conditions === 'entire_condition') {
                         return condition;
                     }
-                    return TT.path.dereference_path(path_within_conditions, condition, top_level_context, robot);
+                    return TT.path.dereference_path(path_within_conditions, robot, condition);
                 },
                 toString: function () {
                     var path_to_condition_description = (path_within_conditions === 'entire_condition') ?

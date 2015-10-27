@@ -781,7 +781,7 @@ window.TOONTALK.box = (function (TT) {
         }
     };
     
-    box.dereference_path = function (path, top_level_context, robot) {
+    box.dereference_path = function (path, robot) {
         var index, hole;
         if (path) {
             index = path.get_index && path.get_index();
@@ -790,11 +790,11 @@ window.TOONTALK.box = (function (TT) {
                 if (hole) {
                     if (hole.dereference_contents && !path.not_to_be_dereferenced) {
                         // this will dereference the top of a nest instead of the nest itself
-                        return hole.dereference_contents(path.next || path, top_level_context, robot);
+                        return hole.dereference_contents(path.next || path, robot);
                     }
                     if (path.next) {
                         if (hole.dereference_path) {
-                            return hole.dereference_path(path.next, top_level_context, robot);
+                            return hole.dereference_path(path.next, robot);
                         } else {
                             TT.UTILITIES.report_internal_error("Expected to refer to a part of " + hole + " but it lacks a method to obtain " + TT.path.toString(path.next));
                         }
