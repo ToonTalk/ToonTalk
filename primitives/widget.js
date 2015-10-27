@@ -880,7 +880,8 @@ window.TOONTALK.widget = (function (TT) {
             var backside  = this.get_backside();
             var frontside = this.get_frontside();
             var parent_of_frontside = this.get_parent_of_frontside();
-            if (backside) {
+            if (backside && this.get_parent_of_backside() && this.get_parent_of_backside().is_top_level()) {
+                // remove both front and back if backside is on the top level backside
                 backside.hide_backside();
             }
             if (frontside) {
