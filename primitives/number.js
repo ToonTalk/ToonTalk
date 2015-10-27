@@ -761,7 +761,7 @@ window.TOONTALK.number = (function () {
          if (side_of_other_number.is_backside()) {
              return;
          }
-         if (side_of_other_number.visible() && (event || robot)) {
+         if (side_of_other_number.visible() && this.visible() && (event || robot)) {
              // do this if number is visible and user did the drop or a visible robot did it
              if (robot) {
                  if (!robot.animate_consequences_of_actions()) {
