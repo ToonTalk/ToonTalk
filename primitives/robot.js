@@ -673,7 +673,7 @@ window.TOONTALK.robot = (function (TT) {
 //      console.log("robot#" + this._debug_id + " match_status is " + this.match_status);
         if (this.match_status === 'matched') {
             if (!queue) {
-                queue = TT.DEFAULT_QUEUE;
+                queue = this.get_queue() || TT.DEFAULT_QUEUE;
             }
             this.get_body().reset_newly_created_widgets();
             queue.enqueue(this);
