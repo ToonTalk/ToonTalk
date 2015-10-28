@@ -9,6 +9,37 @@
 window.TOONTALK.backside = 
 (function (TT) {
     "use strict";
+    var record_backside_widget_positions = function (backside) {
+        var widget = backside.get_widget();
+        var backside_widgets = widget.get_backside_widgets();
+        var backside_widgets_json_views = widget.get_backside_widgets_json_views(true);
+        var backside_dimensions = backside.get_backside_dimensions();
+        var backside_element = backside.get_element();
+        var x_scale = backside_dimensions ? backside_dimensions.x_scale : 1;
+        var y_scale = backside_dimensions ? backside_dimensions.y_scale : 1;
+        backside_widgets.forEach(function (backside_widget_side, index) {
+            var backside_widget_side_element = backside_widget_side.get_element();
+            var position;
+            if (backside_widget_side_element) {
+                if (!backside_widgets_json_views[index]) {
+                    backside_widgets_json_views[index] = {};
+                }
+                if (backside_widget_side.start_offset) {
+                    position = TT.UTILITIES.relative_position_from_absolute_position(backside_widget_side_element.parentElement, backside_widget_side.start_offset);
+                    backside_widget_side.start_offset = undefined;
+                } else {
+                    position = $(backside_widget_side_element).position();
+                }
+                if (backside_widget_side.is_backside()) {
+                    backside_widgets_json_views[index].backside_left = TT.UTILITIES.left_as_percent(position.left, backside_widget_side_element);
+                    backside_widgets_json_views[index].backside_top  = TT.UTILITIES.top_as_percent (position.top,  backside_widget_side_element);
+                } else {
+                    backside_widgets_json_views[index].frontside_left = TT.UTILITIES.left_as_percent(position.left, backside_widget_side_element, backside_element);
+                    backside_widgets_json_views[index].frontside_top  = TT.UTILITIES.top_as_percent (position.top,  backside_widget_side_element, backside_element);     
+                }
+            }
+        });
+    };
     return {
         create: function (widget) {
             var backside = Object.create(this);
@@ -1014,7 +1045,7 @@ window.TOONTALK.backside =
         
        hide_backside: function (event) {
             var widget, robot_in_training, frontside_element, $backside_element, backside_position, $backside_container,
-                animate_disappearance, record_backside_widget_positions, parent_of_backside, container_widget;
+                animate_disappearance, parent_of_backside, container_widget;
             if (!this.visible()) {
                 return;
             }
@@ -1066,38 +1097,9 @@ window.TOONTALK.backside =
                                           top:  frontside_offset.top,
                                           opacity: .1});      
             }.bind(this);
-            record_backside_widget_positions = function () {
-                var backside_widgets = widget.get_backside_widgets();
-                var backside_widgets_json_views = widget.get_backside_widgets_json_views(true);
-                var backside_dimensions = this.get_backside_dimensions();
-                var x_scale = backside_dimensions ? backside_dimensions.x_scale : 1;
-                var y_scale = backside_dimensions ? backside_dimensions.y_scale : 1;
-                backside_widgets.forEach(function (backside_widget_side, index) {
-                    var backside_widget_side_element = backside_widget_side.get_element();
-                    var position;
-                    if (backside_widget_side_element) {
-                        if (!backside_widgets_json_views[index]) {
-                            backside_widgets_json_views[index] = {};
-                        }
-                        if (backside_widget_side.start_offset) {
-                            position = TT.UTILITIES.relative_position_from_absolute_position(backside_widget_side_element.parentElement, backside_widget_side.start_offset);
-                            backside_widget_side.start_offset = undefined;
-                        } else {
-                            position = $(backside_widget_side_element).position();
-                        }
-                        if (backside_widget_side.is_backside()) {
-                            backside_widgets_json_views[index].backside_left = TT.UTILITIES.left_as_percent(position.left, backside_widget_side_element);
-                            backside_widgets_json_views[index].backside_top  = TT.UTILITIES.top_as_percent (position.top,  backside_widget_side_element);
-                        } else {
-                            backside_widgets_json_views[index].frontside_left = TT.UTILITIES.left_as_percent(position.left, backside_widget_side_element, $backside_element.get(0));
-                            backside_widgets_json_views[index].frontside_top  = TT.UTILITIES.top_as_percent (position.top,  backside_widget_side_element, $backside_element.get(0));                             
-                        }
-                    }
-                });
-            }.bind(this);
             parent_of_backside = widget.get_parent_of_backside();
             TT.UTILITIES.remove_highlight();
-            record_backside_widget_positions();
+            record_backside_widget_positions(this);
             widget.backside_geometry = this.get_backside_dimensions();
             animate_disappearance($backside_element);
             this.set_visible(false); // semantic side of things needs to know this backside isn't being watched any more
@@ -1367,6 +1369,7 @@ window.TOONTALK.backside =
             var dimensions = this.get_backside_dimensions();
             var position = $(this.get_element()).position();
             var css;
+            record_backside_widget_positions(this);
             if (dimensions) {
                 css = {width:  dimensions.original_width,
                        height: dimensions.original_height,
