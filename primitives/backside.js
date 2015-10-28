@@ -663,17 +663,15 @@ window.TOONTALK.backside =
             };
             backside.restore_dimensions = function () {
                 var backside_element = this.get_element();
-                if (!this.is_primary_backside()) {
-                     // not very general but is what one normally wants
-                     original_x_scale = 1;
-                     original_y_scale = 1;
-                }
                 if (original_x_scale) {
                     x_scale = original_x_scale;
                 }
                 if (original_y_scale) {
                     y_scale = original_y_scale;
                 }
+                this.render_current_scale();
+            };
+            backside.render_current_scale = function () {
                 this.scale_backside(backside_element, x_scale, y_scale, original_width, original_height);
                 // not clear why these input areas lose their JQuery UI attributes -- e.g. when delivered by a sensor bird
                 $(".toontalk-text-area, .toontalk-radio-button, .toontalk-text-input").button();
@@ -714,7 +712,7 @@ window.TOONTALK.backside =
                     width_at_resize_start  = current_width;
                     height_at_resize_start = current_height;
 //                     console.log(current_width + "x" + current_height + " and scale is " + x_scale + "x" + y_scale);
-                    backside.restore_dimensions();
+                    backside.render_current_scale();
                 },
                 handles: "e,s,se"}); // was "n,e,s,w,se,ne,sw,nw" but interfered with buttons
             backside_element.addEventListener("mouseenter", function (event) {
@@ -744,7 +742,7 @@ window.TOONTALK.backside =
                     name_text_input.button.value = this.get_widget().get_name();
                 }
                 if (this.get_erased()) {
-                    $(backside_element).find(":not(.ui-resizable-handle, .toontalk-green-flag, .toontalk-stop-sign, .toontalk-close-button, .toontalk-help-button)").hide(); // 
+                    $(backside_element).find(":not(.ui-resizable-handle, .toontalk-green-flag, .toontalk-stop-sign, .toontalk-close-button, .toontalk-help-button)").hide(); 
                 } else {
                     $(backside_element).find().show();      
                 }
