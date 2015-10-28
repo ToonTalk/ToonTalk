@@ -46,14 +46,12 @@ window.TOONTALK.UTILITIES =
                                                                                   added_node.toontalk_run_even_if_not_observable = undefined;
                                                                                   $(added_node).removeClass("toontalk-has-attached-callback");
                                                                               }
-                                                                          } else {
-                                                                              $(added_node).find(".toontalk-has-attached-callback").each(function (index, element) {
-                                                                                  element.toontalk_attached_callback();
-                                                                                  element.toontalk_attached_callback = undefined;
-                                                                                  $(element).removeClass("toontalk-has-attached-callback");
-                                                                              });
-
                                                                           }
+                                                                          $(added_node).find(".toontalk-has-attached-callback").each(function (index, element) {
+                                                                              element.toontalk_attached_callback();
+                                                                              element.toontalk_attached_callback = undefined;
+                                                                              $(element).removeClass("toontalk-has-attached-callback");
+                                                                          });
                                                                       }
                                                                   }                                                                
                                                               });    
