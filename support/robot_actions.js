@@ -123,7 +123,7 @@ window.TOONTALK.actions =
                     var step = steps[step_number];
                     step_number++;
                     if (TT.logging && TT.logging.indexOf('event') >= 0) {           
-                        console.log(step.get_action_name() + " (unwatched)");
+                        console.log(step + " (unwatched)");
                     }
                     // each step needs to call robot.run_next_step
                     step.run_unwatched(robot);
@@ -278,7 +278,7 @@ window.TOONTALK.actions =
                                 var step = steps[step_number];
                                 step_number++;
                                 if (TT.logging && TT.logging.indexOf('event') >= 0) {           
-                                    console.log(step.get_action_name() + " (watched)");
+                                    console.log(step + " (watched)");
                                 }
                                 step.run_watched(robot);
                                 if (robot.get_thing_in_hand()) {
