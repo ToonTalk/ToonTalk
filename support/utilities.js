@@ -3875,6 +3875,9 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                   enqueue: function(item) {
                       var first_item = queue.length == 0;
                       queue.push(item);
+                      if (TT.logging && TT.logging.indexOf('queue') >= 0) {           
+                          console.log(item._debug_string + " enqueued");
+                      }
                       return first_item;
                   },
                   // Dequeues an item and returns it. 
@@ -3885,6 +3888,9 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                           return undefined;
                       }
                       item = queue[offset];
+                      if (TT.logging && TT.logging.indexOf('queue') >= 0) {           
+                          console.log(item._debug_string + " dequeued");
+                      }
                       // increment the offset and remove the free space if necessary
                       if (++ offset * 2 >= queue.length){
                          queue  = queue.slice(offset);
