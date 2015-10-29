@@ -1056,7 +1056,7 @@ window.TOONTALK.backside =
                $backside_element.find(".toontalk-train-backside-button").click();
                // firing click also updates the label of the button and also does robot_in_training.training_finished();       
             }
-            frontside_element = widget.get_frontside_element(true);
+            frontside_element = widget.get_frontside_element();
             backside_position = $backside_element.position();
             $backside_container = $backside_element.parent().closest(".toontalk-backside");
             animate_disappearance = 
@@ -1091,8 +1091,8 @@ window.TOONTALK.backside =
                     $element.addClass("toontalk-side-appearing");
                     TT.UTILITIES.add_one_shot_event_handler($element.get(0), 'transitionend', 2500, remove_backside);
                     TT.UTILITIES.set_css($element,
-                                         {left: frontside_offset.left,
-                                          top:  frontside_offset.top,
+                                         {left: frontside_offset && frontside_offset.left,
+                                          top:  frontside_offset && frontside_offset.top,
                                           opacity: .1});      
             }.bind(this);
             parent_of_backside = widget.get_parent_of_backside();
@@ -1101,7 +1101,7 @@ window.TOONTALK.backside =
             widget.backside_geometry = this.get_backside_dimensions();
             animate_disappearance($backside_element);
             this.set_visible(false); // semantic side of things needs to know this backside isn't being watched any more
-            if (event && !TT.UTILITIES.visible_element(frontside_element)) {
+            if (event && frontside_element && !TT.UTILITIES.visible_element(frontside_element)) {
                 // don't do any of this if robot is responsible
                 // in particular don't add widget back -- not as clear about updating CSS below
                 if (backside_position) {
