@@ -119,7 +119,7 @@ window.TOONTALK.vacuum = (function (TT) {
                             return true;
                         });
                     }
-                    removed_items.push(copy);
+                    removed_items.push(widget_side);
                     if (widget_side.set_running) {
                         widget_side.set_running(false);
                     }
