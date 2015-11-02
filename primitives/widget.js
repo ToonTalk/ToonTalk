@@ -917,7 +917,7 @@ window.TOONTALK.widget = (function (TT) {
         },
         
         add_to_json: function (json_semantic, json_history) {
-            var json_view, json, position, frontside_element, parent_widget_of_frontside, backside, backside_element, frontside_width;
+            var json_view, json, position, frontside_element, parent_widget_of_frontside, backside, backside_element, frontside_width, backside_parent_view_of_this, index;
             if (json_semantic) {
                 if (json_semantic.view) {
                     // already contains both semantic and view
@@ -957,8 +957,16 @@ window.TOONTALK.widget = (function (TT) {
                         }
                         if (frontside_width !== 0) {
                             // was using $(frontside_element).position() but then the position of rotated elements wasn't reproduced 
-                            json_view.frontside_left = TT.UTILITIES.get_style_numeric_property(frontside_element, 'left')
-                            json_view.frontside_top  = TT.UTILITIES.get_style_numeric_property(frontside_element, 'top');
+                            json_view.frontside_left = TT.UTILITIES.get_style_numeric_property(frontside_element, 'left');
+                            json_view.frontside_top  = TT.UTILITIES.get_style_numeric_property(frontside_element, 'top')  || backside_parent_view_of_this && backside_parent_view_of_this.frontside_top;
+                            if (json_view.frontside_left === undefined) {
+                               backside_parent_view_of_this = this.get_parent_of_frontside().get_widget().get_backside_widgets_json_views();
+                               if (backside_parent_view_of_this) {
+                                   index = this.get_parent_of_frontside().get_widget().get_backside_widgets().indexOf(this);
+                                   json_view.frontside_left = backside_parent_view_of_this[index].frontside_left;
+                                   json_view.frontside_top =  backside_parent_view_of_this[index].frontside_top; 
+                               }
+                            }
                         }
                     }
                 }

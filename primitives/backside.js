@@ -33,6 +33,7 @@ window.TOONTALK.backside =
                 if (backside_widget_side.is_backside()) {
                     backside_widgets_json_views[index].backside_left = TT.UTILITIES.left_as_percent(position.left, backside_widget_side_element);
                     backside_widgets_json_views[index].backside_top  = TT.UTILITIES.top_as_percent (position.top,  backside_widget_side_element);
+                    record_backside_widget_positions(backside_widget_side);
                 } else {
                     backside_widgets_json_views[index].frontside_left = TT.UTILITIES.left_as_percent(position.left, backside_widget_side_element, backside_element);
                     backside_widgets_json_views[index].frontside_top  = TT.UTILITIES.top_as_percent (position.top,  backside_widget_side_element, backside_element);     
@@ -506,42 +507,43 @@ window.TOONTALK.backside =
                                 backside_widgets.splice(index, 1);
                                 return;
                             }
-                            widget_side_element = backside_widget_side.get_element(backside_visible);
-                            if (widget_side_element) {
-                                if (backside_visible && !widget_side_element.parentElement) {
-                                    // needs to be added to backside element
-                                    backside_element.appendChild(widget_side_element);
-                                }
-                                widget_side_element.toontalk_widget_side = backside_widget_side;
-                                if (json_array) {
-                                    json_view = json_array[index];
-                                    if (json_view) {
-                                        if (backside_widget_side.is_backside()) {
-                                            backside = backside_widget_side.get_widget().get_backside(true);
-                                            css = {left:   json_view.backside_left,
-                                                   top:    json_view.backside_top,
-                                                   width:  json_view.backside_width,
-                                                   height: json_view.backside_height};
-                                            backside_widget_side.get_widget().apply_backside_geometry();
-                                            if (json_view.advanced_settings_open) {
-                                                backside.set_advanced_settings_showing(true, backside.get_element());
-                                            } 
-                                        } else {
-                                            if (json_view.frontside_width  === 0) {
-                                                json_view.frontside_width  = '';
-                                            }
-                                            if (json_view.frontside_height === 0) {
-                                                json_view.frontside_height = '';
-                                            }                                        
-                                            css = {left:   json_view.frontside_left   || 0,
-                                                   top:    json_view.frontside_top    || 0,
-                                                   width:  json_view.frontside_width  || json_view.saved_width,
-                                                   height: json_view.frontside_height || json_view.saved_height};
-                                        }
-                                        TT.UTILITIES.constrain_css_to_fit_inside(backside_element, css);
-                                        $(widget_side_element).css(css);
+                            if (json_array) {
+                                json_view = json_array[index];
+                            }
+                             // true was backside_visible but this meant that the layout of widgets on the backside of a backside weren't recreated
+                             // creating these elements on load time is small constant overhead -- it when robots are running unwatched that we need to be sure
+                             // that front or back sides are created only if needed
+                            widget_side_element = backside_widget_side.get_element(true);
+                            if (!widget_side_element.parentElement) {
+                                // needs to be added to backside element
+                                backside_element.appendChild(widget_side_element);
+                            }
+                            widget_side_element.toontalk_widget_side = backside_widget_side;
+                            if (json_view) {
+                                if (backside_widget_side.is_backside()) {
+                                    backside = backside_widget_side.get_widget().get_backside(true);
+                                    css = {left:   json_view.backside_left,
+                                           top:    json_view.backside_top,
+                                           width:  json_view.backside_width,
+                                           height: json_view.backside_height};
+                                    backside_widget_side.get_widget().apply_backside_geometry();
+                                    if (json_view.advanced_settings_open) {
+                                        backside.set_advanced_settings_showing(true, backside.get_element());
+                                    } 
+                                } else {
+                                    if (json_view.frontside_width  === 0) {
+                                        json_view.frontside_width  = '';
                                     }
+                                    if (json_view.frontside_height === 0) {
+                                        json_view.frontside_height = '';
+                                    }                                    
+                                    css = {left:   json_view.frontside_left   || json_view.frontside_left || 0,
+                                           top:    json_view.frontside_top    || json_view.frontside_top  || 0,
+                                           width:  json_view.frontside_width  || json_view.saved_width,
+                                           height: json_view.frontside_height || json_view.saved_height};
                                 }
+                                TT.UTILITIES.constrain_css_to_fit_inside(backside_element, css);
+                                $(widget_side_element).css(css);                              
                             }
                             backside_widget_side.set_visible(backside_visible);
                             backside_widget_side.get_widget().rerender();
@@ -1056,7 +1058,8 @@ window.TOONTALK.backside =
                $backside_element.find(".toontalk-train-backside-button").click();
                // firing click also updates the label of the button and also does robot_in_training.training_finished();       
             }
-            frontside_element = widget.get_frontside_element();
+            // create the frontside_element if needed if on the back of a top-level backside
+            frontside_element = widget.get_frontside_element(event && widget.get_parent_of_frontside() && widget.get_parent_of_frontside().is_top_level());
             backside_position = $backside_element.position();
             $backside_container = $backside_element.parent().closest(".toontalk-backside");
             animate_disappearance = 
