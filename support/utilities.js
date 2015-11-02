@@ -993,8 +993,8 @@ window.TOONTALK.UTILITIES =
                                 if (json_semantic.type === 'element') {
                                     // delay until updated
                                     widget_side.on_update_display(function () {
-                                                                 utilities.set_css(side_element, size_css);
-                                                             });
+                                                                      utilities.set_css(side_element, size_css);
+                                                                  });
                                 } else {
                                     utilities.set_css(side_element, size_css);
                                 }
@@ -1173,7 +1173,7 @@ window.TOONTALK.UTILITIES =
             if (widget_side.add_to_json) {
                 widget_json = widget_side.add_to_json(widget_json, json_history);
             }
-            // need to push the widget on the list before computing the backside widgets'' jSON in case there is a cycle
+            // need to push the widget on the list before computing the backside widgets' jSON in case there is a cycle
             json_history.json_of_widgets_encountered[index] = widget_json;
             if (widget_side.add_backside_widgets_to_json) {
                 widget_side.add_backside_widgets_to_json(widget_json, json_history);
@@ -1481,7 +1481,7 @@ window.TOONTALK.UTILITIES =
 
         utilities.get_style_numeric_property = function (element, style_property) {
             var as_string = this.get_style_property(element, style_property);
-            var index;
+            var index, numeric_value;
             if (typeof as_string === 'string') {
                 index = as_string.indexOf('px');
                 if (index >= 0) {
@@ -1496,7 +1496,12 @@ window.TOONTALK.UTILITIES =
                     }
                     return as_string;
                 }
-                return parseInt(as_string, 10);
+                numeric_value = parseInt(as_string, 10);
+                if (isNaN(numeric_value)) {
+                    // return undefined
+                    return;
+                }
+                return numeric_value;
             }
             return as_string;
         };
