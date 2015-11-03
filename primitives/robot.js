@@ -207,6 +207,9 @@ window.TOONTALK.robot = (function (TT) {
             return stopped;
         };
         new_robot.set_stopped = function (new_value) {
+            if (stopped === new_value) {
+                return;
+            }
             stopped = new_value;
             if (stopped) {
                 if (this.visible()) {
