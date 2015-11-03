@@ -730,14 +730,15 @@ window.TOONTALK.nest = (function (TT) {
     };
     var next_serial_number = 0;
     var name_counter = 0;
-    // nest capacity - enforced only for unwatched robots
+    // nest capacity - enforced only for unwatched robots when robot_removed_contents_since_empty
     nest.default_maximum_capacity = 10;
     nest.maximum_capacity = nest.default_maximum_capacity;
     nest.create = function (description, contents, guid, original_nest, serial_number, name) { 
         var new_nest = Object.create(nest);
-        var non_empty_listeners = [];
+        var non_empty_listeners           = [];
         var nest_under_capacity_listeners = [];
-        var waiting_widgets     = [];
+        var waiting_widgets               = [];
+        var robot_removed_contents_since_empty           = false; // has any of its contents been removed since this was empty -- needed for maximum_capacity
         var nest_copies, generic_set_name, generic_set_visible;
         if (!contents) {
             contents = [];
@@ -824,8 +825,9 @@ window.TOONTALK.nest = (function (TT) {
             var current_non_empty_listeners, widget_side_copy;
             var stack_size = contents.push(widget_side);
             var nest_visible = this.visible();
-            if (stack_size > nest.maximum_capacity && robot && !robot.visible() && !nest_visible) {
+            if (stack_size > nest.maximum_capacity && robot && robot_removed_contents_since_empty && !robot.visible() && !nest_visible) {
                 // if robot or nest is visible let it keep running even if nest goes over capactity
+                // robot_removed_contents_since_empty ensures that programs to add to top-level nests or nests without robots removing things don't stop
                 if (TT.logging && TT.logging.indexOf("nest") >= 0) {
                     console.log(this.to_debug_string() + " postponing addition of " + widget_side.to_debug_string() +
                                 " by " + robot.to_debug_string() + ". Stack is " + contents.length + " long. " +
@@ -845,6 +847,7 @@ window.TOONTALK.nest = (function (TT) {
                 console.log(this.to_debug_string() + " added " + widget_side.to_debug_string() + " nest now contains " + contents.length + " widgets.");
             }
             if (stack_size === 1) {
+                robot_removed_contents_since_empty = false;
                 if (non_empty_listeners.length > 0) {
                     // is the first content and some robots are waiting for this nest to be filled
                     // running these robots may cause new waiting robots so set non_empty_listeners to [] first
@@ -949,6 +952,9 @@ window.TOONTALK.nest = (function (TT) {
                 console.log(this.to_debug_string() + " removed " + removed.to_debug_string() + " remaining widgets is " + contents.length);
             }
             if (removed) {
+                if (!event) { // only if robot did this should flag to be updated
+                    robot_removed_contents_since_empty = true;
+                }
                 if (removed.is_backside()) {
                     removed.set_parent_of_backside(undefined);
                 } else {
@@ -970,7 +976,7 @@ window.TOONTALK.nest = (function (TT) {
                 }
                 this.render();
             }
-            if (contents.length < nest.maximum_capacity && nest_under_capacity_listeners.length > 0) {
+            if (contents.length <= nest.maximum_capacity && nest_under_capacity_listeners.length > 0) {
                 // remove the limit while running the listeners
                 if (TT.logging && TT.logging.indexOf("nest") >= 0) {
                     console.log(this.to_debug_string() + " running " + nest_under_capacity_listeners.length + " postponed additions. Stack is " + contents.length + " long.");
