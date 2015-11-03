@@ -863,9 +863,6 @@ window.TOONTALK.nest = (function (TT) {
                 // is under the top widget
                 widget_side.hide();
                 widget_side.set_visible(false);
-                if (nest_visible) {
-                    contents[0].set_visible(true);
-                }
             }
             if (widget_side.is_backside()) {
                 widget_side.set_parent_of_backside(this);
@@ -1297,6 +1294,8 @@ window.TOONTALK.nest = (function (TT) {
                     top_contents.update_display(); // TODO: see if render is OK
                     top_contents.scale_to_fit(top_contents_element, frontside_element);
                 } else {
+                    // if was running with document/window hidden then top contents may think they are not visible
+                    top_contents.set_visible(true);
                     top_contents.render();
                     top_contents_element = contents[0].get_element(true);
                     $(top_contents_element).show();
