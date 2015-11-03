@@ -863,6 +863,9 @@ window.TOONTALK.nest = (function (TT) {
                 // is under the top widget
                 widget_side.hide();
                 widget_side.set_visible(false);
+                if (nest_visible) {
+                    contents[0].set_visible(true);
+                }
             }
             if (widget_side.is_backside()) {
                 widget_side.set_parent_of_backside(this);
