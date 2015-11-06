@@ -46,11 +46,13 @@ window.TOONTALK.scale = (function (TT) {
             copy = TT.scale.create(undefined, undefined, copy_as_box, parameters.just_value && this.get_state());
             return new_scale.add_to_copy(copy, parameters);
         };
-        new_scale.get_json = function (json_history) {
-            var scale_json = box_get_json.call(this, json_history);
-            scale_json.type = 'scale';
-            scale_json.inactive_state = this.get_inactive_state();
-            return scale_json;
+        new_scale.get_json = function (json_history, callback, start_time) {
+            var new_callback = function (json, start_time) {
+                json.type = 'scale';
+                json.inactive_state = this.get_inactive_state();
+                callback(json, start_time);
+            }.bind(this);
+            box_get_json.call(this, json_history, new_callback, start_time);
         };
         new_scale.get_path_to = function (widget, robot) {
             var path = box_get_path_to.call(this, widget, robot);

@@ -1006,11 +1006,11 @@ window.TOONTALK.widget = (function (TT) {
             return {};
         },
         
-        add_backside_widgets_to_json: function (json, json_history) {
+        add_backside_widgets_to_json: function (json, json_history, callback, start_time) {
             var backside_widgets = this.get_backside_widgets(); 
             var backside_widgets_json_views, json_backside_widget_side;
             if (backside_widgets.length > 0) {
-                json.semantic.backside_widgets = TT.UTILITIES.get_json_of_array(backside_widgets, json_history);
+                json.semantic.backside_widgets = []; // TT.UTILITIES.get_json_of_array below will push json on to this
                 backside_widgets_json_views = this.get_backside_widgets_json_views();
                 if (backside_widgets_json_views) {
                     backside_widgets_json_views.forEach(function (backside_widget_view, index) {
@@ -1042,6 +1042,9 @@ window.TOONTALK.widget = (function (TT) {
                         }
                     });
                 }
+                TT.UTILITIES.get_json_of_array(backside_widgets, json.semantic.backside_widgets, 0, json_history, callback, start_time);
+            } else {
+                callback();
             }
         },
 
@@ -1555,15 +1558,16 @@ window.TOONTALK.widget = (function (TT) {
             top_level_widget.is_plain_text_element = return_false;
             top_level_widget.is_attribute_widget = return_false;
             top_level_widget.ok_to_set_dimensions = return_false;
-            top_level_widget.get_json = function (json_history) {
+            top_level_widget.get_json = function (json_history, callback, start_time) {
                 var backside = this.get_backside(true);
                 var backside_element = backside.get_element();
                 var background_color = document.defaultView.getComputedStyle(backside_element, null).getPropertyValue("background-color");
                 // don't know why the following returns undefined
 //               $backside_element.attr("background-color")};
-                return {semantic: {type: "top_level",
-                                   settings: settings},
-                        view:     {background_color: background_color}};
+                callback({semantic: {type: "top_level",
+                                     settings: settings},
+                          view:     {background_color: background_color}},
+                         start_time);
             };
             top_level_widget.get_type_name = function () {
                  return "top-level";
@@ -1669,7 +1673,28 @@ window.TOONTALK.widget = (function (TT) {
             };
             top_level_widget.save = function (immediately, parameters, callback) {
                 var program_name = this.get_setting('program_name', true);
-                var json, google_drive_status;
+                var save_function = function (json) {
+                    if (save_to_google_drive) {
+                        google_drive_status = TT.google_drive.get_status();
+                        if (google_drive_status === "Ready") {
+                            TT.google_drive.upload_file(program_name, "json", JSON.stringify(json, TT.UTILITIES.clean_JSON), callback);
+                            callback = undefined;
+                        } else if (TT.google_drive.connection_to_google_drive_possible()) {
+                            if (google_drive_status === 'Need to authorize') {
+                                TT.UTILITIES.display_message_if_new("Unable to save to your Google Drive because you need to log in. Click on the settings icon " +
+                                                                    TT.UTILITIES.encode_HTML_for_title("<span class='toontalk-settings-icon'></span>") +
+                                                                    " to log in.");
+                                TT.UTILITIES.display_tooltip($(".toontalk-settings-button"));
+                            } else {
+                                console.log("Unable to save to Google Drive because: " + google_drive_status);
+                            }
+                        }    
+                    }
+                    if (parameters.local_storage) {
+                       this.save_to_local_storage(json);
+                    }  
+                }.bind(this);
+                var save_to_google_drive, google_drive_status;
                 if (!program_name) {
                     // not saving this -- e.g. an example in a documentation page
                     return;
@@ -1691,29 +1716,15 @@ window.TOONTALK.widget = (function (TT) {
                                100);
                     return;
                 }
-                if (parameters.google_drive && !this.get_setting('google_drive_unavailable')) {
-                    json = TT.UTILITIES.get_json_top_level(this);
-                    google_drive_status = TT.google_drive.get_status();
-                    if (google_drive_status === "Ready") {
-                        TT.google_drive.upload_file(program_name, "json", JSON.stringify(json, TT.UTILITIES.clean_JSON), callback);
-                        callback = undefined;
-                    } else if (TT.google_drive.connection_to_google_drive_possible()) {
-                        if (google_drive_status === 'Need to authorize') {
-                            TT.UTILITIES.display_message_if_new("Unable to save to your Google Drive because you need to log in. Click on the settings icon " +
-                                                                TT.UTILITIES.encode_HTML_for_title("<span class='toontalk-settings-icon'></span>") +
-                                                                " to log in.");
-                            TT.UTILITIES.display_tooltip($(".toontalk-settings-button"));
-                        } else {
-                            console.log("Unable to save to Google Drive because: " + google_drive_status);
-                        }
+                save_to_google_drive = parameters.google_drive && !this.get_setting('google_drive_unavailable');
+                if (!save_to_google_drive && !parameters.local_storage) {
+                    // nothing to save 
+                    if (callback) {
+                        callback();
                     }
+                    return;
                 }
-                if (parameters.local_storage) {
-                    if (!json) {
-                        json = TT.UTILITIES.get_json_top_level(this);
-                    }
-                    this.save_to_local_storage(json);
-                }
+                TT.UTILITIES.get_json_top_level(this, save_function, 250);
                 if (callback) {
                     callback();
                 }

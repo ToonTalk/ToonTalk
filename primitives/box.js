@@ -391,23 +391,49 @@ window.TOONTALK.box = (function (TT) {
         return "docs/manual/boxes.html";
     };
 
-    box.get_json = function (json_history) {
+    box.get_json = function (json_history, callback, start_time) {
         var contents_json = [];
-        var size = this.get_size();
-        var i;
-        for (i = 0; i < size; i++) {
-            if (this.get_hole_contents(i)) {
-                contents_json[i] = TT.UTILITIES.get_json(this.get_hole_contents(i), json_history);
-            } else {
-                contents_json[i] = null;
+        var collect_contents_json = function (index, start_time) {
+            // this is similar to utilities.get_json_of_array but doesn't wrap in {widget: ...} and iterates and terminates differently
+            var widget_side, new_callback;
+            if (index >= this.get_size()) {
+                callback({type: "box",
+                          size: this.get_size(),
+                          contents: contents_json,
+                          horizontal: this.get_horizontal(),
+                          name: this.get_name()
+                         },
+                         start_time);
+                return;
             }
-        }
-        return {type: "box",
-                size: size,
-                contents: contents_json,
-                horizontal: this.get_horizontal(),
-                name: this.get_name()
-               };
+            widget_side = this.get_hole_contents(index);
+            if (!widget_side) {
+                contents_json.push(null);
+                collect_contents_json(index+1, start_time);
+                return; 
+            }
+            if (widget_side.is_primary_backside && widget_side.is_primary_backside()) {
+                new_callback = function (json, new_start_time) {
+                    contents_json.push(json);
+                    collect_contents_json(index+1, new_start_time);
+                }.bind(this);
+                TT.UTILITIES.get_json(widget_side.get_widget(), json_history, new_callback, start_time);
+            } else if (widget_side.is_widget) {
+                new_callback = function (json, new_start_time) {
+                    contents_json.push(json);
+                    collect_contents_json(index+1, new_start_time);
+                }.bind(this);
+                TT.UTILITIES.get_json(widget_side, json_history, new_callback, start_time);
+            } else {
+                // isn't a widget -- e.g. is a path
+                new_callback = function (json, new_start_time) {
+                    contents_json.push(json);
+                    collect_contents_json(index+1, new_start_time);
+                }.bind(this);
+                widget_side.get_json(json_history, new_callback, start_time);
+            }
+        }.bind(this);
+        collect_contents_json(0, start_time);
     };
 
     box.walk_children = function (child_action) {
@@ -834,11 +860,19 @@ window.TOONTALK.box = (function (TT) {
                     }
                     return "the " + TT.UTILITIES.ordinal(index) + " hole ";
                 },
-                get_json: function (json_history) {
-                    return {type: "box_path",
-                            index: index,
-                            true_type: this.true_type,
-                            next: this.next && this.next.get_json(json_history)};
+                get_json: function (json_history, callback, start_time) {
+                    var next_path_callback= function (next_path_json, start_time) {
+                        callback({type: "box_path",
+                                  index: index,
+                                  true_type: this.true_type,
+                                  next: next_path_json},
+                                 start_time);
+                    }.bind(this);
+                    if (this.next) {
+                        this.next.get_json(json_history, next_path_callback, start_time);
+                    } else {
+                        next_path_callback(undefined, start_time);
+                    }
                 }
             };
         }

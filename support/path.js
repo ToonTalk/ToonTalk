@@ -215,30 +215,36 @@ window.TOONTALK.path =
             to_string_info.resource = original_string_info_resource;
             return path_description;
         },
-        get_json: function (path, json_history) {
-            var json;
+        get_json: function (path, json_history, callback, start_time) {
+            var json, new_callback, next_path_callback;
             if (!path.get_json) {
-                return path; // is a constant
+                callback(path, start_time); // is a constant
+                return;
             }
-            json = path.get_json(json_history);
-            if (path.is_widget) {
-                path.add_to_json(json, json_history);
-            }
-            if (path.next) {
-                json.next_path = TT.path.get_json(path.next, json_history);
-            }
-            if (path.removing_widget) {
-                json.removing_widget = true;
-            }
-            if (path.not_to_be_dereferenced) {
-                json.not_to_be_dereferenced = true;
-            }
-            if (path.is_backside === true || (path.is_backside && path.is_backside())) {
-                // TODO: rationalise this -- in one case is_backside is a flag of a path 
-                // in the other the path is itself the backside of a widget
-                json.is_backside = true;
-            }
-            return json;
+            new_callback = function (json, start_time) {   
+                if (path.is_widget) {
+                    json = path.add_to_json(json, json_history);
+                }
+                if (path.next) {
+                    next_path_callback = function (next_path_json) {
+                        json.next_path = next_path_json;
+                    };
+                    TT.path.get_json(path.next, json_history, next_path_callback, start_time);
+                }
+                if (path.removing_widget) {
+                    json.removing_widget = true;
+                }
+                if (path.not_to_be_dereferenced) {
+                    json.not_to_be_dereferenced = true;
+                }
+                if (path.is_backside === true || (path.is_backside && path.is_backside())) {
+                    // TODO: rationalise this -- in one case is_backside is a flag of a path 
+                    // in the other the path is itself the backside of a widget
+                    json.is_backside = true;
+                }
+                callback(json, start_time);
+            };
+            path.get_json(json_history, new_callback, start_time);
         },
         to_entire_context: function (to_string_info) {
             // an action that applies to the entire context (i.e. what the robot is working on)
@@ -255,8 +261,8 @@ window.TOONTALK.path =
                         }
                         return "what I'm working on";
                     },
-                    get_json: function () {
-                        return {type: "path.to_entire_context"};
+                    get_json: function (json_history, callback, start_time) {
+                        callback({type: "path.to_entire_context"}, start_time);
                     }
             };
         },
@@ -267,8 +273,8 @@ window.TOONTALK.path =
                     toString: function () {
                         return "what is on the nest";
                     },
-                    get_json: function () {
-                        return {type: "path.to_widget_on_nest"};
+                    get_json: function (json_history, callback, start_time) {
+                        callback({type: "path.to_widget_on_nest"}, start_time);
                     }
             }; 
         },
@@ -305,11 +311,15 @@ window.TOONTALK.path =
                     toString: function (to_string_info) {
                         return TT.UTILITIES.add_a_or_an(widget.toString(to_string_info));
                     },
-                    get_json: function (json_history) {
-                        return {type: "path.to_resource",
-                                // following resets json_history since within a path there shouldn't be sharing with the 'outside'
-                                // except for shared HTML (which is just an optimisation)
-                                resource: TT.path.get_json(widget, TT.UTILITIES.fresh_json_history(json_history))};
+                    get_json: function (json_history, callback, start_time) {
+                        var new_callback = function (json, start_time) {
+                                               callback({type: "path.to_resource",
+                                                         // following resets json_history since within a path there shouldn't be sharing with the 'outside'
+                                                         // except for shared HTML (which is just an optimisation)
+                                                         resource: json},
+                                                        start_time);
+                        };
+                        widget.get_json(TT.UTILITIES.fresh_json_history(json_history), new_callback, start_time);
                     }
             };
         },
@@ -346,9 +356,10 @@ window.TOONTALK.path =
                         }
                         return string;
                     },
-                    get_json: function () {
-                            return {type: "path.to_backside_widget_of_context",
-                                    type_name: type_name};
+                    get_json: function (path, json_history, callback, start_time) {
+                            callback({type: "path.to_backside_widget_of_context",
+                                      type_name: type_name},
+                                     start_time);
                     }};
             }
             return this.get_path_to_backside_index_of_context(robot.get_backside_condition_index(backside_widget), backside_widget.get_type_name(), robot);   
@@ -374,10 +385,11 @@ window.TOONTALK.path =
                         }
                         return string;
                     },
-                    get_json: function (json_history) {
-                        return {type: "path.to_backside_widget_of_context",
-                                type_name: type_name,
-                                backside_index: backside_index};
+                    get_json: function (json_history, callback, start_time) {
+                        callback({type: "path.to_backside_widget_of_context",
+                                  type_name: type_name,
+                                  backside_index: backside_index},
+                                 start_time);
                     }
             };
         },
@@ -414,8 +426,8 @@ window.TOONTALK.path =
             toString: function () {
                 return "the top-level backside";
             },
-            get_json: function () {
-                return {type: "path.top_level_backside"};
+            get_json: function (json_history, callback, start_time) {
+                callback({type: "path.top_level_backside"}, start_time);
             }
         }
     };

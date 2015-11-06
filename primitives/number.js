@@ -970,14 +970,15 @@ window.TOONTALK.number = (function () {
         return "docs/manual/numbers.html";
     };
     
-    number.get_json = function () {
-        return {type: "number",
-                operator:    this.get_operator(),
-                numerator:   this.numerator_string(),
-                denominator: this.denominator_string(),
-                format:      this.get_format(),
-                approximate: this.get_approximate()
-                };
+    number.get_json = function (json_history, callback, start_time) {
+        callback({type: "number",
+                  operator:    this.get_operator(),
+                  numerator:   this.numerator_string(),
+                  denominator: this.denominator_string(),
+                  format:      this.get_format(),
+                  approximate: this.get_approximate()
+                 },
+                 start_time);
     };
     
     TT.creators_from_json["number"] = function (json) {

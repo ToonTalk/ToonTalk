@@ -824,11 +824,22 @@ window.TOONTALK.robot_action =
                 }
                 return prefix + action_description + " " + path_description + suffix;
             };
-            new_action.get_json = function (json_history) {
-                return {type: "robot_action",
-                        action_name: action_name,
-                        path: TT.path.get_json(path, json_history),
-                        additional_info: additional_info && TT.UTILITIES.get_json_of_keys(additional_info, ["running_watched"])};        
+            new_action.get_json = function (json_history, callback, start_time) {
+                var keys_callback = function (keys_json, start_time) {
+                    var path_callback = function (path_json, start_time) {
+                        callback({type: "robot_action",
+                                  action_name: action_name,
+                                  path: path_json,
+                                  additional_info: keys_json},
+                                 start_time);
+                    };
+                    TT.path.get_json(path, json_history, path_callback, start_time);
+                };
+                if (additional_info) {
+                    TT.UTILITIES.get_json_of_keys(additional_info, ["running_watched"], keys_callback, start_time);
+                } else {
+                    keys_callback(undefined, start_time);
+                }
             };
             return new_action;  
         }
