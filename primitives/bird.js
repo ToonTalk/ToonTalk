@@ -456,7 +456,7 @@ window.TOONTALK.bird = (function (TT) {
                               nest: nest_json},
                              start_time);
                 };
-                nest.get_json(json_history, new_callback, start_time);
+                TT.UTILITIES.get_json(nest, json_history, new_callback, start_time);
             } else {
                 callback({type: "bird"}, start_time);
             }
