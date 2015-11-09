@@ -356,7 +356,7 @@ window.TOONTALK.path =
                         }
                         return string;
                     },
-                    get_json: function (path, json_history, callback, start_time) {
+                    get_json: function (json_history, callback, start_time) {
                             callback({type: "path.to_backside_widget_of_context",
                                       type_name: type_name},
                                      start_time);
