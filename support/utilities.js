@@ -1207,7 +1207,7 @@ window.TOONTALK.UTILITIES =
                     };
                     widget_side.add_backside_widgets_to_json(json, json_history, add_backside_widgets_callback, start_time);
                 } else {
-                    callback(json);
+                    callback(json, start_time);
                 }
             };
             if (Date.now()-start_time <= utilities.maximum_json_generation_duration) {

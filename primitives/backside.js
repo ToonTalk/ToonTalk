@@ -1389,7 +1389,7 @@ window.TOONTALK.backside =
                                         view: {}},
                                        start_time);
             }.bind(this);
-            TT.UTILITIES.get_json(this.get_widget(), json_history, new_callback);
+            TT.UTILITIES.get_json(this.get_widget(), json_history, new_callback, start_time);
         }
 
     };

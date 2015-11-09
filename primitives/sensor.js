@@ -112,7 +112,7 @@ window.TOONTALK.sensor = (function (TT) {
                 if (widget) {
                     widget_callback = function (widget_json) {
                         json.sensor_of = widget_json;
-                        callback(json);
+                        callback(json, start_time);
                     };
                     TT.UTILITIES.get_json(widget, json_history, widget_callback, start_time);
                 } else {
