@@ -40,7 +40,7 @@ window.TOONTALK.robot = (function (TT) {
         // backside_conditions is a list of required widgets on the backside
         // body holds the actions the robot does when it runs
         // if watched_speed is undefined then runs at original speed
-        // otherwise is a positive time which is the multiplier of the normal default speed for each step
+        // otherwise is a positive number which is the multiplier of the normal default speed for each step
         var new_robot = Object.create(robot);
         // who should do the 'repeating'
         var first_in_team;
@@ -452,7 +452,7 @@ window.TOONTALK.robot = (function (TT) {
         new_robot.get_watched_speed = function () {
             return watched_speed;
         };
-         new_robot.set_watched_speed = function (new_value) {
+        new_robot.set_watched_speed = function (new_value) {
             watched_speed = new_value;
             return true;
         };
@@ -1279,15 +1279,15 @@ window.TOONTALK.robot = (function (TT) {
             var next_robot_callback = function (next_robot_json, start_time) {
                 var frontside_conditions_callback = function (frontside_conditions_json, start_time) {
                      callback({type: "robot",
-                                  frontside_conditions: frontside_conditions_json,
-                                  backside_conditions: backside_conditions_json,
-                                  body: body_json,
-                                  run_once: this.get_run_once(),
-                                  next_robot: next_robot_json,
-                                  name: this.get_name(),
-                                  speed: this.get_watched_speed()
-                                },
-                                start_time);
+                               frontside_conditions: frontside_conditions_json,
+                               backside_conditions: backside_conditions_json,
+                               body: body_json,
+                               run_once: this.get_run_once(),
+                               next_robot: next_robot_json,
+                               name: this.get_name(),
+                               speed: this.get_watched_speed()
+                              },
+                              start_time);
                 }.bind(this);
                 var body_json_callback = function (json, start_time) {
                     body_json = json;
