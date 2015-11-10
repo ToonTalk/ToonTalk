@@ -1538,6 +1538,7 @@ window.TOONTALK.widget = (function (TT) {
             var return_false = function () {
                 return false;
             };
+            var save_in_progress = false;
             if (!settings) {
                 settings = {};  
             }
@@ -1674,6 +1675,7 @@ window.TOONTALK.widget = (function (TT) {
             top_level_widget.save = function (immediately, parameters, callback) {
                 var program_name = this.get_setting('program_name', true);
                 var save_function = function (json) {
+                    save_in_progress = false;
                     if (save_to_google_drive) {
                         google_drive_status = TT.google_drive.get_status();
                         if (google_drive_status === "Ready") {
@@ -1692,9 +1694,16 @@ window.TOONTALK.widget = (function (TT) {
                     }
                     if (parameters.local_storage) {
                        this.save_to_local_storage(json);
+                    }
+                    if (callback) {
+                        callback();
                     }  
                 }.bind(this);
                 var save_to_google_drive, google_drive_status;
+                if (save_in_progress) {
+                    // large saves call timeOut
+                    return;
+                }
                 if (!program_name) {
                     // not saving this -- e.g. an example in a documentation page
                     return;
@@ -1724,10 +1733,8 @@ window.TOONTALK.widget = (function (TT) {
                     }
                     return;
                 }
+                save_in_progress = true;
                 TT.UTILITIES.get_json_top_level(this, save_function, 250);
-                if (callback) {
-                    callback();
-                }
             };
             top_level_widget.publish = function (callback, as_workspace) {
                 TT.publish.publish_widget(this.get_setting('program_name'), this, as_workspace, callback);   
