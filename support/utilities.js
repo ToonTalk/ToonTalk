@@ -41,16 +41,20 @@ window.TOONTALK.UTILITIES =
                                                                               if (!$(added_node).is(".toontalk-not-observable") ||
                                                                                   added_node.toontalk_run_even_if_not_observable) {
                                                                                   // was only attached to compute original dimensions and is not computing now
+                                                                                  $(added_node).removeClass("toontalk-has-attached-callback");
                                                                                   added_node.toontalk_attached_callback();
                                                                                   added_node.toontalk_attached_callback = undefined;
                                                                                   added_node.toontalk_run_even_if_not_observable = undefined;
-                                                                                  $(added_node).removeClass("toontalk-has-attached-callback");
                                                                               }
                                                                           }
                                                                           $(added_node).find(".toontalk-has-attached-callback").each(function (index, element) {
-                                                                              element.toontalk_attached_callback();
-                                                                              element.toontalk_attached_callback = undefined;
                                                                               $(element).removeClass("toontalk-has-attached-callback");
+                                                                              if (element.toontalk_attached_callback) {
+                                                                                  // Test "A team of 3 that each adds 1 to 1" calls this with element.toontalk_attached_callback undefined
+                                                                                  // When stepping through the code it works fine so must be some kind of timing dependent problem
+                                                                                  element.toontalk_attached_callback();
+                                                                                  element.toontalk_attached_callback = undefined;
+                                                                              }
                                                                           });
                                                                       }
                                                                   }                                                                
