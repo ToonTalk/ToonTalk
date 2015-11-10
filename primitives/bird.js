@@ -130,12 +130,12 @@ window.TOONTALK.bird = (function (TT) {
             var temporary_bird = !!nest_recieving_message;
             var parent = this.get_parent_of_frontside();
             var bird_frontside_element = this.get_frontside_element(true);
+            var bird_position = $(bird_frontside_element).position();
             var bird_width = $(bird_frontside_element).width();
             var visible_ancestor = this.closest_visible_ancestor_or_frontside();
             var bird_offset = $(visible_ancestor.get_frontside_element()).offset();
             var bird_finished_continuation = 
                 function () {
-                    var parent_offset = $(parent_element).offset();
                     var become_static, current_non_empty_listeners;
                     if (TT.sounds) {
                         TT.sounds.bird_fly.pause();
@@ -151,11 +151,7 @@ window.TOONTALK.bird = (function (TT) {
                             }
                         }.bind(this);
                         bird_frontside_element.style.position = bird_style_position;
-                        if (parent_offset) { // undefined if on unwatched backside
-                            bird_offset.left -= parent_offset.left;
-                            bird_offset.top  -= parent_offset.top;
-                        }
-                        TT.UTILITIES.set_css(bird_frontside_element, bird_offset);
+                        TT.UTILITIES.set_css(bird_frontside_element, bird_position);
                         if (parent_element) {
                             parent_element.appendChild(bird_frontside_element);
                         }
