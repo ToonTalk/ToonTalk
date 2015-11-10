@@ -1274,12 +1274,11 @@ window.TOONTALK.robot = (function (TT) {
     robot.get_json = function (json_history, callback, start_time) {
         var frontside_conditions = this.get_frontside_conditions();
         var backside_conditions = this.get_backside_conditions();
-        var backside_conditions_json;
+        var backside_conditions_json,  frontside_conditions_json;
         var backside_conditions_callback = function () {
             var next_robot_callback = function (next_robot_json, start_time) {
                 var frontside_conditions_callback = function (frontside_conditions_json, start_time) {
-                    var body_json_callback = function (body_json, start_time) {
-                        callback({type: "robot",
+                     callback({type: "robot",
                                   frontside_conditions: frontside_conditions_json,
                                   backside_conditions: backside_conditions_json,
                                   body: body_json,
@@ -1289,16 +1288,20 @@ window.TOONTALK.robot = (function (TT) {
                                   speed: this.get_watched_speed()
                                 },
                                 start_time);
-                    }.bind(this);
-                    this.get_body().get_json(json_history, body_json_callback, start_time);
                 }.bind(this);
-                if (frontside_conditions) {
-                    if (frontside_conditions.is_top_level()) {
-                        frontside_conditions_callback({type: "top_level"}, start_time);
+                var body_json_callback = function (json, start_time) {
+                    body_json = json;
+                    if (frontside_conditions) {
+                        if (frontside_conditions.is_top_level()) {
+                            frontside_conditions_callback({type: "top_level"}, start_time);
+                        } else {
+                            TT.UTILITIES.get_json(frontside_conditions, json_history, frontside_conditions_callback, start_time);
+                        }
                     } else {
-                        TT.UTILITIES.get_json(frontside_conditions, json_history, frontside_conditions_callback, start_time);
+                        frontside_conditions_callback(undefined, start_time);
                     }
-                }
+                };
+                this.get_body().get_json(json_history, body_json_callback, start_time);
             }.bind(this);
             if (this.get_next_robot()) {
                 TT.UTILITIES.get_json(this.get_next_robot(), json_history, next_robot_callback, start_time);
@@ -1306,7 +1309,7 @@ window.TOONTALK.robot = (function (TT) {
                 next_robot_callback(undefined, start_time);
             }
         }.bind(this);
-        var next_robot_json, children_callback;
+        var next_robot_json, body_json, children_callback;
         if (backside_conditions) {
             backside_conditions_json = [];
             TT.UTILITIES.get_json_of_array(backside_conditions, backside_conditions_json, 0, json_history, backside_conditions_callback, start_time);
@@ -1414,7 +1417,7 @@ window.TOONTALK.robot = (function (TT) {
                         var path_to_robot_callback = function (path_to_robot_json, start_time) {
                             var path_within_conditions_callback = function (path_within_conditions_json, start_time) {
                                 callback({type: "path_to_robot_conditions",
-                                          backside_condition: path_within_conditions_json,
+                                          backside_condition: backside_condition_with_path && path_within_conditions_json,
                                           path_to_robot: path_to_robot_json,
                                           path_within_conditions: path_within_conditions_json},
                                          start_time);
