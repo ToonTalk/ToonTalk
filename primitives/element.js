@@ -1441,7 +1441,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             return "";
         }.bind(this);
         var children = this.get_children();
-        var text, description;
+        var text, description, source_URL;
         if (to_string_info && !to_string_info.inside_tool_tip) {
             if (to_string_info.for_json_div) {
                 // don't risk confusing things with a comment that might interfere with the HTML
@@ -1449,11 +1449,16 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             } else {
                 description = image_description();
                 if (!description) {
-                    text = this.get_text();
-                    if (text) {
-                        description = '"' + text + '"';
+                    source_URL = this.get_source_URL();
+                    if (source_URL) {
+                        description = "whose text is the contents of " + source_URL;
                     } else {
-                        description = "";
+                        text = this.get_text();
+                        if (text) {
+                            description = '"' + text + '"';
+                        } else {
+                            description = "";
+                        }
                     }
                 }
             }
@@ -1515,7 +1520,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                   html:                  html_encoded_or_shared, 
                                   attributes:            attributes,
                                   attribute_values:      attributes.map(this.get_attribute.bind(this)),
-                                  attributes_backsides:  attributes_backsides, 
+                                  attributes_backsides:  attributes_backsides,
                                   additional_classes:    this.get_additional_classes(),
                                   children:              this.get_children().length > 0 && children_json,
                                   sound_effect:          this.get_sound_effect() && this.get_sound_effect().src,
