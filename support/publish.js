@@ -88,6 +88,11 @@ var static_contents_end =
                         }
                         TT.UTILITIES.get_json_top_level(widget, function (json) {
                             // following ignores which side of the widget we have
+                            if (json.view) {
+                                // if they are on a web page saved dimensions don't make sense (and might be out of date)
+                                json.view.saved_width  = undefined;
+                                json.view.saved_height = undefined;
+                            }
                             widgets_json.push(TT.UTILITIES.toontalk_json_div(json, widget.get_widget()));
                             if (index > 1) {
                                 editable_contents[index] = editable_contents[1]; // repeat it as many times as needed
