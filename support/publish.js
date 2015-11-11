@@ -70,14 +70,15 @@ var static_contents_end =
                     TT.google_drive.upload_file(program_name, "html", contents, callback);
                 }
             };
-            var program_name, json, widgets_json, widgets;
+            var program_name, widgets_json, widgets;
             if (google_drive_status === "Ready") {
                 program_name = widget.get_setting('program_name');
                 if (as_workspace) {
-                    json = TT.UTILITIES.get_json_top_level(widget);
-                    widget.set_setting('program_name', program_name + " (published version)");
-                    widgets_json = [TT.UTILITIES.toontalk_json_div(json, widget)];
-                    widget.set_setting('program_name', program_name);
+                    TT.UTILITIES.get_json_top_level(widget, function (json) {
+                        widget.set_setting('program_name', program_name + " (published version)");
+                        widgets_json = [TT.UTILITIES.toontalk_json_div(json, widget)];
+                        widget.set_setting('program_name', program_name);
+                    }); 
                 } else {
                     widgets = widget.get_backside_widgets();
                     widgets_json = [];
@@ -85,12 +86,13 @@ var static_contents_end =
                         if (!widget.visible()) {
                             return;
                         }
-                        json = TT.UTILITIES.get_json_top_level(widget);
-                        // following ignores which side of the widget we have
-                        widgets_json.push(TT.UTILITIES.toontalk_json_div(json, widget.get_widget()));
-                        if (index > 1) {
-                            editable_contents[index] = editable_contents[1]; // repeat it as many times as needed
-                        }
+                        TT.UTILITIES.get_json_top_level(widget, function (json) {
+                            // following ignores which side of the widget we have
+                            widgets_json.push(TT.UTILITIES.toontalk_json_div(json, widget.get_widget()));
+                            if (index > 1) {
+                                editable_contents[index] = editable_contents[1]; // repeat it as many times as needed
+                            }
+                        });
                     });
                     editable_contents.push(editable_contents[1]); // final editable text
                 }
