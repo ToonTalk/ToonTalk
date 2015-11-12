@@ -61,7 +61,7 @@ window.TOONTALK.robot_action =
              }
          },
          "drop it on the text area of": function (target, robot, additional_info) {
-             var thing_in_hand, thing_in_hand_frontside_element, thing_in_hand_position;
+             var thing_in_hand;
              if (target) {
                  thing_in_hand = robot.get_thing_in_hand();
                  if (thing_in_hand) {
@@ -331,18 +331,18 @@ window.TOONTALK.robot_action =
     };
     var drop_it_on_text_area_animation = function (target, robot, continuation, additional_info) {
         var thing_in_hand = robot.get_thing_in_hand();
-        var $thing_in_hand_frontside_element, adjust_dropped_location_continuation, find_text_area, text_area;
+        var thing_in_hand_element, adjust_dropped_location_continuation, find_text_area, text_area;
         if (!thing_in_hand) {
             TT.UTILITIES.report_internal_error("Expected the robot to be holding something.");
             console.log("The robot is " + robot);
             move_robot_animation(target, robot, continuation, additional_info);
             return;
         }
-        $thing_in_hand_frontside_element = $(thing_in_hand.get_frontside_element());
+        thing_in_hand_element = thing_in_hand.get_element(true);
+        thing_in_hand.set_visible(robot.visible());
         adjust_dropped_location_continuation = function () {
-            var thing_in_hand_position = $thing_in_hand_frontside_element.offset();
             var $top_level_element, parent;
-            $thing_in_hand_frontside_element.removeClass("toontalk-held-by-robot");
+            $(thing_in_hand_element).removeClass("toontalk-held-by-robot");
             // the following removes dropped which is a small problem if Bammer is added to this since it may be too soon
             continuation();
 //          $(text_area).trigger('change');
