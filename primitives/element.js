@@ -889,7 +889,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         return path;
     };
 
-    element.dereference_path = function (path, top_level_context, robot) {
+    element.dereference_path = function (path, robot) {
         var index, child, children;
         if (path) {
             index = path.get_index && path.get_index();
@@ -899,11 +899,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 if (child) {
                     if (child.dereference_contents && !path.not_to_be_dereferenced) {
                         // this will dereference the top of a nest instead of the nest itself
-                        return child.dereference_contents(path.next || path, top_level_context, robot);
+                        return child.dereference_contents(path.next || path, robot);
                     }
                     if (path.next) {
                         if (child.dereference_path) {
-                            return child.dereference_path(path.next, top_level_context, robot);
+                            return child.dereference_path(path.next, robot);
                         } else {
                             TT.UTILITIES.report_internal_error("Expected to refer to a child of " + child + " but it lacks a method to obtain " + TT.path.toString(path.next));
                         }
@@ -931,10 +931,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 toString: function () {
                     return "the " + TT.UTILITIES.ordinal(index) + " widget ";
                 },
-                get_json: function (json_history) {
-                    return {type: "element_path",
-                            index: index,
-                            next: this.next && this.next.get_json(json_history)};
+                get_json: function (json_history, callback, start_time) {
+                    callback({type: "element_path",
+                              index: index,
+                              next: this.next && this.next.get_json(json_history)},
+                             start_time);
                 }
             };
         }
@@ -1192,10 +1193,14 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 }
                 return this.add_to_copy((copy_of_this_element_widget || this_element_widget).create_attribute_widget(attribute_name), parameters);
             };
-            attribute_widget.get_json = function (json_history) {
-                return {type: 'attribute_widget',
-                        attribute_name: attribute_name,
-                        element: TT.UTILITIES.get_json(this_element_widget, json_history)};            
+            attribute_widget.get_json = function (json_history, callback, start_time) {
+                var new_callback = function (json, start_time) {
+                    callback({type: 'attribute_widget',
+                              attribute_name: attribute_name,
+                              element: json},
+                             start_time);   
+                };
+                TT.UTILITIES.get_json(this_element_widget, json_history, new_callback, start_time);                         
             };
             attribute_widget.get_original_attribute_widget = function () {
                 var copies = this_element_widget.get_original_copies()[attribute_name];
@@ -1413,6 +1418,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
            var style, first_space;
            if (html.length > 1 && html.charAt(0) === '<') {
                 style = "style='width: 50px; height: 30px;'";
+                if (to_string_info && to_string_info.inside_tool_tip) {
+                    style += " class='toontalk-widget-in-tool-tip'";
+                }
                 first_space = html.indexOf(' ');
                 return html.substring(0, first_space+1) + style + html.substring(first_space);
            }
@@ -1433,19 +1441,24 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             return "";
         }.bind(this);
         var children = this.get_children();
-        var text, description;
-        if (to_string_info) {
+        var text, description, source_URL;
+        if (to_string_info && !to_string_info.inside_tool_tip) {
             if (to_string_info.for_json_div) {
                 // don't risk confusing things with a comment that might interfere with the HTML
                return "";
             } else {
                 description = image_description();
                 if (!description) {
-                    text = this.get_text();
-                    if (text) {
-                        description = '"' + text + '"';
+                    source_URL = this.get_source_URL();
+                    if (source_URL) {
+                        description = "whose text is the contents of " + source_URL;
                     } else {
-                        description = "";
+                        text = this.get_text();
+                        if (text) {
+                            description = '"' + text + '"';
+                        } else {
+                            description = "";
+                        }
                     }
                 }
             }
@@ -1469,14 +1482,18 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         return "docs/manual/elements.html";
     };
     
-    element.get_json = function (json_history) {
+    element.get_json = function (json_history, callback, start_time) {
+        // don't want them to appear where they were in the source page
+        // need to revisit this since sometimes we want left and top
+        // maybe when loading don't obey their values
         var attributes = this.get_style_attributes();
         var json_attributes = [];
         var html = TT.UTILITIES.remove_z_index(this.get_HTML()); // z-index is transient
         var html_encoded = encodeURIComponent(html);
         // don't bother to share short HTMLs
         var html_worth_sharing = html.length >= 100;
-        var html_encoded_or_shared, html_index;
+        var children_json = [];
+        var html_encoded_or_shared, html_index, new_callback;
         if (html_worth_sharing) {
             if (!json_history.shared_html) {
                 json_history.shared_html = [];
@@ -1489,32 +1506,49 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         } else {
             html_encoded_or_shared = html_encoded;
         }
-        attributes.forEach(function (item) {
-            // don't want them to appear where they were in the source page
-            // need to revisit this since sometimes we want left and top
-            // maybe when loading don't obey their values
-//             if (item !== "left" && item !== "top") {
-                json_attributes.push(item);
-//             }
-        });
-        return {type: "element",
-                // z-index info is temporary and should not be captured here
-                html:                 html_encoded_or_shared, 
-                attributes:           json_attributes,
-                attribute_values:     json_attributes.map(this.get_attribute.bind(this)),
-                attributes_backsides: json_attributes.map(function (attribute_name) {
-                                                               var backside_widget = this.get_attribute_widget_in_backside_table(attribute_name, true);
-                                                               if (backside_widget) {
-                                                                   return TT.UTILITIES.get_json_of_array(backside_widget.get_backside_widgets(), json_history)
-                                                               }
-                                                          }.bind(this)),
-                additional_classes:    this.get_additional_classes(),
-                children:              this.get_children().length > 0 && TT.UTILITIES.get_json_of_array(this.get_children(), json_history),
-                sound_effect:          this.get_sound_effect() && this.get_sound_effect().src,
-                video:                 this.get_video_object() && this.get_video_object().src,
-                ignore_pointer_events: this.get_ignore_pointer_events() ? true : undefined, // undefined means no attribute value pair saving space
-                source_URL:            this.get_source_URL()
-                };
+        new_callback = function () {
+            var attributes_backsides = [];
+            var attributes_backsides_callback = 
+                function (index) {
+                    var next_backside_widget_callback = function () {
+                        attributes_backsides_callback(index+1);
+                    };
+                    var attribute_name, backside_widget, backside_widgets_json, next_attribute_callback;
+                    if (index >= attributes.length) {
+                        callback({type: "element",
+                                  // z-index info is temporary and should not be captured here
+                                  html:                  html_encoded_or_shared, 
+                                  attributes:            attributes,
+                                  attribute_values:      attributes.map(this.get_attribute.bind(this)),
+                                  attributes_backsides:  attributes_backsides,
+                                  additional_classes:    this.get_additional_classes(),
+                                  children:              this.get_children().length > 0 && children_json,
+                                  sound_effect:          this.get_sound_effect() && this.get_sound_effect().src,
+                                  video:                 this.get_video_object() && this.get_video_object().src,
+                                  ignore_pointer_events: this.get_ignore_pointer_events() ? true : undefined, // undefined means no attribute value pair saving space
+                                  source_URL:            this.get_source_URL()
+                                 },
+                                 start_time);
+                         return;
+                    }
+                    attribute_name = attributes[index];
+                    backside_widget = this.get_attribute_widget_in_backside_table(attribute_name, true);
+                    if (backside_widget) {
+                        backside_widgets_json = [];
+                        attributes_backsides.push(backside_widgets_json);
+                        TT.UTILITIES.get_json_of_array(backside_widget.get_backside_widgets(), backside_widgets_json, 0, json_history, next_backside_widget_callback, start_time);
+                    } else {
+                         attributes_backsides.push(null);
+                        next_backside_widget_callback();
+                    }
+                }.bind(this);
+                attributes_backsides_callback(0);
+        }.bind(this);
+        if (this.get_children().length > 0) {
+           TT.UTILITIES.get_json_of_array(this.get_children(), children_json, 0, json_history, new_callback, start_time);
+        } else {
+           new_callback();
+        }
     };
     
     TT.creators_from_json["element"] = function (json, additional_info) {
@@ -1603,19 +1637,23 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     
     element.extend_attribute_path = function (path_to_element_widget, attribute_name) {
        return {
-            dereference_path: function (context, top_level_context, robot) {
+            dereference_path: function (robot) {
                 // if the robot is running on the backside of a widget that is on the backside of the top_level_context
                 // then use the top_level_context
-                var element_widget = path_to_element_widget.dereference_path((top_level_context || context), undefined, robot);
+                var element_widget = path_to_element_widget.dereference_path(robot, (robot.get_top_level_context() || robot.get_context()));
                 return element_widget.get_widget().get_attribute_widget_in_backside_table(attribute_name);
             },
             toString: function () {
                 return "the '" + attribute_name + "' property of " + path_to_element_widget;
             },
-            get_json: function () {
-                return {type: "path_to_style_attribute",
-                        attribute: attribute_name,
-                        element_widget_path: path_to_element_widget.get_json()};
+            get_json: function (json_history, callback, start_time) {
+                var element_widget_path_callback = function (element_widget_path_json, start_time) {
+                    callback({type: "path_to_style_attribute",
+                              attribute: attribute_name,
+                              element_widget_path: element_widget_path_json},
+                             start_time);
+                };
+                path_to_element_widget.get_json(json_history, element_widget_path_callback, start_time); 
             }};
     };
     

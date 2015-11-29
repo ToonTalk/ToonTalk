@@ -31,12 +31,19 @@ window.TOONTALK.bird = (function (TT) {
                                                           "Click to select the function that this bird will use when given a box.",
                                                           item_titles);
         var backside_element = backside.get_element();
+        var $description_text_area;
         if (function_object) {
             select_menu.menu.value = function_object.name;
         }
         select_menu.menu.addEventListener('change', function (event) {
-                bird.set_function_name(event.target.value);
-            });
+            bird.set_function_name(event.target.value);
+            if (!bird.get_description()) {
+                $description_text_area = $(bird.get_backside_element()).find(".toontalk-description-input");
+                if ($description_text_area.length > 0) {
+                    $description_text_area.get(0).setAttribute('placeholder', bird.get_default_description());
+                }
+            }
+        });
         backside_element.insertBefore(select_menu.container, backside_element.firstChild);
     };
     
@@ -123,12 +130,12 @@ window.TOONTALK.bird = (function (TT) {
             var temporary_bird = !!nest_recieving_message;
             var parent = this.get_parent_of_frontside();
             var bird_frontside_element = this.get_frontside_element(true);
+            var bird_position = $(bird_frontside_element).position();
             var bird_width = $(bird_frontside_element).width();
             var visible_ancestor = this.closest_visible_ancestor_or_frontside();
             var bird_offset = $(visible_ancestor.get_frontside_element()).offset();
             var bird_finished_continuation = 
                 function () {
-                    var parent_offset = $(parent_element).offset();
                     var become_static, current_non_empty_listeners;
                     if (TT.sounds) {
                         TT.sounds.bird_fly.pause();
@@ -144,11 +151,7 @@ window.TOONTALK.bird = (function (TT) {
                             }
                         }.bind(this);
                         bird_frontside_element.style.position = bird_style_position;
-                        if (parent_offset) { // undefined if on unwatched backside
-                            bird_offset.left -= parent_offset.left;
-                            bird_offset.top  -= parent_offset.top;
-                        }
-                        TT.UTILITIES.set_css(bird_frontside_element, bird_offset);
+                        TT.UTILITIES.set_css(bird_frontside_element, bird_position);
                         if (parent_element) {
                             parent_element.appendChild(bird_frontside_element);
                         }
@@ -441,10 +444,18 @@ window.TOONTALK.bird = (function (TT) {
                 this.fly_to(target_offset,  bird_return_continuation,      robot, delay_between_steps);
             }  
         };
-        new_bird.get_json = function (json_history) {
-            return {type: "bird",
-                    nest: nest && TT.UTILITIES.get_json(nest, json_history)
-                   };
+        new_bird.get_json = function (json_history, callback, start_time) {
+            var new_callback;
+            if (nest) {
+                new_callback = function (nest_json, start_time) {
+                    callback({type: "bird",
+                              nest: nest_json},
+                             start_time);
+                };
+                TT.UTILITIES.get_json(nest, json_history, new_callback, start_time);
+            } else {
+                callback({type: "bird"}, start_time);
+            }
         };
         new_bird.copy = function (parameters) {
             // notice that bird/nest semantics is that the nest is shared not copied
@@ -723,14 +734,15 @@ window.TOONTALK.nest = (function (TT) {
     };
     var next_serial_number = 0;
     var name_counter = 0;
-    // nest capacity - enforced only for unwatched robots
+    // nest capacity - enforced only for unwatched robots when robot_removed_contents_since_empty
     nest.default_maximum_capacity = 10;
     nest.maximum_capacity = nest.default_maximum_capacity;
     nest.create = function (description, contents, guid, original_nest, serial_number, name) { 
         var new_nest = Object.create(nest);
-        var non_empty_listeners = [];
+        var non_empty_listeners           = [];
         var nest_under_capacity_listeners = [];
-        var waiting_widgets     = [];
+        var waiting_widgets               = [];
+        var robot_removed_contents_since_empty           = false; // has any of its contents been removed since this was empty -- needed for maximum_capacity
         var nest_copies, generic_set_name, generic_set_visible;
         if (!contents) {
             contents = [];
@@ -817,8 +829,9 @@ window.TOONTALK.nest = (function (TT) {
             var current_non_empty_listeners, widget_side_copy;
             var stack_size = contents.push(widget_side);
             var nest_visible = this.visible();
-            if (stack_size > nest.maximum_capacity && robot && !robot.visible() && !nest_visible) {
+            if (stack_size > nest.maximum_capacity && robot && robot_removed_contents_since_empty && !robot.visible() && !nest_visible) {
                 // if robot or nest is visible let it keep running even if nest goes over capactity
+                // robot_removed_contents_since_empty ensures that programs to add to top-level nests or nests without robots removing things don't stop
                 if (TT.logging && TT.logging.indexOf("nest") >= 0) {
                     console.log(this.to_debug_string() + " postponing addition of " + widget_side.to_debug_string() +
                                 " by " + robot.to_debug_string() + ". Stack is " + contents.length + " long. " +
@@ -826,11 +839,11 @@ window.TOONTALK.nest = (function (TT) {
                 }
                 // stop the robot at the end of this cycle
                 // and let him run again when the nest isn't so full
-                robot.add_body_finished_listener(function (context, top_level_context, queue) {
+                robot.add_body_finished_listener(function () {
                     robot.set_stopped(true);
                     nest_under_capacity_listeners.push(function () {
                         robot.set_stopped(false);
-                        robot.run_actions(context, top_level_context, queue);
+                        robot.run_actions();
                     });
                 })
             }
@@ -838,6 +851,7 @@ window.TOONTALK.nest = (function (TT) {
                 console.log(this.to_debug_string() + " added " + widget_side.to_debug_string() + " nest now contains " + contents.length + " widgets.");
             }
             if (stack_size === 1) {
+                robot_removed_contents_since_empty = false;
                 if (non_empty_listeners.length > 0) {
                     // is the first content and some robots are waiting for this nest to be filled
                     // running these robots may cause new waiting robots so set non_empty_listeners to [] first
@@ -942,6 +956,9 @@ window.TOONTALK.nest = (function (TT) {
                 console.log(this.to_debug_string() + " removed " + removed.to_debug_string() + " remaining widgets is " + contents.length);
             }
             if (removed) {
+                if (!event) { // only if robot did this should flag to be updated
+                    robot_removed_contents_since_empty = true;
+                }
                 if (removed.is_backside()) {
                     removed.set_parent_of_backside(undefined);
                 } else {
@@ -963,7 +980,7 @@ window.TOONTALK.nest = (function (TT) {
                 }
                 this.render();
             }
-            if (contents.length < nest.maximum_capacity && nest_under_capacity_listeners.length > 0) {
+            if (contents.length <= nest.maximum_capacity && nest_under_capacity_listeners.length > 0) {
                 // remove the limit while running the listeners
                 if (TT.logging && TT.logging.indexOf("nest") >= 0) {
                     console.log(this.to_debug_string() + " running " + nest_under_capacity_listeners.length + " postponed additions. Stack is " + contents.length + " long.");
@@ -978,7 +995,7 @@ window.TOONTALK.nest = (function (TT) {
             }
             return removed;
         };
-        new_nest.dereference_path = function (path, top_level_context, robot) {
+        new_nest.dereference_path = function (path, robot) {
             if (contents.length === 0) {
                 if (this.get_guid()) {
                     // robot needs to wait until something arrives on this nest
@@ -989,12 +1006,12 @@ window.TOONTALK.nest = (function (TT) {
                 }
             }
             if (contents) {
-                return contents[0].dereference_path(path, top_level_context, robot);
+                return contents[0].dereference_path(path, robot);
             }
             TT.UTILITIES.display_message("Robot expected to find a nest something that it could get " + TT.path.toString(path) + ". But the nest is empty.");
             return this;
         };
-        new_nest.dereference_contents = function (path_to_nest, top_level_context, robot) {
+        new_nest.dereference_contents = function (path_to_nest, robot) {
             var widget_side, nest_offset, $top_level_backside_element, top_level_backside_element_offset, 
                 widget_element, nest_element, nest_width, nest_height,
                 left, top;
@@ -1039,32 +1056,32 @@ window.TOONTALK.nest = (function (TT) {
             }
             // act as if the top contents was being dereferenced
             if (path_to_nest.next) {
-                return contents[0].get_widget().dereference_path(path_to_nest.next, top_level_context, robot);
+                return contents[0].get_widget().dereference_path(path_to_nest.next, robot);
             }
             // TODO: determine if this should just be return contents[0]
             return contents[0].get_widget();
         };
         // defined here so that contents and other state can be private
-        new_nest.get_json = function (json_history) {
-            // doesn't really make sense to JSONify waiting robots of a nest
-            // and now they are closures for generality and not structures
-//             var non_empty_listeners_json = 
-//                 non_empty_listeners && non_empty_listeners.map(function (non_empty_listener) {
-//                     // no point jsonifying the queue since for the seeable future there is only one queue
-//                     return {robot: TT.UTILITIES.get_json(non_empty_listener.robot, json_history),
-//                             context: non_empty_listener.context && TT.UTILITIES.get_json(non_empty_listener.context, json_history),
-//                             top_level_context: non_empty_listener.top_level_context && TT.UTILITIES.get_json(non_empty_listener.top_level_context, json_history)};
-//             });
-            return {type: "nest",
-                    contents: TT.UTILITIES.get_json_of_array(contents, json_history),
-                    guid: guid,
-                    original_nest: original_nest && TT.UTILITIES.get_json(original_nest, json_history),
-                    serial_number: serial_number,
-                    name: this.get_name()
-//                     non_empty_listeners: non_empty_listeners_json
-                    // nest_copies are generated as those nests are created
-//                  nest_copies: nest_copies && TT.UTILITIES.get_json_of_array(nest_copies, json_history)
-                   };
+        new_nest.get_json = function (json_history, callback, start_time) {
+            var json_array = [];
+            var new_callback =
+                function () {
+                    var original_nest_callback = function (orginal_nest_json, start_time) {
+                                                     callback({type: "nest",
+                                                               contents: json_array,
+                                                               guid: guid,
+                                                               original_nest: orginal_nest_json,
+                                                               serial_number: serial_number,
+                                                               name: this.get_name()},
+                                                              start_time);
+                                                 }.bind(this);
+                    if (original_nest) {
+                        TT.UTILITIES.get_json(original_nest, json_history, original_nest_callback, start_time);
+                    } else {
+                        original_nest_callback(undefined, start_time);
+                    }
+                }.bind(this);
+            TT.UTILITIES.get_json_of_array(contents, json_array, 0, json_history, new_callback, start_time);
         };
         new_nest.copy = function (parameters) {
             // notice that bird/nest semantics is that the nest is shared not copied
@@ -1296,6 +1313,8 @@ window.TOONTALK.nest = (function (TT) {
                     top_contents.update_display(); // TODO: see if render is OK
                     top_contents.scale_to_fit(top_contents_element, frontside_element);
                 } else {
+                    // if was running with document/window hidden then top contents may think they are not visible
+                    top_contents.set_visible(true);
                     top_contents.render();
                     top_contents_element = contents[0].get_element(true);
                     $(top_contents_element).show();
@@ -1540,11 +1559,12 @@ window.TOONTALK.nest = (function (TT) {
                     bird.animate_delivery_to(message_side, this, undefined, undefined, undefined, continuation, event, robot);
                 },
             get_json: 
-                function (json_history) {
-                    return {type: 'function_nest',
-                            function_type: type_name,
-                            // default to first function if none known -- shouldn't really happen but better than an error
-                            function_name: function_object ? function_object.name : TT.UTILITIES.get_first_property(TT[type_name].function)};
+                function (json_history, callback, start_time) {
+                    callback({type: 'function_nest',
+                              function_type: type_name,
+                              // default to first function if none known -- shouldn't really happen but better than an error
+                              function_name: function_object ? function_object.name : TT.UTILITIES.get_first_property(TT[type_name].function)},
+                             start_time);
                 },
             add_to_json: TT.widget.add_to_json,
             get_widget:

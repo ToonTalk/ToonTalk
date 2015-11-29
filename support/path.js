@@ -135,35 +135,45 @@ window.TOONTALK.path =
             }
             return path_end;
         },
-        dereference_path: function (path, context, top_level_context, robot) {
+        dereference_path: function (path, robot, widget) {
+            // widget one of the robot's' backside conditions - if undefined is robot's context
             var dereferenced;
             if (path) {
                 if (path.dereference_path) {
-                    dereferenced = path.dereference_path(context, top_level_context, robot);
-                } else if (context.dereference_path) {
-                    dereferenced = context.dereference_path(path, top_level_context, robot);
+                    dereferenced = path.dereference_path(robot, widget);
+                } else if (widget && widget.dereference_path) {
+                    dereferenced = widget.dereference_path(path, robot);
                 }
             } else {
                 // no path means entire context -- TODO: determine if this is still true
-                dereferenced = context;
+                dereferenced = widget || robot.get_context();
             }
             if (dereferenced && path && path.is_backside) {
                 return dereferenced.get_backside(true);
             }
             return dereferenced;
         },
-        continue_dereferencing_path: function (path, referenced, top_level_context, robot) {
+        continue_dereferencing_path: function (path, referenced, robot) {
             // called when (partial) path has produced referenced
             var new_referenced;
+            if (referenced === undefined) {
+                if (robot.context_is_backside()) {
+                    // if is a backside on a backside -- if no top_level_context then context used below
+                    referenced = robot.get_top_level_context();
+                }                   
+            }
+            if (referenced === undefined) {
+                referenced = robot.get_context();
+            }
             if (path.next) {
                 if (referenced.dereference_contents && !path.next.not_to_be_dereferenced) {
-                    new_referenced = referenced.dereference_contents(path.next, top_level_context, robot);
+                    new_referenced = referenced.dereference_contents(path.next, robot);
                     if (new_referenced && path.is_backside) {
                         return new_referenced.get_backside(true);
                     }
                     return new_referenced;
                 } else {
-                    new_referenced = referenced.dereference_path(path.next, top_level_context, robot);
+                    new_referenced = referenced.dereference_path(path.next, robot);
                     if (new_referenced && path.next.is_backside) {
                         return new_referenced.get_backside(true);
                     }
@@ -171,7 +181,7 @@ window.TOONTALK.path =
                 }                
             }
             if (referenced.dereference_contents && !path.not_to_be_dereferenced) {
-                new_referenced = referenced.dereference_contents(path, top_level_context, robot);
+                new_referenced = referenced.dereference_contents(path, robot);
                 if (new_referenced && path.is_backside) {
                     return new_referenced.get_backside(true);
                 }
@@ -205,36 +215,42 @@ window.TOONTALK.path =
             to_string_info.resource = original_string_info_resource;
             return path_description;
         },
-        get_json: function (path, json_history) {
-            var json;
+        get_json: function (path, json_history, callback, start_time) {
+            var json, new_callback, next_path_callback;
             if (!path.get_json) {
-                return path; // is a constant
+                callback(path, start_time); // is a constant
+                return;
             }
-            json = path.get_json(json_history);
-            if (path.is_widget) {
-                path.add_to_json(json, json_history);
-            }
-            if (path.next) {
-                json.next_path = TT.path.get_json(path.next, json_history);
-            }
-            if (path.removing_widget) {
-                json.removing_widget = true;
-            }
-            if (path.not_to_be_dereferenced) {
-                json.not_to_be_dereferenced = true;
-            }
-            if (path.is_backside === true || (path.is_backside && path.is_backside())) {
-                // TODO: rationalise this -- in one case is_backside is a flag of a path 
-                // in the other the path is itself the backside of a widget
-                json.is_backside = true;
-            }
-            return json;
+            new_callback = function (json, start_time) {   
+                if (path.is_widget) {
+                    json = path.add_to_json(json, json_history);
+                }
+                if (path.next) {
+                    next_path_callback = function (next_path_json) {
+                        json.next_path = next_path_json;
+                    };
+                    TT.path.get_json(path.next, json_history, next_path_callback, start_time);
+                }
+                if (path.removing_widget) {
+                    json.removing_widget = true;
+                }
+                if (path.not_to_be_dereferenced) {
+                    json.not_to_be_dereferenced = true;
+                }
+                if (path.is_backside === true || (path.is_backside && path.is_backside())) {
+                    // TODO: rationalise this -- in one case is_backside is a flag of a path 
+                    // in the other the path is itself the backside of a widget
+                    json.is_backside = true;
+                }
+                callback(json, start_time);
+            };
+            path.get_json(json_history, new_callback, start_time);
         },
         to_entire_context: function (to_string_info) {
             // an action that applies to the entire context (i.e. what the robot is working on)
             // need to create fresh ones since if there is a sub-path they shouldn't be sharing
-            return {dereference_path: function (context, top_level_context, robot) {
-                        return TT.path.continue_dereferencing_path(this, context, top_level_context, robot);
+            return {dereference_path: function (robot, widget) {
+                        return TT.path.continue_dereferencing_path(this, widget, robot);
                     },
                     toString: function (to_string_info) {
                         if (to_string_info && to_string_info.robot) {
@@ -245,20 +261,20 @@ window.TOONTALK.path =
                         }
                         return "what I'm working on";
                     },
-                    get_json: function () {
-                        return {type: "path.to_entire_context"};
+                    get_json: function (json_history, callback, start_time) {
+                        callback({type: "path.to_entire_context"}, start_time);
                     }
             };
         },
         to_widget_on_nest: function () {
-            return {dereference_path: function (context, top_level_context, robot) {
-                        return TT.path.continue_dereferencing_path(this, context, top_level_context, robot);
+            return {dereference_path: function (robot, widget) {
+                        return TT.path.continue_dereferencing_path(this, widget, robot);
                     },
                     toString: function () {
                         return "what is on the nest";
                     },
-                    get_json: function () {
-                        return {type: "path.to_widget_on_nest"};
+                    get_json: function (json_history, callback, start_time) {
+                        callback({type: "path.to_widget_on_nest"}, start_time);
                     }
             }; 
         },
@@ -269,7 +285,7 @@ window.TOONTALK.path =
                 console.error("Widget missing in get_path_to_resource.");
             }
             widget = widget.get_widget(); // if widget is really the backside of the widget
-            return {dereference_path: function (context, top_level_context, robot) {
+            return {dereference_path: function (robot) {
                         var widget_copy = widget.copy({copying_resource: true});
                         var widget_frontside_element, widget_frontside_position, copy_frontside_element;
                         robot.add_newly_created_widget(widget_copy);
@@ -295,11 +311,15 @@ window.TOONTALK.path =
                     toString: function (to_string_info) {
                         return TT.UTILITIES.add_a_or_an(widget.toString(to_string_info));
                     },
-                    get_json: function (json_history) {
-                        return {type: "path.to_resource",
-                                // following resets json_history since within a path there shouldn't be sharing with the 'outside'
-                                // except for shared HTML (which is just an optimisation)
-                                resource: TT.path.get_json(widget, TT.UTILITIES.fresh_json_history(json_history))};
+                    get_json: function (json_history, callback, start_time) {
+                        var new_callback = function (json, start_time) {
+                                               callback({type: "path.to_resource",
+                                                         // following resets json_history since within a path there shouldn't be sharing with the 'outside'
+                                                         // except for shared HTML (which is just an optimisation)
+                                                         resource: json},
+                                                        start_time);
+                        };
+                        widget.get_json(TT.UTILITIES.fresh_json_history(json_history), new_callback, start_time);
                     }
             };
         },
@@ -309,7 +329,8 @@ window.TOONTALK.path =
                 // old format
                 // backside_widget is a type_name so return any bacvkside widget matching that type
                 type_name = backside_widget;
-                return {dereference_path: function (context, top_level_context, robot) {
+                return {dereference_path: function (robot) {
+                            var context = robot.get_context();
                             var referenced = robot.get_backside_widget_of_type(type_name, context);
                             if (!referenced) {
                                 context.get_backside_widgets().some(function (backside_widget_side) {
@@ -323,7 +344,7 @@ window.TOONTALK.path =
                                 });
                              }
                              if (referenced) {
-                                return TT.path.continue_dereferencing_path(this, referenced, top_level_context, robot);
+                                return TT.path.continue_dereferencing_path(this, referenced, robot);
                              }
                        },
                        toString: function (to_string_info) {
@@ -335,19 +356,20 @@ window.TOONTALK.path =
                         }
                         return string;
                     },
-                    get_json: function () {
-                            return {type: "path.to_backside_widget_of_context",
-                                    type_name: type_name};
+                    get_json: function (json_history, callback, start_time) {
+                            callback({type: "path.to_backside_widget_of_context",
+                                      type_name: type_name},
+                                     start_time);
                     }};
             }
             return this.get_path_to_backside_index_of_context(robot.get_backside_condition_index(backside_widget), backside_widget.get_type_name(), robot);   
         },
         get_path_to_backside_index_of_context: function (backside_index, type_name, robot) {
             // type_name is only used to generate better robot titles
-            return {dereference_path: function (context, top_level_context, robot) {
+            return {dereference_path: function (robot) {
                         var referenced = robot.get_backside_matched_widgets()[backside_index];
                         if (referenced) {
-                            return TT.path.continue_dereferencing_path(this, referenced, top_level_context, robot);
+                            return TT.path.continue_dereferencing_path(this, referenced, robot);
                         }
                         // else signal an error?
                         if (TT.debugging) {
@@ -363,10 +385,11 @@ window.TOONTALK.path =
                         }
                         return string;
                     },
-                    get_json: function (json_history) {
-                        return {type: "path.to_backside_widget_of_context",
-                                type_name: type_name,
-                                backside_index: backside_index};
+                    get_json: function (json_history, callback, start_time) {
+                        callback({type: "path.to_backside_widget_of_context",
+                                  type_name: type_name,
+                                  backside_index: backside_index},
+                                 start_time);
                     }
             };
         },
@@ -389,8 +412,8 @@ window.TOONTALK.path =
         top_level_backside: {
             // this can be shared by all since only used to drop on -- not to pick up
             // if pick up then needs to be a fresh copy like get_path_to_resource
-            dereference_path: function (context, top_level_context, robot) {
-                var top_level_widget = context.ancestor_of_type('top-level');
+            dereference_path: function (robot) {
+                var top_level_widget = robot.get_context().ancestor_of_type('top-level');
                 if (top_level_widget) {
                     return top_level_widget;
                 }
@@ -403,8 +426,8 @@ window.TOONTALK.path =
             toString: function () {
                 return "the top-level backside";
             },
-            get_json: function () {
-                return {type: "path.top_level_backside"};
+            get_json: function (json_history, callback, start_time) {
+                callback({type: "path.top_level_backside"}, start_time);
             }
         }
     };

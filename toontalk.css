@@ -1783,7 +1783,7 @@ padding-bottom:  8%;}
 	margin-right:  6px;
 }
 .toontalk-description-input {
-	width: 28em;
+	width: 26em;
 	text-align: inherit;
 }
 .toontalk-conditions-contents {
@@ -3063,6 +3063,9 @@ background-image: url("images/dusty-morph.png");
 
 .ui-tooltip, .toontalk-arrow:after {
     background: green;
+}
+.toontalk-widget-in-tool-tip {
+	background: rgb(2000, 255, 200);
 }
 .ui-tooltip {
     padding: 10px 20px;

@@ -40,7 +40,7 @@ window.TOONTALK.robot = (function (TT) {
         // backside_conditions is a list of required widgets on the backside
         // body holds the actions the robot does when it runs
         // if watched_speed is undefined then runs at original speed
-        // otherwise is a positive time which is the multiplier of the normal default speed for each step
+        // otherwise is a positive number which is the multiplier of the normal default speed for each step
         var new_robot = Object.create(robot);
         // who should do the 'repeating'
         var first_in_team;
@@ -53,7 +53,10 @@ window.TOONTALK.robot = (function (TT) {
         // when running watched runs these after each step
         var watched_step_end_listeners = [];
         // backside that the robot is (or last) was running on
-        var context;
+        var context; // context that the robut is running in (typically the backside of something)
+        var context_is_backside; // true if the context was run as a backside (e.g. it on the back of a widget that was run)
+        var top_level_context; // if the context is on the backside of another (and possibly more) this is the top level widget
+        var queue; // run queue this robot is running (or will run) on
         var running_or_in_run_queue, stopped;
         var original_backside_widgets_of_context, backside_matched_widgets;
         if (!body) {
@@ -204,6 +207,9 @@ window.TOONTALK.robot = (function (TT) {
             return stopped;
         };
         new_robot.set_stopped = function (new_value) {
+            if (stopped === new_value) {
+                return;
+            }
             stopped = new_value;
             if (stopped) {
                 if (this.visible()) {
@@ -244,6 +250,36 @@ window.TOONTALK.robot = (function (TT) {
         };
         new_robot.set_context = function (new_value) {
             context = new_value;
+            if (this.get_next_robot()) {
+                this.get_next_robot().set_context(new_value);
+            }
+        };
+        new_robot.context_is_backside = function () {
+            return context_is_backside;
+        };
+        new_robot.set_context_is_backside = function (new_value) {
+            context_is_backside = new_value;
+            if (this.get_next_robot()) {
+                this.get_next_robot().set_context_is_backside(new_value);
+            }
+        };
+        new_robot.get_top_level_context = function () {
+            return top_level_context;
+        };
+        new_robot.set_top_level_context = function (new_value) {
+            top_level_context = new_value;
+            if (this.get_next_robot()) {
+                this.get_next_robot().set_top_level_context(new_value);
+            }
+        };
+        new_robot.get_queue = function () {
+            return queue;
+        };
+        new_robot.set_queue = function (new_value) {
+            queue = new_value;
+            if (this.get_next_robot()) {
+                this.get_next_robot().set_queue(new_value);
+            }
         };
         new_robot.animate_consequences_of_actions = function () {
             return this.visible() && maximum_step_duration !== 0;
@@ -324,9 +360,9 @@ window.TOONTALK.robot = (function (TT) {
         new_robot.add_body_finished_listener = function (listener) {
             body_finished_listeners.push(listener);
         };
-        new_robot.run_body_finished_listeners = function (context, top_level_context, queue) {
+        new_robot.run_body_finished_listeners = function () {
             body_finished_listeners.forEach(function (listener) {
-                listener(context, top_level_context, queue);
+                listener();
             });
             body_finished_listeners = [];
         };
@@ -416,7 +452,7 @@ window.TOONTALK.robot = (function (TT) {
         new_robot.get_watched_speed = function () {
             return watched_speed;
         };
-         new_robot.set_watched_speed = function (new_value) {
+        new_robot.set_watched_speed = function (new_value) {
             watched_speed = new_value;
             return true;
         };
@@ -547,7 +583,8 @@ window.TOONTALK.robot = (function (TT) {
         return "#" + name_counter.toString();
     };
     
-    robot.run = function (context, top_level_context, queue) {
+    robot.run = function (context, context_is_backside, top_level_context, queue) {
+        // top_level_context if defined is top level context is the top widget if there are backsides on backsides (and possibly so on)
         var frontside_condition_widget = this.get_frontside_conditions();
         var backside_conditions, backside_widgets, condition_frontside_element, to_run_when_non_empty, next_robot_match_status, clear_all_mismatch_displays, 
             backside_matched_widgets, backside;
@@ -566,8 +603,17 @@ window.TOONTALK.robot = (function (TT) {
             clear_all_mismatch_displays(frontside_condition_widget);
             this.rerender();
         }
+        if (context) {
+            // context should be undefined if this robot is just repeatedly running
+            this.set_context(context);        
+            this.set_context_is_backside(context_is_backside);
+            this.set_top_level_context(top_level_context);
+            this.set_queue(queue);
+        } else {
+            context = this.get_context();
+        }
 //      console.log("Match is " + TT.UTILITIES.match(frontside_condition_widget, context) + " for condition " + frontside_condition_widget + " with " + context);
-        this.match_status = TT.UTILITIES.match(frontside_condition_widget, context);
+        this.match_status = TT.UTILITIES.match(frontside_condition_widget, this.get_context());
         if (this.match_status === 'matched') {
             backside_matched_widgets = [];
             backside_conditions = this.get_backside_conditions();      
@@ -630,19 +676,17 @@ window.TOONTALK.robot = (function (TT) {
 //      console.log("robot#" + this._debug_id + " match_status is " + this.match_status);
         if (this.match_status === 'matched') {
             if (!queue) {
-                queue = TT.DEFAULT_QUEUE;
+                queue = this.get_queue() || TT.DEFAULT_QUEUE;
             }
             this.get_body().reset_newly_created_widgets();
-            // TODO: determine if the queue: queue passed in is always the queue who enqueues it
-            this.set_context(context);
-            queue.enqueue({robot: this, top_level_context: top_level_context, queue: queue});
+            queue.enqueue(this);
             return this.match_status;
         }
         if (this.match_status.is_widget) { // failed to match - this.match_status is the cause
             $(this.match_status.get_frontside_element()).addClass("toontalk-conditions-not-matched");
             this.rerender();
             if (this.get_next_robot()) {
-                return this.get_next_robot().run(context, top_level_context, queue);
+                return this.get_next_robot().run();
             }
             return this.match_status;
         }
@@ -654,7 +698,7 @@ window.TOONTALK.robot = (function (TT) {
             }
         });
         if (this.get_next_robot()) {
-            next_robot_match_status = this.get_next_robot().run(context, top_level_context, queue);
+            next_robot_match_status = this.get_next_robot().run();
             if (next_robot_match_status === 'matched') {
                 return next_robot_match_status;
             } else if (!next_robot_match_status.is_widget) {
@@ -669,7 +713,7 @@ window.TOONTALK.robot = (function (TT) {
         if (this.get_first_in_team() === this) {
             to_run_when_non_empty = function () {
                  this.set_waiting(false);
-                 this.run(context, top_level_context, queue);
+                 this.run();
             }.bind(this);
             this.match_status.forEach(function (sub_match_status) {
                 if (sub_match_status[0]) {
@@ -701,15 +745,15 @@ window.TOONTALK.robot = (function (TT) {
         }
     };
     
-    robot.run_actions = function (context, top_level_context, queue) {
+    robot.run_actions = function () {
         if (this.stopped()) { 
             this.get_first_in_team().set_running(false);
             return false;
         }
         if (this.get_first_in_team().visible()) {
-            return this.get_body().run_watched(context, top_level_context, queue, this);
+            return this.get_body().run_watched(this);
         }
-        return this.get_body().run_unwatched(context, top_level_context, queue, this);
+        return this.get_body().run_unwatched(this);
     };
 
     robot.drop_from_data_transfer = function (data_transferred_widget, target_widget) {
@@ -1227,32 +1271,51 @@ window.TOONTALK.robot = (function (TT) {
         return "Drop a robot here who will try to run when I can't.";
     };
     
-    robot.get_json = function (json_history) {
+    robot.get_json = function (json_history, callback, start_time) {
         var frontside_conditions = this.get_frontside_conditions();
         var backside_conditions = this.get_backside_conditions();
-        var frontside_conditions_json, backside_conditions_json, next_robot_json;
-        if (frontside_conditions) {
-            if (frontside_conditions.is_top_level()) {
-                frontside_conditions_json = {type: "top_level"};
+        var backside_conditions_json,  frontside_conditions_json;
+        var backside_conditions_callback = function () {
+            var next_robot_callback = function (next_robot_json, start_time) {
+                var frontside_conditions_callback = function (frontside_conditions_json, start_time) {
+                     callback({type: "robot",
+                               frontside_conditions: frontside_conditions_json,
+                               backside_conditions: backside_conditions_json,
+                               body: body_json,
+                               run_once: this.get_run_once(),
+                               next_robot: next_robot_json,
+                               name: this.get_name(),
+                               speed: this.get_watched_speed()
+                              },
+                              start_time);
+                }.bind(this);
+                var body_json_callback = function (json, start_time) {
+                    body_json = json;
+                    if (frontside_conditions) {
+                        if (frontside_conditions.is_top_level()) {
+                            frontside_conditions_callback({type: "top_level"}, start_time);
+                        } else {
+                            TT.UTILITIES.get_json(frontside_conditions, json_history, frontside_conditions_callback, start_time);
+                        }
+                    } else {
+                        frontside_conditions_callback(undefined, start_time);
+                    }
+                };
+                this.get_body().get_json(json_history, body_json_callback, start_time);
+            }.bind(this);
+            if (this.get_next_robot()) {
+                TT.UTILITIES.get_json(this.get_next_robot(), json_history, next_robot_callback, start_time);
             } else {
-                frontside_conditions_json = TT.UTILITIES.get_json(frontside_conditions, json_history);
+                next_robot_callback(undefined, start_time);
             }
-        }
+        }.bind(this);
+        var next_robot_json, body_json, children_callback;
         if (backside_conditions) {
-            backside_conditions_json = TT.UTILITIES.get_json_of_array(backside_conditions, json_history);
+            backside_conditions_json = [];
+            TT.UTILITIES.get_json_of_array(backside_conditions, backside_conditions_json, 0, json_history, backside_conditions_callback, start_time);
+        } else {
+            backside_conditions_callback();
         }
-        if (this.get_next_robot()) {
-            next_robot_json = TT.UTILITIES.get_json(this.get_next_robot(), json_history);
-        }
-        return {type: "robot",
-                frontside_conditions: frontside_conditions_json,
-                backside_conditions: backside_conditions_json,
-                body: this.get_body().get_json(json_history),
-                run_once: this.get_run_once(),
-                next_robot: next_robot_json,
-                name: this.get_name(),
-                speed: this.get_watched_speed()
-               };
     };
     
     TT.creators_from_json["robot"] = function (json, additional_info) {
@@ -1328,8 +1391,8 @@ window.TOONTALK.robot = (function (TT) {
                 }
             });
         }  
-        return {dereference_path: function (context, top_level_context, robot) {
-                    var robot_with_widget_in_conditions = TT.path.dereference_path(path_to_robot, context, top_level_context, robot);
+        return {dereference_path: function (robot) {
+                    var robot_with_widget_in_conditions = TT.path.dereference_path(path_to_robot, robot);
                     var condition;
                     if (backside_condition_with_path) {
                         condition = backside_condition_with_path;
@@ -1339,7 +1402,7 @@ window.TOONTALK.robot = (function (TT) {
                     if (path_within_conditions === 'entire_condition') {
                         return condition;
                     }
-                    return TT.path.dereference_path(path_within_conditions, condition, top_level_context, robot);
+                    return TT.path.dereference_path(path_within_conditions, robot, condition);
                 },
                 toString: function () {
                     var path_to_condition_description = (path_within_conditions === 'entire_condition') ?
@@ -1349,11 +1412,29 @@ window.TOONTALK.robot = (function (TT) {
                     }
                     return path_to_condition_description + " front side condition of " + TT.path.toString(path_to_robot);
                 },
-                get_json: function (json_history) {
-                    return {type: "path_to_robot_conditions",
-                            backside_condition: backside_condition_with_path && TT.UTILITIES.get_json(backside_condition_with_path, json_history),
-                            path_to_robot: path_to_robot.get_json(),
-                            path_within_conditions: (path_within_conditions === 'entire_condition') ? 'entire_condition' : path_within_conditions.get_json()};
+                get_json: function (json_history, callback, start_time) {
+                    var backside_condition_callback = function (backside_condition_json, start_time) {
+                        var path_to_robot_callback = function (path_to_robot_json, start_time) {
+                            var path_within_conditions_callback = function (path_within_conditions_json, start_time) {
+                                callback({type: "path_to_robot_conditions",
+                                          backside_condition: backside_condition_with_path && path_within_conditions_json,
+                                          path_to_robot: path_to_robot_json,
+                                          path_within_conditions: path_within_conditions_json},
+                                         start_time);
+                            };
+                            if (path_within_conditions === 'entire_condition') {
+                                path_within_conditions_callback('entire_condition', start_time);
+                            } else {
+                                path_within_conditions.get_json(json_history, path_within_conditions_callback, start_time);
+                            }
+                        };
+                        path_to_robot.get_json(json_history, path_to_robot_callback, start_time);
+                    };
+                    if (backside_condition_with_path) {
+                        TT.UTILITIES.get_json(backside_condition_with_path, json_history, backside_condition_callback, start_time);
+                    } else {
+                        backside_condition_callback(undefined, start_time);
+                    }
                 }};
     };
 
@@ -1377,6 +1458,9 @@ window.TOONTALK.robot_backside =
         var condition_element_div_parent = document.createElement('div');
         var scale_element = function () {
                                 var css;
+                                if (!condition_widget.visible()) {
+                                    return;
+                                }
                                 $(condition_element).parent().addClass("toontalk-conditions-contents-container");
                                 condition_widget.update_display();
                                 // need to add the class before checking width and height
@@ -1400,11 +1484,6 @@ window.TOONTALK.robot_backside =
                             };
         var conditions_panel;
         $(condition_element).addClass("toontalk-conditions-contents " + class_name);
-        TT.UTILITIES.run_when_dimensions_known(condition_element, function () {
-                                                                      // need to delay this to ensure this happens after original dimensions set
-                                                                      // if condition is an element widget
-                                                                      setTimeout(scale_element, 100);
-                                                                  });
         if (robot.match_status) {
             if (robot.match_status.is_widget) {
                 $(robot.match_status.get_frontside_element()).addClass("toontalk-conditions-not-matched");
@@ -1419,6 +1498,11 @@ window.TOONTALK.robot_backside =
         condition_element_div_parent.appendChild(condition_element);
         conditions_panel = TT.UTILITIES.create_horizontal_table(description, condition_element_div_parent);
         $(conditions_panel).addClass("toontalk-conditions-panel");
+        TT.UTILITIES.run_when_dimensions_known(condition_element, function () {
+                                                                      // need to delay this to ensure this happens after original dimensions set
+                                                                      // if condition is an element widget
+                                                                      setTimeout(scale_element, 100);
+                                                                  });
         return conditions_panel;
     };
     var add_conditions_area = function (backside_element, robot) {

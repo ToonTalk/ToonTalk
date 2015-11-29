@@ -91,7 +91,6 @@ window.TOONTALK.vacuum = (function (TT) {
            {apply_tool: function (widget_side, event) {
                 var widget = widget_side.get_widget();
                 var remove_widget = function (widget_side) {  
-                    var copy;
                     if (event && widget.robot_in_training()) {
                         widget.robot_in_training().removed(widget_side);
                     }
@@ -110,23 +109,21 @@ window.TOONTALK.vacuum = (function (TT) {
                         // TODO: introduce a removed listener and use that instead
                         TT.sounds.bird_fly.pause();
                     }
-                    // save a copy for restoring since the following clobbers the original -- e.g. removing contents from boxes
-                    copy = widget_side.copy();
-                    if (!copy.is_backside()) {
-                        copy.save_dimensions_of(widget_side);
+                    if (!widget_side.is_backside()) {
+                        widget_side.save_dimensions_of(widget_side);
                         // inactive any active sensors but need to re-activate if restored
-                        copy.this_and_walk_children(function (child) {
+                        widget_side.this_and_walk_children(function (child) {
                             if (child.is_sensor() && child.get_active()) {
                                 child.set_active('temporarily false');
                             }
                             return true;
                         });
                     }
-                    removed_items.push(copy);
+                    removed_items.push(widget_side);
                     if (widget_side.set_running) {
                         widget_side.set_running(false);
                     }
-                    if (!copy.is_backside()) {
+                    if (!widget_side.is_backside()) {
                         widget_side.this_and_walk_children(function (child) {
                             if (!child.is_backside() && child.is_sensor() && child.get_active()) {
                                 child.set_active(false);
@@ -134,7 +131,9 @@ window.TOONTALK.vacuum = (function (TT) {
                             return true;
                         });
                     }
-                    widget_side.remove(event);
+                    // don't remove children since then can't restore
+                    // tried using a copy and removing but then bird/nest relations were broken
+                    widget_side.remove(event, true);
                 };
                 var restoring, initial_location, restored_front_side_element, new_erased, top_level_backside, backside_widgets;
                 if (mode === 'suck') {
@@ -146,7 +145,7 @@ window.TOONTALK.vacuum = (function (TT) {
                      } // else warn??
                 } else if (mode === 'erase' || (mode === 'restore' && widget_side.get_erased && widget_side.get_erased())) {
                     // erase mode toggles and restore mode unerases if erased
-                    if (widget_side.get_type_name() !== 'top-level') {
+                    if (!widget_side.is_top_level()) {
                         new_erased = !widget_side.get_erased();
                         if (TT.sounds) {
                             if (new_erased) {

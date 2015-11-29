@@ -481,8 +481,8 @@ window.TOONTALK.number = (function () {
             client_height = $(frontside_element).height()
             if (!client_width || !client_height) {
                 // TODO: generalise this
-                client_width  = 76;
-                client_height = 55;
+                client_width  = this.saved_width   || 76;
+                client_height = this.saved_heieght || 55;
                 $(frontside_element).css({width:  client_width,
                                           height: client_height});
             }
@@ -761,7 +761,7 @@ window.TOONTALK.number = (function () {
          if (side_of_other_number.is_backside()) {
              return;
          }
-         if (side_of_other_number.visible() && (event || robot)) {
+         if (side_of_other_number.visible() && this.visible() && (event || robot)) {
              // do this if number is visible and user did the drop or a visible robot did it
              if (robot) {
                  if (!robot.animate_consequences_of_actions()) {
@@ -970,14 +970,15 @@ window.TOONTALK.number = (function () {
         return "docs/manual/numbers.html";
     };
     
-    number.get_json = function () {
-        return {type: "number",
-                operator:    this.get_operator(),
-                numerator:   this.numerator_string(),
-                denominator: this.denominator_string(),
-                format:      this.get_format(),
-                approximate: this.get_approximate()
-                };
+    number.get_json = function (json_history, callback, start_time) {
+        callback({type: "number",
+                  operator:    this.get_operator(),
+                  numerator:   this.numerator_string(),
+                  denominator: this.denominator_string(),
+                  format:      this.get_format(),
+                  approximate: this.get_approximate()
+                 },
+                 start_time);
     };
     
     TT.creators_from_json["number"] = function (json) {

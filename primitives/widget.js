@@ -386,7 +386,7 @@ window.TOONTALK.widget = (function (TT) {
                 };
             }
             if (!widget.set_running) {
-                widget.set_running = function (new_value, top_level_context) {
+                widget.set_running = function (new_value, top_level_context, is_backside) {
                     var unchanged_value = (running === new_value);
                     var backside_widgets, backside_widget, backside_element;
                     ok_to_run = new_value;
@@ -414,7 +414,9 @@ window.TOONTALK.widget = (function (TT) {
                             // could this set_stopped stuff be combined with set_running?
                             if (running) {
                                 backside_widget.set_stopped(false);
-                                backside_widget.run(widget, top_level_context);
+                                // no need to create backside to run the robot but the robot needs to know if the backside of the widget is running
+                                // e.g. to act like an "anima-gadget" if is a backside on a backside
+                                backside_widget.run(widget, is_backside, top_level_context);
                                 backside_widget.set_ok_to_run(true);
                             } else {
                                 backside_widget.set_stopped(true);
@@ -424,7 +426,7 @@ window.TOONTALK.widget = (function (TT) {
                             if (!top_level_context && backside_widget_side.is_backside() && widget.get_type_name() !== "top-level") {
                                 // a robot is on the backside of a widget that is on the backside of another
                                 // then its context is the containing widget
-                                backside_widget.set_running(new_value, widget);
+                                backside_widget.set_running(new_value, widget, true);
                             } else {
                                 // if frontside then its context is the widget of the frontside (i.e. backside_widget)
                                 backside_widget.set_running(new_value);
@@ -446,7 +448,7 @@ window.TOONTALK.widget = (function (TT) {
                         if (running) {
                             if (widget.get_parent_of_backside()) {
                                 this.set_stopped(false);
-                                this.run(widget.get_parent_of_backside().get_widget(), top_level_context);
+                                this.run(widget.get_parent_of_backside().get_widget());
                             }
                         } else {
                             this.set_stopped(true);
@@ -753,13 +755,15 @@ window.TOONTALK.widget = (function (TT) {
                  if (parent_of_frontside) {
                      if (parent_of_frontside.is_backside()) {
                          // !event because if a robot is doing this no warning if already removed
-                         parent_of_frontside.remove_backside_widget(this, !event);
+                         parent_of_frontside.remove_backside_widget(this, !event);  
                      } else if (parent_of_frontside.removed_from_container) {
                          if (parent_of_frontside_is_backside) {
                             parent_of_frontside.remove_backside_widget(this, true);
                          } else {
                             parent_of_frontside.removed_from_container(this, event);
                          }
+                     } else if (parent_of_frontside.get_backside()) {
+                         parent_of_frontside.remove_backside_widget(this, !event); 
                      }
                  }
             };
@@ -876,7 +880,8 @@ window.TOONTALK.widget = (function (TT) {
             var backside  = this.get_backside();
             var frontside = this.get_frontside();
             var parent_of_frontside = this.get_parent_of_frontside();
-            if (backside) {
+            if (backside && this.get_parent_of_backside() && this.get_parent_of_backside().is_top_level()) {
+                // remove both front and back if backside is on the top level backside
                 backside.hide_backside();
             }
             if (frontside) {
@@ -912,7 +917,7 @@ window.TOONTALK.widget = (function (TT) {
         },
         
         add_to_json: function (json_semantic, json_history) {
-            var json_view, json, position, frontside_element, parent_widget_of_frontside, backside, backside_element, frontside_width;
+            var json_view, json, position, frontside_element, parent_widget_of_frontside, backside, backside_element, frontside_width, backside_parent_view_of_this, index;
             if (json_semantic) {
                 if (json_semantic.view) {
                     // already contains both semantic and view
@@ -952,8 +957,16 @@ window.TOONTALK.widget = (function (TT) {
                         }
                         if (frontside_width !== 0) {
                             // was using $(frontside_element).position() but then the position of rotated elements wasn't reproduced 
-                            json_view.frontside_left = TT.UTILITIES.get_style_numeric_property(frontside_element, 'left')
-                            json_view.frontside_top  = TT.UTILITIES.get_style_numeric_property(frontside_element, 'top');
+                            json_view.frontside_left = TT.UTILITIES.get_style_numeric_property(frontside_element, 'left');
+                            json_view.frontside_top  = TT.UTILITIES.get_style_numeric_property(frontside_element, 'top')  || backside_parent_view_of_this && backside_parent_view_of_this.frontside_top;
+                            if (json_view.frontside_left === undefined) {
+                               backside_parent_view_of_this = this.get_parent_of_frontside().get_widget().get_backside_widgets_json_views();
+                               if (backside_parent_view_of_this) {
+                                   index = this.get_parent_of_frontside().get_widget().get_backside_widgets().indexOf(this);
+                                   json_view.frontside_left = backside_parent_view_of_this[index].frontside_left;
+                                   json_view.frontside_top =  backside_parent_view_of_this[index].frontside_top; 
+                               }
+                            }
                         }
                     }
                 }
@@ -993,11 +1006,11 @@ window.TOONTALK.widget = (function (TT) {
             return {};
         },
         
-        add_backside_widgets_to_json: function (json, json_history) {
+        add_backside_widgets_to_json: function (json, json_history, callback, start_time) {
             var backside_widgets = this.get_backside_widgets(); 
             var backside_widgets_json_views, json_backside_widget_side;
             if (backside_widgets.length > 0) {
-                json.semantic.backside_widgets = TT.UTILITIES.get_json_of_array(backside_widgets, json_history);
+                json.semantic.backside_widgets = []; // TT.UTILITIES.get_json_of_array below will push json on to this
                 backside_widgets_json_views = this.get_backside_widgets_json_views();
                 if (backside_widgets_json_views) {
                     backside_widgets_json_views.forEach(function (backside_widget_view, index) {
@@ -1029,6 +1042,9 @@ window.TOONTALK.widget = (function (TT) {
                         }
                     });
                 }
+                TT.UTILITIES.get_json_of_array(backside_widgets, json.semantic.backside_widgets, 0, json_history, callback, start_time);
+            } else {
+                callback();
             }
         },
 
@@ -1417,7 +1433,7 @@ window.TOONTALK.widget = (function (TT) {
                             widget_side.hide_backside();
                         } else {
                             widget_side.set_visible(true);
-                            backside_element.appendChild(widget_side.get_frontside_element(true));
+                            backside_element.appendChild(widget_side.get_element(true));
                         }
                 }.bind(this));
             }
@@ -1522,6 +1538,7 @@ window.TOONTALK.widget = (function (TT) {
             var return_false = function () {
                 return false;
             };
+            var save_in_progress = false;
             if (!settings) {
                 settings = {};  
             }
@@ -1542,15 +1559,16 @@ window.TOONTALK.widget = (function (TT) {
             top_level_widget.is_plain_text_element = return_false;
             top_level_widget.is_attribute_widget = return_false;
             top_level_widget.ok_to_set_dimensions = return_false;
-            top_level_widget.get_json = function (json_history) {
+            top_level_widget.get_json = function (json_history, callback, start_time) {
                 var backside = this.get_backside(true);
                 var backside_element = backside.get_element();
                 var background_color = document.defaultView.getComputedStyle(backside_element, null).getPropertyValue("background-color");
                 // don't know why the following returns undefined
 //               $backside_element.attr("background-color")};
-                return {semantic: {type: "top_level",
-                                   settings: settings},
-                        view:     {background_color: background_color}};
+                callback({semantic: {type: "top_level",
+                                     settings: settings},
+                          view:     {background_color: background_color}},
+                         start_time);
             };
             top_level_widget.get_type_name = function () {
                  return "top-level";
@@ -1656,7 +1674,36 @@ window.TOONTALK.widget = (function (TT) {
             };
             top_level_widget.save = function (immediately, parameters, callback) {
                 var program_name = this.get_setting('program_name', true);
-                var json, google_drive_status;
+                var save_function = function (json) {
+                    save_in_progress = false;
+                    if (save_to_google_drive) {
+                        google_drive_status = TT.google_drive.get_status();
+                        if (google_drive_status === "Ready") {
+                            TT.google_drive.upload_file(program_name, "json", JSON.stringify(json, TT.UTILITIES.clean_JSON), callback);
+                            callback = undefined;
+                        } else if (TT.google_drive.connection_to_google_drive_possible()) {
+                            if (google_drive_status === 'Need to authorize') {
+                                TT.UTILITIES.display_message_if_new("Unable to save to your Google Drive because you need to log in. Click on the settings icon " +
+                                                                    TT.UTILITIES.encode_HTML_for_title("<span class='toontalk-settings-icon'></span>") +
+                                                                    " to log in.");
+                                TT.UTILITIES.display_tooltip($(".toontalk-settings-button"));
+                            } else {
+                                console.log("Unable to save to Google Drive because: " + google_drive_status);
+                            }
+                        }    
+                    }
+                    if (parameters.local_storage) {
+                       this.save_to_local_storage(json);
+                    }
+                    if (callback) {
+                        callback();
+                    }  
+                }.bind(this);
+                var save_to_google_drive, google_drive_status;
+                if (save_in_progress) {
+                    // large saves call timeOut
+                    return;
+                }
                 if (!program_name) {
                     // not saving this -- e.g. an example in a documentation page
                     return;
@@ -1678,32 +1725,16 @@ window.TOONTALK.widget = (function (TT) {
                                100);
                     return;
                 }
-                if (parameters.google_drive && !this.get_setting('google_drive_unavailable')) {
-                    json = TT.UTILITIES.get_json_top_level(this);
-                    google_drive_status = TT.google_drive.get_status();
-                    if (google_drive_status === "Ready") {
-                        TT.google_drive.upload_file(program_name, "json", JSON.stringify(json, TT.UTILITIES.clean_JSON), callback);
-                        callback = undefined;
-                    } else if (TT.google_drive.connection_to_google_drive_possible()) {
-                        if (google_drive_status === 'Need to authorize') {
-                            TT.UTILITIES.display_message_if_new("Unable to save to your Google Drive because you need to log in. Click on the settings icon " +
-                                                                TT.UTILITIES.encode_HTML_for_title("<span class='toontalk-settings-icon'></span>") +
-                                                                " to log in.");
-                            TT.UTILITIES.display_tooltip($(".toontalk-settings-button"));
-                        } else {
-                            console.log("Unable to save to Google Drive because: " + google_drive_status);
-                        }
+                save_to_google_drive = parameters.google_drive && !this.get_setting('google_drive_unavailable');
+                if (!save_to_google_drive && !parameters.local_storage) {
+                    // nothing to save 
+                    if (callback) {
+                        callback();
                     }
+                    return;
                 }
-                if (parameters.local_storage) {
-                    if (!json) {
-                        json = TT.UTILITIES.get_json_top_level(this);
-                    }
-                    this.save_to_local_storage(json);
-                }
-                if (callback) {
-                    callback();
-                }
+                save_in_progress = true;
+                TT.UTILITIES.get_json_top_level(this, save_function, 250);
             };
             top_level_widget.publish = function (callback, as_workspace) {
                 TT.publish.publish_widget(this.get_setting('program_name'), this, as_workspace, callback);   

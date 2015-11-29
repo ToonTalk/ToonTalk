@@ -41,19 +41,21 @@ window.TOONTALK.UTILITIES =
                                                                               if (!$(added_node).is(".toontalk-not-observable") ||
                                                                                   added_node.toontalk_run_even_if_not_observable) {
                                                                                   // was only attached to compute original dimensions and is not computing now
+                                                                                  $(added_node).removeClass("toontalk-has-attached-callback");
                                                                                   added_node.toontalk_attached_callback();
                                                                                   added_node.toontalk_attached_callback = undefined;
                                                                                   added_node.toontalk_run_even_if_not_observable = undefined;
-                                                                                  $(added_node).removeClass("toontalk-has-attached-callback");
                                                                               }
-                                                                          } else {
-                                                                              $(added_node).find(".toontalk-has-attached-callback").each(function (index, element) {
+                                                                          }
+                                                                          $(added_node).find(".toontalk-has-attached-callback").each(function (index, element) {
+                                                                              $(element).removeClass("toontalk-has-attached-callback");
+                                                                              if (element.toontalk_attached_callback) {
+                                                                                  // Test "A team of 3 that each adds 1 to 1" calls this with element.toontalk_attached_callback undefined
+                                                                                  // When stepping through the code it works fine so must be some kind of timing dependent problem
                                                                                   element.toontalk_attached_callback();
                                                                                   element.toontalk_attached_callback = undefined;
-                                                                                  $(element).removeClass("toontalk-has-attached-callback");
-                                                                              });
-
-                                                                          }
+                                                                              }
+                                                                          });
                                                                       }
                                                                   }                                                                
                                                               });    
@@ -97,7 +99,7 @@ window.TOONTALK.UTILITIES =
         var $source_element = $(element).closest(".toontalk-side");
         var client_x = utilities.get_mouse_or_first_touch_event_attribute("clientX", event);
         var client_y = utilities.get_mouse_or_first_touch_event_attribute("clientY", event);
-        var bounding_rectangle, json_object, json_div, widget_side, is_resource;
+        var bounding_rectangle, json, json_callback, json_div, widget_side, is_resource;
         $(".ui-tooltip").remove();
         // stop animating it if grabbed
         $(".ui-tooltip").removeClass("toontalk-side-animating");
@@ -130,30 +132,37 @@ window.TOONTALK.UTILITIES =
         // should not wiggle if picked up
         $(element).removeClass("toontalk-wiggle");
         if (widget_side.get_json) {
-            json_object = utilities.get_json_top_level(widget_side);
-            json_object.view.drag_x_offset = client_x-bounding_rectangle.left;
-            json_object.view.drag_y_offset = client_y-bounding_rectangle.top;
-            if (!json_object.view.frontside_width) {
-                if (dragee.parent().is(".toontalk-backside")) {
-                    json_object.view.frontside_width  = dragee.width();
-                    json_object.view.frontside_height = dragee.height();
+            json_callback = function (json) {
+                json.view.drag_x_offset = client_x-bounding_rectangle.left;
+                json.view.drag_y_offset = client_y-bounding_rectangle.top;
+                if (!json.view.frontside_width) {
+                    if (dragee.parent().is(".toontalk-backside")) {
+                        json.view.frontside_width  = dragee.width();
+                        json.view.frontside_height = dragee.height();
+                    }
                 }
-            }
-            dragee.data("json", json_object);   
+                dragee.data("json", json);   
+                if (event.dataTransfer) {
+                    json_div = utilities.toontalk_json_div(json, widget_side);
+                    event.dataTransfer.effectAllowed = is_resource ? 'copy' : 'move';
+                    // text is good for dragging to text editors
+                    event.dataTransfer.setData("text", json_div);
+                    // text/html should work when dragging to a rich text editor
+                    if (!utilities.is_internet_explorer()) {
+                        // text/html causes an error in IE
+                        event.dataTransfer.setData("text/html", json_div);
+                    }
+                }         
+                if (widget_side.drag_started) {
+                    widget_side.drag_started(json, is_resource);
+                }
+            };
             if (event.dataTransfer) {
-                json_div = utilities.toontalk_json_div(json_object, widget_side);
-                event.dataTransfer.effectAllowed = is_resource ? 'copy' : 'move';
-                // text is good for dragging to text editors
-                event.dataTransfer.setData("text", json_div);
-                // text/html should work when dragging to a rich text editor
-                if (!utilities.is_internet_explorer()) {
-                    // text/html causes an error in IE
-                    event.dataTransfer.setData("text/html", json_div);
-                }
-            }         
-            if (widget_side.drag_started) {
-                widget_side.drag_started(json_object, is_resource);
+                event.dataTransfer.setData("text", "Sorry, it took too long to generate the data structure needed to reconstruct " + widget_side + ".");
             }
+            // this may freeze the browser if a very large JSON is generated but the alternative is that drag and drop breaks
+            // so let it take 10 minutes maximum
+            TT.UTILITIES.get_json_top_level(widget_side, json_callback, 1000*60*10);
         }
         dragee.addClass("toontalk-being-dragged");
         event.stopPropagation();
@@ -225,7 +234,7 @@ window.TOONTALK.UTILITIES =
         var $source, source_widget_side, $target, target_widget_side, drag_x_offset, drag_y_offset, target_position, 
             new_target, $container, container, width, height, i, page_x, page_y,
             source_widget_saved_width, source_widget_saved_height;
-        if (!json_object && dragee) {
+        if (json_object === undefined && dragee) {
             json_object = dragee.data("json");
         }
         if (dragee) {
@@ -235,7 +244,7 @@ window.TOONTALK.UTILITIES =
         // https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer#dropEffect.28.29 
         $source = dragee;
         drag_ended();
-        if (!$source && !json_object && !event.dataTransfer.files && !non_data_URL_in_data_transfer(event)) {
+        if (!$source && json_object === undefined && !event.dataTransfer.files && !non_data_URL_in_data_transfer(event)) {
             if (!event.dataTransfer) {
                 utilities.report_internal_error("Drop failed since there is no event.dataTransfer");
             } else {
@@ -995,8 +1004,8 @@ window.TOONTALK.UTILITIES =
                                 if (json_semantic.type === 'element') {
                                     // delay until updated
                                     widget_side.on_update_display(function () {
-                                                                 utilities.set_css(side_element, size_css);
-                                                             });
+                                                                      utilities.set_css(side_element, size_css);
+                                                                  });
                                 } else {
                                     utilities.set_css(side_element, size_css);
                                 }
@@ -1074,28 +1083,38 @@ window.TOONTALK.UTILITIES =
             return new_array;
         };
         
-        utilities.get_json_of_array = function (array, json_history) {
-            var json = [];
-            var widgets_jsonified = [];
-            array.forEach(function (widget_side, index) {
-                if (!widget_side) {
-                    return; // leave it undefined
-                }
-//                 try {
-                    if (widget_side.is_primary_backside && widget_side.is_primary_backside()) {
-                        json[index] = {widget: utilities.get_json(widget_side.get_widget(), json_history),
-                                       is_backside: true};
-                    } else if (widget_side.is_widget) {
-                        json[index] = {widget: utilities.get_json(widget_side, json_history)};
-                    } else {
-                        // isn't a widget -- e.g. is a path
-                        json[index] = widget_side.get_json(json_history);
-                    }
-//                 } catch (e) {
-//                     utilities.report_internal_error("Error trying to save " + widget_side);
-//                 }
-            });
-            return json;
+        utilities.get_json_of_array = function (array, json_array, index, json_history, callback, start_time) {
+            var widget_side, new_callback;
+            if (index >= array.length) {
+                callback();
+                return;
+            }
+            widget_side = array[index];
+            if (!widget_side) {
+                utilities.get_json_of_array(array, json_array, index+1, json_history, callback, start_time);
+                return; 
+            }
+            if (widget_side.is_primary_backside && widget_side.is_primary_backside()) {
+                new_callback = function (json, new_start_time) {
+                    json_array.push({widget: json,
+                                     is_backside: true});
+                    this.get_json_of_array(array, json_array, index+1, json_history, callback, new_start_time);
+                }.bind(this);
+                utilities.get_json(widget_side.get_widget(), json_history, new_callback, start_time);
+            } else if (widget_side.is_widget) {
+                new_callback = function (json, new_start_time) {
+                    json_array.push({widget: json});
+                    this.get_json_of_array(array, json_array, index+1, json_history, callback, new_start_time);
+                }.bind(this);
+                utilities.get_json(widget_side, json_history, new_callback, start_time);
+            } else {
+                // isn't a widget -- e.g. is a path
+                new_callback = function (json, new_start_time) {
+                    json_array.push(json);
+                    this.get_json_of_array(array, json_array, index+1, json_history, callback, new_start_time);
+                }.bind(this);
+                widget_side.get_json(json_history, new_callback, start_time);
+            }
         };
         
         utilities.fresh_json_history = function (current_json_history) {
@@ -1109,81 +1128,103 @@ window.TOONTALK.UTILITIES =
             return json_history;
         };
         
-        utilities.get_json_top_level = function (widget_side) {
+        utilities.get_json_top_level = function (widget_side, callback, maximum_json_generation_duration) {
+            // if maximum_json_generation_duration is exceeded then the browser will be given a chance to run (via setTimeout)
+            // this breaks dataTransfer in drag and drop
             var json_history = this.fresh_json_history();
-            var json = utilities.get_json(widget_side, json_history);
-            if (json_history.shared_widgets.length > 0) {
-                json.shared_widgets = json_history.shared_widgets.map(function (shared_widget, widget_index) {
-                    // get the JSON of only those widgets that occurred more than once
-                    var get_json_of_widget_from_history = function (widget) {
-                        var index_among_all_widgets = json_history.widgets_encountered.indexOf(widget);
-                        return json_history.json_of_widgets_encountered[index_among_all_widgets];
-                    };
-                    var get_json_of_widget_from_shared_widget_index = function (index) {
-                        return get_json_of_widget_from_history(json_history.shared_widgets[index]);
-                    }
-                    var json_of_widget = get_json_of_widget_from_history(shared_widget);
-                    if (widget_side === shared_widget) {
-                        // top-level widget itself is shared_widget_index
-                        // return shallow clone of json_of_widget since don't want to create circularity via shared_widgets
-                        json_of_widget = {semantic: json_of_widget.semantic,
-                                          view: json_of_widget.view,
-                                          version: json_of_widget.version};
-                        json.semantic = {shared_widget_index: widget_index}; 
-                        return json_of_widget;
-                    } else {
+            var new_callback = function (json) {
+                if (json_history.shared_widgets.length > 0) {
+                    json.shared_widgets = json_history.shared_widgets.map(function (shared_widget, widget_index) {
+                        // get the JSON of only those widgets that occurred more than once
+                        var get_json_of_widget_from_history = function (widget) {
+                            var index_among_all_widgets = json_history.widgets_encountered.indexOf(widget);
+                            return json_history.json_of_widgets_encountered[index_among_all_widgets];
+                        };
+                        var get_json_of_widget_from_shared_widget_index = function (index) {
+                            return get_json_of_widget_from_history(json_history.shared_widgets[index]);
+                        }
+                        var json_of_widget = get_json_of_widget_from_history(shared_widget);
+                        if (widget_side === shared_widget) {
+                            // top-level widget itself is shared_widget_index
+                            // return shallow clone of json_of_widget since don't want to create circularity via shared_widgets
+                            json_of_widget = {semantic: json_of_widget.semantic,
+                                              view: json_of_widget.view,
+                                              version: json_of_widget.version};
+                            json.semantic = {shared_widget_index: widget_index}; 
+                            return json_of_widget;
+                        }
                         // start searching tree for json_of_widget with the semantic component
                         // because json might === json_of_widget
                         if (json.semantic) {
                             utilities.tree_replace_once(json.semantic, 
-                                                       json_of_widget,
-                                                       {shared_widget_index: widget_index},
-                                                       get_json_of_widget_from_shared_widget_index,
-                                                       utilities.generate_unique_id());
-                        } // otherwise might be JSON for a backside - TODO: should it also be searched?                        
-                        return json_of_widget;
-                    }
-                });
-            }
-            json.shared_html = json_history.shared_html;
-            return json;
+                                                        json_of_widget,
+                                                        {shared_widget_index: widget_index},
+                                                        get_json_of_widget_from_shared_widget_index,
+                                                        utilities.generate_unique_id());
+                         } // otherwise might be JSON for a backside - TODO: should it also be searched?                        
+                         return json_of_widget;
+                    });
+                }
+                json.shared_html = json_history.shared_html;
+                callback(json);
+            };
+            // may need to time out several times if is short so need to store it
+            utilities.maximum_json_generation_duration = maximum_json_generation_duration;
+            utilities.get_json(widget_side, json_history, new_callback, Date.now());
         };
         
-        utilities.get_json = function (widget_side, json_history) {
-            var index, widget_json, is_primary_backside;
+        utilities.get_json = function (widget_side, json_history, callback, start_time) {
+            var index, widget_json, is_primary_backside, new_callback;
             if (TT.debugging && !json_history) {
                 utilities.report_internal_error("no json_history");
+                return;
             }
             index = json_history.shared_widgets.indexOf(widget_side);
             if (index >= 0) {
-                return {shared_widget_index: index};
+                callback({shared_widget_index: index}, start_time);
+                return;
             }
             index = json_history.widgets_encountered.indexOf(widget_side);
             if (index >= 0) {
                 // need to process children before ancestors when generating the final JSON
                 index = utilities.insert_ancestors_last(widget_side, json_history.shared_widgets);
-                return {shared_widget_index: index};
+                callback({shared_widget_index: index}, start_time);
+                return;
             }
             // need to keep track of the index rather than push json_of_widgets_encountered to keep them aligned properly
             index = json_history.widgets_encountered.push(widget_side)-1;
             is_primary_backside = widget_side.is_primary_backside && widget_side.is_primary_backside();
             if (is_primary_backside) {
-                // save as widget with a flag that is the backside
+                // save as widget with a flag that it is the backside
                 widget_side = widget_side.get_widget();
             }
-            widget_json = widget_side.get_json(json_history);
-            if (widget_side.add_to_json) {
-                widget_json = widget_side.add_to_json(widget_json, json_history);
+            new_callback = function (json, start_time) {
+                var add_backside_widgets_callback;
+                if (widget_side.add_to_json) {
+                    json = widget_side.add_to_json(json, json_history);
+                }
+                // need to push the widget on the list before computing the backside widgets' jSON in case there is a cycle
+                json_history.json_of_widgets_encountered[index] = json;
+                if (widget_side.add_backside_widgets_to_json) {
+                    add_backside_widgets_callback = function () {
+                        callback(json, start_time);
+                    };
+                    widget_side.add_backside_widgets_to_json(json, json_history, add_backside_widgets_callback, start_time);
+                } else {
+                    callback(json, start_time);
+                }
+            };
+            if (Date.now()-start_time <= utilities.maximum_json_generation_duration) {
+                widget_side.get_json(json_history, new_callback, start_time);
+            } else {
+                // taking too long so let browser run
+                setTimeout(function () {
+                               widget_side.get_json(json_history, new_callback, Date.now());     
+                           });
             }
-            // need to push the widget on the list before computing the backside widgets'' jSON in case there is a cycle
-            json_history.json_of_widgets_encountered[index] = widget_json;
-            if (widget_side.add_backside_widgets_to_json) {
-                widget_side.add_backside_widgets_to_json(widget_json, json_history);
-            }
-            return widget_json;
         };
 
-        utilities.get_json_of_keys = function (object, exceptions) {
+        utilities.get_json_of_keys = function (object, exceptions, callback, start_time) {
             var json;
             if (!exceptions) {
                 exceptions = [];
@@ -1194,13 +1235,16 @@ window.TOONTALK.UTILITIES =
                         json = {};
                     }
                     if (object[key].get_json) {
-                        json[key] = {json: object[key].get_json()};
+                        var key_callback = function (json_key, start_time) {
+                            json[key] = {json: json_key};
+                        };
+                        object[key].get_json(undefined, key_callback, start_time);
                     } else {
                         json[key] = object[key];
                     }
                 }
             });
-            return json;
+            callback(json, start_time);
         };
 
         utilities.create_keys_from_json = function (json, additional_info) {
@@ -1483,7 +1527,7 @@ window.TOONTALK.UTILITIES =
 
         utilities.get_style_numeric_property = function (element, style_property) {
             var as_string = this.get_style_property(element, style_property);
-            var index;
+            var index, numeric_value;
             if (typeof as_string === 'string') {
                 index = as_string.indexOf('px');
                 if (index >= 0) {
@@ -1498,13 +1542,18 @@ window.TOONTALK.UTILITIES =
                     }
                     return as_string;
                 }
-                return parseInt(as_string, 10);
+                numeric_value = parseInt(as_string, 10);
+                if (isNaN(numeric_value)) {
+                    // return undefined
+                    return;
+                }
+                return numeric_value;
             }
             return as_string;
         };
         
         utilities.data_transfer_json_object = function (event) {
-            var data, json;
+            var data, json_string, json;
             if (!event.dataTransfer) {
                 // not really an error -- could be a drag of an image into ToonTalk
 //              console.log("no dataTransfer in drop event");
@@ -1538,15 +1587,20 @@ window.TOONTALK.UTILITIES =
 //              console.log("No data in dataTransfer in drop.");
                 return;
             }
-            json = extract_json_from_div_string(data);
-            if (!json) {               
-                return utilities.get_json_top_level(TT.element.create(data));
+            json_string = extract_json_from_div_string(data);
+            if (json_string) {
+                try {
+                    return JSON.parse(json_string);
+                } catch (exception) {
+                    utilities.report_internal_error("Exception parsing " + json_string + "\n" + exception.toString());
+                }
             }
-            try {
-                return JSON.parse(json);
-            } catch (exception) {
-                utilities.report_internal_error("Exception parsing " + json + "\n" + exception.toString());
-            }
+            // treat the data as a plain text element
+            TT.element.create(data).get_json(utilities.fresh_json_history(), 
+                                             function (element_json) {
+                                                 json = element_json;
+                                             });
+            return json;
         };
         
         utilities.drag_and_drop = function (element) {
@@ -2810,9 +2864,9 @@ window.TOONTALK.UTILITIES =
                                             widget.rerender();
                                 },
                                 stop: function (event, ui) {
-                                    if (widget.robot_in_training && widget.robot_in_training()) {
-                                        widget.robot_in_training().resized_widget(widget, previous_width, previous_height, ui.size.width, ui.size.height);
-                                    }
+                                          if (widget.robot_in_training && widget.robot_in_training()) {
+                                              widget.robot_in_training().resized_widget(widget, previous_width, previous_height, ui.size.width, ui.size.height);
+                                          }
                                 },
                                // the corner handles looked bad on element widgets
                                // and generally got in the way
@@ -3639,6 +3693,12 @@ window.TOONTALK.UTILITIES =
                    css.height = '';
                }
            }
+           if (css.width === 0) {
+               css.width  = '';
+           }
+           if (css.height === 0) {
+               css.height  = '';
+           }
            if (!css.transform && typeof css.width === 'number' && typeof css.height === 'number' &&
                widget_side && widget_side.use_scaling_transform) {
                // leave CSS width and height alone and recompute scaling transform
@@ -3871,6 +3931,9 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                   enqueue: function(item) {
                       var first_item = queue.length == 0;
                       queue.push(item);
+                      if (TT.logging && TT.logging.indexOf('queue') >= 0) {           
+                          console.log(item._debug_string + " enqueued");
+                      }
                       return first_item;
                   },
                   // Dequeues an item and returns it. 
@@ -3881,6 +3944,9 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                           return undefined;
                       }
                       item = queue[offset];
+                      if (TT.logging && TT.logging.indexOf('queue') >= 0) {           
+                          console.log(item._debug_string + " dequeued");
+                      }
                       // increment the offset and remove the free space if necessary
                       if (++ offset * 2 >= queue.length){
                          queue  = queue.slice(offset);
