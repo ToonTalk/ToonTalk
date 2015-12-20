@@ -3856,7 +3856,7 @@ window.TOONTALK.UTILITIES =
            } catch (e) {
                // fall back on old way of doing this (needed for IE11)
                event = document.createEvent("CustomEvent");
-               event.initCustomEvent('myMessage', false, false, details);
+               event.initCustomEvent(name, false, false, details);
            }
            return event;
        };
