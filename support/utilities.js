@@ -1719,7 +1719,7 @@ window.TOONTALK.UTILITIES =
                                         message = "Error reading previous state. Error message is " + error;
                                         if (utilities.is_internet_explorer()) {
                                             // TODO: determine what the problem is with IE11 and local storage
-                                            console.error("Unresolved difficulties using window.localStorage in IE11: " + message);
+                                            console.error("window.localStorage in IE11 not available with file://...: " + message);
                                         } else {
                                             utilities.display_message(message);
                                         }
