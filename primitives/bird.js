@@ -549,7 +549,7 @@ window.TOONTALK.bird = (function (TT) {
         };
         new_bird.get_default_description = function () {
             if (this.is_function_bird()) {
-                return "a bird who gives another bird a box to find out the '" + nest.get_function_object().name + "' of " + this.get_function_type(true) + ".";
+                return "a bird who gives another bird a box to compute the '" + nest.get_function_object().name + "' of " + this.get_function_type(true) + ".";
             }
             return "a bird who takes things to her nest.";
         };

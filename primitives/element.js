@@ -2114,12 +2114,24 @@ window.TOONTALK.element.function =
         "join",
         ['any number of numbers or elements']);
     functions.add_function_object(
+        'part of text', 
+        function (message, event, robot) {
+            var substring = function (element_or_number, start_widget, end_widget) {
+                var start = Math.round(start_widget.to_float());
+                var end   = Math.round(end_widget  .to_float());
+                return TT.element.create(element_or_number.get_text().substring(start+1, end+1));
+            };
+            return functions.typed_bird_function(message, substring, ['element', 'number', 'number'], 3, 'part of text', event, robot);
+        },
+        "The bird will return with a new element whose text is the part of the text of the first element (or number) beginning with the first number ending with the second number. 1 is for the first letter.",
+        "part",
+        ['an element followed by two postive numbers']);
+    functions.add_function_object(
         'go to page', 
         function (message, event, robot) {
             var go_to_URL = function (element_url) {
                 window.location.assign(element_url.get_text());
             };
-            var joined_text = "";
             // type checking should be extended so can say below any number of elements or numbers
             return functions.typed_bird_function(message, go_to_URL, ['element'], 1, 'replace page', event, robot);
         },
