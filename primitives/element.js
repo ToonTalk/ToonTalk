@@ -2126,6 +2126,17 @@ window.TOONTALK.element.function =
         "The bird will return with a new element whose text is the part of the text of the first element (or number) beginning with the first number ending with the second number. 1 is for the first letter.",
         "part",
         ['an element followed by two postive numbers']);
+     functions.add_function_object(
+        'length of text', 
+        function (message, event, robot) {
+            var length = function (element_or_number) {
+                return TT.number.create(element_or_number.get_text().length);
+            };
+            return functions.typed_bird_function(message, length, [undefined], 1, 'length of text', event, robot);
+        },
+        "The bird will return with a number that is length of the text of the first element (or number).",
+        "length",
+        ['an element or number']);
     functions.add_function_object(
         'go to page', 
         function (message, event, robot) {
