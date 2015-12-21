@@ -2113,7 +2113,19 @@ window.TOONTALK.element.function =
         "The bird will return with a new element that is made by joining all the elements and numbers.",
         "join",
         ['any number of numbers or elements']);
-    
+    functions.add_function_object(
+        'go to page', 
+        function (message, event, robot) {
+            var go_to_URL = function (element_url) {
+                window.location.assign(element_url.get_text());
+            };
+            var joined_text = "";
+            // type checking should be extended so can say below any number of elements or numbers
+            return functions.typed_bird_function(message, go_to_URL, ['element'], 1, 'replace page', event, robot);
+        },
+        "The bird will cause the current page to be replaced by the new URL. The back button should return to the current page.",
+        "join",
+        ['an element containing a URL']);
     return functions.get_function_table();
 
 }(window.TOONTALK));
