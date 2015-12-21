@@ -2138,6 +2138,26 @@ window.TOONTALK.element.function =
         "length",
         ['an element or number']);
     functions.add_function_object(
+        'text as number', 
+        function (message, event, robot) {
+            var text_to_number = function (element) { 
+                var text = element.get_text();              
+                var number;
+                var slashIndex = text.indexOf('/');
+                if (slashIndex >= 0) {
+                    number = TT.number.create(text.substring(0, slashIndex), text.substring(slashIndex+1, text.length));
+                } else {
+                    number = TT.number.create(0);
+                    number.set_value_from_decimal(text);
+                }
+                return number;
+            };
+            return functions.typed_bird_function(message, text_to_number, [undefined], 1, 'text as number', event, robot);
+        },
+        "The bird will return with a number that has the same text as the element. Arithmetic can be done on the result unlike the original text.",
+        "text as number",
+        ['an element']);
+    functions.add_function_object(
         'go to page', 
         function (message, event, robot) {
             var go_to_URL = function (element_url) {
