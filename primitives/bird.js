@@ -549,7 +549,7 @@ window.TOONTALK.bird = (function (TT) {
         };
         new_bird.get_default_description = function () {
             if (this.is_function_bird()) {
-                return "a bird who gives another bird the '" + nest.get_function_object().name + "' of things.";
+                return "a bird who gives another bird a box to find out the '" + nest.get_function_object().name + "' of " + TT.UTILITIES.add_a_or_an(this.get_function_type()) + ".";
             }
             return "a bird who takes things to her nest.";
         };
@@ -594,6 +594,9 @@ window.TOONTALK.bird = (function (TT) {
                                                            button_selector: ".toontalk-select-function"});
                 }
             }
+        };
+        new_bird.get_function_type = function () {
+            return nest.get_function_type();
         };
         new_bird.get_class_name_with_color = function (base_class_name) {
             if (nest && nest.get_class_name_with_color) {
