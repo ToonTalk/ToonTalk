@@ -1292,8 +1292,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             attribute_widget.is_attribute_widget = function () {
                 return true;
             };
-            attribute_widget.get_function_type = function () {
+            attribute_widget.get_function_type = function (plural) {
                 // function birds are ordinary numeric ones
+                if (plural) {
+                    return 'numbers';
+                }
                 return 'number';
             };
             return attribute_widget;
@@ -1312,8 +1315,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 }
                 return return_value;
             };
-            attribute_widget.get_function_type = function () {
+            attribute_widget.get_function_type = function (plural) {
                 // function birds are like those for elements (not yet implemented)
+                if (plural) {
+                    return 'elements';
+                }
                 return 'element';
             };
             attribute_widget.set_additional_classes("toontalk-string-attribute-widget");
@@ -2086,6 +2092,30 @@ window.TOONTALK.element_backside =
             });
             return backside;
     }};
+}(window.TOONTALK));
+
+window.TOONTALK.element.function = 
+(function (TT) {
+    var functions = TT.create_function_table();
+    functions.add_function_object(
+        'join text', 
+        function (message, event, robot) {
+            var join = function () {
+                for (i = 0; i < arguments.length; i++) {
+                    joined_text += arguments[i].get_text();
+                }
+                return TT.element.create(joined_text);
+            };
+            var joined_text = "";
+            // type checking should be extended so can say below any number of elements or numbers
+            return functions.typed_bird_function(message, join, [undefined], undefined, 'join', event, robot);
+        },
+        "The bird will return with a new element that is made by joining all the elements and numbers.",
+        "join",
+        ['any number of numbers or elements']);
+    
+    return functions.get_function_table();
+
 }(window.TOONTALK));
 
 }());
