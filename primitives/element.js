@@ -1037,6 +1037,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
 //                 // width and height as CSS style attributes become integers so don't set if equal when rounded
 //                 return;
 //             }
+            if (TT.logging && TT.logging.indexOf('attribute:') >= 0 && TT.logging.indexOf(attribute) >= 0) {
+                console.log("Attribute " + attribute + " set to " + new_value_number + " was " + current_value + " at " + Date.now() + " for " + this);  
+            }
             new_value = new_value_number;
         }
         if (handle_training && this.robot_in_training()) {
