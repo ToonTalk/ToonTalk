@@ -697,6 +697,7 @@ window.TOONTALK.UTILITIES =
         if (utilities.get_current_url_numeric_parameter('volume', 10) > 0) {
             initialize_sounds();
         }
+        TT.open_backside_only_if_alt_key = utilities.get_current_url_boolean_parameter('alt_key_to_open_backside');
         utilities.process_json_elements();
         // for top-level resources since they are not on the backside 'work space' we need a way to turn them off
         // clicking on a running widget may not work since its HTML may be changing constantly

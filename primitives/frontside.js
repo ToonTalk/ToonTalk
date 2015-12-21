@@ -35,6 +35,10 @@ window.TOONTALK.frontside =
 //                         TT.UTILITIES.display_message("Clicks on running widgets are ignored. If you wish to see its backside then stop it and click again.");
 //                     }
                 } else {
+                    if (TT.open_backside_only_if_alt_key && !event.altKey) {
+                        // URL parameter used to restrict opening backside -- useful for puzzle construction
+                        return;
+                    }
                     widget.open_backside();
                     if (widget.robot_in_training()) {
                         widget.robot_in_training().backside_opened(widget);
