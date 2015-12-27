@@ -29,6 +29,7 @@ window.TOONTALK.sensor = (function (TT) {
         var new_sensor = TT.nest.create(description, previous_contents, "sensor", undefined, undefined, name || "sensor");
         var nest_get_json = new_sensor.get_json;
         var nest_update_display = new_sensor.update_display;
+        var nest_set_running = new_sensor.set_running;
         var nest_copy = new_sensor.copy;
         var attributes = attributes_string.split(" ");
         var attribute_values;
@@ -179,6 +180,7 @@ window.TOONTALK.sensor = (function (TT) {
         };
         new_sensor.set_running = function (new_value) {
             this.set_active(new_value);
+            nest_set_running.call(this, new_value);
         };
         new_sensor.set_active(active, true);
         new_sensor.create_backside = function () {
@@ -257,11 +259,14 @@ window.TOONTALK.sensor = (function (TT) {
                        return value;
                     } else {       
                          if (typeof value === 'undefined') {
-                             if (event.detail && event.detail.element_widget && attribute === 'widget') {
+                             if (event.detail && event.detail.element_widget && (attribute === 'widget' || attribute === 'back')) {
+                                 // 'widget' is for backwards compatibility -- good idea?
                                  // return a fresh backside of the widget
                                  backside_of_widget_value = TT.UTILITIES.widget_side_of_element(event.detail.element_widget).create_backside();
                                  backside_of_widget_value.save_dimensions();
                                  return backside_of_widget_value;
+                             } else if (event.detail && event.detail.element_widget && attribute === 'front') {
+                                 return TT.UTILITIES.widget_side_of_element(event.detail.element_widget);
                              } else if (event.detail && event.detail[attribute] !== undefined) {
                                  return event.detail[attribute];
                              }
