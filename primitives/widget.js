@@ -963,8 +963,10 @@ window.TOONTALK.widget = (function (TT) {
                                backside_parent_view_of_this = this.get_parent_of_frontside() && this.get_parent_of_frontside().get_widget().get_backside_widgets_json_views();
                                if (backside_parent_view_of_this) {
                                    index = this.get_parent_of_frontside().get_widget().get_backside_widgets().indexOf(this);
-                                   json_view.frontside_left = backside_parent_view_of_this[index].frontside_left;
-                                   json_view.frontside_top =  backside_parent_view_of_this[index].frontside_top; 
+                                   if (index >= 0) {
+                                       json_view.frontside_left = backside_parent_view_of_this[index].frontside_left;
+                                       json_view.frontside_top =  backside_parent_view_of_this[index].frontside_top;
+                                   }
                                }
                             }
                         }
