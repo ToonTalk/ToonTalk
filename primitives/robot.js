@@ -181,7 +181,18 @@ window.TOONTALK.robot = (function (TT) {
             }
         };
         new_robot.get_backside_condition_index = function (widget) {
-            return original_backside_widgets_of_context.indexOf(widget);
+            var index;
+            if (backside_matched_widgets) {
+                index = backside_matched_widgets.indexOf(widget);
+                if (index < 0) {
+                    index = backside_matched_widgets.length;
+                    backside_matched_widgets.push(widget);
+                }
+            } else {
+                index = 0;
+                backside_matched_widgets = [widget];
+            }
+            return index;
         };
         new_robot.get_body = function () {
             return body;
@@ -625,7 +636,7 @@ window.TOONTALK.robot = (function (TT) {
                             // try the last widget (if not recently removed) first to see if it matches since corresponding widget rarely changes
                             sub_match_status = TT.UTILITIES.match(condition, condition.matching_widget);
                             if (sub_match_status === 'matched') {
-                                backside_matched_widgets[this.get_backside_condition_index(condition.matching_widget)] = condition.matching_widget;
+                                backside_matched_widgets.push(condition.matching_widget);
                                 best_sub_match_status = sub_match_status;
                             }
                         }
@@ -644,7 +655,7 @@ window.TOONTALK.robot = (function (TT) {
                                     }
                                     sub_match_status = TT.UTILITIES.match(condition, backside_widget_side);
                                     if (sub_match_status === 'matched') {
-                                        backside_matched_widgets[this.get_backside_condition_index(backside_widget_side)] = backside_widget_side;
+                                        backside_matched_widgets.push(backside_widget_side);
                                         best_sub_match_status = sub_match_status;
                                         condition.matching_widget = backside_widget_side; // to save time next time around
                                         return true;
