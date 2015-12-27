@@ -424,7 +424,7 @@ window.TOONTALK.backside =
                             // TODO: determine if this is not visible when side_of_other_element is undefined
                             $(side_of_other_element).addClass("toontalk-widget-added-to-backside-by-unwatched-robot");
                         }
-                        if (event && !side_of_other.is_backside()) {
+                        if (event && !side_of_other.is_backside() && !side_of_other.is_sensor()) {
                             window.dispatchEvent(TT.UTILITIES.create_event('widget added', {element_widget: side_of_other_element,
                                                                                             here: 'back'}));
                         }
@@ -460,7 +460,7 @@ window.TOONTALK.backside =
                                            $(backside_of_other.get_element()).find(".toontalk-train-backside-button").click();
                                        }    
                                    });           
-                    } else if (event && !side_of_other.is_backside() && this.get_frontside_element()) {
+                    } else if (event && !side_of_other.is_backside() && this.get_frontside_element() && !side_of_other.is_sensor()) {
                         // don't dispatch when a fresh robot is dropped since the robot may be working with the sensor nest
                         this.get_frontside_element().dispatchEvent(TT.UTILITIES.create_event('widget added', {element_widget: side_of_other_element,
                                                                                                               where: 'back'}));
