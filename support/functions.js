@@ -149,7 +149,7 @@ window.TOONTALK.create_function_table =
                 args.push(next_widget);
                 index++;
             }
-            return bird_function.apply(null, args);
+            return bird_function.apply(message, args);
         }.bind(this);
         return this.process_message(message, compute_response, event, robot);
     },
