@@ -605,7 +605,10 @@ window.TOONTALK.bird = (function (TT) {
             return base_class_name;
         }; 
         new_bird.get_name = function () {
-            return nest && nest.get_name();
+            if (nest) {
+                nest.get_name();
+            }
+            return ""; // e.g. a bird in a condition that has no nest
         };
         if (nest && nest.set_name) {
             // function nest names are read-only
