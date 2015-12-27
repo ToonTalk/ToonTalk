@@ -2161,7 +2161,11 @@ window.TOONTALK.element.function =
         'go to page', 
         function (message, event, robot) {
             var go_to_URL = function (element_url) {
-                window.location.assign(element_url.get_text());
+                if (this.robot_in_training()) { // this will be bound to the message given to the function bird
+                    TT.UTILITIES.display_message("Robot trained to replace current URL.");
+                } else {
+                    window.location.assign(element_url.get_text());
+                }
             };
             // type checking should be extended so can say below any number of elements or numbers
             return functions.typed_bird_function(message, go_to_URL, ['element'], 1, 'replace page', event, robot);
