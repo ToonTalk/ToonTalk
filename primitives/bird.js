@@ -472,7 +472,7 @@ window.TOONTALK.bird = (function (TT) {
             } else if (parameters.just_value) {
                 copy = this.create(undefined, this.get_description());
             } else {
-                nest_guid = nest.get_guid();
+                nest_guid = nest && nest.get_guid();
                 if (nest_guid && parameters.nests_copied && parameters.nests_copied[nest_guid]) {
                     // function nests don't have guids
                     new_nest = parameters.nests_copied[nest_guid][0];
