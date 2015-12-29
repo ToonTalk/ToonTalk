@@ -1320,6 +1320,10 @@ window.TOONTALK.backside =
         is_top_level: function () {
             return this.get_widget().is_top_level();
         },
+
+        ok_to_set_dimensions: function () {
+            return false;
+        },
         
         add_listener: function (type, listener) {
             this.get_widget().add_listener(type, listener);     
