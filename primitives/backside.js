@@ -1320,6 +1320,18 @@ window.TOONTALK.backside =
         is_top_level: function () {
             return this.get_widget().is_top_level();
         },
+        
+        add_listener: function (type, listener) {
+            this.get_widget().add_listener(type, listener);     
+        },
+
+        remove_listener: function (type, listener, ok_if_not_there) {
+            this.get_widget().remove_listener(type, listener, ok_if_not_there);     
+        },
+
+        get_listeners: function (type) {
+            return this.get_widget().get_listeners(typee);     
+        },
 
         is_hole: function () {
             return false;
