@@ -1537,7 +1537,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                   ignore_pointer_events: this.get_ignore_pointer_events() ? true : undefined, // undefined means no attribute value pair saving space
                                   source_URL:            this.get_source_URL()
                                  },
-                                 start_time);
+                                 start_time,
+                                 json_history);
                          return;
                     }
                     attribute_name = attributes[index];

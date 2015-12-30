@@ -1554,7 +1554,7 @@ window.TOONTALK.UTILITIES =
         };
         
         utilities.data_transfer_json_object = function (event) {
-            var data, json_string, json;
+            var data, json_string, json, element;
             if (!event.dataTransfer) {
                 // not really an error -- could be a drag of an image into ToonTalk
 //              console.log("no dataTransfer in drop event");
@@ -1596,11 +1596,18 @@ window.TOONTALK.UTILITIES =
                     utilities.report_internal_error("Exception parsing " + json_string + "\n" + exception.toString());
                 }
             }
-            // treat the data as a plain text element
-            TT.element.create(data).get_json(utilities.fresh_json_history(), 
-                                             function (element_json) {
-                                                 json = element_json;
-                                             });
+            // treat the data as rich text (HTML) or a plain text element
+            element = TT.element.create("");
+            element.get_frontside_element(true);
+            element.set_HTML(data);
+            element.get_json(utilities.fresh_json_history(), 
+                             function (element_json, start_time, json_history) {
+                                 if (element_json.html.shared_html_index >= 0) {
+                                     // replace shared HTML index with HTML
+                                     element_json.html = json_history.shared_html[element_json.html.shared_html_index];
+                                 }
+                                 json = element_json;
+                             });
             return json;
         };
         
