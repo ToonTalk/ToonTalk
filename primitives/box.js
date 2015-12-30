@@ -1295,6 +1295,17 @@ window.TOONTALK.box_hole =
             hole.is_plain_text_element = function () {
                 return false;
             };
+            hole.get_active = function () {
+                if (contents) {
+                    return contents.get_active();
+                }
+                return false;
+            };
+            hole.set_active = function (new_value, initialising) {
+                if (contents) {
+                    contents.set_active(new_value, initialising);
+                }
+            };
             TT.widget.has_parent(hole);
             TT.widget.has_listeners(hole);
             if (TT.debugging || TT.logging) {
