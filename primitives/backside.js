@@ -683,7 +683,7 @@ window.TOONTALK.backside =
 	            });
             };
             backside.compare_with = function (other) {
-                return this.get_widget().compare_with(other);
+                return this.get_widget().compare_with && this.get_widget().compare_with(other);
             };
             if (TT.debugging || TT.logging) {
                 backside.to_debug_string = function () {
