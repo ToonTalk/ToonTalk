@@ -136,15 +136,16 @@ window.TOONTALK.scale = (function (TT) {
                 var contents = hole.get_contents();
                 var content_element = (contents || hole).get_element(true);
                 var left = index*scale_width*0.5;
-                var top = 0;
-                var width = scale_width*0.5;
+                var top  = 0;
+                var width  = scale_width*0.5;
                 var height = scale_height;
                 var hole_widget = hole.get_contents();
                 var contents_left, contents_top, contents_width, contents_height;
-                $(hole_element).css({left:   left,
-                                     top:    top,
-                                     width:  width,
-                                     height: height});
+                TT.UTILITIES.set_css(hole_element,
+                                     {left:   left,
+                                      top:    top,
+                                      width:  width,
+                                      height: height});
                 if (hole_element !== content_element) {
                     if (index === 0) {
                         contents_left = scale_width*-0.05;
@@ -175,7 +176,10 @@ window.TOONTALK.scale = (function (TT) {
                         if (hole_widget.set_size_attributes) {
                             hole_widget.set_size_attributes(contents_width, contents_height);
                         }
-                        contents.rerender();
+                        if (hole_widget.is_backside()) {
+                            hole_widget.update_display(); // TODO: see if render is OK
+                            hole_widget.scale_to(contents_width, contents_height);      
+                        } 
                     }
                     hole_element.appendChild(content_element); // no-op if already there
                 }                                          

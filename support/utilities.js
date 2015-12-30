@@ -3675,6 +3675,8 @@ window.TOONTALK.UTILITIES =
            }
            widget_side = utilities.widget_side_of_element(element);
            if (widget_side) {
+               // dereference in case is in a box hole or scale
+               widget_side = widget_side.dereference();
                if (widget_side.is_backside()) {
                    if (!css.transform) {
                        css.width  = '';
