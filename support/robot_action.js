@@ -39,6 +39,7 @@ window.TOONTALK.robot_action =
                          thing_in_hand.drop_on(target, undefined, robot);
                          robot.set_thing_in_hand(undefined);
                          target.rerender();
+                         robot.add_newly_created_widget_if_new(thing_in_hand);
                          if (thing_in_hand.robot_waiting_before_next_step === robot) {
                              // NOTE thing_in_hand needs to call robot.run_next_step();
 //                              console.log("Expecting " + thing_in_hand + " to run_next_step");
@@ -133,7 +134,7 @@ window.TOONTALK.robot_action =
                  widget.update_display(); // so it has width and height for the following
                  TT.UTILITIES.set_position_relative_to_top_level_backside($(widget_frontside_element), robot_location, true);
              } else {
-                 widget.drop_on(robot.get_context().get_backside(), undefined, robot, true);
+                 widget.drop_on(robot.get_context().get_backside(true), undefined, robot, true);
              }
              return true;
          },
