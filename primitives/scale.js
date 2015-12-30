@@ -134,8 +134,7 @@ window.TOONTALK.scale = (function (TT) {
             var scale_height = $(container_element).height();
             var update_hole = function (hole_element, hole, index) {
                 var contents = hole.get_contents();
-                var content_frontside_element = (contents || hole).get_frontside_element(true);
-                var content_frontside_element;
+                var content_element = (contents || hole).get_element(true);
                 var left = index*scale_width*0.5;
                 var top = 0;
                 var width = scale_width*0.5;
@@ -146,7 +145,7 @@ window.TOONTALK.scale = (function (TT) {
                                      top:    top,
                                      width:  width,
                                      height: height});
-                if (hole_element !== content_frontside_element) {
+                if (hole_element !== content_element) {
                     if (index === 0) {
                         contents_left = scale_width*-0.05;
                     } else {
@@ -165,10 +164,10 @@ window.TOONTALK.scale = (function (TT) {
                     }
                     contents_width  = scale_width *0.4;
                     contents_height = scale_height*0.4;
-                    $(content_frontside_element).css({left:   contents_left,
-                                                      top:    contents_top,
-                                                      width:  contents_width,
-                                                      height: contents_height});
+                    $(content_element).css({left:   contents_left,
+                                            top:    contents_top,
+                                            width:  contents_width,
+                                            height: contents_height});
                     if (hole_widget) {
                         if (hole_widget.set_location_attributes) {
                             hole_widget.set_location_attributes(contents_left, contents_top);
@@ -178,7 +177,7 @@ window.TOONTALK.scale = (function (TT) {
                         }
                         contents.rerender();
                     }
-                    hole_element.appendChild(content_frontside_element); // no-op if already there
+                    hole_element.appendChild(content_element); // no-op if already there
                 }                                          
             };
             var state, class_name, scales;
@@ -295,8 +294,8 @@ window.TOONTALK.scale = (function (TT) {
             } else if (!right_contents) {
                return 1;
             } else {
-               if (left_contents.compare_with) {
-                   return left_contents.compare_with(right_contents);
+               if (left_contents.get_widget().compare_with) {
+                   return left_contents.get_widget().compare_with(right_contents.get_widget());
                }
             }
         };
