@@ -328,7 +328,7 @@ window.TOONTALK.UTILITIES =
             if (!(target_widget_side && target_widget_side.get_widget().get_infinite_stack && target_widget_side.get_widget().get_infinite_stack()) && 
                 ($source.get(0) === $target.get(0) || jQuery.contains($source.get(0), $target.get(0)))) {
                 // OK to drop on infinite stack since will become a copy
-                // dropped of itself or dropped on a part of itself
+                // dropped on itself or dropped on a part of itself
                 // just moved it a little bit
                 // only called now that elementFromPoint is used to find another target when dropped on part of itself
                 utilities.set_css($source,
