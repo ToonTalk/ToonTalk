@@ -682,6 +682,9 @@ window.TOONTALK.backside =
                                                              TT.UTILITIES.use_custom_tooltip(element);
 	            });
             };
+            backside.compare_with = function (other) {
+                return this.get_widget().compare_with(other);
+            };
             if (TT.debugging || TT.logging) {
                 backside.to_debug_string = function () {
                     return "backside of " + this.get_widget().to_debug_string();
