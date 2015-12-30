@@ -394,7 +394,7 @@ window.TOONTALK.box = (function (TT) {
     box.get_json = function (json_history, callback, start_time) {
         var contents_json = [];
         var collect_contents_json = function (index, start_time) {
-            // this is similar to utilities.get_json_of_array but doesn't wrap in {widget: ...} and iterates and terminates differently
+            // this is similar to utilities.get_json_of_array but iterates and terminates differently
             var widget_side, new_callback;
             if (index >= this.get_size()) {
                 callback({type: "box",
@@ -414,13 +414,15 @@ window.TOONTALK.box = (function (TT) {
             }
             if (widget_side.is_primary_backside && widget_side.is_primary_backside()) {
                 new_callback = function (json, new_start_time) {
-                    contents_json.push(json);
+                    contents_json.push({widget: json,
+                                        is_backside: true});
                     collect_contents_json(index+1, new_start_time);
                 }.bind(this);
                 TT.UTILITIES.get_json(widget_side.get_widget(), json_history, new_callback, start_time);
-            } else if (widget_side.is_widget) {
+            } else 
+            if (widget_side.is_widget) {
                 new_callback = function (json, new_start_time) {
-                    contents_json.push(json);
+                    contents_json.push({widget: json});
                     collect_contents_json(index+1, new_start_time);
                 }.bind(this);
                 TT.UTILITIES.get_json(widget_side, json_history, new_callback, start_time);
@@ -1097,7 +1099,7 @@ window.TOONTALK.box_hole =
                 var hole_element;
                 if (contents) {
                     hole_element = this.get_frontside_element();
-                    update_css_of_hole_contents(contents, contents.get_frontside_element(), $(hole_element).width(), $(hole_element).height());
+                    update_css_of_hole_contents(contents, contents.get_element(), $(hole_element).width(), $(hole_element).height());
                 }
             };
             hole.dereference = function () {
