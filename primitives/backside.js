@@ -539,8 +539,10 @@ window.TOONTALK.backside =
                                     }                                    
                                     css = {left:   json_view.frontside_left   || json_view.frontside_left || 0,
                                            top:    json_view.frontside_top    || json_view.frontside_top  || 0,
-                                           width:  json_view.frontside_width  || json_view.saved_width,
-                                           height: json_view.frontside_height || json_view.saved_height};
+                                           // if dimensions set by transforms then don't explicitly set width and height here
+                                           // perhaps should check that transforms include scaling transforms
+                                           width:  widget_side_element.style.transform ? "" : (json_view.frontside_width  || json_view.saved_width),
+                                           height: widget_side_element.style.transform ? "" : (json_view.frontside_height || json_view.saved_height)};
                                 }
                                 TT.UTILITIES.constrain_css_to_fit_inside(backside_element, css);
                                 $(widget_side_element).css(css);                              
