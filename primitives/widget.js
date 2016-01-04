@@ -1593,7 +1593,7 @@ window.TOONTALK.widget = (function (TT) {
                 if (this.get_backside_widgets()) {
                     this.get_backside_widgets().forEach(function (widget_side) {
                         if (widget_side && widget_side.visible()) {
-                            widget_side.update_display();
+                            widget_side.render();
                         }    
                     });
                 }
