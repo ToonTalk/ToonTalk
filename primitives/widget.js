@@ -960,7 +960,7 @@ window.TOONTALK.widget = (function (TT) {
                             json_view.frontside_left = TT.UTILITIES.get_style_numeric_property(frontside_element, 'left');
                             json_view.frontside_top  = TT.UTILITIES.get_style_numeric_property(frontside_element, 'top')  || backside_parent_view_of_this && backside_parent_view_of_this.frontside_top;
                             if (json_view.frontside_left === undefined) {
-                               backside_parent_view_of_this = this.get_parent_of_frontside() && this.get_parent_of_frontside().get_widget().get_backside_widgets_json_views();
+                               backside_parent_view_of_this = parent_widget_of_frontside && parent_widget_of_frontside.get_widget().get_backside_widgets_json_views();
                                if (backside_parent_view_of_this) {
                                    index = this.get_parent_of_frontside().get_widget().get_backside_widgets().indexOf(this);
                                    if (index >= 0) {
