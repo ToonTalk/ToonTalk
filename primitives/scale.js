@@ -141,7 +141,6 @@ window.TOONTALK.scale = (function (TT) {
                 var top  = 0;
                 var width  = scale_width*0.5;
                 var height = scale_height;
-                var hole_widget = hole.get_contents();
                 var contents_left, contents_top, contents_width, contents_height;
                 TT.UTILITIES.set_css(hole_element,
                                      {left:   left,
@@ -171,16 +170,16 @@ window.TOONTALK.scale = (function (TT) {
                                             top:    contents_top,
                                             width:  contents_width,
                                             height: contents_height});
-                    if (hole_widget) {
-                        if (hole_widget.set_location_attributes) {
-                            hole_widget.set_location_attributes(contents_left, contents_top);
+                    if (contents) {
+                        if (contents.set_location_attributes) {
+                            contents.set_location_attributes(contents_left, contents_top);
                         }
-                        if (hole_widget.set_size_attributes) {
-                            hole_widget.set_size_attributes(contents_width, contents_height);
+                        if (contents.set_size_attributes) {
+                            contents.set_size_attributes(contents_width, contents_height);
                         }
-                        if (hole_widget.is_backside()) {
-                            hole_widget.update_display(); // TODO: see if render is OK
-                            hole_widget.scale_to(contents_width, contents_height);      
+                        if (contents.is_backside()) {
+                            contents.update_display(); // TODO: see if render is OK
+                            contents.scale_to(contents_width, contents_height);      
                         } 
                     }
                     hole_element.appendChild(content_element); // no-op if already there
@@ -213,8 +212,8 @@ window.TOONTALK.scale = (function (TT) {
                 $scale_parts.each(function (index, hole_element) {
                         // delaying ensures they contents of the holes have the right size
                         TT.UTILITIES.set_timeout(function () {
-                                update_hole(hole_element, this.get_hole(index), index);
-                            }.bind(this));
+                                                     update_hole(hole_element, this.get_hole(index), index);
+                                                 }.bind(this));
                     }.bind(this));
             } else {
                 this.get_holes().forEach(function (hole, index) {
