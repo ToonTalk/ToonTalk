@@ -129,7 +129,9 @@ window.TOONTALK.scale = (function (TT) {
             var $frontside_element = $(frontside_element);
             var $scale_parts = $(frontside_element).children(".toontalk-scale-half");
             var $parent = $(frontside_element).parent();
-            var container_element = $parent.is(".toontalk-backside") ? frontside_element : $parent.get(0);
+            var container_element = ($parent.is(".toontalk-backside") || $frontside_element.is(".toontalk-conditions-contents")) ? 
+                                    frontside_element : 
+                                    $parent.get(0);
             var scale_width  = $(container_element).width();
             var scale_height = $(container_element).height();
             var update_hole = function (hole_element, hole, index) {
