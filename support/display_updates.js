@@ -66,6 +66,11 @@ window.TOONTALK.DISPLAY_UPDATES =
                     // became invisible after being queued
                     return;
                 }
+                if ($(element).is(".toontalk-not-observable")) {
+                    // not ready
+                    pending_update.render();
+                    return;
+                }
                 pending_update.update_display();
                 if (pending_update.get_backside) {
                     backside = pending_update.get_backside();
