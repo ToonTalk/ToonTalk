@@ -537,8 +537,8 @@ window.TOONTALK.backside =
                                     if (json_view.frontside_height === 0) {
                                         json_view.frontside_height = '';
                                     }                                    
-                                    css = {left:   json_view.frontside_left   || json_view.frontside_left || 0,
-                                           top:    json_view.frontside_top    || json_view.frontside_top  || 0,
+                                    css = {left:   json_view.frontside_left,
+                                           top:    json_view.frontside_top,
                                            // if dimensions set by transforms then don't explicitly set width and height here
                                            // perhaps should check that transforms include scaling transforms
                                            width:  widget_side_element.style.transform ? "" : (json_view.frontside_width  || json_view.saved_width),
