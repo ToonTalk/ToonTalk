@@ -3685,7 +3685,7 @@ window.TOONTALK.UTILITIES =
                // dereference in case is in a box hole or scale
                widget_side_dereferenced = widget_side.dereference();
                if (widget_side_dereferenced.is_backside()) {
-                   if (!css.transform) {
+                   if (!css.transform && !widget_side.get_widget().location_constrained_by_container()) {
                        css.width  = '';
                        css.height = '';
                    }
