@@ -3676,15 +3676,15 @@ window.TOONTALK.UTILITIES =
 
        utilities.set_css = function (element, css) {
            // this is mostly useful debugging computed CSS problems since can break here
-           var widget_side;
+           var widget_side, widget_side_dereferenced;
            if (!css) {
                return;
            }
            widget_side = utilities.widget_side_of_element(element);
            if (widget_side) {
                // dereference in case is in a box hole or scale
-               widget_side = widget_side.dereference();
-               if (widget_side.is_backside()) {
+               widget_side_dereferenced = widget_side.dereference();
+               if (widget_side_dereferenced.is_backside()) {
                    if (!css.transform) {
                        css.width  = '';
                        css.height = '';
@@ -3696,9 +3696,10 @@ window.TOONTALK.UTILITIES =
                    // leave the CSS alone
                    // TODO: make this more modular/cleaner
                } else if (widget_side.location_constrained_by_container()) {
+                   // widget_side_dereferenced could be contents of a box or scale and widget_side is the hole itself
                    css.left   = '';
                    css.top    = '';
-               } else if (widget_side.is_plain_text_element()) {
+               } else if (widget_side_dereferenced.is_plain_text_element()) {
                    css.width  = '';
                    css.height = '';
                }
@@ -3710,7 +3711,7 @@ window.TOONTALK.UTILITIES =
                css.height  = '';
            }
            if (!css.transform && typeof css.width === 'number' && typeof css.height === 'number' &&
-               widget_side && widget_side.use_scaling_transform) {
+               widget_side_dereferenced && widget_side_dereferenced.use_scaling_transform) {
                // leave CSS width and height alone and recompute scaling transform
                // following will call set_css again with modified css
                widget_side.use_scaling_transform(css);
