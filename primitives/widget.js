@@ -405,10 +405,14 @@ window.TOONTALK.widget = (function (TT) {
                         }
                         backside_widget = backside_widget_side.get_widget();
                         if (backside_widget_side.is_backside()) {
-                           // make sure that the frontside isn't also running
-                           if (this.get_backside_widgets().indexOf(backside_widget) >= 0) {
-                               return;
-                           }
+                            // make sure that the frontside isn't also running
+                            if (this.get_backside_widgets().indexOf(backside_widget) >= 0) {
+                                return;
+                            }
+                            // if not a primary back side (e.g. from a sensor) then ignore it
+                            if (backside_widget_side.is_primary_backside()) {
+                                return;
+                            }
                         }
                         if (backside_widget.is_robot() && !backside_widget.being_trained && !backside_widget.get_body().is_empty()) {
                             // could this set_stopped stuff be combined with set_running?
