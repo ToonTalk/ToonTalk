@@ -967,7 +967,9 @@ window.TOONTALK.robot = (function (TT) {
    
     robot.created_widget = function (new_widget, source_widget, button_selector) {
         this.add_newly_created_widget(new_widget);
-        this.add_to_top_level_backside(new_widget, false);
+        if (!new_widget.get_parent()) {
+            this.add_to_top_level_backside(new_widget, false);
+        }
         this.add_step(TT.robot_action.create(TT.path.get_path_to_resource(new_widget.copy()), 
                                              "add a new widget to the work space",
                                              {button_selector: button_selector,
