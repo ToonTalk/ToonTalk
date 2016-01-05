@@ -410,7 +410,7 @@ window.TOONTALK.widget = (function (TT) {
                                 return;
                             }
                             // if not a primary back side (e.g. from a sensor) then ignore it
-                            if (backside_widget_side.is_primary_backside()) {
+                            if (!backside_widget_side.is_primary_backside()) {
                                 return;
                             }
                         }
