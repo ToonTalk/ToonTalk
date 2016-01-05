@@ -1576,7 +1576,8 @@ window.TOONTALK.robot_backside =
             var speed_names  = ["normal", "original", "double", "half", "very fast", "very slow"];
             var speed_values = [ 1,        undefined,  2,       .5,      10,         .25];
             var speed_value_to_name = function (value) {
-                var index = value ? speed_values.indexOf(value) : 1;
+                // default is normal (index 0)
+                var index = value ? speed_values.indexOf(value) : 0;
                 return speed_names[index];
             };
             var speed_name_to_value = function (name) {
