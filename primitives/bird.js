@@ -935,6 +935,7 @@ window.TOONTALK.nest = (function (TT) {
             }
         };
         new_nest.get_contents_element = function () {
+            // is this insecure??
             if (contents.length > 0) {
                 return contents[0].get_element();
             }

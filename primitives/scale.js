@@ -313,8 +313,19 @@ window.TOONTALK.scale = (function (TT) {
             return this;
         };
         new_scale.match_with_scale = function (scale_pattern) {
+            var left_contents, right_contents;
             if (this.get_state() === scale_pattern.get_state()) {
                 return 'matched';
+            }
+            left_contents  = this.get_hole_contents(0);
+            if (left_contents && left_contents.is_nest() && !left_contents.has_contents()) {
+               // suspend on nest rather than fail
+                return [[left_contents, this]];
+            }
+            right_contents = this.get_hole_contents(1);
+            if (right_contents && right_contents.is_nest() && !right_contents.has_contents()) {
+                // suspend on nest rather than fail
+                return [[right_contents, this]];
             }
             return scale_pattern;
         };
