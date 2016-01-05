@@ -2175,7 +2175,7 @@ window.TOONTALK.element.function =
             return functions.typed_bird_function(message, go_to_URL, ['element'], 1, 'replace page', event, robot);
         },
         "The bird will cause the current page to be replaced by the new URL. The back button should return to the current page.",
-        "join",
+        "page",
         ['an element containing a URL']);
     return functions.get_function_table();
 
