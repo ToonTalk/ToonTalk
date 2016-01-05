@@ -1014,7 +1014,11 @@ window.TOONTALK.box_hole =
             };
             hole.widget_side_dropped_on_me = function (dropped, event, robot) {
                 var box = this.get_parent_of_frontside();
+                var contents = this.get_contents();
                 var hole_element, hole_position, parent_position, dropped_element, finished_animating, is_plain_text;
+                if (contents) {
+                    return contents.widget_side_dropped_on_me && contents.widget_side_dropped_on_me(dropped, event, robot);
+                }
                 if (dropped.dropped_on_other) {
                     // e.g. so egg can hatch from nest drop
                     dropped.dropped_on_other(this, event, robot);
