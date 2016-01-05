@@ -42,7 +42,7 @@ window.TOONTALK.ORIGIN_FOR_GOOGLE_DRIVE = 'toontalk.github.io';
 <body>
 <h2>I need a 4</h2>
 <div class='toontalk-json'>
-This will be replaced by a work area containing 3 things: a number, an element, and a number.
+This will be replaced by a work area containing 4 things: an element, a backside of an element, a number, and a number.
 top level widget
 <div style='display:none;'>{
   "semantic": {
@@ -51,6 +51,28 @@ top level widget
     "backside_widgets": [
       {
         "widget": {
+          "shared_widget_index": 0
+        }
+      },
+      {
+        "widget": {
+          "type": "backside",
+          "my_widget": {
+            "shared_widget_index": 0
+          },
+          "css": {
+            "width": 550,
+            "height": 200,
+            "transform": "scale(1.4910247933884326, 1.294999999999999)",
+            "transform-origin": "left top 0px",
+            "left": 0,
+            "top": 0
+          },
+          "view": {}
+        }
+      },
+      {
+        "widget": {
           "semantic": {
             "type": "number",
             "operator": "+",
@@ -61,8 +83,8 @@ top level widget
           "view": {
             "frontside_width": 76,
             "frontside_height": 55,
-            "frontside_left": 23,
-            "frontside_top": 28,
+            "frontside_left": 345,
+            "frontside_top": 119,
             "saved_width": 76,
             "saved_height": 55
           },
@@ -71,11 +93,6 @@ top level widget
       },
       {
         "widget": {
-          "shared_widget_index": 0
-        }
-      },
-      {
-        "widget": {
           "semantic": {
             "type": "number",
             "operator": "+",
@@ -86,8 +103,8 @@ top level widget
           "view": {
             "frontside_width": 76,
             "frontside_height": 55,
-            "frontside_left": 332,
-            "frontside_top": 28,
+            "frontside_left": 44,
+            "frontside_top": 123,
             "saved_width": 76,
             "saved_height": 55
           },
@@ -98,12 +115,12 @@ top level widget
   },
   "view": {
     "background_color": "rgba(0, 0, 0, 0)",
-    "backside_width": 537,
-    "backside_height": 291,
+    "backside_width": 508,
+    "backside_height": 263,
     "backside_left": 8,
     "backside_top": 184.1875,
-    "drag_x_offset": 72,
-    "drag_y_offset": 256.8125
+    "drag_x_offset": 264,
+    "drag_y_offset": 145.8125
   },
   "version": 1,
   "shared_widgets": [
@@ -120,10 +137,10 @@ top level widget
           "height"
         ],
         "attribute_values": [
-          117,
-          118,
+          -261.65625,
+          -216.65625,
           388,
-          63
+          61
         ],
         "attributes_backsides": [
           [],
@@ -183,8 +200,6 @@ top level widget
                 "name": ""
               },
               "view": {
-                "frontside_width": 123,
-                "frontside_height": 91,
                 "backside_geometry": {
                   "x_scale": 1,
                   "y_scale": 1,
@@ -200,12 +215,45 @@ top level widget
           {
             "widget": {
               "semantic": {
+                "type": "element",
+                "html": "p2.html%3Falt_key_to_open_backside%3D1%26reset%3D1",
+                "attributes": [
+                  "left",
+                  "top",
+                  "width",
+                  "height"
+                ],
+                "attribute_values": [
+                  0,
+                  0,
+                  400,
+                  38
+                ],
+                "attributes_backsides": [
+                  [],
+                  [],
+                  [],
+                  []
+                ],
+                "additional_classes": "toontalk-string-value-from-sensor",
+                "children": false
+              },
+              "view": {
+                "saved_width": 400,
+                "saved_height": 38
+              },
+              "version": 1
+            }
+          },
+          {
+            "widget": {
+              "semantic": {
                 "type": "robot",
                 "frontside_conditions": {
                   "semantic": {
                     "type": "element",
                     "html": {
-                      "shared_html_index": 1
+                      "shared_html_index": 0
                     },
                     "attributes": [
                       "left",
@@ -216,8 +264,8 @@ top level widget
                     "attribute_values": [
                       0,
                       0,
-                      138,
-                      63
+                      388,
+                      61
                     ],
                     "attributes_backsides": [
                       [],
@@ -229,12 +277,45 @@ top level widget
                     "erased": true
                   },
                   "view": {
-                    "saved_width": 138,
-                    "saved_height": 63
+                    "saved_width": 388,
+                    "saved_height": 61
                   },
                   "version": 1
                 },
                 "backside_conditions": [
+                  {
+                    "widget": {
+                      "semantic": {
+                        "type": "element",
+                        "html": "p2.html%3Falt_key_to_open_backside%3D1%26reset%3D1",
+                        "attributes": [
+                          "left",
+                          "top",
+                          "width",
+                          "height"
+                        ],
+                        "attribute_values": [
+                          0,
+                          0,
+                          400,
+                          38
+                        ],
+                        "attributes_backsides": [
+                          [],
+                          [],
+                          [],
+                          []
+                        ],
+                        "children": false,
+                        "erased": true
+                      },
+                      "view": {
+                        "saved_width": 400,
+                        "saved_height": 38
+                      },
+                      "version": 1
+                    }
+                  },
                   {
                     "widget": {
                       "semantic": {
@@ -256,28 +337,27 @@ top level widget
                           },
                           {
                             "widget": {
-                              "semantic": {
-                                "type": "number",
-                                "operator": "+",
-                                "numerator": "4",
-                                "denominator": "1",
-                                "format": "mixed_number"
-                              },
-                              "view": {
-                                "backside_left": 0,
-                                "backside_top": 0,
-                                "backside_geometry": {
-                                  "x_scale": 0.08945454545454545,
-                                  "y_scale": 0.182,
-                                  "original_width": 550,
-                                  "original_height": 200
+                              "type": "backside",
+                              "my_widget": {
+                                "semantic": {
+                                  "type": "number",
+                                  "operator": "+",
+                                  "numerator": "4",
+                                  "denominator": "1",
+                                  "format": "mixed_number"
                                 },
-                                "saved_width": 76,
-                                "saved_height": 55
+                                "view": {
+                                  "saved_width": 388,
+                                  "saved_height": 63
+                                },
+                                "version": 1
                               },
-                              "version": 1
-                            },
-                            "is_backside": true
+                              "css": {
+                                "top": 0,
+                                "left": 0
+                              },
+                              "view": {}
+                            }
                           }
                         ],
                         "horizontal": true,
@@ -290,39 +370,6 @@ top level widget
                       },
                       "version": 1
                     }
-                  },
-                  {
-                    "widget": {
-                      "semantic": {
-                        "type": "element",
-                        "html": "p2.html%3Falt_key_to_open_backside%3D1%26reset%3D1",
-                        "attributes": [
-                          "left",
-                          "top",
-                          "width",
-                          "height"
-                        ],
-                        "attribute_values": [
-                          0,
-                          0,
-                          725,
-                          68
-                        ],
-                        "attributes_backsides": [
-                          [],
-                          [],
-                          [],
-                          []
-                        ],
-                        "children": false,
-                        "erased": true
-                      },
-                      "view": {
-                        "saved_width": 725,
-                        "saved_height": 68
-                      },
-                      "version": 1
-                    }
                   }
                 ],
                 "body": {
@@ -330,39 +377,14 @@ top level widget
                   "steps": [
                     {
                       "type": "robot_action",
-                      "action_name": "pick up",
-                      "path": {
-                        "type": "path.to_backside_widget_of_context",
-                        "type_name": "scale",
-                        "backside_index": 0,
-                        "removing_widget": true
-                      },
-                      "additional_info": {
-                        "time": 9029
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "drop it on",
-                      "path": {
-                        "type": "path.top_level_backside"
-                      },
-                      "additional_info": {
-                        "left_offset_fraction": 0.4802955020920502,
-                        "top_offset_fraction": 0.08469347133757962,
-                        "time": 2463
-                      }
-                    },
-                    {
-                      "type": "robot_action",
                       "action_name": "open the backside",
                       "path": {
                         "type": "path.to_backside_widget_of_context",
                         "type_name": "element",
-                        "backside_index": 1
+                        "backside_index": 0
                       },
                       "additional_info": {
-                        "time": 5758
+                        "time": 1874
                       }
                     },
                     {
@@ -371,11 +393,11 @@ top level widget
                       "path": {
                         "type": "path.to_backside_widget_of_context",
                         "type_name": "element",
-                        "backside_index": 1
+                        "backside_index": 0
                       },
                       "additional_info": {
                         "button_selector": ".toontalk-settings-backside-button",
-                        "time": 3553
+                        "time": 2626
                       }
                     },
                     {
@@ -402,9 +424,21 @@ top level widget
                           "json": {
                             "type": "path.to_backside_widget_of_context",
                             "type_name": "element",
-                            "backside_index": 1
+                            "backside_index": 0
                           }
                         }
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "close the backside",
+                      "path": {
+                        "type": "path.to_backside_widget_of_context",
+                        "type_name": "element",
+                        "backside_index": 0
+                      },
+                      "additional_info": {
+                        "time": 5505
                       }
                     },
                     {
@@ -412,10 +446,10 @@ top level widget
                       "action_name": "open the backside",
                       "path": {
                         "type": "newly_created_widgets_path",
-                        "index": 1
+                        "index": 0
                       },
                       "additional_info": {
-                        "time": 5741
+                        "time": 2375
                       }
                     },
                     {
@@ -423,14 +457,50 @@ top level widget
                       "action_name": "edit",
                       "path": {
                         "type": "newly_created_widgets_path",
-                        "index": 1
+                        "index": 0
                       },
                       "additional_info": {
                         "setter_name": "set_function_name",
                         "argument_1": "go to page",
                         "toString": "change the function bird to 'go to page'",
                         "button_selector": ".toontalk-select-function",
-                        "time": 4033
+                        "time": 3100
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "close the backside",
+                      "path": {
+                        "type": "newly_created_widgets_path",
+                        "index": 0
+                      },
+                      "additional_info": {
+                        "time": 1936
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "pick up",
+                      "path": {
+                        "type": "path.to_backside_widget_of_context",
+                        "type_name": "scale",
+                        "backside_index": 1,
+                        "removing_widget": true
+                      },
+                      "additional_info": {
+                        "time": 4883
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "drop it on",
+                      "path": {
+                        "type": "path.top_level_backside"
+                      },
+                      "additional_info": {
+                        "left_offset_fraction": 0.47260416666666666,
+                        "top_offset_fraction": 0.3006907894736842,
+                        "time": 2160
                       }
                     },
                     {
@@ -450,19 +520,20 @@ top level widget
                         }
                       },
                       "additional_info": {
-                        "time": 1787
+                        "time": 2267
                       }
                     },
                     {
                       "type": "robot_action",
                       "action_name": "drop it on",
                       "path": {
-                        "type": "path.top_level_backside"
+                        "type": "path.to_entire_context",
+                        "is_backside": true
                       },
                       "additional_info": {
-                        "left_offset_fraction": 0.6872646443514644,
-                        "top_offset_fraction": 0.08004909766454353,
-                        "time": 1361
+                        "left_offset_fraction": 0.29409090909090907,
+                        "top_offset_fraction": 0.231875,
+                        "time": 1443
                       }
                     },
                     {
@@ -471,11 +542,11 @@ top level widget
                       "path": {
                         "type": "path.to_backside_widget_of_context",
                         "type_name": "element",
-                        "backside_index": 1,
+                        "backside_index": 0,
                         "removing_widget": true
                       },
                       "additional_info": {
-                        "time": 2313
+                        "time": 2456
                       }
                     },
                     {
@@ -490,7 +561,7 @@ top level widget
                         }
                       },
                       "additional_info": {
-                        "time": 1539
+                        "time": 905
                       }
                     },
                     {
@@ -501,24 +572,25 @@ top level widget
                         "resource": {
                           "type": "nest",
                           "contents": [],
-                          "serial_number": 7,
-                          "name": "#7"
+                          "serial_number": 5,
+                          "name": "#8"
                         }
                       },
                       "additional_info": {
-                        "time": 2076
+                        "time": 1922
                       }
                     },
                     {
                       "type": "robot_action",
                       "action_name": "drop it on",
                       "path": {
-                        "type": "path.top_level_backside"
+                        "type": "path.to_entire_context",
+                        "is_backside": true
                       },
                       "additional_info": {
-                        "left_offset_fraction": 0.08340742677824267,
-                        "top_offset_fraction": 0.014629777070063694,
-                        "time": 677
+                        "left_offset_fraction": 0.6388920454545455,
+                        "top_offset_fraction": 0.412734375,
+                        "time": 3757
                       }
                     },
                     {
@@ -530,7 +602,7 @@ top level widget
                         "removing_widget": true
                       },
                       "additional_info": {
-                        "time": 4249
+                        "time": 4472
                       }
                     },
                     {
@@ -545,7 +617,7 @@ top level widget
                         }
                       },
                       "additional_info": {
-                        "time": 1066
+                        "time": 849
                       }
                     },
                     {
@@ -557,7 +629,7 @@ top level widget
                         "removing_widget": true
                       },
                       "additional_info": {
-                        "time": 2278
+                        "time": 2996
                       }
                     },
                     {
@@ -565,10 +637,10 @@ top level widget
                       "action_name": "drop it on",
                       "path": {
                         "type": "newly_created_widgets_path",
-                        "index": 1
+                        "index": 0
                       },
                       "additional_info": {
-                        "time": 1547
+                        "time": 1985
                       }
                     }
                   ]
@@ -579,40 +651,10 @@ top level widget
               "view": {
                 "frontside_width": 66,
                 "frontside_height": 110,
+                "frontside_left": "NaN%",
+                "frontside_top": "NaN%",
                 "saved_width": 66,
                 "saved_height": 110
-              },
-              "version": 1
-            }
-          },
-          {
-            "widget": {
-              "semantic": {
-                "type": "element",
-                "html": "p2.html%3Falt_key_to_open_backside%3D1%26reset%3D1",
-                "attributes": [
-                  "left",
-                  "top",
-                  "width",
-                  "height"
-                ],
-                "attribute_values": [
-                  66.20989990234375,
-                  202.1458282470703,
-                  725,
-                  68
-                ],
-                "attributes_backsides": [
-                  [],
-                  [],
-                  [],
-                  []
-                ],
-                "children": false
-              },
-              "view": {
-                "saved_width": 725,
-                "saved_height": 68
               },
               "version": 1
             }
@@ -622,23 +664,24 @@ top level widget
       "view": {
         "frontside_width": 388,
         "frontside_height": 63,
-        "frontside_left": 117,
-        "frontside_top": 118,
+        "frontside_left": 68,
+        "frontside_top": 14,
+        "backside_left": 0,
+        "backside_top": 0,
         "backside_geometry": {
-          "x_scale": 1.4018181818181834,
+          "x_scale": 1.4910247933884326,
           "y_scale": 1.294999999999999,
           "original_width": 550,
           "original_height": 200
         },
-        "saved_width": 488,
-        "saved_height": 63
+        "saved_width": 388,
+        "saved_height": 61
       },
       "version": 1
     }
   ],
   "shared_html": [
-    "%3Cp%20class%3DMsoNormal%3E%3Cspan%20style%3D'font-size%3A20.0pt%3Bline-height%3A107%25%3Bfont-family%3A%0A%22Tahoma%22%2Csans-serif%3Bcolor%3A%23FFCCCC%3Bbackground%3Anavy%3Bmso-highlight%3Anavy'%3E%3Cspan%0Astyle%3D'mso-spacerun%3Ayes'%3E%20%3C%2Fspan%3EI%26nbsp%3Bneed%26nbsp%3Ba%26nbsp%3B4.%20Please%26nbsp%3Bdrop%26nbsp%3Ba%26nbsp%3B4%26nbsp%3Bhere.%3C%2Fspan%3E%3Cspan%20style%3D'font-size%3A20.0pt%3B%0Aline-height%3A107%25%3Bfont-family%3A%22Tahoma%22%2Csans-serif%3Bcolor%3A%23FFCCCC'%3E%3Co%3Ap%3E%3C%2Fo%3Ap%3E%3C%2Fspan%3E%3C%2Fp%3E",
-    "%3Cp%20class%3DMsoNormal%3E%3Cspan%20style%3D'font-size%3A20.0pt%3Bline-height%3A107%25%3Bfont-family%3A%0D%0A%22Tahoma%22%2Csans-serif%3Bcolor%3A%23FFCCCC%3Bbackground%3Anavy%3Bmso-highlight%3Anavy'%3E%3Cspan%0D%0Astyle%3D'mso-spacerun%3Ayes'%3E%C2%A0%3C%2Fspan%3EI%20need%20a%204.%3C%2Fspan%3E%3Cspan%20style%3D'font-size%3A20.0pt%3B%0D%0Aline-height%3A107%25%3Bfont-family%3A%22Tahoma%22%2Csans-serif%3Bcolor%3A%23FFCCCC'%3E%3Co%3Ap%3E%3C%2Fo%3Ap%3E%3C%2Fspan%3E%3C%2Fp%3E"
+    "%3Cp%20class%3DMsoNormal%3E%3Cspan%20style%3D'font-size%3A20.0pt%3Bline-height%3A107%25%3Bfont-family%3A%0A%22Tahoma%22%2Csans-serif%3Bcolor%3A%23FFCCCC%3Bbackground%3Anavy%3Bmso-highlight%3Anavy'%3E%3Cspan%0Astyle%3D'mso-spacerun%3Ayes'%3E%20%3C%2Fspan%3EI%26nbsp%3Bneed%26nbsp%3Ba%26nbsp%3B4.%20Please%26nbsp%3Bdrop%26nbsp%3Ba%26nbsp%3B4%26nbsp%3Bhere.%3C%2Fspan%3E%3Cspan%20style%3D'font-size%3A20.0pt%3B%0Aline-height%3A107%25%3Bfont-family%3A%22Tahoma%22%2Csans-serif%3Bcolor%3A%23FFCCCC'%3E%3Co%3Ap%3E%3C%2Fo%3Ap%3E%3C%2Fspan%3E%3C%2Fp%3E"
   ]
 }</div></div>
 </body>
