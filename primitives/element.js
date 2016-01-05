@@ -1347,10 +1347,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 if (attribute_name === 'left' || attribute_name === 'top') {
                     var owner;
                     if (additional_info && additional_info.to_be_on_backside_of) {
-                       owner = additional_info.to_be_on_backside_of[0]; // top of stack
-                    }
-                    if (!owner) {
-                         owner = attribute_widget.get_attribute_owner();
+                        owner = additional_info.to_be_on_backside_of[0]; // top of stack
                     }
                     drag_listener = 
                         function (event) {
@@ -1358,6 +1355,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                             var top_level_position, attribute_value, left, top;
                             if (event.currentTarget.toontalk_widget_side !== attribute_widget.get_attribute_owner()) {
                                 return;
+                            }
+                            if (!owner) {
+                                owner = attribute_widget.get_attribute_owner();
                             }
                             event.stopPropagation();
                             top_level_position = $(owner.get_frontside_element()).closest(".toontalk-top-level-backside").offset();
