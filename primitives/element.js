@@ -1424,18 +1424,21 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
    
     element.toString = function (to_string_info) {
        var scale_or_quote_html = function (html) {
-           var style, first_space;
+           var style = "";
+           var first_space;
            if (html.length > 1 && html.charAt(0) === '<') {
-                style = "style='width: 50px; height: 30px;'";
+                if (this.get_image_element()) {
+                    // if an image then scale it
+                    style = "style='width: 50px; height: 30px;'";
+                }
                 if (to_string_info && to_string_info.inside_tool_tip) {
                     style += " class='toontalk-widget-in-tool-tip'";
                 }
-                first_space = html.indexOf(' ');
-                return html.substring(0, first_space+1) + style + html.substring(first_space);
+                return "<div " + style + ">" + html + "</div>";
            }
            // else is a plain string so quote it
            return '"' + html + '"';
-        };
+        }.bind(this);
         var image_description = function () {
             // if image returns alt if known otherwise default string
             var html = this.get_HTML();

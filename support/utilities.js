@@ -2112,8 +2112,10 @@ window.TOONTALK.UTILITIES =
                           var default_capacity = 100;
                           var tooltip = ui.tooltip.get(0);
                           var new_width, position;
-                          // replace all new lines with <br> breaks
-                          tooltip.innerHTML = process_encoded_HTML(ui.tooltip.get(0).textContent.replace(/(\r\n|\n|\r)/g, "<br>"), decodeURIComponent);
+                          // the following used // .replace(/(\r\n|\n|\r)/g, "<br>") 
+                          // to replace all new lines with <br> breaks
+                          // but this broke some rich text -- could make it more selective but not clear how important it is
+                          tooltip.innerHTML = process_encoded_HTML(ui.tooltip.get(0).textContent, decodeURIComponent); 
                           // width is 340 by default but if more than fits then make wider
                           if (text_length > default_capacity) {
                               new_width = Math.min(800, maximum_width_if_moved || $(window).width()-100);
