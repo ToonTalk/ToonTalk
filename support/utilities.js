@@ -1044,15 +1044,18 @@ window.TOONTALK.UTILITIES =
             if (!json_semantic_backside_widgets) {
                 return;
             }
-            if (!widget_side.is_top_level()) {
-                // the backside widgets need to know parent to be
-                // since they may be called recursively maintain a stack of them
-                if (additional_info.to_be_on_backside_of) {
-                    additional_info.to_be_on_backside_of.push(widget_side);
-                } else {
-                    additional_info.to_be_on_backside_of = [widget_side];    
-                }
-            }
+            // the following caused elements on the back of elements to misbehave
+            // they acquired the wrong owner and parent and child dragged together
+            // running tests seems as if things are working without this
+//             if (!widget_side.is_top_level()) {
+//                 // the backside widgets need to know parent to be
+//                 // since they may be called recursively maintain a stack of them
+//                 if (additional_info.to_be_on_backside_of) {
+//                     additional_info.to_be_on_backside_of.push(widget_side);
+//                 } else {
+//                     additional_info.to_be_on_backside_of = [widget_side];    
+//                 }
+//             }
             backside_widgets = this.create_array_from_json(json_semantic_backside_widgets, additional_info);
             widget_side.set_backside_widgets(backside_widgets, 
                                              json_semantic_backside_widgets.map(
