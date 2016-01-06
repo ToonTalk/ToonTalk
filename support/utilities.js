@@ -698,6 +698,14 @@ window.TOONTALK.UTILITIES =
             initialize_sounds();
         }
         TT.open_backside_only_if_alt_key = utilities.get_current_url_boolean_parameter('alt_key_to_open_backside');
+        TT.reset = utilities.get_current_url_boolean_parameter('reset', false)
+        if (!TT.open_backside_only_if_alt_key) {
+            // puzzle=1 is shorthand for alt_key_to_open_backside=1&reset=1
+            TT.open_backside_only_if_alt_key = utilities.get_current_url_boolean_parameter('puzzle');
+            if (TT.open_backside_only_if_alt_key) {
+                TT.reset = true;
+            }
+        }
         utilities.process_json_elements();
         // for top-level resources since they are not on the backside 'work space' we need a way to turn them off
         // clicking on a running widget may not work since its HTML may be changing constantly
@@ -1719,7 +1727,7 @@ window.TOONTALK.UTILITIES =
                     if (json.semantic && json.semantic.type === 'top_level') {
                         // perhaps local storage will be used instead of the current json
                         if (!TT.no_local_storage) {
-                            if (!utilities.get_current_url_boolean_parameter("reset", false)) {
+                            if (!TT.reset) {
                                 if (json.load_most_recent_program) {
                                     try {
                                          toontalk_last_key = window.localStorage.getItem('toontalk-last-key');
