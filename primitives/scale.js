@@ -180,7 +180,8 @@ window.TOONTALK.scale = (function (TT) {
                         if (contents.is_backside()) {
                             contents.update_display(); // TODO: see if render is OK
                             contents.scale_to(contents_width, contents_height);      
-                        } 
+                        }
+                        contents.render();
                     }
                     hole_element.appendChild(content_element); // no-op if already there
                 }                                          
