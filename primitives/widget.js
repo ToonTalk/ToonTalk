@@ -1348,8 +1348,8 @@ window.TOONTALK.widget = (function (TT) {
                 // already open
                 // make it is opaque
                 $(backside.get_element()).css({opacity: 1});
-                if (new_continuation) {
-                    new_continuation();
+                if (continuation) {
+                    continuation();
                 }
                 return;
             }
