@@ -947,11 +947,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         if (side_of_other.is_backside()) {
             return false;
         }
-        if (!side_of_other.is_element() && !side_of_other.is_number()) {
-            // numbers can become more "element" like when on another element -- e.g. the score
-            // TODO: render numbers on top of elements differently
-            return false;
-        }
+//         if (!side_of_other.is_element() && !side_of_other.is_number()) {
+//             // numbers can become more "element" like when on another element -- e.g. the score
+//             // TODO: render numbers on top of elements differently
+//             return false;
+//         }
         if (this.get_erased() && side_of_other.get_HTML) {
             this.set_HTML(side_of_other.get_HTML());
             this.set_erased(false);
