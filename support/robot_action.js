@@ -403,14 +403,15 @@ window.TOONTALK.robot_action =
             }
             setTimeout(function () {
                            $(button_element).removeClass("ui-state-active");
-                           if (!button_visible && widget.get_backside()) {
-                               // restore things at cycle end
-                               robot.add_body_finished_listener(function () {
-                                   if (widget.get_backside()) {
-                                       widget.get_backside().hide_backside();
-                                   }
-                               });         
-                           }
+                           // following hide the backside even when robot didn't open it
+//                            if (!button_visible && widget.get_backside()) {
+//                                // restore things at cycle end
+//                                robot.add_body_finished_listener(function () {
+//                                    if (widget.get_backside()) {
+//                                        widget.get_backside().hide_backside();
+//                                    }
+//                                });         
+//                            }
                            robot.run_next_step();
                       },
                       delay);
@@ -426,8 +427,10 @@ window.TOONTALK.robot_action =
             robot.animate_to_element(button_element, new_continuation, robot.transform_animation_speed(TT.UTILITIES.default_animation_speed/2), 0, 0, true);
         }
         if (!button_visible && widget.open_backside && robot.animate_consequences_of_actions()) {
-            widget.open_backside(animation_continuation);
-            close_backside_when_finished(widget, robot);
+            if (widget.open_backside(animation_continuation)) {
+                // open_backside returns backside only if it really opened it (not already open)
+                close_backside_when_finished(widget, robot);
+            }
         } else {
             animation_continuation();
         }
@@ -607,6 +610,12 @@ window.TOONTALK.robot_action =
     };
     var click_button_animation = function (widget, robot, continuation, additional_info) {
         var new_continuation = function (button_element) {
+            if ($(button_element).is(".toontalk-settings-backside-button") && button_element.innerText === '>') {
+                // displaying advanced settings so be sure to hide them when robot is finished
+                robot.add_body_finished_listener(function () {
+                                                     widget.get_backside().set_advanced_settings_showing(false, widget.get_backside_element());
+                                                 });
+            }
             $(button_element).click();
             continuation();
         };
