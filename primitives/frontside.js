@@ -66,15 +66,15 @@ window.TOONTALK.frontside =
                 var widget = this.get_widget();
                 // tried to return if no change if visibility but then loading backside of robot lost its conditions
                 visible = new_value;
+                if (new_value) {
+                    TT.UTILITIES.when_attached(this.get_element(true), 
+                                               widget.render.bind(widget));
+                }
                 if (widget.walk_children) {
                     widget.walk_children(function (child_side) {
                                              child_side.set_visible(new_value);
                                              return true; // continue to next child
                     });
-                }
-                if (new_value) {
-                    TT.UTILITIES.when_attached(this.get_element(true), 
-                                               widget.render.bind(widget));
                 }
             };
             // prefer addEventListener over JQuery's equivalent since when I inspect listeners I get a link to this code
