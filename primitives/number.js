@@ -487,12 +487,6 @@ window.TOONTALK.number = (function () {
                                           height: client_height});
             }
         } else {
-            if (!TT.UTILITIES.visible_element($dimensions_holder.get(0))) {
-                if (TT.logging && TT.logging.indexOf('display') >= 0) {
-                    console.log("Container not visible so no display of " + this.to_debug_string());
-                }
-                return;
-            }
             client_width  = $dimensions_holder.width();
             client_height = $dimensions_holder.height();
             if (client_width === 0 || client_height === 0) {
