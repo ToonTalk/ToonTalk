@@ -1084,7 +1084,7 @@ window.TOONTALK.backside =
                             }
                             $element.remove();
                         }.bind(this);
-                    if (!$element.is(":visible")) {
+                    if (!TT.UTILITIES.visible_element($element)) {
                         // robot may have opened the backside and then removed the widget itself
                         remove_backside();
                         return;

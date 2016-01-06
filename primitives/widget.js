@@ -1344,7 +1344,7 @@ window.TOONTALK.widget = (function (TT) {
                 final_left, final_top, 
                 frontside_offset, backside_width, frontside_height, 
                 container_offset, container_width;
-            if (backside && $(backside.get_element()).is(":visible")) {
+            if (backside && TT.UTILITIES.visible_element(backside.get_element())) {
                 // already open
                 // make it is opaque
                 $(backside.get_element()).css({opacity: 1});

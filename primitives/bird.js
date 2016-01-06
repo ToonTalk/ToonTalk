@@ -913,6 +913,7 @@ window.TOONTALK.nest = (function (TT) {
             }
             bird.animate_delivery_to(message_side, this, undefined, undefined, undefined, continuation, event, robot);
             if (nest_copies) {
+                // TODO: determine if .closest(":visible") is needed here -- :visible is a JQuery hack to avoid
                 start_position = $(bird.closest_visible_ancestor().get_widget().get_frontside_element()).closest(":visible").position();
                 bird_parent_element = bird.get_parent_of_frontside().get_element();
                 visible = this.visible();

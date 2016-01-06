@@ -1792,7 +1792,7 @@ window.TOONTALK.element_backside =
         var $show_chooser_button = $("<button>" + show_label + "</button>").button();
         var show_chooser_button_clicked =
             function (event) {
-                if ($(attributes_chooser).is(":visible")) {
+                if (TT.UTILITIES.visible_element(attributes_chooser)) {
                     $(attributes_chooser).hide();
                     $show_chooser_button.button("option", "label", show_label);
                     TT.UTILITIES.give_tooltip($show_chooser_button.get(0), show_title);
@@ -2070,7 +2070,7 @@ window.TOONTALK.element_backside =
                     $(html_input.button).val(element_widget[getter]());
                 }
                 update_style_attributes_table(attribute_table, element_widget, backside);
-                if ($(attributes_chooser).is(":visible")) {
+                if (TT.UTILITIES.visible_element(attributes_chooser)) {
                     backside.update_style_attribute_chooser();
                 }
                 element_widget.get_backside_widgets().forEach(function (widget) {

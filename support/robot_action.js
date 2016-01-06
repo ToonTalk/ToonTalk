@@ -394,7 +394,7 @@ window.TOONTALK.robot_action =
     var button_use_animation = function (widget, robot, continuation, class_name_selector, additional_info, delay) {
         var button_element = find_backside_element(widget, class_name_selector);
         var robot_frontside_element = robot.get_frontside_element();
-        var button_visible = button_element && $(button_element).is(":visible");
+        var button_visible = button_element && TT.UTILITIES.visible_element(button_element);
         var new_continuation = function () {
             continuation(button_element);
             $(button_element).addClass("ui-state-active");

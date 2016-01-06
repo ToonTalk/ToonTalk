@@ -342,7 +342,7 @@ window.TOONTALK.robot = (function (TT) {
         new_robot.set_animating = function (animating, robot_offset) {
             var frontside_element = this.get_frontside_element();
             var $top_level_element, robot_offset;
-            if (animating && $(frontside_element).is(":visible")) {
+            if (animating && TT.UTILITIES.visible_element(frontside_element)) {
                 if (!robot_offset) {
                     robot_offset = $(frontside_element).offset();
                 } 
