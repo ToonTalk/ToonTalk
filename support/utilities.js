@@ -680,89 +680,6 @@ window.TOONTALK.UTILITIES =
             }
         });
     };
-    var initialize = function () {
-        var document_click =
-            function (event) {
-    //          event.stopPropagation();
-                $(".toontalk-top-level-resource-container").each(function (index, element) {
-                    var widget = element.toontalk_widget_side;
-                    if (widget && widget.set_running) {
-                        widget.set_running(false);
-                    }
-                });
-            };
-        var translation_div;
-        TT.debugging = utilities.get_current_url_parameter('debugging');
-        TT.logging   = utilities.get_current_url_parameter('log');
-        if (utilities.get_current_url_numeric_parameter('volume', 10) > 0) {
-            initialize_sounds();
-        }
-        TT.open_backside_only_if_alt_key = utilities.get_current_url_boolean_parameter('alt_key_to_open_backside');
-        TT.reset = utilities.get_current_url_boolean_parameter('reset', false)
-        if (!TT.open_backside_only_if_alt_key) {
-            // puzzle=1 is shorthand for alt_key_to_open_backside=1&reset=1
-            TT.open_backside_only_if_alt_key = utilities.get_current_url_boolean_parameter('puzzle');
-            if (TT.open_backside_only_if_alt_key) {
-                TT.reset = true;
-            }
-        }
-        utilities.process_json_elements();
-        // for top-level resources since they are not on the backside 'work space' we need a way to turn them off
-        // clicking on a running widget may not work since its HTML may be changing constantly
-        window.document.addEventListener('click', document_click);
-        // frontside's click handler will run the top-level resource widgets if clicked
-        TT.DEFAULT_QUEUE = window.TOONTALK.queue.create();
-        // might want two queues: so new entries end up in the 'next queue'
-        TT.DEFAULT_QUEUE.start();
-        window.addEventListener('beforeunload', function (event) {
-            try {
-                utilities.backup_all_top_level_widgets(true);
-            } catch (error) {
-                TT.UTILITIES.report_internal_error(error);
-            }
-        });
-        TT.TRANSLATION_ENABLED = utilities.get_current_url_boolean_parameter("translate", false);
-        if (TT.TRANSLATION_ENABLED) {
-            $("a").each(function (index, element) {
-                            element.href = utilities.add_URL_parameter(element.href, "translate", "1"); 
-                        });
-            if (!$("#google_translate_element").is("*")) {
-                // if one wasn't added to the page then add it at the top of the body
-                translation_div = document.createElement("div");
-                translation_div.id = "google_translate_element";
-                document.body.insertBefore(translation_div, document.body.firstChild);
-            }
-            document.head.appendChild($('<meta name="google-translate-customization" content="7e20c0dc38d147d6-a2c819007bfac9d1-gc84ee27cc12fd5d1-1b"></meta>')[0]);
-            load_script("https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit");
-        } else {
-            $("#google_translate_element").remove();
-        }
-        if (!TT.vacuum.the_vacuum) {
-            TT.vacuum.create();
-        }
-        utilities.add_test_all_button();
-        // compute the default dimensions of robots, birds, nests, and scales (not really needed for scales and causes a bug in test-programs.html)
-        discover_default_dimensions('toontalk-robot',       TT.robot);
-        discover_default_dimensions('toontalk-empty-nest',  TT.nest);
-        discover_default_dimensions('toontalk-bird-static', TT.bird);
-        // all titles should use custom tool tips (e.g. those in documentation pages)
-        $("[title]").each(function (index, element) {
-                              utilities.use_custom_tooltip(element);
-	    });
-	    document.addEventListener("visibilitychange", function() {
-	        if (document.hidden) {
-	            utilities.mute_audio_objects_playing();
-	        } else {
-	            // make sure all widgets are redisplayed
-                utilities.rerender_all();
-                utilities.restore_audio_volumes();
-	        }
-	    });
-	    setTimeout(function () {
-	                   TT.DISPLAY_UPDATES.update_display();
-                   },
-                   100); 
-    };
     var discover_default_dimensions = function (class_name, toontalk_module) {
         var $element_for_determining_dimensions = $("<div class='" + class_name + "'>");
         utilities.run_when_dimensions_known($element_for_determining_dimensions.get(0), 
@@ -870,7 +787,7 @@ window.TOONTALK.UTILITIES =
                                 }
                             },
                             false); // don't capture events
-    document.addEventListener('DOMContentLoaded', initialize);
+    document.addEventListener('DOMContentLoaded', utilities.initialize);
     observer.observe(window.document, {childList: true,
                                        subtree:   true});
     utilities.available_types = ["number", "box", "element", "robot", "nest", "sensor", "top-level"];   
@@ -3997,6 +3914,90 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                       return false;
                   }
             };
+        };
+
+        utilities.initialize = function () {
+            var document_click =
+                function (event) {
+        //          event.stopPropagation();
+                    $(".toontalk-top-level-resource-container").each(function (index, element) {
+                        var widget = element.toontalk_widget_side;
+                        if (widget && widget.set_running) {
+                            widget.set_running(false);
+                        }
+                    });
+                };
+            var translation_div;
+            TT.debugging = utilities.get_current_url_parameter('debugging');
+            TT.logging   = utilities.get_current_url_parameter('log');
+            if (utilities.get_current_url_numeric_parameter('volume', 10) > 0) {
+                initialize_sounds();
+            }
+            TT.open_backside_only_if_alt_key = utilities.get_current_url_boolean_parameter('alt_key_to_open_backside');
+            TT.reset = utilities.get_current_url_boolean_parameter('reset', false)
+            if (!TT.open_backside_only_if_alt_key) {
+                // puzzle=1 is shorthand for alt_key_to_open_backside=1&reset=1
+                TT.open_backside_only_if_alt_key = utilities.get_current_url_boolean_parameter('puzzle');
+                if (TT.open_backside_only_if_alt_key) {
+                    TT.reset = true;
+                }
+            }
+            utilities.process_json_elements();
+            // for top-level resources since they are not on the backside 'work space' we need a way to turn them off
+            // clicking on a running widget may not work since its HTML may be changing constantly
+            window.document.addEventListener('click', document_click);
+            // frontside's click handler will run the top-level resource widgets if clicked
+            TT.DEFAULT_QUEUE = window.TOONTALK.queue.create();
+            // might want two queues: so new entries end up in the 'next queue'
+            TT.DEFAULT_QUEUE.start();
+            window.addEventListener('beforeunload', function (event) {
+                try {
+                    utilities.backup_all_top_level_widgets(true);
+                } catch (error) {
+                    TT.UTILITIES.report_internal_error(error);
+                }
+            });
+            TT.TRANSLATION_ENABLED = utilities.get_current_url_boolean_parameter("translate", false);
+            if (TT.TRANSLATION_ENABLED) {
+                $("a").each(function (index, element) {
+                                element.href = utilities.add_URL_parameter(element.href, "translate", "1"); 
+                            });
+                if (!$("#google_translate_element").is("*")) {
+                    // if one wasn't added to the page then add it at the top of the body
+                    translation_div = document.createElement("div");
+                    translation_div.id = "google_translate_element";
+                    document.body.insertBefore(translation_div, document.body.firstChild);
+                }
+                document.head.appendChild($('<meta name="google-translate-customization" content="7e20c0dc38d147d6-a2c819007bfac9d1-gc84ee27cc12fd5d1-1b"></meta>')[0]);
+                load_script("https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit");
+            } else {
+                $("#google_translate_element").remove();
+            }
+            if (!TT.vacuum.the_vacuum) {
+                TT.vacuum.create();
+            }
+            utilities.add_test_all_button();
+            // compute the default dimensions of robots, birds, nests, and scales (not really needed for scales and causes a bug in test-programs.html)
+            discover_default_dimensions('toontalk-robot',       TT.robot);
+            discover_default_dimensions('toontalk-empty-nest',  TT.nest);
+            discover_default_dimensions('toontalk-bird-static', TT.bird);
+            // all titles should use custom tool tips (e.g. those in documentation pages)
+            $("[title]").each(function (index, element) {
+                                  utilities.use_custom_tooltip(element);
+            });
+            document.addEventListener("visibilitychange", function() {
+                if (document.hidden) {
+                    utilities.mute_audio_objects_playing();
+                } else {
+                    // make sure all widgets are redisplayed
+                    utilities.rerender_all();
+                    utilities.restore_audio_volumes();
+                }
+            });
+            setTimeout(function () {
+                           TT.DISPLAY_UPDATES.update_display();
+                       },
+                       100); 
         };
 
         return utilities;
