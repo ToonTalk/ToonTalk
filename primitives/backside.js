@@ -510,7 +510,7 @@ window.TOONTALK.backside =
                             if (json_array) {
                                 json_view = json_array[index];
                             }
-                             // true was backside_visible but this meant that the layout of widgets on the backside of a backside weren't recreated
+                             // true was backside_visible but this meant that the layout of widgets on the backside of a backside wasn't recreated
                              // creating these elements on load time is small constant overhead -- it when robots are running unwatched that we need to be sure
                              // that front or back sides are created only if needed
                             widget_side_element = backside_widget_side.get_element(true);

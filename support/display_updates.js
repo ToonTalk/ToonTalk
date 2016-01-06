@@ -111,7 +111,7 @@ window.TOONTALK.DISPLAY_UPDATES =
                                                  } else if (!$(element).is(".ui-resizable")) {
                                                      TT.UTILITIES.make_resizable($(element), pending_update);
                                                  }
-                                            });   
+                                             });   
                 }                  
             });
             updating = false;
