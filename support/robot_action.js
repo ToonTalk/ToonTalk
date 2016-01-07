@@ -613,7 +613,9 @@ window.TOONTALK.robot_action =
             if ($(button_element).is(".toontalk-settings-backside-button") && button_element.innerText === '>') {
                 // displaying advanced settings so be sure to hide them when robot is finished
                 robot.add_body_finished_listener(function () {
-                                                     widget.get_backside().set_advanced_settings_showing(false, widget.get_backside_element());
+                                                     if (widget.get_backside()) {
+                                                         widget.get_backside().set_advanced_settings_showing(false, widget.get_backside_element());
+                                                     }
                                                  });
             }
             $(button_element).click();
