@@ -1,12 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="stylesheet" media="all" href="../../toontalk.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-<script src="../../compile/toontalk.js"></script>
-<script src="../../libraries/jquery-ui-1.11.2.custom/jquery-ui.min.js"></script>
+<script src="../../toontalk.js"></script>
 <title>Function Birds in ToonTalk</title>
-<link rel="shortcut icon" href="../../favicon.ico" />
 </head>
 <body>
 A function bird behaves just any other <a href="birds-nests.html">bird</a>.
@@ -16,15 +12,33 @@ The bird is given the result of computing a function of the other widgets.
 <h2>Numeric Function Birds</h2>
 <p id='number_function'>
 Here is the list of <b>number</b> functions birds available in this system:
+<table id='number_function_birds'></table>
 <script type="text/javascript">
-   window.TOONTALK.UTILITIES.insert_function_bird_documentation('number');
-  </script> 
+   document.addEventListener('toontalk_initialized', 
+                             function () {
+                                 window.TOONTALK.UTILITIES.insert_function_bird_documentation('number', '#number_function_birds');
+                             });
+</script> 
 </p>
 <p id='box_functions'>
 Here is the list of <b>box</b> functions birds available in this system:
+<table id='box_function_birds'></table>
 <script type="text/javascript">
-   window.TOONTALK.UTILITIES.insert_function_bird_documentation('box');
-  </script> 
+   document.addEventListener('toontalk_initialized', 
+                             function () {
+                                    window.TOONTALK.UTILITIES.insert_function_bird_documentation('box', '#box_function_birds');
+                             });
+</script> 
+</p>
+<p id='element_functions'>
+Here is the list of <b>element</b> functions birds available in this system:
+<table id='element_function_birds'></table>
+<script type="text/javascript">
+   document.addEventListener('toontalk_initialized', 
+                             function () {
+                                    window.TOONTALK.UTILITIES.insert_function_bird_documentation('element', '#element_function_birds');
+                             });
+</script> 
 </p>
 <p>
 You can add a function bird to your work space by dragging one of the birds above or by clicking on a number.
