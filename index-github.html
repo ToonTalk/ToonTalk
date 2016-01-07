@@ -4,16 +4,31 @@
 <html>
 <head>
 <meta charset="utf-8" />
-<link rel="stylesheet" media="all" href="toontalk.css" />
 <script>
-window.TOONTALK = {GOOGLE_DRIVE_CLIENT_ID:  '148386604750-704q35l4gcffpj2nn3p4ivcopl81nm27.apps.googleusercontent.com',
-                   ORIGIN_FOR_GOOGLE_DRIVE: 'toontalk.github.io',
-                   DEBUG_PATH_PREFIX:       ""};
+(function () {
+    var script = document.createElement("script");
+    var script_file, parameters, parameters_start, debugging;
+    parameters_start = window.location.href.indexOf('?');
+    if (parameters_start > 0) {
+        parameters = window.location.href.substring(parameters_start, window.location.href.length);
+    }
+    if (parameters) {
+        debugging = parameters.indexOf("debugging=") > 0 && parameters.indexOf("debugging=0") < 0;
+    }
+    if (debugging) {
+        script_file = "toontalk.js";
+    } else {
+        script_file = "toontalk.min.js";
+    }
+    if (parameters) {
+        script_file += parameters;
+    }
+    script.src = script_file;
+    alert(script_file);
+    document.head.appendChild(script);
+}());
 </script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-<script src="compile/toontalk.debug.js"></script>
 <title>ToonTalk Reborn</title>
-<link rel="shortcut icon" href="favicon.ico" />
 </head>
 <body>
 <p>
