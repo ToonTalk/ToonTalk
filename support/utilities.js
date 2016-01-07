@@ -4003,3 +4003,8 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
         return utilities;
     
 }(window.TOONTALK));
+
+function initialize() {
+    // for access in toontalk.js even when compiled
+    window.TOONTALK.UTILITIES.initialize();
+};
