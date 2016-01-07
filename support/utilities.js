@@ -3679,7 +3679,7 @@ window.TOONTALK.UTILITIES =
                            }).join("");
        };
 
-       utilities.insert_function_bird_documentation = function (type_name) {
+       utilities.insert_function_bird_documentation = function (type_name, id) {
            var function_table = TOONTALK[type_name]['function'];
            var function_names = Object.keys(function_table);
            var table = "<table class='toontalk-function-bird-documentation-table'>";
@@ -3690,14 +3690,16 @@ window.TOONTALK.UTILITIES =
                         function_object.title + "</td></tr>";
            });
            table += "</table>";
-           document.write(table);
+           $(id).html(table);
            function_names.forEach(function (function_name, index) {
                var bird = window.TOONTALK.bird.create_function(type_name, undefined, function_name);
                var bird_frontside_element = bird.get_frontside_element();
                bird.update_display();
                $("#bird_id_" + index).replaceWith($(bird_frontside_element).addClass("toontalk-function-bird-documentation-bird"));
                // sanitise the id -- id enables links to specific function birds
-               bird_frontside_element.id = encodeURIComponent(function_name);
+               if (bird_frontside_element) {
+                   bird_frontside_element.id = encodeURIComponent(function_name);
+               }
            });  
        };
 
@@ -3916,7 +3918,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             };
         };
 
-        utilities.initialize = function () {
+        utilities.initialize = function (callback) {
             var document_click =
                 function (event) {
         //          event.stopPropagation();
@@ -3997,7 +3999,8 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             setTimeout(function () {
                            TT.DISPLAY_UPDATES.update_display();
                        },
-                       100); 
+                       100);
+            document.dispatchEvent(TT.UTILITIES.create_event('toontalk_initialized', {}));
         };
 
         return utilities;

@@ -11,12 +11,19 @@
 (function () {
 "use strict";
 
-var url = document.querySelector('script[src*="toontalk.js"]').src;
+var this_url = document.querySelector('script[src*="toontalk.js"]').src;
 // following assumes that no URL parameters contain forward slashes
-var path_prefix = url.substring(0, url.lastIndexOf('/')+1);
+var path_prefix = this_url.substring(0, this_url.lastIndexOf('/')+1);
+var this_url_parameters = this_url.substring(this_url.indexOf('?')+1);
+var web_page_parameters = window.location.search.substr(1);
 
-var get_url_parameter = function (name, default_value) {
-    var parts = window.location.search.substr(1).split('&');
+var get_parameter = function (name, default_value) {
+    return get_url_parameter(name, web_page_parameters) ||
+           get_url_parameter(name, this_url_parameters, default_value);
+};
+
+var get_url_parameter = function (name, parameters, default_value) {
+    var parts = parameters.split('&');
     var value = default_value;
     parts.some(function (part) {
                    var name_and_value = part.split('=');
@@ -30,17 +37,21 @@ var get_url_parameter = function (name, default_value) {
 
 // following is needed to access the user's Google Drive 
 // default assumes web page is hosted on toontalk.github.io
-window.TOONTALK = {GOOGLE_DRIVE_CLIENT_ID:  get_url_parameter('GOOGLE_DRIVE_CLIENT_ID',  '148386604750-704q35l4gcffpj2nn3p4ivcopl81nm27.apps.googleusercontent.com'),
-                   ORIGIN_FOR_GOOGLE_DRIVE: get_url_parameter('ORIGIN_FOR_GOOGLE_DRIVE', 'toontalk.github.io')};
+window.TOONTALK = {GOOGLE_DRIVE_CLIENT_ID:  get_parameter('GOOGLE_DRIVE_CLIENT_ID',  '148386604750-704q35l4gcffpj2nn3p4ivcopl81nm27.apps.googleusercontent.com'),
+                   ORIGIN_FOR_GOOGLE_DRIVE: get_parameter('ORIGIN_FOR_GOOGLE_DRIVE', 'toontalk.github.io')};
 
-var debugging = get_url_parameter('debugging', '0') !== '0';
+var debugging = get_parameter('debugging', '0') !== '0';
+
+var add_css = function (URL) {
+    var css = document.createElement('link');
+    css.rel   = 'stylesheet';
+    css.media = 'all';
+    css.href  = path_prefix + URL;
+    document.head.appendChild(css);
+}
 
 // <link rel="stylesheet" media="all" href="../../toontalk.css">
-var css = document.createElement('link');
-css.rel   = 'stylesheet';
-css.media = 'all';
-css.href  = path_prefix + 'toontalk.css';
-document.head.appendChild(css);
+add_css('toontalk.css');
 
 // <link rel="shortcut icon" href="../../images/favicon.ico" />
 var icon = document.createElement('link');
@@ -106,10 +117,24 @@ var loadFile = function (index) {
                                                  if (index < file_names.length) {
                                                      loadFile(index);               
                                                  } else {
-                                                     initialize();  
+                                                     initialize();
                                                  }         
                                             });
                };
+
+var table_of_contents = get_parameter('TOC', '0') !== '0';
+
+if (table_of_contents) {
+    // Following based upon http://solidgone.org/Jqtoc
+    file_names.push("libraries/jquery.jqTOC.js");
+    add_css("libraries/jquery.jqTOC.css");
+    document.addEventListener('toontalk_initialized',
+                              function () {
+                                  $("div#table_of_contents").jqTOC({tocWidth:   200,
+                                                                    tocTitle:   'Click to navigate',
+                                                                    tocTopLink: 'Top of page'});
+                              });
+}
 
 loadFile(0);
 
