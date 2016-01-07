@@ -15,8 +15,8 @@ var url = document.querySelector('script[src*="toontalk.js"]').src;
 // following assumes that no URL parameters contain forward slashes
 var path_prefix = url.substring(0, url.lastIndexOf('/')+1);
 
-var get_url_parameter = function (name, url, default_value) {
-    var parts = url.split('&');
+var get_url_parameter = function (name, default_value) {
+    var parts = window.location.search.substr(1).split('&');
     var value = default_value;
     parts.some(function (part) {
                    var name_and_value = part.split('=');
@@ -30,10 +30,10 @@ var get_url_parameter = function (name, url, default_value) {
 
 // following is needed to access the user's Google Drive 
 // default assumes web page is hosted on toontalk.github.io
-window.TOONTALK = {GOOGLE_DRIVE_CLIENT_ID:  get_url_parameter('GOOGLE_DRIVE_CLIENT_ID',  url, '148386604750-704q35l4gcffpj2nn3p4ivcopl81nm27.apps.googleusercontent.com'),
-                   ORIGIN_FOR_GOOGLE_DRIVE: get_url_parameter('ORIGIN_FOR_GOOGLE_DRIVE', url, 'toontalk.github.io')};
+window.TOONTALK = {GOOGLE_DRIVE_CLIENT_ID:  get_url_parameter('GOOGLE_DRIVE_CLIENT_ID',  '148386604750-704q35l4gcffpj2nn3p4ivcopl81nm27.apps.googleusercontent.com'),
+                   ORIGIN_FOR_GOOGLE_DRIVE: get_url_parameter('ORIGIN_FOR_GOOGLE_DRIVE', 'toontalk.github.io')};
 
-var debugging = get_url_parameter('debugging', window.location.href, '0') !== '0';
+var debugging = get_url_parameter('debugging', '0') !== '0';
 
 // <link rel="stylesheet" media="all" href="../../toontalk.css">
 var css = document.createElement('link');
