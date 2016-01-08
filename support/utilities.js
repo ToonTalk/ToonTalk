@@ -3644,7 +3644,7 @@ window.TOONTALK.UTILITIES =
                widget_side_dereferenced && widget_side_dereferenced.use_scaling_transform) {
                // leave CSS width and height alone and recompute scaling transform
                // following will call set_css again with modified css
-               widget_side.use_scaling_transform(css);
+               widget_side_dereferenced.use_scaling_transform(css);
            } else {
                $(element).css(css);
            }
@@ -4008,5 +4008,5 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
 }(window.TOONTALK));
 
 // for access in toontalk.js even when compiled
-window.initialize_toontalk = window.TOONTALK.UTILITIES.initialize;
+window['initialize_toontalk'] = window.TOONTALK.UTILITIES.initialize;
 
