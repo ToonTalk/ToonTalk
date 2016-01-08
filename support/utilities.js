@@ -1960,6 +1960,12 @@ window.TOONTALK.UTILITIES =
                 return "ninth";
                 case 10:
                 return "tenth";
+                case 11:
+                return "eleventh";
+                case 12:
+                return "twelfth";
+                case 13:
+                return "thirteenth";
                 default:
                 if (n%10 === 1) {
                     return n + "st";
