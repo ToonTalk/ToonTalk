@@ -102,24 +102,45 @@ if (debugging) {
                   "libraries/jquery.ui.touch-punch.min.js"];                 
 }
 
-var loadFile = function (index) {
+var local_replacements =
+    // used to run off-line
+    // no need for an entry for https://apis.google.com/js/client.js?onload=handle_client_load
+    // since requires an Internet connection
+    {"https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js": "libraries/jquery.min.js"};
+
+var loadFile = function (index, offline) {
                    var script = document.createElement("script");
                    var file_name = file_names[index];
+                   var load_next_file = function () {
+                                            index++;
+                                            if (index < file_names.length) {
+                                                loadFile(index, offline);               
+                                            } else {
+                                                initialize_toontalk();
+                                            }         
+                                        };
                    if (file_name.indexOf("https:") >= 0) {
-                       script.src = file_name;
+                       if (!offline) { // window.navigator.onLine was true even after disconnecting from the net
+                           script.src = file_name;
+                       } else if (local_replacements[file_name]) {
+                           script.src = path_prefix + local_replacements[file_name];
+                       } else {
+                           // ignore it
+                           load_next_file();
+                       }
                    } else {
                       script.src = path_prefix + file_name;
                    }
+                   script.addEventListener('load', load_next_file);
+                   script.addEventListener('error', function (event) {
+                       if (script.src.indexOf("https:") >= 0) {
+                           if (local_replacements[file_name]) {
+                               // try again with local file
+                               loadFile(index, true);
+                           }
+                       }
+                   });
                    document.head.appendChild(script);
-                   script.addEventListener('load',
-                                           function (event) {
-                                                 index++;
-                                                 if (index < file_names.length) {
-                                                     loadFile(index);               
-                                                 } else {
-                                                     initialize_toontalk();
-                                                 }         
-                                            });
                };
 
 var table_of_contents = get_parameter('TOC', '0') !== '0';
