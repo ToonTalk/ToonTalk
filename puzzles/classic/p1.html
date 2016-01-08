@@ -7,17 +7,13 @@
 <body>
 <h2>I need a box with 1 and 2 in it</h2>
 <div class='toontalk-json'>
-This will be replaced by a work area containing 4 things: an element, a number, a box, and a number.
+This will be replaced by a work area containing 4 things: a number, a box, a number, and an element.
 top level widget
 <div style='display:none;'>{
   "semantic": {
     "type": "top_level",
+    "running": true,
     "backside_widgets": [
-      {
-        "widget": {
-          "shared_widget_index": 0
-        }
-      },
       {
         "widget": {
           "semantic": {
@@ -80,6 +76,11 @@ top level widget
           },
           "version": 1
         }
+      },
+      {
+        "widget": {
+          "shared_widget_index": 0
+        }
       }
     ]
   },
@@ -88,9 +89,9 @@ top level widget
     "backside_width": 725,
     "backside_height": 234,
     "backside_left": 8,
-    "backside_top": 184.1875,
-    "drag_x_offset": 172,
-    "drag_y_offset": 191.8125
+    "backside_top": 74.8125,
+    "drag_x_offset": 673,
+    "drag_y_offset": 91.1875
   },
   "version": 1,
   "shared_widgets": [
@@ -107,8 +108,8 @@ top level widget
           "height"
         ],
         "attribute_values": [
-          177.5,
-          20,
+          210.5,
+          14,
           388,
           61
         ],
@@ -119,6 +120,7 @@ top level widget
           []
         ],
         "children": false,
+        "running": true,
         "backside_widgets": [
           {
             "widget": {
@@ -187,7 +189,7 @@ top level widget
                         "type": "sensor",
                         "contents": [],
                         "guid": "sensor",
-                        "serial_number": 3,
+                        "serial_number": 1,
                         "name": "sensor",
                         "event_name": "widget added",
                         "attribute": "back",
@@ -666,11 +668,10 @@ top level widget
                   ]
                 },
                 "name": "Jump to URL",
+                "running": true,
                 "description": "a robot who when the sensor receives the expected widget jumps to the given URL."
               },
               "view": {
-                "frontside_width": 66,
-                "frontside_height": 110,
                 "saved_width": 66,
                 "saved_height": 110
               },
@@ -681,7 +682,7 @@ top level widget
             "widget": {
               "semantic": {
                 "type": "element",
-                "html": "p3.html%3Falt_key_to_open_backside%3D1%26reset%3D1",
+                "html": "p2.html%3Falt_key_to_open_backside%3D1%26reset%3D1",
                 "attributes": [
                   "left",
                   "top",
@@ -715,10 +716,8 @@ top level widget
       "view": {
         "frontside_width": 595,
         "frontside_height": 63,
-        "frontside_left": 74,
-        "frontside_top": 19,
-        "backside_left": 0,
-        "backside_top": 0,
+        "frontside_left": 107,
+        "frontside_top": 13,
         "backside_geometry": {
           "x_scale": 1.0672727272727272,
           "y_scale": 0.8468468468468467,
