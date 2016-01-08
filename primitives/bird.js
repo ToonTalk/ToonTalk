@@ -961,10 +961,14 @@ window.TOONTALK.nest = (function (TT) {
         new_nest.removed_from_container = function (part_side, event, report_error_if_nothing_removed) {
             var removed = contents.shift();
             if (TT.logging && TT.logging.indexOf("nest") >= 0) {
-                console.log(this.to_debug_string() + " removed " + removed.to_debug_string() + " remaining widgets is " + contents.length);
+                if (removed) {
+                    console.log(this.to_debug_string() + " removed " + removed.to_debug_string() + " remaining widgets is " + contents.length);
+                } else {
+                    console.log(this.to_debug_string() + " nothing left to remove.");
+                }
             }
             if (removed) {
-                if (!event) { // only if robot did this should flag to be updated
+                if (!event) { // only if robot did this should flag be updated
                     robot_removed_contents_since_empty = true;
                 }
                 if (removed.is_backside()) {
