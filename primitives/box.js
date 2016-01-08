@@ -394,7 +394,7 @@ window.TOONTALK.box = (function (TT) {
     box.get_json = function (json_history, callback, start_time) {
         var contents_json = [];
         var collect_contents_json = function (index, start_time) {
-            // this is similar to utilities.get_json_of_array but doesn't wrap in {widget: ...} and iterates and terminates differently
+            // this is similar to utilities.get_json_of_array but iterates and terminates differently
             var widget_side, new_callback;
             if (index >= this.get_size()) {
                 callback({type: "box",
@@ -414,13 +414,15 @@ window.TOONTALK.box = (function (TT) {
             }
             if (widget_side.is_primary_backside && widget_side.is_primary_backside()) {
                 new_callback = function (json, new_start_time) {
-                    contents_json.push(json);
+                    contents_json.push({widget: json,
+                                        is_backside: true});
                     collect_contents_json(index+1, new_start_time);
                 }.bind(this);
                 TT.UTILITIES.get_json(widget_side.get_widget(), json_history, new_callback, start_time);
-            } else if (widget_side.is_widget) {
+            } else 
+            if (widget_side.is_widget) {
                 new_callback = function (json, new_start_time) {
-                    contents_json.push(json);
+                    contents_json.push({widget: json});
                     collect_contents_json(index+1, new_start_time);
                 }.bind(this);
                 TT.UTILITIES.get_json(widget_side, json_history, new_callback, start_time);
@@ -1012,7 +1014,11 @@ window.TOONTALK.box_hole =
             };
             hole.widget_side_dropped_on_me = function (dropped, event, robot) {
                 var box = this.get_parent_of_frontside();
+                var contents = this.get_contents();
                 var hole_element, hole_position, parent_position, dropped_element, finished_animating, is_plain_text;
+                if (contents) {
+                    return contents.widget_side_dropped_on_me && contents.widget_side_dropped_on_me(dropped, event, robot);
+                }
                 if (dropped.dropped_on_other) {
                     // e.g. so egg can hatch from nest drop
                     dropped.dropped_on_other(this, event, robot);
@@ -1053,7 +1059,7 @@ window.TOONTALK.box_hole =
                     if (!dropped.is_backside()) {
                         box.get_frontside_element().dispatchEvent(TT.UTILITIES.create_event('widget added', {element_widget: dropped_element,
                                                                                                              where: 'front',
-                                                                                                             ndex: this.get_index()}));
+                                                                                                             index: this.get_index()}));
                     }
                 } else {
                     box.rerender();
@@ -1097,7 +1103,7 @@ window.TOONTALK.box_hole =
                 var hole_element;
                 if (contents) {
                     hole_element = this.get_frontside_element();
-                    update_css_of_hole_contents(contents, contents.get_frontside_element(), $(hole_element).width(), $(hole_element).height());
+                    update_css_of_hole_contents(contents, contents.get_element(), $(hole_element).width(), $(hole_element).height());
                 }
             };
             hole.dereference = function () {
@@ -1292,6 +1298,17 @@ window.TOONTALK.box_hole =
             };
             hole.is_plain_text_element = function () {
                 return false;
+            };
+            hole.get_active = function () {
+                if (contents) {
+                    return contents.get_active();
+                }
+                return false;
+            };
+            hole.set_active = function (new_value, initialising) {
+                if (contents) {
+                    contents.set_active(new_value, initialising);
+                }
             };
             TT.widget.has_parent(hole);
             TT.widget.has_listeners(hole);

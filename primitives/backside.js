@@ -229,7 +229,7 @@ window.TOONTALK.backside =
                                                 backside_element.title = "On the back of the robot you can change the conditions and setting of the robot."
                                             } else {
                                                 widget_HTML = widget.toString({inside_tool_tip: true}); 
-                                                backside_element.title = "The back of " + widget_HTML + ". You can put robots on the back to make it come 'alive'."; 
+                                                backside_element.title = "The back of " + widget_HTML + " You can put robots on the back to make it come 'alive'."; 
                                             }                  
                                             TT.UTILITIES.use_custom_tooltip(backside_element);
                                        });
@@ -424,7 +424,7 @@ window.TOONTALK.backside =
                             // TODO: determine if this is not visible when side_of_other_element is undefined
                             $(side_of_other_element).addClass("toontalk-widget-added-to-backside-by-unwatched-robot");
                         }
-                        if (event && !side_of_other.is_backside()) {
+                        if (event && !side_of_other.is_backside() && !side_of_other.is_sensor()) {
                             window.dispatchEvent(TT.UTILITIES.create_event('widget added', {element_widget: side_of_other_element,
                                                                                             here: 'back'}));
                         }
@@ -460,7 +460,7 @@ window.TOONTALK.backside =
                                            $(backside_of_other.get_element()).find(".toontalk-train-backside-button").click();
                                        }    
                                    });           
-                    } else if (event && !side_of_other.is_backside() && this.get_frontside_element()) {
+                    } else if (event && !side_of_other.is_backside() && this.get_frontside_element() && !side_of_other.is_sensor()) {
                         // don't dispatch when a fresh robot is dropped since the robot may be working with the sensor nest
                         this.get_frontside_element().dispatchEvent(TT.UTILITIES.create_event('widget added', {element_widget: side_of_other_element,
                                                                                                               where: 'back'}));
@@ -510,7 +510,7 @@ window.TOONTALK.backside =
                             if (json_array) {
                                 json_view = json_array[index];
                             }
-                             // true was backside_visible but this meant that the layout of widgets on the backside of a backside weren't recreated
+                             // true was backside_visible but this meant that the layout of widgets on the backside of a backside wasn't recreated
                              // creating these elements on load time is small constant overhead -- it when robots are running unwatched that we need to be sure
                              // that front or back sides are created only if needed
                             widget_side_element = backside_widget_side.get_element(true);
@@ -537,10 +537,12 @@ window.TOONTALK.backside =
                                     if (json_view.frontside_height === 0) {
                                         json_view.frontside_height = '';
                                     }                                    
-                                    css = {left:   json_view.frontside_left   || json_view.frontside_left || 0,
-                                           top:    json_view.frontside_top    || json_view.frontside_top  || 0,
-                                           width:  json_view.frontside_width  || json_view.saved_width,
-                                           height: json_view.frontside_height || json_view.saved_height};
+                                    css = {left:   json_view.frontside_left,
+                                           top:    json_view.frontside_top,
+                                           // if dimensions set by transforms then don't explicitly set width and height here
+                                           // perhaps should check that transforms include scaling transforms
+                                           width:  widget_side_element.style.transform ? "" : (json_view.frontside_width  || json_view.saved_width),
+                                           height: widget_side_element.style.transform ? "" : (json_view.frontside_height || json_view.saved_height)};
                                 }
                                 TT.UTILITIES.constrain_css_to_fit_inside(backside_element, css);
                                 $(widget_side_element).css(css);                              
@@ -681,6 +683,9 @@ window.TOONTALK.backside =
                 $(backside_element).find("[title]").each(function (index, element) {
                                                              TT.UTILITIES.use_custom_tooltip(element);
 	            });
+            };
+            backside.compare_with = function (other) {
+                return this.get_widget().compare_with && this.get_widget().compare_with(other);
             };
             if (TT.debugging || TT.logging) {
                 backside.to_debug_string = function () {
@@ -995,7 +1000,7 @@ window.TOONTALK.backside =
             $make_sensor_nest_button.attr('title', "Click to create a nest which receives messages when events happen to this " + widget.get_type_name() + ".");
             $make_function_bird_button.addClass("toontalk-make-function_bird_button");
             $make_function_bird_button.get(0).addEventListener('click', make_function_bird_button_clicked);
-            if (widget.is_number() || widget.is_box()) {
+            if (widget.is_number() || widget.is_box() || widget.is_element()) {
                 // will implement more functions (e.g. for string elements and boxes)
                 $make_function_bird_button.attr('title', "Click to get a bird that flies to functions of " + widget.get_type_name(true) + ".");
             } else {
@@ -1079,7 +1084,7 @@ window.TOONTALK.backside =
                             }
                             $element.remove();
                         }.bind(this);
-                    if (!$element.is(":visible")) {
+                    if (!TT.UTILITIES.visible_element($element)) {
                         // robot may have opened the backside and then removed the widget itself
                         remove_backside();
                         return;
@@ -1321,6 +1326,22 @@ window.TOONTALK.backside =
             return this.get_widget().is_top_level();
         },
 
+        ok_to_set_dimensions: function () {
+            return false;
+        },
+        
+        add_listener: function (type, listener) {
+            this.get_widget().add_listener(type, listener);     
+        },
+
+        remove_listener: function (type, listener, ok_if_not_there) {
+            this.get_widget().remove_listener(type, listener, ok_if_not_there);     
+        },
+
+        get_listeners: function (type) {
+            return this.get_widget().get_listeners(typee);     
+        },
+
         is_hole: function () {
             return false;
         },
@@ -1342,6 +1363,10 @@ window.TOONTALK.backside =
         },
 
         is_nest: function () {
+            return false;
+        },
+
+        is_robot: function () {
             return false;
         },
 

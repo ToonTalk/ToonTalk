@@ -328,7 +328,7 @@ window.TOONTALK.UTILITIES =
             if (!(target_widget_side && target_widget_side.get_widget().get_infinite_stack && target_widget_side.get_widget().get_infinite_stack()) && 
                 ($source.get(0) === $target.get(0) || jQuery.contains($source.get(0), $target.get(0)))) {
                 // OK to drop on infinite stack since will become a copy
-                // dropped of itself or dropped on a part of itself
+                // dropped on itself or dropped on a part of itself
                 // just moved it a little bit
                 // only called now that elementFromPoint is used to find another target when dropped on part of itself
                 utilities.set_css($source,
@@ -680,80 +680,6 @@ window.TOONTALK.UTILITIES =
             }
         });
     };
-    var initialize = function () {
-        var document_click =
-            function (event) {
-    //          event.stopPropagation();
-                $(".toontalk-top-level-resource-container").each(function (index, element) {
-                    var widget = element.toontalk_widget_side;
-                    if (widget && widget.set_running) {
-                        widget.set_running(false);
-                    }
-                });
-            };
-        var translation_div;
-        TT.debugging = utilities.get_current_url_parameter('debugging');
-        TT.logging   = utilities.get_current_url_parameter('log');
-        if (utilities.get_current_url_numeric_parameter('volume', 10) > 0) {
-            initialize_sounds();
-        }
-        utilities.process_json_elements();
-        // for top-level resources since they are not on the backside 'work space' we need a way to turn them off
-        // clicking on a running widget may not work since its HTML may be changing constantly
-        window.document.addEventListener('click', document_click);
-        // frontside's click handler will run the top-level resource widgets if clicked
-        TT.DEFAULT_QUEUE = window.TOONTALK.queue.create();
-        // might want two queues: so new entries end up in the 'next queue'
-        TT.DEFAULT_QUEUE.start();
-        window.addEventListener('beforeunload', function (event) {
-            try {
-                utilities.backup_all_top_level_widgets(true);
-            } catch (error) {
-                TT.UTILITIES.report_internal_error(error);
-            }
-        });
-        TT.TRANSLATION_ENABLED = utilities.get_current_url_boolean_parameter("translate", false);
-        if (TT.TRANSLATION_ENABLED) {
-            $("a").each(function (index, element) {
-                            element.href = utilities.add_URL_parameter(element.href, "translate", "1"); 
-                        });
-            if (!$("#google_translate_element").is("*")) {
-                // if one wasn't added to the page then add it at the top of the body
-                translation_div = document.createElement("div");
-                translation_div.id = "google_translate_element";
-                document.body.insertBefore(translation_div, document.body.firstChild);
-            }
-            document.head.appendChild($('<meta name="google-translate-customization" content="7e20c0dc38d147d6-a2c819007bfac9d1-gc84ee27cc12fd5d1-1b"></meta>')[0]);
-            load_script("https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit");
-        } else {
-            $("#google_translate_element").remove();
-        }
-        if (!TT.vacuum.the_vacuum) {
-            TT.vacuum.create();
-        }
-        utilities.add_test_all_button();
-        // compute the default dimensions of robots, birds, nests, and scales (not really needed for scales and causes a bug in test-programs.html)
-        discover_default_dimensions('toontalk-robot',       TT.robot);
-        discover_default_dimensions('toontalk-empty-nest',  TT.nest);
-        discover_default_dimensions('toontalk-bird-static', TT.bird);
-        // all titles should use custom tool tips (e.g. those in documentation pages)
-        $("[title]").each(function (index, element) {
-                              utilities.use_custom_tooltip(element);
-	    });
-	    document.addEventListener("visibilitychange", function() {
-	        if (document.hidden) {
-	            utilities.mute_audio_objects_playing();
-	        } else {
-	            // make sure all widgets are redisplayed
-                utilities.rerender_all();
-                utilities.restore_audio_volumes();
-	        }
-	    });
-	    setTimeout(function () {
-	                   TT.DISPLAY_UPDATES.update_display();
-                   },
-                   100); 
-    };
     var discover_default_dimensions = function (class_name, toontalk_module) {
         var $element_for_determining_dimensions = $("<div class='" + class_name + "'>");
         utilities.run_when_dimensions_known($element_for_determining_dimensions.get(0), 
@@ -861,7 +787,7 @@ window.TOONTALK.UTILITIES =
                                 }
                             },
                             false); // don't capture events
-    document.addEventListener('DOMContentLoaded', initialize);
+    document.addEventListener('DOMContentLoaded', utilities.initialize);
     observer.observe(window.document, {childList: true,
                                        subtree:   true});
     utilities.available_types = ["number", "box", "element", "robot", "nest", "sensor", "top-level"];   
@@ -1043,15 +969,18 @@ window.TOONTALK.UTILITIES =
             if (!json_semantic_backside_widgets) {
                 return;
             }
-            if (!widget_side.is_top_level()) {
-                // the backside widgets need to know parent to be
-                // since they may be called recursively maintain a stack of them
-                if (additional_info.to_be_on_backside_of) {
-                    additional_info.to_be_on_backside_of.push(widget_side);
-                } else {
-                    additional_info.to_be_on_backside_of = [widget_side];    
-                }
-            }
+            // the following caused elements on the back of elements to misbehave
+            // they acquired the wrong owner and parent and child dragged together
+            // running tests seems as if things are working without this
+//             if (!widget_side.is_top_level()) {
+//                 // the backside widgets need to know parent to be
+//                 // since they may be called recursively maintain a stack of them
+//                 if (additional_info.to_be_on_backside_of) {
+//                     additional_info.to_be_on_backside_of.push(widget_side);
+//                 } else {
+//                     additional_info.to_be_on_backside_of = [widget_side];    
+//                 }
+//             }
             backside_widgets = this.create_array_from_json(json_semantic_backside_widgets, additional_info);
             widget_side.set_backside_widgets(backside_widgets, 
                                              json_semantic_backside_widgets.map(
@@ -1065,9 +994,9 @@ window.TOONTALK.UTILITIES =
                                                      }
                                                      return json.widget.view; 
                                                  }));
-            if (!widget_side.is_top_level()) {
-                additional_info.to_be_on_backside_of.pop();
-            }
+//             if (!widget_side.is_top_level()) {
+//                 additional_info.to_be_on_backside_of.pop();
+//             }
         };
         
         utilities.create_array_from_json = function (json_array, additional_info) {
@@ -1553,7 +1482,7 @@ window.TOONTALK.UTILITIES =
         };
         
         utilities.data_transfer_json_object = function (event) {
-            var data, json_string, json;
+            var data, json_string, json, element;
             if (!event.dataTransfer) {
                 // not really an error -- could be a drag of an image into ToonTalk
 //              console.log("no dataTransfer in drop event");
@@ -1595,11 +1524,18 @@ window.TOONTALK.UTILITIES =
                     utilities.report_internal_error("Exception parsing " + json_string + "\n" + exception.toString());
                 }
             }
-            // treat the data as a plain text element
-            TT.element.create(data).get_json(utilities.fresh_json_history(), 
-                                             function (element_json) {
-                                                 json = element_json;
-                                             });
+            // treat the data as rich text (HTML) or a plain text element
+            element = TT.element.create("");
+            element.get_frontside_element(true);
+            element.set_HTML(data);
+            element.get_json(utilities.fresh_json_history(), 
+                             function (element_json, start_time, json_history) {
+                                 if (element_json.html.shared_html_index >= 0) {
+                                     // replace shared HTML index with HTML
+                                     element_json.html = json_history.shared_html[element_json.html.shared_html_index];
+                                 }
+                                 json = element_json;
+                             });
             return json;
         };
         
@@ -1708,7 +1644,7 @@ window.TOONTALK.UTILITIES =
                     if (json.semantic && json.semantic.type === 'top_level') {
                         // perhaps local storage will be used instead of the current json
                         if (!TT.no_local_storage) {
-                            if (!utilities.get_current_url_boolean_parameter("reset", false)) {
+                            if (!TT.reset) {
                                 if (json.load_most_recent_program) {
                                     try {
                                          toontalk_last_key = window.localStorage.getItem('toontalk-last-key');
@@ -1719,7 +1655,7 @@ window.TOONTALK.UTILITIES =
                                         message = "Error reading previous state. Error message is " + error;
                                         if (utilities.is_internet_explorer()) {
                                             // TODO: determine what the problem is with IE11 and local storage
-                                            console.error("Unresolved difficulties using window.localStorage in IE11: " + message);
+                                            console.error("window.localStorage in IE11 not available with file://...: " + message);
                                         } else {
                                             utilities.display_message(message);
                                         }
@@ -2024,6 +1960,12 @@ window.TOONTALK.UTILITIES =
                 return "ninth";
                 case 10:
                 return "tenth";
+                case 11:
+                return "eleventh";
+                case 12:
+                return "twelfth";
+                case 13:
+                return "thirteenth";
                 default:
                 if (n%10 === 1) {
                     return n + "st";
@@ -2104,8 +2046,10 @@ window.TOONTALK.UTILITIES =
                           var default_capacity = 100;
                           var tooltip = ui.tooltip.get(0);
                           var new_width, position;
-                          // replace all new lines with <br> breaks
-                          tooltip.innerHTML = process_encoded_HTML(ui.tooltip.get(0).textContent.replace(/(\r\n|\n|\r)/g, "<br>"), decodeURIComponent);
+                          // the following used // .replace(/(\r\n|\n|\r)/g, "<br>") 
+                          // to replace all new lines with <br> breaks
+                          // but this broke some rich text -- could make it more selective but not clear how important it is
+                          tooltip.innerHTML = process_encoded_HTML(ui.tooltip.get(0).textContent, decodeURIComponent); 
                           // width is 340 by default but if more than fits then make wider
                           if (text_length > default_capacity) {
                               new_width = Math.min(800, maximum_width_if_moved || $(window).width()-100);
@@ -3668,14 +3612,16 @@ window.TOONTALK.UTILITIES =
 
        utilities.set_css = function (element, css) {
            // this is mostly useful debugging computed CSS problems since can break here
-           var widget_side;
+           var widget_side, widget_side_dereferenced;
            if (!css) {
                return;
            }
            widget_side = utilities.widget_side_of_element(element);
            if (widget_side) {
-               if (widget_side.is_backside()) {
-                   if (!css.transform) {
+               // dereference in case is in a box hole or scale
+               widget_side_dereferenced = widget_side.dereference();
+               if (widget_side_dereferenced.is_backside()) {
+                   if (!css.transform && !widget_side.get_widget().location_constrained_by_container()) {
                        css.width  = '';
                        css.height = '';
                    }
@@ -3686,9 +3632,10 @@ window.TOONTALK.UTILITIES =
                    // leave the CSS alone
                    // TODO: make this more modular/cleaner
                } else if (widget_side.location_constrained_by_container()) {
+                   // widget_side_dereferenced could be contents of a box or scale and widget_side is the hole itself
                    css.left   = '';
                    css.top    = '';
-               } else if (widget_side.is_plain_text_element()) {
+               } else if (widget_side_dereferenced.is_plain_text_element()) {
                    css.width  = '';
                    css.height = '';
                }
@@ -3700,10 +3647,10 @@ window.TOONTALK.UTILITIES =
                css.height  = '';
            }
            if (!css.transform && typeof css.width === 'number' && typeof css.height === 'number' &&
-               widget_side && widget_side.use_scaling_transform) {
+               widget_side_dereferenced && widget_side_dereferenced.use_scaling_transform) {
                // leave CSS width and height alone and recompute scaling transform
                // following will call set_css again with modified css
-               widget_side.use_scaling_transform(css);
+               widget_side_dereferenced.use_scaling_transform(css);
            } else {
                $(element).css(css);
            }
@@ -3738,7 +3685,7 @@ window.TOONTALK.UTILITIES =
                            }).join("");
        };
 
-       utilities.insert_function_bird_documentation = function (type_name) {
+       utilities.insert_function_bird_documentation = function (type_name, id) {
            var function_table = TOONTALK[type_name]['function'];
            var function_names = Object.keys(function_table);
            var table = "<table class='toontalk-function-bird-documentation-table'>";
@@ -3749,14 +3696,16 @@ window.TOONTALK.UTILITIES =
                         function_object.title + "</td></tr>";
            });
            table += "</table>";
-           document.write(table);
+           $(id).html(table);
            function_names.forEach(function (function_name, index) {
                var bird = window.TOONTALK.bird.create_function(type_name, undefined, function_name);
                var bird_frontside_element = bird.get_frontside_element();
                bird.update_display();
                $("#bird_id_" + index).replaceWith($(bird_frontside_element).addClass("toontalk-function-bird-documentation-bird"));
                // sanitise the id -- id enables links to specific function birds
-               bird_frontside_element.id = encodeURIComponent(function_name);
+               if (bird_frontside_element) {
+                   bird_frontside_element.id = encodeURIComponent(function_name);
+               }
            });  
        };
 
@@ -3769,9 +3718,10 @@ window.TOONTALK.UTILITIES =
                                     });
        };
 
+       // using width and height since :visible since didn't work reliably and is costly and is a JQuery hack https://api.jquery.com/visible-selector/
        utilities.visible_element = function (element) {
            var $element = $(element);
-           return $element.is(":visible") && $element.css('opacity') !== '0';
+           return ($element.width() > 0 || $element.height() > 0) && $element.css('opacity') !== '0';
        };
 
        utilities.get_audio_volume = function (audio_object) {
@@ -3856,7 +3806,7 @@ window.TOONTALK.UTILITIES =
            } catch (e) {
                // fall back on old way of doing this (needed for IE11)
                event = document.createEvent("CustomEvent");
-               event.initCustomEvent('myMessage', false, false, details);
+               event.initCustomEvent(name, false, false, details);
            }
            return event;
        };
@@ -3974,6 +3924,95 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             };
         };
 
+        utilities.initialize = function (callback) {
+            var document_click =
+                function (event) {
+        //          event.stopPropagation();
+                    $(".toontalk-top-level-resource-container").each(function (index, element) {
+                        var widget = element.toontalk_widget_side;
+                        if (widget && widget.set_running) {
+                            widget.set_running(false);
+                        }
+                    });
+                };
+            var translation_div;
+            TT.debugging = utilities.get_current_url_parameter('debugging');
+            TT.logging   = utilities.get_current_url_parameter('log');
+            if (utilities.get_current_url_numeric_parameter('volume', 10) > 0) {
+                initialize_sounds();
+            }
+            TT.open_backside_only_if_alt_key = utilities.get_current_url_boolean_parameter('alt_key_to_open_backside');
+            TT.reset = utilities.get_current_url_boolean_parameter('reset', false)
+            if (!TT.open_backside_only_if_alt_key) {
+                // puzzle=1 is shorthand for alt_key_to_open_backside=1&reset=1
+                TT.open_backside_only_if_alt_key = utilities.get_current_url_boolean_parameter('puzzle');
+                if (TT.open_backside_only_if_alt_key) {
+                    TT.reset = true;
+                }
+            }
+            utilities.process_json_elements();
+            // for top-level resources since they are not on the backside 'work space' we need a way to turn them off
+            // clicking on a running widget may not work since its HTML may be changing constantly
+            window.document.addEventListener('click', document_click);
+            // frontside's click handler will run the top-level resource widgets if clicked
+            TT.DEFAULT_QUEUE = window.TOONTALK.queue.create();
+            // might want two queues: so new entries end up in the 'next queue'
+            TT.DEFAULT_QUEUE.start();
+            window.addEventListener('beforeunload', function (event) {
+                try {
+                    utilities.backup_all_top_level_widgets(true);
+                } catch (error) {
+                    TT.UTILITIES.report_internal_error(error);
+                }
+            });
+            TT.TRANSLATION_ENABLED = utilities.get_current_url_boolean_parameter("translate", false);
+            if (TT.TRANSLATION_ENABLED) {
+                $("a").each(function (index, element) {
+                                element.href = utilities.add_URL_parameter(element.href, "translate", "1"); 
+                            });
+                if (!$("#google_translate_element").is("*")) {
+                    // if one wasn't added to the page then add it at the top of the body
+                    translation_div = document.createElement("div");
+                    translation_div.id = "google_translate_element";
+                    document.body.insertBefore(translation_div, document.body.firstChild);
+                }
+                document.head.appendChild($('<meta name="google-translate-customization" content="7e20c0dc38d147d6-a2c819007bfac9d1-gc84ee27cc12fd5d1-1b"></meta>')[0]);
+                load_script("https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit");
+            } else {
+                $("#google_translate_element").remove();
+            }
+            if (!TT.vacuum.the_vacuum) {
+                TT.vacuum.create();
+            }
+            utilities.add_test_all_button();
+            // compute the default dimensions of robots, birds, nests, and scales (not really needed for scales and causes a bug in test-programs.html)
+            discover_default_dimensions('toontalk-robot',       TT.robot);
+            discover_default_dimensions('toontalk-empty-nest',  TT.nest);
+            discover_default_dimensions('toontalk-bird-static', TT.bird);
+            // all titles should use custom tool tips (e.g. those in documentation pages)
+            $("[title]").each(function (index, element) {
+                                  utilities.use_custom_tooltip(element);
+            });
+            document.addEventListener("visibilitychange", function() {
+                if (document.hidden) {
+                    utilities.mute_audio_objects_playing();
+                } else {
+                    // make sure all widgets are redisplayed
+                    utilities.rerender_all();
+                    utilities.restore_audio_volumes();
+                }
+            });
+            setTimeout(function () {
+                           TT.DISPLAY_UPDATES.update_display();
+                       },
+                       100);
+            document.dispatchEvent(TT.UTILITIES.create_event('toontalk_initialized', {}));
+        };
+
         return utilities;
     
 }(window.TOONTALK));
+
+// for access in toontalk.js even when compiled
+window['initialize_toontalk'] = window.TOONTALK.UTILITIES.initialize;
+

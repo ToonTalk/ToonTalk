@@ -1,12 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="stylesheet" media="all" href="../../toontalk.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-<script src="../../compile/toontalk.js"></script>
-<script src="../../libraries/jquery-ui-1.11.2.custom/jquery-ui.min.js"></script>
+<script src="../../toontalk.js"></script>
 <title>What's new' in ToonTalk?</title>
-<link rel="shortcut icon" href="../../favicon.ico" />
 </head>
 <body>
 <h2>Major changes to ToonTalk</h2>
@@ -16,6 +12,24 @@ For the full gory details visit <a href="https://github.com/ToonTalk/ToonTalk/co
 </p>
 <h2>Highlights of recent changes</h2>
 <ul>
+<li>
+<b style="color: brown">Elements support function birds</b>.</br>
+<a href='function-birds.html#element_functions'>These function birds</a> provide access to string manipulation and the ability to jump to a new web page.
+<i>Released 8 January 2016.</i>
+</li>
+<li>
+<b style="color: brown">New script loader</b>.</br>
+Including &lt;script src='https://toontalk.github.io/ToonTalk/toontalk.js'&gt;&lt;/script&gt; in any web page adds ToonTalk functionality to that page.
+It works both online and offline.
+It supports a debugging mode and customization for integration with Google Drive using a different host than the toontalk.github.io default.
+<i>Released 8 January 2016.</i>
+</li>
+<li>
+<b style="color: brown">First experimental reconstruction of the ToonTalk puzzle game</b>.</br>
+The <a href='https://toontalk.github.io/ToonTalk/\puzzles/classic/p1.pzl'>first two puzzles</a> of <a href='http://www.toontalk.com/English/puzlearn.htm'>the ToonTalk puzzle game</a> has been implemented in ToonTalk user code (not part of the ToonTalk implementation).
+Many features yet to be added.
+<i>Released 8 January 2016.</i>
+</li>
 <li>
 <b style="color: brown">Adding the back of a widget to the back of other widgets provides support for hierarchical composititon of behaviours</b>.</br>
 Particularly useful for behaviours of element widgets to package up collections of behaviours and share them.
@@ -214,7 +228,7 @@ This is a nice way of expressing the termination of a process.
 </li>
 <li>
 <b style="color: brown">Numeric functions</b>.<br>
-Added <a href="function-birds.html">function birds</a> which can be used for advanced numeric calculations.
+Added <a href="function-birds.html#number_functions">function birds</a> which can be used for advanced numeric calculations.
 ToonTalk <a href="numbers.html">numbers</a> can be combined by adding, subtracting, multiplying, and dividing.
 (A limited ability to compute a number raised to another number was removed and replaced by the <i>power</i> function bird.)
 Function birds can be used to obtain random numbers, compute trigonometric functions, logarithms, conversion to integer values, and modulo arithmetic.

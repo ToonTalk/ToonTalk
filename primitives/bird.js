@@ -472,7 +472,7 @@ window.TOONTALK.bird = (function (TT) {
             } else if (parameters.just_value) {
                 copy = this.create(undefined, this.get_description());
             } else {
-                nest_guid = nest.get_guid();
+                nest_guid = nest && nest.get_guid();
                 if (nest_guid && parameters.nests_copied && parameters.nests_copied[nest_guid]) {
                     // function nests don't have guids
                     new_nest = parameters.nests_copied[nest_guid][0];
@@ -549,7 +549,7 @@ window.TOONTALK.bird = (function (TT) {
         };
         new_bird.get_default_description = function () {
             if (this.is_function_bird()) {
-                return "a bird who gives another bird the '" + nest.get_function_object().name + "' of things.";
+                return "a bird who gives another bird a box to compute the '" + nest.get_function_object().name + "' of " + this.get_function_type(true) + ".";
             }
             return "a bird who takes things to her nest.";
         };
@@ -595,6 +595,9 @@ window.TOONTALK.bird = (function (TT) {
                 }
             }
         };
+        new_bird.get_function_type = function (plural) {
+            return nest.get_function_type(plural);
+        };
         new_bird.get_class_name_with_color = function (base_class_name) {
             if (nest && nest.get_class_name_with_color) {
                 return nest.get_class_name_with_color(base_class_name);
@@ -602,7 +605,10 @@ window.TOONTALK.bird = (function (TT) {
             return base_class_name;
         }; 
         new_bird.get_name = function () {
-            return nest && nest.get_name();
+            if (nest) {
+                return nest.get_name();
+            }
+            return ""; // e.g. a bird in a condition that has no nest
         };
         if (nest && nest.set_name) {
             // function nest names are read-only
@@ -907,6 +913,7 @@ window.TOONTALK.nest = (function (TT) {
             }
             bird.animate_delivery_to(message_side, this, undefined, undefined, undefined, continuation, event, robot);
             if (nest_copies) {
+                // TODO: determine if .closest(":visible") is needed here -- :visible is a JQuery hack to avoid
                 start_position = $(bird.closest_visible_ancestor().get_widget().get_frontside_element()).closest(":visible").position();
                 bird_parent_element = bird.get_parent_of_frontside().get_element();
                 visible = this.visible();
@@ -929,6 +936,7 @@ window.TOONTALK.nest = (function (TT) {
             }
         };
         new_nest.get_contents_element = function () {
+            // is this insecure??
             if (contents.length > 0) {
                 return contents[0].get_element();
             }
@@ -950,13 +958,17 @@ window.TOONTALK.nest = (function (TT) {
                 this.to_run_when_unlocked = [listener];
             }
         };
-        new_nest.removed_from_container = function (part_side, event) {
+        new_nest.removed_from_container = function (part_side, event, report_error_if_nothing_removed) {
             var removed = contents.shift();
             if (TT.logging && TT.logging.indexOf("nest") >= 0) {
-                console.log(this.to_debug_string() + " removed " + removed.to_debug_string() + " remaining widgets is " + contents.length);
+                if (removed) {
+                    console.log(this.to_debug_string() + " removed " + removed.to_debug_string() + " remaining widgets is " + contents.length);
+                } else {
+                    console.log(this.to_debug_string() + " nothing left to remove.");
+                }
             }
             if (removed) {
-                if (!event) { // only if robot did this should flag to be updated
+                if (!event) { // only if robot did this should flag be updated
                     robot_removed_contents_since_empty = true;
                 }
                 if (removed.is_backside()) {
@@ -1529,8 +1541,8 @@ window.TOONTALK.nest = (function (TT) {
         // and whose other widgets are arguments to the function
         var function_nest =
             {get_function_type: 
-                function () {
-                    return type_name;
+                function (plural) {
+                    return TT[type_name].get_type_name(plural);
                 },
             get_function_object: 
                 function () {

@@ -947,11 +947,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         if (side_of_other.is_backside()) {
             return false;
         }
-        if (!side_of_other.is_element() && !side_of_other.is_number()) {
-            // numbers can become more "element" like when on another element -- e.g. the score
-            // TODO: render numbers on top of elements differently
-            return false;
-        }
+//         if (!side_of_other.is_element() && !side_of_other.is_number()) {
+//             // numbers can become more "element" like when on another element -- e.g. the score
+//             // TODO: render numbers on top of elements differently
+//             return false;
+//         }
         if (this.get_erased() && side_of_other.get_HTML) {
             this.set_HTML(side_of_other.get_HTML());
             this.set_erased(false);
@@ -1037,6 +1037,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
 //                 // width and height as CSS style attributes become integers so don't set if equal when rounded
 //                 return;
 //             }
+            if (TT.logging && TT.logging.indexOf('attribute:') >= 0 && TT.logging.indexOf(attribute) >= 0) {
+                console.log("Attribute " + attribute + " set to " + new_value_number + " was " + current_value + " at " + Date.now() + " for " + this);  
+            }
             new_value = new_value_number;
         }
         if (handle_training && this.robot_in_training()) {
@@ -1289,8 +1292,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             attribute_widget.is_attribute_widget = function () {
                 return true;
             };
-            attribute_widget.get_function_type = function () {
+            attribute_widget.get_function_type = function (plural) {
                 // function birds are ordinary numeric ones
+                if (plural) {
+                    return 'numbers';
+                }
                 return 'number';
             };
             return attribute_widget;
@@ -1309,8 +1315,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 }
                 return return_value;
             };
-            attribute_widget.get_function_type = function () {
+            attribute_widget.get_function_type = function (plural) {
                 // function birds are like those for elements (not yet implemented)
+                if (plural) {
+                    return 'elements';
+                }
                 return 'element';
             };
             attribute_widget.set_additional_classes("toontalk-string-attribute-widget");
@@ -1336,20 +1345,17 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     return true; // don't remove
                 });
                 if (attribute_name === 'left' || attribute_name === 'top') {
-                    var owner;
-                    if (additional_info && additional_info.to_be_on_backside_of) {
-                       owner = additional_info.to_be_on_backside_of[0]; // top of stack
-                    }
-                    if (!owner) {
-                         owner = attribute_widget.get_attribute_owner();
-                    }
+//                     if (additional_info && additional_info.to_be_on_backside_of) {
+//                         owner = additional_info.to_be_on_backside_of[0]; // top of stack
+//                     }
                     drag_listener = 
                         function (event) {
                             // ensures numbers are updated as the element is dragged
-                            var top_level_position, attribute_value, left, top;
+                            var owner, top_level_position, attribute_value, left, top;
                             if (event.currentTarget.toontalk_widget_side !== attribute_widget.get_attribute_owner()) {
                                 return;
                             }
+                            owner = attribute_widget.get_attribute_owner();
                             event.stopPropagation();
                             top_level_position = $(owner.get_frontside_element()).closest(".toontalk-top-level-backside").offset();
                             if (!top_level_position) {
@@ -1415,18 +1421,21 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
    
     element.toString = function (to_string_info) {
        var scale_or_quote_html = function (html) {
-           var style, first_space;
+           var style = "";
+           var first_space;
            if (html.length > 1 && html.charAt(0) === '<') {
-                style = "style='width: 50px; height: 30px;'";
+                if (this.get_image_element()) {
+                    // if an image then scale it
+                    style = "style='width: 50px; height: 30px;'";
+                }
                 if (to_string_info && to_string_info.inside_tool_tip) {
                     style += " class='toontalk-widget-in-tool-tip'";
                 }
-                first_space = html.indexOf(' ');
-                return html.substring(0, first_space+1) + style + html.substring(first_space);
+                return "<div " + style + ">" + html + "</div>";
            }
            // else is a plain string so quote it
            return '"' + html + '"';
-        };
+        }.bind(this);
         var image_description = function () {
             // if image returns alt if known otherwise default string
             var html = this.get_HTML();
@@ -1528,7 +1537,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                   ignore_pointer_events: this.get_ignore_pointer_events() ? true : undefined, // undefined means no attribute value pair saving space
                                   source_URL:            this.get_source_URL()
                                  },
-                                 start_time);
+                                 start_time,
+                                 json_history);
                          return;
                     }
                     attribute_name = attributes[index];
@@ -1782,7 +1792,7 @@ window.TOONTALK.element_backside =
         var $show_chooser_button = $("<button>" + show_label + "</button>").button();
         var show_chooser_button_clicked =
             function (event) {
-                if ($(attributes_chooser).is(":visible")) {
+                if (TT.UTILITIES.visible_element(attributes_chooser)) {
                     $(attributes_chooser).hide();
                     $show_chooser_button.button("option", "label", show_label);
                     TT.UTILITIES.give_tooltip($show_chooser_button.get(0), show_title);
@@ -2060,7 +2070,7 @@ window.TOONTALK.element_backside =
                     $(html_input.button).val(element_widget[getter]());
                 }
                 update_style_attributes_table(attribute_table, element_widget, backside);
-                if ($(attributes_chooser).is(":visible")) {
+                if (TT.UTILITIES.visible_element(attributes_chooser)) {
                     backside.update_style_attribute_chooser();
                 }
                 element_widget.get_backside_widgets().forEach(function (widget) {
@@ -2083,6 +2093,89 @@ window.TOONTALK.element_backside =
             });
             return backside;
     }};
+}(window.TOONTALK));
+
+window.TOONTALK.element.function = 
+(function (TT) {
+    var functions = TT.create_function_table();
+    functions.add_function_object(
+        'join text', 
+        function (message, event, robot) {
+            var join = function () {
+                for (i = 0; i < arguments.length; i++) {
+                    joined_text += arguments[i].get_text();
+                }
+                return TT.element.create(joined_text);
+            };
+            var joined_text = "";
+            // type checking should be extended so can say below any number of elements or numbers
+            return functions.typed_bird_function(message, join, [undefined], undefined, 'join', event, robot);
+        },
+        "The bird will return with a new element that is made by joining all the elements and numbers.",
+        "join",
+        ['any number of numbers or elements']);
+    functions.add_function_object(
+        'part of text', 
+        function (message, event, robot) {
+            var substring = function (element_or_number, start_widget, end_widget) {
+                var start = Math.round(start_widget.to_float());
+                var end   = Math.round(end_widget  .to_float());
+                return TT.element.create(element_or_number.get_text().substring(start+1, end+1));
+            };
+            return functions.typed_bird_function(message, substring, ['element', 'number', 'number'], 3, 'part of text', event, robot);
+        },
+        "The bird will return with a new element whose text is the part of the text of the first element (or number) beginning with the first number ending with the second number. 1 is for the first letter.",
+        "part",
+        ['an element followed by two postive numbers']);
+     functions.add_function_object(
+        'length of text', 
+        function (message, event, robot) {
+            var length = function (element_or_number) {
+                return TT.number.create(element_or_number.get_text().length);
+            };
+            return functions.typed_bird_function(message, length, [undefined], 1, 'length of text', event, robot);
+        },
+        "The bird will return with a number that is length of the text of the first element (or number).",
+        "length",
+        ['an element or number']);
+    functions.add_function_object(
+        'text as number', 
+        function (message, event, robot) {
+            var text_to_number = function (element) { 
+                var text = element.get_text();              
+                var number;
+                var slashIndex = text.indexOf('/');
+                if (slashIndex >= 0) {
+                    number = TT.number.create(text.substring(0, slashIndex), text.substring(slashIndex+1, text.length));
+                } else {
+                    number = TT.number.create(0);
+                    number.set_value_from_decimal(text);
+                }
+                return number;
+            };
+            return functions.typed_bird_function(message, text_to_number, [undefined], 1, 'text as number', event, robot);
+        },
+        "The bird will return with a number that has the same text as the element. Arithmetic can be done on the result unlike the original text.",
+        "text as number",
+        ['an element']);
+    functions.add_function_object(
+        'go to page', 
+        function (message, event, robot) {
+            var go_to_URL = function (element_url) {
+                if (this.robot_in_training()) { // this will be bound to the message given to the function bird
+                    TT.UTILITIES.display_message("Robot trained to replace current URL.");
+                } else {
+                    window.location.assign(element_url.get_text());
+                }
+            };
+            // type checking should be extended so can say below any number of elements or numbers
+            return functions.typed_bird_function(message, go_to_URL, ['element'], 1, 'replace page', event, robot);
+        },
+        "The bird will cause the current page to be replaced by the new URL. The back button should return to the current page.",
+        "page",
+        ['an element containing a URL']);
+    return functions.get_function_table();
+
 }(window.TOONTALK));
 
 }());

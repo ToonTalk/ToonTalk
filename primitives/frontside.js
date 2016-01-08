@@ -35,6 +35,10 @@ window.TOONTALK.frontside =
 //                         TT.UTILITIES.display_message("Clicks on running widgets are ignored. If you wish to see its backside then stop it and click again.");
 //                     }
                 } else {
+                    if (TT.open_backside_only_if_alt_key && !event.altKey) {
+                        // URL parameter used to restrict opening backside -- useful for puzzle construction
+                        return;
+                    }
                     widget.open_backside();
                     if (widget.robot_in_training()) {
                         widget.robot_in_training().backside_opened(widget);
@@ -62,15 +66,15 @@ window.TOONTALK.frontside =
                 var widget = this.get_widget();
                 // tried to return if no change if visibility but then loading backside of robot lost its conditions
                 visible = new_value;
+                if (new_value) {
+                    TT.UTILITIES.when_attached(this.get_element(true), 
+                                               widget.render.bind(widget));
+                }
                 if (widget.walk_children) {
                     widget.walk_children(function (child_side) {
                                              child_side.set_visible(new_value);
                                              return true; // continue to next child
                     });
-                }
-                if (new_value) {
-                    TT.UTILITIES.when_attached(this.get_element(true), 
-                                               widget.render.bind(widget));
                 }
             };
             // prefer addEventListener over JQuery's equivalent since when I inspect listeners I get a link to this code

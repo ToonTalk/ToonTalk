@@ -129,24 +129,25 @@ window.TOONTALK.scale = (function (TT) {
             var $frontside_element = $(frontside_element);
             var $scale_parts = $(frontside_element).children(".toontalk-scale-half");
             var $parent = $(frontside_element).parent();
-            var container_element = $parent.is(".toontalk-backside") ? frontside_element : $parent.get(0);
+            var container_element = ($parent.is(".toontalk-backside") || $frontside_element.is(".toontalk-conditions-contents")) ? 
+                                    frontside_element : 
+                                    $parent.get(0);
             var scale_width  = $(container_element).width();
             var scale_height = $(container_element).height();
             var update_hole = function (hole_element, hole, index) {
                 var contents = hole.get_contents();
-                var content_frontside_element = (contents || hole).get_frontside_element(true);
-                var content_frontside_element;
+                var content_element = (contents || hole).get_element(true);
                 var left = index*scale_width*0.5;
-                var top = 0;
-                var width = scale_width*0.5;
+                var top  = 0;
+                var width  = scale_width*0.5;
                 var height = scale_height;
-                var hole_widget = hole.get_contents();
                 var contents_left, contents_top, contents_width, contents_height;
-                $(hole_element).css({left:   left,
-                                     top:    top,
-                                     width:  width,
-                                     height: height});
-                if (hole_element !== content_frontside_element) {
+                TT.UTILITIES.set_css(hole_element,
+                                     {left:   left,
+                                      top:    top,
+                                      width:  width,
+                                      height: height});
+                if (hole_element !== content_element) {
                     if (index === 0) {
                         contents_left = scale_width*-0.05;
                     } else {
@@ -165,20 +166,24 @@ window.TOONTALK.scale = (function (TT) {
                     }
                     contents_width  = scale_width *0.4;
                     contents_height = scale_height*0.4;
-                    $(content_frontside_element).css({left:   contents_left,
-                                                      top:    contents_top,
-                                                      width:  contents_width,
-                                                      height: contents_height});
-                    if (hole_widget) {
-                        if (hole_widget.set_location_attributes) {
-                            hole_widget.set_location_attributes(contents_left, contents_top);
+                    $(content_element).css({left:   contents_left,
+                                            top:    contents_top,
+                                            width:  contents_width,
+                                            height: contents_height});
+                    if (contents) {
+                        if (contents.set_location_attributes) {
+                            contents.set_location_attributes(contents_left, contents_top);
                         }
-                        if (hole_widget.set_size_attributes) {
-                            hole_widget.set_size_attributes(contents_width, contents_height);
+                        if (contents.set_size_attributes) {
+                            contents.set_size_attributes(contents_width, contents_height);
                         }
-                        contents.rerender();
+                        if (contents.is_backside()) {
+                            contents.update_display(); // TODO: see if render is OK
+                            contents.scale_to(contents_width, contents_height);      
+                        }
+                        contents.render();
                     }
-                    hole_element.appendChild(content_frontside_element); // no-op if already there
+                    hole_element.appendChild(content_element); // no-op if already there
                 }                                          
             };
             var state, class_name, scales;
@@ -208,8 +213,8 @@ window.TOONTALK.scale = (function (TT) {
                 $scale_parts.each(function (index, hole_element) {
                         // delaying ensures they contents of the holes have the right size
                         TT.UTILITIES.set_timeout(function () {
-                                update_hole(hole_element, this.get_hole(index), index);
-                            }.bind(this));
+                                                     update_hole(hole_element, this.get_hole(index), index);
+                                                 }.bind(this));
                     }.bind(this));
             } else {
                 this.get_holes().forEach(function (hole, index) {
@@ -295,8 +300,8 @@ window.TOONTALK.scale = (function (TT) {
             } else if (!right_contents) {
                return 1;
             } else {
-               if (left_contents.compare_with) {
-                   return left_contents.compare_with(right_contents);
+               if (left_contents.get_widget().compare_with) {
+                   return left_contents.get_widget().compare_with(right_contents.get_widget());
                }
             }
         };
@@ -309,8 +314,19 @@ window.TOONTALK.scale = (function (TT) {
             return this;
         };
         new_scale.match_with_scale = function (scale_pattern) {
+            var left_contents, right_contents;
             if (this.get_state() === scale_pattern.get_state()) {
                 return 'matched';
+            }
+            left_contents  = this.get_hole_contents(0);
+            if (left_contents && left_contents.is_nest() && !left_contents.has_contents()) {
+               // suspend on nest rather than fail
+                return [[left_contents, this]];
+            }
+            right_contents = this.get_hole_contents(1);
+            if (right_contents && right_contents.is_nest() && !right_contents.has_contents()) {
+                // suspend on nest rather than fail
+                return [[right_contents, this]];
             }
             return scale_pattern;
         };

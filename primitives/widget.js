@@ -405,10 +405,14 @@ window.TOONTALK.widget = (function (TT) {
                         }
                         backside_widget = backside_widget_side.get_widget();
                         if (backside_widget_side.is_backside()) {
-                           // make sure that the frontside isn't also running
-                           if (this.get_backside_widgets().indexOf(backside_widget) >= 0) {
-                               return;
-                           }
+                            // make sure that the frontside isn't also running
+                            if (this.get_backside_widgets().indexOf(backside_widget) >= 0) {
+                                return;
+                            }
+                            // if not a primary back side (e.g. from a sensor) then ignore it
+                            if (!backside_widget_side.is_primary_backside()) {
+                                return;
+                            }
                         }
                         if (backside_widget.is_robot() && !backside_widget.being_trained && !backside_widget.get_body().is_empty()) {
                             // could this set_stopped stuff be combined with set_running?
@@ -960,11 +964,13 @@ window.TOONTALK.widget = (function (TT) {
                             json_view.frontside_left = TT.UTILITIES.get_style_numeric_property(frontside_element, 'left');
                             json_view.frontside_top  = TT.UTILITIES.get_style_numeric_property(frontside_element, 'top')  || backside_parent_view_of_this && backside_parent_view_of_this.frontside_top;
                             if (json_view.frontside_left === undefined) {
-                               backside_parent_view_of_this = this.get_parent_of_frontside().get_widget().get_backside_widgets_json_views();
+                               backside_parent_view_of_this = parent_widget_of_frontside && parent_widget_of_frontside.get_widget().get_backside_widgets_json_views();
                                if (backside_parent_view_of_this) {
                                    index = this.get_parent_of_frontside().get_widget().get_backside_widgets().indexOf(this);
-                                   json_view.frontside_left = backside_parent_view_of_this[index].frontside_left;
-                                   json_view.frontside_top =  backside_parent_view_of_this[index].frontside_top; 
+                                   if (index >= 0) {
+                                       json_view.frontside_left = backside_parent_view_of_this[index].frontside_left;
+                                       json_view.frontside_top =  backside_parent_view_of_this[index].frontside_top;
+                                   }
                                }
                             }
                         }
@@ -1338,12 +1344,12 @@ window.TOONTALK.widget = (function (TT) {
                 final_left, final_top, 
                 frontside_offset, backside_width, frontside_height, 
                 container_offset, container_width;
-            if (backside && $(backside.get_element()).is(":visible")) {
+            if (backside && TT.UTILITIES.visible_element(backside.get_element())) {
                 // already open
                 // make it is opaque
                 $(backside.get_element()).css({opacity: 1});
-                if (new_continuation) {
-                    new_continuation();
+                if (continuation) {
+                    continuation();
                 }
                 return;
             }
@@ -1498,8 +1504,9 @@ window.TOONTALK.widget = (function (TT) {
 
         location_constrained_by_container: function () {
             var parent = this.get_parent_of_frontside();
-            if (parent && (parent.is_hole() || parent.is_nest())) {
+            if (parent && (parent.is_hole() || parent.is_nest() || parent.is_robot())) {
                  // TODO: generalise this for other kinds of containers
+                 // robot is included since it then a condition contrained to condition area
                 return true;
             }
             return false;
@@ -1590,7 +1597,7 @@ window.TOONTALK.widget = (function (TT) {
                 if (this.get_backside_widgets()) {
                     this.get_backside_widgets().forEach(function (widget_side) {
                         if (widget_side && widget_side.visible()) {
-                            widget_side.update_display();
+                            widget_side.render();
                         }    
                     });
                 }

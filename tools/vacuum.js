@@ -53,8 +53,11 @@ window.TOONTALK.vacuum = (function (TT) {
 
         document.addEventListener('keyup', function (event) {
             var character = String.fromCharCode(event.keyCode);
-            // control keys are used by browser
+            // control keys are used by browser so respond only to Alt-s, etc.
             if (event.altKey) {
+                if (['S', 's', 'E', 'e', 'R', 'r', 'A', 'a'].indexOf(character) < 0) {
+                    return;
+                }
                 if (!element) {
                     vacuum.the_vacuum.get_element(); // this sets element since should only be one vacuum
                     $(element).css({left: TT.tool.pageX,

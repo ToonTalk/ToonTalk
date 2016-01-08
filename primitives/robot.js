@@ -58,7 +58,7 @@ window.TOONTALK.robot = (function (TT) {
         var top_level_context; // if the context is on the backside of another (and possibly more) this is the top level widget
         var queue; // run queue this robot is running (or will run) on
         var running_or_in_run_queue, stopped;
-        var original_backside_widgets_of_context, backside_matched_widgets;
+        var original_backside_widgets_of_context, original_backside_widgets_of_context_copy, backside_matched_widgets;
         if (!body) {
             body = TT.actions.create();
         }
@@ -86,7 +86,7 @@ window.TOONTALK.robot = (function (TT) {
         };
         new_robot.get_matched_backside_widget = function (backside_widget) {
             if (backside_matched_widgets) {
-                return backside_matched_widgets[this.get_training_context().get_backside_widgets().indexOf(backside_widget)];
+                return backside_matched_widgets[original_backside_widgets_of_context.indexOf(backside_widget)];
             }
         };
         new_robot.get_backside_widget_of_type = function (type_name, context) {
@@ -151,7 +151,8 @@ window.TOONTALK.robot = (function (TT) {
             var context = this.get_training_context();
             // following used to also include copy_covered_nests: true but that caused nest sharing between members of a robot team
             // that led to several bugs -- also robots shouldn't be able to tell if it has a widget or has a nest with that widget on top
-            original_backside_widgets_of_context = TT.UTILITIES.copy_widget_sides(context.get_backside_widgets(), {just_value: true});
+            original_backside_widgets_of_context = context.get_backside_widgets().slice();
+            original_backside_widgets_of_context_copy = TT.UTILITIES.copy_widget_sides(original_backside_widgets_of_context, {just_value: true});
             this.set_backside_conditions([]);
         };
         new_robot.add_to_backside_conditions = function (widget) {
@@ -166,9 +167,9 @@ window.TOONTALK.robot = (function (TT) {
             // the condition is what the widget was like when training started
             // but no need to consider all backside widgets as backside conditions
             // only those that are "used"
-            widget_index = this.get_training_context().get_backside_widgets().indexOf(widget);
+            widget_index = original_backside_widgets_of_context.indexOf(widget);
             if (widget_index >= 0) {
-                widget_copy = original_backside_widgets_of_context[widget_index]
+                widget_copy = original_backside_widgets_of_context_copy[widget_index];
             }
             if (!widget_copy) {
                 return;
@@ -180,10 +181,18 @@ window.TOONTALK.robot = (function (TT) {
             }
         };
         new_robot.get_backside_condition_index = function (widget) {
-            var backside_widget_index = this.get_training_context().get_backside_widgets().indexOf(widget);
-            if (backside_widget_index >= 0) {
-                return backside_conditions.indexOf(original_backside_widgets_of_context[backside_widget_index]);
+            var index;
+            if (backside_matched_widgets) {
+                index = backside_matched_widgets.indexOf(widget);
+                if (index < 0) {
+                    index = backside_matched_widgets.length;
+                    backside_matched_widgets.push(widget);
+                }
+            } else {
+                index = 0;
+                backside_matched_widgets = [widget];
             }
+            return index;
         };
         new_robot.get_body = function () {
             return body;
@@ -333,7 +342,7 @@ window.TOONTALK.robot = (function (TT) {
         new_robot.set_animating = function (animating, robot_offset) {
             var frontside_element = this.get_frontside_element();
             var $top_level_element, robot_offset;
-            if (animating && $(frontside_element).is(":visible")) {
+            if (animating && TT.UTILITIES.visible_element(frontside_element)) {
                 if (!robot_offset) {
                     robot_offset = $(frontside_element).offset();
                 } 
@@ -487,7 +496,7 @@ window.TOONTALK.robot = (function (TT) {
             this.update_title();
             backside_element = this.get_backside_element();
             $(backside_element).find(".toontalk-conditions-panel").remove();
-           if (this.robot_training_this_robot()) {
+            if (this.robot_training_this_robot()) {
                 this.robot_training_this_robot().started_training_another(this);
             }
         };
@@ -958,7 +967,9 @@ window.TOONTALK.robot = (function (TT) {
    
     robot.created_widget = function (new_widget, source_widget, button_selector) {
         this.add_newly_created_widget(new_widget);
-        this.add_to_top_level_backside(new_widget, false);
+        if (!new_widget.get_parent()) {
+            this.add_to_top_level_backside(new_widget, false);
+        }
         this.add_step(TT.robot_action.create(TT.path.get_path_to_resource(new_widget.copy()), 
                                              "add a new widget to the work space",
                                              {button_selector: button_selector,
@@ -1567,7 +1578,8 @@ window.TOONTALK.robot_backside =
             var speed_names  = ["normal", "original", "double", "half", "very fast", "very slow"];
             var speed_values = [ 1,        undefined,  2,       .5,      10,         .25];
             var speed_value_to_name = function (value) {
-                var index = value ? speed_values.indexOf(value) : 1;
+                // default is normal (index 0)
+                var index = value ? speed_values.indexOf(value) : 0;
                 return speed_names[index];
             };
             var speed_name_to_value = function (name) {
