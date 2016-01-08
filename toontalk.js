@@ -117,7 +117,7 @@ var loadFile = function (index) {
                                                  if (index < file_names.length) {
                                                      loadFile(index);               
                                                  } else {
-                                                     initialize();
+                                                     initialize_toontalk();
                                                  }         
                                             });
                };
