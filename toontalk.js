@@ -48,7 +48,11 @@ var add_css = function (URL) {
     var css = document.createElement('link');
     css.rel   = 'stylesheet';
     css.media = 'all';
-    css.href  = path_prefix + URL;
+    if (URL.indexOf("https:") >= 0) {
+        css.href = URL;
+    } else {
+        css.href = path_prefix + URL; 
+    }
     document.head.appendChild(css);
 }
 
