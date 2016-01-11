@@ -22,7 +22,11 @@ var message_handler =
             respond_to_authorization_need(event.data.authorization_problem, event.source, event.data.respond_to);
         }
     };
-window.addEventListener("message", message_handler, false);
+
+document.addEventListener('toontalk_initialized', function () {
+    // don't start handling messages until system initialized
+    window.addEventListener("message", message_handler, false);
+});
 
 var add_save_edits_iframe = function () {
     var file_id_end   = window.location.href.lastIndexOf("/");
