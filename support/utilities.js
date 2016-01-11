@@ -3242,25 +3242,26 @@ window.TOONTALK.UTILITIES =
         };
 
         utilities.get_path_to_toontalk_folder = function () {
-            var toontalk_start, next_slash;
-            if (typeof path_to_toontalk_folder === 'string') {
-                return path_to_toontalk_folder;
-            }
-            path_to_toontalk_folder = "";
-            toontalk_start = window.location.href.indexOf("/ToonTalk/");
-            if (toontalk_start < 0) {
-                // give up
-                return path_to_toontalk_folder;
-            } else {
-                next_slash = toontalk_start+"/ToonTalk".length;
-            }
-            while (true) {
-                next_slash = window.location.href.indexOf("/", next_slash+1);
-                if (next_slash < 0) {
-                    return path_to_toontalk_folder;
-                }
-                path_to_toontalk_folder += "../";
-            };
+            return TT.TOONTALK_URL;
+//             var toontalk_start, next_slash;
+//             if (typeof path_to_toontalk_folder === 'string') {
+//                 return path_to_toontalk_folder;
+//             }
+//             path_to_toontalk_folder = "";
+//             toontalk_start = window.location.href.indexOf("/ToonTalk/");
+//             if (toontalk_start < 0) {
+//                 // give up
+//                 return path_to_toontalk_folder;
+//             } else {
+//                 next_slash = toontalk_start+"/ToonTalk".length;
+//             }
+//             while (true) {
+//                 next_slash = window.location.href.indexOf("/", next_slash+1);
+//                 if (next_slash < 0) {
+//                     return path_to_toontalk_folder;
+//                 }
+//                 path_to_toontalk_folder += "../";
+//             };
         };
 
         utilities.is_browser_of_type = function (type) {
