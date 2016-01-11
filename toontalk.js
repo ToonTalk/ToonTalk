@@ -38,7 +38,9 @@ var get_url_parameter = function (name, parameters, default_value) {
 // following is needed to access the user's Google Drive 
 // default assumes web page is hosted on toontalk.github.io
 window.TOONTALK = {GOOGLE_DRIVE_CLIENT_ID:  get_parameter('GOOGLE_DRIVE_CLIENT_ID',  '148386604750-704q35l4gcffpj2nn3p4ivcopl81nm27.apps.googleusercontent.com'),
-                   ORIGIN_FOR_GOOGLE_DRIVE: get_parameter('ORIGIN_FOR_GOOGLE_DRIVE', 'toontalk.github.io')};
+                   ORIGIN_FOR_GOOGLE_DRIVE: get_parameter('ORIGIN_FOR_GOOGLE_DRIVE', 'toontalk.github.io'),
+                   // TOONTALK_URL is where the scripts, sounds, css, images, etc live
+                   TOONTALK_URL: path_prefix};
 
 var debugging = get_parameter('debugging', '0') !== '0';
 
@@ -155,6 +157,20 @@ if (table_of_contents) {
                                                                     tocTitle:   'Click to navigate',
                                                                     tocTopLink: 'Top of page'});
                               });
+}
+
+var published_page = get_parameter('published', '0') !== '0';
+
+if (published_page) {
+    file_names.push("support/published_support.js");
+    file_names.push("https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/froala_editor.min.js");
+    file_names.push("https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/block_styles.min.js");
+    file_names.push("https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/colors.min.js");
+    file_names.push("https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/font_family.min.js");
+    file_names.push("https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/font_size.min.js");
+    file_names.push("https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/lists.min.js");
+    file_names.push("https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/tables.min.js");
+    file_names.push("https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/video.min.js");
 }
 
 loadFile(0);

@@ -16,15 +16,7 @@ var static_contents_header_1 =
 '<!DOCTYPE html>\n' +
 '<html>\n' +
 '<head>\n' +
-'<script src="https://toontalk.github.io/ToonTalk/toontalk.js"></script>\n' +
-'<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/froala_editor.min.js"></script>\n' +
-'<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/block_styles.min.js"></script>\n' +
-'<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/colors.min.js"></script>\n' +
-'<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/font_family.min.js"></script>\n' +
-'<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/font_size.min.js"></script>\n' +
-'<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/lists.min.js"></script>\n' +
-'<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/tables.min.js"></script>\n' +
-'<script src="https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/video.min.js"></script>\n' +
+'<script src="https://toontalk.github.io/ToonTalk/toontalk.js?published=1"></script>\n' +
 '<title>\n';
 // title will be inserted here
 var static_contents_header_2 =
@@ -32,7 +24,6 @@ var static_contents_header_2 =
 '</head>\n' +
 '<body>\n';
 var static_contents_end =
-'<script src="https://toontalk.github.io/ToonTalk/support/published_support.js"></script>\n' +
 '</body>\n' +
 '</html>\n';
     
