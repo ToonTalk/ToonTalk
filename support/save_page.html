@@ -6,6 +6,7 @@
 <script>
 function authorize_then_inform_parent_to_save_edits() {
     "use strict";
+    alert("authorize_then_inform_parent_to_save_edits");
     var callback_when_authorized = function (error) {
         var file_id_index, file_id;
         if (typeof error === 'string') {
@@ -34,15 +35,17 @@ var message_handler =
     };
 window.addEventListener("message", message_handler, false);
 document.addEventListener('toontalk_initialized', function () {
-    alert("toontalk_initialized");
     var script = document.createElement("script");
     script.src = "https://apis.google.com/js/client.js?onload=authorize_then_inform_parent_to_save_edits";
-    // delay this since other listeners to toontalk_initialized may not have run yet
-    setTimeout(function () {
-        document.head.appendChild(script);
+    document.head.appendChild(script);
+    script.addEventListener('load', function () {
         // not clear why onload doesn't always call the following
+        alert("client.js loaded");
         authorize_then_inform_parent_to_save_edits();
     });
+    script.addEventListener('error', function (event) {
+        alert("Error loading " + script.src);
+        });
 });
 </script>
 <title>ToonTalk hidden iframe for saving edits</title>
