@@ -33,9 +33,15 @@ var message_handler =
         }
     };
 window.addEventListener("message", message_handler, false);
-                                                   
+window.addEventListener('toontalk_initialized', function () {
+    var script = document.createElement("script");
+    script.src = "https://apis.google.com/js/client.js?onload=authorize_then_inform_parent_to_save_edits";
+    // delay this since other listeners to toontalk_initialized may not have run yet
+    setTimeout(function () {
+        document.head.appendChild(script);
+    });
+});                                               
 </script>
-<script src="https://apis.google.com/js/client.js?onload=authorize_then_inform_parent_to_save_edits"></script>
 <title>ToonTalk hidden iframe for saving edits</title>
 </head>
 <body>
