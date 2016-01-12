@@ -23,10 +23,7 @@ var message_handler =
         }
     };
 
-document.addEventListener('toontalk_initialized', function () {
-    // don't start handling messages until system initialized
-    window.addEventListener("message", message_handler, false);
-});
+window.addEventListener("message", message_handler, false);
 
 var add_save_edits_iframe = function () {
     var file_id_end   = window.location.href.lastIndexOf("/");

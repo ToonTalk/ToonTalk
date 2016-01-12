@@ -6,10 +6,10 @@
 <script>
 function authorize_then_inform_parent_to_save_edits() {
     "use strict";
-    alert("authorize_then_inform_parent_to_save_edits");
     var callback_when_authorized = function (error) {
         var file_id_index, file_id;
         if (typeof error === 'string') {
+            console.error("authorize_then_inform_parent_to_save_edits received an error: " + error);
             window.parent.postMessage({authorization_problem: error,
                                        respond_to: window.location.href},
                                       "*");
@@ -21,6 +21,7 @@ function authorize_then_inform_parent_to_save_edits() {
             return;
         }
         file_id = window.location.href.substring(file_id_index+3);
+        console.log("Posting message to parent to start the saving of edits.");
         window.parent.postMessage({save_edits_to: window.location.href,
                                    file_id: file_id},
                                   "*");
@@ -43,8 +44,8 @@ document.addEventListener('toontalk_initialized', function () {
         authorize_then_inform_parent_to_save_edits();
     });
     script.addEventListener('error', function (event) {
-        console.log("Error loading " + script.src);
-        console.log(event);
+        console.error("Error loading " + script.src);
+        console.error(event);
     });
 });
 </script>
