@@ -383,8 +383,8 @@ window.TOONTALK.scale = (function (TT) {
                     right_contents = "empty pan";
                 }
                 return ["The " + right_contents + " is greater than the " + left_contents + ".",
-                        "The " + right_contents + " is equal to the " + left_contents + ".",
-                        "The " + right_contents + " is less than the " + left_contents + "."][state+1];
+                        "The " + right_contents + " is equal to the "     + left_contents + ".",
+                        "The " + right_contents + " is less than the "    + left_contents + "."][state+1];
             }            
         };
         new_scale.get_default_description = function () {

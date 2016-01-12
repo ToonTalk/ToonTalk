@@ -540,12 +540,12 @@ window.TOONTALK.bird = (function (TT) {
                 if (nest.is_function_nest()) {
                     return nest.get_function_object().toString();
                 }
-                return "a bird";
+                return "bird";
             }
             if (to_string_info && to_string_info.role === "conditions") {
                 return "any bird";
             }
-            return "a bird without a nest";
+            return "bird without a nest";
         };
         new_bird.get_default_description = function () {
             if (this.is_function_bird()) {
@@ -1629,7 +1629,7 @@ window.TOONTALK.nest = (function (TT) {
     };
     
     nest.toString = function () {
-        return "a nest"; // good enough for now
+        return "nest"; // good enough for now
     };
 
     nest.get_default_description = function () {
