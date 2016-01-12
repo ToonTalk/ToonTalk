@@ -68,6 +68,21 @@ var respond_to_authorization_need = function (error, saving_window, saving_windo
                10000); // alert goes away after 10 seconds
 };
 
+var ensure_toontalk_is_initialized = function () {
+    // any web pages generated before the 8 January 2016 release need this to explicitly call initialize_toontalk
+    if (window.initialize_toontalk) {
+        window.initialize_toontalk();
+    } else {
+        // check again in a second
+        setTimeout(function () {
+                       ensure_toontalk_is_initialized();
+                   },
+                   1000);
+    }
+};
+
+ensure_toontalk_is_initialized();
+
 return {
     enable_editor: function (saving_window, saving_window_URL, file_id, widgets_json) {
         var drop_handler = function (event) {
