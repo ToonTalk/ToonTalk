@@ -36,16 +36,16 @@ var message_handler =
 window.addEventListener("message", message_handler, false);
 document.addEventListener('toontalk_initialized', function () {
     var script = document.createElement("script");
-    script.src = "https://apis.google.com/js/client.js?onload=authorize_then_inform_parent_to_save_edits";
+    script.src = "https://apis.google.com/js/client.js"; // ?onload=authorize_then_inform_parent_to_save_edits";
     document.head.appendChild(script);
     script.addEventListener('load', function () {
-        // not clear why onload doesn't always call the following
-        alert("client.js loaded");
+        // not clear why onload didn't always call the following
         authorize_then_inform_parent_to_save_edits();
     });
     script.addEventListener('error', function (event) {
-        alert("Error loading " + script.src);
-        });
+        console.log("Error loading " + script.src);
+        console.log(event);
+    });
 });
 </script>
 <title>ToonTalk hidden iframe for saving edits</title>
