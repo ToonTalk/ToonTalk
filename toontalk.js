@@ -45,7 +45,11 @@ window.TOONTALK = {GOOGLE_DRIVE_CLIENT_ID:  get_parameter('GOOGLE_DRIVE_CLIENT_I
 var debugging = get_parameter('debugging', '0') !== '0';
 
 var add_css = function (URL) {
-    var css = document.createElement('link');
+    var css;
+    if (no_need_to_load_css) {
+        return;
+    }
+    css = document.createElement('link');
     css.rel   = 'stylesheet';
     css.media = 'all';
     if (URL.indexOf("https:") >= 0) {
@@ -148,6 +152,8 @@ var loadFile = function (index, offline) {
                    });
                    document.head.appendChild(script);
                };
+
+var no_need_to_load_css = get_parameter('no_need_to_load_css', '0') !== '0';
 
 var table_of_contents = get_parameter('TOC', '0') !== '0';
 
