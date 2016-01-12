@@ -33,14 +33,14 @@ var message_handler =
         }
     };
 window.addEventListener("message", message_handler, false);
-window.addEventListener('toontalk_initialized', function () {
+document.addEventListener('toontalk_initialized', function () {
     var script = document.createElement("script");
     script.src = "https://apis.google.com/js/client.js?onload=authorize_then_inform_parent_to_save_edits";
     // delay this since other listeners to toontalk_initialized may not have run yet
     setTimeout(function () {
         document.head.appendChild(script);
         // not clear why onload doesn't always call the following
-        authorize_then_inform_parent_to_save_edits();
+//         authorize_then_inform_parent_to_save_edits();
     });
 });
 </script>
