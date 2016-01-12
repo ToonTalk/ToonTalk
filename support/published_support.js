@@ -17,7 +17,9 @@ var inline_mode = !TT.UTILITIES.get_current_url_boolean_parameter('edit', false)
 var message_handler =
     function (event) {
         if (event.data.save_edits_to) {
-            TT.published_support.enable_editor(event.source, event.data.save_edits_to, event.data.file_id, event.data.widgets_json);
+            TT.UTILITIES.do_after_initialization(function () {
+                TT.published_support.enable_editor(event.source, event.data.save_edits_to, event.data.file_id, event.data.widgets_json);
+            });
         } else if (event.data.authorization_problem) {
             respond_to_authorization_need(event.data.authorization_problem, event.source, event.data.respond_to);
         }
