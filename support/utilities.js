@@ -3927,7 +3927,11 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
         };
 
         utilities.initialize = function (callback) {
-            var document_click =
+            var document_click, translation_div;
+            if (toontalk_initialized) {
+                return;
+            }
+            document_click =
                 function (event) {
         //          event.stopPropagation();
                     $(".toontalk-top-level-resource-container").each(function (index, element) {
@@ -3937,7 +3941,6 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                         }
                     });
                 };
-            var translation_div;
             TT.debugging = utilities.get_current_url_parameter('debugging');
             TT.logging   = utilities.get_current_url_parameter('log');
             if (utilities.get_current_url_numeric_parameter('volume', 10) > 0) {
