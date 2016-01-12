@@ -71,6 +71,9 @@ window.TOONTALK.DISPLAY_UPDATES =
                     pending_update.render();
                     return;
                 }
+                // if window was hidden and then shown elements might be stuck hidden
+                // perhaps worth calling the following only when needed
+                $(element).show(); 
                 pending_update.update_display();
                 if (pending_update.get_backside) {
                     backside = pending_update.get_backside();
