@@ -18,7 +18,8 @@ window.TOONTALK.UTILITIES =
 
     // following holds all the utility functions
     // defined here to support self-reference
-    var utilities = {};    
+    var utilities = {};  
+    var toontalk_initialized = false;  
     var dragee;
     var z_index = 100;
     // id needs to be unique across ToonTalks due to drag and drop
@@ -4007,7 +4008,16 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                            TT.DISPLAY_UPDATES.update_display();
                        },
                        100);
+            toontalk_initialized = true;
             document.dispatchEvent(TT.UTILITIES.create_event('toontalk_initialized', {}));
+        };
+
+        utilities.do_after_initialization = function (callback) {
+            if (toontalk_initialized) {
+                callback();
+            } else {
+                document.addEventListener('toontalk_initialized', callback);
+            }
         };
 
         return utilities;
