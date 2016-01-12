@@ -20,17 +20,14 @@ function authorize_then_inform_parent_to_save_edits() {
             return;
         }
         file_id = window.location.href.substring(file_id_index+3);
-        alert("callback_when_authorized about to postMessage");
         window.parent.postMessage({save_edits_to: window.location.href,
                                    file_id: file_id},
                                   "*");
     };
-    alert("about to call handle_client_load");
     window.TOONTALK.google_drive.handle_client_load(callback_when_authorized);
 };
 var message_handler =
     function (event) {
-        alert("message received with event.data " + event.data);
         if (event.data === "user wants to authorize") {
             window.TOONTALK.google_drive.authorize(authorize_then_inform_parent_to_save_edits);
         }
@@ -40,11 +37,12 @@ window.addEventListener('toontalk_initialized', function () {
     var script = document.createElement("script");
     script.src = "https://apis.google.com/js/client.js?onload=authorize_then_inform_parent_to_save_edits";
     // delay this since other listeners to toontalk_initialized may not have run yet
-    alert("about to load Google loader" + script.src);
     setTimeout(function () {
         document.head.appendChild(script);
+        // not clear why onload doesn't always call the following
+        authorize_then_inform_parent_to_save_edits();
     });
-});                                               
+});
 </script>
 <title>ToonTalk hidden iframe for saving edits</title>
 </head>
