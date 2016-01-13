@@ -10,7 +10,7 @@
 (function () {
 "use strict";
 
-var this_url = document.querySelector('script[src*="toontalk.js"]').src;
+var this_url = document.querySelector('script[src*="ToonTalk/toontalk.js"]').src;
 // following assumes that no URL parameters contain forward slashes
 var path_prefix = this_url.substring(0, this_url.lastIndexOf('/')+1);
 var this_url_parameters = this_url.substring(this_url.indexOf('?')+1);
