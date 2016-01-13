@@ -32,5 +32,5 @@ java -jar c:\bin\closure\compiler.jar ^
  --js support\publish.js ^
  --js support\google_drive.js ^
  --js support\utilities.js --compilation_level=SIMPLE_OPTIMIZATIONS --externs  compile\externs.js ^
- --js_output_file=compile/toontalk.js
+ --js_output_file=compile/compiled_toontalk.js
 cd compile

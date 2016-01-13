@@ -1,7 +1,6 @@
  /**
  * Implements a loader for ToonTalk's JavaScript files 
  * the production version is used unless the URL parameter debugging is set to non-zero
- * for production use toontalk.min.js
  * Authors: Ken Kahn
  * License: New BSD
  */
@@ -105,7 +104,7 @@ if (debugging) {
 } else {
     file_names = ["https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js",
                   "libraries/jquery-ui.min.js",
-                  "compile/toontalk.js",
+                  "compile/compiled_toontalk.js",
                   "https://apis.google.com/js/client.js?onload=handle_client_load",
                   // following enables JQuery UI resize handles to respond to touch
                   // Note that including this in the closure compiler resulted in errors
