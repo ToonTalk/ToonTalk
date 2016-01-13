@@ -10,7 +10,10 @@
 (function () {
 "use strict";
 
-var this_url = document.querySelector('script[src*="ToonTalk/toontalk.js"]').src;
+// need to try ToonTalk/toontalk.js first in case old page with reference to compile/toontalk.js is loading
+// but sometimes src is just 'toontalk.js' so need fall back
+var this_url = (document.querySelector('script[src*="ToonTalk/toontalk.js"]') ||
+                document.querySelector('script[src*="toontalk.js"]')).src;
 // following assumes that no URL parameters contain forward slashes
 var path_prefix = this_url.substring(0, this_url.lastIndexOf('/')+1);
 var this_url_parameters = this_url.substring(this_url.indexOf('?')+1);
