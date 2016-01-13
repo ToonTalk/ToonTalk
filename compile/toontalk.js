@@ -10,7 +10,7 @@
 "use strict";
 
 var script = document.createElement("script");
-script.src = "https://toontalk.github.io/ToonTalk/toontalk.js?old_reference_to_toontalk_js=1"; 
+script.src = "https://toontalk.github.io/ToonTalk/toontalk.js?published=1&old_reference_to_toontalk_js=1"; 
 document.head.appendChild(script);
 
 }());
