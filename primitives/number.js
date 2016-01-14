@@ -572,7 +572,8 @@ window.TOONTALK.number = (function () {
     number.to_HTML = function (original_max_characters, font_size, format, top_level, operator, size_unconstrained_by_container) {
         var integer_as_string, value_as_string, integer_part, fractional_part, improper_fraction_HTML, digits_needed, shrinkage, table_style,
             // following needed for scientific notation
-            exponent, ten_to_exponent, exponent_area, exponent_index, exponent_string, significand, max_decimal_places, decimal_digits, integer_digit, negative, decimal_part;
+            exponent, ten_to_exponent, exponent_area, exponent_index, exponent_string, significand, approximate_value,
+            max_decimal_places, decimal_digits, integer_digit, negative, decimal_part;
         var extra_class = (top_level !== false) ? ' toontalk-top-level-number' : '';
         var minimum_characters = 4;
         var max_characters = original_max_characters;
@@ -712,7 +713,9 @@ window.TOONTALK.number = (function () {
             negative = bigrat.isNegative(this.get_value());
             exponent = scientific_notation_exponent(this.get_value());
             ten_to_exponent = bigrat.power(bigrat.create(), TEN, exponent+1);
-            significand = bigrat.divide(bigrat.create(), this.get_value(), ten_to_exponent);
+            // only need max_decimal_places of accurancy for the significand so truncate it
+            approximate_value = truncate_to_n_decimal_places(this.get_value(), max_decimal_places+1);
+            significand = bigrat.divide(bigrat.create(), approximate_value, ten_to_exponent);
             // 6 for integer_digit, space, and '10x' - divide by 2 since superscript font is smaller
             exponent_area = 6+(exponent === 0 ? 1 : Math.ceil(log10(Math.abs(exponent)))/2);
             if (negative) {
@@ -723,8 +726,6 @@ window.TOONTALK.number = (function () {
                 return this.to_HTML(exponent_area+1, font_size*original_max_characters/(exponent_area+1), format, top_level, operator, size_unconstrained_by_container);
             }
             max_decimal_places = shrinking_digits_length(compute_number_of_full_size_characters_after_decimal_point(max_characters, exponent_area), font_size); 
-            // only need max_decimal_places of accurancy for the significand so truncate it
-            significand = truncate_to_n_decimal_places(significand, max_decimal_places+1);
             decimal_digits = generate_decimal_places(significand, max_decimal_places);      
             if (negative) { // negative so include sign and first digit
                 integer_digit = "-" + decimal_digits.substring(0, 1);
