@@ -237,7 +237,8 @@ window.TOONTALK.SETTINGS =
                                  height: $(widget_element).height()+50,
                                  left:  -2,
                                  top:  -25,
-                                "z-index": TT.UTILITIES.next_z_index()});
+                                 // settings panel should be on top of everything
+                                "z-index": 9999999});
           settings_panel.appendChild(close_button);
           program_name.button.addEventListener('change', program_name_changed);
           google_drive.button .addEventListener('click', 
