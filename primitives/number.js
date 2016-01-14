@@ -560,12 +560,16 @@ window.TOONTALK.number = (function () {
         }
     };
     
-    number.to_HTML = function (max_characters, font_size, format, top_level, operator, size_unconstrained_by_container) {
+    number.to_HTML = function (original_max_characters, font_size, format, top_level, operator, size_unconstrained_by_container) {
         var integer_as_string, value_as_string, integer_part, fractional_part, improper_fraction_HTML, digits_needed, shrinkage, table_style,
             // following needed for scientific notation
             exponent, ten_to_exponent, exponent_area, exponent_index, exponent_string, significand, max_decimal_places, decimal_digits, integer_digit, negative, decimal_part;
         var extra_class = (top_level !== false) ? ' toontalk-top-level-number' : '';
         var minimum_characters = 4;
+        var max_characters = original_max_characters;
+        var operator_end = ""; // typically no need for something at the end due to the operator -- e.g. -(-2)
+        // --2 needs to be displayed as -(-2)
+        var subtraction_of_negative_number;
         if (this.is_attribute_widget && this.is_attribute_widget()) {
              extra_class += " toontalk-attribute-number";
         } else if (this.get_approximate()) {
@@ -586,6 +590,14 @@ window.TOONTALK.number = (function () {
         }
         if (operator_HTML.length > 0) {
             max_characters -= 1; // leave room for operator
+            subtraction_of_negative_number = operator === '-' && 
+                                               (this.is_negative() || this.is_zero()) &&
+                                               (this.is_integer() || (format !== "improper_fraction" && format !== "proper_fraction" && format !== "mixed_number"));
+            if (subtraction_of_negative_number) {
+                max_characters -= 1;
+                operator_HTML += "&nbsp;";
+                operator_end = "";
+            }
             if (max_characters < 2) {
                 // better to use a smaller font than have too few digits
                 font_size *= Math.max(1, max_characters) / 2;
@@ -609,7 +621,7 @@ window.TOONTALK.number = (function () {
                 max_characters = shrinkage;
             }
             return '<div class="toontalk-number toontalk-integer' + extra_class + '" style="font-size: ' + font_size + 'px;">' +
-                   operator_HTML + fit_string_to_length(integer_as_string, max_characters, font_size) + '</div>';
+                   operator_HTML + fit_string_to_length(integer_as_string, max_characters, font_size) + operator_end + '</div>';
         }
         if (this.get_approximate() || this.is_attribute_widget()) {
             if (format === 'decimal') {
@@ -619,8 +631,7 @@ window.TOONTALK.number = (function () {
                 exponent_index = value_as_string.indexOf('e');
                 if (exponent_index >= 0) {
                     exponent = value_as_string.substring(exponent_index+1);
-                    value_as_string = value_as_string.substring(0, exponent_index); 
-                    
+                    value_as_string = value_as_string.substring(0, exponent_index);  
                 }
             }
             if (value_as_string) {
@@ -650,7 +661,7 @@ window.TOONTALK.number = (function () {
                     exponent_string = "";
                 }
                 return '<div class="toontalk-number toontalk-approximate-number' + extra_class + '" style="font-size: ' + font_size + 'px;">' +
-                       operator_HTML + shrink_to_fit(value_as_string, max_characters, font_size, true) + exponent_string + '</div>';
+                       operator_HTML + shrink_to_fit(value_as_string, max_characters, font_size, true) + exponent_string + operator_end + '</div>';
             }
         }
         table_style = ' style="font-size:' + (font_size * 0.4) + 'px;"';
@@ -688,7 +699,7 @@ window.TOONTALK.number = (function () {
                 font_size *= Math.max(1, max_characters) / 4;
                 max_characters = 4;
             }
-            return '<div class="toontalk-number toontalk-decimal toontalk-top-level-decimal' + extra_class + '" style="font-size: ' + font_size + 'px;">' + operator_HTML + this.decimal_string(max_characters, font_size) + '</div>';
+            return '<div class="toontalk-number toontalk-decimal toontalk-top-level-decimal' + extra_class + '" style="font-size: ' + font_size + 'px;">' + operator_HTML + this.decimal_string(max_characters, font_size) + operator_end + '</div>';
         }
         if (format === 'scientific_notation') {
             negative = bigrat.isNegative(this.get_value());
@@ -700,9 +711,9 @@ window.TOONTALK.number = (function () {
             if (negative) {
                 exponent_area++; // need more room
             }
-            if (max_characters < exponent_area+1) {
+            if (original_max_characters < exponent_area+1) {
                 // try again with a smaller font_size
-                return this.to_HTML(exponent_area+1, font_size*max_characters/(exponent_area+1), format, top_level, operator, size_unconstrained_by_container);
+                return this.to_HTML(exponent_area+1, font_size*original_max_characters/(exponent_area+1), format, top_level, operator, size_unconstrained_by_container);
             }
             max_decimal_places = shrinking_digits_length(compute_number_of_full_size_characters_after_decimal_point(max_characters, exponent_area), font_size); 
             decimal_digits = generate_decimal_places(significand, max_decimal_places);      
@@ -721,7 +732,7 @@ window.TOONTALK.number = (function () {
                    '<tr><td class="toontalk-number toontalk-significand-of-scientific-notation">' +
                    // mulitply by .9 since otherwise the number obscures some of the number border
                    '<div class="toontalk-number toontalk-decimal' + extra_class + '" style="font-size: ' + font_size*.9 + 'px;">' +
-                   operator_HTML + integer_digit + decimal_part +
+                   operator_HTML + integer_digit + decimal_part + operator_end + 
                    '</td><td class="toontalk-number toontalk-exponent-of-scientific-notation">' +
                    '<div style="font-size: ' + font_size + 'px;">' +
                    ' &times;10<sup style="font-size: ' + font_size/2 + 'px;">' + exponent + '</sup></div>' +
