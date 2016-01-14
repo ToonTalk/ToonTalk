@@ -42,7 +42,8 @@ var static_contents_end =
         publish_widget: function (page_title, widget, as_workspace, callback) {
             // TODO: generalize this to other cloud services
             var google_drive_status = TT.google_drive.get_status();
-            var editable_contents = ["Edit this. Select text for formatting.", "And edit this."];
+            var editable_contents = ["Edit this. Select text for formatting."];
+            var after_widget_text = ""; // will display Type something
             var insert_or_update = function (response) {
                 var file = response && response.items && response.items.length > 0 && response.items[0];
                 var contents;
@@ -79,12 +80,9 @@ var static_contents_end =
                                 json.view.saved_height = undefined;
                             }
                             widgets_json.push(TT.UTILITIES.toontalk_json_div(json, widget.get_widget()));
-                            if (index > 1) {
-                                editable_contents[index] = editable_contents[1]; // repeat it as many times as needed
-                            }
+                            editable_contents.push(after_widget_text);
                         });
                     });
-                    editable_contents.push(editable_contents[1]); // final editable text
                 }
                 TT.google_drive.get_toontalk_files(TT.google_drive.full_file_name(program_name, 'page'), 
                                                   'page',

@@ -572,7 +572,7 @@ window.TOONTALK.box = (function (TT) {
             if (size === 0) {
                 box_width = 0;
             } else {
-                box_width = $(frontside_element).width()  || TT.box.get_default_width();
+                box_width = $(frontside_element).width() || TT.box.get_default_width();
             }
             box_height = $(frontside_element).height() || TT.box.get_default_height();
             if (horizontal) {
