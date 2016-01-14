@@ -1697,7 +1697,9 @@ window.TOONTALK.UTILITIES =
                             frontside_element = widget.get_frontside_element(true);
                             if (frontside_element) {
                                 $(frontside_element).addClass("toontalk-top-level-resource")
-                                                    .css({position: 'relative'});
+                                                    .css({position: 'relative',
+                                                          width:  widget.saved_width,
+                                                          height: widget.saved_height});
                                 element.toontalk_widget_side = widget;
                                 element.appendChild(frontside_element);
                             }
