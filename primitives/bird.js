@@ -1393,7 +1393,14 @@ window.TOONTALK.nest = (function (TT) {
             }
         };
         new_nest.get_contents_dimensions = function () {
-            var frontside_element = this.get_frontside_element();
+            var full_size_element = function () {
+                var frontside_element = this.get_frontside_element();
+                if ($(frontside_element).parent().is(".toontalk-box-hole")) {
+                    return frontside_element.parentElement;
+                }
+                return frontside_element;
+            }.bind(this);
+            var frontside_element = full_size_element();
             var nest_width = $(frontside_element).width();
             var nest_height = $(frontside_element).height();
             var width  = TT.nest.CONTENTS_WIDTH_FACTOR *nest_width;
