@@ -474,6 +474,13 @@ window.TOONTALK.number = (function () {
                 $dimensions_holder = $(parent_widget.get_frontside_element());
             }
         }
+        if (TT.nest.CONTENTS_WIDTH_FACTOR  === 1 &&
+            TT.nest.CONTENTS_HEIGHT_FACTOR === 1 &&
+            $dimensions_holder.is(".toontalk-nest") &&
+            $dimensions_holder.parent().is(".toontalk-box-hole")) {
+            // number is on a nest that is in a box hole so use box hole dimension 
+            $dimensions_holder = $dimensions_holder.parent();
+        }
         if ($(frontside_element).is(".toontalk-carried-by-bird")) {
             // good enough values when carried by a bird
             client_width  = 100;
@@ -544,7 +551,8 @@ window.TOONTALK.number = (function () {
         new_HTML = this.to_HTML(max_decimal_places, font_height, this.get_format(), true, this.get_operator(), size_unconstrained_by_container);
         if (TT.UTILITIES.on_a_nest_in_a_box(frontside_element)) {
             // need to work around a CSS problem where nested percentage widths don't behave as expected
-            new_HTML = add_to_style(new_HTML, "width:" + client_width + "px;");
+            new_HTML = add_to_style(new_HTML, "width:"  + (client_width-border_size*2)  + "px;");
+            new_HTML = add_to_style(new_HTML, "height:" + (client_height-border_size*2) + "px;");
         }
         child_element.innerHTML = new_HTML;
         // numbers looked wrong when translated (extra spaces between digits)
