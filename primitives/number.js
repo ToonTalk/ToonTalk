@@ -168,6 +168,10 @@ window.TOONTALK.number = (function () {
 
     var generate_decimal_places_from_numerator_and_denominator = function (numerator, denominator, number_of_full_size_characters) {
         // numerator and denominator are bigrats with denominators of 1
+        if (bigrat.equals(numerator, bigrat.ZERO)) {
+            // without this special case it becomes 0.000000... x 10^0
+            return "0";
+        }
         var result = "";
         // this is base 10 -- could generalise...
         var quotient_rational = bigrat.create();
@@ -251,6 +255,9 @@ window.TOONTALK.number = (function () {
         var absolute_value = bigrat.abs(bigrat.create(), rational_number);
         var negative_exponent = bigrat.isLessThan(absolute_value, bigrat.ONE);
         var integer_approximation, integer_approximation_as_string;
+        if (bigrat.equals(rational_number, bigrat.ZERO)) {
+            return 0;
+        }
         if (negative_exponent) {
             // use reciprocal to compute exponent
             integer_approximation = bigrat.toBigInteger(bigrat.divide(bigrat.create(), bigrat.ONE, absolute_value));
