@@ -1346,8 +1346,8 @@ window.TOONTALK.nest = (function (TT) {
                                                  {width:  contents_dimension.width,
                                                   height: contents_dimension.height,
                                                   // following currently has no effect if element has a translation transform
-                                                  left: nest_width*0.1,
-                                                  top:  nest_height*0.1});
+                                                  left: nest_width *(1.0-TT.nest.CONTENTS_WIDTH_FACTOR) /2,
+                                                  top:  nest_height*(1.0-TT.nest.CONTENTS_HEIGHT_FACTOR)/2});
                             if (top_contents.set_size_attributes) {
                                 // e.g. element widgets need to update their attributes
                                 top_contents.set_size_attributes(contents_dimension.width, contents_dimension.height);
@@ -1676,8 +1676,11 @@ window.TOONTALK.nest = (function (TT) {
         return nest;
     };
 
-    nest.CONTENTS_WIDTH_FACTOR  = 0.8;
-    nest.CONTENTS_HEIGHT_FACTOR = 0.8;
+    // the following were 0.8 for a long time with the idea that it made it clear there was a nest there
+    // and provided handles for picking up the nest (and not its contents)
+    // however it broke the idea of transparency (no difference between a bound variable and its value)
+    nest.CONTENTS_WIDTH_FACTOR  = 1;
+    nest.CONTENTS_HEIGHT_FACTOR = 1;
     
     return nest;
 }(window.TOONTALK));
