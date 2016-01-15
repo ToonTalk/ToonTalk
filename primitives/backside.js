@@ -834,6 +834,99 @@ window.TOONTALK.backside =
             return check_box;
         },
 
+        create_parent_selection_check_box: function (backside, widget) {
+            var get_parent = function () {
+                var parent = widget.get_parent();
+                if (!parent) {
+                    return;
+                }
+                if (!(parent.is_nest() ||
+                      parent.is_hole() ||
+                      parent.is_element())) {
+                    return;      
+                }
+                if (parent.is_hole()) {
+                    return parent.get_parent_of_frontside();
+                }
+                return parent;
+            }
+            var parent = get_parent();
+            var label = function (parent) {
+                 return "Drag the " + parent.get_type_name() + " I'm on when dragging";
+            };
+            var title = function (parent) {
+                return "Check this if you want to drag the " + parent.get_type_name() + " when you move this widget.";
+            };
+            var check_box, check_box_clicked;
+            if (!parent) {
+                return;
+            }
+            check_box = TT.UTILITIES.create_check_box(widget.get_infinite_stack(), 
+                                                      "toontalk-parent-selection-check-box",
+                                                      label(parent),
+                                                      title(parent));
+            var update_or_disable_check_box = function (parent) {
+                var current_parent = get_parent();
+                if (!current_parent) {
+                    disable_check_box();
+                    return;
+                }
+                if (current_parent !== parent) {
+                    update_check_box(current_parent);
+                }
+                enable_check_box(current_parent);
+            };
+            var update_check_box = function (parent) {
+                check_box.label.innerHTML = label(parent);
+                check_box.button.innerHTML = title(parent);     
+            };
+            var get_selection_without_parent = function () {
+                update_or_disable_check_box();
+                return widget;
+            };
+            var disable_check_box = function () {
+                check_box.button.checked = false;
+                check_box.button.disabled = true;
+                $(check_box.label).addClass("ui-state-disabled");
+                check_box.container.title = "Widget moved so this has been disabled. Close and re-open the back side to refresh.";
+            }
+            var enable_check_box = function (parent) {
+                check_box.button.disabled = false;
+                $(check_box.label).removeClass("ui-state-disabled");
+                check_box.container.title = title(parent);     
+            };
+            check_box_clicked = function (event) {
+                var current_parent = get_parent();
+                if (!get_parent()) {
+                    disable_check_box();
+                    return;
+                }
+                if (current_parent !== parent) {
+                    update_check_box(current_parent);
+                }
+                if (check_box.button.checked) {
+                   widget.get_selection = function () {
+                       // compute the parent again since it may have changed
+                       var current_parent = get_parent();
+                       update_or_disable_check_box();
+                       if (current_parent) {
+                           return current_parent.get_selection();
+                       }
+                       return widget;
+                   }
+                } else {
+                   widget.get_selection = get_selection_without_parent;        
+                }                
+                event.stopPropagation();
+            };
+            check_box.button.checked = widget !== widget.get_selection();
+            if (!check_box.button.checked) {
+                widget.get_selection = get_selection_without_parent; 
+            }
+            check_box.button.addEventListener('click', check_box_clicked);
+            return check_box;
+        },      
+
         create_click_opens_backside_check_box: function (backside, widget) {
             var check_box = TT.UTILITIES.create_check_box(widget.get_open_backside_only_if_stopped(), 
                                                           "toontalk-click-opens-backside-check-box",
@@ -943,6 +1036,7 @@ window.TOONTALK.backside =
             // advanced options not visible by default
             var widget = this.get_widget();
             var infinite_stack_check_box = this.create_infinite_stack_check_box(this, widget);
+            var parent_selection_check_box = this.create_parent_selection_check_box(this, widget);
             var click_opens_backside_check_box = this.create_click_opens_backside_check_box(this, widget);
             var type_name = widget.get_type_name();
             var $make_sensor_nest_button   = $("<button>Make a sensor nest</button>")  .button();
@@ -1018,7 +1112,11 @@ window.TOONTALK.backside =
             if (widget.set_name && !this.get_name_text_input()) {
                 this.add_name_setting(settings);
             }
-            settings.appendChild(TT.UTILITIES.create_row($make_sensor_nest_button.get(0), $make_function_bird_button.get(0), infinite_stack_check_box.container, click_opens_backside_check_box.container));
+            settings.appendChild(TT.UTILITIES.create_row($make_sensor_nest_button.get(0),
+                                                         $make_function_bird_button.get(0),
+                                                         infinite_stack_check_box.container,
+                                                         (parent_selection_check_box && parent_selection_check_box.container),
+                                                         click_opens_backside_check_box.container));
             if (!this.is_primary_backside()) {
                 $create_remove_widget_button = $("<button>Remove me and my widget</button>").button();
                 // TODO: decide if more buttons are needed -- e.g. to copy the widget
@@ -1415,6 +1513,10 @@ window.TOONTALK.backside =
                                        start_time);
             }.bind(this);
             TT.UTILITIES.get_json(this.get_widget(), json_history, new_callback, start_time);
+        },
+
+        get_selection: function () {
+            return this;
         }
 
     };

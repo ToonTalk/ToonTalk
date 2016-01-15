@@ -89,6 +89,15 @@
         return bigrat.add(parts.integer_part, parts.integer_part, bigrat.ONE);
     };
 
+    var truncate_to_n_decimal_places = function (rational_number, n) {
+        var ten_to_n = bigrat.power(bigrat.create(), TEN, n);
+        var integer;
+        bigrat.multiply(rational_number, rational_number, ten_to_n);
+        integer = bigrat.fromValues(bigrat.toBigInteger(rational_number), 1);
+        bigrat.divide(rational_number, integer, ten_to_n);
+        return rational_number;
+    };
+
 window.TOONTALK.number = (function () {   
     var number = Object.create(TT.widget);
 
@@ -465,6 +474,13 @@ window.TOONTALK.number = (function () {
                 $dimensions_holder = $(parent_widget.get_frontside_element());
             }
         }
+        if (TT.nest.CONTENTS_WIDTH_FACTOR  === 1 &&
+            TT.nest.CONTENTS_HEIGHT_FACTOR === 1 &&
+            $dimensions_holder.is(".toontalk-nest") &&
+            $dimensions_holder.parent().is(".toontalk-box-hole")) {
+            // number is on a nest that is in a box hole so use box hole dimension 
+            $dimensions_holder = $dimensions_holder.parent();
+        }
         if ($(frontside_element).is(".toontalk-carried-by-bird")) {
             // good enough values when carried by a bird
             client_width  = 100;
@@ -535,7 +551,8 @@ window.TOONTALK.number = (function () {
         new_HTML = this.to_HTML(max_decimal_places, font_height, this.get_format(), true, this.get_operator(), size_unconstrained_by_container);
         if (TT.UTILITIES.on_a_nest_in_a_box(frontside_element)) {
             // need to work around a CSS problem where nested percentage widths don't behave as expected
-            new_HTML = add_to_style(new_HTML, "width:" + client_width + "px;");
+            new_HTML = add_to_style(new_HTML, "width:"  + (client_width-border_size*2)  + "px;");
+            new_HTML = add_to_style(new_HTML, "height:" + (client_height-border_size*2) + "px;");
         }
         child_element.innerHTML = new_HTML;
         // numbers looked wrong when translated (extra spaces between digits)
@@ -560,12 +577,16 @@ window.TOONTALK.number = (function () {
         }
     };
     
-    number.to_HTML = function (max_characters, font_size, format, top_level, operator, size_unconstrained_by_container) {
+    number.to_HTML = function (original_max_characters, font_size, format, top_level, operator, size_unconstrained_by_container) {
         var integer_as_string, value_as_string, integer_part, fractional_part, improper_fraction_HTML, digits_needed, shrinkage, table_style,
             // following needed for scientific notation
-            exponent, ten_to_exponent, exponent_area, exponent_index, exponent_string, significand, max_decimal_places, decimal_digits, integer_digit, negative, decimal_part;
+            exponent, ten_to_exponent, exponent_area, exponent_index, exponent_string, significand, approximate_value,
+            max_decimal_places, decimal_digits, integer_digit, negative, decimal_part;
         var extra_class = (top_level !== false) ? ' toontalk-top-level-number' : '';
         var minimum_characters = 4;
+        var max_characters = original_max_characters;
+        // --2 needs to be displayed as - -2
+        var subtraction_of_negative_number;
         if (this.is_attribute_widget && this.is_attribute_widget()) {
              extra_class += " toontalk-attribute-number";
         } else if (this.get_approximate()) {
@@ -586,6 +607,13 @@ window.TOONTALK.number = (function () {
         }
         if (operator_HTML.length > 0) {
             max_characters -= 1; // leave room for operator
+            subtraction_of_negative_number = operator === '-' && 
+                                               (this.is_negative() || this.is_zero()) &&
+                                               (this.is_integer() || (format !== "improper_fraction" && format !== "proper_fraction" && format !== "mixed_number"));
+            if (subtraction_of_negative_number) {
+                max_characters -= 1;
+                operator_HTML += "&nbsp;";
+            }
             if (max_characters < 2) {
                 // better to use a smaller font than have too few digits
                 font_size *= Math.max(1, max_characters) / 2;
@@ -619,8 +647,7 @@ window.TOONTALK.number = (function () {
                 exponent_index = value_as_string.indexOf('e');
                 if (exponent_index >= 0) {
                     exponent = value_as_string.substring(exponent_index+1);
-                    value_as_string = value_as_string.substring(0, exponent_index); 
-                    
+                    value_as_string = value_as_string.substring(0, exponent_index);  
                 }
             }
             if (value_as_string) {
@@ -694,15 +721,17 @@ window.TOONTALK.number = (function () {
             negative = bigrat.isNegative(this.get_value());
             exponent = scientific_notation_exponent(this.get_value());
             ten_to_exponent = bigrat.power(bigrat.create(), TEN, exponent+1);
-            significand = bigrat.divide(bigrat.create(), this.get_value(), ten_to_exponent);
+            // only need max_decimal_places of accurancy for the significand so truncate it
+            approximate_value = truncate_to_n_decimal_places(this.get_value(), max_decimal_places+1);
+            significand = bigrat.divide(bigrat.create(), approximate_value, ten_to_exponent);
             // 6 for integer_digit, space, and '10x' - divide by 2 since superscript font is smaller
             exponent_area = 6+(exponent === 0 ? 1 : Math.ceil(log10(Math.abs(exponent)))/2);
             if (negative) {
                 exponent_area++; // need more room
             }
-            if (max_characters < exponent_area+1) {
+            if (original_max_characters < exponent_area+1) {
                 // try again with a smaller font_size
-                return this.to_HTML(exponent_area+1, font_size*max_characters/(exponent_area+1), format, top_level, operator, size_unconstrained_by_container);
+                return this.to_HTML(exponent_area+1, font_size*original_max_characters/(exponent_area+1), format, top_level, operator, size_unconstrained_by_container);
             }
             max_decimal_places = shrinking_digits_length(compute_number_of_full_size_characters_after_decimal_point(max_characters, exponent_area), font_size); 
             decimal_digits = generate_decimal_places(significand, max_decimal_places);      

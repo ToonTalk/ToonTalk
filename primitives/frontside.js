@@ -28,7 +28,8 @@ window.TOONTALK.frontside =
                 if (widget.get_open_backside_only_if_stopped() && widget.get_running()) {
                     return;
                 }
-                if ($frontside_element.is(".toontalk-top-level-resource")) {
+                if ($frontside_element.is(".toontalk-top-level-resource") && !event.altKey) {
+                    // can open top-level resources with Alt key
                     widget.set_running(!widget.get_running());
 //                 } else if (widget.get_running() && !widget.robot_in_training()) {
 //                     if (TT.debugging) {
@@ -45,6 +46,21 @@ window.TOONTALK.frontside =
                     }
                 }
                 event.stopPropagation();
+            };
+            var selection_feedback = function (event) {
+                // note that this highlights the backside if visible even if the widget passes the selection to its parent
+                var backside = widget.get_backside();
+                var wiggling_widget = (widget.is_empty_hole() ? wiget.get_parent_of_frontside() : widget).get_selection();
+                var frontside_element = wiggling_widget.get_frontside_element();
+                var $selected = $(frontside_element);
+                if (backside) {
+                    TT.UTILITIES.highlight_element(backside.get_element());
+                }
+                $(".toontalk-wiggle").removeClass("toontalk-wiggle");
+                if (!$selected.is(".toontalk-top-level-resource")) {
+                    $selected.addClass("toontalk-wiggle");
+                }
+                event.stopPropagation(); 
             };
             var visible;
             $(frontside_element).addClass("toontalk-frontside toontalk-side");
@@ -80,19 +96,7 @@ window.TOONTALK.frontside =
             // prefer addEventListener over JQuery's equivalent since when I inspect listeners I get a link to this code
             frontside_element.addEventListener('click',      click_handler);
             frontside_element.addEventListener('touchstart', click_handler);
-            frontside_element.addEventListener("mouseenter", function (event) {
-                var backside = widget.get_backside();
-                var wiggling_widget = widget.is_empty_hole() ? wiget.get_parent_of_frontside() : widget;
-                var frontside_element = wiggling_widget.get_frontside_element();
-                if (backside) {
-                    TT.UTILITIES.highlight_element(backside.get_element());
-                }
-                $(".toontalk-wiggle").removeClass("toontalk-wiggle");
-                if (!$(frontside_element).is(".toontalk-top-level-resource")) {
-                    $(frontside_element).addClass("toontalk-wiggle");
-                }
-                event.stopPropagation(); 
-            });
+            frontside_element.addEventListener("mouseenter", selection_feedback);
             frontside_element.addEventListener("mouseleave", function (event) {
                 var backside = widget.get_backside();
                 var wiggling_widget = widget.is_empty_hole() ? wiget.get_parent_of_frontside() : widget;
