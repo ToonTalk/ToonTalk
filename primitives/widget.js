@@ -1378,12 +1378,12 @@ window.TOONTALK.widget = (function (TT) {
             // frontside_ancestor_that_is_backside_element is first parent that is a toontalk-backside
             $frontside_ancestor_that_is_backside_element = $(frontside_element).parent();
             $frontside_ancestor_before_backside_element  = $(frontside_element);
-            if ($frontside_ancestor_before_backside_element.is(".toontalk-top-level-resource")) {
-                if (new_continuation) {
-                    new_continuation();
-                }
-                return;
-            }
+//             if ($frontside_ancestor_before_backside_element.is(".toontalk-top-level-resource")) {
+//                 if (new_continuation) {
+//                     new_continuation();
+//                 }
+//                 return;
+//             }
             while ($frontside_ancestor_that_is_backside_element.length > 0 && !$frontside_ancestor_that_is_backside_element.is(".toontalk-backside")) {
                 $frontside_ancestor_before_backside_element  = $frontside_ancestor_that_is_backside_element;
                 $frontside_ancestor_that_is_backside_element = $frontside_ancestor_that_is_backside_element.parent();
@@ -1405,6 +1405,8 @@ window.TOONTALK.widget = (function (TT) {
                                      opacity: .01});
             if ($frontside_ancestor_that_is_backside_element.length > 0) {
                 $frontside_ancestor_that_is_backside_element.get(0).appendChild(backside_element);
+            } else {
+                frontside_element.appendChild(backside_element);
             }
             ancestor_that_owns_backside_element = TT.UTILITIES.widget_side_of_jquery($frontside_ancestor_that_is_backside_element);
             if (ancestor_that_owns_backside_element) {
@@ -1537,6 +1539,10 @@ window.TOONTALK.widget = (function (TT) {
                 this.robot_in_training().dropped_on(widget_side, top_level_widget);
             }
             return widget_frontside_element;
+        },
+
+        get_selection: function () {
+            return this;
         },
 
         create_top_level_widget: function (settings) {

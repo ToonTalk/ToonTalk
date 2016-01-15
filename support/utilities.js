@@ -20,7 +20,7 @@ window.TOONTALK.UTILITIES =
     // defined here to support self-reference
     var utilities = {};  
     var toontalk_initialized = false;  
-    var dragee;
+    var $dragee;
     var z_index = 100;
     // id needs to be unique across ToonTalks due to drag and drop
     var id_counter = new Date().getTime();
@@ -110,17 +110,19 @@ window.TOONTALK.UTILITIES =
             // e.g. dragging some text off the backside of a widget
             return;
         }
-        dragee = ($source_element || $(element));
-        widget_side = utilities.widget_side_of_jquery(dragee);
+        $dragee = ($source_element || $(element));
+        widget_side = utilities.widget_side_of_jquery($dragee);
         if (!widget_side) {
             widget_side = utilities.widget_side_of_element(element);
-            utilities.report_internal_error("Possible bug that " + dragee + " doesn't have a known owner.");
+            utilities.report_internal_error("Possible bug that " + $dragee + " doesn't have a known owner.");
             if (!widget_side) {
                 utilities.report_internal_error("The element doesn't have an owner either.");
                 return;
             }
-            dragee = $(element);
+            $dragee = $(element);
         }
+        widget_side = widget_side.get_selection();
+        $dragee = $(widget_side.get_element());
         if (widget_side.set_stopped) {
             widget_side.set_stopped(true);
         }
@@ -128,8 +130,8 @@ window.TOONTALK.UTILITIES =
             widget_side.save_dimensions();
         }
         widget_side.being_dragged = true;
-        bounding_rectangle = dragee.get(0).getBoundingClientRect();
-        is_resource = dragee.is(".toontalk-top-level-resource");
+        bounding_rectangle = $dragee.get(0).getBoundingClientRect();
+        is_resource = $dragee.is(".toontalk-top-level-resource");
         // should not wiggle if picked up
         $(element).removeClass("toontalk-wiggle");
         if (widget_side.get_json) {
@@ -137,12 +139,12 @@ window.TOONTALK.UTILITIES =
                 json.view.drag_x_offset = client_x-bounding_rectangle.left;
                 json.view.drag_y_offset = client_y-bounding_rectangle.top;
                 if (!json.view.frontside_width) {
-                    if (dragee.parent().is(".toontalk-backside")) {
-                        json.view.frontside_width  = dragee.width();
-                        json.view.frontside_height = dragee.height();
+                    if ($dragee.parent().is(".toontalk-backside")) {
+                        json.view.frontside_width  = $dragee.width();
+                        json.view.frontside_height = $dragee.height();
                     }
                 }
-                dragee.data("json", json);   
+                $dragee.data("json", json);   
                 if (event.dataTransfer) {
                     json_div = utilities.toontalk_json_div(json, widget_side);
                     event.dataTransfer.effectAllowed = is_resource ? 'copy' : 'move';
@@ -165,31 +167,31 @@ window.TOONTALK.UTILITIES =
             // so let it take 10 minutes maximum
             TT.UTILITIES.get_json_top_level(widget_side, json_callback, 1000*60*10);
         }
-        dragee.addClass("toontalk-being-dragged");
+        $dragee.addClass("toontalk-being-dragged");
         event.stopPropagation();
     };
     var drag_end_handler = function (event) {
         var widget_side;
-        if (!dragee) {
-            dragee = $(event.target).closest(".toontalk-side");
+        if (!$dragee) {
+            $dragee = $(event.target).closest(".toontalk-side");
         }
-        widget_side = utilities.widget_side_of_jquery(dragee);
+        widget_side = utilities.widget_side_of_jquery($dragee);
         if (widget_side) {
             widget_side.being_dragged = undefined;
         }
-        if (dragee.is(".toontalk-frontside")) {
-            if (dragee.parent().is(".toontalk-backside")) {
+        if ($dragee.is(".toontalk-frontside")) {
+            if ($dragee.parent().is(".toontalk-backside")) {
                 // restore ordinary size styles
-                var json_object = dragee.data("json");
+                var json_object = $dragee.data("json");
                 if (json_object) {
-                    utilities.set_css(dragee,
+                    utilities.set_css($dragee,
                                       {width:  json_object.view.frontside_width,
                                        height: json_object.view.frontside_height});
                 }
-            } else if (!dragee.parent().is(".toontalk-top-level-resource, .toontalk-drop-area, .toontalk-json") &&
-                       !dragee.is(".toontalk-carried-by-bird, .toontalk-element-attribute, .toontalk-function-bird-documentation-bird") &&
-                       !utilities.has_animating_image(dragee.get(0))) {
-                utilities.set_css(dragee,
+            } else if (!$dragee.parent().is(".toontalk-top-level-resource, .toontalk-drop-area, .toontalk-json") &&
+                       !$dragee.is(".toontalk-carried-by-bird, .toontalk-element-attribute, .toontalk-function-bird-documentation-bird") &&
+                       !utilities.has_animating_image($dragee.get(0))) {
+                utilities.set_css($dragee,
                                   {width:  "100%",
                                    height: "100%"});
             }
@@ -200,8 +202,8 @@ window.TOONTALK.UTILITIES =
     var get_dropped_widget = function (event) {
         // TODO: use this within drop_handler
         var json_object;
-        if (dragee) {
-            return utilities.widget_side_of_jquery(dragee);
+        if ($dragee) {
+            return utilities.widget_side_of_jquery($dragee);
         }
         if (event) { 
             json_object = utilities.data_transfer_json_object(event);
@@ -235,15 +237,15 @@ window.TOONTALK.UTILITIES =
         var $source, source_widget_side, $target, target_widget_side, drag_x_offset, drag_y_offset, target_position, 
             new_target, $container, container, width, height, i, page_x, page_y,
             source_widget_saved_width, source_widget_saved_height;
-        if (json_object === undefined && dragee) {
-            json_object = dragee.data("json");
+        if (json_object === undefined && $dragee) {
+            json_object = $dragee.data("json");
         }
-        if (dragee) {
-            dragee.data("json", ""); // no point wasting memory on this anymore
+        if ($dragee) {
+            $dragee.data("json", ""); // no point wasting memory on this anymore
         }
         // should this set the dropEffect? 
         // https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer#dropEffect.28.29 
-        $source = dragee;
+        $source = $dragee;
         drag_ended();
         if (!$source && json_object === undefined && !event.dataTransfer.files && !non_data_URL_in_data_transfer(event)) {
             if (!event.dataTransfer) {
@@ -438,19 +440,19 @@ window.TOONTALK.UTILITIES =
             function (event) {
                 var dropped = get_dropped_widget(event);
                 // if drag was from a resource then restore it
-                utilities.restore_resource(utilities.get_dragee(), dropped);
+                utilities.restore_resource(utilities.get_$dragee(), dropped);
                 drop_handler(event);
             }
         input_element.addEventListener('drop', new_drop_handler);
     };
     var $toontalk_side_underneath = function (element) {
         var $target = $(element).closest(".toontalk-side");
-        var dragee = utilities.get_dragee();
+        var $dragee = utilities.get_$dragee();
         if ($target.is("*") &&
             !$target.is(".toontalk-top-level-backside") && 
             !$target.closest(".toontalk-top-level-resource").is("*") &&
-            !$target.is(".toontalk-being-dragged") && // is dragee.get(0) === $target.get(0) a better way to express this?
-            !(dragee && has_ancestor_element($target.get(0), dragee.get(0)))) {
+            !$target.is(".toontalk-being-dragged") && // is $dragee.get(0) === $target.get(0) a better way to express this?
+            !($dragee && has_ancestor_element($target.get(0), $dragee.get(0)))) {
             return $target;
         }
     };
@@ -549,7 +551,7 @@ window.TOONTALK.UTILITIES =
                 // e.g. an element needs to know its position attributes
                 source_widget_side.set_location_attributes(left, top);
             }
-            if (json_object && json_object.semantic && json_object.semantic.running && !utilities.get_dragee()) {
+            if (json_object && json_object.semantic && json_object.semantic.running && !utilities.get_$dragee()) {
                 // JSON was dropped here from outside so if was running before should be here
                 // but not if just a local move
                 source_widget_side.set_running(true);
@@ -720,14 +722,14 @@ window.TOONTALK.UTILITIES =
         document.body.appendChild(script);
     };
     var drag_ended = function () {
-        if (!dragee) {
+        if (!$dragee) {
             return;
         }
-        dragee.removeClass("toontalk-being-dragged");
+        $dragee.removeClass("toontalk-being-dragged");
         // need delay since there may be other listeners to drop events that need to know this
         // e.g. drop area for next robot
         utilities.set_timeout(function () {
-            dragee = undefined;
+            $dragee = undefined;
             }); 
     };
     var has_ancestor_element = function (element, possible_ancestor) {
@@ -2568,7 +2570,9 @@ window.TOONTALK.UTILITIES =
             var table_element = document.createElement("td");
             var i;
             for (i = 0; i < arguments.length; i++) {
-                row.appendChild(arguments[i]);
+                if (arguments[i]) {
+                    row.appendChild(arguments[i]);
+                }
             }
             table_element.appendChild(row);
             return row;
@@ -2713,8 +2717,8 @@ window.TOONTALK.UTILITIES =
             return table;
         };
         
-        utilities.get_dragee = function () {
-            return dragee;
+        utilities.get_$dragee = function () {
+            return $dragee;
         };
 
         utilities.add_URL_parameter = function (url, parameter, value) {
@@ -3928,8 +3932,22 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             };
         };
 
+//         utilities.element_selected = function (event, $element) {
+//             var $parent;
+//             if (event.ctrlKey) {
+//                 // Control key means drag the container (if appropriate)
+//                 $parent = $element.parent();
+//                 if ($parent.is(".toontalk-nest")) {
+//                     return $parent;
+//                 } else if ($parent.is(".toontalk-box-hole")) {
+//                     return $parent.parent();
+//                 }
+//             }
+//             return $element;
+//         };
+
         utilities.initialize = function (callback) {
-            var document_click, translation_div;
+            var document_click, translation_div, $saved_selection;
             if (toontalk_initialized) {
                 return;
             }
@@ -4009,6 +4027,25 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                     utilities.restore_audio_volumes();
                 }
             });
+//             document.addEventListener('keyDown', function (event) {
+//                 var $current_selection, $new_selection;
+//                 if (event.ctrlKey) {
+//                     $current_selection = $(".toontalk-wiggle");
+//                     $new_selection = utilities.element_selected(event, $current_selection);
+//                     if ($current_selection !== $new_selection) {
+//                         $saved_selection = $current_selection;
+//                         $current_selection.removeClass("toontalk-wiggle");
+//                         $new_selection.addClass("toontalk-wiggle");
+//                     }
+//                 }
+//             });
+//             document.addEventListener('keyUp', function (event) {
+//                 if (event.ctrlKey && $saved_selection) {
+//                     $(".toontalk-wiggle").removeClass("toontalk-wiggle");
+//                     $saved_selection.addClass("toontalk-wiggle");
+//                     $saved_selection = undefined;
+//                 }
+//             });
             setTimeout(function () {
                            TT.DISPLAY_UPDATES.update_display();
                        },
