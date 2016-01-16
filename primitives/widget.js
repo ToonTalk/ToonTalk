@@ -1406,6 +1406,9 @@ window.TOONTALK.widget = (function (TT) {
             if ($frontside_ancestor_that_is_backside_element.length > 0) {
                 $frontside_ancestor_that_is_backside_element.get(0).appendChild(backside_element);
             } else {
+                // by appending the backside to the front when the front is a top-level resource
+                // the backside inherits text align center
+                $(backside_element).css({textAlign: 'left'});
                 frontside_element.appendChild(backside_element);
             }
             ancestor_that_owns_backside_element = TT.UTILITIES.widget_side_of_jquery($frontside_ancestor_that_is_backside_element);
@@ -1505,10 +1508,14 @@ window.TOONTALK.widget = (function (TT) {
         },
 
         location_constrained_by_container: function () {
+            if (this.is_nest()) {
+                // nests are displayed proportionately and are offset to be centered
+                return false;
+            }
             var parent = this.get_parent_of_frontside();
             if (parent && (parent.is_hole() || parent.is_nest() || parent.is_robot())) {
                  // TODO: generalise this for other kinds of containers
-                 // robot is included since it then a condition contrained to condition area
+                 // robot is included since it has a condition constrained to condition area
                 return true;
             }
             return false;

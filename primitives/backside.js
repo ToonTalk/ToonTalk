@@ -905,17 +905,17 @@ window.TOONTALK.backside =
                     update_check_box(current_parent);
                 }
                 if (check_box.button.checked) {
-                   widget.get_selection = function () {
-                       // compute the parent again since it may have changed
-                       var current_parent = get_parent();
-                       update_or_disable_check_box();
-                       if (current_parent) {
-                           return current_parent.get_selection();
-                       }
-                       return widget;
-                   }
+                    widget.get_selection = function () {
+                        // compute the parent again since it may have changed
+                        var current_parent = get_parent();
+                        update_or_disable_check_box();
+                        if (current_parent) {
+                            return current_parent.get_selection();
+                        }
+                        return widget;
+                    }
                 } else {
-                   widget.get_selection = get_selection_without_parent;        
+                    widget.get_selection = get_selection_without_parent;        
                 }                
                 event.stopPropagation();
             };
