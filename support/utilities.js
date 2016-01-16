@@ -345,9 +345,9 @@ window.TOONTALK.UTILITIES =
                 $source.removeClass("toontalk-widget-in-drop_area");
                 $source.parent().data("drop_area_owner").set_next_robot(undefined);
             } else {
-                $container = $source.parents(".toontalk-side:first");
-                container = utilities.widget_side_of_jquery($container);
+                container = source_widget_side.get_parent();
                 if (container) {
+                    $container = $(container.get_element());
                     if (!source_widget_side.is_backside() && source_widget_side.get_widget().get_infinite_stack && source_widget_side.get_widget().get_infinite_stack()) {
                         // leave the source there but create a copy
                         source_widget_saved_width  = source_widget_side.get_widget().saved_width;
