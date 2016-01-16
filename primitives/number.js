@@ -1282,7 +1282,7 @@ window.TOONTALK.number_backside =
                 case "proper_fraction": // older name
                 TT.UTILITIES.check_radio_button(mixed_number_format);
                 break;
-                case "scientific_format":
+                case "scientific_notation":
                 TT.UTILITIES.check_radio_button(scientific_format);
                 break;
             }
