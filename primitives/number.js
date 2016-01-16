@@ -91,11 +91,12 @@
 
     var truncate_to_n_decimal_places = function (rational_number, n) {
         var ten_to_n = bigrat.power(bigrat.create(), TEN, n);
+        var trancated_rational_number = bigrat.create();
         var integer;
-        bigrat.multiply(rational_number, rational_number, ten_to_n);
-        integer = bigrat.fromValues(bigrat.toBigInteger(rational_number), 1);
-        bigrat.divide(rational_number, integer, ten_to_n);
-        return rational_number;
+        bigrat.multiply(trancated_rational_number, rational_number, ten_to_n);
+        integer = bigrat.fromValues(bigrat.toBigInteger(trancated_rational_number), 1);
+        bigrat.divide(trancated_rational_number, integer, ten_to_n);
+        return trancated_rational_number;
     };
 
 window.TOONTALK.number = (function () {   
@@ -729,11 +730,12 @@ window.TOONTALK.number = (function () {
             negative = bigrat.isNegative(this.get_value());
             exponent = scientific_notation_exponent(this.get_value());
             ten_to_exponent = bigrat.power(bigrat.create(), TEN, exponent+1);
-            // only need max_decimal_places of accurancy for the significand so truncate it
-            approximate_value = truncate_to_n_decimal_places(this.get_value(), max_decimal_places+1);
-            significand = bigrat.divide(bigrat.create(), approximate_value, ten_to_exponent);
             // 6 for integer_digit, space, and '10x' - divide by 2 since superscript font is smaller
             exponent_area = 6+(exponent === 0 ? 1 : Math.ceil(log10(Math.abs(exponent)))/2);
+            max_decimal_places = shrinking_digits_length(compute_number_of_full_size_characters_after_decimal_point(max_characters, exponent_area), font_size); 
+            // only need max_decimal_places of accurancy for the significand so truncate it
+            approximate_value = truncate_to_n_decimal_places(this.get_value(), max_decimal_places+1);
+            significand = bigrat.divide(bigrat.create(), approximate_value, ten_to_exponent);   
             if (negative) {
                 exponent_area++; // need more room
             }
@@ -741,7 +743,6 @@ window.TOONTALK.number = (function () {
                 // try again with a smaller font_size
                 return this.to_HTML(exponent_area+1, font_size*original_max_characters/(exponent_area+1), format, top_level, operator, size_unconstrained_by_container);
             }
-            max_decimal_places = shrinking_digits_length(compute_number_of_full_size_characters_after_decimal_point(max_characters, exponent_area), font_size); 
             decimal_digits = generate_decimal_places(significand, max_decimal_places);      
             if (negative) { // negative so include sign and first digit
                 integer_digit = "-" + decimal_digits.substring(0, 1);
@@ -1281,7 +1282,7 @@ window.TOONTALK.number_backside =
                 case "proper_fraction": // older name
                 TT.UTILITIES.check_radio_button(mixed_number_format);
                 break;
-                case "scientific_format":
+                case "scientific_notation":
                 TT.UTILITIES.check_radio_button(scientific_format);
                 break;
             }
