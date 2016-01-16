@@ -1355,7 +1355,13 @@ window.TOONTALK.nest = (function (TT) {
                         }.bind(this),
                         2); // TODO: see if 0 works here
                 }
-                frontside_element.appendChild(top_contents_element);
+                if ($(frontside_element).parent().is(".toontalk-box-hole")) {
+                    // contents should display as though they were directly in the box hole
+                    frontside_element.parentElement.appendChild(top_contents_element);
+                    $(top_contents_element).css({"z-index": TT.UTILITIES.next_z_index()});
+                } else {
+                    frontside_element.appendChild(top_contents_element);
+                }
                 $(frontside_element).addClass(this.get_class_name_with_color("toontalk-empty-nest"));
                 if (contents[0].is_backside()) {
                     top_contents.set_parent_of_backside(this);
@@ -1401,7 +1407,7 @@ window.TOONTALK.nest = (function (TT) {
                 return frontside_element;
             }.bind(this);
             var frontside_element = full_size_element();
-            var nest_width = $(frontside_element).width();
+            var nest_width  = $(frontside_element).width();
             var nest_height = $(frontside_element).height();
             var width  = TT.nest.CONTENTS_WIDTH_FACTOR *nest_width;
             var height = TT.nest.CONTENTS_HEIGHT_FACTOR*nest_height;
@@ -1655,7 +1661,7 @@ window.TOONTALK.nest = (function (TT) {
     };
 
     nest.maintain_proportional_dimensions = function () {
-        // should not be stretched in only one dimension
+        // should be stretched in both dimensions the same amount
         return true;
     };
     

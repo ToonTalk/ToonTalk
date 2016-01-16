@@ -569,12 +569,23 @@ window.TOONTALK.box = (function (TT) {
                 }
             }.bind(this);
         var update_dimensions = function () {
+            var get_containing_hole = function (element) {
+                if (!element.parentElement) {
+                   return;
+                }
+                if ($(element.parentElement).is(".toontalk-box-hole")) {
+                    return element.parentElement;
+                }
+                return get_containing_hole(element.parentElement);
+            };
+            var containing_hole = get_containing_hole(frontside_element);
+            var element = containing_hole || frontside_element;
             if (size === 0) {
                 box_width = 0;
             } else {
-                box_width = $(frontside_element).width() || TT.box.get_default_width();
+                box_width = $(element).width() || TT.box.get_default_width();
             }
-            box_height = $(frontside_element).height() || TT.box.get_default_height();
+            box_height = $(element).height() || TT.box.get_default_height();
             if (horizontal) {
                 if (size === 0) {
                     hole_width = 0;
