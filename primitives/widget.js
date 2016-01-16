@@ -409,7 +409,7 @@ window.TOONTALK.widget = (function (TT) {
                             if (this.get_backside_widgets().indexOf(backside_widget) >= 0) {
                                 return;
                             }
-                            // if not a primary back side (e.g. from a sensor) then ignore it
+                            // if not a primary backside (e.g. from a sensor) then ignore it
                             if (!backside_widget_side.is_primary_backside()) {
                                 return;
                             }
@@ -594,11 +594,11 @@ window.TOONTALK.widget = (function (TT) {
                                         " and then click on me.";
                             } else {
                                 title = "There are robots on my back." + 
-                                        "\nTo see them in action click me to open my back side and then click the green flag " +
+                                        "\nTo see them in action click me to open my backside and then click the green flag " +
                                         TT.UTILITIES.encode_HTML_for_title("<span class='toontalk-green-flag-icon'></span>") + ".";
                             }
                         } else {
-                            title = "Click to see my back side.";
+                            title = "Click to see my backside.";
                         }
                     }
                     if (description) {
@@ -1067,7 +1067,7 @@ window.TOONTALK.widget = (function (TT) {
                     var backside;
                     if (!widget_side) {
                         if (TT.debugging) {
-                           TT.UTILITIES.report_internal_error("adding undefined to back side widgets.");
+                           TT.UTILITIES.report_internal_error("adding undefined to backside widgets.");
                         }
                         return;
                     }

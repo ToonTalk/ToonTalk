@@ -209,7 +209,7 @@ window.TOONTALK.backside =
                 } else {
                     close_title = "the " + widget.get_type_name();
                 }
-                close_title = "Click to remove this back side of " + close_title + ".";
+                close_title = "Click to remove this backside of " + close_title + ".";
                 close_button = TT.UTILITIES.create_close_button(close_handler, close_title);
                 backside_element.appendChild(close_button);
             }
@@ -512,7 +512,7 @@ window.TOONTALK.backside =
                             }
                              // true was backside_visible but this meant that the layout of widgets on the backside of a backside wasn't recreated
                              // creating these elements on load time is small constant overhead -- it when robots are running unwatched that we need to be sure
-                             // that front or back sides are created only if needed
+                             // that front or backsides are created only if needed
                             widget_side_element = backside_widget_side.get_element(true);
                             if (!widget_side_element.parentElement) {
                                 // needs to be added to backside element
@@ -888,7 +888,7 @@ window.TOONTALK.backside =
                 check_box.button.checked = false;
                 check_box.button.disabled = true;
                 $(check_box.label).addClass("ui-state-disabled");
-                check_box.container.title = "Widget moved so this has been disabled. Close and re-open the back side to refresh.";
+                check_box.container.title = "Widget moved so this has been disabled. Close and re-open the backside to refresh.";
             }
             var enable_check_box = function (parent) {
                 check_box.button.disabled = false;
@@ -930,7 +930,7 @@ window.TOONTALK.backside =
         create_click_opens_backside_check_box: function (backside, widget) {
             var check_box = TT.UTILITIES.create_check_box(widget.get_open_backside_only_if_stopped(), 
                                                           "toontalk-click-opens-backside-check-box",
-                                                          "Mouse click opens this back side only if I'm stopped.",
+                                                          "Mouse click opens this backside only if I'm stopped.",
                                                           "Check this if you want my backside to open only when I'm stopped. Really useful if there are robots using click sensors.");
             var check_box_clicked = function (event) {
                 var open_backside_only_if_stopped = check_box.button.checked;
@@ -956,7 +956,7 @@ window.TOONTALK.backside =
         create_description_label: function (backside, widget) {
             var description = widget.get_description();
             if (description) {
-               return TT.UTILITIES.create_text_element("I'm the back side of a " + widget.get_type_name() + " that is " + description);
+               return TT.UTILITIES.create_text_element("I'm the backside of a " + widget.get_type_name() + " that is " + description);
             }
         },
 

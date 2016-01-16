@@ -1153,7 +1153,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             };
             attribute_widget.get_custom_title_prefix = function () {
                 return "I'm the '" + this.attribute + "' attribute of " + this.get_attribute_owner() + ".\n" +
-                       "Drop a number on me or edit my back side to change my value. My back side has an info button to learn more.";
+                       "Drop a number on me or edit my backside to change my value. My backside has an info button to learn more.";
             };
             attribute_widget.equals = function (other) {
                 if (attribute_name === other.attribute) {

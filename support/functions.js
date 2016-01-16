@@ -184,7 +184,7 @@ window.TOONTALK.create_function_table =
         };
     },
     add_function_object: function (name, respond_to_message, title, short_name, types) {
-        var and_on_my_back = "\nOn my back side you can change me to compute other functions.";
+        var and_on_my_back = "\nOn my backside you can change me to compute other functions.";
         var get_description;
         if (types) {
            if (types.length === 1) {

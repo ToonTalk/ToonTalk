@@ -429,7 +429,7 @@ window.TOONTALK.UTILITIES =
             }
         }    
         if (target_widget_side && source_widget_side.get_widget() === target_widget_side.get_widget()) {
-            // dropping front side on back side so ignore
+            // dropping front side on backside so ignore
             return;
         }
         handle_drop($target, $source, source_widget_side, target_widget_side, target_position, event, json_object, drag_x_offset, drag_y_offset);
