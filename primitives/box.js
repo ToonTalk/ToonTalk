@@ -583,9 +583,9 @@ window.TOONTALK.box = (function (TT) {
             if (size === 0) {
                 box_width = 0;
             } else {
-                box_width = $(element).width() || TT.box.get_default_width();
+                box_width = $(element).width() || this.saved_width || TT.box.get_default_width();
             }
-            box_height = $(element).height() || TT.box.get_default_height();
+            box_height = $(element).height() || this.saved_height || TT.box.get_default_height();
             if (horizontal) {
                 if (size === 0) {
                     hole_width = 0;
@@ -597,7 +597,7 @@ window.TOONTALK.box = (function (TT) {
                 hole_width  = box_width;
                 hole_height = box_height/size;
             }
-        };
+        }.bind(this);
         var hole_labels = this.get_name().split(";");
         var i, hole, hole_element, box_left, box_width, hole_width, first_hole_width, box_height, hole_height,
             border_class, border_size, backside;
