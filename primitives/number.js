@@ -484,7 +484,8 @@ window.TOONTALK.number = (function () {
         if (TT.nest.CONTENTS_WIDTH_FACTOR  === 1 &&
             TT.nest.CONTENTS_HEIGHT_FACTOR === 1 &&
             $dimensions_holder.is(".toontalk-nest") &&
-            $dimensions_holder.parent().is(".toontalk-box-hole")) {
+            $dimensions_holder.parent().is(".toontalk-box-hole") &&
+            !$dimensions_holder.parent().is(".toontalk-scale-half")) {
             // number is on a nest that is in a box hole so use box hole dimension 
             $dimensions_holder = $dimensions_holder.parent();
         }

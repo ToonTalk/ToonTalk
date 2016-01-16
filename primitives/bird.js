@@ -1355,8 +1355,9 @@ window.TOONTALK.nest = (function (TT) {
                         }.bind(this),
                         2); // TODO: see if 0 works here
                 }
-                if ($(frontside_element).parent().is(".toontalk-box-hole")) {
-                    // contents should display as though they were directly in the box hole
+                if ( $(frontside_element).parent().is(".toontalk-box-hole") &&
+                    !$(frontside_element).parent().is(".toontalk-scale-half")) {
+                    // contents should display as though they were directly in the box hole (but not scale pans)
                     frontside_element.parentElement.appendChild(top_contents_element);
                     $(top_contents_element).css({"z-index": TT.UTILITIES.next_z_index()});
                 } else {
@@ -1401,7 +1402,8 @@ window.TOONTALK.nest = (function (TT) {
         new_nest.get_contents_dimensions = function () {
             var full_size_element = function () {
                 var frontside_element = this.get_frontside_element();
-                if ($(frontside_element).parent().is(".toontalk-box-hole")) {
+                if ( $(frontside_element).parent().is(".toontalk-box-hole") &&
+                    !$(frontside_element).parent().is(".toontalk-scale-half")) {
                     return frontside_element.parentElement;
                 }
                 return frontside_element;
