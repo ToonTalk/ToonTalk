@@ -1508,10 +1508,14 @@ window.TOONTALK.widget = (function (TT) {
         },
 
         location_constrained_by_container: function () {
+            if (this.is_nest()) {
+                // nests are displayed proportionately and are offset to be centered
+                return false;
+            }
             var parent = this.get_parent_of_frontside();
             if (parent && (parent.is_hole() || parent.is_nest() || parent.is_robot())) {
                  // TODO: generalise this for other kinds of containers
-                 // robot is included since it then a condition contrained to condition area
+                 // robot is included since it has a condition constrained to condition area
                 return true;
             }
             return false;
