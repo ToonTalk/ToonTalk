@@ -3728,7 +3728,11 @@ window.TOONTALK.UTILITIES =
 
        // using width and height since :visible since didn't work reliably and is costly and is a JQuery hack https://api.jquery.com/visible-selector/
        utilities.visible_element = function (element) {
-           var $element = $(element);
+            var $element;
+            if (!element || !element.style || element.style.display === "none") {
+               return false;
+           }
+           $element = $(element);
            return ($element.width() > 0 || $element.height() > 0) && $element.css('opacity') !== '0';
        };
 
