@@ -1341,11 +1341,16 @@ window.TOONTALK.UTILITIES =
                 var type = this.getResponseHeader('content-type');
                 var widget;
                 if (!type) {
-                    if (error_callback) {
-                        error_callback("Could not determine the contents type of the url");
+                    if (url.indexOf(TT.TOONTALK_URL) === 0) {
+                        // will fall through to iframe which should work since same origin
+                        type = "";
+                    } else {
+                        if (error_callback) {
+                            error_callback("Could not determine the contents type of the url");
+                        }
+                        request.removeEventListener('readystatechange', response_handler);
+                        return;
                     }
-                    request.removeEventListener('readystatechange', response_handler);
-                    return;
                 }
                 if (type.indexOf("audio") === 0) {
                     widget = TT.element.create(url);
@@ -1363,7 +1368,8 @@ window.TOONTALK.UTILITIES =
                } else {  
                    widget = TT.element.create("<div class='toontalk-iframe-container'><iframe src='" + url + "' width='480' height='320'></iframe></div>");
                    // tried various ways to find out if the loading was successful but failed 
-                   // maybe try to follow the ideas in http://siderite.blogspot.com/2013/04/detecting-if-url-can-be-loaded-in-iframe.html                     
+                   // maybe try to follow the ideas in http://siderite.blogspot.com/2013/04/detecting-if-url-can-be-loaded-in-iframe.html  
+                   // tried listening to load event and trying to catch errors but still can't tell apart iframes that are allowed and those not                   
 //                    iframe_frontside_element = widget.get_frontside_element(true);
 //                    iframe = iframe_frontside_element.firstChild.firstChild;
                }
