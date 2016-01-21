@@ -1339,12 +1339,14 @@ window.TOONTALK.UTILITIES =
         var response_handler = function (response_event) {
             try {
                 var type = this.getResponseHeader('content-type');
-                var widget;
+                var widget, origin;
                 if (!type) {
-                    if (url.indexOf(TT.TOONTALK_URL) === 0) {
+                    origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
+                    if (url.indexOf(origin) === 0) {
                         // will fall through to iframe which should work since same origin
                         type = "";
                     } else {
+                        // if different origin likely to get blocked by browser's same origin policy and permission to include in iframes
                         if (error_callback) {
                             error_callback("Could not determine the contents type of the url");
                         }
