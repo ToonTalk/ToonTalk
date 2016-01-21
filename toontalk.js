@@ -150,6 +150,8 @@ var loadFile = function (index, offline) {
                                // try again with local file
                                loadFile(index, true);
                            }
+                       } else {
+                           console.error(event);
                        }
                    });
                    document.head.appendChild(script);
