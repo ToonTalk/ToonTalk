@@ -1839,6 +1839,21 @@ window.TOONTALK.UTILITIES =
                 }
             }
         };
+
+        utilities.closest_element = function ($elements, this_element) {
+            var element_offset = $(this_element).offset();
+            var least_distance = Number.MAX_VALUE;
+            var closest, best_so_far;
+            $elements.each(function (index, backside_element) {
+                               var offset = $(backside_element).offset();
+                               var distance = TT.UTILITIES.distance(offset, element_offset);
+                               if (least_distance > distance) {
+                                   best_so_far = backside_element;
+                                   least_distance = distance;
+                               }
+                          });
+            return best_so_far;
+        };
         
         utilities.find_resource_equal_to_widget = function (widget) {
             var element_found;
