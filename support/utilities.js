@@ -1855,24 +1855,30 @@ window.TOONTALK.UTILITIES =
             return best_so_far;
         };
         
-        utilities.find_resource_equal_to_widget = function (widget) {
-            var element_found;
+        utilities.find_resource_equal_to_widget = function (widget, closest_to_this_widget) {
+            var least_distance = Number.MAX_VALUE;
+            var widget_offset = $(closest_to_this_widget.get_frontside_element()).offset();
+            var best_so_far;
             // toontalk-top-level-resource is used for a DIV and its child -- TODO rationalise this
             // here only consider the child ones
             $(".toontalk-top-level-resource.toontalk-side").each(function (index, element) {
                 var owner = utilities.widget_side_of_jquery($(element));
+                var distance;
                 if (owner && ((widget.equals && widget.equals(owner)) ||
                               (widget.matching_resource && widget.matching_resource(owner)) ||
                               (widget.match(owner) === 'matched'))) {
                     if (widget.is_hole() ||
                         owner.get_backside_widgets().length === widget.get_backside_widgets().length) {
                         // TODO: make sure the backside widgets are equivalent...
-                        element_found = element;
-                        return false; // stop the 'each'
+                        distance = utilities.distance($(element).offset(), widget_offset);
+                        if (least_distance > distance) {
+                            best_so_far = element;
+                            least_distance = distance;
+                        }                        
                     }
                 }
             });
-            return element_found;
+            return best_so_far;
         };
         
         utilities.set_position_is_absolute = function (element, absolute, event) {
