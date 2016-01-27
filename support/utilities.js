@@ -1841,9 +1841,12 @@ window.TOONTALK.UTILITIES =
         };
 
         utilities.closest_element = function ($elements, this_element) {
-            var element_offset = $(this_element).offset();
-            var least_distance = Number.MAX_VALUE;
-            var closest, best_so_far;
+            var element_offset, least_distance, closest, best_so_far;
+            if (!this_element) {
+                return $elements.get(0); // any will do
+            }
+            element_offset = $(this_element).offset();
+            least_distance = Number.MAX_VALUE;
             $elements.each(function (index, backside_element) {
                                var offset = $(backside_element).offset();
                                var distance = TT.UTILITIES.distance(offset, element_offset);
