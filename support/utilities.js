@@ -278,7 +278,7 @@ window.TOONTALK.UTILITIES =
             }
         } else if ($(event.target).is(".toontalk-drop-area")) {
             $target = $(event.target);
-       } else if (json_object && $(event.currentTarget).is(".froala-element")) {
+        } else if (json_object && $(event.currentTarget).is(".froala-element")) {
             // dropped a widget on editable text - insert it after that
             insert_widget_in_editable_text(json_object, event);
             return;
@@ -290,8 +290,20 @@ window.TOONTALK.UTILITIES =
             return;
         }
         if ($target.is(".toontalk-top-level-resource")) {
-            // maybe should ensure they are not drop targets
-            return;
+            if (event.type === 'touchend') {
+                // simulating a drop so use the closest top-level
+                $target = $(utilities.closest_element($(".toontalk-side").filter(function (index, element) {
+                                                           return !$(element).parent().is(".toontalk-top-level-resource") && element !== $source.get(0);
+                                                      }), 
+                                                      {left: event.changedTouches[0].pageX,
+                                                       top:  event.changedTouches[0].pageY})); 
+                if ($target.length === 0) {
+                    return;
+                }
+            } else {
+                // maybe should ensure they are not drop targets
+                return;
+            }
         }
         // if this is computed when needed and if dragging a resource it isn't the correct value
         target_position = $target.offset();
@@ -1339,13 +1351,20 @@ window.TOONTALK.UTILITIES =
         var response_handler = function (response_event) {
             try {
                 var type = this.getResponseHeader('content-type');
-                var widget;
+                var widget, origin;
                 if (!type) {
-                    if (error_callback) {
-                        error_callback("Could not determine the contents type of the url");
+                    origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
+                    if (url.indexOf(origin) === 0) {
+                        // will fall through to iframe which should work since same origin
+                        type = "";
+                    } else {
+                        // if different origin likely to get blocked by browser's same origin policy and permission to include in iframes
+                        if (error_callback) {
+                            error_callback("Could not determine the contents type of the url");
+                        }
+                        request.removeEventListener('readystatechange', response_handler);
+                        return;
                     }
-                    request.removeEventListener('readystatechange', response_handler);
-                    return;
                 }
                 if (type.indexOf("audio") === 0) {
                     widget = TT.element.create(url);
@@ -1363,7 +1382,8 @@ window.TOONTALK.UTILITIES =
                } else {  
                    widget = TT.element.create("<div class='toontalk-iframe-container'><iframe src='" + url + "' width='480' height='320'></iframe></div>");
                    // tried various ways to find out if the loading was successful but failed 
-                   // maybe try to follow the ideas in http://siderite.blogspot.com/2013/04/detecting-if-url-can-be-loaded-in-iframe.html                     
+                   // maybe try to follow the ideas in http://siderite.blogspot.com/2013/04/detecting-if-url-can-be-loaded-in-iframe.html  
+                   // tried listening to load event and trying to catch errors but still can't tell apart iframes that are allowed and those not                   
 //                    iframe_frontside_element = widget.get_frontside_element(true);
 //                    iframe = iframe_frontside_element.firstChild.firstChild;
                }
@@ -1831,25 +1851,48 @@ window.TOONTALK.UTILITIES =
                 }
             }
         };
+
+        utilities.closest_element = function ($elements, location) {
+            var element_offset, least_distance, closest, best_so_far;
+            if (!location) {
+                return $elements.get(0); // any will do
+            }
+            least_distance = Number.MAX_VALUE;
+            $elements.each(function (index, backside_element) {
+                               var offset = $(backside_element).offset();
+                               var distance = TT.UTILITIES.distance(offset, location);
+                               if (least_distance > distance) {
+                                   best_so_far = backside_element;
+                                   least_distance = distance;
+                               }
+                          });
+            return best_so_far;
+        };
         
-        utilities.find_resource_equal_to_widget = function (widget) {
-            var element_found;
+        utilities.find_resource_equal_to_widget = function (widget, closest_to_this_widget) {
+            var least_distance = Number.MAX_VALUE;
+            var widget_offset = $(closest_to_this_widget.get_frontside_element()).offset();
+            var best_so_far;
             // toontalk-top-level-resource is used for a DIV and its child -- TODO rationalise this
             // here only consider the child ones
             $(".toontalk-top-level-resource.toontalk-side").each(function (index, element) {
                 var owner = utilities.widget_side_of_jquery($(element));
+                var distance;
                 if (owner && ((widget.equals && widget.equals(owner)) ||
                               (widget.matching_resource && widget.matching_resource(owner)) ||
                               (widget.match(owner) === 'matched'))) {
                     if (widget.is_hole() ||
                         owner.get_backside_widgets().length === widget.get_backside_widgets().length) {
                         // TODO: make sure the backside widgets are equivalent...
-                        element_found = element;
-                        return false; // stop the 'each'
+                        distance = utilities.distance($(element).offset(), widget_offset);
+                        if (least_distance > distance) {
+                            best_so_far = element;
+                            least_distance = distance;
+                        }                        
                     }
                 }
             });
-            return element_found;
+            return best_so_far;
         };
         
         utilities.set_position_is_absolute = function (element, absolute, event) {
@@ -3603,7 +3646,7 @@ window.TOONTALK.UTILITIES =
            var best_so_far, best_distance_so_far;
            $(".toontalk-top-level-backside").each(function () {
                var position = $(this).offset();
-               var this_distance = (position.left + $(this).width()/2  - x)^2 + 
+               var this_distance = (position.left + $(this).width() /2 - x)^2 + 
                                    (position.top  + $(this).height()/2 - x)^2;
                if (best_so_far) {
                    if (this_distance < best_distance_so_far) {

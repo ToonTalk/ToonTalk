@@ -538,6 +538,18 @@ window.TOONTALK.box = (function (TT) {
         var renderer = 
             function () {
                 var $box_hole_elements = $(frontside_element).children(".toontalk-box-hole");
+                if (!$(frontside_element).parent(".toontalk-conditions-contents-container").is("*") &&
+                    !$(frontside_element).parent().is(".toontalk-scale-half")) {
+                    if ($(frontside_element).parent(".toontalk-box-hole").is("*")) {
+                        TT.UTILITIES.set_css(frontside_element,
+                                             {width:  '',
+                                              height: ''});
+                    } else {
+                        TT.UTILITIES.set_css(frontside_element,
+                                             {width:  box_width,
+                                              height: box_height});
+                    }
+                }
                 if ($box_hole_elements.length === size) {
                     $box_hole_elements.each(function (index, hole_element) {
                         var hole = this.get_hole(index);
@@ -556,17 +568,6 @@ window.TOONTALK.box = (function (TT) {
                         frontside_element.appendChild(hole_element);
                     });
                 };
-                if (!$(frontside_element).parent(".toontalk-conditions-contents-container").is("*")) {
-                    if ($(frontside_element).parent(".toontalk-box-hole").is("*")) {
-                        TT.UTILITIES.set_css(frontside_element,
-                                             {width:  '',
-                                              height: ''});
-                    } else {
-                        TT.UTILITIES.set_css(frontside_element,
-                                             {width:  box_width,
-                                              height: box_height});
-                    }
-                }
             }.bind(this);
         var update_dimensions = function () {
             var get_containing_hole = function (element) {
@@ -580,12 +581,14 @@ window.TOONTALK.box = (function (TT) {
             };
             var containing_hole = get_containing_hole(frontside_element);
             var element = containing_hole || frontside_element;
+            // scales explicitly control the size of the contents of their pans
+            var containing_element = $(frontside_element).parent().is(".toontalk-scale-half") ? frontside_element : element;
             if (size === 0) {
                 box_width = 0;
             } else {
-                box_width = $(element).width() || this.saved_width || TT.box.get_default_width();
+                box_width = $(containing_element).width() || this.saved_width || TT.box.get_default_width();
             }
-            box_height = $(element).height() || this.saved_height || TT.box.get_default_height();
+            box_height = $(containing_element).height() || this.saved_height || TT.box.get_default_height();
             if (horizontal) {
                 if (size === 0) {
                     hole_width = 0;

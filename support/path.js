@@ -292,7 +292,7 @@ window.TOONTALK.path =
                         if (robot.visible()) {//} && !widget.visible()) {
                             // picking up a copy of a resource
                             // but robot isn't referring to the resource itself just the 'value'
-                            widget_frontside_element = TT.UTILITIES.find_resource_equal_to_widget(widget);
+                            widget_frontside_element = TT.UTILITIES.find_resource_equal_to_widget(widget, robot);
                             if (widget_frontside_element) {
                                 widget_copy.save_dimensions_of(TT.UTILITIES.widget_side_of_element(widget_frontside_element));
                                 copy_frontside_element = widget_copy.get_frontside_element();

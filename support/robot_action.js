@@ -195,7 +195,7 @@ window.TOONTALK.robot_action =
             robot_location,
             thing_in_hand_location;
         if (!widget_element) {
-            widget_element = TT.UTILITIES.find_resource_equal_to_widget(side);
+            widget_element = TT.UTILITIES.find_resource_equal_to_widget(side, robot);
         }
         if (!TT.UTILITIES.is_attached(widget_element) || !robot.visible()) {
             // is running in a context where the source of this widget isn't available
@@ -261,7 +261,8 @@ window.TOONTALK.robot_action =
                                 robot.transform_animation_speed(.25),
                                 left_offset, top_offset,
                                 true,
-                                robot.transform_original_step_duration(additional_info && additional_info.time));
+                                robot.transform_original_step_duration(additional_info && additional_info.time),
+                                robot);
     };
     var pick_up_animation = function (widget_side, robot, continuation, additional_info) {
         var new_continuation = function () {
@@ -436,7 +437,7 @@ window.TOONTALK.robot_action =
         }
     };
     var move_to_tool_and_use_animation = function (widget, robot, continuation, tool_held_by_robot_css_class, resource_tool_css_class) {
-        var tool_element = $("." + resource_tool_css_class).get(0);
+        var tool_element = TT.UTILITIES.closest_element($("." + resource_tool_css_class), $(robot.get_frontside_element()).offset());
         var new_continuation = function () {
             tool_use_animation(widget, robot, continuation, tool_held_by_robot_css_class);
         };

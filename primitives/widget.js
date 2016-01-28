@@ -74,10 +74,9 @@ window.TOONTALK.widget = (function (TT) {
                 }
                 $top_level_backsides = $(".toontalk-top-level-backside");
                 if ($top_level_backsides.length > 0) {
-                    if ($top_level_backsides.length > 1) {
-                       console.log("Cannot find the top-level widget of " + this + " but found " + $top_level_backsides.length + " top-level backsides so picked one.");
-                    }
-                    top_level_widget = TT.UTILITIES.widget_side_of_jquery($top_level_backsides).get_widget();
+                    top_level_widget = TT.UTILITIES.widget_side_of_element(TT.UTILITIES.closest_element($top_level_backsides, 
+                                                                                                        $(this.get_frontside_element()).offset()))
+                                       .get_widget();
                     return top_level_widget;
                 }
                 console.log("Could not find top_level_widget of " + this + ". Created one instead");
@@ -506,19 +505,19 @@ window.TOONTALK.widget = (function (TT) {
         animatable: function (widget) {
             var find_widget_element;
             if (!widget.animate_to_widget) {
-                find_widget_element = function (widget) {
+                find_widget_element = function (widget, target_widget) {
                     var widget_element = widget.get_element();
                     if (!widget_element || (!widget.is_backside() && !TT.UTILITIES.visible_element(widget_element))) {        
                         // widget is assumed to be a fresh copy of a resource that has yet to be added to anything
-                        widget_element = TT.UTILITIES.find_resource_equal_to_widget(widget);
+                        widget_element = TT.UTILITIES.find_resource_equal_to_widget(widget, target_widget);
                     }
                     return widget_element;
                 };
-                widget.animate_to_widget = function (target_widget, continuation, speed, left_offset, top_offset, more_animation_follows, duration) {
+                widget.animate_to_widget = function (target_widget, continuation, speed, left_offset, top_offset, more_animation_follows, duration, robot) {
                     // delay for DOM to settle down in case target_widget is brand new
                     var new_continuation = 
                         function () {
-                             this.animate_to_element(find_widget_element(target_widget), continuation, speed, left_offset, top_offset, more_animation_follows, duration && Math.max(0, duration-100));
+                             this.animate_to_element(find_widget_element(target_widget, robot), continuation, speed, left_offset, top_offset, more_animation_follows, duration && Math.max(0, duration-100));
                              this.rerender();
                          }.bind(this);
                     if (duration === 0) {

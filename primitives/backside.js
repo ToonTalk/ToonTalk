@@ -1483,6 +1483,10 @@ window.TOONTALK.backside =
             $(this.get_element()).hide();
         },
 
+        get_infinite_stack: function () {
+            return false;
+        },
+
         drag_started: function (json, is_resource) {
             if (this.robot_in_training()) {
                 this.robot_in_training().picked_up(this, json, is_resource);
