@@ -234,6 +234,16 @@ window.TOONTALK.UTILITIES =
             widget.update_display();
             // TODO: trigger save of this page?
         };
+        var element_under_page_x_y = function () {
+            // don't include the current $source so temporarily hide it
+            var new_target;
+            $source.hide();
+            new_target = document.elementFromPoint(page_x-window.pageXOffset, page_y-window.pageYOffset);
+            $source.show();
+            if (new_target) {
+                return $(new_target).closest(".toontalk-side");
+            }
+        };
         var $source, source_widget_side, $target, target_widget_side, drag_x_offset, drag_y_offset, target_position, 
             new_target, $container, container, width, height, i, page_x, page_y,
             source_widget_saved_width, source_widget_saved_height;
@@ -289,15 +299,13 @@ window.TOONTALK.UTILITIES =
         if ($target.length === 0) {
             return;
         }
+        page_x = utilities.get_mouse_or_first_touch_event_attribute("pageX", event);
+        page_y = utilities.get_mouse_or_first_touch_event_attribute("pageY", event);
         if ($target.is(".toontalk-top-level-resource")) {
             if (event.type === 'touchend') {
                 // simulating a drop so use the closest top-level
-                $target = $(utilities.closest_element($(".toontalk-side").filter(function (index, element) {
-                                                           return !$(element).parent().is(".toontalk-top-level-resource") && element !== $source.get(0);
-                                                      }), 
-                                                      {left: event.changedTouches[0].pageX,
-                                                       top:  event.changedTouches[0].pageY})); 
-                if ($target.length === 0) {
+                $target = element_under_page_x_y();
+                if (!$target || $target.length === 0) {
                     return;
                 }
             } else {
@@ -318,19 +326,12 @@ window.TOONTALK.UTILITIES =
             }
             // not dropping on itself but on the widget underneath
             // to not find $target again temporarily hide it
-            $target.hide();
-            page_x = utilities.get_mouse_or_first_touch_event_attribute("pageX", event);
-            page_y = utilities.get_mouse_or_first_touch_event_attribute("pageY", event);
-            new_target = document.elementFromPoint(page_x-window.pageXOffset,page_y-window.pageYOffset);
-            $target.show();
-            if (new_target) {
-                $target = $(new_target).closest(".toontalk-side");
-                if ($target.length === 0) {
-                    return;
-                }
-                target_position = $target.offset();
-                target_widget_side = utilities.widget_side_of_jquery($target);
+            $target = element_under_page_x_y();
+            if (!$target || $target.length === 0) {
+                return;
             }
+            target_position = $target.offset();
+            target_widget_side = utilities.widget_side_of_jquery($target);
         }
         if (json_object && json_object.view && json_object.view.drag_x_offset) {
             drag_x_offset = json_object.view.drag_x_offset;
