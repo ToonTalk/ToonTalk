@@ -131,6 +131,7 @@ window.TOONTALK.UTILITIES =
         }
         widget_side.being_dragged = true;
         bounding_rectangle = $dragee.get(0).getBoundingClientRect();
+        // TODO: determine if the following is still accurate and useful
         is_resource = $dragee.is(".toontalk-top-level-resource");
         // should not wiggle if picked up
         $(element).removeClass("toontalk-wiggle");
