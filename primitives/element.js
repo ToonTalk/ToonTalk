@@ -583,7 +583,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             }
             if (typeof original_width === 'undefined' && frontside_element.parentElement) {
                 // if it doesn't have a parentElement it is too early
-                this.compute_original_dimensions();
+                if (this.is_plain_text_element()) {
+                    this.plain_text_dimensions();
+                } else {
+                    this.compute_original_dimensions();
+                }
             }
             this.apply_css();
             if (children) {
