@@ -278,7 +278,7 @@ window.TOONTALK.UTILITIES =
             }
         } else if ($(event.target).is(".toontalk-drop-area")) {
             $target = $(event.target);
-       } else if (json_object && $(event.currentTarget).is(".froala-element")) {
+        } else if (json_object && $(event.currentTarget).is(".froala-element")) {
             // dropped a widget on editable text - insert it after that
             insert_widget_in_editable_text(json_object, event);
             return;
@@ -290,8 +290,20 @@ window.TOONTALK.UTILITIES =
             return;
         }
         if ($target.is(".toontalk-top-level-resource")) {
-            // maybe should ensure they are not drop targets
-            return;
+            if (event.type === 'touchend') {
+                // simulating a drop so use the closest top-level
+                $target = $(utilities.closest_element($(".toontalk-side").filter(function (index, element) {
+                                                           return !$(element).parent().is(".toontalk-top-level-resource") && element !== $source.get(0);
+                                                      }), 
+                                                      {left: event.changedTouches[0].pageX,
+                                                       top:  event.changedTouches[0].pageY})); 
+                if ($target.length === 0) {
+                    return;
+                }
+            } else {
+                // maybe should ensure they are not drop targets
+                return;
+            }
         }
         // if this is computed when needed and if dragging a resource it isn't the correct value
         target_position = $target.offset();
@@ -1840,16 +1852,15 @@ window.TOONTALK.UTILITIES =
             }
         };
 
-        utilities.closest_element = function ($elements, this_element) {
+        utilities.closest_element = function ($elements, location) {
             var element_offset, least_distance, closest, best_so_far;
-            if (!this_element) {
+            if (!location) {
                 return $elements.get(0); // any will do
             }
-            element_offset = $(this_element).offset();
             least_distance = Number.MAX_VALUE;
             $elements.each(function (index, backside_element) {
                                var offset = $(backside_element).offset();
-                               var distance = TT.UTILITIES.distance(offset, element_offset);
+                               var distance = TT.UTILITIES.distance(offset, location);
                                if (least_distance > distance) {
                                    best_so_far = backside_element;
                                    least_distance = distance;
@@ -3635,7 +3646,7 @@ window.TOONTALK.UTILITIES =
            var best_so_far, best_distance_so_far;
            $(".toontalk-top-level-backside").each(function () {
                var position = $(this).offset();
-               var this_distance = (position.left + $(this).width()/2  - x)^2 + 
+               var this_distance = (position.left + $(this).width() /2 - x)^2 + 
                                    (position.top  + $(this).height()/2 - x)^2;
                if (best_so_far) {
                    if (this_distance < best_distance_so_far) {

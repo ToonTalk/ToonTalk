@@ -74,7 +74,9 @@ window.TOONTALK.widget = (function (TT) {
                 }
                 $top_level_backsides = $(".toontalk-top-level-backside");
                 if ($top_level_backsides.length > 0) {
-                    top_level_widget = TT.UTILITIES.widget_side_of_element(TT.UTILITIES.closest_element($top_level_backsides, this.get_frontside_element())).get_widget();
+                    top_level_widget = TT.UTILITIES.widget_side_of_element(TT.UTILITIES.closest_element($top_level_backsides, 
+                                                                                                        $(this.get_frontside_element()).offset()))
+                                       .get_widget();
                     return top_level_widget;
                 }
                 console.log("Could not find top_level_widget of " + this + ". Created one instead");

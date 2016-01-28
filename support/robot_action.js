@@ -437,7 +437,7 @@ window.TOONTALK.robot_action =
         }
     };
     var move_to_tool_and_use_animation = function (widget, robot, continuation, tool_held_by_robot_css_class, resource_tool_css_class) {
-        var tool_element = TT.UTILITIES.closest_element($("." + resource_tool_css_class), robot.get_frontside_element());
+        var tool_element = TT.UTILITIES.closest_element($("." + resource_tool_css_class), $(robot.get_frontside_element()).offset());
         var new_continuation = function () {
             tool_use_animation(widget, robot, continuation, tool_held_by_robot_css_class);
         };
