@@ -336,6 +336,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             } else {
                 pending_css = {};
             }
+            // otherwise rotations become more like revolutions
+            // though this problem only occurs if left or top attributes have also been used in the element widget
+            pending_css.position = 'absolute';
             if (transform_css) {
                 if (typeof transform_css['rotate'] === 'number') {
                     transform += 'rotate(' + transform_css['rotate'] + 'deg)';

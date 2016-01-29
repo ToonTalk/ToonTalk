@@ -3698,11 +3698,6 @@ window.TOONTALK.UTILITIES =
            if (css.height === 0) {
                css.height  = '';
            }
-           if (css.transform) {
-               // otherwise rotations become more like revolutions
-               // though this problem only occurs if left or top attributes have also been used in the element widget
-               css.position = 'absolute';
-           }
            if (!css.transform && typeof css.width === 'number' && typeof css.height === 'number' &&
                widget_side_dereferenced && widget_side_dereferenced.use_scaling_transform) {
                // leave CSS width and height alone and recompute scaling transform
