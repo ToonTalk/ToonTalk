@@ -70,6 +70,11 @@ var respond_to_authorization_need = function (error, saving_window, saving_windo
 
 var ensure_toontalk_is_initialized = function () {
     // any web pages generated before the 8 January 2016 release need this to explicitly call initialize_toontalk
+    if (window.TOONTALK.TOONTALK_URL) {
+        // toontalk.js will call initialise when it is ready
+        return;
+    }
+    // must be an older published page
     if (window.initialize_toontalk) {
         window.initialize_toontalk();
     } else {
