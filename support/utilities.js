@@ -804,7 +804,6 @@ window.TOONTALK.UTILITIES =
                                 }
                             },
                             false); // don't capture events
-    document.addEventListener('DOMContentLoaded', utilities.initialize);
     observer.observe(window.document, {childList: true,
                                        subtree:   true});
     utilities.available_types = ["number", "box", "element", "robot", "nest", "sensor", "top-level"];   
