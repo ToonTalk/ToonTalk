@@ -1717,7 +1717,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
            // update the backside during drag if 'left' or 'top' are attributes
            if (attribute === 'left') {
                frontside_element = this.get_frontside_element();
-               $(frontside_element).addEventListener('drag', function (event) {
+               frontside_element.addEventListener('drag', function (event) {
                    var backside_element  = this.get_backside_element(true);
                    var frontside_element = this.get_frontside_element();
                    if (backside_element && frontside_element) {
@@ -1727,7 +1727,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                }.bind(this));
            } else if (attribute === 'top') {
                frontside_element = this.get_frontside_element();
-               $(frontside_element).addEventListener('drag', function (event) {
+               frontside_element.addEventListener('drag', function (event) {
                    var backside_element  = this.get_backside_element(true);
                    var frontside_element = this.get_frontside_element();
                    if (backside_element && frontside_element) {
