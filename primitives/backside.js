@@ -140,7 +140,7 @@ window.TOONTALK.backside =
                                           }
                                       };
             var close_title, close_handler, description_text_area, name_text_input, relative_URL, widget_HTML;
-            if (TT.TRANSLATION_ENABLED) {
+            if (TT.TRANSLATION_ENABLED && help_URL) {
                 help_URL = TT.UTILITIES.add_URL_parameter(help_URL, "translate", "1");
             }
             if (widget.close_button_ok(backside_element)) {
