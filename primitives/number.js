@@ -96,6 +96,11 @@
         bigrat.multiply(trancated_rational_number, rational_number, ten_to_n);
         integer = bigrat.fromValues(bigrat.toBigInteger(trancated_rational_number), 1);
         bigrat.divide(trancated_rational_number, integer, ten_to_n);
+        if (bigrat.equals(trancated_rational_number, bigrat.ZERO) && 
+            !bigrat.equals(rational_number, bigrat.ZERO)) {
+             // truncasted too much
+             return truncate_to_n_decimal_places(rational_number, 2*n);   
+        }
         return trancated_rational_number;
     };
 
@@ -1109,8 +1114,11 @@ window.TOONTALK.number = (function () {
 
     number.get_custom_title_prefix = function () {
         var prefix;
+        // TODO: might be better to use : or which is and then the value (if short or if long abbreviate)
         if (this.get_operator() === '=') {
             prefix =  "Drop me on another number I'll give him my value.";
+        } else if (this.get_operator() === '/') {
+            prefix =  "Drop me on another number I'll divide him by my value.";
         } else {
             prefix = "Drop me on another number and I'll " + this.operator_word("myself") + " him.";
         }
@@ -1150,7 +1158,7 @@ window.TOONTALK.number_backside =
             var plus = TT.UTILITIES.create_radio_button("operator", "+", "toontalk-plus-radio-button", "+", "Add me to what I'm dropped on.", true); // no need for &plus;
             var minus = TT.UTILITIES.create_radio_button("operator", "-", "toontalk-minus-radio-button", "&minus;", "Subtract me from what I'm dropped on.", true);
             var multiply = TT.UTILITIES.create_radio_button("operator", "*", "toontalk-times-radio-button", "&times;", "Multiply me with what I'm dropped on.", true);
-            var divide = TT.UTILITIES.create_radio_button("operator", "/", "toontalk-divide-radio-button", "&divide;", "Divide me into what I'm dropped on.", true);
+            var divide = TT.UTILITIES.create_radio_button("operator", "/", "toontalk-divide-radio-button", "&divide;", "I will divide what I'm dropped on.", true);
             var set = TT.UTILITIES.create_radio_button("operator", "=", "toontalk-set-equal-radio-button", "&equals;", "Set what I'm dropped on to my value.", true);
 //          var power = TT.UTILITIES.create_radio_button("operator", "^", "toontalk-power-radio-button", "Integer power", "Use me as the number of times to multiply together what I'm dropped on.", true);
             var update_value = function (event) {
