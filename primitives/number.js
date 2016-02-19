@@ -96,6 +96,11 @@
         bigrat.multiply(trancated_rational_number, rational_number, ten_to_n);
         integer = bigrat.fromValues(bigrat.toBigInteger(trancated_rational_number), 1);
         bigrat.divide(trancated_rational_number, integer, ten_to_n);
+        if (bigrat.equals(trancated_rational_number, bigrat.ZERO) && 
+            !bigrat.equals(rational_number, bigrat.ZERO)) {
+             // truncasted too much
+             return truncate_to_n_decimal_places(rational_number, 2*n);   
+        }
         return trancated_rational_number;
     };
 
