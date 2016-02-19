@@ -1,4 +1,4 @@
-<div class='toontalk-json'>{
+<div class='toontalk-json' translate='no'>{
   "semantic": {
     "type": "top_level",
     "backside_widgets": [
