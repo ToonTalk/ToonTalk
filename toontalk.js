@@ -189,6 +189,6 @@ if (published_page) {
     add_css("https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/css/froala_editor.min.css");
 }
 
-loadFile(0);
+loadFile(0, this_url.indexOf("file://")  === 0);
 
 }());
