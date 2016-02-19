@@ -24,7 +24,7 @@ window.TOONTALK.UTILITIES =
     var z_index = 100;
     // id needs to be unique across ToonTalks due to drag and drop
     var id_counter = new Date().getTime();
-    var div_json   = "<div class='toontalk-json'>";
+    var div_json   = "<div class='toontalk-json' translate='no'>"; // Google translate and the like should not translate the JSON
     var div_hidden = "<div style='display:none;'>"; // don't use a class since CSS might not be loaded
     var div_hidden_and_json_start = div_hidden + "{";
     var div_close  = "</div>";
