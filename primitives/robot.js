@@ -42,6 +42,8 @@ window.TOONTALK.robot = (function (TT) {
         // if watched_speed is undefined then runs at original speed
         // otherwise is a positive number which is the multiplier of the normal default speed for each step
         var new_robot = Object.create(robot);
+        // grab the default definition of remove_backside_widget so can use it while overriding it
+        var widget_remove_backside_widget = new_robot.remove_backside_widget;
         // who should do the 'repeating'
         var first_in_team;
         // if not the first_in_team then the robot just before this one
@@ -76,7 +78,9 @@ window.TOONTALK.robot = (function (TT) {
         };
         new_robot.set_frontside_conditions = function (new_value) {
             frontside_conditions = new_value;
-            frontside_conditions.set_parent_of_frontside(this);
+            if (frontside_conditions) {
+                frontside_conditions.set_parent_of_frontside(this);
+            }
         };
         new_robot.get_backside_matched_widgets = function () {
            return backside_matched_widgets;
@@ -540,6 +544,29 @@ window.TOONTALK.robot = (function (TT) {
         new_robot.has_name(new_robot);
         new_robot.set_name(name);
         new_robot.set_description(description);
+        new_robot.remove_backside_widget = function (widget_side, ignore_if_not_on_backside) {
+            // e.g. a condition has been vacuumed away
+            // TODO: if robot training a robot ensure path is OK
+            var frontside_conditions = this.get_frontside_conditions();
+            var backside_conditions;
+            if (widget_side === frontside_conditions) {
+                this.set_frontside_conditions(undefined);
+                return;
+            }
+            backside_conditions = this.get_backside_conditions();
+            if (backside_conditions &&
+                backside_conditions.some(function (condition, index) {
+                                             if (widget_side === condition) {
+                                                 // splice it out
+                                                 backside_conditions.splice(index, 1);
+                                                 return true;
+                                             }
+                                         })) {
+                return;
+            }
+            // else do the default widget behaviour for removal
+            widget_remove_backside_widget(widget_side, ignore_if_not_on_backside);
+        };
         if (TT.debugging) {
             new_robot._debug_id = TT.UTILITIES.generate_unique_id();
             new_robot._debug_string = new_robot.to_debug_string();
@@ -602,7 +629,7 @@ window.TOONTALK.robot = (function (TT) {
             return this;
         }
         backside = this.get_backside();
-        if (backside && backside.visible()) {
+        if (backside && backside.visible() && frontside_condition_widget) {
             clear_all_mismatch_displays = function (widget) {
                 // conditions could keep last_match_status and when displayed use appropriate CSS
                 $(widget.get_frontside_element()).removeClass("toontalk-conditions-not-matched toontalk-conditions-waiting")
@@ -1380,7 +1407,7 @@ window.TOONTALK.robot = (function (TT) {
                                               path_within_conditions = condition.get_path_to(widget, robot);
                                               if (path_within_conditions) {
                                                   backside_condition_with_path = condition;
-                                                  return;
+                                                  return true;
                                               }
                                           }
                                       });

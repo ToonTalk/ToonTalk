@@ -2870,7 +2870,11 @@ window.TOONTALK.UTILITIES =
         };
         
         utilities.match = function (pattern, widget) {
-            var match_status = pattern.match(widget);
+            var match_status;
+            if (pattern === undefined) {
+                return "matched";
+            };
+            match_status = pattern.match(widget);
             if (match_status.is_widget && widget.matched_by) {
                 // e.g. widget is a nest             
                 return widget.matched_by(pattern);

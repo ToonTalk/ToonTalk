@@ -761,9 +761,9 @@ window.TOONTALK.widget = (function (TT) {
                          parent_of_frontside.remove_backside_widget(this, !event);  
                      } else if (parent_of_frontside.removed_from_container) {
                          if (parent_of_frontside_is_backside) {
-                            parent_of_frontside.remove_backside_widget(this, true);
+                             parent_of_frontside.remove_backside_widget(this, true);
                          } else {
-                            parent_of_frontside.removed_from_container(this, event);
+                             parent_of_frontside.removed_from_container(this, event);
                          }
                      } else if (parent_of_frontside.get_backside()) {
                          parent_of_frontside.remove_backside_widget(this, !event); 
