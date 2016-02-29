@@ -24,7 +24,9 @@ window.TOONTALK.UTILITIES =
     var z_index = 100;
     // id needs to be unique across ToonTalks due to drag and drop
     var id_counter = new Date().getTime();
-    var div_json   = "<div class='toontalk-json' translate='no'>"; // Google translate and the like should not translate the JSON
+    // Google translate and the like should not translate the JSON
+    // The JSON should not be displayed - but once element is processed the display property will be removed
+    var div_json   = "<div class='toontalk-json' translate='no' style='display:none'>"; 
     var div_hidden = "<div style='display:none;'>"; // don't use a class since CSS might not be loaded
     var div_hidden_and_json_start = div_hidden + "{";
     var div_close  = "</div>";
@@ -1698,6 +1700,8 @@ window.TOONTALK.UTILITIES =
                     }
                     if (widget) {
                         element.textContent = ""; // served its purpose of being parsed as JSON
+                        // may have been been display:none while loading so looks better while loading
+                        $(element).css({display: ''});
                         if (!widget.get_type_name) {
                             // isn't a widget. e.g. a tool
                             element.appendChild(widget.get_element());
