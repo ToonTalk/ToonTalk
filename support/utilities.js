@@ -241,7 +241,7 @@ window.TOONTALK.UTILITIES =
             // don't include the current $source so temporarily hide it
             var new_target;
             $source.hide();
-            new_target = document.elementFromPoint(page_x-window.pageXOffset, page_y-window.pageYOffset);
+            new_target = document.elementFromPoint(page_x-window.pageXOffset-TT.USABILITY_DRAG_OFFSET.x, page_y-window.pageYOffset-TT.USABILITY_DRAG_OFFSET.y);
             $source.show();
             if (new_target) {
                 return $(new_target).closest(".toontalk-side");
@@ -609,8 +609,8 @@ window.TOONTALK.UTILITIES =
             top_level_element.appendChild($source.get(0));
             top_level_backside_position = $(top_level_element).offset();
             utilities.set_css($source,
-                              {left: page_x - (top_level_backside_position.left + drag_x_offset),
-                               top:  page_y - (top_level_backside_position.top  + drag_y_offset)}
+                              {left: page_x - (top_level_backside_position.left + drag_x_offset + TT.USABILITY_DRAG_OFFSET.x),
+                               top:  page_y - (top_level_backside_position.top  + drag_y_offset + TT.USABILITY_DRAG_OFFSET.y)}
             );
             if (source_widget_side.drop_on && source_widget_side.drop_on(target_widget_side, event)) {
             } else if (target_widget_side.widget_side_dropped_on_me && target_widget_side.widget_side_dropped_on_me(source_widget_side, event)) {
@@ -3483,6 +3483,12 @@ window.TOONTALK.UTILITIES =
         utilities.enable_touch_events = function (element, maximum_click_duration) {
             var original_element = element;
             var touch_start_handler = function (event) {
+                if (TT.USABILITY_DRAG_OFFSET.y === 0) {
+                    // since can't see through a finger
+                    // placed here because device may have touch and mouse so this is set if touch events triggered
+                    // TODO: figure out how to restore things if user switches to mouse after this
+                    TT.USABILITY_DRAG_OFFSET.y = 100;
+                }
                 // rewrite using startsWith in ECMAScript version 6
                 if (TT.logging && TT.logging.indexOf('touch') === 0) {
                     TT.debugging += "\ntouch start";
@@ -3518,6 +3524,8 @@ window.TOONTALK.UTILITIES =
                             }   
                         } else {
                             drag_started = true;
+                            // figure out why the following doesn't for example find contents in a box
+//                             widget = utilities.find_widget_on_page_side(touch, element, 0, 0);
                             widget = utilities.widget_side_of_element(element);
                             if (widget && widget.get_infinite_stack()) {
                                 widget_copy = widget.copy();     
@@ -3571,6 +3579,8 @@ window.TOONTALK.UTILITIES =
                         alert(TT.debugging);
                         TT.debugging = 'touch';
                     }
+                    utilities.set_absolute_position(element, {left: touch.pageX-drag_x_offset-TT.USABILITY_DRAG_OFFSET.x,
+                                                               top: touch.pageY-drag_y_offset-TT.USABILITY_DRAG_OFFSET.y});
                 } else {
                     // touch_start time out will see this and treat it all as a click
                     touch_end_occurred = true;
@@ -3583,9 +3593,9 @@ window.TOONTALK.UTILITIES =
                 event.preventDefault();
                 if (drag_started) {
                     touch = event.changedTouches[0];
-                    utilities.set_absolute_position(element, {left: touch.pageX-drag_x_offset,
-                                                               top:  touch.pageY-drag_y_offset});
-                    widget_side_under_element = utilities.find_widget_on_page_side(touch, element, 0, 0);
+                    utilities.set_absolute_position(element, {left: touch.pageX-drag_x_offset-TT.USABILITY_DRAG_OFFSET.x,
+                                                               top: touch.pageY-drag_y_offset-TT.USABILITY_DRAG_OFFSET.y});
+                    widget_side_under_element = utilities.find_widget_on_page_side(touch, element, TT.USABILITY_DRAG_OFFSET.x, TT.USABILITY_DRAG_OFFSET.y);
                     if (widget_drag_entered && widget_drag_entered !== widget_side_under_element) {
                         drag_leave_handler(touch, widget_drag_entered.get_frontside_element());
                         widget_drag_entered = undefined;
@@ -3627,7 +3637,6 @@ window.TOONTALK.UTILITIES =
             var element_on_page, widget_on_page_side, widget_type;
             // hide the tool so it is not under itself
             $(element).hide();
-            // select using the leftmost part of tool and vertical center
             element_on_page = document.elementFromPoint(page_x - (window.pageXOffset + x_offset), (page_y - (window.pageYOffset + y_offset)));
             $(element).show();
             while (element_on_page && !element_on_page.toontalk_widget_side && 

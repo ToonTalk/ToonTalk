@@ -42,7 +42,12 @@ var get_url_parameter = function (name, parameters, default_value) {
 window.TOONTALK = {GOOGLE_DRIVE_CLIENT_ID:  get_parameter('GOOGLE_DRIVE_CLIENT_ID',  '148386604750-704q35l4gcffpj2nn3p4ivcopl81nm27.apps.googleusercontent.com'),
                    ORIGIN_FOR_GOOGLE_DRIVE: get_parameter('ORIGIN_FOR_GOOGLE_DRIVE', 'toontalk.github.io'),
                    // TOONTALK_URL is where the scripts, sounds, css, images, etc live
-                   TOONTALK_URL: path_prefix};
+                   TOONTALK_URL: path_prefix,
+                   // can't see through your finger so offset dragee
+                   // here so people can easily customise this (diffrent devices, fingers, etc.)
+                   USABILITY_DRAG_OFFSET: {x: 0,
+                                           y: 0}
+                  };
 
 var debugging = get_parameter('debugging', '0') !== '0';
 
