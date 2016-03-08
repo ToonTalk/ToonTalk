@@ -56,15 +56,15 @@ window.TOONTALK.backside =
                 close_button, backside_widgets, help_button, help_frame, close_help_button;
             var update_flag_and_stop_sign_classes = function (running) {
                 if (running) {
-                    $(green_flag_element).addClass   ("toontalk-green-flag-active")
-                                         .removeClass("toontalk-green-flag-inactive");
-                    $(stop_sign_element) .addClass   ("toontalk-stop-sign-inactive")
-                                         .removeClass("toontalk-stop-sign-active");
+                    $(green_flag_element).addClass   ("toontalk-green-flag-active toontalk-button")
+                                         .removeClass("toontalk-green-flag-inactive toontalk-button");
+                    $(stop_sign_element) .addClass   ("toontalk-stop-sign-inactive toontalk-button")
+                                         .removeClass("toontalk-stop-sign-active toontalk-button");
                 } else {
-                    $(green_flag_element).addClass   ("toontalk-green-flag-inactive")
-                                         .removeClass("toontalk-green-flag-active");
-                    $(stop_sign_element) .addClass   ("toontalk-stop-sign-active")
-                                         .removeClass("toontalk-stop-sign-inactive");
+                    $(green_flag_element).addClass   ("toontalk-green-flag-inactive toontalk-button")
+                                         .removeClass("toontalk-green-flag-active toontalk-button");
+                    $(stop_sign_element) .addClass   ("toontalk-stop-sign-active toontalk-button")
+                                         .removeClass("toontalk-stop-sign-inactive toontalk-button");
                 }
             };
             var description_label = this.create_description_label(backside, widget);
@@ -1089,10 +1089,10 @@ window.TOONTALK.backside =
             var advanced_settings_button = $(backside_element).find(".toontalk-settings-backside-button").get(0);
             var i;
             $(settings).addClass("toontalk-advanced-settings-table");
-            $make_sensor_nest_button.addClass("toontalk-make-sensor_nest_button");
+            $make_sensor_nest_button.addClass("toontalk-make-sensor_nest_button toontalk-button");
             $make_sensor_nest_button.get(0).addEventListener('click', make_sensor_nest_button_clicked);
             $make_sensor_nest_button.attr('title', "Click to create a nest which receives messages when events happen to this " + widget.get_type_name() + ".");
-            $make_function_bird_button.addClass("toontalk-make-function_bird_button");
+            $make_function_bird_button.addClass("toontalk-make-function_bird_button toontalk-button");
             $make_function_bird_button.get(0).addEventListener('click', make_function_bird_button_clicked);
             if (widget.is_number() || widget.is_box() || widget.is_element()) {
                 // will implement more functions (e.g. for string elements and boxes)
@@ -1246,7 +1246,7 @@ window.TOONTALK.backside =
                     }
                 };
             buuton.innerHTML = '&gt;';
-            $settings_button.addClass("toontalk-settings-backside-button");
+            $settings_button.addClass("toontalk-settings-backside-button toontalk-button");
             $settings_button.css({"z-index": TT.UTILITIES.next_z_index()});
             $settings_button.get(0).addEventListener('click', settings_button_clicked);
             TT.UTILITIES.give_tooltip($settings_button.get(0), "Click to see the advanced settings of this " + widget.get_type_name() + ".");
@@ -1405,6 +1405,10 @@ window.TOONTALK.backside =
         },
 
         maintain_proportional_dimensions: function () {
+            return false;
+        },
+
+        location_constrained_by_container: function () {
             return false;
         },
 
