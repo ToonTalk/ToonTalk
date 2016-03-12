@@ -316,7 +316,11 @@ window.TOONTALK.UTILITIES =
         if ($target.is(".toontalk-top-level-resource")) {
             if (event.type === 'touchend') {
                 // simulating a drop so use the closest top-level
-                $target = element_under_page_x_y();
+                // first use the highlighted element
+                $target = $(".toontalk-highlight"); 
+                if ($target.length === 0 || $target.get(0) === $source.get(0)) {
+                    $target = element_under_page_x_y();
+                }
                 if (!$target || $target.length === 0) {
                     return;
                 }
@@ -327,7 +331,6 @@ window.TOONTALK.UTILITIES =
         }
         // if this is computed when needed and if dragging a resource it isn't the correct value
         target_position = $target.offset();
-        utilities.remove_highlight();
         target_widget_side = utilities.widget_side_of_jquery($target);
         if ($source && $source.length > 0 &&
             // OK to drop on infinite stack since will become a copy
@@ -337,14 +340,18 @@ window.TOONTALK.UTILITIES =
                 return; // let event propagate since this doesn't make sense
             }
             // not dropping on itself but on the widget underneath
-            // to not find $target again temporarily hide it
-            $target = element_under_page_x_y();
+            // first use the highlighted element
+            $target = $(".toontalk-highlight"); 
+            if ($target.length === 0 || $target.get(0) === $source.get(0)) {
+                $target = element_under_page_x_y();
+            }
             if (!$target || $target.length === 0) {
                 return;
             }
             target_position = $target.offset();
             target_widget_side = utilities.widget_side_of_jquery($target);
         }
+        utilities.remove_highlight();
         if (json_object && json_object.view && json_object.view.drag_x_offset) {
             drag_x_offset = json_object.view.drag_x_offset;
             drag_y_offset = json_object.view.drag_y_offset;
@@ -3535,7 +3542,7 @@ window.TOONTALK.UTILITIES =
                     widget.being_dragged = true;
                 }
                 if (widget && widget.get_infinite_stack()) {
-                    widget_copy = widget.copy();     
+                    widget_copy = widget.copy();
                     widget.set_infinite_stack(false);
                     widget_copy.set_infinite_stack(true);
                 } else if ($(element).is(".toontalk-top-level-resource")) {
@@ -3552,6 +3559,7 @@ window.TOONTALK.UTILITIES =
                     }
                 }
                 // TODO: figure out why the following doesn't always help -- e.g.  drag number from box to another box
+                // maybe it is because the child still "thinks" its parent is the old container
                 $(element).css({"z-index": 99999999});
                 if (!element_position) {
                     element_position = $(element).offset();
@@ -3679,10 +3687,17 @@ window.TOONTALK.UTILITIES =
             if (widget_on_page_side && widget_on_page_side.get_contents && widget_on_page_side.get_contents()) {
                 widget_on_page_side = widget_on_page_side.get_contents();
             }
-            widget_type = widget_on_page_side.get_type_name();
-            if (widget_on_page_side && widget_type === "empty hole") {
-                return widget_on_page_side.get_parent_of_frontside();
+            if (widget_on_page_side.element_to_highlight && event) {
+                element_on_page = widget_on_page_side.element_to_highlight(event);
+                if (!element_on_page) {
+                    return;
+                }
+                widget_on_page_side = element_on_page.toontalk_widget_side;    
             }
+            widget_type = widget_on_page_side.get_type_name();
+//             if (widget_on_page_side && widget_type === "empty hole") {
+//                 return widget_on_page_side.get_parent_of_frontside();
+//             }
             return widget_on_page_side;
        };
 
