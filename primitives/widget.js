@@ -761,9 +761,9 @@ window.TOONTALK.widget = (function (TT) {
                          parent_of_frontside.remove_backside_widget(this, !event);  
                      } else if (parent_of_frontside.removed_from_container) {
                          if (parent_of_frontside_is_backside) {
-                            parent_of_frontside.remove_backside_widget(this, true);
+                             parent_of_frontside.remove_backside_widget(this, true);
                          } else {
-                            parent_of_frontside.removed_from_container(this, event);
+                             parent_of_frontside.removed_from_container(this, event);
                          }
                      } else if (parent_of_frontside.get_backside()) {
                          parent_of_frontside.remove_backside_widget(this, !event); 
@@ -1507,11 +1507,16 @@ window.TOONTALK.widget = (function (TT) {
         },
 
         location_constrained_by_container: function () {
+            var parent;
             if (this.is_nest()) {
                 // nests are displayed proportionately and are offset to be centered
                 return false;
             }
-            var parent = this.get_parent_of_frontside();
+            if (this.being_dragged) {
+                // touch move calls set_css which calls this
+                return false;
+            }
+            parent = this.get_parent_of_frontside();
             if (parent && (parent.is_hole() || parent.is_nest() || parent.is_robot())) {
                  // TODO: generalise this for other kinds of containers
                  // robot is included since it has a condition constrained to condition area

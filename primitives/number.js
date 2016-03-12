@@ -1164,7 +1164,7 @@ window.TOONTALK.number_backside =
             var update_value = function (event) {
                 var numerator = numerator_input.button.value.trim();
                 var denominator = denominator_input.button.value.trim();
-                var string, first_class_name;
+                var string, first_class_name, numerator_as_float, numerator_as_fraction, denominator_as_float, denominator_as_fraction;
                 var valid_integer = function (string, ator, negative_not_allowed) {
                     // ator can be numerATOR or denominATOR
                     var without_sign;
@@ -1195,8 +1195,14 @@ window.TOONTALK.number_backside =
                 }
                 validity = valid_integer(numerator, "numerator");
                 if (validity.message) {
-                    TT.UTILITIES.display_message(validity.message);
-                    numerator = validity.replacement;
+                    numerator_as_float = parseFloat(numerator);
+                    if (isNaN(numerator_as_float)) {
+                        TT.UTILITIES.display_message(validity.message);
+                        numerator = validity.replacement;
+                    } else {
+                       // convert to integer and adjust denominator accordingly
+                       numerator_as_fraction = bigrat.fromDecimal(numerator_as_float);
+                    }
                 }
                 if (denominator === "0") {
                     TT.UTILITIES.display_message("It doesn't make sense for a fraction to have a denominator of 0. Resetting it to 1.");
@@ -1204,16 +1210,27 @@ window.TOONTALK.number_backside =
                 } else {
                     validity = valid_integer(denominator, "denominator");
                     if (validity.message) {
-                        TT.UTILITIES.display_message(validity.message);
-                        denominator = validity.replacement;
+                        denominator_as_float = parseFloat(denominator);
+                        if (isNaN(denominator_as_float)) {
+                            TT.UTILITIES.display_message(validity.message);
+                            denominator = validity.replacement || "1";
+                        } else {
+                            denominator_as_fraction = bigrat.fromDecimal(denominator_as_float);
+                        }
                     }
                 }
-                if (!number.set_from_values(numerator, denominator)) {
+                if (numerator_as_fraction && denominator_as_fraction) {
+                    number.set_value(bigrat.divide(number.get_value(), numerator_as_fraction, denominator_as_fraction), true);
+                } else if (numerator_as_fraction) {
+                    number.set_value(bigrat.divide(number.get_value(), numerator_as_fraction, bigrat.fromValues(denominator, 1)), true);
+                } else if (denominator_as_fraction) {
+                    number.set_value(bigrat.divide(number.get_value(), bigrat.fromValues(numerator, 1), denominator_as_fraction), true);
+                } else if (!number.set_from_values(numerator, denominator) && !isNaN(denominator_as_float)) {
                     // no change in value so ignore this
                     return;
                 }
-                current_numerator   = numerator;
-                current_denominator = denominator;
+                current_numerator   = number.numerator_string();
+                current_denominator = number.denominator_string();
                 if (number.robot_in_training()) {
                     first_class_name = event.srcElement.className.split(" ", 1)[0];
                     if (first_class_name === "toontalk-denominator-input") {

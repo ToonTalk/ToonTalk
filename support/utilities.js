@@ -24,7 +24,9 @@ window.TOONTALK.UTILITIES =
     var z_index = 100;
     // id needs to be unique across ToonTalks due to drag and drop
     var id_counter = new Date().getTime();
-    var div_json   = "<div class='toontalk-json' translate='no'>"; // Google translate and the like should not translate the JSON
+    // Google translate and the like should not translate the JSON
+    // The JSON should not be displayed - but once element is processed the display property will be removed
+    var div_json   = "<div class='toontalk-json' translate='no' style='display:none'>"; 
     var div_hidden = "<div style='display:none;'>"; // don't use a class since CSS might not be loaded
     var div_hidden_and_json_start = div_hidden + "{";
     var div_close  = "</div>";
@@ -62,24 +64,33 @@ window.TOONTALK.UTILITIES =
                                                               });    
                                         });
     var translate = function (element, translate_attribute, scale_attribute) {
-            var translation, ancestor;
-            if (!element) {
-                return;
+        var translation, ancestor;
+        if (!element) {
+            return;
+        }
+        translation = element[translate_attribute] || 0;
+        if (element[scale_attribute]) {
+            translation /= element[scale_attribute];
+        }
+        ancestor = element.parentElement;
+        while (ancestor) {
+            translation += ancestor[translate_attribute] || 0;
+            if (ancestor[scale_attribute]) {
+                translation /= ancestor[scale_attribute];
             }
-            translation = element[translate_attribute] || 0;
-            if (element[scale_attribute]) {
-                translation /= element[scale_attribute];
-            }
-            ancestor = element.parentElement;
-            while (ancestor) {
-                translation += ancestor[translate_attribute] || 0;
-                if (ancestor[scale_attribute]) {
-                    translation /= ancestor[scale_attribute];
-                }
-                ancestor = ancestor.parentElement;
-            }
-            return translation;
-        };
+            ancestor = ancestor.parentElement;
+        }
+        return translation;
+    };
+    var add_to_touch_log = function (message, display_now) {
+        // since hard to see console log on phone or tablet this uses both console and eventually alert
+        TT.debugging += "\n" + message;
+        console.log(message);
+        if (display_now) {
+            alert(TT.debugging);
+            TT.debugging = 'touch';
+        }
+    };
     var extract_json_from_div_string = function (div_string) {
         // expecting div_string to begin with div_open and end with div_close
         // but users may be dragging something different
@@ -239,7 +250,7 @@ window.TOONTALK.UTILITIES =
             // don't include the current $source so temporarily hide it
             var new_target;
             $source.hide();
-            new_target = document.elementFromPoint(page_x-window.pageXOffset, page_y-window.pageYOffset);
+            new_target = document.elementFromPoint(page_x-window.pageXOffset-TT.USABILITY_DRAG_OFFSET.x, page_y-window.pageYOffset-TT.USABILITY_DRAG_OFFSET.y);
             $source.show();
             if (new_target) {
                 return $(new_target).closest(".toontalk-side");
@@ -305,7 +316,11 @@ window.TOONTALK.UTILITIES =
         if ($target.is(".toontalk-top-level-resource")) {
             if (event.type === 'touchend') {
                 // simulating a drop so use the closest top-level
-                $target = element_under_page_x_y();
+                // first use the highlighted element
+                $target = $(".toontalk-highlight"); 
+                if ($target.length === 0 || $target.get(0) === $source.get(0)) {
+                    $target = element_under_page_x_y();
+                }
                 if (!$target || $target.length === 0) {
                     return;
                 }
@@ -316,7 +331,6 @@ window.TOONTALK.UTILITIES =
         }
         // if this is computed when needed and if dragging a resource it isn't the correct value
         target_position = $target.offset();
-        utilities.remove_highlight();
         target_widget_side = utilities.widget_side_of_jquery($target);
         if ($source && $source.length > 0 &&
             // OK to drop on infinite stack since will become a copy
@@ -326,14 +340,18 @@ window.TOONTALK.UTILITIES =
                 return; // let event propagate since this doesn't make sense
             }
             // not dropping on itself but on the widget underneath
-            // to not find $target again temporarily hide it
-            $target = element_under_page_x_y();
+            // first use the highlighted element
+            $target = $(".toontalk-highlight"); 
+            if ($target.length === 0 || $target.get(0) === $source.get(0)) {
+                $target = element_under_page_x_y();
+            }
             if (!$target || $target.length === 0) {
                 return;
             }
             target_position = $target.offset();
             target_widget_side = utilities.widget_side_of_jquery($target);
         }
+        utilities.remove_highlight();
         if (json_object && json_object.view && json_object.view.drag_x_offset) {
             drag_x_offset = json_object.view.drag_x_offset;
             drag_y_offset = json_object.view.drag_y_offset;
@@ -607,8 +625,8 @@ window.TOONTALK.UTILITIES =
             top_level_element.appendChild($source.get(0));
             top_level_backside_position = $(top_level_element).offset();
             utilities.set_css($source,
-                              {left: page_x - (top_level_backside_position.left + drag_x_offset),
-                               top:  page_y - (top_level_backside_position.top  + drag_y_offset)}
+                              {left: page_x - (top_level_backside_position.left + drag_x_offset + TT.USABILITY_DRAG_OFFSET.x),
+                               top:  page_y - (top_level_backside_position.top  + drag_y_offset + TT.USABILITY_DRAG_OFFSET.y)}
             );
             if (source_widget_side.drop_on && source_widget_side.drop_on(target_widget_side, event)) {
             } else if (target_widget_side.widget_side_dropped_on_me && target_widget_side.widget_side_dropped_on_me(source_widget_side, event)) {
@@ -1698,6 +1716,8 @@ window.TOONTALK.UTILITIES =
                     }
                     if (widget) {
                         element.textContent = ""; // served its purpose of being parsed as JSON
+                        // may have been been display:none while loading so looks better while loading
+                        $(element).css({display: ''});
                         if (!widget.get_type_name) {
                             // isn't a widget. e.g. a tool
                             element.appendChild(widget.get_element());
@@ -2337,7 +2357,7 @@ window.TOONTALK.UTILITIES =
 
         utilities.create_button = function (label, class_name, title, click_handler) {
             var $button = $("<button>" + label + "</button>").button();
-            $button.addClass(class_name);
+            $button.addClass(class_name + " toontalk-button");
             $button.get(0).addEventListener('click', click_handler);
             utilities.give_tooltip($button.get(0), title);
             return $button.get(0);
@@ -2346,7 +2366,7 @@ window.TOONTALK.UTILITIES =
         utilities.create_close_button = function (handler, title) {
             var close_button = document.createElement("div");
             var x = document.createElement("div");
-            $(close_button).addClass("toontalk-close-button");
+            $(close_button).addClass("toontalk-close-button toontalk-button");
             close_button.addEventListener('click', handler);
             utilities.give_tooltip(close_button, title);
             x.innerHTML = "&times;";
@@ -2430,7 +2450,7 @@ window.TOONTALK.UTILITIES =
                 label_element.htmlFor = text_input.id;
                 if (documentation_url) {
                     documentation_anchor = utilities.create_anchor_element("i", documentation_url);
-                    $(documentation_anchor).addClass("toontalk-help-button notranslate");
+                    $(documentation_anchor).addClass("toontalk-help-button toontalk-button notranslate");
                     documentation_anchor.translate = false; // should not be translated
                 }
                 container = utilities.create_horizontal_table(label_element, text_input, documentation_anchor);
@@ -2511,7 +2531,7 @@ window.TOONTALK.UTILITIES =
             var input = document.createElement("input");
             var label_element = document.createElement("label");
             input.type = "radio";
-            container.className = class_name;
+            container.className = class_name + " toontalk-button";
             input.name = name;
             input.value = value;
             label_element.innerHTML = label;
@@ -2567,7 +2587,7 @@ window.TOONTALK.UTILITIES =
             var input = document.createElement("input");
             var label_element = document.createElement("label");
             input.type = "checkbox";
-            input.className = class_name;
+            input.className = class_name + " toontalk-button";
             input.checked = value;
             label_element.innerHTML = label;
             input.id = utilities.generate_unique_id();
@@ -2870,7 +2890,11 @@ window.TOONTALK.UTILITIES =
         };
         
         utilities.match = function (pattern, widget) {
-            var match_status = pattern.match(widget);
+            var match_status;
+            if (pattern === undefined) {
+                return "matched";
+            };
+            match_status = pattern.match(widget);
             if (match_status.is_widget && widget.matched_by) {
                 // e.g. widget is a nest             
                 return widget.matched_by(pattern);
@@ -3475,10 +3499,20 @@ window.TOONTALK.UTILITIES =
         utilities.enable_touch_events = function (element, maximum_click_duration) {
             var original_element = element;
             var touch_start_handler = function (event) {
+                var touch = event.changedTouches[0];
+                var sub_widget, bounding_rectangle, widget_copy, element_position;
+                original_location = $(element).offset();
+                if (TT.USABILITY_DRAG_OFFSET.y === 0) {
+                    // since can't see through a finger
+                    // placed here because device may have touch and mouse so this is set if touch events triggered
+                    // TODO: figure out how to restore things if user switches to mouse after this
+                    TT.USABILITY_DRAG_OFFSET.y = 100;
+                }
                 // rewrite using startsWith in ECMAScript version 6
                 if (TT.logging && TT.logging.indexOf('touch') === 0) {
-                    TT.debugging += "\ntouch start";
+                    add_to_touch_log("touch start " + element.id);
                 }
+                element_being_dragged = element;
                 event.preventDefault();
                 // text area input and resize handles work differently
                 if (event.srcElement.tagName === 'TEXTAREA' || 
@@ -3486,118 +3520,132 @@ window.TOONTALK.UTILITIES =
                     $(event.srcElement).is(".ui-resizable-handle")) {
                     // rewrite using startsWith in ECMAScript version 6
                     if (TT.logging && TT.logging.indexOf('touch') === 0) {
-                        TT.debugging += "\ntouch start ignored due to tag name or class";
+                        add_to_touch_log("touch start ignored due to tag name or class " + element.id);
                     }
                    return;
                 }
+                sub_widget = utilities.find_widget_on_page_side(event.changedTouches[0], undefined, 0, 0);
+                if (sub_widget && sub_widget.get_frontside_element() !== element) {
+                    // really touching a child of the element so let's the child's handler handle this
+                    if (TT.logging && TT.logging.indexOf('touch') === 0) {
+                        add_to_touch_log("touch start ignored since has child who is really touched: " + utilities.widget_side_of_element(element));
+                    }
+                    return;
+                }
+                drag_start_time = Date.now();
+                if (TT.logging && TT.logging.indexOf('touch') === 0) {
+                    add_to_touch_log("touch start of " + element.id + " at " + drag_start_time);
+                }
                 event.stopPropagation();
-                utilities.set_timeout(
-                    function () {
-                        var touch = event.changedTouches[0];
-                        var simulatedEvent, bounding_rectangle, widget, widget_copy, element_position;
-                        if (touch_end_occurred) {
-                            touch_end_occurred = false;   
-                            simulatedEvent = document.createEvent("MouseEvent");
-                            simulatedEvent.initMouseEvent('click', true, true, window, 1,
-                                                          touch.screenX, touch.screenY,
-                                                          touch.clientX, touch.clientY, false,
-                                                          false, false, false, 0, null);
-                            touch.target.dispatchEvent(simulatedEvent);
-                            if (TT.logging && TT.logging.indexOf('touch') === 0) {
-                                TT.debugging += "\ntouch end treated as click";
-                                alert(TT.debugging);
-                                TT.debugging = 'touch';
-                            }   
-                        } else {
-                            drag_started = true;
-                            widget = utilities.widget_side_of_element(element);
-                            if (widget && widget.get_infinite_stack()) {
-                                widget_copy = widget.copy();     
-                                widget.set_infinite_stack(false);
-                                widget_copy.set_infinite_stack(true);
-                            } else if ($(element).is(".toontalk-top-level-resource")) {
-                                widget_copy = widget.copy();
-                                widget.add_copy_to_container(widget_copy, 0, 0);
-                                // need to capture the position of the original
-                                element_position = $(element).offset();
-                                element = widget_copy.get_frontside_element(true);                              
-                            }
-                            if (widget_copy) {
-                                widget.add_copy_to_container(widget_copy, 0, 0);
-                                if (widget.robot_in_training()) {
-                                    widget.robot_in_training().copied(widget, widget_copy, false);
-                                }
-                            }
-                            if (!element_position) {
-                                element_position = $(element).offset();
-                            }
-                            drag_start_handler(event, element);
-                            drag_x_offset = touch.clientX - element_position.left;
-                            drag_y_offset = touch.clientY - element_position.top;
-                            if (TT.logging && TT.logging.indexOf('touch') === 0) {
-                                TT.debugging += "\ndrag started";
-                            }
-                        }
-                    },
-                    maximum_click_duration);
+                widget = utilities.widget_side_of_element(element);
+                if (widget) {
+                    widget.being_dragged = true;
+                }
+                if (widget && widget.get_infinite_stack()) {
+                    widget_copy = widget.copy();
+                    widget.set_infinite_stack(false);
+                    widget_copy.set_infinite_stack(true);
+                } else if ($(element).is(".toontalk-top-level-resource")) {
+                    widget_copy = widget.copy();
+                    widget.add_copy_to_container(widget_copy, 0, 0);
+                    // need to capture the position of the original
+                    element_position = $(element).offset();
+                    element = widget_copy.get_frontside_element(true);                              
+                }
+                if (widget_copy) {
+                    widget.add_copy_to_container(widget_copy, 0, 0);
+                    if (widget.robot_in_training()) {
+                        widget.robot_in_training().copied(widget, widget_copy, false);
+                    }
+                }
+                // TODO: figure out why the following doesn't always help -- e.g.  drag number from box to another box
+                // maybe it is because the child still "thinks" its parent is the old container
+                $(element).css({"z-index": 99999999});
+                if (!element_position) {
+                    element_position = $(element).offset();
+                }
+                drag_start_handler(event, element);
+                drag_x_offset = touch.clientX - element_position.left;
+                drag_y_offset = touch.clientY - element_position.top;
+                if (TT.logging && TT.logging.indexOf('touch') === 0) {
+                    add_to_touch_log("drag started " + element.id);
+                }
             };
             var touch_end_handler = function (event) {
-                var touch;
-                event.stopPropagation();
+                var touch, simulatedEvent;
                 event.preventDefault();
-                if (drag_started) {
-                    drag_started = false;
-                    touch = event.changedTouches[0];
-                    drag_end_handler(event, element);
-//                     widget_side = utilities.widget_side_of_element(element); //utilities.find_widget_on_page_side(touch, element, 0, 0);
-                    if (TT.logging && TT.logging.indexOf('touch') === 0) {
-                        TT.debugging += "\ndrag ended";
-                    }
-//                     if (widget_side) {
-                        drop_handler(event, element); // widget.get_frontside_element());
-                        if (TT.logging && TT.logging.indexOf('touch') === 0) {
-                            TT.debugging += "\ndrop happened";
-                        }
-//                     }
-                    if (TT.logging && TT.logging.indexOf('touch') === 0) {
-                        alert(TT.debugging);
-                        TT.debugging = 'touch';
-                    }
-                } else {
-                    // touch_start time out will see this and treat it all as a click
-                    touch_end_occurred = true;
+                if (!drag_start_time) {
+                    return;
                 }
+                event.stopPropagation();
+                touch = event.changedTouches[0];
+                if (widget) {
+                    widget.being_dragged = false;
+                }
+                $(element).removeClass("toontalk-being-dragged");
+                if (drag_start_time+maximum_click_duration >= Date.now()) {
+                    // should also test that not moved very much
+                    simulatedEvent = document.createEvent("MouseEvent");
+                    simulatedEvent.initMouseEvent('click', true, true, window, 1,
+                                                  touch.screenX, touch.screenY,
+                                                  touch.clientX, touch.clientY, false,
+                                                  false, false, false, 0, null);
+                    touch.target.dispatchEvent(simulatedEvent);
+                    // if it was slightly moved put it back
+                    if (widget && widget.location_constrained_by_container()) {
+                        $(element).css({left: '',
+                                        top:  ''});
+                    } else {
+                        utilities.set_absolute_position(element, {left: original_location.left,
+                                                                  top:  original_location.top});
+                    }
+                    if (TT.logging && TT.logging.indexOf('touch') === 0) {
+                        add_to_touch_log("touch end treated as click " + element.id, true);
+                    } 
+                } else {
+                    drag_end_handler(event, element);
+                    if (TT.logging && TT.logging.indexOf('touch') === 0) {
+                        add_to_touch_log("drag ended " + element.id);
+                    }
+                    drop_handler(event, element); // widget.get_frontside_element());
+                    if (TT.logging && TT.logging.indexOf('touch') === 0) {
+                        add_to_touch_log("drop happened " + element.id);
+                    }
+                    if (TT.logging && TT.logging.indexOf('touch') === 0) {
+                        add_to_touch_log("", true);
+                    }
+                    utilities.set_absolute_position(element, {left: touch.pageX-drag_x_offset-TT.USABILITY_DRAG_OFFSET.x,
+                                                              top:  touch.pageY-drag_y_offset-TT.USABILITY_DRAG_OFFSET.y});
+                }
+                drag_start_time = undefined;
                 // restore the original element
                 element = original_element;
             };
             var touch_move_handler = function (event) {
-                var widget_side_under_element, widget, widget_copy, touch;
+                var widget_side_under_element, widget, widget_copy;
+                var touch = event.changedTouches[0];
+                if (!drag_start_time) {
+                    return;
+                }
                 event.preventDefault();
-                if (drag_started) {
-                    touch = event.changedTouches[0];
-                    utilities.set_absolute_position(element, {left: touch.pageX-drag_x_offset,
-                                                               top:  touch.pageY-drag_y_offset});
-                    widget_side_under_element = utilities.find_widget_on_page_side(touch, element, 0, 0);
-                    if (widget_drag_entered && widget_drag_entered !== widget_side_under_element) {
-                        drag_leave_handler(touch, widget_drag_entered.get_frontside_element());
-                        widget_drag_entered = undefined;
-                    }
-                    if (widget_side_under_element) {
-                        drag_enter_handler(touch, widget_side_under_element.get_element());
-                        widget_drag_entered = widget_side_under_element;
-                    }
-                    if (TT.logging && TT.logging.indexOf('touch') === 0) {
-                        TT.debugging += "\ndragged to " + (touch.pageX-drag_x_offset) + ", " + (touch.pageY-drag_y_offset);
-                    }
-                } else if (TT.logging && TT.logging.indexOf('touch') === 0) {
-                    TT.debugging += "\ntouch move ignored since drag_started not yet set. " + Date.now();
+                utilities.set_absolute_position(element, {left: touch.pageX-drag_x_offset-TT.USABILITY_DRAG_OFFSET.x,
+                                                          top:  touch.pageY-drag_y_offset-TT.USABILITY_DRAG_OFFSET.y});
+                widget_side_under_element = utilities.find_widget_on_page_side(touch, element, TT.USABILITY_DRAG_OFFSET.x, TT.USABILITY_DRAG_OFFSET.y);
+                if (widget_drag_entered && widget_drag_entered !== widget_side_under_element) {
+                    drag_leave_handler(touch, widget_drag_entered.get_frontside_element());
+                    widget_drag_entered = undefined;
+                }
+                if (widget_side_under_element) {
+                    drag_enter_handler(touch, widget_side_under_element.get_element());
+                    widget_drag_entered = widget_side_under_element;
+                }
+                if (TT.logging && TT.logging.indexOf('touch') === 0) {
+                    add_to_touch_log("dragged to " + (touch.pageX-drag_x_offset) + ", " + (touch.pageY-drag_y_offset) + " " + element.id);
                 }
             };
-            var drag_started       = false;
-            var touch_end_occurred = false;
             var drag_x_offset = 0;
             var drag_y_offset = 0;
-            var widget_drag_entered, closest_top_level_backside;
+            var element_being_dragged, original_location, drag_start_time, widget, widget_drag_entered, closest_top_level_backside;
             element.addEventListener("touchstart",  touch_start_handler, true);
             element.addEventListener("touchmove",   touch_move_handler,  true);
             element.addEventListener("touchend",    touch_end_handler,   true);
@@ -3618,12 +3666,15 @@ window.TOONTALK.UTILITIES =
             var page_y = utilities.get_mouse_or_first_touch_event_attribute("pageY", event);
             var element_on_page, widget_on_page_side, widget_type;
             // hide the tool so it is not under itself
-            $(element).hide();
-            // select using the leftmost part of tool and vertical center
+            if (element) {
+                $(element).hide();
+            }
             element_on_page = document.elementFromPoint(page_x - (window.pageXOffset + x_offset), (page_y - (window.pageYOffset + y_offset)));
-            $(element).show();
+            if (element) {
+                $(element).show();
+            }
             while (element_on_page && !element_on_page.toontalk_widget_side && 
-                   (!$(element_on_page).is(".toontalk-backside") || $(element_on_page).is(".toontalk-top-level-backside"))) {
+                   (!$(element_on_page).is(".toontalk-backside") && !$(element_on_page).is(".toontalk-button"))) {
                 // element might be a 'sub-element' so go up parent links to find ToonTalk widget
                 element_on_page = element_on_page.parentNode;
             }
@@ -3636,10 +3687,17 @@ window.TOONTALK.UTILITIES =
             if (widget_on_page_side && widget_on_page_side.get_contents && widget_on_page_side.get_contents()) {
                 widget_on_page_side = widget_on_page_side.get_contents();
             }
-            widget_type = widget_on_page_side.get_type_name();
-            if (widget_on_page_side && widget_type === "empty hole") {
-                return widget_on_page_side.get_parent_of_frontside();
+            if (widget_on_page_side.element_to_highlight && event) {
+                element_on_page = widget_on_page_side.element_to_highlight(event);
+                if (!element_on_page) {
+                    return;
+                }
+                widget_on_page_side = element_on_page.toontalk_widget_side;    
             }
+            widget_type = widget_on_page_side.get_type_name();
+//             if (widget_on_page_side && widget_type === "empty hole") {
+//                 return widget_on_page_side.get_parent_of_frontside();
+//             }
             return widget_on_page_side;
        };
 
