@@ -3506,7 +3506,7 @@ window.TOONTALK.UTILITIES =
                     // since can't see through a finger
                     // placed here because device may have touch and mouse so this is set if touch events triggered
                     // TODO: figure out how to restore things if user switches to mouse after this
-                    TT.USABILITY_DRAG_OFFSET.y = 100;
+                    TT.USABILITY_DRAG_OFFSET.y = 25;
                 }
                 // rewrite using startsWith in ECMAScript version 6
                 if (TT.logging && TT.logging.indexOf('touch') === 0) {
@@ -3525,6 +3525,9 @@ window.TOONTALK.UTILITIES =
                    return;
                 }
                 sub_widget = utilities.find_widget_on_page_side(event.changedTouches[0], undefined, 0, 0);
+                if (sub_widget && sub_widget.is_of_type("empty hole")) {
+                    sub_widget = sub_widget.get_parent_of_frontside();
+                }
                 if (sub_widget && sub_widget.get_frontside_element() !== element) {
                     // really touching a child of the element so let's the child's handler handle this
                     if (TT.logging && TT.logging.indexOf('touch') === 0) {
@@ -3695,9 +3698,6 @@ window.TOONTALK.UTILITIES =
                 widget_on_page_side = element_on_page.toontalk_widget_side;    
             }
             widget_type = widget_on_page_side.get_type_name();
-//             if (widget_on_page_side && widget_type === "empty hole") {
-//                 return widget_on_page_side.get_parent_of_frontside();
-//             }
             return widget_on_page_side;
        };
 
