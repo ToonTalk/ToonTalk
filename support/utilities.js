@@ -3677,7 +3677,7 @@ window.TOONTALK.UTILITIES =
                 $(element).show();
             }
             while (element_on_page && !element_on_page.toontalk_widget_side && 
-                   (!$(element_on_page).is(".toontalk-backside") && !$(element_on_page).is(".toontalk-button"))) {
+                   (!$(element_on_page).is(".toontalk-backside") && !$(element_on_page).is(".toontalk-button") && !$(element_on_page).is(".ui-button"))) {
                 // element might be a 'sub-element' so go up parent links to find ToonTalk widget
                 element_on_page = element_on_page.parentNode;
             }
