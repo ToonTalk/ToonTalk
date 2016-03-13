@@ -98,7 +98,7 @@
         bigrat.divide(trancated_rational_number, integer, ten_to_n);
         if (bigrat.equals(trancated_rational_number, bigrat.ZERO) && 
             !bigrat.equals(rational_number, bigrat.ZERO)) {
-             // truncasted too much
+             // truncated too much
              return truncate_to_n_decimal_places(rational_number, 2*n);   
         }
         return trancated_rational_number;
@@ -140,7 +140,11 @@ window.TOONTALK.number = (function () {
     var shrinking_digits_length = function (number_of_full_size_characters, font_size) {
         // returns number of shrinking digits that could fit in number_of_full_size_characters*font_size
         // before getting below half a pixel
-        var factor = number_of_full_size_characters/(1+number_of_full_size_characters); 
+        var factor;
+        if (number_of_full_size_characters < 0) {
+            return 0;
+        }
+        factor = number_of_full_size_characters/(1+number_of_full_size_characters); 
         return Math.ceil(Math.log(.5/font_size)/Math.log(factor));
     };
 
