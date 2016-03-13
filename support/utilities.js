@@ -108,6 +108,10 @@ window.TOONTALK.UTILITIES =
         return div_string.substring(json_start, json_end+1);
     };
     var drag_start_handler = function (event, element) {
+        if ($(element).is(".toontalk-conditions-contents")) {
+            // don't drag widget out of condition container
+            return;
+        }
         var $source_element = $(element).closest(".toontalk-side");
         var client_x = utilities.get_mouse_or_first_touch_event_attribute("clientX", event);
         var client_y = utilities.get_mouse_or_first_touch_event_attribute("clientY", event);
@@ -182,8 +186,12 @@ window.TOONTALK.UTILITIES =
         $dragee.addClass("toontalk-being-dragged");
         event.stopPropagation();
     };
-    var drag_end_handler = function (event) {
+    var drag_end_handler = function (event, element) {
         var widget_side;
+        if ($(element).is(".toontalk-conditions-contents")) {
+            // don't drag widget out of condition container
+            return;
+        }
         if (!$dragee) {
             $dragee = $(event.target).closest(".toontalk-side");
         }
