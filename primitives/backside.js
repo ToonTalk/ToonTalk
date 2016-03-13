@@ -306,6 +306,10 @@ window.TOONTALK.backside =
                 return erased;
             };
             backside.set_erased = function (new_value, update_now) {
+                if (new_value && !this.inside_condtions_container()) {
+                    // ignore erasures if not in a condition container
+                    return;
+                }
                 erased = new_value;
                 if (update_now) {
                     this.rerender();
@@ -319,6 +323,9 @@ window.TOONTALK.backside =
             };
             backside.is_primary_backside = function () {
                 return this === this.get_widget().get_backside();
+            };
+            backside.inside_condtions_container = function () {
+                return $(this.get_element()).closest(".toontalk-conditions-container").is("*");
             };
             backside.get_width = function () {
                 return $(this.get_element()).width();

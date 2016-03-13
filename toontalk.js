@@ -70,8 +70,11 @@ var add_css = function (URL) {
 }
 
 setTimeout(function () {
-     loading_please_wait.innerHTML = "<b>Loading. Please wait...</b>";
-     document.body.appendChild(loading_please_wait);
+    // delay this so that typically document.body is defined but test just in case
+    if (document.body) {
+        loading_please_wait.innerHTML = "<b>Loading. Please wait...</b>";
+        document.body.appendChild(loading_please_wait);
+    }
 });
 
 // <link rel="stylesheet" media="all" href="../../toontalk.css">

@@ -566,7 +566,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                     .css({width:  width,
                                           height: height,
                                           transform: ''}); // remove any transformations
-                if ($(frontside_element).parent(".toontalk-conditions-contents-container").is("*")) {
+                if ($(frontside_element).parent(".toontalk-conditions-container").is("*")) {
                     TT.UTILITIES.give_tooltip(frontside_element, "This is an element that has been erased. It will match any element.");
                 } else {
                     TT.UTILITIES.give_tooltip(frontside_element, "This is an erased element. It will replace its HTML with the HTML of the element you drop on it.");            

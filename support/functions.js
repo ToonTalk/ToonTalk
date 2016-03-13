@@ -114,7 +114,7 @@ window.TOONTALK.create_function_table =
     },
     n_ary_function: function (message, operation, minimum_arity, function_name, event, robot) { 
         var compute_response = function (bird, box_size) {
-            var next_widget, index, args, is_number_or_nest;
+            var next_widget, index, args, is_number_or_nest, any_approximate_arguments, response;
             if (box_size < minimum_arity+1) { // one for the bird
                 TT.UTILITIES.display_message("Birds for the " + function_name + " function can only respond to boxes with at least " + (minimum_arity+1) + " holes. Not " + box_size + " holes.");
                 return;
@@ -127,10 +127,17 @@ window.TOONTALK.create_function_table =
                 if (!is_number_or_nest) {
                     return;
                 }
+                if (next_widget.get_approximate && next_widget.get_approximate()) {
+                    any_approximate_arguments = true;
+                }
                 args.push(next_widget.get_value());
                 index++;
             }
-            return operation.apply(null, args);
+            response = operation.apply(null, args);
+            if (any_approximate_arguments) {
+                response.set_approximate(true);
+            }
+            return response;
         }.bind(this);
         return this.process_message(message, compute_response, event, robot);
     },
@@ -177,7 +184,7 @@ window.TOONTALK.create_function_table =
         // returns a function that converts the response into a widget
         return function () {
             var result = TT.number.create_from_bigrat(bigrat_function.apply(null, arguments));
-            if (approximate) {
+            if (approximate && approximate(arguments)) {
                 result.set_approximate(true);
             }
             return result;
