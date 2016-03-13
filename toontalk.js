@@ -144,7 +144,10 @@ var loadFile = function (index, offline) {
                                                 loadFile(index, offline);               
                                             } else {
                                                 initialize_toontalk();
-                                                $(loading_please_wait).remove();
+                                                // delay the following since its addition was delayed as well
+                                                setTimeout(function () {
+                                                    $(loading_please_wait).remove();
+                                                });                                                
                                             }
                                         };
                    if (file_name.indexOf("https:") >= 0) {
