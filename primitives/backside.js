@@ -821,7 +821,7 @@ window.TOONTALK.backside =
                                                           "Check this if you want the " + widget.get_type_name()
                                                           + " to be copied instead of moved.");
             var check_box_clicked = function (event) {
-                var infinite_stack = check_box.button.checked;
+                var infinite_stack = !widget.get_infinite_stack();
                 var action_string;
                 widget.set_infinite_stack(infinite_stack);
                 if (widget.robot_in_training()) {
@@ -838,6 +838,7 @@ window.TOONTALK.backside =
                 event.stopPropagation();
             };
             check_box.button.addEventListener('click', check_box_clicked);
+            check_box.button.addEventListener('touchstart', check_box_clicked);
             return check_box;
         },
 
@@ -940,9 +941,10 @@ window.TOONTALK.backside =
                                                           "Mouse click opens this backside only if I'm stopped.",
                                                           "Check this if you want my backside to open only when I'm stopped. Really useful if there are robots using click sensors.");
             var check_box_clicked = function (event) {
-                var open_backside_only_if_stopped = check_box.button.checked;
+                var open_backside_only_if_stopped = !widget.get_open_backside_only_if_stopped();
                 var action_string;
                 widget.set_open_backside_only_if_stopped(open_backside_only_if_stopped);
+                check_box.button.checked = open_backside_only_if_stopped;
                 if (widget.robot_in_training()) {
                     if (open_backside_only_if_stopped) {
                         action_string = "change the response to a mouse click to open only if stopped the backside of ";
@@ -957,6 +959,7 @@ window.TOONTALK.backside =
                 event.stopPropagation();
             };
             check_box.button.addEventListener('click', check_box_clicked);
+            check_box.button.addEventListener('touchstart', check_box_clicked);
             return check_box;
         },
         

@@ -1184,7 +1184,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     } else {
                         // if owner is "free" (not a child of another element widget) then it should be updated with the current value
                         attribute_value = owner.get_attribute(this.attribute);
-                        value_setter(attribute_value);
+                        if (!isNaN(attribute_value)) {
+                            value_setter(attribute_value);
+                        }
                     }
                 }
                 widget_update_display.call(this);
@@ -1933,13 +1935,7 @@ window.TOONTALK.element_backside =
                     var additional_class = "toontalk-style-attribute-check-box-for-" + option;
                     var documentation_link = TT.UTILITIES.create_anchor_element("i", documentation_source(option));
                     var list_item = document.createElement("li");
-                    $(documentation_link).addClass("toontalk-help-button notranslate toontalk-attribute-help-button");
-                    $(documentation_link).css({color: "white"}); // ui-widget-content interferes with this
-                    documentation_link.translate = false; // should not be translated
-                    documentation_link.lang      = "en";
-                    check_box.container.appendChild(documentation_link);
-                    $(check_box.button).addClass(additional_class);
-                    check_box.button.addEventListener('click', function (event) {
+                    var check_box_toggled = function (event) {
                         if (check_box.button.checked) {
                             element_widget.add_style_attribute(option);
                         } else {
@@ -1953,7 +1949,18 @@ window.TOONTALK.element_backside =
                                                                         toString: (check_box.button.checked ? "add" : "remove") + " a widget for the " + option + " attribute of",
                                                                         button_selector: "." + additional_class});
                         }
-                    });
+                    };
+                    $(documentation_link).addClass("toontalk-help-button notranslate toontalk-attribute-help-button");
+                    $(documentation_link).css({color: "white"}); // ui-widget-content interferes with this
+                    documentation_link.translate = false; // should not be translated
+                    documentation_link.lang      = "en";
+                    check_box.container.appendChild(documentation_link);
+                    $(check_box.button).addClass(additional_class);
+                    check_box.button.addEventListener('click', check_box_toggled);
+                    check_box.button.addEventListener('touchstart', function (event) {
+                                                                          check_box.button.checked = !check_box.button.checked;
+                                                                          check_box_toggled(event)
+                                                                          });
                     list_item.appendChild(check_box.container);
                     menu_list.appendChild(list_item);
                  };
@@ -2096,6 +2103,10 @@ window.TOONTALK.element_backside =
             });
             react_to_pointer_checkbox.button.checked = !element_widget.get_ignore_pointer_events();
             react_to_pointer_checkbox.button.addEventListener('click', function () {
+                element_widget.set_ignore_pointer_events(!react_to_pointer_checkbox.button.checked);
+            });
+            react_to_pointer_checkbox.button.addEventListener('touchstart', function () {
+                react_to_pointer_checkbox.button.checked = !react_to_pointer_checkbox.button.checked;
                 element_widget.set_ignore_pointer_events(!react_to_pointer_checkbox.button.checked);
             });
             return backside;
