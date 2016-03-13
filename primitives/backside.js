@@ -325,7 +325,7 @@ window.TOONTALK.backside =
                 return this === this.get_widget().get_backside();
             };
             backside.inside_condtions_container = function () {
-                return $(this.get_element()).closest(".toontalk-conditions-contents-container").is("*");
+                return $(this.get_element()).closest(".toontalk-conditions-container").is("*");
             };
             backside.get_width = function () {
                 return $(this.get_element()).width();

@@ -634,7 +634,7 @@ window.TOONTALK.widget = (function (TT) {
         },
 
         inside_condtions_container: function () {
-             return $(this.get_frontside_element()).closest(".toontalk-conditions-contents-container").is("*");
+             return $(this.get_frontside_element()).closest(".toontalk-conditions-container").is("*");
         },
 
         get_title_of_erased_widget: function () {

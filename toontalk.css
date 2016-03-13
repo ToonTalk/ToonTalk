@@ -1790,7 +1790,7 @@ padding-bottom:  8%;}
 	width:  100%;
 	height: 100%;
 }
-.toontalk-conditions-contents-container {
+.toontalk-conditions-container {
 /* 	Can't add the border to toontalk-conditions-contents because erased elements have 0 opacity */
 	width: 240px;
 	height: 60px;

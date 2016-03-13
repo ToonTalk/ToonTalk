@@ -538,7 +538,7 @@ window.TOONTALK.box = (function (TT) {
         var renderer = 
             function () {
                 var $box_hole_elements = $(frontside_element).children(".toontalk-box-hole");
-                if (!$(frontside_element).parent(".toontalk-conditions-contents-container").is("*") &&
+                if (!$(frontside_element).parent(".toontalk-conditions-container").is("*") &&
                     !$(frontside_element).parent().is(".toontalk-scale-half")) {
                     if ($(frontside_element).parent(".toontalk-box-hole").is("*")) {
                         TT.UTILITIES.set_css(frontside_element,
