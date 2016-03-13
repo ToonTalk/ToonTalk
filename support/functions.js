@@ -177,7 +177,7 @@ window.TOONTALK.create_function_table =
         // returns a function that converts the response into a widget
         return function () {
             var result = TT.number.create_from_bigrat(bigrat_function.apply(null, arguments));
-            if (approximate) {
+            if (approximate && approximate(arguments)) {
                 result.set_approximate(true);
             }
             return result;

@@ -1393,6 +1393,9 @@ window.TOONTALK.number.function =
     var radians_to_decimal = function (rational_number) {
         return bigrat.toDecimal(modulo(rational_number, TWO_PI));
     };
+    var always_approximate = function () { 
+        return true;
+    };
     functions.add_function_object('sum', 
                         function (message, event, robot) {
                             return functions.n_ary_widget_function(message, TT.number.ZERO, TT.number.add, 'sum', event, robot);
@@ -1458,7 +1461,11 @@ window.TOONTALK.number.function =
                                 // reuse to_numerator since not needed anymore
                                 return bigrat.nthRoot(to_numerator, to_numerator, denominator_power);
                             };
-                            return functions.n_ary_function(message, functions.bigrat_function_to_widget_function(power_function, true), 2, 'power', event, robot);
+                            var approximate_if_power_is_not_integer = function (args) {
+                                // args[1] is power and args[1][1] is its denominator
+                                return args[1][1].compare(BigInteger.ONE) !== 0;
+                            };
+                            return functions.n_ary_function(message, functions.bigrat_function_to_widget_function(power_function, approximate_if_power_is_not_integer), 2, 'power', event, robot);
                         },
                         "The bird will return with the first number to the power of the second number.");
     functions.add_function_object('logarithm', 
@@ -1469,7 +1476,7 @@ window.TOONTALK.number.function =
                                 }
                                 return Math.log(arguments[0])/Math.log(arguments[1]);
                             };
-                            return functions.n_ary_function(message, functions.numeric_javascript_function_to_widget_function(logarithm, true), 1, 'logarithm', event, robot);
+                            return functions.n_ary_function(message, functions.numeric_javascript_function_to_widget_function(logarithm, always_approximate), 1, 'logarithm', event, robot);
                         },
                         "The bird will return an approximation of the logarithm number of the first number.\n" +
                         "If a second number is provided then it is used as the base of the logarithm.\n" +
