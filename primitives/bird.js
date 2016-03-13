@@ -303,7 +303,6 @@ window.TOONTALK.bird = (function (TT) {
             $(bird_frontside_element).removeClass("toontalk-bird-static " + this.get_class_name_with_color("toontalk-bird-static"));
             if (!target_side.is_function_nest()) {
                 // nests of functions are 'virtual'
-                target_frontside_element = target_side.get_widget().closest_visible_ancestor_or_frontside().get_widget().get_frontside_element();
                 target_offset = $(target_frontside_element).offset();
                 $top_level_backside_element = $(nest_recieving_message.get_frontside_element()).closest(".toontalk-top-level-backside");   
             }
