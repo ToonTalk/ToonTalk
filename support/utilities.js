@@ -385,7 +385,7 @@ window.TOONTALK.UTILITIES =
                 $source.removeClass("toontalk-widget-in-drop_area");
                 $source.parent().data("drop_area_owner").set_next_robot(undefined);
             } else {
-                container = source_widget_side.get_parent();
+                container = source_widget_side && source_widget_side.get_parent();
                 if (container) {
                     $container = $(container.get_element());
                     if (!source_widget_side.is_backside() && source_widget_side.get_widget().get_infinite_stack && source_widget_side.get_widget().get_infinite_stack()) {
@@ -1521,7 +1521,7 @@ window.TOONTALK.UTILITIES =
                     }
                     return as_string;
                 }
-                numeric_value = parseInt(as_string, 10);
+                numeric_value = parseFloat(as_string, 10);
                 if (isNaN(numeric_value)) {
                     // return undefined
                     return;
