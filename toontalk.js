@@ -10,6 +10,8 @@
 (function () {
 "use strict";
 
+var loading_please_wait = document.createElement('div');
+
 // need to try ToonTalk/toontalk.js first in case old page with reference to compile/toontalk.js is loading
 // but sometimes src is just 'toontalk.js' so need fall back
 var this_url = (document.querySelector('script[src*="ToonTalk/toontalk.js"]') ||
@@ -66,6 +68,11 @@ var add_css = function (URL) {
     }
     document.head.appendChild(css);
 }
+
+setTimeout(function () {
+     loading_please_wait.innerHTML = "<b>Loading. Please wait...</b>";
+     document.body.appendChild(loading_please_wait);
+});
 
 // <link rel="stylesheet" media="all" href="../../toontalk.css">
 add_css('toontalk.css');
@@ -134,7 +141,8 @@ var loadFile = function (index, offline) {
                                                 loadFile(index, offline);               
                                             } else {
                                                 initialize_toontalk();
-                                            }         
+                                                $(loading_please_wait).remove();
+                                            }
                                         };
                    if (file_name.indexOf("https:") >= 0) {
                        if (!offline) { // window.navigator.onLine was true even after disconnecting from the net
