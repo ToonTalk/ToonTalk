@@ -1687,7 +1687,6 @@ window.TOONTALK.UTILITIES =
                     var json, widget, frontside_element, backside_element, backside,
                         stored_json_string, message, toontalk_last_key;
                     if (!json_string) {
-                        console.log("No json");
                         return;
                     }
                     json_string = json_string.substring(json_string.indexOf("{"), json_string.lastIndexOf("}")+1);
@@ -1724,7 +1723,6 @@ window.TOONTALK.UTILITIES =
                         widget = utilities.create_from_json(json);
                     }
                     if (widget) {
-                        console.log("Created " + widget);
                         element.textContent = ""; // served its purpose of being parsed as JSON
                         // may have been been display:none while loading so looks better while loading
                         $(element).css({display: ''});
@@ -1755,7 +1753,6 @@ window.TOONTALK.UTILITIES =
                                                           height: widget.saved_height});
                                 element.toontalk_widget_side = widget;
                                 element.appendChild(frontside_element);
-                                console.log("Appended " + frontside_element.className + " to " + element.className);
                             }
                         }
                         if (widget.set_active) {
