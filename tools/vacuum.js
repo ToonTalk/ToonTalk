@@ -168,6 +168,7 @@ window.TOONTALK.vacuum = (function (TT) {
                         restoring = removed_items.pop();
                         restoring.restore_dimensions();
                         restored_front_side_element = widget_side.add_to_top_level_backside(restoring, true);
+                        restored_front_side_element.toontalk_widget_side = restoring;
                         initial_location = $(element).offset();
                         initial_location.left -= $(restored_front_side_element).width(); // left of vacuum
                         TT.UTILITIES.set_absolute_position(restored_front_side_element, initial_location);
