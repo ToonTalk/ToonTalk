@@ -43,7 +43,7 @@ window.TOONTALK.robot = (function (TT) {
         // otherwise is a positive number which is the multiplier of the normal default speed for each step
         var new_robot = Object.create(robot);
         // grab the default definition of remove_backside_widget so can use it while overriding it
-        var widget_remove_backside_widget = new_robot.remove_backside_widget;
+        var widget_remove_backside_widget;
         // who should do the 'repeating'
         var first_in_team;
         // if not the first_in_team then the robot just before this one
@@ -541,6 +541,7 @@ window.TOONTALK.robot = (function (TT) {
             new_robot.set_next_robot(next_robot);
         }
         new_robot.add_standard_widget_functionality(new_robot);
+        widget_remove_backside_widget = new_robot.remove_backside_widget;
         new_robot.has_name(new_robot);
         new_robot.set_name(name);
         new_robot.set_description(description);
