@@ -377,7 +377,8 @@ window.TOONTALK.path =
                         }     
                     },
                     toString: function (to_string_info) {
-                        var back = robot.get_frontside_conditions().is_top_level() ? "work area" : "back of what";
+                        var conditions =  robot.get_frontside_conditions();
+                        var back = conditions && conditions.is_top_level() ? "work area" : "back of what";
                         var string = TT.UTILITIES.add_a_or_an(type_name || "thing") + 
                                      " on the " + back + " I'm working on";
                         if (this.removing_widget) {
