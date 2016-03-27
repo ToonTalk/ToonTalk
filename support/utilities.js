@@ -2902,6 +2902,7 @@ window.TOONTALK.UTILITIES =
             if (pattern === undefined) {
                 return "matched";
             };
+            widget = widget.dereference(); // e.g. widget on top of nest
             match_status = pattern.match(widget);
             if (match_status.is_widget && widget.matched_by) {
                 // e.g. widget is a nest             
