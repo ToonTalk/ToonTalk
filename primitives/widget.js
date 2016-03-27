@@ -1855,6 +1855,9 @@ window.TOONTALK.widget = (function (TT) {
             top_level_widget.location_constrained_by_container = function () {
                 return false;
             };
+            top_level_widget.dereference = function () {
+                return this;
+            };
             top_level_widget.is_widget = true;
             if (TT.debugging) {
                 top_level_widget._debug_id = TT.UTILITIES.generate_unique_id();
