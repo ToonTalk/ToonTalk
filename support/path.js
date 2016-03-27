@@ -116,7 +116,7 @@ window.TOONTALK.path =
                 path.is_backside = is_backside;
                 return path;
             }
-            var path = compute_path(widget, robot);
+            var path = compute_path(widget, robot, or_any_backside_of_widget);
             if (path && widget.dereference_contents) {
                 // widget is normally transparently dereferenced but here the widget (e.g. a nest)
                 // only widgets that respond to dereference_contents need to conditionally be dereferenced

@@ -16,7 +16,7 @@ window.TOONTALK.robot = (function (TT) {
         var path, now;
         robot.current_action_name = action_name;
         // following relies on current_action_name being set
-        path = TT.path.get_path_to(widget, robot);
+        path = TT.path.get_path_to(widget, robot, true);
         if (path) {
             if (!additional_info) {
                 additional_info = {};
