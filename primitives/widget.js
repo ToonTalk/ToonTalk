@@ -1238,12 +1238,12 @@ window.TOONTALK.widget = (function (TT) {
         
         add_copy_to_container: function (widget_copy, x_offset, y_offset) {
             var visible = this.visible();
-            var frontside_element, frontside_element_copy, $container_element, ok_to_set_dimensions,  position, container_widget;
+            var frontside_element, element_of_copy, $container_element, ok_to_set_dimensions, position, container_widget;
             if (!widget_copy) {
                 widget_copy = this.copy({});
             }
             frontside_element = this.get_frontside_element(visible);
-            frontside_element_copy = widget_copy.get_frontside_element(visible);  
+            element_of_copy = widget_copy.get_element(visible);  
             $container_element = $(frontside_element).closest(".toontalk-backside");
             ok_to_set_dimensions = widget_copy.ok_to_set_dimensions();
             if ($container_element.length === 0) {
@@ -1259,10 +1259,10 @@ window.TOONTALK.widget = (function (TT) {
                 }
                 position = TT.UTILITIES.relative_position(frontside_element, $container_element.get(0));
                 if ($container_element.length > 0) {
-                    $container_element.get(0).appendChild(frontside_element_copy);
+                    $container_element.get(0).appendChild(element_of_copy);
                 }
                 // plain text should not have its dimensions set
-                TT.UTILITIES.set_css(frontside_element_copy,
+                TT.UTILITIES.set_css(element_of_copy,
                                      {width:  ok_to_set_dimensions ? $(frontside_element).width()  : "",
                                       height: ok_to_set_dimensions ? $(frontside_element).height() : "",
                                       left:   position.left+x_offset,

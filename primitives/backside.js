@@ -1380,6 +1380,10 @@ window.TOONTALK.backside =
             return other;
         },
 
+        add_copy_to_container: function (widget_copy, x_offset, y_offset) {
+            return this.get_widget().add_copy_to_container(widget_copy || this.copy(), x_offset, y_offset);
+        },
+
         has_ancestor: function (other) {
             // goes up the ancestor tree following backside or frontside parent as appropriate
             var parent;
