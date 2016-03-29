@@ -1429,7 +1429,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     };
    
     element.toString = function (to_string_info) {
-       var scale_or_quote_html = function (html) {
+        var scale_or_quote_html, image_description, children, text, description, source_URL;
+        if (this.get_erased()) {
+            return "any element";
+        }
+        scale_or_quote_html = function (html) {
            var style = "";
            var first_space;
            if (html.length > 1 && html.charAt(0) === '<') {
@@ -1445,7 +1449,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
            // else is a plain string so quote it
            return '"' + html + '"';
         }.bind(this);
-        var image_description = function () {
+        image_description = function () {
             // if image returns alt if known otherwise default string
             var html = this.get_HTML();
             var alt_index = html.indexOf("alt=");
@@ -1458,8 +1462,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             }
             return "";
         }.bind(this);
-        var children = this.get_children();
-        var text, description, source_URL;
+        children = this.get_children();
         if (to_string_info && !to_string_info.inside_tool_tip) {
             if (to_string_info.for_json_div) {
                 // don't risk confusing things with a comment that might interfere with the HTML
