@@ -932,7 +932,7 @@ window.TOONTALK.robot = (function (TT) {
             this.training_finished();
         } else {
             // needed since removal may require this when running (since removal also applies to taking out of a container)
-            // this way the robot could restore things using the robot
+            // this way the robot could restore things using the vacuum
             this.add_newly_created_widget_if_new(widget);
         }
     };
