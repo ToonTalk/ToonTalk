@@ -837,7 +837,7 @@ window.TOONTALK.robot = (function (TT) {
             widget_copy = widget_side.copy({fresh_copy: true});
             path = TT.path.get_path_to_resource(widget_copy);
         } else {
-            path = TT.path.get_path_to(widget_side, this);
+            path = TT.path.get_path_to(widget_side, this, true);
         }
         if (path) {
             now = Date.now();

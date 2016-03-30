@@ -1218,6 +1218,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 var copies = this_element_widget.get_original_copies()[attribute_name];
                 return copies && copies[0];
             };
+            attribute_widget.is_attribute_widget_copy = function (attribute_widget) {
+                var copies = this_element_widget.get_original_copies()[attribute_name];
+                return copies && copies.indexOf(attribute_widget) >= 0;
+            };
             attribute_widget.get_attribute_owner = function () {
                 // return this_element_widget or backside top ancestor of type element
                 var get_backside_parent = function (widget) {
@@ -1629,7 +1633,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         if (children) {
             TT.UTILITIES.when_attached(function () {
                  children.forEach(function (child, index) {
-                    var view = json.children[index].widget && json.children[index].widget.view;
+                    var view = json.children[index] && json.children[index].widget && json.children[index].widget.view;
                     if (view) {
                         TT.UTILITIES.set_css(child.get_frontside_element(true),
                                              {left: view.frontside_left,

@@ -61,7 +61,7 @@ window.TOONTALK.path =
                     path.is_backside = is_backside;
                     return path;
                 }
-                if (widget_type === "element attribute" && widget.get_original_attribute_widget() === widget) {
+                if (widget_type === "element attribute" && widget.is_attribute_widget_copy(widget)) {
                     // if widget.get_parent_of_frontside() then is a copy of the attribute element
                     path = TT.element.create_attribute_path(widget, robot);
                     path.is_backside = is_backside;
