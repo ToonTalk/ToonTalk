@@ -1253,7 +1253,6 @@ window.TOONTALK.robot = (function (TT) {
                                    " (highlighted in red on my backside) that I'm expecting doesn't match " + mismatch_description + ". Perhaps editing my conditions will help.\n" + 
                                    robot_description;
             } else if (this.match_status !== 'matched') {
-                robot_description = "I'm waiting for something to be delivered to the nest that matches the " + this.match_status[0][1] +
                                     " in my conditions (highlighted in yellow on my backside).\n" + robot_description;
             }
         }
