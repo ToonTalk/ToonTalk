@@ -541,7 +541,7 @@ window.TOONTALK.robot = (function (TT) {
             new_robot.set_next_robot(next_robot);
         }
         new_robot.add_standard_widget_functionality(new_robot);
-        widget_remove_backside_widget = new_robot.remove_backside_widget;
+        widget_remove_backside_widget = new_robot.remove_backside_widget.bind(new_robot);
         new_robot.has_name(new_robot);
         new_robot.set_name(name);
         new_robot.set_description(description);
