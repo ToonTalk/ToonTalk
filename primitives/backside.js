@@ -305,8 +305,8 @@ window.TOONTALK.backside =
             backside.get_erased = function () {
                 return erased;
             };
-            backside.set_erased = function (new_value, update_now) {
-                if (new_value && !this.inside_condtions_container()) {
+            backside.set_erased = function (new_value, update_now, dont_ignore_conditions) {
+                if (new_value && !dont_ignore_conditions && !this.inside_condtions_container()) {
                     // ignore erasures if not in a condition container
                     return;
                 }
@@ -1554,7 +1554,8 @@ TOONTALK.creators_from_json['backside'] = function (json, additional_info) {
     var backside_element = backside.get_element();
     TOONTALK.UTILITIES.set_css(backside_element, json.css);
     if (json.erased) {
-        backside.set_erased(json.erased);
+        // following should be set even if not yet part of a condition
+        backside.set_erased(json.erased, false, true);
     }
     return backside;
 };
