@@ -431,6 +431,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         new_element.get_children = function () {
             return children;
         };
+        new_element.get_child = function (index) {
+            if (children) {
+                return children[index];
+            }
+        };
         new_element.set_sound_effect = function (new_value) {
             sound_effect = new_value;
             sound_effect.volume = TT.UTILITIES.get_audio_volume(sound_effect);
@@ -1670,7 +1675,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 return element_widget.get_widget().get_attribute_widget_in_backside_table(attribute_name);
             },
             toString: function () {
-                return "the '" + attribute_name + "' property of " + path_to_element_widget;
+                return "the '" + attribute_name + "' property of " + TT.path.toString(path_to_element_widget);
             },
             get_json: function (json_history, callback, start_time) {
                 var element_widget_path_callback = function (element_widget_path_json, start_time) {
@@ -1679,12 +1684,12 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                               element_widget_path: element_widget_path_json},
                              start_time);
                 };
-                path_to_element_widget.get_json(json_history, element_widget_path_callback, start_time); 
+                TT.path.get_json(path_to_element_widget, json_history, element_widget_path_callback, start_time); 
             }};
     };
     
-    TT.creators_from_json["path_to_style_attribute"] = function (json) {
-        var element_widget_path = TT.UTILITIES.create_from_json(json.element_widget_path);
+    TT.creators_from_json["path_to_style_attribute"] = function (json, additional_info) {
+        var element_widget_path = TT.UTILITIES.create_from_json(json.element_widget_path, additional_info);
         return element.extend_attribute_path(element_widget_path, json.attribute);
     };
 

@@ -12,7 +12,7 @@ window.TOONTALK.path =
 
     var default_top_level_widget; // needed when running without a top-level backside
 
-    TT.creators_from_json["path.to_entire_context"] = function () {
+    TT.creators_from_json["path.to_entire_context"] = function (json, additional_info) {
         return TT.path.to_entire_context();
     };
 
@@ -394,10 +394,9 @@ window.TOONTALK.path =
                     }
             };
         },
-        create_from_json: function (json, additional_info) {
-            var path = TT.UTILITIES.create_from_json(json, additional_info);
+        process_path_json: function (path, json, additional_info) {
             if (json.next_path) {
-                path.next = this.create_from_json(json.next_path, additional_info);
+                path.next = TT.UTILITIES.create_from_json(json.next_path, additional_info);
             }
             if (json.removing_widget) {
                 path.removing_widget = true;
@@ -408,7 +407,6 @@ window.TOONTALK.path =
             if (json.is_backside) {
                 path.is_backside = true;
             }
-            return path;
         },
         top_level_backside: {
             // this can be shared by all since only used to drop on -- not to pick up

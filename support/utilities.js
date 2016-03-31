@@ -949,6 +949,10 @@ window.TOONTALK.UTILITIES =
                 utilities.report_internal_error("JSON type '" + json_semantic.type + "' not supported. Perhaps a JavaScript file implementing it is missing.");
                 return;
             }
+            if (widget_side && !widget_side.is_widget) {
+                // is really a path not a full widget
+                TT.path.process_path_json(widget_side, json, additional_info);
+            }
             if (widget_side && widget_side.get_backside) {
                 // widget_side may be a robot body or some other part of a widget
                 if (json_semantic.erased) {
