@@ -183,8 +183,7 @@ window.TOONTALK.robot_action =
         var thing_in_hand = robot.get_thing_in_hand();
         var robot_frontside_element = robot.get_frontside_element();
         var widget_element = side.get_element();
-        var widget_width,
-            widget_height,
+        var widget_bounding_box,
             left_offset,
             top_offset,
             animation_left_offset,
@@ -203,8 +202,8 @@ window.TOONTALK.robot_action =
             continuation();
             return;
         }
-        widget_width  = $(widget_element).width();
-        widget_height = $(widget_element).height();
+        widget_bounding_box = widget_element.getBoundingClientRect();
+        // bounding box (unlike) $(widget_element).width(), etc. is adjusted if scaled
         if (additional_info && additional_info.left_offset_fraction) {
             if (!robot.original_animation_left_offset) {
                 robot.original_animation_left_offset = [];
@@ -212,8 +211,8 @@ window.TOONTALK.robot_action =
             if (!robot.original_animation_top_offset) {
                 robot.original_animation_top_offset = [];
             }
-            animation_left_offset = additional_info.left_offset_fraction*widget_width;
-            animation_top_offset  = additional_info.top_offset_fraction*widget_height;
+            animation_left_offset = additional_info.left_offset_fraction*widget_bounding_box.width;
+            animation_top_offset  = additional_info.top_offset_fraction*widget_bounding_box.height;
             if (thing_in_hand) {
                 thing_in_hand_element = thing_in_hand.get_element();
                 if (TT.UTILITIES.visible_element(thing_in_hand_element)) {
@@ -229,10 +228,10 @@ window.TOONTALK.robot_action =
                 // robot has already dropped something here
                 animation_left_offset = robot.animation_left_offset+robot.last_thing_in_hand_width;
                 animation_top_offset  = robot.animation_top_offset;
-                if (animation_left_offset >= widget_width) {
+                if (animation_left_offset >= widget_bounding_box.width) {
                     animation_left_offset = 0;
                     animation_top_offset += robot.max_thing_in_hand_height;
-                    if (animation_top_offset >= widget_height) {
+                    if (animation_top_offset >= widget_bounding_box.height) {
                         animation_top_offset = 0;
                     }
                 }
@@ -252,8 +251,8 @@ window.TOONTALK.robot_action =
             robot.animation_left_offset = animation_left_offset;
             robot.animation_top_offset  = animation_top_offset;
         } else {
-            left_offset = widget_width/2;
-            top_offset  = widget_height/2;
+            left_offset = widget_bounding_box.width/2;
+            top_offset  = widget_bounding_box.height/2;
         }
         // robots move at 1/4 pixel per millisecond for clarity
         robot.animate_to_widget(side,
