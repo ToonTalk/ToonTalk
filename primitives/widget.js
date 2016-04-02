@@ -164,12 +164,12 @@ window.TOONTALK.widget = (function (TT) {
             }
             if (!widget.get_width) {
                widget.get_width = function () {
-                   return $(widget.get_frontside_element()).width();
+                   return TT.UTILITIES.get_element_width(widget.get_frontside_element());
                }
             }
             if (!widget.get_height) {
                widget.get_height = function () {
-                   return $(widget.get_frontside_element()).height();
+                   return TT.UTILITIES.get_element_height(widget.get_frontside_element());
                }
             }
             if ((TT.debugging  || TT.logging) && !widget.to_debug_string) {
@@ -530,7 +530,7 @@ window.TOONTALK.widget = (function (TT) {
             if (!widget.animate_to_element) {
                 widget.animate_to_element = function (target_element, continuation, speed, left_offset, top_offset, more_animation_follows, duration) {
                     var target_absolute_position = $(target_element).offset();
-                    var $frontside_element = $(this.get_frontside_element());
+                    var frontside_element = this.get_frontside_element();
                     var target_is_backside = $(target_element).is(".toontalk-backside");
                     if (!target_element || !TT.UTILITIES.visible_element(target_element)) {
                         // don't know where to go so just start doing the next thing
@@ -543,12 +543,12 @@ window.TOONTALK.widget = (function (TT) {
                         left_offset = target_element.animation_left_offset;
                     } else if (typeof left_offset === "undefined" || target_is_backside) {
                         // pick a random location completely inside the target
-                        left_offset = ($(target_element).width()-$frontside_element.width())  * Math.random();
+                        left_offset = (TT.UTILITIES.get_element_width(target_element)-TT.UTILITIES.get_element_width(frontside_element))*Math.random();
                     }
                     if (typeof target_element.animation_top_offset  === 'number') {
                         top_offset = target_element.animation_top_offset;
                     } else  if (typeof top_offset === "undefined" || target_is_backside) {
-                        top_offset = ($(target_element).height()-$frontside_element.height()) * Math.random();
+                        top_offset = (TT.UTILITIES.get_element_height(target_element)-TT.UTILITIES.get_element_height(frontside_element))*Math.random();
                     }
                     if (target_absolute_position) {
                         target_absolute_position.left += left_offset;

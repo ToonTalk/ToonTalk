@@ -1543,6 +1543,17 @@ window.TOONTALK.UTILITIES =
             }
             return as_string;
         };
+
+        // following provide the correct dimensions even if the element has been scaled by a transform
+        // note that for CSS purposes this isn't what is needed since the transform should be part of the CSS
+
+        utilities.get_element_width = function (element) {
+            return element.getBoundingClientRect().width;
+        };
+
+        utilities.get_element_height = function (element) {
+            return element.getBoundingClientRect().height;
+        };
         
         utilities.data_transfer_json_object = function (event) {
             var data, json_string, json, element;
