@@ -1548,10 +1548,16 @@ window.TOONTALK.UTILITIES =
         // note that for CSS purposes this isn't what is needed since the transform should be part of the CSS
 
         utilities.get_element_width = function (element) {
+            if (!element) {
+                return 0;
+            }
             return element.getBoundingClientRect().width;
         };
 
         utilities.get_element_height = function (element) {
+            if (!element) {
+                return 0;
+            }
             return element.getBoundingClientRect().height;
         };
         
