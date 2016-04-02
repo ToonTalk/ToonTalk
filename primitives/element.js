@@ -1672,7 +1672,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 // if the robot is running on the backside of a widget that is on the backside of the top_level_context
                 // then use the top_level_context
                 var element_widget = path_to_element_widget.dereference_path(robot, (robot.get_top_level_context() || robot.get_context()));
-                return element_widget.get_widget().get_attribute_widget_in_backside_table(attribute_name);
+                return element_widget && element_widget.get_widget().get_attribute_widget_in_backside_table(attribute_name);
             },
             toString: function () {
                 return "the '" + attribute_name + "' property of " + TT.path.toString(path_to_element_widget);
