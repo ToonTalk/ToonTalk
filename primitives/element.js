@@ -570,6 +570,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                     .addClass("toontalk-erased-element toontalk-side")
                                     .css({width:  width,
                                           height: height,
+                                          position: '',    // no longer absolute (maybe shouldn't have been since is presumably a condition)
                                           transform: ''}); // remove any transformations
                 if ($(frontside_element).parent(".toontalk-conditions-container").is("*")) {
                     TT.UTILITIES.give_tooltip(frontside_element, "This is an element that has been erased. It will match any element.");
