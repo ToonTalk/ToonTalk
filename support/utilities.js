@@ -1500,11 +1500,20 @@ window.TOONTALK.UTILITIES =
         };
         
         utilities.get_style_property = function (element, style_property) {
+            var value;
             if (element.currentStyle) {
                 return element.currentStyle[style_property];
             } 
             if (window.getComputedStyle) {
-                return document.defaultView.getComputedStyle(element, null).getPropertyValue(style_property);
+                if (element.parentElement) {
+                    return document.defaultView.getComputedStyle(element, null).getPropertyValue(style_property);
+                }
+                // for example, may have just been dropped so not yet attached
+                // so attach, get property value, and then unattach 
+                document.body.appendChild(element);
+                value = document.defaultView.getComputedStyle(element, null).getPropertyValue(style_property);
+                document.body.removeChild(element);
+                return value;
             }
         };
 
