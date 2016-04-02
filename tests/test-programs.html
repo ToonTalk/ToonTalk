@@ -19522,20 +19522,12 @@ top level widget
 <div style='display:none;'>{
   "semantic": {
     "type": "top_level",
-    "running": false,
     "backside_widgets": [
       {
         "widget": {
-          "type": "backside",
-          "my_widget": {
-            "shared_widget_index": 0
-          },
-          "css": {
-            "top": 0,
-            "left": 0
-          },
-          "view": {}
-        }
+          "shared_widget_index": 0
+        },
+        "is_backside": true
       },
       {
         "widget": {
@@ -19740,8 +19732,8 @@ top level widget
           "view": {
             "frontside_width": 66,
             "frontside_height": 110,
-            "frontside_left": 594.813,
-            "frontside_top": 26.8125,
+            "frontside_left": 456.078,
+            "frontside_top": 34.125,
             "saved_width": 66,
             "saved_height": 110
           },
@@ -19752,12 +19744,12 @@ top level widget
   },
   "view": {
     "background_color": "rgba(0, 0, 0, 0)",
-    "backside_width": 689,
-    "backside_height": 264,
+    "backside_width": 821,
+    "backside_height": 470,
     "backside_left": 8,
     "backside_top": 183.1875,
-    "drag_x_offset": 379,
-    "drag_y_offset": 155.8125
+    "drag_x_offset": 298,
+    "drag_y_offset": 83.8125
   },
   "version": 1,
   "shared_widgets": [
@@ -19774,9 +19766,9 @@ top level widget
           "height"
         ],
         "attribute_values": [
-          160.7188,
-          11.4688,
-          31,
+          22.8594,
+          14.7344,
+          66,
           134
         ],
         "attributes_backsides": [
@@ -19786,7 +19778,6 @@ top level widget
           []
         ],
         "children": false,
-        "running": true,
         "backside_widgets": [
           {
             "widget": {
@@ -19798,7 +19789,7 @@ top level widget
                 "name": "sensor",
                 "event_name": "widget added",
                 "attribute": "widget",
-                "active": true,
+                "active": false,
                 "sensor_of": {
                   "shared_widget_index": 0
                 }
@@ -19806,8 +19797,8 @@ top level widget
               "view": {
                 "frontside_width": 116,
                 "frontside_height": 98,
-                "frontside_left": "NaN%",
-                "frontside_top": "NaN%",
+                "frontside_left": 324.813,
+                "frontside_top": 74.1563,
                 "saved_width": 116,
                 "saved_height": 98
               },
@@ -19951,7 +19942,8 @@ top level widget
                       "type": "robot_action",
                       "action_name": "drop it on",
                       "path": {
-                        "type": "path.top_level_backside"
+                        "type": "path.top_level_backside",
+                        "removing_widget": true
                       },
                       "additional_info": {
                         "left_offset_fraction": 0.2438938182527301,
@@ -20035,10 +20027,13 @@ top level widget
                     }
                   ]
                 },
-                "name": "Add Widths",
-                "running": true
+                "name": "Add Widths"
               },
               "view": {
+                "frontside_width": 103,
+                "frontside_height": 139,
+                "frontside_left": 223.094,
+                "frontside_top": 48.3906,
                 "saved_width": 66,
                 "saved_height": 110
               },
@@ -20050,9 +20045,11 @@ top level widget
       "view": {
         "frontside_width": 223,
         "frontside_height": 134,
-        "frontside_left": 64.7188,
-        "frontside_top": 11.4688,
-        "saved_width": 30,
+        "frontside_left": -55.6406,
+        "frontside_top": 14.7344,
+        "backside_left": 90.875,
+        "backside_top": 191.75,
+        "saved_width": 66,
         "saved_height": 134
       },
       "version": 1
