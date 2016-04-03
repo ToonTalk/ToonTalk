@@ -40,24 +40,27 @@ window.TOONTALK.UTILITIES =
                                                                       added_node = mutation.addedNodes.item(i);
                                                                       if (added_node.nodeType === 1) {
                                                                           // is an element
-                                                                          if (added_node.toontalk_attached_callback) {
-                                                                              if (!$(added_node).is(".toontalk-not-observable") ||
-                                                                                  added_node.toontalk_run_even_if_not_observable) {
-                                                                                  // was only attached to compute original dimensions and is not computing now
-                                                                                  $(added_node).removeClass("toontalk-has-attached-callback");
-                                                                                  added_node.toontalk_attached_callback();
-                                                                                  added_node.toontalk_attached_callback = undefined;
-                                                                                  added_node.toontalk_run_even_if_not_observable = undefined;
+                                                                          setTimeout(function () {
+                                                                              // delay seems necessary since callbacks below can trigger new mutations
+                                                                              if (added_node.toontalk_attached_callback) {
+                                                                                  if (!$(added_node).is(".toontalk-not-observable") ||
+                                                                                      added_node.toontalk_run_even_if_not_observable) {
+                                                                                      // was only attached to compute original dimensions and is not computing now
+                                                                                      $(added_node).removeClass("toontalk-has-attached-callback");
+                                                                                      added_node.toontalk_attached_callback();
+                                                                                      added_node.toontalk_attached_callback = undefined;
+                                                                                      added_node.toontalk_run_even_if_not_observable = undefined;     ;
+                                                                                  }
                                                                               }
-                                                                          }
-                                                                          $(added_node).find(".toontalk-has-attached-callback").each(function (index, element) {
-                                                                              $(element).removeClass("toontalk-has-attached-callback");
-                                                                              if (element.toontalk_attached_callback) {
-                                                                                  // Test "A team of 3 that each adds 1 to 1" calls this with element.toontalk_attached_callback undefined
-                                                                                  // When stepping through the code it works fine so must be some kind of timing dependent problem
-                                                                                  element.toontalk_attached_callback();
-                                                                                  element.toontalk_attached_callback = undefined;
-                                                                              }
+                                                                              $(added_node).find(".toontalk-has-attached-callback").each(function (index, element) {
+                                                                                  $(element).removeClass("toontalk-has-attached-callback");
+                                                                                  if (element.toontalk_attached_callback) {
+                                                                                      // Test "A team of 3 that each adds 1 to 1" calls this with element.toontalk_attached_callback undefined
+                                                                                      // When stepping through the code it works fine so must be some kind of timing dependent problem
+                                                                                      element.toontalk_attached_callback();
+                                                                                      element.toontalk_attached_callback = undefined;;
+                                                                                  }
+                                                                              });
                                                                           });
                                                                       }
                                                                   }                                                                
@@ -3068,6 +3071,7 @@ window.TOONTALK.UTILITIES =
             }; 
             var widget, x_scale, y_scale, $image;
              if ($(element).is(".toontalk-not-observable")) {
+                 // this happens on FireFox where this is called before the widget has been "rendered"
                  widget = TT.UTILITIES.widget_side_of_element(element);
                  if (widget) {
                     widget.update_display();
