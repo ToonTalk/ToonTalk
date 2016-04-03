@@ -724,18 +724,19 @@ window.TOONTALK.UTILITIES =
         });
     };
     var discover_default_dimensions = function (class_name, toontalk_module) {
+        // finds and then defines the default dimensions of ToonTalk primitives (e.g. robot, nest, and bird)
         var $element_for_determining_dimensions = $("<div class='" + class_name + "'>");
         utilities.run_when_dimensions_known($element_for_determining_dimensions.get(0), 
-                                               function () {
-                                                   var default_width  = $element_for_determining_dimensions.width();
-                                                   var default_height = $element_for_determining_dimensions.height();
-                                                   toontalk_module.get_default_width = function () {
-                                                       return default_width;
-                                                   };
-                                                   toontalk_module.get_default_height = function () {
-                                                       return default_height;
-                                                   };
-                                               });
+                                            function () {
+                                                var default_width  = $element_for_determining_dimensions.width();
+                                                var default_height = $element_for_determining_dimensions.height();
+                                                toontalk_module.get_default_width = function () {
+                                                    return default_width;
+                                                };
+                                                toontalk_module.get_default_height = function () {
+                                                    return default_height;
+                                                };
+                                            });
     };
     var initialize_sounds = function () {
         var sounds_path = utilities.get_path_to_toontalk_folder() + "sounds/";
