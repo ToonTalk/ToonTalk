@@ -223,16 +223,6 @@ window.TOONTALK.backside =
             backside_element.appendChild(stop_sign_element);
             TT.UTILITIES.use_custom_tooltip(green_flag_element);
             TT.UTILITIES.use_custom_tooltip(stop_sign_element);
-            TT.UTILITIES.when_attached(backside_element,
-                                       function () {
-                                            if (widget.is_robot()) {
-                                                backside_element.title = "On the back of the robot you can change the conditions and setting of the robot."
-                                            } else {
-                                                widget_HTML = widget.toString({inside_tool_tip: true}); 
-                                                backside_element.title = "The back of " + widget_HTML + " You can put robots on the back to make it come 'alive'."; 
-                                            }                  
-                                            TT.UTILITIES.use_custom_tooltip(backside_element);
-                                       });
             if (help_URL) {
                 relative_URL = help_URL.indexOf("://") < 0;
                 help_button = document.createElement(relative_URL ? 'div' : "a");
@@ -271,6 +261,31 @@ window.TOONTALK.backside =
             }
             $backside_element.addClass("toontalk-backside toontalk-side " + "toontalk-backside-of-" + widget.get_type_name());
             $backside_element.css({"z-index": TT.UTILITIES.next_z_index()});
+            TT.UTILITIES.when_attached(backside_element,
+                                       function () {
+                                            var container;
+                                            if (backside.inside_conditions_container()) {
+                                                // if in a condition then hides my buttons
+                                                $(green_flag_element).hide();
+                                                $(stop_sign_element).hide();
+                                                $(help_button).hide();
+                                                $(close_button).hide();
+                                                // and use my description as the tool tip
+                                                backside_element.title = "This will match " + backside.toString() + ".";
+                                                backside.rerender();
+//                                                 container = $(backside_element).closest(".toontalk-conditions-panel, .toontalk-conditions-container").get(0);
+//                                                 TT.UTILITIES.when_attached(container,
+//                                                                            function () {
+//                                                                                backside.scale_to_fit(backside_element, container);
+//                                                                         });                                                        
+                                            } else if (widget.is_robot()) {
+                                                backside_element.title = "On the back of the robot you can change the conditions and setting of the robot."
+                                            } else {
+                                                widget_HTML = widget.toString({inside_tool_tip: true}); 
+                                                backside_element.title = "The back of " + widget_HTML + " You can put robots on the back to make it come 'alive'."; 
+                                            }                  
+                                            TT.UTILITIES.use_custom_tooltip(backside_element);
+                                       });
             backside.get_element = function () {
                 return backside_element;
             };
@@ -306,7 +321,7 @@ window.TOONTALK.backside =
                 return erased;
             };
             backside.set_erased = function (new_value, update_now, dont_ignore_conditions) {
-                if (new_value && !dont_ignore_conditions && !this.inside_condtions_container()) {
+                if (new_value && !dont_ignore_conditions && !this.inside_conditions_container()) {
                     // ignore erasures if not in a condition container
                     return;
                 }
@@ -324,8 +339,8 @@ window.TOONTALK.backside =
             backside.is_primary_backside = function () {
                 return this === this.get_widget().get_backside();
             };
-            backside.inside_condtions_container = function () {
-                return $(this.get_element()).closest(".toontalk-conditions-container").is("*");
+            backside.inside_conditions_container = function () {
+                return $(this.get_element()).closest(".toontalk-conditions-panel, .toontalk-conditions-container").is("*");
             };
             backside.get_width = function () {
                 return TT.UTILITIES.get_element_width (this.get_element());
