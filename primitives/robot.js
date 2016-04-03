@@ -1572,7 +1572,11 @@ window.TOONTALK.robot_backside =
             backside_conditions.forEach(function (backside_condition) {
                 var condition_element, type;
                 if (backside_condition) {
-                    type = backside_condition.get_type_name();
+                    if (backside_condition.is_backside()) {
+                        type = "on-backside";
+                    } else {
+                        type = backside_condition.get_type_name();
+                    }
                     area_class_name = "toontalk-backside-" + type + "-conditions-area";
                     if (type === 'bird') {
                         condition_element = TT.UTILITIES.create_text_element("And there is a bird on the back.");
