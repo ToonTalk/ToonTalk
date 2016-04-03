@@ -3065,8 +3065,14 @@ window.TOONTALK.UTILITIES =
 //                     }
 //                 }
                 utilities.set_css(element, pending_css);
-            };
-            var x_scale, y_scale, $image;
+            }; 
+            var widget, x_scale, y_scale, $image;
+             if ($(element).is(".toontalk-not-observable")) {
+                 widget = TT.UTILITIES.widget_side_of_element(element);
+                 if (widget) {
+                    widget.update_display();
+                }
+            }
             if (!original_width) {
                 $image = $(element).children("img");
                 if ($image.is("*")) {
