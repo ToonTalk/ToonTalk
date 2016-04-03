@@ -235,7 +235,7 @@ window.TOONTALK.robot_action =
                         animation_top_offset = 0;
                     }
                 }
-                robot.last_thing_in_hand_width = $(thing_in_hand_element).width();
+                robot.last_thing_in_hand_width = TT.UTILITIES.get_element_width(thing_in_hand_element);
                 if (typeof robot.max_thing_in_hand_height === 'undefined') {
                     robot.max_thing_in_hand_height = 0;
                 }
@@ -243,8 +243,8 @@ window.TOONTALK.robot_action =
             } else {
                 robot.original_animation_left_offset.push(animation_left_offset);
                 robot.original_animation_top_offset .push(animation_top_offset);
-                robot.last_thing_in_hand_width = $(thing_in_hand_element).width();
-                robot.max_thing_in_hand_height = $(thing_in_hand_element).height();
+                robot.last_thing_in_hand_width = TT.UTILITIES.get_element_width (thing_in_hand_element);
+                robot.max_thing_in_hand_height = TT.UTILITIES.get_element_height(thing_in_hand_element);
             }
             widget_element.animation_left_offset = animation_left_offset;
             widget_element.animation_top_offset  = animation_top_offset;
@@ -494,17 +494,18 @@ window.TOONTALK.robot_action =
         button_use_animation(widget, robot, new_continuation, additional_info.button_selector, additional_info, robot.transform_step_duration(1000));
     };
     var change_size_animation = function (widget, robot, continuation, additional_info) {
-       var frontside_element = widget.get_frontside_element();
-       var new_continuation;
-       if (!frontside_element) {
-           // was hidden while running
-           continuation();
-           robot.run_next_step();
-           return;
-       }
-       new_continuation = function () {
-            var width  = $(frontside_element).width();
-            var height = $(frontside_element).height();
+        var frontside_element = widget.get_frontside_element();
+        var new_continuation;
+        if (!frontside_element) {
+            // was hidden while running
+            continuation();
+            robot.run_next_step();
+            return;
+        }
+        new_continuation = function () {
+            var bounding_box = frontside_element.getBoundingClientRect();
+            var width  = bounding_box.width;
+            var height = bounding_box.height;
             var new_width  = width *additional_info.x_factor;
             var new_height = height*additional_info.y_factor;
             var duration = robot.transform_step_duration(1000);
