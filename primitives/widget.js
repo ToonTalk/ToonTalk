@@ -633,13 +633,13 @@ window.TOONTALK.widget = (function (TT) {
             };
         },
 
-        inside_condtions_container: function () {
+        inside_conditions_container: function () {
              return $(this.get_frontside_element()).closest(".toontalk-conditions-container").is("*");
         },
 
         get_title_of_erased_widget: function () {
             var type_name = this.get_type_name();
-            if (this.inside_condtions_container()) {
+            if (this.inside_conditions_container()) {
                 return "I'm an erased " + type_name + ".\nI'll match with any other " + type_name + ".";
             }
             return "I'm an erased " + type_name + ".\nDusty the Vacuum can restore me to normal.";
