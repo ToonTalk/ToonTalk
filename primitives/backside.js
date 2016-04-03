@@ -328,10 +328,10 @@ window.TOONTALK.backside =
                 return $(this.get_element()).closest(".toontalk-conditions-container").is("*");
             };
             backside.get_width = function () {
-                return $(this.get_element()).width();
+                return TT.UTILITIES.get_element_width (this.get_element());
             };
             backside.get_height = function () {
-                return $(this.get_element()).height();
+                return TT.UTILITIES.get_element_height(this.get_element());
             };
             backside.is_widget = true; // perhaps should be renamed is_widget_side
             backside.get_parent_of_backside = function () {
@@ -606,9 +606,10 @@ window.TOONTALK.backside =
             TT.UTILITIES.when_attached(backside_element, 
                                        function () {
                                             var backside_width, backside_height, sign_width, close_button_width, green_flag_width, help_button_width;
-                                            backside_width  = $backside_element.width();
-                                            backside_height = $backside_element.height();
-                                            sign_width = $(stop_sign_element) .width();
+                                            backside_width  = TT.UTILITIES.get_element_width (backside_element);
+                                            backside_height = TT.UTILITIES.get_element_height(backside_element);
+                                            // following used for CSS so use CSS width rather than true width (if scaled)
+                                            sign_width = $(stop_sign_element).width();
                                             close_button_width = $(close_button).width();
                                             if (close_button_width) {
                                                 close_button_width += 14; // needs a gap
@@ -703,8 +704,8 @@ window.TOONTALK.backside =
             TT.UTILITIES.drag_and_drop(backside_element);
             $backside_element.resizable(
                 {start: function () {
-                    width_at_resize_start  = $backside_element.width();
-                    height_at_resize_start = $backside_element.height();
+                    width_at_resize_start  = TT.UTILITIES.get_element_width (backside_element);
+                    height_at_resize_start = TT.UTILITIES.get_element_height(backside_element);
                     if (!original_width) {
                         original_width  = width_at_resize_start;
                     }
@@ -765,10 +766,10 @@ window.TOONTALK.backside =
             backside.display_updated = function () {
                 var $backside_element = $(this.get_element());
                 if (!original_width) {
-                    original_width = $backside_element.width();
+                    original_width  = TT.UTILITIES.get_element_width (backside_element);
                 }
                 if (!original_height) {
-                    original_height = $backside_element.height();
+                    original_height = TT.UTILITIES.get_element_height(backside_element);
                 }
             };
             backside.add_to_top_level_backside = function (widget_side, train) {
