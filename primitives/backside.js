@@ -44,12 +44,12 @@ window.TOONTALK.backside =
     return {
         create: function (widget) {
             var backside = Object.create(this);
-            var backside_element = document.createElement("div");
+            var backside_element = document.createElement('div');
             var $backside_element = $(backside_element);
             var x_scale = 1; // so can shrink this down
             var y_scale = 1;
-            var green_flag_element = document.createElement("div");
-            var stop_sign_element  = document.createElement("div");
+            var green_flag_element = document.createElement('div');
+            var stop_sign_element  = document.createElement('div');
             var help_URL = widget.get_help_URL && widget.get_help_URL();
             var erased, parent, parent_is_backside, settings_button, visible,
                 original_width, original_height, original_x_scale, original_y_scale, width_at_resize_start, height_at_resize_start, 
@@ -235,7 +235,7 @@ window.TOONTALK.backside =
                                        });
             if (help_URL) {
                 relative_URL = help_URL.indexOf("://") < 0;
-                help_button = document.createElement(relative_URL ? "div" : "a");
+                help_button = document.createElement(relative_URL ? 'div' : "a");
                 // notranslate shouldn't be needed and is the older way of avoiding translation
                 // see http://www.w3.org/International/questions/qa-translate-flag
                 $(help_button).addClass("toontalk-help-button notranslate toontalk-widget-help-button");
@@ -243,7 +243,7 @@ window.TOONTALK.backside =
                 help_button.innerHTML = 'i'; // like tourist info -- alternatively could use a question mark
                 help_button.translate = false; // should not be translated
                 TT.UTILITIES.give_tooltip(help_button, "Click to learn more about " + widget.get_type_name(true, true) + ".");
-                close_help_button = document.createElement("div");
+                close_help_button = document.createElement('div');
                 $(close_help_button).addClass("toontalk-close-help-frame-button")
                                     .button();
                 close_help_button.addEventListener('click',
@@ -259,7 +259,7 @@ window.TOONTALK.backside =
                 backside_element.appendChild(description_label); 
             }
             if (widget.is_top_level()) {
-                settings_button = document.createElement("div");
+                settings_button = document.createElement('div');
                 $(settings_button).addClass("toontalk-settings-button");
                 settings_button.addEventListener('click', 
                                                  function (event) {

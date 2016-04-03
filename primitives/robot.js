@@ -633,9 +633,9 @@ window.TOONTALK.robot = (function (TT) {
         if (backside && backside.visible() && frontside_condition_widget) {
             clear_all_mismatch_displays = function (widget) {
                 // conditions could keep last_match_status and when displayed use appropriate CSS
-                $(widget.get_frontside_element()).removeClass("toontalk-conditions-not-matched toontalk-conditions-waiting")
-                                                 // clear all the mismatch displays from descendants
-                                                 .find(".toontalk-conditions-not-matched, .toontalk-conditions-waiting").removeClass("toontalk-conditions-not-matched toontalk-conditions-waiting");
+                $(widget.get_element()).removeClass("toontalk-conditions-not-matched toontalk-conditions-waiting")
+                                       // clear all the mismatch displays from descendants
+                                       .find(".toontalk-conditions-not-matched, .toontalk-conditions-waiting").removeClass("toontalk-conditions-not-matched toontalk-conditions-waiting");
             };
             clear_all_mismatch_displays(frontside_condition_widget);
             this.rerender();
@@ -731,7 +731,8 @@ window.TOONTALK.robot = (function (TT) {
         this.match_status.forEach(function (waiting_widget) {
             if (waiting_widget[1]) {
                 // true for nests but not birds busy delivering
-                $(waiting_widget[1].get_frontside_element()).addClass("toontalk-conditions-waiting");
+                // waiting_widget is [widget, pattern]
+                $(waiting_widget[1].get_element()).addClass("toontalk-conditions-waiting");
             }
         });
         if (this.get_next_robot()) {
@@ -1529,7 +1530,7 @@ window.TOONTALK.robot_backside =
             } else if (robot.match_status !== 'matched') {
                 robot.match_status.forEach(function (waiting_widget) {
                     // waiting_widget is [widget, pattern]
-                    $(waiting_widget[1].get_frontside_element()).addClass("toontalk-conditions-waiting");
+                    $(waiting_widget[1].get_element()).addClass("toontalk-conditions-waiting");
                 });
             }
         }

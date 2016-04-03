@@ -1948,7 +1948,7 @@ table.toontalk-documentation-table {
 	border: solid 3px red;
 }
 .toontalk-conditions-waiting {
-	border: solid 3px yellow;
+	border: solid 8px yellow;
 }
 .toontalk-green-flag-inactive, .toontalk-green-flag-active:hover {
 	background-image: url("images/green-flag-inactive.png");
