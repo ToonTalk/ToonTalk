@@ -1851,10 +1851,10 @@ window.TOONTALK.UTILITIES =
             left = absolute_position.left-parent_position.left;
             top  = absolute_position.top -parent_position.top;
             if (stay_inside_parent) {
-                element_width  = $element.width();
-                element_height = $element.height();
-                parent_element_width  = $parent_element.width();
-                parent_element_height = $parent_element.height();
+                element_width         = TT.UTILITIES.get_element_width ($element.get(0));
+                element_height        = TT.UTILITIES.get_element_height($element.get(0));
+                parent_element_width  = TT.UTILITIES.get_element_width ($parent_element.get(0));
+                parent_element_height = TT.UTILITIES.get_element_height($parent_element.get(0));
                 if (left > parent_element_width-element_width) {
                     left = parent_element_width-element_width;
                 }
@@ -1868,6 +1868,8 @@ window.TOONTALK.UTILITIES =
                     top = 0;
                 }
             }
+            left = utilities.scale_left(left, $parent_element.get(0))
+            top  = utilities.scale_top (top,  $parent_element.get(0));
             css = {left: left,
                    top:  top,
                    position: "absolute"};
@@ -2039,6 +2041,30 @@ window.TOONTALK.UTILITIES =
                 original_height = widget.get_original_height();
                 if (original_height && widget.get_attribute) {
                     return top-(original_height-widget.get_attribute('height'))/2;
+                }
+            }
+            return top;
+        };
+
+        utilities.scale_left = function (left, element) {
+            var widget = utilities.widget_side_of_element(element);
+            var original_width;
+            if (widget && widget.get_original_width) {
+                original_width = widget.get_original_width();
+                if (original_width && widget.get_attribute) {
+                    return left*original_width/widget.get_attribute('width');
+                }
+            }
+            return left;
+        };
+
+        utilities.scale_top = function (top, element) {
+            var widget = utilities.widget_side_of_element(element);
+            var original_height;
+            if (widget && widget.get_original_height) {
+                original_height = widget.get_original_height();
+                if (original_height && widget.get_attribute) {
+                    return top*original_height/widget.get_attribute('height');
                 }
             }
             return top;
