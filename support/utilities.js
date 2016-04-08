@@ -2188,6 +2188,9 @@ window.TOONTALK.UTILITIES =
                           // but this broke some rich text -- could make it more selective but not clear how important it is
                           tooltip.innerHTML = process_encoded_HTML(ui.tooltip.get(0).textContent, decodeURIComponent); 
                           // width is 340 by default but if more than fits then make wider
+                          if (TT.speak) {
+                              window.speechSynthesis.speak(new SpeechSynthesisUtterance(tooltip.innerText));
+                          }
                           if (text_length > default_capacity) {
                               new_width = Math.min(800, maximum_width_if_moved || $(window).width()-100);
                               position = $(tooltip).position();
@@ -2227,6 +2230,7 @@ window.TOONTALK.UTILITIES =
                                      text_length*(TT.MAXIMUM_TOOLTIP_DURATION_PER_CHARACTER || 100));
                       },
                close: function () {
+                   window.speechSynthesis.cancel();
                           if ($(this).data('ui-tooltip')) {
                               $(this).tooltip('destroy');
                               // ui-helper-hidden-accessible elements were added by tooltip for accessibility but tooltip is being closed now
@@ -4144,7 +4148,8 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                 initialize_sounds();
             }
             TT.open_backside_only_if_alt_key = utilities.get_current_url_boolean_parameter('alt_key_to_open_backside');
-            TT.reset = utilities.get_current_url_boolean_parameter('reset', false)
+            TT.reset = utilities.get_current_url_boolean_parameter('reset', false);
+            TT.speak = utilities.get_current_url_boolean_parameter('speak', false);
             if (!TT.open_backside_only_if_alt_key) {
                 // puzzle=1 is shorthand for alt_key_to_open_backside=1&reset=1
                 TT.open_backside_only_if_alt_key = utilities.get_current_url_boolean_parameter('puzzle');
