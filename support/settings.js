@@ -241,7 +241,7 @@ window.TOONTALK.SETTINGS =
                                 "z-index": 9999999});
           settings_panel.appendChild(close_button);
           program_name.button.addEventListener('change', program_name_changed);
-          google_drive.button .addEventListener('click', 
+          google_drive.button.addEventListener('click', 
                                                 function (event) {
                                                     // if turnning off auto-saving save one last time
                                                     // which also saves the new setting of save to local_storage

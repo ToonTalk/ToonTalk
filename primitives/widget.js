@@ -1700,7 +1700,7 @@ window.TOONTALK.widget = (function (TT) {
                  stack_of_robots_in_training.pop();  
             };
             top_level_widget.save = function (immediately, parameters, callback) {
-                var program_name = this.get_setting('program_name', true);
+                var program_name = this.get_setting('program_name', TT.reset);
                 var save_function = function (json) {
                     save_in_progress = false;
                     if (save_to_google_drive) {
