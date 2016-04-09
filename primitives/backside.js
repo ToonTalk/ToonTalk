@@ -279,7 +279,9 @@ window.TOONTALK.backside =
 //                                                                                backside.scale_to_fit(backside_element, container);
 //                                                                         });                                                        
                                             } else if (widget.is_robot()) {
-                                                backside_element.title = "On the back of the robot you can change the conditions and setting of the robot."
+                                                backside_element.title = "On the back of the robot you can change the conditions and setting of the robot.";
+                                            } else if (widget.is_top_level()) {
+                                                backside_element.title = "This is a work area where you can drag things.";     
                                             } else {
                                                 widget_HTML = widget.toString({inside_tool_tip: true}); 
                                                 backside_element.title = "You are pointing to the back of " + TT.UTILITIES.add_a_or_an(widget_HTML) + 
