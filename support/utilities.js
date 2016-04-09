@@ -2182,7 +2182,7 @@ window.TOONTALK.UTILITIES =
                           var tooltip = ui.tooltip.get(0);
                           var text = tooltip.textContent;
                           var default_capacity = 100;
-                          var new_width, position;
+                          var short_language_name, voices, new_width, position;
                           if (text === element.toontalk_previous_text) {
                               // already said and/or displayed this
                               ui.tooltip.remove();
@@ -2193,8 +2193,19 @@ window.TOONTALK.UTILITIES =
                               speech_utterance = new SpeechSynthesisUtterance(tooltip.innerText);
                               // TT.volume is used for speech and sound effects and speech is quieter so triple its volume
                               speech_utterance.volume = Math.min(1, 3*TT.volume);
-                              speech_utterance.pitch  = 2.0; // highest value to sound more like a child -- should really be parameter
+                              speech_utterance.pitch  = 1.2; // higher value to sound more like a child -- should really be parameter
                               speech_utterance.rate   = .75; // slow it down for kids
+                              if (TT.TRANSLATION_ENABLED && google && google.translate) {
+                                  short_language_name = google.translate.TranslateElement().f;
+                                  voices = window.speechSynthesis.getVoices();
+                                  voices.some(function (voice) {
+                                      if (voice.lang.indexOf(short_language_name) === 0) {
+                                          speech_utterance.lang = voice.lang;
+                                          speech_utterance.voice = voice;
+                                          return true;
+                                      }
+                                  })
+                              }
                               speech_utterance.onend = function (event) {
                                   // this should be triggered only if the utterance was completed but it seems some browsers trigger it earlier
                                   // consequently partial utterances won't be repeated
