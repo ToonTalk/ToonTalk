@@ -2191,6 +2191,10 @@ window.TOONTALK.UTILITIES =
                           tooltip.innerHTML = process_encoded_HTML(text, decodeURIComponent); 
                           if (TT.speak) {
                               speech_utterance = new SpeechSynthesisUtterance(tooltip.innerText);
+                              // TT.volume is used for speech and sound effects and speech is quieter so triple its volume
+                              speech_utterance.volume = Math.min(1, 3*TT.volume);
+                              speech_utterance.pitch  = 2.0; // highest value to sound more like a child -- should really be parameter
+                              speech_utterance.rate   = .75; // slow it down for kids
                               speech_utterance.onend = function (event) {
                                   // this should be triggered only if the utterance was completed but it seems some browsers trigger it earlier
                                   // consequently partial utterances won't be repeated
@@ -3928,7 +3932,7 @@ window.TOONTALK.UTILITIES =
        };
 
        utilities.get_audio_volume = function (audio_object) {
-           var volume = document.hidden ? 0 : utilities.get_current_url_numeric_parameter('volume', 10)/100;
+           var volume = document.hidden ? 0 : TT.volume;
            if (volume === 0) {
                muted_audio_objects.push({audio_object: audio_object,
                                          volume: audio_object.volume});
@@ -4158,7 +4162,9 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                 };
             TT.debugging = utilities.get_current_url_parameter('debugging');
             TT.logging   = utilities.get_current_url_parameter('log');
-            if (utilities.get_current_url_numeric_parameter('volume', 10) > 0) {
+            // a value between 0 and 1 specified as a percent with a default of 10%
+            TT.volume = utilities.get_current_url_numeric_parameter('volume', 10)/100;
+            if (TT.volume > 0) {
                 initialize_sounds();
             }
             TT.open_backside_only_if_alt_key = utilities.get_current_url_boolean_parameter('alt_key_to_open_backside');
