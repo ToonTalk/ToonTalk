@@ -1369,7 +1369,6 @@ window.TOONTALK.nest = (function (TT) {
                     top_contents.set_parent_of_frontside(this);
                 }
             } else {
-                TT.UTILITIES.give_tooltip(frontside_element, this.get_title());
                 if (guid) {
                     $(frontside_element).removeClass(this.get_class_name_with_color("toontalk-nest-with-egg"));
                     $(frontside_element).addClass(this.get_class_name_with_color("toontalk-empty-nest"));
@@ -1377,6 +1376,7 @@ window.TOONTALK.nest = (function (TT) {
                     TT.UTILITIES.add_animation_class(frontside_element, this.get_class_name_with_color("toontalk-nest-with-egg"));
                 }
             }
+            TT.UTILITIES.give_tooltip(frontside_element, this.get_title());
             $(frontside_element).addClass("toontalk-nest");
             if (backside) {
                 backside.rerender();
