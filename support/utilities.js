@@ -2182,7 +2182,7 @@ window.TOONTALK.UTILITIES =
                           var tooltip = ui.tooltip.get(0);
                           var text = tooltip.textContent;
                           var default_capacity = 100;
-                          var short_language_name, voices, new_width, position;
+                          var language_code, new_width, position;
                           if (text === element.toontalk_previous_text) {
                               // already said and/or displayed this
                               ui.tooltip.remove();
@@ -2196,19 +2196,23 @@ window.TOONTALK.UTILITIES =
                               speech_utterance.pitch  = 1.2; // higher value to sound more like a child -- should really be parameter
                               speech_utterance.rate   = .75; // slow it down for kids
                               if (TT.TRANSLATION_ENABLED && google && google.translate) {
-                                  short_language_name = google.translate.TranslateElement().f;
-                                  voices = window.speechSynthesis.getVoices();
-                                  voices.some(function (voice) {
-                                      if (voice.lang.indexOf(short_language_name) === 0) {
-                                          speech_utterance.lang = voice.lang;
-                                          speech_utterance.voice = voice;
-                                          return true;
-                                      }
-                                  })
+                                  language_code = google.translate.TranslateElement().f;
+                              } else {
+                                  language_code = navigator.language;
                               }
+                              window.speechSynthesis.getVoices().some(function (voice) {
+                                   if (voice.lang.indexOf(language_code) === 0) {
+                                       // might be 'es' while voice.lang will be 'es-ES'
+                                       // first one is good enough
+                                       speech_utterance.lang = voice.lang;
+                                       speech_utterance.voice = voice;
+                                       return true;
+                                  }
+                              });
                               speech_utterance.onend = function (event) {
                                   // this should be triggered only if the utterance was completed but it seems some browsers trigger it earlier
                                   // consequently partial utterances won't be repeated
+                                  // should use charIndex to determine how much was said and maybe use onboundary (when it works) to highlight text
                                   element.toontalk_previous_text = text;
                               };
                               window.speechSynthesis.speak(speech_utterance);
