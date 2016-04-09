@@ -2191,6 +2191,10 @@ window.TOONTALK.UTILITIES =
                           if (TT.speak) {
                               window.speechSynthesis.speak(new SpeechSynthesisUtterance(tooltip.innerText));
                           }
+                          if (!TT.balloons) {
+                              ui.tooltip.remove();
+                              return;
+                          }
                           if (text_length > default_capacity) {
                               new_width = Math.min(800, maximum_width_if_moved || $(window).width()-100);
                               position = $(tooltip).position();
@@ -4148,8 +4152,9 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                 initialize_sounds();
             }
             TT.open_backside_only_if_alt_key = utilities.get_current_url_boolean_parameter('alt_key_to_open_backside');
-            TT.reset = utilities.get_current_url_boolean_parameter('reset', false);
-            TT.speak = utilities.get_current_url_boolean_parameter('speak', false);
+            TT.reset    = utilities.get_current_url_boolean_parameter('reset', false);
+            TT.speak    = utilities.get_current_url_boolean_parameter('speak', false);
+            TT.balloons = utilities.get_current_url_boolean_parameter('balloons', true);
             if (!TT.open_backside_only_if_alt_key) {
                 // puzzle=1 is shorthand for alt_key_to_open_backside=1&reset=1
                 TT.open_backside_only_if_alt_key = utilities.get_current_url_boolean_parameter('puzzle');
