@@ -2130,7 +2130,7 @@ window.TOONTALK.UTILITIES =
             // nicer looking tool tips
             // customization to crude talk balloons thanks to http://jsfiddle.net/pragneshkaria/Qv6L2/49/
             var $element = $(element);
-            var maximum_width_if_moved, feedback_horizontal, feedback_vertical;
+            var speech_utterance, maximum_width_if_moved, feedback_horizontal, feedback_vertical;
             $element.tooltip(
                 {position: {
                      my: "center bottom-20",
@@ -2179,26 +2179,36 @@ window.TOONTALK.UTILITIES =
                                feedback_vertical   = feedback.vertical;
                      }},
                 open: function (event, ui) {
-                          var text_length = ui.tooltip.get(0).textContent.length;
-                          var default_capacity = 100;
                           var tooltip = ui.tooltip.get(0);
+                          var text = tooltip.textContent;
+                          var default_capacity = 100;
                           var new_width, position;
-                          // the following used // .replace(/(\r\n|\n|\r)/g, "<br>") 
-                          // to replace all new lines with <br> breaks
-                          // but this broke some rich text -- could make it more selective but not clear how important it is
-                          tooltip.innerHTML = process_encoded_HTML(ui.tooltip.get(0).textContent, decodeURIComponent); 
-                          // width is 340 by default but if more than fits then make wider
+                          if (text === element.toontalk_previous_text) {
+                              // already said and/or displayed this
+                              ui.tooltip.remove();
+                              return;
+                          }                
+                          tooltip.innerHTML = process_encoded_HTML(text, decodeURIComponent); 
                           if (TT.speak) {
-                              window.speechSynthesis.speak(new SpeechSynthesisUtterance(tooltip.innerText));
+                              speech_utterance = new SpeechSynthesisUtterance(tooltip.innerText);
+                              speech_utterance.onend = function (event) {
+                                  // this should be triggered only if the utterance was completed but it seems some browsers trigger it earlier
+                                  // consequently partial utterances won't be repeated
+                                  element.toontalk_previous_text = text;
+                              };
+                              window.speechSynthesis.speak(speech_utterance);
                           }
-                          if (!TT.balloons) {
+                          if (TT.balloons) {
+                              element.toontalk_previous_text = text;
+                          } else {
                               ui.tooltip.remove();
                               return;
                           }
-                          if (text_length > default_capacity) {
+                          // width is 340 by default but if more than fits then make wider
+                          if (text.length > default_capacity) {
                               new_width = Math.min(800, maximum_width_if_moved || $(window).width()-100);
                               position = $(tooltip).position();
-                              // //width: (340 + 340*(text_length-default_capacity)/default_capacity),
+                              // //width: (340 + 340*(text.length-default_capacity)/default_capacity),
                               ui.tooltip.css({maxWidth: new_width});
                           }
                           if (element_displaying_tooltip) {
@@ -2216,7 +2226,7 @@ window.TOONTALK.UTILITIES =
     //                       if (height_adjustment) {
     //                           $(ui.tooltip).css({maxHeight: $(ui.tooltip).height()+height_adjustment/2});
     //                       }
-                          // auto hide after duration proportional to text_length
+                          // auto hide after duration proportional to text.length
                           // TODO: if longer than fits on the screen then autoscroll after some time
                           setTimeout(function () {
                                          ui.tooltip.remove();
@@ -2231,7 +2241,7 @@ window.TOONTALK.UTILITIES =
                                          }
                                          element_displaying_tooltip = undefined;
                                      }, 
-                                     text_length*(TT.MAXIMUM_TOOLTIP_DURATION_PER_CHARACTER || 100));
+                                     text.length*(TT.MAXIMUM_TOOLTIP_DURATION_PER_CHARACTER || 100));
                       },
                close: function () {
                    window.speechSynthesis.cancel();

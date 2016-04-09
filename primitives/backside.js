@@ -263,31 +263,26 @@ window.TOONTALK.backside =
             $backside_element.css({"z-index": TT.UTILITIES.next_z_index()});
             TT.UTILITIES.when_attached(backside_element,
                                        function () {
-                                            var container;
+                                            var new_title, container;
                                             if (backside.inside_conditions_container()) {
-                                                // if in a condition then hides my buttons
+                                                // if in a condition then hide my buttons
                                                 $(green_flag_element).hide();
                                                 $(stop_sign_element).hide();
                                                 $(help_button).hide();
                                                 $(close_button).hide();
                                                 // and use my description as the tool tip
-                                                backside_element.title = "This will match " + backside.toString() + ".";
-                                                backside.rerender();
-//                                                 container = $(backside_element).closest(".toontalk-conditions-panel, .toontalk-conditions-container").get(0);
-//                                                 TT.UTILITIES.when_attached(container,
-//                                                                            function () {
-//                                                                                backside.scale_to_fit(backside_element, container);
-//                                                                         });                                                        
+                                                new_title = "This will match " + backside.toString() + ".";
+                                                backside.rerender();                                                       
                                             } else if (widget.is_robot()) {
-                                                backside_element.title = "On the back of the robot you can change the conditions and setting of the robot.";
+                                                new_title = "On the back of the robot you can change the conditions and setting of the robot.";
                                             } else if (widget.is_top_level()) {
-                                                backside_element.title = "This is a work area where you can drag things.";     
+                                                new_title = "This is a work area where you can drag things.";     
                                             } else {
                                                 widget_HTML = widget.toString({inside_tool_tip: true}); 
-                                                backside_element.title = "You are pointing to the back of " + TT.UTILITIES.add_a_or_an(widget_HTML) + 
-                                                                         ". You can put robots on the back to make it come 'alive'."; 
-                                            }                  
-                                            TT.UTILITIES.use_custom_tooltip(backside_element);
+                                                new_title = "You are pointing to the back of " + TT.UTILITIES.add_a_or_an(widget_HTML) + 
+                                                            ". You can put robots on the back to make it come 'alive'."; 
+                                            }
+                                            TT.UTILITIES.give_tooltip(backside_element, new_title);
                                        });
             backside.get_element = function () {
                 return backside_element;
