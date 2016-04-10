@@ -2182,15 +2182,24 @@ window.TOONTALK.UTILITIES =
                           var tooltip = ui.tooltip.get(0);
                           var text = tooltip.textContent;
                           var default_capacity = 100;
-                          var new_width, position;
+                          var new_width, position, when_speaking_finished;
                           if (text === element.toontalk_previous_text) {
                               // already said and/or displayed this
                               ui.tooltip.remove();
                               return;
-                          }                
+                          }
+                          // if element is provided then use it to prevent repeating the same text for the same element
+                          when_speaking_finished = function (event) {
+                              // this should be triggered only if the utterance was completed but it seems some browsers trigger it earlier
+                              // consequently partial utterances won't be repeated
+                              // should use charIndex to determine how much was said and maybe use onboundary (when it works) to highlight text
+                              element.toontalk_previous_text = text;
+                          };       
                           tooltip.innerHTML = process_encoded_HTML(text, decodeURIComponent); 
                           if (TT.speak) {
-                              utilities.speak(tooltip.innerText, element);
+                              // first cancel any old speech
+                              window.speechSynthesis.cancel();
+                              utilities.speak(tooltip.innerText, when_speaking_finished);
                           }
                           if (TT.balloons) {
                               element.toontalk_previous_text = text;
@@ -2238,7 +2247,6 @@ window.TOONTALK.UTILITIES =
                                      text.length*(TT.MAXIMUM_TOOLTIP_DURATION_PER_CHARACTER || 100));
                       },
                close: function () {
-//                        window.speechSynthesis.cancel();
                           if ($(this).data('ui-tooltip')) {
                               $(this).tooltip('destroy');
                               // ui-helper-hidden-accessible elements were added by tooltip for accessibility but tooltip is being closed now
@@ -2249,9 +2257,17 @@ window.TOONTALK.UTILITIES =
                }});
         };
 
-        utilities.speak = function (text, element, volume, pitch, rate, voice_number) {
+        utilities.speak = function (text, when_finished, volume, pitch, rate, voice_number) {
             var speech_utterance = new SpeechSynthesisUtterance(text);
+            var voices = window.speechSynthesis.getVoices();
             var language_code;
+            if (voices.length === 0) {
+                // not yet loaded -- see https://bugs.chromium.org/p/chromium/issues/detail?id=334847
+                window.speechSynthesis.onvoiceschanged = function () {
+                                                             utilities.speak(text, when_finished, volume, pitch, rate, voice_number);
+                                                         };
+                return;
+            }
             // TT.volume is used for speech and sound effects and speech is quieter so triple its volume
             speech_utterance.volume = volume === undefined ? Math.min(1, 3*TT.volume) : volume;
             speech_utterance.pitch  = pitch  === undefined ? 1.2 : pitch; // higher value to sound more like a child -- should really be parameter
@@ -2261,7 +2277,7 @@ window.TOONTALK.UTILITIES =
             } else {
                 language_code = navigator.language;
             }
-            window.speechSynthesis.getVoices().some(function (voice) {
+            voices.some(function (voice) {
                 if (voice.lang.indexOf(language_code) === 0) {
                     // might be 'es' while voice.lang will be 'es-ES'
                     // first one is good enough
@@ -2275,17 +2291,10 @@ window.TOONTALK.UTILITIES =
                 }
             });
             // if language_code's format is name-country and nothing found could try again with just the language name
-            if (element) {
-                // if element is provided then use it to prevent repeating the same text for the same element
-                speech_utterance.onend = function (event) {
-                    // this should be triggered only if the utterance was completed but it seems some browsers trigger it earlier
-                    // consequently partial utterances won't be repeated
-                    // should use charIndex to determine how much was said and maybe use onboundary (when it works) to highlight text
-                    element.toontalk_previous_text = text;
-                };
-            };
+            if (when_finished) {
+                speech_utterance.onend = when_finished;
+            }
             window.speechSynthesis.speak(speech_utterance);
-            return speech_utterance;
         };
 
         utilities.encode_HTML_for_title = function (html) {

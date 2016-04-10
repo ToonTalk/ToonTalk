@@ -2209,18 +2209,18 @@ window.TOONTALK.element.function =
         'speak', 
         function (message, event, robot) {
             var speak = function (widget) {
-                var text, speech_utterance;
+                var text, speech_utterance, when_finished;
                 if (!widget) {
                     TT.UTILITIES.display_message("Speaking birds need something in the second box hole.");
                     return;
                 }
-                widget = widget.get_widget(); // either side is fine
-                text = widget.get_text ? widget.get_text() : widget.toString();
-                speech_utterance = TT.UTILITIES.speak(text, undefined, volume, pitch, rate, voice_number);
-                speech_utterance.onend =  function (event) {
+                when_finished = function (event) {
                     var response = TT.element.create(text, [], "a response to speaking '" + text + "'");
                     functions.process_response(response, box_size_and_bird.bird, message, event, robot);
                 };
+                widget = widget.get_widget(); // either side is fine
+                text = widget.get_text ? widget.get_text() : widget.toString();
+                TT.UTILITIES.speak(text, when_finished, volume, pitch, rate, voice_number);
             };
             var box_size_and_bird = functions.check_message(message);
             var volume, pitch, rate, voice_number;
