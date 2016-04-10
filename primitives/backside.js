@@ -808,6 +808,9 @@ window.TOONTALK.backside =
         },
 
         get_full_description: function (to_string_info) {
+            if (this.get_erased()) {
+                return "any backside";
+            }
             return "backside of " + this.get_widget().get_full_description(to_string_info);
         },
                 
