@@ -1032,7 +1032,7 @@ window.TOONTALK.robot = (function (TT) {
     };
 
     robot.get_training_context = function () {
-        return this.get_first_in_team().get_parent_of_frontside().get_widget();
+        return this.get_first_in_team().get_parent_of_frontside() && this.get_first_in_team().get_parent_of_frontside().get_widget();
     };
     
     robot.add_step = function (step, new_widget) {
