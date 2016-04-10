@@ -2238,7 +2238,7 @@ window.TOONTALK.UTILITIES =
                                      text.length*(TT.MAXIMUM_TOOLTIP_DURATION_PER_CHARACTER || 100));
                       },
                close: function () {
-                   window.speechSynthesis.cancel();
+//                        window.speechSynthesis.cancel();
                           if ($(this).data('ui-tooltip')) {
                               $(this).tooltip('destroy');
                               // ui-helper-hidden-accessible elements were added by tooltip for accessibility but tooltip is being closed now
