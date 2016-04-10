@@ -1467,8 +1467,7 @@ window.TOONTALK.number.function =
                                     // faster and bigrat.nthRoot doesn't respond well to 1
                                     return to_numerator;
                                 }
-                                // reuse to_numerator since not needed anymore
-                                return bigrat.nthRoot(to_numerator, to_numerator, denominator_power);
+                                return bigrat.nthRoot(bigrat.create(), to_numerator, denominator_power);
                             };
                             var approximate_if_power_is_not_integer = function (args) {
                                 // args[1] is power and args[1][1] is its denominator
