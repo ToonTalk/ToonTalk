@@ -573,7 +573,9 @@ window.TOONTALK.bird = (function (TT) {
                             .addClass("toontalk-bird-static " + this.get_class_name_with_color("toontalk-bird-static"))
                             .removeClass("toontalk-bird-gimme");
                        // if in a container restore dimensions
-                       this.get_parent_of_frontside().render();
+                       if (this.get_parent_of_frontside()) {
+                           this.get_parent_of_frontside().render();
+                       }
                     }
                 }.bind(this));
             }
