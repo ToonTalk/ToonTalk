@@ -136,6 +136,8 @@ window.TOONTALK.create_function_table =
             response = operation.apply(null, args);
             if (any_approximate_arguments) {
                 response.set_approximate(true);
+                // better default for approximate numbers
+                result.set_format('decimal');
             }
             return response;
         }.bind(this);
@@ -175,6 +177,8 @@ window.TOONTALK.create_function_table =
             response.set_value_from_decimal(decimal_function.apply(null, TT.UTILITIES.map_arguments(arguments, (toDecimal || bigrat.toDecimal))));
             if (approximate) {
                 response.set_approximate(true);
+                // better default for approximate numbers
+                result.set_format('decimal');
             }
             return response;
         };
@@ -186,6 +190,8 @@ window.TOONTALK.create_function_table =
             var result = TT.number.create_from_bigrat(bigrat_function.apply(null, arguments));
             if (approximate && approximate(arguments)) {
                 result.set_approximate(true);
+                // better default for approximate numbers
+                result.set_format('decimal');
             }
             return result;
         };
