@@ -74,7 +74,7 @@ window.TOONTALK.box = (function (TT) {
             return holes[index];
         };
         new_box.get_hole_contents = function (index) {
-            return holes[index].get_contents();
+            return holes[index] && holes[index].get_contents();
         };
         new_box.set_hole = function (index, new_content, update_display) {
             var frontside_element, $hole_element, content_element, hole_dimensions;
