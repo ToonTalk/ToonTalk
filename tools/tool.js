@@ -69,6 +69,9 @@ window.TOONTALK.tool = (function (TT) {
                 var new_highlighted_element, scroll_adjustment;
                 var point = {};
                 event.preventDefault();
+                if (widget_side_under_tool && widget_side_under_tool.is_of_type("empty hole")) {
+                    widget_side_under_tool = widget_side_under_tool.get_parent_of_frontside();
+                }
                 // not sure why the tool tip doesn't got away but force it here
                 $(".ui-tooltip").each(function () {
                                           $(this).hide();
