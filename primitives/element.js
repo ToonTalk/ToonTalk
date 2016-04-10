@@ -2208,15 +2208,34 @@ window.TOONTALK.element.function =
     functions.add_function_object(
         'speak', 
         function (message, event, robot) {
-            var speak = function (element_or_number) {
-                return TT.UTILITIES.speak(element_or_number.get_text());
+            var speak = function (widget) {
+                var text, speech_utterance;
+                if (!widget) {
+                    TT.UTILITIES.display_message("Speaking birds need something in the second box hole.");
+                    return;
+                }
+                text = widget.get_text ? widget.get_text() : widget.toString();
+                speech_utterance = TT.UTILITIES.speak(text);
+                speech_utterance.onend =  function (event) {
+                    var response = TT.element.create(text, [], "a response to speaking '" + text + "'");
+                    functions.process_response(response, box_size_and_bird.bird, message, event, robot);
+                };
             };
+            var box_size_and_bird = functions.check_message(message);
+            if (!box_size_and_bird) {
+                return;
+            }
+            if (box_size_and_bird.size < 2) {
+                TT.UTILITIES.display_message("Speaking birds need a box with two or more holes.");
+                return;
+            }
+            speak(message.get_hole_contents(1));
+            return true;
             // could enhance this to support pitch, volume, rate, voice number, lang
-            return functions.typed_bird_function(message, speak, [undefined], 1, 'speak', event, robot);
         },
-        "The bird will cause the browser to speak the text of the first element (or number). Note that this currently only works in Chrome and Safari.",
+        "The bird will cause the browser to speak what is in the second box hole. Note that this currently only works in Chrome and Safari.",
         "speak",
-        ['an element or number']);
+        ['a widget']);
     return functions.get_function_table();
 
 }(window.TOONTALK));

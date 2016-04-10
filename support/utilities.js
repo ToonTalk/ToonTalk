@@ -2285,6 +2285,7 @@ window.TOONTALK.UTILITIES =
                 };
             };
             window.speechSynthesis.speak(speech_utterance);
+            return speech_utterance;
         };
 
         utilities.encode_HTML_for_title = function (html) {
