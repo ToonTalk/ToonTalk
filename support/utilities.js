@@ -3394,6 +3394,10 @@ window.TOONTALK.UTILITIES =
             console.log(message);
             console.trace();
             document.body.insertBefore(alert_element, document.body.firstChild);
+            if (TT.speak) {
+                window.speechSynthesis.cancel(); // stop any ongoing speech
+                utilities.speak(message);
+            }
             setTimeout(function () {
                            $(alert_element).remove();
                        },
