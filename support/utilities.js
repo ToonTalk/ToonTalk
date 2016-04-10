@@ -2130,7 +2130,7 @@ window.TOONTALK.UTILITIES =
             // nicer looking tool tips
             // customization to crude talk balloons thanks to http://jsfiddle.net/pragneshkaria/Qv6L2/49/
             var $element = $(element);
-            var speech_utterance, maximum_width_if_moved, feedback_horizontal, feedback_vertical;
+            var maximum_width_if_moved, feedback_horizontal, feedback_vertical;
             $element.tooltip(
                 {position: {
                      my: "center bottom-20",
@@ -2182,7 +2182,7 @@ window.TOONTALK.UTILITIES =
                           var tooltip = ui.tooltip.get(0);
                           var text = tooltip.textContent;
                           var default_capacity = 100;
-                          var language_code, new_width, position;
+                          var new_width, position;
                           if (text === element.toontalk_previous_text) {
                               // already said and/or displayed this
                               ui.tooltip.remove();
@@ -2190,32 +2190,7 @@ window.TOONTALK.UTILITIES =
                           }                
                           tooltip.innerHTML = process_encoded_HTML(text, decodeURIComponent); 
                           if (TT.speak) {
-                              speech_utterance = new SpeechSynthesisUtterance(tooltip.innerText);
-                              // TT.volume is used for speech and sound effects and speech is quieter so triple its volume
-                              speech_utterance.volume = Math.min(1, 3*TT.volume);
-                              speech_utterance.pitch  = 1.2; // higher value to sound more like a child -- should really be parameter
-                              speech_utterance.rate   = .75; // slow it down for kids
-                              if (TT.TRANSLATION_ENABLED && google && google.translate) {
-                                  language_code = google.translate.TranslateElement().f;
-                              } else {
-                                  language_code = navigator.language;
-                              }
-                              window.speechSynthesis.getVoices().some(function (voice) {
-                                   if (voice.lang.indexOf(language_code) === 0) {
-                                       // might be 'es' while voice.lang will be 'es-ES'
-                                       // first one is good enough
-                                       speech_utterance.lang = voice.lang;
-                                       speech_utterance.voice = voice;
-                                       return true;
-                                  }
-                              });
-                              speech_utterance.onend = function (event) {
-                                  // this should be triggered only if the utterance was completed but it seems some browsers trigger it earlier
-                                  // consequently partial utterances won't be repeated
-                                  // should use charIndex to determine how much was said and maybe use onboundary (when it works) to highlight text
-                                  element.toontalk_previous_text = text;
-                              };
-                              window.speechSynthesis.speak(speech_utterance);
+                              utilities.speak(tooltip.innerText, element);
                           }
                           if (TT.balloons) {
                               element.toontalk_previous_text = text;
@@ -2272,6 +2247,44 @@ window.TOONTALK.UTILITIES =
                           }
                           element_displaying_tooltip = undefined;
                }});
+        };
+
+        utilities.speak = function (text, element, volume, pitch, rate, voice_number) {
+            var speech_utterance = new SpeechSynthesisUtterance(text);
+            var language_code;
+            // TT.volume is used for speech and sound effects and speech is quieter so triple its volume
+            speech_utterance.volume = volume === undefined ? Math.min(1, 3*TT.volume) : volume;
+            speech_utterance.pitch  = pitch  === undefined ? 1.2 : pitch; // higher value to sound more like a child -- should really be parameter
+            speech_utterance.rate   = rate   === undefined ? .75 : rate; // slow it down for kids
+            if (TT.TRANSLATION_ENABLED && google && google.translate) {
+                language_code = google.translate.TranslateElement().f;
+            } else {
+                language_code = navigator.language;
+            }
+            window.speechSynthesis.getVoices().some(function (voice) {
+                if (voice.lang.indexOf(language_code) === 0) {
+                    // might be 'es' while voice.lang will be 'es-ES'
+                    // first one is good enough
+                    speech_utterance.lang = voice.lang;
+                    speech_utterance.voice = voice;
+                    if (voice_number === 0 || voice_number === undefined) {
+                        return true;
+                    }
+                    // note that if voice number is greater than the number of matching voices the last one found is used
+                    voice_number--;
+                }
+            });
+            // if language_code's format is name-country and nothing found could try again with just the language name
+            if (element) {
+                // if element is provided then use it to prevent repeating the same text for the same element
+                speech_utterance.onend = function (event) {
+                    // this should be triggered only if the utterance was completed but it seems some browsers trigger it earlier
+                    // consequently partial utterances won't be repeated
+                    // should use charIndex to determine how much was said and maybe use onboundary (when it works) to highlight text
+                    element.toontalk_previous_text = text;
+                };
+            };
+            window.speechSynthesis.speak(speech_utterance);
         };
 
         utilities.encode_HTML_for_title = function (html) {

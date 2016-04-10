@@ -2205,6 +2205,18 @@ window.TOONTALK.element.function =
         "The bird will cause the current page to be replaced by the new URL. The back button should return to the current page.",
         "page",
         ['an element containing a URL']);
+    functions.add_function_object(
+        'speak', 
+        function (message, event, robot) {
+            var speak = function (element_or_number) {
+                return TT.UTILITIES.speak(element_or_number.get_text());
+            };
+            // could enhance this to support pitch, volume, rate, voice number, lang
+            return functions.typed_bird_function(message, speak, [undefined], 1, 'speak', event, robot);
+        },
+        "The bird will cause the browser to speak the text of the first element (or number). Note that this currently only works in Chrome and Safari.",
+        "speak",
+        ['an element or number']);
     return functions.get_function_table();
 
 }(window.TOONTALK));
