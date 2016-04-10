@@ -104,6 +104,9 @@ window.TOONTALK.tool = (function (TT) {
                 var widget_side_under_tool = TT.UTILITIES.find_widget_on_page_side(event, element, drag_x_offset, drag_y_offset-tool_height/2);
                 var top_level_widget;
                 event.preventDefault();
+                if (widget_side_under_tool && widget_side_under_tool.is_of_type("empty hole")) {
+                    widget_side_under_tool = widget_side_under_tool.get_parent_of_frontside();
+                }
                 if (tool.set_held) {
                     tool.set_held(false);
                 }
