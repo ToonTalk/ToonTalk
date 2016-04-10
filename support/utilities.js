@@ -3794,7 +3794,7 @@ window.TOONTALK.UTILITIES =
             // return what is under the element
             var page_x = utilities.get_mouse_or_first_touch_event_attribute("pageX", event);
             var page_y = utilities.get_mouse_or_first_touch_event_attribute("pageY", event);
-            var element_on_page, widget_on_page_side, widget_type;
+            var element_on_page, widget_on_page_side;
             // hide the tool so it is not under itself
             if (element) {
                 $(element).hide();
@@ -3824,7 +3824,6 @@ window.TOONTALK.UTILITIES =
                 }
                 widget_on_page_side = element_on_page.toontalk_widget_side;    
             }
-            widget_type = widget_on_page_side.get_type_name();
             return widget_on_page_side;
        };
 
