@@ -1379,11 +1379,12 @@ window.TOONTALK.backside =
             var this_widget, match_status;
             if (other.is_backside()) {
                 if (this.get_erased()) {
-                    // matches any backside of the same widget type
-                    if (this.get_widget().get_type_name() === other.get_widget().get_type_name()) {
+                    // used to match any backside of the same widget type
+                    // but any backside should match any backside
+//                     if (this.get_widget().get_type_name() === other.get_widget().get_type_name()) {
                         return 'matched';
-                    }
-                    return this;
+//                     }
+//                     return this;
                 }
                 this_widget = this.get_widget();
                 match_status = this_widget.match(other.get_widget());
