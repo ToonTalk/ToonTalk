@@ -2214,20 +2214,38 @@ window.TOONTALK.element.function =
                     TT.UTILITIES.display_message("Speaking birds need something in the second box hole.");
                     return;
                 }
+                widget = widget.get_widget(); // either side is fine
                 text = widget.get_text ? widget.get_text() : widget.toString();
-                speech_utterance = TT.UTILITIES.speak(text);
+                speech_utterance = TT.UTILITIES.speak(text, undefined, volume, pitch, rate, voice_number);
                 speech_utterance.onend =  function (event) {
                     var response = TT.element.create(text, [], "a response to speaking '" + text + "'");
                     functions.process_response(response, box_size_and_bird.bird, message, event, robot);
                 };
             };
             var box_size_and_bird = functions.check_message(message);
+            var volume, pitch, rate, voice_number;
             if (!box_size_and_bird) {
                 return;
             }
             if (box_size_and_bird.size < 2) {
                 TT.UTILITIES.display_message("Speaking birds need a box with two or more holes.");
                 return;
+            }
+            volume = message.get_hole_contents(2);
+            if (volume) {
+                volume = volume && volume.to_float && volume.to_float();
+            }
+            pitch = message.get_hole_contents(3);
+            if (pitch) {
+                pitch = pitch && pitch.to_float && pitch.to_float();
+            }
+            rate = message.get_hole_contents(4);
+            if (rate) {
+                rate = rate && rate.to_float && rate.to_float();
+            }
+            voice_number = message.get_hole_contents(5);
+            if (voice_number) {
+                voice_number = voice_number && voice_number.to_float && voice_number.to_float();
             }
             speak(message.get_hole_contents(1));
             return true;
