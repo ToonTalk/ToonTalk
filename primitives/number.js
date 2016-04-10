@@ -989,11 +989,17 @@ window.TOONTALK.number = (function () {
     };
 
     number.get_text = function () {
-        if (this.is_integer() || this.get_format() === 'improper_fraction') {
+        var format = this.get_format();
+        var integer_part, fractional_part;
+        if (this.is_integer() || format === 'improper_fraction') {
             return this.toString();
         }
-        // can't turn an infinite decimal expansion into a string so approximate it as JavaScript number
-        return bigrat.toDecimal(this.get_value()).toString();
+        integer_part = this.integer_part();
+        if (integer_part.is_zero()) {
+            return this.toString();
+        }
+        fractional_part = this.copy({just_value: true}).subtract(integer_part).absolute_value();
+        return integer_part + " " + fractional_part; 
     };
     
     number.to_float = function () {
