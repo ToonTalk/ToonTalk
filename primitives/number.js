@@ -991,6 +991,9 @@ window.TOONTALK.number = (function () {
     number.get_text = function () {
         var format = this.get_format();
         var integer_part, fractional_part;
+        if (this.get_approximate() || (this.is_attribute_widget && this.is_attribute_widget())) {
+            return "approximately " + bigrat.toDecimal(this.get_value()).toString();
+        }
         if (this.is_integer() || format === 'improper_fraction') {
             return this.toString();
         }
