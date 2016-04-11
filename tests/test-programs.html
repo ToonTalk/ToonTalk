@@ -11352,6 +11352,115 @@ top level widget
     }
   ]
 }</div></div>
+<p>A robot that vacuums up a 1 and then spits it out again.</p>
+<div class='toontalk-json' translate='no' style='display:none'>
+This will be replaced by a work area containing 2 things: a robot, and a number.
+top level widget
+<div style='display:none;'>{
+  "semantic": {
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "robot",
+            "frontside_conditions": {
+              "type": "top_level"
+            },
+            "backside_conditions": [
+              {
+                "widget": {
+                  "semantic": {
+                    "type": "number",
+                    "operator": "+",
+                    "numerator": "1",
+                    "denominator": "1",
+                    "format": "mixed_number"
+                  },
+                  "view": {
+                    "saved_width": 240,
+                    "saved_height": 60
+                  },
+                  "version": 1
+                }
+              }
+            ],
+            "body": {
+              "type": "body",
+              "steps": [
+                {
+                  "type": "robot_action",
+                  "action_name": "remove",
+                  "path": {
+                    "type": "path.to_backside_widget_of_context",
+                    "type_name": "number",
+                    "backside_index": 0,
+                    "removing_widget": true
+                  },
+                  "additional_info": {
+                    "time": 4442
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "restore",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 0
+                  },
+                  "additional_info": {
+                    "time": 31400
+                  }
+                }
+              ]
+            },
+            "name": "#1",
+            "speed": 1
+          },
+          "view": {
+            "frontside_width": 66,
+            "frontside_height": 110,
+            "frontside_left": 47.8281,
+            "frontside_top": 25.0938,
+            "saved_width": 66,
+            "saved_height": 110
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "number",
+            "operator": "+",
+            "numerator": "1",
+            "denominator": "1",
+            "format": "mixed_number"
+          },
+          "view": {
+            "frontside_width": 76,
+            "frontside_height": 55,
+            "frontside_left": 347.344,
+            "frontside_top": 67.9219,
+            "saved_width": 76,
+            "saved_height": 55
+          },
+          "version": 1
+        }
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgba(0, 0, 0, 0)",
+    "backside_width": 643,
+    "backside_height": 243,
+    "backside_left": 8,
+    "backside_top": 183.1875,
+    "drag_x_offset": 319,
+    "drag_y_offset": 181.8125
+  },
+  "version": 1
+}</div></div>
 <p>An element that moves at a constant speed because an anima-gadget is on the back of its 'left' attribute</p>
 <div class='toontalk-json'>
 This will be replaced by a work area containing one thing: an element.
