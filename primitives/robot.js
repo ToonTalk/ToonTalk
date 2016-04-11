@@ -694,6 +694,8 @@ window.TOONTALK.robot = (function (TT) {
                                         // only set to failure if not a suspension (or match)
                                         best_sub_match_status = sub_match_status;
                                     }
+                                } else {
+                                    best_sub_match_status = condition;
                                 }
                             }.bind(this));
                         }
