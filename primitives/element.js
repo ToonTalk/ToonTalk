@@ -2220,7 +2220,16 @@ window.TOONTALK.element.function =
                 };
                 widget = widget.get_widget(); // either side is fine
                 text = widget.get_text ? widget.get_text() : widget.toString();
-                TT.UTILITIES.speak(text, when_finished, volume, pitch, rate, voice_number);
+                if (TT.TRANSLATION_ENABLED) {
+                    // TT.UTILITIES.speak doesn't translate since it should already be translated
+                    // but the text of a widget may not be
+                    TT.UTILITIES.translate(text,
+                                           function (translated_text) {
+                                               TT.UTILITIES.speak(translated_text, when_finished, volume, pitch, rate, voice_number);
+                                           });
+                } else {
+                    TT.UTILITIES.speak(text, when_finished, volume, pitch, rate, voice_number);
+                }
             };
             var box_size_and_bird = functions.check_message(message);
             var volume, pitch, rate, voice_number;

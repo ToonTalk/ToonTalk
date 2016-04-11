@@ -3109,6 +3109,13 @@ background-image: url("images/dusty-morph.png");
     bottom: -20px;
     top: auto;
 }
+.toontalk-translation-element {
+/* 	This is used to get Google to translate text for speech */
+	width: 1px;
+	height: 1px;
+	color: white;
+	display:  none;
+}
 /* .toontalk-select-function {
 	position: relative;
 } */

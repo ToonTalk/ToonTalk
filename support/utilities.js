@@ -2265,6 +2265,7 @@ window.TOONTALK.UTILITIES =
                 // not yet loaded -- see https://bugs.chromium.org/p/chromium/issues/detail?id=334847
                 window.speechSynthesis.onvoiceschanged = function () {
                                                              utilities.speak(text, when_finished, volume, pitch, rate, voice_number);
+                                                             window.speechSynthesis.onvoiceschanged = undefined;
                                                          };
                 return;
             }
@@ -4187,7 +4188,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
 //         };
 
         utilities.initialize = function (callback) {
-            var document_click, translation_div, $saved_selection;
+            var document_click, translation_div, translation_element, $saved_selection;
             if (toontalk_initialized) {
                 return;
             }
@@ -4247,6 +4248,30 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                 }
                 document.head.appendChild($('<meta name="google-translate-customization" content="7e20c0dc38d147d6-a2c819007bfac9d1-gc84ee27cc12fd5d1-1b"></meta>')[0]);
                 load_script("https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit");
+                // need an element that triggers Google translate to speak arbitrary text
+                translation_element = document.createElement('div');
+                translation_element.className = 'toontalk-translation-element';
+                document.body.appendChild(translation_element);
+                utilities.translate = function (text, callback, maximum_wait) {
+                                          var original;
+                                          if (maximum_wait === undefined) {
+                                              // hoping 1/2 second is enough for Google to translate this
+                                              // could use a longer time if could text if translation is needed
+                                              maximum_wait = 500;
+                                          }
+                                          translation_element.innerHTML = text;
+                                          original = translation_element.innerText;
+                                          setTimeout(function () {
+                                                         if (original !== translation_element.innerText || maximum_wait <= 0) {
+                                                             callback(translation_element.innerText);
+                                                             translation_element.innerText = '';
+                                                         } else {
+                                                             // not yet translated check again in 100ms
+                                                             utilities.translate(text, callback, maximum_wait-100);
+                                                         }
+                                                      },
+                                                      100);
+                };
             } else {
                 $("#google_translate_element").remove();
             }
