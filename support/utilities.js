@@ -2182,28 +2182,30 @@ window.TOONTALK.UTILITIES =
                           var tooltip = ui.tooltip.get(0);
                           var text = tooltip.textContent;
                           var default_capacity = 100;
+                          var is_robot = $(element).is(".toontalk-robot");
                           var new_width, position, when_speaking_finished;
                           if (text === element.toontalk_previous_text) {
                               // already said and/or displayed this
                               ui.tooltip.remove();
                               return;
                           }
-                          // if element is provided then use it to prevent repeating the same text for the same element
-                          when_speaking_finished = function (event) {
-                              // this should be triggered only if the utterance was completed but it seems some browsers trigger it earlier
-                              // consequently partial utterances won't be repeated
-                              // should use charIndex to determine how much was said and maybe use onboundary (when it works) to highlight text
-                              element.toontalk_previous_text = text;
-                          };       
+                          if (!is_robot) {
+                              // prevent repeating the same text for the same element - except robots which have complex generated titles
+                              when_speaking_finished = function (event) {
+                                  // this should be triggered only if the utterance was completed but it seems some browsers trigger it earlier
+                                  // consequently partial utterances won't be repeated
+                                  // should use charIndex to determine how much was said and maybe use onboundary (when it works) to highlight text
+                                  element.toontalk_previous_text = text;
+                              };
+                          }    
                           tooltip.innerHTML = process_encoded_HTML(text, decodeURIComponent); 
                           if (TT.speak) {
                               // first cancel any old speech
                               window.speechSynthesis.cancel();
                               utilities.speak(tooltip.innerText, when_speaking_finished);
                           }
-                          if (TT.balloons) {
-                              element.toontalk_previous_text = text;
-                          } else {
+                          if (!TT.balloons) {
+                              // if no balloons remove tool tip
                               ui.tooltip.remove();
                               return;
                           }
@@ -2232,6 +2234,9 @@ window.TOONTALK.UTILITIES =
                           // auto hide after duration proportional to text.length
                           // TODO: if longer than fits on the screen then autoscroll after some time
                           setTimeout(function () {
+                                         if (!is_robot) {
+                                             element.toontalk_previous_text = text;
+                                         }
                                          ui.tooltip.remove();
                                          // see http://bugs.jqueryui.com/ticket/10689
                                          if ($(tooltip).data('ui-tooltip')) {
