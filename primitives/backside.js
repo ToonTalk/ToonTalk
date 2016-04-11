@@ -589,11 +589,8 @@ window.TOONTALK.backside =
             };
             backside.scale_to_fit = function (this_element, other_element) {
                 var scales;
-                if (!original_width && this.get_widget().backside_geometry) {
-                    original_width  = this.get_widget().backside_geometry.original_width;
-                    original_height = this.get_widget().backside_geometry.original_height;  
-                }
-                scales = TT.UTILITIES.scale_to_fit(this_element, other_element, original_width, original_height);
+                // if CSS of toontalk-backside changes then change the following numbers
+                scales = TT.UTILITIES.scale_to_fit(this_element, other_element, 550, 200);
                 x_scale = scales.x_scale;
                 y_scale = scales.y_scale;
             };

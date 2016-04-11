@@ -1430,7 +1430,8 @@ body {
 	padding-top:    6px;
 	padding-left:   6px;
 	padding-right:  6px;
-	min-width: 550px;
+/* 	if the following changes update backside.scale_to_fit */
+	min-width:  550px;
 	min-height: 200px;
 }
 .toontalk-backside.toontalk-highlight {
