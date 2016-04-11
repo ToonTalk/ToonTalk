@@ -79,7 +79,13 @@ window.TOONTALK.robot_action =
              widget.remove();
              if (widget === robot) {
                  robot.set_stopped(true);
+             } else {
+                 robot.add_newly_created_widget_if_new(widget);
              }
+             return true;
+         },
+         "restore": function (widget, robot) {
+             robot.add_to_top_level_backside(widget);
              return true;
          },
          "change whether erased": function (widget, robot, additional_info) {
@@ -454,6 +460,7 @@ window.TOONTALK.robot_action =
             continuation();
             robot.run_next_step();
         };
+        var speed, where, top_level_area;
         if (!robot.animate_consequences_of_actions()) {
             continuation();
             robot.run_next_step();
@@ -462,7 +469,16 @@ window.TOONTALK.robot_action =
         robot.carrying_tool = tool_held_by_robot_css_class;
         robot.update_display(); // to display tool
         // robots move at 1/4 pixel per millisecond for clarity
-        robot.animate_to_element(widget.get_element(), new_continuation, robot.transform_animation_speed(TT.UTILITIES.default_animation_speed/2), 0, 0, true);
+        speed = robot.transform_animation_speed(TT.UTILITIES.default_animation_speed/2);
+        if (widget) {
+            robot.animate_to_element(widget.get_element(), new_continuation, speed, 0, 0, true);
+        } else {
+            // move anywhere in robot's top_level_element (multiplying by .8 and adding .1 to avoid the edges)
+            top_level_area = robot.top_level_widget().get_element().getBoundingClientRect();
+            where = {left: top_level_area.left+top_level_area.width *(.1+Math.random()*.8),
+                     top:  top_level_area.top +top_level_area.height*(.1+Math.random()*.8)};
+            robot.animate_to_absolute_position(where, new_continuation, speed, true);
+        }
     };
     var copy_animation = function (widget, robot, continuation) {
         var new_continuation = function () {
@@ -481,6 +497,13 @@ window.TOONTALK.robot_action =
             widget.rerender(); // if wasn't removed
         };
         move_to_tool_and_use_animation(widget, robot, new_continuation, "toontalk-vacuum-ready-small", "toontalk-vacuum");
+    };
+    var restore_animation = function (widget, robot, continuation) {
+        var new_continuation = function () {
+            TT.UTILITIES.set_css(widget.get_element(true), $(robot.get_frontside_element()).position());
+            continuation();
+        }
+        move_to_tool_and_use_animation(undefined, robot, new_continuation, "toontalk-vacuum-ready-small", "toontalk-vacuum");
     };
     var edit_animation = function (widget, robot, continuation, additional_info) {
         var new_continuation = function () {
@@ -632,7 +655,8 @@ window.TOONTALK.robot_action =
          "drop it on the text area of":       drop_it_on_text_area_animation,
          // remove and erase have identical animation but different unwatched semantics
          "remove":                            remove_or_erase_animation,
-         "change whether erased":             remove_or_erase_animation, 
+         "change whether erased":             remove_or_erase_animation,
+         "restore":                           restore_animation,
          "edit":                              edit_animation,
          "change size of":                    change_size_animation,
          "add to the top-level backside": function (widget, robot, continuation) {

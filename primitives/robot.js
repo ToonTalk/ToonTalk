@@ -937,6 +937,12 @@ window.TOONTALK.robot = (function (TT) {
             this.add_newly_created_widget_if_new(widget);
         }
     };
+
+    robot.restored = function (widget) {
+        // robot used vacuum to restore previously vacuumed widget
+        var action_name = "restore";
+        add_step_to_robot(widget, action_name, this);
+    };
     
     robot.edited = function (widget, details) {
         var action_name = "edit";
