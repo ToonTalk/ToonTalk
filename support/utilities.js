@@ -3873,6 +3873,7 @@ window.TOONTALK.UTILITIES =
            }
            widget_side = utilities.widget_side_of_element(element);
            if (widget_side) {
+               widget_side_dereferenced = widget_side.dereference();
                if ($(element).is(".toontalk-temporarily-set-down")) {
                    // leave the CSS alone
                    // TODO: make this more modular/cleaner
@@ -3880,8 +3881,11 @@ window.TOONTALK.UTILITIES =
                    // widget_side_dereferenced could be contents of a box or scale and widget_side is the hole itself
                    css.left   = '';
                    css.top    = '';
-               }
-                widget_side_dereferenced = widget_side.dereference();
+               } else if (widget_side_dereferenced.is_plain_text_element()) {
+                   // see Robot dropping text to change element text: test case
+                   css.width  = '';
+                   css.height = '';
+               }              
            }
            if (css.width === 0) {
                css.width  = '';
@@ -3893,7 +3897,6 @@ window.TOONTALK.UTILITIES =
                widget_side_dereferenced && widget_side_dereferenced.use_scaling_transform) {
                // leave CSS width and height alone and recompute scaling transform
                // following will call set_css again with modified css
-               // is this still right?
                widget_side_dereferenced.use_scaling_transform(css);
            } else {
                $(element).css(css);
