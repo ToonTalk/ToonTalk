@@ -137,7 +137,7 @@ window.TOONTALK.create_function_table =
             if (any_approximate_arguments) {
                 response.set_approximate(true);
                 // better default for approximate numbers
-                result.set_format('decimal');
+                response.set_format('decimal');
             }
             return response;
         }.bind(this);
@@ -178,7 +178,7 @@ window.TOONTALK.create_function_table =
             if (approximate) {
                 response.set_approximate(true);
                 // better default for approximate numbers
-                result.set_format('decimal');
+                response.set_format('decimal');
             }
             return response;
         };
