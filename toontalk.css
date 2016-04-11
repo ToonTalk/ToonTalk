@@ -1430,7 +1430,7 @@ body {
 	padding-top:    6px;
 	padding-left:   6px;
 	padding-right:  6px;
-/* 	if the following changes update backside.scale_to_fit */
+/* 	if the following changes update backside.scale_to_fit and backside.scale_to */
 	min-width:  550px;
 	min-height: 200px;
 }
