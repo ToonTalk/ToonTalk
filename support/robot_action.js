@@ -446,7 +446,8 @@ window.TOONTALK.robot_action =
         var new_continuation = function () {
             tool_use_animation(widget, robot, continuation, tool_held_by_robot_css_class);
         };
-        if (tool_element && robot.animate_consequences_of_actions()) {
+        if (tool_element && robot.animate_consequences_of_actions() && $("." + resource_tool_css_class).length > 0) {
+            // the tools might not be part of this page when $("." + resource_tool_css_class).length === 0
             robot.animate_to_element(tool_element, new_continuation, robot.transform_animation_speed(TT.UTILITIES.default_animation_speed), 0, 0, true);
         } else {
             new_continuation();
@@ -460,7 +461,7 @@ window.TOONTALK.robot_action =
             continuation();
             robot.run_next_step();
         };
-        var speed, where, top_level_area;
+        var speed, where, top_level_element;
         if (!robot.animate_consequences_of_actions()) {
             continuation();
             robot.run_next_step();
@@ -474,9 +475,10 @@ window.TOONTALK.robot_action =
             robot.animate_to_element(widget.get_element(), new_continuation, speed, 0, 0, true);
         } else {
             // move anywhere in robot's top_level_element (multiplying by .8 and adding .1 to avoid the edges)
-            top_level_area = robot.top_level_widget().get_element().getBoundingClientRect();
-            where = {left: top_level_area.left+top_level_area.width *(.1+Math.random()*.8),
-                     top:  top_level_area.top +top_level_area.height*(.1+Math.random()*.8)};
+            top_level_element = robot.top_level_widget().get_element();
+            where = $(top_level_element).offset();
+            where.left += $(top_level_element).width() *(.1+Math.random()*.8);
+            where.top  += $(top_level_element).height()*(.1+Math.random()*.8);
             robot.animate_to_absolute_position(where, new_continuation, speed, true);
         }
     };
