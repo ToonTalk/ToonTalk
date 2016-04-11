@@ -3412,7 +3412,7 @@ window.TOONTALK.UTILITIES =
 
         utilities.report_internal_error = function (message) {
             // these are ToonTalk errors not user errors
-            console.log(message);
+            console.error(message);
             console.trace();
             if (TT.debugging) {
                 utilities.display_message("Error: " + message);
