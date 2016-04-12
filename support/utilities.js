@@ -2195,7 +2195,10 @@ window.TOONTALK.UTILITIES =
                                   // this should be triggered only if the utterance was completed but it seems some browsers trigger it earlier
                                   // consequently partial utterances won't be repeated
                                   // should use charIndex to determine how much was said and maybe use onboundary (when it works) to highlight text
-                                  element.toontalk_previous_text = text;
+                                  if (tooltip === element_displaying_tooltip || element_displaying_tooltip === undefined) {
+                                      // if switched to another widget don't consider this spoken
+                                      element.toontalk_previous_text = text;
+                                  }
                               };
                           }    
                           tooltip.innerHTML = process_encoded_HTML(text, decodeURIComponent); 
@@ -2204,6 +2207,7 @@ window.TOONTALK.UTILITIES =
                               window.speechSynthesis.cancel();
                               utilities.speak(tooltip.innerText, when_speaking_finished);
                           }
+                          element_displaying_tooltip = tooltip;
                           if (!TT.balloons) {
                               // if no balloons remove tool tip
                               ui.tooltip.remove();
@@ -2217,7 +2221,7 @@ window.TOONTALK.UTILITIES =
                               ui.tooltip.css({maxWidth: new_width});
                           }
                           if (element_displaying_tooltip) {
-                              element_displaying_tooltip.remove();
+                              $(element_displaying_tooltip).remove();
                           }
                           // need to add the arrow here since the replacing of the innerHTML above removed the arrow
                           // when it was added earlier
@@ -2227,7 +2231,6 @@ window.TOONTALK.UTILITIES =
 //                                     .addClass(feedback_vertical)
 //                                     .addClass(feedback_horizontal)
 //                                     .appendTo(ui.tooltip);
-                          element_displaying_tooltip = ui.tooltip;
     //                       if (height_adjustment) {
     //                           $(ui.tooltip).css({maxHeight: $(ui.tooltip).height()+height_adjustment/2});
     //                       }
