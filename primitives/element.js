@@ -2214,6 +2214,10 @@ window.TOONTALK.element.function =
                     TT.UTILITIES.display_message("Speaking birds need something in the second box hole.");
                     return;
                 }
+                if (!window.speechSynthesis) {
+                    // ignore this
+                    return true;
+                }
                 when_finished = function (event) {
                     var response = TT.element.create(text, [], "a response to speaking '" + text + "'");
                     functions.process_response(response, box_size_and_bird.bird, message, event, robot);
