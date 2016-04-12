@@ -1197,7 +1197,7 @@ window.TOONTALK.nest = (function (TT) {
                     } else {
                         top_level_widget_side = TT.UTILITIES.widget_side_of_jquery($(frontside_element).closest(".toontalk-top-level-backside"));
                         if (!top_level_widget_side) {
-                            top_level_widget_side = TT.UTILITIES.widget_side_of_jquery($(other.get_widget().get_frontside_element(true)).closest(".toontalk-top-level-backside"));     
+                            top_level_widget_side = TT.UTILITIES.widget_side_of_jquery($(side_of_other.get_widget().get_frontside_element(true)).closest(".toontalk-top-level-backside"));     
                         }
                         if (top_level_widget_side) {
                             if (top_level_widget_side.is_backside()) {
