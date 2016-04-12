@@ -2187,7 +2187,9 @@ window.TOONTALK.UTILITIES =
                           if (text === element.toontalk_previous_text) {
                               // already said and/or displayed this
                               ui.tooltip.remove();
-                              window.speechSynthesis.cancel();
+                              if (TT.speak) {
+                                  window.speechSynthesis.cancel();
+                              }
                               return;
                           }
                           if (!is_robot) {
@@ -4213,6 +4215,10 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             TT.open_backside_only_if_alt_key = utilities.get_current_url_boolean_parameter('alt_key_to_open_backside');
             TT.reset    = utilities.get_current_url_boolean_parameter('reset', false);
             TT.speak    = utilities.get_current_url_boolean_parameter('speak', false);
+            if (TT.speak && !window.speechSynthesis) {
+                utilities.display_message("This browser doesn't support speech output. speak=1 ignored.");
+                TT.speak = false;
+            }
             TT.balloons = utilities.get_current_url_boolean_parameter('balloons', true);
             if (!TT.open_backside_only_if_alt_key) {
                 // puzzle=1 is shorthand for alt_key_to_open_backside=1&reset=1
