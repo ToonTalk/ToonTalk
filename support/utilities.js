@@ -4216,8 +4216,8 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             TT.reset    = utilities.get_current_url_boolean_parameter('reset', false);
             TT.speak    = utilities.get_current_url_boolean_parameter('speak', false);
             if (TT.speak && !window.speechSynthesis) {
-                utilities.display_message("This browser doesn't support speech output. speak=1 ignored.");
                 TT.speak = false;
+                utilities.display_message("This browser doesn't support speech output. speak=1 ignored.");
             }
             TT.balloons = utilities.get_current_url_boolean_parameter('balloons', true);
             if (!TT.open_backside_only_if_alt_key) {
