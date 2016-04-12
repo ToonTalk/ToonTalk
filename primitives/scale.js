@@ -106,9 +106,9 @@ window.TOONTALK.scale = (function (TT) {
         new_scale.which_hole = function (event, or_entire_thing) {
             // if or_entire_thing is true can return -1 meaning the whole scale
             // otherwise returns closest pan
-            var $frontside_element = $(new_scale.get_frontside_element());
-            var position = $frontside_element.offset();
-            var width = $frontside_element.width();
+            var frontside_element = new_scale.get_frontside_element();
+            var position = $(frontside_element).offset();
+            var width = TT.UTILITIES.get_element_width(frontside_element);
             var center = position.left+width/2;
             var distance_to_center = event.clientX-center;
             var error = or_entire_thing ? width/10 : 0; // within 1/10 of the width to center

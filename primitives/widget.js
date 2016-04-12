@@ -164,12 +164,12 @@ window.TOONTALK.widget = (function (TT) {
             }
             if (!widget.get_width) {
                widget.get_width = function () {
-                   return $(widget.get_frontside_element()).width();
+                   return TT.UTILITIES.get_element_width(widget.get_frontside_element());
                }
             }
             if (!widget.get_height) {
                widget.get_height = function () {
-                   return $(widget.get_frontside_element()).height();
+                   return TT.UTILITIES.get_element_height(widget.get_frontside_element());
                }
             }
             if ((TT.debugging  || TT.logging) && !widget.to_debug_string) {
@@ -530,7 +530,7 @@ window.TOONTALK.widget = (function (TT) {
             if (!widget.animate_to_element) {
                 widget.animate_to_element = function (target_element, continuation, speed, left_offset, top_offset, more_animation_follows, duration) {
                     var target_absolute_position = $(target_element).offset();
-                    var $frontside_element = $(this.get_frontside_element());
+                    var frontside_element = this.get_frontside_element();
                     var target_is_backside = $(target_element).is(".toontalk-backside");
                     if (!target_element || !TT.UTILITIES.visible_element(target_element)) {
                         // don't know where to go so just start doing the next thing
@@ -543,12 +543,12 @@ window.TOONTALK.widget = (function (TT) {
                         left_offset = target_element.animation_left_offset;
                     } else if (typeof left_offset === "undefined" || target_is_backside) {
                         // pick a random location completely inside the target
-                        left_offset = ($(target_element).width()-$frontside_element.width())  * Math.random();
+                        left_offset = (TT.UTILITIES.get_element_width(target_element)-TT.UTILITIES.get_element_width(frontside_element))*Math.random();
                     }
                     if (typeof target_element.animation_top_offset  === 'number') {
                         top_offset = target_element.animation_top_offset;
                     } else  if (typeof top_offset === "undefined" || target_is_backside) {
-                        top_offset = ($(target_element).height()-$frontside_element.height()) * Math.random();
+                        top_offset = (TT.UTILITIES.get_element_height(target_element)-TT.UTILITIES.get_element_height(frontside_element))*Math.random();
                     }
                     if (target_absolute_position) {
                         target_absolute_position.left += left_offset;
@@ -633,13 +633,13 @@ window.TOONTALK.widget = (function (TT) {
             };
         },
 
-        inside_condtions_container: function () {
+        inside_conditions_container: function () {
              return $(this.get_frontside_element()).closest(".toontalk-conditions-container").is("*");
         },
 
         get_title_of_erased_widget: function () {
             var type_name = this.get_type_name();
-            if (this.inside_condtions_container()) {
+            if (this.inside_conditions_container()) {
                 return "I'm an erased " + type_name + ".\nI'll match with any other " + type_name + ".";
             }
             return "I'm an erased " + type_name + ".\nDusty the Vacuum can restore me to normal.";
@@ -1238,12 +1238,12 @@ window.TOONTALK.widget = (function (TT) {
         
         add_copy_to_container: function (widget_copy, x_offset, y_offset) {
             var visible = this.visible();
-            var frontside_element, frontside_element_copy, $container_element, ok_to_set_dimensions,  position, container_widget;
+            var frontside_element, element_of_copy, $container_element, ok_to_set_dimensions, position, container_widget;
             if (!widget_copy) {
                 widget_copy = this.copy({});
             }
             frontside_element = this.get_frontside_element(visible);
-            frontside_element_copy = widget_copy.get_frontside_element(visible);  
+            element_of_copy = widget_copy.get_element(visible);  
             $container_element = $(frontside_element).closest(".toontalk-backside");
             ok_to_set_dimensions = widget_copy.ok_to_set_dimensions();
             if ($container_element.length === 0) {
@@ -1259,10 +1259,10 @@ window.TOONTALK.widget = (function (TT) {
                 }
                 position = TT.UTILITIES.relative_position(frontside_element, $container_element.get(0));
                 if ($container_element.length > 0) {
-                    $container_element.get(0).appendChild(frontside_element_copy);
+                    $container_element.get(0).appendChild(element_of_copy);
                 }
                 // plain text should not have its dimensions set
-                TT.UTILITIES.set_css(frontside_element_copy,
+                TT.UTILITIES.set_css(element_of_copy,
                                      {width:  ok_to_set_dimensions ? $(frontside_element).width()  : "",
                                       height: ok_to_set_dimensions ? $(frontside_element).height() : "",
                                       left:   position.left+x_offset,
@@ -1700,7 +1700,7 @@ window.TOONTALK.widget = (function (TT) {
                  stack_of_robots_in_training.pop();  
             };
             top_level_widget.save = function (immediately, parameters, callback) {
-                var program_name = this.get_setting('program_name', true);
+                var program_name = this.get_setting('program_name', TT.reset);
                 var save_function = function (json) {
                     save_in_progress = false;
                     if (save_to_google_drive) {
@@ -1711,7 +1711,7 @@ window.TOONTALK.widget = (function (TT) {
                         } else if (TT.google_drive.connection_to_google_drive_possible()) {
                             if (google_drive_status === 'Need to authorize') {
                                 TT.UTILITIES.display_message_if_new("Unable to save to your Google Drive because you need to log in. Click on the settings icon " +
-                                                                    TT.UTILITIES.encode_HTML_for_title("<span class='toontalk-settings-icon'></span>") +
+                                                                   "<span class='toontalk-settings-icon'></span>" +
                                                                     " to log in.");
                                 TT.UTILITIES.display_tooltip($(".toontalk-settings-button"));
                             } else {
@@ -1854,6 +1854,9 @@ window.TOONTALK.widget = (function (TT) {
             };
             top_level_widget.location_constrained_by_container = function () {
                 return false;
+            };
+            top_level_widget.dereference = function () {
+                return this;
             };
             top_level_widget.is_widget = true;
             if (TT.debugging) {

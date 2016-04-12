@@ -20,8 +20,11 @@
     var NEGATIVE_HALF                  = bigrat.fromValues(-1, 2);
     var THREE_HUNDRED_AND_SIXTY        = bigrat.fromInteger(360);
     var TWO_PI                         = bigrat.fromDecimal(2*Math.PI);
-//     var MAX_JAVASCRIPT_NUMBER          = bigrat.fromDecimal(Number.MAX_VALUE);
-//     var NEGATIVE_MAX_JAVASCRIPT_NUMBER = bigrat.opposite(bigrat.create(), MAX_JAVASCRIPT_NUMBER);
+
+    // according to http://www.webspaceworks.com/resources/fonts-web-typography/43/
+    // the aspect ratio of monospace fonts varies from .43 to .55
+    // .55 'worst' aspect ratio -- add a little extra
+    var FONT_ASPECT_RATIO           = 0.64;
 
     // Math.log10 not defined in IE11
     var log10 = Math.log10 ? Math.log10 : function (x) { return Math.log(x)/LOG_10 };
@@ -561,12 +564,10 @@ window.TOONTALK.number = (function () {
         }
         font_height = (client_height-border_size*2);
 //      font_size = TT.UTILITIES.get_style_numeric_property(frontside, "font-size");
-        // according to http://www.webspaceworks.com/resources/fonts-web-typography/43/
-        // the aspect ratio of monospace fonts varies from .43 to .55
-        font_width = font_height * 0.64; // .55 'worst' aspect ratio -- add a little extra
+        font_width = font_height * FONT_ASPECT_RATIO; 
         // could find the font name and use the precise value
         max_decimal_places = client_width / font_width;
-        new_HTML = this.to_HTML(max_decimal_places, font_height, this.get_format(), true, this.get_operator(), size_unconstrained_by_container);
+        new_HTML = this.to_HTML(max_decimal_places, client_width, client_height, font_height, this.get_format(), true, this.get_operator(), size_unconstrained_by_container);
         if (TT.UTILITIES.on_a_nest_in_a_box(frontside_element)) {
             // need to work around a CSS problem where nested percentage widths don't behave as expected
             new_HTML = add_to_style(new_HTML, "width:"  + (client_width-border_size*2)  + "px;");
@@ -595,7 +596,7 @@ window.TOONTALK.number = (function () {
         }
     };
     
-    number.to_HTML = function (original_max_characters, font_size, format, top_level, operator, size_unconstrained_by_container) {
+    number.to_HTML = function (original_max_characters, client_width, client_height, font_size, format, top_level, operator, size_unconstrained_by_container) {
         var integer_as_string, value_as_string, integer_part, fractional_part, improper_fraction_HTML, digits_needed, shrinkage, table_style,
             // following needed for scientific notation
             exponent, ten_to_exponent, exponent_area, exponent_index, exponent_string, significand, approximate_value,
@@ -670,6 +671,9 @@ window.TOONTALK.number = (function () {
             }
             if (value_as_string) {
                 digits_needed = value_as_string.length;
+                if (max_characters > digits_needed) {
+                    max_characters = digits_needed;
+                }
                 if (operator_HTML.length > 0) {
                     digits_needed++;
                 }
@@ -694,8 +698,9 @@ window.TOONTALK.number = (function () {
                 } else {
                     exponent_string = "";
                 }
+                font_size = Math.min(font_size, client_width / (FONT_ASPECT_RATIO * digits_needed));
                 return '<div class="toontalk-number toontalk-approximate-number' + extra_class + '" style="font-size: ' + font_size + 'px;">' +
-                       operator_HTML + shrink_to_fit(value_as_string, max_characters, font_size, true) + exponent_string + '</div>';
+                       operator_HTML + '<div style="margin-top: ' + (client_height-font_size)/2 + 'px">' + value_as_string + '</div>' + exponent_string + '</div>';
             }
         }
         table_style = ' style="font-size:' + (font_size * 0.4) + 'px;"';
@@ -716,15 +721,15 @@ window.TOONTALK.number = (function () {
             // proper_fraction is the old name for mixed_number
             integer_part = this.integer_part();
             if (integer_part.is_zero()) {
-                return this.to_HTML(max_characters, font_size, 'improper_fraction', top_level, operator);
+                return this.to_HTML(max_characters, client_width, client_height, font_size, 'improper_fraction', top_level, operator);
             }
             fractional_part = this.copy({just_value: true}).subtract(integer_part).absolute_value();
             // split max_characters between the two parts and recur for each them
             return '<table class="toontalk-number toontalk-mixed-number' + extra_class + '"' + table_style + '>' +
                    '<tr><td class="toontalk-number toontalk-integer-part-of-mixed-number">' +
-                    integer_part.to_HTML(max_characters/2, font_size, '', false, this.get_operator()) + // integers don't have formats but should display operator
+                    integer_part.to_HTML(max_characters/2, client_width, client_height, font_size, '', false, this.get_operator()) + // integers don't have formats but should display operator
                     '</td><td class="toontalk-number toontalk-fraction-part-of-mixed-number">' +
-                    fractional_part.to_HTML(max_characters/2, font_size, 'improper_fraction', false) +
+                    fractional_part.to_HTML(max_characters/2, client_width, client_height, font_size, 'improper_fraction', false) +
                    '</td></tr></table>';
         }
         if (format === 'decimal') {
@@ -750,7 +755,7 @@ window.TOONTALK.number = (function () {
             }
             if (original_max_characters < exponent_area+1) {
                 // try again with a smaller font_size
-                return this.to_HTML(exponent_area+1, font_size*original_max_characters/(exponent_area+1), format, top_level, operator, size_unconstrained_by_container);
+                return this.to_HTML(exponent_area+1, client_width, client_height, font_size*original_max_characters/(exponent_area+1), format, top_level, operator, size_unconstrained_by_container);
             }
             decimal_digits = generate_decimal_places(significand, max_decimal_places);      
             if (negative) { // negative so include sign and first digit
@@ -989,11 +994,20 @@ window.TOONTALK.number = (function () {
     };
 
     number.get_text = function () {
-        if (this.is_integer() || this.get_format() === 'improper_fraction') {
+        var format = this.get_format();
+        var integer_part, fractional_part;
+        if (this.get_approximate() || (this.is_attribute_widget && this.is_attribute_widget())) {
+            return "approximately " + bigrat.toDecimal(this.get_value()).toString();
+        }
+        if (this.is_integer() || format === 'improper_fraction') {
             return this.toString();
         }
-        // can't turn an infinite decimal expansion into a string so approximate it as JavaScript number
-        return bigrat.toDecimal(this.get_value()).toString();
+        integer_part = this.integer_part();
+        if (integer_part.is_zero()) {
+            return this.toString();
+        }
+        fractional_part = this.copy({just_value: true}).subtract(integer_part).absolute_value();
+        return integer_part + " " + fractional_part; 
     };
     
     number.to_float = function () {
@@ -1458,8 +1472,7 @@ window.TOONTALK.number.function =
                                     // faster and bigrat.nthRoot doesn't respond well to 1
                                     return to_numerator;
                                 }
-                                // reuse to_numerator since not needed anymore
-                                return bigrat.nthRoot(to_numerator, to_numerator, denominator_power);
+                                return bigrat.nthRoot(bigrat.create(), to_numerator, denominator_power);
                             };
                             var approximate_if_power_is_not_integer = function (args) {
                                 // args[1] is power and args[1][1] is its denominator

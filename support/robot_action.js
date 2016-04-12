@@ -79,7 +79,13 @@ window.TOONTALK.robot_action =
              widget.remove();
              if (widget === robot) {
                  robot.set_stopped(true);
+             } else {
+                 robot.add_newly_created_widget_if_new(widget);
              }
+             return true;
+         },
+         "restore": function (widget, robot) {
+             robot.add_to_top_level_backside(widget);
              return true;
          },
          "change whether erased": function (widget, robot, additional_info) {
@@ -183,8 +189,7 @@ window.TOONTALK.robot_action =
         var thing_in_hand = robot.get_thing_in_hand();
         var robot_frontside_element = robot.get_frontside_element();
         var widget_element = side.get_element();
-        var widget_width,
-            widget_height,
+        var widget_bounding_box,
             left_offset,
             top_offset,
             animation_left_offset,
@@ -203,8 +208,8 @@ window.TOONTALK.robot_action =
             continuation();
             return;
         }
-        widget_width  = $(widget_element).width();
-        widget_height = $(widget_element).height();
+        widget_bounding_box = widget_element.getBoundingClientRect();
+        // bounding box (unlike) $(widget_element).width(), etc. is adjusted if scaled
         if (additional_info && additional_info.left_offset_fraction) {
             if (!robot.original_animation_left_offset) {
                 robot.original_animation_left_offset = [];
@@ -212,8 +217,8 @@ window.TOONTALK.robot_action =
             if (!robot.original_animation_top_offset) {
                 robot.original_animation_top_offset = [];
             }
-            animation_left_offset = additional_info.left_offset_fraction*widget_width;
-            animation_top_offset  = additional_info.top_offset_fraction*widget_height;
+            animation_left_offset = additional_info.left_offset_fraction*widget_bounding_box.width;
+            animation_top_offset  = additional_info.top_offset_fraction*widget_bounding_box.height;
             if (thing_in_hand) {
                 thing_in_hand_element = thing_in_hand.get_element();
                 if (TT.UTILITIES.visible_element(thing_in_hand_element)) {
@@ -229,14 +234,14 @@ window.TOONTALK.robot_action =
                 // robot has already dropped something here
                 animation_left_offset = robot.animation_left_offset+robot.last_thing_in_hand_width;
                 animation_top_offset  = robot.animation_top_offset;
-                if (animation_left_offset >= widget_width) {
+                if (animation_left_offset >= widget_bounding_box.width) {
                     animation_left_offset = 0;
                     animation_top_offset += robot.max_thing_in_hand_height;
-                    if (animation_top_offset >= widget_height) {
+                    if (animation_top_offset >= widget_bounding_box.height) {
                         animation_top_offset = 0;
                     }
                 }
-                robot.last_thing_in_hand_width = $(thing_in_hand_element).width();
+                robot.last_thing_in_hand_width = TT.UTILITIES.get_element_width(thing_in_hand_element);
                 if (typeof robot.max_thing_in_hand_height === 'undefined') {
                     robot.max_thing_in_hand_height = 0;
                 }
@@ -244,16 +249,16 @@ window.TOONTALK.robot_action =
             } else {
                 robot.original_animation_left_offset.push(animation_left_offset);
                 robot.original_animation_top_offset .push(animation_top_offset);
-                robot.last_thing_in_hand_width = $(thing_in_hand_element).width();
-                robot.max_thing_in_hand_height = $(thing_in_hand_element).height();
+                robot.last_thing_in_hand_width = TT.UTILITIES.get_element_width (thing_in_hand_element);
+                robot.max_thing_in_hand_height = TT.UTILITIES.get_element_height(thing_in_hand_element);
             }
             widget_element.animation_left_offset = animation_left_offset;
             widget_element.animation_top_offset  = animation_top_offset;
             robot.animation_left_offset = animation_left_offset;
             robot.animation_top_offset  = animation_top_offset;
         } else {
-            left_offset = widget_width/2;
-            top_offset  = widget_height/2;
+            left_offset = widget_bounding_box.width/2;
+            top_offset  = widget_bounding_box.height/2;
         }
         // robots move at 1/4 pixel per millisecond for clarity
         robot.animate_to_widget(side,
@@ -441,7 +446,8 @@ window.TOONTALK.robot_action =
         var new_continuation = function () {
             tool_use_animation(widget, robot, continuation, tool_held_by_robot_css_class);
         };
-        if (tool_element && robot.animate_consequences_of_actions()) {
+        if (tool_element && robot.animate_consequences_of_actions() && $("." + resource_tool_css_class).length > 0) {
+            // the tools might not be part of this page when $("." + resource_tool_css_class).length === 0
             robot.animate_to_element(tool_element, new_continuation, robot.transform_animation_speed(TT.UTILITIES.default_animation_speed), 0, 0, true);
         } else {
             new_continuation();
@@ -455,6 +461,7 @@ window.TOONTALK.robot_action =
             continuation();
             robot.run_next_step();
         };
+        var speed, where, top_level_element;
         if (!robot.animate_consequences_of_actions()) {
             continuation();
             robot.run_next_step();
@@ -463,7 +470,17 @@ window.TOONTALK.robot_action =
         robot.carrying_tool = tool_held_by_robot_css_class;
         robot.update_display(); // to display tool
         // robots move at 1/4 pixel per millisecond for clarity
-        robot.animate_to_element(widget.get_element(), new_continuation, robot.transform_animation_speed(TT.UTILITIES.default_animation_speed/2), 0, 0, true);
+        speed = robot.transform_animation_speed(TT.UTILITIES.default_animation_speed/2);
+        if (widget) {
+            robot.animate_to_element(widget.get_element(), new_continuation, speed, 0, 0, true);
+        } else {
+            // move anywhere in robot's top_level_element (multiplying by .8 and adding .1 to avoid the edges)
+            top_level_element = robot.top_level_widget().get_element();
+            where = $(top_level_element).offset();
+            where.left += $(top_level_element).width() *(.1+Math.random()*.8);
+            where.top  += $(top_level_element).height()*(.1+Math.random()*.8);
+            robot.animate_to_absolute_position(where, new_continuation, speed, true);
+        }
     };
     var copy_animation = function (widget, robot, continuation) {
         var new_continuation = function () {
@@ -483,6 +500,13 @@ window.TOONTALK.robot_action =
         };
         move_to_tool_and_use_animation(widget, robot, new_continuation, "toontalk-vacuum-ready-small", "toontalk-vacuum");
     };
+    var restore_animation = function (widget, robot, continuation) {
+        var new_continuation = function () {
+            TT.UTILITIES.set_css(widget.get_element(true), $(robot.get_frontside_element()).position());
+            continuation();
+        }
+        move_to_tool_and_use_animation(undefined, robot, new_continuation, "toontalk-vacuum-ready-small", "toontalk-vacuum");
+    };
     var edit_animation = function (widget, robot, continuation, additional_info) {
         var new_continuation = function () {
             var widget_backside = widget.get_backside();
@@ -495,17 +519,18 @@ window.TOONTALK.robot_action =
         button_use_animation(widget, robot, new_continuation, additional_info.button_selector, additional_info, robot.transform_step_duration(1000));
     };
     var change_size_animation = function (widget, robot, continuation, additional_info) {
-       var frontside_element = widget.get_frontside_element();
-       var new_continuation;
-       if (!frontside_element) {
-           // was hidden while running
-           continuation();
-           robot.run_next_step();
-           return;
-       }
-       new_continuation = function () {
-            var width  = $(frontside_element).width();
-            var height = $(frontside_element).height();
+        var frontside_element = widget.get_frontside_element();
+        var new_continuation;
+        if (!frontside_element) {
+            // was hidden while running
+            continuation();
+            robot.run_next_step();
+            return;
+        }
+        new_continuation = function () {
+            var bounding_box = frontside_element.getBoundingClientRect();
+            var width  = bounding_box.width;
+            var height = bounding_box.height;
             var new_width  = width *additional_info.x_factor;
             var new_height = height*additional_info.y_factor;
             var duration = robot.transform_step_duration(1000);
@@ -632,7 +657,8 @@ window.TOONTALK.robot_action =
          "drop it on the text area of":       drop_it_on_text_area_animation,
          // remove and erase have identical animation but different unwatched semantics
          "remove":                            remove_or_erase_animation,
-         "change whether erased":             remove_or_erase_animation, 
+         "change whether erased":             remove_or_erase_animation,
+         "restore":                           restore_animation,
          "edit":                              edit_animation,
          "change size of":                    change_size_animation,
          "add to the top-level backside": function (widget, robot, continuation) {
@@ -651,9 +677,9 @@ window.TOONTALK.robot_action =
 
     TT.creators_from_json["robot_action"] = function (json, additional_info) {
         if (json.additional_info) {
-            return TT.robot_action.create(TT.path.create_from_json(json.path, additional_info), json.action_name, TT.UTILITIES.create_keys_from_json(json.additional_info, additional_info));
+            return TT.robot_action.create(TT.UTILITIES.create_from_json(json.path, additional_info), json.action_name, TT.UTILITIES.create_keys_from_json(json.additional_info, additional_info));
         } else {
-            return TT.robot_action.create(TT.path.create_from_json(json.path, additional_info), json.action_name);
+            return TT.robot_action.create(TT.UTILITIES.create_from_json(json.path, additional_info), json.action_name);
         }
     };
     

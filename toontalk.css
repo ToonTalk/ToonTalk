@@ -1430,7 +1430,8 @@ body {
 	padding-top:    6px;
 	padding-left:   6px;
 	padding-right:  6px;
-	min-width: 550px;
+/* 	if the following changes update backside.scale_to_fit and backside.scale_to */
+	min-width:  550px;
 	min-height: 200px;
 }
 .toontalk-backside.toontalk-highlight {
@@ -1870,8 +1871,6 @@ table.toontalk-documentation-table {
 .toontalk-erased-element {
 	background-color: white;
 	opacity: .67;
-	width: 80px;
-	height: 40px;
 }
 .toontalk-attributes-chooser {
 	background-color: white;
@@ -1950,7 +1949,7 @@ table.toontalk-documentation-table {
 	border: solid 3px red;
 }
 .toontalk-conditions-waiting {
-	border: solid 3px yellow;
+	border: solid 8px yellow;
 }
 .toontalk-green-flag-inactive, .toontalk-green-flag-active:hover {
 	background-image: url("images/green-flag-inactive.png");
@@ -1996,6 +1995,8 @@ table.toontalk-documentation-table {
 }
 .toontalk-settings-icon {
 	content: url("images/settings-gear.png");
+	width:  22px;
+	height: 22px;
 }
 .toontalk-settings-button {
 	background-image: url("images/settings-gear.png");
@@ -3108,6 +3109,13 @@ background-image: url("images/dusty-morph.png");
 .toontalk-arrow.top:after {
     bottom: -20px;
     top: auto;
+}
+.toontalk-translation-element {
+/* 	This is used to get Google to translate text for speech */
+	width: 1px;
+	height: 1px;
+	color: white;
+	display:  none;
 }
 /* .toontalk-select-function {
 	position: relative;

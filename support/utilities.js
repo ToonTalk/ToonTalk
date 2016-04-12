@@ -40,24 +40,27 @@ window.TOONTALK.UTILITIES =
                                                                       added_node = mutation.addedNodes.item(i);
                                                                       if (added_node.nodeType === 1) {
                                                                           // is an element
-                                                                          if (added_node.toontalk_attached_callback) {
-                                                                              if (!$(added_node).is(".toontalk-not-observable") ||
-                                                                                  added_node.toontalk_run_even_if_not_observable) {
-                                                                                  // was only attached to compute original dimensions and is not computing now
-                                                                                  $(added_node).removeClass("toontalk-has-attached-callback");
-                                                                                  added_node.toontalk_attached_callback();
-                                                                                  added_node.toontalk_attached_callback = undefined;
-                                                                                  added_node.toontalk_run_even_if_not_observable = undefined;
+                                                                          setTimeout(function () {
+                                                                              // delay seems necessary since callbacks below can trigger new mutations
+                                                                              if (added_node.toontalk_attached_callback) {
+                                                                                  if (!$(added_node).is(".toontalk-not-observable") ||
+                                                                                      added_node.toontalk_run_even_if_not_observable) {
+                                                                                      // was only attached to compute original dimensions and is not computing now
+                                                                                      $(added_node).removeClass("toontalk-has-attached-callback");
+                                                                                      added_node.toontalk_attached_callback();
+                                                                                      added_node.toontalk_attached_callback = undefined;
+                                                                                      added_node.toontalk_run_even_if_not_observable = undefined;     ;
+                                                                                  }
                                                                               }
-                                                                          }
-                                                                          $(added_node).find(".toontalk-has-attached-callback").each(function (index, element) {
-                                                                              $(element).removeClass("toontalk-has-attached-callback");
-                                                                              if (element.toontalk_attached_callback) {
-                                                                                  // Test "A team of 3 that each adds 1 to 1" calls this with element.toontalk_attached_callback undefined
-                                                                                  // When stepping through the code it works fine so must be some kind of timing dependent problem
-                                                                                  element.toontalk_attached_callback();
-                                                                                  element.toontalk_attached_callback = undefined;
-                                                                              }
+                                                                              $(added_node).find(".toontalk-has-attached-callback").each(function (index, element) {
+                                                                                  $(element).removeClass("toontalk-has-attached-callback");
+                                                                                  if (element.toontalk_attached_callback) {
+                                                                                      // Test "A team of 3 that each adds 1 to 1" calls this with element.toontalk_attached_callback undefined
+                                                                                      // When stepping through the code it works fine so must be some kind of timing dependent problem
+                                                                                      element.toontalk_attached_callback();
+                                                                                      element.toontalk_attached_callback = undefined;;
+                                                                                  }
+                                                                              });
                                                                           });
                                                                       }
                                                                   }                                                                
@@ -724,18 +727,19 @@ window.TOONTALK.UTILITIES =
         });
     };
     var discover_default_dimensions = function (class_name, toontalk_module) {
+        // finds and then defines the default dimensions of ToonTalk primitives (e.g. robot, nest, and bird)
         var $element_for_determining_dimensions = $("<div class='" + class_name + "'>");
         utilities.run_when_dimensions_known($element_for_determining_dimensions.get(0), 
-                                               function () {
-                                                   var default_width  = $element_for_determining_dimensions.width();
-                                                   var default_height = $element_for_determining_dimensions.height();
-                                                   toontalk_module.get_default_width = function () {
-                                                       return default_width;
-                                                   };
-                                                   toontalk_module.get_default_height = function () {
-                                                       return default_height;
-                                                   };
-                                               });
+                                            function () {
+                                                var default_width  = $element_for_determining_dimensions.width();
+                                                var default_height = $element_for_determining_dimensions.height();
+                                                toontalk_module.get_default_width = function () {
+                                                    return default_width;
+                                                };
+                                                toontalk_module.get_default_height = function () {
+                                                    return default_height;
+                                                };
+                                            });
     };
     var initialize_sounds = function () {
         var sounds_path = utilities.get_path_to_toontalk_folder() + "sounds/";
@@ -948,6 +952,10 @@ window.TOONTALK.UTILITIES =
             } else {
                 utilities.report_internal_error("JSON type '" + json_semantic.type + "' not supported. Perhaps a JavaScript file implementing it is missing.");
                 return;
+            }
+            if (widget_side && !widget_side.is_widget) {
+                // is really a path not a full widget
+                TT.path.process_path_json(widget_side, json, additional_info);
             }
             if (widget_side && widget_side.get_backside) {
                 // widget_side may be a robot body or some other part of a widget
@@ -1496,11 +1504,20 @@ window.TOONTALK.UTILITIES =
         };
         
         utilities.get_style_property = function (element, style_property) {
+            var value;
             if (element.currentStyle) {
                 return element.currentStyle[style_property];
             } 
             if (window.getComputedStyle) {
-                return document.defaultView.getComputedStyle(element, null).getPropertyValue(style_property);
+                if (element.parentElement) {
+                    return document.defaultView.getComputedStyle(element, null).getPropertyValue(style_property);
+                }
+                // for example, may have just been dropped so not yet attached
+                // so attach, get property value, and then unattach 
+                document.body.appendChild(element);
+                value = document.defaultView.getComputedStyle(element, null).getPropertyValue(style_property);
+                document.body.removeChild(element);
+                return value;
             }
         };
 
@@ -1529,6 +1546,23 @@ window.TOONTALK.UTILITIES =
                 return numeric_value;
             }
             return as_string;
+        };
+
+        // following provide the correct dimensions even if the element has been scaled by a transform
+        // note that for CSS purposes this isn't what is needed since the transform should be part of the CSS
+
+        utilities.get_element_width = function (element) {
+            if (!element) {
+                return 0;
+            }
+            return element.getBoundingClientRect().width;
+        };
+
+        utilities.get_element_height = function (element) {
+            if (!element) {
+                return 0;
+            }
+            return element.getBoundingClientRect().height;
         };
         
         utilities.data_transfer_json_object = function (event) {
@@ -1821,10 +1855,10 @@ window.TOONTALK.UTILITIES =
             left = absolute_position.left-parent_position.left;
             top  = absolute_position.top -parent_position.top;
             if (stay_inside_parent) {
-                element_width  = $element.width();
-                element_height = $element.height();
-                parent_element_width  = $parent_element.width();
-                parent_element_height = $parent_element.height();
+                element_width         = TT.UTILITIES.get_element_width ($element.get(0));
+                element_height        = TT.UTILITIES.get_element_height($element.get(0));
+                parent_element_width  = TT.UTILITIES.get_element_width ($parent_element.get(0));
+                parent_element_height = TT.UTILITIES.get_element_height($parent_element.get(0));
                 if (left > parent_element_width-element_width) {
                     left = parent_element_width-element_width;
                 }
@@ -1838,6 +1872,8 @@ window.TOONTALK.UTILITIES =
                     top = 0;
                 }
             }
+            left = utilities.scale_left(left, $parent_element.get(0))
+            top  = utilities.scale_top (top,  $parent_element.get(0));
             css = {left: left,
                    top:  top,
                    position: "absolute"};
@@ -2013,6 +2049,30 @@ window.TOONTALK.UTILITIES =
             }
             return top;
         };
+
+        utilities.scale_left = function (left, element) {
+            var widget = utilities.widget_side_of_element(element);
+            var original_width;
+            if (widget && widget.get_original_width) {
+                original_width = widget.get_original_width();
+                if (original_width && widget.get_attribute) {
+                    return left*original_width/widget.get_attribute('width');
+                }
+            }
+            return left;
+        };
+
+        utilities.scale_top = function (top, element) {
+            var widget = utilities.widget_side_of_element(element);
+            var original_height;
+            if (widget && widget.get_original_height) {
+                original_height = widget.get_original_height();
+                if (original_height && widget.get_attribute) {
+                    return top*original_height/widget.get_attribute('height');
+                }
+            }
+            return top;
+        };
         
         utilities.ordinal = function (n) {
             n++; // switch from zero-indexing to one-indexing
@@ -2119,23 +2179,52 @@ window.TOONTALK.UTILITIES =
                                feedback_vertical   = feedback.vertical;
                      }},
                 open: function (event, ui) {
-                          var text_length = ui.tooltip.get(0).textContent.length;
-                          var default_capacity = 100;
                           var tooltip = ui.tooltip.get(0);
-                          var new_width, position;
-                          // the following used // .replace(/(\r\n|\n|\r)/g, "<br>") 
-                          // to replace all new lines with <br> breaks
-                          // but this broke some rich text -- could make it more selective but not clear how important it is
-                          tooltip.innerHTML = process_encoded_HTML(ui.tooltip.get(0).textContent, decodeURIComponent); 
+                          var text = tooltip.textContent;
+                          var default_capacity = 100;
+                          var is_robot = $(element).is(".toontalk-robot");
+                          var new_width, position, when_speaking_finished;
+                          if (text === element.toontalk_previous_text) {
+                              // already said and/or displayed this
+                              ui.tooltip.remove();
+                              if (TT.speak) {
+                                  window.speechSynthesis.cancel();
+                              }
+                              return;
+                          }
+                          if (!is_robot) {
+                              // prevent repeating the same text for the same element - except robots which have complex generated titles
+                              when_speaking_finished = function (event) {
+                                  // this should be triggered only if the utterance was completed but it seems some browsers trigger it earlier
+                                  // consequently partial utterances won't be repeated
+                                  // should use charIndex to determine how much was said and maybe use onboundary (when it works) to highlight text
+                                  if (tooltip === element_displaying_tooltip || element_displaying_tooltip === undefined) {
+                                      // if switched to another widget don't consider this spoken
+                                      element.toontalk_previous_text = text;
+                                  }
+                              };
+                          }    
+                          tooltip.innerHTML = process_encoded_HTML(text, decodeURIComponent); 
+                          if (TT.speak) {
+                              // first cancel any old speech
+                              window.speechSynthesis.cancel();
+                              utilities.speak(tooltip.innerText, when_speaking_finished);
+                          }
+                          element_displaying_tooltip = tooltip;
+                          if (!TT.balloons) {
+                              // if no balloons remove tool tip
+                              ui.tooltip.remove();
+                              return;
+                          }
                           // width is 340 by default but if more than fits then make wider
-                          if (text_length > default_capacity) {
+                          if (text.length > default_capacity) {
                               new_width = Math.min(800, maximum_width_if_moved || $(window).width()-100);
                               position = $(tooltip).position();
-                              // //width: (340 + 340*(text_length-default_capacity)/default_capacity),
+                              // //width: (340 + 340*(text.length-default_capacity)/default_capacity),
                               ui.tooltip.css({maxWidth: new_width});
                           }
                           if (element_displaying_tooltip) {
-                              element_displaying_tooltip.remove();
+                              $(element_displaying_tooltip).remove();
                           }
                           // need to add the arrow here since the replacing of the innerHTML above removed the arrow
                           // when it was added earlier
@@ -2145,13 +2234,15 @@ window.TOONTALK.UTILITIES =
 //                                     .addClass(feedback_vertical)
 //                                     .addClass(feedback_horizontal)
 //                                     .appendTo(ui.tooltip);
-                          element_displaying_tooltip = ui.tooltip;
     //                       if (height_adjustment) {
     //                           $(ui.tooltip).css({maxHeight: $(ui.tooltip).height()+height_adjustment/2});
     //                       }
-                          // auto hide after duration proportional to text_length
+                          // auto hide after duration proportional to text.length
                           // TODO: if longer than fits on the screen then autoscroll after some time
                           setTimeout(function () {
+                                         if (!is_robot) {
+                                             element.toontalk_previous_text = text;
+                                         }
                                          ui.tooltip.remove();
                                          // see http://bugs.jqueryui.com/ticket/10689
                                          if ($(tooltip).data('ui-tooltip')) {
@@ -2164,7 +2255,7 @@ window.TOONTALK.UTILITIES =
                                          }
                                          element_displaying_tooltip = undefined;
                                      }, 
-                                     text_length*(TT.MAXIMUM_TOOLTIP_DURATION_PER_CHARACTER || 100));
+                                     text.length*(TT.MAXIMUM_TOOLTIP_DURATION_PER_CHARACTER || 100));
                       },
                close: function () {
                           if ($(this).data('ui-tooltip')) {
@@ -2175,6 +2266,47 @@ window.TOONTALK.UTILITIES =
                           }
                           element_displaying_tooltip = undefined;
                }});
+        };
+
+        utilities.speak = function (text, when_finished, volume, pitch, rate, voice_number) {
+            var speech_utterance = new SpeechSynthesisUtterance(text);
+            var voices = window.speechSynthesis.getVoices();
+            var language_code;
+            if (voices.length === 0) {
+                // not yet loaded -- see https://bugs.chromium.org/p/chromium/issues/detail?id=334847
+                window.speechSynthesis.onvoiceschanged = function () {
+                                                             utilities.speak(text, when_finished, volume, pitch, rate, voice_number);
+                                                             window.speechSynthesis.onvoiceschanged = undefined;
+                                                         };
+                return;
+            }
+            // TT.volume is used for speech and sound effects and speech is quieter so triple its volume
+            speech_utterance.volume = volume === undefined ? Math.min(1, 3*TT.volume) : volume;
+            speech_utterance.pitch  = pitch  === undefined ? 1.2 : pitch; // higher value to sound more like a child -- should really be parameter
+            speech_utterance.rate   = rate   === undefined ? .75 : rate; // slow it down for kids
+            if (TT.TRANSLATION_ENABLED && google && google.translate) {
+                language_code = google.translate.TranslateElement().f;
+            } else {
+                language_code = navigator.language;
+            }
+            voices.some(function (voice) {
+                if (voice.lang.indexOf(language_code) === 0) {
+                    // might be 'es' while voice.lang will be 'es-ES'
+                    // first one is good enough
+                    speech_utterance.lang = voice.lang;
+                    speech_utterance.voice = voice;
+                    if (voice_number === 0 || voice_number === undefined) {
+                        return true;
+                    }
+                    // note that if voice number is greater than the number of matching voices the last one found is used
+                    voice_number--;
+                }
+            });
+            // if language_code's format is name-country and nothing found could try again with just the language name
+            if (when_finished) {
+                speech_utterance.onend = when_finished;
+            }
+            window.speechSynthesis.speak(speech_utterance);
         };
 
         utilities.encode_HTML_for_title = function (html) {
@@ -2902,6 +3034,7 @@ window.TOONTALK.UTILITIES =
             if (pattern === undefined) {
                 return "matched";
             };
+            widget = widget.dereference(); // e.g. widget on top of nest
             match_status = pattern.match(widget);
             if (match_status.is_widget && widget.matched_by) {
                 // e.g. widget is a nest             
@@ -3007,8 +3140,15 @@ window.TOONTALK.UTILITIES =
 //                     }
 //                 }
                 utilities.set_css(element, pending_css);
-            };
-            var x_scale, y_scale, $image;
+            }; 
+            var widget, x_scale, y_scale, $image;
+             if ($(element).is(".toontalk-not-observable")) {
+                 // this happens on FireFox where this is called before the widget has been "rendered"
+                 widget = TT.UTILITIES.widget_side_of_element(element);
+                 if (widget) {
+                    widget.update_display();
+                }
+            }
             if (!original_width) {
                 $image = $(element).children("img");
                 if ($image.is("*")) {
@@ -3266,6 +3406,10 @@ window.TOONTALK.UTILITIES =
             console.log(message);
             console.trace();
             document.body.insertBefore(alert_element, document.body.firstChild);
+            if (TT.speak) {
+                window.speechSynthesis.cancel(); // stop any ongoing speech
+                utilities.speak(message);
+            }
             setTimeout(function () {
                            $(alert_element).remove();
                        },
@@ -3279,7 +3423,7 @@ window.TOONTALK.UTILITIES =
 
         utilities.report_internal_error = function (message) {
             // these are ToonTalk errors not user errors
-            console.log(message);
+            console.error(message);
             console.trace();
             if (TT.debugging) {
                 utilities.display_message("Error: " + message);
@@ -3416,8 +3560,9 @@ window.TOONTALK.UTILITIES =
         };
 
         utilities.set_timeout = function (delayed, delay) {
-            if (!delay) {
+            if (!delay && !utilities.is_internet_explorer()) {
                 // see http://dbaron.org/log/20100309-faster-timeouts
+                // seems to tickle some IE11 security setting so postMessage is sometimes blocked
                 timeouts.push(delayed);
                 window.postMessage(timeout_message_name, "*");
             } else {
@@ -3576,8 +3721,8 @@ window.TOONTALK.UTILITIES =
                     element_position = $(element).offset();
                 }
                 drag_start_handler(event, element);
-                drag_x_offset = touch.clientX - element_position.left;
-                drag_y_offset = touch.clientY - element_position.top;
+                drag_x_offset = touch.pageX - element_position.left;
+                drag_y_offset = touch.pageY - element_position.top;
                 if (TT.logging && TT.logging.indexOf('touch') === 0) {
                     add_to_touch_log("drag started " + element.id);
                 }
@@ -3675,7 +3820,7 @@ window.TOONTALK.UTILITIES =
             // return what is under the element
             var page_x = utilities.get_mouse_or_first_touch_event_attribute("pageX", event);
             var page_y = utilities.get_mouse_or_first_touch_event_attribute("pageY", event);
-            var element_on_page, widget_on_page_side, widget_type;
+            var element_on_page, widget_on_page_side;
             // hide the tool so it is not under itself
             if (element) {
                 $(element).hide();
@@ -3705,7 +3850,6 @@ window.TOONTALK.UTILITIES =
                 }
                 widget_on_page_side = element_on_page.toontalk_widget_side;    
             }
-            widget_type = widget_on_page_side.get_type_name();
             return widget_on_page_side;
        };
 
@@ -3736,16 +3880,7 @@ window.TOONTALK.UTILITIES =
            }
            widget_side = utilities.widget_side_of_element(element);
            if (widget_side) {
-               // dereference in case is in a box hole or scale
                widget_side_dereferenced = widget_side.dereference();
-               if (widget_side_dereferenced.is_backside()) {
-                   if (!css.transform && !widget_side.get_widget().location_constrained_by_container()) {
-                       css.width  = '';
-                       css.height = '';
-                   }
-                   $(element).css(css);
-                   return;
-               }
                if ($(element).is(".toontalk-temporarily-set-down")) {
                    // leave the CSS alone
                    // TODO: make this more modular/cleaner
@@ -3754,9 +3889,10 @@ window.TOONTALK.UTILITIES =
                    css.left   = '';
                    css.top    = '';
                } else if (widget_side_dereferenced.is_plain_text_element()) {
+                   // see Robot dropping text to change element text: test case
                    css.width  = '';
                    css.height = '';
-               }
+               }              
            }
            if (css.width === 0) {
                css.width  = '';
@@ -3842,7 +3978,7 @@ window.TOONTALK.UTILITIES =
        };
 
        utilities.get_audio_volume = function (audio_object) {
-           var volume = document.hidden ? 0 : utilities.get_current_url_numeric_parameter('volume', 10)/100;
+           var volume = document.hidden ? 0 : TT.volume;
            if (volume === 0) {
                muted_audio_objects.push({audio_object: audio_object,
                                          volume: audio_object.volume});
@@ -4056,7 +4192,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
 //         };
 
         utilities.initialize = function (callback) {
-            var document_click, translation_div, $saved_selection;
+            var document_click, translation_div, translation_element, $saved_selection;
             if (toontalk_initialized) {
                 return;
             }
@@ -4072,11 +4208,19 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                 };
             TT.debugging = utilities.get_current_url_parameter('debugging');
             TT.logging   = utilities.get_current_url_parameter('log');
-            if (utilities.get_current_url_numeric_parameter('volume', 10) > 0) {
+            // a value between 0 and 1 specified as a percent with a default of 10%
+            TT.volume = utilities.get_current_url_numeric_parameter('volume', 10)/100;
+            if (TT.volume > 0) {
                 initialize_sounds();
             }
             TT.open_backside_only_if_alt_key = utilities.get_current_url_boolean_parameter('alt_key_to_open_backside');
-            TT.reset = utilities.get_current_url_boolean_parameter('reset', false)
+            TT.reset    = utilities.get_current_url_boolean_parameter('reset', false);
+            TT.speak    = utilities.get_current_url_boolean_parameter('speak', false);
+            if (TT.speak && !window.speechSynthesis) {
+                TT.speak = false;
+                utilities.display_message("This browser doesn't support speech output. speak=1 ignored.");
+            }
+            TT.balloons = utilities.get_current_url_boolean_parameter('balloons', true);
             if (!TT.open_backside_only_if_alt_key) {
                 // puzzle=1 is shorthand for alt_key_to_open_backside=1&reset=1
                 TT.open_backside_only_if_alt_key = utilities.get_current_url_boolean_parameter('puzzle');
@@ -4112,6 +4256,30 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                 }
                 document.head.appendChild($('<meta name="google-translate-customization" content="7e20c0dc38d147d6-a2c819007bfac9d1-gc84ee27cc12fd5d1-1b"></meta>')[0]);
                 load_script("https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit");
+                // need an element that triggers Google translate to speak arbitrary text
+                translation_element = document.createElement('div');
+                translation_element.className = 'toontalk-translation-element';
+                document.body.appendChild(translation_element);
+                utilities.translate = function (text, callback, maximum_wait) {
+                                          var original;
+                                          if (maximum_wait === undefined) {
+                                              // hoping 1/2 second is enough for Google to translate this
+                                              // could use a longer time if could text if translation is needed
+                                              maximum_wait = 500;
+                                          }
+                                          translation_element.innerHTML = text;
+                                          original = translation_element.innerText;
+                                          setTimeout(function () {
+                                                         if (original !== translation_element.innerText || maximum_wait <= 0) {
+                                                             callback(translation_element.innerText);
+                                                             translation_element.innerText = '';
+                                                         } else {
+                                                             // not yet translated check again in 100ms
+                                                             utilities.translate(text, callback, maximum_wait-100);
+                                                         }
+                                                      },
+                                                      100);
+                };
             } else {
                 $("#google_translate_element").remove();
             }

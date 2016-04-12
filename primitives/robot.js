@@ -16,7 +16,7 @@ window.TOONTALK.robot = (function (TT) {
         var path, now;
         robot.current_action_name = action_name;
         // following relies on current_action_name being set
-        path = TT.path.get_path_to(widget, robot);
+        path = TT.path.get_path_to(widget, robot, true);
         if (path) {
             if (!additional_info) {
                 additional_info = {};
@@ -43,7 +43,7 @@ window.TOONTALK.robot = (function (TT) {
         // otherwise is a positive number which is the multiplier of the normal default speed for each step
         var new_robot = Object.create(robot);
         // grab the default definition of remove_backside_widget so can use it while overriding it
-        var widget_remove_backside_widget = new_robot.remove_backside_widget;
+        var widget_remove_backside_widget;
         // who should do the 'repeating'
         var first_in_team;
         // if not the first_in_team then the robot just before this one
@@ -541,6 +541,7 @@ window.TOONTALK.robot = (function (TT) {
             new_robot.set_next_robot(next_robot);
         }
         new_robot.add_standard_widget_functionality(new_robot);
+        widget_remove_backside_widget = new_robot.remove_backside_widget.bind(new_robot);
         new_robot.has_name(new_robot);
         new_robot.set_name(name);
         new_robot.set_description(description);
@@ -632,9 +633,9 @@ window.TOONTALK.robot = (function (TT) {
         if (backside && backside.visible() && frontside_condition_widget) {
             clear_all_mismatch_displays = function (widget) {
                 // conditions could keep last_match_status and when displayed use appropriate CSS
-                $(widget.get_frontside_element()).removeClass("toontalk-conditions-not-matched toontalk-conditions-waiting")
-                                                 // clear all the mismatch displays from descendants
-                                                 .find(".toontalk-conditions-not-matched, .toontalk-conditions-waiting").removeClass("toontalk-conditions-not-matched toontalk-conditions-waiting");
+                $(widget.get_element()).removeClass("toontalk-conditions-not-matched toontalk-conditions-waiting")
+                                       // clear all the mismatch displays from descendants
+                                       .find(".toontalk-conditions-not-matched, .toontalk-conditions-waiting").removeClass("toontalk-conditions-not-matched toontalk-conditions-waiting");
             };
             clear_all_mismatch_displays(frontside_condition_widget);
             this.rerender();
@@ -693,6 +694,8 @@ window.TOONTALK.robot = (function (TT) {
                                         // only set to failure if not a suspension (or match)
                                         best_sub_match_status = sub_match_status;
                                     }
+                                } else {
+                                    best_sub_match_status = condition;
                                 }
                             }.bind(this));
                         }
@@ -730,7 +733,8 @@ window.TOONTALK.robot = (function (TT) {
         this.match_status.forEach(function (waiting_widget) {
             if (waiting_widget[1]) {
                 // true for nests but not birds busy delivering
-                $(waiting_widget[1].get_frontside_element()).addClass("toontalk-conditions-waiting");
+                // waiting_widget is [widget, pattern]
+                $(waiting_widget[1].get_element()).addClass("toontalk-conditions-waiting");
             }
         });
         if (this.get_next_robot()) {
@@ -836,7 +840,7 @@ window.TOONTALK.robot = (function (TT) {
             widget_copy = widget_side.copy({fresh_copy: true});
             path = TT.path.get_path_to_resource(widget_copy);
         } else {
-            path = TT.path.get_path_to(widget_side, this);
+            path = TT.path.get_path_to(widget_side, this, true);
         }
         if (path) {
             now = Date.now();
@@ -931,9 +935,15 @@ window.TOONTALK.robot = (function (TT) {
             this.training_finished();
         } else {
             // needed since removal may require this when running (since removal also applies to taking out of a container)
-            // this way the robot could restore things using the robot
+            // this way the robot could restore things using the vacuum
             this.add_newly_created_widget_if_new(widget);
         }
+    };
+
+    robot.restored = function (widget) {
+        // robot used vacuum to restore previously vacuumed widget
+        var action_name = "restore";
+        add_step_to_robot(widget, action_name, this);
     };
     
     robot.edited = function (widget, details) {
@@ -1030,7 +1040,7 @@ window.TOONTALK.robot = (function (TT) {
     };
 
     robot.get_training_context = function () {
-        return this.get_first_in_team().get_parent_of_frontside().get_widget();
+        return this.get_first_in_team().get_parent_of_frontside() && this.get_first_in_team().get_parent_of_frontside().get_widget();
     };
     
     robot.add_step = function (step, new_widget) {
@@ -1082,10 +1092,10 @@ window.TOONTALK.robot = (function (TT) {
                     // tried to add position: absolute to toontalk-held-by-robot CSS but didn't work
                     $(thing_in_hand_element).addClass("toontalk-held-by-robot");
                     // compute where the thing should be to be centred over the robot
-                    thing_in_hand_width  = $(thing_in_hand_element).width();
-                    thing_in_hand_height = $(thing_in_hand_element).height();
-                    robot_width  = $(frontside_element).width();
-                    robot_height = $(frontside_element).height();
+                    thing_in_hand_width  = TT.UTILITIES.get_element_width(thing_in_hand_element); 
+                    thing_in_hand_height = TT.UTILITIES.get_element_height(thing_in_hand_element);
+                    robot_width          = TT.UTILITIES.get_element_width(frontside_element); 
+                    robot_height         = TT.UTILITIES.get_element_height(frontside_element);
                     if (thing_in_hand && thing_in_hand_width === 0) {
                         // could be holding a tool so thing_in_hand is undefined but 
                         // thing_in_hand_element is the tool's element
@@ -1252,7 +1262,7 @@ window.TOONTALK.robot = (function (TT) {
                                    " (highlighted in red on my backside) that I'm expecting doesn't match " + mismatch_description + ". Perhaps editing my conditions will help.\n" + 
                                    robot_description;
             } else if (this.match_status !== 'matched') {
-                robot_description = "I'm waiting for something to be delivered to the nest that matches the " + this.match_status[0][1] +
+                robot_description = "I'm waiting for something to be delivered to the nest that matches " + TT.UTILITIES.add_a_or_an(this.match_status[0][1].toString()) +
                                     " in my conditions (highlighted in yellow on my backside).\n" + robot_description;
             }
         }
@@ -1528,7 +1538,7 @@ window.TOONTALK.robot_backside =
             } else if (robot.match_status !== 'matched') {
                 robot.match_status.forEach(function (waiting_widget) {
                     // waiting_widget is [widget, pattern]
-                    $(waiting_widget[1].get_frontside_element()).addClass("toontalk-conditions-waiting");
+                    $(waiting_widget[1].get_element()).addClass("toontalk-conditions-waiting");
                 });
             }
         }
@@ -1570,7 +1580,11 @@ window.TOONTALK.robot_backside =
             backside_conditions.forEach(function (backside_condition) {
                 var condition_element, type;
                 if (backside_condition) {
-                    type = backside_condition.get_type_name();
+                    if (backside_condition.is_backside()) {
+                        type = "on-backside";
+                    } else {
+                        type = backside_condition.get_type_name();
+                    }
                     area_class_name = "toontalk-backside-" + type + "-conditions-area";
                     if (type === 'bird') {
                         condition_element = TT.UTILITIES.create_text_element("And there is a bird on the back.");

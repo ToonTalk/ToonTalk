@@ -12,7 +12,7 @@ window.TOONTALK.path =
 
     var default_top_level_widget; // needed when running without a top-level backside
 
-    TT.creators_from_json["path.to_entire_context"] = function () {
+    TT.creators_from_json["path.to_entire_context"] = function (json, additional_info) {
         return TT.path.to_entire_context();
     };
 
@@ -61,7 +61,7 @@ window.TOONTALK.path =
                     path.is_backside = is_backside;
                     return path;
                 }
-                if (widget_type === "element attribute" && widget.get_original_attribute_widget() === widget) {
+                if (widget_type === "element attribute" && widget.is_attribute_widget_copy(widget)) {
                     // if widget.get_parent_of_frontside() then is a copy of the attribute element
                     path = TT.element.create_attribute_path(widget, robot);
                     path.is_backside = is_backside;
@@ -116,7 +116,7 @@ window.TOONTALK.path =
                 path.is_backside = is_backside;
                 return path;
             }
-            var path = compute_path(widget, robot);
+            var path = compute_path(widget, robot, or_any_backside_of_widget);
             if (path && widget.dereference_contents) {
                 // widget is normally transparently dereferenced but here the widget (e.g. a nest)
                 // only widgets that respond to dereference_contents need to conditionally be dereferenced
@@ -377,7 +377,8 @@ window.TOONTALK.path =
                         }     
                     },
                     toString: function (to_string_info) {
-                        var back = robot.get_frontside_conditions().is_top_level() ? "work area" : "back of what";
+                        var conditions =  robot.get_frontside_conditions();
+                        var back = conditions && conditions.is_top_level() ? "work area" : "back of what";
                         var string = TT.UTILITIES.add_a_or_an(type_name || "thing") + 
                                      " on the " + back + " I'm working on";
                         if (this.removing_widget) {
@@ -393,10 +394,9 @@ window.TOONTALK.path =
                     }
             };
         },
-        create_from_json: function (json, additional_info) {
-            var path = TT.UTILITIES.create_from_json(json, additional_info);
+        process_path_json: function (path, json, additional_info) {
             if (json.next_path) {
-                path.next = this.create_from_json(json.next_path, additional_info);
+                path.next = TT.UTILITIES.create_from_json(json.next_path, additional_info);
             }
             if (json.removing_widget) {
                 path.removing_widget = true;
@@ -407,7 +407,6 @@ window.TOONTALK.path =
             if (json.is_backside) {
                 path.is_backside = true;
             }
-            return path;
         },
         top_level_backside: {
             // this can be shared by all since only used to drop on -- not to pick up

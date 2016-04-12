@@ -573,7 +573,9 @@ window.TOONTALK.bird = (function (TT) {
                             .addClass("toontalk-bird-static " + this.get_class_name_with_color("toontalk-bird-static"))
                             .removeClass("toontalk-bird-gimme");
                        // if in a container restore dimensions
-                       this.get_parent_of_frontside().render();
+                       if (this.get_parent_of_frontside()) {
+                           this.get_parent_of_frontside().render();
+                       }
                     }
                 }.bind(this));
             }
@@ -1195,7 +1197,7 @@ window.TOONTALK.nest = (function (TT) {
                     } else {
                         top_level_widget_side = TT.UTILITIES.widget_side_of_jquery($(frontside_element).closest(".toontalk-top-level-backside"));
                         if (!top_level_widget_side) {
-                            top_level_widget_side = TT.UTILITIES.widget_side_of_jquery($(other.get_widget().get_frontside_element(true)).closest(".toontalk-top-level-backside"));     
+                            top_level_widget_side = TT.UTILITIES.widget_side_of_jquery($(side_of_other.get_widget().get_frontside_element(true)).closest(".toontalk-top-level-backside"));     
                         }
                         if (top_level_widget_side) {
                             if (top_level_widget_side.is_backside()) {
@@ -1369,7 +1371,6 @@ window.TOONTALK.nest = (function (TT) {
                     top_contents.set_parent_of_frontside(this);
                 }
             } else {
-                TT.UTILITIES.give_tooltip(frontside_element, this.get_title());
                 if (guid) {
                     $(frontside_element).removeClass(this.get_class_name_with_color("toontalk-nest-with-egg"));
                     $(frontside_element).addClass(this.get_class_name_with_color("toontalk-empty-nest"));
@@ -1377,6 +1378,7 @@ window.TOONTALK.nest = (function (TT) {
                     TT.UTILITIES.add_animation_class(frontside_element, this.get_class_name_with_color("toontalk-nest-with-egg"));
                 }
             }
+            TT.UTILITIES.give_tooltip(frontside_element, this.get_title());
             $(frontside_element).addClass("toontalk-nest");
             if (backside) {
                 backside.rerender();

@@ -21,6 +21,7 @@ window.TOONTALK.wand = (function (TT) {
                                     TT.sounds.magic.play();
                                 }
                                 widget_copy = widget.add_copy_to_container();
+                                widget_copy.update_display();
                                 if (widget.robot_in_training()) {
                                     widget.robot_in_training().copied(widget, widget_copy, false);
                                 }

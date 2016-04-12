@@ -431,6 +431,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         new_element.get_children = function () {
             return children;
         };
+        new_element.get_child = function (index) {
+            if (children) {
+                return children[index];
+            }
+        };
         new_element.set_sound_effect = function (new_value) {
             sound_effect = new_value;
             sound_effect.volume = TT.UTILITIES.get_audio_volume(sound_effect);
@@ -565,6 +570,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                     .addClass("toontalk-erased-element toontalk-side")
                                     .css({width:  width,
                                           height: height,
+                                          position: '',    // no longer absolute (maybe shouldn't have been since is presumably a condition)
                                           transform: ''}); // remove any transformations
                 if ($(frontside_element).parent(".toontalk-conditions-container").is("*")) {
                     TT.UTILITIES.give_tooltip(frontside_element, "This is an element that has been erased. It will match any element.");
@@ -1218,6 +1224,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 var copies = this_element_widget.get_original_copies()[attribute_name];
                 return copies && copies[0];
             };
+            attribute_widget.is_attribute_widget_copy = function (attribute_widget) {
+                var copies = this_element_widget.get_original_copies()[attribute_name];
+                return copies && copies.indexOf(attribute_widget) >= 0;
+            };
             attribute_widget.get_attribute_owner = function () {
                 // return this_element_widget or backside top ancestor of type element
                 var get_backside_parent = function (widget) {
@@ -1429,7 +1439,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     };
    
     element.toString = function (to_string_info) {
-       var scale_or_quote_html = function (html) {
+        var scale_or_quote_html, image_description, children, text, description, source_URL;
+        if (this.get_erased()) {
+            return "any element";
+        }
+        scale_or_quote_html = function (html) {
            var style = "";
            var first_space;
            if (html.length > 1 && html.charAt(0) === '<') {
@@ -1445,7 +1459,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
            // else is a plain string so quote it
            return '"' + html + '"';
         }.bind(this);
-        var image_description = function () {
+        image_description = function () {
             // if image returns alt if known otherwise default string
             var html = this.get_HTML();
             var alt_index = html.indexOf("alt=");
@@ -1458,8 +1472,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             }
             return "";
         }.bind(this);
-        var children = this.get_children();
-        var text, description, source_URL;
+        children = this.get_children();
         if (to_string_info && !to_string_info.inside_tool_tip) {
             if (to_string_info.for_json_div) {
                 // don't risk confusing things with a comment that might interfere with the HTML
@@ -1626,7 +1639,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         if (children) {
             TT.UTILITIES.when_attached(function () {
                  children.forEach(function (child, index) {
-                    var view = json.children[index].widget && json.children[index].widget.view;
+                    var view = json.children[index] && json.children[index].widget && json.children[index].widget.view;
                     if (view) {
                         TT.UTILITIES.set_css(child.get_frontside_element(true),
                                              {left: view.frontside_left,
@@ -1660,10 +1673,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 // if the robot is running on the backside of a widget that is on the backside of the top_level_context
                 // then use the top_level_context
                 var element_widget = path_to_element_widget.dereference_path(robot, (robot.get_top_level_context() || robot.get_context()));
-                return element_widget.get_widget().get_attribute_widget_in_backside_table(attribute_name);
+                return element_widget && element_widget.get_widget().get_attribute_widget_in_backside_table(attribute_name);
             },
             toString: function () {
-                return "the '" + attribute_name + "' property of " + path_to_element_widget;
+                return "the '" + attribute_name + "' property of " + TT.path.toString(path_to_element_widget);
             },
             get_json: function (json_history, callback, start_time) {
                 var element_widget_path_callback = function (element_widget_path_json, start_time) {
@@ -1672,12 +1685,12 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                               element_widget_path: element_widget_path_json},
                              start_time);
                 };
-                path_to_element_widget.get_json(json_history, element_widget_path_callback, start_time); 
+                TT.path.get_json(path_to_element_widget, json_history, element_widget_path_callback, start_time); 
             }};
     };
     
-    TT.creators_from_json["path_to_style_attribute"] = function (json) {
-        var element_widget_path = TT.UTILITIES.create_from_json(json.element_widget_path);
+    TT.creators_from_json["path_to_style_attribute"] = function (json, additional_info) {
+        var element_widget_path = TT.UTILITIES.create_from_json(json.element_widget_path, additional_info);
         return element.extend_attribute_path(element_widget_path, json.attribute);
     };
 
@@ -2192,6 +2205,68 @@ window.TOONTALK.element.function =
         "The bird will cause the current page to be replaced by the new URL. The back button should return to the current page.",
         "page",
         ['an element containing a URL']);
+    functions.add_function_object(
+        'speak', 
+        function (message, event, robot) {
+            var speak = function (widget) {
+                var text, speech_utterance, when_finished;
+                if (!widget) {
+                    TT.UTILITIES.display_message("Speaking birds need something in the second box hole.");
+                    return;
+                }
+                if (!window.speechSynthesis) {
+                    // ignore this
+                    return true;
+                }
+                when_finished = function (event) {
+                    var response = TT.element.create(text, [], "a response to speaking '" + text + "'");
+                    functions.process_response(response, box_size_and_bird.bird, message, event, robot);
+                };
+                widget = widget.get_widget(); // either side is fine
+                text = widget.get_text ? widget.get_text() : widget.toString();
+                if (TT.TRANSLATION_ENABLED) {
+                    // TT.UTILITIES.speak doesn't translate since it should already be translated
+                    // but the text of a widget may not be
+                    TT.UTILITIES.translate(text,
+                                           function (translated_text) {
+                                               TT.UTILITIES.speak(translated_text, when_finished, volume, pitch, rate, voice_number);
+                                           });
+                } else {
+                    TT.UTILITIES.speak(text, when_finished, volume, pitch, rate, voice_number);
+                }
+            };
+            var box_size_and_bird = functions.check_message(message);
+            var volume, pitch, rate, voice_number;
+            if (!box_size_and_bird) {
+                return;
+            }
+            if (box_size_and_bird.size < 2) {
+                TT.UTILITIES.display_message("Speaking birds need a box with two or more holes.");
+                return;
+            }
+            volume = message.get_hole_contents(2);
+            if (volume) {
+                volume = volume && volume.to_float && volume.to_float();
+            }
+            pitch = message.get_hole_contents(3);
+            if (pitch) {
+                pitch = pitch && pitch.to_float && pitch.to_float();
+            }
+            rate = message.get_hole_contents(4);
+            if (rate) {
+                rate = rate && rate.to_float && rate.to_float();
+            }
+            voice_number = message.get_hole_contents(5);
+            if (voice_number) {
+                voice_number = voice_number && voice_number.to_float && voice_number.to_float();
+            }
+            speak(message.get_hole_contents(1));
+            return true;
+            // could enhance this to support pitch, volume, rate, voice number, lang
+        },
+        "The bird will cause the browser to speak what is in the second box hole. Note that this currently only works in Chrome and Safari.",
+        "speak",
+        ['a widget']);
     return functions.get_function_table();
 
 }(window.TOONTALK));

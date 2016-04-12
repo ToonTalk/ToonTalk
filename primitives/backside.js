@@ -44,12 +44,12 @@ window.TOONTALK.backside =
     return {
         create: function (widget) {
             var backside = Object.create(this);
-            var backside_element = document.createElement("div");
+            var backside_element = document.createElement('div');
             var $backside_element = $(backside_element);
             var x_scale = 1; // so can shrink this down
             var y_scale = 1;
-            var green_flag_element = document.createElement("div");
-            var stop_sign_element  = document.createElement("div");
+            var green_flag_element = document.createElement('div');
+            var stop_sign_element  = document.createElement('div');
             var help_URL = widget.get_help_URL && widget.get_help_URL();
             var erased, parent, parent_is_backside, settings_button, visible,
                 original_width, original_height, original_x_scale, original_y_scale, width_at_resize_start, height_at_resize_start, 
@@ -223,19 +223,9 @@ window.TOONTALK.backside =
             backside_element.appendChild(stop_sign_element);
             TT.UTILITIES.use_custom_tooltip(green_flag_element);
             TT.UTILITIES.use_custom_tooltip(stop_sign_element);
-            TT.UTILITIES.when_attached(backside_element,
-                                       function () {
-                                            if (widget.is_robot()) {
-                                                backside_element.title = "On the back of the robot you can change the conditions and setting of the robot."
-                                            } else {
-                                                widget_HTML = widget.toString({inside_tool_tip: true}); 
-                                                backside_element.title = "The back of " + widget_HTML + " You can put robots on the back to make it come 'alive'."; 
-                                            }                  
-                                            TT.UTILITIES.use_custom_tooltip(backside_element);
-                                       });
             if (help_URL) {
                 relative_URL = help_URL.indexOf("://") < 0;
-                help_button = document.createElement(relative_URL ? "div" : "a");
+                help_button = document.createElement(relative_URL ? 'div' : "a");
                 // notranslate shouldn't be needed and is the older way of avoiding translation
                 // see http://www.w3.org/International/questions/qa-translate-flag
                 $(help_button).addClass("toontalk-help-button notranslate toontalk-widget-help-button");
@@ -243,7 +233,7 @@ window.TOONTALK.backside =
                 help_button.innerHTML = 'i'; // like tourist info -- alternatively could use a question mark
                 help_button.translate = false; // should not be translated
                 TT.UTILITIES.give_tooltip(help_button, "Click to learn more about " + widget.get_type_name(true, true) + ".");
-                close_help_button = document.createElement("div");
+                close_help_button = document.createElement('div');
                 $(close_help_button).addClass("toontalk-close-help-frame-button")
                                     .button();
                 close_help_button.addEventListener('click',
@@ -259,7 +249,7 @@ window.TOONTALK.backside =
                 backside_element.appendChild(description_label); 
             }
             if (widget.is_top_level()) {
-                settings_button = document.createElement("div");
+                settings_button = document.createElement('div');
                 $(settings_button).addClass("toontalk-settings-button");
                 settings_button.addEventListener('click', 
                                                  function (event) {
@@ -271,6 +261,29 @@ window.TOONTALK.backside =
             }
             $backside_element.addClass("toontalk-backside toontalk-side " + "toontalk-backside-of-" + widget.get_type_name());
             $backside_element.css({"z-index": TT.UTILITIES.next_z_index()});
+            TT.UTILITIES.when_attached(backside_element,
+                                       function () {
+                                            var new_title, container;
+                                            if (backside.inside_conditions_container()) {
+                                                // if in a condition then hide my buttons
+                                                $(green_flag_element).hide();
+                                                $(stop_sign_element).hide();
+                                                $(help_button).hide();
+                                                $(close_button).hide();
+                                                // and use my description as the tool tip
+                                                new_title = "This will match " + backside.toString() + ".";
+                                                backside.rerender();                                                       
+                                            } else if (widget.is_robot()) {
+                                                new_title = "On the back of the robot you can change the conditions and setting of the robot.";
+                                            } else if (widget.is_top_level()) {
+                                                new_title = "This is a work area where you can drag things.";     
+                                            } else {
+                                                widget_HTML = widget.toString({inside_tool_tip: true}); 
+                                                new_title = "You are pointing to the back of " + TT.UTILITIES.add_a_or_an(widget_HTML) + 
+                                                            ". You can put robots on the back to make it come 'alive'."; 
+                                            }
+                                            TT.UTILITIES.give_tooltip(backside_element, new_title);
+                                       });
             backside.get_element = function () {
                 return backside_element;
             };
@@ -305,8 +318,8 @@ window.TOONTALK.backside =
             backside.get_erased = function () {
                 return erased;
             };
-            backside.set_erased = function (new_value, update_now) {
-                if (new_value && !this.inside_condtions_container()) {
+            backside.set_erased = function (new_value, update_now, dont_ignore_conditions) {
+                if (new_value && !dont_ignore_conditions && !this.inside_conditions_container()) {
                     // ignore erasures if not in a condition container
                     return;
                 }
@@ -324,14 +337,14 @@ window.TOONTALK.backside =
             backside.is_primary_backside = function () {
                 return this === this.get_widget().get_backside();
             };
-            backside.inside_condtions_container = function () {
-                return $(this.get_element()).closest(".toontalk-conditions-container").is("*");
+            backside.inside_conditions_container = function () {
+                return $(this.get_element()).closest(".toontalk-conditions-panel, .toontalk-conditions-container").is("*");
             };
             backside.get_width = function () {
-                return $(this.get_element()).width();
+                return TT.UTILITIES.get_element_width (this.get_element());
             };
             backside.get_height = function () {
-                return $(this.get_element()).height();
+                return TT.UTILITIES.get_element_height(this.get_element());
             };
             backside.is_widget = true; // perhaps should be renamed is_widget_side
             backside.get_parent_of_backside = function () {
@@ -575,22 +588,14 @@ window.TOONTALK.backside =
                 original_height = dimensions.original_height;
             };
             backside.scale_to_fit = function (this_element, other_element) {
-                var scales;
-                if (!original_width && this.get_widget().backside_geometry) {
-                    original_width  = this.get_widget().backside_geometry.original_width;
-                    original_height = this.get_widget().backside_geometry.original_height;  
-                }
-                scales = TT.UTILITIES.scale_to_fit(this_element, other_element, original_width, original_height);
+                // if CSS of toontalk-backside changes then change the following numbers
+                var scales = TT.UTILITIES.scale_to_fit(this_element, other_element, 550, 200);
                 x_scale = scales.x_scale;
                 y_scale = scales.y_scale;
             };
             backside.scale_to = function (new_width, new_height) {
-                var scales;
-                if (!original_width && this.get_widget().backside_geometry) {
-                    original_width  = this.get_widget().backside_geometry.original_width;
-                    original_height = this.get_widget().backside_geometry.original_height;  
-                }
-                scales = TT.UTILITIES.scale_element(this.get_element(true), new_width, new_height, original_width, original_height);
+                // if CSS of toontalk-backside changes then change the following numbers
+                var scales = TT.UTILITIES.scale_element(this.get_element(true), new_width, new_height, 550, 200);
                 x_scale = scales.x_scale;
                 y_scale = scales.y_scale;  
             };
@@ -606,9 +611,10 @@ window.TOONTALK.backside =
             TT.UTILITIES.when_attached(backside_element, 
                                        function () {
                                             var backside_width, backside_height, sign_width, close_button_width, green_flag_width, help_button_width;
-                                            backside_width  = $backside_element.width();
-                                            backside_height = $backside_element.height();
-                                            sign_width = $(stop_sign_element) .width();
+                                            backside_width  = TT.UTILITIES.get_element_width (backside_element);
+                                            backside_height = TT.UTILITIES.get_element_height(backside_element);
+                                            // following used for CSS so use CSS width rather than true width (if scaled)
+                                            sign_width = $(stop_sign_element).width();
                                             close_button_width = $(close_button).width();
                                             if (close_button_width) {
                                                 close_button_width += 14; // needs a gap
@@ -703,8 +709,8 @@ window.TOONTALK.backside =
             TT.UTILITIES.drag_and_drop(backside_element);
             $backside_element.resizable(
                 {start: function () {
-                    width_at_resize_start  = $backside_element.width();
-                    height_at_resize_start = $backside_element.height();
+                    width_at_resize_start  = TT.UTILITIES.get_element_width (backside_element);
+                    height_at_resize_start = TT.UTILITIES.get_element_height(backside_element);
                     if (!original_width) {
                         original_width  = width_at_resize_start;
                     }
@@ -765,10 +771,10 @@ window.TOONTALK.backside =
             backside.display_updated = function () {
                 var $backside_element = $(this.get_element());
                 if (!original_width) {
-                    original_width = $backside_element.width();
+                    original_width  = TT.UTILITIES.get_element_width (backside_element);
                 }
                 if (!original_height) {
-                    original_height = $backside_element.height();
+                    original_height = TT.UTILITIES.get_element_height(backside_element);
                 }
             };
             backside.add_to_top_level_backside = function (widget_side, train) {
@@ -787,10 +793,16 @@ window.TOONTALK.backside =
         },
 
         toString: function () {
+            if (this.get_erased()) {
+                return "any backside";
+            }
             return "backside of " + this.get_widget();
         },
 
         get_full_description: function (to_string_info) {
+            if (this.get_erased()) {
+                return "any backside";
+            }
             return "backside of " + this.get_widget().get_full_description(to_string_info);
         },
                 
@@ -1362,11 +1374,12 @@ window.TOONTALK.backside =
             var this_widget, match_status;
             if (other.is_backside()) {
                 if (this.get_erased()) {
-                    // matches any backside of the same widget type
-                    if (this.get_widget().get_type_name() === other.get_widget().get_type_name()) {
+                    // used to match any backside of the same widget type
+                    // but any backside should match any backside
+//                     if (this.get_widget().get_type_name() === other.get_widget().get_type_name()) {
                         return 'matched';
-                    }
-                    return this;
+//                     }
+//                     return this;
                 }
                 this_widget = this.get_widget();
                 match_status = this_widget.match(other.get_widget());
@@ -1378,6 +1391,10 @@ window.TOONTALK.backside =
             }
             other.last_match = this;
             return other;
+        },
+
+        add_copy_to_container: function (widget_copy, x_offset, y_offset) {
+            return this.get_widget().add_copy_to_container(widget_copy || this.copy(), x_offset, y_offset);
         },
 
         has_ancestor: function (other) {
@@ -1547,7 +1564,8 @@ TOONTALK.creators_from_json['backside'] = function (json, additional_info) {
     var backside_element = backside.get_element();
     TOONTALK.UTILITIES.set_css(backside_element, json.css);
     if (json.erased) {
-        backside.set_erased(json.erased);
+        // following should be set even if not yet part of a condition
+        backside.set_erased(json.erased, false, true);
     }
     return backside;
 };
