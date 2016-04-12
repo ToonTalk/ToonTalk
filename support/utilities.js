@@ -2187,6 +2187,7 @@ window.TOONTALK.UTILITIES =
                           if (text === element.toontalk_previous_text) {
                               // already said and/or displayed this
                               ui.tooltip.remove();
+                              window.speechSynthesis.cancel();
                               return;
                           }
                           if (!is_robot) {
