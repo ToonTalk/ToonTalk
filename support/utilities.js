@@ -2192,23 +2192,27 @@ window.TOONTALK.UTILITIES =
                               }
                               return;
                           }
-                          if (!is_robot) {
-                              // prevent repeating the same text for the same element - except robots which have complex generated titles
-                              when_speaking_finished = function (event) {
-                                  // this should be triggered only if the utterance was completed but it seems some browsers trigger it earlier
-                                  // consequently partial utterances won't be repeated
-                                  // should use charIndex to determine how much was said and maybe use onboundary (when it works) to highlight text
-                                  if (tooltip === element_displaying_tooltip || element_displaying_tooltip === undefined) {
-                                      // if switched to another widget don't consider this spoken
-                                      element.toontalk_previous_text = text;
-                                  }
-                              };
-                          }    
                           tooltip.innerHTML = process_encoded_HTML(text, decodeURIComponent); 
                           if (TT.speak) {
                               // first cancel any old speech
                               window.speechSynthesis.cancel();
+                              if (!is_robot) {
+                                  // prevent repeating the same text for the same element - except robots which have complex generated titles
+                                  when_speaking_finished = function (event) {
+                                      // this should be triggered only if the utterance was completed but it seems some browsers trigger it earlier
+                                      // consequently partial utterances won't be repeated
+                                      // should use charIndex to determine how much was said and maybe use onboundary (when it works) to highlight text
+                                      if (tooltip === element_displaying_tooltip || element_displaying_tooltip === undefined) {
+                                          // if switched to another widget don't consider this spoken
+                                          element.toontalk_previous_text = text;
+                                      }
+                                  };
+                              }    
                               utilities.speak(tooltip.innerText, when_speaking_finished);
+                          }
+                          if (element_displaying_tooltip) {
+                              // remove old tool tip
+                              $(element_displaying_tooltip).remove();
                           }
                           element_displaying_tooltip = tooltip;
                           if (!TT.balloons) {
@@ -2222,9 +2226,6 @@ window.TOONTALK.UTILITIES =
                               position = $(tooltip).position();
                               // //width: (340 + 340*(text.length-default_capacity)/default_capacity),
                               ui.tooltip.css({maxWidth: new_width});
-                          }
-                          if (element_displaying_tooltip) {
-                              $(element_displaying_tooltip).remove();
                           }
                           // need to add the arrow here since the replacing of the innerHTML above removed the arrow
                           // when it was added earlier
