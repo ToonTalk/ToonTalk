@@ -3560,8 +3560,9 @@ window.TOONTALK.UTILITIES =
         };
 
         utilities.set_timeout = function (delayed, delay) {
-            if (!delay) {
+            if (!delay && !utilities.is_internet_explorer()) {
                 // see http://dbaron.org/log/20100309-faster-timeouts
+                // seems to tickle some IE11 security setting so postMessage is sometimes blocked
                 timeouts.push(delayed);
                 window.postMessage(timeout_message_name, "*");
             } else {
