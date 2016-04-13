@@ -3117,6 +3117,12 @@ background-image: url("images/dusty-morph.png");
 	color: white;
 	display:  none;
 }
+.ui-tooltip > a {
+/* 	links in tool tips display as ordinary text but link may be used elsewhere - e.g. in generating function-birds.html */
+	color: white;
+	text-decoration: none;
+}
+
 /* .toontalk-select-function {
 	position: relative;
 } */

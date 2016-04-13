@@ -2264,7 +2264,7 @@ window.TOONTALK.element.function =
             return true;
             // could enhance this to support pitch, volume, rate, voice number, lang
         },
-        "The bird will cause the browser to speak what is in the second box hole. Note that this currently only works in Chrome and Safari.",
+        "The bird will cause the browser to speak what is in the second box hole. Other holes can have numbers describing the <a href='https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance'>volume, pitch, rate, voice_number</a>. Might do nothing in <a href='http://caniuse.com/#search=speech%20syn'>some browsers</a>.",
         "speak",
         ['a widget']);
     return functions.get_function_table();
