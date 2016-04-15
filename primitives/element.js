@@ -2069,7 +2069,7 @@ window.TOONTALK.element_backside =
                 };
                 $play_video_button = $("<button>Play video</button>").button();
                 $play_video_button.addClass("toontalk-play-video-button");
-                play_sound_effect_button_clicked =
+                play_video_button_clicked =
                     function (event) {
                         if (video_object.paused) {
                             video_object.play();
