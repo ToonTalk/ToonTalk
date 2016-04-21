@@ -287,7 +287,8 @@ window.TOONTALK.widget = (function (TT) {
                         backside = this.create_backside();
                         if (this.backside_widgets_json_views) {
                             backside.add_backside_widgets(this.get_backside_widgets(), this.backside_widgets_json_views);
-                            this.backside_widgets_json_views = undefined;
+                            // the following was causing JSON to lose the location of widgets on the backside (if not visible)
+//                             this.backside_widgets_json_views = undefined;
                         }
                     }
                     return backside;

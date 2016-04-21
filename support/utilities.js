@@ -3561,6 +3561,8 @@ window.TOONTALK.UTILITIES =
         };
 
         utilities.set_timeout = function (delayed, delay) {
+            // this prevents the 4ms delay due to specification of setTimeout
+            // not sure how much it matters
             if (!delay && !utilities.is_internet_explorer()) {
                 // see http://dbaron.org/log/20100309-faster-timeouts
                 // seems to tickle some IE11 security setting so postMessage is sometimes blocked
