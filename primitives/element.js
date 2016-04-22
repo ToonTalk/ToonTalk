@@ -2207,63 +2207,7 @@ window.TOONTALK.element.function =
         ['an element containing a URL']);
     functions.add_function_object(
         'speak', 
-        function (message, event, robot) {
-            var speak = function (widget) {
-                var text, speech_utterance, when_finished;
-                if (!widget) {
-                    TT.UTILITIES.display_message("Speaking birds need something in the second box hole.");
-                    return;
-                }
-                if (!window.speechSynthesis) {
-                    // ignore this
-                    return true;
-                }
-                when_finished = function (event) {
-                    var response = TT.element.create(text, [], "a response to speaking '" + text + "'");
-                    functions.process_response(response, box_size_and_bird.bird, message, event, robot);
-                };
-                widget = widget.get_widget(); // either side is fine
-                text = widget.get_text ? widget.get_text() : widget.toString();
-                if (TT.TRANSLATION_ENABLED) {
-                    // TT.UTILITIES.speak doesn't translate since it should already be translated
-                    // but the text of a widget may not be
-                    TT.UTILITIES.translate(text,
-                                           function (translated_text) {
-                                               TT.UTILITIES.speak(translated_text, when_finished, volume, pitch, rate, voice_number);
-                                           });
-                } else {
-                    TT.UTILITIES.speak(text, when_finished, volume, pitch, rate, voice_number);
-                }
-            };
-            var box_size_and_bird = functions.check_message(message);
-            var volume, pitch, rate, voice_number;
-            if (!box_size_and_bird) {
-                return;
-            }
-            if (box_size_and_bird.size < 2) {
-                TT.UTILITIES.display_message("Speaking birds need a box with two or more holes.");
-                return;
-            }
-            volume = message.get_hole_contents(2);
-            if (volume) {
-                volume = volume && volume.to_float && volume.to_float();
-            }
-            pitch = message.get_hole_contents(3);
-            if (pitch) {
-                pitch = pitch && pitch.to_float && pitch.to_float();
-            }
-            rate = message.get_hole_contents(4);
-            if (rate) {
-                rate = rate && rate.to_float && rate.to_float();
-            }
-            voice_number = message.get_hole_contents(5);
-            if (voice_number) {
-                voice_number = voice_number && voice_number.to_float && voice_number.to_float();
-            }
-            speak(message.get_hole_contents(1));
-            return true;
-            // could enhance this to support pitch, volume, rate, voice number, lang
-        },
+        TT.widget.get_speak_function(functions),
         "The bird will cause the browser to speak what is in the second box hole. Other holes can have numbers describing the <a href='https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance'>volume, pitch, rate, voice_number</a>. Might do nothing in <a href='http://caniuse.com/#search=speech%20syn'>some browsers</a>.",
         "speak",
         ['a widget']);

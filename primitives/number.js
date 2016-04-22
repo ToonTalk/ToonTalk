@@ -1600,6 +1600,11 @@ window.TOONTALK.number.function =
                         },
                         "The bird will return with an approximation of the arc tangent (in radians) of the point where the first number is the y coordinate and the second one is the x.",
                         "atan2 rad");
+   functions.add_function_object('speak', 
+                                 TT.widget.get_speak_function(functions),
+                                 "The bird will cause the browser to speak what is in the second box hole. Other holes can have numbers describing the <a href='https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance'>volume, pitch, rate, voice_number</a>. Might do nothing in <a href='http://caniuse.com/#search=speech%20syn'>some browsers</a>.",
+                                 "speak",
+                                 ['a widget']);
     return functions.get_function_table();
 }());
 
