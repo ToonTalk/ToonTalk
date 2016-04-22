@@ -779,8 +779,9 @@ window.TOONTALK.robot_action =
                 var path_description, trained_action;
                 if (action_name === "open the backside" || 
                     action_name === "close the backside") {
-                    // not interesting enough
-                    return "";
+                    // following used to return the empty string but that led to confusing robot titles and users should know about every step
+                    // action names should end of " of" so fix it here (too many JSONified robots are out there to change it and don't want two forms)
+                    action_name += " of";
                 }
                 if (action_name === "click the button of") {
                     switch (additional_info.button_selector) {
