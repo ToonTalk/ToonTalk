@@ -159,8 +159,12 @@ window.TOONTALK.robot_action =
              // no need to do this if unwatched
              return true;
          },
-         "close the backside": function () {
+         "close the backside of": function () {
              // no need to do this if unwatched
+             return true;
+         },
+         "close the backside": function () {
+             // old name of this action
              return true;
          },
          "click the button of": function () {
@@ -671,7 +675,8 @@ window.TOONTALK.robot_action =
          "stop training":                      stop_training_animation,
          "train":                              train_another_animation,
          "open the backside":                  open_backside_animation,
-         "close the backside":                 close_backside,
+         "close the backside of":              close_backside,
+         "close the backside":                 close_backside, // old name
          "click the button of":                click_button_animation
     };
 
