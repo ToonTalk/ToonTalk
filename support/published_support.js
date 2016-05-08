@@ -140,7 +140,7 @@ return {
     send_edit_updates: function (saving_window, saving_window_URL, file_id) {
         var $elements = $(".toontalk-backside-of-top-level, .toontalk-top-level-resource-container");
         var any_edits;
-        any_edits = widget_count_in_last_save !=- $elements.length;
+        any_edits = widget_count_in_last_save !== $elements.length;
         widget_count_in_last_save = $elements.length;
         $(".toontalk-edit").each(function (index, element) {
                                      var content = $(element).editable("getHTML", false, true);
@@ -162,6 +162,7 @@ return {
         if (any_edits) {
             saving_window.postMessage({title: document.title, editable_contents: editable_contents, widgets_json: widgets_json, file_id: file_id}, saving_window_URL);
         }
+        // check every 10 seconds for edits
         setTimeout(function () {
                        TT.published_support.send_edit_updates(saving_window, saving_window_URL, file_id);
                    },

@@ -258,7 +258,7 @@ window.TOONTALK.UTILITIES =
             $(editable_text).insertAfter(top_level_element);
             widget.set_visible(true);
             widget.render();
-            utilities.backup_all_top_level_widgets(true);
+            // published_support will notice this and save soon
         };
         var element_under_page_x_y = function () {
             // don't include the current $source so temporarily hide it
