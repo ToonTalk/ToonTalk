@@ -90,17 +90,6 @@ ensure_toontalk_is_initialized();
 
 return {
     enable_editor: function (saving_window, saving_window_URL, file_id, widgets_json) {
-        var drop_handler = function (event) {
-            console.log(event.dataTransfer);
-        };
-        var prevent_default = function (event) {
-            event.preventDefault();
-        };
-        var accept_drops = function (index, element) {
-            element.addEventListener('drop', drop_handler);
-            element.addEventListener('dragover',  prevent_default);
-            element.addEventListener('dragenter', prevent_default);
-        };
         var $elements, current_widget_count, new_widget_count;
         if (editor_enabled) {
             return;

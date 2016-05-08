@@ -245,7 +245,9 @@ window.TOONTALK.UTILITIES =
             var child_target = event.target;
             $(top_level_element).addClass("toontalk-json toontalk-top-level-resource toontalk-top-level-resource-container");
             $(json_object_element).addClass("toontalk-top-level-resource")
-                                  .css({position: 'relative'});
+                                  .css({position: 'relative',
+                                        width:  widget.saved_width,
+                                        height: widget.saved_height});
             json_object_element.toontalk_widget_side = widget;
             top_level_element.toontalk_widget_side   = widget;
             top_level_element.appendChild(json_object_element);
