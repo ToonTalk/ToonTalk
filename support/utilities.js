@@ -256,7 +256,8 @@ window.TOONTALK.UTILITIES =
                 $(editable_text).children(".froala-element").get(0).appendChild(child_target.nextSibling);
             }
             $(editable_text).insertAfter(top_level_element);
-            widget.update_display();
+            widget.set_visible(true);
+            widget.render();
             // TODO: trigger save of this page?
         };
         var element_under_page_x_y = function () {
