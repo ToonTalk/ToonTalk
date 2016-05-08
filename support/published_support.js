@@ -11,6 +11,7 @@ window.TOONTALK.published_support = (function (TT) {
 
 var editable_contents = [];
 var widgets_json = [];
+var widget_count_in_last_save = 0;
 var editor_enabled = false;
 var inline_mode = !TT.UTILITIES.get_current_url_boolean_parameter('edit', false);
 
@@ -137,7 +138,10 @@ return {
          return editable_text;
     },
     send_edit_updates: function (saving_window, saving_window_URL, file_id) {
-        var any_edits = false;
+        var $elements = $(".toontalk-backside-of-top-level, .toontalk-top-level-resource-container");
+        var any_edits;
+        any_edits = widget_count_in_last_save !=- $elements.length;
+        widget_count_in_last_save = $elements.length;
         $(".toontalk-edit").each(function (index, element) {
                                      var content = $(element).editable("getHTML", false, true);
                                      if (editable_contents[index] && editable_contents[index] !== content) {
@@ -145,7 +149,7 @@ return {
                                      }
                                      editable_contents[index] = content;
         });
-        $(".toontalk-backside-of-top-level, .toontalk-top-level-resource-container").each(function (index, element) {
+        $elements.each(function (index, element) {
             var widget = TT.UTILITIES.widget_side_of_element(element);
             TT.UTILITIES.get_json_top_level(widget, function (json) {
                 var json_div = TT.UTILITIES.toontalk_json_div(json, widget);
