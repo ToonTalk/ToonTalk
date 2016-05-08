@@ -659,7 +659,15 @@ window.TOONTALK.widget = (function (TT) {
             widget.get_parent_widget_of_frontside = function () {
                  // returns the widget regardless of which side is the parent
                  return parent_of_frontside;
-            }
+            };
+            widget.get_containing_widget = function () {
+                // a box hole (or scale pan) is the parent but not the containing widget
+                // this function gets the hole's parent
+                if (parent_of_frontside && parent_of_frontside.is_hole()) {
+                    return parent_of_frontside.get_parent_widget_of_frontside();
+                }
+                return get_parent_of_frontside();
+            };
             widget.parent_of_frontside_is_backside = function () {
                 return parent_of_frontside_is_backside;
             };

@@ -870,7 +870,8 @@ window.TOONTALK.nest = (function (TT) {
                                                         });
                 }
                 widget_side.set_visible(nest_visible);
-                if (!nest_visible) {
+                if (nest_visible) {
+                } else {
                     widget_side.hide();
                 }
             } else {
