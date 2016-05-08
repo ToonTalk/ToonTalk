@@ -777,9 +777,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         if (video_object_or_video_file_name) {
             // by supporting both the video object and the file name we can get sharing of video objects between copies of the same element
             if (typeof video_object_or_video_file_name === 'string') {
-                original_html = "<video src='" + video_object_or_video_file_name + "' alt='" + video_object_or_video_file_name + "'/>"
+                // removed  + "' alt='" + video_object_or_video_file_name since might be long data string
+                original_html = "<video src='" + video_object_or_video_file_name + "'/>";
+                new_element.set_HTML(original_html);
             } else {
-                video_object = video_object_or_video_file_name;
+                new_element.set_video_object(video_object_or_video_file_name);
             }
         }
         if (TT.debugging) {
@@ -2021,8 +2023,8 @@ window.TOONTALK.element_backside =
                     }
                 }
             };
-            if (element_widget.get_sound_effect()) {
-                sound_effect = element_widget.get_sound_effect();
+            sound_effect = element_widget.get_sound_effect();
+            if (sound_effect) {
                 audio_label_and_title = function () {
                     if (!backside.visible()) {
                         return;
@@ -2053,9 +2055,9 @@ window.TOONTALK.element_backside =
                 $play_sound_effect_button.get(0).addEventListener('click', play_sound_effect_button_clicked);
                 audio_label_and_title();
                 backside_element.appendChild($play_sound_effect_button.get(0));
-            } else if ($(element_widget.get_frontside_element()).find("video").is("*")) {
+            } else if (element_widget.get_video_object()) {
                 video_object = element_widget.get_video_object();
-                video_label_and_title = function () {
+                video_label_and_title = function (event) {
                     if (!backside.visible()) {
                         return;
                     }
