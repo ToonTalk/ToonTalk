@@ -871,6 +871,7 @@ window.TOONTALK.nest = (function (TT) {
                 }
                 widget_side.set_visible(nest_visible);
                 if (nest_visible) {
+                    this.get_containing_widget().rerender();
                 } else {
                     widget_side.hide();
                 }
@@ -992,7 +993,8 @@ window.TOONTALK.nest = (function (TT) {
                     contents[0].set_visible(true);
                     $(contents[0].get_element()).show();
                 }
-                this.render();
+                // if empty container or new top contents may need to update -- e.g. scales
+                this.get_containing_widget().render();
             }
             if (contents.length <= nest.maximum_capacity && nest_under_capacity_listeners.length > 0) {
                 // remove the limit while running the listeners

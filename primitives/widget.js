@@ -666,7 +666,8 @@ window.TOONTALK.widget = (function (TT) {
                 if (parent_of_frontside && parent_of_frontside.is_hole()) {
                     return parent_of_frontside.get_parent_widget_of_frontside();
                 }
-                return get_parent_of_frontside();
+                // if top-level is its own container
+                return this.get_parent_of_frontside() || this;
             };
             widget.parent_of_frontside_is_backside = function () {
                 return parent_of_frontside_is_backside;
