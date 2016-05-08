@@ -300,6 +300,9 @@ window.TOONTALK.scale = (function (TT) {
             } else if (!right_contents) {
                return 1;
             } else {
+               // if either are covered nests compare their top contents
+               left_contents  = left_contents .dereference();
+               right_contents = right_contents.dereference();
                if (left_contents.get_widget().compare_with) {
                    return left_contents.get_widget().compare_with(right_contents.get_widget());
                }
