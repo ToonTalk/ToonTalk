@@ -1820,7 +1820,10 @@ window.TOONTALK.widget = (function (TT) {
                                100);
                     return;
                 }
-                save_to_google_drive = parameters.google_drive && !this.get_setting('google_drive_unavailable');
+                save_to_google_drive = parameters.google_drive && 
+                                       !this.get_setting('google_drive_unavailable') &&
+                                       // localhost can't connect to Google Drive
+                                       TT.TOONTALK_URL.indexOf("http://localhost") < 0;
                 if (!save_to_google_drive && !parameters.local_storage) {
                     // nothing to save 
                     if (callback) {
