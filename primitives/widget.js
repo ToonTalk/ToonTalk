@@ -1213,6 +1213,15 @@ window.TOONTALK.widget = (function (TT) {
                     return true;
                 }
             });
+            if (this.walk_children) {
+                this.walk_children(function (child) {
+                                       if (child.can_run()) {
+                                           can_run = true;
+                                       } else {
+                                           return true; // go on to next child
+                                       }
+                                   });
+            }
             return can_run;
         },
 
