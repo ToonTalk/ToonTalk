@@ -856,6 +856,7 @@ window.TOONTALK.UTILITIES =
                 // was undefined and still is
                 return;
             }
+//             console.log(json);
             if (!additional_info) {
                 additional_info = {};
             }
@@ -881,35 +882,14 @@ window.TOONTALK.UTILITIES =
             if (additional_info && additional_info.shared_widgets && json.shared_widget_index >= 0) {
                 shared_widget = additional_info.shared_widgets[json.shared_widget_index];
                 if (shared_widget) {
-//                     if (shared_widget.shared_widget_index >= 0) {
-//                         console.log("Warning cyclic JSON not fully supported")
-//                         // this isn't a widget but a promise of one -- so must be a cycle
-//                         if (!additional_info.cyclic_widgets_json) {
-//                             additional_info.cyclic_widgets_json = [];
-//                         }
-//                         if (additional_info.cyclic_widgets_json.indexOf(shared_widget) < 0) {
-//                             additional_info.cyclic_widgets_json.push(shared_widget);
-//                         }
-//                     }
                     return shared_widget;
                 }
                 // otherwise create it from the JSON and store it
                 json_of_shared_widget = additional_info.json_of_shared_widgets[json.shared_widget_index];
-                // following is to deal with reconstructing cyclic references
-                // if this is encountered again recursively will discover the JSON with shared_widget_index
-//                 additional_info.shared_widgets[json.shared_widget_index] = json;
-                // following postpones creation of backside widgets to deal with cycles
                 widget_side = utilities.create_from_json(json_of_shared_widget, additional_info, true);
-//                 if (additional_info.cyclic_widgets_json && typeof json_of_shared_widget.shared_widget_index === 'undefined') {
-//                     if (additional_info.cyclic_widgets_json.indexOf(json) >= 0) {
-//                         // contains cyclic references so make json into the widget_side
-//                         // clobber json to have all the (deep) properties of the widget_side
-//                         $.extend(true, json, widget_side);
-//                         json.shared_widget_index = undefined;
-//                         // all references shared including the top-level one
-//                         widget_side = json;
-//                     }
-//                 }
+                // following is to deal with reconstructing cyclic references
+                // but not needed anymore 
+//              additional_info.shared_widgets[json.shared_widget_index] = widget_side;
                 return handle_delayed_backside_widgets(widget_side, additional_info, json.shared_widget_index);
             }
             json_semantic = json.semantic;
@@ -945,13 +925,6 @@ window.TOONTALK.UTILITIES =
                         utilities.report_internal_error("Unable to recreate a " + json_semantic.type + ". Error is " + e); 
                     }
                 }
-               // following was needed when get_json_top_level wasn't working properly
-//             } else if (json_semantic.shared_widget_index >= 0) {
-//                 widget_side = additional_info.shared_widgets[json_semantic.shared_widget_index];
-//                 if (!widget_side) {
-//                     // try again with the JSON of the shared widget
-//                     widget_side = utilities.create_from_json(additional_info.json_of_shared_widgets[json_semantic.shared_widget_index], additional_info);
-//                 }
             } else {
                 utilities.report_internal_error("JSON type '" + json_semantic.type + "' not supported. Perhaps a JavaScript file implementing it is missing.");
                 return;

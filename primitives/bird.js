@@ -1159,6 +1159,10 @@ window.TOONTALK.nest = (function (TT) {
         new_nest.has_contents = function () {
             return contents.length > 0;
         };
+        new_nest.set_contents = function (new_contents) {
+            // this is used by sensors when reconstructing from JSON
+            contents = new_contents;
+        };
         new_nest.dropped_on_other = function (side_of_other, event, robot) {
             var bird, frontside_element, bird_frontside_element, nest_position, 
                 hatching_finished_handler, fly_down_finished_handler, bird_fly_continuation;
