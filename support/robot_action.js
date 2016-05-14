@@ -33,6 +33,7 @@ window.TOONTALK.robot_action =
                          if (TT.debugging && thing_in_hand === target) {
                              TT.UTILITIES.report_internal_error("Dropping something on itself! " + target);
                          }
+                         if (!target.visible()) {
                             // might be a robot was running watched but window hidden or robot's context closed
                             // so thing dropped on top-level backside should be removed from DOM
                             $(thing_in_hand.get_frontside_element()).remove();
