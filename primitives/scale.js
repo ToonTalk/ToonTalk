@@ -320,7 +320,7 @@ window.TOONTALK.scale = (function (TT) {
             var left_contents, right_contents;
             if (this.get_state() !== scale_pattern.get_state()) {
                 // mismatch if tilted differently
-                scale_pattern.last_match = this;
+                this.last_match = scale_pattern;
                 return this;
             }
             left_contents  = this.get_hole_contents(0);
