@@ -3656,7 +3656,7 @@ window.TOONTALK.UTILITIES =
                     }
                    return;
                 }
-                sub_widget = utilities.find_widget_on_page_side(event.changedTouches[0], undefined, 0, 0);
+                sub_widget = utilities.find_widget_side_on_page(event.changedTouches[0], undefined, 0, 0);
                 if (sub_widget && sub_widget.is_of_type("empty hole")) {
                     sub_widget = sub_widget.get_parent_of_frontside();
                 }
@@ -3765,7 +3765,7 @@ window.TOONTALK.UTILITIES =
                 event.preventDefault();
                 utilities.set_absolute_position(element, {left: touch.pageX-drag_x_offset-TT.USABILITY_DRAG_OFFSET.x,
                                                           top:  touch.pageY-drag_y_offset-TT.USABILITY_DRAG_OFFSET.y});
-                widget_side_under_element = utilities.find_widget_on_page_side(touch, element, TT.USABILITY_DRAG_OFFSET.x, TT.USABILITY_DRAG_OFFSET.y);
+                widget_side_under_element = utilities.find_widget_side_on_page(touch, element, TT.USABILITY_DRAG_OFFSET.x, TT.USABILITY_DRAG_OFFSET.y);
                 if (widget_drag_entered && widget_drag_entered !== widget_side_under_element) {
                     drag_leave_handler(touch, widget_drag_entered.get_frontside_element());
                     widget_drag_entered = undefined;
@@ -3795,11 +3795,11 @@ window.TOONTALK.UTILITIES =
             return event[attribute];
         };
 
-        utilities.find_widget_on_page_side = function (event, element, x_offset, y_offset) {
+        utilities.find_widget_side_on_page = function (event, element, x_offset, y_offset) {
             // return what is under the element
             var page_x = utilities.get_mouse_or_first_touch_event_attribute("pageX", event);
             var page_y = utilities.get_mouse_or_first_touch_event_attribute("pageY", event);
-            var element_on_page, widget_on_page_side;
+            var element_on_page, widget_side_on_page;
             // hide the tool so it is not under itself
             if (element) {
                 $(element).hide();
@@ -3814,22 +3814,22 @@ window.TOONTALK.UTILITIES =
                 element_on_page = element_on_page.parentNode;
             }
             if (element_on_page) {
-                widget_on_page_side = element_on_page.toontalk_widget_side;
+                widget_side_on_page = element_on_page.toontalk_widget_side;
             }
-            if (!widget_on_page_side) {
+            if (!widget_side_on_page) {
                 return;
             }
-            if (widget_on_page_side && widget_on_page_side.get_contents && widget_on_page_side.get_contents()) {
-                widget_on_page_side = widget_on_page_side.get_contents();
+            if (widget_side_on_page && widget_side_on_page.get_contents && widget_side_on_page.get_contents()) {
+                widget_side_on_page = widget_side_on_page.get_contents();
             }
-            if (widget_on_page_side.element_to_highlight && event) {
-                element_on_page = widget_on_page_side.element_to_highlight(event);
-                if (!element_on_page) {
-                    return;
-                }
-                widget_on_page_side = element_on_page.toontalk_widget_side;    
-            }
-            return widget_on_page_side;
+//             if (widget_side_on_page.element_to_highlight && event) {
+//                 element_on_page = widget_side_on_page.element_to_highlight(event);
+//                 if (!element_on_page) {
+//                     return;
+//                 }
+//                 widget_side_on_page = element_on_page.toontalk_widget_side;    
+//             }
+            return widget_side_on_page;
        };
 
        utilities.closest_top_level_backside = function (x, y) {
