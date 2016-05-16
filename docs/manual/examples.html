@@ -1182,8 +1182,8 @@ This will be replaced by an element.
     "shared_widget_index": 0
   },
   "view": {
-    "frontside_left": 653.024,
-    "frontside_top": 50.8229,
+    "frontside_left": 143.321,
+    "frontside_top": 70.6302,
     "backside_geometry": {
       "x_scale": 0.9746765342596788,
       "y_scale": 0.7457044673539522,
@@ -1192,8 +1192,8 @@ This will be replaced by an element.
     },
     "saved_width": 277.734,
     "saved_height": 44,
-    "drag_x_offset": 59.31927490234375,
-    "drag_y_offset": 20.572921752929688,
+    "drag_x_offset": 83.27999877929688,
+    "drag_y_offset": 20.651031494140625,
     "frontside_width": 219,
     "frontside_height": 19
   },
@@ -1221,48 +1221,46 @@ This will be replaced by an element.
           {
             "widget": {
               "semantic": {
-                "type": "box",
-                "size": 2,
-                "contents": [
-                  {
-                    "widget": {
-                      "semantic": {
-                        "type": "bird",
-                        "nest": {
-                          "semantic": {
-                            "type": "nest",
-                            "contents": [],
-                            "guid": "toontalk_id_1462729009164",
-                            "serial_number": 1,
-                            "name": "#1"
-                          },
-                          "view": {
-                            "saved_width": 116,
-                            "saved_height": 98
-                          },
-                          "version": 1
-                        }
-                      },
-                      "view": {
-                        "saved_width": 70,
-                        "saved_height": 102
-                      },
-                      "version": 1
-                    }
+                "type": "bird",
+                "nest": {
+                  "semantic": {
+                    "type": "function_nest",
+                    "function_type": "element",
+                    "function_name": "go to page"
                   },
-                  null
-                ],
-                "horizontal": true,
-                "name": ";;",
-                "infinite_stack": true
+                  "view": {},
+                  "version": 1
+                }
               },
               "view": {
-                "frontside_width": 164,
-                "frontside_height": 68,
-                "frontside_left": "53.04137639555701%",
-                "frontside_top": "43.73638486472166%",
-                "saved_width": 164,
-                "saved_height": 68
+                "saved_width": 70,
+                "saved_height": 102
+              },
+              "version": 1
+            }
+          },
+          {
+            "widget": {
+              "semantic": {
+                "type": "sensor",
+                "contents": [],
+                "guid": "sensor",
+                "serial_number": 6,
+                "name": "sensor",
+                "event_name": "widget added",
+                "attribute": "widget",
+                "active": false,
+                "sensor_of": {
+                  "shared_widget_index": 0
+                }
+              },
+              "view": {
+                "frontside_width": 116,
+                "frontside_height": 98,
+                "frontside_left": "25.4803794419572%",
+                "frontside_top": "38.57087893699701%",
+                "saved_width": 116,
+                "saved_height": 98
               },
               "version": 1
             }
@@ -1349,7 +1347,7 @@ This will be replaced by an element.
                           ],
                           "attribute_values": [
                             8,
-                            696.188,
+                            637.188,
                             47.5,
                             117
                           ],
@@ -1537,10 +1535,10 @@ This will be replaced by an element.
                 "name": "#1"
               },
               "view": {
-                "frontside_width": 73,
-                "frontside_height": 101,
-                "frontside_left": "83.09917734753544%",
-                "frontside_top": "43.92140666105391%",
+                "frontside_width": 66,
+                "frontside_height": 110,
+                "frontside_left": "73.6691726213967%",
+                "frontside_top": "39.76331641338802%",
                 "saved_width": 66,
                 "saved_height": 110
               },
@@ -1550,46 +1548,47 @@ This will be replaced by an element.
           {
             "widget": {
               "semantic": {
-                "type": "sensor",
-                "contents": [],
-                "guid": "sensor",
-                "serial_number": 5,
-                "name": "sensor",
-                "event_name": "widget added",
-                "attribute": "widget",
-                "active": false,
-                "sensor_of": {
-                  "shared_widget_index": 0
-                }
-              },
-              "view": {
-                "frontside_width": 116,
-                "frontside_height": 98,
-                "frontside_left": "33.56000004748812%",
-                "frontside_top": "39.72733247409843%",
-                "saved_width": 116,
-                "saved_height": 98
-              },
-              "version": 1
-            }
-          },
-          {
-            "widget": {
-              "semantic": {
-                "type": "bird",
-                "nest": {
-                  "semantic": {
-                    "type": "function_nest",
-                    "function_type": "element",
-                    "function_name": "go to page"
+                "type": "box",
+                "size": 2,
+                "contents": [
+                  {
+                    "widget": {
+                      "semantic": {
+                        "type": "bird",
+                        "nest": {
+                          "semantic": {
+                            "type": "nest",
+                            "contents": [],
+                            "guid": "toontalk_id_1462729009164",
+                            "serial_number": 1,
+                            "name": "#1"
+                          },
+                          "view": {
+                            "saved_width": 116,
+                            "saved_height": 98
+                          },
+                          "version": 1
+                        }
+                      },
+                      "view": {
+                        "saved_width": 70,
+                        "saved_height": 102
+                      },
+                      "version": 1
+                    }
                   },
-                  "view": {},
-                  "version": 1
-                }
+                  null
+                ],
+                "horizontal": true,
+                "name": ";;"
               },
               "view": {
-                "saved_width": 70,
-                "saved_height": 102
+                "frontside_width": 164,
+                "frontside_height": 68,
+                "frontside_left": "40.32513137638085%",
+                "frontside_top": "37.71254149999583%",
+                "saved_width": 164,
+                "saved_height": 68
               },
               "version": 1
             }
@@ -1597,8 +1596,8 @@ This will be replaced by an element.
         ]
       },
       "view": {
-        "frontside_left": 653.024,
-        "frontside_top": 50.8229,
+        "frontside_left": 143.321,
+        "frontside_top": 70.6302,
         "backside_geometry": {
           "x_scale": 0.9746765342596788,
           "y_scale": 0.7457044673539522,
@@ -1607,8 +1606,8 @@ This will be replaced by an element.
         },
         "saved_width": 277.734,
         "saved_height": 44,
-        "drag_x_offset": 59.31927490234375,
-        "drag_y_offset": 20.572921752929688,
+        "drag_x_offset": 83.27999877929688,
+        "drag_y_offset": 20.651031494140625,
         "frontside_width": 219,
         "frontside_height": 19
       },
