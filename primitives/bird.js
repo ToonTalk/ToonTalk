@@ -423,7 +423,7 @@ window.TOONTALK.bird = (function (TT) {
                     }
                     stop_carrying_element(nest_offset);
                     if (!message_side.is_plain_text_element()) {
-                        TT.UTILITIES.set_css(message_side.get_frontside_element(), message_dimensions);
+                        TT.UTILITIES.set_css(message_side.get_element(), message_dimensions);
                     }
                     this.fly_to(contents_offset, move_contents_back_continuation, robot, delay_between_steps);
                 }.bind(this);
