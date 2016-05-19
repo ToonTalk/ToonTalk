@@ -1014,6 +1014,11 @@ window.TOONTALK.widget = (function (TT) {
                     // backside is closed but this was saved when it was hidden
                     json_view.backside_geometry = this.backside_geometry;
                 }
+                if (json_view.frontside_left === undefined && this.json_view) {
+                    // if still undefined use saved view when this widget's parent was loaded
+                    json_view.frontside_left = this.json_view.frontside_left;
+                    json_view.frontside_top = this.json_view.frontside_top;
+                }
                 json_semantic.description = this.get_description && this.get_description();
                 // following are typically undefined unless in a container
                 json_view.saved_width  = this.saved_width;
@@ -1035,6 +1040,8 @@ window.TOONTALK.widget = (function (TT) {
                         var json_view, widget_index;
                         json_backside_widget_side = json.semantic.backside_widgets[index];
                         if (!json_backside_widget_side) {
+                            // save the parent's json view of children with child
+                            backside_widgets[index].json_view = backside_widgets_json_views[index];
                             return;
                         }
                         if (json_backside_widget_side.widget.shared_widget_index >= 0) {
