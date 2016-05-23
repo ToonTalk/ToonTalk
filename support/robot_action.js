@@ -199,6 +199,13 @@ window.TOONTALK.robot_action =
         var thing_in_hand = robot.get_thing_in_hand();
         var robot_frontside_element = robot.get_frontside_element();
         var widget_element = side.get_element();
+        var close_memmber = function (x, max_difference, xs) {
+            return xs.some(function (other) {
+                              if (Math.abs(other-x) <= max_difference) {
+                                  return true;
+                              }
+                          });
+        };
         var widget_bounding_box,
             left_offset,
             top_offset,
@@ -239,8 +246,8 @@ window.TOONTALK.robot_action =
                 }
             }
             if (thing_in_hand && 
-                robot.original_animation_left_offset.indexOf(animation_left_offset) >= 0 && 
-                robot.original_animation_top_offset .indexOf(animation_top_offset)  >= 0) {
+                close_memmber(animation_left_offset, robot.last_thing_in_hand_width, robot.original_animation_left_offset) && 
+                robot.original_animation_top_offset.indexOf(animation_top_offset)  >= 0) {
                 // robot has already dropped something here
                 animation_left_offset = robot.animation_left_offset+robot.last_thing_in_hand_width;
                 animation_top_offset  = robot.animation_top_offset;
@@ -261,7 +268,9 @@ window.TOONTALK.robot_action =
                                            });
             } else {
                 robot.original_animation_left_offset.push(animation_left_offset);
-                robot.original_animation_top_offset .push(animation_top_offset);
+                if (robot.original_animation_top_offset .indexOf(animation_top_offset) < 0) {
+                    robot.original_animation_top_offset .push(animation_top_offset);
+                }
                 robot.last_thing_in_hand_width = TT.UTILITIES.get_element_width (thing_in_hand_element);
                 robot.max_thing_in_hand_height = TT.UTILITIES.get_element_height(thing_in_hand_element);
             }
