@@ -1643,6 +1643,42 @@ window.TOONTALK.widget = (function (TT) {
             speak(message.get_hole_contents(1));
             return true;
         }},
+        get_description_function: function (functions) {
+            return function (message, event, robot) {
+            var describe = function (widget) {
+                var text, speech_utterance, respond;
+                if (!widget) {
+                    TT.UTILITIES.display_message("Description birds need something in the second box hole.");
+                    return;
+                }
+                respond = function (description) {
+                    var response = TT.element.create(description, [], widget.toString());
+                    functions.process_response(response, box_size_and_bird.bird, message, event, robot);
+                };
+                widget = widget.get_widget(); // either side is fine
+                text = widget.get_text ? widget.get_text(true) : widget.toString();
+                if (TT.TRANSLATION_ENABLED) {
+                    // TT.UTILITIES.speak doesn't translate since it should already be translated
+                    // but the text of a widget may not be
+                    TT.UTILITIES.translate(text,
+                                           function (translated_text) {
+                                               respond(translated_text);
+                                           });
+                } else {
+                    respond(text);
+                }
+            };
+            var box_size_and_bird = functions.check_message(message);
+            if (!box_size_and_bird) {
+                return;
+            }
+            if (box_size_and_bird.size < 2) {
+                TT.UTILITIES.display_message("Description birds need a box with two holes containing a bird and a widget.");
+                return;
+            }
+            describe(message.get_hole_contents(1));
+            return true;
+        }},
         create_top_level_widget: function (settings) {
             var top_level_widget = Object.create(TT.widget);
             var stack_of_robots_in_training = [];

@@ -4273,6 +4273,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
         // web page seems to be gone but see http://web.archive.org/web/20061006084112/http://home.earthlink.net/~mrob/pub/math/largenum.html
 
         // note that this is incorrect for long form languages -- see https://en.wikipedia.org/wiki/Long_and_short_scales#Long_scale_users
+        // however Google translate translates billion, trillion, correctly to French (and presumably the like)
 
 /*
  Rules for one system extending up to 103000 are given in The Book of Numbers by Conway and Guy.
