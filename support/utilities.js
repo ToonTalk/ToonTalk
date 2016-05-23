@@ -4273,7 +4273,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
         // web page seems to be gone but see http://web.archive.org/web/20061006084112/http://home.earthlink.net/~mrob/pub/math/largenum.html
 
         // note that this is incorrect for long form languages -- see https://en.wikipedia.org/wiki/Long_and_short_scales#Long_scale_users
-        
+
 /*
  Rules for one system extending up to 103000 are given in The Book of Numbers by Conway and Guy.
  This system was developed by John Conway and Allan Wechsler after significant research into Latin5 but Olivier Miakinen4 has refined it, as described below. 
@@ -4501,6 +4501,16 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
 //       return iter('')(0)(grp(String(n)))(rem(String(n)));
 //     };
         utilities.initialize = function (callback) {
+            var translation_observer = new MutationObserver(function (mutations) {
+                                                                mutations.forEach(function (mutation) {
+                                                                    var translation_element = $(mutation.target).closest(".toontalk-translation-element").get(0);
+                                                                    if (translation_element && translation_element.toontalk_callback) {
+                                                                        translation_element.toontalk_callback(translation_element.innerText);
+                                                                        translation_element.innerText = '';
+                                                                        translation_element.toontalk_callback = undefined;
+                                                                    }
+                                                                });
+                                                            });
             var document_click, translation_div, translation_element, $saved_selection;
             if (toontalk_initialized) {
                 return;
@@ -4574,25 +4584,13 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                 translation_element = document.createElement('div');
                 translation_element.className = 'toontalk-translation-element';
                 document.body.appendChild(translation_element);
-                utilities.translate = function (text, callback, maximum_wait) {
+                translation_observer.observe(translation_element, {characterData: true,
+                                                                   subtree: true});
+                utilities.translate = function (text, callback) {
                                           var original;
-                                          if (maximum_wait === undefined) {
-                                              // hoping 1/2 second is enough for Google to translate this
-                                              // could use a longer time but then there is a delay is speaking
-                                              maximum_wait = 500;
-                                          }
                                           translation_element.innerHTML = text;
                                           original = translation_element.innerText;
-                                          setTimeout(function () {
-                                                         if (original !== translation_element.innerText || maximum_wait <= 0) {
-                                                             callback(translation_element.innerText);
-                                                             translation_element.innerText = '';
-                                                         } else {
-                                                             // not yet translated check again in 100ms
-                                                             utilities.translate(text, callback, maximum_wait-100);
-                                                         }
-                                                      },
-                                                      100);
+                                          translation_element.toontalk_callback = callback;
                 };
             } else {
                 $("#google_translate_element").remove();
