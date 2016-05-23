@@ -251,11 +251,14 @@ window.TOONTALK.robot_action =
                         animation_top_offset = 0;
                     }
                 }
-                robot.last_thing_in_hand_width = TT.UTILITIES.get_element_width(thing_in_hand_element);
-                if (typeof robot.max_thing_in_hand_height === 'undefined') {
-                    robot.max_thing_in_hand_height = 0;
-                }
-                robot.max_thing_in_hand_height = Math.max(robot.max_thing_in_hand_height, $(thing_in_hand_element).height());
+                TT.UTILITIES.when_attached(thing_in_hand_element,
+                                           function () {
+                                                robot.last_thing_in_hand_width = TT.UTILITIES.get_element_width(thing_in_hand_element);
+                                                if (typeof robot.max_thing_in_hand_height === 'undefined') {
+                                                    robot.max_thing_in_hand_height = 0;
+                                                }
+                                                robot.max_thing_in_hand_height = Math.max(robot.max_thing_in_hand_height, $(thing_in_hand_element).height());
+                                           });
             } else {
                 robot.original_animation_left_offset.push(animation_left_offset);
                 robot.original_animation_top_offset .push(animation_top_offset);
