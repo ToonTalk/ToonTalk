@@ -2248,13 +2248,60 @@ window.TOONTALK.UTILITIES =
         utilities.speak = function (text, when_finished, volume, pitch, rate, voice_number) {
             var speech_utterance = new SpeechSynthesisUtterance(text);
             var voices = window.speechSynthesis.getVoices();
-            var language_code;
+            var break_into_short_segments = function (text) {
+                var segments = [];
+                var break_text = function (text) {
+                    var segment, index;
+                    if (text.length < maximum_length) {
+                        return text.length+1;
+                    }
+                    segment = text.substring(0, maximum_length);
+                    index = segment.lastIndexOf(". ") || segment.lastIndexOf(".\n");
+                    if (index > 0) {
+                        return index+2;
+                    }
+                    index = segment.lastIndexOf(".");
+                    if (index === segment.length-1) {
+                        // final period need not have space after it
+                        return index+1;
+                    }
+                    index = segment.lastIndexOf(", ");
+                    if (index > 0) {
+                        return index+2;
+                    }
+                    index = segment.lastIndexOf(" ");
+                    if (index > 0) {
+                        return index+1;
+                    }
+                    // give up - no periods, commas, or spaces
+                    return Math.min(text.length+1, maximum_length);
+                };
+                var best_break;
+                while (text.length > 0) {
+                    best_break = break_text(text);
+                    if (best_break > 1) {
+                        segments.push(text.substring(0, best_break-1));
+                    }
+                    text = text.substring(best_break);
+                }
+                return segments;
+            };
+            var language_code, segments;
             if (voices.length === 0) {
                 // not yet loaded -- see https://bugs.chromium.org/p/chromium/issues/detail?id=334847
                 window.speechSynthesis.onvoiceschanged = function () {
                                                              utilities.speak(text, when_finished, volume, pitch, rate, voice_number);
                                                              window.speechSynthesis.onvoiceschanged = undefined;
                                                          };
+                return;
+            }
+            // if the text is too long it needs to be broken into pieces
+            // see http://stackoverflow.com/questions/21947730/chrome-speech-synthesis-with-longer-texts
+            if (text.length > maximum_length) {
+                segments = break_into_short_segments(text);
+                segments.forEach(function (segment, index) {
+                    utilities.speak(segment, index === segments.length-1 ? when_finished : undefined, volume, pitch, rate, voice_number)
+                });
                 return;
             }
             // TT.volume is used for speech and sound effects and speech is quieter so triple its volume
@@ -4172,6 +4219,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
 
         utilities.number_to_words = function (input) {
         // largely based on information in http://home.earthlink.net/~mrob/pub/math/largenum.html
+        // web page seems to be gone but see http://web.archive.org/web/20061006084112/http://home.earthlink.net/~mrob/pub/math/largenum.html
 /*
  Rules for one system extending up to 103000 are given in The Book of Numbers by Conway and Guy.
  This system was developed by John Conway and Allan Wechsler after significant research into Latin5 but Olivier Miakinen4 has refined it, as described below. 
@@ -4199,6 +4247,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
 */
         // note that the above web site does not have "prefix" "m" for nonaginta or nongenti but many sites seem to require it -- e.g. http://www.webster-dictionary.org/definition/Names%20of%20large%20numbers
         // based on desktop ToonTalk code in https://github.com/ToonTalk/desktop-toontalk/blob/781b9fa035304b93b015447f1c7773b07e912eb2/source/martian.cpp
+        // note that this assumes the short scale which is appropriate for English -- seee https://en.wikipedia.org/wiki/Long_and_short_scales
         var output = "";
         var one_names = ["", "un", "duo", "tre", "quattuor", "quin", "se", "septe", "octo", "nove"];
         var one_suffixes = ["", "", "", "*", "", "", "sx", "mn", "", "mx"];
@@ -4442,6 +4491,11 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             // might want two queues: so new entries end up in the 'next queue'
             TT.DEFAULT_QUEUE.start();
             window.addEventListener('beforeunload', function (event) {
+                try {
+                    window.speechSynthesis.cancel();
+                } catch (e) {
+                    // ignore error    
+                }
                 try {
                     utilities.backup_all_top_level_widgets(true);
                 } catch (error) {
