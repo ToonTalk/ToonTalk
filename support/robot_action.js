@@ -161,6 +161,10 @@ window.TOONTALK.robot_action =
              // no need to do this if unwatched
              return true;
          },
+         "open the backside of": function () {
+             // no need to do this if unwatched
+             return true;
+         },
          "close the backside of": function () {
              // no need to do this if unwatched
              return true;
