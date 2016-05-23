@@ -4392,6 +4392,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                     };
                     output += "llion";
                 };
+                output += ","; // reads better and segmented text-to-speech breaks at better places
             };
         };
         return output.trim();
