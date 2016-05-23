@@ -1603,7 +1603,7 @@ window.TOONTALK.widget = (function (TT) {
                     functions.process_response(response, box_size_and_bird.bird, message, event, robot);
                 };
                 widget = widget.get_widget(); // either side is fine
-                text = widget.get_text ? widget.get_text() : widget.toString();
+                text = widget.get_text ? widget.get_text(true) : widget.toString();
                 if (TT.TRANSLATION_ENABLED) {
                     // TT.UTILITIES.speak doesn't translate since it should already be translated
                     // but the text of a widget may not be

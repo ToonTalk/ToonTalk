@@ -993,13 +993,17 @@ window.TOONTALK.number = (function () {
         }
     };
 
-    number.get_text = function () {
+    number.get_text = function (for_speaking) {
+        // for_speaking is because most (all?) text-to-speech engines fail to speak large numbers correctly
         var format = this.get_format();
         var integer_part, fractional_part;
         if (this.get_approximate() || (this.is_attribute_widget && this.is_attribute_widget())) {
             return "approximately " + bigrat.toDecimal(this.get_value()).toString();
         }
         if (this.is_integer() || format === 'improper_fraction') {
+            if (for_speaking) {
+                return TT.UTILITIES.number_to_words(this.toString());
+            }
             return this.toString();
         }
         integer_part = this.integer_part();

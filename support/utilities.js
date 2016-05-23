@@ -2248,6 +2248,7 @@ window.TOONTALK.UTILITIES =
         utilities.speak = function (text, when_finished, volume, pitch, rate, voice_number) {
             var speech_utterance = new SpeechSynthesisUtterance(text);
             var voices = window.speechSynthesis.getVoices();
+            var maximum_length = 200; // not sure what a good value is
             var break_into_short_segments = function (text) {
                 var segments = [];
                 var break_text = function (text) {
